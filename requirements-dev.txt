@@ -7,7 +7,7 @@
 # Product runtimes keep their own pins: LiveTrial in
 # apps/timetrials-desktop/vision-runtime/requirements.txt, the Tournament tools in
 # tooling/tournament/requirements.lock.txt.
-numpy==2.2.1
+numpy==2.5.4
 opencv-python-headless==4.10.0.84
-jsonschema==4.23.0
+jsonschema==4.26.0
 pytest==9.2.0

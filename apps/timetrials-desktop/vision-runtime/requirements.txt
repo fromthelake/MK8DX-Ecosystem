@@ -6,10 +6,10 @@
 # fine on CPU) — plain `pip install easyocr` picks the right wheel for your box.
 opencv-python==4.13.0.92
 opencv-python-headless==4.13.0.92
-numpy==2.4.5
+numpy==2.5.4
 Pillow==13.0.0
 easyocr==1.7.2
-jsonschema==4.23.0
+jsonschema==4.26.0
 
 # NOT a pip package — required on PATH for capture + clip recording:
 #   ffmpeg   (https://ffmpeg.org)  -> `ffmpeg -version` must work
