@@ -1,4 +1,4 @@
-FROM node:24.12.0-bookworm-slim AS build
+FROM node:26.13.0-bookworm-slim AS build
 WORKDIR /build/apps/timetrials-web
 COPY apps/timetrials-web/package.json apps/timetrials-web/package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -10,7 +10,7 @@ COPY packages/assets/web-asset-selection-v1.json /build/packages/assets/web-asse
 COPY tooling/assets/materialize_collection.mjs /build/tooling/assets/materialize_collection.mjs
 RUN node /build/tooling/assets/materialize_collection.mjs web /build/web-assets
 
-FROM node:24.12.0-bookworm-slim AS scanner
+FROM node:26.13.0-bookworm-slim AS scanner
 WORKDIR /build/apps/timetrials-scanner-web
 COPY apps/timetrials-scanner-web/package.json apps/timetrials-scanner-web/package-lock.json ./
 RUN npm ci --ignore-scripts
