@@ -16,8 +16,8 @@ docker compose version
 # extracts into a new folder); later starts load again only when an image is missing.
 load=no
 [ -f images/docker-images-amd64.tar ] && [ ! -f images/loaded.txt ] && load=yes
-if ! docker image inspect mk8dx/api:local-20261001-r13-amd64 >/dev/null 2>&1 ||
-   ! docker image inspect mk8dx/web:local-20261002-r14-amd64 >/dev/null 2>&1; then
+if ! docker image inspect mk8dx/api:local-v010-node26-amd64 >/dev/null 2>&1 ||
+   ! docker image inspect mk8dx/web:local-v010-node26-amd64 >/dev/null 2>&1; then
   [ -f images/docker-images-amd64.tar ] || { echo 'Complete prebuilt image bundle is missing.' >&2; exit 1; }
   load=yes
 fi
