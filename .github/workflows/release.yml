@@ -1,7 +1,6 @@
 name: Release
-# A tag v* builds the client packages and the source archive from that commit, writes SHA256SUMS.txt and
-# manifest.json, and opens a DRAFT release for a maintainer to review and publish. Server packages (host-local,
-# XAMPP, shared hosting) need the maintainer's image builds and are attached by hand (docs/RELEASE_PACKAGES.md).
+# A tag v* builds the clients, source and three server packages from that commit, attests the release
+# assets, writes SHA256SUMS.txt and manifest.json, and opens a DRAFT release for review.
 # The Android APK here is debug-signed; an official signed APK is attached by the maintainer (docs/CLIENT_BUILDS.md).
 # Nothing is built unless the tagged commit already has a successful Verify run: tag a commit after its
 # Verify run is green (re-run this workflow if the tag was pushed while Verify was still running).
@@ -11,6 +10,10 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+env:
+  # workflow_dispatch runs on a branch (whose name may contain '/'); use a
+  # harmless version string for package paths. Tagged runs keep the exact tag.
+  PACKAGE_VERSION: ${{ github.event_name == 'workflow_dispatch' && 'v0.1.0-rc.0' || github.ref_name }}
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -46,7 +49,7 @@ jobs:
           export JAVA_HOME="$JAVA_HOME_21_X64"
           bash ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
           mkdir -p "$RUNNER_TEMP/out"
-          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/out/mk8dx-android-debug-${GITHUB_REF_NAME}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/out/mk8dx-android-debug-${PACKAGE_VERSION}.apk"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android
@@ -67,9 +70,9 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install --disable-pip-version-check build wheel
-          python tooling/tournament/build_windows_package.py --output "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME" --version "$env:GITHUB_REF_NAME"
+          python tooling/tournament/build_windows_package.py --output "$env:RUNNER_TEMP\tournament-tools-$env:PACKAGE_VERSION" --version "$env:PACKAGE_VERSION"
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
-          Move-Item "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME.zip" "$env:RUNNER_TEMP\out\"
+          Move-Item "$env:RUNNER_TEMP\tournament-tools-$env:PACKAGE_VERSION.zip" "$env:RUNNER_TEMP\out\"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: tournament
@@ -95,11 +98,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "LiveTrial dependency installation failed" }
           $embed = "$env:RUNNER_TEMP\python-3.12.10-embed-amd64.zip"
           Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip -OutFile $embed
-          $out = "$env:RUNNER_TEMP\desktop-client-$env:GITHUB_REF_NAME"
-          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:GITHUB_REF_NAME"
+          $out = "$env:RUNNER_TEMP\desktop-client-$env:PACKAGE_VERSION"
+          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:PACKAGE_VERSION"
           if ($LASTEXITCODE -ne 0) { throw "LiveTrial package build failed" }
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
-          Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:GITHUB_REF_NAME.zip"
+          Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:PACKAGE_VERSION.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: livetrial
@@ -117,23 +120,139 @@ jobs:
         run: |
           python tooling/assets/shared_asset_source.py verify
           mkdir -p "$RUNNER_TEMP/out"
-          python tooling/release/full_archive.py --output "$RUNNER_TEMP/out/mk8dx-full-local-${GITHUB_REF_NAME}.zip"
+          python tooling/release/full_archive.py --output "$RUNNER_TEMP/out/mk8dx-full-local-${PACKAGE_VERSION}.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: source
           path: ${{ runner.temp }}/out/
-  draft-release:
-    needs: [android, tournament, livetrial, source]
+  host-package:
+    needs: verified
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 75
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Build, package and publish versioned linux/amd64 images
+        id: images
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          version="$PACKAGE_VERSION"
+          mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version")
+          test "${#images[@]}" -eq 4
+          python tooling/assets/shared_asset_source.py verify
+          docker build --platform linux/amd64 --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
+            --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
+            -f backend/api/Dockerfile -t "${images[0]}" .
+          docker build --platform linux/amd64 --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
+            --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
+            -f apps/timetrials-web/Dockerfile -t "${images[1]}" .
+          docker pull --platform linux/amd64 "${images[2]}"
+          docker pull --platform linux/amd64 "${images[3]}"
+          mkdir -p "$RUNNER_TEMP/out"
+          python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
+            --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
+          if [ "$GITHUB_EVENT_NAME" != workflow_dispatch ]; then
+            echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
+            docker push "${images[0]}"
+            docker push "${images[1]}"
+            api_digest=$(docker image inspect --format '{{index .RepoDigests 0}}' "${images[0]}")
+            web_digest=$(docker image inspect --format '{{index .RepoDigests 0}}' "${images[1]}")
+            echo "api_digest=${api_digest##*@}" >> "$GITHUB_OUTPUT"
+            echo "web_digest=${web_digest##*@}" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Attest API image provenance
+        if: github.event_name != 'workflow_dispatch'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ghcr.io/fromthelake/mk8dx-api
+          subject-digest: ${{ steps.images.outputs.api_digest }}
+          push-to-registry: true
+      - name: Attest Web image provenance
+        if: github.event_name != 'workflow_dispatch'
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-name: ghcr.io/fromthelake/mk8dx-web
+          subject-digest: ${{ steps.images.outputs.web_digest }}
+          push-to-registry: true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: host-package
+          path: ${{ runner.temp }}/out/*.zip
+  native-packages:
+    needs: verified
+    runs-on: windows-2022
+    timeout-minutes: 75
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.12.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Build A3 and B2 packages from source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($dir in @('backend/api', 'apps/timetrials-web', 'apps/timetrials-scanner-web')) {
+            npm.cmd ci --prefix $dir --ignore-scripts
+            if ($LASTEXITCODE -ne 0) { throw "npm ci failed: $dir" }
+          }
+          npm.cmd run build --prefix backend/api
+          if ($LASTEXITCODE -ne 0) { throw 'API build failed' }
+          npm.cmd run build --prefix apps/timetrials-web
+          if ($LASTEXITCODE -ne 0) { throw 'Web build failed' }
+          npm.cmd run sync-assets --prefix apps/timetrials-scanner-web
+          if ($LASTEXITCODE -ne 0) { throw 'Scanner asset sync failed' }
+          $env:MK8_BASE_PATH = '/scanner/'
+          npm.cmd run build --prefix apps/timetrials-scanner-web
+          if ($LASTEXITCODE -ne 0) { throw 'Scanner build failed' }
+          $mailpit = Join-Path $env:RUNNER_TEMP 'mailpit-windows-amd64.zip'
+          $mariadb = Join-Path $env:RUNNER_TEMP 'mariadb-11.4.13-winx64.zip'
+          Invoke-WebRequest -Uri 'https://github.com/axllent/mailpit/releases/download/v1.32.0/mailpit-windows-amd64.zip' -OutFile $mailpit
+          Invoke-WebRequest -Uri 'https://archive.mariadb.org/mariadb-11.4.13/winx64-packages/mariadb-11.4.13-winx64.zip' -OutFile $mariadb
+          New-Item -ItemType Directory -Force (Join-Path $env:RUNNER_TEMP 'out') | Out-Null
+          python tooling/release/non_docker_bundle.py --output-dir (Join-Path $env:RUNNER_TEMP 'out') --mailpit-archive $mailpit --mariadb-archive $mariadb --revision $env:PACKAGE_VERSION
+          if ($LASTEXITCODE -ne 0) { throw 'A3/B2 package build failed' }
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: native-packages
+          path: ${{ runner.temp }}/out/*.zip
+  draft-release:
+    needs: [android, tournament, livetrial, source, host-package, native-packages]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
     permissions:
       contents: write
+      id-token: write
+      attestations: write
+      artifact-metadata: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           path: ${{ runner.temp }}/dist
           merge-multiple: true
+      - name: Generate SPDX software bill of materials for release assets
+        uses: anchore/sbom-action@fffec3d851af758d56fee099cf3fbf8aa8779843 # v0.24.3
+        with:
+          path: ${{ runner.temp }}/dist
+          format: spdx-json
+          output-file: ${{ runner.temp }}/dist/SBOM.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+      - name: Include every built asset in SPDX inventory
+        run: python3 tooling/release/complete_sbom.py "$RUNNER_TEMP/dist" "$RUNNER_TEMP/dist/SBOM.spdx.json"
       - name: Checksums, manifest and a draft release
         env:
           GH_TOKEN: ${{ github.token }}
@@ -143,16 +262,29 @@ jobs:
           cp "$GITHUB_WORKSPACE/docs/THIRD_PARTY_MATERIALS.md" .
           cp "$GITHUB_WORKSPACE"/docs/install/MK8DX_User_Guide_EN.* "$GITHUB_WORKSPACE"/docs/install/MK8DX_Handleiding_NL.* .
           # The APK cannot carry loose files: its notices travel beside it.
-          (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${GITHUB_REF_NAME}.zip" \
+          (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${PACKAGE_VERSION}.zip" \
             LICENSE LICENSE_SCOPE.md SOURCE_FOR_BINARIES.txt docs/THIRD_PARTY_MATERIALS.md)
-          printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$GITHUB_REF_NAME" "$GITHUB_SHA" > manifest.json
+          printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$PACKAGE_VERSION" "$GITHUB_SHA" > manifest.json
           sha256sum -- * > SHA256SUMS.txt
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo "Dry run: packages, manifest and checksums built; no tag or release created."
             exit 0
           fi
           gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft --verify-tag --title "$GITHUB_REF_NAME" \
-            --notes "Draft built from $GITHUB_SHA. Attach the server packages (and a release-signed APK if any), then refresh SHA256SUMS.txt (docs/RELEASE_PACKAGES.md, Publishing a release), review and publish." -- *
+            --notes "Draft built from $GITHUB_SHA. Replace the debug APK with the locally release-signed APK, refresh SHA256SUMS.txt, verify downloads and attestations (docs/RELEASE_PACKAGES.md), review and publish." -- *
+      - name: Attest exact release assets
+        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
+        with:
+          subject-path: ${{ runner.temp }}/dist/*
+      - name: Verify every generated provenance record
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          for file in "$RUNNER_TEMP"/dist/*; do
+            test -f "$file"
+            gh attestation verify "$file" -R "$GITHUB_REPOSITORY" >/dev/null
+          done
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: github.event_name == 'workflow_dispatch'
         with:

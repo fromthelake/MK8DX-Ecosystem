@@ -59,7 +59,9 @@ def content(stage):
 def write_zip(stage, output, route, revision):
     files = sorted(p for p in stage.rglob("*") if p.is_file() and p.name != "PACKAGE_MANIFEST.json")
     receipt = {"schemaVersion": "mk8dx.non-docker-bundle.v1", "route": route,
-               "revision": revision, "files": {
+               "revision": revision,
+               "sourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+               "files": {
                    p.relative_to(stage).as_posix(): {"bytes": p.stat().st_size, "sha256": digest(p)} for p in files}}
     (stage / "PACKAGE_MANIFEST.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
     with zipfile.ZipFile(output, "x", allowZip64=True) as archive:
@@ -93,6 +95,8 @@ def main():
         hosted_result = write_zip(hosted, output / f"mk8dx-mijnhost-node-{args.revision}.zip", "B2", args.revision)
         windows = Path(temp) / "windows"
         shutil.copytree(base, windows)
+        if digest(args.mailpit_archive) != "16915767a6c95dca569336e8f561f91cf355e9a33c57b91deedcc10a4bba7fd4":
+            raise ValueError("Mailpit 1.32.0 download differs from the upstream SHA-256")
         with zipfile.ZipFile(args.mailpit_archive) as mailpit:
             expected = ("mailpit.exe", "LICENSE")
             if any(name not in mailpit.namelist() for name in expected): raise ValueError("Mailpit archive is incomplete")
