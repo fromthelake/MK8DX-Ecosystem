@@ -251,6 +251,8 @@ jobs:
           output-file: ${{ runner.temp }}/dist/SBOM.spdx.json
           upload-artifact: false
           upload-release-assets: false
+      - name: Include every built asset in SPDX inventory
+        run: python3 tooling/release/complete_sbom.py "$RUNNER_TEMP/dist" "$RUNNER_TEMP/dist/SBOM.spdx.json"
       - name: Checksums, manifest and a draft release
         env:
           GH_TOKEN: ${{ github.token }}
