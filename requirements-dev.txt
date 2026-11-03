@@ -9,5 +9,5 @@
 # tooling/tournament/requirements.lock.txt.
 numpy==2.2.1
 opencv-python-headless==4.10.0.84
-jsonschema==4.23.0
+jsonschema==4.26.0
 pytest==8.3.4
