@@ -12,7 +12,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-IMAGES = ("mk8dx/api:local-20261001-r13-amd64", "mk8dx/web:local-20261002-r14-amd64",
+IMAGES = ("mk8dx/api:local-v010-node26-amd64", "mk8dx/web:local-v010-node26-amd64",
           "mysql:8.4.11", "axllent/mailpit:v1.31.3")
 FILES = (
     "Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "compose.yaml", "compose.local.yaml", "compose.lan.yaml",

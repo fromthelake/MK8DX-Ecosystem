@@ -25,7 +25,7 @@ docker compose version | Out-Host
 $bundle = Join-Path $root 'images\docker-images-amd64.tar'
 $loaded = Join-Path $root 'images\loaded.txt'
 $load = (Test-Path -LiteralPath $bundle) -and -not (Test-Path -LiteralPath $loaded)
-foreach ($tag in @('mk8dx/api:local-20261001-r13-amd64', 'mk8dx/web:local-20261002-r14-amd64')) {
+foreach ($tag in @('mk8dx/api:local-v010-node26-amd64', 'mk8dx/web:local-v010-node26-amd64')) {
   docker image inspect $tag *> $null
   if ($LASTEXITCODE -ne 0) {
     if (-not (Test-Path -LiteralPath $bundle)) { throw "Missing prebuilt image $tag. Use the complete host installation package." }

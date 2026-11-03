@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
     logging: {options: {max-size: "10m", max-file: "3"}}
   api:
-    image: ${MK8DX_API_IMAGE:-mk8dx/api:local-20261001-r13-amd64}
+    image: ${MK8DX_API_IMAGE:-mk8dx/api:local-v010-node26-amd64}
     build:
       context: .
       dockerfile: backend/api/Dockerfile
@@ -40,7 +40,7 @@ services:
     restart: unless-stopped
     logging: {options: {max-size: "10m", max-file: "3"}}
   web:
-    image: ${MK8DX_WEB_IMAGE:-mk8dx/web:local-20261002-r14-amd64}
+    image: ${MK8DX_WEB_IMAGE:-mk8dx/web:local-v010-node26-amd64}
     build:
       context: .
       dockerfile: apps/timetrials-web/Dockerfile
