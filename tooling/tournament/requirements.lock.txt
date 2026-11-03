@@ -8,7 +8,7 @@
 # 4.10.0.84 build as opencv-python so that only one cv2 ABI is ever installed.
 #
 # torch/torchvision base versions constrain both CPU and CUDA local versions.
-# The source-backed hardware selector installs the exact +cpu/+cu128 wheels from
+# The source-backed hardware selector installs the exact +cpu/+cu132 wheels from
 # the official PyTorch index BEFORE resolving this closure. Keep these base pins
 # in sync with mk8dx_tournament_extraction/setup_torch.py.
 #
@@ -44,14 +44,14 @@ pytz==2026.3.post1
 PyYAML==6.0.3
 scikit-image==0.26.0
 scipy==1.18.1
-setuptools==84.0.0
+setuptools==84.2.1
 shapely==2.1.2
 shiboken6==6.8.3
 six==1.17.0
 sympy==1.14.0
 textdistance==4.6.2
 tifffile==2026.8.16
-torch==2.10.0
-torchvision==0.25.0
+torch==2.15.0
+torchvision==0.29.2
 typing_extensions==4.16.0
 tzdata==2026.3
