@@ -208,7 +208,7 @@ dependencies {
     implementation("androidx.core:core:1.15.0")
     // The splash screen the product already gets on Android 12+, backported to
     // every supported release (DESIGN_SYSTEM §23).
-    implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("androidx.core:core-splashscreen:1.2.0")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material:material-icons-core")
     implementation("androidx.compose.ui:ui")
