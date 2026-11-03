@@ -17,6 +17,19 @@ python tooling/check_docs.py
 git diff --check
 ```
 
+For Docker gateway changes, validate all three `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
+image (supply a test `MK8DX_DOMAIN` for LAN/production). Inspect the response headers on `/` and `/scanner/`
+through a running container. Before enforcing a Report-Only CSP, exercise the scanner's image upload and WASM
+workers and the classic Tournament report export in a real browser at 320, 768 and 1440 CSS pixels in English and
+Dutch; inspect console CSP violations. The scanner needs `worker-src 'self' blob:` and
+`script-src 'self' 'wasm-unsafe-eval'`. Do not treat static Caddy validation as browser acceptance.
+The classic export's `about:blank` preview inherits the Web page's existing meta CSP. In the 2026-11-04
+Chromium qualification, the report generated successfully but 70 inline-style assignments were blocked by that
+meta policy; the new gateway Report-Only policy added no violations. Record these separately and resolve or
+explicitly accept their visual effect before claiming the classic preview is violation-free or enforcing a new
+gateway policy. External YouTube links open a new tab; check navigation without requiring YouTube to load in a
+test environment.
+
 ## Per component
 
 | Component | Commands (from the repository root) |

@@ -498,7 +498,7 @@ Object.assign(I18N.uk, {
   playerFilterLabelShort: 'Player filter',
   embeddedPreviewTitle: 'Embedded Twenty Fifteen preview',
   classicFragmentHelper: 'The download only contains the entry content, but the preview already shows that content embedded in the Twenty Fifteen shell so the sidebar/content ratio is immediately visible.',
-  classicFullHelper: 'The preview uses the full Twenty Fifteen shell so you can immediately see how the export lands in the community site's structure.',
+  classicFullHelper: 'The preview uses the full Twenty Fifteen shell so you can immediately see how the export lands in the community site’s structure.',
   classicSave: 'Save',
   classicSaveIdle: 'Unsaved changes',
   classicSaveSuccess: 'Changes saved',

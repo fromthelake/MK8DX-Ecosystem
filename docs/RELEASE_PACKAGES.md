@@ -17,7 +17,7 @@ same packages yourself; see [Building the packages](#building-the-packages).
 | `desktop-client-….zip` | LiveTrial for Windows, with its engine and an embedded Python | Capture-card and video recognition |
 | `tournament-tools-….zip` | Tournament Processor, Live and Connect for Windows, with an installer | Tournament nights |
 | `mk8dx-full-local-….zip` | The complete source with the hydrated asset collection and build recipes, without Git history | Building everything yourself |
-| `SBOM.spdx.json` | SPDX inventory of the automatically built release assets, including SHA-256 for each built file and Syft's discovered package records | Asset audit; nested dependencies are checked separately by Verify's dependency audits |
+| `SBOM.spdx.json` | SPDX inventory of the seven primary CI-built packages and full-source manifest sidecar, with SHA-256 and Syft's discovered package records | Package audit; ancillary notices/guides and nested dependencies are checked separately by checksums and Verify's dependency audits |
 
 The user guides are attached to each release as well: `MK8DX_User_Guide_EN.txt`/`.docx` and
 `MK8DX_Handleiding_NL.txt`/`.docx`. The same files are in [docs/install](install/) and inside the installation
@@ -54,6 +54,12 @@ the host ZIP for offline installation. The workflow pushes those two images to G
 attests the exact release-asset bytes, writes `SHA256SUMS.txt` and `manifest.json`, and opens a **draft** release.
 The signing key stays only on the maintainer's computer; CI's debug APK is not the stable phone package.
 `workflow_dispatch` builds the same package types as a dry run, with no tag, image push or release.
+The Docker gateways currently send CSP in **Report-Only** mode. Before changing it to enforcement, verify the
+scanner's WASM/workers and the classic Tournament report in a real browser as described in [Testing](TESTING.md).
+The Node/Caddy base images use digest pins; review upstream security updates and refresh the pins together with
+their tags in a tested PR. Caddy still runs as root in the released image. A disposable UID-10001 test served
+local HTTP and LAN internal TLS, but switching an existing A2/B1 installation also needs a tested ownership
+transition for its persistent `caddy_data` and `caddy_config` volumes.
 
 Maintainers and other users can build the same packages from a clean clone with
 `tooling/release/full_archive.py`, `tooling/release/host_bundle.py`, `tooling/release/non_docker_bundle.py` and

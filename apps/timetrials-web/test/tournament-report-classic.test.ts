@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { Script } from "node:vm";
 
 import { classicContent, classicDataset, classicPicture, type ClassicCatalog } from "../src/tournament-report-classic.js";
 import type { PublicTournamentEvent } from "../src/tournament-operation-client.js";
@@ -53,6 +55,10 @@ const event = {
 } as unknown as PublicTournamentEvent;
 
 describe("the classic export's data, from a published night", () => {
+  it("keeps the vendored browser export script parseable", () => {
+    const source = readFileSync(new URL("../styles/classic-report-export.js", import.meta.url), "utf8");
+    expect(() => new Script(source)).not.toThrow();
+  });
   const { raceRows, finalRows } = classicDataset(event, catalog);
 
   it("has a race row per counted placement, in race order, with running totals and places", () => {
