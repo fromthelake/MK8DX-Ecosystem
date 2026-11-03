@@ -10,6 +10,10 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+env:
+  # workflow_dispatch runs on a branch (whose name may contain '/'); use a
+  # harmless version string for package paths. Tagged runs keep the exact tag.
+  PACKAGE_VERSION: ${{ github.event_name == 'workflow_dispatch' && 'v0.1.0-rc.0' || github.ref_name }}
 concurrency:
   group: release-${{ github.ref }}
   cancel-in-progress: false
@@ -45,7 +49,7 @@ jobs:
           export JAVA_HOME="$JAVA_HOME_21_X64"
           bash ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
           mkdir -p "$RUNNER_TEMP/out"
-          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/out/mk8dx-android-debug-${GITHUB_REF_NAME}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/out/mk8dx-android-debug-${PACKAGE_VERSION}.apk"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: android
@@ -66,9 +70,9 @@ jobs:
         shell: pwsh
         run: |
           python -m pip install --disable-pip-version-check build wheel
-          python tooling/tournament/build_windows_package.py --output "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME" --version "$env:GITHUB_REF_NAME"
+          python tooling/tournament/build_windows_package.py --output "$env:RUNNER_TEMP\tournament-tools-$env:PACKAGE_VERSION" --version "$env:PACKAGE_VERSION"
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
-          Move-Item "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME.zip" "$env:RUNNER_TEMP\out\"
+          Move-Item "$env:RUNNER_TEMP\tournament-tools-$env:PACKAGE_VERSION.zip" "$env:RUNNER_TEMP\out\"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: tournament
@@ -94,11 +98,11 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "LiveTrial dependency installation failed" }
           $embed = "$env:RUNNER_TEMP\python-3.12.10-embed-amd64.zip"
           Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip -OutFile $embed
-          $out = "$env:RUNNER_TEMP\desktop-client-$env:GITHUB_REF_NAME"
-          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:GITHUB_REF_NAME"
+          $out = "$env:RUNNER_TEMP\desktop-client-$env:PACKAGE_VERSION"
+          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:PACKAGE_VERSION"
           if ($LASTEXITCODE -ne 0) { throw "LiveTrial package build failed" }
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
-          Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:GITHUB_REF_NAME.zip"
+          Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:PACKAGE_VERSION.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: livetrial
@@ -116,7 +120,7 @@ jobs:
         run: |
           python tooling/assets/shared_asset_source.py verify
           mkdir -p "$RUNNER_TEMP/out"
-          python tooling/release/full_archive.py --output "$RUNNER_TEMP/out/mk8dx-full-local-${GITHUB_REF_NAME}.zip"
+          python tooling/release/full_archive.py --output "$RUNNER_TEMP/out/mk8dx-full-local-${PACKAGE_VERSION}.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: source
@@ -142,8 +146,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          version="$GITHUB_REF_NAME"
-          if [ "$GITHUB_EVENT_NAME" = workflow_dispatch ]; then version=v0.1.0-rc.0; fi
+          version="$PACKAGE_VERSION"
           mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version")
           test "${#images[@]}" -eq 4
           python tooling/assets/shared_asset_source.py verify
@@ -156,8 +159,8 @@ jobs:
           docker pull --platform linux/amd64 "${images[2]}"
           docker pull --platform linux/amd64 "${images[3]}"
           mkdir -p "$RUNNER_TEMP/out"
-          python tooling/release/host_bundle.py --version "$version" --revision "$GITHUB_REF_NAME" \
-            --output "$RUNNER_TEMP/out/mk8dx-host-local-${GITHUB_REF_NAME}-amd64.zip"
+          python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
+            --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
           if [ "$GITHUB_EVENT_NAME" != workflow_dispatch ]; then
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker push "${images[0]}"
@@ -219,7 +222,7 @@ jobs:
           Invoke-WebRequest -Uri 'https://github.com/axllent/mailpit/releases/download/v1.32.0/mailpit-windows-amd64.zip' -OutFile $mailpit
           Invoke-WebRequest -Uri 'https://archive.mariadb.org/mariadb-11.4.13/winx64-packages/mariadb-11.4.13-winx64.zip' -OutFile $mariadb
           New-Item -ItemType Directory -Force (Join-Path $env:RUNNER_TEMP 'out') | Out-Null
-          python tooling/release/non_docker_bundle.py --output-dir (Join-Path $env:RUNNER_TEMP 'out') --mailpit-archive $mailpit --mariadb-archive $mariadb --revision $env:GITHUB_REF_NAME
+          python tooling/release/non_docker_bundle.py --output-dir (Join-Path $env:RUNNER_TEMP 'out') --mailpit-archive $mailpit --mariadb-archive $mariadb --revision $env:PACKAGE_VERSION
           if ($LASTEXITCODE -ne 0) { throw 'A3/B2 package build failed' }
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
@@ -257,9 +260,9 @@ jobs:
           cp "$GITHUB_WORKSPACE/docs/THIRD_PARTY_MATERIALS.md" .
           cp "$GITHUB_WORKSPACE"/docs/install/MK8DX_User_Guide_EN.* "$GITHUB_WORKSPACE"/docs/install/MK8DX_Handleiding_NL.* .
           # The APK cannot carry loose files: its notices travel beside it.
-          (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${GITHUB_REF_NAME}.zip" \
+          (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${PACKAGE_VERSION}.zip" \
             LICENSE LICENSE_SCOPE.md SOURCE_FOR_BINARIES.txt docs/THIRD_PARTY_MATERIALS.md)
-          printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$GITHUB_REF_NAME" "$GITHUB_SHA" > manifest.json
+          printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$PACKAGE_VERSION" "$GITHUB_SHA" > manifest.json
           sha256sum -- * > SHA256SUMS.txt
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
             echo "Dry run: packages, manifest and checksums built; no tag or release created."
