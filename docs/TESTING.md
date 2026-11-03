@@ -59,8 +59,11 @@ LiveTrial engine snapshot and its Clean Assets database, which are not in this r
 
 ## Database integration tests
 
-The API's MySQL tests (`backend/api/test/*.integration.test.ts`, 35 files) are opt-in and skip without the
-settings below. Run them against a **disposable** MySQL 8.4 server, never against an installation's database.
+The API's database tests (`backend/api/test/*.integration.test.ts`, 35 files) are opt-in and skip without the
+settings below. Verify runs all 35 against both disposable MySQL 8.4.11 and MariaDB 11.4.12 containers.
+Each suite gets its own newly migrated schema; the reference-seed suite uses a synthetic configuration.
+Run them only against a **disposable** server, never against an installation's database. The CI entry point is
+`bash tooling/run_database_integration_ci.sh mysql` or `mariadb` after `npm ci` and the API build on Linux.
 
 | Variable | Value |
 | --- | --- |
@@ -77,7 +80,7 @@ Rules that the suites enforce or rely on:
 - Several suites need a schema nobody else used: `tournament-operation` (fixed participant counts),
   `administrator-claim-review` (it uses the one-time first-administrator bootstrap) and
   `mysql-firebase-backout-repository` (row counts). The simplest reliable procedure is one fresh schema per suite.
-- `reference-seed.integration.test.ts` also needs `MK8DX_REFERENCE_TEST_CONFIG` (a private installation
+- `reference-seed.integration.test.ts` also needs `MK8DX_REFERENCE_TEST_CONFIG` (a disposable synthetic
   configuration for a `_contract` schema) and skips without it.
 
 The procedure below ran all 34 suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02. It uses
