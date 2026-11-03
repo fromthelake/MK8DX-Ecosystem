@@ -11,7 +11,7 @@ val materializer = repositoryRoot.resolve("tooling/assets/materialize_collection
 
 android {
     namespace = "nl.mariokart8.mk8dxtimetrials.scanruntime"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         minSdk = 26

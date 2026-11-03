@@ -30,7 +30,7 @@ npm run build
 
 ## Android
 
-Install JDK 17 (or 21), Android SDK platform 36, the Android build tools and Node 24.
+Install JDK 17 (or 21), Android SDK platform 37.0, the Android build tools and Node 24.
 Set `JAVA_HOME` to that JDK when `java -version` does not already show it, and set `ANDROID_HOME` to the installed public SDK directory (or create a local,
 untracked `local.properties` containing `sdk.dir`). From
 `apps/timetrials-android`, on Windows:
