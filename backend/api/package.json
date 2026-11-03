@@ -44,7 +44,7 @@
     "fast-uri@^4": "4.2.3"
   },
   "devDependencies": {
-    "@types/node": "26.2.0",
+    "@types/node": "26.6.6",
     "@types/nodemailer": "8.0.1",
     "@types/web-push": "^3.6.4",
     "axe-core": "4.13.0",
