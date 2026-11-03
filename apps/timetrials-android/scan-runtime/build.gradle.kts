@@ -65,7 +65,7 @@ tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.con
 }
 
 dependencies {
-    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.26.0")
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.31.1")
     implementation("org.opencv:opencv:4.10.0")
     implementation("com.google.mlkit:text-recognition:16.0.1")
     implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
