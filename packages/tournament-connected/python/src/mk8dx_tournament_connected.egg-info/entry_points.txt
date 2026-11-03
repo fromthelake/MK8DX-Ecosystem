@@ -1,2 +1,0 @@
-[console_scripts]
-mk8dx-tournament-connect = mk8dx_tournament_connected.cli:main

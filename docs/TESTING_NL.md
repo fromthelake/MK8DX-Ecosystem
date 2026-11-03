@@ -123,6 +123,14 @@ pull request als je die niet kon uitvoeren.
 
 ## Wat CI draait
 
+De Python-afhankelijkheidscontrole inventariseert alle getrackte `requirements*.txt` en `pyproject.toml`
+met `python tooling/security/python_dependency_audit.py prepare <tijdelijke-map>`. Verify scant de exacte
+derdepartijversies met OSV-Scanner zonder installatie of nieuwe resolverkeuzes en weigert CVSS 7.0+.
+Tijdelijke uitzonderingen zijn pakket- en advisoryspecifiek en hebben een reden en vervaldatum in
+[`python_audit_allowlist.toml`](../tooling/security/python_audit_allowlist.toml); een verlopen uitzondering
+laat Verify falen. Versiebereiken vereisen elders een exacte pin. Deze broncontrole vervangt geen audit van
+de geïnstalleerde transitieve runtime.
+
 De [Verify-workflow](../.github/workflows/verify.yml) draait bij elke pull request en push naar `main`: de privacy-,
 grens- en documentatiecontroles; de API- en Webcontroles; de TypeScript- en Python-tests van de centrale lezer;
 de CSS-controle, de intakeproef en de toolingtests; gitleaks over de geschiedenis; `npm audit --omit=dev

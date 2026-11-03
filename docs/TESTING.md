@@ -126,6 +126,14 @@ say in your pull request when you could not run them.
 
 ## What CI runs
 
+The Python dependency audit inventories every tracked `requirements*.txt` and `pyproject.toml` with
+`python tooling/security/python_dependency_audit.py prepare <temporary-directory>`. Verify scans their exact
+third-party pins with OSV-Scanner (without installing or resolving them) and rejects CVSS 7.0+ findings.
+Temporary exceptions are specific to a package and advisory, carry a reason and an expiry date in
+[`python_audit_allowlist.toml`](../tooling/security/python_audit_allowlist.toml); an expired exception fails
+Verify. Ranged dependencies must have an exact companion pin in another manifest. This source-manifest
+audit does not replace an audit of the installed transitive runtime.
+
 The [Verify workflow](../.github/workflows/verify.yml) runs on every pull request and push to `main`: the privacy,
 boundary and documentation checks; the API and Web checks; the central reader's TypeScript and Python tests; the
 CSS check, the intake rehearsal and the tooling tests; gitleaks over the history; `npm audit --omit=dev

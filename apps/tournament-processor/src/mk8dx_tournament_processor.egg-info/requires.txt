@@ -1,2 +1,0 @@
-mk8dx-tournament-extraction[vision]==0.1.0
-mk8dx-tournament-connected==0.2.0

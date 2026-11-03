@@ -16,9 +16,14 @@ import numpy as np
 MAX_SAMPLE = 1200  # masked pixels sampled per template: plenty for a corr estimate
 
 
+def _open_png(path):
+    from PIL import Image
+    return Image.open(path, formats=["PNG"])
+
+
 def _imread_rgba(path):
     from PIL import Image
-    return Image.open(path).convert("RGBA")
+    return _open_png(path).convert("RGBA")
 
 
 class Template:
@@ -111,7 +116,7 @@ class TemplateDb:
         from PIL import Image
         recs = {i: next(r for r in self.db["collections"]["hudTemplates"]
                         if r["id"] == f"hud_template.hud_coins_{i:02d}") for i in range(11)}
-        imgs = {i: np.asarray(Image.open(self.root / recs[i]["assets"]["template"]["path"]).convert("RGBA"))
+        imgs = {i: np.asarray(_open_png(self.root / recs[i]["assets"]["template"]["path"]).convert("RGBA"))
                 for i in range(11)}
         lx0, lx1 = self.LAST_DIGIT_COLS
         anchor = self.templates["hud_template.hud_coins_03"][0].anchor
@@ -216,9 +221,9 @@ class TemplateDb:
         from PIL import Image
         recs = {r["id"]: r for r in self.db["collections"]["hudTemplates"]}
         try:
-            a = np.asarray(Image.open(
+            a = np.asarray(_open_png(
                 self.root / recs["hud_template.hud_lap3_1"]["assets"]["template"]["path"]).convert("RGBA"))
-            b = np.asarray(Image.open(
+            b = np.asarray(_open_png(
                 self.root / recs["hud_template.hud_lap7_1"]["assets"]["template"]["path"]).convert("RGBA"))
             anchor = recs["hud_template.hud_lap3_1"]["anchor"]
         except Exception:
@@ -306,7 +311,7 @@ class TemplateDb:
         self._lap_adv: dict = {}
         for laps in (3, 7):
             try:
-                ims = [np.asarray(Image.open(
+                ims = [np.asarray(_open_png(
                     self.root / next(r for r in self.db["collections"]["hudTemplates"]
                                      if r["id"] == f"hud_template.hud_lap{laps}_{n}"
                                      )["assets"]["template"]["path"]).convert("RGBA"))
@@ -382,7 +387,7 @@ class TemplateDb:
             recs = [r for r in self.db["collections"]["hudTemplates"] if r["id"] in fam]
             imgs = []
             for r in recs:
-                img = np.asarray(Image.open(self.root / r["assets"]["template"]["path"]).convert("RGBA"))
+                img = np.asarray(_open_png(self.root / r["assets"]["template"]["path"]).convert("RGBA"))
                 imgs.append((r, img))
             hw = {(i.shape[0], i.shape[1]) for _, i in imgs}
             if len(hw) != 1:

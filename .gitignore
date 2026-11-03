@@ -25,3 +25,4 @@ CLAUDE.local.md
 # is a local copy that tooling/assets/shared_asset_source.py rebuilds.
 packages/assets/collection/objects/1a/1ab4350c9a0cc7fa1a04631d14c2e05a5d84e8ebef719d8a2eb03906e9246b20
 packages/assets/collection/objects/**/*.joining
+*.egg-info/

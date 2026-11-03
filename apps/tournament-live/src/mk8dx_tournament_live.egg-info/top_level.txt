@@ -1,2 +1,0 @@
-live_processor
-tournament_live
