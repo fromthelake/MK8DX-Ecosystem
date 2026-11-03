@@ -1,6 +1,6 @@
 {
   "name": "mk8dx-tt-scanner-web",
-  "version": "0.4.1-web.3",
+  "version": "0.4.1-web.4",
   "private": true,
   "description": "Browser/PWA version of the MK8DX Time Trial scanner (runs alongside the native app)",
   "type": "module",
@@ -23,6 +23,6 @@
     "@types/node": "^26.6.6",
     "typescript": "^7.0.2",
     "vite": "^8.3.5",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite-plugin-pwa": "^2.0.0"
   }
 }
