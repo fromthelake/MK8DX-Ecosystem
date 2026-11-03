@@ -46,7 +46,7 @@ require(
 
 android {
     namespace = "nl.mariokart8.mk8dxtimetrials"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "nl.mariokart8.mk8dxtimetrials"
