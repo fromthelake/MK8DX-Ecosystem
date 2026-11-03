@@ -1,12 +1,6 @@
 # Exact, temporary exceptions for other open dependency risk streams.
 # Verify rejects expired entries, including those that no longer occur.
 [[exception]]
-id = "GHSA-v4x8-3wr5-3wq8"
-package = "filelock"
-expires = 2026-11-17
-reason = "Filelock 4 is under separate review in PR #28; remove after its compatibility gate."
-
-[[exception]]
 id = "PYSEC-2026-139"
 package = "torch"
 expires = 2026-11-17
