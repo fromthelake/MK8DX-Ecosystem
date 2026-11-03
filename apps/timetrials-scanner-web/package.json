@@ -15,14 +15,14 @@
   },
   "dependencies": {
     "@techstark/opencv-js": "4.10.0-release.1",
-    "onnxruntime-web": "1.29.0",
+    "onnxruntime-web": "1.31.1",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.62.1",
+    "@playwright/test": "^1.64.1",
     "@types/node": "^26.6.6",
     "typescript": "^7.0.2",
-    "vite": "^8.2.2",
+    "vite": "^8.3.5",
     "vite-plugin-pwa": "^1.2.0"
   }
 }
