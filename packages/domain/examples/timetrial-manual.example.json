@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.01SYNTHETICMANUAL01",
+  "revision": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 94612,
+  "laps": [],
+  "countryId": "country.nl",
+  "playerReference": {
+    "namespace": "player",
+    "value": "player.synthetic_manual_01"
+  },
+  "source": {
+    "kind": "web_manual",
+    "producerVersion": "synthetic-example"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786900000000,
+    "createdAtMs": 1786900060000
+  }
+}

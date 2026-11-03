@@ -1,0 +1,1158 @@
+{
+  "schemaVersion": 9,
+  "source": "Clean Assets schema-9 deployment database; same projection source as Web",
+  "tracks": [
+    {
+      "id": "track.mario_kart_stadium",
+      "legacyIndex": 0,
+      "names": {
+        "en-US": "Mario Kart Stadium",
+        "en-GB": "Mario Kart Stadium",
+        "nl-NL": "Mario Kart-Stadion"
+      },
+      "previewPath": "images/tracks/previews/000_mario_kart_stadium.png",
+      "cupId": "cup.mushroom_cup",
+      "cupIconPath": "images/cups/000_mushroom_cup.png"
+    },
+    {
+      "id": "track.water_park",
+      "legacyIndex": 1,
+      "names": {
+        "en-US": "Water Park",
+        "en-GB": "Water Park",
+        "nl-NL": "Waterpretpark"
+      },
+      "previewPath": "images/tracks/previews/001_water_park.png",
+      "cupId": "cup.mushroom_cup",
+      "cupIconPath": "images/cups/000_mushroom_cup.png"
+    },
+    {
+      "id": "track.sweet_sweet_canyon",
+      "legacyIndex": 2,
+      "names": {
+        "en-US": "Sweet Sweet Canyon",
+        "en-GB": "Sweet Sweet Canyon",
+        "nl-NL": "Zoetekauwcanyon"
+      },
+      "previewPath": "images/tracks/previews/002_sweet_sweet_canyon.png",
+      "cupId": "cup.mushroom_cup",
+      "cupIconPath": "images/cups/000_mushroom_cup.png"
+    },
+    {
+      "id": "track.thwomp_ruins",
+      "legacyIndex": 3,
+      "names": {
+        "en-US": "Thwomp Ruins",
+        "en-GB": "Thwomp Ruins",
+        "nl-NL": "Thwomps Tempel"
+      },
+      "previewPath": "images/tracks/previews/003_thwomp_ruins.png",
+      "cupId": "cup.mushroom_cup",
+      "cupIconPath": "images/cups/000_mushroom_cup.png"
+    },
+    {
+      "id": "track.mario_circuit",
+      "legacyIndex": 4,
+      "names": {
+        "en-US": "Mario Circuit",
+        "en-GB": "Mario Circuit",
+        "nl-NL": "Mario's Circuit"
+      },
+      "previewPath": "images/tracks/previews/004_mario_circuit.png",
+      "cupId": "cup.flower_cup",
+      "cupIconPath": "images/cups/001_flower_cup.png"
+    },
+    {
+      "id": "track.toad_harbour",
+      "legacyIndex": 5,
+      "names": {
+        "en-US": "Toad Harbor",
+        "en-GB": "Toad Harbour",
+        "nl-NL": "Toad-Baai"
+      },
+      "previewPath": "images/tracks/previews/005_toad_harbour.png",
+      "cupId": "cup.flower_cup",
+      "cupIconPath": "images/cups/001_flower_cup.png"
+    },
+    {
+      "id": "track.twisted_mansion",
+      "legacyIndex": 6,
+      "names": {
+        "en-US": "Twisted Mansion",
+        "en-GB": "Twisted Mansion",
+        "nl-NL": "Boo's Duizelhuis"
+      },
+      "previewPath": "images/tracks/previews/006_twisted_mansion.png",
+      "cupId": "cup.flower_cup",
+      "cupIconPath": "images/cups/001_flower_cup.png"
+    },
+    {
+      "id": "track.shy_guy_falls",
+      "legacyIndex": 7,
+      "names": {
+        "en-US": "Shy Guy Falls",
+        "en-GB": "Shy Guy Falls",
+        "nl-NL": "Shy Guys Kristalmijn"
+      },
+      "previewPath": "images/tracks/previews/007_shy_guy_falls.png",
+      "cupId": "cup.flower_cup",
+      "cupIconPath": "images/cups/001_flower_cup.png"
+    },
+    {
+      "id": "track.sunshine_airport",
+      "legacyIndex": 8,
+      "names": {
+        "en-US": "Sunshine Airport",
+        "en-GB": "Sunshine Airport",
+        "nl-NL": "Sunshine Airport"
+      },
+      "previewPath": "images/tracks/previews/008_sunshine_airport.png",
+      "cupId": "cup.star_cup",
+      "cupIconPath": "images/cups/002_star_cup.png"
+    },
+    {
+      "id": "track.dolphin_shoals",
+      "legacyIndex": 9,
+      "names": {
+        "en-US": "Dolphin Shoals",
+        "en-GB": "Dolphin Shoals",
+        "nl-NL": "Dolfijnenparadijs"
+      },
+      "previewPath": "images/tracks/previews/009_dolphin_shoals.png",
+      "cupId": "cup.star_cup",
+      "cupIconPath": "images/cups/002_star_cup.png"
+    },
+    {
+      "id": "track.electrodrome",
+      "legacyIndex": 10,
+      "names": {
+        "en-US": "Electrodrome",
+        "en-GB": "Electrodrome",
+        "nl-NL": "Electrodome"
+      },
+      "previewPath": "images/tracks/previews/010_electrodrome.png",
+      "cupId": "cup.star_cup",
+      "cupIconPath": "images/cups/002_star_cup.png"
+    },
+    {
+      "id": "track.mount_wario",
+      "legacyIndex": 11,
+      "names": {
+        "en-US": "Mount Wario",
+        "en-GB": "Mount Wario",
+        "nl-NL": "Wario's Winterberg"
+      },
+      "previewPath": "images/tracks/previews/011_mount_wario.png",
+      "cupId": "cup.star_cup",
+      "cupIconPath": "images/cups/002_star_cup.png"
+    },
+    {
+      "id": "track.cloudtop_cruise",
+      "legacyIndex": 12,
+      "names": {
+        "en-US": "Cloudtop Cruise",
+        "en-GB": "Cloudtop Cruise",
+        "nl-NL": "Wildewolkenweg"
+      },
+      "previewPath": "images/tracks/previews/012_cloudtop_cruise.png",
+      "cupId": "cup.special_cup",
+      "cupIconPath": "images/cups/003_special_cup.png"
+    },
+    {
+      "id": "track.bone_dry_dunes",
+      "legacyIndex": 13,
+      "names": {
+        "en-US": "Bone-Dry Dunes",
+        "en-GB": "Bone Dry Dunes",
+        "nl-NL": "Dry Bowsers Woestijn"
+      },
+      "previewPath": "images/tracks/previews/013_bone_dry_dunes.png",
+      "cupId": "cup.special_cup",
+      "cupIconPath": "images/cups/003_special_cup.png"
+    },
+    {
+      "id": "track.bowsers_castle",
+      "legacyIndex": 14,
+      "names": {
+        "en-US": "Bowser's Castle",
+        "en-GB": "Bowser's Castle",
+        "nl-NL": "Bowsers Kasteel"
+      },
+      "previewPath": "images/tracks/previews/014_bowsers_castle.png",
+      "cupId": "cup.special_cup",
+      "cupIconPath": "images/cups/003_special_cup.png"
+    },
+    {
+      "id": "track.rainbow_road",
+      "legacyIndex": 15,
+      "names": {
+        "en-US": "Rainbow Road",
+        "en-GB": "Rainbow Road",
+        "nl-NL": "Regenboogbaan"
+      },
+      "previewPath": "images/tracks/previews/015_rainbow_road.png",
+      "cupId": "cup.special_cup",
+      "cupIconPath": "images/cups/003_special_cup.png"
+    },
+    {
+      "id": "track.wii_moo_moo_meadows",
+      "legacyIndex": 16,
+      "names": {
+        "en-US": "Wii Moo Moo Meadows",
+        "en-GB": "Wii Moo Moo Meadows",
+        "nl-NL": "Wii Boe-Boe-Boerenland"
+      },
+      "previewPath": "images/tracks/previews/016_wii_moo_moo_meadows.png",
+      "cupId": "cup.shell_cup",
+      "cupIconPath": "images/cups/004_shell_cup.png"
+    },
+    {
+      "id": "track.gba_mario_circuit",
+      "legacyIndex": 17,
+      "names": {
+        "en-US": "GBA Mario Circuit",
+        "en-GB": "GBA Mario Circuit",
+        "nl-NL": "GBA Mario's Circuit"
+      },
+      "previewPath": "images/tracks/previews/017_gba_mario_circuit.png",
+      "cupId": "cup.shell_cup",
+      "cupIconPath": "images/cups/004_shell_cup.png"
+    },
+    {
+      "id": "track.ds_cheep_cheep_beach",
+      "legacyIndex": 18,
+      "names": {
+        "en-US": "DS Cheep Cheep Beach",
+        "en-GB": "DS Cheep Cheep Beach",
+        "nl-NL": "DS Cheep Cheep Strand"
+      },
+      "previewPath": "images/tracks/previews/018_ds_cheep_cheep_beach.png",
+      "cupId": "cup.shell_cup",
+      "cupIconPath": "images/cups/004_shell_cup.png"
+    },
+    {
+      "id": "track.n64_toads_turnpike",
+      "legacyIndex": 19,
+      "names": {
+        "en-US": "N64 Toad's Turnpike",
+        "en-GB": "N64 Toad's Turnpike",
+        "nl-NL": "N64 Toads Tolweg"
+      },
+      "previewPath": "images/tracks/previews/019_n64_toads_turnpike.png",
+      "cupId": "cup.shell_cup",
+      "cupIconPath": "images/cups/004_shell_cup.png"
+    },
+    {
+      "id": "track.gcn_dry_dry_desert",
+      "legacyIndex": 20,
+      "names": {
+        "en-US": "GCN Dry Dry Desert",
+        "en-GB": "GCN Dry Dry Desert",
+        "nl-NL": "GCN Zinderende Zandvlakte"
+      },
+      "previewPath": "images/tracks/previews/020_gcn_dry_dry_desert.png",
+      "cupId": "cup.banana_cup",
+      "cupIconPath": "images/cups/005_banana_cup.png"
+    },
+    {
+      "id": "track.snes_donut_plains_3",
+      "legacyIndex": 21,
+      "names": {
+        "en-US": "SNES Donut Plains 3",
+        "en-GB": "SNES Donut Plains 3",
+        "nl-NL": "SNES Donutvlakte 3"
+      },
+      "previewPath": "images/tracks/previews/021_snes_donut_plains_3.png",
+      "cupId": "cup.banana_cup",
+      "cupIconPath": "images/cups/005_banana_cup.png"
+    },
+    {
+      "id": "track.n64_royal_raceway",
+      "legacyIndex": 22,
+      "names": {
+        "en-US": "N64 Royal Raceway",
+        "en-GB": "N64 Royal Raceway",
+        "nl-NL": "N64 Koninklijke Kartbaan"
+      },
+      "previewPath": "images/tracks/previews/022_n64_royal_raceway.png",
+      "cupId": "cup.banana_cup",
+      "cupIconPath": "images/cups/005_banana_cup.png"
+    },
+    {
+      "id": "track.3ds_dk_jungle",
+      "legacyIndex": 23,
+      "names": {
+        "en-US": "3DS DK Jungle",
+        "en-GB": "3DS DK Jungle",
+        "nl-NL": "3DS DK's Jungle"
+      },
+      "previewPath": "images/tracks/previews/023_3ds_dk_jungle.png",
+      "cupId": "cup.banana_cup",
+      "cupIconPath": "images/cups/005_banana_cup.png"
+    },
+    {
+      "id": "track.ds_wario_stadium",
+      "legacyIndex": 24,
+      "names": {
+        "en-US": "DS Wario Stadium",
+        "en-GB": "DS Wario Stadium",
+        "nl-NL": "DS Wario's Stadion"
+      },
+      "previewPath": "images/tracks/previews/024_ds_wario_stadium.png",
+      "cupId": "cup.leaf_cup",
+      "cupIconPath": "images/cups/006_leaf_cup.png"
+    },
+    {
+      "id": "track.gcn_sherbet_land",
+      "legacyIndex": 25,
+      "names": {
+        "en-US": "GCN Sherbet Land",
+        "en-GB": "GCN Sherbet Land",
+        "nl-NL": "GCN Ijzige Ijsbaan"
+      },
+      "previewPath": "images/tracks/previews/025_gcn_sherbet_land.png",
+      "cupId": "cup.leaf_cup",
+      "cupIconPath": "images/cups/006_leaf_cup.png"
+    },
+    {
+      "id": "track.3ds_melody_motorway",
+      "legacyIndex": 26,
+      "names": {
+        "en-US": "3DS Music Park",
+        "en-GB": "3DS Melody Motorway",
+        "nl-NL": "3DS Muziekcircuit"
+      },
+      "previewPath": "images/tracks/previews/026_3ds_melody_motorway.png",
+      "cupId": "cup.leaf_cup",
+      "cupIconPath": "images/cups/006_leaf_cup.png"
+    },
+    {
+      "id": "track.n64_yoshi_valley",
+      "legacyIndex": 27,
+      "names": {
+        "en-US": "N64 Yoshi Valley",
+        "en-GB": "N64 Yoshi Valley",
+        "nl-NL": "N64 Yoshi's Vallei"
+      },
+      "previewPath": "images/tracks/previews/027_n64_yoshi_valley.png",
+      "cupId": "cup.leaf_cup",
+      "cupIconPath": "images/cups/006_leaf_cup.png"
+    },
+    {
+      "id": "track.ds_tick_tock_clock",
+      "legacyIndex": 28,
+      "names": {
+        "en-US": "DS Tick-Tock Clock",
+        "en-GB": "DS Tick-Tock Clock",
+        "nl-NL": "DS Tik-Tak-Klok"
+      },
+      "previewPath": "images/tracks/previews/028_ds_tick_tock_clock.png",
+      "cupId": "cup.lightning_cup",
+      "cupIconPath": "images/cups/007_lightning_cup.png"
+    },
+    {
+      "id": "track.3ds_piranha_plant_pipeway",
+      "legacyIndex": 29,
+      "names": {
+        "en-US": "3DS Piranha Plant Slide",
+        "en-GB": "3DS Piranha Plant Pipeway",
+        "nl-NL": "3DS Piranha Plant-Parkoers"
+      },
+      "previewPath": "images/tracks/previews/029_3ds_piranha_plant_pipeway.png",
+      "cupId": "cup.lightning_cup",
+      "cupIconPath": "images/cups/007_lightning_cup.png"
+    },
+    {
+      "id": "track.wii_grumble_volcano",
+      "legacyIndex": 30,
+      "names": {
+        "en-US": "Wii Grumble Volcano",
+        "en-GB": "Wii Grumble Volcano",
+        "nl-NL": "Wii Dondervulkaan"
+      },
+      "previewPath": "images/tracks/previews/030_wii_grumble_volcano.png",
+      "cupId": "cup.lightning_cup",
+      "cupIconPath": "images/cups/007_lightning_cup.png"
+    },
+    {
+      "id": "track.n64_rainbow_road",
+      "legacyIndex": 31,
+      "names": {
+        "en-US": "N64 Rainbow Road",
+        "en-GB": "N64 Rainbow Road",
+        "nl-NL": "N64 Regenboogbaan"
+      },
+      "previewPath": "images/tracks/previews/031_n64_rainbow_road.png",
+      "cupId": "cup.lightning_cup",
+      "cupIconPath": "images/cups/007_lightning_cup.png"
+    },
+    {
+      "id": "track.gcn_yoshi_circuit",
+      "legacyIndex": 32,
+      "names": {
+        "en-US": "GCN Yoshi Circuit",
+        "en-GB": "GCN Yoshi Circuit",
+        "nl-NL": "GCN Yoshi's Circuit"
+      },
+      "previewPath": "images/tracks/previews/032_gcn_yoshi_circuit.png",
+      "cupId": "cup.egg_cup",
+      "cupIconPath": "images/cups/008_egg_cup.png"
+    },
+    {
+      "id": "track.excitebike_arena",
+      "legacyIndex": 33,
+      "names": {
+        "en-US": "Excitebike Arena",
+        "en-GB": "Excitebike Arena",
+        "nl-NL": "Excitebike-Arena"
+      },
+      "previewPath": "images/tracks/previews/033_excitebike_arena.png",
+      "cupId": "cup.egg_cup",
+      "cupIconPath": "images/cups/008_egg_cup.png"
+    },
+    {
+      "id": "track.dragon_driftway",
+      "legacyIndex": 34,
+      "names": {
+        "en-US": "Dragon Driftway",
+        "en-GB": "Dragon Driftway",
+        "nl-NL": "Drakendreef"
+      },
+      "previewPath": "images/tracks/previews/034_dragon_driftway.png",
+      "cupId": "cup.egg_cup",
+      "cupIconPath": "images/cups/008_egg_cup.png"
+    },
+    {
+      "id": "track.mute_city",
+      "legacyIndex": 35,
+      "names": {
+        "en-US": "Mute City",
+        "en-GB": "Mute City",
+        "nl-NL": "Mute City"
+      },
+      "previewPath": "images/tracks/previews/035_mute_city.png",
+      "cupId": "cup.egg_cup",
+      "cupIconPath": "images/cups/008_egg_cup.png"
+    },
+    {
+      "id": "track.wii_warios_gold_mine",
+      "legacyIndex": 36,
+      "names": {
+        "en-US": "Wii Wario's Gold Mine",
+        "en-GB": "Wii Wario's Gold Mine",
+        "nl-NL": "Wii Wario's Goudmijn"
+      },
+      "previewPath": "images/tracks/previews/036_wii_warios_gold_mine.png",
+      "cupId": "cup.triforce_cup",
+      "cupIconPath": "images/cups/009_triforce_cup.png"
+    },
+    {
+      "id": "track.snes_rainbow_road",
+      "legacyIndex": 37,
+      "names": {
+        "en-US": "SNES Rainbow Road",
+        "en-GB": "SNES Rainbow Road",
+        "nl-NL": "SNES Regenboogbaan"
+      },
+      "previewPath": "images/tracks/previews/037_snes_rainbow_road.png",
+      "cupId": "cup.triforce_cup",
+      "cupIconPath": "images/cups/009_triforce_cup.png"
+    },
+    {
+      "id": "track.ice_ice_outpost",
+      "legacyIndex": 38,
+      "names": {
+        "en-US": "Ice Ice Outpost",
+        "en-GB": "Ice Ice Outpost",
+        "nl-NL": "Toads Poolbasis"
+      },
+      "previewPath": "images/tracks/previews/038_ice_ice_outpost.png",
+      "cupId": "cup.triforce_cup",
+      "cupIconPath": "images/cups/009_triforce_cup.png"
+    },
+    {
+      "id": "track.hyrule_circuit",
+      "legacyIndex": 39,
+      "names": {
+        "en-US": "Hyrule Circuit",
+        "en-GB": "Hyrule Circuit",
+        "nl-NL": "Hyrule-Circuit"
+      },
+      "previewPath": "images/tracks/previews/039_hyrule_circuit.png",
+      "cupId": "cup.triforce_cup",
+      "cupIconPath": "images/cups/009_triforce_cup.png"
+    },
+    {
+      "id": "track.gcn_baby_park",
+      "legacyIndex": 40,
+      "names": {
+        "en-US": "GCN Baby Park",
+        "en-GB": "GCN Baby Park",
+        "nl-NL": "GCN Babypark"
+      },
+      "previewPath": "images/tracks/previews/040_gcn_baby_park.png",
+      "cupId": "cup.crossing_cup",
+      "cupIconPath": "images/cups/010_crossing_cup.png"
+    },
+    {
+      "id": "track.gba_cheese_land",
+      "legacyIndex": 41,
+      "names": {
+        "en-US": "GBA Cheese Land",
+        "en-GB": "GBA Cheese Land",
+        "nl-NL": "GBA Kaasland"
+      },
+      "previewPath": "images/tracks/previews/041_gba_cheese_land.png",
+      "cupId": "cup.crossing_cup",
+      "cupIconPath": "images/cups/010_crossing_cup.png"
+    },
+    {
+      "id": "track.wild_woods",
+      "legacyIndex": 42,
+      "names": {
+        "en-US": "Wild Woods",
+        "en-GB": "Wild Woods",
+        "nl-NL": "Wervelwoud"
+      },
+      "previewPath": "images/tracks/previews/042_wild_woods.png",
+      "cupId": "cup.crossing_cup",
+      "cupIconPath": "images/cups/010_crossing_cup.png"
+    },
+    {
+      "id": "track.animal_crossing",
+      "legacyIndex": 43,
+      "names": {
+        "en-US": "Animal Crossing",
+        "en-GB": "Animal Crossing",
+        "nl-NL": "Animal Crossing"
+      },
+      "previewPath": "images/tracks/previews/043_animal_crossing.png",
+      "cupId": "cup.crossing_cup",
+      "cupIconPath": "images/cups/010_crossing_cup.png"
+    },
+    {
+      "id": "track.3ds_koopa_city",
+      "legacyIndex": 44,
+      "names": {
+        "en-US": "3DS Neo Bowser City",
+        "en-GB": "3DS Koopa City",
+        "nl-NL": "3DS Bowser City"
+      },
+      "previewPath": "images/tracks/previews/044_3ds_koopa_city.png",
+      "cupId": "cup.bell_cup",
+      "cupIconPath": "images/cups/011_bell_cup.png"
+    },
+    {
+      "id": "track.gba_ribbon_road",
+      "legacyIndex": 45,
+      "names": {
+        "en-US": "GBA Ribbon Road",
+        "en-GB": "GBA Ribbon Road",
+        "nl-NL": "GBA Sprintlint"
+      },
+      "previewPath": "images/tracks/previews/045_gba_ribbon_road.png",
+      "cupId": "cup.bell_cup",
+      "cupIconPath": "images/cups/011_bell_cup.png"
+    },
+    {
+      "id": "track.super_bell_subway",
+      "legacyIndex": 46,
+      "names": {
+        "en-US": "Super Bell Subway",
+        "en-GB": "Super Bell Subway",
+        "nl-NL": "Mario's Metro"
+      },
+      "previewPath": "images/tracks/previews/046_super_bell_subway.png",
+      "cupId": "cup.bell_cup",
+      "cupIconPath": "images/cups/011_bell_cup.png"
+    },
+    {
+      "id": "track.big_blue",
+      "legacyIndex": 47,
+      "names": {
+        "en-US": "Big Blue",
+        "en-GB": "Big Blue",
+        "nl-NL": "Big Blue"
+      },
+      "previewPath": "images/tracks/previews/047_big_blue.png",
+      "cupId": "cup.bell_cup",
+      "cupIconPath": "images/cups/011_bell_cup.png"
+    },
+    {
+      "id": "track.tour_paris_promenade",
+      "legacyIndex": 48,
+      "names": {
+        "en-US": "Tour Paris Promenade",
+        "en-GB": "Tour Paris Promenade",
+        "nl-NL": "Tour Parijs-Promenade"
+      },
+      "previewPath": "images/tracks/previews/048_tour_paris_promenade.png",
+      "cupId": "cup.golden_dash_cup",
+      "cupIconPath": "images/cups/012_golden_dash_cup.png"
+    },
+    {
+      "id": "track.3ds_toad_circuit",
+      "legacyIndex": 49,
+      "names": {
+        "en-US": "3DS Toad Circuit",
+        "en-GB": "3DS Toad Circuit",
+        "nl-NL": "3DS Toads Circuit"
+      },
+      "previewPath": "images/tracks/previews/049_3ds_toad_circuit.png",
+      "cupId": "cup.golden_dash_cup",
+      "cupIconPath": "images/cups/012_golden_dash_cup.png"
+    },
+    {
+      "id": "track.n64_choco_mountain",
+      "legacyIndex": 50,
+      "names": {
+        "en-US": "N64 Choco Mountain",
+        "en-GB": "N64 Choco Mountain",
+        "nl-NL": "N64 Chocokloof"
+      },
+      "previewPath": "images/tracks/previews/050_n64_choco_mountain.png",
+      "cupId": "cup.golden_dash_cup",
+      "cupIconPath": "images/cups/012_golden_dash_cup.png"
+    },
+    {
+      "id": "track.wii_coconut_mall",
+      "legacyIndex": 51,
+      "names": {
+        "en-US": "Wii Coconut Mall",
+        "en-GB": "Wii Coconut Mall",
+        "nl-NL": "Wii Kokosnootplaza"
+      },
+      "previewPath": "images/tracks/previews/051_wii_coconut_mall.png",
+      "cupId": "cup.golden_dash_cup",
+      "cupIconPath": "images/cups/012_golden_dash_cup.png"
+    },
+    {
+      "id": "track.tour_tokyo_blur",
+      "legacyIndex": 52,
+      "names": {
+        "en-US": "Tour Tokyo Blur",
+        "en-GB": "Tour Tokyo Blur",
+        "nl-NL": "Tour Tokio-Toer"
+      },
+      "previewPath": "images/tracks/previews/052_tour_tokyo_blur.png",
+      "cupId": "cup.lucky_cat_cup",
+      "cupIconPath": "images/cups/013_lucky_cat_cup.png"
+    },
+    {
+      "id": "track.ds_shroom_ridge",
+      "legacyIndex": 53,
+      "names": {
+        "en-US": "DS Shroom Ridge",
+        "en-GB": "DS Shroom Ridge",
+        "nl-NL": "DS Paddenstoelenpas"
+      },
+      "previewPath": "images/tracks/previews/053_ds_shroom_ridge.png",
+      "cupId": "cup.lucky_cat_cup",
+      "cupIconPath": "images/cups/013_lucky_cat_cup.png"
+    },
+    {
+      "id": "track.gba_sky_garden",
+      "legacyIndex": 54,
+      "names": {
+        "en-US": "GBA Sky Garden",
+        "en-GB": "GBA Sky Garden",
+        "nl-NL": "GBA Wolkenhof"
+      },
+      "previewPath": "images/tracks/previews/054_gba_sky_garden.png",
+      "cupId": "cup.lucky_cat_cup",
+      "cupIconPath": "images/cups/013_lucky_cat_cup.png"
+    },
+    {
+      "id": "track.ninja_hideaway",
+      "legacyIndex": 55,
+      "names": {
+        "en-US": "Ninja Hideaway",
+        "en-GB": "Ninja Hideaway",
+        "nl-NL": "Ninjaschool"
+      },
+      "previewPath": "images/tracks/previews/055_ninja_hideaway.png",
+      "cupId": "cup.lucky_cat_cup",
+      "cupIconPath": "images/cups/013_lucky_cat_cup.png"
+    },
+    {
+      "id": "track.tour_new_york_minute",
+      "legacyIndex": 56,
+      "names": {
+        "en-US": "Tour New York Minute",
+        "en-GB": "Tour New York Minute",
+        "nl-NL": "Tour New York Drive"
+      },
+      "previewPath": "images/tracks/previews/056_tour_new_york_minute.png",
+      "cupId": "cup.turnip_cup",
+      "cupIconPath": "images/cups/014_turnip_cup.png"
+    },
+    {
+      "id": "track.snes_mario_circuit_3",
+      "legacyIndex": 57,
+      "names": {
+        "en-US": "SNES Mario Circuit 3",
+        "en-GB": "SNES Mario Circuit 3",
+        "nl-NL": "SNES Mario Circuit 3"
+      },
+      "previewPath": "images/tracks/previews/057_snes_mario_circuit_3.png",
+      "cupId": "cup.turnip_cup",
+      "cupIconPath": "images/cups/014_turnip_cup.png"
+    },
+    {
+      "id": "track.n64_kalimari_desert",
+      "legacyIndex": 58,
+      "names": {
+        "en-US": "N64 Kalimari Desert",
+        "en-GB": "N64 Kalimari Desert",
+        "nl-NL": "N64 Wildwestwoestijn"
+      },
+      "previewPath": "images/tracks/previews/058_n64_kalimari_desert.png",
+      "cupId": "cup.turnip_cup",
+      "cupIconPath": "images/cups/014_turnip_cup.png"
+    },
+    {
+      "id": "track.ds_waluigi_pinball",
+      "legacyIndex": 59,
+      "names": {
+        "en-US": "DS Waluigi Pinball",
+        "en-GB": "DS Waluigi Pinball",
+        "nl-NL": "DS Waluigi's Flipperkast"
+      },
+      "previewPath": "images/tracks/previews/059_ds_waluigi_pinball.png",
+      "cupId": "cup.turnip_cup",
+      "cupIconPath": "images/cups/014_turnip_cup.png"
+    },
+    {
+      "id": "track.tour_sydney_sprint",
+      "legacyIndex": 60,
+      "names": {
+        "en-US": "Tour Sydney Sprint",
+        "en-GB": "Tour Sydney Sprint",
+        "nl-NL": "Tour Sydney-Sprint"
+      },
+      "previewPath": "images/tracks/previews/060_tour_sydney_sprint.png",
+      "cupId": "cup.propeller_cup",
+      "cupIconPath": "images/cups/015_propeller_cup.png"
+    },
+    {
+      "id": "track.gba_snow_land",
+      "legacyIndex": 61,
+      "names": {
+        "en-US": "GBA Snow Land",
+        "en-GB": "GBA Snow Land",
+        "nl-NL": "GBA Sneeuwland"
+      },
+      "previewPath": "images/tracks/previews/061_gba_snow_land.png",
+      "cupId": "cup.propeller_cup",
+      "cupIconPath": "images/cups/015_propeller_cup.png"
+    },
+    {
+      "id": "track.wii_mushroom_gorge",
+      "legacyIndex": 62,
+      "names": {
+        "en-US": "Wii Mushroom Gorge",
+        "en-GB": "Wii Mushroom Gorge",
+        "nl-NL": "Wii Paddenstoelengrot"
+      },
+      "previewPath": "images/tracks/previews/062_wii_mushroom_gorge.png",
+      "cupId": "cup.propeller_cup",
+      "cupIconPath": "images/cups/015_propeller_cup.png"
+    },
+    {
+      "id": "track.sky_high_sundae",
+      "legacyIndex": 63,
+      "names": {
+        "en-US": "Sky-High Sundae",
+        "en-GB": "Sky-High Sundae",
+        "nl-NL": "Stracciatellastraat"
+      },
+      "previewPath": "images/tracks/previews/063_sky_high_sundae.png",
+      "cupId": "cup.propeller_cup",
+      "cupIconPath": "images/cups/015_propeller_cup.png"
+    },
+    {
+      "id": "track.tour_london_loop",
+      "legacyIndex": 64,
+      "names": {
+        "en-US": "Tour London Loop",
+        "en-GB": "Tour London Loop",
+        "nl-NL": "Tour Londen-Ronde"
+      },
+      "previewPath": "images/tracks/previews/064_tour_london_loop.png",
+      "cupId": "cup.rock_cup",
+      "cupIconPath": "images/cups/016_rock_cup.png"
+    },
+    {
+      "id": "track.gba_boo_lake",
+      "legacyIndex": 65,
+      "names": {
+        "en-US": "GBA Boo Lake",
+        "en-GB": "GBA Boo Lake",
+        "nl-NL": "GBA Boo-Bruggen"
+      },
+      "previewPath": "images/tracks/previews/065_gba_boo_lake.png",
+      "cupId": "cup.rock_cup",
+      "cupIconPath": "images/cups/016_rock_cup.png"
+    },
+    {
+      "id": "track.3ds_alpine_pass",
+      "legacyIndex": 66,
+      "names": {
+        "en-US": "3DS Rock Rock Mountain",
+        "en-GB": "3DS Alpine Pass",
+        "nl-NL": "3DS Kampioensberg"
+      },
+      "previewPath": "images/tracks/previews/066_3ds_alpine_pass.png",
+      "cupId": "cup.rock_cup",
+      "cupIconPath": "images/cups/016_rock_cup.png"
+    },
+    {
+      "id": "track.wii_maple_treeway",
+      "legacyIndex": 67,
+      "names": {
+        "en-US": "Wii Maple Treeway",
+        "en-GB": "Wii Maple Treeway",
+        "nl-NL": "Wii Wigglers Woud"
+      },
+      "previewPath": "images/tracks/previews/067_wii_maple_treeway.png",
+      "cupId": "cup.rock_cup",
+      "cupIconPath": "images/cups/016_rock_cup.png"
+    },
+    {
+      "id": "track.tour_berlin_byways",
+      "legacyIndex": 68,
+      "names": {
+        "en-US": "Tour Berlin Byways",
+        "en-GB": "Tour Berlin Byways",
+        "nl-NL": "Tour Berlijn-Bezoek"
+      },
+      "previewPath": "images/tracks/previews/068_tour_berlin_byways.png",
+      "cupId": "cup.moon_cup",
+      "cupIconPath": "images/cups/017_moon_cup.png"
+    },
+    {
+      "id": "track.ds_peach_gardens",
+      "legacyIndex": 69,
+      "names": {
+        "en-US": "DS Peach Gardens",
+        "en-GB": "DS Peach Gardens",
+        "nl-NL": "DS Peach' Paleistuin"
+      },
+      "previewPath": "images/tracks/previews/069_ds_peach_gardens.png",
+      "cupId": "cup.moon_cup",
+      "cupIconPath": "images/cups/017_moon_cup.png"
+    },
+    {
+      "id": "track.merry_mountain",
+      "legacyIndex": 70,
+      "names": {
+        "en-US": "Merry Mountain",
+        "en-GB": "Merry Mountain",
+        "nl-NL": "Dennenboomdorp"
+      },
+      "previewPath": "images/tracks/previews/070_merry_mountain.png",
+      "cupId": "cup.moon_cup",
+      "cupIconPath": "images/cups/017_moon_cup.png"
+    },
+    {
+      "id": "track.3ds_rainbow_road",
+      "legacyIndex": 71,
+      "names": {
+        "en-US": "3DS Rainbow Road",
+        "en-GB": "3DS Rainbow Road",
+        "nl-NL": "3DS Regenboogbaan"
+      },
+      "previewPath": "images/tracks/previews/071_3ds_rainbow_road.png",
+      "cupId": "cup.moon_cup",
+      "cupIconPath": "images/cups/017_moon_cup.png"
+    },
+    {
+      "id": "track.tour_amsterdam_drift",
+      "legacyIndex": 72,
+      "names": {
+        "en-US": "Tour Amsterdam Drift",
+        "en-GB": "Tour Amsterdam Drift",
+        "nl-NL": "Tour Afslag Amsterdam"
+      },
+      "previewPath": "images/tracks/previews/072_tour_amsterdam_drift.png",
+      "cupId": "cup.fruit_cup",
+      "cupIconPath": "images/cups/018_fruit_cup.png"
+    },
+    {
+      "id": "track.gba_riverside_park",
+      "legacyIndex": 73,
+      "names": {
+        "en-US": "GBA Riverside Park",
+        "en-GB": "GBA Riverside Park",
+        "nl-NL": "GBA Rivieroever"
+      },
+      "previewPath": "images/tracks/previews/073_gba_riverside_park.png",
+      "cupId": "cup.fruit_cup",
+      "cupIconPath": "images/cups/018_fruit_cup.png"
+    },
+    {
+      "id": "track.wii_dk_summit",
+      "legacyIndex": 74,
+      "names": {
+        "en-US": "Wii DK Summit",
+        "en-GB": "Wii DK's Snowboard Cross",
+        "nl-NL": "Wii DK's Skipark"
+      },
+      "previewPath": "images/tracks/previews/074_wii_dk_summit.png",
+      "cupId": "cup.fruit_cup",
+      "cupIconPath": "images/cups/018_fruit_cup.png"
+    },
+    {
+      "id": "track.yoshis_island",
+      "legacyIndex": 75,
+      "names": {
+        "en-US": "Yoshi's Island",
+        "en-GB": "Yoshi's Island",
+        "nl-NL": "Yoshi's Eiland"
+      },
+      "previewPath": "images/tracks/previews/075_yoshis_island.png",
+      "cupId": "cup.fruit_cup",
+      "cupIconPath": "images/cups/018_fruit_cup.png"
+    },
+    {
+      "id": "track.tour_bangkok_rush",
+      "legacyIndex": 76,
+      "names": {
+        "en-US": "Tour Bangkok Rush",
+        "en-GB": "Tour Bangkok Rush",
+        "nl-NL": "Tour Bangkok-Break"
+      },
+      "previewPath": "images/tracks/previews/076_tour_bangkok_rush.png",
+      "cupId": "cup.boomerang_cup",
+      "cupIconPath": "images/cups/019_boomerang_cup.png"
+    },
+    {
+      "id": "track.ds_mario_circuit",
+      "legacyIndex": 77,
+      "names": {
+        "en-US": "DS Mario Circuit",
+        "en-GB": "DS Mario Circuit",
+        "nl-NL": "DS Mario's Circuit"
+      },
+      "previewPath": "images/tracks/previews/077_ds_mario_circuit.png",
+      "cupId": "cup.boomerang_cup",
+      "cupIconPath": "images/cups/019_boomerang_cup.png"
+    },
+    {
+      "id": "track.gcn_waluigi_stadium",
+      "legacyIndex": 78,
+      "names": {
+        "en-US": "GCN Waluigi Stadium",
+        "en-GB": "GCN Waluigi Stadium",
+        "nl-NL": "GCN Waluigi's Stadion"
+      },
+      "previewPath": "images/tracks/previews/078_gcn_waluigi_stadium.png",
+      "cupId": "cup.boomerang_cup",
+      "cupIconPath": "images/cups/019_boomerang_cup.png"
+    },
+    {
+      "id": "track.tour_singapore_speedway",
+      "legacyIndex": 79,
+      "names": {
+        "en-US": "Tour Singapore Speedway",
+        "en-GB": "Tour Singapore Speedway",
+        "nl-NL": "Tour Signapore-Skyline"
+      },
+      "previewPath": "images/tracks/previews/079_tour_singapore_speedway.png",
+      "cupId": "cup.boomerang_cup",
+      "cupIconPath": "images/cups/019_boomerang_cup.png"
+    },
+    {
+      "id": "track.tour_athens_dash",
+      "legacyIndex": 80,
+      "names": {
+        "en-US": "Tour Athens Dash",
+        "en-GB": "Tour Athens Dash",
+        "nl-NL": "Tour Athene-Trip"
+      },
+      "previewPath": "images/tracks/previews/080_tour_athens_dash.png",
+      "cupId": "cup.feather_cup",
+      "cupIconPath": "images/cups/020_feather_cup.png"
+    },
+    {
+      "id": "track.gcn_daisy_cruiser",
+      "legacyIndex": 81,
+      "names": {
+        "en-US": "GCN Daisy Cruiser",
+        "en-GB": "GCN Daisy Cruiser",
+        "nl-NL": "GCN Daisy's Cruiseschip"
+      },
+      "previewPath": "images/tracks/previews/081_gcn_daisy_cruiser.png",
+      "cupId": "cup.feather_cup",
+      "cupIconPath": "images/cups/020_feather_cup.png"
+    },
+    {
+      "id": "track.wii_moonview_highway",
+      "legacyIndex": 82,
+      "names": {
+        "en-US": "Wii Moonview Highway",
+        "en-GB": "Wii Moonview Highway",
+        "nl-NL": "Wii Maanlichtlaan"
+      },
+      "previewPath": "images/tracks/previews/082_wii_moonview_highway.png",
+      "cupId": "cup.feather_cup",
+      "cupIconPath": "images/cups/020_feather_cup.png"
+    },
+    {
+      "id": "track.squeaky_clean_sprint",
+      "legacyIndex": 83,
+      "names": {
+        "en-US": "Squeaky Clean Sprint",
+        "en-GB": "Squeaky Clean Sprint",
+        "nl-NL": "Badderbaan"
+      },
+      "previewPath": "images/tracks/previews/083_squeaky_clean_sprint.png",
+      "cupId": "cup.feather_cup",
+      "cupIconPath": "images/cups/020_feather_cup.png"
+    },
+    {
+      "id": "track.tour_los_angeles_laps",
+      "legacyIndex": 84,
+      "names": {
+        "en-US": "Tour Los Angeles Laps",
+        "en-GB": "Tour Los Angeles Laps",
+        "nl-NL": "Tour Los Angeles-Boulevard"
+      },
+      "previewPath": "images/tracks/previews/084_tour_los_angeles_laps.png",
+      "cupId": "cup.cherry_cup",
+      "cupIconPath": "images/cups/021_cherry_cup.png"
+    },
+    {
+      "id": "track.gba_sunset_wilds",
+      "legacyIndex": 85,
+      "names": {
+        "en-US": "GBA Sunset Wilds",
+        "en-GB": "GBA Sunset Wilds",
+        "nl-NL": "GBA Schemersteppe"
+      },
+      "previewPath": "images/tracks/previews/085_gba_sunset_wilds.png",
+      "cupId": "cup.cherry_cup",
+      "cupIconPath": "images/cups/021_cherry_cup.png"
+    },
+    {
+      "id": "track.wii_koopa_cape",
+      "legacyIndex": 86,
+      "names": {
+        "en-US": "Wii Koopa Cape",
+        "en-GB": "Wii Koopa Cape",
+        "nl-NL": "Wii Kaap Koopa"
+      },
+      "previewPath": "images/tracks/previews/086_wii_koopa_cape.png",
+      "cupId": "cup.cherry_cup",
+      "cupIconPath": "images/cups/021_cherry_cup.png"
+    },
+    {
+      "id": "track.tour_vancouver_velocity",
+      "legacyIndex": 87,
+      "names": {
+        "en-US": "Tour Vancouver Velocity",
+        "en-GB": "Tour Vancouver Velocity",
+        "nl-NL": "Tour Vancouver-Route"
+      },
+      "previewPath": "images/tracks/previews/087_tour_vancouver_velocity.png",
+      "cupId": "cup.cherry_cup",
+      "cupIconPath": "images/cups/021_cherry_cup.png"
+    },
+    {
+      "id": "track.tour_rome_avanti",
+      "legacyIndex": 88,
+      "names": {
+        "en-US": "Tour Rome Avanti",
+        "en-GB": "Tour Rome Avanti",
+        "nl-NL": "Tour Rome-Run"
+      },
+      "previewPath": "images/tracks/previews/088_tour_rome_avanti.png",
+      "cupId": "cup.acorn_cup",
+      "cupIconPath": "images/cups/022_acorn_cup.png"
+    },
+    {
+      "id": "track.gcn_dk_mountain",
+      "legacyIndex": 89,
+      "names": {
+        "en-US": "GCN DK Mountain",
+        "en-GB": "GCN DK Mountain",
+        "nl-NL": "GCN DK-Gebergte"
+      },
+      "previewPath": "images/tracks/previews/089_gcn_dk_mountain.png",
+      "cupId": "cup.acorn_cup",
+      "cupIconPath": "images/cups/022_acorn_cup.png"
+    },
+    {
+      "id": "track.wii_daisy_circuit",
+      "legacyIndex": 90,
+      "names": {
+        "en-US": "Wii Daisy Circuit",
+        "en-GB": "Wii Daisy Circuit",
+        "nl-NL": "Wii Daisy's Circuit"
+      },
+      "previewPath": "images/tracks/previews/090_wii_daisy_circuit.png",
+      "cupId": "cup.acorn_cup",
+      "cupIconPath": "images/cups/022_acorn_cup.png"
+    },
+    {
+      "id": "track.piranha_plant_cove",
+      "legacyIndex": 91,
+      "names": {
+        "en-US": "Piranha Plant Cove",
+        "en-GB": "Piranha Plant Cove",
+        "nl-NL": "Piranha Plant-Lagune"
+      },
+      "previewPath": "images/tracks/previews/091_piranha_plant_cove.png",
+      "cupId": "cup.acorn_cup",
+      "cupIconPath": "images/cups/022_acorn_cup.png"
+    },
+    {
+      "id": "track.tour_madrid_drive",
+      "legacyIndex": 92,
+      "names": {
+        "en-US": "Tour Madrid Drive",
+        "en-GB": "Tour Madrid Drive",
+        "nl-NL": "Tour Madrid-Rit"
+      },
+      "previewPath": "images/tracks/previews/092_tour_madrid_drive.png",
+      "cupId": "cup.spiny_cup",
+      "cupIconPath": "images/cups/023_spiny_cup.png"
+    },
+    {
+      "id": "track.3ds_rosalinas_ice_world",
+      "legacyIndex": 93,
+      "names": {
+        "en-US": "3DS Rosalina's Ice World",
+        "en-GB": "3DS Rosalina's Ice World",
+        "nl-NL": "3DS Rosalina's Ijsplaneet"
+      },
+      "previewPath": "images/tracks/previews/093_3ds_rosalinas_ice_world.png",
+      "cupId": "cup.spiny_cup",
+      "cupIconPath": "images/cups/023_spiny_cup.png"
+    },
+    {
+      "id": "track.snes_bowser_castle_3",
+      "legacyIndex": 94,
+      "names": {
+        "en-US": "SNES Bowser Castle 3",
+        "en-GB": "SNES Bowser Castle 3",
+        "nl-NL": "SNES Bowsers Kasteel 3"
+      },
+      "previewPath": "images/tracks/previews/094_snes_bowser_castle_3.png",
+      "cupId": "cup.spiny_cup",
+      "cupIconPath": "images/cups/023_spiny_cup.png"
+    },
+    {
+      "id": "track.wii_rainbow_road",
+      "legacyIndex": 95,
+      "names": {
+        "en-US": "Wii Rainbow Road",
+        "en-GB": "Wii Rainbow Road",
+        "nl-NL": "Wii Regenboogbaan"
+      },
+      "previewPath": "images/tracks/previews/095_wii_rainbow_road.png",
+      "cupId": "cup.spiny_cup",
+      "cupIconPath": "images/cups/023_spiny_cup.png"
+    }
+  ]
+}

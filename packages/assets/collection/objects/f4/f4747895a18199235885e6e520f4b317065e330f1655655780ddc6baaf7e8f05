@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "model_asset": "model/inference_model.onnx",
+  "runtime": "ONNX Runtime Mobile",
+  "source_report": "runtime/performance_runs/mobile_android_feasibility_20260715_235416/summary.json",
+  "source_export": "runtime/performance_runs/mobile_android_feasibility_20260715_235416/onnx_export/inference_model.onnx",
+  "active_profile": "mobile_candidate",
+  "checkpoint_dir": "artifacts/ckpt_rfdetr_3class_large_20260526_ownerfix_release01",
+  "selected_weight": "artifacts/ckpt_rfdetr_3class_large_20260526_ownerfix_release01/checkpoint_best_total.pth",
+  "classes": [
+    "ghost_timetrail_box",
+    "player_timetrail_box",
+    "lap_index"
+  ],
+  "detect_threshold": 0.2,
+  "onnx_bytes": 121579098,
+  "purpose": "debug_display_only_never_runtime_authority"
+}

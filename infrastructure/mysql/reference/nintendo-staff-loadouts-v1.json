@@ -1,0 +1,2312 @@
+{
+  "schemaVersion": "mk8dx.nintendo-staff-loadouts.v1",
+  "asOf": "2026-07-08T09:53:23+00:00",
+  "count": 192,
+  "recordsSha256": "6428a7dd4a5002020a8653ec2469e89277b3623becff21c9ce8a060c513bfe62",
+  "records": [
+    {
+      "trackId": "track.3ds_alpine_pass",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 144730,
+      "loadout": {
+        "characterId": "character.morton",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_alpine_pass",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 99664,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.landship",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_dk_jungle",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 140006,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.waddle_wing"
+      }
+    },
+    {
+      "trackId": "track.3ds_dk_jungle",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 106758,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.city_tripper",
+        "tireId": "tire.funky_monster",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_koopa_city",
+      "mode": 150,
+      "playerName": "Nin★Rui",
+      "timeMs": 133138,
+      "loadout": {
+        "characterId": "character.dry_bowser",
+        "bodyId": "body.bone_rattler",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_koopa_city",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 97526,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.bone_rattler",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_melody_motorway",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 139675,
+      "loadout": {
+        "characterId": "character.baby_daisy",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_melody_motorway",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 96529,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.gla_wheels",
+        "gliderId": "glider.mktv_parafoil"
+      }
+    },
+    {
+      "trackId": "track.3ds_piranha_plant_pipeway",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 141321,
+      "loadout": {
+        "characterId": "character.ludwig",
+        "bodyId": "body.jet_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_piranha_plant_pipeway",
+      "mode": 200,
+      "playerName": "Nin★Frank",
+      "timeMs": 108454,
+      "loadout": {
+        "characterId": "character.wendy",
+        "bodyId": "body.mr_scooty",
+        "tireId": "tire.metal",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.3ds_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 112015,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 79545,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_rosalinas_ice_world",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 130993,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.sport_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_rosalinas_ice_world",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 98735,
+      "loadout": {
+        "characterId": "character.king_boo",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_toad_circuit",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 93670,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.mr_scooty",
+        "tireId": "tire.azure_roller",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.3ds_toad_circuit",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 63969,
+      "loadout": {
+        "characterId": "character.toadette",
+        "bodyId": "body.prancer",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.animal_crossing",
+      "mode": 150,
+      "playerName": "Nin★Marie",
+      "timeMs": 113584,
+      "loadout": {
+        "characterId": "character.isabelle",
+        "bodyId": "body.city_tripper",
+        "tireId": "tire.slim",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.animal_crossing",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 83417,
+      "loadout": {
+        "characterId": "character.villager_male",
+        "bodyId": "body.300_sl_roadster",
+        "tireId": "tire.gla_wheels",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.big_blue",
+      "mode": 150,
+      "playerName": "Nin★Dylan",
+      "timeMs": 97316,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.p_wing",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.big_blue",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 73516,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.25_silver_arrow",
+        "tireId": "tire.slim",
+        "gliderId": "glider.plane_glider"
+      }
+    },
+    {
+      "trackId": "track.bone_dry_dunes",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 135338,
+      "loadout": {
+        "characterId": "character.morton",
+        "bodyId": "body.tri_speeder",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.bone_dry_dunes",
+      "mode": 200,
+      "playerName": "Nin★Pavel",
+      "timeMs": 99330,
+      "loadout": {
+        "characterId": "character.dry_bones",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.plane_glider"
+      }
+    },
+    {
+      "trackId": "track.bowsers_castle",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 141980,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.bowsers_castle",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 100953,
+      "loadout": {
+        "characterId": "character.dry_bowser",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.slim",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.cloudtop_cruise",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 139568,
+      "loadout": {
+        "characterId": "character.baby_rosalina",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.cloudtop_cruise",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 104120,
+      "loadout": {
+        "characterId": "character.bowser_jr",
+        "bodyId": "body.koopa_clown",
+        "tireId": "tire.cyber_slick",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.dolphin_shoals",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 134832,
+      "loadout": {
+        "characterId": "character.wendy",
+        "bodyId": "body.landship",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.dolphin_shoals",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 98911,
+      "loadout": {
+        "characterId": "character.ludwig",
+        "bodyId": "body.steel_driver",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.dragon_driftway",
+      "mode": 150,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 125957,
+      "loadout": {
+        "characterId": "character.lakitu",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.dragon_driftway",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 94873,
+      "loadout": {
+        "characterId": "character.inkling_boy",
+        "bodyId": "body.splat_buggy",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_cheep_cheep_beach",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 126314,
+      "loadout": {
+        "characterId": "character.koopa_troopa",
+        "bodyId": "body.steel_driver",
+        "tireId": "tire.metal",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.ds_cheep_cheep_beach",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 85089,
+      "loadout": {
+        "characterId": "character.lakitu",
+        "bodyId": "body.landship",
+        "tireId": "tire.metal",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 110550,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.b_dasher",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 84282,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_peach_gardens",
+      "mode": 150,
+      "playerName": "Nin★Marie",
+      "timeMs": 139534,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.prancer",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_peach_gardens",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 99851,
+      "loadout": {
+        "characterId": "character.toadette",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.button",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_shroom_ridge",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 129148,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.bone_rattler",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_shroom_ridge",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 97626,
+      "loadout": {
+        "characterId": "character.morton",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.cushion",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.ds_tick_tock_clock",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 126485,
+      "loadout": {
+        "characterId": "character.iggy",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_tick_tock_clock",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 92483,
+      "loadout": {
+        "characterId": "character.larry",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.sponge",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_waluigi_pinball",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 156450,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_waluigi_pinball",
+      "mode": 200,
+      "playerName": "Nin★Pavel",
+      "timeMs": 120942,
+      "loadout": {
+        "characterId": "character.morton",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ds_wario_stadium",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 129171,
+      "loadout": {
+        "characterId": "character.wario",
+        "bodyId": "body.tri_speeder",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.ds_wario_stadium",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 99724,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.varmint",
+        "tireId": "tire.funky_monster",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.electrodrome",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 141023,
+      "loadout": {
+        "characterId": "character.larry",
+        "bodyId": "body.sport_bike",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.electrodrome",
+      "mode": 200,
+      "playerName": "Nin★Laura",
+      "timeMs": 100943,
+      "loadout": {
+        "characterId": "character.roy",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.cushion",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.excitebike_arena",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 118808,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.excitebike_arena",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 89202,
+      "loadout": {
+        "characterId": "character.inkling_girl",
+        "bodyId": "body.inkstriker",
+        "tireId": "tire.leaf_tyres",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_boo_lake",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 96212,
+      "loadout": {
+        "characterId": "character.king_boo",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_boo_lake",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 69576,
+      "loadout": {
+        "characterId": "character.dry_bones",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_cheese_land",
+      "mode": 150,
+      "playerName": "Nin★Aracel",
+      "timeMs": 126316,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.monster",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.gba_cheese_land",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 101248,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.streetle",
+        "tireId": "tire.roller",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 104593,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.yoshi_bike",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Pit",
+      "timeMs": 70475,
+      "loadout": {
+        "characterId": "character.baby_luigi",
+        "bodyId": "body.sport_bike",
+        "tireId": "tire.slick",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.gba_ribbon_road",
+      "mode": 150,
+      "playerName": "Nin★Giulia",
+      "timeMs": 127152,
+      "loadout": {
+        "characterId": "character.villager_female",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.button",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_ribbon_road",
+      "mode": 200,
+      "playerName": "Nin★Maria",
+      "timeMs": 91220,
+      "loadout": {
+        "characterId": "character.isabelle",
+        "bodyId": "body.cat_cruiser",
+        "tireId": "tire.crimson_slim",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_riverside_park",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 94480,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_riverside_park",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 73455,
+      "loadout": {
+        "characterId": "character.bowser_jr",
+        "bodyId": "body.koopa_clown",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_sky_garden",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 102267,
+      "loadout": {
+        "characterId": "character.lakitu",
+        "bodyId": "body.p_wing",
+        "tireId": "tire.retro_off_road",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_sky_garden",
+      "mode": 200,
+      "playerName": "Nin★Rui",
+      "timeMs": 73606,
+      "loadout": {
+        "characterId": "character.ludwig",
+        "bodyId": "body.steel_driver",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.gba_snow_land",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 106763,
+      "loadout": {
+        "characterId": "character.tanooki_mario",
+        "bodyId": "body.tanooki_kart",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_snow_land",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 81826,
+      "loadout": {
+        "characterId": "character.king_boo",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_sunset_wilds",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 108993,
+      "loadout": {
+        "characterId": "character.petey_piranha",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.gba_sunset_wilds",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 80411,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_baby_park",
+      "mode": 150,
+      "playerName": "Nin★Joost",
+      "timeMs": 76561,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_baby_park",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 59765,
+      "loadout": {
+        "characterId": "character.baby_rosalina",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.cyber_slick",
+        "gliderId": "glider.waddle_wing"
+      }
+    },
+    {
+      "trackId": "track.gcn_daisy_cruiser",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 107238,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.jet_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_daisy_cruiser",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 81241,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_dk_mountain",
+      "mode": 150,
+      "playerName": "Nin★Laura",
+      "timeMs": 155917,
+      "loadout": {
+        "characterId": "character.funky_kong",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.monster",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.gcn_dk_mountain",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 126814,
+      "loadout": {
+        "characterId": "character.diddy_kong",
+        "bodyId": "body.mr_scooty",
+        "tireId": "tire.button",
+        "gliderId": "glider.waddle_wing"
+      }
+    },
+    {
+      "trackId": "track.gcn_dry_dry_desert",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 146614,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_dry_dry_desert",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 105087,
+      "loadout": {
+        "characterId": "character.lemmy",
+        "bodyId": "body.tanooki_kart",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_sherbet_land",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 140174,
+      "loadout": {
+        "characterId": "character.lemmy",
+        "bodyId": "body.bounder",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_sherbet_land",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 94370,
+      "loadout": {
+        "characterId": "character.iggy",
+        "bodyId": "body.bone_rattler",
+        "tireId": "tire.monster",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.gcn_waluigi_stadium",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 136894,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_waluigi_stadium",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 103781,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_yoshi_circuit",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 127557,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.b_dasher",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.gcn_yoshi_circuit",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 98869,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.p_wing",
+        "tireId": "tire.slick",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.hyrule_circuit",
+      "mode": 150,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 128616,
+      "loadout": {
+        "characterId": "character.link",
+        "bodyId": "body.master_cycle",
+        "tireId": "tire.triforce_tyres",
+        "gliderId": "glider.hylian_kite"
+      }
+    },
+    {
+      "trackId": "track.hyrule_circuit",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 100394,
+      "loadout": {
+        "characterId": "character.link",
+        "bodyId": "body.master_cycle",
+        "tireId": "tire.triforce_tyres",
+        "gliderId": "glider.hylian_kite"
+      }
+    },
+    {
+      "trackId": "track.ice_ice_outpost",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 129427,
+      "loadout": {
+        "characterId": "character.tanooki_mario",
+        "bodyId": "body.tanooki_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ice_ice_outpost",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 92435,
+      "loadout": {
+        "characterId": "character.cat_peach",
+        "bodyId": "body.bounder",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 128501,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 83243,
+      "loadout": {
+        "characterId": "character.pink_gold_peach",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.mario_kart_stadium",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 113191,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.mario_kart_stadium",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 81984,
+      "loadout": {
+        "characterId": "character.gold_mario",
+        "bodyId": "body.gold_kart",
+        "tireId": "tire.gold_wheels",
+        "gliderId": "glider.gold_glider"
+      }
+    },
+    {
+      "trackId": "track.merry_mountain",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 129693,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.merry_mountain",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 91642,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.mount_wario",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 123483,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.monster",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.mount_wario",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 97266,
+      "loadout": {
+        "characterId": "character.wario",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.crimson_slim",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.mute_city",
+      "mode": 150,
+      "playerName": "Nin★Laura",
+      "timeMs": 130167,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.blue_falcon",
+        "tireId": "tire.roller",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.mute_city",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 94273,
+      "loadout": {
+        "characterId": "character.metal_mario",
+        "bodyId": "body.blue_falcon",
+        "tireId": "tire.azure_roller",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.n64_choco_mountain",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 128949,
+      "loadout": {
+        "characterId": "character.koopa_troopa",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_choco_mountain",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 91715,
+      "loadout": {
+        "characterId": "character.tanooki_mario",
+        "bodyId": "body.tanooki_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_kalimari_desert",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 100363,
+      "loadout": {
+        "characterId": "character.dry_bones",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_kalimari_desert",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 70511,
+      "loadout": {
+        "characterId": "character.dry_bowser",
+        "bodyId": "body.bone_rattler",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 93981,
+      "loadout": {
+        "characterId": "character.metal_mario",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 68128,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.tri_speeder",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_royal_raceway",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 138307,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.prancer",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.n64_royal_raceway",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 103120,
+      "loadout": {
+        "characterId": "character.baby_peach",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.cyber_slick",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.n64_toads_turnpike",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 128966,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.normal",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.n64_toads_turnpike",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 81156,
+      "loadout": {
+        "characterId": "character.toadette",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.slick",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_yoshi_valley",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 143688,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.wild_wiggler",
+        "tireId": "tire.normal",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.n64_yoshi_valley",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 95628,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ninja_hideaway",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 140813,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.ninja_hideaway",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 97815,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.piranha_plant_cove",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 137775,
+      "loadout": {
+        "characterId": "character.petey_piranha",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.slim",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.piranha_plant_cove",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 101315,
+      "loadout": {
+        "characterId": "character.koopa_troopa",
+        "bodyId": "body.steel_driver",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 145267,
+      "loadout": {
+        "characterId": "character.pink_gold_peach",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Pedro",
+      "timeMs": 115767,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.mktv_parafoil"
+      }
+    },
+    {
+      "trackId": "track.shy_guy_falls",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 141804,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.shy_guy_falls",
+      "mode": 200,
+      "playerName": "Nin★Anne",
+      "timeMs": 100698,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.retro_off_road",
+        "gliderId": "glider.parafoil"
+      }
+    },
+    {
+      "trackId": "track.sky_high_sundae",
+      "mode": 150,
+      "playerName": "Nin★Akira",
+      "timeMs": 127380,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.sky_high_sundae",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 90777,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_bowser_castle_3",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 114632,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.landship",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_bowser_castle_3",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 82052,
+      "loadout": {
+        "characterId": "character.dry_bones",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_donut_plains_3",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 95564,
+      "loadout": {
+        "characterId": "character.lakitu",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.monster",
+        "gliderId": "glider.mktv_parafoil"
+      }
+    },
+    {
+      "trackId": "track.snes_donut_plains_3",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 71794,
+      "loadout": {
+        "characterId": "character.koopa_troopa",
+        "bodyId": "body.streetle",
+        "tireId": "tire.monster",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_mario_circuit_3",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 106806,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.b_dasher",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_mario_circuit_3",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 77075,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Anne",
+      "timeMs": 100711,
+      "loadout": {
+        "characterId": "character.cat_peach",
+        "bodyId": "body.cat_cruiser",
+        "tireId": "tire.retro_off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.snes_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Marie",
+      "timeMs": 72762,
+      "loadout": {
+        "characterId": "character.tanooki_mario",
+        "bodyId": "body.gla",
+        "tireId": "tire.gla_wheels",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.squeaky_clean_sprint",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 137580,
+      "loadout": {
+        "characterId": "character.kamek",
+        "bodyId": "body.city_tripper",
+        "tireId": "tire.cushion",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.squeaky_clean_sprint",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 98459,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.wild_wiggler",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.sunshine_airport",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 140447,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.sunshine_airport",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 105437,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.jet_bike",
+        "tireId": "tire.metal",
+        "gliderId": "glider.plane_glider"
+      }
+    },
+    {
+      "trackId": "track.super_bell_subway",
+      "mode": 150,
+      "playerName": "Nin★Juliet",
+      "timeMs": 126487,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.city_tripper",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.super_bell_subway",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 83304,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.yoshi_bike",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.sweet_sweet_canyon",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 127205,
+      "loadout": {
+        "characterId": "character.baby_peach",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.sweet_sweet_canyon",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 100972,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.prancer",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.thwomp_ruins",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 132125,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.thwomp_ruins",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 91436,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.normal",
+        "gliderId": "glider.bowser_kite"
+      }
+    },
+    {
+      "trackId": "track.toad_harbour",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 149282,
+      "loadout": {
+        "characterId": "character.toadette",
+        "bodyId": "body.cat_cruiser",
+        "tireId": "tire.retro_off_road",
+        "gliderId": "glider.plane_glider"
+      }
+    },
+    {
+      "trackId": "track.toad_harbour",
+      "mode": 200,
+      "playerName": "Nin★Adrien",
+      "timeMs": 103003,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_amsterdam_drift",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 108580,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.prancer",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_amsterdam_drift",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 79135,
+      "loadout": {
+        "characterId": "character.shy_guy",
+        "bodyId": "body.flame_rider",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_athens_dash",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 112892,
+      "loadout": {
+        "characterId": "character.wiggler",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.sponge",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_athens_dash",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 81362,
+      "loadout": {
+        "characterId": "character.dry_bones",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_bangkok_rush",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 114995,
+      "loadout": {
+        "characterId": "character.inkling_boy",
+        "bodyId": "body.inkstriker",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_bangkok_rush",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 84201,
+      "loadout": {
+        "characterId": "character.wario",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.tour_berlin_byways",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 131001,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_berlin_byways",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 95467,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_london_loop",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 140500,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_london_loop",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 98896,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_los_angeles_laps",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 117938,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_los_angeles_laps",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 85694,
+      "loadout": {
+        "characterId": "character.birdo",
+        "bodyId": "body.pipe_frame",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_madrid_drive",
+      "mode": 150,
+      "playerName": "Nin★Aracel",
+      "timeMs": 130689,
+      "loadout": {
+        "characterId": "character.peachette",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.cloud_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_madrid_drive",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 93156,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.bounder",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_new_york_minute",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 94573,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_new_york_minute",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 67562,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_paris_promenade",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 127401,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.slim",
+        "gliderId": "glider.peach_parasol"
+      }
+    },
+    {
+      "trackId": "track.tour_paris_promenade",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 87101,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_rome_avanti",
+      "mode": 150,
+      "playerName": "Nin★Giulia",
+      "timeMs": 117329,
+      "loadout": {
+        "characterId": "character.pauline",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_rome_avanti",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 85406,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.wild_wiggler",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_singapore_speedway",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 128954,
+      "loadout": {
+        "characterId": "character.bowser",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_singapore_speedway",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 92160,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.comet",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_sydney_sprint",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 136617,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_sydney_sprint",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 97367,
+      "loadout": {
+        "characterId": "character.bowser_jr",
+        "bodyId": "body.koopa_clown",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_tokyo_blur",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 96317,
+      "loadout": {
+        "characterId": "character.inkling_boy",
+        "bodyId": "body.splat_buggy",
+        "tireId": "tire.normal_blue",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_tokyo_blur",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 67560,
+      "loadout": {
+        "characterId": "character.inkling_girl",
+        "bodyId": "body.inkstriker",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_vancouver_velocity",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 131072,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.sport_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.tour_vancouver_velocity",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 92752,
+      "loadout": {
+        "characterId": "character.peach",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.twisted_mansion",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 134615,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.twisted_mansion",
+      "mode": 200,
+      "playerName": "Nin★Rui",
+      "timeMs": 98244,
+      "loadout": {
+        "characterId": "character.king_boo",
+        "bodyId": "body.wild_wiggler",
+        "tireId": "tire.sponge",
+        "gliderId": "glider.flower_glider"
+      }
+    },
+    {
+      "trackId": "track.water_park",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 122186,
+      "loadout": {
+        "characterId": "character.baby_luigi",
+        "bodyId": "body.mr_scooty",
+        "tireId": "tire.roller",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.water_park",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 82799,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_coconut_mall",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 118401,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.bounder",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_coconut_mall",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 89009,
+      "loadout": {
+        "characterId": "character.baby_luigi",
+        "bodyId": "body.yoshi_bike",
+        "tireId": "tire.slick",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.wii_daisy_circuit",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 121099,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.sports_coupe",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_daisy_circuit",
+      "mode": 200,
+      "playerName": "Nin★Pit",
+      "timeMs": 85861,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_dk_summit",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 142680,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_dk_summit",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 113372,
+      "loadout": {
+        "characterId": "character.rosalina",
+        "bodyId": "body.circuit_special",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_grumble_volcano",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 136524,
+      "loadout": {
+        "characterId": "character.roy",
+        "bodyId": "body.badwagon",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_grumble_volcano",
+      "mode": 200,
+      "playerName": "Nin★Maria",
+      "timeMs": 104284,
+      "loadout": {
+        "characterId": "character.morton",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.cushion",
+        "gliderId": "glider.parachute"
+      }
+    },
+    {
+      "trackId": "track.wii_koopa_cape",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 138943,
+      "loadout": {
+        "characterId": "character.koopa_troopa",
+        "bodyId": "body.steel_driver",
+        "tireId": "tire.metal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_koopa_cape",
+      "mode": 200,
+      "playerName": "Nin★Frank",
+      "timeMs": 101749,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_maple_treeway",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 156581,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.prancer",
+        "tireId": "tire.off_road",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_maple_treeway",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 118543,
+      "loadout": {
+        "characterId": "character.wario",
+        "bodyId": "body.tri_speeder",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_moo_moo_meadows",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 101846,
+      "loadout": {
+        "characterId": "character.daisy",
+        "bodyId": "body.varmint",
+        "tireId": "tire.funky_monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_moo_moo_meadows",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 69980,
+      "loadout": {
+        "characterId": "character.baby_daisy",
+        "bodyId": "body.bounder",
+        "tireId": "tire.cyber_slick",
+        "gliderId": "glider.mktv_parafoil"
+      }
+    },
+    {
+      "trackId": "track.wii_moonview_highway",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 114655,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.the_duke",
+        "tireId": "tire.monster",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.wii_moonview_highway",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 79973,
+      "loadout": {
+        "characterId": "character.donkey_kong",
+        "bodyId": "body.varmint",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_mushroom_gorge",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 110666,
+      "loadout": {
+        "characterId": "character.toadette",
+        "bodyId": "body.teddy_buggy",
+        "tireId": "tire.wooden",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_mushroom_gorge",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 81194,
+      "loadout": {
+        "characterId": "character.toad",
+        "bodyId": "body.standard_quad",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 169574,
+      "loadout": {
+        "characterId": "character.mario",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 126146,
+      "loadout": {
+        "characterId": "character.luigi",
+        "bodyId": "body.mach_8",
+        "tireId": "tire.slim",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_warios_gold_mine",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 142119,
+      "loadout": {
+        "characterId": "character.wario",
+        "bodyId": "body.standard_kart",
+        "tireId": "tire.monster",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.wii_warios_gold_mine",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 101168,
+      "loadout": {
+        "characterId": "character.waluigi",
+        "bodyId": "body.standard_bike",
+        "tireId": "tire.retro_off_road",
+        "gliderId": "glider.wario_wing"
+      }
+    },
+    {
+      "trackId": "track.wild_woods",
+      "mode": 150,
+      "playerName": "Nin★Akira",
+      "timeMs": 125396,
+      "loadout": {
+        "characterId": "character.villager_male",
+        "bodyId": "body.streetle",
+        "tireId": "tire.leaf_tyres",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.wild_woods",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 87555,
+      "loadout": {
+        "characterId": "character.villager_female",
+        "bodyId": "body.city_tripper",
+        "tireId": "tire.leaf_tyres",
+        "gliderId": "glider.paper_glider"
+      }
+    },
+    {
+      "trackId": "track.yoshis_island",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 140116,
+      "loadout": {
+        "characterId": "character.baby_mario",
+        "bodyId": "body.buggybud",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    },
+    {
+      "trackId": "track.yoshis_island",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 100731,
+      "loadout": {
+        "characterId": "character.yoshi",
+        "bodyId": "body.wild_wiggler",
+        "tireId": "tire.normal",
+        "gliderId": "glider.super_glider"
+      }
+    }
+  ]
+}

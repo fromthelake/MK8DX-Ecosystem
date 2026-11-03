@@ -1,0 +1,70 @@
+{
+  "schemaVersion": "mk8dx.tournament-race-result.v1",
+  "raceResultId": "tournament_race_result.synthetic_manual_entry_001",
+  "revision": 1,
+  "raceNumber": 1,
+  "scoringSegment": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "countsTowardStandings": true,
+  "context": {
+    "tournamentReference": {
+      "namespace": "tournament",
+      "value": "tournament.synthetic_manual_entry_event"
+    },
+    "stageReference": {
+      "namespace": "tournament_stage",
+      "value": "qualifier"
+    },
+    "groupReference": {
+      "namespace": "tournament_group",
+      "value": "tournament_group.synthetic_manual_entry_group_1"
+    },
+    "observedStageLabel": "Qualifiers",
+    "observedGroupLabel": "Group 1"
+  },
+  "placements": [
+    {
+      "finishPosition": 1,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_alpha" },
+      "scoring": { "racePoints": 7, "totalBeforeRace": 0, "totalAfterRace": 7, "rankAfterRace": 1 }
+    },
+    {
+      "finishPosition": 2,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_bravo" },
+      "scoring": { "racePoints": 5, "totalBeforeRace": 0, "totalAfterRace": 5, "rankAfterRace": 2 }
+    },
+    {
+      "finishPosition": 3,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_charlie" },
+      "scoring": { "racePoints": 4, "totalBeforeRace": 0, "totalAfterRace": 4, "rankAfterRace": 3 }
+    },
+    {
+      "finishPosition": 4,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_delta" },
+      "scoring": { "racePoints": 3, "totalBeforeRace": 0, "totalAfterRace": 3, "rankAfterRace": 4 }
+    },
+    {
+      "finishPosition": 5,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_echo" },
+      "scoring": { "racePoints": 2, "totalBeforeRace": 0, "totalAfterRace": 2, "rankAfterRace": 5 }
+    },
+    {
+      "finishPosition": 6,
+      "participantReference": { "namespace": "player", "value": "player.synthetic_manual_entry_foxtrot" },
+      "scoring": { "racePoints": 1, "totalBeforeRace": 0, "totalAfterRace": 1, "rankAfterRace": 6 }
+    }
+  ],
+  "source": {
+    "kind": "tournament_manual_entry",
+    "transport": "web_form",
+    "producerVersion": "mk8dx-web-tournament-operation.v1"
+  },
+  "timestamps": {
+    "createdAtMs": 1787400000000,
+    "occurredAtMs": 1787400000000
+  },
+  "verification": {
+    "status": "not_checked"
+  }
+}

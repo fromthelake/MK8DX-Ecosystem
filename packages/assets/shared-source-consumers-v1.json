@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "mk8dx.shared-asset-consumer-map.v1",
+  "resolverEnvironment": "MK8DX_SHARED_ASSET_ROOT",
+  "manifestName": "asset-source-manifest.v1.json",
+  "sources": [
+    {"id":"schema9","role":"stable domain IDs, original database, UI images, HUD templates, item and loadout variants"},
+    {"id":"tournament","role":"recorded Extractor templates, numeric character crops, track/cup references, game catalog"},
+    {"id":"tt-scan","role":"pinned ONNX model, icon references, grids, seven-segment templates and calibration metadata; no demo/review images"},
+    {"id":"icon-matcher","role":"distinct display/recognition/scoreboard variants and their original manifest"},
+    {"id":"legacy-live","role":"preserved live-specific resource variants; never substituted for recorded Extractor resources"},
+    {"id":"tools-2-2-32","role":"captured local installed-candidate resource layout; keeps its distinct catalog/index mapping and package-specific assets"},
+    {"id":"web-ui","role":"existing application icons and intentionally published UI artwork"}
+  ],
+  "consumers": [
+    {"id":"review","sourceIds":["schema9","tournament","icon-matcher"],"boundary":"tooling.assets.shared_asset_source.SharedAssetSource.catalog/resolve/image","status":"adopted_by_review_integration","gate":"review picker browser and saved-label workflow"},
+    {"id":"web-track-catalog","sourceIds":["schema9"],"boundary":"tooling/web/generate_asset_manifest.mjs --shared-asset-root","status":"adopted_byte_equivalent","gate":"real-source regeneration equals maintained asset-manifest.ts"},
+    {"id":"web-loadout-catalog","sourceIds":["schema9"],"boundary":"tooling/web/generate_loadout_manifest.mjs --shared-asset-root","status":"adopted_byte_equivalent","gate":"real-source regeneration equals maintained loadout-manifest.ts"},
+    {"id":"web-variant-stage","sourceIds":["icon-matcher"],"boundary":"tooling/assets/stage_loadout_variant_assets.mjs --shared-asset-root","status":"adopted_staged_locally","gate":"all 288 variants copied byte-for-byte and receipt records logical source/hash"},
+    {"id":"tournament-tools","sourceIds":["tools-2-2-32","tournament","schema9"],"boundary":"stage the matching versioned tools source; MK8DX_TOURNAMENT_ASSETS_ROOT, MK8DX_TOURNAMENT_REFERENCE_ROOT, MK8_CLEAN_ASSETS_ROOT","status":"installed_resource_differences_recorded","gate":"installed 2.2.32 differs from Extractor at 28 track image paths, its game catalog and one historical GUI file; do not substitute layouts before explicit mapping/replay proof"},
+    {"id":"android-clean-assets","sourceIds":["schema9","icon-matcher"],"boundary":"stage schema9 + icon-matcher; existing mk8dxPrivateCleanAssetsRoot and mk8dxPrivateVariantAssetsRoot Gradle properties","status":"existing_apk_selected_resources_verified","gate":"1,881 selected UI/scan APK resources match; a new build/install/runtime with configured staged paths remains required"},
+    {"id":"android-scan","sourceIds":["tt-scan"],"boundary":"stage tt-scan; existing private scan-runtime staging retains separate source-code and fixture inputs","status":"existing_apk_selected_resources_verified","gate":"selected model/templates/grid/ref bytes in release APK match; offline golden/runtime gate with newly staged paths remains required"},
+    {"id":"browser-scanner","sourceIds":["tt-scan"],"boundary":"existing sync_assets.mjs; native resources, demo/evaluation inputs and browser runtime derivatives remain distinct","status":"byte_inventory_complete_adoption_pending","gate":"migrate sync input with separate demo source, then production-build/offline/parity gates"},
+    {"id":"livetrial","sourceIds":["schema9"],"boundary":"engine asset configuration and package builder; preserved engine tree stays immutable","status":"mapped_adoption_pending","gate":"package with generated schema9 tree and run desktop golden/runtime gates"},
+    {"id":"separate-extractor","sourceIds":["tournament"],"boundary":"mk8dx_video_result_extractor/data_paths.py currently resolves checkout/assets","status":"mapped_original_unchanged","gate":"explicit configurable integration and actual extraction/export comparison required before source retirement"},
+    {"id":"legacy-live-sibling","sourceIds":["legacy-live"],"boundary":"live_processor/baseline_assets.py and assets root","status":"mapped_original_unchanged","gate":"separate Mii.png/catalog variants require their original live gates"}
+  ],
+  "excludedData": ["recordings", "user camera images", "review labels", "approved datasets", "run logs", "private sessions and credentials"],
+  "deletionStatus": "No source duplicate has been removed; consumer runtime gates and protected originals remain explicit."
+}

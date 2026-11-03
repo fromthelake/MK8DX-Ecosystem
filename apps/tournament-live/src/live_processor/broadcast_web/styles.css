@@ -1,0 +1,814 @@
+:root {
+  --bg: #0d1130;
+  --bg-elev: #161c46;
+  --bg-row: #1a2049;
+  --bg-row-alt: #161b40;
+  --line: #2a3262;
+  --text: #f1f3ff;
+  --pack: #b9c0e0;   /* dimmer off-white for P4–P12 so the podium's bright white pops */
+  --muted: #aab2e6;
+  --muted-2: #828bc8;
+  --faint: #626cae;
+  --accent: #e52521;
+  --accent-2: #ff5a2c;
+  --gold: #ffcf33;
+  --silver: #aab6d8;
+  --bronze: #d98a44;
+  --up: #4fde95;
+  --down: #ff6b69;
+  /* Live/sync state has its own cool identity so green stays reserved for
+     scoring (points, deltas, totals, overall) and never reads green-on-green. */
+  /* Faint up/down-arrow + question-mark imprint for boundary-tie rows ("could
+     go either way"). Layered over the gradient, behind the row content. */
+  --tiemark: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2060%2032%27%3E%3Cg%20fill%3D%27%23ffffff%27%20fill-opacity%3D%270.22%27%3E%3Cpolygon%20points%3D%2713%2C4%207%2C12%2019%2C12%27%2F%3E%3Cpolygon%20points%3D%2713%2C28%207%2C20%2019%2C20%27%2F%3E%3Crect%20x%3D%2711.5%27%20y%3D%2710%27%20width%3D%273%27%20height%3D%2712%27%2F%3E%3Ctext%20x%3D%2727%27%20y%3D%2726%27%20font-family%3D%27Arial%2CHelvetica%2Csans-serif%27%20font-size%3D%2727%27%20font-weight%3D%27800%27%3E%3F%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E");
+  --live: #dce9ff;
+  --live-dot: #5cc8ff;
+  --live-soft: rgba(92, 200, 255, 0.12);
+  --live-line: rgba(92, 200, 255, 0.46);
+  --pill-bg: #1c5638;
+  --pill-text: #74f0a8;
+  --pill-zero-bg: #23294f;
+  --pill-zero-text: #9aa2da;
+}
+
+* { box-sizing: border-box; }
+/* Ensure the hidden attribute always wins over component display rules
+   (e.g. .trackbar/.totalsbar use display:flex) so only one banner shows. */
+[hidden] { display: none !important; }
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: #05071a url("/assets/gui/bg.jpg") center / cover no-repeat;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(5, 7, 26, 0.72), rgba(5, 7, 26, 0.92));
+  z-index: 0;
+}
+/* OBS browser sources set a transparent page bg; ?bg=transparent matches it. */
+body.transparent { background: transparent; }
+body.transparent::before { display: none; }
+
+.stage {
+  position: relative;
+  z-index: 1;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.shell {
+  width: 740px;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* rotation ring: fills over the slideboard interval, coloured by the next group */
+.rotring { width: 36px; height: 36px; transform: rotate(-90deg); }
+.rotring__track { fill: none; stroke: rgba(255, 255, 255, 0.16); stroke-width: 3; }
+.rotring__bar {
+  fill: none; stroke: #ffffff; stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 94.25; stroke-dashoffset: 94.25;
+}
+@keyframes rotfill { from { stroke-dashoffset: 94.25; } to { stroke-dashoffset: 0; } }
+
+.board {
+  width: 100%;
+  background: rgba(13, 17, 48, 0.96);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* header */
+.board__top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 17px 22px;
+  background: linear-gradient(135deg, #1b2256, #141a42);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand__badge {
+  min-width: 46px; height: 44px;
+  padding: 0 15px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent);
+  border-radius: 12px;
+  font-size: 17px; font-weight: 800; color: #fff;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+.brand__eyebrow {
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 800;
+  color: var(--muted-2); transition: color .2s ease;
+}
+/* The eyebrow names the on-screen list; colour it to match the mode so the
+   race-result vs overall-standings switch reads at a glance. */
+.board.view-race .brand__eyebrow { color: var(--gold); }
+.board.view-total .brand__eyebrow { color: var(--up); }
+.brand__title { font-size: 20px; font-weight: 700; margin-top: 2px; letter-spacing: .01em; }
+.board__meta { display: flex; align-items: center; gap: 18px; }
+.racecount { text-align: right; }
+.racecount__label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted-2); }
+.racecount__value { font-size: 22px; font-weight: 700; }
+.racecount__of { font-size: 15px; font-weight: 600; color: var(--muted-2); margin-left: 2px; }
+
+.statuswrap { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.livepill {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+  color: var(--faint);
+  font-size: 12px; font-weight: 700; letter-spacing: .14em;
+  padding: 7px 13px; border-radius: 20px;
+}
+.livepill__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--faint); }
+.livepill.live, .livepill.insync {
+  color: var(--live); border-color: var(--live-line); background: var(--live-soft);
+}
+.livepill.live .livepill__dot, .livepill.insync .livepill__dot {
+  background: var(--live-dot); animation: pulse 1.4s ease-in-out infinite;
+}
+.livepill.waiting {
+  color: #ffe6b0; border-color: rgba(255, 207, 51, 0.5); background: rgba(255, 207, 51, 0.12);
+}
+.livepill.waiting .livepill__dot { background: var(--gold); }
+.countdown { font-size: 13px; font-weight: 700; color: var(--live-dot); }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .2; } }
+
+/* track bar */
+.trackbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 22px;
+  background: linear-gradient(90deg, #20285f, #1a2150);
+  border-bottom: 1px solid var(--line);
+}
+.trackbar__art {
+  width: 70px; height: 47px; object-fit: cover;
+  border-radius: 7px; background: #39427e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.trackbar__text { flex: 1; min-width: 0; }
+.trackbar__name {
+  font-size: 17px; font-weight: 700;
+  display: flex; align-items: center; gap: 10px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.trackbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.trackbar__cup { width: 40px; height: 40px; object-fit: contain; }
+
+.racechip {
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 11px; flex: none;
+}
+.racechip.ongoing { background: rgba(255, 207, 51, 0.16); color: var(--gold); }
+.racechip.finished { background: rgba(79, 222, 149, 0.16); color: var(--up); }
+
+/* totals placeholder shown after a race total is confirmed */
+.totalsbar {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 22px;
+  background: linear-gradient(90deg, #241c45, #1a2150);
+  border-bottom: 1px solid var(--line);
+}
+.totalsbar__emblem {
+  width: 46px; height: 46px; flex: none;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 11px; background: rgba(255, 207, 51, 0.14); color: var(--gold);
+}
+.totalsbar__title { font-size: 17px; font-weight: 700; }
+.totalsbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+/* in-race hero: a track + live-countdown banner shown above the running totals
+   while a race is being played (it replaces the track/totals banners). */
+.racehero { display: none; }
+.board.racing .trackbar,
+.board.racing .totalsbar { display: none; }
+.board.racing .racehero { display: flex; }
+
+.racehero {
+  align-items: center;
+  gap: 18px;
+  padding: 16px 22px;
+  background:
+    radial-gradient(130% 180% at 85% -40%, rgba(255, 207, 51, 0.14), transparent 60%),
+    linear-gradient(90deg, #20285f, #1a2150);
+  border-bottom: 1px solid var(--line);
+}
+.racehero__art {
+  width: 132px; height: 84px; object-fit: cover;
+  border-radius: 10px; flex: none; background: #39427e;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.4);
+}
+.racehero__body { flex: 1; min-width: 0; }
+.racehero__live {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--live-dot);
+}
+.racehero__dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--live-dot); animation: pulse 1.4s ease-in-out infinite;
+}
+.racehero__track {
+  font-size: 26px; font-weight: 800; line-height: 1.05; margin-top: 5px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.racehero__sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.racehero__count { text-align: right; flex: none; }
+.racehero__countlabel {
+  display: block;
+  font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--muted-2);
+}
+.racehero__counttime {
+  font-size: 38px; font-weight: 800; color: var(--gold);
+  font-variant-numeric: tabular-nums; line-height: 1.1;
+}
+.racehero__cup { width: 56px; height: 56px; object-fit: contain; flex: none; }
+
+/* board caption: states exactly what the list below is showing */
+.boardcaption {
+  padding: 10px 24px 0;
+  font-size: 13px; font-weight: 700; letter-spacing: .04em;
+  color: var(--text);
+}
+
+/* column header */
+.cols {
+  display: grid;
+  grid-template-columns: 44px 36px 1fr 84px 80px;
+  gap: 10px;
+  padding: 12px 24px 7px;
+  font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted-2);
+}
+.cols__race { text-align: center; }
+.cols__total { text-align: right; }
+/* Emphasise the column the rows are sorted by for the current view, and mute
+   the other, so "this race points" vs "running total" can't be confused. */
+.board.view-race .cols__race,
+.board.view-total .cols__total { color: var(--text); font-weight: 800; }
+.board.view-race .cols__total,
+.board.view-total .cols__race { opacity: .55; }
+.board.view-race .row__total { opacity: .62; }
+.board.view-total .row__race { opacity: .72; }
+
+/* rows */
+.rows { list-style: none; margin: 0; padding: 4px 13px 14px; }
+.row {
+  display: grid;
+  grid-template-columns: 44px 36px 1fr 84px 80px;
+  gap: 10px;
+  align-items: center;
+  padding: 9px 11px;
+  margin-bottom: 5px;
+  border-radius: 11px;
+  background: var(--bg-row);
+  border-left: 4px solid transparent;
+  will-change: transform;
+}
+.row:nth-child(even) { background: var(--bg-row-alt); }
+
+.row__rank { font-size: 18px; font-weight: 700; }
+.row__delta { font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 1px; color: var(--faint); }
+.row__delta.up { color: var(--up); }
+.row__delta.down { color: var(--down); }
+
+.row__driver { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.row__icon {
+  width: 42px; height: 42px; border-radius: 50%;
+  background: #2c3370; flex: none; object-fit: cover;
+  border: 1.5px solid rgba(255, 255, 255, 0.16);
+}
+.row__name {
+  font-size: 15.5px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.row__race { text-align: center; }
+/* Race-points pill, coloured by value via --h (set per pill in racePill): the
+   most points reads green, the fewest red, gradient through yellow between. */
+.racepill {
+  background: hsl(var(--h, 140), 50%, 19%);
+  color: hsl(var(--h, 140), 88%, 72%);
+  border: 1px solid hsl(var(--h, 140), 55%, 34%);
+  font-size: 13px; font-weight: 700;
+  padding: 4px 11px; border-radius: 13px;
+}
+.racepill.zero { background: var(--pill-zero-bg); color: var(--pill-zero-text); border-color: transparent; }
+.row__total { text-align: right; font-size: 18px; font-weight: 700; }
+
+/* podium */
+.row.rank-1 {
+  background: linear-gradient(90deg, rgba(255, 207, 51, 0.18), rgba(255, 207, 51, 0.05));
+  border-left-color: var(--gold);
+}
+.row.rank-1 .row__rank, .row.rank-1 .row__total { color: var(--gold); }
+.row.rank-2 {
+  background: linear-gradient(90deg, rgba(212, 216, 238, 0.16), rgba(212, 216, 238, 0.04));
+  border-left-color: var(--silver);
+}
+.row.rank-2 .row__rank { color: var(--silver); }
+.row.rank-3 {
+  background: linear-gradient(90deg, rgba(217, 138, 68, 0.18), rgba(217, 138, 68, 0.04));
+  border-left-color: var(--bronze);
+}
+.row.rank-3 .row__rank { color: #eaa765; }
+.row.rank-1 .row__rank, .row.rank-2 .row__rank, .row.rank-3 .row__rank { font-size: 21px; }
+
+.row.enter { animation: rowin .45s ease both; }
+@keyframes rowin { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.row.bumped { animation: bump 1.1s ease; }
+@keyframes bump {
+  0% { box-shadow: 0 0 0 0 rgba(79, 222, 149, 0); }
+  18% { box-shadow: inset 0 0 0 2px rgba(79, 222, 149, 0.7); background-color: rgba(79, 222, 149, 0.12); }
+  100% { box-shadow: 0 0 0 0 rgba(79, 222, 149, 0); }
+}
+
+/* empty + footer */
+.emptystate { padding: 30px 24px; text-align: center; color: var(--faint); font-size: 14px; }
+.board__foot {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 22px;
+  background: #0a0e28;
+  font-size: 11.5px; color: var(--faint);
+  border-top: 1px solid var(--line);
+}
+.board__brandfoot { letter-spacing: .04em; }
+
+.board.is-disconnected .livepill__dot { animation: none; opacity: .4; }
+
+/* Skeleton rows reserve the full 12-driver height before/with sparse data. */
+.row.filler { opacity: .26; }
+.row.filler .row__icon { background: #222a55; border-style: dashed; }
+.row.filler .row__rank { font-weight: 600; }
+
+/* Fixed all-feeds board (?view=grid). This keeps every active feed visible in
+   one browser frame instead of rotating through a single board. */
+body.fixed-grid-view .stage {
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 16px;
+}
+.gridboard {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  /* Stretch the card row(s) to the full board height so there's no dead space
+     below the table — the rows expand to fill it. */
+  grid-auto-rows: minmax(0, 1fr);
+  align-content: stretch;
+  gap: 16px;
+}
+.gridempty {
+  grid-column: 1 / -1;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  padding: 36px 44px;
+  background: rgba(13, 17, 48, 0.94);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.gridempty__title { font-size: 26px; font-weight: 800; }
+.gridempty__sub { margin-top: 8px; color: var(--muted); }
+.gridcard {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(13, 17, 48, 0.96);
+  /* Border in the selected group's colour so each card is tied to its group. */
+  border: 2px solid var(--badge, var(--line));
+  border-radius: 14px;
+  overflow: hidden;
+  /* A little extra separation + a faint top highlight so each group reads as
+     its own object against the shared background. */
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.gridcard__header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: clamp(10px, 1.5vh, 20px) 16px;
+  background: linear-gradient(135deg, #1b2256, #141a42);
+}
+.gridcard__badge {
+  min-width: clamp(58px, 8vh, 116px);
+  padding: clamp(6px, 1vh, 13px) clamp(9px, 1.1vw, 18px);
+  border-radius: 10px;
+  text-align: center;
+  font-size: clamp(14px, 2.1vh, 30px);
+  font-weight: 900;
+  letter-spacing: .01em;
+  background: var(--badge);
+  color: var(--badge-text);
+}
+.gridcard__title { min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; }
+.gridcard__title b { font-size: clamp(15px, 2.3vh, 32px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+/* Mode pill: gold = a single race's result, green = cumulative standings. */
+.gridcard__mode {
+  display: inline-flex; align-items: center; gap: .35em;
+  font-size: clamp(11px, 1.6vh, 22px); font-weight: 900; letter-spacing: .12em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 999px;
+  border: 1px solid currentColor;
+  color: var(--muted-2);
+}
+.gridcard.view-race .gridcard__mode { color: var(--gold); }
+.gridcard.view-total .gridcard__mode { color: var(--up); }
+/* Finished group: gold "Finished" pill with a checkered flag (wins over the
+   view-total green above). No gold ring — that inset box-shadow doubled up with
+   the group-colour border on the sides; the pill + flag already mark it done. */
+.gridcard.is-finished .gridcard__mode { color: var(--gold); background: rgba(255, 207, 51, 0.16); }
+.finflag { height: 1.35em; width: auto; flex: none; }
+.gridcard__race { text-align: right; }
+.gridcard__race span { display: block; font-size: 10px; text-transform: uppercase; color: var(--muted-2); letter-spacing: .12em; }
+.gridcard__race b { font-size: clamp(22px, 3.3vh, 46px); }
+/* Bigger top so the track stands out. Order: cup emblem, then the enlarged
+   track image, then the name. Art scales with vh like the rest of the board. */
+.gridcard__track {
+  /* FIXED height (not min-height) so the banner is identical whether it shows the
+     track panel or the "Overall standings" trophy panel — otherwise the card
+     jumps each time the review rotation swaps between them. Content is centred. */
+  height: clamp(80px, 12vh, 168px);
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: clamp(8px, 1vw, 18px);
+  align-items: center;
+  padding: clamp(8px, 1.4vh, 18px) 16px;
+  background: linear-gradient(90deg, #20285f, #1a2150);
+}
+.gridcard__track--totals { grid-template-columns: auto 1fr; background: linear-gradient(90deg, #241c45, #1a2150); }
+/* While racing, a 4th column holds the (compact) LIVE box; the track image keeps
+   its full size — the timer is kept small so the name still fits beside it. */
+.gridcard__track--live { grid-template-columns: auto auto 1fr auto; }
+/* Cup icon with its (Cup-less) name stacked beneath it. */
+.gridcard__cupwrap {
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(2px, 0.5vh, 6px);
+  flex: none; min-width: 0;
+}
+.gridcard__cup {
+  width: clamp(40px, 5.6vh, 92px);
+  height: clamp(40px, 5.6vh, 92px);
+  object-fit: contain;
+  flex: none;
+}
+.gridcard__cup--ph { display: inline-block; }
+.gridcard__cuplabel {
+  font-size: clamp(10px, 1.5vh, 18px);
+  font-weight: 700;
+  color: var(--muted);
+  text-align: center;
+  max-width: clamp(58px, 9vh, 130px);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* Track art is a fixed 160×111 thumbnail. Match the box to that aspect ratio
+   (driven by height) so the image fills it exactly — no letterboxing, and since
+   the box matches the image, `cover` never crops the name baked into the art. */
+.gridcard__trackimg {
+  height: clamp(54px, 8.4vh, 128px);
+  aspect-ratio: 160 / 111;
+  width: auto;
+  object-fit: cover;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.42);
+}
+/* Gold trophy emblem on the Overall-standings header. */
+.gridcard__trophy {
+  width: clamp(46px, 6.4vh, 96px);
+  height: clamp(46px, 6.4vh, 96px);
+  flex: none;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 207, 51, 0.14);
+  color: var(--gold);
+}
+.gridcard__trophy svg { width: 64%; height: 64%; fill: currentColor; }
+.gridcard__trackplaceholder {
+  height: clamp(54px, 8.4vh, 128px);
+  aspect-ratio: 160 / 111;
+  width: auto;
+  border-radius: 9px;
+  background: #39427e;
+}
+.gridcard__tracktext { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+/* UK (EU-flag) and Dutch (NL-flag) names share one size; the flags follow via em. */
+.gridcard__tracktext b { font-size: clamp(13px, 1.95vh, 26px); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gridcard__tracktext span { font-size: clamp(13px, 1.95vh, 26px); color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Inline region flags beside the UK (EU) and Dutch (NL) names; scale with text. */
+.flag {
+  height: .92em; width: auto; flex: none;
+  border-radius: 2px; margin-right: .42em; vertical-align: -.11em;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.3);
+}
+/* In-track LIVE box (racing only): LIVE tag + big next-result countdown, on the
+   right of the track panel so it clearly belongs to the race shown, not the
+   overall table below. */
+.gridcard__live {
+  display: flex; flex-direction: column; align-items: flex-end;
+  justify-content: center; gap: 0;
+  flex: none; text-align: right;
+  padding-left: clamp(6px, 0.8vw, 16px);
+}
+.gridcard__livetag {
+  display: inline-flex; align-items: center; gap: .4em;
+  font-size: clamp(9px, 1.25vh, 16px); font-weight: 900; letter-spacing: .12em;
+  color: var(--live-dot);
+}
+.gridcard__livedot { width: .68em; height: .68em; border-radius: 50%; background: var(--live-dot); animation: pulse 1.4s ease-in-out infinite; }
+.gridcard__livedot.waiting { background: var(--gold); }
+.gridcard__livenext { font-size: clamp(8px, 1.05vh, 13px); text-transform: uppercase; letter-spacing: .08em; color: var(--muted-2); }
+.gridcard__liveclock {
+  font-size: clamp(17px, 3vh, 42px); font-weight: 900; line-height: 1.05;
+  color: var(--live); font-variant-numeric: tabular-nums;
+}
+.gridcard__livewait {
+  font-size: clamp(10px, 1.35vh, 17px); font-weight: 700; color: var(--gold);
+  max-width: clamp(110px, 17vh, 240px);
+}
+/* Connection-error / temporary-player-drop banner. Amber while a drop is
+   suspected (scores may still change); quieter once the adjustment is applied. */
+.gridcard__connerr {
+  margin: clamp(6px, 1vh, 12px) 16px 0;
+  padding: clamp(6px, 1vh, 12px) 12px;
+  border-radius: 9px;
+  font-size: clamp(11px, 1.5vh, 19px);
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: .01em;
+}
+.gridcard__connerr.is-suspected {
+  color: #ffe6b0;
+  background: rgba(255, 207, 51, 0.16);
+  border: 1px solid rgba(255, 207, 51, 0.5);
+  animation: pulse 2s ease-in-out infinite;
+}
+.gridcard__connerr.is-adjusted {
+  color: var(--muted);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line);
+}
+.gridcard__connerr.is-reset {
+  color: var(--live);
+  background: var(--live-soft);
+  border: 1px solid var(--live-line);
+}
+/* What the table below is showing — moved here, right above the table, so it's
+   never mistaken for the live race position. */
+.gridcard__tablecap {
+  padding: clamp(8px, 1.4vh, 18px) 16px clamp(2px, 0.4vh, 6px);
+  font-size: clamp(13px, 1.95vh, 28px);
+  font-weight: 800; letter-spacing: .02em;
+  color: var(--text);
+}
+.gridcard.view-race .gridcard__tablecap { color: var(--gold); }
+.gridcard.view-total .gridcard__tablecap { color: var(--up); }
+/* Operator diagnostics, only rendered with ?debug=1. Deliberately plain and
+   low-contrast so it never competes with the broadcast content. */
+.gridcard__debug {
+  margin: 5px 16px 0;
+  font-size: 10px;
+  letter-spacing: .02em;
+  color: var(--faint);
+  font-variant-numeric: tabular-nums;
+}
+.gridcols,
+.gridrow {
+  display: grid;
+  /* Names max out at ~10 chars (Switch nickname), so the driver column only
+     needs what the name uses — the wider numeric columns pull the scores in and
+     shrink the dead gap, while keeping Race/Gap/Total right-aligned as a group. */
+  grid-template-columns:
+    clamp(30px, 3.6vh, 54px)
+    clamp(24px, 3vh, 44px)
+    minmax(0, 1fr)
+    clamp(60px, 6.8vh, 110px)
+    clamp(42px, 4.6vh, 78px)
+    clamp(58px, 7.2vh, 112px);
+  gap: clamp(5px, 0.5vw, 11px);
+  align-items: center;
+}
+.gridcols {
+  padding: 9px 16px 6px;
+  font-size: clamp(10px, 1.45vh, 18px);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  white-space: nowrap;
+}
+.gridcols span:first-child,
+.gridcols span:nth-child(4),
+.gridcols span:nth-child(5),
+.gridcols span:last-child { text-align: right; }
+.gridcols__delta { text-align: center; }
+/* Emphasise the column the rows are sorted by for the current view; mute the
+   other so "this race points" and "running total" can never be confused. */
+.gridcard.view-race .gridcols span:nth-child(4),
+.gridcard.view-total .gridcols span:last-child { color: var(--text); font-weight: 800; }
+.gridcard.view-race .gridcols span:last-child,
+.gridcard.view-total .gridcols span:nth-child(4) { opacity: .5; }
+.gridrows-wrap { position: relative; flex: 1; display: flex; flex-direction: column; }
+.gridrows-wrap .gridrows { flex: 1; }
+/* Reserved skeleton fades back so the single waiting message reads clearly. */
+.gridrows-wrap.is-empty .gridrows { opacity: .3; }
+.gridcard__waiting {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; text-align: center;
+  color: var(--muted); font-size: 20px; font-weight: 700; letter-spacing: .01em;
+}
+.gridrows {
+  list-style: none;
+  margin: 0;
+  padding: 0 11px 10px;
+  flex: 1;
+  /* Rows share the available height equally so 12 drivers fill the card. */
+  display: flex;
+  flex-direction: column;
+}
+.gridrows.swap { animation: gridswap .55s ease; }
+@keyframes gridswap { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+/* Faint skeleton bar instead of a dash, so the empty board looks intentional. */
+.gridrow__skel { height: 9px; border-radius: 4px; background: rgba(255, 255, 255, 0.06); }
+.gridrow {
+  flex: 1 1 0;
+  /* min-height:0 (not the flex default of auto) lets the 12 rows shrink to fit a
+     shorter window instead of overflowing/clipping; size containment makes the
+     row a query container so the icon can size against the row's own height. */
+  min-height: 0;
+  container-type: size;
+  margin-bottom: 5px;
+  padding: 4px 11px;
+  /* No left rail — the podium/band colour is carried by the row background tint
+     and the coloured rank; a left bar competed with the group-colour card border. */
+  border-radius: 9px;
+  background: var(--bg-row);
+  overflow: hidden;
+}
+.gridrow:nth-child(even) { background: var(--bg-row-alt); }
+.gridrow.filler { color: var(--faint); opacity: .72; }
+.gridrow.rank-1 { border-left-color: var(--gold); background: linear-gradient(90deg, rgba(255, 207, 51, 0.22), rgba(255, 207, 51, 0.05)); min-height: 39px; }
+.gridrow.rank-2 { border-left-color: var(--silver); background: linear-gradient(90deg, rgba(212, 216, 238, 0.16), rgba(212, 216, 238, 0.04)); }
+.gridrow.rank-3 { border-left-color: var(--bronze); background: linear-gradient(90deg, rgba(217, 138, 68, 0.18), rgba(217, 138, 68, 0.04)); }
+/* Podium hero: P1 leads each card; P2/P3 carry their metal in the numeral. */
+.gridrow.rank-1 .gridrow__rank, .gridrow.rank-1 .gridrow__total { color: var(--gold); }
+/* Row content is sized in vh so it scales with the (viewport-driven) row height
+   — on a beamer the icons/text fill ~half the row instead of floating in it. */
+.gridrow.rank-1 .gridrow__rank { font-size: clamp(22px, 4vh, 54px); }
+.gridrow.rank-2 .gridrow__rank, .gridrow.rank-2 .gridrow__total { color: var(--silver); }
+.gridrow.rank-3 .gridrow__rank, .gridrow.rank-3 .gridrow__total { color: #eaa765; }
+/* Dark outline around the podium rank + total numbers so the metallic colours
+   pop off the row and 2nd/3rd never read like the plain white pack below. */
+.gridrow.rank-1 .gridrow__rank, .gridrow.rank-1 .gridrow__total,
+.gridrow.rank-2 .gridrow__rank, .gridrow.rank-2 .gridrow__total,
+.gridrow.rank-3 .gridrow__rank, .gridrow.rank-3 .gridrow__total {
+  -webkit-text-stroke: 1.4px rgba(0, 0, 0, 0.62);
+  paint-order: stroke fill;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+/* Qualifier advancement bands (overall standings): Kampioen (top) / Talent
+   (middle) / Wild (bottom). Colours mirror groups.py GROUP_COLORS. Each band is
+   a coloured rail + tint + coloured rank; names/totals stay bright. */
+.gridrow.qband-top { border-left-color: #f59e0b; background: linear-gradient(90deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.05)); }
+.gridrow.qband-mid { border-left-color: #38bdf8; background: linear-gradient(90deg, rgba(56, 189, 248, 0.20), rgba(56, 189, 248, 0.05)); }
+.gridrow.qband-bot { border-left-color: #a78bfa; background: linear-gradient(90deg, rgba(167, 139, 250, 0.20), rgba(167, 139, 250, 0.05)); }
+/* Pos and Total share the band colour (mixed tie rows keep their white rank/total). */
+.gridrow.qband-top .gridrow__rank, .gridrow.qband-top .gridrow__total { color: #ffb938; }
+.gridrow.qband-mid .gridrow__rank, .gridrow.qband-mid .gridrow__total { color: #7dd3fc; }
+.gridrow.qband-bot .gridrow__rank, .gridrow.qband-bot .gridrow__total { color: #c4b5fd; }
+/* Boundary ties straddle two bands and can't all advance — show a left→right
+   gradient: the higher band's colour on the left, the lower band's on the right
+   (the actual split is decided externally on the tiebreak). */
+.gridrow.qband-top-mid {
+  border-left-color: #f59e0b;
+  background: var(--tiemark) center / auto 66% no-repeat,
+    linear-gradient(90deg, rgba(245, 158, 11, 0.30), rgba(56, 189, 248, 0.26));
+}
+.gridrow.qband-mid-bot {
+  border-left-color: #38bdf8;
+  background: var(--tiemark) center / auto 66% no-repeat,
+    linear-gradient(90deg, rgba(56, 189, 248, 0.28), rgba(167, 139, 250, 0.26));
+}
+.gridrow.qband-top-mid-bot {
+  border-left-color: #f59e0b;
+  background: var(--tiemark) center / auto 66% no-repeat,
+    linear-gradient(90deg, rgba(245, 158, 11, 0.30), rgba(56, 189, 248, 0.26) 50%, rgba(167, 139, 250, 0.24));
+}
+/* line-height:1 so the digits sit on the row's true vertical centre — the
+   default line box reserves descender space the numbers don't use, which made
+   them ride high (most visible when the row is short). */
+.gridrow__rank,
+.gridrow__total { font-size: clamp(18px, 3.4vh, 46px); font-weight: 900; line-height: 1; }
+/* Right-align Pos so a bigger 1/2/3 font grows leftward into its own column
+   instead of pushing the driver/score columns over on those rows. */
+.gridrow__rank { text-align: right; }
+.gridrow__delta { font-size: clamp(12px, 2.1vh, 28px); text-align: center; color: var(--faint); font-weight: 700; line-height: 1; }
+.gridrow__delta.up { color: var(--up); }
+.gridrow__delta.down { color: var(--down); }
+.gridrow__delta.flat { color: var(--faint); }
+.gridrow__driver {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.1vw, 20px);
+}
+.gridrow__driver img {
+  /* Size against the row's own height (cqh) so the circle always fits the row —
+     it shrinks with the row on a short window — capped by a vh value on tall ones. */
+  height: min(98cqh, clamp(30px, 7.3vh, 114px));
+  width: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #2c3370;
+  flex: none;
+}
+.gridrow__driver b {
+  min-width: 0;
+  font-size: clamp(15px, 2.9vh, 40px);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* Dropped-this-race marker (suspected connection error). */
+.gridrow__drop { color: var(--gold); font-size: clamp(13px, 2.2vh, 28px); flex: none; line-height: 1; }
+.gridrow.is-dropped { background: rgba(255, 207, 51, 0.10); }
+.gridrow.is-dropped .gridrow__driver b { color: #ffe6b0; }
+/* Disconnected — carried over with last total, frozen. The name stays fully legible
+   (a muted grey, NOT dimmed) followed by a no-wifi mark; icon + numbers desaturate. */
+.gridrow__dcwrap { flex: none; display: inline-flex; align-items: center; }
+.gridrow__dc { width: clamp(15px, 2.5vh, 30px); height: auto; color: var(--muted-2); flex: none; }
+.gridrow.is-disconnected { background: rgba(130, 139, 200, 0.08); }
+.gridrow.is-disconnected .gridrow__driver img { filter: grayscale(1); opacity: .6; }
+.gridrow.is-disconnected .gridrow__driver b { color: var(--muted); }
+.gridrow.is-disconnected .gridrow__rank,
+.gridrow.is-disconnected .gridrow__total { color: var(--muted-2); }
+/* Podium (not banded) only: P4–P12 read a step smaller, and a dimmer off-white,
+   than the top 3. Qualifier banded rows stay uniform (see qbands below). */
+.gridcard:not(.is-banded) .gridrow:not(.rank-1):not(.rank-2):not(.rank-3) .gridrow__rank,
+.gridcard:not(.is-banded) .gridrow:not(.rank-1):not(.rank-2):not(.rank-3) .gridrow__total {
+  font-size: clamp(15px, 2.9vh, 38px);
+  color: var(--pack);
+}
+.gridcard:not(.is-banded) .gridrow:not(.rank-1):not(.rank-2):not(.rank-3) .gridrow__driver b {
+  font-size: clamp(13px, 2.5vh, 34px);
+  color: var(--pack);
+}
+.gridrow__race,
+.gridrow__gap,
+.gridrow__total { text-align: right; }
+/* Gap to leader: secondary, always muted so Total stays the hero. */
+.gridrow__gap { font-size: clamp(12px, 2.2vh, 28px); font-weight: 700; color: var(--muted-2); line-height: 1; }
+.gridrow.rank-1 .gridrow__gap { color: var(--faint); }
+/* Mute the non-sorted points column on grid cards, mirroring the single board. */
+.gridcard.view-race .gridrow__total { opacity: .5; }
+.gridcard.view-total .gridrow__race { opacity: .62; }
+.gridrow__race .racepill {
+  font-size: clamp(12px, 2.05vh, 25px);
+  padding: 0.4vh 0.9vh;
+}
+
+/* Bottom-left transition ring: fills over the race-result <-> overall rotation
+   so the upcoming swap is anticipated, never abrupt. */
+.gridcard__rotate {
+  display: flex; align-items: center; gap: 10px;
+  margin: 0 16px 11px; padding-top: 3px;
+  color: var(--muted-2); font-size: 12px; font-weight: 700; letter-spacing: .03em;
+}
+.rotmini { width: 24px; height: 24px; transform: rotate(-90deg); flex: none; }
+.rotmini__t { fill: none; stroke: rgba(255, 255, 255, 0.14); stroke-width: 4; }
+.rotmini__b {
+  fill: none; stroke: var(--live-dot); stroke-width: 4; stroke-linecap: round;
+  stroke-dasharray: 94.25; stroke-dashoffset: 94.25;
+  transition: stroke-dashoffset .25s linear;
+}
+
+@media (max-width: 1320px) {
+  .gridboard { grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); }
+  .gridrow__driver b { font-size: 12px; }
+}
+
+/* ?density=tv: fewer, wider cards. Row content already scales with viewport
+   height (vh), so this only widens the columns (more room for names) — the type
+   grows naturally from the taller rows. */
+body.density-tv .gridboard { grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); }
+body.density-tv .gridcard__tracktext span { font-size: clamp(13px, 1.7vh, 22px); }

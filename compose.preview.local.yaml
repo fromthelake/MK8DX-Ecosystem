@@ -1,0 +1,8 @@
+# Local-only preview. Set all three paths to reviewed task-owned output copies.
+# Never point them at an original source, shared asset vault or home directory.
+services:
+  web:
+    volumes:
+      - ${MK8DX_LOCAL_WEB_ASSETS:?Reviewed local Web asset stage required}:/srv/assets:ro
+      - ${MK8DX_LOCAL_SCANNER_DIST:?Reviewed local scanner build required}:/srv/scanner:ro
+      - ${MK8DX_LOCAL_PREVIEW_INDEX:?Generated preview index required}:/srv/index.html:ro

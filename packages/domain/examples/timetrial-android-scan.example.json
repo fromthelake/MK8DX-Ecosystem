@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.01SYNTHETICSCAN0001",
+  "revision": 1,
+  "mode": 200,
+  "trackId": "track.water_park",
+  "totalTimeMs": 143000,
+  "laps": [
+    {
+      "lapNumber": 1,
+      "timeMs": 49234,
+      "confidence": 0.99
+    },
+    {
+      "lapNumber": 2,
+      "timeMs": 47567,
+      "confidence": 0.98
+    },
+    {
+      "lapNumber": 3,
+      "timeMs": 46199,
+      "confidence": 0.99
+    }
+  ],
+  "loadout": {
+    "characterId": "character.yoshi",
+    "characterVariantId": "character_variant.yoshi.018_black",
+    "bodyId": "body.mr_scooty",
+    "tireId": "tire.roller",
+    "gliderId": "glider.cloud_glider"
+  },
+  "countryId": "country.nl",
+  "playerReference": {
+    "namespace": "producer_local_profile",
+    "value": "android.synthetic-profile-01"
+  },
+  "observedPlayerName": "Synthetic Racer A",
+  "source": {
+    "kind": "android_scan",
+    "producerVersion": "synthetic-example",
+    "localRecordId": "scan.synthetic-0001"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786901000000,
+    "capturedAtMs": 1786901010000,
+    "createdAtMs": 1786901020000
+  },
+  "evidence": [
+    {
+      "kind": "screenshot",
+      "reference": "synthetic/android-scan-0001.png",
+      "sha256": "1111111111111111111111111111111111111111111111111111111111111111",
+      "mediaType": "image/png"
+    }
+  ],
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "android scan consensus and lap-sum check",
+    "lapSumMatches": true,
+    "confidence": 0.96,
+    "fieldConfidence": {
+      "totalTime": 0.99,
+      "character": 0.95,
+      "body": 0.93,
+      "tire": 0.94,
+      "glider": 0.92,
+      "country": 0.9,
+      "playerName": 0.82
+    }
+  }
+}

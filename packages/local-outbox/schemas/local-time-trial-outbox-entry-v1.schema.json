@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/local-outbox/local-time-trial-outbox-entry-v1.schema.json",
+  "title": "LocalTimeTrialOutboxEntryV1",
+  "description": "Immutable local manifest for one canonical Time Trial submission. The submission is stored in a separate byte-hashed file and private evidence is never embedded here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "entryKey",
+    "submissionSha256",
+    "createdAtMs",
+    "privateEvidencePresent"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mk8dx.local-time-trial-outbox-entry.v1"
+    },
+    "entryKey": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "submissionSha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "createdAtMs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 253402300799999
+    },
+    "privateEvidencePresent": {
+      "type": "boolean"
+    }
+  }
+}

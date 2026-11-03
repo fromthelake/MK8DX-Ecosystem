@@ -1,0 +1,3 @@
+# API
+
+Fastify owns identity, authentication, Time Trial submission and publication, Tournament operation, ratings, and persistence. Public entry point: `src/composition/passwordless-hosted-main.ts`; public contract: `/v1` plus readiness routes. It depends on the shared domain/rules/catalogue and MySQL adapters, never on Web internals. Configuration enters through composition adapters. Change a feature in its named `src/` module and add a focused `test/` case. Run `npm ci`, `npm run typecheck`, `npm test`, `npm run build`; opt-in MySQL tests require a disposable `_test` or `_contract` schema. Web is the reverse HTTP consumer.

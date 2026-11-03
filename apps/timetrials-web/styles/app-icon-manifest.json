@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "mk8dx.brand-install-assets.v1",
+  "source": {
+    "name": "mk8dx-timetrials-app.png",
+    "role": "owner-supplied canonical app icon; protected original remains unchanged",
+    "sha256": "7dadced247b8e70eb10bdbc42e0eaa85643102e12ea4fe2a01d79294adb8c313"
+  },
+  "method": "2026-09-21: high-quality bicubic size derivation; maskable variants place the complete original at 78% on the dark app surface so launcher masks preserve the stopwatch, ribbon 8 and lettering",
+  "outputs": [
+    { "file": "app-icon-192.png", "size": 192, "purpose": "any", "sha256": "a91723c06b8b799b92b1fef2b4a45dbd5c6b42899a1f408040ea31d4257eefed" },
+    { "file": "app-icon-512.png", "size": 512, "purpose": "any", "sha256": "556fd24449fbd6694b79936ede9520d8ffb9413d79e4d2c0eb00550792214be2" },
+    { "file": "app-icon-maskable-192.png", "size": 192, "purpose": "maskable", "sha256": "731a4430d2698be66b2682653d58645b0a53790bea8dc8b4e2891f2030bdca62" },
+    { "file": "app-icon-maskable-512.png", "size": 512, "purpose": "maskable", "sha256": "2b5e1b7ae0ea50578117d935211c237ec070716c12f98e1dd19a1f7641d0f952" }
+  ],
+  "scanner": "The isolated scanner PWA uses byte-identical derived outputs under public/icons; its manifest keeps /scanner/ scope."
+}

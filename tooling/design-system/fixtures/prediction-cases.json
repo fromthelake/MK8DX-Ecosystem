@@ -1,0 +1,107 @@
+{
+  "kind": "mk8dx.submission-prediction-parity.v1",
+  "note": "POST_A_TIME_ARCHITECTURE §5: the task's client-side prediction is a port of the server's pure computeSubmissionFeedback. Both implementations are run over these cases - the web by apps/timetrials-web/test/post-time-prediction.test.ts, the server by backend/api/test/submission-feedback.test.ts - so 'the prediction matches the feedback' is checked rather than hoped for. Only the fields both produce are listed.",
+  "cases": [
+    {
+      "id": "first-time-on-the-combo",
+      "subject": { "totalTimeMs": 105912, "previousBestMs": null },
+      "competitors": [
+        { "playerId": "player.evan", "username": "evan", "displayName": "Evan", "bestMs": 104500 },
+        { "playerId": "player.nova", "username": "nova", "displayName": "Nova", "bestMs": 106400 }
+      ],
+      "rivals": [],
+      "expect": {
+        "improved": true, "deltaMs": null,
+        "rankAfter": 2, "rankBefore": null,
+        "passedCount": 0, "rivalsPassed": 0, "passed": []
+      }
+    },
+    {
+      "id": "improvement-passes-two-one-rival",
+      "subject": { "totalTimeMs": 103000, "previousBestMs": 107000 },
+      "competitors": [
+        { "playerId": "player.evan", "username": "evan", "displayName": "Evan", "bestMs": 104500 },
+        { "playerId": "player.nova", "username": "nova", "displayName": "Nova", "bestMs": 106400 },
+        { "playerId": "player.valerio", "username": "valerio", "displayName": "Valerio", "bestMs": 102000 }
+      ],
+      "rivals": ["player.nova"],
+      "expect": {
+        "improved": true, "deltaMs": -4000,
+        "rankAfter": 2, "rankBefore": 4,
+        "passedCount": 2, "rivalsPassed": 1, "passed": ["player.nova", "player.evan"]
+      }
+    },
+    {
+      "id": "slower-than-own-best-changes-nothing",
+      "subject": { "totalTimeMs": 109000, "previousBestMs": 105000 },
+      "competitors": [
+        { "playerId": "player.evan", "username": "evan", "displayName": "Evan", "bestMs": 104500 },
+        { "playerId": "player.nova", "username": "nova", "displayName": "Nova", "bestMs": 106400 }
+      ],
+      "rivals": [],
+      "expect": {
+        "improved": false, "deltaMs": 4000,
+        "rankAfter": 2, "rankBefore": 2,
+        "passedCount": 0, "rivalsPassed": 0, "passed": []
+      }
+    },
+    {
+      "id": "equal-times-share-a-rank",
+      "subject": { "totalTimeMs": 104500, "previousBestMs": 108000 },
+      "competitors": [
+        { "playerId": "player.evan", "username": "evan", "displayName": "Evan", "bestMs": 104500 },
+        { "playerId": "player.nova", "username": "nova", "displayName": "Nova", "bestMs": 106400 }
+      ],
+      "rivals": [],
+      "expect": {
+        "improved": true, "deltaMs": -3500,
+        "rankAfter": 1, "rankBefore": 3,
+        "passedCount": 1, "rivalsPassed": 0, "passed": ["player.nova"]
+      }
+    },
+    {
+      "id": "equal-own-pb-promotes-richer-run",
+      "subject": { "totalTimeMs": 104500, "previousBestMs": 104500 },
+      "competitors": [
+        { "playerId": "player.evan", "username": "evan", "displayName": "Evan", "bestMs": 103000 },
+        { "playerId": "player.nova", "username": "nova", "displayName": "Nova", "bestMs": 106400 }
+      ],
+      "rivals": [],
+      "expect": {
+        "improved": true, "deltaMs": 0,
+        "rankAfter": 2, "rankBefore": 2,
+        "passedCount": 0, "rivalsPassed": 0, "passed": []
+      }
+    },
+    {
+      "id": "empty-board-enters-at-one",
+      "subject": { "totalTimeMs": 145000, "previousBestMs": null },
+      "competitors": [],
+      "rivals": [],
+      "expect": {
+        "improved": true, "deltaMs": null,
+        "rankAfter": 1, "rankBefore": null,
+        "passedCount": 0, "rivalsPassed": 0, "passed": []
+      }
+    },
+    {
+      "id": "passed-list-is-capped-at-five",
+      "subject": { "totalTimeMs": 100000, "previousBestMs": 120000 },
+      "competitors": [
+        { "playerId": "player.a", "username": "a", "displayName": "A", "bestMs": 101000 },
+        { "playerId": "player.b", "username": "b", "displayName": "B", "bestMs": 102000 },
+        { "playerId": "player.c", "username": "c", "displayName": "C", "bestMs": 103000 },
+        { "playerId": "player.d", "username": "d", "displayName": "D", "bestMs": 104000 },
+        { "playerId": "player.e", "username": "e", "displayName": "E", "bestMs": 105000 },
+        { "playerId": "player.f", "username": "f", "displayName": "F", "bestMs": 106000 }
+      ],
+      "rivals": ["player.f"],
+      "expect": {
+        "improved": true, "deltaMs": -20000,
+        "rankAfter": 1, "rankBefore": 7,
+        "passedCount": 6, "rivalsPassed": 1,
+        "passed": ["player.f", "player.a", "player.b", "player.c", "player.d"]
+      }
+    }
+  ]
+}

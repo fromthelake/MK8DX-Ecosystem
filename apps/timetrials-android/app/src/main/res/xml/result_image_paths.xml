@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <cache-path
+        name="result_images"
+        path="mk8dx-result-images/" />
+    <!-- The score workbook handed back at Step 6 and Step 10. -->
+    <cache-path
+        name="workbooks"
+        path="workbooks/" />
+</paths>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug build only: the owner's scan debug bridge (see ScanDebugBridge.kt). -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <!-- Design-system component gallery (CP1), debug builds only. Started from
+             adb (which holds DUMP); no launcher entry. -->
+        <activity
+            android:name="nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxDesignGalleryActivity"
+            android:exported="true"
+            android:permission="android.permission.DUMP"
+            android:label="MK8DX design gallery" />
+        <provider
+            android:name="nl.mariokart8.mk8dxtimetrials.scan.ScanDebugInstaller"
+            android:authorities="${applicationId}.scan-debug"
+            android:exported="false" />
+        <!-- DUMP is held by the adb shell and by no ordinary app. -->
+        <receiver
+            android:name="nl.mariokart8.mk8dxtimetrials.scan.ScanDebugReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP">
+            <intent-filter>
+                <action android:name="nl.mariokart8.mk8dxtimetrials.debug.SCAN" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

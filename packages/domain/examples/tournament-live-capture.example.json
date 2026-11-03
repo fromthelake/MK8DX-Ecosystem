@@ -1,0 +1,145 @@
+{
+  "schemaVersion": "mk8dx.tournament-race-result.v1",
+  "raceResultId": "tournament_race_result.synthetic_live_002",
+  "revision": 2,
+  "raceNumber": 2,
+  "scoringSegment": 2,
+  "trackId": "track.water_park",
+  "countsTowardStandings": true,
+  "context": {
+    "groupReference": {
+      "namespace": "tournament_manager_lobby",
+      "value": "synthetic_lobby_alpha"
+    },
+    "observedGroupLabel": "Group Alpha"
+  },
+  "placements": [
+    {
+      "finishPosition": 1,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_bravo"
+      },
+      "observedPlayerName": "Player Bravo",
+      "characterId": "character.luigi",
+      "scoring": {
+        "racePoints": 15,
+        "totalBeforeRace": 12,
+        "totalAfterRace": 27,
+        "rankAfterRace": 1
+      },
+      "confidence": {
+        "playerName": 0.94,
+        "character": 0.91,
+        "racePoints": 0.99,
+        "totalAfterRace": 0.98
+      }
+    },
+    {
+      "finishPosition": 2,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_alpha"
+      },
+      "observedPlayerName": "Player Alpha",
+      "characterId": "character.mario",
+      "scoring": {
+        "racePoints": 12,
+        "totalBeforeRace": 15,
+        "totalAfterRace": 27,
+        "rankAfterRace": 1
+      }
+    },
+    {
+      "finishPosition": 3,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_charlie"
+      },
+      "observedPlayerName": "Player Charlie",
+      "characterId": "character.peach",
+      "scoring": {
+        "racePoints": 10,
+        "totalBeforeRace": 10,
+        "totalAfterRace": 20,
+        "rankAfterRace": 3
+      }
+    },
+    {
+      "finishPosition": 4,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_delta"
+      },
+      "observedPlayerName": "Player Delta",
+      "characterId": "character.daisy",
+      "scoring": {
+        "racePoints": 9,
+        "totalBeforeRace": 9,
+        "totalAfterRace": 18,
+        "rankAfterRace": 4
+      }
+    },
+    {
+      "finishPosition": 5,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_echo"
+      },
+      "observedPlayerName": "Player Echo",
+      "characterId": "character.yoshi",
+      "scoring": {
+        "racePoints": 8,
+        "totalBeforeRace": 8,
+        "totalAfterRace": 16,
+        "rankAfterRace": 5
+      }
+    },
+    {
+      "finishPosition": 6,
+      "participantReference": {
+        "namespace": "producer_local_player",
+        "value": "live.synthetic.player_foxtrot"
+      },
+      "observedPlayerName": "Player Foxtrot",
+      "characterId": "character.toad",
+      "scoring": {
+        "racePoints": 7,
+        "totalBeforeRace": 7,
+        "totalAfterRace": 14,
+        "rankAfterRace": 6
+      }
+    }
+  ],
+  "source": {
+    "kind": "tournament_live_capture",
+    "transport": "native_contract",
+    "producerVersion": "synthetic-1.0.0",
+    "localRecordId": "live_race_002_confirmed",
+    "sessionId": "synthetic_live_session",
+    "streamId": "capture_feed_alpha",
+    "frameIndex": 7200
+  },
+  "timestamps": {
+    "occurredAtMs": 1767225840000,
+    "capturedAtMs": 1767225841000,
+    "createdAtMs": 1767225845000
+  },
+  "evidence": [
+    {
+      "kind": "capture_session",
+      "reference": "evidence.synthetic.live.session_alpha"
+    }
+  ],
+  "verification": {
+    "status": "needs_review",
+    "method": "synthetic_live_confirmed_pair_consensus",
+    "confidence": 0.93,
+    "issues": [
+      {
+        "code": "player_count.mismatch",
+        "message": "Synthetic fixture models a confirmed race with fewer visible players than the session field."
+      }
+    ]
+  }
+}

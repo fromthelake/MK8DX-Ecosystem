@@ -1,0 +1,39 @@
+# Weekly dependency update pull requests. Security updates are opened as soon as an advisory appears
+# (enable "Dependabot security updates" in the repository settings).
+# Exact pins stay exact: review each pull request like any other change (docs/TESTING.md).
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /backend/api
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /apps/timetrials-web
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+  - package-ecosystem: npm
+    directory: /apps/timetrials-scanner-web
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+  - package-ecosystem: gradle
+    directory: /apps/timetrials-android
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 5
+  - package-ecosystem: pip
+    directory: /
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 3
+  - package-ecosystem: pip
+    directory: /apps/timetrials-desktop/vision-runtime
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 3
+  - package-ecosystem: docker
+    directories: [/backend/api, /apps/timetrials-web]
+    schedule: {interval: weekly}
+    open-pull-requests-limit: 3
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: {interval: weekly}
+    groups:
+      actions:
+        patterns: ["*"]

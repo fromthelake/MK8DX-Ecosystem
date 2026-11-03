@@ -1,0 +1,2863 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LiveTrial — MK8DX Time Trials</title>
+<link rel="icon" href="/app-icon">
+<script>/* apply saved theme before first paint (no flash) */
+// The desktop app shows the live block and the run history in separate tabs (owner 2026-09-27).
+(() => { const p = new URLSearchParams(location.search), v = p.get("view");
+  if (v === "live" || v === "history") document.documentElement.dataset.view = v;
+  if (p.get("embedded") === "1") document.documentElement.dataset.embedded = "1"; })();
+(() => { const q = new URLSearchParams(location.search).get("theme"); const t = q === "dark" || q === "light" ? q : localStorage.getItem("lt-theme"); if (t) document.documentElement.dataset.theme = t; })();
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --surface-1: #fffdf6; --page: #f5f2e8;
+    --ink-1: #1c1a14; --ink-2: #565348; --ink-muted: #8d8a7c;
+    --grid: #e6e2d3; --baseline: #c9c5b3; --border: rgba(28,26,20,0.11);
+    --player: #2a78d6; --ghost: #e8622a;
+    --good-text: #0f8c31; --bad-text: #d03b3b; --gold: #dfa000;
+    --tile: #ffffff; --tile-2: #faf8ef;
+    --chip-ink: #ffffff;
+    /* cc colors sampled from 004_menu_hint_cc_toggle.png. */
+    --cc150: #4672ca; --cc200: #c8595f;
+    --state-menu: #4d9de0; --state-armed: #f0a41c; --state-racing: #23a04b; --state-reading: #8f56f0;
+    --rainbow: linear-gradient(90deg,#e6194b,#f58231,#ffd028,#3cb44b,#4363d8,#911eb4);
+    --shadow-1: 0 1px 3px rgba(28,26,20,.08);
+    --shadow-2: 0 4px 14px rgba(28,26,20,.13);
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --surface-1: #191c30; --page: #0f1122;
+    --ink-1: #f2f3fa; --ink-2: #b8bcd4; --ink-muted: #7e829e;
+    --grid: #272b45; --baseline: #363b5c; --border: rgba(242,243,250,0.11);
+    --player: #4a95ef; --ghost: #ff7a3d;
+    --good-text: #35cf62; --bad-text: #ff7070; --gold: #ffc233;
+    --tile: #202440; --tile-2: #1b1e37;
+    --chip-ink: #ffffff;
+    --shadow-1: 0 1px 3px rgba(0,0,0,.3);
+    --shadow-2: 0 5px 18px rgba(0,0,0,.45);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --surface-1: #191c30; --page: #0f1122;
+      --ink-1: #f2f3fa; --ink-2: #b8bcd4; --ink-muted: #7e829e;
+      --grid: #272b45; --baseline: #363b5c; --border: rgba(242,243,250,0.11);
+      --player: #4a95ef; --ghost: #ff7a3d;
+      --good-text: #35cf62; --bad-text: #ff7070; --gold: #ffc233;
+      --tile: #202440; --tile-2: #1b1e37;
+      --shadow-1: 0 1px 3px rgba(0,0,0,.3);
+      --shadow-2: 0 5px 18px rgba(0,0,0,.45);
+    }
+  }
+  :root.notrans *, :root.notrans { transition: none !important; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink-1);
+         font: 14px/1.45 "Segoe UI", system-ui, -apple-system, sans-serif; }
+  /* subtle checkered-flag wash behind everything (Mario Kart flavor, whisper-quiet) */
+  body::before { content: ""; position: fixed; inset: 0 0 auto 0; height: 340px; pointer-events: none; z-index: 0;
+    background: repeating-conic-gradient(currentColor 0% 25%, transparent 0% 50%) 0 0/28px 28px;
+    color: var(--ink-1); opacity: .022;
+    -webkit-mask-image: linear-gradient(180deg,#000,transparent); mask-image: linear-gradient(180deg,#000,transparent); }
+  header, #livewrap, .layout { position: relative; z-index: 1; }
+
+  header { display: flex; align-items: center; gap: 12px; padding: 11px 20px 10px;
+           flex-wrap: wrap; background: var(--surface-1);
+           border-bottom: 1px solid var(--border); position: relative; }
+  header::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 3px;
+                  background: var(--rainbow); opacity: .85; }
+  header h1 { font-size: 18px; margin: 0; font-weight: 800; letter-spacing: .01em; font-style: italic; }
+  header h1 .flag { font-style: normal; margin-right: 2px; }
+  header .sub { color: var(--ink-2); font-size: 13px; font-weight: 600; }
+  header .sub .livemark { color: var(--bad-text); font-weight: 800; }
+  header .hbtn { background: var(--tile); border: 1px solid var(--border); color: var(--ink-2);
+                 border-radius: 99px; padding: 5px 13px; cursor: pointer; font: inherit; font-weight: 600;
+                 transition: transform .12s, box-shadow .12s, color .12s; }
+  header .hbtn:hover { transform: translateY(-1px); box-shadow: var(--shadow-1); color: var(--ink-1); }
+  header .hbtn.on { color: var(--chip-ink); background: var(--player); border-color: transparent; }
+  header .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 99px; overflow: hidden; }
+  header .seg button { border: 0; background: var(--tile); color: var(--ink-muted); font: inherit;
+                       font-weight: 700; padding: 5px 11px; cursor: pointer; }
+  header .seg button.on { background: var(--player); color: var(--chip-ink); }
+  header .spacer { margin-left: auto; }
+  .lanchip { font-size: 12px; color: var(--ink-2); border: 1px dashed var(--border);
+             border-radius: 99px; padding: 4px 11px; background: var(--tile); }
+
+  .layout { display: grid; grid-template-columns: 316px 1fr; gap: 16px;
+            padding: 16px 20px; max-width: 1340px; margin: 0 auto; }
+  @media (max-width: 940px) { .layout { grid-template-columns: 1fr; } }
+
+  /* ------- chips & badges ------- */
+  .badge { font-size: 11.5px; font-weight: 650; padding: 2px 9px; border-radius: 99px;
+           border: 1px solid var(--border); color: var(--ink-2); white-space: nowrap;
+           background: var(--tile); display: inline-flex; align-items: center; gap: 4px; }
+  .badge.won  { color: #fff; background: var(--good-text); border-color: transparent; }
+  .badge.lost { color: #fff; background: var(--bad-text);  border-color: transparent; }
+  .badge.rec  { color: #4a3200; background: linear-gradient(110deg, #ffd028 30%, #fff3b0 50%, #ffd028 70%);
+                background-size: 200% 100%; border-color: transparent; font-weight: 800;
+                animation: shine 2.6s linear infinite; }
+  @keyframes shine { to { background-position: -200% 0; } }
+  .badge.ccb { color: #fff; border-color: transparent; font-weight: 750; letter-spacing: .02em; }
+  /* run-confidence chip: at-a-glance "is this run captured correctly?" */
+  .conf { font-size: 11px; font-weight: 750; padding: 2px 8px; border-radius: 99px;
+          white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;
+          border: 1px solid transparent; cursor: help; }
+  .conf.cok   { color: var(--good-text); background: color-mix(in srgb, var(--good-text) 15%, transparent);
+                border-color: color-mix(in srgb, var(--good-text) 40%, transparent); }
+  .conf.cwarn { color: var(--bad-text);  background: color-mix(in srgb, var(--bad-text) 14%, transparent);
+                border-color: color-mix(in srgb, var(--bad-text) 40%, transparent); }
+  .badge.cc150 { background: var(--cc150); } .badge.cc200 { background: var(--cc200); }
+  .badge .bic { height: 13px; }
+
+  /* ------- left column ------- */
+  .viewtabs { display: flex; gap: 6px; margin-bottom: 10px; }
+  .viewtabs button { flex: 1; background: var(--tile); border: 1px solid var(--border);
+                     border-radius: 99px; padding: 7px 0; cursor: pointer; font: inherit;
+                     color: var(--ink-2); font-weight: 650; transition: transform .12s, box-shadow .12s; }
+  .viewtabs button:hover { transform: translateY(-1px); box-shadow: var(--shadow-1); }
+  .viewtabs button.on { color: var(--chip-ink); background: var(--player); border-color: transparent; }
+  .filters { display: flex; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; font-size: 12.5px; }
+  .filters label { display: inline-flex; gap: 5px; align-items: center; color: var(--ink-2); cursor: pointer; }
+  .filters input { accent-color: var(--player); }
+  .runlist { display: flex; flex-direction: column; gap: 8px; }
+  .sesshead { color: var(--ink-muted); font-size: 11.5px; text-transform: uppercase; font-weight: 700;
+              letter-spacing: .07em; margin: 10px 2px 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px;
+              white-space: nowrap; }
+  .sesshead::after { content: ""; flex: 1 0 100%; height: 1px; margin-top: 4px; background: var(--grid); }
+  .sesshead .recap { text-transform: none; letter-spacing: 0; font-weight: 650;
+                     color: var(--ink-2); white-space: normal; flex: 1 1 12rem; min-width: 0; }
+  .runcard { background: var(--tile); border: 1px solid var(--border); border-radius: 12px;
+             padding: 9px 11px; cursor: pointer; display: flex; gap: 10px; align-items: center;
+             position: relative; transition: transform .12s, box-shadow .12s, border-color .12s; }
+  .runcard:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+  .runcard.sel { border-color: var(--player); box-shadow: inset 3px 0 0 var(--player), var(--shadow-1);
+                 background: color-mix(in srgb, var(--player) 9%, var(--tile)); }
+  .runcard .thumb { width: 74px; height: 42px; border-radius: 8px; object-fit: cover;
+                    background: var(--grid); flex: none; }
+  .thumb.ph { display: flex; align-items: center; justify-content: center; color: var(--ink-muted);
+              font-weight: 800; font-size: 17px;
+              background: repeating-conic-gradient(var(--grid) 0% 25%, var(--tile-2) 0% 50%) 0 0/14px 14px; }
+  .runcard .track { font-weight: 700; font-size: 13.5px; display: flex; align-items: center; gap: 6px; min-width: 0; }
+  .runcard .track .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cupic { height: 17px; flex: none; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+  .runcard .meta { color: var(--ink-2); font-size: 12px; display: flex; gap: 7px; margin-top: 3px;
+                   flex-wrap: wrap; align-items: center; }
+  .runcard .meta .t { font-variant-numeric: tabular-nums; font-weight: 650; }
+  .runcard .archbtn { position: absolute; top: 4px; right: 6px; border: 0; background: none;
+                      color: var(--ink-muted); cursor: pointer; font-size: 13px; padding: 2px; display: none; }
+  .runcard:hover .archbtn { display: block; }
+  /* a ghost replay in the list: the ghost colour down its edge */
+  .runcard.ghostrun { box-shadow: inset 3px 0 0 var(--ghost); }
+  .runcard.ghostrun.sel { box-shadow: inset 3px 0 0 var(--player), var(--shadow-1); }
+  .v.ghostkart { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 13px; font-weight: 600; }
+  .ghostpart { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .runcard.arch { opacity: .55; }
+
+  /* ------- tracks view ------- */
+  .trackrow { background: var(--tile); border: 1px solid var(--border); border-radius: 12px;
+              padding: 10px 12px; cursor: pointer; transition: transform .12s, box-shadow .12s; }
+  .trackrow:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+  .trackrow .toprow { display: flex; gap: 8px; align-items: center; min-width: 0; }
+  .trackrow .nm { font-weight: 700; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis;
+                  white-space: nowrap; flex: 1; }
+  .trackrow .pbrow { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; }
+  .trackrow .pb { font-size: 19px; font-weight: 800; font-variant-numeric: tabular-nums; font-style: italic; }
+  .trackrow .att { color: var(--ink-muted); font-size: 12px; }
+  .trackrow .subrow { display: flex; align-items: center; gap: 8px; margin-top: 5px; flex-wrap: wrap;
+                      color: var(--ink-2); font-size: 12px; }
+  .trackrow .subrow b { font-variant-numeric: tabular-nums; }
+  .trackrow svg { flex: none; }
+  .wrchip { font-size: 11.5px; font-weight: 700; border-radius: 99px; padding: 1px 8px;
+            color: var(--chip-ink); background: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .wrchip.close { background: var(--gold); color: #4a3200; }
+
+  /* ------- detail ------- */
+  .detail { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .panel { background: var(--surface-1); border: 1px solid var(--border);
+           border-radius: 14px; padding: 16px; box-shadow: var(--shadow-1); }
+  .panel h2 { margin: 0 0 10px; font-size: 12.5px; font-weight: 750; color: var(--ink-2);
+              text-transform: uppercase; letter-spacing: .07em; display: flex; align-items: center; gap: 8px; }
+  .panel h2::before { content: ""; width: 16px; height: 8px; border-radius: 3px; background: var(--rainbow); opacity: .9; }
+  .trackbanner { position: relative; border-radius: 13px 13px 0 0; overflow: hidden;
+                 margin: -16px -16px 14px; height: 168px; background-size: cover; background-position: center; }
+  .trackbanner .shade { position: absolute; inset: 0;
+                        background: linear-gradient(180deg, rgba(0,0,0,.08) 10%, rgba(0,0,0,.72)); }
+  .trackbanner .tb { position: absolute; left: 16px; right: 16px; bottom: 11px;
+                     display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .trackbanner .track { color: #fff; font-size: 22px; font-weight: 800; font-style: italic;
+                        text-shadow: 0 1px 8px rgba(0,0,0,.7); display: flex; align-items: center; gap: 9px; }
+  .trackbanner .track .cupic { height: 26px; }
+  .trackbanner .badge { background: rgba(12,12,16,.55); color: #fff; border-color: rgba(255,255,255,.35);
+                        backdrop-filter: blur(3px); }
+  .trackbanner .badge.won { background: var(--good-text); border-color: transparent; }
+  .trackbanner .badge.lost { background: var(--bad-text); border-color: transparent; }
+  .trackbanner .badge.ccb { border-color: transparent; }
+  .trackbanner .conf { background: rgba(12,12,16,.72); border-color: rgba(255,255,255,.35); }
+  .trackbanner .conf.cok { color: #7dffa6; } .trackbanner .conf.cwarn { color: #ffb3b3; }
+  .trackbanner .badge.cc150 { background: var(--cc150); } .trackbanner .badge.cc200 { background: var(--cc200); }
+  .trackbanner .when { margin-left: auto; color: rgba(255,255,255,.85); font-size: 12px; font-weight: 600;
+                       text-shadow: 0 1px 4px rgba(0,0,0,.8); }
+  .titlebar-plain { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+  .titlebar-plain .track { font-size: 20px; font-weight: 800; font-style: italic;
+                           display: flex; align-items: center; gap: 8px; }
+
+  .hero { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+  .hero .portrait { width: 92px; height: 92px; object-fit: contain; flex: none;
+                    filter: drop-shadow(0 4px 10px rgba(0,0,0,.3)); }
+  .hero .big { font-size: 46px; font-weight: 900; line-height: 1.02; letter-spacing: .01em;
+               font-style: italic; font-variant-numeric: tabular-nums; }
+  .hero .big.wonc { color: var(--good-text); }
+  .hero .big.recc { background: linear-gradient(100deg, var(--gold), #ffe9a0 45%, var(--gold));
+                    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .sub3 { font-size: 13.5px; margin-top: 4px; font-weight: 650; }
+  .hero .medal { font-size: 34px; animation: pop .5s ease-out; }
+  @keyframes pop { 0% { transform: scale(.3); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+  .recap { margin-top: 13px; color: var(--ink-2); font-size: 13.5px; border-top: 1px solid var(--grid); padding-top: 11px; }
+
+  /* ---- cups & tracks overview ---- */
+  .cupgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+             gap: 12px; margin-top: 14px; }
+  .cupcard { background: var(--tile); border: 1px solid var(--border); border-radius: 14px;
+             padding: 10px 12px 8px; }
+  .cupcard header { display: flex; align-items: center; gap: 8px; margin-bottom: 7px;
+                    padding-bottom: 7px; border-bottom: 1px solid var(--grid); }
+  .cupcard header b { font-size: 14px; }
+  .cupcard header .cnt { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--ink-muted);
+                         font-variant-numeric: tabular-nums; }
+  .cupic.big { height: 26px; }
+  .ctrack { display: flex; align-items: center; gap: 8px; padding: 4px 2px; font-size: 13px;
+            border-radius: 8px; }
+  .ctrack img { width: 34px; height: 20px; object-fit: cover; border-radius: 4px; }
+  .ctrack i { width: 34px; height: 20px; border-radius: 4px; background: var(--grid); display: inline-block; }
+  .ctrack .nm { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ctrack .tm { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .ctrack.none { opacity: .5; }
+  .ctrack.has .tm { color: var(--player); }
+  .ctrack.rec { background: color-mix(in srgb, var(--gold) 14%, transparent); }
+  .ctrack .recdot { color: var(--gold); font-size: 13px; }
+  .ctrack.beat { background: color-mix(in srgb, var(--good-text) 12%, transparent); }
+  .ctrack.goal .tm { min-width: 58px; text-align: right; }
+  .ctrack.goal .goalgap { min-width: 58px; text-align: right; font-size: 12px;
+                          font-variant-numeric: tabular-nums; font-weight: 750; }
+  .ctrack.goal .goalgap.dim { color: var(--ink-muted); font-weight: 650; }
+  .ctrack[data-key] { cursor: pointer; }
+  .ctrack[data-key]:hover { background: var(--tile-2); }
+  .ctrack.beat[data-key]:hover { background: color-mix(in srgb, var(--good-text) 18%, transparent); }
+  .ctrack.rec[data-key]:hover { background: color-mix(in srgb, var(--gold) 20%, transparent); }
+
+  /* ---- storage ---- */
+  .stwarn { border-radius: 12px; padding: 10px 13px; margin-top: 10px; font-size: 13.5px;
+            border: 1px solid var(--border); background: var(--tile); }
+  .stwarn.warn { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 12%, transparent); }
+  .stwarn.alert { border-color: var(--bad-text); background: color-mix(in srgb, var(--bad-text) 12%, transparent);
+                  font-weight: 650; }
+  .card { background: var(--tile); border: 1px solid var(--border); border-radius: 14px;
+          padding: 12px 14px; margin-top: 12px; }
+  .card h3 { margin: 0 0 8px; font-size: 13.5px; color: var(--ink-2); }
+  .bar { height: 12px; border-radius: 8px; background: var(--grid); overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--player); transition: width .3s ease; }
+  .bar .fill.over { background: var(--bad-text); }
+  .barlab { display: flex; justify-content: space-between; margin-top: 6px; font-size: 12.5px;
+            font-variant-numeric: tabular-nums; font-weight: 650; }
+  .barlab .pct { margin-left: 6px; color: var(--player); }
+  .caplab { margin-top: 4px; font-size: 12.5px; font-weight: 650; color: var(--ink-2);
+            font-variant-numeric: tabular-nums; }
+  .setgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px 16px; }
+  .setgrid label { display: flex; flex-direction: column; gap: 4px; font-size: 12.5px;
+                   color: var(--ink-2); font-weight: 600; }
+  .setgrid .hint { font-size: 11px; font-weight: 600; color: var(--ink-muted); }
+  .setgrid select { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border);
+                    background: var(--bg); color: var(--ink); font: inherit; }
+  table.reqtab { width: 100%; border-collapse: collapse; font-size: 12.5px;
+                 font-variant-numeric: tabular-nums; }
+  table.reqtab th { text-align: right; color: var(--ink-muted); font-weight: 700; padding: 3px 8px;
+                    border-bottom: 1px solid var(--grid); }
+  table.reqtab th:first-child, table.reqtab td:first-child { text-align: left; }
+  table.reqtab td { text-align: right; padding: 4px 8px; border-bottom: 1px solid var(--grid); }
+  table.reqtab tr.cur td { background: var(--tile-2); font-weight: 750; }
+  table.reqtab .tag { font-style: normal; font-size: 9.5px; font-weight: 800; padding: 1px 5px;
+                      border-radius: 999px; background: var(--player); color: var(--chip-ink); }
+  .setgrid label.chk { flex-direction: row; align-items: center; gap: 8px; }
+  .setgrid input[type=number] { width: 100%; padding: 6px 8px; border-radius: 8px;
+                                border: 1px solid var(--border); background: var(--bg);
+                                color: var(--ink); font: inherit; font-variant-numeric: tabular-nums; }
+  .setgrid .acts { grid-column: 1 / -1; display: flex; gap: 8px; margin-top: 4px; }
+  .setgrid .acts button { padding: 7px 14px; border-radius: 9px; border: 1px solid var(--border);
+                          background: var(--tile-2); color: var(--ink); font: inherit;
+                          font-weight: 700; cursor: pointer; }
+  .setgrid .acts button.danger { border-color: var(--bad-text); color: var(--bad-text); }
+  .setgrid .acts button:hover { transform: translateY(-1px); }
+  .strow { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 12.5px;
+           border-bottom: 1px solid var(--grid); }
+  .strow:last-child { border-bottom: 0; }
+  .strow .f { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+              font-family: ui-monospace, Menlo, Consolas, monospace; }
+  .strow .b { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .strow .tag { font-style: normal; font-size: 10.5px; font-weight: 800; padding: 2px 6px;
+                border-radius: 999px; background: var(--grid); color: var(--ink-2); margin-right: 4px; }
+  .strow .tag.record { background: var(--gold); color: var(--chip-ink); }
+  .strow .tag.best { background: var(--player); color: var(--chip-ink); }
+  .strow .tag.pinned { background: var(--ink-muted); color: var(--chip-ink); }
+  .pinbtn { padding: 3px 9px; border-radius: 8px; border: 1px solid var(--border);
+            background: var(--tile-2); color: var(--ink-2); font: inherit; font-size: 11.5px;
+            font-weight: 700; cursor: pointer; }
+  .viewtabs button.warnpulse { border-color: var(--gold); color: var(--gold); }
+
+  .segs { display: flex; gap: 6px; }
+  .segs button { background: var(--tile-2); border: 1px solid var(--border); color: var(--ink-2);
+                 border-radius: 9px; padding: 5px 12px; font: inherit; font-size: 12.5px;
+                 font-weight: 700; cursor: pointer; }
+  .segs button.on { background: var(--player); color: var(--chip-ink); border-color: transparent; }
+  .segs button.cc150.on { background: var(--cc150); }
+  .segs button.cc200.on { background: var(--cc200); }
+  .wrcombo { display: flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 12.5px; }
+  .wrcombo img { height: 26px; }
+  .wrcombo a { color: var(--player); font-weight: 700; text-decoration: none; }
+  .verchip { font-size: 12px; font-weight: 700; color: var(--ink-muted); border: 1px solid var(--border); border-radius: 999px; padding: 1px 8px; margin-left: 6px; vertical-align: 3px; }
+  .updbar { display: none; margin: 0 16px; padding: 8px 14px; border-radius: 10px; background: hsl(130 60% 45%); color: #fff; font-weight: 700; }
+  .updbar a { color: #fff; text-decoration: underline; margin-left: 8px; }
+  .focusgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 12px; }
+  .focuscard { background: var(--tile); border: 1px solid var(--border); border-radius: 14px; padding: 12px 14px; display: grid; gap: 6px; }
+  .focuscard .fk { font-size: 12px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-muted); }
+  .focuscard .ft { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 15px; }
+  .focuscard .ft img { width: 44px; height: 28px; object-fit: cover; border-radius: 6px; }
+  .focuscard .ft .orig { font-size: 11px; color: var(--ink-muted); font-weight: 800; }
+  .focuscard .fh { font-size: 14px; }
+  .focuscard .fg { display: inline-block; width: fit-content; border-radius: 8px; padding: 2px 9px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .focuscard .fc { font-size: 12px; color: var(--ink-2); }
+  .focuscard .ftimes { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .focuscard .ftimes b { font-weight: 800; }
+  .focuscard.empty { color: var(--ink-muted); font-size: 13px; }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr)); gap: 10px; margin-top: 14px; }
+  .tile { background: var(--tile); border: 1px solid var(--border); border-radius: 12px; padding: 10px 13px; }
+  .tile .k { font-size: 12px; color: var(--ink-2); font-weight: 600; }
+  .tile .v { font-size: 21px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .tile .v .of { font-size: 13px; color: var(--ink-muted); font-weight: 600; }
+  .d.good { color: var(--good-text); } .d.bad { color: var(--bad-text); }
+  .d { font-size: 12.5px; }
+  .itemic { height: 19px; vertical-align: -5px; margin-right: 4px; }
+  .aborted-note { background: var(--tile); border: 1px dashed var(--border); border-radius: 12px;
+                  padding: 12px 14px; color: var(--ink-2); margin-top: 12px; }
+
+  /* lap table */
+  table.laps { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.laps th { text-align: right; color: var(--ink-muted); font-weight: 700; padding: 4px 10px;
+                  border-bottom: 2px solid var(--grid); font-size: 11.5px; text-transform: uppercase;
+                  letter-spacing: .04em; }
+  table.laps th:first-child { text-align: left; }
+  table.laps td { padding: 5px 10px; border-bottom: 1px solid var(--grid);
+                  font-variant-numeric: tabular-nums; text-align: right; }
+  table.laps td:first-child { text-align: left; color: var(--ink-2); font-weight: 650; white-space: nowrap; }
+  table.laps tbody tr:hover td { background: var(--tile-2); }
+  table.laps tr.total td { font-weight: 800; border-top: 2px solid var(--baseline); border-bottom: 0;
+                           font-size: 14px; }
+  table.laps .best { color: var(--gold); font-weight: 750; white-space: nowrap; }
+  table.laps td.mslot { width: 20px; padding: 4px 1px; text-align: center; }
+  table.laps th.mhead { text-align: center; }
+  table.laps .cplus { color: var(--good-text); width: 40px; }
+  table.laps .cmin { color: var(--bad-text); width: 40px; }
+  table.laps .cend { font-weight: 700; width: 46px; }
+  table.laps th.cplus, table.laps th.cmin { font-size: 13px; font-weight: 800; }
+  .shroomdot { height: 15px; vertical-align: -3px; }
+  .lapswrap { overflow-x: auto; }
+  .obanner { object-fit: contain; filter: drop-shadow(0 2px 4px rgba(0,0,0,.35)); vertical-align: middle; }
+
+  /* loadouts — APK design language (buildDesignResultPanel): yellow YOU /
+     off-white ghost, per-part accent borders, amber "?" for unsure fields */
+  :root { --apk-you: #d9a621; --apk-ghost: #7f8b99; --apk-amber: #b96f00;
+          --acc-character: #f59e0b; --acc-kart: #3b82f6;
+          --acc-wheel: #22c55e; --acc-glider: #a855f7; }
+  :root[data-theme="dark"] { --apk-you: #f6c945; --apk-ghost: #cdd6e0; --apk-amber: #ffc878; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --apk-you: #f6c945; --apk-ghost: #cdd6e0; --apk-amber: #ffc878; }
+  }
+  .loadouts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 720px) { .loadouts { grid-template-columns: 1fr; } }
+  .loadout { background: var(--tile); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+             border-top: 3px solid var(--border); }
+  .loadout.p { border-top-color: var(--apk-you); }
+  .loadout.g { border-top-color: var(--apk-ghost); }
+  .loadout .who { font-weight: 750; display: flex; align-items: center; gap: 7px; }
+  .loadout .who .tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em;
+                       border-radius: 99px; padding: 1.5px 9px; }
+  .loadout.p .who .tag { background: var(--apk-you); color: #3a2d00; }
+  .loadout.g .who .tag { background: var(--apk-ghost); color: #1a2029; }
+  .loadout .who .flagic { margin-left: auto; height: 20px; border-radius: 3px; border: 1px solid var(--border); }
+  .swatch { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+  .parttiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+  .ptile { display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; }
+  .ptile .pk { font-size: 9.5px; font-weight: 700; text-transform: uppercase;
+               letter-spacing: .06em; color: var(--ink-muted); }
+  .ptile .pbox { width: 58px; height: 44px; border-radius: 8px; background: var(--tile-2);
+                 border: 2px solid var(--border); display: flex; align-items: center;
+                 justify-content: center; }
+  .ptile.character .pbox { border-color: var(--acc-character); }
+  .ptile.kart .pbox { border-color: var(--acc-kart); }
+  .ptile.wheel .pbox { border-color: var(--acc-wheel); }
+  .ptile.glider .pbox { border-color: var(--acc-glider); }
+  .ptile .pbox img { max-width: 48px; max-height: 36px; object-fit: contain; }
+  .ptile .pn { font-size: 11px; font-weight: 700; text-align: center; max-width: 100%;
+               overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ptile .pn.unsure2 { color: var(--apk-amber); }
+  .ptile .ps { font-size: 9.5px; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .unsure { font-size: 10.5px; color: var(--bad-text); border: 1px solid currentColor;
+            border-radius: 99px; padding: 0 6px; margin-left: 6px; vertical-align: 1px; }
+  .evlink { font-size: 12px; color: var(--ink-muted); cursor: pointer; text-decoration: underline dotted; }
+  .evlink:hover { color: var(--ink-1); }
+  .evimg { width: 100%; border-radius: 8px; border: 1px solid var(--border); margin-top: 8px; }
+
+  /* combined stats */
+  .cmpstats { margin-top: 14px; }
+  .cmpstats .legend2 { display: flex; gap: 10px; align-items: center; margin-bottom: 7px;
+                       font-size: 12px; color: var(--ink-2); font-weight: 650; }
+  .cmpstats .sb { display: grid; grid-template-columns: 82px 1fr 78px; gap: 10px; align-items: center;
+                  font-size: 12px; color: var(--ink-2); padding: 3px 0; font-weight: 600; }
+  .cmpstats .bars { position: relative; height: 17px; }
+  .cmpstats .bars.solo { height: 9px; }
+  /* stacked bars: each stat is built from the character/body/tire/glider
+     contribution, in the same accent colors as the tile borders (APK) */
+  .cmpstats .brow { position: absolute; left: 0; right: 0; height: 7px;
+                    border-radius: 4px; overflow: hidden; }
+  .cmpstats .brow.p { top: 0; }
+  .cmpstats .brow.g { bottom: 0; opacity: .6; }
+  .cmpstats .bars.solo .brow.p { top: 1px; }
+  .cmpstats .seg { position: absolute; top: 0; bottom: 0; }
+  .cmpstats .seg.k0 { background: var(--acc-character); }
+  .cmpstats .seg.k1 { background: var(--acc-kart); }
+  .cmpstats .seg.k2 { background: var(--acc-wheel); }
+  .cmpstats .seg.k3 { background: var(--acc-glider); }
+  .cmpstats .tick2 { position: absolute; top: -2px; bottom: -2px; width: 1px;
+                     background: var(--baseline); opacity: .55; }
+  .cmpstats .cap { position: absolute; top: -2px; bottom: -2px; width: 2px; border-radius: 2px; background: var(--baseline); }
+  .cmpstats .v { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-muted); }
+  .samenote { font-size: 12px; color: var(--ink-muted); margin-top: 8px; }
+
+  /* records */
+  .recrow { display: flex; gap: 12px; align-items: center; padding: 8px 0;
+            border-bottom: 1px solid var(--grid); font-size: 13.5px; flex-wrap: wrap; }
+  .recrow:last-of-type { border-bottom: 0; }
+  .recrow .ric { width: 22px; text-align: center; flex: none; }
+  .recrow .lbl { width: 128px; color: var(--ink-2); flex: none; font-weight: 650; }
+  .recrow .t { font-variant-numeric: tabular-nums; font-weight: 750; }
+  .recrow .gap { font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 700;
+                 border-radius: 99px; padding: 1px 9px; background: var(--tile); border: 1px solid var(--border); }
+  .recrow .gap.ahead { color: #fff; background: var(--good-text); border-color: transparent; }
+  .recrow .who2 { color: var(--ink-muted); font-size: 12.5px; }
+
+  .legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--ink-2); margin-bottom: 6px;
+            flex-wrap: wrap; font-weight: 600; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  svg text { font: 11px "Segoe UI", system-ui, sans-serif; fill: var(--ink-muted); }
+  svg .tick { font-variant-numeric: tabular-nums; }
+  .chartwrap { position: relative; }
+  .tooltip { position: absolute; pointer-events: none; display: none; z-index: 5;
+             background: var(--tile); border: 1px solid var(--border); border-radius: 10px;
+             padding: 7px 10px; font-size: 12.5px; box-shadow: var(--shadow-2); white-space: nowrap; }
+  .tooltip b { font-variant-numeric: tabular-nums; }
+
+  table.events { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.events th { text-align: left; color: var(--ink-muted); font-weight: 700; padding: 5px 8px;
+                    border-bottom: 2px solid var(--grid); font-size: 11.5px; text-transform: uppercase;
+                    letter-spacing: .04em; }
+  table.events td { padding: 3.5px 8px; border-bottom: 1px solid var(--grid); font-variant-numeric: tabular-nums; }
+  table.events .em { display: inline-flex; width: 24px; justify-content: center; vertical-align: middle; }
+  table.events .em img { max-width: 21px; max-height: 21px; vertical-align: middle; }
+  .empty { color: var(--ink-2); padding: 40px; text-align: center; }
+  details.evd summary { cursor: pointer; color: var(--ink-2); font-size: 13px; font-weight: 650; }
+  details.evd summary:hover { color: var(--ink-1); }
+  .actions { display: flex; gap: 8px; margin-top: 13px; flex-wrap: wrap; }
+  .actions button { background: var(--tile); border: 1px solid var(--border); color: var(--ink-2);
+                    border-radius: 99px; padding: 6px 14px; cursor: pointer; font: inherit; font-weight: 650;
+                    transition: transform .12s, box-shadow .12s, color .12s; }
+  .actions button:hover { color: var(--ink-1); transform: translateY(-1px); box-shadow: var(--shadow-1); }
+
+  /* live panel */
+  #livewrap { max-width: 1340px; margin: 0 auto; padding: 16px 20px 0; }
+  .livehead { display: flex; align-items: center; gap: 10px; font-weight: 650; flex-wrap: wrap; }
+  .livedot { width: 9px; height: 9px; border-radius: 50%; background: var(--bad-text);
+             animation: pulse 1.4s infinite; flex: none; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .livelabel { font-weight: 800; letter-spacing: .04em; font-style: italic; }
+  .livephase { color: var(--chip-ink); font-weight: 700; font-size: 12.5px; border-radius: 99px;
+               padding: 3px 12px; background: var(--state-menu); transition: background .3s; }
+  .livephase.armed { background: var(--state-armed); animation: pulse 1s infinite; }
+  .livephase.racing { background: var(--state-racing); }
+  .livephase.reading { background: var(--state-reading); }
+  .liveclock { font-variant-numeric: tabular-nums; color: var(--player); font-weight: 900;
+               font-size: 21px; font-style: italic; }
+  .liverow { display: grid; grid-template-columns: minmax(300px, 520px) 1fr; gap: 16px; margin-top: 12px; }
+  @media (max-width: 820px) { .liverow { grid-template-columns: 1fr; } }
+  /* DIRECT child only: the black letterbox is for the preview image. Without the
+     child combinator this also matched the nested ticker icon <img>s, painting a
+     black box behind their transparent alpha (the .ticker .em img rule resets
+     size but not background). */
+  .liverow > img { width: 100%; border-radius: 10px; border: 1px solid var(--border); background: #000;
+                 aspect-ratio: 16/9; object-fit: contain; box-shadow: var(--shadow-1); }
+  .ticker { max-height: min(520px, calc(100vh - 260px)); overflow-y: auto; font-size: 13px; }
+  .ticker div { padding: 3.5px 0; border-bottom: 1px solid var(--grid); display: flex; gap: 10px;
+                align-items: baseline; }
+  .ticker .tt { color: var(--ink-muted); font-variant-numeric: tabular-nums; min-width: 52px; flex: none; }
+  /* fixed-size icon slot: every icon (emoji OR asset img) occupies the SAME box so
+     rows line up — the wide Boo and the tall coin both fit the same 28x24 cell.
+     Sized up for legibility ("clearly readable at a glance") while staying tidy. */
+  .ticker .em { flex: none; width: 28px; height: 24px; display: inline-flex;
+                align-items: center; justify-content: center; font-size: 19px; line-height: 1; }
+  .ticker .em img { max-width: 24px; max-height: 24px; width: auto; height: auto; object-fit: contain; }
+  .ticker .waiting { color: var(--ink-muted); border-bottom: 0; font-style: italic; }
+  /* event rows: thin accent bar keyed to event category + one bold key value */
+  .ticker .tk { align-items: center; min-height: 26px; border-left: 3px solid var(--baseline);
+                padding-left: 8px; border-radius: 2px; }
+  .ticker .tk .msg { color: var(--ink-2); }
+  .ticker .tk b { font-weight: 800; color: var(--ink-1); }
+  .ticker .tk .dim, .ticker .tk .arw { color: var(--ink-muted); font-weight: 400; }
+  .ticker .tk b.g   { color: var(--gold); }
+  .ticker .tk b.win { color: var(--good-text); }
+  .ticker .tk b.bad { color: var(--bad-text); }
+  .ticker .tk b.cc150 { color: var(--cc150); }
+  .ticker .tk b.cc200 { color: var(--cc200); }
+  .tk-go     { border-left-color: var(--state-racing) !important; }
+  .tk-count  { border-left-color: var(--state-armed) !important; }
+  .tk-lap    { border-left-color: var(--player) !important; }
+  .tk-coin   { border-left-color: var(--gold) !important; }
+  /* "now on lap N" is a position, not a result — it must not compete with the
+     lap REPORT directly above it, which is the row carrying the times */
+  .tk-lapnow { border-left-color: var(--grid) !important; opacity: .62; }
+  .tk-lapnow .msg { font-size: 92%; }
+  .tk-pause  { border-left-color: var(--state-armed) !important; }
+  .tk-mush   { border-left-color: var(--ghost) !important; }
+  .tk-finish { border-left-color: var(--state-reading) !important; }
+  .tk-win    { border-left-color: var(--good-text) !important; }
+  .tk-lost   { border-left-color: var(--bad-text) !important; }
+  .tk-track  { border-left-color: var(--player) !important; }
+  .tk-cc150  { border-left-color: var(--cc150) !important; }
+  .tk-cc200  { border-left-color: var(--cc200) !important; }
+  .tk-mode   { border-left-color: var(--ghost) !important; }
+  .tk-rec    { border-left-color: var(--gold) !important;
+               background: linear-gradient(90deg, color-mix(in srgb, var(--gold) 20%, transparent), transparent); }
+  .tickempty { display: flex; flex-direction: column; gap: 7px; justify-content: center;
+               height: 100%; min-height: 180px; color: var(--ink-muted); font-size: 13px; }
+  .tickempty .step { display: flex; gap: 9px; align-items: center; }
+  .tickempty .step .n { width: 20px; height: 20px; border-radius: 50%; background: var(--tile);
+                        border: 1px solid var(--border); display: inline-flex; align-items: center;
+                        justify-content: center; font-size: 11px; font-weight: 700; flex: none; }
+  .chips { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .recbtn { background: none; border: 1.5px solid var(--bad-text); color: var(--bad-text);
+            border-radius: 99px; padding: 3px 13px; font: inherit; font-weight: 800;
+            cursor: pointer; font-variant-numeric: tabular-nums; }
+  .recbtn.on { background: var(--bad-text); color: #fff; border-color: transparent;
+               animation: pulse 1.2s infinite; }
+  .pillbtn { background: var(--tile); border: 1px solid var(--border); color: var(--ink-2);
+             border-radius: 99px; padding: 3px 12px; cursor: pointer; font: inherit;
+             font-weight: 650; font-size: 12.5px; }
+  .pillbtn.on { background: var(--player); color: var(--chip-ink); border-color: transparent; }
+  .clips { display: flex; gap: 8px; margin-top: 9px; flex-wrap: wrap; font-size: 12px; align-items: center; }
+  .cliplink { color: var(--ink-2); text-decoration: none; border: 1px solid var(--border);
+              border-radius: 99px; padding: 2px 11px; background: var(--tile);
+              font-variant-numeric: tabular-nums; }
+  .cliplink:hover { color: var(--ink-1); border-color: var(--ink-muted); }
+  /* ghost panel: the card the engine read by itself */
+  .lvghost:empty { display: none; }
+  .lvghost { margin-top: 10px; }
+  .gcard { padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--page);
+           display: grid; gap: 8px; min-width: 0; }
+  .gcard .ghead { font-size: 11px; font-weight: 800; letter-spacing: .06em; color: var(--gold); text-transform: uppercase; }
+  .gcard .gwho { display: flex; align-items: center; gap: 8px 10px; flex-wrap: wrap; min-width: 0; }
+  .gcard .gchar { width: 40px; height: 40px; object-fit: contain; }
+  .gcard .flagic { height: 22px; width: auto; }
+  .gcard .gname { font-weight: 800; font-size: 16px; overflow-wrap: anywhere; }
+  .gcard .gtotal { font-weight: 800; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .gcard .gstate { color: var(--ink-muted); font-size: 12px; font-weight: 650; }
+  .gcard .glaps { display: flex; gap: 6px 14px; flex-wrap: wrap; font-variant-numeric: tabular-nums; font-weight: 650; }
+  .gcard .gl { display: inline-flex; align-items: center; gap: 6px; }
+  .gcard .gli { width: 18px; height: 18px; border-radius: 50%; background: var(--tile); border: 1px solid var(--border);
+                display: inline-grid; place-items: center; font-size: 11px; font-weight: 800; }
+  .gcard .gparts { display: flex; gap: 6px 14px; flex-wrap: wrap; }
+  .gcard .gpart { display: inline-flex; align-items: center; gap: 6px; min-width: 0; }
+  .gcard .gpart img { width: 34px; height: 24px; object-fit: contain; }
+
+  @media print {
+    header, .runlist, #livewrap, .viewtabs, .filters, .actions, details.evd, .archbtn { display: none !important; }
+    .layout { display: block; padding: 0; }
+    .panel { border: 1px solid #ccc; break-inside: avoid; margin-bottom: 10px; box-shadow: none; }
+    body { background: #fff; }
+    body::before { display: none; }
+  }
+  /* App views: Live shows only the live block (large picture, a summary line that
+     lights up on every trigger, all engine detail one click away); Run history
+     shows everything but the live block. */
+  html[data-view="live"] header, html[data-view="live"] .updbar,
+  html[data-view="live"] .layout { display: none !important; }
+  html[data-view="history"] #livewrap { display: none !important; }
+  html[data-view="live"], html[data-view="live"] body { overflow: hidden; min-height: 0; background: transparent; }
+  html[data-view="live"] #livewrap { max-width: none; padding: 0; display: flow-root; }
+  .livehero { margin-top: 12px; position: relative; }
+  /* Until the first frame arrives: a black 16:9 box that says so, never a broken-image icon. */
+  .livehero img:not([src]) { visibility: hidden; }
+  .livehero:has(img:not([src]))::after { content: attr(data-wait); position: absolute; inset: 0; display: grid;
+    place-items: center; color: #c9cde0; font-weight: 700; }
+  .livehero img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: contain; background: #000;
+                  border-radius: 12px; border: 1px solid var(--border); }
+  .livesum { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; margin-top: 12px;
+             padding: 10px 12px; border: 1px solid var(--border); border-radius: 12px; background: var(--page); }
+  .livesum.flash { animation: trigflash 1.4s ease-out; }
+  @keyframes trigflash { 0% { box-shadow: 0 0 0 3px var(--gold), 0 0 28px var(--gold); background: var(--surface-1); }
+                         100% { box-shadow: 0 0 0 0 transparent; } }
+  .livesum .ltrack { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+  .livesum .langchip { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .livesum .langchip img { height: 16px; width: auto; border-radius: 2px; }
+  .livesum .tthumb { width: 104px; height: 58px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+  .livesum .tcup { width: 30px; height: 30px; object-fit: contain; }
+  .livesum .llast { flex: 1 1 280px; display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .livesum .llast .lbl { flex: none; font-size: 11px; font-weight: 800; letter-spacing: .06em; color: var(--gold); }
+  .livesum .llast .em { flex: none; display: inline-flex; width: 26px; justify-content: center; }
+  .livesum .llast .em img { max-width: 24px; max-height: 24px; }
+  .livesum .llast .msg { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .livesum .dim { color: var(--ink-muted); font-weight: 600; }
+  /* the trigger line keeps the ticker's colours: ahead green, behind red, gold, class colours */
+  .livesum .msg b { font-weight: 800; color: var(--ink-1); }
+  .livesum .msg b.g { color: var(--gold); }
+  .livesum .msg b.win { color: var(--good-text); }
+  .livesum .msg b.bad { color: var(--bad-text); }
+  .livesum .msg b.cc150 { color: var(--cc150); }
+  .livesum .msg b.cc200 { color: var(--cc200); }
+  .livesum .msg .dim, .livesum .msg .arw { color: var(--ink-muted); font-weight: 400; }
+  .livemore { margin-top: 10px; }
+  .livemore > summary { cursor: pointer; list-style: none; padding: 9px 12px; border: 1px solid var(--border);
+                        border-radius: 10px; font-weight: 750; }
+  .livemore > summary::-webkit-details-marker { display: none; }
+  .livemore > summary::before { content: "\25B8  "; }
+  .livemore[open] > summary::before { content: "\25BE  "; }
+  .livemore .trigcount { color: var(--gold); font-variant-numeric: tabular-nums; }
+  .livemore .ticker { max-height: none; overflow: visible; margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <h1><span class="flag">🏁</span>LiveTrial<span class="verchip" id="verchip" style="display:none"></span></h1>
+  <span class="sub" id="srcinfo"></span>
+  <span class="lanchip" id="lanchip" style="display:none"></span>
+  <span class="spacer"></span>
+  <span class="seg" role="group" aria-label="language">
+    <button id="lang-nl">NL</button><button id="lang-en">EN</button>
+  </span>
+  <button class="hbtn" id="expertbtn"></button>
+  <a class="hbtn" href="api/export.csv" download="livetrial.csv" title="CSV">⬇ CSV</a>
+  <a class="hbtn" href="api/export.json" download="livetrial-rivals.json" id="expjson"></a>
+  <label class="hbtn" id="implbl"><input type="file" accept="application/json" style="display:none"
+    onchange="if(this.files[0])loadRival(this.files[0])"></label>
+  <a class="hbtn" href="overlay" target="_blank" rel="noopener" id="ovbtn"></a>
+  <button class="hbtn" id="themebtn" title="Licht/donker">🌙</button>
+</header>
+<div class="updbar" id="updbar"></div>
+<div id="livewrap"></div>
+<div class="layout">
+  <nav>
+    <div class="viewtabs">
+      <button id="tab-focus" onclick="VIEW='focus';render()"></button>
+      <button id="tab-runs" onclick="VIEW='runs';render()"></button>
+      <button id="tab-tracks" onclick="VIEW='tracks';render()"></button>
+      <button id="tab-cups" onclick="VIEW='cups';render()"></button>
+      <button id="tab-goals" onclick="VIEW='goals';render()"></button>
+      <button id="tab-storage" onclick="VIEW='storage';loadStorage()"></button>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="runlist" id="runlist"></div>
+  </nav>
+  <main class="detail" id="detail"><div class="empty">…</div></main>
+</div>
+
+<script>
+"use strict";
+/* =============== i18n =============== */
+const STR = {
+  nl: {
+    stLang: "Taal van je Switch", stLangAuto: "automatisch (alle talen)",
+    stLangHint: "Het resultaatscherm toont namen in de taal van je console. "
+      + "Die instellen maakt het herkennen van personagenamen betrouwbaarder.",
+    goals: "Doelen", nsc: "zonder shortcut", sc: "met shortcut", category: "Categorie",
+    analytics: "Analyse", aMedian: "Mediaan", aConsistency: "Consistentie", aSpread: "spreiding",
+    thisRun: "deze run", yourBest: "jouw beste", lost: "verlies", track: "Baan",
+    gHasTime: "Banen met tijd", gStaff: "Nintendo-ghost verslagen",
+    sitePb: "Jouw record op de site", localBest: "Beste op deze pc", nextRival: "Volgende rivaal",
+    behindYou: "Vlak achter je", noRivalAhead: "geen rivaal voor je", fromSite: "van de site",
+    refFor: "Doelen voor", refStale: "records van de site; ververs via het LiveTrial-menu (11)",
+    goalRivals: "Rivalen", goalRivalsBeat: "Voor op alle rivalen", goalNoRivals: "nog geen rivalen op de site",
+    focus: "Focus", yourFocus: "Jouw focus", fRivals: "Rivalen", fGlobal: "Globaal", fAll: "alles",
+    fBest: "Laagste Mastery", fClosest: "Dichtste rivaal", fBiggest: "Grootste achterstand",
+    fLowest: "Je laagste Mastery", fImprove: (d, n) => `Verbeter met ${d} om ${n} te halen.`, fTop: "Dit is al je hoogste Mastery-tier.",
+    fIsRank: (n, r) => `${n} is #${r} op deze baan.`, fIsRankYou: (n, r, y) => `${n} is #${r} hier — jij bent #${y}.`,
+    fYou: "Jij", fNoRival: "Geen rivaal voor je op een baan; je leidt overal.", fNoAbove: "Niemand voor je; je leidt overal.",
+    fSignIn: "Meld je aan in het LiveTrial-venster om je focus van de site te zien.",
+    updAvail: (v) => `Nieuwe LiveTrial-versie ${v} beschikbaar`, updGet: "downloaden op example.invalid",
+    goalStaff: "Nintendo-ghost", goalWorld: "Wereldrecord", goalStaffBeat: "Nintendo-ghost verslagen",
+    goalWr10: "Wereldrecords binnen 10s",
+    exportCsv: "CSV", exportJson: "Deel-export", importRival: "Rivaal laden", rival: "Rivaal",
+    pkg: "Bewijspakket", overlay: "OBS-overlay",
+    recap: "Sessie-overzicht", wrCombo: "WR-combo", wrVideo: "video",
+    runs: "Runs", tracks: "Banen", cups: "Bekers", storage: "Opslag",
+    onlyFinished: "alleen gefinisht", showArchived: "toon gearchiveerd",
+    stTitle: "Opslag & opnames", stUsed: "Gebruikt door clips", stFree: "Vrij op schijf",
+    stClips: "Clips", stSessions: "Sessies", stProtected: "Beschermd", stFreeable: "Op te ruimen",
+    stBudget: "Maximale totale grootte (GB)", stKeepLatest: "Bewaar laatste X opnames",
+    stKeepRecords: "Bewaar clip bij nieuw record (per baan)", stKeepBest: "Bewaar snelste run (per baan)",
+    stMinFree: "Waarschuw onder (GB vrij)", stAuto: "Automatisch opruimen",
+    stPause: "Stop opnemen bij weinig ruimte", stCleanup: "Nu opruimen",
+    stDry: "Toon wat verwijderd wordt", stNothing: "Niets op te ruimen — alles past binnen het budget.",
+    stCapacity: "Ruimte over", stPerRun: "per run", stPerHour: "per uur",
+    stRecommend: (mn, rec, n) => `${n} banen: min. ${mn} GB (1 beste run per baan), aanbevolen ${rec} GB`,
+    stRes: "Opnameresolutie", stResSource: "zoals capture card", stResHint: "720p is het minimum",
+    stRecVideo: "Video's opnemen", stStills: "Eindschermen",
+    stNoVideo: "Video-opname staat uit — alleen het eindscherm van elke run wordt bewaard.",
+    endscreen: "Eindscherm", stillOnly: "de video is opgeruimd — het eindscherm blijft bewaard",
+    stReqTitle: (n, s) => `Benodigde ruimte voor alle ${n} banen (gem. clip ${s} s)`,
+    stReqMin: "minimum", stReqRec: "aanbevolen",
+    stReqNote: "Clipduur uit de Nintendo-ghosttijden +10% voor een menselijke rijder, plus 15 s pre-roll en 25 s resultaatscherm. Minimum = 1 beste run per baan + 15 extra clips.",
+    stFits: (n, h) => `nog ~${n} runs (~${h} uur) tot vol`,
+    stStored: "Opgenomen", stWillDelete: n => `${n} clip(s) worden verwijderd`, stPin: "Vastzetten", stUnpin: "Losmaken",
+    stReasons: { pinned: "vastgezet", record: "nieuw record", best: "snelste", latest: "recent" },
+    cupsTitle: "Bekers & banen", cupsDone: "met tijd", cupsRecord: "record", cupsNone: "nog geen tijd",
+    expert: "expert", finished: "gefinisht", aborted: "gestopt",
+    won: "gewonnen", lost: "verloren", record: "record!", unknownTrack: "Onbekende baan",
+    playerTotal: "Totaaltijd", ghostTotal: "Ghost-tijd", coins: "Munten", mushrooms: "Paddenstoelen",
+    vsGhost: "t.o.v. ghost", lap: "Ronde", laps: "rondes", delta: "Δ ghost", cum: "Δ totaal",
+    coinsShort: "munten", lapTimes: "Rondetijden", loadouts: "Setups", player: "Speler", ghost: "Ghost",
+    timeline: "Munten, paddenstoelen & rondes", records: "Records op deze baan", worldRecord: "Wereldrecord",
+    staffGhost: "Nintendo-ghost", personalBest: "Persoonlijk record", gap: "verschil",
+    eventLog: "Gebeurtenissenlog (tabel)", liveLog: "Live-log rond deze race", time: "tijd", event: "gebeurtenis", detail: "detail",
+    abortedNote: "Deze run is voortijdig gestopt — er is geen resultaatscherm, dus geen tijden of setups.",
+    resultSkippedNote: "De finish is gehaald! Maar het resultaatscherm was te kort in beeld om tijden en setups te lezen — laat het na de finish een paar seconden staan.",
+    abortedReason: { hud_lost: "de race werd verlaten of gereset", restart: "de race werd herstart",
+                     menu_gate: "er werd teruggegaan naar het menu", countdown_vanished: "de start ging niet door",
+                     video_end: "het beeld stopte tijdens de race", result_skipped: "",
+                     lost_track: "het beeld werd onherkenbaar tijdens de race" },
+    ev: { go: "GO! — race gestart", finish: "Finish — resultaatscherm", coin: "Munt",
+          lap: "Ronde", mushrooms: "Paddenstoel gebruikt", mushroom_use_3to2: "1e paddenstoel",
+          mushroom_use_2to1: "2e paddenstoel", mushroom_use_1to0_ring_exit: "Laatste paddenstoel",
+          banner_won: "Ghost verslagen 🏅", banner_lost: "Verloren van ghost", banner_new_record: "NIEUW RECORD 🏆",
+          deltaAhead: "voor op de ghost", deltaBehind: "achter op de ghost",
+          lapTime: "Rondetijd", pause: "⏸️ Gepauzeerd", resume: "▶️ Hervat" },
+    recapWin: (c, m, d) => `Je pakte ${c} munten, gebruikte ${m} paddenstoel${m === 1 ? "" : "en"} en was ${d} sneller dan je ghost. 🎉`,
+    recapLose: (c, m, d) => `Je pakte ${c} munten, gebruikte ${m} paddenstoel${m === 1 ? "" : "en"} en kwam ${d} tekort op je ghost.`,
+    recapSolo: (c, m) => `Je pakte ${c} munten en gebruikte ${m} paddenstoel${m === 1 ? "" : "en"}.`,
+    attempts: "pogingen", theoBest: "Theoretisch best", copyJson: "kopieer JSON", copied: "gekopieerd ✓",
+    downloadCard: "download run-kaart", printBtn: "print", archive: "archiveer", unarchive: "herstel",
+    unsure: "onzeker", evidence: "toon bewijs", hideEvidence: "verberg bewijs",
+    trackVerified: "gecontroleerd", trackVerifiedTip: "Tijden sluiten en gelezen — deze run klopt",
+    trackCheck: "controleer", trackCheckTip: "Gelezen, maar de laptijden sluiten niet exact — even nakijken",
+    trackingOk: "tracking", trackingTip: "Context vastgelegd — deze run wordt goed opgenomen",
+    liveConnect: "Verbinden…", liveMenus: "In de menu's — kies een baan",
+    liveConfirmed: "Baan gekozen — wachten op de start", liveCountdown: "Aftellen…",
+    liveReading: "Resultaatscherm lezen…", session: "sessie",
+    liveRacing: (l, n, c, m) => `Race bezig — ronde ${l}/${n} · ${c} munten · ${m} paddenstoelen over`,
+    noContext: "nog geen context", waitingEvents: "wachten op gebeurtenissen…", today: "vandaag", yesterday: "gisteren",
+    stepPick: "kies een baan in het spel", stepStart: "start de time trial", stepWatch: "ik registreer alles live",
+    rec: "opnemen", autoClips: "auto-clips per run", clips: "clips",
+    waitTrack: "wacht op een baan — kies er een in het spel", waitTrigger: "nog geen triggers — start de time trial",
+    langDetecting: "taal van de Switch: wordt herkend…", langDetected: "taal van de Switch, herkend bij de start van deze sessie",
+    langChosen: "taal van de Switch, gekozen in de instellingen",
+    picture: "Beeld", pictureTip: "Hoeveel livebeelden dit venster per seconde echt laat zien (30 is vloeiend)",
+    firstFrame: "Eerste beeld van de capturekaart…", lastTrigger: "LAATSTE TRIGGER", triggers: "triggers herkend", showAll: "toon alle gebeurtenissen, rondes en clips",
+    stopCapture: "Opname stoppen", stopConfirm: "Opname stoppen en terug naar het menu in het LiveTrial-venster?",
+    ghostPanel: "Ghostpaneel", panelCollapsed: "ingeklapt", panelExpanded: "uitgeklapt",
+    ghostReplay: "Ghost-replay", ghostKart: "Kart", ghostClip: "Clip van deze replay", ghostMine: "Van mij",
+    replayOf: "Herhaling van", replayLoop: "ronde", staffGhost: "Nintendo-staff",
+    stopped: "Opname gestopt. Het LiveTrial-venster staat weer in het menu; dit tabblad kun je sluiten.",
+    clip: "Clip van deze run", downloadClip: "download clip", noFlag: "geen vlag ingesteld",
+    noRuns: "Nog geen runs — start een time trial, ik kijk mee via de capture-kaart.",
+    speed: "Snelheid", accel: "Acceleratie", weight: "Gewicht", handling: "Besturing", grip: "Grip", miniturbo: "Mini-turbo",
+    identical: "speler en ghost rijden identieke setups", vsWr: "vs WR", bestPossible: "theoretisch best",
+    nameRead: "naamstrip", statsLegendCap: "5,75-limiet",
+    // live-ticker phrasing: each returns the row's inner HTML (bold key value +
+    // dim surrounds already placed) so word order localizes cleanly per language.
+    // Values (n, total, name, cc…) are pre-escaped by tickerRow.
+    dec: ",",
+    tk: {
+      go: () => `<b class="win">GO!</b> <span class="dim">race gestart</span>`,
+      countdown: () => `Aftellen <span class="dim">— race begint</span>`,
+      lap: n => `Ronde <b>${n}</b>`,
+      lapNow: n => `<span class="dim">nu op ronde</span> <b>${n}</b>`,
+      lapReport: (n, t, gap) =>
+        `Ronde <b>${n}</b> <span class="dim">·</span> <b>${t}</b>`
+        + (gap ? ` <span class="dim">·</span> ${gap}` : ""),
+      lapDelta: (n, gap) => `Na ronde <b>${n}</b> <span class="dim">·</span> ${gap}`,
+      paused: () => `<b>Gepauzeerd</b> <span class="dim">— de raceklok staat stil</span>`,
+      resumed: h => `Hervat <span class="dim">na</span> <b>${h}</b>`,
+      ahead: "VOOR", behind: "ACHTER", sec: " s",
+      coins: (a, b) => `Munten ${a} <span class="arw">→</span> <b class="g">${b}</b>`,
+      mush: n => `Paddenstoel gebruikt <span class="dim">·</span> <b>${n}</b> over`,
+      lastMush: () => `<b>Laatste</b> paddenstoel <span class="dim">(ring-uitgang)</span>`,
+      finishWait: () => `Resultaatscherm — <b>even laten staan</b>, ik lees je tijden…`,
+      beaten: () => `Ghost <b class="win">verslagen</b>`,
+      lost: () => `<b class="bad">Verloren</b> van ghost`,
+      record: () => `<b class="g">NIEUW RECORD</b>`,
+      cc: cc => `CC-klasse <b class="cc${cc === "200" ? "200" : "150"}">${cc}cc</b>`,
+      mode: m => `Modus <b>${m}</b>`,
+      track: name => `Baan <b>${name}</b>`,
+      cupReset: () => `Terug in het cupmenu <span class="dim">— baan en klasse worden bij de volgende race opnieuw gelezen</span>`,
+      clipSaved: () => `<span class="dim">Clip opgeslagen</span>`,
+      runFinished: (n, total) => total
+        ? `Run <b>${n}</b> gefinisht <span class="dim">· totaal</span> <b>${total}</b>`
+        : `Run <b>${n}</b> gefinisht`,
+      runSkipped: n => `Run <b>${n}</b> gefinisht <span class="dim">— resultaatscherm te kort, geen tijden gelezen</span>`,
+      runDone: n => `Run <b>${n}</b> opgeslagen — start de volgende race of probeer deze opnieuw.`,
+      aborted: (n, reason) => `Run ${n} gestopt <span class="dim">(${reason})</span>`,
+    },
+  },
+  en: {
+    stLang: "Switch language", stLangAuto: "automatic (all languages)",
+    stLangHint: "The result screen prints names in your console's language. "
+      + "Setting it makes character-name reads more reliable.",
+    goals: "Goals", nsc: "no shortcut", sc: "shortcut", category: "Category",
+    analytics: "Analytics", aMedian: "Median", aConsistency: "Consistency", aSpread: "spread",
+    thisRun: "this run", yourBest: "your best", lost: "lost", track: "Track",
+    gHasTime: "Courses with a time", gStaff: "Staff ghost beaten",
+    sitePb: "Your record on the site", localBest: "Best on this PC", nextRival: "Next rival",
+    behindYou: "Just behind you", noRivalAhead: "no rival ahead of you", fromSite: "from the site",
+    refFor: "Targets for", refStale: "records from the site; refresh from the LiveTrial menu (11)",
+    goalRivals: "Rivals", goalRivalsBeat: "Ahead of all rivals", goalNoRivals: "no rivals on the site yet",
+    focus: "Focus", yourFocus: "Your focus", fRivals: "Rivals", fGlobal: "Global", fAll: "all",
+    fBest: "Lowest mastery", fClosest: "Closest rival", fBiggest: "Biggest gap",
+    fLowest: "Your lowest Mastery", fImprove: (d, n) => `Improve by ${d} to reach ${n}.`, fTop: "This is already your strongest possible Mastery tier.",
+    fIsRank: (n, r) => `${n} is #${r} on this track.`, fIsRankYou: (n, r, y) => `${n} is #${r} here — you are #${y}.`,
+    fYou: "You", fNoRival: "No rival ahead of you on any track; you lead everywhere.", fNoAbove: "Nobody above you; you lead everywhere.",
+    fSignIn: "Sign in from the LiveTrial window to see your focus from the site.",
+    updAvail: (v) => `New LiveTrial version ${v} available`, updGet: "download at example.invalid",
+    goalStaff: "Nintendo ghost", goalWorld: "World record", goalStaffBeat: "Staff ghosts beaten",
+    goalWr10: "World records within 10s",
+    exportCsv: "CSV", exportJson: "Share export", importRival: "Load rival", rival: "Rival",
+    pkg: "Proof package", overlay: "OBS overlay",
+    recap: "Session recap", wrCombo: "WR combo", wrVideo: "video",
+    runs: "Runs", tracks: "Tracks", cups: "Cups", storage: "Storage",
+    onlyFinished: "finished only", showArchived: "show archived",
+    stTitle: "Storage & recordings", stUsed: "Used by clips", stFree: "Free on disk",
+    stClips: "Clips", stSessions: "Sessions", stProtected: "Protected", stFreeable: "Reclaimable",
+    stBudget: "Max total size (GB)", stKeepLatest: "Keep latest X recordings",
+    stKeepRecords: "Keep the new-record clip (per track)", stKeepBest: "Keep the fastest run (per track)",
+    stMinFree: "Warn below (GB free)", stAuto: "Clean up automatically",
+    stPause: "Stop recording when space is low", stCleanup: "Clean up now",
+    stDry: "Preview what gets deleted", stNothing: "Nothing to clean up — everything fits the budget.",
+    stCapacity: "Room left", stPerRun: "per run", stPerHour: "per hour",
+    stRecommend: (mn, rec, n) => `${n} courses: min ${mn} GB (one best run each), recommended ${rec} GB`,
+    stRes: "Recording resolution", stResSource: "as captured", stResHint: "720p is the minimum",
+    stRecVideo: "Record videos", stStills: "End screens",
+    stNoVideo: "Video recording is off — only each run's end screen is kept.",
+    endscreen: "End screen", stillOnly: "the video was cleaned up — the end screen is kept",
+    stReqTitle: (n, s) => `Space needed for all ${n} courses (avg clip ${s} s)`,
+    stReqMin: "minimum", stReqRec: "recommended",
+    stReqNote: "Clip length from the Nintendo staff-ghost times +10% for a human driver, plus 15 s pre-roll and 25 s result screen. Minimum = one best run per course + 15 spare clips.",
+    stFits: (n, h) => `~${n} more runs (~${h} h) until full`,
+    stStored: "Recorded", stWillDelete: n => `${n} clip(s) would be deleted`, stPin: "Pin", stUnpin: "Unpin",
+    stReasons: { pinned: "pinned", record: "new record", best: "fastest", latest: "recent" },
+    cupsTitle: "Cups & tracks", cupsDone: "have a time", cupsRecord: "record", cupsNone: "no time yet",
+    expert: "expert", finished: "finished", aborted: "stopped",
+    won: "won", lost: "lost", record: "record!", unknownTrack: "Unknown track",
+    playerTotal: "Total time", ghostTotal: "Ghost time", coins: "Coins", mushrooms: "Mushrooms",
+    vsGhost: "vs ghost", lap: "Lap", laps: "laps", delta: "Δ ghost", cum: "Δ total",
+    coinsShort: "coins", lapTimes: "Lap times", loadouts: "Setups", player: "Player", ghost: "Ghost",
+    timeline: "Coins, mushrooms & laps", records: "Records on this track", worldRecord: "World record",
+    staffGhost: "Nintendo ghost", personalBest: "Personal best", gap: "gap",
+    eventLog: "Event log (table)", liveLog: "Live log around this race", time: "time", event: "event", detail: "detail",
+    abortedNote: "This run ended early — there is no result screen, so no times or setups.",
+    resultSkippedNote: "You crossed the finish line! But the result screen was gone too quickly to read times and setups — leave it up a few seconds after finishing.",
+    abortedReason: { hud_lost: "the race was quit or reset", restart: "the race was restarted",
+                     menu_gate: "returned to the menus", countdown_vanished: "the start never happened",
+                     video_end: "the feed stopped mid-race", result_skipped: "",
+                     lost_track: "the feed became unrecognisable mid-race" },
+    ev: { go: "GO! — race started", finish: "Finish — result screen", coin: "Coin",
+          lap: "Lap", mushrooms: "Mushroom used", mushroom_use_3to2: "1st mushroom",
+          mushroom_use_2to1: "2nd mushroom", mushroom_use_1to0_ring_exit: "Last mushroom",
+          banner_won: "Ghost beaten 🏅", banner_lost: "Lost to ghost", banner_new_record: "NEW RECORD 🏆",
+          deltaAhead: "ahead of the ghost", deltaBehind: "behind the ghost",
+          lapTime: "Lap time", pause: "⏸️ Paused", resume: "▶️ Resumed" },
+    recapWin: (c, m, d) => `You grabbed ${c} coins, used ${m} mushroom${m === 1 ? "" : "s"} and beat your ghost by ${d}. 🎉`,
+    recapLose: (c, m, d) => `You grabbed ${c} coins, used ${m} mushroom${m === 1 ? "" : "s"} and finished ${d} behind your ghost.`,
+    recapSolo: (c, m) => `You grabbed ${c} coins and used ${m} mushroom${m === 1 ? "" : "s"}.`,
+    attempts: "attempts", theoBest: "Theoretical best", copyJson: "copy JSON", copied: "copied ✓",
+    downloadCard: "download run card", printBtn: "print", archive: "archive", unarchive: "restore",
+    unsure: "unsure", evidence: "show evidence", hideEvidence: "hide evidence",
+    trackVerified: "verified", trackVerifiedTip: "Times close and read — this run checks out",
+    trackCheck: "check", trackCheckTip: "Read, but the lap times don't sum exactly — worth a look",
+    trackingOk: "tracking", trackingTip: "Context captured — this run is being recorded correctly",
+    liveConnect: "Connecting…", liveMenus: "In the menus — pick a track",
+    liveConfirmed: "Track confirmed — waiting for the start", liveCountdown: "Countdown…",
+    liveReading: "Reading result screen…", session: "session",
+    liveRacing: (l, n, c, m) => `Racing — lap ${l}/${n} · ${c} coins · ${m} mushrooms left`,
+    noContext: "no context yet", waitingEvents: "waiting for events…", today: "today", yesterday: "yesterday",
+    stepPick: "pick a track in the game", stepStart: "start the time trial", stepWatch: "I'll record everything live",
+    rec: "record", autoClips: "auto-clips per run", clips: "clips",
+    waitTrack: "waiting for a track — pick one in the game", waitTrigger: "no triggers yet — start the time trial",
+    langDetecting: "Switch language: recognising…", langDetected: "Switch language, recognised at the start of this session",
+    langChosen: "Switch language, chosen in the settings",
+    picture: "Picture", pictureTip: "How many live frames per second this window really shows (30 is smooth)",
+    firstFrame: "First picture from the capture card…", lastTrigger: "LAST TRIGGER", triggers: "triggers recognised", showAll: "show every event, lap and clip",
+    stopCapture: "Stop capture", stopConfirm: "Stop capturing and return to the menu in the LiveTrial window?",
+    ghostPanel: "Ghost panel", panelCollapsed: "collapsed", panelExpanded: "expanded",
+    ghostReplay: "Ghost replay", ghostKart: "Kart", ghostClip: "Clip of this replay", ghostMine: "Mine",
+    replayOf: "Replay of", replayLoop: "loop", staffGhost: "Nintendo staff",
+    stopped: "Capture stopped. The LiveTrial window is back at its menu; you can close this tab.",
+    clip: "Clip of this run", downloadClip: "download clip", noFlag: "no flag set",
+    noRuns: "No runs yet — start a time trial, I'm watching the capture card.",
+    speed: "Speed", accel: "Acceleration", weight: "Weight", handling: "Handling", grip: "Grip", miniturbo: "Mini-turbo",
+    identical: "player and ghost run identical setups", vsWr: "vs WR", bestPossible: "theoretical best",
+    nameRead: "name strip", statsLegendCap: "5.75 cap",
+    // live-ticker phrasing (see nl.tk); returns row inner HTML, values pre-escaped.
+    dec: ".",
+    tk: {
+      go: () => `<b class="win">GO!</b> <span class="dim">race started</span>`,
+      countdown: () => `Countdown <span class="dim">— race starting</span>`,
+      lap: n => `Lap <b>${n}</b>`,
+      lapNow: n => `<span class="dim">now on lap</span> <b>${n}</b>`,
+      lapReport: (n, t, gap) =>
+        `Lap <b>${n}</b> <span class="dim">·</span> <b>${t}</b>`
+        + (gap ? ` <span class="dim">·</span> ${gap}` : ""),
+      lapDelta: (n, gap) => `After lap <b>${n}</b> <span class="dim">·</span> ${gap}`,
+      paused: () => `<b>Paused</b> <span class="dim">— the race clock is stopped</span>`,
+      resumed: h => `Resumed <span class="dim">after</span> <b>${h}</b>`,
+      ahead: "AHEAD", behind: "BEHIND", sec: "s",
+      coins: (a, b) => `Coins ${a} <span class="arw">→</span> <b class="g">${b}</b>`,
+      mush: n => `Mushroom used <span class="dim">·</span> <b>${n}</b> left`,
+      lastMush: () => `<b>Last</b> mushroom used <span class="dim">(ring exit)</span>`,
+      finishWait: () => `<b>Keep the results screen</b> — reading the times…`,
+      beaten: () => `Ghost <b class="win">beaten</b>`,
+      lost: () => `<b class="bad">Lost</b> to ghost`,
+      record: () => `<b class="g">NEW RECORD</b>`,
+      cc: cc => `CC class <b class="cc${cc === "200" ? "200" : "150"}">${cc}cc</b>`,
+      mode: m => `Mode <b>${m}</b>`,
+      track: name => `Track <b>${name}</b>`,
+      cupReset: () => `Back at the cup screen <span class="dim">— track and class are read afresh for the next race</span>`,
+      clipSaved: () => `<span class="dim">Clip saved</span>`,
+      runFinished: (n, total) => total
+        ? `Run <b>${n}</b> finished <span class="dim">· total</span> <b>${total}</b>`
+        : `Run <b>${n}</b> finished`,
+      runSkipped: n => `Run <b>${n}</b> finished <span class="dim">— result screen too short, no times read</span>`,
+      runDone: n => `Run <b>${n}</b> saved — start the next race or retry this one.`,
+      aborted: (n, reason) => `Run ${n} stopped <span class="dim">(${reason})</span>`,
+    },
+  },
+};
+let LANG = (q => q === "en" || q === "nl" ? q : null)(new URLSearchParams(location.search).get("lang")) || localStorage.getItem("lt-lang") || "nl";
+let EXPERT = localStorage.getItem("lt-expert") === "1";
+const T = k => STR[LANG][k] ?? STR.en[k] ?? k;
+
+/* =============== helpers =============== */
+const fmtT = ms => {
+  if (ms == null) return "—";
+  const s = ms / 1000, m = Math.floor(s / 60);
+  return `${m}:${(s - m * 60).toFixed(3).padStart(6, "0")}`;
+};
+const fmtD = ms => (ms >= 0 ? "+" : "−") + fmtT(Math.abs(ms));
+const fmtDs = fmtD;  // all deltas in x:xx.xxx (user preference)
+const GAP_RED_MS = 6000;      // this far behind (or more) is fully red
+const GAP_GREEN_MS = 3000;    // this far ahead (or more) is fully green
+function gapHue(ms) {
+  if (ms == null) return null;
+  if (ms <= 0) return 130;                                   // ahead: green
+  const t = Math.min(1, ms / GAP_RED_MS);
+  return Math.round(45 * (1 - t));                            // behind: amber -> red
+}
+function gapStyle(ms) {
+  const h = gapHue(ms);
+  if (h == null) return "";
+  const strength = ms <= 0 ? Math.min(1, -ms / GAP_GREEN_MS) : Math.min(1, ms / GAP_RED_MS);
+  // Solid chip, white text: a tinted text on a tinted background of the same
+  // hue was unreadable (owner 2026-09-07). Strength deepens the chip.
+  const sat = 60 + Math.round(30 * strength);
+  const light = 48 - Math.round(12 * strength);
+  return `color:#fff;font-weight:800;background:hsl(${h} ${sat}% ${light}%)`;
+}
+function gapRowStyle(ms) {
+  const h = gapHue(ms);
+  if (h == null) return "";
+  const strength = ms <= 0 ? Math.min(1, -ms / GAP_GREEN_MS) : Math.min(1, ms / GAP_RED_MS);
+  return `background:linear-gradient(90deg, transparent 55%, hsl(${h} 70% 50% / ${(0.06 + 0.16 * strength).toFixed(2)}))`;
+}
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const pretty = id => {
+  if (!id) return "?";
+  const parts = String(id).split(".");
+  let slug = parts[parts.length - 1].replace(/^\d+_/, "");
+  if (parts[0].endsWith("_variant") && parts.length >= 3) slug = slug + " " + parts[1];
+  return slug.replace(/_/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+};
+const dayLabel = ts => {
+  if (!ts) return "?";
+  const d = new Date(ts * 1000), now = new Date();
+  const sameDay = (a, b) => a.toDateString() === b.toDateString();
+  if (sameDay(d, now)) return T("today");
+  const yd = new Date(now); yd.setDate(now.getDate() - 1);
+  if (sameDay(d, yd)) return T("yesterday");
+  return d.toLocaleDateString(LANG === "nl" ? "nl-NL" : "en-GB", { day: "numeric", month: "short" });
+};
+const timeLabel = ts => ts ? new Date(ts * 1000).toLocaleTimeString(LANG === "nl" ? "nl-NL" : "en-GB",
+  { hour: "2-digit", minute: "2-digit" }) : "";
+
+/* =============== data =============== */
+let DATA = { runs: [] }, META = null, SELKEY = null, VIEW = "runs";
+// The signed-in Player's published bests and rivals (api/reference), written
+// by the LiveTrial console beside the runs. Empty when nobody is signed in.
+let REF = null;
+function refFor(tid, cc) {
+  const t = REF && REF.tracks && REF.tracks[tid];
+  return t ? (t[String(cc)] || null) : null;
+}
+let GOALCC = localStorage.getItem("lt-goalcc") || "150";
+let FOCUSSCOPE = localStorage.getItem("lt-focusscope") || "rivals";
+let FOCUSCC = localStorage.getItem("lt-focuscc") || "150";
+let GOALTARGET = localStorage.getItem("lt-goaltarget") || "staff";
+let CUPCC = localStorage.getItem("lt-cupcc") || "150";
+// Owner 2026-09-27: finished runs only by default; the choice is remembered.
+let FILT = { finishedOnly: localStorage.getItem("lt-finishedonly") !== "0", showArchived: false };
+let LAST_SNAP = "", FORCE_RENDER = false, LAST_DETAIL_KEY = "";
+const A = p => p ? "assets/" + p : null;
+const part = id => (META && META.parts && META.parts[id]) || null;
+const partName = id => { const p = part(id); return p ? p.name : pretty(id); };
+const flagOf = id => (META && META.flags && META.flags[id]) || null;
+const trackOf = id => (META && META.tracks && META.tracks[id]) || null;
+const runKey = r => r.key || `${r.source}|${r.run}|${r.goAtMs}`;
+const locName = t => t ? (LANG === "nl" && t.nameNl ? t.nameNl : t.name) : null;
+const ccChip = cc => cc ? `<span class="badge ccb cc${esc(cc)}">${esc(cc)}cc</span>` : "";
+
+async function load() {
+  try {
+    if (!META) META = await (await fetch("api/meta", { cache: "force-cache" })).json();
+  } catch (e) { META = { parts: {}, flags: {}, tracks: {}, items: {}, records: {} }; }
+  try {
+    const ref = await (await fetch("api/reference", { cache: "no-store" })).json();
+    const refSnap = JSON.stringify(ref);
+    if (refSnap !== JSON.stringify(REF)) { REF = ref && ref.format ? ref : null; FORCE_RENDER = true; }
+    const vc = document.getElementById("verchip");
+    if (REF && REF.productVersion) { vc.textContent = "v" + REF.productVersion; vc.style.display = ""; } else { vc.style.display = "none"; }
+    const ub = document.getElementById("updbar");
+    if (REF && REF.update && REF.update.version) {
+      ub.innerHTML = `⬆ ${esc(T("updAvail")(REF.update.version))}${REF.update.releasedOn ? " · " + esc(REF.update.releasedOn) : ""}`
+        + `<a href"${esc(REF.update.downloadUrl || "https://example.invalid/?apps=1")}" target="_blank" rel="noopener">${esc(T("updGet"))}</a>`;
+      ub.style.display = "block";
+    } else { ub.style.display = "none"; }
+  } catch (e) { /* the engine may predate api/reference; the page works without it */ }
+  try {
+    DATA = await (await fetch("api/runs", { cache: "no-store" })).json();
+  } catch (e) {
+    document.getElementById("detail").innerHTML =
+      `<div class="empty">api/runs unreachable.<br><code>python livetrial\\serve.py</code></div>`;
+    return;
+  }
+  DATA.runs.sort((a, b) => (b.capturedAt || 0) - (a.capturedAt || 0) || b.run - a.run);
+  // ghost replays watched to the line: listed and shown like runs, never counted as the player's
+  DATA.ghostRuns = DATA.ghostRuns || [];
+  // re-render only when the run data actually changed: keeps scroll position,
+  // text selection and open <details> intact during live polling
+  const snap = JSON.stringify(DATA.runs) + "|" + JSON.stringify(DATA.ghostRuns) + "|" + DATA.lanUrl;
+  if (snap !== LAST_SNAP || FORCE_RENDER) {
+    LAST_SNAP = snap; FORCE_RENDER = false;
+    render();
+  }
+  updateLive();  // live panel updates in place (no DOM rebuild)
+  if (DATA.live) setTimeout(load, 1500);
+}
+
+/* =============== derived =============== */
+const outcome = r => {
+  const types = (r.events || []).map(e => e.type);
+  if (types.includes("banner_new_record")) return ["rec", T("record")];
+  if (types.includes("banner_won")) return ["won", T("won")];
+  if (types.includes("banner_lost")) return ["lost", T("lost")];
+  return r.aborted ? ["", T("aborted")] : ["", T("finished")];
+};
+const trackId = r => ((r.context || {}).trackName || {}).trackId || null;
+const trackName = r => {
+  const tid = trackId(r);
+  if (tid) { const t = trackOf(tid); return t ? locName(t) : pretty(tid.replace(/^track\./, "")); }
+  const tn = (r.context || {}).trackName;
+  return tn && tn.raw ? tn.raw : T("unknownTrack");
+};
+const trackIcon = r => { const t = trackId(r) && trackOf(trackId(r)); return t && t.icon ? A(t.icon) : null; };
+const cupOf = r => { const t = trackId(r) && trackOf(trackId(r)); return t && t.cup ? t.cup : null; };
+const cupImg = (cup, cls) => cup && cup.icon
+  ? `<img class="${cls || "cupic"}" src="${A(cup.icon)}" alt="${esc(locName(cup) || "")}" title="${esc(locName(cup) || "")}" loading="lazy">` : "";
+// the real in-game finish banners (Clean Assets hud/templates, localized)
+const BOO = "assets/images/items/icons/028_boo.png";
+const outcomeBanner = (cls, height) => {
+  const file = { won: "070_finish_banner_won", rec: "071_finish_banner_new_record",
+                 lost: "072_finish_banner_lost" }[cls];
+  // language-per-directory (en/, nl/, and future es/ de/ fr/ it/ ...); if a
+  // language folder has no banner yet, fall back to the English cutout.
+  return file ? `<img class="obanner" style="height:${height}px"
+    src="assets/images/hud/templates/${LANG}/${file}.png"
+    onerror="this.onerror=null;this.src='assets/images/hud/templates/en/${file}.png'" alt="${cls}">` : "";
+};
+// "Do we know this run is good?" — a green/amber confidence chip from signals the
+// pipeline already produces. Green = accepted AND the player lap times SUM to the
+// total (and the ghost's too, when present) — the read is internally consistent,
+// so you don't have to guess. Amber = finished but the sum didn't close: worth a
+// glance. Aborted / in-progress runs get no chip (handled elsewhere).
+function trackConfidence(r) {
+  if (!r || r.aborted || !r.finished) return null;
+  const res = r.results || {}, p = res.player || {}, g = res.ghost;
+  const sumOk = p.lapSumOk === true && (!g || g.lapSumOk !== false);
+  return (res.accepted === true && sumOk)
+    ? { cls: "cok", icon: "✓", txt: T("trackVerified"), tip: T("trackVerifiedTip") }
+    : { cls: "cwarn", icon: "!", txt: T("trackCheck"), tip: T("trackCheckTip") };
+}
+const confChip = r => {
+  const c = trackConfidence(r);
+  return c ? `<span class="conf ${c.cls}" title="${esc(c.tip)}">${c.icon} ${esc(c.txt)}</span>` : "";
+};
+// The list shows the player's runs and ghost replays together, newest first.
+// Everything that COUNTS (PBs, goals, tracks, cups) reads countedRuns(): the
+// player's runs plus the ghosts they marked Mine — a time they own. A day recap
+// counts only runs driven that day, so never a ghost (ADR-0210 rule 11).
+const sameResult = (a, b) => trackId(a) === trackId(b)
+  && String((a.context || {}).cc) === String((b.context || {}).cc)
+  && ((a.results || {}).player || {}).totalMs === ((b.results || {}).player || {}).totalMs;
+const countedRuns = () => DATA.runs.concat((DATA.ghostRuns || []).filter(g =>
+  (g.ghostReplay || {}).mine && !DATA.runs.some(r => !r.aborted && sameResult(r, g))));
+const visibleRuns = () => DATA.runs.filter(r =>
+  (FILT.showArchived || !r.archived) && (!FILT.finishedOnly || !r.aborted))
+  .concat(DATA.ghostRuns || [])
+  .sort((a, b) => (b.capturedAt || 0) - (a.capturedAt || 0));
+const selectedRun = () => visibleRuns().find(r => runKey(r) === SELKEY) || visibleRuns()[0] || null;
+
+// Events are indexed by wall time since GO. Lap boundaries come from the result
+// card, which is pure RACE time — the game clock stops while paused. The two
+// agree only when nobody paused, and diverge by the whole pause when someone
+// did: after a 6-minute pause every coin landed past the end of a 79-second
+// run, so the timeline drew them off the chart and every one of them was
+// attributed to the last lap. e.race is t with the pause removed
+// (engine._stamp_race_time); runs recorded before that have no pause either,
+// so falling back to t is exact, not a guess.
+const raceT = e => (e.race != null ? e.race : e.t);
+
+function coinsPerLap(r) {
+  const n = r.lapCount;
+  const evs = (r.events || []).slice().sort((a, b) => raceT(a) - raceT(b));
+  const lapT = lapBoundaries(r).map(l => l.t);  // result-splits first, lap events fallback
+  const laps = [0].concat(lapT);
+  const gained = Array(n).fill(0), lost = Array(n).fill(0), shrooms = Array(n).fill(0);
+  const endCnt = Array(n).fill(null);
+  const lapAt = t => { let li = 0; for (let i = 0; i < laps.length; i++) if (laps[i] <= t) li = i; return Math.min(li, n - 1); };
+  let cur = 0, bi = 0;
+  for (const e of evs) {
+    // passing a lap boundary: the running count is that lap's end count
+    while (bi < lapT.length && raceT(e) >= lapT[bi]) { endCnt[Math.min(bi, n - 1)] = cur; bi++; }
+    if (e.type === "coin") {
+      const d = e.to - e.from;
+      if (d > 0) gained[lapAt(raceT(e))] += d; else if (d < 0) lost[lapAt(raceT(e))] += -d;
+      cur = e.to;
+    }
+    // mushrooms used per lap = the count DECREASE, not the use-trigger
+    // ANIMATION. A rapid triple-fire flashes the "using" animation by too fast
+    // to match (so mushroom_use_3to2/2to1 are missed), but the mushroom COUNTER
+    // still steps down — which is why the graph shows the drop while the table
+    // used to undercount. The count-state events carry the drop (from-to); the
+    // final 1->0 arrives as the ring-exit. Same source as the graph, so they agree.
+    if (e.type === "mushrooms") shrooms[lapAt(raceT(e))] += Math.max(0, e.from - e.to);
+    else if (e.type === "mushroom_use_1to0_ring_exit") shrooms[lapAt(raceT(e))] += 1;
+  }
+  while (bi < lapT.length) { endCnt[Math.min(bi, n - 1)] = cur; bi++; }
+  endCnt[n - 1] = cur;
+  return { gained, lost, endCnt, shrooms, coins: gained };
+}
+
+/* =============== header/UI chrome =============== */
+const isDark = () => getComputedStyle(document.documentElement).colorScheme.includes("dark");
+function chrome() {
+  document.getElementById("lang-nl").className = LANG === "nl" ? "on" : "";
+  document.getElementById("lang-en").className = LANG === "en" ? "on" : "";
+  const eb = document.getElementById("expertbtn");
+  eb.textContent = "⚙ " + T("expert");
+  eb.className = "hbtn" + (EXPERT ? " on" : "");
+  document.getElementById("themebtn").textContent = isDark() ? "☀️" : "🌙";
+  document.getElementById("expjson").textContent = "⬇ " + T("exportJson");
+  document.getElementById("implbl").firstChild.textContent = "⬆ " + T("importRival") +
+    (RIVAL ? " ✓" : "");
+  document.getElementById("ovbtn").textContent = "📺 " + T("overlay");
+  document.getElementById("tab-runs").textContent = T("runs");
+  document.getElementById("tab-runs").className = VIEW === "runs" ? "on" : "";
+  document.getElementById("tab-tracks").textContent = T("tracks");
+  document.getElementById("tab-tracks").className = VIEW === "tracks" ? "on" : "";
+  document.getElementById("tab-focus").textContent = T("focus");
+  document.getElementById("tab-focus").className = VIEW === "focus" ? "on" : "";
+  document.getElementById("tab-goals").textContent = T("goals");
+  document.getElementById("tab-goals").className = VIEW === "goals" ? "on" : "";
+  document.getElementById("tab-cups").textContent = T("cups");
+  document.getElementById("tab-cups").className = VIEW === "cups" ? "on" : "";
+  const sb = document.getElementById("tab-storage");
+  sb.textContent = T("storage") + (storageBadge() || "");
+  sb.className = VIEW === "storage" ? "on" : (storageBadge() ? "warnpulse" : "");
+  document.getElementById("filters").innerHTML = VIEW !== "runs" ? "" : `
+    <label><input type="checkbox" ${FILT.finishedOnly ? "checked" : ""}
+      onchange="FILT.finishedOnly=this.checked;localStorage.setItem('lt-finishedonly',this.checked?'1':'0');render()">${T("onlyFinished")}</label>
+    <label><input type="checkbox" ${FILT.showArchived ? "checked" : ""}
+      onchange="FILT.showArchived=this.checked;render()">${T("showArchived")}</label>`;
+  const lan = document.getElementById("lanchip");
+  if (DATA.lanUrl) { lan.style.display = ""; lan.textContent = "📱 " + DATA.lanUrl; }
+  const n = visibleRuns().length;
+  document.getElementById("srcinfo").innerHTML =
+    (DATA.live ? `<span class="livemark">LIVE</span> · ` : "") + n + " " + T("runs").toLowerCase();
+}
+document.getElementById("themebtn").onclick = () => {
+  const r = document.documentElement;
+  r.classList.add("notrans");              // no half-painted mixed-theme frames
+  r.dataset.theme = isDark() ? "light" : "dark";
+  localStorage.setItem("lt-theme", r.dataset.theme);
+  setTimeout(() => r.classList.remove("notrans"), 120);
+  render();
+};
+const setLang = l => { LANG = l; localStorage.setItem("lt-lang", LANG); render(); updateLive(); };
+document.getElementById("lang-nl").onclick = () => setLang("nl");
+document.getElementById("lang-en").onclick = () => setLang("en");
+document.getElementById("expertbtn").onclick = () => {
+  EXPERT = !EXPERT; localStorage.setItem("lt-expert", EXPERT ? "1" : "0"); render();
+};
+async function toggleArchive(key) {
+  try { await fetch("api/archive?key=" + encodeURIComponent(key)); } catch (e) {}
+  FORCE_RENDER = true;
+  load();
+}
+// one delegated listener: no JSON inside HTML attributes (quote-safe)
+document.getElementById("detail").addEventListener("click", async ev => {
+  const pb = ev.target.closest("[data-pin]");
+  if (pb) { ev.stopPropagation(); togglePin(pb.dataset.pin); return; }
+  const cb = ev.target.closest("[data-cat]");
+  if (cb) {
+    ev.stopPropagation();
+    try { await fetch(`api/category?key=${encodeURIComponent(cb.dataset.cat)}&value=${cb.dataset.catval}`); }
+    catch (e) {}
+    FORCE_RENDER = true; load(); return;
+  }
+  const rc = ev.target.closest("[data-key]");
+  if (rc) {
+    ev.stopPropagation();
+    VIEW = "runs";
+    SELKEY = rc.dataset.key;
+    FORCE_RENDER = true;
+    render();
+    return;
+  }
+});
+document.getElementById("runlist").addEventListener("click", ev => {
+  const ab = ev.target.closest("[data-arch]");
+  if (ab) { ev.stopPropagation(); toggleArchive(ab.dataset.arch); return; }
+  const rc = ev.target.closest("[data-key]");
+  if (rc) {
+    if (rc.dataset.goruns) VIEW = "runs";
+    SELKEY = rc.dataset.key;
+    FORCE_RENDER = true;
+    render();
+  }
+});
+
+/* =============== render =============== */
+function render() {
+  chrome();
+  const list = document.getElementById("runlist");
+  if (VIEW === "tracks") { list.innerHTML = tracksListHtml(); }
+  else if (VIEW === "cups" || VIEW === "goals" || VIEW === "focus") { list.innerHTML = ""; }
+  else if (VIEW === "storage") { list.innerHTML = ""; }
+  else { list.innerHTML = runsListHtml(); }
+  if (VIEW === "cups") {
+    document.getElementById("detail").innerHTML = cupsHtml();
+    LAST_DETAIL_KEY = "cups|" + LANG + "|" + CUPCC;
+    localStorage.setItem("lt-cupcc", CUPCC);
+    return;
+  }
+  if (VIEW === "focus") {
+    document.getElementById("detail").innerHTML = focusHtml();
+    LAST_DETAIL_KEY = "focus|" + LANG + FOCUSSCOPE + FOCUSCC + JSON.stringify(REF && REF.focus ? REF.focus : null);
+    localStorage.setItem("lt-focusscope", FOCUSSCOPE);
+    localStorage.setItem("lt-focuscc", FOCUSCC);
+    return;
+  }
+  if (VIEW === "goals") {
+    document.getElementById("detail").innerHTML = goalsHtml();
+    LAST_DETAIL_KEY = "goals|" + LANG + GOALCC + GOALTARGET + (RIVAL ? "r" : "");
+    localStorage.setItem("lt-goalcc", GOALCC);
+    localStorage.setItem("lt-goaltarget", GOALTARGET);
+    return;
+  }
+  if (VIEW === "storage") {
+    document.getElementById("detail").innerHTML = storageHtml();
+    LAST_DETAIL_KEY = "storage|" + LANG + "|" + JSON.stringify(STORAGE && STORAGE.totals || {}); return;
+  }
+  const r = selectedRun();
+  if (r) SELKEY = runKey(r);
+  // Rebuild the detail panel only when the SELECTED run's data (or selection/
+  // view/lang/expert) changed. Without this, any OTHER run finishing during a
+  // live session re-rendered the whole panel — recreating the clip <video>
+  // (playback jumps to 0), collapsing the event-log <details>, and clearing
+  // text selection. The left list still rebuilds every render (it's cheap).
+  const detailKey = r
+    ? [runKey(r), VIEW, LANG, EXPERT ? 1 : 0, (r.events || []).length, r.clipFile || "",
+       r.endscreenFile || "",
+       JSON.stringify(r.results || {}), JSON.stringify(r.identity || {})].join("|")
+    : "empty|" + LANG;
+  if (detailKey !== LAST_DETAIL_KEY || FORCE_RENDER) {
+    LAST_DETAIL_KEY = detailKey;
+    document.getElementById("detail").innerHTML = r ? detailHtml(r) : `<div class="empty">${T("noRuns")}</div>`;
+    if (r) wireTimeline(r);
+  }
+}
+
+/* capturedAt is the SESSION's clock, so every run in one recording shares it to
+   the microsecond; ordering on it alone makes sibling runs mutually "not
+   earlier" and no PB is ever credited within a session. The run index breaks
+   the tie — it is monotonic within a report by construction. */
+const runOrd = r => [r.capturedAt || 0, r.run || 0];
+const before = (a, b) => a[0] !== b[0] ? a[0] < b[0] : a[1] < b[1];
+
+/* One line per session day. A PB here means "beat everything recorded on that
+   track/cc/category BEFORE this run" — comparing against the all-time best would
+   credit only the last run of a session that improved five times. */
+function recapHtml(runs, day) {
+  const mine = runs.filter(r => dayLabel(r.capturedAt) === day && !r.archived && !r.ghostReplay);
+  if (!mine.length) return "";
+  const done = mine.filter(r => !r.aborted && ((r.results || {}).player || {}).totalMs != null);
+  let pbs = 0, gain = 0;
+  for (const r of done) {
+    const tid = trackId(r), cc = (r.context || {}).cc, cat = catOf(r);
+    const t = r.results.player.totalMs;
+    // every earlier attempt, session or not — capturedAt is the ordering
+    const prior = countedRuns().filter(x => !x.aborted && !x.archived && trackId(x) === tid
+      && ((x.context || {}).cc) === cc && catOf(x) === cat
+      && before(runOrd(x), runOrd(r)) && ((x.results || {}).player || {}).totalMs != null)
+      .map(x => x.results.player.totalMs);
+    if (!prior.length) continue;
+    const was = Math.min(...prior);
+    if (t < was) { pbs++; gain += was - t; }
+  }
+  const drive = done.reduce((a, r) => a + (r.results.player.totalMs || 0), 0);
+  const bits = [`${mine.length} ${T("attempts").toLowerCase()}`,
+                `${done.length}/${mine.length} ${T("finished").toLowerCase()}`];
+  if (pbs) bits.push(`🏅 ${pbs} PB${pbs > 1 ? "s" : ""} (${fmtDs(-gain)})`);
+  if (drive) bits.push(`⏱ ${fmtT(drive)}`);
+  return `<span class="recap">${bits.join(" · ")}</span>`;
+}
+
+function runsListHtml() {
+  const runs = visibleRuns();
+  if (!runs.length) return `<div class="empty">${T("noRuns")}</div>`;
+  let html = "", lastDay = null;
+  for (const r of runs) {
+    const day = dayLabel(r.capturedAt);
+    if (day !== lastDay) {
+      html += `<div class="sesshead">${esc(day)}${recapHtml(runs, day)}</div>`;
+      lastDay = day;
+    }
+    const [cls, txt] = outcome(r);
+    const total = ((r.results || {}).player || {}).totalMs;
+    const th = trackIcon(r);
+    const cup = cupOf(r);
+    const cc = (r.context || {}).cc;
+    const key = runKey(r);
+    if (r.ghostReplay) {
+      html += `<div class="runcard ghostrun ${key === SELKEY ? "sel" : ""}" data-key="${esc(key)}">
+      ${th ? `<img class="thumb" src="${th}" alt="" loading="lazy">` : `<div class="thumb ph">?</div>`}
+      <div style="min-width:0;flex:1">
+        <div class="track">${cupImg(cup)}<span class="nm">${esc(trackName(r))}</span></div>
+        <div class="meta">
+          <span>${timeLabel(r.capturedAt)}</span>
+          ${total != null ? `<span class="t">${fmtT(total)}</span>` : ""}
+          ${ccChip(cc)}
+          ${r.ghostReplay.mine ? `<span class="badge">✓ ${esc(T("ghostMine"))}</span>` : ""}
+          <span class="badge"><img class="bic" src="${BOO}" alt=""> ${esc(T("ghostReplay"))}${r.ghostReplay.name ? " · " + esc(r.ghostReplay.name) : ""}</span>
+        </div>
+      </div>
+    </div>`;
+      continue;
+    }
+    html += `<div class="runcard ${key === SELKEY ? "sel" : ""} ${r.archived ? "arch" : ""}" data-key="${esc(key)}">
+      ${th ? `<img class="thumb" src="${th}" alt="" loading="lazy">` : `<div class="thumb ph">?</div>`}
+      <div style="min-width:0;flex:1">
+        <div class="track">${cupImg(cup)}<span class="nm">${esc(trackName(r))}</span></div>
+        <div class="meta">
+          <span>${timeLabel(r.capturedAt)}</span>
+          ${total != null ? `<span class="t">${fmtT(total)}</span>` : ""}
+          ${ccChip(cc)}
+          ${outcomeBanner(cls, 13) || `<span class="badge ${cls}">${txt}</span>`}
+          ${confChip(r)}
+        </div>
+      </div>
+      <button class="archbtn" title="${r.archived ? T("unarchive") : T("archive")}"
+        data-arch="${esc(key)}">${r.archived ? "↩" : "🗑"}</button>
+    </div>`;
+  }
+  return html;
+}
+
+/* =============== competitive analytics =============== */
+/* Shortcut vs no-shortcut is a different EVENT, not a variation: aggregating
+   them together would call an SC run your PB on an NSC board. Every aggregate
+   below is keyed by track|cc|category. */
+const CATS = ["nsc", "sc"];
+const catOf = r => r.category || "nsc";
+
+function stats(vals) {
+  if (!vals.length) return null;
+  const v = [...vals].sort((a, b) => a - b);
+  const mean = v.reduce((a, b) => a + b, 0) / v.length;
+  const sd = Math.sqrt(v.reduce((a, b) => a + (b - mean) ** 2, 0) / v.length);
+  return { n: v.length, best: v[0], median: v[Math.floor(v.length / 2)], worst: v[v.length - 1],
+           mean, sd, spread: v[v.length - 1] - v[0] };
+}
+
+/* per-lap consistency + where the time goes vs your own best lap */
+function lapStats(runs, n) {
+  const cols = Array.from({ length: n }, () => []);
+  for (const r of runs) {
+    const l = ((r.results || {}).player || {}).lapTimesMs;
+    if (l && l.length === n && l.every(v => v != null)) l.forEach((v, i) => cols[i].push(v));
+  }
+  return cols.map(c => stats(c)).filter(Boolean);
+}
+
+/* gap to the ghost per lap — exact, from both owners' result cards (the in-race
+   HUD delta only gives the sign, and only while you are driving) */
+function ghostSplits(r) {
+  const p = ((r.results || {}).player || {}).lapTimesMs;
+  const g = ((r.results || {}).ghost || {}).lapTimesMs;
+  if (!p || !g || p.length !== g.length || p.some(v => v == null) || g.some(v => v == null)) return null;
+  let cum = 0;
+  return p.map((v, i) => { cum += v - g[i]; return { lap: i + 1, d: v - g[i], cum }; });
+}
+
+function analyticsPanel(r) {
+  const tid = trackId(r), cc = (r.context || {}).cc, cat = catOf(r);
+  const p = (r.results || {}).player;
+  if (!tid || !p || p.totalMs == null) return "";
+  const peers = countedRuns().filter(x => !x.aborted && !x.archived && trackId(x) === tid
+    && ((x.context || {}).cc) === cc && catOf(x) === cat
+    && ((x.results || {}).player || {}).totalMs != null);
+  const st = stats(peers.map(x => x.results.player.totalMs));
+  const ls = lapStats(peers, r.lapCount);
+  const gs = ghostSplits(r);
+  if (!st) return "";
+  const theo = ls.length === r.lapCount ? ls.reduce((a, s) => a + s.best, 0) : null;
+  let h = `<div class="panel"><h2>📊 ${T("analytics")} <span class="dim">${T(cat)}</span></h2>
+    <div class="tiles">
+      <div class="tile"><div class="k">${T("attempts")}</div><div class="v">${st.n}</div></div>
+      <div class="tile"><div class="k">${T("personalBest")}</div><div class="v">${fmtT(st.best)}</div></div>
+      <div class="tile"><div class="k">${T("aMedian")}</div><div class="v">${fmtT(st.median)}</div></div>
+      <div class="tile"><div class="k">${T("aConsistency")}</div><div class="v">±${(st.sd / 1000).toFixed(2)}s</div></div>
+      ${theo != null ? `<div class="tile"><div class="k">${T("theoBest")}</div><div class="v">${fmtT(theo)}
+        <span class="of">${fmtDs(theo - st.best)}</span></div></div>` : ""}
+    </div>`;
+  if (ls.length === r.lapCount) {
+    h += `<table class="laps" style="margin-top:10px"><tr><th>${T("lap")}</th><th>${T("thisRun")}</th>
+      <th>${T("yourBest")}</th><th>${T("lost")}</th><th>${T("aSpread")}</th>${gs ? `<th>${T("vsGhost")}</th>` : ""}</tr>`;
+    ls.forEach((s, i) => {
+      const mine = (p.lapTimesMs || [])[i];
+      h += `<tr><td>${i + 1}</td><td>${mine != null ? fmtT(mine) : "—"}</td><td>${fmtT(s.best)}</td>
+        <td class="${mine != null && mine - s.best > 0 ? "cmin" : "cplus"}">${mine != null ? fmtDs(mine - s.best) : "—"}</td>
+        <td class="dim">±${(s.sd / 1000).toFixed(2)}s</td>
+        ${gs ? `<td class="${gs[i].d <= 0 ? "cplus" : "cmin"}">${fmtDs(gs[i].d)}</td>` : ""}</tr>`;
+    });
+    h += `</table>`;
+  }
+  return h + `</div>`;
+}
+
+/* =============== focus (the site's "Your focus" trio) =============== */
+function focusTrackHtml(tid) {
+  const t = ((META || {}).tracks || {})[tid];
+  const nm = t ? locName(t) : pretty(tid);
+  const m = /^(SNES|N64|GBA|GCN|DS|Wii|3DS|Tour|Nintendo Switch) (.+)$/i.exec(nm || "");
+  return `${t && t.icon ? `<img src="${A(t.icon)}" alt="">` : ""}<span>${m ? `<span class="orig">${esc(m[1].toUpperCase())}</span> ${esc(m[2])}` : esc(nm)}</span>`;
+}
+function focusCardHtml(label, card, scope) {
+  if (!card) return `<div class="focuscard empty"><div class="fk">${label}</div><div>${scope === "rivals" ? T("fNoRival") : T("fNoAbove")}</div></div>`;
+  let h = `<div class="focuscard"><div class="fk">${label}</div><div class="ft">${focusTrackHtml(card.trackId)}${card.mode ? ccChip(String(card.mode)) : ""}</div>`;
+  if (card.kind === "mastery") {
+    h += `<div class="fh">${T("fLowest")}: <b>${esc(card.masteryLabel || "—")}</b></div>`;
+    h += `<div class="fc">${card.nextMasteryLabel ? esc(T("fImprove")(fmtT(card.improveByMs || 0), card.nextMasteryLabel)) : T("fTop")}</div>`;
+    if (card.myBestMs != null) h += `<div class="ftimes"><span>${T("fYou")}</span><b>${fmtT(card.myBestMs)}</b></div>`;
+  } else {
+    h += `<div class="fh"><b>${esc(card.targetLabel || "?")}</b></div>`;
+    h += `<div class="fg" style="${gapStyle(card.gapMs)}">${fmtDs(card.gapMs)}</div>`;
+    const line = card.kind === "global" && card.myRank != null && card.targetRank != null
+      ? T("fIsRankYou")(esc(card.targetLabel), card.targetRank, card.myRank)
+      : card.targetRank != null ? T("fIsRank")(esc(card.targetLabel), card.targetRank) : "";
+    if (line) h += `<div class="fc">${line}</div>`;
+    h += `<div class="ftimes"><span>${T("fYou")}</span><b>${fmtT(card.myBestMs)}</b><span>${esc(card.targetLabel || "")}</span><b>${fmtT(card.targetMs)}</b></div>`;
+  }
+  return h + `</div>`;
+}
+function focusHtml() {
+  let h = `<div class="dhead"><h2>🎯 ${T("yourFocus")}${REF && REF.displayName ? ` <small class="dim">· ${esc(REF.displayName)} · ☁ ${esc(T("fromSite"))}</small>` : ""}</h2>`;
+  if (!REF || !REF.focus) return h + `</div><div class="empty">${T("fSignIn")}</div>`;
+  h += `<div class="segs">${[["rivals", T("fRivals")], ["global", T("fGlobal")]].map(([v, n]) =>
+      `<button class="${FOCUSSCOPE === v ? "on" : ""}" onclick="FOCUSSCOPE='${v}';FORCE_RENDER=true;render()">${n}</button>`).join("")}
+    ${[["150", "150cc"], ["200", "200cc"], ["all", T("fAll")]].map(([v, n]) =>
+      `<button class="cc${v} ${FOCUSCC === v ? "on" : ""}" onclick="FOCUSCC='${v}';FORCE_RENDER=true;render()">${n}</button>`).join("")}</div></div>`;
+  const set = ((REF.focus[FOCUSSCOPE] || {})[FOCUSCC]) || {};
+  h += `<div class="focusgrid">${focusCardHtml(T("fBest"), set.best, FOCUSSCOPE)}${focusCardHtml(T("fClosest"), set.closest, FOCUSSCOPE)}${focusCardHtml(T("fBiggest"), set.biggest, FOCUSSCOPE)}</div>`;
+  return h;
+}
+
+/* =============== goals =============== */
+/* Coverage is not the goal a competitive player sets. "Staff ghost beaten on
+   every course" is — and the staff times are already in the database. */
+const WR_GOAL_WINDOW_MS = 10000;
+
+function goalIndex(cc) {
+  const out = {};
+  for (const [tid, t] of Object.entries((META || {}).tracks || {})) {
+    const rec = ((META.records || {})[tid] || {})[cc] || {};
+    out[tid] = { tid, name: locName(t), icon: t.icon || null,
+                 staff: (rec.staff || {}).timeMs || null,
+                 wr: (rec.wr || {}).timeMs || null, best: null, bestRun: null, cup: t.cup };
+  }
+  for (const r of countedRuns()) {
+    if (r.aborted || r.archived) continue;
+    const tid = trackId(r), p = ((r.results || {}).player || {});
+    if (!tid || p.totalMs == null || String((r.context || {}).cc || "") !== String(cc)) continue;
+    const e = out[tid];
+    if (e && (e.best == null || p.totalMs < e.best)) { e.best = p.totalMs; e.bestRun = r; }
+  }
+  // The Player's published record on the site counts as a best too: a
+  // goal met before this PC existed is still met (owner ask 2026-09-07).
+  for (const [tid, e] of Object.entries(out)) {
+    const ref = refFor(tid, cc);
+    if (ref && ref.pb != null && (e.best == null || ref.pb < e.best)) { e.best = ref.pb; e.bestRun = null; e.fromSite = true; }
+    // The nearest rival: the slowest rival still ahead of the best, or, when
+    // no rival is ahead, the fastest one behind. Without a best of our own the
+    // fastest rival is the time to reach.
+    const others = ref && ref.others ? ref.others : [];
+    e.rival = null;
+    if (others.length) {
+      const ahead = e.best == null ? others : others.filter(o => o.timeMs < e.best);
+      const pick = ahead.length ? ahead[ahead.length - 1] : others[0];
+      e.rival = { timeMs: pick.timeMs, name: pick.name, ahead: ahead.length > 0 };
+      e.rivalsAhead = ahead.length;
+    }
+  }
+  return out;
+}
+
+function goalsHtml() {
+  if (!META) return `<div class="empty">…</div>`;
+  const cc = GOALCC, target = GOALTARGET;
+  const idx = goalIndex(cc);
+  const all = Object.values(idx);
+  const withTime = all.filter(e => e.best != null);
+  const beatStaff = withTime.filter(e => e.staff != null && e.best < e.staff);
+  const closeWr = withTime.filter(e => e.wr != null
+    && e.best - e.wr >= 0 && e.best - e.wr <= WR_GOAL_WINDOW_MS);
+  const leadRivals = withTime.filter(e => e.rival && e.rivalsAhead === 0);
+  const pct = n => Math.round(100 * n / all.length);
+  const targetLabel = target === "wr" ? T("goalWr10") : target === "rival" ? T("goalRivalsBeat") : T("goalStaffBeat");
+  const targetCount = target === "wr" ? closeWr.length : target === "rival" ? leadRivals.length : beatStaff.length;
+  let h = `<div class="dhead"><h2>🎯 ${T("goals")}${REF && REF.displayName ? ` <small class="dim">· ${T("refFor")} ${esc(REF.displayName)} · ☁ ${esc(T("fromSite"))}</small>` : ""}</h2>
+    <div class="segs">${[["150", "150cc"], ["200", "200cc"]].map(([v, n]) =>
+      `<button class="cc${v} ${cc === v ? "on" : ""}" onclick="GOALCC='${v}';FORCE_RENDER=true;render()">${n}</button>`).join("")}
+      ${[["staff", T("goalStaff")], ["wr", T("goalWorld")], ["rival", T("goalRivals")]].map(([v, n]) =>
+        `<button class="${target === v ? "on" : ""}" onclick="GOALTARGET='${v}';FORCE_RENDER=true;render()">${n}</button>`).join("")}</div>
+    <div class="tiles">
+      <div class="tile"><div class="k">${T("gHasTime")}</div><div class="v">${withTime.length}
+        <span class="of">/ ${all.length} · ${pct(withTime.length)}%</span></div></div>
+      <div class="tile"><div class="k">${targetLabel}</div><div class="v">${targetCount}
+        <span class="of">/ ${all.length} · ${pct(targetCount)}%</span></div></div>
+    </div></div><div class="cupgrid">`;
+  const cups = {};
+  for (const [tid, t] of Object.entries((META || {}).tracks || {})) {
+    const c = t.cup || { name: "—" };
+    const key = c.name || "—";
+    (cups[key] = cups[key] || { info: c, tracks: [] }).tracks.push(tid);
+  }
+  for (const [name, cup] of Object.entries(cups)) {
+    const refOf = e => !e ? null : target === "wr" ? e.wr : target === "rival" ? (e.rival ? e.rival.timeMs : null) : e.staff;
+    const met = (e, dTarget) => dTarget != null && (target === "wr"
+      ? dTarget >= 0 && dTarget <= WR_GOAL_WINDOW_MS
+      : target === "rival" ? e.rivalsAhead === 0 : dTarget < 0);
+    const beaten = cup.tracks.filter(tid => {
+      const e = idx[tid], ref = refOf(e);
+      return e && e.best != null && ref != null && met(e, e.best - ref);
+    }).length;
+    h += `<section class="cupcard">
+      <header>${cupImg(cup.info, "cupic big")}<b>${esc(locName(cup.info) || name)}</b>
+        <span class="cnt">${beaten}/${cup.tracks.length}</span></header>`;
+    for (const tid of cup.tracks) {
+      const e = idx[tid], ref = refOf(e);
+      const dTarget = e && e.best != null && ref != null ? e.best - ref : null;
+      const targetMet = met(e, dTarget);
+      const cls = targetMet ? "beat" : e && e.best != null ? "has" : "none";
+      const rivalName = target === "rival" && e && e.rival ? ` <small class="dim">${esc(e.rival.name)}</small>` : "";
+      const gap = (dTarget == null
+        ? (ref != null ? fmtT(ref) : (target === "rival" ? `<span class="dim">${T("goalNoRivals")}</span>` : "—"))
+        : fmtDs(dTarget)) + rivalName;
+      const gapCls = dTarget == null ? "dim" : dTarget < 0 ? "cplus" : "cmin";
+      const tip = `${T("staffGhost")}: ${e && e.staff != null ? fmtT(e.staff) : "—"}`
+        + `${e && e.wr != null ? " · " + T("worldRecord") + ": " + fmtT(e.wr) : ""}`
+        + `${e && e.rival ? " · " + T("goalRivals") + ": " + esc(e.rival.name) + " " + fmtT(e.rival.timeMs) : ""}`;
+      h += `<div class="ctrack goal ${cls}"${e && e.bestRun ? ` data-key="${esc(runKey(e.bestRun))}" data-goruns="1"` : ""} title="${esc(tip)}" style="${gapRowStyle(dTarget)}">
+        ${e && e.icon ? `<img src="${A(e.icon)}" alt="" loading="lazy">` : `<i></i>`}
+        <span class="nm">${esc(e ? e.name : pretty(tid))}</span>
+        <span class="tm">${e && e.best != null ? fmtT(e.best) + (e.fromSite ? ` <small class="dim" title="${esc(T("fromSite"))}">☁</small>` : "") : `<span class="dim">—</span>`}</span>
+        <span class="goalgap ${gapCls}" style="${dTarget == null ? "" : gapStyle(dTarget) + ";border-radius:8px;padding:1px 7px"}">${gap}</span></div>`;
+    }
+    h += `</section>`;
+  }
+  return h + `</div>`;
+}
+
+/* =============== rivals (imported friend export) =============== */
+let RIVAL = null;
+/* restore AFTER the declaration: an assignment above it is a temporal-dead-zone
+   ReferenceError that the try/catch would swallow, silently losing the rival */
+try {
+  const rv = localStorage.getItem("lt-rival");
+  if (rv) RIVAL = JSON.parse(rv);
+} catch (e) { RIVAL = null; }
+
+function loadRival(file) {
+  const fr = new FileReader();
+  fr.onload = () => {
+    try {
+      const j = JSON.parse(fr.result);
+      RIVAL = (j.format || "").startsWith("livetrial.rivals") ? j : null;
+      if (RIVAL) localStorage.setItem("lt-rival", fr.result);
+    } catch (e) { RIVAL = null; }
+    FORCE_RENDER = true; render();
+  };
+  fr.readAsText(file);
+}
+function rivalRow(tid, cc, cat) {
+  if (!RIVAL) return null;
+  return (RIVAL.best || []).find(b => b.track === tid && String(b.cc) === String(cc) && b.category === cat) || null;
+}
+
+/* =============== cups & tracks overview =============== */
+/* Which of the courses you already have a time on, grouped by cup, with the
+   ones whose LATEST run set a new record called out. It answers "what have I
+   still not driven?" — which the runs list, being chronological, cannot. */
+function cupIndex(cc = CUPCC) {
+  const cups = {};                       // cup name -> {info, tracks:[tid]}
+  for (const [tid, t] of Object.entries((META || {}).tracks || {})) {
+    const c = t.cup || { name: "—" };
+    const key = c.name || "—";
+    (cups[key] = cups[key] || { info: c, tracks: [] }).tracks.push(tid);
+  }
+  const mine = {};                       // tid -> {best, cc, record, when, n}
+  for (const r of countedRuns()) {
+    if (r.aborted || r.archived) continue;
+    const tid = trackId(r), p = ((r.results || {}).player || {});
+    if (!tid || p.totalMs == null || String((r.context || {}).cc || "") !== String(cc)) continue;
+    const e = mine[tid] = mine[tid] || { best: null, bestRun: null, cc: null, record: false, when: 0, n: 0 };
+    e.n++;
+    if (e.best == null || p.totalMs < e.best) {
+      e.best = p.totalMs;
+      e.bestRun = r;
+      e.cc = (r.context || {}).cc || "150";
+    }
+    if ((r.capturedAt || 0) > e.when) {
+      e.when = r.capturedAt || 0;
+      e.record = (r.events || []).some(x => x.type === "banner_new_record");
+    }
+  }
+  return { cups, mine };
+}
+
+function cupsHtml() {
+  if (!META) return `<div class="empty">…</div>`;
+  const cc = CUPCC;
+  const { cups, mine } = cupIndex(cc);
+  const total = Object.keys((META.tracks || {})).length;
+  const done = Object.keys(mine).length;
+  const recs = Object.values(mine).filter(m => m.record).length;
+  let h = `<div class="dhead"><h2>${T("cupsTitle")}</h2>
+    <div class="segs">${[["150", "150cc"], ["200", "200cc"]].map(([v, n]) =>
+      `<button class="cc${v} ${cc === v ? "on" : ""}" onclick="CUPCC='${v}';FORCE_RENDER=true;render()">${n}</button>`).join("")}</div>
+    <div class="tiles">
+      <div class="tile"><div class="k">${T("cupsDone")}</div><div class="v">${done} / ${total}</div></div>
+      <div class="tile"><div class="k">${T("cupsRecord")}</div><div class="v">${recs}</div></div>
+    </div></div><div class="cupgrid">`;
+  for (const [name, c] of Object.entries(cups)) {
+    const got = c.tracks.filter(t => mine[t]).length;
+    h += `<section class="cupcard">
+      <header>${cupImg(c.info, "cupic big")}<b>${esc(locName(c.info) || name)}</b>
+        <span class="cnt">${got}/${c.tracks.length}</span></header>`;
+    for (const tid of c.tracks) {
+      const t = META.tracks[tid], m = mine[tid];
+      const cls = m ? (m.record ? "has rec" : "has") : "none";
+      h += `<div class="ctrack ${cls}"${m && m.bestRun ? ` data-key="${esc(runKey(m.bestRun))}" data-goruns="1"` : ""}>
+        ${t.icon ? `<img src="${A(t.icon)}" alt="" loading="lazy">` : `<i></i>`}
+        <span class="nm">${esc(locName(t))}</span>
+        <span class="tm">${m ? fmtT(m.best) : `<span class="dim">${T("cupsNone")}</span>`}</span>
+        ${m && m.record ? `<span class="recdot" title="${T("cupsRecord")}">★</span>` : ""}</div>`;
+    }
+    h += `</section>`;
+  }
+  return h + `</div>`;
+}
+
+/* =============== storage =============== */
+let STORAGE = null;
+const GBv = b => (b / (1024 ** 3)).toFixed(b > 1024 ** 3 * 10 ? 0 : 1) + " GB";
+const hrs = s => s >= 3600 ? (s / 3600).toFixed(1) + " h" : Math.round(s / 60) + " min";
+function storageBadge() {
+  const w = (STORAGE && STORAGE.warnings) || [];
+  if (w.some(x => x.level === "alert")) return " ⚠";
+  if (w.some(x => x.level === "warn")) return " !";
+  return "";
+}
+async function loadStorage() {
+  try { STORAGE = await (await fetch("api/storage")).json(); }
+  catch (e) { STORAGE = null; }
+  FORCE_RENDER = true;
+  render();
+}
+async function saveSetting(k, v) {
+  try { await fetch("api/settings?" + k + "=" + encodeURIComponent(v)); } catch (e) {}
+  await loadStorage();
+}
+async function runCleanup(dry) {
+  try { await fetch("api/storage/cleanup" + (dry ? "?dry=1" : "")); } catch (e) {}
+  await loadStorage();
+}
+async function togglePin(file) {
+  try { await fetch("api/pin?file=" + encodeURIComponent(file)); } catch (e) {}
+  await loadStorage();
+}
+function storageHtml() {
+  if (!STORAGE) return `<div class="empty">…</div>`;
+  const t = STORAGE.totals, d = STORAGE.disk || {}, st = STORAGE.settings || {},
+        c = STORAGE.capacity || {};
+  const usedPct = d.totalBytes ? 100 * (d.totalBytes - d.freeBytes) / d.totalBytes : 0;
+  const budgetPct = st.maxTotalGb ? Math.min(100, 100 * t.bytes / (st.maxTotalGb * 1024 ** 3)) : 0;
+  let h = `<div class="dhead"><h2>${T("stTitle")}</h2><div class="tiles">
+    <div class="tile"><div class="k">${T("stUsed")}</div><div class="v">${GBv(t.bytes)}</div></div>
+    <div class="tile"><div class="k">${T("stClips")}</div><div class="v">${t.clips}</div></div>
+    <div class="tile"><div class="k">${T("stSessions")}</div><div class="v">${t.sessions}</div></div>
+    <div class="tile"><div class="k">${T("stProtected")}</div><div class="v">${GBv(t.protectedBytes)}</div></div>
+    <div class="tile"><div class="k">${T("stFreeable")}</div><div class="v">${GBv(t.freeableBytes)}</div></div>
+    <div class="tile"><div class="k">${T("stFree")}</div><div class="v">${GBv(d.freeBytes || 0)}</div></div>
+    <div class="tile"><div class="k">${T("stStored")}</div><div class="v">${hrs(t.seconds || 0)}</div></div>
+    <div class="tile"><div class="k">${T("stStills")}</div>
+      <div class="v">${(STORAGE.stills || {}).count || 0}
+        <span class="of">${GBv((STORAGE.stills || {}).bytes || 0)}</span></div></div>
+  </div></div>`;
+  if (!st.recordVideo) h += `<div class="stwarn">${T("stNoVideo")}</div>`;
+  for (const w of STORAGE.warnings || [])
+    h += `<div class="stwarn ${w.level}">${esc(w.text)}</div>`;
+  h += `<section class="card">
+    <div class="bar"><div class="fill ${budgetPct > 99 ? "over" : ""}" style="width:${budgetPct}%"></div></div>
+    <div class="barlab"><span>${GBv(t.bytes)} / ${st.maxTotalGb} GB
+        <b class="pct">${(c.usedPct || 0).toFixed(1)}%</b></span>
+      <span class="dim">${T("stFree")}: ${GBv(d.freeBytes || 0)} (${(100 - usedPct).toFixed(0)}%)</span></div>
+    <div class="caplab">${c.remainingClips != null
+        ? T("stFits")(c.remainingClips, ((c.remainingSeconds || 0) / 3600).toFixed(1)) : ""}
+      <span class="dim">· ${GBv(c.bytesPerClip || 0)} ${T("stPerRun")}
+        · ${(c.gbPerHour || 0).toFixed(1)} GB ${T("stPerHour")}</span></div></section>`;
+  h += `<section class="card setgrid">
+    <label>${T("stBudget")}<input type="number" min="0.5" step="0.5" value="${st.maxTotalGb}"
+      onchange="saveSetting('maxTotalGb', this.value)">
+      ${c.recommend ? `<span class="hint">${T("stRecommend")(
+          (c.recommend.minBytes / 1024 ** 3).toFixed(0),
+          (c.recommend.recommendedBytes / 1024 ** 3).toFixed(0), c.recommend.courses)}</span>` : ""}</label>
+    <label>${T("stRes")}<select onchange="saveSetting('recordHeight', this.value)">
+        ${[[0, T("stResSource")], [720, "720p"], [1080, "1080p"], [1440, "1440p"], [2160, "2160p (4K)"]]
+          .map(([v, n]) => `<option value="${v}" ${(st.recordHeight | 0) === v ? "selected" : ""}>${n}</option>`).join("")}
+      </select><span class="hint">${T("stResHint")}</span></label>
+    <label>${T("stLang")}<select onchange="saveSetting('switchLanguage', this.value)">
+        ${[["", T("stLangAuto")], ["en-US", "English (US)"], ["en-GB", "English (UK)"],
+           ["nl-NL", "Nederlands"], ["de-DE", "Deutsch"], ["fr-FR", "Français"],
+           ["es-ES", "Español"], ["it-IT", "Italiano"], ["pt-PT", "Português"],
+           ["ru-RU", "Русский"], ["pl-PL", "Polski"], ["ja-JP", "日本語"],
+           ["ko-KR", "한국어"], ["zh-CN", "简体中文"], ["zh-TW", "繁體中文"]]
+          .map(([v, n]) => `<option value="${v}" ${(st.switchLanguage || "") === v ? "selected" : ""}>${n}</option>`).join("")}
+      </select><span class="hint">${T("stLangHint")}</span></label>
+    <label>${T("stKeepLatest")}<input type="number" min="0" step="1" value="${st.keepLatest}"
+      onchange="saveSetting('keepLatest', this.value)"></label>
+    <label>${T("stMinFree")}<input type="number" min="0" step="0.5" value="${st.minFreeGb}"
+      onchange="saveSetting('minFreeGb', this.value)"></label>
+    <label class="chk"><input type="checkbox" ${st.keepRecords ? "checked" : ""}
+      onchange="saveSetting('keepRecords', this.checked?1:0)">${T("stKeepRecords")}</label>
+    <label class="chk"><input type="checkbox" ${st.keepBest ? "checked" : ""}
+      onchange="saveSetting('keepBest', this.checked?1:0)">${T("stKeepBest")}</label>
+    <label class="chk"><input type="checkbox" ${st.recordVideo ? "checked" : ""}
+      onchange="saveSetting('recordVideo', this.checked?1:0)">${T("stRecVideo")}</label>
+    <label class="chk"><input type="checkbox" ${st.autoCleanup ? "checked" : ""}
+      onchange="saveSetting('autoCleanup', this.checked?1:0)">${T("stAuto")}</label>
+    <label class="chk"><input type="checkbox" ${st.pauseRecordingWhenLow ? "checked" : ""}
+      onchange="saveSetting('pauseRecordingWhenLow', this.checked?1:0)">${T("stPause")}</label>
+    <div class="acts"><button onclick="runCleanup(true)">${T("stDry")}</button>
+      <button class="danger" onclick="runCleanup(false)">${T("stCleanup")}</button></div>
+  </section>`;
+  const rq = STORAGE.requirements;
+  if (rq && rq.resolutions) {
+    h += `<section class="card"><h3>${T("stReqTitle")(rq.courses, Math.round(rq.avgClipSeconds))}</h3>
+      <table class="reqtab"><tr><th>${T("stRes")}</th><th>GB / run</th><th>GB / ${T("stPerHour")}</th>
+        <th>${rq.courses} PB</th><th>${T("stReqMin")}</th><th>${T("stReqRec")}</th></tr>` +
+      Object.entries(rq.resolutions).map(([n, v]) => `<tr class="${(st.recordHeight | 0) === v.height ? "cur" : ""}">
+        <td>${n}${v.height === 720 ? " <i class='tag'>min</i>" : ""}</td>
+        <td>${v.gbPerClip.toFixed(2)}</td><td>${v.gbPerHour.toFixed(1)}</td>
+        <td>${(v.bytesPerSecond * rq.collectionSeconds / 1024 ** 3).toFixed(0)}</td>
+        <td>${v.minimumGb.toFixed(0)} GB</td><td><b>${v.recommendedGb.toFixed(0)} GB</b></td></tr>`).join("") +
+      `</table><div class="hint">${T("stReqNote")}</div></section>`;
+  }
+  const del = STORAGE.delete || [];
+  h += `<section class="card"><h3>${del.length ? T("stWillDelete")(del.length) : T("stNothing")}</h3>`;
+  for (const x of del.slice(0, 12))
+    h += `<div class="strow"><span class="f">${esc(x.file)}</span><span class="b">${GBv(x.bytes)}</span></div>`;
+  h += `</section><section class="card"><h3>${T("stProtected")}</h3>`;
+  const prot = (STORAGE.keep || []).filter(k => k.reasons.some(r => r !== "latest"));
+  for (const k of prot.slice(0, 24))
+    h += `<div class="strow"><span class="f">${esc(k.file)}</span>
+      <span class="tags">${k.reasons.map(r => `<i class="tag ${r}">${T("stReasons")[r] || r}</i>`).join("")}</span>
+      <span class="b">${GBv(k.bytes)}</span>
+      <button class="pinbtn" data-pin="${esc(k.file)}">${k.pinned ? T("stUnpin") : T("stPin")}</button></div>`;
+  return h + `</section>`;
+}
+
+/* =============== tracks view =============== */
+function trackAgg() {
+  const by = {};
+  for (const r of countedRuns()) {
+    if (r.aborted || r.archived) continue;
+    const tid = trackId(r), p = ((r.results || {}).player || {});
+    if (!tid || p.totalMs == null) continue;
+    const cc = (r.context || {}).cc || "150", cat = catOf(r);
+    const k = tid + "|" + cc + "|" + cat;
+    const e = by[k] = by[k] || { tid, cc, cat, runs: [] };
+    e.runs.push(r);
+  }
+  return Object.values(by).map(e => {
+    e.runs.sort((a, b) => (a.capturedAt || 0) - (b.capturedAt || 0));
+    const totals = e.runs.map(r => r.results.player.totalMs);
+    e.best = Math.min(...totals);
+    e.bestRun = e.runs.find(r => r.results.player.totalMs === e.best);
+    e.totals = totals;
+    const n = e.bestRun.lapCount;
+    const allLaps = e.runs.map(r => r.results.player.lapTimesMs).filter(l => l && l.length === n && l.every(v => v != null));
+    e.theo = allLaps.length ? Array.from({ length: n }, (_, i) => Math.min(...allLaps.map(l => l[i]))).reduce((a, b) => a + b, 0) : null;
+    const rec = ((META.records || {})[e.tid] || {})[e.cc];
+    e.wr = rec && rec.wr ? rec.wr.timeMs : null;
+    return e;
+  }).sort((a, b) => b.runs[b.runs.length - 1].capturedAt - a.runs[a.runs.length - 1].capturedAt);
+}
+
+function sparkline(vals, w = 78, h = 30) {
+  if (vals.length < 2) return "";
+  const mn = Math.min(...vals), mx = Math.max(...vals), rng = Math.max(1, mx - mn);
+  const pt = (v, i) => [i / (vals.length - 1) * (w - 8) + 4, (1 - (mx - v) / rng) * (h - 10) + 5];
+  const pts = vals.map((v, i) => pt(v, i).map(n => n.toFixed(1)).join(","));
+  const [lx, ly] = pt(vals[vals.length - 1], vals.length - 1);
+  // down = faster (lower total time)
+  return `<svg width="${w}" height="${h}" aria-hidden="true"><polyline points="${pts.join(" ")}"
+    fill="none" stroke="var(--player)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+    <circle cx="${lx.toFixed(1)}" cy="${ly.toFixed(1)}" r="3" fill="var(--player)"/></svg>`;
+}
+
+function tracksListHtml() {
+  const agg = trackAgg();
+  if (!agg.length) return `<div class="empty">${T("noRuns")}</div>`;
+  return agg.map(e => {
+    const t = trackOf(e.tid);
+    const bkey = runKey(e.bestRun);
+    const wrGap = e.wr != null ? e.best - e.wr : null;
+    return `<div class="trackrow" data-key="${esc(bkey)}" data-goruns="1">
+      <div class="toprow">
+        ${t && t.icon ? `<img class="thumb" style="width:56px;height:32px;border-radius:6px" src="${A(t.icon)}" alt="" loading="lazy">` : ""}
+        <span class="nm">${cupImg(t && t.cup)} ${esc(t ? locName(t) : pretty(e.tid))}</span>
+        ${ccChip(e.cc)}
+      </div>
+      <div class="pbrow"><span class="pb">${fmtT(e.best)}</span>
+        <span class="att">${e.runs.length}× </span>${sparkline(e.totals)}</div>
+      <div class="subrow">
+        ${wrGap != null ? `<span class="wrchip ${wrGap < 3000 ? "close" : ""}">${T("vsWr")} ${fmtD(wrGap)}</span>` : ""}
+      </div></div>`;
+  }).join("");
+}
+
+/* =============== detail =============== */
+/* A ghost replay watched to the line (ADR-0210 rule 11): the same lap table,
+   chart and clip as a run, the ghost's name, character and kart instead of the
+   player's, and none of a run's actions (category, export, card, archive). */
+function ghostDetailHtml(r) {
+  const gr = r.ghostReplay || {};
+  const p = (r.results || {}).player || {};
+  const tIcon = trackIcon(r);
+  const cup = cupOf(r);
+  const it = (META && META.items) || {};
+  const coinIcon = A((it.coinByTrack || {})[trackId(r)] || it.coin);
+  const mushIcon = A(it.tripleMushrooms || it.mushroom);
+  const cc = (r.context || {}).cc;
+  const kind = gr.staffGhost ? T("staffGhost") : gr.worldRecord ? T("worldRecord") : T("ghost");
+  const badges = `${ccChip(cc)}
+      ${gr.mine ? `<span class="badge">✓ ${esc(T("ghostMine"))}</span>` : ""}
+      <span class="badge"><img class="bic" src="${BOO}" alt=""> ${esc(T("ghostReplay").toLowerCase())}</span>
+      <span class="badge">${r.lapCount} ${T("laps")}</span>`;
+  const when = `${dayLabel(r.capturedAt)} ${timeLabel(r.capturedAt)}`;
+  const head = tIcon
+    ? `<div class="trackbanner" style="background-image:url('${tIcon}')"><div class="shade"></div>
+         <div class="tb"><span class="track">${cupImg(cup)}${esc(trackName(r))}</span>${badges}
+         <span class="when">${esc(when)}</span></div></div>`
+    : `<div class="titlebar-plain"><span class="track">${cupImg(cup)}${esc(trackName(r))}</span>${badges}
+       <span class="when" style="margin-left:auto;color:var(--ink-muted);font-size:12px">${esc(when)}</span></div>`;
+  const charIcon = gr.characterId && part(gr.characterId) && part(gr.characterId).icon;
+  const coins = r.coins != null ? r.coins : 0;
+  const shroomsUsed = 3 - (r.mushrooms != null ? r.mushrooms : 3);
+  const kart = (gr.parts || []).map(id => {
+    const pt = part(id);
+    return `<span class="ghostpart">${pt && pt.icon ? `<img class="itemic" src="${A(pt.icon)}" alt="">` : ""}${esc(partName(id))}</span>`;
+  }).join("");
+  return `
+  <div class="panel">${head}
+    <div class="hero">
+      ${charIcon ? `<img class="portrait" src="${A(charIcon)}" alt="${esc(partName(gr.characterId))}">` : ""}
+      <div>
+        <div class="big">${fmtT(p.totalMs)}</div>
+        <div class="sub3">${esc(gr.name || T("ghost"))} · ${esc(kind)}</div>
+      </div>
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="k">${coinIcon ? `<img class="itemic" src="${coinIcon}" alt="">` : ""}${T("coins")}</div>
+        <div class="v">${coins}<span class="of"> / 10</span></div></div>
+      <div class="tile"><div class="k">${mushIcon ? `<img class="itemic" src="${mushIcon}" alt="">` : ""}${T("mushrooms")}</div>
+        <div class="v">${shroomsUsed}<span class="of"> / 3</span></div></div>
+      ${kart ? `<div class="tile"><div class="k">${T("ghostKart")}</div><div class="v ghostkart">${kart}</div></div>` : ""}
+    </div>
+  </div>
+  ${r.clipFile ? `<div class="panel"><h2>🎞️ ${T("ghostClip")}</h2>
+    <video controls preload="metadata" src="runs/${esc(r.clipFile)}"
+      style="width:100%;max-height:430px;border-radius:10px;background:#000"></video>
+    <div class="actions"><a class="cliplink" href="runs/${esc(r.clipFile)}" download>⬇ ${T("downloadClip")}</a></div>
+  </div>` : ""}
+  ${r.endscreenFile ? `<div class="panel"><h2>🖼️ ${T("ghostPanel")}</h2>
+    <a href="runs/${esc(r.endscreenFile)}" target="_blank" rel="noopener">
+      <img src="runs/${esc(r.endscreenFile)}" alt="${T("ghostPanel")}" loading="lazy"
+        style="width:100%;border-radius:10px;background:#000"></a></div>` : ""}
+  ${lapTablePanel(r, coinIcon, mushIcon)}
+  <div class="panel">
+    <h2>${T("timeline")}</h2>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--player)"></span>${coinIcon ? `<img class="itemic" src="${coinIcon}" alt="">` : ""}${T("coins").toLowerCase()} (0–10)</span>
+      <span><span class="swatch" style="background:var(--ghost)"></span>${mushIcon ? `<img class="itemic" src="${mushIcon}" alt="">` : ""}${T("mushrooms").toLowerCase()} (0–3)</span>
+    </div>
+    <div class="chartwrap" id="tlwrap">
+      <svg id="timeline" width="100%" height="220" role="img" aria-label="${T("timeline")}"></svg>
+      <div class="tooltip" id="tltip"></div>
+    </div>
+  </div>
+  ${eventsPanel(r)}`;
+}
+
+function detailHtml(r) {
+  if (r.ghostReplay) return ghostDetailHtml(r);
+  const [cls, txt] = outcome(r);
+  const res = r.results || {};
+  const p = res.player, g = res.ghost;
+  const delta = p && g && p.totalMs != null && g.totalMs != null ? p.totalMs - g.totalMs : null;
+  const coins = r.coins != null ? r.coins : 0;
+  const shroomsUsed = 3 - (r.mushrooms != null ? r.mushrooms : 3);
+  const tIcon = trackIcon(r);
+  const cup = cupOf(r);
+  const it = (META && META.items) || {};
+  const coinIcon = A((it.coinByTrack || {})[trackId(r)] || it.coin);
+  const mushIcon = A(it.tripleMushrooms || it.mushroom);
+  const cc = (r.context || {}).cc;
+  const badges = `
+      ${ccChip(cc)}
+      <span class="badge">${(r.context || {}).mode === "ghost" ? `<img class="bic" src="${BOO}" alt=""> ` + T("ghost").toLowerCase() : (r.context || {}).mode || ""}</span>
+      <span class="badge">${r.lapCount} ${T("laps")}</span>
+      ${outcomeBanner(cls, 20) || `<span class="badge ${cls}">${txt}</span>`}
+      ${confChip(r)}`;
+  const when = `${dayLabel(r.capturedAt)} ${timeLabel(r.capturedAt)}`;
+  const head = tIcon
+    ? `<div class="trackbanner" style="background-image:url('${tIcon}')"><div class="shade"></div>
+         <div class="tb"><span class="track">${cupImg(cup)}${esc(trackName(r))}</span>${badges}
+         <span class="when">${esc(when)}</span></div></div>`
+    : `<div class="titlebar-plain"><span class="track">${cupImg(cup)}${esc(trackName(r))}</span>${badges}
+       <span class="when" style="margin-left:auto;color:var(--ink-muted);font-size:12px">${esc(when)}</span></div>`;
+
+  if (r.aborted && (!p || p.totalMs == null)) {
+    const skipped = r.abortReason === "result_skipped";
+    const reason = (STR[LANG].abortedReason || {})[r.abortReason] ?? r.abortReason ?? "";
+    return `<div class="panel">${head}
+      <div class="aborted-note">${skipped ? "🏁" : "⚠"} ${T(skipped ? "resultSkippedNote" : "abortedNote")}${reason ? `<br><span style="color:var(--ink-muted)">${esc(reason)}</span>` : ""}</div>
+      ${eventsPanel(r)}</div>`;
+  }
+
+  const charId = (((r.identity || {}).player || {}).character || {}).id;
+  const charIcon = charId && part(charId) && part(charId).icon;
+
+  return `
+  <div class="panel">${head}
+    <div class="hero">
+      ${charIcon ? `<img class="portrait" src="${A(charIcon)}" alt="${esc(partName(charId))}">` : ""}
+      <div>
+        <div class="big ${cls === "won" ? "wonc" : cls === "rec" ? "recc" : ""}">${fmtT(p && p.totalMs)}</div>
+        ${delta != null ? `<div class="sub3 d ${delta <= 0 ? "good" : "bad"}">${delta <= 0 ? "▲" : "▼"} ${fmtD(delta)} ${T("vsGhost")}</div>` : ""}
+      </div>
+      ${outcomeBanner(cls, 42) ? `<div class="medal">${outcomeBanner(cls, 42)}</div>` : ""}
+    </div>
+    <div class="tiles">
+      <div class="tile"><div class="k">${T("ghostTotal")}</div><div class="v">${fmtT(g && g.totalMs)}</div></div>
+      <div class="tile"><div class="k">${coinIcon ? `<img class="itemic" src="${coinIcon}" alt="">` : ""}${T("coins")}</div>
+        <div class="v">${coins}<span class="of"> / 10</span></div></div>
+      <div class="tile"><div class="k">${mushIcon ? `<img class="itemic" src="${mushIcon}" alt="">` : ""}${T("mushrooms")}</div>
+        <div class="v">${shroomsUsed}<span class="of"> / 3</span></div></div>
+    </div>
+    <div class="actions">
+      ${r.submission ? `<button onclick="copyJson(this)">${T("copyJson")}</button>` : ""}
+      <button onclick="downloadCard()">${T("downloadCard")}</button>
+      <button onclick="window.print()">${T("printBtn")}</button>
+    </div>
+  </div>
+  ${r.clipFile ? `<div class="panel"><h2>🎞️ ${T("clip")}</h2>
+    <video controls preload="metadata" src="runs/${esc(r.clipFile)}"
+      onerror="if((this.dataset.retry|0)<20){this.dataset.retry=(this.dataset.retry|0)+1;setTimeout(()=>{this.src=this.src.split('?')[0]+'?r='+Date.now();this.load();},3000)}"
+      style="width:100%;max-height:430px;border-radius:10px;background:#000"></video>
+    <div class="actions"><a class="cliplink" href="runs/${esc(r.clipFile)}" download>⬇ ${T("downloadClip")}</a></div>
+  </div>` : ""}
+  ${/* the end-screen still is kept for every run and outlives the clip, so it
+       is the panel that is always there once the video has been trimmed */""}
+  ${r.endscreenFile ? `<div class="panel"><h2>🖼️ ${T("endscreen")}</h2>
+    <a href="runs/${esc(r.endscreenFile)}" target="_blank" rel="noopener">
+      <img src="runs/${esc(r.endscreenFile)}" alt="${T("endscreen")}" loading="lazy"
+        style="width:100%;border-radius:10px;background:#000"></a>
+    <div class="actions"><a class="cliplink" href="runs/${esc(r.endscreenFile)}" download>⬇ ${T("endscreen")}</a>
+      ${r.clipFile ? "" : `<span class="dim">${T("stillOnly")}</span>`}</div>
+  </div>` : ""}
+  <div class="panel"><h2>🏷️ ${T("category")}</h2>
+    <div class="segs">${["nsc", "sc"].map(c => `<button class="${catOf(r) === c ? "on" : ""}"
+      data-cat="${esc(runKey(r))}" data-catval="${c}">${T(c)}</button>`).join("")}</div>
+    <div class="actions" style="margin-top:8px">
+      <a class="cliplink" href="api/export/package?key=${encodeURIComponent(runKey(r))}">📦 ${T("pkg")}</a>
+    </div></div>
+  ${lapTablePanel(r, coinIcon, mushIcon)}
+  ${analyticsPanel(r)}
+  ${recordsPanel(r)}
+  ${identityPanel(r)}
+  <div class="panel">
+    <h2>${T("timeline")}</h2>
+    <div class="legend">
+      <span><span class="swatch" style="background:var(--player)"></span>${coinIcon ? `<img class="itemic" src="${coinIcon}" alt="">` : ""}${T("coins").toLowerCase()} (0–10)</span>
+      <span><span class="swatch" style="background:var(--ghost)"></span>${mushIcon ? `<img class="itemic" src="${mushIcon}" alt="">` : ""}${T("mushrooms").toLowerCase()} (0–3)</span>
+    </div>
+    <div class="chartwrap" id="tlwrap">
+      <svg id="timeline" width="100%" height="220" role="img" aria-label="${T("timeline")}"></svg>
+      <div class="tooltip" id="tltip"></div>
+    </div>
+  </div>
+  ${eventsPanel(r)}`;
+}
+
+function lapTablePanel(r, coinIcon, mushIcon) {
+  const p = (r.results || {}).player, g = (r.results || {}).ghost;
+  if (!p || !p.lapTimesMs || !p.lapTimesMs.some(v => v != null)) return "";
+  const n = p.lapTimesMs.length;
+  const { gained, lost, endCnt, shrooms } = coinsPerLap(r);
+  const bestP = Math.min(...p.lapTimesMs.filter(v => v != null));
+  const bestG = g && g.lapTimesMs ? Math.min(...g.lapTimesMs.filter(v => v != null)) : null;
+  const mushUrl = A((META.items || {}).mushroom);
+  // three fixed mushroom slots per lap: column spacing never shifts,
+  // whichever lap the mushrooms were used in
+  const shroomCells = k => [0, 1, 2].map(s =>
+    `<td class="mslot">${s < k && mushUrl ? `<img class="shroomdot" src="${mushUrl}" alt="mushroom">` : ""}</td>`).join("");
+  // best time: star BEFORE the time so the digits stay aligned
+  const timeCell = (v, best) =>
+    `<td class="${v === best ? "best" : ""}">${v === best ? "★ " : ""}${fmtT(v)}</td>`;
+  let cum = 0, rows = "";
+  for (let i = 0; i < n; i++) {
+    const pv = p.lapTimesMs[i], gv = g && g.lapTimesMs ? g.lapTimesMs[i] : null;
+    const d = pv != null && gv != null ? pv - gv : null;
+    if (d != null) cum += d;
+    rows += `<tr>
+      <td>${T("lap")} ${i + 1}</td>${shroomCells(shrooms[i])}
+      ${timeCell(pv, bestP)}
+      ${g ? `${timeCell(gv, bestG)}
+      <td style="color:${d == null ? "inherit" : d <= 0 ? "var(--good-text)" : "var(--bad-text)"}">${d != null ? fmtD(d) : "—"}</td>
+      <td style="color:${cum <= 0 ? "var(--good-text)" : "var(--bad-text)"}">${d != null ? fmtD(cum) : "—"}</td>` : ""}
+      <td class="cplus">${gained[i] ? "+" + gained[i] : ""}</td>
+      <td class="cmin">${lost[i] ? "−" + lost[i] : ""}</td>
+      <td class="cend">${endCnt[i] != null ? endCnt[i] : ""}</td>
+    </tr>`;
+  }
+  const dTot = p.totalMs != null && g && g.totalMs != null ? p.totalMs - g.totalMs : null;
+  const totGain = gained.reduce((a, b) => a + b, 0), totLost = lost.reduce((a, b) => a + b, 0);
+  rows += `<tr class="total"><td></td><td colspan="3"></td><td>${fmtT(p.totalMs)}</td>
+    ${g ? `<td>${fmtT(g.totalMs)}</td>
+    <td style="color:${dTot <= 0 ? "var(--good-text)" : "var(--bad-text)"}">${dTot != null ? fmtD(dTot) : ""}</td><td></td>` : ""}
+    <td class="cplus">${totGain ? "+" + totGain : ""}</td>
+    <td class="cmin">${totLost ? "−" + totLost : ""}</td>
+    <td class="cend">${endCnt[n - 1] != null ? endCnt[n - 1] : ""}</td></tr>`;
+  return `<div class="panel"><h2>${T("lapTimes")}</h2><div class="lapswrap">
+    <table class="laps"><thead><tr><th></th>
+      <th colspan="3" class="mhead">${mushIcon ? `<img class="itemic" src="${mushIcon}" alt="${T("mushrooms")}">` : ""}</th>
+      <th>${r.ghostReplay ? esc(r.ghostReplay.name || T("ghost")) : T("player")}</th>
+      ${g ? `<th>${T("ghost")}</th><th>${T("delta")}</th><th>${T("cum")}</th>` : ""}
+      <th class="cplus">+</th><th class="cmin">−</th>
+      <th class="cend">${coinIcon ? `<img class="itemic" src="${coinIcon}" alt="${T("coins")}">` : T("coinsShort")}</th>
+    </tr></thead><tbody>${rows}</tbody></table></div></div>`;
+}
+
+function recordsPanel(r) {
+  const tid = trackId(r), cc = (r.context || {}).cc;
+  const p = (r.results || {}).player;
+  if (!tid || !cc || !p || p.totalMs == null) return "";
+  const rec = ((META.records || {})[tid] || {})[cc];
+  if (!rec) return "";
+  const agg = trackAgg().find(e => e.tid === tid && e.cc === cc);
+  const row = (icon, label, t, who) => t == null ? "" :
+    `<div class="recrow"><span class="ric">${icon}</span><span class="lbl">${label}</span><span class="t">${fmtT(t)}</span>
+     <span class="gap ${p.totalMs - t <= 0 ? "ahead" : ""}" style="${gapStyle(p.totalMs - t)}">${fmtDs(p.totalMs - t)}</span>
+     <span class="who2">${esc(who || "")}</span></div>`;
+  let wrLaps = "";
+  if (rec.wr && rec.wr.lapTimesMs && p.lapTimesMs && rec.wr.lapTimesMs.length === p.lapTimesMs.length && EXPERT) {
+    wrLaps = `<div style="font-size:12px;color:var(--ink-muted);margin-top:8px">WR splits: ` +
+      rec.wr.lapTimesMs.map((v, i) => `L${i + 1} ${fmtT(v)} (${p.lapTimesMs[i] != null ? fmtDs(p.lapTimesMs[i] - v) : "—"})`).join(" · ") + `</div>`;
+  }
+  return `<div class="panel"><h2>${T("records")}</h2>
+    ${row("🌍", T("worldRecord"), rec.wr && rec.wr.timeMs, rec.wr && rec.wr.player)}
+    ${row(`<img src="static/nintendo.png" alt="Nintendo" style="height:16px;border-radius:3px;vertical-align:-3px">`,
+          T("staffGhost"), rec.staff && rec.staff.timeMs, rec.staff && rec.staff.player)}
+    ${(() => {
+        const ref = refFor(tid, cc);
+        if (!ref) return agg && agg.best !== p.totalMs ? row("⭐", T("personalBest"), agg.best, "") : "";
+        let h = "";
+        if (ref.pb != null) h += row("⭐", T("sitePb"), ref.pb, ref.rank != null ? `#${ref.rank}` : "");
+        const faster = (ref.others || []).filter(o => o.timeMs < p.totalMs);
+        const slower = (ref.others || []).filter(o => o.timeMs >= p.totalMs);
+        if (faster.length) { const o = faster[faster.length - 1]; h += row("🤝", T("nextRival"), o.timeMs, o.name); }
+        else if (ref.others && ref.others.length) h += `<div class="recrow"><span class="ric">🤝</span><span class="lbl">${T("nextRival")}</span><span class="t dim">${T("noRivalAhead")}</span></div>`;
+        if (slower.length) { const o = slower[0]; h += row("👀", T("behindYou"), o.timeMs, o.name); }
+        if (agg && agg.best !== p.totalMs && agg.best !== ref.pb) h += row("💻", T("localBest"), agg.best, "");
+        return h;
+      })()}
+    ${rec.wr && rec.wr.loadout ? `<div class="wrcombo"><span class="dim">${T("wrCombo")}:</span>
+      ${["characterId", "bodyId", "tireId", "gliderId"].map(k => {
+          const pp = rec.wr.loadout[k] && part(rec.wr.loadout[k]);
+          return pp && pp.icon ? `<img src="${A(pp.icon)}" title="${esc(pp.name)}" alt="${esc(pp.name)}">` : "";
+        }).join("")}
+      ${rec.wr.videoUrl ? `<a href="${esc(rec.wr.videoUrl)}" target="_blank" rel="noopener">▶ ${T("wrVideo")}</a>` : ""}
+      </div>` : ""}
+    ${RIVAL && rivalRow(tid, cc, catOf(r)) ? (() => {
+        const rv = rivalRow(tid, cc, catOf(r));
+        return row("🤝", T("rival"), rv.timeMs, "");
+      })() : ""}
+    ${wrLaps}</div>`;
+}
+
+function loadoutStats(o) {
+  const stats = ["character", "kart", "wheel", "glider"]
+    .map(k => { const p = part(o[k] && o[k].id); return p && p.stats; });
+  if (stats.some(s => !s)) return null;
+  return [[T("speed"), "speedLand"], [T("accel"), "acceleration"], [T("weight"), "weight"],
+          [T("handling"), "handlingLand"], [T("grip"), "traction"], [T("miniturbo"), "miniTurbo"]]
+    .map(([lbl, key]) => {
+      // per-part contributions (character/body/tire/glider) for stacked bars
+      const segs = stats.map(s => s[key] || 0);
+      let v = segs.reduce((a, b) => a + b, 0);
+      if (v > 5.75) { const f = 5.75 / v; for (let i = 0; i < segs.length; i++) segs[i] *= f; v = 5.75; }
+      return { lbl, v, segs };
+    });
+}
+
+function identityPanel(r) {
+  const ids = r.identity || {};
+  if (!ids.player && !ids.ghost) return "";
+  // APK setup tiles: kind label above, icon in an accent-bordered box,
+  // name below (amber + " ?" when unsure — same marker as the app)
+  const KIND_LBL = { character: "Character", kart: "Body", wheel: "Tire", glider: "Glider" };
+  const tiles = o => `<div class="parttiles">` + ["character", "kart", "wheel", "glider"].map(k => {
+    const v = o[k];
+    if (!v) return `<div class="ptile ${k}"></div>`;
+    const pp = part(v.id);
+    // a name-strip override is authoritative — never mark it unsure
+    const unsure = !v.name_strip_override && (v.score < 0.75 || v.margin < 0.02);
+    const ic = pp && pp.icon ? `<img src="${A(pp.icon)}" alt="" loading="lazy">` : "";
+    const nm = partName(v.id);
+    return `<div class="ptile ${k}"><span class="pk">${KIND_LBL[k]}</span>
+      <span class="pbox">${ic}</span>
+      <span class="pn ${unsure ? "unsure2" : ""}" title="${esc(nm)}${unsure ? " — " + T("unsure") : ""}">${esc(nm)}${unsure ? " ?" : ""}</span>
+      ${EXPERT ? `<span class="ps">${v.score.toFixed(2)}</span>` : ""}</div>`;
+  }).join("") + `</div>`;
+  const card = (who, o, color) => {
+    if (!o) return "";
+    const fl = o.flag && flagOf(o.flag.id);
+    const ev = o.evidenceFile ? `runs/${o.evidenceFile}` : null;
+    const evid = "ev_" + color;
+    // player: the name strip IS the character name — show the resolved, clean
+    // name; the raw OCR read only matters to experts. Ghost: the strip is the
+    // ghost owner's username, that IS the interesting name.
+    const charName = o.character && partName(o.character.id);
+    const shownName = color === "player" ? null : o.name;
+    const rawRead = EXPERT && o.name && o.name !== shownName
+      ? ` <span style="color:var(--ink-muted);font-weight:500;font-size:12px" title="${T("nameRead")}">“${esc(o.name)}”</span>` : "";
+    return `<div class="loadout ${color === "player" ? "p" : "g"}">
+      <div class="who">${color === "ghost"
+        ? `<span class="badge"><img class="bic" src="${BOO}" alt=""> ${T("ghost").toLowerCase()}</span>`
+        : `<span class="tag">${who}</span>`}${shownName ? ` <span style="font-weight:650">${esc(shownName)}</span>` : ""}${rawRead}
+        ${fl ? `<img class="flagic" src="${A(fl.icon)}" title="${esc(fl.name)}" alt="${esc(fl.name)}">` : ""}</div>
+      ${tiles(o)}
+      ${ev ? `<div><span class="evlink" onclick="const i=document.getElementById('${evid}');if(!i.src)i.src=i.dataset.src;i.style.display=i.style.display==='none'?'':'none'">${T("evidence")}</span>
+        <img id="${evid}" class="evimg" data-src="${ev}" style="display:none" alt="card evidence"></div>` : ""}
+    </div>`;
+  };
+  const sp = loadoutStats(ids.player || {}), sg = ids.ghost ? loadoutStats(ids.ghost) : null;
+  const partsOf = o => ["character", "kart", "wheel", "glider"].map(k => (o[k] || {}).id).join("|");
+  const identical = ids.player && ids.ghost && partsOf(ids.player) === partsOf(ids.ghost);
+  let cmp = "";
+  if (sp) {
+    const legend = `<div class="legend2">
+      <span><span class="swatch" style="background:var(--acc-character)"></span> Character</span>
+      <span><span class="swatch" style="background:var(--acc-kart)"></span> Body</span>
+      <span><span class="swatch" style="background:var(--acc-wheel)"></span> Tire</span>
+      <span><span class="swatch" style="background:var(--acc-glider)"></span> Glider</span>
+      <span style="margin-left:auto;color:var(--ink-muted)">${sg ? `${T("player")} ↑ · ${T("ghost")} ↓ · ` : ""}| ${T("statsLegendCap")}</span></div>`;
+    const segRow = (segs, cls) => {
+      let acc = 0;
+      return `<span class="brow ${cls}">` + segs.map((w, k) => {
+        const left = acc / 6 * 100; acc += w;
+        return `<span class="seg k${k}" style="left:${left.toFixed(2)}%;width:${(w / 6 * 100).toFixed(2)}%"></span>`;
+      }).join("") + `</span>`;
+    };
+    const ticks = [1, 2, 3, 4, 5].map(v =>
+      `<span class="tick2" style="left:${(v / 6 * 100).toFixed(2)}%"></span>`).join("");
+    cmp = `<div class="cmpstats">` + legend + sp.map((s, i) => {
+      const g = sg ? sg[i] : null;
+      const vTxt = g != null && g.v !== s.v ? `${s.v.toFixed(2)} · ${g.v.toFixed(2)}` : s.v.toFixed(2);
+      return `<div class="sb"><span>${s.lbl}</span>
+        <span class="bars ${g == null ? "solo" : ""}">
+          ${ticks}
+          ${segRow(s.segs, "p")}
+          ${g != null ? segRow(g.segs, "g") : ""}
+          <span class="cap" style="left:${(5.75 / 6 * 100).toFixed(1)}%"></span>
+        </span><span class="v">${vTxt}</span></div>`;
+    }).join("") + (identical ? `<div class="samenote">⇄ ${T("identical")}</div>` : "") + `</div>`;
+  }
+  return `<div class="panel"><h2>${T("loadouts")}</h2><div class="loadouts">
+    ${card(T("player"), ids.player, "player")}${card(T("ghost"), ids.ghost, "ghost")}
+  </div>${cmp}</div>`;
+}
+
+function eventsPanel(r) {
+  const evd = STR[LANG].ev;
+  const label = e => {
+    if (e.type === "coin") return `${evd.coin} ${e.from} → ${e.to}`;
+    if (e.type === "lap") return `${evd.lap} ${e.lap}`;
+    if (e.type === "mushrooms") return `${evd.mushrooms} (${e.to} over)`;
+    // Both of these now carry the digits the HUD showed (hudtimes.py reads
+    // them off the frozen clock). e.text is absent only on runs recorded
+    // before that landed, so the side/lap wording still has to stand alone.
+    if (e.type === "lapTime")
+      return `${evd.lap} ${e.lap} — ${evd.lapTime} ${e.text || ""}`.trim();
+    if (e.type === "resume")
+      return `${evd.resume} (${Math.round((e.heldMs || 0) / 1000)}s)`;
+    if (e.type === "delta")
+      return `${evd.lap} ${e.lap} — ${e.text ? e.text + " " : ""}`
+           + `${e.side === "ahead" ? evd.deltaAhead : evd.deltaBehind}`;
+    return evd[e.type] || e.type;
+  };
+  const liveTime = i => {
+    if (i.race) return esc(String(i.race).replace(/\.\d+$/, ""));
+    const t = Number(i.t), armed = Number(r.armedAtMs);
+    if (Number.isFinite(t) && Number.isFinite(armed)) {
+      const d = t - armed;
+      return `${d < 0 ? "-" : "+"}${fmtT(Math.abs(d)).replace(/\.\d+$/, "")}`;
+    }
+    return esc(i.wall || "");
+  };
+  const liveRows = (r.liveLog || []).map(i => {
+    const row = tickerRow(i);
+    return `<tr><td>${liveTime(i)}</td><td><span class="em">${row.icon}</span> ${row.text}</td></tr>`;
+  }).join("");
+  return `<div class="panel"><details class="evd"><summary>${T("eventLog")}</summary>
+    <table class="events"><thead><tr><th>${T("time")}</th><th>${T("event")}</th></tr></thead><tbody>
+    ${(r.events || []).map(e => `<tr><td>+${fmtT(raceT(e))}</td><td>${esc(label(e))}</td></tr>`).join("")}
+    </tbody></table></details>
+    ${liveRows ? `<details class="evd"><summary>${T("liveLog")}</summary>
+      <table class="events"><thead><tr><th>${T("time")}</th><th>${T("event")}</th></tr></thead><tbody>
+      ${liveRows}</tbody></table></details>` : ""}</div>`;
+}
+
+/* =============== timeline chart =============== */
+// Lap boundaries (the moment each new lap STARTS), preferring the authoritative
+// result-screen splits over live lap events. Live lap-event detection reads the
+// small "x/3" HUD counter, which scores low on some captures and can be missed
+// entirely — then every coin/mushroom falls into lap 1 and the chart shows no
+// laps. The result-screen lap times never lie, so build boundaries from their
+// cumulative sum; fall back to detected lap events only when splits are absent.
+function lapBoundaries(r) {
+  const lt = ((r.results || {}).player || {}).lapTimesMs;
+  if (lt && lt.length > 1 && lt.every(v => v != null)) {
+    const out = []; let cum = 0;
+    for (let i = 0; i < lt.length - 1; i++) { cum += lt[i]; out.push({ t: cum, lap: i + 2 }); }
+    return out;
+  }
+  return (r.events || []).filter(e => e.type === "lap").map(e => ({ t: raceT(e), lap: e.lap }));
+}
+
+function seriesFrom(r) {
+  const end = ((r.results || {}).player || {}).totalMs ||
+              Math.max(1, ...(r.events || []).map(raceT));
+  const coins = [{ t: 0, v: 0 }], mush = [{ t: 0, v: 3 }];
+  for (const e of r.events || []) {
+    if (e.type === "coin") coins.push({ t: raceT(e), v: e.to });
+    if (e.type === "mushrooms") mush.push({ t: raceT(e), v: e.to });
+    if (e.type === "mushroom_use_1to0_ring_exit") mush.push({ t: raceT(e), v: 0 });
+  }
+  return { end, coins, mush, lapsAt: lapBoundaries(r) };
+}
+
+function wireTimeline(r) {
+  const svg = document.getElementById("timeline");
+  if (!svg) return;
+  const { end, coins, mush, lapsAt } = seriesFrom(r);
+  const W = svg.clientWidth || 800, H = 220, L = 34, R = 14, Tm = 16, B = 26;
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  const x = t => L + (t / end) * (W - L - R);
+  const y = v => Tm + (1 - v / 10) * (H - Tm - B);
+  const step = pts => {
+    let d = `M${x(pts[0].t)},${y(pts[0].v)}`;
+    for (let i = 1; i < pts.length; i++) d += `H${x(pts[i].t)}V${y(pts[i].v)}`;
+    return d + `H${x(end)}`;
+  };
+  let s = "";
+  // alternating lap bands instead of dashed cut lines: calmer, more readable
+  const bounds = [0, ...lapsAt.map(l => l.t), end];
+  for (let i = 0; i + 1 < bounds.length; i++) {
+    if (i % 2 === 1)
+      s += `<rect x="${x(bounds[i])}" y="${Tm}" width="${x(bounds[i + 1]) - x(bounds[i])}" height="${H - Tm - B}"
+             fill="var(--ink-1)" opacity="0.05"/>`;
+    const mid = (x(bounds[i]) + x(bounds[i + 1])) / 2;
+    if (x(bounds[i + 1]) - x(bounds[i]) > 26)
+      s += `<text x="${mid}" y="${Tm - 4}" text-anchor="middle" font-weight="600">L${i + 1}</text>`;
+  }
+  for (let v = 0; v <= 10; v += 2)
+    s += `<line x1="${L}" y1="${y(v)}" x2="${W - R}" y2="${y(v)}" stroke="var(--grid)" stroke-width="1"/>
+          <text class="tick" x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end">${v}</text>`;
+  s += `<line x1="${L}" y1="${y(0)}" x2="${W - R}" y2="${y(0)}" stroke="var(--baseline)" stroke-width="1"/>`;
+  const nt = Math.max(1, Math.min(6, Math.ceil(end / 15000)));
+  for (let i = 0; i <= nt; i++) {
+    const t = (end / nt) * i;
+    const anchor = i === 0 ? "start" : i === nt ? "end" : "middle";
+    s += `<text class="tick" x="${x(t)}" y="${H - 8}" text-anchor="${anchor}">${fmtT(Math.round(t))}</text>`;
+  }
+  s += `<path d="${step(mush)}" fill="none" stroke="var(--ghost)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  s += `<path d="${step(coins)}" fill="none" stroke="var(--player)" stroke-width="2.5" stroke-linejoin="round"/>`;
+  for (const c of coins.slice(1))
+    s += `<circle cx="${x(c.t)}" cy="${y(c.v)}" r="3.5" fill="var(--player)" stroke="var(--surface-1)" stroke-width="1.5"/>`;
+  for (const e of (r.events || []).filter(e => e.type.startsWith("mushroom_use")))
+    s += `<circle cx="${x(raceT(e))}" cy="${y(at(mush, raceT(e)))}" r="4.5" fill="var(--ghost)" stroke="var(--surface-1)" stroke-width="2"/>`;
+  s += `<line id="cross" x1="0" y1="${Tm}" x2="0" y2="${H - B}" stroke="var(--ink-muted)" stroke-width="1" style="display:none"/>`;
+  svg.innerHTML = s;
+
+  const tip = document.getElementById("tltip");
+  const cross = svg.querySelector("#cross");
+  svg.onmousemove = ev => {
+    const rect = svg.getBoundingClientRect();
+    const px = (ev.clientX - rect.left) * (W / rect.width);
+    if (px < L || px > W - R) { tip.style.display = "none"; cross.style.display = "none"; return; }
+    const t = (px - L) / (W - L - R) * end;
+    let lap = 1; for (const lb of lapsAt) if (lb.t <= t) lap = lb.lap;
+    cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.style.display = "";
+    tip.style.display = "block";
+    tip.innerHTML = `<b>+${fmtT(Math.round(t))}</b> · ${T("lap").toLowerCase()} ${lap}<br>` +
+      `<span class="swatch" style="background:var(--player)"></span> ${T("coins").toLowerCase()} <b>${at(coins, t)}</b> &nbsp;` +
+      `<span class="swatch" style="background:var(--ghost)"></span> ${T("mushrooms").toLowerCase()} <b>${at(mush, t)}</b>`;
+    const wrap = document.getElementById("tlwrap").getBoundingClientRect();
+    const tx = ev.clientX - wrap.left + 14, ty = ev.clientY - wrap.top - 12;
+    tip.style.left = Math.min(tx, wrap.width - tip.offsetWidth - 6) + "px";
+    tip.style.top = ty + "px";
+  };
+  svg.onmouseleave = () => { tip.style.display = "none"; cross.style.display = "none"; };
+}
+const at = (pts, t) => { let v = pts[0].v; for (const p of pts) { if (p.t <= t) v = p.v; else break; } return v; };
+
+/* =============== share =============== */
+function copyJson(btn) {
+  const r = selectedRun();
+  if (!r || !r.submission) return;
+  navigator.clipboard.writeText(JSON.stringify(r.submission, null, 1)).then(() => {
+    const t = btn.textContent; btn.textContent = T("copied");
+    setTimeout(() => { btn.textContent = t; }, 1500);
+  });
+}
+
+async function downloadCard() {
+  const r = selectedRun();
+  if (!r) return;
+  const p = (r.results || {}).player || {}, g = (r.results || {}).ghost;
+  const cv = document.createElement("canvas");
+  cv.width = 840; cv.height = 440;
+  const c = cv.getContext("2d");
+  const loadImg = src => new Promise(res => {
+    if (!src) return res(null);
+    const im = new Image(); im.onload = () => res(im); im.onerror = () => res(null); im.src = src;
+  });
+  const [bg, ch] = await Promise.all([
+    loadImg(trackIcon(r)),
+    loadImg((() => { const cid = (((r.identity || {}).player || {}).character || {}).id;
+                     const pp = cid && part(cid); return pp && pp.icon ? A(pp.icon) : null; })()),
+  ]);
+  c.fillStyle = "#14140f"; c.fillRect(0, 0, 840, 440);
+  if (bg) { c.globalAlpha = .55; c.drawImage(bg, 0, 0, 840, 473); c.globalAlpha = 1; }
+  const grad = c.createLinearGradient(0, 120, 0, 440);
+  grad.addColorStop(0, "rgba(10,10,8,0)"); grad.addColorStop(1, "rgba(10,10,8,.94)");
+  c.fillStyle = grad; c.fillRect(0, 0, 840, 440);
+  c.fillStyle = "#fff"; c.font = "italic 700 34px 'Segoe UI', system-ui";
+  c.fillText(trackName(r), 34, 250);
+  c.font = "italic 900 64px 'Segoe UI', system-ui";
+  c.fillText(fmtT(p.totalMs), 34, 330);
+  const [cls] = outcome(r);
+  if (g && g.totalMs != null && p.totalMs != null) {
+    const d = p.totalMs - g.totalMs;
+    c.font = "600 24px 'Segoe UI', system-ui"; c.fillStyle = d <= 0 ? "#39d353" : "#ff7b72";
+    c.fillText(`${d <= 0 ? "▲" : "▼"} ${fmtD(d)} ${T("vsGhost")}`, 34, 368);
+  }
+  c.fillStyle = "#c8c8c0"; c.font = "500 20px 'Segoe UI', system-ui";
+  const laps = (p.lapTimesMs || []).map((v, i) => `L${i + 1} ${fmtT(v)}`).join("   ");
+  c.fillText(laps.slice(0, 70), 34, 408);
+  if (ch) c.drawImage(ch, 690, 250, 120, 120);
+  if (cls === "won" || cls === "rec") { c.font = "56px system-ui"; c.fillText(cls === "rec" ? "🏆" : "🏅", 748, 90); }
+  // rainbow footer stripe — same accent as the site header
+  const rg = c.createLinearGradient(0, 0, 840, 0);
+  ["#e6194b", "#f58231", "#ffd028", "#3cb44b", "#4363d8", "#911eb4"].forEach((col, i, arr) =>
+    rg.addColorStop(i / (arr.length - 1), col));
+  c.fillStyle = rg; c.fillRect(0, 434, 840, 6);
+  c.font = "600 16px 'Segoe UI', system-ui"; c.fillStyle = "#8b8b83"; c.fillText("LiveTrial · MK8DX", 34, 46);
+  const a = document.createElement("a");
+  a.download = `livetrial_${(trackName(r) || "run").replace(/\W+/g, "_").toLowerCase()}_${fmtT(p.totalMs).replace(/[:.]/g, "")}.png`;
+  a.href = cv.toDataURL("image/png");
+  a.click();
+}
+
+/* =============== live panel =============== */
+function phaseText(s) {
+  if (!s || !s.state) return T("liveConnect");
+  if (s.reading) return T("liveReading");
+  if (s.state === "RACING" && s.current)
+    return STR[LANG].liveRacing(s.current.lap, s.current.lapCount, s.current.coins, s.current.mushrooms);
+  if (s.state === "ARMED") return T("liveCountdown");
+  const c = s.ctx || {};
+  if (c.track || c.cc) return T("liveConfirmed");
+  return T("liveMenus");
+}
+function phaseClass(s) {
+  if (!s || !s.state) return "";
+  if (s.reading) return "reading";
+  if (s.state === "RACING") return "racing";
+  if (s.state === "ARMED") return "armed";
+  return "";
+}
+// Rich per-row renderer for the live event ticker. Each server msg is a plain
+// string (built by watch.py::_describe); we parse it and return {cls, icon, text}
+// where cls = accent category, icon = the fixed-slot icon (asset <img> or emoji),
+// text = the prettified message with ONE bold/coloured key value. Output is a pure
+// function of (msg, META, live ctx) so identical state yields identical HTML and
+// the setHTML dirty-check keeps the feed from thrashing on every poll.
+// The gap against the ghost, coloured by side. Solo runs have no delta at all
+// — that is the game showing none, not a failed read, so it renders as nothing.
+const gapHtml = d => {
+  if (d.deltaMs == null && !d.delta) return "";
+  const ms = Math.abs(d.deltaMs != null ? d.deltaMs : 0);
+  const L = STR[LANG].tk;
+  // past a minute the unit is the colon, not "s" — "1:01 s" reads as nonsense
+  const s = ms >= 60000
+    ? `${Math.floor(ms / 60000)}:${String(Math.floor(ms % 60000 / 1000)).padStart(2, "0")}`
+    : (ms / 1000).toFixed(3).replace(".", STR[LANG].dec || ".") + L.sec;
+  return d.side === "ahead"
+    ? `<b class="win">${s} ${L.ahead}</b>`
+    : `<b class="bad">${s} ${L.behind}</b>`;
+};
+// A pause is reported in wall time: the game clock deliberately does not move.
+const fmtHold = ms => {
+  const s = Math.round((ms || 0) / 1000);
+  return s >= 60 ? `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}` : `${s}s`;
+};
+const tickerRow = i => {
+  const m = i.msg || "";
+  const it = (META && META.items) || {};
+  const L = STR[LANG].tk;                 // localized ticker phrasing (nl / en)
+  const ctxTrack = ((DATA.liveState || {}).ctx || {}).track;
+  const img = (url, alt) => `<img src="${url}" alt="${alt || ""}">`;
+  let x;
+  // STRUCTURED first. Everything below this block reverse-engineers the
+  // server's English prose with regexes, and that cost us the numbers we had
+  // already decoded: /^Lap (\d+)/ matched "Lap 2" (now on lap 2), "Lap 1 —
+  // 0:28.238" and "Lap 1 — -0:00.722 AHEAD", rendered all three as "Lap N",
+  // and so showed three identical rows in an order that read as 3, 2, 2.
+  // Items carrying `kind` skip the guessing entirely; the prose path stays
+  // for older payloads and for the events that need no structure.
+  if (i.kind) {
+    const d = i.data || {};
+    if (i.kind === "lapNow")
+      return { cls: "tk-lapnow", icon: "▸", text: L.lapNow(esc(String(d.lap))) };
+    if (i.kind === "lapReport")
+      return { cls: "tk-lap", icon: "🏁",
+               text: L.lapReport(esc(String(d.lap)), esc(d.time || "?"), gapHtml(d)) };
+    if (i.kind === "lapDelta")
+      return { cls: "tk-lap", icon: img(BOO, "ghost"),
+               text: L.lapDelta(esc(String(d.lap)), gapHtml(d)) };
+    if (i.kind === "pause")
+      return { cls: "tk-pause", icon: "⏸️", text: L.paused() };
+    if (i.kind === "resume")
+      return { cls: "tk-pause", icon: "▶️", text: L.resumed(fmtHold(d.heldMs)) };
+  }
+  if (/^GO!/.test(m))
+    return { cls: "tk-go", icon: "🚦", text: L.go() };
+  if (/^Countdown/.test(m))
+    return { cls: "tk-count", icon: "⏱️", text: L.countdown() };
+  if (x = m.match(/^Lap\s+(\d+)/))
+    return { cls: "tk-lap", icon: "🏁", text: L.lap(esc(x[1])) };
+  if (x = m.match(/^Coins\s+(\d+)\s*→\s*(\d+)/)) {
+    // correct currency for the current track: rupee on Hyrule, bell on Animal
+    // Crossing, else the plain coin — mirrors the per-run coin icon logic
+    const url = A((it.coinByTrack || {})[ctxTrack] || it.coin);
+    return { cls: "tk-coin", icon: url ? img(url, "coins") : "🪙",
+             text: L.coins(esc(x[1]), esc(x[2])) };
+  }
+  if (x = m.match(/Mushroom used \((\d+) left\)/)) {
+    const url = A(it.mushroom);
+    return { cls: "tk-mush", icon: url ? img(url, "mushroom") : "🍄", text: L.mush(esc(x[1])) };
+  }
+  if (/Last mushroom used/.test(m)) {
+    const url = A(it.mushroom);
+    return { cls: "tk-mush", icon: url ? img(url, "mushroom") : "🍄", text: L.lastMush() };
+  }
+  // result-screen detection: re-render the server's "finish" line as WAIT guidance
+  // (the finish event fires exactly when the read starts — the right moment to ask
+  // the user to keep the result screen up). ✋ raised hand reads clearly as "hold".
+  if (/^FINISH/.test(m))
+    return { cls: "tk-finish", icon: "✋", text: L.finishWait() };
+  if (/BEATEN/.test(m))
+    return { cls: "tk-win", icon: "🏅", text: L.beaten() };
+  if (/Lost vs ghost/.test(m))
+    return { cls: "tk-lost", icon: img(BOO, "ghost"), text: L.lost() };
+  if (/NEW RECORD/.test(m))
+    return { cls: "tk-rec", icon: "🏆", text: L.record() };
+  if (x = m.match(/^CC class detected:\s*(\d+)/)) {
+    const cc = x[1];
+    return { cls: cc === "200" ? "tk-cc200" : "tk-cc150", icon: "🎚️", text: L.cc(esc(cc)) };
+  }
+  if (x = m.match(/^Mode detected:\s*(\w+)/)) {
+    const mode = x[1];
+    return { cls: "tk-mode", icon: mode === "ghost" ? img(BOO, "ghost") : "🏎️", text: L.mode(esc(mode)) };
+  }
+  if (x = m.match(/^Track detected:\s*(\S+)/)) {
+    const t = trackOf(x[1]);
+    const name = t ? locName(t) : pretty(x[1].replace(/^track\./, ""));
+    const icon = t && t.cup && t.cup.icon ? img(A(t.cup.icon), "cup") : "📍";
+    return { cls: "tk-track", icon, text: L.track(esc(name)) };
+  }
+  if (/Cup screen/.test(m))
+    return { cls: "", icon: "🔄", text: L.cupReset() };
+  if (/^Clip saved/.test(m))
+    return { cls: "", icon: "🎞️", text: L.clipSaved() };
+  // DONE/PROCEED: the run is fully complete (read + clip), so re-render the
+  // "Run N recorded" line as the "safe to move on" guidance. Matched before
+  // "finished" so the two Run rows never collide.
+  if (x = m.match(/^Run\s+(\d+)\s+recorded/)) {
+    const url = A("images/items/icons/027_crazy_eight.png");
+    return { cls: "tk-finish", icon: url ? img(url, "recorded") : "🎬", text: L.runDone(esc(x[1])) };
+  }
+  if (x = m.match(/^Run\s+(\d+)\s+finished(?:\s+—\s+total\s+(\S+))?(.*)$/)) {
+    const url = A("images/items/icons/023_super_star.png");
+    const total = x[2], rest = x[3] || "";
+    const text = /skipped|no times/.test(rest) ? L.runSkipped(esc(x[1]))
+               : L.runFinished(esc(x[1]), total ? esc(total) : null);
+    return { cls: "tk-finish", icon: url ? img(url, "finished") : "🏁", text };
+  }
+  if (x = m.match(/^Run\s+(\d+)\s+ABORTED\s*\(([^)]*)\)/)) {
+    const reason = (STR[LANG].abortedReason || {})[x[2]] || x[2];
+    return { cls: "tk-lost", icon: "⚠️", text: L.aborted(esc(x[1]), esc(reason)) };
+  }
+  if (/ABORTED/.test(m))
+    return { cls: "tk-lost", icon: "⚠️", text: esc(m) };
+  return { cls: "", icon: "·", text: esc(m) };
+};
+// assign innerHTML only when it actually changed — skips per-poll DOM churn and,
+// crucially for the event ticker, stops the 1.5s scroll-to-top reset when nothing
+// new arrived (the ticker is only rebuilt on a genuinely new event)
+function setHTML(el, html) {
+  if (el && el._html !== html) {
+    const keepScroll = el.id === "lv-ticker";
+    const oldTop = el.scrollTop;
+    const oldHeight = el.scrollHeight;
+    const pinnedTop = oldTop < 4;
+    el._html = html;
+    el.innerHTML = html;
+    if (keepScroll && !pinnedTop)
+      el.scrollTop = Math.max(0, oldTop + el.scrollHeight - oldHeight);
+  }
+}
+
+const APP_LIVE = document.documentElement.dataset.view === "live";
+const EMBEDDED = document.documentElement.dataset.embedded === "1";
+let LAST_TRIGGER = null;
+
+// --- ghost panel -------------------------------------------------------------
+// The engine reads the Select-a-Ghost panel by itself on the ghost menu
+// (liveState.ghostPanel) — no button (ADR-0210). A collapsed panel is a full
+// answer too (name, flag, character, total); expanded adds laps and parts.
+// Whose ghost it is, is decided in the app's This session list, not here.
+function ghostCardHtml(g, head) {
+  const ch = g.character && part(g.character.id), fl = g.flag && flagOf(g.flag.id);
+  const laps = (g.lapTimes || []).map((t, i) =>
+    `<span class="gl"><span class="gli">${i + 1}</span>${esc(t)}</span>`).join("");
+  const tile = k => {
+    const v = g[k]; if (!v || !v.id) return "";
+    const pp = part(v.id);
+    return `<span class="gpart">${pp && pp.icon ? `<img src="${A(pp.icon)}" alt="" loading="lazy">` : ""}<span>${esc(partName(v.id))}</span></span>`;
+  };
+  const state = g.state === "expanded" ? T("panelExpanded") : T("panelCollapsed");
+  return `<div class="gcard">
+    <div class="ghead">${head}</div>
+    <div class="gwho">${ch && ch.icon ? `<img class="gchar" src="${A(ch.icon)}" alt="${esc(ch.name || "")}" title="${esc(ch.name || "")}">` : ""}
+      <span class="gname">${esc(g.name || "?")}</span>
+      ${fl ? `<img class="flagic" src="${A(fl.icon)}" title="${esc(fl.name)}" alt="${esc(fl.name)}">` : ""}
+      ${g.staffGhost ? `<span class="badge">${esc(T("staffGhost"))}</span>` : ""}
+      <span class="gtotal">${esc(g.total || "")}</span>
+      ${g.cc ? ccChip(String(g.cc)) : ""}
+      <span class="gstate">${esc(state)}</span></div>
+    ${laps ? `<div class="glaps">${laps}</div>` : ""}
+    ${g.state === "expanded" ? `<div class="gparts">${tile("body")}${tile("tire")}${tile("glider")}</div>` : ""}
+  </div>`;
+}
+function renderGhostPanel(s) {
+  const el = document.getElementById("lv-ghost");
+  if (!el) return;
+  const cur = s.current || {};
+  const g = s.ghostPanel;
+  if (!g) { setHTML(el, ""); return; }
+  const head = cur.kind === "replay"
+    ? `${esc(T("replayOf"))} · ${esc(T("replayLoop"))} ${cur.replayLoop || 1}`
+    : esc(T("ghostPanel"));
+  setHTML(el, ghostCardHtml(g, head));
+}
+function appLivePanel() {
+  // The app has its own Stop button, so an embedded Live view carries none.
+  return `<div class="panel live applive">
+      <div class="livehead"><span class="livedot"></span><span class="livelabel">LIVE</span>
+        <span class="livephase" id="lv-phase"></span>
+        <span class="conf" id="lv-track" style="display:none"></span>
+        <span class="liveclock" id="lv-clock"></span>
+        <span class="spacer" style="margin-left:auto"></span>
+        <span class="conf" id="lv-fps" title="${esc(T("pictureTip"))}"></span>
+        ${EMBEDDED ? "" : `<button class="stopbtn" id="lv-stop" type="button">⏹ ${T("stopCapture")}</button>`}
+        <span style="color:var(--ink-muted);font-size:12px" id="lv-meta"></span></div>
+      <div class="livehero" data-wait="${esc(T("firstFrame"))}"><img id="lv-prev" alt=""></div>
+      <div class="livesum" id="lv-sum" aria-live="polite"></div>
+      <div class="lvghost" id="lv-ghost" aria-live="polite"></div>
+      <details class="livemore" id="lv-more"><summary id="lv-more-sum"></summary>
+        <div class="chips" id="lv-chips"></div>
+        <div class="ticker" id="lv-ticker" aria-label="events"></div>
+        <div class="clips" id="lv-clips"></div>
+        <button class="recbtn" id="lv-rec" title="handmatige opname — clips per run gaan vanzelf"></button>
+      </details></div>`;
+}
+// The Switch's language (consolelang.py): chosen in the settings, or recognised
+// once at the start of the session and kept until it ends.
+function langChip(s) {
+  const l = s.consoleLanguage;
+  if (!l) return "";
+  if (!l.code) return `<span class="langchip dim">${esc(T("langDetecting"))}</span>`;
+  const title = T(l.status === "manual" ? "langChosen" : "langDetected");
+  return `<span class="langchip" title="${esc(title)}">${l.flag ? `<img src="${A(l.flag)}" alt="">` : ""}<span>${esc(l.label || l.code)}</span></span>`;
+}
+function updateAppLiveSummary(s) {
+  const sum = document.getElementById("lv-sum"), more = document.getElementById("lv-more-sum");
+  if (!sum || !more) return;
+  const c = s.ctx || {}, tk = c.track && trackOf(c.track);
+  // The summary shows the last trigger that says something about the race; returning to the cup
+  // screen (the engine forgetting track and class for the next race) is not one (owner 2026-09-27).
+  const items = s.ticker || [], first = items.find(i => !/Cup screen/.test(i.msg || "")), r0 = first ? tickerRow(first) : null;
+  const track = tk
+    ? `${tk.icon ? `<img class="tthumb" src="${A(tk.icon)}" alt="">` : ""}${tk.cup && tk.cup.icon ? `<img class="tcup" src="${A(tk.cup.icon)}" alt="">` : ""}<span>${esc(locName(tk))}</span>${c.cc ? ccChip(c.cc) : ""}`
+    : `<span class="dim">${esc(T("waitTrack"))}</span>`;
+  setHTML(sum, `<div class="ltrack">${track}</div><div class="llast">${r0
+    ? `<span class="lbl">${esc(T("lastTrigger"))}</span><span class="em">${r0.icon}</span><span class="msg">${r0.text}</span>`
+    : `<span class="dim">${esc(T("waitTrigger"))}</span>`}</div>${langChip(s)}`);
+  setHTML(more, `<span class="trigcount">${items.length}</span> ${esc(T("triggers"))} · ${esc(T("showAll"))}`);
+  // Every new trigger lights the summary up, so it is plain the engine is reading the race.
+  const key = first ? `${first.t}|${first.kind || ""}|${first.msg || ""}` : "";
+  if (key && LAST_TRIGGER !== null && key !== LAST_TRIGGER) {
+    sum.classList.remove("flash"); void sum.offsetWidth; sum.classList.add("flash");
+  }
+  if (key) LAST_TRIGGER = key;
+}
+function updateLive() {
+  const wrap = document.getElementById("livewrap");
+  if (!DATA.live) { wrap.innerHTML = ""; LAST_TRIGGER = null; return; }
+  const s = DATA.liveState || {};
+  if (!wrap.firstChild) {
+    wrap.innerHTML = APP_LIVE ? appLivePanel() : `<div class="panel live">
+      <div class="livehead"><span class="livedot"></span><span class="livelabel">LIVE</span>
+        <span class="livephase" id="lv-phase"></span>
+        <span class="conf" id="lv-track" style="display:none"></span>
+        <span class="liveclock" id="lv-clock"></span>
+        <span class="spacer" style="margin-left:auto"></span>
+        <button class="recbtn" id="lv-rec" title="handmatige opname — clips per run gaan vanzelf"></button>
+        <button class="stopbtn" id="lv-stop" type="button">⏹ ${T("stopCapture")}</button>
+        <span style="color:var(--ink-muted);font-size:12px" id="lv-meta"></span></div>
+      <div class="liverow">
+        <img id="lv-prev" alt="live capture preview">
+        <div class="ticker" id="lv-ticker" aria-label="events"></div>
+      </div>
+      <div class="lvghost" id="lv-ghost" aria-live="polite"></div>
+      <div class="chips" id="lv-chips"></div>
+      <div class="clips" id="lv-clips"></div></div>`;
+    const setRec = async (mode, on) => {
+      try { await fetch(`api/record?mode=${mode}&on=${on ? 1 : 0}`); } catch (e) {}
+      load();
+    };
+    document.getElementById("lv-rec").onclick = () => setRec("manual", !(DATA.record || {}).manual);
+    if (APP_LIVE) {
+      const more = document.getElementById("lv-more");
+      try { more.open = localStorage.getItem("lt-livemore") === "1"; } catch (e) {}
+      more.addEventListener("toggle", () => { try { localStorage.setItem("lt-livemore", more.open ? "1" : "0"); } catch (e) {} });
+    }
+    // Stop capture from here: the engine ends the session the way Ctrl+C
+    // does and the console returns to its menu. The confirm is a native
+    // dialog on purpose: a mis-click must not end a session mid-run.
+    if (document.getElementById("lv-stop")) document.getElementById("lv-stop").onclick = async () => {
+      if (!window.confirm(T("stopConfirm"))) return;
+      try { await fetch("api/stop", { method: "POST" }); } catch (e) {}
+      const head = wrap.querySelector(".livehead");
+      if (head) head.innerHTML = `<span class="livelabel">⏹</span><span class="livephase">${esc(T("stopped"))}</span>`;
+      DATA.live = false;
+    };
+  }
+  const rec = DATA.record || {};
+  const rb = document.getElementById("lv-rec");
+  rb.className = "recbtn" + (rec.active ? " on" : "");
+  const el = rec.active ? Math.max(0, (s.elapsedMs || 0) - (rec.sinceMs || 0)) : 0;
+  rb.textContent = rec.active
+    ? `● REC ${Math.floor(el / 60000)}:${String(Math.floor(el / 1000) % 60).padStart(2, "0")}`
+    : `● ${T("rec")}`;
+  setHTML(document.getElementById("lv-clips"), (rec.clips || []).length
+    ? `<span style="color:var(--ink-muted)">${T("clips")}:</span>` +
+      (rec.clips || []).slice(-4).reverse().map(c =>
+        `<a class="cliplink" href="runs/${esc(rec.dir)}/${esc(c)}" download>🎞️ ${esc(c)}</a>`).join("")
+    : "");
+  renderGhostPanel(s);
+  const ph = document.getElementById("lv-phase");
+  ph.textContent = phaseText(s);
+  ph.className = "livephase " + phaseClass(s);
+  // live tracking assurance: during ARMED/RACING, tell the user whether this run
+  // is being captured with FULL context (cc+track+mode). Green = it will be
+  // attributed correctly; amber = still resolving a field.
+  const lt = document.getElementById("lv-track");
+  const racing = s.state === "ARMED" || s.state === "RACING";
+  const cc2 = s.ctx || {};
+  if (racing) {
+    const full = cc2.cc && cc2.track && cc2.mode;
+    lt.style.display = "";
+    lt.className = "conf " + (full ? "cok" : "cwarn");
+    lt.textContent = (full ? "✓ " : "… ") + T("trackingOk");
+    lt.title = T("trackingTip");
+  } else {
+    lt.style.display = "none";
+  }
+  document.getElementById("lv-clock").textContent = s.clock || "";
+  document.getElementById("lv-meta").textContent =
+    `${s.runs ?? 0} ${T("runs").toLowerCase()} · ${Math.floor((s.elapsedMs || 0) / 60000)}m ${T("session")}`;
+  const c = s.ctx || {};
+  const tk = c.track && trackOf(c.track);
+  setHTML(document.getElementById("lv-chips"),
+    [tk ? `${tk.cup && tk.cup.icon ? `<img class="bic" src="${A(tk.cup.icon)}" alt="">` : ""}${esc(locName(tk))}`
+        : (c.track && esc(String(c.track).replace(/^track\./, ""))),
+     null, c.mode === "ghost" ? `<img class="bic" src="${BOO}" alt=""> ` + T("ghost").toLowerCase() : c.mode]
+      .filter(Boolean).map(t => `<span class="badge">${t}</span>`).join("")
+    + (c.cc ? ccChip(c.cc) : "")
+    || `<span class="badge">${T("noContext")}</span>`);
+  setHTML(document.getElementById("lv-ticker"), (s.ticker || [])
+    .map(i => { const r = tickerRow(i);
+      // the race clock when the server stamped one, else session elapsed —
+      // "12:40" for a race 28 seconds old was nobody's idea of a timestamp
+      // race clock inside a race, time of day outside one. Session-elapsed is
+      // the last resort (older payloads) and is the confusing one: it looks
+      // like a race time and is not.
+      const tt = i.race ? esc(i.race.replace(/\.\d+$/, ""))
+               : i.wall ? esc(i.wall)
+               : fmtT(i.t).replace(/\.\d+$/, "");
+      return `<div class="tk ${r.cls}"><span class="tt">${tt}</span><span class="em">${r.icon}</span><span class="msg">${r.text}</span></div>`; })
+    .join("") || `<div class="tickempty">
+      <div class="step"><span class="n">1</span>🗺️ ${T("stepPick")}</div>
+      <div class="step"><span class="n">2</span>🚦 ${T("stepStart")}</div>
+      <div class="step"><span class="n">3</span>📝 ${T("stepWatch")}</div></div>`);
+  if (APP_LIVE) updateAppLiveSummary(s);
+  // preview refresh is handled by the standalone pollPreview() timer below.
+}
+
+// Live preview via fast JPEG polling (NOT an MJPEG stream). The stream leaked
+// server threads on Windows and, worse, when you switched tabs the <img> abort
+// fired onerror -> it fell back to a 1.5 s poll (~0.7 fps, the "1 frame per
+// second" lag that persisted after returning to the tab). Polling a small JPEG
+// at ~12 fps is robust: each request is short-lived (no lingering connection,
+// no thread pile-up), it survives tab-switches, and double-buffering (load into
+// a detached Image, swap on load) keeps it flicker-free. Only one request is in
+// flight at a time and none fire while the tab is hidden.
+let _prevBusy = false, _shownAt = [], _shownFps = null;
+const previewWanted = () => document.documentElement.dataset.view !== "history" && window.innerWidth > 0;
+function pollPreview() {
+  if (document.hidden || !DATA.live || !previewWanted()) return;
+  const img = document.getElementById("lv-prev");
+  if (!img || _prevBusy) return;
+  _prevBusy = true;
+  const next = new Image();
+  next.onload = () => {
+    img.src = next.src; _prevBusy = false;
+    const now = performance.now(); _shownAt.push(now);
+    while (_shownAt.length && now - _shownAt[0] > 1000) _shownAt.shift();
+    _shownFps = _shownAt.length;
+    const chip = document.getElementById("lv-fps");
+    if (chip) { chip.textContent = `${T("picture")} ${_shownFps} fps`; chip.className = "conf " + (_shownFps >= 20 ? "cok" : "cwarn"); }
+  };
+  next.onerror = () => { _prevBusy = false; };
+  next.src = "api/preview.jpg?t=" + Date.now() + (_shownFps == null ? "" : "&shown=" + _shownFps);
+}
+// ~30 fps while visible, driven by the display's frame callback rather than a timer: Edge clamps
+// the timers of an embedded page it considers not visible to once a second, and did so in the
+// owner's app window (measured 2026-09-28: 29 frames produced, 1 requested per second, until F5).
+// requestAnimationFrame runs at the display rate whenever the frame is actually painted.
+let _lastPreviewPoll = 0, _lastLivePoll = 0;
+function previewLoop(now) {
+  if (now - _lastPreviewPoll >= 30) { _lastPreviewPoll = now; pollPreview(); }
+  if (now - _lastLivePoll >= 220) { _lastLivePoll = now; pollLive(); }
+  requestAnimationFrame(previewLoop);
+}
+requestAnimationFrame(previewLoop);
+document.addEventListener("visibilitychange", () => { if (!document.hidden) pollPreview(); });
+if (EMBEDDED && APP_LIVE) {
+  let lastHeight = -1;
+  const postHeight = () => {
+    const height = Math.ceil(document.getElementById("livewrap").getBoundingClientRect().height);
+    if (height !== lastHeight) { lastHeight = height; parent.postMessage({ livetrialHeight: height }, "*"); }
+  };
+  new ResizeObserver(postHeight).observe(document.getElementById("livewrap"));
+  setInterval(postHeight, 1000);
+}
+
+// Fast live-text poller: /api/runs is 26 KB and stays on the 1.5s load() path
+// (run cards + lap table + chart), but the live ticker/phase/chips/mushrooms-left
+// live inside that payload too and lagged the near-real-time preview by up to
+// 1.5s. This hits the tiny /api/live companion (~a couple KB) ~4-5x/s and updates
+// ONLY the live panel in place via updateLive() — no render() (that's the heavy
+// history rebuild). setHTML's dirty-check means unchanged content is a no-op, so
+// the ticker never scroll-resets when nothing new arrived. Idles cheaply when not
+// live or when the tab is hidden (a flag check, no network); live goes true/false
+// via the 1.5s load() cadence.
+let _liveBusy = false;
+async function pollLive() {
+  if (document.hidden || !DATA.live || _liveBusy || !previewWanted()) return;
+  _liveBusy = true;
+  try {
+    const j = await (await fetch("api/live", { cache: "no-store" })).json();
+    DATA.live = j.live; DATA.liveState = j.liveState; DATA.record = j.record;
+    updateLive();  // live panel only, in place; NO render()
+  } catch (e) { /* transient; next tick retries */ }
+  finally { _liveBusy = false; }
+}
+// pollLive (~4-5 fps, tracks the preview) runs from previewLoop above for the same reason.
+
+window.addEventListener("resize", () => { const r = selectedRun(); if (r) wireTimeline(r); });
+load();
+</script>
+</body>
+</html>

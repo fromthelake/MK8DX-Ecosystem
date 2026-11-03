@@ -1,0 +1,148 @@
+name: Release
+# A tag v* builds the client packages and the source archive from that commit, writes SHA256SUMS.txt and
+# manifest.json, and opens a DRAFT release for a maintainer to review and publish. Server packages (host-local,
+# XAMPP, shared hosting) need the maintainer's image builds and are attached by hand (docs/RELEASE_PACKAGES.md).
+# The Android APK here is debug-signed; an official signed APK is attached by the maintainer (docs/CLIENT_BUILDS.md).
+# Nothing is built unless the tagged commit already has a successful Verify run: tag a commit after its
+# Verify run is green (re-run this workflow if the tag was pushed while Verify was still running).
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  verified:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: read
+    steps:
+      - name: The tagged commit passed Verify
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(gh api "repos/$GITHUB_REPOSITORY/actions/workflows/verify.yml/runs?head_sha=$GITHUB_SHA&status=success&per_page=1" --jq '.total_count')
+          if [ "${count:-0}" -lt 1 ]; then
+            echo "::error::No successful Verify run for $GITHUB_SHA; no release is built from an unverified commit."
+            exit 1
+          fi
+  android:
+    needs: verified
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24.12.0
+      - name: Debug APK
+        working-directory: apps/timetrials-android
+        run: |
+          export JAVA_HOME="$JAVA_HOME_21_X64"
+          bash ./gradlew --no-daemon :app:testDebugUnitTest :app:assembleDebug
+          mkdir -p "$RUNNER_TEMP/out"
+          cp app/build/outputs/apk/debug/app-debug.apk "$RUNNER_TEMP/out/mk8dx-android-debug-${GITHUB_REF_NAME}.apk"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: android
+          path: ${{ runner.temp }}/out/
+  tournament:
+    needs: verified
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24.12.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12'
+      - name: Tournament tools package
+        shell: pwsh
+        run: |
+          python -m pip install --disable-pip-version-check build wheel
+          python tooling/tournament/build_windows_package.py --output "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME" --version "$env:GITHUB_REF_NAME"
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          Move-Item "$env:RUNNER_TEMP\tournament-tools-$env:GITHUB_REF_NAME.zip" "$env:RUNNER_TEMP\out\"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tournament
+          path: ${{ runner.temp }}/out/
+  livetrial:
+    needs: verified
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+        with:
+          node-version: 24.12.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12'
+      - name: LiveTrial package (engine, assets, embedded Python)
+        shell: pwsh
+        run: |
+          $venv = "$env:RUNNER_TEMP\livetrial-venv"
+          python -m venv $venv
+          & "$venv\Scripts\python.exe" -m pip install --disable-pip-version-check -r apps/timetrials-desktop/vision-runtime/requirements.txt jsonschema==4.25.1 pyinstaller==6.16.0
+          $embed = "$env:RUNNER_TEMP\python-3.12.10-embed-amd64.zip"
+          Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip -OutFile $embed
+          $out = "$env:RUNNER_TEMP\desktop-client-$env:GITHUB_REF_NAME"
+          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:GITHUB_REF_NAME"
+          New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
+          Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:GITHUB_REF_NAME.zip"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: livetrial
+          path: ${{ runner.temp }}/out/
+  source:
+    needs: verified
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+        with:
+          python-version: '3.12'
+      - name: Full source archive with the hydrated asset collection
+        run: |
+          python tooling/assets/shared_asset_source.py verify
+          mkdir -p "$RUNNER_TEMP/out"
+          python tooling/release/full_archive.py --output "$RUNNER_TEMP/out/mk8dx-full-local-${GITHUB_REF_NAME}.zip"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: source
+          path: ${{ runner.temp }}/out/
+  draft-release:
+    needs: [android, tournament, livetrial, source]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          path: ${{ runner.temp }}/dist
+          merge-multiple: true
+      - name: Checksums, manifest and a draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd "$RUNNER_TEMP/dist"
+          cp "$GITHUB_WORKSPACE/LICENSE" "$GITHUB_WORKSPACE/LICENSE_SCOPE.md" "$GITHUB_WORKSPACE/SOURCE_FOR_BINARIES.txt" .
+          cp "$GITHUB_WORKSPACE/docs/THIRD_PARTY_MATERIALS.md" .
+          cp "$GITHUB_WORKSPACE"/docs/install/MK8DX_User_Guide_EN.* "$GITHUB_WORKSPACE"/docs/install/MK8DX_Handleiding_NL.* .
+          # The APK cannot carry loose files: its notices travel beside it.
+          (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${GITHUB_REF_NAME}.zip" \
+            LICENSE LICENSE_SCOPE.md SOURCE_FOR_BINARIES.txt docs/THIRD_PARTY_MATERIALS.md)
+          printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$GITHUB_REF_NAME" "$GITHUB_SHA" > manifest.json
+          sha256sum -- * > SHA256SUMS.txt
+          gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" \
+            --notes "Draft built from $GITHUB_SHA. Attach the server packages (and a release-signed APK if any), then refresh SHA256SUMS.txt (docs/RELEASE_PACKAGES.md, Publishing a release), review and publish." -- *

@@ -1,0 +1,27 @@
+**/node_modules/
+**/dist/
+**/build/
+**/.gradle/
+**/.cache/
+**/coverage/
+**/__pycache__/
+*.pyc
+# Python virtual environments (docs/DEVELOPMENT.md creates .venv in the repository root)
+.venv/
+venv/
+.mk8dx-local/
+.mk8dx-production/
+*.env
+*.env.*
+!*.env.example
+*.log
+*.zip
+*.tar
+*.sql.gz
+~$*.docx
+.DS_Store
+CLAUDE.local.md
+# A collection object over GitHub's 100 MiB file limit is tracked as numbered parts; the joined file
+# is a local copy that tooling/assets/shared_asset_source.py rebuilds.
+packages/assets/collection/objects/1a/1ab4350c9a0cc7fa1a04631d14c2e05a5d84e8ebef719d8a2eb03906e9246b20
+packages/assets/collection/objects/**/*.joining

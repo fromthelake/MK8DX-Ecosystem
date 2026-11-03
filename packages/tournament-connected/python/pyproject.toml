@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mk8dx-tournament-connected"
+version = "0.2.0"
+description = "Optional device-authorized MK8DX Tournament pending-result upload"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+mk8dx-tournament-connect = "mk8dx_tournament_connected.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

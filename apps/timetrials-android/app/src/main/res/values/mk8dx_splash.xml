@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        The splash background is the product's own page surface, so the splash
+        dissolves into the app instead of flashing a different colour. It
+        mirrors the generated `surface.app` token (Mk8dxTokens); there is no
+        token adapter for Android resource XML, so a device test asserts the
+        two are the same value.
+
+        Phase 17: the default appearance is System again (ADR-0205 §3), so the
+        splash follows the phone through the `-night` qualifier — the only
+        mechanism the platform offers, because the splash window is drawn
+        before any app code runs. This file holds the Light value and
+        `values-night` holds Dark. A Player who explicitly chooses the opposite
+        of their phone still gets their phone's splash; that is the same
+        exception the product already accepted, now for the minority rather
+        than for everyone (DESIGN_SYSTEM §19, §23).
+    -->
+    <color name="mk8dx_splash_background">#EEF1F7</color>
+
+    <style name="Theme.Mk8dxProduct" parent="@android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/mk8dx_splash_background</item>
+    </style>
+
+    <!-- core-splashscreen: the launcher's own icon on the product surface, on every supported release
+         (mk8dx_splash_icon: the owner-private icon when the build has it, the fallback otherwise). -->
+    <style name="Theme.Mk8dxSplash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/mk8dx_splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/mk8dx_splash_icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.Mk8dxProduct</item>
+    </style>
+</resources>

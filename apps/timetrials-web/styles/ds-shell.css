@@ -1,0 +1,368 @@
+/* AppShell (DESIGN_SYSTEM.md §11, §12, §24). Built by src/ds-shell.ts.
+   Only the four breakpoint tokens are used: 600 (tablet) and 1100 (desktop). No colour literals.
+   Route content lives in .ds-app__main and is deliberately NOT inside a .ds-root: until a route
+   migrates it keeps its legacy look, so nothing is half-migrated. */
+@layer legacy, tokens, base, components;
+@layer components {
+  /* Ranking already owns the full phone canvas; keep its accepted deploy276 geometry. */
+  body:has(.ds-rank) { margin: 0; }
+
+  .ds-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    /* The frame paints the resolved page surface. Without it the legacy `:root` colour shows through
+       wherever a route's own content stops, which in Light was a dark band around a light page. An
+       unmigrated route still paints its own `.page-shell` over this. */
+    background: var(--ds-surface-app);
+  }
+
+  /* ---------------- skip link: the first stop, visible only when it is focused ---------------- */
+  .ds-skip {
+    position: absolute;
+    inset-inline-start: var(--ds-space-lg);
+    inset-block-start: calc(var(--ds-space-lg) * -4);
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--ds-target-min);
+    padding: 0 var(--ds-space-lg);
+    background: var(--ds-action-primary);
+    color: var(--ds-action-on-primary);
+    font-weight: 600;
+    text-decoration: none;
+    transition: inset-block-start var(--ds-motion-state) ease-out;
+  }
+  .ds-skip:focus-visible { inset-block-start: var(--ds-space-lg); }
+
+  /* ---------------- top bar ---------------- */
+  .ds-topbar {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 20;
+    /* Keep the route canvas at its established width: several phone routes intentionally use the
+       browser's 8 px body frame when calculating their full-bleed offset. Only the shared chrome
+       crosses that frame, which matches the installed app without changing every route's geometry. */
+    margin: -8px -8px 0;
+    background: var(--ds-surface-app);
+    border-block-end: 1px solid var(--ds-border-subtle);
+    padding-block-start: env(safe-area-inset-top, 0);
+  }
+  body:has(.ds-rank) .ds-topbar { margin: 0; }
+  .ds-topbar__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: var(--ds-space-lg);
+    row-gap: 0;
+    width: 100%;
+    max-width: var(--ds-container-max);
+    margin-inline: auto;
+    min-height: 60px;
+    padding-inline: var(--ds-gutter-phone);
+  }
+  @media (min-width: 600px) { .ds-topbar__inner { padding-inline: var(--ds-gutter-tablet); } }
+  @media (min-width: 1100px) { .ds-topbar__inner { padding-inline: var(--ds-gutter-desktop); } }
+  /* On a phone the bar carries the compact lockup next to up to four 44 px targets, and Dutch
+     labels are the longer ones. The gutter and the gap give way before the identity or a target
+     does: the lockup is never squeezed and no control drops below the touch floor. */
+  @media (max-width: 599px) {
+    .ds-topbar__inner { min-height: 64px; column-gap: var(--ds-space-xs); padding-inline: var(--ds-space-md); }
+    .ds-topbar__brand { margin-inline-start: calc(var(--ds-space-xs) * -1); }
+    .ds-topbar__actions { gap: 5px; }
+    .ds-topbar__actions .ds-icon-button { min-width: 48px; min-height: 48px; }
+  }
+  /* The narrowest phones ("Aanmelden", "サインイン" are wider than "Sign in"): the extra-languages
+     select gives way - Settings lists all 15 languages - and the gaps tighten, never a target. */
+  @media (max-width: 359px) {
+    .ds-topbar__actions { gap: 2px; }
+    .ds-language-more { display: none; }
+  }
+
+  .ds-topbar__brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: var(--ds-target-min);
+    min-height: var(--ds-target-min);
+    text-decoration: none;
+    flex: 0 0 auto;
+  }
+  .ds-topbar__brand:focus-visible { outline: var(--ds-focus-width) solid var(--ds-focus-ring); outline-offset: 3px; }
+
+  /* ---------------- destinations ----------------
+     Below the widest layout the destinations take a row of their own. Every destination stays a
+     destination: nothing is truncated, nothing scrolls out of reach and nothing can be pushed on
+     top of the right cluster, which is what happens when seven nowrap labels, a lockup and four
+     controls are asked to share 768 px. */
+  .ds-primary-nav {
+    display: none;
+    order: 3;
+    flex: 1 1 100%;
+    align-items: center;
+    gap: var(--ds-space-xs);
+    min-height: 48px;
+    border-block-start: 1px solid var(--ds-border-subtle);
+  }
+  @media (min-width: 1440px) {
+    .ds-primary-nav { order: 0; flex: 1 1 auto; min-width: 0; border-block-start: 0; }
+  }
+  .ds-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ds-space-xs);
+    min-height: var(--ds-target-min);
+    padding-inline: var(--ds-space-md);
+    border: 0;
+    background: transparent;
+    color: var(--ds-text-secondary);
+    font-family: var(--ds-font-ui);
+    font-size: var(--ds-type-body-s-size);
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .ds-nav-link:hover { color: var(--ds-text-primary); background: var(--ds-surface-hover); }
+  /* The current place is never colour alone: it also carries the rule under it (§7 principle). */
+  .ds-nav-link[aria-current="page"] { color: var(--ds-text-primary); box-shadow: inset 0 -3px 0 0 var(--ds-action-primary); }
+  .ds-primary-nav__more { display: none; }
+
+  /* Tablet: four destinations plus More. Hidden means display:none, never a focusable ghost. */
+  @media (min-width: 600px) {
+    .ds-primary-nav { display: flex; }
+    .ds-nav-link[data-tablet="false"] { display: none; }
+    .ds-primary-nav__more { display: block; }
+  }
+  @media (min-width: 1100px) {
+    .ds-nav-link[data-tablet="false"] { display: inline-flex; }
+    .ds-primary-nav__more { display: none; }
+  }
+
+  /* ---------------- right cluster ---------------- */
+  .ds-topbar__actions { display: flex; align-items: center; gap: var(--ds-space-xs); margin-inline-start: auto; flex: 0 0 auto; }
+  /* `hidden` must win over a component's own display, or a control the shell has put away stays on
+     screen and in the tab order. Scoped to the shell's own chrome, never to route content. */
+  .ds-topbar [hidden], .ds-taskbar [hidden], .ds-bottom-tabs [hidden], .ds-docked [hidden] { display: none; }
+  .ds-icon-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ds-space-xs);
+    min-width: var(--ds-target-min);
+    min-height: var(--ds-target-min);
+    padding-inline: var(--ds-space-sm);
+    border: 0;
+    background: transparent;
+    color: var(--ds-text-secondary);
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .ds-icon-button:hover { color: var(--ds-text-primary); background: var(--ds-surface-hover); }
+  .ds-icon-button .ds-icon { width: 22px; height: 22px; }
+  .ds-topbar__bell[data-unread] { color: var(--ds-action-primary); }
+  .ds-topbar__apps-label { display: none; font-size: var(--ds-type-body-s-size); font-weight: 600; }
+  @media (min-width: 1100px) { .ds-topbar__apps-label { display: inline; } }
+
+  .ds-badge {
+    position: absolute;
+    inset-block-start: 4px;
+    inset-inline-end: 2px;
+    min-width: 18px;
+    height: 18px;
+    padding-inline: 4px;
+    border-radius: var(--ds-radius-round);
+    background: var(--ds-action-primary);
+    color: var(--ds-action-on-primary);
+    font-family: var(--ds-font-data);
+    font-size: var(--ds-type-data-s-size);
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+  }
+  .ds-badge:empty { display: none; }
+
+  .ds-topbar__account {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ds-space-sm);
+    min-height: var(--ds-target-min);
+    padding-inline: var(--ds-space-sm);
+    border: 0;
+    background: transparent;
+    color: var(--ds-text-body);
+    font-family: var(--ds-font-ui);
+    font-size: var(--ds-type-body-s-size);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ds-topbar__account:hover { background: var(--ds-surface-hover); color: var(--ds-text-primary); }
+  .ds-topbar__account .ds-icon { width: 22px; height: 22px; }
+  .ds-topbar__avatar { width: 28px; height: 28px; border-radius: var(--ds-radius-round); }
+  .ds-topbar__account-name { display: inline; max-width: 12ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ds-topbar__account-slot[hidden] { display: none; }
+  .ds-topbar__settings { display: none; }
+  @media (max-width: 599px) {
+    .ds-topbar__account { gap: 5px; min-height: 48px; padding-inline: var(--ds-space-xs); }
+    .ds-topbar__settings:not([hidden]) { display: inline-flex; }
+  }
+
+  /* ---------------- task mode (§11): the tabs give way to Back, title and Close ---------------- */
+  .ds-taskbar {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-sm);
+    width: 100%;
+    max-width: var(--ds-container-max);
+    margin-inline: auto;
+    min-height: 52px;
+    padding-inline: var(--ds-gutter-phone);
+    border-block-start: 1px solid var(--ds-border-subtle);
+  }
+  .ds-taskbar[hidden] { display: none; }
+  .ds-taskbar__title { flex: 1 1 auto; font-weight: 600; color: var(--ds-text-primary); }
+  .ds-app[data-task="true"] .ds-bottom-tabs { display: none; }
+  .ds-app[data-task="true"] .ds-docked { display: none; }
+
+  /* ---------------- operator / administrator context bar ---------------- */
+  .ds-context-bar {
+    border-block-end: 4px solid var(--ds-mode-race-direction);
+    background: var(--ds-surface-raised);
+    color: var(--ds-text-body);
+  }
+  /* Administration is a role, not a live race: it gets the rule without the race-direction colour. */
+  .ds-context-bar:has(> [data-mode="administration"]) { border-block-end-color: var(--ds-border-strong); }
+  .ds-context-bar__line { margin: 0; letter-spacing: 0.08em; text-transform: uppercase; }
+  .ds-context-bar[hidden] { display: none; }
+  .ds-context-bar > * {
+    width: 100%;
+    max-width: var(--ds-container-max);
+    margin-inline: auto;
+    padding: var(--ds-space-sm) var(--ds-gutter-phone);
+  }
+  @media (max-width: 599px) {
+    /* On the installed app, the Director's create action is part of the Tournament list itself.
+       The desktop role bar remains the shell entry point at wider viewports. */
+    .ds-context-bar:has(> .ds-tournaments__context) { display: none; }
+  }
+
+  /* ---------------- the one main ---------------- */
+  .ds-app__main { flex: 1 1 auto; min-width: 0; }
+  .ds-app__main:focus { outline: none; }
+  .ds-app__main:focus-visible { outline: var(--ds-focus-width) solid var(--ds-focus-ring); outline-offset: -4px; }
+
+  /* ---------------- phone: five tabs, plus room for them above the content ---------------- */
+  .ds-bottom-tabs {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: 20;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    background: var(--ds-surface-raised);
+    border-block-start: 1px solid var(--ds-border-subtle);
+    column-gap: var(--ds-space-xxs);
+    padding-inline: var(--ds-space-xs);
+    padding-block-end: env(safe-area-inset-bottom, 0);
+  }
+  .ds-tab-link {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 3px;
+    min-height: 64px;
+    padding: 5px 1px;
+    color: var(--ds-text-tertiary);
+    text-decoration: none;
+  }
+  .ds-tab-link .ds-icon { width: 24px; height: 24px; }
+  .ds-tab-link__label { font-family: var(--ds-font-ui); font-size: 10px; line-height: 11px; font-weight: 600; letter-spacing: 0; white-space: nowrap; }
+  .ds-tab-link[aria-current="page"] { color: var(--ds-action-primary); background: var(--ds-surface-selected); }
+  .ds-tab-link[aria-current="page"]::after {
+    content: ""; position: absolute; inset-block-end: 4px; width: max(18px, 50%); height: 3px;
+    background: var(--ds-action-primary);
+  }
+  @media (min-width: 600px) { .ds-bottom-tabs { display: none; } }
+  @media (max-width: 599px) {
+    .ds-app { padding-block-end: calc(64px + env(safe-area-inset-bottom, 0px)); }
+    /* The docked action floats over the page, so the page ends above it: the last row of content
+       must stay readable and reachable, not sit under a button. */
+    .ds-app[data-global-action="filled"] {
+      padding-block-end: calc(64px + 68px + env(safe-area-inset-bottom, 0px));
+    }
+    .ds-topbar__action { display: none; }
+  }
+
+  /* Docked "Post a time" (§11): only on the phone, and only where the page has no filled action. */
+  .ds-docked {
+    position: fixed;
+    inset-inline-end: var(--ds-gutter-phone);
+    inset-block-end: calc(64px + var(--ds-space-lg) + env(safe-area-inset-bottom, 0px));
+    z-index: 21;
+    box-shadow: var(--ds-elevation-docked);
+  }
+  .ds-docked[hidden] { display: none; }
+  @media (min-width: 600px) { .ds-docked { display: none; } }
+
+  /* ---------------- the product language switch (signed-out cluster) ---------------- */
+  .ds-language-toggle { display: inline-flex; align-items: center; }
+  .ds-language-toggle[hidden] { display: none; }
+  .ds-language-option {
+    min-width: var(--ds-target-min);
+    min-height: var(--ds-target-min);
+    border: 0;
+    background: transparent;
+    color: var(--ds-text-tertiary);
+    font-family: var(--ds-font-ui);
+    font-size: var(--ds-type-micro-size);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+  }
+  .ds-language-option:hover { color: var(--ds-text-primary); background: var(--ds-surface-hover); }
+  .ds-language-option[aria-pressed="true"] { color: var(--ds-text-primary); box-shadow: inset 0 -3px 0 0 var(--ds-border-control); }
+  .ds-language-more {
+    min-height: var(--ds-target-min);
+    max-width: 7.5rem;
+    border: 0;
+    background: transparent;
+    color: var(--ds-text-tertiary);
+    font-family: var(--ds-font-ui);
+    font-size: var(--ds-type-micro-size);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ds-language-more:hover, .ds-language-more:focus-visible { color: var(--ds-text-primary); background: var(--ds-surface-hover); }
+
+  /* ---------------- bare chrome: the device-approval page has nothing to navigate ------------- */
+  .ds-app[data-chrome="bare"] .ds-primary-nav,
+  .ds-app[data-chrome="bare"] .ds-topbar__actions,
+  .ds-app[data-chrome="bare"] .ds-bottom-tabs,
+  .ds-app[data-chrome="bare"] .ds-docked { display: none; }
+  .ds-app[data-chrome="bare"] { padding-block-end: 0; }
+
+  /* ---------------- not found (W33) ---------------- */
+  .ds-not-found {
+    display: grid;
+    gap: var(--ds-space-lg);
+    justify-items: start;
+    max-width: 60ch;
+    margin-inline: auto;
+    padding: var(--ds-space-5xl) var(--ds-gutter-phone);
+  }
+
+  /* ---------------- menus opened from the right cluster ---------------- */
+  .ds-menu__list[data-align="end"] { inset-inline-start: auto; inset-inline-end: 0; }
+
+  /* ---------------- forced colours: keep the rules and the current mark ---------------- */
+  @media (forced-colors: active) {
+    .ds-topbar, .ds-bottom-tabs, .ds-context-bar { border-color: CanvasText; }
+    .ds-nav-link[aria-current="page"], .ds-tab-link[aria-current="page"] { box-shadow: none; border-block-end: 3px solid Highlight; }
+    .ds-badge { border: 1px solid CanvasText; }
+    .ds-skip { border: 1px solid CanvasText; }
+  }
+}

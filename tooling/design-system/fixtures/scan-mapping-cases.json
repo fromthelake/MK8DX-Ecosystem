@@ -1,0 +1,165 @@
+{
+  "version": "mk8dx.scan-mapping-cases.v1",
+  "note": "What a producer read, and what the canonical Post-a-Time draft makes of it (POST_A_TIME_ARCHITECTURE §3/§11, ADR-0204, ADR-0206). The scanner writes `handoff`; the scan service maps it to `fill`; applying that fill to a blank draft gives `draft`. One file, so the reader of a screen and the form that publishes it cannot drift apart quietly.",
+  "cases": [
+    {
+      "id": "result-screen-three-laps",
+      "note": "The ordinary case: the end screen, everything read, nothing doubted.",
+      "handoff": {
+        "trackId": "track.mario_kart_stadium",
+        "mode": 150,
+        "totalDigits": "145912",
+        "laps": ["035392", "035300", "035220"],
+        "characterId": "character.mario",
+        "layout": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "confidence": { "character": 0.93 },
+        "lapSumMatches": true
+      },
+      "fill": {
+        "totalDigits": "145912",
+        "laps": ["035392", "035300", "035220"],
+        "characterId": "character.mario",
+        "source": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "confidence": { "character": 0.93 },
+        "lapSumMatches": true
+      },
+      "draft": {
+        "totalDigits": "145912",
+        "lapDigits": ["035392", "035300", "035220"],
+        "scanned": [
+          "totalDigits",
+          "laps[0].timeDigits",
+          "laps[1].timeDigits",
+          "laps[2].timeDigits",
+          "loadout.characterId"
+        ],
+        "doubt": [],
+        "captureLayout": "time_trial_result",
+        "sourceKind": "web_scan",
+        "verificationStatus": "producer_check_passed"
+      }
+    },
+    {
+      "id": "ghost-panel-total-only",
+      "note": "A ghost panel with unreadable laps: the empty values are left empty, never guessed, and total-only stays a valid submission (SPEC §7 D6).",
+      "handoff": {
+        "trackId": "track.mario_kart_stadium",
+        "mode": 200,
+        "totalDigits": "150000",
+        "laps": ["", "", ""],
+        "layout": "ghost_detail",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "lapSumMatches": false
+      },
+      "fill": {
+        "totalDigits": "150000",
+        "laps": ["", "", ""],
+        "source": "ghost_detail",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "lapSumMatches": false
+      },
+      "draft": {
+        "totalDigits": "150000",
+        "lapDigits": ["", "", ""],
+        "scanned": ["totalDigits"],
+        "doubt": [],
+        "captureLayout": "ghost_details",
+        "sourceKind": "web_scan",
+        "verificationStatus": "producer_check_passed"
+      }
+    },
+    {
+      "id": "low-confidence-part-is-flagged",
+      "note": "A part the producer was unsure of is filled in and flagged, never dropped and never silently trusted (LowConfidenceField).",
+      "handoff": {
+        "trackId": "track.mario_kart_stadium",
+        "mode": 150,
+        "totalDigits": "145912",
+        "laps": [],
+        "characterId": "character.mario",
+        "bodyId": "body.pipe_frame",
+        "layout": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "confidence": { "character": 0.62, "body": 0.91 },
+        "doubt": ["loadout.characterId"]
+      },
+      "fill": {
+        "totalDigits": "145912",
+        "laps": [],
+        "characterId": "character.mario",
+        "bodyId": "body.pipe_frame",
+        "source": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2",
+        "confidence": { "character": 0.62, "body": 0.91 },
+        "doubt": ["loadout.characterId"]
+      },
+      "draft": {
+        "totalDigits": "145912",
+        "lapDigits": ["", "", ""],
+        "scanned": ["totalDigits", "loadout.characterId", "loadout.bodyId"],
+        "doubt": ["loadout.characterId"],
+        "captureLayout": "time_trial_result",
+        "sourceKind": "web_scan",
+        "verificationStatus": "producer_check_passed"
+      }
+    },
+    {
+      "id": "a-misread-total-is-shown-not-repaired",
+      "note": "A scanned 1:78.000 stays 1:78.000: the rule fires and the Player sees the misread, instead of the typed digit mask silently turning it into 1:58.000 (SPEC §7 D5).",
+      "handoff": {
+        "trackId": "track.mario_kart_stadium",
+        "mode": 150,
+        "totalDigits": "178000",
+        "laps": [],
+        "layout": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2"
+      },
+      "fill": {
+        "totalDigits": "178000",
+        "laps": [],
+        "source": "endscreen",
+        "producerVersion": "tt-scan-web/0.4.1-web.2"
+      },
+      "draft": {
+        "totalDigits": "178000",
+        "lapDigits": ["", "", ""],
+        "scanned": ["totalDigits"],
+        "doubt": [],
+        "captureLayout": "time_trial_result",
+        "sourceKind": "web_scan",
+        "verificationStatus": "producer_check_passed",
+        "valid": false
+      }
+    },
+    {
+      "id": "an-old-scanner-says-nothing-about-provenance",
+      "note": "A handoff from a build that predates ADR-0204 still fills the form. It is still a scan, and the capture layout is simply absent rather than invented.",
+      "handoff": {
+        "trackId": "track.mario_kart_stadium",
+        "mode": 150,
+        "totalDigits": "145912",
+        "laps": ["035392", "035300", "035220"]
+      },
+      "fill": {
+        "totalDigits": "145912",
+        "laps": ["035392", "035300", "035220"]
+      },
+      "draft": {
+        "totalDigits": "145912",
+        "lapDigits": ["035392", "035300", "035220"],
+        "scanned": [
+          "totalDigits",
+          "laps[0].timeDigits",
+          "laps[1].timeDigits",
+          "laps[2].timeDigits"
+        ],
+        "doubt": [],
+        "captureLayout": "time_trial_result",
+        "sourceKind": "web_scan",
+        "verificationStatus": "producer_check_passed"
+      }
+    }
+  ]
+}

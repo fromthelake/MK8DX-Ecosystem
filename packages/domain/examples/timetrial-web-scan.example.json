@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.01SYNTHETICWEBSCAN1",
+  "revision": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 105912,
+  "laps": [
+    { "lapNumber": 1, "timeMs": 35392 },
+    { "lapNumber": 2, "timeMs": 35300 },
+    { "lapNumber": 3, "timeMs": 35220 }
+  ],
+  "countryId": "country.nl",
+  "playerReference": {
+    "namespace": "player",
+    "value": "player.synthetic_web_scan_01"
+  },
+  "source": {
+    "kind": "web_scan",
+    "captureLayout": "time_trial_result",
+    "producerVersion": "tt-scan-web/0.4.1-web.2"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786900000000,
+    "createdAtMs": 1786900060000
+  },
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "tt_scan_web_v1",
+    "lapSumMatches": true,
+    "fieldConfidence": {
+      "totalTime": 0.97,
+      "character": 0.84
+    }
+  }
+}

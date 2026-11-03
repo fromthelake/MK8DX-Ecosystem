@@ -1,0 +1,396 @@
+{
+ "measuredAt": "2026-09-19T20:20:44.692Z",
+ "totals": {
+  "webCssBytes": 549165,
+  "legacyCssBytes": 549165,
+  "systemCssBytes": 0,
+  "scannerCssBytes": 18368,
+  "legacyHexLiterals": 995,
+  "legacyImportant": 16,
+  "legacyMediaQueries": 85,
+  "legacyStateModifierClasses": 22,
+  "pageShellLayers": 14
+ },
+ "files": {
+  "manual-entry.css": {
+   "bytes": 10743,
+   "lines": 438,
+   "ruleBlocks": 69,
+   "hexLiterals": 20,
+   "hexDistinct": 18,
+   "rgbCalls": 1,
+   "important": 0,
+   "mediaQueries": 2,
+   "breakpointWidths": [
+    "2.75rem",
+    "24rem",
+    "34rem"
+   ],
+   "stateModifierClasses": 1,
+   "customPropertyDefinitions": 9,
+   "fontSizeDeclarations": 9,
+   "fontSizeDistinct": 7,
+   "pageShellLayers": {}
+  },
+  "product-page.css": {
+   "bytes": 538422,
+   "lines": 16978,
+   "ruleBlocks": 3754,
+   "hexLiterals": 975,
+   "hexDistinct": 273,
+   "rgbCalls": 225,
+   "important": 16,
+   "mediaQueries": 83,
+   "breakpointWidths": [
+    "1.18rem",
+    "1.1rem",
+    "1.25rem",
+    "1.55rem",
+    "1.5rem",
+    "1.75rem",
+    "1.9rem",
+    "10rem",
+    "1220px",
+    "12rem",
+    "13rem",
+    "14rem",
+    "2.25rem",
+    "2.2rem",
+    "2.5rem",
+    "2.6rem",
+    "2.75rem",
+    "2.7rem",
+    "2.8rem",
+    "20.5rem",
+    "22px",
+    "26rem",
+    "288px",
+    "2px",
+    "2rem",
+    "3.2rem",
+    "3.5rem",
+    "30rem",
+    "320px",
+    "34rem",
+    "35rem",
+    "36rem",
+    "4.25rem",
+    "4.2rem",
+    "4.4rem",
+    "4.5rem",
+    "4.65rem",
+    "4.6rem",
+    "4.8rem",
+    "40.0625rem",
+    "40rem",
+    "42rem",
+    "44rem",
+    "45rem",
+    "46rem",
+    "480px",
+    "48rem",
+    "49.99rem",
+    "5.4rem",
+    "5.5rem",
+    "50rem",
+    "52rem",
+    "53rem",
+    "560px",
+    "56rem",
+    "58.0625rem",
+    "58rem",
+    "6.5rem",
+    "60rem",
+    "62rem",
+    "64.01rem",
+    "640px",
+    "64rem",
+    "66rem",
+    "7.5rem",
+    "700px",
+    "75rem",
+    "7rem",
+    "8.5rem",
+    "820px",
+    "8rem"
+   ],
+   "stateModifierClasses": 21,
+   "customPropertyDefinitions": 128,
+   "fontSizeDeclarations": 785,
+   "fontSizeDistinct": 122,
+   "pageShellLayers": {
+    "x": 1,
+    "tournament-control": 133,
+    "timing-tower": 717,
+    "ranking-pilot": 238,
+    "track-control": 96,
+    "tracks-control": 49,
+    "records-control": 37,
+    "player-control": 79,
+    "player-overview": 43,
+    "mastery-control": 78,
+    "compare-control": 108,
+    "build-control": 101,
+    "activity-control": 109,
+    "community-control": 54
+   }
+  }
+ },
+ "scanner": {
+  "bytes": 18368,
+  "lines": 273,
+  "ruleBlocks": 199,
+  "hexLiterals": 54,
+  "hexDistinct": 37,
+  "rgbCalls": 15,
+  "important": 0,
+  "mediaQueries": 3,
+  "breakpointWidths": [
+   "220px",
+   "34px",
+   "46px",
+   "50px",
+   "560px",
+   "900px"
+  ],
+  "stateModifierClasses": 0,
+  "customPropertyDefinitions": 14,
+  "fontSizeDeclarations": 51,
+  "fontSizeDistinct": 17,
+  "pageShellLayers": {}
+ },
+ "legacyCeiling": {
+  "totals": {
+   "legacyCssBytes": 0,
+   "legacyHexLiterals": 0,
+   "legacyImportant": 0,
+   "legacyMediaQueries": 0,
+   "legacyStateModifierClasses": 0,
+   "pageShellLayers": 0
+  },
+  "history": [
+   {
+    "at": "2026-09-19T22:38:41.609Z",
+    "note": "Phase 5: the 108 .site-nav rules of the legacy header (the AppShell replaces it on every route)",
+    "moved": [
+     "legacyCssBytes 549165 → 532073",
+     "legacyHexLiterals 995 → 987",
+     "legacyImportant 16 → 13",
+     "legacyMediaQueries 85 → 81",
+     "legacyStateModifierClasses 22 → 20",
+     "pageShellLayers 14 → 13"
+    ]
+   },
+   {
+    "at": "2026-09-20T00:20:46.438Z",
+    "note": "Phase 6: the 238 .page-shell--ranking-pilot rules, the .tt-standing, .rank-card and .tournament-standing layers of W10/W11 (kept: the track-thumb rules the Home activity list still uses, and the tournament tier chip the night report still draws)",
+    "moved": [
+     "legacyCssBytes 532073 → 478270",
+     "legacyHexLiterals 987 → 946",
+     "legacyMediaQueries 81 → 75",
+     "legacyStateModifierClasses 20 → 17",
+     "pageShellLayers 13 → 12"
+    ]
+   },
+   {
+    "at": "2026-09-20T03:32:34.441Z",
+    "note": "Phase 6 (W11 track record): the Race Control colour literals in the track-record rules gave way to the design tokens, and the legacy sort-header rule to SortHeader",
+    "moved": [
+     "legacyCssBytes 478270 → 478098",
+     "legacyHexLiterals 946 → 935",
+     "legacyStateModifierClasses 17 → 16"
+    ]
+   },
+   {
+    "at": "2026-09-20T04:08:05.772Z",
+    "note": "Phase 7: manual-entry.css and the legacy entry form it styled (the canonical Post-a-Time task replaces W08 and W07's inline entry)",
+    "moved": [
+     "legacyCssBytes 478098 → 467337",
+     "legacyHexLiterals 935 → 915",
+     "legacyMediaQueries 75 → 73",
+     "legacyStateModifierClasses 16 → 15"
+    ]
+   },
+   {
+    "at": "2026-09-20T05:13:39.680Z",
+    "note": "Phase 9: the 96 .page-shell--track-control selectors and the 195 dead .track-board__/.public-time-trials rules the retired leaderboard module built (kept: the .track-board__flag of the activity list and the .track-board__mode pills Compare and Mastery still build)",
+    "moved": [
+     "legacyCssBytes 467337 → 429889",
+     "legacyHexLiterals 915 → 885",
+     "legacyMediaQueries 73 → 62",
+     "pageShellLayers 12 → 11"
+    ]
+   },
+   {
+    "at": "2026-09-20T05:39:33.699Z",
+    "note": "Phase 10: the 290 home-hero/home-domain/home-ladder/home-focus/home-away/home-dashboard/home-more/signed-out-home selectors of W01 and W02, and with them the timing tower's Home parts (717 -> 263 uses); kept .home-focus__mode, which Compare and Mastery still build, and .timing-summary, which Community still builds",
+    "moved": [
+     "legacyCssBytes 429889 → 394151",
+     "legacyHexLiterals 885 → 865",
+     "legacyMediaQueries 62 → 51"
+    ]
+   },
+   {
+    "at": "2026-09-20T08:59:31.592Z",
+    "note": "Phase 12 W06: the 83 tracks-control / cups-view rule blocks",
+    "moved": [
+     "legacyCssBytes 394151 → 381424",
+     "legacyHexLiterals 865 → 852",
+     "legacyMediaQueries 51 → 48",
+     "pageShellLayers 11 → 10"
+    ]
+   },
+   {
+    "at": "2026-09-20T09:21:41.226Z",
+    "note": "Phase 12 W12/W13/W15/W28: the compare/records/community/insights layers",
+    "moved": [
+     "legacyCssBytes 381424 → 346338",
+     "legacyHexLiterals 852 → 818",
+     "legacyMediaQueries 48 → 41",
+     "pageShellLayers 10 → 7"
+    ]
+   },
+   {
+    "at": "2026-09-20T10:43:01.258Z",
+    "note": "Phase 12 W16: the activity-control layer and the retired feed's own classes",
+    "moved": [
+     "legacyCssBytes 346338 → 300809",
+     "legacyHexLiterals 818 → 778",
+     "legacyMediaQueries 41 → 40",
+     "legacyStateModifierClasses 15 → 14",
+     "pageShellLayers 7 → 6"
+    ]
+   },
+   {
+    "at": "2026-09-20T11:06:13.469Z",
+    "note": "Phase 12 W14: the build-control layer and the build view's own rules",
+    "moved": [
+     "legacyCssBytes 300809 → 283362",
+     "legacyHexLiterals 778 → 747",
+     "legacyMediaQueries 40 → 38",
+     "legacyStateModifierClasses 14 → 13",
+     "pageShellLayers 6 → 5"
+    ]
+   },
+   {
+    "at": "2026-09-20T11:12:20.155Z",
+    "note": "Phase 12 W03/W04/W22: the retired tt-auth form, notice and account-action rules and the public-tournaments layer",
+    "moved": [
+     "legacyCssBytes 283362 → 281586",
+     "legacyHexLiterals 747 → 738"
+    ]
+   },
+   {
+    "at": "2026-09-20T15:33:23.123Z",
+    "note": "Phase 11/12: the tournament family (W17, W19-W21, W18) retired 244 legacy rule blocks, the report's paper island and the statistics' own layer",
+    "moved": [
+     "legacyCssBytes 281586 → 255886",
+     "legacyHexLiterals 738 → 624",
+     "legacyMediaQueries 38 → 37",
+     "legacyStateModifierClasses 13 → 12"
+    ]
+   },
+   {
+    "at": "2026-09-20T20:49:12.661Z",
+    "note": "Phase 13 continuation ratchet: W25 retired the player-overview layer. The measured legacy CSS is 235497 B; the 240000 B ceiling deliberately leaves a 4503 B maintenance margin while lowering the previous architecture ceiling.",
+    "moved": [
+     "legacyCssBytes ceiling 255886 → 240000 (actual 235497)",
+     "legacyHexLiterals ceiling 624 → 600 (actual 591)",
+     "legacyMediaQueries ceiling 37 → 36 (actual 35)",
+     "pageShellLayers 5 → 4"
+    ]
+   },
+   {
+    "at": "2026-09-20T21:45:04.701Z",
+    "note": "W26/W27 profile results and mastery legacy route layers retired. Actual legacy CSS is 215503 B; the 220000 B ceiling leaves a bounded 4497 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 240000 → 220000 (actual 215503)",
+     "legacyHexLiterals 600 → 562",
+     "legacyImportant 13 → 11",
+     "legacyMediaQueries 36 → 31",
+     "legacyStateModifierClasses 12 → 11",
+     "pageShellLayers 4 → 2"
+    ]
+   },
+   {
+    "at": "2026-09-20T22:12:19.995Z",
+    "note": "Phase 12 W05: retired the standalone Welcome form, choice and action presentation. Actual legacy CSS is 207958 B; the 212000 B ceiling leaves a bounded 4042 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 220000 → 212000 (actual 207958)",
+     "legacyHexLiterals 562 → 557",
+     "legacyMediaQueries 31 → 30"
+    ]
+   },
+   {
+    "at": "2026-09-20T22:24:10.106Z",
+    "note": "Phase 12 W29: retired the notifications inbox, grouped-entry and Web Push legacy presentation. Actual legacy CSS is 196381 B; the 200000 B ceiling leaves a bounded 3619 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 212000 → 200000 (actual 196381)",
+     "legacyHexLiterals 557 → 548",
+     "legacyStateModifierClasses 11 → 10"
+    ]
+   },
+   {
+    "at": "2026-09-20T22:58:00.000Z",
+    "note": "Phase 12 W31: retired the Apps/download cards, platform palette and responsive legacy layer. Actual legacy CSS is 190746 B; the 194000 B ceiling leaves a bounded 3254 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 200000 → 194000 (actual 190746)",
+     "legacyHexLiterals ceiling 548 → 536 (actual 532)",
+     "legacyMediaQueries actual 30 → 29"
+    ]
+   },
+   {
+    "at": "2026-09-20T23:20:00.000Z",
+    "note": "Phase 12 W30: retired the Settings account, preference, claim, alias, visibility, rival and social-group presentation. Actual legacy CSS is 181543 B; the 185000 B ceiling leaves a bounded 3457 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 194000 → 185000 (actual 181543)",
+     "legacyHexLiterals ceiling 536 → 504 (actual 499)",
+     "legacyMediaQueries ceiling 30 → 29 (actual 28)",
+     "legacyStateModifierClasses ceiling 10 → 9 (actual 9)"
+    ]
+   },
+   {
+    "at": "2026-09-20T23:35:00.000Z",
+    "note": "Phase 14 W24: retired the report editor frame, field, toolbar and mobile presentation while preserving the shared report-content palette. Actual legacy CSS is 176758 B; the 180000 B ceiling leaves a bounded 3242 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 185000 → 180000 (actual 176758)",
+     "legacyHexLiterals ceiling 504 → 489 (actual 484)",
+     "legacyMediaQueries ceiling 29 → 28 (actual 27)"
+    ]
+   },
+   {
+    "at": "2026-09-21T00:05:00.000Z",
+    "note": "Phase 14 W23: retired the operator route palette and tournament-control frame while preserving the proven workflow structure under the MINIMAL design-system root. The active step/export/drop states moved to semantic attributes. Actual legacy CSS is 157848 B; the 162000 B ceiling leaves a bounded 4152 B maintenance margin.",
+    "moved": [
+     "legacyCssBytes ceiling 180000 → 162000 (actual 157848)",
+     "legacyHexLiterals ceiling 489 → 484 (actual 480)",
+     "legacyImportant 11 → 10",
+     "legacyMediaQueries ceiling 28 → 26 (actual 25)",
+     "legacyStateModifierClasses ceiling 9 → 8 (actual 7)",
+     "pageShellLayers 2 → 1"
+    ]
+   },
+   {
+    "at": "2026-09-21T01:05:00.000Z",
+    "note": "Phase 15 W32: retired the Administration claim, identity, Tournament, Time Trial and rating route presentation. Actual legacy CSS is 147647 B; the 152000 B ceiling leaves a bounded 4353 B maintenance margin while the one remaining timing-tower layer is handled by final retirement.",
+    "moved": [
+     "legacyCssBytes ceiling 162000 → 152000 (actual 147647)",
+     "legacyHexLiterals ceiling 484 → 462 (actual 457)",
+     "legacyMediaQueries ceiling 26 → 24 (actual 23)"
+    ]
+   },
+   {
+    "at": "2026-09-21T02:15:41.035Z",
+    "note": "Phase 17: retired product-page.css and the final timing-tower route palette; retained workflow structure moved to token-only ds-workflows.css",
+    "moved": [
+     "legacyCssBytes 152000 → 0",
+     "legacyHexLiterals 462 → 0",
+     "legacyImportant 10 → 0",
+     "legacyMediaQueries 24 → 0",
+     "legacyStateModifierClasses 8 → 0",
+     "pageShellLayers 1 → 0"
+    ]
+   }
+  ]
+ }
+}

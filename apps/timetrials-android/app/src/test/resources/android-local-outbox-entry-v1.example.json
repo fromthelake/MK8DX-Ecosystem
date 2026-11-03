@@ -1,0 +1,7 @@
+{
+  "schemaVersion": "mk8dx.local-time-trial-outbox-entry.v1",
+  "entryKey": "670c54bf140b7fa905dee4ecbc78f49ac663bbb7e893aa8ca5ae4ffd8537e7d3",
+  "submissionSha256": "c76c2501ba63fe5ba72d639712e6956ef0a409f96f2579b71cf70c5299170150",
+  "createdAtMs": 1786900070000,
+  "privateEvidencePresent": true
+}

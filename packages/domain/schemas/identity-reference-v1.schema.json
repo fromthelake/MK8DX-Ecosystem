@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json",
+  "title": "CentralIdentityReferenceV1",
+  "description": "Policy-neutral typed opaque references for central MK8DX identity concepts. A reference identifies a record type; it does not establish a claim, alias assignment, or reconciliation result.",
+  "oneOf": [
+    { "$ref": "#/$defs/playerReference" },
+    { "$ref": "#/$defs/userAccountReference" },
+    { "$ref": "#/$defs/playerClaimReference" },
+    { "$ref": "#/$defs/aliasReference" }
+  ],
+  "$defs": {
+    "playerId": {
+      "description": "Opaque central Player identifier. The opaque component must not encode a name, username, email address, or raw legacy identifier.",
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 135,
+      "pattern": "^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "userAccountId": {
+      "description": "Opaque central UserAccount identifier, distinct from Player and from any authentication-provider subject.",
+      "type": "string",
+      "minLength": 14,
+      "maxLength": 141,
+      "pattern": "^user_account\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "playerClaimId": {
+      "description": "Opaque identifier for an explicit PlayerClaim relationship record. Its presence alone does not say that the claim is verified or active.",
+      "type": "string",
+      "minLength": 14,
+      "maxLength": 141,
+      "pattern": "^player_claim\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "aliasId": {
+      "description": "Opaque identifier for an Alias record. The identifier does not contain or normalize the observed alias text.",
+      "type": "string",
+      "minLength": 7,
+      "maxLength": 134,
+      "pattern": "^alias\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+    },
+    "playerReference": {
+      "description": "Reference to an already-resolved central Player. It does not reference a UserAccount or assert a claim.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "value"],
+      "properties": {
+        "namespace": { "const": "player" },
+        "value": { "$ref": "#/$defs/playerId" }
+      }
+    },
+    "userAccountReference": {
+      "description": "Reference to a central authentication/account identity, not a Player.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "value"],
+      "properties": {
+        "namespace": { "const": "user_account" },
+        "value": { "$ref": "#/$defs/userAccountId" }
+      }
+    },
+    "playerClaimReference": {
+      "description": "Reference to an explicit relationship record between a UserAccount and a Player, without claim-state semantics.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "value"],
+      "properties": {
+        "namespace": { "const": "player_claim" },
+        "value": { "$ref": "#/$defs/playerClaimId" }
+      }
+    },
+    "aliasReference": {
+      "description": "Reference to a provenance-bearing Alias record, not to its observed text.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "value"],
+      "properties": {
+        "namespace": { "const": "alias" },
+        "value": { "$ref": "#/$defs/aliasId" }
+      }
+    }
+  }
+}

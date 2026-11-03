@@ -1,0 +1,1350 @@
+{
+  "schemaVersion": "mk8dx.reference.staff.v1",
+  "provenance": "Historical Nintendo Staff snapshot; partial physical spot check only",
+  "records": [
+    {
+      "trackId": "track.3ds_alpine_pass",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 144730,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.3ds_dk_jungle",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 140006,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.3ds_koopa_city",
+      "mode": 150,
+      "playerName": "Nin★Rui",
+      "timeMs": 133138,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.3ds_melody_motorway",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 139675,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.3ds_piranha_plant_pipeway",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 141321,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.3ds_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 112015,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.3ds_rosalinas_ice_world",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 130993,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.3ds_toad_circuit",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 93670,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.animal_crossing",
+      "mode": 150,
+      "playerName": "Nin★Marie",
+      "timeMs": 113584,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.big_blue",
+      "mode": 150,
+      "playerName": "Nin★Dylan",
+      "timeMs": 97316,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.bone_dry_dunes",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 135338,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.bowsers_castle",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 141980,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.cloudtop_cruise",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 139568,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.dolphin_shoals",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 134832,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.dragon_driftway",
+      "mode": 150,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 125957,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ds_cheep_cheep_beach",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 126314,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.ds_mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 110550,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.ds_peach_gardens",
+      "mode": 150,
+      "playerName": "Nin★Marie",
+      "timeMs": 139534,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.ds_shroom_ridge",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 129148,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.ds_tick_tock_clock",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 126485,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.ds_waluigi_pinball",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 156450,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.ds_wario_stadium",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 129171,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.electrodrome",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 141023,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.excitebike_arena",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 118808,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.gba_boo_lake",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 96212,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.gba_cheese_land",
+      "mode": 150,
+      "playerName": "Nin★Aracel",
+      "timeMs": 126316,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.gba_mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 104593,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.gba_ribbon_road",
+      "mode": 150,
+      "playerName": "Nin★Giulia",
+      "timeMs": 127152,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.gba_riverside_park",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 94480,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.gba_sky_garden",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 102267,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.gba_snow_land",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 106763,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.gba_sunset_wilds",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 108993,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.gcn_baby_park",
+      "mode": 150,
+      "playerName": "Nin★Joost",
+      "timeMs": 76561,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.gcn_daisy_cruiser",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 107238,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.gcn_dk_mountain",
+      "mode": 150,
+      "playerName": "Nin★Laura",
+      "timeMs": 155917,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.gcn_dry_dry_desert",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 146614,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.gcn_sherbet_land",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 140174,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.gcn_waluigi_stadium",
+      "mode": 150,
+      "playerName": "Nin★Maria",
+      "timeMs": 136894,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.gcn_yoshi_circuit",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 127557,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.hyrule_circuit",
+      "mode": 150,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 128616,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ice_ice_outpost",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 129427,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.mario_circuit",
+      "mode": 150,
+      "playerName": "Nin★Sho",
+      "timeMs": 128501,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.mario_kart_stadium",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 113191,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.merry_mountain",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 129693,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.mount_wario",
+      "mode": 150,
+      "playerName": "Nin★Elena",
+      "timeMs": 123483,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.mute_city",
+      "mode": 150,
+      "playerName": "Nin★Laura",
+      "timeMs": 130167,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.n64_choco_mountain",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 128949,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.n64_kalimari_desert",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 100363,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.n64_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 93981,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.n64_royal_raceway",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 138307,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.n64_toads_turnpike",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 128966,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.n64_yoshi_valley",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 143688,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.ninja_hideaway",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 140813,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.piranha_plant_cove",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 137775,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 145267,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.shy_guy_falls",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 141804,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.sky_high_sundae",
+      "mode": 150,
+      "playerName": "Nin★Akira",
+      "timeMs": 127380,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.snes_bowser_castle_3",
+      "mode": 150,
+      "playerName": "Nin★Polly",
+      "timeMs": 114632,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.snes_donut_plains_3",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 95564,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.snes_mario_circuit_3",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 106806,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.snes_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Anne",
+      "timeMs": 100711,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.squeaky_clean_sprint",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 137580,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.sunshine_airport",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 140447,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.super_bell_subway",
+      "mode": 150,
+      "playerName": "Nin★Juliet",
+      "timeMs": 126487,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.sweet_sweet_canyon",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 127205,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.thwomp_ruins",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 132125,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.toad_harbour",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 149282,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_amsterdam_drift",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 108580,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.tour_athens_dash",
+      "mode": 150,
+      "playerName": "Nin★Pedro",
+      "timeMs": 112892,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.tour_bangkok_rush",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 114995,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_berlin_byways",
+      "mode": 150,
+      "playerName": "Nin★Sophia",
+      "timeMs": 131001,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.tour_london_loop",
+      "mode": 150,
+      "playerName": "Nin★Frank",
+      "timeMs": 140500,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.tour_los_angeles_laps",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 117938,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_madrid_drive",
+      "mode": 150,
+      "playerName": "Nin★Aracel",
+      "timeMs": 130689,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.tour_new_york_minute",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 94573,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_paris_promenade",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 127401,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.tour_rome_avanti",
+      "mode": 150,
+      "playerName": "Nin★Giulia",
+      "timeMs": 117329,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.tour_singapore_speedway",
+      "mode": 150,
+      "playerName": "Nin★Alice",
+      "timeMs": 128954,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_sydney_sprint",
+      "mode": 150,
+      "playerName": "Nin★Rie",
+      "timeMs": 136617,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_tokyo_blur",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 96317,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_vancouver_velocity",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 131072,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.twisted_mansion",
+      "mode": 150,
+      "playerName": "Nin★Mark",
+      "timeMs": 134615,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.water_park",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 122186,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.wii_coconut_mall",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 118401,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.wii_daisy_circuit",
+      "mode": 150,
+      "playerName": "Nin★Adrien",
+      "timeMs": 121099,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.wii_dk_summit",
+      "mode": 150,
+      "playerName": "Nin★Fausti",
+      "timeMs": 142680,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.wii_grumble_volcano",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 136524,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.wii_koopa_cape",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 138943,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.wii_maple_treeway",
+      "mode": 150,
+      "playerName": "Nin★Pavel",
+      "timeMs": 156581,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.wii_moo_moo_meadows",
+      "mode": 150,
+      "playerName": "Nin★Chris",
+      "timeMs": 101846,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.wii_moonview_highway",
+      "mode": 150,
+      "playerName": "Nin★Yuya",
+      "timeMs": 114655,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.wii_mushroom_gorge",
+      "mode": 150,
+      "playerName": "Nin★Massim",
+      "timeMs": 110666,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.wii_rainbow_road",
+      "mode": 150,
+      "playerName": "Nin★Leonel",
+      "timeMs": 169574,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.wii_warios_gold_mine",
+      "mode": 150,
+      "playerName": "Nin★Pit",
+      "timeMs": 142119,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.wild_woods",
+      "mode": 150,
+      "playerName": "Nin★Akira",
+      "timeMs": 125396,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.yoshis_island",
+      "mode": 150,
+      "playerName": "Nin★Skip",
+      "timeMs": 140116,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.3ds_alpine_pass",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 99664,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.3ds_dk_jungle",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 106758,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.3ds_koopa_city",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 97526,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.3ds_melody_motorway",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 96529,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.3ds_piranha_plant_pipeway",
+      "mode": 200,
+      "playerName": "Nin★Frank",
+      "timeMs": 108454,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.3ds_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 79545,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.3ds_rosalinas_ice_world",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 98735,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.3ds_toad_circuit",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 63969,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.animal_crossing",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 83417,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.big_blue",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 73516,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.bone_dry_dunes",
+      "mode": 200,
+      "playerName": "Nin★Pavel",
+      "timeMs": 99330,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.bowsers_castle",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 100953,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.cloudtop_cruise",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 104120,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.dolphin_shoals",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 98911,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.dragon_driftway",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 94873,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.ds_cheep_cheep_beach",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 85089,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ds_mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 84282,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ds_peach_gardens",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 99851,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.ds_shroom_ridge",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 97626,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ds_tick_tock_clock",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 92483,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.ds_waluigi_pinball",
+      "mode": 200,
+      "playerName": "Nin★Pavel",
+      "timeMs": 120942,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.ds_wario_stadium",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 99724,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.electrodrome",
+      "mode": 200,
+      "playerName": "Nin★Laura",
+      "timeMs": 100943,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.excitebike_arena",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 89202,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.gba_boo_lake",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 69576,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.gba_cheese_land",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 101248,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.gba_mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Pit",
+      "timeMs": 70475,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.gba_ribbon_road",
+      "mode": 200,
+      "playerName": "Nin★Maria",
+      "timeMs": 91220,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.gba_riverside_park",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 73455,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.gba_sky_garden",
+      "mode": 200,
+      "playerName": "Nin★Rui",
+      "timeMs": 73606,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.gba_snow_land",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 81826,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.gba_sunset_wilds",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 80411,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.gcn_baby_park",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 59765,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.gcn_daisy_cruiser",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 81241,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.gcn_dk_mountain",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 126814,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.gcn_dry_dry_desert",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 105087,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.gcn_sherbet_land",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 94370,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.gcn_waluigi_stadium",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 103781,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.gcn_yoshi_circuit",
+      "mode": 200,
+      "playerName": "Nin★Elena",
+      "timeMs": 98869,
+      "countryId": "country.ru"
+    },
+    {
+      "trackId": "track.hyrule_circuit",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 100394,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.ice_ice_outpost",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 92435,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.mario_circuit",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 83243,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.mario_kart_stadium",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 81984,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.merry_mountain",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 91642,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.mount_wario",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 97266,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.mute_city",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 94273,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.n64_choco_mountain",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 91715,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.n64_kalimari_desert",
+      "mode": 200,
+      "playerName": "Nin★Juliet",
+      "timeMs": 70511,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.n64_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 68128,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.n64_royal_raceway",
+      "mode": 200,
+      "playerName": "Nin★Dylan",
+      "timeMs": 103120,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.n64_toads_turnpike",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 81156,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.n64_yoshi_valley",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 95628,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.ninja_hideaway",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 97815,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.piranha_plant_cove",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 101315,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Pedro",
+      "timeMs": 115767,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.shy_guy_falls",
+      "mode": 200,
+      "playerName": "Nin★Anne",
+      "timeMs": 100698,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.sky_high_sundae",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 90777,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.snes_bowser_castle_3",
+      "mode": 200,
+      "playerName": "Nin★Mark",
+      "timeMs": 82052,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.snes_donut_plains_3",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 71794,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.snes_mario_circuit_3",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 77075,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.snes_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Marie",
+      "timeMs": 72762,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.squeaky_clean_sprint",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 98459,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.sunshine_airport",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 105437,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.super_bell_subway",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 83304,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.sweet_sweet_canyon",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 100972,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.thwomp_ruins",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 91436,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.toad_harbour",
+      "mode": 200,
+      "playerName": "Nin★Adrien",
+      "timeMs": 103003,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.tour_amsterdam_drift",
+      "mode": 200,
+      "playerName": "Nin★Rie",
+      "timeMs": 79135,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_athens_dash",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 81362,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.tour_bangkok_rush",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 84201,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_berlin_byways",
+      "mode": 200,
+      "playerName": "Nin★Skip",
+      "timeMs": 95467,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_london_loop",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 98896,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.tour_los_angeles_laps",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 85694,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_madrid_drive",
+      "mode": 200,
+      "playerName": "Nin★Fausti",
+      "timeMs": 93156,
+      "countryId": "country.fr"
+    },
+    {
+      "trackId": "track.tour_new_york_minute",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 67562,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_paris_promenade",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 87101,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.tour_rome_avanti",
+      "mode": 200,
+      "playerName": "Nin★Akira",
+      "timeMs": 85406,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_singapore_speedway",
+      "mode": 200,
+      "playerName": "Nin★Mizuho",
+      "timeMs": 92160,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.tour_sydney_sprint",
+      "mode": 200,
+      "playerName": "Nin★Giulia",
+      "timeMs": 97367,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.tour_tokyo_blur",
+      "mode": 200,
+      "playerName": "Nin★Aracel",
+      "timeMs": 67560,
+      "countryId": "country.es"
+    },
+    {
+      "trackId": "track.tour_vancouver_velocity",
+      "mode": 200,
+      "playerName": "Nin★Joost",
+      "timeMs": 92752,
+      "countryId": "country.nl"
+    },
+    {
+      "trackId": "track.twisted_mansion",
+      "mode": 200,
+      "playerName": "Nin★Rui",
+      "timeMs": 98244,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.water_park",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 82799,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.wii_coconut_mall",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 89009,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.wii_daisy_circuit",
+      "mode": 200,
+      "playerName": "Nin★Pit",
+      "timeMs": 85861,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.wii_dk_summit",
+      "mode": 200,
+      "playerName": "Nin★Massim",
+      "timeMs": 113372,
+      "countryId": "country.it"
+    },
+    {
+      "trackId": "track.wii_grumble_volcano",
+      "mode": 200,
+      "playerName": "Nin★Maria",
+      "timeMs": 104284,
+      "countryId": "country.pt"
+    },
+    {
+      "trackId": "track.wii_koopa_cape",
+      "mode": 200,
+      "playerName": "Nin★Frank",
+      "timeMs": 101749,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.wii_maple_treeway",
+      "mode": 200,
+      "playerName": "Nin★Sho",
+      "timeMs": 118543,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.wii_moo_moo_meadows",
+      "mode": 200,
+      "playerName": "Nin★Leonel",
+      "timeMs": 69980,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.wii_moonview_highway",
+      "mode": 200,
+      "playerName": "Nin★Sophia",
+      "timeMs": 79973,
+      "countryId": "country.de"
+    },
+    {
+      "trackId": "track.wii_mushroom_gorge",
+      "mode": 200,
+      "playerName": "Nin★Chris",
+      "timeMs": 81194,
+      "countryId": "country.gb"
+    },
+    {
+      "trackId": "track.wii_rainbow_road",
+      "mode": 200,
+      "playerName": "Nin★Yuya",
+      "timeMs": 126146,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.wii_warios_gold_mine",
+      "mode": 200,
+      "playerName": "Nin★Alice",
+      "timeMs": 101168,
+      "countryId": "country.us"
+    },
+    {
+      "trackId": "track.wild_woods",
+      "mode": 200,
+      "playerName": "Nin★Mitsu",
+      "timeMs": 87555,
+      "countryId": "country.jp"
+    },
+    {
+      "trackId": "track.yoshis_island",
+      "mode": 200,
+      "playerName": "Nin★Polly",
+      "timeMs": 100731,
+      "countryId": "country.gb"
+    }
+  ]
+}

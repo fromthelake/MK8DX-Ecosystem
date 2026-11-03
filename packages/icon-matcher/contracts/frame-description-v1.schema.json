@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/recognition/frame-description-v1.schema.json",
+  "title": "MK8DX Frame Description V1",
+  "description": "What the ROI Searcher hands to the ROI Matcher for one canonical frame (CENTRAL_RECOGNITION.md section 8.3). It records what is on screen; every interpretation is versioned central code. The pixels travel beside it: in process as the canonical image, in parity vectors as a lossless PNG whose SHA-256 is recorded here.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "frame", "console", "source", "image", "residual", "fields"],
+  "properties": {
+    "schema": { "const": "mk8dx.frame-description.v1" },
+    "frame": {
+      "description": "The screen. Values are added when a frame type joins the pipeline.",
+      "enum": ["timetrial_end_screen", "timetrial_ghost_select", "timetrial_ghost_view",
+               "tournament_race_result", "tournament_score", "tournament_track_card"]
+    },
+    "console": {
+      "description": "Provenance. One frame definition serves both consoles until a capture proves a frame differs.",
+      "enum": ["switch1", "switch2", "unknown"]
+    },
+    "source": { "enum": ["hdmi", "webcam", "phone_photo"] },
+    "image": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["width", "height"],
+      "properties": {
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" }
+      }
+    },
+    "residual": {
+      "description": "Colour-correction fit of the frame (searcher's panel or card photometry); null when not measured. The matcher uses it to judge how far colour evidence can be trusted.",
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "locale": {
+      "description": "Console language when known (Clean Assets name locale, e.g. en-GB).",
+      "type": "string",
+      "pattern": "^[a-z]{2}(-[A-Z0-9]{2,3})?$"
+    },
+    "fields": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/field" }
+    }
+  },
+  "$defs": {
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "slot"],
+      "properties": {
+        "field": {
+          "enum": ["character", "body", "tire", "glider", "flag", "player_name", "track_name",
+                   "lap_time_1", "lap_time_2", "lap_time_3", "total_time", "race_score", "total_score"]
+        },
+        "slot": {
+          "description": "Rough position [x, y, w, h] in the canonical frame; the matcher refines around it.",
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 4,
+          "maxItems": 4
+        },
+        "context": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "printedText": {
+              "description": "The OCR line of a printed name in or beside this field, as read (a clue, never a decision).",
+              "type": ["string", "null"]
+            }
+          }
+        },
+        "candidates": { "$ref": "#/$defs/candidates" }
+      }
+    },
+    "candidates": {
+      "description": "Optional app candidate scope (section 8.4). Narrows the comparison; never makes an answer certain on its own.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["ids", "reason", "fallback"],
+      "properties": {
+        "ids": { "type": "array", "items": { "type": "string" }, "minItems": 1, "uniqueItems": true },
+        "reason": { "type": "string", "pattern": "^[a-z][a-z0-9_]{2,63}$" },
+        "fallback": { "enum": ["none", "full"] }
+      }
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+ "version": 3,
+ "note": "Ghost-delta digit geometry. Columns are {x, tilt}: x is the cell's left edge at the BOTTOM row, tilt is px of x per px of y, so a cell is a parallelogram. SEVEN segments (the database ships nine, but two appear in no digit pattern). One bar size, segLong x segShort, turned 90 degrees for the verticals. segOffsets nudges each segment, shared across columns. Edit at /deltagrid.",
+ "roi": [
+  540,
+  314,
+  198,
+  31
+ ],
+ "glyphRows": [
+  0,
+  31
+ ],
+ "glyphW": 21,
+ "signBox": [
+  1,
+  21
+ ],
+ "columns": {
+  "+": [
+   {
+    "x": 25,
+    "tilt": -0.138
+   },
+   {
+    "x": 60,
+    "tilt": -0.138
+   },
+   {
+    "x": 85,
+    "tilt": -0.138
+   },
+   {
+    "x": 120,
+    "tilt": -0.138
+   },
+   {
+    "x": 145,
+    "tilt": -0.138
+   },
+   {
+    "x": 171,
+    "tilt": -0.138
+   }
+  ],
+  "-": [
+   {
+    "x": 22,
+    "tilt": -0.138
+   },
+   {
+    "x": 57,
+    "tilt": -0.138
+   },
+   {
+    "x": 82,
+    "tilt": -0.138
+   },
+   {
+    "x": 117,
+    "tilt": -0.138
+   },
+   {
+    "x": 142,
+    "tilt": -0.138
+   },
+   {
+    "x": 167,
+    "tilt": -0.138
+   }
+  ]
+ },
+ "segOffsets": {
+  "top_middle": [
+   -1,
+   -2
+  ],
+  "left_middle": [
+   -3,
+   0
+  ],
+  "right_middle": [
+   -1,
+   0
+  ],
+  "center": [
+   -2,
+   0
+  ],
+  "left_bottom": [
+   -3,
+   0
+  ],
+  "right_bottom": [
+   -1,
+   0
+  ],
+  "middle_bottom_edge": [
+   -2,
+   0
+  ]
+ },
+ "segLong": 10,
+ "segShort": 7,
+ "pixelThresh": 0.55,
+ "areaFrac": 0.4,
+ "stemExtent": 0.64
+}

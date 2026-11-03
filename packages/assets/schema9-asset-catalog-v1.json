@@ -1,0 +1,3435 @@
+{
+  "snapshotVersion": "mk8dx.schema9-asset-catalog-snapshot.v1",
+  "schemaVersion": 9,
+  "sourceDatabaseSha256": "2375050f7a332c5bbe89a9109356e07759cc7432f5f804ba004d298c479950c0",
+  "assets": [
+    {
+      "id": "body.25_silver_arrow",
+      "assetType": "body"
+    },
+    {
+      "id": "body.300_sl_roadster",
+      "assetType": "body"
+    },
+    {
+      "id": "body.b_dasher",
+      "assetType": "body"
+    },
+    {
+      "id": "body.badwagon",
+      "assetType": "body"
+    },
+    {
+      "id": "body.blue_falcon",
+      "assetType": "body"
+    },
+    {
+      "id": "body.bone_rattler",
+      "assetType": "body"
+    },
+    {
+      "id": "body.bounder",
+      "assetType": "body"
+    },
+    {
+      "id": "body.buggybud",
+      "assetType": "body"
+    },
+    {
+      "id": "body.cat_cruiser",
+      "assetType": "body"
+    },
+    {
+      "id": "body.circuit_special",
+      "assetType": "body"
+    },
+    {
+      "id": "body.city_tripper",
+      "assetType": "body"
+    },
+    {
+      "id": "body.comet",
+      "assetType": "body"
+    },
+    {
+      "id": "body.flame_rider",
+      "assetType": "body"
+    },
+    {
+      "id": "body.gla",
+      "assetType": "body"
+    },
+    {
+      "id": "body.gold_kart",
+      "assetType": "body"
+    },
+    {
+      "id": "body.inkstriker",
+      "assetType": "body"
+    },
+    {
+      "id": "body.jet_bike",
+      "assetType": "body"
+    },
+    {
+      "id": "body.koopa_clown",
+      "assetType": "body"
+    },
+    {
+      "id": "body.landship",
+      "assetType": "body"
+    },
+    {
+      "id": "body.mach_8",
+      "assetType": "body"
+    },
+    {
+      "id": "body.master_cycle",
+      "assetType": "body"
+    },
+    {
+      "id": "body.master_cycle_zero",
+      "assetType": "body"
+    },
+    {
+      "id": "body.mr_scooty",
+      "assetType": "body"
+    },
+    {
+      "id": "body.p_wing",
+      "assetType": "body"
+    },
+    {
+      "id": "body.pipe_frame",
+      "assetType": "body"
+    },
+    {
+      "id": "body.prancer",
+      "assetType": "body"
+    },
+    {
+      "id": "body.splat_buggy",
+      "assetType": "body"
+    },
+    {
+      "id": "body.sport_bike",
+      "assetType": "body"
+    },
+    {
+      "id": "body.sports_coupe",
+      "assetType": "body"
+    },
+    {
+      "id": "body.standard_bike",
+      "assetType": "body"
+    },
+    {
+      "id": "body.standard_kart",
+      "assetType": "body"
+    },
+    {
+      "id": "body.standard_quad",
+      "assetType": "body"
+    },
+    {
+      "id": "body.steel_driver",
+      "assetType": "body"
+    },
+    {
+      "id": "body.streetle",
+      "assetType": "body"
+    },
+    {
+      "id": "body.tanooki_kart",
+      "assetType": "body"
+    },
+    {
+      "id": "body.teddy_buggy",
+      "assetType": "body"
+    },
+    {
+      "id": "body.the_duke",
+      "assetType": "body"
+    },
+    {
+      "id": "body.tri_speeder",
+      "assetType": "body"
+    },
+    {
+      "id": "body.varmint",
+      "assetType": "body"
+    },
+    {
+      "id": "body.wild_wiggler",
+      "assetType": "body"
+    },
+    {
+      "id": "body.yoshi_bike",
+      "assetType": "body"
+    },
+    {
+      "id": "body_variant.bounder.000_grey",
+      "assetType": "body_variant",
+      "parentId": "body.bounder"
+    },
+    {
+      "id": "body_variant.bounder.001_pink",
+      "assetType": "body_variant",
+      "parentId": "body.bounder"
+    },
+    {
+      "id": "body_variant.bounder.002_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.bounder"
+    },
+    {
+      "id": "body_variant.bounder.003_default",
+      "assetType": "body_variant",
+      "parentId": "body.bounder"
+    },
+    {
+      "id": "body_variant.buggybud.000_blue",
+      "assetType": "body_variant",
+      "parentId": "body.buggybud"
+    },
+    {
+      "id": "body_variant.buggybud.001_green",
+      "assetType": "body_variant",
+      "parentId": "body.buggybud"
+    },
+    {
+      "id": "body_variant.buggybud.002_pink",
+      "assetType": "body_variant",
+      "parentId": "body.buggybud"
+    },
+    {
+      "id": "body_variant.buggybud.003_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.buggybud"
+    },
+    {
+      "id": "body_variant.buggybud.004_default",
+      "assetType": "body_variant",
+      "parentId": "body.buggybud"
+    },
+    {
+      "id": "body_variant.circuit_special.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.circuit_special"
+    },
+    {
+      "id": "body_variant.circuit_special.001_green",
+      "assetType": "body_variant",
+      "parentId": "body.circuit_special"
+    },
+    {
+      "id": "body_variant.circuit_special.002_orange",
+      "assetType": "body_variant",
+      "parentId": "body.circuit_special"
+    },
+    {
+      "id": "body_variant.circuit_special.003_default",
+      "assetType": "body_variant",
+      "parentId": "body.circuit_special"
+    },
+    {
+      "id": "body_variant.city_tripper.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.001_blue",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.002_brown",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.003_green",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.004_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.005_orange",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.006_pink",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.007_purple",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.008_red",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.009_white",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.010_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.city_tripper.011_default",
+      "assetType": "body_variant",
+      "parentId": "body.city_tripper"
+    },
+    {
+      "id": "body_variant.gla.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.001_blue",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.002_brown",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.003_grey",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.004_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.005_purple",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.006_red",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.007_white",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.gla.008_default",
+      "assetType": "body_variant",
+      "parentId": "body.gla"
+    },
+    {
+      "id": "body_variant.inkstriker.000_inkling_girl",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.001_inkling_girl_green",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.002_inkling_girl_pink",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.003_inkling_boy",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.004_inkling_boy_purple",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.005_inkling_boy_cyan",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.inkstriker.006_default",
+      "assetType": "body_variant",
+      "parentId": "body.inkstriker"
+    },
+    {
+      "id": "body_variant.koopa_clown.000_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.001_larry",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.002_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.003_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.004_morton",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.005_roy",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.006_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.koopa_clown.007_default",
+      "assetType": "body_variant",
+      "parentId": "body.koopa_clown"
+    },
+    {
+      "id": "body_variant.landship.000_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.001_larry",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.002_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.003_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.004_morton",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.005_roy",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.006_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.landship.007_default",
+      "assetType": "body_variant",
+      "parentId": "body.landship"
+    },
+    {
+      "id": "body_variant.pipe_frame.000_birdo",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.001_black",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.002_blue",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.003_bowser",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.004_brown",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.005_green",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.006_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.007_larry",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.008_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.009_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.010_lightgreen",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.011_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.012_mario_gold",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.013_morton",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.014_orange",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.015_peach_gold",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.016_pink",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.017_purple",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.018_roy",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.019_waluigi",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.020_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.021_white",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.022_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.pipe_frame.023_default",
+      "assetType": "body_variant",
+      "parentId": "body.pipe_frame"
+    },
+    {
+      "id": "body_variant.splat_buggy.000_inkling_girl",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.001_inkling_girl_green",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.002_inkling_girl_pink",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.003_inkling_boy",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.004_inkling_boy_purple",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.005_inkling_boy_cyan",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.splat_buggy.006_default",
+      "assetType": "body_variant",
+      "parentId": "body.splat_buggy"
+    },
+    {
+      "id": "body_variant.sport_bike.000_green",
+      "assetType": "body_variant",
+      "parentId": "body.sport_bike"
+    },
+    {
+      "id": "body_variant.sport_bike.001_orange",
+      "assetType": "body_variant",
+      "parentId": "body.sport_bike"
+    },
+    {
+      "id": "body_variant.sport_bike.002_default",
+      "assetType": "body_variant",
+      "parentId": "body.sport_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.001_blue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.002_bowser",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.003_bowser_dry",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.004_bowser_jr",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.005_brown",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.006_dk",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.007_drybones",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.008_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.009_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.010_inkling_girl",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.011_inkling_girl_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.012_inkling_girl_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.013_inkling_boy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.014_inkling_boy_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.015_inkling_boy_cyan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.016_isabelle",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.017_kingboo",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.018_larry",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.019_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.020_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.021_lightgreen",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.022_link",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.023_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.024_mario_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.025_mario_tan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.026_morton",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.027_orange",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.028_peach_cat",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.029_peach_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.030_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.031_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.032_rosalina",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.033_roy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.034_shy_guy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.035_toad",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.036_toadette",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.037_villager_f",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.038_villager_m",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.039_waluigi",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.040_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.041_white",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.042_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.043_yoshi",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_bike.044_default",
+      "assetType": "body_variant",
+      "parentId": "body.standard_bike"
+    },
+    {
+      "id": "body_variant.standard_kart.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.001_blue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.002_bowser",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.003_bowser_dry",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.004_bowser_jr",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.005_brown",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.006_daisy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.007_dk",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.008_drybones",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.009_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.010_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.011_inkling_girl",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.012_inkling_girl_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.013_inkling_girl_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.014_inkling_boy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.015_inkling_boy_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.016_inkling_boy_cyan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.017_isabelle",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.018_kingboo",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.019_koopa",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.020_larry",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.021_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.022_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.023_lightgreen",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.024_link",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.025_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.026_mario_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.027_mario_tan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.028_morton",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.029_orange",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.030_peach_cat",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.031_peach_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.032_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.033_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.034_rosalina",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.035_roy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.036_shy_guy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.037_toad",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.038_toadette",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.039_villager_f",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.040_villager_m",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.041_waluigi",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.042_wario",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.043_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.044_white",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.045_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.046_yoshi",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_kart.047_default",
+      "assetType": "body_variant",
+      "parentId": "body.standard_kart"
+    },
+    {
+      "id": "body_variant.standard_quad.000_black",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.001_blue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.002_bowser",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.003_bowser_dry",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.004_bowser_jr",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.005_brown",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.006_daisy_bb",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.007_dk",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.008_drybones",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.009_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.010_iggy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.011_inkling_girl",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.012_inkling_girl_green",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.013_inkling_girl_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.014_inkling_boy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.015_inkling_boy_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.016_inkling_boy_cyan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.017_isabelle",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.018_kingboo",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.019_koopa",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.020_lemmy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.021_lightblue",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.022_lightgreen",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.023_link",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.024_ludwig",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.025_mario_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.026_mario_tan",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.027_morton",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.028_orange",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.029_peach",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.030_peach_cat",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.031_peach_gold",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.032_pink",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.033_purple",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.034_rosalina",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.035_roy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.036_villager_f",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.037_villager_m",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.038_waluigi",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.039_wendy",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.040_white",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.041_yellow",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "body_variant.standard_quad.042_default",
+      "assetType": "body_variant",
+      "parentId": "body.standard_quad"
+    },
+    {
+      "id": "character.baby_daisy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.baby_luigi",
+      "assetType": "character"
+    },
+    {
+      "id": "character.baby_mario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.baby_peach",
+      "assetType": "character"
+    },
+    {
+      "id": "character.baby_rosalina",
+      "assetType": "character"
+    },
+    {
+      "id": "character.birdo",
+      "assetType": "character"
+    },
+    {
+      "id": "character.bowser",
+      "assetType": "character"
+    },
+    {
+      "id": "character.bowser_jr",
+      "assetType": "character"
+    },
+    {
+      "id": "character.cat_peach",
+      "assetType": "character"
+    },
+    {
+      "id": "character.champion_link",
+      "assetType": "character"
+    },
+    {
+      "id": "character.daisy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.diddy_kong",
+      "assetType": "character"
+    },
+    {
+      "id": "character.donkey_kong",
+      "assetType": "character"
+    },
+    {
+      "id": "character.dry_bones",
+      "assetType": "character"
+    },
+    {
+      "id": "character.dry_bowser",
+      "assetType": "character"
+    },
+    {
+      "id": "character.funky_kong",
+      "assetType": "character"
+    },
+    {
+      "id": "character.gold_mario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.iggy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.inkling_boy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.inkling_girl",
+      "assetType": "character"
+    },
+    {
+      "id": "character.isabelle",
+      "assetType": "character"
+    },
+    {
+      "id": "character.kamek",
+      "assetType": "character"
+    },
+    {
+      "id": "character.king_boo",
+      "assetType": "character"
+    },
+    {
+      "id": "character.koopa_troopa",
+      "assetType": "character"
+    },
+    {
+      "id": "character.lakitu",
+      "assetType": "character"
+    },
+    {
+      "id": "character.larry",
+      "assetType": "character"
+    },
+    {
+      "id": "character.lemmy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.link",
+      "assetType": "character"
+    },
+    {
+      "id": "character.ludwig",
+      "assetType": "character"
+    },
+    {
+      "id": "character.luigi",
+      "assetType": "character"
+    },
+    {
+      "id": "character.mario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.metal_mario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.mii_heavy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.mii_light",
+      "assetType": "character"
+    },
+    {
+      "id": "character.mii_medium",
+      "assetType": "character"
+    },
+    {
+      "id": "character.morton",
+      "assetType": "character"
+    },
+    {
+      "id": "character.pauline",
+      "assetType": "character"
+    },
+    {
+      "id": "character.peach",
+      "assetType": "character"
+    },
+    {
+      "id": "character.peachette",
+      "assetType": "character"
+    },
+    {
+      "id": "character.petey_piranha",
+      "assetType": "character"
+    },
+    {
+      "id": "character.pink_gold_peach",
+      "assetType": "character"
+    },
+    {
+      "id": "character.rosalina",
+      "assetType": "character"
+    },
+    {
+      "id": "character.roy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.shy_guy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.tanooki_mario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.toad",
+      "assetType": "character"
+    },
+    {
+      "id": "character.toadette",
+      "assetType": "character"
+    },
+    {
+      "id": "character.villager_female",
+      "assetType": "character"
+    },
+    {
+      "id": "character.villager_male",
+      "assetType": "character"
+    },
+    {
+      "id": "character.waluigi",
+      "assetType": "character"
+    },
+    {
+      "id": "character.wario",
+      "assetType": "character"
+    },
+    {
+      "id": "character.wendy",
+      "assetType": "character"
+    },
+    {
+      "id": "character.wiggler",
+      "assetType": "character"
+    },
+    {
+      "id": "character.yoshi",
+      "assetType": "character"
+    },
+    {
+      "id": "character_variant.birdo.008_light_blue",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.009_black",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.010_red",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.011_yellow",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.012_white",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.013_blue",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.014_green",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.birdo.015_orange",
+      "assetType": "character_variant",
+      "parentId": "character.birdo"
+    },
+    {
+      "id": "character_variant.inkling_boy.069_purple",
+      "assetType": "character_variant",
+      "parentId": "character.inkling_boy"
+    },
+    {
+      "id": "character_variant.inkling_boy.070_cyan",
+      "assetType": "character_variant",
+      "parentId": "character.inkling_boy"
+    },
+    {
+      "id": "character_variant.inkling_girl.066_green",
+      "assetType": "character_variant",
+      "parentId": "character.inkling_girl"
+    },
+    {
+      "id": "character_variant.inkling_girl.067_pink",
+      "assetType": "character_variant",
+      "parentId": "character.inkling_girl"
+    },
+    {
+      "id": "character_variant.shy_guy.028_light_blue",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.029_black",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.030_green",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.031_yellow",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.032_white",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.033_blue",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.034_pink",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.shy_guy.035_orange",
+      "assetType": "character_variant",
+      "parentId": "character.shy_guy"
+    },
+    {
+      "id": "character_variant.yoshi.017_light_blue",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.018_black",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.019_red",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.020_yellow",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.021_white",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.022_blue",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.023_pink",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "character_variant.yoshi.024_orange",
+      "assetType": "character_variant",
+      "parentId": "character.yoshi"
+    },
+    {
+      "id": "country.ad",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ae",
+      "assetType": "country"
+    },
+    {
+      "id": "country.af",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ag",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ai",
+      "assetType": "country"
+    },
+    {
+      "id": "country.al",
+      "assetType": "country"
+    },
+    {
+      "id": "country.am",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ao",
+      "assetType": "country"
+    },
+    {
+      "id": "country.aq",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ar",
+      "assetType": "country"
+    },
+    {
+      "id": "country.as",
+      "assetType": "country"
+    },
+    {
+      "id": "country.at",
+      "assetType": "country"
+    },
+    {
+      "id": "country.au",
+      "assetType": "country"
+    },
+    {
+      "id": "country.aw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ax",
+      "assetType": "country"
+    },
+    {
+      "id": "country.az",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ba",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bb",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bd",
+      "assetType": "country"
+    },
+    {
+      "id": "country.be",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bi",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bj",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bo",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bq",
+      "assetType": "country"
+    },
+    {
+      "id": "country.br",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bs",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.by",
+      "assetType": "country"
+    },
+    {
+      "id": "country.bz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ca",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cd",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ch",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ci",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ck",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.co",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cx",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cy",
+      "assetType": "country"
+    },
+    {
+      "id": "country.cz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.de",
+      "assetType": "country"
+    },
+    {
+      "id": "country.dj",
+      "assetType": "country"
+    },
+    {
+      "id": "country.dk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.dm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.do",
+      "assetType": "country"
+    },
+    {
+      "id": "country.dz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ec",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ee",
+      "assetType": "country"
+    },
+    {
+      "id": "country.eg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.eh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.er",
+      "assetType": "country"
+    },
+    {
+      "id": "country.es",
+      "assetType": "country"
+    },
+    {
+      "id": "country.et",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fi",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fj",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fo",
+      "assetType": "country"
+    },
+    {
+      "id": "country.fr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ga",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gb",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gd",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ge",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gi",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gp",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gq",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gs",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.gy",
+      "assetType": "country"
+    },
+    {
+      "id": "country.hk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.hm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.hn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.hr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ht",
+      "assetType": "country"
+    },
+    {
+      "id": "country.hu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.id",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ie",
+      "assetType": "country"
+    },
+    {
+      "id": "country.il",
+      "assetType": "country"
+    },
+    {
+      "id": "country.im",
+      "assetType": "country"
+    },
+    {
+      "id": "country.in",
+      "assetType": "country"
+    },
+    {
+      "id": "country.io",
+      "assetType": "country"
+    },
+    {
+      "id": "country.iq",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ir",
+      "assetType": "country"
+    },
+    {
+      "id": "country.is",
+      "assetType": "country"
+    },
+    {
+      "id": "country.it",
+      "assetType": "country"
+    },
+    {
+      "id": "country.je",
+      "assetType": "country"
+    },
+    {
+      "id": "country.jm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.jo",
+      "assetType": "country"
+    },
+    {
+      "id": "country.jp",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ke",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ki",
+      "assetType": "country"
+    },
+    {
+      "id": "country.km",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kp",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ky",
+      "assetType": "country"
+    },
+    {
+      "id": "country.kz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.la",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lb",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.li",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ls",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.lv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ly",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ma",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.md",
+      "assetType": "country"
+    },
+    {
+      "id": "country.me",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ml",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mo",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mp",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mq",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ms",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mx",
+      "assetType": "country"
+    },
+    {
+      "id": "country.my",
+      "assetType": "country"
+    },
+    {
+      "id": "country.mz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.na",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ne",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ng",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ni",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.no",
+      "assetType": "country"
+    },
+    {
+      "id": "country.np",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.nz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.om",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pa",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pe",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ph",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ps",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.pw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.py",
+      "assetType": "country"
+    },
+    {
+      "id": "country.qa",
+      "assetType": "country"
+    },
+    {
+      "id": "country.re",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ro",
+      "assetType": "country"
+    },
+    {
+      "id": "country.rs",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ru",
+      "assetType": "country"
+    },
+    {
+      "id": "country.rw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sa",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sb",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sd",
+      "assetType": "country"
+    },
+    {
+      "id": "country.se",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sh",
+      "assetType": "country"
+    },
+    {
+      "id": "country.si",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sj",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.so",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ss",
+      "assetType": "country"
+    },
+    {
+      "id": "country.st",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sx",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sy",
+      "assetType": "country"
+    },
+    {
+      "id": "country.sz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.td",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.th",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tj",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tk",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tl",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.to",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tr",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tv",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tw",
+      "assetType": "country"
+    },
+    {
+      "id": "country.tz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ua",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ug",
+      "assetType": "country"
+    },
+    {
+      "id": "country.um",
+      "assetType": "country"
+    },
+    {
+      "id": "country.us",
+      "assetType": "country"
+    },
+    {
+      "id": "country.uy",
+      "assetType": "country"
+    },
+    {
+      "id": "country.uz",
+      "assetType": "country"
+    },
+    {
+      "id": "country.va",
+      "assetType": "country"
+    },
+    {
+      "id": "country.vc",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ve",
+      "assetType": "country"
+    },
+    {
+      "id": "country.vg",
+      "assetType": "country"
+    },
+    {
+      "id": "country.vi",
+      "assetType": "country"
+    },
+    {
+      "id": "country.vn",
+      "assetType": "country"
+    },
+    {
+      "id": "country.vu",
+      "assetType": "country"
+    },
+    {
+      "id": "country.wf",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ws",
+      "assetType": "country"
+    },
+    {
+      "id": "country.ye",
+      "assetType": "country"
+    },
+    {
+      "id": "country.yt",
+      "assetType": "country"
+    },
+    {
+      "id": "country.za",
+      "assetType": "country"
+    },
+    {
+      "id": "country.zm",
+      "assetType": "country"
+    },
+    {
+      "id": "country.zw",
+      "assetType": "country"
+    },
+    {
+      "id": "glider.bowser_kite",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.cloud_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.flower_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.gold_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.hylian_kite",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.mktv_parafoil",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.paper_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.parachute",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.parafoil",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.paraglider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.peach_parasol",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.plane_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.super_glider",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.waddle_wing",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider.wario_wing",
+      "assetType": "glider"
+    },
+    {
+      "id": "glider_variant.peach_parasol.000_daisy",
+      "assetType": "glider_variant",
+      "parentId": "glider.peach_parasol"
+    },
+    {
+      "id": "glider_variant.peach_parasol.001_rosalina",
+      "assetType": "glider_variant",
+      "parentId": "glider.peach_parasol"
+    },
+    {
+      "id": "glider_variant.peach_parasol.002_default",
+      "assetType": "glider_variant",
+      "parentId": "glider.peach_parasol"
+    },
+    {
+      "id": "glider_variant.super_glider.000_black",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.001_blue",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.002_bowser",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.003_bowser_dry",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.004_bowser_jr",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.005_dk",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.006_drybones",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.007_green",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.008_iggy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.009_inkling_girl",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.010_inkling_girl_green",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.011_inkling_girl_pink",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.012_inkling_boy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.013_inkling_boy_purple",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.014_inkling_boy_cyan",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.015_isabelle",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.016_kingboo",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.017_koopa",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.018_lakitu",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.019_larry",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.020_lemmy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.021_lightblue",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.022_link",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.023_ludwig",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.024_mario_gold",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.025_mario_tan",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.026_morton",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.027_orange",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.028_peach_cat",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.029_peach_gold",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.030_pink",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.031_purple",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.032_rosalina",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.033_roy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.034_shy_guy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.035_toad",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.036_toadette",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.037_villager_f",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.038_villager_m",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.039_waluigi",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.040_wario",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.041_wendy",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.042_white",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.043_yellow",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.044_yoshi",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "glider_variant.super_glider.045_default",
+      "assetType": "glider_variant",
+      "parentId": "glider.super_glider"
+    },
+    {
+      "id": "tire.ancient_tyres",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.azure_roller",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.button",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.crimson_slim",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.cushion",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.cyber_slick",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.funky_monster",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.gla_wheels",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.gold_wheels",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.leaf_tyres",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.metal",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.monster",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.normal",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.normal_blue",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.off_road",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.retro_off_road",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.roller",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.slick",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.slim",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.sponge",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.triforce_tyres",
+      "assetType": "tire"
+    },
+    {
+      "id": "tire.wooden",
+      "assetType": "tire"
+    },
+    {
+      "id": "track.3ds_alpine_pass",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_dk_jungle",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_koopa_city",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_melody_motorway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_piranha_plant_pipeway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_rainbow_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_rosalinas_ice_world",
+      "assetType": "track"
+    },
+    {
+      "id": "track.3ds_toad_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.animal_crossing",
+      "assetType": "track"
+    },
+    {
+      "id": "track.big_blue",
+      "assetType": "track"
+    },
+    {
+      "id": "track.bone_dry_dunes",
+      "assetType": "track"
+    },
+    {
+      "id": "track.bowsers_castle",
+      "assetType": "track"
+    },
+    {
+      "id": "track.cloudtop_cruise",
+      "assetType": "track"
+    },
+    {
+      "id": "track.dolphin_shoals",
+      "assetType": "track"
+    },
+    {
+      "id": "track.dragon_driftway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_cheep_cheep_beach",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_mario_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_peach_gardens",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_shroom_ridge",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_tick_tock_clock",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_waluigi_pinball",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ds_wario_stadium",
+      "assetType": "track"
+    },
+    {
+      "id": "track.electrodrome",
+      "assetType": "track"
+    },
+    {
+      "id": "track.excitebike_arena",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_boo_lake",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_cheese_land",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_mario_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_ribbon_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_riverside_park",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_sky_garden",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_snow_land",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gba_sunset_wilds",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_baby_park",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_daisy_cruiser",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_dk_mountain",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_dry_dry_desert",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_sherbet_land",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_waluigi_stadium",
+      "assetType": "track"
+    },
+    {
+      "id": "track.gcn_yoshi_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.hyrule_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ice_ice_outpost",
+      "assetType": "track"
+    },
+    {
+      "id": "track.mario_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.mario_kart_stadium",
+      "assetType": "track"
+    },
+    {
+      "id": "track.merry_mountain",
+      "assetType": "track"
+    },
+    {
+      "id": "track.mount_wario",
+      "assetType": "track"
+    },
+    {
+      "id": "track.mute_city",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_choco_mountain",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_kalimari_desert",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_rainbow_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_royal_raceway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_toads_turnpike",
+      "assetType": "track"
+    },
+    {
+      "id": "track.n64_yoshi_valley",
+      "assetType": "track"
+    },
+    {
+      "id": "track.ninja_hideaway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.piranha_plant_cove",
+      "assetType": "track"
+    },
+    {
+      "id": "track.rainbow_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.shy_guy_falls",
+      "assetType": "track"
+    },
+    {
+      "id": "track.sky_high_sundae",
+      "assetType": "track"
+    },
+    {
+      "id": "track.snes_bowser_castle_3",
+      "assetType": "track"
+    },
+    {
+      "id": "track.snes_donut_plains_3",
+      "assetType": "track"
+    },
+    {
+      "id": "track.snes_mario_circuit_3",
+      "assetType": "track"
+    },
+    {
+      "id": "track.snes_rainbow_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.squeaky_clean_sprint",
+      "assetType": "track"
+    },
+    {
+      "id": "track.sunshine_airport",
+      "assetType": "track"
+    },
+    {
+      "id": "track.super_bell_subway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.sweet_sweet_canyon",
+      "assetType": "track"
+    },
+    {
+      "id": "track.thwomp_ruins",
+      "assetType": "track"
+    },
+    {
+      "id": "track.toad_harbour",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_amsterdam_drift",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_athens_dash",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_bangkok_rush",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_berlin_byways",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_london_loop",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_los_angeles_laps",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_madrid_drive",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_new_york_minute",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_paris_promenade",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_rome_avanti",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_singapore_speedway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_sydney_sprint",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_tokyo_blur",
+      "assetType": "track"
+    },
+    {
+      "id": "track.tour_vancouver_velocity",
+      "assetType": "track"
+    },
+    {
+      "id": "track.twisted_mansion",
+      "assetType": "track"
+    },
+    {
+      "id": "track.water_park",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_coconut_mall",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_daisy_circuit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_dk_summit",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_grumble_volcano",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_koopa_cape",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_maple_treeway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_moo_moo_meadows",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_moonview_highway",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_mushroom_gorge",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_rainbow_road",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wii_warios_gold_mine",
+      "assetType": "track"
+    },
+    {
+      "id": "track.wild_woods",
+      "assetType": "track"
+    },
+    {
+      "id": "track.yoshis_island",
+      "assetType": "track"
+    }
+  ]
+}

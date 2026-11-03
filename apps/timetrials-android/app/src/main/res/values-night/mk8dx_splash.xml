@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        The Dark half of the splash surface: the generated `surface.app` Dark
+        token (Mk8dxTokens.Dark), picked by the platform whenever the phone is
+        in dark mode. See values/mk8dx_splash.xml for why the splash follows
+        the phone rather than the stored choice.
+    -->
+    <color name="mk8dx_splash_background">#080C1C</color>
+</resources>

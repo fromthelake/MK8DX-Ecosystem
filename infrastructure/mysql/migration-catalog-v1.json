@@ -1,0 +1,754 @@
+{
+  "catalogVersion": "mk8dx.mysql-migration-catalog.v1",
+  "targetEngine": "oracle-mysql",
+  "conformanceBaseline": "8.4",
+  "migrations": [
+    {
+      "version": "0000",
+      "name": "migration_ledger",
+      "upPath": "migrations/0000_migration_ledger.up.sql",
+      "upSha256": "b6aea61702d8b711a65972d6c9cfc730944a8806cc91d496822d9b9c38e573c3",
+      "downPath": "migrations/0000_migration_ledger.down.sql",
+      "downSha256": "3bf8b7d9cb2cb2e96c5104ed22e414e3e5dd82539dd8cc62feb1fd0546c9fb5b",
+      "destructiveDown": true
+    },
+    {
+      "version": "0001",
+      "name": "identity_foundation",
+      "upPath": "migrations/0001_identity_foundation.up.sql",
+      "upSha256": "18b37ef823ba0ea10546acff6876c0d72cd5abcafbafc6b6bc24188168b34f48",
+      "downPath": "migrations/0001_identity_foundation.down.sql",
+      "downSha256": "24e4d4583847236f2eab68674bd03a04bc3450ee19d49949e44433485444a69a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0002",
+      "name": "claim_evidence_staging",
+      "upPath": "migrations/0002_claim_evidence_staging.up.sql",
+      "upSha256": "990fd0147f1696dd81046c4a9da1a95ef0575c3165edafe33fb43dafb8497ff8",
+      "downPath": "migrations/0002_claim_evidence_staging.down.sql",
+      "downSha256": "718c8f40d856253af7003414fd4a0e3303c64cc44c3c37a35932d3abbcc5b585",
+      "destructiveDown": true
+    },
+    {
+      "version": "0003",
+      "name": "authentication_bindings",
+      "upPath": "migrations/0003_authentication_bindings.up.sql",
+      "upSha256": "297bf8d1679091f066c927710789766176529b4e2a57698c5b385d2a89424b7e",
+      "downPath": "migrations/0003_authentication_bindings.down.sql",
+      "downSha256": "75b6ff19bdaf60f5a4b4e6fb17f6e86fc5267d9adef49c1445b889497de2284b",
+      "destructiveDown": true
+    },
+    {
+      "version": "0004",
+      "name": "alias_lifecycle",
+      "upPath": "migrations/0004_alias_lifecycle.up.sql",
+      "upSha256": "72a289553fba73bb806965ad61d025573ee82c420c23688645996d7f72fc0383",
+      "downPath": "migrations/0004_alias_lifecycle.down.sql",
+      "downSha256": "063e140ff3638555d110572fbd20741c5d523bd2dd0ce896fc64584a6c75f149",
+      "destructiveDown": true
+    },
+    {
+      "version": "0005",
+      "name": "time_trial_submission_v1",
+      "upPath": "migrations/0005_time_trial_submission_v1.up.sql",
+      "upSha256": "fa5e1abe5e09bd1135aba48fdab392c264ac68685f7f4f13cf3402ed29c0dceb",
+      "downPath": "migrations/0005_time_trial_submission_v1.down.sql",
+      "downSha256": "3ff17464b23a89d819cdf4293d6f4a6fe785604d18bec61127b6e5a19c007920",
+      "destructiveDown": true
+    },
+    {
+      "version": "0006",
+      "name": "tournament_race_result_v1",
+      "upPath": "migrations/0006_tournament_race_result_v1.up.sql",
+      "upSha256": "7a0e65642786977bd66aa741480a3add532bba8bc260a1d1248d3427bc396a86",
+      "downPath": "migrations/0006_tournament_race_result_v1.down.sql",
+      "downSha256": "5f8ef58baf645da073781728a879ec99328d35b3b96fd543907d343f1cef7441",
+      "destructiveDown": true
+    },
+    {
+      "version": "0007",
+      "name": "authentication_provisioning_actor",
+      "upPath": "migrations/0007_authentication_provisioning_actor.up.sql",
+      "upSha256": "bd64c65644440f1be6c5230a15615ea74d4a2fb20555573f40bb04f9c5dfaff6",
+      "downPath": "migrations/0007_authentication_provisioning_actor.down.sql",
+      "downSha256": "e3ef22168b8c162fa19cb236b0f087e10e80c438eddc189619b972f21e773173",
+      "destructiveDown": true
+    },
+    {
+      "version": "0008",
+      "name": "embedded_passwordless_auth",
+      "upPath": "migrations/0008_embedded_passwordless_auth.up.sql",
+      "upSha256": "0c7d4371b0db220c431cc3ac04c58a7b0344bdc5bde9982977168316f78496b8",
+      "downPath": "migrations/0008_embedded_passwordless_auth.down.sql",
+      "downSha256": "59c123ad2d8528b8f155e74c9453e978c9c2c0e23a000558d3bf87e5c25a9ee6",
+      "destructiveDown": true
+    },
+    {
+      "version": "0009",
+      "name": "administrator_grants",
+      "upPath": "migrations/0009_administrator_grants.up.sql",
+      "upSha256": "8eca3560b31cf5b10c2f1d128870aa4d25175733d69ebba765dfbb4b33a06b63",
+      "downPath": "migrations/0009_administrator_grants.down.sql",
+      "downSha256": "85f11cb4e289e41a8487fcda34e96a0f9f5ab7bdc23f60581bdf095ed630ff65",
+      "destructiveDown": true
+    },
+    {
+      "version": "0010",
+      "name": "time_trial_publication",
+      "upPath": "migrations/0010_time_trial_publication.up.sql",
+      "upSha256": "9117f50a1335fea9809d909ef6b760056c5230d26b882fd2eca4cf954c9d0c35",
+      "downPath": "migrations/0010_time_trial_publication.down.sql",
+      "downSha256": "9f2dd61896a44c48de51f5079e73a0b9511fdba22da3e800a8277e95b5f57767",
+      "destructiveDown": true
+    },
+    {
+      "version": "0011",
+      "name": "tournament_publication",
+      "upPath": "migrations/0011_tournament_publication.up.sql",
+      "upSha256": "e0f0e0608c691adea898b562f278b85ab6d68471a72a244953d8bb6c713c1c11",
+      "downPath": "migrations/0011_tournament_publication.down.sql",
+      "downSha256": "02292fc084c9710fab908afce054d233af0d10498fe20d4d6b75c2ca6d03a208",
+      "destructiveDown": true
+    },
+    {
+      "version": "0012",
+      "name": "firebase_timetrial_import",
+      "upPath": "migrations/0012_firebase_timetrial_import.up.sql",
+      "upSha256": "b93bcfd50fd2e74be83353d377ad8e234bea3b9c6518bdec66fa639ca6bf2ddc",
+      "downPath": "migrations/0012_firebase_timetrial_import.down.sql",
+      "downSha256": "4df0626ff456cf5e1720b2346d3af6c3959727f2b6698ddde561ab040cf860cc",
+      "destructiveDown": true
+    },
+    {
+      "version": "0013",
+      "name": "firebase_import_backout",
+      "upPath": "migrations/0013_firebase_import_backout.up.sql",
+      "upSha256": "d6d5e42ca6c410b5fe5ef8fec14b424979fbf1a773beebafe8420b979f92846c",
+      "downPath": "migrations/0013_firebase_import_backout.down.sql",
+      "downSha256": "41e32b19d2511767c80d347f42f6cd82aab50f688fd545c50c2e116431046730",
+      "destructiveDown": true
+    },
+    {
+      "version": "0014",
+      "name": "firebase_import_dispositions",
+      "upPath": "migrations/0014_firebase_import_dispositions.up.sql",
+      "upSha256": "01697741f98ba18675104f690b58f3eb93402ef1d2954c8c8a0da8e77afff3ab",
+      "downPath": "migrations/0014_firebase_import_dispositions.down.sql",
+      "downSha256": "169f4bac8ee17d20bf68cc5ac55921a7923c5a2eee1594bd8dc6296e72c1c0ca",
+      "destructiveDown": true
+    },
+    {
+      "version": "0015",
+      "name": "time_trial_administrator_publication",
+      "upPath": "migrations/0015_time_trial_administrator_publication.up.sql",
+      "upSha256": "3fe8b6014e01dae5e1fa8d3bc00880975640312e44806646bdfffc2200508fce",
+      "downPath": "migrations/0015_time_trial_administrator_publication.down.sql",
+      "downSha256": "a67205eab473a15ad98b7c354dcdaf0e38af0876d4a048f56bf7db74ade7487e",
+      "destructiveDown": false
+    },
+    {
+      "version": "0016",
+      "name": "player_ratings",
+      "upPath": "migrations/0016_player_ratings.up.sql",
+      "upSha256": "32f03346e4fbeedcf54d1f63e819e07e7d04282d65090ee3128d18dbbd3c2419",
+      "downPath": "migrations/0016_player_ratings.down.sql",
+      "downSha256": "bb4106d4b2a75c50a2a5ef9aadef8440621239507fcc1b1759945ace4e918605",
+      "destructiveDown": true
+    },
+    {
+      "version": "0017",
+      "name": "rating_recalculation",
+      "upPath": "migrations/0017_rating_recalculation.up.sql",
+      "upSha256": "6bae2c87e38626b492342906b01ab4bcf6a85de621cf090c1d1bf85b83f10ae9",
+      "downPath": "migrations/0017_rating_recalculation.down.sql",
+      "downSha256": "222648a50732c00df1568091cf7acb32b73e8497a26bdacedf8d882e9f902db3",
+      "destructiveDown": true
+    },
+    {
+      "version": "0018",
+      "name": "player_country",
+      "upPath": "migrations/0018_player_country.up.sql",
+      "upSha256": "75eab6f0f3c0155479255737e24aa44858e74beee373e6f6790bf51bfde6941f",
+      "downPath": "migrations/0018_player_country.down.sql",
+      "downSha256": "b25b773016045e1025641101e6d7cd6bd10cb2b074c7a9d27ecfd830d69203e3",
+      "destructiveDown": true
+    },
+    {
+      "version": "0019",
+      "name": "time_trial_reactions",
+      "upPath": "migrations/0019_time_trial_reactions.up.sql",
+      "upSha256": "57a08eb4468aff9c88c0408bc0f8af78c77eb4fc83ffc0cc2ab7fcbf57915837",
+      "downPath": "migrations/0019_time_trial_reactions.down.sql",
+      "downSha256": "ca7a043d484bf265bdf9690cd284443f5707834301d4ee64724e1539bab2b16e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0020",
+      "name": "reaction_vocabulary",
+      "upPath": "migrations/0020_reaction_vocabulary.up.sql",
+      "upSha256": "0d535026721fe66fb3bfa9f4edaaecdc5ac1aa0a226219b8965db21c33e902ec",
+      "downPath": "migrations/0020_reaction_vocabulary.down.sql",
+      "downSha256": "b3c2a5b21f57ab9b07244586f5db1d047734835dd851c9036f33d03c90a52788",
+      "destructiveDown": true
+    },
+    {
+      "version": "0021",
+      "name": "notifications",
+      "upPath": "migrations/0021_notifications.up.sql",
+      "upSha256": "8de3586371e472f20770b0923af3886746ab08af0b78bb2e9fc5f53977344821",
+      "downPath": "migrations/0021_notifications.down.sql",
+      "downSha256": "435066f6dbe48d2ac8a1c3dfb34556bf7dd27e56da2d1038649b64a57f8de74b",
+      "destructiveDown": true
+    },
+    {
+      "version": "0022",
+      "name": "player_avatar",
+      "upPath": "migrations/0022_player_avatar.up.sql",
+      "upSha256": "50948109b401db24a592ccf0602e155d4204be930e66bdc0b7695774486572e3",
+      "downPath": "migrations/0022_player_avatar.down.sql",
+      "downSha256": "bd9de542a1bcdfc9210c416bc8bf435377c339cf0789b2bf5222016ce87af792",
+      "destructiveDown": true
+    },
+    {
+      "version": "0023",
+      "name": "home_comeback",
+      "upPath": "migrations/0023_home_comeback.up.sql",
+      "upSha256": "6e510b33102530823d253f121a882b629bebb29fd43dd47fd5f5703a80b1595d",
+      "downPath": "migrations/0023_home_comeback.down.sql",
+      "downSha256": "f11cac6c689bc379f9a80f31944f86de52d0862aacf24c06238445fa68d8bd1d",
+      "destructiveDown": true
+    },
+    {
+      "version": "0024",
+      "name": "player_follows",
+      "upPath": "migrations/0024_player_follows.up.sql",
+      "upSha256": "59e25e5d2c071faac314afc11c0388aa5660477181e89ea53228db13cdd62252",
+      "downPath": "migrations/0024_player_follows.down.sql",
+      "downSha256": "335b774e6171791d00dc5907c55c04460beece576d95f970e35aeef440978a6a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0025",
+      "name": "legacy_race_history",
+      "upPath": "migrations/0025_legacy_race_history.up.sql",
+      "upSha256": "c86ac4186394065fd2eed875f840022a3fac2bd98423ef046168f611d14741fc",
+      "downPath": "migrations/0025_legacy_race_history.down.sql",
+      "downSha256": "19b52427f92a206fbeb94e2f197779bc9cdc9731552dbbb2416135f5e7ccea5c",
+      "destructiveDown": true
+    },
+    {
+      "version": "0026",
+      "name": "legacy_placement_ratings",
+      "upPath": "migrations/0026_legacy_placement_ratings.up.sql",
+      "upSha256": "100a2681f60b7ddafcba1f4ced27a3c388d1417d080abbb18ef2cfd2363c417d",
+      "downPath": "migrations/0026_legacy_placement_ratings.down.sql",
+      "downSha256": "9ffeb089adee1161027f75a699f355d4ba09fe1cbead4653613c18d619b9fdb9",
+      "destructiveDown": true
+    },
+    {
+      "version": "0027",
+      "name": "player_visibility",
+      "upPath": "migrations/0027_player_visibility.up.sql",
+      "upSha256": "626ddf0d655c7b0f008a45d94897e2bda100dfd507cfa0974c8a08a20c7bebab",
+      "downPath": "migrations/0027_player_visibility.down.sql",
+      "downSha256": "dcedcea9625c6ca025a3d0bb6dcc551e29e0aab5d6318ce8fa1a93dd377ea02a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0028",
+      "name": "time_trial_lifecycle",
+      "upPath": "migrations/0028_time_trial_lifecycle.up.sql",
+      "upSha256": "3e68494a5d55cd8fddae5d5057f1be89fa5169ac070b0ca79b6d729a6ed7f345",
+      "downPath": "migrations/0028_time_trial_lifecycle.down.sql",
+      "downSha256": "b3f1deb7c08c58ac1391535d2548cf10bec5f1924827b10668a8072a81ef8ece",
+      "destructiveDown": true
+    },
+    {
+      "version": "0029",
+      "name": "tournament_operations",
+      "upPath": "migrations/0029_tournament_operations.up.sql",
+      "upSha256": "2cdcfafea902874c789fc63803ea7cec83bfed95fb1c6f9198bfda822b319f4d",
+      "downPath": "migrations/0029_tournament_operations.down.sql",
+      "downSha256": "0d0aa05ac08ee1cc249be8a87ab39f7a68849cec220ebfc2f5f89a0dc2822228",
+      "destructiveDown": true
+    },
+    {
+      "version": "0030",
+      "name": "tournament_report_capability",
+      "upPath": "migrations/0030_tournament_report_capability.up.sql",
+      "upSha256": "c1a1d9d57ea748007ce21b9b247bfae38c5334ca5825058c3b7e47587e9dd507",
+      "downPath": "migrations/0030_tournament_report_capability.down.sql",
+      "downSha256": "51453ec8713c83ecf2948424c8f3b3447d56cd427c7accc4cd48f2c1d60a123e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0031",
+      "name": "tournament_connected_retraction_and_chronology",
+      "upPath": "migrations/0031_tournament_connected_retraction_and_chronology.up.sql",
+      "upSha256": "75d821fc3d3303e4c3c117f67856c1288cd67ef85d46ba7d232a83304ca05c65",
+      "downPath": "migrations/0031_tournament_connected_retraction_and_chronology.down.sql",
+      "downSha256": "aba32156def5830f125d33e183f8c18c8e66df64abe1550b7941929c7cd5d3e3",
+      "destructiveDown": true
+    },
+    {
+      "version": "0032",
+      "name": "ephemeral_android_scan_tests",
+      "upPath": "migrations/0032_ephemeral_android_scan_tests.up.sql",
+      "upSha256": "a246dd8883ba7479aad02822cbb8b23945f34c826229bea6c46153e61ea8de4a",
+      "downPath": "migrations/0032_ephemeral_android_scan_tests.down.sql",
+      "downSha256": "a6a25986b8b9b64106e9abc0edff19d65f2fa6f976c36cd0058afeebc84215e5",
+      "destructiveDown": true
+    },
+    {
+      "version": "0033",
+      "name": "device_authorization_operator_audit",
+      "upPath": "migrations/0033_device_authorization_operator_audit.up.sql",
+      "upSha256": "8254990a0939e9414014cbec74109e2ccec7aeb3a6d290e652f352ac2329966e",
+      "downPath": "migrations/0033_device_authorization_operator_audit.down.sql",
+      "downSha256": "e97581290d16890d44918d20e6d2cf926cc757682d92ad9e3a3a9ad226ac4d26",
+      "destructiveDown": true
+    },
+    {
+      "version": "0034",
+      "name": "time_trial_correction_provenance",
+      "upPath": "migrations/0034_time_trial_correction_provenance.up.sql",
+      "upSha256": "e98ca16f4d5b6461fdd2a82f6f54e4252c51e8441d2744fed02d4101da642678",
+      "downPath": "migrations/0034_time_trial_correction_provenance.down.sql",
+      "downSha256": "f053b947a3db83539ca6b80020e144c8c1c2b322239b6f51cf1a7c477cb3a195",
+      "destructiveDown": true
+    },
+    {
+      "version": "0035",
+      "name": "private_social_groups",
+      "upPath": "migrations/0035_private_social_groups.up.sql",
+      "upSha256": "c9fdbc56fd52cc6766895eb0812a0d6d7199295d6e4459e166d54ad92f5ea1b1",
+      "downPath": "migrations/0035_private_social_groups.down.sql",
+      "downSha256": "3e0fd7a460f0ba9ee14c1f2e2b78b44636b94c4f734b3e879f5dbd8cbea718b6",
+      "destructiveDown": true
+    },
+    {
+      "version": "0036",
+      "name": "atomic_daily_world_records",
+      "upPath": "migrations/0036_atomic_daily_world_records.up.sql",
+      "upSha256": "f6f17ed69008ca36014bee5e1ae1e82fdbdac1ab1b4e1e36ecb17aa707c4818f",
+      "downPath": "migrations/0036_atomic_daily_world_records.down.sql",
+      "downSha256": "00f6d39caaff77d0e8dda8c68ac60b07efff0a43706d56407b8dd4042340e46d",
+      "destructiveDown": true
+    },
+    {
+      "version": "0038",
+      "name": "tournament_operation_capability",
+      "upPath": "migrations/0038_tournament_operation_capability.up.sql",
+      "upSha256": "947ef903ef958bda570f095abeb6ba87b07c85c8261ac8bc157fdb4a8d850b78",
+      "downPath": "migrations/0038_tournament_operation_capability.down.sql",
+      "downSha256": "6f17693f8cd271176326c290de082099fec8b3c4cf8eec8c667825e4345f7f9b",
+      "destructiveDown": true
+    },
+    {
+      "version": "0039",
+      "name": "account_time_trial_preferences",
+      "upPath": "migrations/0039_account_time_trial_preferences.up.sql",
+      "upSha256": "bcac54cf445256b93be5cf9ff5e5615879230bb266ea71981791f5b2e6cf8e43",
+      "downPath": "migrations/0039_account_time_trial_preferences.down.sql",
+      "downSha256": "df591b334ddbaba958f0af67a63c09d55ed9458686773fae652fcd2dfe74e638",
+      "destructiveDown": true
+    },
+    {
+      "version": "0040",
+      "name": "player_profile_preferences",
+      "upPath": "migrations/0040_player_profile_preferences.up.sql",
+      "upSha256": "f3996b383634ff47f12a052378d24bf2b1b7418be294fb5f7901db2f469238ed",
+      "downPath": "migrations/0040_player_profile_preferences.down.sql",
+      "downSha256": "93f8f61e7f89db8941f4528b9494aec275adbb17d4a7a08f96a6208baaf1f3ca",
+      "destructiveDown": true
+    },
+    {
+      "version": "0041",
+      "name": "canonical_notification_delivery",
+      "upPath": "migrations/0041_canonical_notification_delivery.up.sql",
+      "upSha256": "95427e2f5608f426d7bc0f03732d6550b29387c77d983b4e0b013aa6d9e3e4ec",
+      "downPath": "migrations/0041_canonical_notification_delivery.down.sql",
+      "downSha256": "c4fc1bbb8d4c6975afcb495424bce68af8a6f7e50e914ab0f2d4dfbabb1bcc5e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0042",
+      "name": "guided_tournament_workflow",
+      "upPath": "migrations/0042_guided_tournament_workflow.up.sql",
+      "upSha256": "fc6cf479d8e81f228c3c5df94442d9d717ecabaa4569d864c87549738c01c52f",
+      "downPath": "migrations/0042_guided_tournament_workflow.down.sql",
+      "downSha256": "1b7563c1269f491d3dc53bbc12b445e2cb7ec0a0e60da0a466ba6130607f3e71",
+      "destructiveDown": true
+    },
+    {
+      "version": "0043",
+      "name": "player_display_name_uniqueness",
+      "upPath": "migrations/0043_player_display_name_uniqueness.up.sql",
+      "upSha256": "72e1e3516ebca1377bffe33fd7d770dfdcfc3887f993df114887577fa69a1ffd",
+      "downPath": "migrations/0043_player_display_name_uniqueness.down.sql",
+      "downSha256": "2875f67d4a5c55de252870be43a3d3b8a16292870de0ba903442b4297076c05a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0044",
+      "name": "full_tournament_workflow_and_utp_cables",
+      "upPath": "migrations/0044_full_tournament_workflow_and_utp_cables.up.sql",
+      "upSha256": "5f779868cb0080dbdf4e25b83e032c57786d39e18c8c30625f28f976c83932bf",
+      "downPath": "migrations/0044_full_tournament_workflow_and_utp_cables.down.sql",
+      "downSha256": "955ce0e8081b2b0c397f45082740b895ed5784faa6d4d5b4a2dd5e1a8fade4e8",
+      "destructiveDown": true
+    },
+    {
+      "version": "0045",
+      "name": "tournament_owner_seating_mode",
+      "upPath": "migrations/0045_tournament_owner_seating_mode.up.sql",
+      "upSha256": "c29e6dcd15ffd11de1d43fbb38bae1a02f8f0547589550d8d4891d9a803c0abd",
+      "downPath": "migrations/0045_tournament_owner_seating_mode.down.sql",
+      "downSha256": "b42ae991d23ac3ebf80cedd7444c053f34701bbbf58b584e84c03b93e7adc398",
+      "destructiveDown": true
+    },
+    {
+      "version": "0046",
+      "name": "legacy_tournament_event_dates",
+      "upPath": "migrations/0046_legacy_tournament_event_dates.up.sql",
+      "upSha256": "ba4c4f9dfe2db074fdf285dcbe6de607abf8a6153480b860920c16bd2c55db0e",
+      "downPath": "migrations/0046_legacy_tournament_event_dates.down.sql",
+      "downSha256": "25d05e835b059545eef97f6e687f5a49d8fa43f811bb6659db0102912f539477",
+      "destructiveDown": true
+    },
+    {
+      "version": "0047",
+      "name": "default_player_rating",
+      "upPath": "migrations/0047_default_player_rating.up.sql",
+      "upSha256": "cbe04f7e6feecf673366dc769c7323166ff1abad759efc5a8586e79037a0aea1",
+      "downPath": "migrations/0047_default_player_rating.down.sql",
+      "downSha256": "b40690a48f2ebba42fe0ee1750f3f9327af6371359d868aae5d2b0b82cf29763",
+      "destructiveDown": true
+    },
+    {
+      "version": "0048",
+      "name": "split_tournament_identity",
+      "upPath": "migrations/0048_split_tournament_identity.up.sql",
+      "upSha256": "ae819f988efa0a896f090b3f418e8c53cc533dc73f705936030940d2b1ba0624",
+      "downPath": "migrations/0048_split_tournament_identity.down.sql",
+      "downSha256": "f3d5088eb3ae37cdde24767237a93aa6f1704cb224d0cd859f70a145683a5721",
+      "destructiveDown": true
+    },
+    {
+      "version": "0049",
+      "name": "tournament_manager_alias_baseline",
+      "upPath": "migrations/0049_tournament_manager_alias_baseline.up.sql",
+      "upSha256": "4acd1114eacc3a0f6c7b95e8b70c43c45643b1c29b5ec64f6299ebb5ccdb4ade",
+      "downPath": "migrations/0049_tournament_manager_alias_baseline.down.sql",
+      "downSha256": "581d1118436b4255cc855955a7e5c7c096fdb269612fa4f4b771a71bf4d08897",
+      "destructiveDown": true
+    },
+    {
+      "version": "0050",
+      "name": "tournament_phase_tie_breaks",
+      "upPath": "migrations/0050_tournament_phase_tie_breaks.up.sql",
+      "upSha256": "d1e6b479c2212e1260d0e279fc02691e92609755bf13754b9ce4ed10a49fbb45",
+      "downPath": "migrations/0050_tournament_phase_tie_breaks.down.sql",
+      "downSha256": "15b72c0dd5492a2a382e351a75a1d38f750f290f00e64766488721cc219e9ef4",
+      "destructiveDown": true
+    },
+    {
+      "version": "0051",
+      "name": "tournament_evidence_records",
+      "upPath": "migrations/0051_tournament_evidence_records.up.sql",
+      "upSha256": "d352d2ba4366d1ef6bc36874ca09e065e63b7b1103c934b7a441b00cdd8e5e51",
+      "downPath": "migrations/0051_tournament_evidence_records.down.sql",
+      "downSha256": "8fa1e16d6328665fa5abc5c5bb0158798e479ef96f3409f02cd1578bdc342a78",
+      "destructiveDown": true
+    },
+    {
+      "version": "0052",
+      "name": "time_trial_publication_rank_snapshot",
+      "upPath": "migrations/0052_time_trial_publication_rank_snapshot.up.sql",
+      "upSha256": "618700bf6b75cb3bd8a37832abb70a009fca046a643dc5cf8d033c76ab36a21f",
+      "downPath": "migrations/0052_time_trial_publication_rank_snapshot.down.sql",
+      "downSha256": "1f711c40dd64cb0fcd1c97c3eebd7c7e212a1247dfa5b94a093eeb0a5229361a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0053",
+      "name": "time_trial_track_access",
+      "upPath": "migrations/0053_time_trial_track_access.up.sql",
+      "upSha256": "c57c6a5c8e7c73986e81cee61df881b73d8a35a9a702fec76f32ffaf73f47e50",
+      "downPath": "migrations/0053_time_trial_track_access.down.sql",
+      "downSha256": "6ac1c0bf932d8da34315b021669c9eab32559a64d6dce2010fc9ba1aeaf7366a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0054",
+      "name": "notification_scope",
+      "upPath": "migrations/0054_notification_scope.up.sql",
+      "upSha256": "16afdbef03029659acd01c4785e80f0d008cef02e6f08e42e7ad85528989a052",
+      "downPath": "migrations/0054_notification_scope.down.sql",
+      "downSha256": "1e2b8f5e82d841c7755535cb62b525a68b47db9f9a58843d5e980782b246fc7e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0055",
+      "name": "player_engagement",
+      "upPath": "migrations/0055_player_engagement.up.sql",
+      "upSha256": "5ed60cb43c6c3df060a83ef8dfc76a66c8074f668c79c16e9c6473be67a120bf",
+      "downPath": "migrations/0055_player_engagement.down.sql",
+      "downSha256": "c6712af17f3638af5791515f7a78268584b6520adbe44b092efa392e819cd655",
+      "destructiveDown": true
+    },
+    {
+      "version": "0056",
+      "name": "notification_events",
+      "upPath": "migrations/0056_notification_events.up.sql",
+      "upSha256": "53a4f93b8f620a9401b1f9776ad26ef6efde4e78aecd284b75a404120982f338",
+      "downPath": "migrations/0056_notification_events.down.sql",
+      "downSha256": "c85655260ea31e0ae97d437862309eed7cbb9660567635073530ec24be46cb9f",
+      "destructiveDown": true
+    },
+    {
+      "version": "0057",
+      "name": "tournament_history",
+      "upPath": "migrations/0057_tournament_history.up.sql",
+      "upSha256": "b65c18e021c0eabbcc5ecaba3949f8cca56522a1f0d95563e78f97b34c9f3d57",
+      "downPath": "migrations/0057_tournament_history.down.sql",
+      "downSha256": "0e9cfec093c0f8b91e702fff297a94cd8f081e482c827c568abc08f274de13c6",
+      "destructiveDown": true
+    },
+    {
+      "version": "0058",
+      "name": "history_rating_events",
+      "upPath": "migrations/0058_history_rating_events.up.sql",
+      "upSha256": "26531a34eb5f19730e765ab77e1d447c569f74c6d97981f96f88738631693cf9",
+      "downPath": "migrations/0058_history_rating_events.down.sql",
+      "downSha256": "75b86e287d6e5fcec7ed01720fff5e8c93d5b98a1eaa6bb51d752de1c17fff56",
+      "destructiveDown": true
+    },
+    {
+      "version": "0059",
+      "name": "claim_requested_notifications",
+      "upPath": "migrations/0059_claim_requested_notifications.up.sql",
+      "upSha256": "08191372f5a0d6d517cc794d3d319969488e9c321a0f357f7e3a177dc2604114",
+      "downPath": "migrations/0059_claim_requested_notifications.down.sql",
+      "downSha256": "1ff1e6be09f709cd2c20abbaca9e139e765627e6eb801d716dd32834b7086ef3",
+      "destructiveDown": true
+    },
+    {
+      "version": "0060",
+      "name": "tournament_group_stations",
+      "upPath": "migrations/0060_tournament_group_stations.up.sql",
+      "upSha256": "ed1293dad3d5453c9edd00713d506f91aae783b616d9269856513d5c5995f9b2",
+      "downPath": "migrations/0060_tournament_group_stations.down.sql",
+      "downSha256": "2335ee2fad47068d0493615455c61f5e9f8405db72df1373ce82066cb6c9bd6a",
+      "destructiveDown": true
+    },
+    {
+      "version": "0061",
+      "name": "tournament_group_member_characters",
+      "upPath": "migrations/0061_tournament_group_member_characters.up.sql",
+      "upSha256": "6c8ca6990874d7848dca4944de8c219c1864fe995ed958d99f8bf2f0d916c2eb",
+      "downPath": "migrations/0061_tournament_group_member_characters.down.sql",
+      "downSha256": "f0774e545237e948c132fbaeb7663b5bf7444322bbc4763fb34a303d2fb733a3",
+      "destructiveDown": true
+    },
+    {
+      "version": "0062",
+      "name": "tournament_report_publication",
+      "upPath": "migrations/0062_tournament_report_publication.up.sql",
+      "upSha256": "be440a5081fcd26e5e497ae1a1bf612f05f85f5ab1ec0b6fe1a5d03648c591b9",
+      "downPath": "migrations/0062_tournament_report_publication.down.sql",
+      "downSha256": "ae4485afb7e06c5ae28351a3dadf16c83f73d6507f61b64cc4f92e46bc81db4b",
+      "destructiveDown": true
+    },
+    {
+      "version": "0063",
+      "name": "tn8_group_three_out_of_rating",
+      "upPath": "migrations/0063_tn8_group_three_out_of_rating.up.sql",
+      "upSha256": "5695bf3f8a7721cbf6538443e161e25ac01eaa758137d6aeb5fd33cdfe7d0aa0",
+      "downPath": "migrations/0063_tn8_group_three_out_of_rating.down.sql",
+      "downSha256": "b197c98633cd0adb4cc2e28411bee2f63c063ed6294ec5b313f9f353e345fd5a",
+      "destructiveDown": false
+    },
+    {
+      "version": "0064",
+      "name": "client_installations",
+      "upPath": "migrations/0064_client_installations.up.sql",
+      "upSha256": "748036c4a07b180deaa7666287f4cbe0f1963caac3ee0634c1746d8ef155648e",
+      "downPath": "migrations/0064_client_installations.down.sql",
+      "downSha256": "45982edb9d9f18c4dc1f7591e710b05d9337f85875dcdb7024bb9758ef146752",
+      "destructiveDown": true
+    },
+    {
+      "version": "0065",
+      "name": "tournament_live_public_groups",
+      "upPath": "migrations/0065_tournament_live_public_groups.up.sql",
+      "upSha256": "b71560bfe2f7971dab605ae5e92692b76a44bff3f598a8f5ae6eb1e23ee1e66f",
+      "downPath": "migrations/0065_tournament_live_public_groups.down.sql",
+      "downSha256": "566208b8c2eb87ed0b74c3ac45db6fd7d0b1fa622e8a161c7d9d4ed2bb1d2593",
+      "destructiveDown": true
+    },
+    {
+      "version": "0066",
+      "name": "reference_seed_versions",
+      "upPath": "migrations/0066_reference_seed_versions.up.sql",
+      "upSha256": "f1a5ebfd530d00506d7925bd035808a86500dbc1e8ec6fc9150aa924ee0a3353",
+      "downPath": "migrations/0066_reference_seed_versions.down.sql",
+      "downSha256": "bd0cf9ce5d331485839fde5466f608cacc3e813239e350eea3920353964c20ae",
+      "destructiveDown": true
+    },
+    {
+      "version": "0067",
+      "name": "account_appearance_preference",
+      "upPath": "migrations/0067_account_appearance_preference.up.sql",
+      "upSha256": "7b506ac3c25281a669b141cd2be89dfbe459de8191f5e3c76bef6637014b9b3f",
+      "downPath": "migrations/0067_account_appearance_preference.down.sql",
+      "downSha256": "c337a247c75765d82c78ee23b7b09bac65404dc0e0587aeacd9784dfc33c22a2",
+      "destructiveDown": true
+    },
+    {
+      "version": "0068",
+      "name": "web_scan_submission_provenance",
+      "upPath": "migrations/0068_web_scan_submission_provenance.up.sql",
+      "upSha256": "7af7e6c751b383fd57094cc24638767306f8669a840a82bb2a62d3150d5cbef1",
+      "downPath": "migrations/0068_web_scan_submission_provenance.down.sql",
+      "downSha256": "7e431852e7af41b1173d2484c7c005033d93f3a33e78c10f6bcfa5676d64404e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0069",
+      "name": "time_trial_player_bests",
+      "upPath": "migrations/0069_time_trial_player_bests.up.sql",
+      "upSha256": "68909f79c210f22a399856605c997ff20e916d9428f7dee7709690aa4dc45285",
+      "downPath": "migrations/0069_time_trial_player_bests.down.sql",
+      "downSha256": "1b1226fce92e4f6839b377a0be39b68c655ecd267bea26496a95beca8d525979",
+      "destructiveDown": true
+    },
+    {
+      "version": "0070",
+      "name": "notification_producer_jobs",
+      "upPath": "migrations/0070_notification_producer_jobs.up.sql",
+      "upSha256": "56cdcc45397daf9619f56a95534aff7e8b55fbe07177d4f69f1cdc851d464714",
+      "downPath": "migrations/0070_notification_producer_jobs.down.sql",
+      "downSha256": "30feb6494731b5153f98fc6eb970903811dd306276ee960408da81f1653f2fe7",
+      "destructiveDown": true
+    },
+    {
+      "version": "0071",
+      "name": "native_email_approval_audit",
+      "upPath": "migrations/0071_native_email_approval_audit.up.sql",
+      "upSha256": "e57384f9fcc166ce0d3df671cbda9e2b9368aa147e6836f578fb60c2e53e11bc",
+      "downPath": "migrations/0071_native_email_approval_audit.down.sql",
+      "downSha256": "cf85c106167a21f993244da46c2f817727b1eb02c5af1a0ec0992cc1d77b49c9",
+      "destructiveDown": true
+    },
+    {
+      "version": "0072",
+      "name": "time_trial_videos",
+      "upPath": "migrations/0072_time_trial_videos.up.sql",
+      "upSha256": "744b5ad3e2175c2104c48fa401157163402b6ec17cdb7ce8f4b8a41c41467fce",
+      "downPath": "migrations/0072_time_trial_videos.down.sql",
+      "downSha256": "27c767a98a69d57d890affc3e8471d2a358ca8fb9b0dddd7f5bb939baedcb7ed",
+      "destructiveDown": true
+    },
+    {
+      "version": "0073",
+      "name": "reference_ghost_readings",
+      "upPath": "migrations/0073_reference_ghost_readings.up.sql",
+      "upSha256": "2fa49608df1d48e094ef9916401a777de6b9b80160fa4a277be3e4c3af98c9aa",
+      "downPath": "migrations/0073_reference_ghost_readings.down.sql",
+      "downSha256": "c18972575fd918212666747ba7df54aea47956f3daaa1e51974e8d49a1013d93",
+      "destructiveDown": true
+    },
+    {
+      "version": "0074",
+      "name": "night_report_capability",
+      "upPath": "migrations/0074_night_report_capability.up.sql",
+      "upSha256": "046ca17b54cf9ba3009d434a92f3b4e638868578ac5e4747ddfecb5737623a07",
+      "downPath": "migrations/0074_night_report_capability.down.sql",
+      "downSha256": "8156a4dec44848d459bd0686c06c6619a33f0f1f7844bb1fa0cd4deb1f4fee59",
+      "destructiveDown": false
+    },
+    {
+      "version": "0075",
+      "name": "world_record_unknown_item_splits",
+      "upPath": "migrations/0075_world_record_unknown_item_splits.up.sql",
+      "upSha256": "f8c378fda9bb9170c559af641e8bed56f4f43c735884445014c3cea38114bdeb",
+      "downPath": "migrations/0075_world_record_unknown_item_splits.down.sql",
+      "downSha256": "e9038b56b22675820fbc9fe334067d2618cd3b4ff0dfc53538007dacc4977c04",
+      "destructiveDown": false
+    },
+    {
+      "version": "0076",
+      "name": "multi_claim_accounts",
+      "upPath": "migrations/0076_multi_claim_accounts.up.sql",
+      "upSha256": "77305e967ab54911eec5e2044250c1d98afcc8743bdf43695dea4474ee935251",
+      "downPath": "migrations/0076_multi_claim_accounts.down.sql",
+      "downSha256": "4f21ab005a76c0b24c3f97d62c195fea71df6de3489d4ce869695ce915d7f219",
+      "destructiveDown": false
+    },
+    {
+      "version": "0077",
+      "name": "claim_notes_and_director_review",
+      "upPath": "migrations/0077_claim_notes_and_director_review.up.sql",
+      "upSha256": "f0e8a5678ba03e4f6c1bfa87549c3c6ee289d5f5db485341f2bc6bf7df7fac83",
+      "downPath": "migrations/0077_claim_notes_and_director_review.down.sql",
+      "downSha256": "82919cf35d717c293f0c0be71c5707b1edc02c752c3d70d32b684a1b87abb211",
+      "destructiveDown": true
+    },
+    {
+      "version": "0078",
+      "name": "tournament_race_class",
+      "upPath": "migrations/0078_tournament_race_class.up.sql",
+      "upSha256": "bd5ad0ab130961a384fa729899ebbb5e1ceea323ec416d86e726f5529a11ad3c",
+      "downPath": "migrations/0078_tournament_race_class.down.sql",
+      "downSha256": "ec59e25b623840225a57ba41215d1cca08f80bff3ad51cfb80429a1436f3bf46",
+      "destructiveDown": true
+    },
+    {
+      "version": "0079",
+      "name": "repeatable_display_names_director_aliases",
+      "upPath": "migrations/0079_repeatable_display_names_director_aliases.up.sql",
+      "upSha256": "a99d575ed1350535dcc68078b1d2eea0f8ed977a1d9fc2d7760457e80e6b341c",
+      "downPath": "migrations/0079_repeatable_display_names_director_aliases.down.sql",
+      "downSha256": "a1fc389429f3af4284586cd4e95d0ac7df395b8d500261b28a886d335ed3449e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0080",
+      "name": "director_host_requests",
+      "upPath": "migrations/0080_director_host_requests.up.sql",
+      "upSha256": "a843c9bc4939ff6679078619d6ec3bcde41896e541d0d1105c4a3cfa8b943d82",
+      "downPath": "migrations/0080_director_host_requests.down.sql",
+      "downSha256": "2bea976a97b135e16d795da1472bd8ff891f8f0ee19a9ddd989f1fd884c48b99",
+      "destructiveDown": true
+    },
+    {
+      "version": "0081",
+      "name": "installation_settings_and_night_rating_options",
+      "upPath": "migrations/0081_installation_settings_and_night_rating_options.up.sql",
+      "upSha256": "91bc5249294b54252647b94b33265f0ecf224ee375b177adb3023295bfc94974",
+      "downPath": "migrations/0081_installation_settings_and_night_rating_options.down.sql",
+      "downSha256": "892ed827b996fa8390bbbcb95c010966350d580e51dcd435270f9027ae4f124f",
+      "destructiveDown": true
+    },
+    {
+      "version": "0082",
+      "name": "tournament_open_signup",
+      "upPath": "migrations/0082_tournament_open_signup.up.sql",
+      "upSha256": "b85b78d2d621010a8ffd1562424e8ddd57c9d5281ca7a6bc23adc9328cc34632",
+      "downPath": "migrations/0082_tournament_open_signup.down.sql",
+      "downSha256": "460e4bae7460752f87884b1559e0b59d3d4e3f26db57e380f2d491ec6fe6cd00",
+      "destructiveDown": true
+    },
+    {
+      "version": "0083",
+      "name": "better_auth_account_issuer_optional",
+      "upPath": "migrations/0083_better_auth_account_issuer_optional.up.sql",
+      "upSha256": "2418bec12547270184efeeef46f76520fc0d838cbd0e95d8db17cede54634aa5",
+      "downPath": "migrations/0083_better_auth_account_issuer_optional.down.sql",
+      "downSha256": "e3103f215a4dc8f71394000e31cfa07700c0b921a0f5c32ea479d3d55f8d2207",
+      "destructiveDown": true
+    }
+  ]
+}

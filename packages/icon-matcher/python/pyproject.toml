@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mk8dx-icon-matcher"
+version = "0.4.1"
+description = "Shared MK8DX visual field matcher"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "numpy==2.2.1",
+  "opencv-python==4.10.0.84",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mk8dx_icon_matcher*"]
+
+[tool.setuptools.package-data]
+mk8dx_icon_matcher = ["references/*.json"]

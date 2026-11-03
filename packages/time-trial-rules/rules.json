@@ -1,0 +1,247 @@
+{
+  "rulesVersion": "1.0.0",
+  "submissionContract": "mk8dx.time-trial-submission.v1",
+  "specification": "packages/time-trial-rules/SPEC.md",
+  "rules": [
+    {
+      "id": "track_required",
+      "field": "trackId",
+      "condition": "trackId is present, at most 255 characters and matches ^track\\.[a-z0-9]+(?:_[a-z0-9]+)*$",
+      "messageKey": "tt.rules.track_required",
+      "params": [],
+      "serverReason": "submission scalar is invalid"
+    },
+    {
+      "id": "engine_required",
+      "field": "mode",
+      "condition": "context.engine is 150 or 200",
+      "messageKey": "tt.rules.engine_required",
+      "params": [],
+      "serverReason": "submission scalar is invalid"
+    },
+    {
+      "id": "total_required",
+      "field": "totalDigits",
+      "condition": "totalDigits is not empty",
+      "messageKey": "tt.rules.total_required",
+      "params": [],
+      "serverReason": null
+    },
+    {
+      "id": "total_format",
+      "field": "totalDigits",
+      "condition": "totalDigits is exactly six ASCII digits (M SS mmm)",
+      "messageKey": "tt.rules.total_format",
+      "params": [],
+      "serverReason": "submission scalar is invalid"
+    },
+    {
+      "id": "total_seconds_range",
+      "field": "totalDigits",
+      "condition": "the seconds digits (positions 2-3) are at most 59",
+      "messageKey": "tt.rules.total_seconds_range",
+      "params": ["seconds"],
+      "serverReason": null
+    },
+    {
+      "id": "total_range",
+      "field": "totalDigits",
+      "condition": "the total is 0:00.001 to 9:59.999 (1..599999 ms)",
+      "messageKey": "tt.rules.total_range",
+      "params": [],
+      "serverReason": "submission scalar is invalid"
+    },
+    {
+      "id": "lap_details_require_lap_times",
+      "field": "laps",
+      "condition": "coin changes or mushrooms are only entered when lap times are entered",
+      "messageKey": "tt.rules.lap_details_require_lap_times",
+      "params": [],
+      "serverReason": null
+    },
+    {
+      "id": "lap_count_matches_track",
+      "field": "laps",
+      "condition": "when any lap time is entered, the number of lap rows equals context.trackLapCount (3, or 7)",
+      "messageKey": "tt.rules.lap_count_matches_track",
+      "params": ["expected", "actual"],
+      "serverReason": "laps are invalid"
+    },
+    {
+      "id": "lap_missing",
+      "field": "laps[i].timeDigits",
+      "condition": "when any lap time is entered, every lap time is entered (all or none)",
+      "messageKey": "tt.rules.lap_missing",
+      "alternateMessageKeys": ["tt.rules.lap_missing_suggested"],
+      "params": ["lap", "suggestionMs?", "suggestionDigits?"],
+      "serverReason": null
+    },
+    {
+      "id": "lap_time_format",
+      "field": "laps[i].timeDigits",
+      "condition": "an entered lap time is exactly six ASCII digits",
+      "messageKey": "tt.rules.lap_time_format",
+      "params": ["lap"],
+      "serverReason": null
+    },
+    {
+      "id": "lap_seconds_range",
+      "field": "laps[i].timeDigits",
+      "condition": "the lap's seconds digits are at most 59",
+      "messageKey": "tt.rules.lap_seconds_range",
+      "params": ["lap", "seconds"],
+      "serverReason": null
+    },
+    {
+      "id": "lap_time_range",
+      "field": "laps[i].timeDigits",
+      "condition": "the lap time is 0:00.001 to 9:59.999",
+      "messageKey": "tt.rules.lap_time_range",
+      "params": ["lap"],
+      "serverReason": "laps are invalid"
+    },
+    {
+      "id": "lap_sum_equals_total",
+      "field": "laps",
+      "condition": "the lap times add up exactly to the total (evaluated only when the total and every lap are valid times)",
+      "messageKey": "tt.rules.lap_sum_equals_total",
+      "params": ["lapSumMs", "totalMs"],
+      "serverReason": "lap semantics are invalid"
+    },
+    {
+      "id": "coin_change_range",
+      "field": "laps[i].coinChange",
+      "condition": "an entered coin change is an integer from -10 to +10",
+      "messageKey": "tt.rules.coin_change_range",
+      "params": ["lap", "change"],
+      "serverReason": null
+    },
+    {
+      "id": "coin_balance_range",
+      "field": "laps[i].coinChange",
+      "condition": "the running coin balance (race starts at 0; a lap without a change counts as 0) stays 0..10 after every lap; only the first lap that leaves the range is reported",
+      "messageKey": "tt.rules.coin_balance_below_zero",
+      "alternateMessageKeys": ["tt.rules.coin_balance_above_ten"],
+      "params": ["lap", "balance"],
+      "serverReason": "laps are invalid"
+    },
+    {
+      "id": "mushrooms_per_lap_range",
+      "field": "laps[i].mushroomsUsed",
+      "condition": "an entered mushroom count is an integer from 0 to 3",
+      "messageKey": "tt.rules.mushrooms_per_lap_range",
+      "params": ["lap"],
+      "serverReason": "laps are invalid"
+    },
+    {
+      "id": "mushrooms_race_total",
+      "field": "laps",
+      "condition": "the mushrooms of all laps add up to at most 3 (evaluated only when every entered count is 0..3)",
+      "messageKey": "tt.rules.mushrooms_race_total",
+      "params": ["total"],
+      "serverReason": "lap semantics are invalid"
+    },
+    {
+      "id": "loadout_id_format",
+      "field": "loadout.<key>",
+      "condition": "an entered loadout id is at most 255 characters and has the schema-9 form of its kind (character., character_variant., body., body_variant., tire., glider., glider_variant.)",
+      "messageKey": "tt.rules.loadout_id_format",
+      "params": ["part"],
+      "serverReason": "loadout is invalid"
+    },
+    {
+      "id": "loadout_variant_requires_base",
+      "field": "loadout.<variantKey>",
+      "condition": "characterVariantId, bodyVariantId and gliderVariantId are only entered together with characterId, bodyId and gliderId",
+      "messageKey": "tt.rules.loadout_variant_requires_base",
+      "params": ["part"],
+      "serverReason": "loadout is invalid"
+    }
+  ],
+  "messages": {
+    "tt.rules.track_required": {
+      "en": "Choose a track first.",
+      "nl": "Kies eerst een circuit."
+    },
+    "tt.rules.engine_required": {
+      "en": "Choose 150cc or 200cc.",
+      "nl": "Kies 150cc of 200cc."
+    },
+    "tt.rules.total_required": {
+      "en": "Enter the total time.",
+      "nl": "Vul de totaaltijd in."
+    },
+    "tt.rules.total_format": {
+      "en": "Enter the total time as six digits, for example 145912 for 1:45.912.",
+      "nl": "Vul de totaaltijd in als zes cijfers, bijvoorbeeld 145912 voor 1:45.912."
+    },
+    "tt.rules.total_seconds_range": {
+      "en": "Check the total time — seconds go up to 59.",
+      "nl": "Controleer de totaaltijd — seconden gaan tot 59."
+    },
+    "tt.rules.total_range": {
+      "en": "The total time must be at least 0:00.001.",
+      "nl": "De totaaltijd moet minstens 0:00.001 zijn."
+    },
+    "tt.rules.lap_details_require_lap_times": {
+      "en": "Add the lap times to keep coins and mushrooms.",
+      "nl": "Vul de rondetijden in om munten en paddenstoelen te bewaren."
+    },
+    "tt.rules.lap_count_matches_track": {
+      "en": "This track has {expected} laps — you entered {actual}.",
+      "nl": "Dit circuit heeft {expected} ronden — je hebt er {actual} ingevuld."
+    },
+    "tt.rules.lap_missing": {
+      "en": "Lap {lap} missing — type it, or clear all laps.",
+      "nl": "Ronde {lap} ontbreekt — vul hem in, of wis alle ronden."
+    },
+    "tt.rules.lap_missing_suggested": {
+      "en": "Lap {lap} missing. From your total it would be {suggestionMs} — type it, or clear all laps.",
+      "nl": "Ronde {lap} ontbreekt. Volgens je totaaltijd is dat {suggestionMs} — vul hem in, of wis alle ronden."
+    },
+    "tt.rules.lap_time_format": {
+      "en": "Enter lap {lap} as six digits.",
+      "nl": "Vul ronde {lap} in als zes cijfers."
+    },
+    "tt.rules.lap_seconds_range": {
+      "en": "Check lap {lap} — seconds go up to 59.",
+      "nl": "Controleer ronde {lap} — seconden gaan tot 59."
+    },
+    "tt.rules.lap_time_range": {
+      "en": "Lap {lap} must be at least 0:00.001.",
+      "nl": "Ronde {lap} moet minstens 0:00.001 zijn."
+    },
+    "tt.rules.lap_sum_equals_total": {
+      "en": "Your laps add up to {lapSumMs}, the total is {totalMs}.",
+      "nl": "Je rondetijden tellen op tot {lapSumMs}, de totaaltijd is {totalMs}."
+    },
+    "tt.rules.coin_change_range": {
+      "en": "Coins change by −10 to +10 per lap — lap {lap} has {change}.",
+      "nl": "Munten veranderen per ronde met −10 tot +10 — ronde {lap} heeft {change}."
+    },
+    "tt.rules.coin_balance_below_zero": {
+      "en": "Coins can't go below 0 — lap {lap} would end at {balance}.",
+      "nl": "Munten kunnen niet onder 0 komen — ronde {lap} zou eindigen op {balance}."
+    },
+    "tt.rules.coin_balance_above_ten": {
+      "en": "Coins can't go above 10 — lap {lap} would end at {balance}.",
+      "nl": "Munten kunnen niet boven 10 komen — ronde {lap} zou eindigen op {balance}."
+    },
+    "tt.rules.mushrooms_per_lap_range": {
+      "en": "Lap {lap}: choose 0 to 3 mushrooms.",
+      "nl": "Ronde {lap}: kies 0 tot 3 paddenstoelen."
+    },
+    "tt.rules.mushrooms_race_total": {
+      "en": "Only 3 mushrooms in a race — you entered {total}.",
+      "nl": "Maximaal 3 paddenstoelen in een race — je hebt er {total} ingevuld."
+    },
+    "tt.rules.loadout_id_format": {
+      "en": "This part isn't in the catalogue — choose it again.",
+      "nl": "Dit onderdeel staat niet in de catalogus — kies het opnieuw."
+    },
+    "tt.rules.loadout_variant_requires_base": {
+      "en": "Choose the part before its colour variant.",
+      "nl": "Kies eerst het onderdeel, daarna de kleurvariant."
+    }
+  }
+}

@@ -1,0 +1,12 @@
+DROP TABLE restricted_identity_access_log;
+DROP TABLE restricted_legacy_identity_identifiers;
+DROP TABLE alias_provenance;
+DROP TABLE aliases;
+DROP TABLE player_claim_event_evidence;
+DROP TABLE player_claim_lifecycle;
+DROP TABLE restricted_claim_reviews;
+DROP TABLE restricted_claim_evidence;
+DROP TABLE player_claims;
+DROP TABLE user_accounts;
+DROP TABLE player_username_history;
+DROP TABLE players;

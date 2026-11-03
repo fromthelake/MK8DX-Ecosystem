@@ -1,0 +1,105 @@
+{
+  "policyVersion": "mk8dx.identity-policy.v1",
+  "claimPolicy": {
+    "administratorReviewRequired": true,
+    "activeVerifiedStatus": "verified",
+    "maximumActiveVerifiedClaimsPerHumanPlayer": 1,
+    "maximumActiveVerifiedHumanClaimsPerUserAccount": 1,
+    "historyIsAppendOnly": true,
+    "reassignmentUsesNewClaimRecord": true
+  },
+  "usernamePolicy": {
+    "globallyUnique": true,
+    "comparisonAlgorithm": "unicode-nfc-full-casefold-v1",
+    "historyIsAppendOnly": true,
+    "legacyHandleDoesNotAllocateUsernameWithoutVerifiedClaim": true
+  },
+  "privacyPolicy": {
+    "publicPlayerProjectionPaths": [
+      "playerId",
+      "username.value",
+      "displayName"
+    ],
+    "publicAliasProjectionPaths": [
+      "aliasId",
+      "playerId",
+      "aliasText",
+      "aliasType"
+    ],
+    "privateResourceTypes": [
+      "user_account",
+      "player_claim",
+      "claim_evidence",
+      "claim_review",
+      "restricted_legacy_identity"
+    ],
+    "rawLegacyIdentifiersAllowedInPublicRecords": false,
+    "authenticationDataAllowedInPlayerRecords": false,
+    "claimDataAllowedInPublicPlayerProjection": false
+  },
+  "authorizationPolicy": {
+    "public_player_profile": {
+      "anonymous": ["read"],
+      "account_owner": ["read"],
+      "authenticated_other": ["read"],
+      "administrator": ["read", "create", "update", "archive"],
+      "migration_operator": []
+    },
+    "user_account": {
+      "anonymous": [],
+      "account_owner": ["read_own", "update_own"],
+      "authenticated_other": [],
+      "administrator": ["read", "update_status"],
+      "migration_operator": []
+    },
+    "player_claim": {
+      "anonymous": [],
+      "account_owner": ["create_own", "read_own", "open_dispute_own"],
+      "authenticated_other": [],
+      "administrator": [
+        "read",
+        "start_review",
+        "verify",
+        "reject",
+        "release",
+        "revoke",
+        "open_dispute",
+        "resolve_dispute"
+      ],
+      "migration_operator": []
+    },
+    "claim_evidence": {
+      "anonymous": [],
+      "account_owner": ["create_own", "read_own"],
+      "authenticated_other": [],
+      "administrator": ["read"],
+      "migration_operator": []
+    },
+    "claim_review": {
+      "anonymous": [],
+      "account_owner": [],
+      "authenticated_other": [],
+      "administrator": ["read", "create", "update"],
+      "migration_operator": []
+    },
+    "alias": {
+      "anonymous": ["read_public"],
+      "account_owner": ["read_public", "propose_own"],
+      "authenticated_other": ["read_public"],
+      "administrator": ["read", "approve", "create", "retire", "set_visibility"],
+      "migration_operator": []
+    },
+    "restricted_legacy_identity": {
+      "anonymous": [],
+      "account_owner": [],
+      "authenticated_other": [],
+      "administrator": ["read_audited"],
+      "migration_operator": ["read_audited", "write_audited"]
+    }
+  },
+  "systemSourcePolicy": {
+    "claimableAsHumanPlayer": false,
+    "knownLegacySourceReferences": ["NintendoStaff", "WorldRecord"],
+    "automaticPlayerConversionAllowed": false
+  }
+}

@@ -1,0 +1,423 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/time-trial-submission-v1.schema.json",
+  "title": "TimeTrialSubmissionV1",
+  "description": "Language-neutral MK8DX Time Trial submission contract. The schema version and the user submission revision are independent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "submissionId",
+    "revision",
+    "mode",
+    "trackId",
+    "totalTimeMs",
+    "laps",
+    "playerReference",
+    "source",
+    "timestamps"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mk8dx.time-trial-submission.v1"
+    },
+    "submissionId": {
+      "description": "Stable across all revisions. The opaque suffix must not contain a username or display name.",
+      "type": "string",
+      "pattern": "^user_submission\\.time\\.[A-Za-z0-9][A-Za-z0-9_-]{5,127}$"
+    },
+    "revision": {
+      "description": "One-based revision of this submissionId; unrelated to schemaVersion.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "mode": {
+      "description": "Engine class in cubic centimetres.",
+      "type": "integer",
+      "enum": [150, 200]
+    },
+    "trackId": {
+      "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/trackId"
+    },
+    "totalTimeMs": {
+      "description": "Displayed total race time in integer milliseconds.",
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 599999
+    },
+    "laps": {
+      "description": "Empty when a manual source has no splits; otherwise exactly 3 or 7 ordered laps.",
+      "oneOf": [
+        {
+          "type": "array",
+          "maxItems": 0
+        },
+        {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            { "$ref": "#/$defs/lap1" },
+            { "$ref": "#/$defs/lap2" },
+            { "$ref": "#/$defs/lap3" }
+          ],
+          "items": false
+        },
+        {
+          "type": "array",
+          "minItems": 7,
+          "maxItems": 7,
+          "prefixItems": [
+            { "$ref": "#/$defs/lap1" },
+            { "$ref": "#/$defs/lap2" },
+            { "$ref": "#/$defs/lap3" },
+            { "$ref": "#/$defs/lap4" },
+            { "$ref": "#/$defs/lap5" },
+            { "$ref": "#/$defs/lap6" },
+            { "$ref": "#/$defs/lap7" }
+          ],
+          "items": false
+        }
+      ]
+    },
+    "loadout": {
+      "$ref": "#/$defs/loadout"
+    },
+    "countryId": {
+      "description": "Observed or selected country for this result; it does not assert nationality or identity.",
+      "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/countryId"
+    },
+    "playerReference": {
+      "$ref": "#/$defs/playerReference"
+    },
+    "observedPlayerName": {
+      "description": "Optional source-observed display text. It is not an identity merge key.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 64
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "timestamps": {
+      "$ref": "#/$defs/timestamps"
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 8,
+      "items": {
+        "$ref": "#/$defs/evidenceReference"
+      }
+    },
+    "verification": {
+      "$ref": "#/$defs/verification"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "required": ["verification"],
+        "properties": {
+          "verification": {
+            "required": ["correctedFields"],
+            "properties": { "correctedFields": {} }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "web_scan",
+                  "android_scan",
+                  "android_scan_test",
+                  "livetrial_capture",
+                  "livetrial_recorded_video"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["source"],
+        "properties": {
+          "source": {
+            "required": ["captureLayout"],
+            "properties": { "captureLayout": {} }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "source": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "web_scan",
+                  "android_scan",
+                  "android_scan_test",
+                  "livetrial_capture",
+                  "livetrial_recorded_video"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "lap": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lapNumber", "timeMs"],
+      "properties": {
+        "lapNumber": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 7
+        },
+        "timeMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 599999
+        },
+        "coinsCollected": {
+          "description": "Observed coin balance at the end of this lap. Per-lap gains or losses are derived from consecutive balances.",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "mushroomsUsed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 3
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "lap1": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 1 } } },
+    "lap2": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 2 } } },
+    "lap3": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 3 } } },
+    "lap4": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 4 } } },
+    "lap5": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 5 } } },
+    "lap6": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 6 } } },
+    "lap7": { "$ref": "#/$defs/lap", "properties": { "lapNumber": { "const": 7 } } },
+    "loadout": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "characterId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/characterId"
+        },
+        "characterVariantId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/characterVariantId"
+        },
+        "bodyId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/bodyId"
+        },
+        "bodyVariantId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/bodyVariantId"
+        },
+        "tireId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/tireId"
+        },
+        "gliderId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/gliderId"
+        },
+        "gliderVariantId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/gliderVariantId"
+        }
+      },
+      "dependentRequired": {
+        "characterVariantId": ["characterId"],
+        "bodyVariantId": ["bodyId"],
+        "gliderVariantId": ["gliderId"]
+      }
+    },
+    "playerReference": {
+      "description": "A namespaced opaque ownership reference. Namespace values preserve provenance and do not establish links between identity domains.",
+      "oneOf": [
+        {
+          "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerReference"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["namespace", "value"],
+          "properties": {
+            "namespace": {
+              "type": "string",
+              "enum": [
+                "legacy_firebase_user",
+                "producer_local_profile",
+                "unresolved_observation"
+              ]
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        }
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "web_manual",
+            "web_scan",
+            "android_manual",
+            "android_scan",
+            "android_scan_test",
+            "livetrial_capture",
+            "livetrial_recorded_video"
+          ]
+        },
+        "captureLayout": {
+          "type": "string",
+          "enum": ["time_trial_result", "ghost_details"]
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "localRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAtMs"],
+      "properties": {
+        "occurredAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "capturedAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "createdAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "submittedAtMs": { "$ref": "#/$defs/epochMilliseconds" }
+      }
+    },
+    "epochMilliseconds": {
+      "description": "Unix epoch milliseconds in UTC.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 253402300799999
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": ["screenshot", "video", "capture_session", "scan_result"]
+        },
+        "reference": {
+          "description": "Opaque reference to separately managed evidence; raw media is not embedded in the contract.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mediaType": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+        }
+      }
+    },
+    "verification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["not_checked", "producer_check_passed", "producer_check_failed", "needs_review"]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "lapSumMatches": {
+          "type": "boolean"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fieldConfidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "totalTime": { "$ref": "#/$defs/confidence" },
+            "track": { "$ref": "#/$defs/confidence" },
+            "character": { "$ref": "#/$defs/confidence" },
+            "characterVariant": { "$ref": "#/$defs/confidence" },
+            "body": { "$ref": "#/$defs/confidence" },
+            "tire": { "$ref": "#/$defs/confidence" },
+            "glider": { "$ref": "#/$defs/confidence" },
+            "country": { "$ref": "#/$defs/confidence" },
+            "playerName": { "$ref": "#/$defs/confidence" }
+          }
+        },
+        "correctedFields": {
+          "description": "Canonical field groups that were recognized by a scan or video producer and then changed by the reviewing Player before this revision was submitted.",
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 15,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "enum": [
+              "track",
+              "mode",
+              "totalTime",
+              "laps",
+              "coins",
+              "mushrooms",
+              "character",
+              "characterVariant",
+              "body",
+              "bodyVariant",
+              "tire",
+              "glider",
+              "gliderVariant",
+              "country",
+              "playerName"
+            ]
+          }
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

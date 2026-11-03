@@ -1,0 +1,303 @@
+<meta charset="utf-8">
+<title>LiveTrial — card grid calibration</title>
+<style>
+:root { color-scheme: dark; --bg:#14140f; --pan:#1e1e18; --ln:#33332a; --ink:#e8e8dd;
+        --dim:#9a9a8a; --acc:#ffd54a; }
+* { box-sizing: border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+             font:13px/1.45 "Segoe UI", system-ui, sans-serif; }
+#wrap { display:flex; height:100vh; }
+#left { flex:1; min-width:0; display:flex; flex-direction:column; }
+#bar { display:flex; gap:8px; align-items:center; padding:8px 10px;
+       border-bottom:1px solid var(--ln); flex-wrap:wrap; }
+#stage { flex:1; overflow:auto; padding:10px; }
+#cv { image-rendering:pixelated; box-shadow:0 4px 20px #0009; }
+#side { width:400px; border-left:1px solid var(--ln); overflow-y:auto; background:var(--pan); }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--dim);
+     margin:14px 10px 6px; }
+button, select, input { font:inherit; background:#2a2a22; color:var(--ink);
+                        border:1px solid var(--ln); border-radius:7px; padding:4px 9px; }
+button { cursor:pointer; } button.on { background:var(--acc); color:#1a1a12; font-weight:700;
+                                        border-color:transparent; }
+.grp { border-top:1px solid var(--ln); }
+.ghead { display:flex; align-items:center; gap:8px; padding:7px 10px; cursor:pointer; }
+.ghead .sw { width:12px; height:12px; border-radius:3px; }
+.ghead b { flex:1; font-weight:650; }
+.flds { padding:0 10px 10px; display:none; }
+.grp.open .flds { display:block; }
+.row { display:flex; align-items:center; gap:6px; margin:3px 0; }
+.row label { width:52px; color:var(--dim); font-size:12px; }
+.row input { width:74px; text-align:right; padding:3px 6px; }
+.hint { color:var(--dim); font-size:11.5px; margin:6px 10px 10px; }
+#log { font-family:ui-monospace,Consolas,monospace; font-size:11px; color:var(--dim);
+       padding:6px 10px; white-space:pre-wrap; }
+kbd { background:#2a2a22; border:1px solid var(--ln); border-radius:4px; padding:0 4px;
+      font-size:11px; }
+</style>
+
+<div id="wrap">
+  <div id="left">
+    <div id="bar">
+      <select id="mode"><option value="3lap">3 laps</option><option value="7lap">7 laps</option></select>
+      <select id="zoom"><option>1</option><option selected>2</option><option>3</option><option>4</option></select>
+      <button id="btnOverlay">assets overlay</button>
+      <select id="blend"><option value="normal">normal</option><option value="difference">difference</option></select>
+      <input id="opa" type="range" min="0" max="100" value="70" style="width:90px">
+      <button id="btnArt">COCO artwork</button>
+      <button id="btnBoth">show both cards</button>
+      <span style="flex:1"></span>
+      <button id="btnSave">save</button>
+      <button id="btnReset">reload</button>
+    </div>
+    <div id="stage"><canvas id="cv"></canvas></div>
+    <div id="log"></div>
+  </div>
+  <div id="side">
+    <h2>card origin (absolute)</h2>
+    <div id="card"></div>
+    <h2>groups (card-relative)</h2>
+    <div id="groups"></div>
+    <div class="hint">Click a field then <kbd>↑</kbd><kbd>↓</kbd> to nudge 1 px,
+      <kbd>Shift</kbd> for 10. Groups are rule-bound: one <b>x</b>, one <b>w</b>×<b>h</b>
+      and one <b>pitch</b> generate every row, so rows cannot drift apart.
+      The bottom card is this geometry plus <b>bottomDy</b>.</div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const cv = $("#cv"), ctx = cv.getContext("2d");
+let G = null, MODE = "3lap", IMG = null, ART = null, TOPOWNER = "?";
+let showOverlay = false, showArt = false, showBoth = true;
+const ASSETS = {};   // key -> HTMLImageElement (RGBA cut-outs)
+
+const COL = { character:"#4ad6ff", parts:"#4ad6ff", flag:"#4ad6ff",
+              name:"#ff5b5b", partName:"#5bd75b", lapIndex:"#c58bff",
+              lapTime:"#ff9d3c", totalTime:"#ff5bd7" };
+
+/* ---- rule-bound expansion: ONE x / w / h / pitch -> every row ------------- */
+function rows(g) {
+  const n = g.n || 1, out = [];
+  for (let i = 0; i < n; i++)
+    out.push({ x: g.x, y: (g.y0 !== undefined ? g.y0 : g.y) + i * (g.pitch || 0),
+               w: g.w, h: g.h });
+  return out;
+}
+/* digits: constant height, one numeral width, one separator width, and slot N
+   shares an x across every row of the same system */
+function digitSlots(d) {
+  const pat = (d.pattern || "").split(""), out = [];
+  let x = 0;
+  for (let i = 0; i < pat.length; i++) {
+    const sep = pat[i] === ":" || pat[i] === ".";
+    out.push({ x: d.slots && d.slots[i] !== undefined ? d.slots[i] : x,
+               w: sep ? d.sepW : d.numW, sep });
+    x += (sep ? d.sepW : d.numW);
+  }
+  return out;
+}
+
+function cardsOf(c) {
+  const out = [{ x: c.card.x, y: c.card.y, tag: "top" }];
+  if (showBoth) out.push({ x: c.card.x, y: c.card.y + c.card.bottomDy, tag: "bottom" });
+  return out;
+}
+
+function draw() {
+  if (!G || !IMG) return;
+  const c = G.cards[MODE], z = +$("#zoom").value;
+  cv.width = G.canvas[0] * z; cv.height = G.canvas[1] * z;
+  ctx.setTransform(z, 0, 0, z, 0, 0);
+  ctx.clearRect(0, 0, G.canvas[0], G.canvas[1]);
+  ctx.drawImage(IMG, 0, 0);
+
+  for (const cd of cardsOf(c)) {
+    const ox = cd.x + 0, oy = cd.y + (G.layoutOffsetY || 0);
+    ctx.lineWidth = 1 / z * 2;
+    ctx.strokeStyle = "#57d977";
+    ctx.strokeRect(ox + .5, oy + .5, c.card.w, c.card.h);
+
+    // asset overlay: draw the RGBA cut-out INSIDE its slot to check alignment
+    if (showOverlay) {
+      ctx.save();
+      ctx.globalAlpha = +$("#opa").value / 100;
+      ctx.globalCompositeOperation = $("#blend").value;
+      const put = (im, b) => im && im.complete && ctx.drawImage(im, ox + b.x, oy + b.y, b.w, b.h);
+      put(ASSETS[cd.tag + ":character"], c.icons.character);
+      put(ASSETS[cd.tag + ":flag"], c.icons.flag);
+      rows(c.icons.parts).forEach((b, i) =>
+        put(ASSETS[cd.tag + ":" + c.icons.parts.order[i]], b));
+      ctx.restore();
+    }
+
+    const box = (b, col, label) => {
+      ctx.strokeStyle = col; ctx.strokeRect(ox + b.x + .5, oy + b.y + .5, b.w, b.h);
+      if (label) { ctx.fillStyle = col; ctx.font = `${9}px system-ui`;
+                   ctx.fillText(label, ox + b.x + 2, oy + b.y + 9); }
+    };
+    box(c.icons.character, COL.character, "char");
+    box(c.icons.flag, COL.flag, "flag");
+    rows(c.icons.parts).forEach((b, i) => box(b, COL.parts, c.icons.parts.order[i]));
+    for (const [k, g] of Object.entries(c.text)) rows(g).forEach((b, i) =>
+      box(b, COL[k] || "#fff", i === 0 ? k : ""));
+    // digit slots inside each time row
+    for (const [k, d] of Object.entries(c.digits || {})) {
+      const base = c.text[k];
+      rows(base).forEach(r => {
+        digitSlots(d).forEach(s => {
+          ctx.strokeStyle = s.sep ? "#ffffff66" : "#ffffffaa";
+          ctx.strokeRect(ox + d.x + s.x + .5, oy + r.y + .5, s.w, d.h);
+        });
+      });
+    }
+  }
+  if (showArt && ART && ART[MODE]) {
+    ctx.strokeStyle = "#ff00ff88";
+    for (const b of ART[MODE]) ctx.strokeRect(b[0] + .5, b[1] + .5, b[2], b[3]);
+  }
+  $("#log").textContent =
+    `${MODE}  card ${c.card.x},${c.card.y} ${c.card.w}x${c.card.h}  bottomDy ${c.card.bottomDy}` +
+    `   layoutOffsetY ${G.layoutOffsetY}  (new-ghost preset ${G.layoutOffsetYNewGhost})` +
+    `   top card = ${TOPOWNER}`;
+}
+
+/* ---- controls ------------------------------------------------------------ */
+function field(obj, key, label) {
+  const r = document.createElement("div"); r.className = "row";
+  r.innerHTML = `<label>${label || key}</label>`;
+  const i = document.createElement("input");
+  i.type = "number"; i.step = "0.5"; i.value = obj[key];
+  i.onchange = i.oninput = () => { obj[key] = parseFloat(i.value); draw(); };
+  i.onkeydown = e => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    obj[key] = (parseFloat(i.value) || 0) + (e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 10 : 1);
+    i.value = obj[key]; draw();
+  };
+  r.appendChild(i); return r;
+}
+
+function panel() {
+  const c = G.cards[MODE];
+  const cd = $("#card"); cd.innerHTML = "";
+  const w1 = document.createElement("div"); w1.className = "flds"; w1.style.display = "block";
+  ["x", "y", "w", "h", "bottomDy"].forEach(k => w1.appendChild(field(c.card, k)));
+  w1.appendChild(field(G, "layoutOffsetY", "shiftY"));
+  cd.appendChild(w1);
+
+  const gs = $("#groups"); gs.innerHTML = "";
+  const add = (name, obj, keys) => {
+    const d = document.createElement("div"); d.className = "grp";
+    d.innerHTML = `<div class="ghead"><span class="sw" style="background:${COL[name] || "#fff"}"></span>`
+                + `<b>${name}</b><span style="color:var(--dim)">${obj.n || 1}</span></div>`;
+    const f = document.createElement("div"); f.className = "flds";
+    keys.filter(k => obj[k] !== undefined).forEach(k => f.appendChild(field(obj, k)));
+    d.appendChild(f);
+    d.querySelector(".ghead").onclick = () => d.classList.toggle("open");
+    gs.appendChild(d);
+  };
+  add("character", c.icons.character, ["x", "y", "w", "h"]);
+  add("parts", c.icons.parts, ["x", "y0", "w", "h", "pitch"]);
+  add("flag", c.icons.flag, ["x", "y", "w", "h"]);
+  for (const [k, g] of Object.entries(c.text)) add(k, g, ["x", "y0", "y", "w", "h", "pitch"]);
+  for (const [k, d] of Object.entries(c.digits || {})) addDigits(k, d);
+}
+
+/* Digit slots: the widths stay rule-bound (one numeral width, one separator
+   width, one height) but each slot's x is nudgeable, because ':' and '.' are
+   not simply "previous slot + previous width" — the game kerns them tighter
+   than a numeral cell. Reflow recomputes an even run from x + the widths when
+   you want to start over. */
+function addDigits(name, d) {
+  const gs = $("#groups");
+  const wrap = document.createElement("div"); wrap.className = "grp";
+  wrap.innerHTML = `<div class="ghead"><span class="sw" style="background:#fff"></span>`
+                 + `<b>digits ${name}</b><span style="color:var(--dim)">${d.pattern}</span></div>`;
+  const f = document.createElement("div"); f.className = "flds";
+  ["x", "numW", "sepW", "h"].forEach(k => f.appendChild(field(d, k)));
+
+  const sub = document.createElement("div");
+  sub.style.cssText = "margin-top:8px;border-top:1px dashed var(--ln);padding-top:6px";
+  sub.innerHTML = `<div style="color:var(--dim);font-size:11.5px;margin-bottom:4px">`
+                + `slot x (relative to this group's x)</div>`;
+  const pat = (d.pattern || "").split("");
+  d.slots = d.slots || [];
+  pat.forEach((ch, i) => {
+    if (d.slots[i] === undefined) d.slots[i] = 0;
+    const r = document.createElement("div"); r.className = "row";
+    const sep = ch === ":" || ch === ".";
+    r.innerHTML = `<label style="width:52px">${i} <b style="color:${sep ? "#ffd54a" : "var(--ink)"}">${ch}</b></label>`;
+    const inp = document.createElement("input");
+    inp.type = "number"; inp.step = "0.5"; inp.value = d.slots[i];
+    const apply = v => { d.slots[i] = v; inp.value = v; draw(); };
+    inp.oninput = () => apply(parseFloat(inp.value));
+    inp.onkeydown = e => {
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+      e.preventDefault();
+      apply((parseFloat(inp.value) || 0) + (e.key === "ArrowUp" ? 1 : -1) * (e.shiftKey ? 10 : 1));
+    };
+    r.appendChild(inp);
+    // nudge this slot AND everything to its right, which is what you want when
+    // a separator is too tight: the trailing digits must move with it
+    const push = document.createElement("button");
+    push.textContent = "→"; push.title = "shift this slot and all after it by +1";
+    push.style.cssText = "padding:2px 7px";
+    push.onclick = () => { for (let j = i; j < d.slots.length; j++) d.slots[j] += 1;
+                           panel(); draw(); };
+    const pull = document.createElement("button");
+    pull.textContent = "←"; pull.title = "shift this slot and all after it by -1";
+    pull.style.cssText = "padding:2px 7px";
+    pull.onclick = () => { for (let j = i; j < d.slots.length; j++) d.slots[j] -= 1;
+                           panel(); draw(); };
+    r.appendChild(pull); r.appendChild(push);
+    sub.appendChild(r);
+  });
+  const rf = document.createElement("button");
+  rf.textContent = "reflow evenly"; rf.style.marginTop = "6px";
+  rf.onclick = () => {
+    let x = 0;
+    d.slots = pat.map(ch => { const v = x; x += (ch === ":" || ch === ".") ? d.sepW : d.numW; return v; });
+    panel(); draw();
+  };
+  sub.appendChild(rf);
+  f.appendChild(sub);
+  wrap.appendChild(f);
+  wrap.querySelector(".ghead").onclick = e => {
+    if (e.target.tagName !== "BUTTON") wrap.classList.toggle("open");
+  };
+  gs.appendChild(wrap);
+}
+
+async function load() {
+  G = await (await fetch("api/grid")).json();
+  MODE = $("#mode").value;
+  IMG = new Image();
+  IMG.onload = () => { panel(); draw(); };
+  IMG.src = "api/grid/ref?mode=" + MODE + "&t=" + Date.now();
+  try { ART = await (await fetch("api/grid/artwork")).json(); } catch (e) { ART = null; }
+  // RGBA cut-outs for whichever loadout the reference frame actually shows
+  try {
+    const m = await (await fetch("api/grid/assets?mode=" + MODE)).json();
+    for (const [k, p] of Object.entries(m)) {
+      if (k.startsWith("_")) continue;          // _topOwner, not an image
+      const im = new Image(); im.onload = draw; im.src = "assets/" + p; ASSETS[k] = im;
+    }
+    TOPOWNER = m._topOwner || "?";
+  } catch (e) {}
+}
+
+$("#mode").onchange = load;
+$("#zoom").onchange = draw;
+$("#opa").oninput = draw;
+$("#blend").onchange = draw;
+$("#btnOverlay").onclick = e => { showOverlay = !showOverlay; e.target.classList.toggle("on", showOverlay); draw(); };
+$("#btnArt").onclick = e => { showArt = !showArt; e.target.classList.toggle("on", showArt); draw(); };
+$("#btnBoth").onclick = e => { showBoth = !showBoth; e.target.classList.toggle("on", showBoth); draw(); };
+$("#btnBoth").classList.add("on");
+$("#btnReset").onclick = load;
+$("#btnSave").onclick = async () => {
+  const r = await fetch("api/grid", { method: "POST", body: JSON.stringify(G) });
+  $("#log").textContent = (await r.json()).ok ? "saved to config/card_grid.json" : "save FAILED";
+};
+load();
+</script>

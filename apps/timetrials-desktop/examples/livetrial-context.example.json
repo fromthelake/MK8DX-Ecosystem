@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "mk8dx.livetrial-submission-context.v1",
+  "submissionId": "user_submission.time.SYNTHETICLIVETRIAL01",
+  "revision": 1,
+  "sourceKind": "livetrial_recorded_video",
+  "playerReference": {
+    "namespace": "unresolved_observation",
+    "value": "desktop-local-player"
+  },
+  "producerVersion": "synthetic-local-example",
+  "localRecordId": "run.synthetic-0007",
+  "timestamps": {
+    "createdAtMs": 1786900000100,
+    "occurredAtMs": 1786900000000,
+    "capturedAtMs": 1786900000000
+  },
+  "evidence": [
+    {
+      "kind": "capture_session",
+      "reference": "synthetic/session-1/run-7"
+    }
+  ]
+}

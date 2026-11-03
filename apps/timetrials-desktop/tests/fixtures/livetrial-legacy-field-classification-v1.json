@@ -1,0 +1,21 @@
+{
+  "schemaVersion": "mk8dx.livetrial-legacy-field-classification.v1",
+  "legacyTopLevelFields": {
+    "id": {"disposition": "replaced_by_injected_context", "target": "submissionId"},
+    "recordType": {"disposition": "replaced_by_contract", "target": "schemaVersion"},
+    "status": {"disposition": "migration_workflow_only", "target": null},
+    "mode": {"disposition": "canonical", "target": "mode"},
+    "trackId": {"disposition": "canonical", "target": "trackId"},
+    "trackNameRaw": {"disposition": "retained_local", "target": "rawTrackName"},
+    "lapCount": {"disposition": "canonical", "target": "laps.length"},
+    "timeMs": {"disposition": "canonical", "target": "totalTimeMs"},
+    "dateMs": {"disposition": "replaced_by_injected_context", "target": "timestamps.capturedAtMs"},
+    "outcome": {"disposition": "retained_local", "target": "outcome"},
+    "loadout": {"disposition": "canonical", "target": "loadout + countryId"},
+    "splits": {"disposition": "canonical_plus_recomputable_local", "target": "laps + events"},
+    "ghost": {"disposition": "retained_local", "target": "ghost + ghostIdentity"},
+    "playerCardName": {"disposition": "canonical", "target": "observedPlayerName"},
+    "verification": {"disposition": "canonical_plus_recomputable_local", "target": "verification + events + identity + runDiagnostics"},
+    "source": {"disposition": "canonical_plus_retained_local", "target": "source + sourceInput + runIndex"}
+  }
+}

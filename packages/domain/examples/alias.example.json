@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "mk8dx.alias.v1",
+  "aliasId": "alias.synthetic_alias_01",
+  "revision": 1,
+  "playerId": "player.synthetic_racer_01",
+  "aliasText": "Synthetic Racer OCR",
+  "aliasType": "ocr_observation",
+  "visibility": "restricted",
+  "recordStatus": "active",
+  "provenance": [
+    {
+      "sourceType": "ocr",
+      "sourceReference": "source.synthetic_capture_01",
+      "observedAtMs": 1735689600000
+    }
+  ],
+  "review": {
+    "reviewStatus": "approved",
+    "reviewedByUserAccountId": "user_account.synthetic_admin_01",
+    "reviewedAtMs": 1735689660000
+  },
+  "createdAtMs": 1735689600000,
+  "updatedAtMs": 1735689660000
+}

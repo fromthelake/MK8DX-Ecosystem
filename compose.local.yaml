@@ -1,0 +1,11 @@
+services:
+  mailpit:
+    image: axllent/mailpit:v1.31.3
+    ports:
+      - "127.0.0.1:${MK8DX_MAILPIT_PORT:?}:8025"
+    restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
+  api:
+    depends_on:
+      mysql: {condition: service_healthy}
+      mailpit: {condition: service_started}

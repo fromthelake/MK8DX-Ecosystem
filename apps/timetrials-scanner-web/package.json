@@ -1,0 +1,28 @@
+{
+  "name": "mk8dx-tt-scanner-web",
+  "version": "0.4.1-web.3",
+  "private": true,
+  "description": "Browser/PWA version of the MK8DX Time Trial scanner (runs alongside the native app)",
+  "type": "module",
+  "scripts": {
+    "sync-assets": "node tools/sync_assets.mjs && node tools/stage_collection_pack.mjs && node tools/split_opencv.mjs",
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview --host",
+    "typecheck": "tsc --noEmit",
+    "parity": "node tools/parity_run.mjs",
+    "test": "playwright test"
+  },
+  "dependencies": {
+    "@techstark/opencv-js": "4.10.0-release.1",
+    "onnxruntime-web": "1.29.0",
+    "tesseract.js": "^7.0.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@types/node": "^26.4.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.2.2",
+    "vite-plugin-pwa": "^1.2.0"
+  }
+}

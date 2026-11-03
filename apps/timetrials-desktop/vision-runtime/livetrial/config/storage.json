@@ -1,0 +1,12 @@
+{
+ "recordVideo": true,
+ "maxTotalGb": 50.0,
+ "recordHeight": 1080,
+ "keepLatest": 20,
+ "keepRecords": true,
+ "keepBest": true,
+ "minFreeGb": 5.0,
+ "autoCleanup": true,
+ "pauseRecordingWhenLow": true,
+ "switchLanguage": ""
+}

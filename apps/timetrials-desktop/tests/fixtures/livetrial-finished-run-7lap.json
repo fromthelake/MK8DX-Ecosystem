@@ -1,0 +1,51 @@
+{
+  "run": 7,
+  "lapCount": 7,
+  "context": {
+    "cc": 200,
+    "trackName": {
+      "trackId": "track.gcn_baby_park",
+      "raw": "private OCR track text"
+    }
+  },
+  "results": {
+    "player": {
+      "totalMs": 70000,
+      "lapTimesMs": [10000, 10000, 10000, 10000, 10000, 10000, 10000],
+      "lapSumOk": true
+    },
+    "ghost": {
+      "totalMs": 71000,
+      "lapTimesMs": [10100, 10100, 10100, 10100, 10100, 10100, 10400],
+      "lapSumOk": true
+    }
+  },
+  "identity": {
+    "player": {
+      "name": "Observed Driver",
+      "character": {"id": "character.mario", "source": "generic"},
+      "kart": {"id": "body.standard_kart", "source": "golden"},
+      "wheel": {"id": "tire.normal", "source": "generic"},
+      "glider": {"id": "glider.super_glider", "source": "generic"},
+      "flag": {"id": "country.nl", "source": "generic"}
+    },
+    "ghost": {
+      "name": "Private Ghost",
+      "character": {"id": "character.luigi", "source": "generic"},
+      "kart": {"id": "body.pipe_frame", "source": "generic"},
+      "wheel": {"id": "tire.roller", "source": "generic"},
+      "glider": {"id": "glider.cloud_glider", "source": "generic"},
+      "flag": {"id": "country.de", "source": "generic"}
+    }
+  },
+  "events": [
+    {"type": "coin", "t": 500, "from": 0, "to": 2},
+    {"type": "mushroom_use_shortcut", "t": 21500},
+    {"type": "banner_new_record", "t": 69500}
+  ],
+  "category": "nsc",
+  "outcome": "new_record",
+  "finishGateMissed": true,
+  "goEstimated": true,
+  "lapCountCorrected": "result_screen"
+}

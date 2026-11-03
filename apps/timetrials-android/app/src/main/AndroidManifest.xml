@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!--
+        Asked for from Settings, never at start, and only to open Android's own
+        dialog: without the exemption a fifteen-minute reconciliation is held
+        for as long as the phone likes, and a notification arrives when the app
+        is opened rather than when the thing happened.
+    -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
+
+    <!--
+        Android 11 hides other packages unless they are declared. The app has
+        to be able to *find a browser*: since it became the verified handler
+        for its own host, an ordinary ACTION_VIEW comes back to itself, so the
+        download page is sent to a browser by name.
+    -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:icon="${mk8dxLauncherIcon}"
+        android:label="MK8DX Time Trials"
+        android:networkSecurityConfig="@xml/mk8dx_network_security_config"
+        android:supportsRtl="true"
+        android:roundIcon="${mk8dxLauncherIcon}"
+        android:theme="@style/Theme.Mk8dxSplash"
+        android:usesCleartextTraffic="false">
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.result-image-provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/result_image_paths" />
+        </provider>
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:exported="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--
+                The product's own links open the product.
+
+                One host, and only the paths this app has a screen for: every
+                view the site can show lives on "/" with a query, which is why
+                the path is pinned rather than left open. /scanner/, the game
+                assets and the downloads stay with the browser, where they
+                belong, and the app hands one back if it ever receives one.
+
+                autoVerify asks Android to fetch
+                the configured website's /.well-known/assetlinks.json at
+                install and check this package's release signing certificate
+                against it, so a tap opens the app without asking. That file is
+                served by the API from apps/timetrials-web/assetlinks.json.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" android:host="${mk8dxApiHost}" android:path="/" />
+                <data android:scheme="https" android:host="${mk8dxApiHost}" android:path="/index.html" />
+                <data android:scheme="https" android:host="${mk8dxApiHost}" android:path="/device" />
+            </intent-filter>
+        </activity>
+    </application>
+</manifest>

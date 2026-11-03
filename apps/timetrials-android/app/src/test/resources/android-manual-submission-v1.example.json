@@ -1,0 +1,24 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.ANDROIDLOCAL0001",
+  "revision": 1,
+  "mode": 200,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 83456,
+  "laps": [],
+  "countryId": "country.nl",
+  "playerReference": {
+    "namespace": "producer_local_profile",
+    "value": "local-profile-01"
+  },
+  "observedPlayerName": "Synthetic Racer",
+  "source": {
+    "kind": "android_manual",
+    "producerVersion": "android-migration-test",
+    "localRecordId": "local-record-01"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786900000000,
+    "createdAtMs": 1786900060000
+  }
+}

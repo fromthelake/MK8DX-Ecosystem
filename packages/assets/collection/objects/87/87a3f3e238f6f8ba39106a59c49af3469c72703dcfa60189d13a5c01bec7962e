@@ -1,0 +1,1648 @@
+{
+ "character": {
+  "0": {
+   "uk": "Mario",
+   "nl": "Mario"
+  },
+  "1": {
+   "uk": "Luigi",
+   "nl": "Luigi"
+  },
+  "2": {
+   "uk": "Peach",
+   "nl": "Peach"
+  },
+  "3": {
+   "uk": "Daisy",
+   "nl": "Daisy"
+  },
+  "4": {
+   "uk": "Rosalina",
+   "nl": "Rosalina"
+  },
+  "5": {
+   "uk": "Tanooki Mario",
+   "nl": "Tanuki-Mario"
+  },
+  "6": {
+   "uk": "Cat Peach",
+   "nl": "Kat-Peach"
+  },
+  "7": {
+   "uk": "Birdo",
+   "nl": "Birdo"
+  },
+  "8": {
+   "uk": "Birdo (Light-blue)",
+   "nl": "Birdo (lichtblauw)"
+  },
+  "9": {
+   "uk": "Birdo (Black)",
+   "nl": "Birdo (zwart)"
+  },
+  "10": {
+   "uk": "Birdo (Red)",
+   "nl": "Birdo (rood)"
+  },
+  "11": {
+   "uk": "Birdo (Yellow)",
+   "nl": "Birdo (geel)"
+  },
+  "12": {
+   "uk": "Birdo (White)",
+   "nl": "Birdo (wit)"
+  },
+  "13": {
+   "uk": "Birdo (Blue)",
+   "nl": "Birdo (blauw)"
+  },
+  "14": {
+   "uk": "Birdo (Green)",
+   "nl": "Birdo (groen)"
+  },
+  "15": {
+   "uk": "Birdo (Orange)",
+   "nl": "Birdo (oranje)"
+  },
+  "16": {
+   "uk": "Yoshi",
+   "nl": "Yoshi"
+  },
+  "17": {
+   "uk": "Light-blue Yoshi",
+   "nl": "Lichtblauwe Yoshi"
+  },
+  "18": {
+   "uk": "Black Yoshi",
+   "nl": "Zwarte Yoshi"
+  },
+  "19": {
+   "uk": "Red Yoshi",
+   "nl": "Rode Yoshi"
+  },
+  "20": {
+   "uk": "Yellow Yoshi",
+   "nl": "Gele Yoshi"
+  },
+  "21": {
+   "uk": "White Yoshi",
+   "nl": "Witte Yoshi"
+  },
+  "22": {
+   "uk": "Blue Yoshi",
+   "nl": "Blauwe Yoshi"
+  },
+  "23": {
+   "uk": "Pink Yoshi",
+   "nl": "Roze Yoshi"
+  },
+  "24": {
+   "uk": "Orange Yoshi",
+   "nl": "Oranje Yoshi"
+  },
+  "25": {
+   "uk": "Toad",
+   "nl": "Toad"
+  },
+  "26": {
+   "uk": "Koopa Troopa",
+   "nl": "Koopa Troopa"
+  },
+  "27": {
+   "uk": "Shy Guy",
+   "nl": "Shy Guy"
+  },
+  "28": {
+   "uk": "Light-blue Shy Guy",
+   "nl": "Lichtblauwe Shy Guy"
+  },
+  "29": {
+   "uk": "Black Shy Guy",
+   "nl": "Zwarte Shy Guy"
+  },
+  "30": {
+   "uk": "Green Shy Guy",
+   "nl": "Groene Shy Guy"
+  },
+  "31": {
+   "uk": "Yellow Shy Guy",
+   "nl": "Gele Shy Guy"
+  },
+  "32": {
+   "uk": "White Shy Guy",
+   "nl": "Witte Shy Guy"
+  },
+  "33": {
+   "uk": "Blue Shy Guy",
+   "nl": "Blauwe Shy Guy"
+  },
+  "34": {
+   "uk": "Pink Shy Guy",
+   "nl": "Roze Shy Guy"
+  },
+  "35": {
+   "uk": "Orange Shy Guy",
+   "nl": "Oranje Shy Guy"
+  },
+  "36": {
+   "uk": "Lakitu",
+   "nl": "Lakitu"
+  },
+  "37": {
+   "uk": "Toadette",
+   "nl": "Toadette"
+  },
+  "38": {
+   "uk": "King Boo",
+   "nl": "King Boo"
+  },
+  "39": {
+   "uk": "Petey Piranha",
+   "nl": "Petey Piranha"
+  },
+  "40": {
+   "uk": "Baby Mario",
+   "nl": "Baby Mario"
+  },
+  "41": {
+   "uk": "Baby Luigi",
+   "nl": "Baby Luigi"
+  },
+  "42": {
+   "uk": "Baby Peach",
+   "nl": "Baby Peach"
+  },
+  "43": {
+   "uk": "Baby Daisy",
+   "nl": "Baby Daisy"
+  },
+  "44": {
+   "uk": "Baby Rosalina",
+   "nl": "Baby Rosalina"
+  },
+  "45": {
+   "uk": "Metal Mario",
+   "nl": "Metalen Mario"
+  },
+  "46": {
+   "uk": "Gold Mario",
+   "nl": "Gouden Mario"
+  },
+  "47": {
+   "uk": "Pink Gold Peach",
+   "nl": "Rozegouden Peach"
+  },
+  "48": {
+   "uk": "Wiggler",
+   "nl": "Wiggler"
+  },
+  "49": {
+   "uk": "Wario",
+   "nl": "Wario"
+  },
+  "50": {
+   "uk": "Waluigi",
+   "nl": "Waluigi"
+  },
+  "51": {
+   "uk": "Donkey Kong",
+   "nl": "Donkey Kong"
+  },
+  "52": {
+   "uk": "Bowser",
+   "nl": "Bowser"
+  },
+  "53": {
+   "uk": "Dry Bones",
+   "nl": "Dry Bones"
+  },
+  "54": {
+   "uk": "Bowser Jr.",
+   "nl": "Bowser Jr."
+  },
+  "55": {
+   "uk": "Dry Bowser",
+   "nl": "Dry Bowser"
+  },
+  "56": {
+   "uk": "Kamek",
+   "nl": "Kamek"
+  },
+  "57": {
+   "uk": "Lemmy",
+   "nl": "Lemmy"
+  },
+  "58": {
+   "uk": "Larry",
+   "nl": "Larry"
+  },
+  "59": {
+   "uk": "Wendy",
+   "nl": "Wendy"
+  },
+  "60": {
+   "uk": "Ludwig",
+   "nl": "Ludwig"
+  },
+  "61": {
+   "uk": "Iggy",
+   "nl": "Iggy"
+  },
+  "62": {
+   "uk": "Roy",
+   "nl": "Roy"
+  },
+  "63": {
+   "uk": "Morton",
+   "nl": "Morton"
+  },
+  "64": {
+   "uk": "Peachette",
+   "nl": "Peachette"
+  },
+  "65": {
+   "uk": "Inkling Girl",
+   "nl": "Inkling-meisje"
+  },
+  "66": {
+   "uk": "Inkling Girl",
+   "nl": "Inkling-meisje"
+  },
+  "67": {
+   "uk": "Inkling Girl",
+   "nl": "Inkling-meisje"
+  },
+  "68": {
+   "uk": "Inkling Boy",
+   "nl": "Inkling-jongen"
+  },
+  "69": {
+   "uk": "Inkling Boy",
+   "nl": "Inkling-jongen"
+  },
+  "70": {
+   "uk": "Inkling Boy",
+   "nl": "Inkling-jongen"
+  },
+  "71": {
+   "uk": "Villager (Boy)",
+   "nl": "Dorpsbewoner"
+  },
+  "72": {
+   "uk": "Villager (Girl)",
+   "nl": "Dorpsbewoner"
+  },
+  "73": {
+   "uk": "Isabelle",
+   "nl": "Isabelle"
+  },
+  "74": {
+   "uk": "Link",
+   "nl": "Link"
+  },
+  "75": {
+   "uk": "Link",
+   "nl": "Link"
+  },
+  "76": {
+   "uk": "Diddy Kong",
+   "nl": "Diddy Kong"
+  },
+  "77": {
+   "uk": "Funky Kong",
+   "nl": "Funky Kong"
+  },
+  "78": {
+   "uk": "Pauline",
+   "nl": "Pauline"
+  },
+  "79": {
+   "uk": "Mii (Small)",
+   "nl": "Mii (Small)"
+  },
+  "80": {
+   "uk": "Mii (Medium)",
+   "nl": "Mii (Medium)"
+  },
+  "81": {
+   "uk": "Mii (Large)",
+   "nl": "Mii (Large)"
+  }
+ },
+ "body": {
+  "0": {
+   "uk": "Standard Kart",
+   "nl": "Standaardkart"
+  },
+  "1": {
+   "uk": "Pipe Frame",
+   "nl": "Skelter"
+  },
+  "2": {
+   "uk": "Mach 8",
+   "nl": "Mach 8"
+  },
+  "3": {
+   "uk": "Steel Driver",
+   "nl": "Diepzeeduikkar"
+  },
+  "4": {
+   "uk": "Cat Cruiser",
+   "nl": "Miauwto"
+  },
+  "5": {
+   "uk": "Circuit Special",
+   "nl": "Sprinter 2.0"
+  },
+  "6": {
+   "uk": "Tri-Speeder",
+   "nl": "Driebander"
+  },
+  "7": {
+   "uk": "Badwagon",
+   "nl": "Blingbolide"
+  },
+  "8": {
+   "uk": "Prancer",
+   "nl": "Paradepaardje"
+  },
+  "9": {
+   "uk": "Buggybud",
+   "nl": "Biddybuggy"
+  },
+  "10": {
+   "uk": "Landship",
+   "nl": "Flitsfregat"
+  },
+  "11": {
+   "uk": "Bounder",
+   "nl": "Koploper"
+  },
+  "12": {
+   "uk": "Sports Coupé",
+   "nl": "Topsporter"
+  },
+  "13": {
+   "uk": "Gold Kart",
+   "nl": "Gouden kart"
+  },
+  "14": {
+   "uk": "GLA",
+   "nl": "GLA"
+  },
+  "15": {
+   "uk": "W 25 Silver Arrow",
+   "nl": "W 25 Zilverpijl"
+  },
+  "16": {
+   "uk": "300 SL Roadster",
+   "nl": "300 SL Roadster"
+  },
+  "17": {
+   "uk": "Blue Falcon",
+   "nl": "Blue Falcon"
+  },
+  "18": {
+   "uk": "Tanooki Kart",
+   "nl": "Turbo-Tanuki"
+  },
+  "19": {
+   "uk": "B Dasher",
+   "nl": "Sprinter"
+  },
+  "20": {
+   "uk": "Streetle",
+   "nl": "Sjeesbeestje"
+  },
+  "21": {
+   "uk": "P-Wing",
+   "nl": "Vleugelflitser"
+  },
+  "22": {
+   "uk": "Koopa Clown",
+   "nl": "Koopa-clown"
+  },
+  "23": {
+   "uk": "Standard Bike",
+   "nl": "Standaardmotor"
+  },
+  "24": {
+   "uk": "Comet",
+   "nl": "Megamoto Pro"
+  },
+  "25": {
+   "uk": "Sport Bike",
+   "nl": "Circuitsrijder"
+  },
+  "26": {
+   "uk": "The Duke",
+   "nl": "Ultrascooter"
+  },
+  "27": {
+   "uk": "Flame Rider",
+   "nl": "Turbochopper"
+  },
+  "28": {
+   "uk": "Varmint",
+   "nl": "Offroadracer"
+  },
+  "29": {
+   "uk": "Mr Scooty",
+   "nl": "Dreumes"
+  },
+  "30": {
+   "uk": "Jet Bike",
+   "nl": "Straatjager"
+  },
+  "31": {
+   "uk": "Yoshi Bike",
+   "nl": "Yoshi-crosser"
+  },
+  "32": {
+   "uk": "Master Cycle",
+   "nl": "Triforcer"
+  },
+  "33": {
+   "uk": "Master Cycle Zero",
+   "nl": "Triforcer Zero"
+  },
+  "34": {
+   "uk": "City Tripper",
+   "nl": "Stadscooter"
+  },
+  "35": {
+   "uk": "Standard ATV",
+   "nl": "Standaardquad"
+  },
+  "36": {
+   "uk": "Wild Wiggler",
+   "nl": "Wiggler-quad"
+  },
+  "37": {
+   "uk": "Teddy Buggy",
+   "nl": "Knuffelquad"
+  },
+  "38": {
+   "uk": "Bone Rattler",
+   "nl": "Dry-Wieler"
+  },
+  "39": {
+   "uk": "Splat Buggy",
+   "nl": "Kladderquad"
+  },
+  "40": {
+   "uk": "Inkstriker",
+   "nl": "Tornado"
+  }
+ },
+ "tire": {
+  "0": {
+   "uk": "Normal",
+   "nl": "Standaard"
+  },
+  "1": {
+   "uk": "Monster",
+   "nl": "Monster"
+  },
+  "2": {
+   "uk": "Roller",
+   "nl": "Mini"
+  },
+  "3": {
+   "uk": "Slim",
+   "nl": "Klassiek"
+  },
+  "4": {
+   "uk": "Slick",
+   "nl": "Glad"
+  },
+  "5": {
+   "uk": "Metal",
+   "nl": "Metaal"
+  },
+  "6": {
+   "uk": "Button",
+   "nl": "Knopen"
+  },
+  "7": {
+   "uk": "Off-Road",
+   "nl": "Offroad"
+  },
+  "8": {
+   "uk": "Sponge",
+   "nl": "Sponzen"
+  },
+  "9": {
+   "uk": "Wooden",
+   "nl": "Hout"
+  },
+  "10": {
+   "uk": "Cushion",
+   "nl": "Poefen"
+  },
+  "11": {
+   "uk": "Normal Blue",
+   "nl": "Standaard (blauw)"
+  },
+  "12": {
+   "uk": "Funky Monster",
+   "nl": "Monster (funky)"
+  },
+  "13": {
+   "uk": "Azure Roller",
+   "nl": "Mini (lichtblauw)"
+  },
+  "14": {
+   "uk": "Crimson Slim",
+   "nl": "Klassiek (rood)"
+  },
+  "15": {
+   "uk": "Cyber Slick",
+   "nl": "Glad (paars)"
+  },
+  "16": {
+   "uk": "Retro Off-Road",
+   "nl": "Offroad (retro)"
+  },
+  "17": {
+   "uk": "Gold Wheels",
+   "nl": "Gouden wielen"
+  },
+  "18": {
+   "uk": "GLA Wheels",
+   "nl": "GLA-wielen"
+  },
+  "19": {
+   "uk": "Triforce Tyres",
+   "nl": "Triforce"
+  },
+  "20": {
+   "uk": "Ancient Tyres",
+   "nl": "Geavanceerd"
+  },
+  "21": {
+   "uk": "Leaf Tyres",
+   "nl": "Crossing"
+  }
+ },
+ "glider": {
+  "0": {
+   "uk": "Super Glider",
+   "nl": "Standaard"
+  },
+  "1": {
+   "uk": "Cloud Glider",
+   "nl": "Wolkballonnen"
+  },
+  "2": {
+   "uk": "Wario Wing",
+   "nl": "Wario-vlieger"
+  },
+  "3": {
+   "uk": "Waddle Wing",
+   "nl": "Waddlewing"
+  },
+  "4": {
+   "uk": "Peach Parasol",
+   "nl": "Peach’ Parasol"
+  },
+  "5": {
+   "uk": "Parachute",
+   "nl": "Parachute"
+  },
+  "6": {
+   "uk": "Parafoil",
+   "nl": "Glijscherm"
+  },
+  "7": {
+   "uk": "Flower Glider",
+   "nl": "Bloem"
+  },
+  "8": {
+   "uk": "Bowser Kite",
+   "nl": "Bowser-vlieger"
+  },
+  "9": {
+   "uk": "Plane Glider",
+   "nl": "Zweefvliegtuig"
+  },
+  "10": {
+   "uk": "MKTV Parafoil",
+   "nl": "MKTV-glijscherm"
+  },
+  "11": {
+   "uk": "Gold Glider",
+   "nl": "Gouden vleugel"
+  },
+  "12": {
+   "uk": "Hylian Kite",
+   "nl": "Hyliaanse vlieger"
+  },
+  "13": {
+   "uk": "Paraglider",
+   "nl": "Zweefzeil"
+  },
+  "14": {
+   "uk": "Paper Glider",
+   "nl": "Papieren vliegtuig"
+  }
+ },
+ "mk8_flags": {
+  "0": {
+   "uk": "Afghanistan",
+   "nl": "Afghanistan"
+  },
+  "1": {
+   "uk": "Albania",
+   "nl": "Albanië"
+  },
+  "2": {
+   "uk": "Algeria",
+   "nl": "Algerije"
+  },
+  "3": {
+   "uk": "American Samoa",
+   "nl": "Amerikaans-Samoa"
+  },
+  "4": {
+   "uk": "Andorra",
+   "nl": "Andorra"
+  },
+  "5": {
+   "uk": "Angola",
+   "nl": "Angola"
+  },
+  "6": {
+   "uk": "Anguilla",
+   "nl": "Anguilla"
+  },
+  "7": {
+   "uk": "Antarctica",
+   "nl": "Antarctica"
+  },
+  "8": {
+   "uk": "Antigua & Barbuda",
+   "nl": "Antigua en Barbuda"
+  },
+  "9": {
+   "uk": "Argentina",
+   "nl": "Argentinië"
+  },
+  "10": {
+   "uk": "Armenia",
+   "nl": "Armenië"
+  },
+  "11": {
+   "uk": "Aruba",
+   "nl": "Aruba"
+  },
+  "12": {
+   "uk": "Australia",
+   "nl": "Australië"
+  },
+  "13": {
+   "uk": "Austria",
+   "nl": "Oostenrijk"
+  },
+  "14": {
+   "uk": "Azerbaijan",
+   "nl": "Azerbeidzjan"
+  },
+  "15": {
+   "uk": "Bahamas",
+   "nl": "Bahama’s"
+  },
+  "16": {
+   "uk": "Bahrain",
+   "nl": "Bahrein"
+  },
+  "17": {
+   "uk": "Bangladesh",
+   "nl": "Bangladesh"
+  },
+  "18": {
+   "uk": "Barbados",
+   "nl": "Barbados"
+  },
+  "19": {
+   "uk": "Belarus",
+   "nl": "Belarus"
+  },
+  "20": {
+   "uk": "Belgium",
+   "nl": "België"
+  },
+  "21": {
+   "uk": "Belize",
+   "nl": "Belize"
+  },
+  "22": {
+   "uk": "Benin",
+   "nl": "Benin"
+  },
+  "23": {
+   "uk": "Bermuda",
+   "nl": "Bermuda"
+  },
+  "24": {
+   "uk": "Bhutan",
+   "nl": "Bhutan"
+  },
+  "25": {
+   "uk": "Bolivia",
+   "nl": "Bolivia"
+  },
+  "26": {
+   "uk": "Caribbean Netherlands",
+   "nl": "Caribisch Nederland"
+  },
+  "27": {
+   "uk": "Bosnia & Herzegovina",
+   "nl": "Bosnië en Herzegovina"
+  },
+  "28": {
+   "uk": "Botswana",
+   "nl": "Botswana"
+  },
+  "29": {
+   "uk": "Bouvet Island",
+   "nl": "Bouveteiland"
+  },
+  "30": {
+   "uk": "Brazil",
+   "nl": "Brazilië"
+  },
+  "31": {
+   "uk": "British Indian Ocean Territory",
+   "nl": "Brits Indische Oceaanterritorium"
+  },
+  "32": {
+   "uk": "Brunei",
+   "nl": "Brunei"
+  },
+  "33": {
+   "uk": "Bulgaria",
+   "nl": "Bulgarije"
+  },
+  "34": {
+   "uk": "Burkina Faso",
+   "nl": "Burkina Faso"
+  },
+  "35": {
+   "uk": "Burundi",
+   "nl": "Burundi"
+  },
+  "36": {
+   "uk": "Cape Verde",
+   "nl": "Kaapverdië"
+  },
+  "37": {
+   "uk": "Cambodia",
+   "nl": "Cambodja"
+  },
+  "38": {
+   "uk": "Cameroon",
+   "nl": "Kameroen"
+  },
+  "39": {
+   "uk": "Canada",
+   "nl": "Canada"
+  },
+  "40": {
+   "uk": "Cayman Islands",
+   "nl": "Kaaimaneilanden"
+  },
+  "41": {
+   "uk": "Central African Republic",
+   "nl": "Centraal-Afrikaanse Republiek"
+  },
+  "42": {
+   "uk": "Chad",
+   "nl": "Tsjaad"
+  },
+  "43": {
+   "uk": "Chile",
+   "nl": "Chili"
+  },
+  "44": {
+   "uk": "China",
+   "nl": "China"
+  },
+  "45": {
+   "uk": "Christmas Island",
+   "nl": "Christmaseiland"
+  },
+  "46": {
+   "uk": "Cocos (Keeling) Islands",
+   "nl": "Cocoseilanden"
+  },
+  "47": {
+   "uk": "Colombia",
+   "nl": "Colombia"
+  },
+  "48": {
+   "uk": "Comoros",
+   "nl": "Comoren"
+  },
+  "49": {
+   "uk": "Congo - Brazzaville",
+   "nl": "Congo-Brazzaville"
+  },
+  "50": {
+   "uk": "Congo - Kinshasa",
+   "nl": "Congo-Kinshasa"
+  },
+  "51": {
+   "uk": "Cook Islands",
+   "nl": "Cookeilanden"
+  },
+  "52": {
+   "uk": "Costa Rica",
+   "nl": "Costa Rica"
+  },
+  "53": {
+   "uk": "Croatia",
+   "nl": "Kroatië"
+  },
+  "54": {
+   "uk": "Cuba",
+   "nl": "Cuba"
+  },
+  "55": {
+   "uk": "Curaçao",
+   "nl": "Curaçao"
+  },
+  "56": {
+   "uk": "Cyprus",
+   "nl": "Cyprus"
+  },
+  "57": {
+   "uk": "Czechia",
+   "nl": "Tsjechië"
+  },
+  "58": {
+   "uk": "Côte d’Ivoire",
+   "nl": "Ivoorkust"
+  },
+  "59": {
+   "uk": "Denmark",
+   "nl": "Denemarken"
+  },
+  "60": {
+   "uk": "Djibouti",
+   "nl": "Djibouti"
+  },
+  "61": {
+   "uk": "Dominica",
+   "nl": "Dominica"
+  },
+  "62": {
+   "uk": "Dominican Republic",
+   "nl": "Dominicaanse Republiek"
+  },
+  "63": {
+   "uk": "Ecuador",
+   "nl": "Ecuador"
+  },
+  "64": {
+   "uk": "Egypt",
+   "nl": "Egypte"
+  },
+  "65": {
+   "uk": "El Salvador",
+   "nl": "El Salvador"
+  },
+  "66": {
+   "uk": "Equatorial Guinea",
+   "nl": "Equatoriaal-Guinea"
+  },
+  "67": {
+   "uk": "Eritrea",
+   "nl": "Eritrea"
+  },
+  "68": {
+   "uk": "Estonia",
+   "nl": "Estland"
+  },
+  "69": {
+   "uk": "Eswatini",
+   "nl": "Eswatini"
+  },
+  "70": {
+   "uk": "Ethiopia",
+   "nl": "Ethiopië"
+  },
+  "71": {
+   "uk": "Falkland Islands",
+   "nl": "Falklandeilanden"
+  },
+  "72": {
+   "uk": "Faroe Islands",
+   "nl": "Faeröer"
+  },
+  "73": {
+   "uk": "Fiji",
+   "nl": "Fiji"
+  },
+  "74": {
+   "uk": "Finland",
+   "nl": "Finland"
+  },
+  "75": {
+   "uk": "France",
+   "nl": "Frankrijk"
+  },
+  "76": {
+   "uk": "French Guiana",
+   "nl": "Frans-Guyana"
+  },
+  "77": {
+   "uk": "French Polynesia",
+   "nl": "Frans-Polynesië"
+  },
+  "78": {
+   "uk": "French Southern Territories",
+   "nl": "Franse Gebieden in de zuidelijke Indische Oceaan"
+  },
+  "79": {
+   "uk": "Gabon",
+   "nl": "Gabon"
+  },
+  "80": {
+   "uk": "Gambia",
+   "nl": "Gambia"
+  },
+  "81": {
+   "uk": "Georgia",
+   "nl": "Georgië"
+  },
+  "82": {
+   "uk": "Germany",
+   "nl": "Duitsland"
+  },
+  "83": {
+   "uk": "Ghana",
+   "nl": "Ghana"
+  },
+  "84": {
+   "uk": "Gibraltar",
+   "nl": "Gibraltar"
+  },
+  "85": {
+   "uk": "Greece",
+   "nl": "Griekenland"
+  },
+  "86": {
+   "uk": "Greenland",
+   "nl": "Groenland"
+  },
+  "87": {
+   "uk": "Grenada",
+   "nl": "Grenada"
+  },
+  "88": {
+   "uk": "Guadeloupe",
+   "nl": "Guadeloupe"
+  },
+  "89": {
+   "uk": "Guam",
+   "nl": "Guam"
+  },
+  "90": {
+   "uk": "Guatemala",
+   "nl": "Guatemala"
+  },
+  "91": {
+   "uk": "Guernsey",
+   "nl": "Guernsey"
+  },
+  "92": {
+   "uk": "Guinea",
+   "nl": "Guinee"
+  },
+  "93": {
+   "uk": "Guinea-Bissau",
+   "nl": "Guinee-Bissau"
+  },
+  "94": {
+   "uk": "Guyana",
+   "nl": "Guyana"
+  },
+  "95": {
+   "uk": "Haiti",
+   "nl": "Haïti"
+  },
+  "96": {
+   "uk": "Heard & McDonald Islands",
+   "nl": "Heard en McDonaldeilanden"
+  },
+  "97": {
+   "uk": "Vatican City",
+   "nl": "Vaticaanstad"
+  },
+  "98": {
+   "uk": "Honduras",
+   "nl": "Honduras"
+  },
+  "99": {
+   "uk": "Hong Kong SAR China",
+   "nl": "Hongkong SAR van China"
+  },
+  "100": {
+   "uk": "Hungary",
+   "nl": "Hongarije"
+  },
+  "101": {
+   "uk": "Iceland",
+   "nl": "IJsland"
+  },
+  "102": {
+   "uk": "India",
+   "nl": "India"
+  },
+  "103": {
+   "uk": "Indonesia",
+   "nl": "Indonesië"
+  },
+  "104": {
+   "uk": "Iran",
+   "nl": "Iran"
+  },
+  "105": {
+   "uk": "Iraq",
+   "nl": "Irak"
+  },
+  "106": {
+   "uk": "Ireland",
+   "nl": "Ierland"
+  },
+  "107": {
+   "uk": "Isle of Man",
+   "nl": "Isle of Man"
+  },
+  "108": {
+   "uk": "Israel",
+   "nl": "Israël"
+  },
+  "109": {
+   "uk": "Italy",
+   "nl": "Italië"
+  },
+  "110": {
+   "uk": "Jamaica",
+   "nl": "Jamaica"
+  },
+  "111": {
+   "uk": "Japan",
+   "nl": "Japan"
+  },
+  "112": {
+   "uk": "Jersey",
+   "nl": "Jersey"
+  },
+  "113": {
+   "uk": "Jordan",
+   "nl": "Jordanië"
+  },
+  "114": {
+   "uk": "Kazakhstan",
+   "nl": "Kazachstan"
+  },
+  "115": {
+   "uk": "Kenya",
+   "nl": "Kenia"
+  },
+  "116": {
+   "uk": "Kiribati",
+   "nl": "Kiribati"
+  },
+  "117": {
+   "uk": "North Korea",
+   "nl": "Noord-Korea"
+  },
+  "118": {
+   "uk": "South Korea",
+   "nl": "Zuid-Korea"
+  },
+  "119": {
+   "uk": "Kuwait",
+   "nl": "Koeweit"
+  },
+  "120": {
+   "uk": "Kyrgyzstan",
+   "nl": "Kirgizië"
+  },
+  "121": {
+   "uk": "Laos",
+   "nl": "Laos"
+  },
+  "122": {
+   "uk": "Latvia",
+   "nl": "Letland"
+  },
+  "123": {
+   "uk": "Lebanon",
+   "nl": "Libanon"
+  },
+  "124": {
+   "uk": "Lesotho",
+   "nl": "Lesotho"
+  },
+  "125": {
+   "uk": "Liberia",
+   "nl": "Liberia"
+  },
+  "126": {
+   "uk": "Libya",
+   "nl": "Libië"
+  },
+  "127": {
+   "uk": "Liechtenstein",
+   "nl": "Liechtenstein"
+  },
+  "128": {
+   "uk": "Lithuania",
+   "nl": "Litouwen"
+  },
+  "129": {
+   "uk": "Luxembourg",
+   "nl": "Luxemburg"
+  },
+  "130": {
+   "uk": "Macao SAR China",
+   "nl": "Macau SAR van China"
+  },
+  "131": {
+   "uk": "Madagascar",
+   "nl": "Madagaskar"
+  },
+  "132": {
+   "uk": "Malawi",
+   "nl": "Malawi"
+  },
+  "133": {
+   "uk": "Malaysia",
+   "nl": "Maleisië"
+  },
+  "134": {
+   "uk": "Maldives",
+   "nl": "Maldiven"
+  },
+  "135": {
+   "uk": "Mali",
+   "nl": "Mali"
+  },
+  "136": {
+   "uk": "Malta",
+   "nl": "Malta"
+  },
+  "137": {
+   "uk": "Marshall Islands",
+   "nl": "Marshalleilanden"
+  },
+  "138": {
+   "uk": "Martinique",
+   "nl": "Martinique"
+  },
+  "139": {
+   "uk": "Mauritania",
+   "nl": "Mauritanië"
+  },
+  "140": {
+   "uk": "Mauritius",
+   "nl": "Mauritius"
+  },
+  "141": {
+   "uk": "Mayotte",
+   "nl": "Mayotte"
+  },
+  "142": {
+   "uk": "Mexico",
+   "nl": "Mexico"
+  },
+  "143": {
+   "uk": "Micronesia",
+   "nl": "Micronesia"
+  },
+  "144": {
+   "uk": "Moldova",
+   "nl": "Moldavië"
+  },
+  "145": {
+   "uk": "Monaco",
+   "nl": "Monaco"
+  },
+  "146": {
+   "uk": "Mongolia",
+   "nl": "Mongolië"
+  },
+  "147": {
+   "uk": "Montenegro",
+   "nl": "Montenegro"
+  },
+  "148": {
+   "uk": "Montserrat",
+   "nl": "Montserrat"
+  },
+  "149": {
+   "uk": "Morocco",
+   "nl": "Marokko"
+  },
+  "150": {
+   "uk": "Mozambique",
+   "nl": "Mozambique"
+  },
+  "151": {
+   "uk": "Myanmar (Burma)",
+   "nl": "Myanmar (Birma)"
+  },
+  "152": {
+   "uk": "Namibia",
+   "nl": "Namibië"
+  },
+  "153": {
+   "uk": "Nauru",
+   "nl": "Nauru"
+  },
+  "154": {
+   "uk": "Nepal",
+   "nl": "Nepal"
+  },
+  "155": {
+   "uk": "Netherlands",
+   "nl": "Nederland"
+  },
+  "156": {
+   "uk": "New Caledonia",
+   "nl": "Nieuw-Caledonië"
+  },
+  "157": {
+   "uk": "New Zealand",
+   "nl": "Nieuw-Zeeland"
+  },
+  "158": {
+   "uk": "Nicaragua",
+   "nl": "Nicaragua"
+  },
+  "159": {
+   "uk": "Niger",
+   "nl": "Niger"
+  },
+  "160": {
+   "uk": "Nigeria",
+   "nl": "Nigeria"
+  },
+  "161": {
+   "uk": "Niue",
+   "nl": "Niue"
+  },
+  "162": {
+   "uk": "Norfolk Island",
+   "nl": "Norfolk"
+  },
+  "163": {
+   "uk": "North Macedonia",
+   "nl": "Noord-Macedonië"
+  },
+  "164": {
+   "uk": "Northern Mariana Islands",
+   "nl": "Noordelijke Marianen"
+  },
+  "165": {
+   "uk": "Norway",
+   "nl": "Noorwegen"
+  },
+  "166": {
+   "uk": "Oman",
+   "nl": "Oman"
+  },
+  "167": {
+   "uk": "Pakistan",
+   "nl": "Pakistan"
+  },
+  "168": {
+   "uk": "Palau",
+   "nl": "Palau"
+  },
+  "169": {
+   "uk": "Palestinian Territories",
+   "nl": "Palestijnse gebieden"
+  },
+  "170": {
+   "uk": "Panama",
+   "nl": "Panama"
+  },
+  "171": {
+   "uk": "Papua New Guinea",
+   "nl": "Papoea-Nieuw-Guinea"
+  },
+  "172": {
+   "uk": "Paraguay",
+   "nl": "Paraguay"
+  },
+  "173": {
+   "uk": "Peru",
+   "nl": "Peru"
+  },
+  "174": {
+   "uk": "Philippines",
+   "nl": "Filipijnen"
+  },
+  "175": {
+   "uk": "Pitcairn Islands",
+   "nl": "Pitcairneilanden"
+  },
+  "176": {
+   "uk": "Poland",
+   "nl": "Polen"
+  },
+  "177": {
+   "uk": "Portugal",
+   "nl": "Portugal"
+  },
+  "178": {
+   "uk": "Puerto Rico",
+   "nl": "Puerto Rico"
+  },
+  "179": {
+   "uk": "Qatar",
+   "nl": "Qatar"
+  },
+  "180": {
+   "uk": "Romania",
+   "nl": "Roemenië"
+  },
+  "181": {
+   "uk": "Russia",
+   "nl": "Rusland"
+  },
+  "182": {
+   "uk": "Rwanda",
+   "nl": "Rwanda"
+  },
+  "183": {
+   "uk": "Réunion",
+   "nl": "Réunion"
+  },
+  "184": {
+   "uk": "St Barthélemy",
+   "nl": "Saint-Barthélemy"
+  },
+  "185": {
+   "uk": "St Helena",
+   "nl": "Sint-Helena"
+  },
+  "186": {
+   "uk": "St Kitts & Nevis",
+   "nl": "Saint Kitts en Nevis"
+  },
+  "187": {
+   "uk": "St Lucia",
+   "nl": "Saint Lucia"
+  },
+  "188": {
+   "uk": "St Martin",
+   "nl": "Saint-Martin"
+  },
+  "189": {
+   "uk": "St Pierre & Miquelon",
+   "nl": "Saint-Pierre en Miquelon"
+  },
+  "190": {
+   "uk": "St Vincent & the Grenadines",
+   "nl": "Saint Vincent en de Grenadines"
+  },
+  "191": {
+   "uk": "Samoa",
+   "nl": "Samoa"
+  },
+  "192": {
+   "uk": "San Marino",
+   "nl": "San Marino"
+  },
+  "193": {
+   "uk": "São Tomé & Príncipe",
+   "nl": "Sao Tomé en Principe"
+  },
+  "194": {
+   "uk": "Saudi Arabia",
+   "nl": "Saoedi-Arabië"
+  },
+  "195": {
+   "uk": "Senegal",
+   "nl": "Senegal"
+  },
+  "196": {
+   "uk": "Serbia",
+   "nl": "Servië"
+  },
+  "197": {
+   "uk": "Seychelles",
+   "nl": "Seychellen"
+  },
+  "198": {
+   "uk": "Sierra Leone",
+   "nl": "Sierra Leone"
+  },
+  "199": {
+   "uk": "Singapore",
+   "nl": "Singapore"
+  },
+  "200": {
+   "uk": "Sint Maarten",
+   "nl": "Sint-Maarten"
+  },
+  "201": {
+   "uk": "Slovakia",
+   "nl": "Slowakije"
+  },
+  "202": {
+   "uk": "Slovenia",
+   "nl": "Slovenië"
+  },
+  "203": {
+   "uk": "Solomon Islands",
+   "nl": "Salomonseilanden"
+  },
+  "204": {
+   "uk": "Somalia",
+   "nl": "Somalië"
+  },
+  "205": {
+   "uk": "South Africa",
+   "nl": "Zuid-Afrika"
+  },
+  "206": {
+   "uk": "South Georgia & South Sandwich Islands",
+   "nl": "Zuid-Georgia en Zuidelijke Sandwicheilanden"
+  },
+  "207": {
+   "uk": "South Sudan",
+   "nl": "Zuid-Soedan"
+  },
+  "208": {
+   "uk": "Spain",
+   "nl": "Spanje"
+  },
+  "209": {
+   "uk": "Sri Lanka",
+   "nl": "Sri Lanka"
+  },
+  "210": {
+   "uk": "Sudan",
+   "nl": "Soedan"
+  },
+  "211": {
+   "uk": "Suriname",
+   "nl": "Suriname"
+  },
+  "212": {
+   "uk": "Svalbard & Jan Mayen",
+   "nl": "Spitsbergen en Jan Mayen"
+  },
+  "213": {
+   "uk": "Sweden",
+   "nl": "Zweden"
+  },
+  "214": {
+   "uk": "Switzerland",
+   "nl": "Zwitserland"
+  },
+  "215": {
+   "uk": "Syria",
+   "nl": "Syrië"
+  },
+  "216": {
+   "uk": "Taiwan",
+   "nl": "Taiwan"
+  },
+  "217": {
+   "uk": "Tajikistan",
+   "nl": "Tadzjikistan"
+  },
+  "218": {
+   "uk": "Tanzania",
+   "nl": "Tanzania"
+  },
+  "219": {
+   "uk": "Thailand",
+   "nl": "Thailand"
+  },
+  "220": {
+   "uk": "Timor-Leste",
+   "nl": "Oost-Timor"
+  },
+  "221": {
+   "uk": "Togo",
+   "nl": "Togo"
+  },
+  "222": {
+   "uk": "Tokelau",
+   "nl": "Tokelau"
+  },
+  "223": {
+   "uk": "Tonga",
+   "nl": "Tonga"
+  },
+  "224": {
+   "uk": "Trinidad & Tobago",
+   "nl": "Trinidad en Tobago"
+  },
+  "225": {
+   "uk": "Tunisia",
+   "nl": "Tunesië"
+  },
+  "226": {
+   "uk": "Türkiye",
+   "nl": "Turkije"
+  },
+  "227": {
+   "uk": "Turkmenistan",
+   "nl": "Turkmenistan"
+  },
+  "228": {
+   "uk": "Turks & Caicos Islands",
+   "nl": "Turks- en Caicoseilanden"
+  },
+  "229": {
+   "uk": "Tuvalu",
+   "nl": "Tuvalu"
+  },
+  "230": {
+   "uk": "Uganda",
+   "nl": "Oeganda"
+  },
+  "231": {
+   "uk": "Ukraine",
+   "nl": "Oekraïne"
+  },
+  "232": {
+   "uk": "United Arab Emirates",
+   "nl": "Verenigde Arabische Emiraten"
+  },
+  "233": {
+   "uk": "United Kingdom",
+   "nl": "Verenigd Koninkrijk"
+  },
+  "234": {
+   "uk": "United States",
+   "nl": "Verenigde Staten"
+  },
+  "235": {
+   "uk": "US Outlying Islands",
+   "nl": "Kleine afgelegen eilanden van de Verenigde Staten"
+  },
+  "236": {
+   "uk": "Uruguay",
+   "nl": "Uruguay"
+  },
+  "237": {
+   "uk": "Uzbekistan",
+   "nl": "Oezbekistan"
+  },
+  "238": {
+   "uk": "Vanuatu",
+   "nl": "Vanuatu"
+  },
+  "239": {
+   "uk": "Venezuela",
+   "nl": "Venezuela"
+  },
+  "240": {
+   "uk": "Vietnam",
+   "nl": "Vietnam"
+  },
+  "241": {
+   "uk": "British Virgin Islands",
+   "nl": "Britse Maagdeneilanden"
+  },
+  "242": {
+   "uk": "US Virgin Islands",
+   "nl": "Amerikaanse Maagdeneilanden"
+  },
+  "243": {
+   "uk": "Wallis & Futuna",
+   "nl": "Wallis en Futuna"
+  },
+  "244": {
+   "uk": "Western Sahara",
+   "nl": "Westelijke Sahara"
+  },
+  "245": {
+   "uk": "Yemen",
+   "nl": "Jemen"
+  },
+  "246": {
+   "uk": "Zambia",
+   "nl": "Zambia"
+  },
+  "247": {
+   "uk": "Zimbabwe",
+   "nl": "Zimbabwe"
+  },
+  "248": {
+   "uk": "Åland Islands",
+   "nl": "Åland"
+  }
+ }
+}

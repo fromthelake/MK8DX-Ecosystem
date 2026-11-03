@@ -1,0 +1,318 @@
+{
+ "schema": "mk8dx.public-test-set.v1",
+ "labelRule": "labels record what is seen on the screen; interpretation is versioned code",
+ "records": [
+  {
+   "file": "result-de-win.png",
+   "sha256": "06b2475606486c1733f400c2333023aefcb25d23013a2217e3a8b1e040b13aa6",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "de",
+   "times": {
+    "player_lap_1": "0:38.765",
+    "player_lap_2": "0:36.010",
+    "player_lap_3": "0:36.351",
+    "player_total": "1:51.126",
+    "ghost_lap_1": "0:40.588",
+    "ghost_lap_2": "0:36.367",
+    "ghost_lap_3": "0:36.236",
+    "ghost_total": "1:53.191"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {
+     "character": "character.mario",
+     "kart": "body.sports_coupe",
+     "glider": "glider.super_glider"
+    }
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-en-solo-record.png",
+   "sha256": "16c8e09cff715687aaf16d73946509328305bcd551aec56d0bfd249ca69f7856",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "en",
+   "times": {
+    "player_lap_1": "0:30.917",
+    "player_lap_2": "0:27.341",
+    "player_lap_3": "0:29.809",
+    "player_total": "1:28.067"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {
+     "glider": "glider_variant.peach_parasol.000_daisy"
+    }
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-es-solo-record.png",
+   "sha256": "f0f792fa3f18da7847afc07368e755c9a885c1e2184fde2e221395e0d6b974cf",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "es",
+   "times": {
+    "player_lap_1": "0:35.625",
+    "player_lap_2": "0:34.741",
+    "player_lap_3": "0:35.835",
+    "player_total": "1:46.201"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {
+     "character": "character.ludwig",
+     "kart": "body_variant.standard_quad.025_mario_gold"
+    }
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-ja-won.png",
+   "sha256": "9054fc6687378f08c26eddf672b16d3fb90a5b08f0e5b43845479dfd9eb6387b",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "ja",
+   "times": {
+    "player_lap_1": "0:11.657",
+    "player_lap_2": "0:11.403",
+    "player_lap_3": "0:10.292",
+    "player_lap_4": "0:10.520",
+    "player_lap_5": "0:10.276",
+    "player_lap_6": "0:08.796",
+    "player_lap_7": "0:09.456",
+    "player_total": "1:12.400",
+    "ghost_lap_1": "0:15.451",
+    "ghost_lap_2": "0:09.980",
+    "ghost_lap_3": "0:10.680",
+    "ghost_lap_4": "0:09.857",
+    "ghost_lap_5": "0:10.328",
+    "ghost_lap_6": "0:09.532",
+    "ghost_lap_7": "0:10.733",
+    "ghost_total": "1:16.561"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {
+     "character": "character.baby_mario",
+     "kart": "body_variant.gla.000_black",
+     "glider": "glider.super_glider"
+    }
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-ko-solo-record.png",
+   "sha256": "d5548aaa17701e329bcdc729f658009ca4e3868916d5704fe9d88e8e891c5eab",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "ko",
+   "times": {
+    "player_lap_1": "0:38.307",
+    "player_lap_2": "0:36.716",
+    "player_lap_3": "0:33.475",
+    "player_total": "1:48.498"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {
+     "character": "character_variant.yoshi.021_white"
+    }
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-nl-solo-record.png",
+   "sha256": "f7b099dd48142a78ce631d9a4bed26cd0c2e82a4965143e7cdb9b8cf1f743b36",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "nl",
+   "times": {
+    "player_lap_1": "0:51.803",
+    "player_lap_2": "0:46.416",
+    "player_lap_3": "0:42.402",
+    "player_total": "2:20.621"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {}
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "result-zh-cn-solo-record.png",
+   "sha256": "c857d4710ee0b7b1caa5310f43212cc87dd05c305775321b9d19eac468395002",
+   "kind": "result_screen_capture",
+   "consoleLanguage": "zh-cn",
+   "times": {
+    "player_lap_1": "0:26.376",
+    "player_lap_2": "0:24.151",
+    "player_lap_3": "0:21.738",
+    "player_total": "1:12.265"
+   },
+   "identities": {
+    "player": {
+     "character": "character_variant.yoshi.020_yellow",
+     "kart": "body_variant.pipe_frame.022_yellow",
+     "glider": "glider_variant.super_glider.043_yellow"
+    },
+    "ghost": {}
+   },
+   "labelSource": "web scanner reading (lap sums verified), checked against the image; owner to confirm"
+  },
+  {
+   "file": "ghost-select-mario_kart_stadium-200cc-phone.png",
+   "sha256": "018ae050970482e3678339c46bf754936eb4ea5c852bfca0f4f5c5cde08f0f22",
+   "kind": "ghost_select_panel",
+   "source": "phone",
+   "track": "track.mario_kart_stadium",
+   "cc": "200",
+   "totalMs": 81984,
+   "lapTimesMs": [
+    28960,
+    26813,
+    26211
+   ],
+   "staffName": "Nin★Sophia",
+   "identities": {
+    "ghost": {
+     "character": "character.gold_mario",
+     "kart": "body.gold_kart",
+     "wheel": "tire.gold_wheels",
+     "glider": "glider.gold_glider",
+     "flag": "country.de"
+    }
+   },
+   "labelSource": "Clean Assets staff record (staff192-phone-hdmi-v1)"
+  },
+  {
+   "file": "ghost-select-water_park-150cc-hdmi.png",
+   "sha256": "6d1608bf40a4c07650a40ea5ca459d3f90fbf386a674012b79c7850057de9c00",
+   "kind": "ghost_select_panel",
+   "source": "hdmi",
+   "track": "track.water_park",
+   "cc": "150",
+   "totalMs": 122186,
+   "lapTimesMs": [
+    42469,
+    40030,
+    39687
+   ],
+   "staffName": "Nin★Massim",
+   "identities": {
+    "ghost": {
+     "character": "character.baby_luigi",
+     "kart": "body.mr_scooty",
+     "wheel": "tire.roller",
+     "glider": "glider.super_glider",
+     "flag": "country.it"
+    }
+   },
+   "labelSource": "Clean Assets staff record (staff192-phone-hdmi-v1)"
+  },
+  {
+   "file": "ghost-select-sweet_sweet_canyon-150cc-phone.png",
+   "sha256": "5ca44c625fd8bd26f85255fef2c4ec867915cd401a8992e3544a1c59d16d0fb8",
+   "kind": "ghost_select_panel",
+   "source": "phone",
+   "track": "track.sweet_sweet_canyon",
+   "cc": "150",
+   "totalMs": 127205,
+   "lapTimesMs": [
+    43478,
+    41946,
+    41781
+   ],
+   "staffName": "Nin★Fausti",
+   "identities": {
+    "ghost": {
+     "character": "character.baby_peach",
+     "kart": "body.teddy_buggy",
+     "wheel": "tire.wooden",
+     "glider": "glider.peach_parasol",
+     "flag": "country.fr"
+    }
+   },
+   "labelSource": "Clean Assets staff record (staff192-phone-hdmi-v1)"
+  },
+  {
+   "file": "result-screen-capture-7laps-inkling_boy.jpg",
+   "sha256": "f76cef8b8b3f3baecf055e38314451c9c7aaaf058fd8727b6a9300cb16c070b6",
+   "kind": "result_screen_capture",
+   "laps": 7,
+   "times": {
+    "player_total": "1:14.723",
+    "player_lap_1": "0:12.068",
+    "player_lap_2": "0:12.154",
+    "player_lap_3": "0:10.512",
+    "player_lap_4": "0:10.608",
+    "player_lap_5": "0:10.443",
+    "player_lap_6": "0:09.939",
+    "player_lap_7": "0:08.999"
+   },
+   "identities": {
+    "player": {
+     "character": "character.inkling_boy",
+     "kart": "body_variant.buggybud.000_blue",
+     "wheel": "tire.azure_roller",
+     "glider": "glider.cloud_glider",
+     "flag": "country.nl"
+    }
+   },
+   "labelSource": "phone baseline 2026-10-23 (hdmi58)"
+  },
+  {
+   "file": "result-screen-capture-3laps-dry_bowser.jpg",
+   "sha256": "16f043155edd347f0d132d0d6e18d7a10932eeb83454c68b621b41456dd2fd50",
+   "kind": "result_screen_capture",
+   "laps": 3,
+   "times": {
+    "player_total": "2:07.649",
+    "player_lap_1": "0:42.697",
+    "player_lap_2": "0:38.841",
+    "player_lap_3": "0:46.111",
+    "ghost_total": "2:05.396",
+    "ghost_lap_1": "0:44.470",
+    "ghost_lap_2": "0:39.992",
+    "ghost_lap_3": "0:40.934"
+   },
+   "identities": {
+    "ghost": {
+     "character": "character.villager_male",
+     "kart": "body.streetle",
+     "wheel": "tire.leaf_tyres",
+     "glider": "glider.paper_glider",
+     "flag": "country.jp"
+    },
+    "player": {
+     "character": "character.dry_bowser",
+     "kart": "body.inkstriker",
+     "wheel": "tire.wooden",
+     "glider": "glider.cloud_glider",
+     "flag": "country.nl"
+    }
+   },
+   "labelSource": "phone baseline 2026-10-23 (hdmi58)"
+  }
+ ]
+}

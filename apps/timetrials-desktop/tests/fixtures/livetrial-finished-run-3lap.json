@@ -1,0 +1,53 @@
+{
+  "run": 7,
+  "lapCount": 3,
+  "context": {
+    "cc": 150,
+    "trackName": {
+      "trackId": "track.mario_kart_stadium",
+      "raw": "private OCR track text"
+    }
+  },
+  "results": {
+    "player": {
+      "totalMs": 60000,
+      "lapTimesMs": [20000, 19500, 20500],
+      "lapSumOk": true
+    },
+    "ghost": {
+      "totalMs": 61000,
+      "lapTimesMs": [20300, 20100, 20600],
+      "lapSumOk": true
+    }
+  },
+  "identity": {
+    "player": {
+      "name": "Observed Driver",
+      "character": {"id": "character.mario", "source": "generic"},
+      "kart": {"id": "body.standard_kart", "source": "golden"},
+      "wheel": {"id": "tire.normal", "source": "generic"},
+      "glider": {"id": "glider.super_glider", "source": "generic"},
+      "flag": {"id": "country.nl", "source": "generic"}
+    },
+    "ghost": {
+      "name": "Private Ghost",
+      "character": {"id": "character.luigi", "source": "generic"},
+      "kart": {"id": "body.pipe_frame", "source": "generic"},
+      "wheel": {"id": "tire.roller", "source": "generic"},
+      "glider": {"id": "glider.cloud_glider", "source": "generic"},
+      "flag": {"id": "country.de", "source": "generic"}
+    }
+  },
+  "events": [
+    {"type": "coin", "t": 500, "from": 0, "to": 1},
+    {"type": "lap", "t": 20000},
+    {"type": "mushroom_use", "t": 25000},
+    {"type": "lap", "t": 39500},
+    {"type": "banner_won", "t": 59000}
+  ],
+  "category": "nsc",
+  "outcome": "won",
+  "finishGateMissed": false,
+  "goEstimated": false,
+  "lapCountCorrected": null
+}

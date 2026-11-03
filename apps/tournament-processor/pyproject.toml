@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mk8dx-tournament-processor"
+version = "0.3.0"
+description = "Recorded-video MK8DX tournament processing product"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mk8dx-tournament-extraction[vision]==0.1.0",
+  "mk8dx-tournament-connected==0.2.0",
+]
+
+[project.scripts]
+mk8dx-tournament-processor = "tournament_processor.cli:main"
+mk8dx-tournament-video = "tournament_processor.vision_cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

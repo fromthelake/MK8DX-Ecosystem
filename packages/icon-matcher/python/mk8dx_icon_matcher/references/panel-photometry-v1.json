@@ -1,0 +1,162 @@
+{
+ "schema": "mk8dx.panel-photometry.v1",
+ "version": 1,
+ "canonical": [
+  1280,
+  720
+ ],
+ "elements": [
+  {
+   "name": "x_button_fill",
+   "box": [
+    826,
+    106,
+    856,
+    136
+   ],
+   "kind": "yellow",
+   "fraction": 0.15,
+   "hdmi": [
+    213.0,
+    194.0,
+    15.0
+   ],
+   "hdmiSpread": 0.48
+  },
+  {
+   "name": "x_button_glyph",
+   "box": [
+    830,
+    113,
+    853,
+    133
+   ],
+   "kind": "dark",
+   "fraction": 0.25,
+   "hdmi": [
+    39.0,
+    32.0,
+    7.0
+   ],
+   "hdmiSpread": 0.36
+  },
+  {
+   "name": "magnifier",
+   "box": [
+    857,
+    105,
+    890,
+    137
+   ],
+   "kind": "bright",
+   "fraction": 0.12,
+   "hdmi": [
+    243.0,
+    245.0,
+    245.0
+   ],
+   "hdmiSpread": 0.4
+  },
+  {
+   "name": "name_text",
+   "box": [
+    521,
+    89,
+    730,
+    118
+   ],
+   "kind": "bright",
+   "fraction": 0.12,
+   "hdmi": [
+    239.0,
+    242.0,
+    243.0
+   ],
+   "hdmiSpread": 8.18
+  },
+  {
+   "name": "total_time",
+   "box": [
+    664,
+    123,
+    804,
+    164
+   ],
+   "kind": "bright",
+   "fraction": 0.12,
+   "hdmi": [
+    244.0,
+    246.0,
+    246.2
+   ],
+   "hdmiSpread": 0.9
+  },
+  {
+   "name": "lap_times",
+   "box": [
+    641,
+    193,
+    763,
+    311
+   ],
+   "kind": "bright",
+   "fraction": 0.12,
+   "hdmi": [
+    253.0,
+    248.0,
+    153.0
+   ],
+   "hdmiSpread": 0.55
+  },
+  {
+   "name": "lap_discs",
+   "box": [
+    564,
+    197,
+    598,
+    311
+   ],
+   "kind": "dark",
+   "fraction": 0.08,
+   "hdmi": [
+    55.0,
+    55.0,
+    58.0
+   ],
+   "hdmiSpread": 8.46
+  },
+  {
+   "name": "lap_box",
+   "box": [
+    767,
+    193,
+    846,
+    308
+   ],
+   "kind": "dark",
+   "fraction": 0.5,
+   "hdmi": [
+    64.0,
+    84.0,
+    87.0
+   ],
+   "hdmiSpread": 1.16
+  }
+ ],
+ "source": {
+  "panels": 192,
+  "rule": "median over expanded HDMI Select-a-Ghost panels of the 96-track walk (staff and player ghosts), same selection as the scanners",
+  "hdmiToCanonical": [
+   [
+    1.01917,
+    0.00959,
+    -290.17921
+   ],
+   [
+    -0.00241,
+    1.01693,
+    -22.58105
+   ]
+  ]
+ }
+}

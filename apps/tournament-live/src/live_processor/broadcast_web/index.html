@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MK8DX Live Scoreboard</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div id="stage" class="stage">
+    <div class="shell">
+      <section id="board" class="board" aria-live="polite">
+        <header class="board__top">
+          <div class="brand">
+            <div class="brand__badge" id="badge">MK8DX</div>
+            <div class="brand__text">
+              <div class="brand__eyebrow" id="eyebrow">Tournament standings</div>
+              <div class="brand__title" id="title">Waiting for feed…</div>
+            </div>
+          </div>
+          <div class="board__meta">
+            <svg class="rotring" id="rotring" viewBox="0 0 36 36" hidden aria-hidden="true">
+              <title>Time until next group</title>
+              <circle class="rotring__track" cx="18" cy="18" r="15"></circle>
+              <circle class="rotring__bar" id="rotbar" cx="18" cy="18" r="15"></circle>
+            </svg>
+            <div class="racecount">
+              <div class="racecount__label">Race</div>
+              <div class="racecount__value"><span id="race-seq">–</span><span class="racecount__of" id="race-total"></span></div>
+            </div>
+            <div class="statuswrap">
+              <div class="livepill offline" id="livepill"><span class="livepill__dot"></span><span id="livelabel">OFFLINE</span></div>
+              <div class="countdown" id="countdown" hidden></div>
+            </div>
+          </div>
+        </header>
+
+        <div class="trackbar" id="trackbar" hidden>
+          <img class="trackbar__art" id="track-art" alt="" />
+          <div class="trackbar__text">
+            <div class="trackbar__name">
+              <span id="track-name"></span>
+              <span class="racechip" id="track-status" hidden></span>
+            </div>
+            <div class="trackbar__sub" id="track-sub"></div>
+          </div>
+          <img class="trackbar__cup" id="cup-art" alt="" />
+        </div>
+
+        <div class="totalsbar" id="totalsbar" hidden>
+          <div class="totalsbar__emblem">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor" aria-hidden="true">
+              <path d="M6 3h12v2h3v3a4 4 0 0 1-4 4h-.3A6 6 0 0 1 13 15.9V18h3v2H8v-2h3v-2.1A6 6 0 0 1 7.3 12H7a4 4 0 0 1-4-4V5h3V3zm0 4H5v1a2 2 0 0 0 1 1.7V7zm12 0v2.7A2 2 0 0 0 19 8V7h-1z"/>
+            </svg>
+          </div>
+          <div class="totalsbar__text">
+            <div class="totalsbar__title">Overall standings</div>
+            <div class="totalsbar__sub" id="totals-sub"></div>
+          </div>
+        </div>
+
+        <div class="racehero" id="racehero">
+          <img class="racehero__art" id="hero-track-art" alt="" />
+          <div class="racehero__body">
+            <div class="racehero__live"><span class="racehero__dot"></span><span id="hero-status">Race in progress</span></div>
+            <div class="racehero__track" id="hero-track-name">Track pending</div>
+            <div class="racehero__sub" id="hero-track-sub"></div>
+            <div class="racehero__count">
+              <span class="racehero__countlabel">Next update in</span>
+              <span class="racehero__counttime" id="hero-countdown">–</span>
+            </div>
+          </div>
+          <img class="racehero__cup" id="hero-cup-art" alt="" />
+        </div>
+
+        <div class="boardcaption" id="board-caption"></div>
+
+        <div class="cols">
+          <span class="cols__pos">Pos</span>
+          <span></span>
+          <span class="cols__driver">Driver</span>
+          <span class="cols__race" id="col-race">This race</span>
+          <span class="cols__total">Total</span>
+        </div>
+
+        <ol class="rows" id="rows"></ol>
+
+        <div class="emptystate" id="emptystate">Standings will appear after the first race is confirmed.</div>
+
+        <footer class="board__foot">
+          <span class="board__brandfoot">MK8DX Live</span>
+          <span id="foot-status"></span>
+        </footer>
+      </section>
+    </div>
+  </div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

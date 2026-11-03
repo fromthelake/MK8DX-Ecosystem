@@ -1,0 +1,457 @@
+{
+  "schemaVersion": "mk8dx.firebase-timetrial-import-plan.v1",
+  "runnerVersion": "firebase-timetrial-batch-dry-run.v1",
+  "inputSha256": "324763e9bbc540042fecfbc12d09bd2d3110ed47be3f8628d7e4bf65fcd67c22",
+  "records": [
+    {
+      "recordKey": "firebase_record.5054b9c7ddcb44e1d34373daf9c4f74d",
+      "candidateSha256": "0ccca52d6c5a661b3110562bae85a4e1471fd6152ac453be22cdf242e2968066",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_18ce342c701159d92090d9de",
+        "revision": 1,
+        "mode": 200,
+        "trackId": "track.gcn_baby_park",
+        "totalTimeMs": 71000,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 10000
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 10100
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 10050
+          },
+          {
+            "lapNumber": 4,
+            "timeMs": 10200
+          },
+          {
+            "lapNumber": 5,
+            "timeMs": 10150
+          },
+          {
+            "lapNumber": 6,
+            "timeMs": 10250
+          },
+          {
+            "lapNumber": 7,
+            "timeMs": 10250
+          }
+        ],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_laps_007"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_40f54b5c2d0820a5210fd82f"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000300000,
+          "submittedAtMs": 1760000301000
+        }
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_laps_007"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_laps_007",
+        "playerId": "player.synthetic_migrated_laps_007",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.465c5b2e3f429ff7c408bb6ff06767f2",
+      "candidateSha256": "d1a6cea159c2e144cb9a12fcffd1d267fdbae20c593afe6c6ac9461ee610ba68",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_1ea2812f31bd1bc8ed87b815",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 119000,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_unresolved_001"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_1b6ed3c5d564c6f050cd14c0"
+        },
+        "timestamps": {
+          "createdAtMs": 1760001100000,
+          "submittedAtMs": 1760001101000
+        }
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_unresolved_001"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_unresolved_001",
+        "playerId": "player.synthetic_migrated_unresolved_001",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.c4c575706e604eec122199f2fccc8fe2",
+      "candidateSha256": "bcf803244ae70d051f0ebc2822d15af6705c59c3323214ed355b0c008243eb8a",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_62332e57d54512215fd8836b",
+        "revision": 1,
+        "mode": 200,
+        "trackId": "track.tour_paris_promenade",
+        "totalTimeMs": 131250,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_android_001"
+        },
+        "source": {
+          "kind": "android_manual",
+          "localRecordId": "firebase_7ec002ccf46a193411658ebf",
+          "producerVersion": "synthetic-android-1.0"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000100000,
+          "submittedAtMs": 1760000101000
+        }
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_android_001"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_android_001",
+        "playerId": "player.synthetic_migrated_android_001",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.a9c9c0a5a66ecc114862fe8a288be9f6",
+      "candidateSha256": "39eaeab3d964fdb2921746cc96b944a372d72bcecc9078e6db55ac8b8d22700e",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_925a4639e0af0f583e9e13e5",
+        "revision": 2,
+        "mode": 200,
+        "trackId": "track.mario_circuit",
+        "totalTimeMs": 117500,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_revision_001"
+        },
+        "source": {
+          "kind": "android_manual",
+          "localRecordId": "firebase_8ef6370a30e9d13e2476b7ae"
+        },
+        "timestamps": {
+          "createdAtMs": 1760001400000,
+          "submittedAtMs": 1760001401000
+        }
+      },
+      "legacyVisible": false,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_revision_001"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_revision_001",
+        "playerId": "player.synthetic_migrated_revision_001",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.e6cc49ed1b1bba483f543433e1d17653",
+      "candidateSha256": "0bd365cd01c37ebe9485cd419341d553a232b131a06edaad819653d3eec2cd1f",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_940973c9039dc755493884e2",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 123000,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 41000,
+            "coinsCollected": 4,
+            "mushroomsUsed": 1
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 41000,
+            "coinsCollected": 3,
+            "mushroomsUsed": 1
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 41000,
+            "coinsCollected": 3,
+            "mushroomsUsed": 1
+          }
+        ],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_laps_003"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_17531fe4af0fa7d659c8ea94"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000200000,
+          "submittedAtMs": 1760000201000
+        },
+        "evidence": [
+          {
+            "kind": "video",
+            "reference": "migration-media://synthetic/three-lap.mp4"
+          }
+        ]
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_laps_003"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_laps_003",
+        "playerId": "player.synthetic_migrated_laps_003",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.5e92ad0c8609b221b44adf0acc1c7f16",
+      "candidateSha256": "9acbe630e9bc6a6289a275b4070de3b0610f5e319215da6c3687363756a7f308",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_c64cac66be9e4a1f3e92cfda",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.mario_circuit",
+        "totalTimeMs": 120000,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_no_loadout"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_d3f9bbb5a1229da90e5e479d"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000500000,
+          "submittedAtMs": 1760000501000
+        }
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_no_loadout"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_no_loadout",
+        "playerId": "player.synthetic_migrated_no_loadout",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.f1e49a35c32e4d70cfd760259cac73e1",
+      "candidateSha256": "0caef2554b67a4c899e3b7679d957f422aa774e4a67413919a71e7a8ad0313ae",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_c6d3f8548657510a40189e96",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 123456,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_web_001"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_a2fda9ec50e91110a04a6c45",
+          "producerVersion": "synthetic-web-1.0"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000000000,
+          "submittedAtMs": 1760000001000
+        },
+        "evidence": [
+          {
+            "kind": "screenshot",
+            "reference": "migration-media://synthetic/web-manual.png"
+          }
+        ]
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_web_001"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_web_001",
+        "playerId": "player.synthetic_migrated_web_001",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.c9524bccf8a7567ea50d4ec4abc7b137",
+      "candidateSha256": "5060e686b6ff79eeafbf8c0ec66911cbbd0c33bf1059a376a106e6b0642268da",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_cf0cbd5fbf2b6bb02df5723e",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.gcn_waluigi_stadium",
+        "totalTimeMs": 140000,
+        "laps": [],
+        "playerReference": {
+          "namespace": "player",
+          "value": "player.synthetic_migrated_variant_001"
+        },
+        "source": {
+          "kind": "android_manual",
+          "localRecordId": "firebase_7ae955c69624a90d67c0681a"
+        },
+        "timestamps": {
+          "createdAtMs": 1760000400000,
+          "submittedAtMs": 1760000401000
+        },
+        "loadout": {
+          "characterId": "character.birdo",
+          "characterVariantId": "character_variant.birdo.008_light_blue",
+          "bodyId": "body.landship",
+          "tireId": "tire.metal",
+          "gliderId": "glider.parachute"
+        },
+        "countryId": "country.ax"
+      },
+      "legacyVisible": true,
+      "recordKind": "reviewed_player",
+      "legacyOwner": {
+        "namespace": "legacy_firebase_user",
+        "value": "synthetic_firebase_uid_variant_001"
+      },
+      "resolution": {
+        "resolutionId": "migration_identity_resolution.synthetic_variant_001",
+        "playerId": "player.synthetic_migrated_variant_001",
+        "expectedPlayerRevision": 1,
+        "administratorGrantId": "administrator_grant.synthetic_migration_review",
+        "reasonCode": "synthetic_exact_match",
+        "reviewedAtMs": 1900000000000
+      }
+    },
+    {
+      "recordKey": "firebase_record.e11740612262f077f7cb87e2691bea06",
+      "candidateSha256": "28f9927c00712684f16343ed13fbd325c062e9bfa372912e34f29509f6731b57",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_f252fe74f8e0fb919392aab0",
+        "revision": 1,
+        "mode": 200,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 95000,
+        "laps": [],
+        "playerReference": {
+          "namespace": "unresolved_observation",
+          "value": "legacy_system.world_record"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_5ebc3eb18c26a09c403e7dcb"
+        },
+        "timestamps": {
+          "createdAtMs": 1760001300000,
+          "submittedAtMs": 1760001301000
+        },
+        "evidence": [
+          {
+            "kind": "video",
+            "reference": "migration-media://synthetic/world-record.mp4"
+          }
+        ]
+      },
+      "legacyVisible": true,
+      "recordKind": "system_reference",
+      "systemReference": {
+        "namespace": "unresolved_observation",
+        "value": "legacy_system.world_record"
+      }
+    },
+    {
+      "recordKey": "firebase_record.3474412dba534ceb2c8244decb75a46e",
+      "candidateSha256": "727517e18d9f4b298b62af2d83c6db98c5ca2df43cb427fac2c3fc2e61632cf4",
+      "candidate": {
+        "schemaVersion": "mk8dx.time-trial-submission.v1",
+        "submissionId": "user_submission.time.firebase_fdba1c79acd3a49483c6aef2",
+        "revision": 1,
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 118000,
+        "laps": [],
+        "playerReference": {
+          "namespace": "unresolved_observation",
+          "value": "legacy_system.nintendo_staff"
+        },
+        "source": {
+          "kind": "web_manual",
+          "localRecordId": "firebase_6b372d49fbecc042749f53aa"
+        },
+        "timestamps": {
+          "createdAtMs": 1760001200000,
+          "submittedAtMs": 1760001201000
+        }
+      },
+      "legacyVisible": true,
+      "recordKind": "system_reference",
+      "systemReference": {
+        "namespace": "unresolved_observation",
+        "value": "legacy_system.nintendo_staff"
+      }
+    }
+  ]
+}

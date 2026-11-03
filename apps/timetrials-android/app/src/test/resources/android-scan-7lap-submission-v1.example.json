@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.ANDROIDSCAN0002",
+  "revision": 1,
+  "mode": 200,
+  "trackId": "track.baby_park",
+  "totalTimeMs": 70128,
+  "laps": [
+    { "lapNumber": 1, "timeMs": 12584 },
+    { "lapNumber": 2, "timeMs": 10100 },
+    { "lapNumber": 3, "timeMs": 9875 },
+    { "lapNumber": 4, "timeMs": 9615 },
+    { "lapNumber": 5, "timeMs": 9812 },
+    { "lapNumber": 6, "timeMs": 9042 },
+    { "lapNumber": 7, "timeMs": 9100 }
+  ],
+  "playerReference": {
+    "namespace": "unresolved_observation",
+    "value": "synthetic-scan-player"
+  },
+  "source": {
+    "kind": "android_scan",
+    "captureLayout": "time_trial_result",
+    "producerVersion": "tt-scan-adapter-test",
+    "localRecordId": "synthetic-scan-7lap"
+  },
+  "timestamps": {
+    "capturedAtMs": 1786900100000,
+    "createdAtMs": 1786900160000
+  },
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "tt_scan_lap_sum_v1",
+    "lapSumMatches": true
+  }
+}

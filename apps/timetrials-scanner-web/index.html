@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8" />
+  <title>MK8DX TT Scanner</title>
+  <!-- Zoomen blijft toegestaan (ADR-0206, DESIGN_SYSTEM §21): het ghost-paneel is smalle tekst die
+       een lezer moet kunnen vergroten. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080C1C" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" href="%BASE_URL%icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="%BASE_URL%icons/icon-192.png" />
+  <!-- De scannersubset van de ene tokenbron, vóór het blad dat hem gebruikt (ADR-0207). -->
+  <link rel="stylesheet" href="/src/app/ds-tokens.generated.css" />
+  <link rel="stylesheet" href="/src/app/app.css" />
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/app/main.ts"></script>
+</body>
+</html>

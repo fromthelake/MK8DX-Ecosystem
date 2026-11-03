@@ -1,0 +1,12 @@
+{
+  "name": "@mk8dx/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Canonical platform-independent design tokens (ADR-0207) and their platform adapters. No runtime dependencies.",
+  "scripts": {
+    "generate": "node generate.mjs",
+    "check": "node generate.mjs --check",
+    "test": "node --test test/contrast.test.mjs"
+  }
+}

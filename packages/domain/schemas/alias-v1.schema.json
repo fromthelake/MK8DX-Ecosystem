@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/alias-v1.schema.json",
+  "title": "AliasV1",
+  "description": "A reviewed, provenance-bearing alternate text associated with one Player. Alias equality is never identity proof.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "aliasId",
+    "revision",
+    "playerId",
+    "aliasText",
+    "aliasType",
+    "visibility",
+    "recordStatus",
+    "provenance",
+    "review",
+    "createdAtMs",
+    "updatedAtMs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "mk8dx.alias.v1" },
+    "aliasId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/aliasId"
+    },
+    "revision": { "type": "integer", "minimum": 1 },
+    "playerId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerId"
+    },
+    "aliasText": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "aliasType": {
+      "enum": ["declared", "legacy_handle", "tournament_name", "ocr_observation", "other_observation"]
+    },
+    "visibility": { "enum": ["public", "restricted"] },
+    "recordStatus": { "enum": ["active", "retired"] },
+    "provenance": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/provenance" }
+    },
+    "review": { "$ref": "#/$defs/review" },
+    "createdAtMs": { "type": "integer", "minimum": 0 },
+    "updatedAtMs": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceType", "sourceReference", "observedAtMs"],
+      "properties": {
+        "sourceType": {
+          "enum": [
+            "player_declaration",
+            "tournament_manager",
+            "tournament_workbook",
+            "timetrial_firebase",
+            "ocr",
+            "administrator"
+          ]
+        },
+        "sourceReference": {
+          "type": "string",
+          "pattern": "^source\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+          "description": "Privacy-safe opaque source coordinate, not a raw legacy identifier."
+        },
+        "observedAtMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["reviewStatus", "reviewedByUserAccountId", "reviewedAtMs"],
+      "properties": {
+        "reviewStatus": { "const": "approved" },
+        "reviewedByUserAccountId": {
+          "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/userAccountId"
+        },
+        "reviewedAtMs": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

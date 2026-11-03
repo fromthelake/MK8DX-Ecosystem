@@ -1,0 +1,201 @@
+{
+  "schemaVersion": "mk8dx.tournament-engine-provenance.v1",
+  "classification": "internally-produced-source; original code MPL-2.0; third-party assets excluded",
+  "bundledRuntimeArtifacts": [],
+  "modules": [
+    {
+      "module": "__init__.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "0148b2b77a9083a949ae4f3849a6be268550502d49bd3e5fdec10e00f9df6936",
+      "targetNormalizedSha256": "0148b2b77a9083a949ae4f3849a6be268550502d49bd3e5fdec10e00f9df6936",
+      "migration": "exact"
+    },
+    {
+      "module": "app_runtime.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "c1812fc23a4ae0f91fada46a43297f56c32d8d3373c94af53a7b3908dd6611d2",
+      "targetNormalizedSha256": "2bfd49b42d6747f0ad8077024a27c6404aa89fdde70c0d4157bc5789dc486381",
+      "migration": "packaged-config-fallback-adapter",
+      "notes": "Use the packaged source example only when both runtime-local config files are absent; local/environment precedence and parsing unchanged."
+    },
+    {
+      "module": "console_logging.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "a92b4e3290611281ad0c2069e8fc44766a5b09eb165ebb256d636af88d4d847b",
+      "targetNormalizedSha256": "a92b4e3290611281ad0c2069e8fc44766a5b09eb165ebb256d636af88d4d847b",
+      "migration": "exact"
+    },
+    {
+      "module": "data_paths.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "5bbfe60f1df8a179117aac41242321d0fc11eeb9c85ff8c9e7b865c7f501af6d",
+      "targetNormalizedSha256": "1be5841a2ad8f6e2c0679e5b88a10561dff9d2c9e60007edcbc0a2f88b755ff3",
+      "migration": "runtime-path-adapter"
+    },
+    {
+      "module": "extract_common.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "b10f7a0aa09ce1a8bfdc89acaad74c8f7cd3b4e0d920b8371430c6006822fbb2",
+      "targetNormalizedSha256": "cae0be96bc83001abdde308bd64dea6b72f6d6abe5057f7d77eb0874b4c4d079",
+      "migration": "recorded-video-selection-adapter",
+      "notes": "Existing flat/nested race selector from commit 4e0462a; ignore-marked recording directories excluded in a523b38d; provenance hash caught up on 2026-10-29."
+    },
+    {
+      "module": "extract_frames.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "1433cc51c497de78543f88555011908912b08f8c2c9602b31015556f8e9a5a55",
+      "targetNormalizedSha256": "97c2035c110330f2e97751bbb6019ebfbe098c6210cfe9351be051bebe014ec9",
+      "migration": "orchestration-status-adapter",
+      "notes": "Only the settings display changed: overlap mode/consumers now reflect attached callbacks. Recognition and frame selection unchanged. Per-locale banner templates (roadmap LANGUAGES_15 A1): appends locale_templates.json entries after the eight fixed templates; without a manifest behaviour is unchanged."
+    },
+    {
+      "module": "extract_initial_scan.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "3197a9c40ed8be95a71d0bd9b04b9da88c1b4c42b5fee77da764d86abc081f70",
+      "targetNormalizedSha256": "e3be05919a6388865a94d6485122ce04fb407685a31e56ec80ac9f52165fa749",
+      "migration": "validated-temporal-track-association",
+      "notes": "Per-locale banner templates (roadmap LANGUAGES_15 A1): appends locale_templates.json entries after the eight fixed templates; without a manifest behaviour is unchanged."
+    },
+    {
+      "module": "extract_score_screen_selection.py",
+      "selectedOrigin": "live-processor",
+      "sourceNormalizedSha256": "1b0ef97a35e1486e66025c9ba40ac37e8d083ed14f9dbee0a72dda6a08d407bf",
+      "targetNormalizedSha256": "6b58399f8cf1a67c550ac401fc890e2f1f5fd09974260140a6b31133ac3987ba",
+      "migration": "locale-template-adapter",
+      "notes": "Per-locale banner templates (roadmap LANGUAGES_15 A1): appends locale_templates.json entries after the eight fixed templates; without a manifest behaviour is unchanged."
+    },
+    {
+      "module": "extract_text.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "fa0ca4468a29623899298be77074513aaa88fc44f3c30c66969477d220ab0e3c",
+      "targetNormalizedSha256": "8d8af6b34c3169848ebf765e8c8c96fde3d782b5b59132628e0120adccd377bb",
+      "migration": "recorded-video-selection-adapter",
+      "notes": "Existing flat/nested race selector from commit 4e0462a; recognition unchanged. Track names and OCR script per game locale (roadmap LANGUAGES_15 A2, track_names.py); auto keeps English and Dutch."
+    },
+    {
+      "module": "extract_video_io.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "f4bb6c5e8c382f456a5663d2ed676dff80eafb9465478e6274d8cd6dddd8df64",
+      "targetNormalizedSha256": "f4bb6c5e8c382f456a5663d2ed676dff80eafb9465478e6274d8cd6dddd8df64",
+      "migration": "exact"
+    },
+    {
+      "module": "game_catalog.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "d5b669777be21146a3db480b932d5b1f7a8b23583ba5a2c02a86a3da8eaabf48",
+      "targetNormalizedSha256": "d5b669777be21146a3db480b932d5b1f7a8b23583ba5a2c02a86a3da8eaabf48",
+      "migration": "exact"
+    },
+    {
+      "module": "low_res_identity.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "6d4aae0d293249912c2c9bac2e44e8423a9e2ffdd8364e40ea4d79a4a046f9d8",
+      "targetNormalizedSha256": "6d4aae0d293249912c2c9bac2e44e8423a9e2ffdd8364e40ea4d79a4a046f9d8",
+      "migration": "exact"
+    },
+    {
+      "module": "name_unicode.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "176615987bff0f4d0f2ec1c11bcb25c00bdbffa2d629bd366d4875fad5b63804",
+      "targetNormalizedSha256": "10053069df5344f0f1062a468a174e3b4025fe9365ae103695be33baf3fc4e79",
+      "migration": "runtime-path-adapter",
+      "notes": "Existing private data path adapter from commit 170000a; recorded target hash corrected, implementation unchanged."
+    },
+    {
+      "module": "ocr_common.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "2bbf46efde99151e5e1fd081e8f57d2e976713ee8a917444dd4b86787130ad33",
+      "targetNormalizedSha256": "2bbf46efde99151e5e1fd081e8f57d2e976713ee8a917444dd4b86787130ad33",
+      "migration": "exact"
+    },
+    {
+      "module": "ocr_export.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "f0ab2c48fce2e78a917ef0a26ba27ba033032155baa5ed77e9b83c465ca9e73f",
+      "targetNormalizedSha256": "f0ab2c48fce2e78a917ef0a26ba27ba033032155baa5ed77e9b83c465ca9e73f",
+      "migration": "exact"
+    },
+    {
+      "module": "ocr_name_matching.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "a717d65edc0c1a6a39d4abb51a92ee18c2543cd0c61173f27dc789e4e1bcae94",
+      "targetNormalizedSha256": "a717d65edc0c1a6a39d4abb51a92ee18c2543cd0c61173f27dc789e4e1bcae94",
+      "migration": "exact"
+    },
+    {
+      "module": "ocr_scoreboard_consensus.py",
+      "selectedOrigin": "live-validated-baseline",
+      "sourceNormalizedSha256": "fbf1929ba325e0fb2167a7ea2307bdda8149fe33c13305e3d834c3c4ca22cffb",
+      "targetNormalizedSha256": "2fbe41c4854cccd151210b7890f2d8cbfe7ddab9d11d660b39a729a7c51ea053",
+      "migration": "central-decision-adapter",
+      "notes": "Score digits and the per-field frame vote decided by the central packages/icon-matcher modules (segment_digits score profile, sequence_decision.field_vote; 2026-10-30)."
+    },
+    {
+      "module": "ocr_scoring_policy.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "7bb62f6d4266b090e50cfdffdc1fd7adffab32a04cb83c81513281da78eb491d",
+      "targetNormalizedSha256": "7bb62f6d4266b090e50cfdffdc1fd7adffab32a04cb83c81513281da78eb491d",
+      "migration": "exact"
+    },
+    {
+      "module": "ocr_session_validation.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "fc37059ee40692e9c0211bdf9127129d576169d4c6a39926c72ac5dd31c3d12c",
+      "targetNormalizedSha256": "fc37059ee40692e9c0211bdf9127129d576169d4c6a39926c72ac5dd31c3d12c",
+      "migration": "exact"
+    },
+    {
+      "module": "project_paths.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "c1a47b0412cccac194d90f810b27285e0524fc04700b126ee64f558594de694d",
+      "targetNormalizedSha256": "7150ecc6f4e12f394f900f7809e1feeb9e2425527980e02c4f1b1b0661f58ce7",
+      "migration": "runtime-path-adapter"
+    },
+    {
+      "module": "score_layouts.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "d3f37260a0d78e926a9ec92789f32311437398fc57cf40faf03cac082e85a40f",
+      "targetNormalizedSha256": "965649a6d3f4aae9f68c0a938fed1b09c4edb5b18d20a1ffaf51827525b4c9f7",
+      "migration": "central-geometry-adapter",
+      "notes": "Score-screen geometry loaded from the central scoreboard frames (packages/icon-matcher frame_geometry.scoreboard_frames, 2026-10-31); the values are the original ones (tests/tournament/test_scoreboard_frames.py)."
+    },
+    {
+      "module": "track_metadata.py",
+      "selectedOrigin": "recorded-video-extractor",
+      "sourceNormalizedSha256": "f43c4343dab048c02e3e8c6ef3a6678c82bdea7e78449844b71304ad9679681e",
+      "targetNormalizedSha256": "f43c4343dab048c02e3e8c6ef3a6678c82bdea7e78449844b71304ad9679681e",
+      "migration": "exact"
+    }
+  ],
+  "orchestration": {
+    "source": "_source_snapshots/tournament-video-extractor-original/mk8dx_video_result_extractor/main.py",
+    "sourceCommit": "beb14ff",
+    "sourceNormalizedSha256": "ed3fe8511b7fde19c96b17ff5d1d567c5fdf0d298ef70d4be9efbe9ff12c5d50",
+    "sourceFunctions": [
+      "_run_all_with_video_overlap",
+      "_overlap_ocr_race_process_worker",
+      "_overlap_ocr_process_worker",
+      "run_all"
+    ],
+    "target": "python/src/mk8dx_tournament_extraction/orchestration.py",
+    "targetNormalizedSha256": "e270efa3b8e01fe602bae1019582a147c4e7480ddbf7153fa96116bb02a01671",
+    "migration": "source-worker-orchestration-port",
+    "notes": "Retains spawn, three queues, race/video jobs, latest-revision barrier, per-video finalization, single-consumer frame cache and serial fallback. GUI formatting replaced by product progress/JSONL trace; lost worker exits and failed finalizers are supervised, all workers cleaned up before return."
+  },
+  "torchSetup": {
+    "selectedOrigin": "recorded-video-extractor",
+    "source": "mk8dx_video_result_extractor/setup_torch.py",
+    "sourceNormalizedSha256": "54e5d4395e80e68910118a9fbf5e0df8c545e48e09c5060e57ef39e18297ff70",
+    "target": "python/src/mk8dx_tournament_extraction/setup_torch.py",
+    "targetNormalizedSha256": "87cfbafa20a2bbbc22a65ded6cdfd5fd275e7fb56b3d5c09f8f16e718bb7ce74",
+    "migration": "standalone-install-entrypoint-adapter"
+  },
+  "defaultConfiguration": {
+    "selectedOrigin": "recorded-video-extractor",
+    "source": "config/app_config.example.json",
+    "sourceNormalizedSha256": "f0f1fae6917c5d93bf0f789b8bf06920a130fc19ed810d7d26143d658fadc763",
+    "target": "python/src/mk8dx_tournament_extraction/config/app_config.example.json",
+    "targetNormalizedSha256": "f0f1fae6917c5d93bf0f789b8bf06920a130fc19ed810d7d26143d658fadc763",
+    "migration": "exact"
+  }
+}

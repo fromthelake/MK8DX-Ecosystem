@@ -1,0 +1,4175 @@
+import difflib
+import json
+import logging
+import os
+import re
+import time
+import threading
+import heapq
+import unicodedata
+from collections import Counter, defaultdict
+from functools import lru_cache
+from pathlib import Path
+from typing import Dict, List, Tuple, Union
+
+import cv2
+import numpy as np
+import pandas as pd
+from PIL import Image, ImageDraw
+
+try:
+    import easyocr
+except Exception:
+    easyocr = None
+
+try:
+    import torch
+except Exception:
+    torch = None
+
+from .app_runtime import easyocr_gpu_enabled as runtime_easyocr_gpu_enabled, load_app_config
+from .data_paths import resolve_asset_file, resolve_game_catalog_file
+from .extract_common import EXPORT_IMAGE_FORMAT
+from .game_catalog import load_game_catalog
+from .name_unicode import (
+    allowed_name_char_ratio,
+    collapse_name_whitespace,
+    distinct_visible_name_count,
+    normalize_name_key,
+    unknown_name_chars,
+    visible_name_length,
+)
+from .score_layouts import DEFAULT_SCORE_LAYOUT_ID, get_score_layout
+from .project_paths import PROJECT_ROOT
+
+APP_CONFIG = load_app_config()
+LOGGER = logging.getLogger(__name__)
+_DIGIT_EASYOCR_READER = None
+_DIGIT_EASYOCR_LOCK = threading.Lock()
+PLAYER_NAME_COORDS = get_score_layout(DEFAULT_SCORE_LAYOUT_ID).player_name_coords
+BASE_POSITION_STRIP_ROI = get_score_layout(DEFAULT_SCORE_LAYOUT_ID).base_position_strip_roi
+POSITION_STRIP_OFFSET_X = -2
+POSITION_STRIP_OFFSET_Y = -2
+POSITION_STRIP_PADDING_X = 2
+POSITION_STRIP_PADDING_Y = 2
+POSITION_ROW_PADDING_X = 1
+POSITION_ROW_PADDING_TOP = 1
+POSITION_ROW_PADDING_BOTTOM = 4
+POSITION_FALSE_NEGATIVE_WEIGHT = 2.0
+POSITION_PRESENT_COEFF_THRESHOLD = float(os.environ.get("MK8_POSITION_PRESENT_COEFF_THRESHOLD", "0.50"))
+POSITION_PRESENT_ROW1_COEFF_THRESHOLD = float(os.environ.get("MK8_POSITION_PRESENT_ROW1_COEFF_THRESHOLD", "0.30"))
+LOW_RES_POSITION_PRESENT_COEFF_THRESHOLD = float(os.environ.get("MK8_LOW_RES_POSITION_PRESENT_COEFF_THRESHOLD", "0.35"))
+LOW_RES_POSITION_PRESENT_ROW1_COEFF_THRESHOLD = float(os.environ.get("MK8_LOW_RES_POSITION_PRESENT_ROW1_COEFF_THRESHOLD", "0.35"))
+POSITION_TEMPLATE_BEAM_WIDTH = max(1, int(os.environ.get("MK8_POSITION_TEMPLATE_BEAM_WIDTH", "3")))
+POSITION_TEMPLATE_TILE_WIDTH = 52
+POSITION_TEMPLATE_TILE_HEIGHT = 52
+POSITION_TEMPLATE_TILE_X_OFFSET = -2
+POSITION_TEMPLATE_TILE_Y_OFFSET = -11
+CHARACTER_ROI_LEFT = get_score_layout(DEFAULT_SCORE_LAYOUT_ID).character_roi_left
+CHARACTER_TEMPLATE_SIZE = 48
+CHARACTER_ROW_START = 49
+CHARACTER_ROW_STEP = 52
+CHARACTER_ROW_PADDING_TOP = 2
+CHARACTER_ROW_PADDING_BOTTOM = 2
+EXCLUDED_CHARACTER_TEMPLATE_INDICES = {79, 80, 81}
+MII_CHARACTER_NAME = "Mii"
+MII_CHARACTER_INDEX = 80
+MII_OPEN_SET_MAX_TOP2_MARGIN = 1.0
+MII_OPEN_SET_MAX_TOP5_SPREAD = 3.5
+MII_OPEN_SET_MIN_TOP5_FAMILY_COUNT = 4
+MII_PRIOR_MIN_SAMPLES = 3
+MII_PRIOR_EARLY_MIN_SAMPLES = 2
+MII_PRIOR_MAX_CANDIDATES = 8
+MII_PRIOR_OVERRIDE_MIN_CONFIDENCE = 92.0
+MII_PRIOR_OVERRIDE_MIN_MARGIN = 10.0
+MII_PRIOR_OVERRIDE_RISKY_MIN_CONFIDENCE = 96.0
+MII_PRIOR_OVERRIDE_RISKY_MIN_MARGIN = 12.0
+CHARACTER_ALIGNMENT_CANDIDATE_OFFSETS = (
+    (2, 1),
+    (1, 1),
+    (3, 1),
+    (3, 2),
+    (2, 2),
+    (2, 0),
+    (2, 3),
+    (3, 3),
+    (1, 0),
+)
+CHARACTER_FULL_SEARCH_PREFILTER_LIMIT = 8
+CHARACTER_FULL_SEARCH_PREFILTER_LIMIT_RISKY_FAMILY = 6
+OBSERVATION_STAGE_STATS = defaultdict(lambda: {"calls": 0, "seconds": 0.0})
+CALL_MATRIX_STATS = defaultdict(lambda: {"calls": 0, "seconds": 0.0})
+CHARACTER_SHORTLIST_BY_VIDEO = defaultdict(dict)
+CHARACTER_SHORTLIST_LOCK = threading.Lock()
+CHARACTER_PRIOR_TRACE_LOCK = threading.Lock()
+CHARACTER_SHORTLIST_STATS = defaultdict(int)
+PLAYER_CHARACTER_PRIORS = defaultdict(dict)
+CHARACTER_SHORTLIST_MIN_CONFIDENCE = 50.0
+CHARACTER_SHORTLIST_MIN_MARGIN = 5.0
+CHARACTER_PRIOR_CONFIRM_MIN_CONFIDENCE = 50.0
+CHARACTER_PRIOR_STABLE_MIN_SEEN = 2
+CHARACTER_PRIOR_MAX_FAST_ACCEPTS = 6
+CHARACTER_SHORTLIST_ACCELERATION_ENABLED = os.environ.get("MK8_CHARACTER_SHORTLIST_ACCELERATION", "1").strip().lower() not in {"0", "false", "no", "off"}
+LOW_RES_ROW12_CHARACTER_FALLBACK_MIN_CONFIDENCE = APP_CONFIG.low_res_row12_character_fallback_min_confidence
+LOW_RES_ROW12_CHARACTER_FALLBACK_MIN_POSITION_SCORE = APP_CONFIG.low_res_row12_character_fallback_min_position_score
+ULTRA_LOW_RES_ROW_LEFT = CHARACTER_ROI_LEFT
+ULTRA_LOW_RES_ROW_RIGHT = PLAYER_NAME_COORDS[0][1][0]
+ULTRA_LOW_RES_ROW_MIN_STDDEV = APP_CONFIG.ultra_low_res_row_min_stddev
+ULTRA_LOW_RES_ROW_MIN_EDGE_DENSITY = APP_CONFIG.ultra_low_res_row_min_edge_density
+TOTAL_SCORE_RACE_POINTS_ENABLED = os.environ.get("MK8_TOTAL_SCORE_RACE_POINTS_ENABLED", "0").lower() not in {"0", "false", "no"}
+DIGIT_OCR_FALLBACK_ENABLED = os.environ.get("MK8_DIGIT_OCR_FALLBACK_ENABLED", "0").lower() not in {"0", "false", "no"}
+
+
+def easyocr_gpu_enabled() -> bool:
+    runtime_config = load_app_config()
+    return runtime_easyocr_gpu_enabled(runtime_config)
+
+
+def record_observation_stage(label: str, duration_s: float) -> None:
+    stats = OBSERVATION_STAGE_STATS[label]
+    stats["calls"] += 1
+    stats["seconds"] += duration_s
+
+
+def observation_stage_summary_lines() -> List[str]:
+    if not OBSERVATION_STAGE_STATS:
+        return []
+    total_seconds = sum(item["seconds"] for item in OBSERVATION_STAGE_STATS.values())
+    rows = []
+    for label, item in sorted(OBSERVATION_STAGE_STATS.items(), key=lambda pair: pair[1]["seconds"], reverse=True):
+        avg_ms = (item["seconds"] / max(1, item["calls"])) * 1000.0
+        rows.append((str(label), f"{int(item['calls']):>5}", f"{item['seconds']:>10.2f}", f"{avg_ms:>9.1f}"))
+    headers = ("Stage", "Calls", "Total (s)", "Avg (ms)")
+    widths = [len(header) for header in headers]
+    for row in rows:
+        for index, value in enumerate(row):
+            widths[index] = max(widths[index], len(value))
+    lines = [
+        f"Observation stage profile (cumulative across all observations): {total_seconds:.2f}s",
+        "  "
+        + "  ".join(
+            header.ljust(widths[index]) if index == 0 else header.rjust(widths[index])
+            for index, header in enumerate(headers)
+        ),
+        "  "
+        + "  ".join(
+            ("-" * widths[index]).ljust(widths[index]) if index == 0 else ("-" * widths[index]).rjust(widths[index])
+            for index in range(len(headers))
+        ),
+    ]
+    for row in rows:
+        lines.append(
+            "  "
+            + "  ".join(
+                row[index].ljust(widths[index]) if index == 0 else row[index].rjust(widths[index])
+                for index in range(len(headers))
+            )
+        )
+    return lines
+
+
+def reset_observation_stage_stats() -> None:
+    OBSERVATION_STAGE_STATS.clear()
+
+
+def record_call_matrix(bundle_kind: str, field_name: str, method_name: str, duration_s: float) -> None:
+    stats = CALL_MATRIX_STATS[(str(bundle_kind), str(field_name), str(method_name))]
+    stats["calls"] += 1
+    stats["seconds"] += float(duration_s)
+
+
+def reset_call_matrix_stats() -> None:
+    CALL_MATRIX_STATS.clear()
+
+
+def call_matrix_summary_lines(colorize=None) -> List[str]:
+    if not CALL_MATRIX_STATS:
+        return []
+
+    entries = []
+    for (bundle_kind, field_name, method_name), item in CALL_MATRIX_STATS.items():
+        calls = int(item["calls"])
+        seconds = float(item["seconds"])
+        avg_ms = (seconds / max(1, calls)) * 1000.0
+        entries.append(
+            {
+                "bundle": bundle_kind,
+                "field": field_name,
+                "method": method_name,
+                "calls": calls,
+                "seconds": seconds,
+                "avg_ms": avg_ms,
+            }
+        )
+
+    ranked_entries = sorted(entries, key=lambda item: item["seconds"], reverse=True)
+    highlight_colors: dict[tuple[str, str, str], str] = {}
+    if ranked_entries:
+        highlight_colors[(ranked_entries[0]["bundle"], ranked_entries[0]["field"], ranked_entries[0]["method"])] = "red"
+    if len(ranked_entries) > 1:
+        highlight_colors[(ranked_entries[1]["bundle"], ranked_entries[1]["field"], ranked_entries[1]["method"])] = "yellow"
+
+    lines = ["OCR Call Matrix"]
+    bundle_width = max(len("Bundle"), max(len(str(entry["bundle"])) for entry in entries))
+    field_width = max(len("Field"), max(len(str(entry["field"])) for entry in entries))
+    method_width = max(len("Method"), max(len(str(entry["method"])) for entry in entries))
+    detail_header = (
+        f"{'Bundle':<{bundle_width}}  {'Field':<{field_width}}  {'Method':<{method_width}}  "
+        f"{'Calls':>5}  {'Total (s)':>10}  {'Avg (ms)':>9}"
+    )
+    detail_divider = (
+        f"{'-' * bundle_width}  {'-' * field_width}  {'-' * method_width}  "
+        f"{'-' * 5}  {'-' * 10}  {'-' * 9}"
+    )
+    lines.append(detail_header)
+    lines.append(detail_divider)
+    bundle_order = {"2RaceScore": 0, "3TotalScore": 1}
+    for entry in sorted(
+        entries,
+        key=lambda item: (bundle_order.get(str(item["bundle"]), 99), str(item["bundle"]), -float(item["seconds"]), str(item["field"]), str(item["method"])),
+    ):
+        row = (
+            f"{entry['bundle']:<{bundle_width}}  {entry['field']:<{field_width}}  {entry['method']:<{method_width}}  "
+            f"{entry['calls']:>5d}  {entry['seconds']:>10.2f}  {entry['avg_ms']:>9.1f}"
+        )
+        row_color = highlight_colors.get((entry["bundle"], entry["field"], entry["method"]))
+        lines.append(colorize(row, row_color) if colorize and row_color else row)
+    lines.append("")
+
+    field_totals = defaultdict(lambda: {"calls": 0, "seconds": 0.0})
+    for entry in entries:
+        field_totals[entry["field"]]["calls"] += entry["calls"]
+        field_totals[entry["field"]]["seconds"] += entry["seconds"]
+    lines.append("Totals By Field")
+    summary_field_width = max(len("Field"), max(len(str(field_name)) for field_name in field_totals))
+    summary_header = f"{'Field':<{summary_field_width}}  {'Calls':>5}  {'Total (s)':>10}  {'Avg (ms)':>9}"
+    summary_divider = f"{'-' * summary_field_width}  {'-' * 5}  {'-' * 10}  {'-' * 9}"
+    lines.append(summary_header)
+    lines.append(summary_divider)
+    for field_name, item in sorted(field_totals.items(), key=lambda pair: pair[1]["seconds"], reverse=True):
+        calls = int(item["calls"])
+        seconds = float(item["seconds"])
+        avg_ms = (seconds / max(1, calls)) * 1000.0
+        lines.append(f"{field_name:<{summary_field_width}}  {calls:>5d}  {seconds:>10.2f}  {avg_ms:>9.1f}")
+    lines.append("")
+
+    bundle_totals = defaultdict(lambda: {"calls": 0, "seconds": 0.0})
+    for entry in entries:
+        bundle_totals[entry["bundle"]]["calls"] += entry["calls"]
+        bundle_totals[entry["bundle"]]["seconds"] += entry["seconds"]
+    lines.append("Totals By Bundle")
+    bundle_summary_width = max(len("Bundle"), max(len(str(bundle_name)) for bundle_name in bundle_totals))
+    bundle_header = f"{'Bundle':<{bundle_summary_width}}  {'Calls':>5}  {'Total (s)':>10}  {'Avg (ms)':>9}"
+    bundle_divider = f"{'-' * bundle_summary_width}  {'-' * 5}  {'-' * 10}  {'-' * 9}"
+    lines.append(bundle_header)
+    lines.append(bundle_divider)
+    for bundle_name, item in sorted(bundle_totals.items(), key=lambda pair: (bundle_order.get(str(pair[0]), 99), str(pair[0]))):
+        calls = int(item["calls"])
+        seconds = float(item["seconds"])
+        avg_ms = (seconds / max(1, calls)) * 1000.0
+        lines.append(f"{bundle_name:<{bundle_summary_width}}  {calls:>5d}  {seconds:>10.2f}  {avg_ms:>9.1f}")
+    return lines
+
+
+def character_shortlist_summary_lines() -> List[str]:
+    if not CHARACTER_SHORTLIST_STATS:
+        return []
+    lines = [
+        "Character shortlist activity",
+        f"- prior rows accepted: {CHARACTER_SHORTLIST_STATS['prior_accepts']}",
+        f"- prior Mii-likely accepts: {CHARACTER_SHORTLIST_STATS['prior_mii_likely_accepts']}",
+        f"- shortlist rows accepted: {CHARACTER_SHORTLIST_STATS['shortlist_accepts']}",
+        f"- prior rows escalated to shortlist/full search: {CHARACTER_SHORTLIST_STATS['prior_fallbacks']}",
+        f"- shortlist rows escalated to full search: {CHARACTER_SHORTLIST_STATS['shortlist_fallbacks']}",
+        f"- full-search rows: {CHARACTER_SHORTLIST_STATS['full_search_rows']}",
+        f"- shortlist expansions: {CHARACTER_SHORTLIST_STATS['shortlist_expansions']}",
+    ]
+    reason_keys = sorted(
+        key for key in CHARACTER_SHORTLIST_STATS.keys()
+        if str(key).startswith("reason_") and int(CHARACTER_SHORTLIST_STATS[key]) > 0
+    )
+    for key in reason_keys:
+        lines.append(f"- {str(key).replace('reason_', '').replace('_', ' ')}: {CHARACTER_SHORTLIST_STATS[key]}")
+    return lines
+
+
+def reset_character_shortlist_state() -> None:
+    with CHARACTER_SHORTLIST_LOCK:
+        CHARACTER_SHORTLIST_BY_VIDEO.clear()
+        PLAYER_CHARACTER_PRIORS.clear()
+    CHARACTER_SHORTLIST_STATS.clear()
+
+
+def _eligible_character_shortlist_indices(
+    shortlist_state: Dict[int, int] | set[int] | None,
+    race_id_number: int | None,
+) -> set[int]:
+    if shortlist_state is None:
+        return set()
+    if isinstance(shortlist_state, set):
+        return {int(value) for value in shortlist_state}
+    if race_id_number is None:
+        return {int(value) for value in shortlist_state.keys()}
+    current_race = int(race_id_number)
+    return {
+        int(character_index)
+        for character_index, first_seen_race in shortlist_state.items()
+        if int(first_seen_race) < current_race
+    }
+
+
+def _eligible_player_character_priors(
+    prior_state_by_player: Dict[str, Dict[str, object]] | None,
+    race_id_number: int | None,
+) -> Dict[str, Dict[str, object]]:
+    if not prior_state_by_player:
+        return {}
+    if race_id_number is None:
+        return {str(key): dict(value) for key, value in prior_state_by_player.items()}
+    current_race = int(race_id_number)
+    eligible = {}
+    for player_key, prior_state in prior_state_by_player.items():
+        try:
+            last_race_id = int(prior_state.get("last_race_id", 0) or 0)
+        except (TypeError, ValueError):
+            last_race_id = 0
+        if last_race_id < current_race:
+            eligible[str(player_key)] = dict(prior_state)
+    return eligible
+
+
+def player_identity_key(name: str) -> str:
+    normalized = normalize_name_key(name)
+    if not normalized:
+        return ""
+    accent_folded = "".join(
+        ch for ch in unicodedata.normalize("NFKD", normalized)
+        if unicodedata.category(ch) != "Mn"
+    )
+    return "".join(ch for ch in accent_folded if ch.isalnum())
+
+
+def is_risky_character_family(character_name: str) -> bool:
+    normalized = str(character_name or "").lower()
+    return "yoshi" in normalized or "birdo" in normalized
+
+
+def character_margin_threshold(character_name: str) -> float:
+    return 3.5 if is_risky_character_family(character_name) else 3.0
+
+
+def character_confidence_threshold(character_name: str) -> float:
+    return 74.5 if is_risky_character_family(character_name) else CHARACTER_PRIOR_CONFIRM_MIN_CONFIDENCE
+
+
+
+
+def position_strip_roi(score_layout_id: str | None = None) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    """Return the adjusted position-strip ROI after applying the current offset and padding."""
+    (base_x1, base_y1), (base_x2, base_y2) = get_score_layout(score_layout_id).base_position_strip_roi
+    shifted_x1 = base_x1 + POSITION_STRIP_OFFSET_X
+    shifted_y1 = base_y1 + POSITION_STRIP_OFFSET_Y
+    shifted_x2 = base_x2 + POSITION_STRIP_OFFSET_X
+    shifted_y2 = base_y2 + POSITION_STRIP_OFFSET_Y
+    return (
+        (shifted_x1 - POSITION_STRIP_PADDING_X, shifted_y1 - POSITION_STRIP_PADDING_Y),
+        (shifted_x2 + POSITION_STRIP_PADDING_X, shifted_y2 + POSITION_STRIP_PADDING_Y),
+    )
+
+
+def character_row_roi(row_index: int, score_layout_id: str | None = None) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    row_top = CHARACTER_ROW_START + (row_index * CHARACTER_ROW_STEP)
+    character_roi_left = get_score_layout(score_layout_id).character_roi_left
+    return (
+        (character_roi_left, row_top - CHARACTER_ROW_PADDING_TOP),
+        (character_roi_left + CHARACTER_TEMPLATE_SIZE, row_top + CHARACTER_TEMPLATE_SIZE + CHARACTER_ROW_PADDING_BOTTOM),
+    )
+
+
+def ultra_low_res_combined_row_roi(row_index: int, score_layout_id: str | None = None) -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    player_name_coords = get_score_layout(score_layout_id).player_name_coords
+    (cx1, cy1), (_cx2, cy2) = character_row_roi(row_index, score_layout_id=score_layout_id)
+    (_nx1, ny1), (nx2, ny2) = player_name_coords[row_index]
+    return (
+        (int(get_score_layout(score_layout_id).character_roi_left), int(min(cy1, ny1))),
+        (int(max(player_name_coords[0][1][0], nx2)), int(max(cy2, ny2))),
+    )
+
+
+def normalize_binary_foreground(binary_image: np.ndarray) -> np.ndarray:
+    """Keep the foreground polarity consistent across OCR regions and template matching."""
+    black_pixels = int(np.count_nonzero(binary_image == 0))
+    white_pixels = int(np.count_nonzero(binary_image == 255))
+    if white_pixels > black_pixels:
+        return cv2.bitwise_not(binary_image)
+    return binary_image
+
+
+def position_template_tile_windows() -> List[Tuple[int, int]]:
+    """Return the 52 px row windows used by the black/white tile templates."""
+    return [
+        (
+            row_index * POSITION_TEMPLATE_TILE_HEIGHT,
+            (row_index + 1) * POSITION_TEMPLATE_TILE_HEIGHT,
+        )
+        for row_index in range(12)
+    ]
+
+def stack_position_rows(row_images: List[np.ndarray]) -> np.ndarray:
+    """Stack row crops into one compact vertical strip for cheap prefix gating."""
+    if not row_images:
+        return np.zeros((0, 0), dtype=np.uint8)
+    normalized_rows = []
+    target_height = max(row.shape[0] for row in row_images)
+    target_width = max(row.shape[1] for row in row_images)
+    for row_image in row_images:
+        row = row_image
+        if row.shape[0] != target_height or row.shape[1] != target_width:
+            row = cv2.copyMakeBorder(
+                row,
+                0,
+                max(0, target_height - row.shape[0]),
+                0,
+                max(0, target_width - row.shape[1]),
+                cv2.BORDER_CONSTANT,
+                value=0,
+            )
+        normalized_rows.append(row)
+    return np.vstack(normalized_rows)
+
+
+def extract_position_tile_match_crops(
+    processed_image: np.ndarray,
+    score_layout_id: str | None = None,
+    *,
+    max_rows: int | None = None,
+) -> List[np.ndarray]:
+    """Extract fixed 52x52 row tiles aligned to the black/white template set."""
+    layout = get_score_layout(score_layout_id)
+    (base_x1, base_y1), _ = layout.base_position_strip_roi
+    image_height, image_width = processed_image.shape[:2]
+    if len(processed_image.shape) == 3:
+        grayscale_image = cv2.cvtColor(processed_image, cv2.COLOR_BGR2GRAY)
+    else:
+        grayscale_image = processed_image
+
+    tile_x1 = int(base_x1) + int(POSITION_TEMPLATE_TILE_X_OFFSET)
+    tile_x2 = tile_x1 + int(POSITION_TEMPLATE_TILE_WIDTH)
+    row_windows = position_template_tile_windows()
+    if max_rows is not None:
+        row_windows = row_windows[:max(0, int(max_rows))]
+
+    row_crops = []
+    for row_start_offset, row_end_offset in row_windows:
+        row_start = int(base_y1) + int(POSITION_TEMPLATE_TILE_Y_OFFSET) + int(row_start_offset)
+        row_end = int(base_y1) + int(POSITION_TEMPLATE_TILE_Y_OFFSET) + int(row_end_offset)
+        crop_x1 = max(0, min(image_width, tile_x1))
+        crop_x2 = max(crop_x1, min(image_width, tile_x2))
+        crop_y1 = max(0, min(image_height, row_start))
+        crop_y2 = max(crop_y1, min(image_height, row_end))
+        row_crop = grayscale_image[crop_y1:crop_y2, crop_x1:crop_x2]
+        row_crops.append(row_crop)
+    return row_crops
+
+
+@lru_cache(maxsize=1)
+def load_position_row_template_tiles() -> Dict[str, List[Tuple[np.ndarray, np.ndarray | None]]]:
+    """Load the black/white per-row tile templates with alpha masks."""
+    templates_by_variant: Dict[str, List[Tuple[np.ndarray, np.ndarray | None]]] = {}
+    for variant_name in ("white", "black"):
+        template_path = resolve_asset_file("templates", f"Score_template_{variant_name}.png")
+        template_image = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+        if template_image is None:
+            raise FileNotFoundError(f"Position tile template image not found: {template_path}")
+        variant_tiles: List[Tuple[np.ndarray, np.ndarray | None]] = []
+        for row_index in range(12):
+            start_y = row_index * POSITION_TEMPLATE_TILE_HEIGHT
+            end_y = start_y + POSITION_TEMPLATE_TILE_HEIGHT
+            tile = template_image[start_y:end_y, :POSITION_TEMPLATE_TILE_WIDTH]
+            if tile.shape[0] != POSITION_TEMPLATE_TILE_HEIGHT or tile.shape[1] != POSITION_TEMPLATE_TILE_WIDTH:
+                raise ValueError(f"Unexpected position tile shape for {template_path.name} row {row_index + 1}: {tile.shape}")
+            if len(tile.shape) == 3 and tile.shape[2] == 4:
+                tile_gray = cv2.cvtColor(tile[:, :, :3], cv2.COLOR_BGR2GRAY)
+                _, alpha_mask = cv2.threshold(tile[:, :, 3], 0, 255, cv2.THRESH_BINARY)
+            elif len(tile.shape) == 3:
+                tile_gray = cv2.cvtColor(tile, cv2.COLOR_BGR2GRAY)
+                alpha_mask = None
+            else:
+                tile_gray = tile
+                alpha_mask = None
+            _, tile_binary = cv2.threshold(tile_gray, 180, 255, cv2.THRESH_BINARY)
+            variant_tiles.append((tile_binary, alpha_mask))
+        templates_by_variant[variant_name] = variant_tiles
+    return templates_by_variant
+
+
+@lru_cache(maxsize=1)
+def load_character_templates() -> List[Dict[str, object]]:
+    """Load full-color character icon templates from the catalog-backed asset folder."""
+    catalog = load_game_catalog()
+    _validate_character_catalog(catalog.characters)
+    templates = []
+    expected_count = 0
+    for character in catalog.characters:
+        if int(character.character_index) in EXCLUDED_CHARACTER_TEMPLATE_INDICES:
+            continue
+        expected_count += 1
+        template_path = resolve_asset_file("character", f"{character.character_index}.png")
+        if not template_path.exists():
+            raise FileNotFoundError(
+                f"Missing character template asset for index {character.character_index} "
+                f"({character.name_uk}): {template_path}"
+            )
+        template_image = cv2.imread(str(template_path), cv2.IMREAD_UNCHANGED)
+        if template_image is None:
+            raise RuntimeError(
+                f"Could not load character template asset for index {character.character_index} "
+                f"({character.name_uk}): {template_path}"
+            )
+        if len(template_image.shape) == 2:
+            template_image = cv2.cvtColor(template_image, cv2.COLOR_GRAY2BGRA)
+        elif template_image.shape[2] == 3:
+            alpha_channel = np.full(template_image.shape[:2], 255, dtype=np.uint8)
+            template_image = np.dstack((template_image, alpha_channel))
+        resized_template = cv2.resize(
+            template_image,
+            (CHARACTER_TEMPLATE_SIZE, CHARACTER_TEMPLATE_SIZE),
+            interpolation=cv2.INTER_LINEAR,
+        )
+        template_rgb = resized_template[:, :, :3]
+        template_alpha = resized_template[:, :, 3]
+        templates.append(
+            {
+                "character_index": int(character.character_index),
+                "roster_index": int(character.roster_index),
+                "character_name": str(character.name_uk),
+                "template_image": template_rgb,
+                "template_alpha": template_alpha,
+                "aligned_variants": _build_aligned_template_variants(template_rgb, template_alpha),
+            }
+        )
+    if len(templates) != expected_count:
+        raise RuntimeError(f"Loaded {len(templates)} character templates, expected {expected_count}")
+    LOGGER.debug(
+        "Loaded %d character templates from %s; first mappings: %s",
+        len(templates),
+        resolve_game_catalog_file(),
+        _format_character_mappings(templates),
+    )
+    return templates
+
+
+def _validate_character_catalog(characters) -> None:
+    indices = [int(character.character_index) for character in characters]
+    if len(indices) != len(set(indices)):
+        duplicates = sorted(index for index, count in Counter(indices).items() if count > 1)
+        raise RuntimeError(f"Duplicate character indices in game catalog: {duplicates}")
+    expected = list(range(0, len(indices)))
+    if sorted(indices) != expected:
+        raise RuntimeError(
+            "Game catalog character indices must be contiguous model/template indices "
+            f"0..{len(indices) - 1}; got {sorted(indices)[:12]}..."
+        )
+
+
+def _format_character_mappings(templates: List[Dict[str, object]], limit: int = 10) -> str:
+    return ", ".join(
+        f"{int(template['character_index'])}:{template['character_name']}"
+        for template in templates[:limit]
+    )
+
+
+def describe_character_catalog_runtime() -> Dict[str, object]:
+    catalog = load_game_catalog()
+    _validate_character_catalog(catalog.characters)
+    templates = load_character_templates()
+    return {
+        "catalog_path": str(resolve_game_catalog_file()),
+        "catalog_character_count": len(catalog.characters),
+        "loaded_template_count": len(templates),
+        "first_mappings": _format_character_mappings(templates),
+    }
+
+
+def shortlist_character_templates(templates: List[Dict[str, object]], allowed_indices: set[int]) -> List[Dict[str, object]]:
+    if not allowed_indices:
+        return templates
+    shortlisted = [template for template in templates if int(template["character_index"]) in allowed_indices]
+    return shortlisted or templates
+
+
+def _core_visible_mask(alpha: np.ndarray, *, iterations: int = 1) -> np.ndarray:
+    mask = np.asarray(alpha > 16, dtype=np.uint8)
+    if int(np.count_nonzero(mask)) <= 0:
+        return np.zeros_like(mask, dtype=bool)
+    kernel = np.ones((3, 3), dtype=np.uint8)
+    eroded = cv2.erode(mask, kernel, iterations=max(0, int(iterations)))
+    if int(np.count_nonzero(eroded)) <= 0:
+        eroded = mask
+    return np.asarray(eroded > 0, dtype=bool)
+
+
+def _translate_template_for_alignment(
+    image: np.ndarray,
+    alpha: np.ndarray,
+    *,
+    dx: int = 0,
+    dy: int = 0,
+) -> Tuple[np.ndarray, np.ndarray]:
+    height, width = alpha.shape[:2]
+    matrix = np.float32([[1.0, 0.0, float(dx)], [0.0, 1.0, float(dy)]])
+    shifted_image = cv2.warpAffine(
+        image,
+        matrix,
+        (width, height),
+        flags=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=(0, 0, 0),
+    )
+    shifted_alpha = cv2.warpAffine(
+        alpha,
+        matrix,
+        (width, height),
+        flags=cv2.INTER_LINEAR,
+        borderMode=cv2.BORDER_CONSTANT,
+        borderValue=0,
+    )
+    return shifted_image, shifted_alpha
+
+
+def _build_aligned_template_variants(
+    template_image: np.ndarray,
+    template_alpha: np.ndarray,
+) -> List[Dict[str, object]]:
+    variants = []
+    for offset_x, offset_y in CHARACTER_ALIGNMENT_CANDIDATE_OFFSETS:
+        shifted_image, shifted_alpha = _translate_template_for_alignment(
+            template_image,
+            template_alpha,
+            dx=offset_x,
+            dy=offset_y,
+        )
+        core_mask = _core_visible_mask(shifted_alpha)
+        if int(np.count_nonzero(core_mask)) > 0:
+            template_edges = cv2.Canny(cv2.cvtColor(shifted_image, cv2.COLOR_BGR2GRAY), 80, 160) > 0
+            template_edges &= core_mask
+        else:
+            template_edges = np.zeros_like(core_mask, dtype=bool)
+        variants.append(
+            {
+                "offset_x": int(offset_x),
+                "offset_y": int(offset_y),
+                "image": shifted_image,
+                "image_float": shifted_image.astype(np.float32),
+                "alpha": shifted_alpha,
+                "core_mask": core_mask,
+                "edges": template_edges,
+            }
+        )
+    return variants
+
+
+def _masked_cutout_color_score(
+    source_image: np.ndarray,
+    target_image: np.ndarray,
+    target_alpha: np.ndarray,
+    *,
+    source_rgb: np.ndarray | None = None,
+    target_rgb: np.ndarray | None = None,
+    target_mask: np.ndarray | None = None,
+) -> float:
+    target_mask = _core_visible_mask(target_alpha) if target_mask is None else np.asarray(target_mask, dtype=bool)
+    if int(np.count_nonzero(target_mask)) <= 0:
+        return 0.0
+    source_rgb = source_image.astype(np.float32) if source_rgb is None else np.asarray(source_rgb, dtype=np.float32)
+    target_rgb = target_image.astype(np.float32) if target_rgb is None else np.asarray(target_rgb, dtype=np.float32)
+    mean_abs_diff = float(np.mean(np.abs(source_rgb[target_mask] - target_rgb[target_mask])))
+    return max(0.0, 1.0 - (mean_abs_diff / 255.0))
+
+
+def _cutout_edge_agreement_score(
+    source_image: np.ndarray,
+    target_image: np.ndarray,
+    target_alpha: np.ndarray,
+    *,
+    source_edges: np.ndarray | None = None,
+    target_mask: np.ndarray | None = None,
+    target_edges: np.ndarray | None = None,
+) -> float:
+    target_mask = _core_visible_mask(target_alpha) if target_mask is None else np.asarray(target_mask, dtype=bool)
+    if int(np.count_nonzero(target_mask)) <= 0:
+        return 0.0
+    if source_edges is None:
+        source_edges = cv2.Canny(cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY), 80, 160) > 0
+    else:
+        source_edges = np.asarray(source_edges, dtype=bool)
+    if target_edges is None:
+        target_edges = cv2.Canny(cv2.cvtColor(target_image, cv2.COLOR_BGR2GRAY), 80, 160) > 0
+    else:
+        target_edges = np.asarray(target_edges, dtype=bool)
+    masked_source_edges = source_edges & target_mask
+    masked_target_edges = target_edges & target_mask
+    overlap = int(np.count_nonzero(masked_source_edges & masked_target_edges))
+    total = int(np.count_nonzero(masked_source_edges)) + int(np.count_nonzero(masked_target_edges))
+    if total <= 0:
+        return 0.0
+    return float((2.0 * overlap) / total)
+
+
+def aligned_character_match_score(
+    source_image: np.ndarray,
+    template_image: np.ndarray,
+    template_alpha: np.ndarray,
+    *,
+    aligned_variants: List[Dict[str, object]] | None = None,
+    source_edges: np.ndarray | None = None,
+    source_rgb: np.ndarray | None = None,
+) -> Dict[str, float]:
+    """Match a roster template using alpha-cutout comparison at calibrated offsets."""
+    source_height, source_width = source_image.shape[:2]
+    template_height, template_width = template_image.shape[:2]
+    if source_height < template_height or source_width < template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+        source_height, source_width = source_image.shape[:2]
+
+    if source_height != template_height or source_width != template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+        source_edges = None
+        source_rgb = None
+    elif source_edges is not None and np.asarray(source_edges).shape[:2] != source_image.shape[:2]:
+        source_edges = None
+    if source_rgb is not None and np.asarray(source_rgb).shape[:2] != source_image.shape[:2]:
+        source_rgb = None
+    best_blend = -1.0
+    best_color = 0.0
+    best_edge = 0.0
+    best_offset_x = 0
+    best_offset_y = 0
+    variants = aligned_variants or _build_aligned_template_variants(template_image, template_alpha)
+    for variant in variants:
+        shifted_template = variant["image"]
+        shifted_alpha = variant["alpha"]
+        target_mask = variant["core_mask"]
+        target_edges = variant["edges"]
+        color_score = _masked_cutout_color_score(
+            source_image,
+            shifted_template,
+            shifted_alpha,
+            source_rgb=source_rgb,
+            target_rgb=variant.get("image_float"),
+            target_mask=target_mask,
+        )
+        edge_score = _cutout_edge_agreement_score(
+            source_image,
+            shifted_template,
+            shifted_alpha,
+            source_edges=source_edges,
+            target_mask=target_mask,
+            target_edges=target_edges,
+        )
+        blend_score = (0.20 * color_score) + (0.80 * edge_score)
+        if blend_score > best_blend:
+            best_blend = float(blend_score)
+            best_color = float(color_score)
+            best_edge = float(edge_score)
+            best_offset_x = int(variant["offset_x"])
+            best_offset_y = int(variant["offset_y"])
+    return {
+        "score": max(0.0, float(best_blend)),
+        "color_score": max(0.0, float(best_color)),
+        "edge_score": max(0.0, float(best_edge)),
+        "offset_x": int(best_offset_x),
+        "offset_y": int(best_offset_y),
+    }
+
+
+def _prepare_character_source_features(
+    row_roi: np.ndarray,
+    template_shape: Tuple[int, int],
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    template_height, template_width = template_shape
+    source_image = row_roi
+    if row_roi.shape[0] < template_height or row_roi.shape[1] < template_width:
+        source_image = cv2.resize(row_roi, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+    elif row_roi.shape[0] != template_height or row_roi.shape[1] != template_width:
+        source_image = cv2.resize(row_roi, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+    source_edges = cv2.Canny(cv2.cvtColor(source_image, cv2.COLOR_BGR2GRAY), 80, 160) > 0
+    source_rgb = source_image.astype(np.float32)
+    return source_image, source_edges, source_rgb
+
+
+def best_character_matches(
+    row_roi: np.ndarray,
+    templates: List[Dict[str, object]],
+    limit: int = 2,
+    *,
+    prepared_source_image: np.ndarray | None = None,
+    prepared_source_edges: np.ndarray | None = None,
+    prepared_source_rgb: np.ndarray | None = None,
+) -> List[Dict[str, object]]:
+    if limit <= 0:
+        return []
+    top_matches: List[Tuple[float, int, Tuple[object, ...]]] = []
+    sequence = 0
+    source_image = row_roi if prepared_source_image is None else prepared_source_image
+    source_edges = prepared_source_edges
+    source_rgb = prepared_source_rgb
+    if templates and (prepared_source_image is None or prepared_source_edges is None or prepared_source_rgb is None):
+        source_image, source_edges, source_rgb = _prepare_character_source_features(
+            row_roi,
+            templates[0]["template_image"].shape[:2],
+        )
+    for template in templates:
+        match_result = aligned_character_match_score(
+            source_image,
+            template["template_image"],
+            template["template_alpha"],
+            aligned_variants=template.get("aligned_variants")
+            or _build_aligned_template_variants(template["template_image"], template["template_alpha"]),
+            source_edges=source_edges,
+            source_rgb=source_rgb,
+        )
+        confidence = round(float(match_result["score"]) * 100.0, 1)
+        entry_payload = (
+            template["character_name"],
+            template["character_index"],
+            template["roster_index"],
+            confidence,
+            round(float(match_result.get("color_score", 0.0)) * 100.0, 1),
+            round(float(match_result.get("edge_score", 0.0)) * 100.0, 1),
+            int(match_result.get("offset_x", 0)),
+            int(match_result.get("offset_y", 0)),
+        )
+        entry = (float(confidence), -sequence, entry_payload)
+        sequence += 1
+        if len(top_matches) < limit:
+            heapq.heappush(top_matches, entry)
+        elif entry > top_matches[0]:
+            heapq.heapreplace(top_matches, entry)
+    top_matches.sort(reverse=True)
+    return [
+        {
+            "Character": payload[0],
+            "CharacterIndex": payload[1],
+            "CharacterRosterIndex": payload[2],
+            "CharacterMatchConfidence": payload[3],
+            "CharacterMatchMethod": "aligned_alpha_cutout_template_local_search",
+            "CharacterMatchColorConfidence": payload[4],
+            "CharacterMatchEdgeConfidence": payload[5],
+            "CharacterMatchOffsetX": payload[6],
+            "CharacterMatchOffsetY": payload[7],
+        }
+        for _score, _neg_sequence, payload in top_matches
+    ]
+
+
+def prefilter_character_templates(
+    row_roi: np.ndarray,
+    templates: List[Dict[str, object]],
+    limit: int,
+    *,
+    prepared_source_image: np.ndarray | None = None,
+    prepared_source_edges: np.ndarray | None = None,
+    prepared_source_rgb: np.ndarray | None = None,
+) -> Tuple[List[Dict[str, object]], np.ndarray, np.ndarray, np.ndarray]:
+    if limit <= 0 or len(templates) <= limit:
+        if prepared_source_image is None or prepared_source_edges is None or prepared_source_rgb is None:
+            source_image, source_edges, source_rgb = _prepare_character_source_features(
+                row_roi,
+                templates[0]["template_image"].shape[:2],
+            )
+        else:
+            source_image, source_edges, source_rgb = prepared_source_image, prepared_source_edges, prepared_source_rgb
+        return templates, source_image, source_edges, source_rgb
+    if prepared_source_image is None or prepared_source_edges is None or prepared_source_rgb is None:
+        source_image, source_edges, source_rgb = _prepare_character_source_features(
+            row_roi,
+            templates[0]["template_image"].shape[:2],
+        )
+    else:
+        source_image, source_edges, source_rgb = prepared_source_image, prepared_source_edges, prepared_source_rgb
+
+    top_templates: List[Tuple[float, int, Dict[str, object]]] = []
+    sequence = 0
+    for template in templates:
+        variants = template.get("aligned_variants") or _build_aligned_template_variants(
+            template["template_image"],
+            template["template_alpha"],
+        )
+        variant = variants[0] if variants else None
+        if variant is None:
+            continue
+        color_score = _masked_cutout_color_score(
+            source_image,
+            variant["image"],
+            variant["alpha"],
+            source_rgb=source_rgb,
+            target_rgb=variant.get("image_float"),
+            target_mask=variant["core_mask"],
+        )
+        entry = (float(color_score), -sequence, template)
+        sequence += 1
+        if len(top_templates) < limit:
+            heapq.heappush(top_templates, entry)
+        elif entry > top_templates[0]:
+            heapq.heapreplace(top_templates, entry)
+    top_templates.sort(reverse=True)
+    return ([template for _score, _neg_sequence, template in top_templates] or templates), source_image, source_edges, source_rgb
+
+
+def _character_template_edge_agreement(
+    row_roi: np.ndarray,
+    template_image: np.ndarray,
+    template_alpha: np.ndarray,
+    *,
+    offset_x: int = 0,
+    offset_y: int = 0,
+) -> float:
+    template_height, template_width = template_image.shape[:2]
+    if row_roi.shape[0] < template_height or row_roi.shape[1] < template_width:
+        row_roi = cv2.resize(row_roi, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+        offset_x = 0
+        offset_y = 0
+
+    offset_x = max(0, min(int(offset_x), max(0, row_roi.shape[1] - template_width)))
+    offset_y = max(0, min(int(offset_y), max(0, row_roi.shape[0] - template_height)))
+    window = row_roi[offset_y:offset_y + template_height, offset_x:offset_x + template_width]
+    if window.shape[:2] != (template_height, template_width):
+        return 0.0
+
+    visible_mask = template_alpha > 16
+    if int(np.count_nonzero(visible_mask)) <= 0:
+        return 0.0
+
+    source_gray = cv2.cvtColor(window, cv2.COLOR_BGR2GRAY)
+    template_gray = cv2.cvtColor(template_image, cv2.COLOR_BGR2GRAY)
+    source_edges = cv2.Canny(source_gray, 80, 160) > 0
+    template_edges = cv2.Canny(template_gray, 80, 160) > 0
+    source_edges &= visible_mask
+    template_edges &= visible_mask
+
+    overlap = int(np.count_nonzero(source_edges & template_edges))
+    edge_total = int(np.count_nonzero(source_edges)) + int(np.count_nonzero(template_edges))
+    if edge_total <= 0:
+        return 0.0
+    return float((2.0 * overlap) / edge_total)
+
+
+def _should_reject_character_match_as_mii(
+    ranked_matches: List[Dict[str, object]] | None,
+) -> bool:
+    if not ranked_matches:
+        return False
+    best_match = ranked_matches[0]
+    best_confidence = float(best_match.get("CharacterMatchConfidence", 0.0) or 0.0)
+    second_confidence = float(ranked_matches[1].get("CharacterMatchConfidence", 0.0) or 0.0) if len(ranked_matches) > 1 else 0.0
+    fifth_confidence = float(ranked_matches[4].get("CharacterMatchConfidence", 0.0) or 0.0) if len(ranked_matches) > 4 else best_confidence
+    top2_margin = best_confidence - second_confidence
+    top5_spread = best_confidence - fifth_confidence
+    family_count = len(
+        {
+            int(match.get("CharacterRosterIndex"))
+            for match in ranked_matches[:5]
+            if match.get("CharacterRosterIndex") is not None
+        }
+    )
+    return (
+        top2_margin <= MII_OPEN_SET_MAX_TOP2_MARGIN
+        and top5_spread <= MII_OPEN_SET_MAX_TOP5_SPREAD
+        and family_count >= MII_OPEN_SET_MIN_TOP5_FAMILY_COUNT
+    )
+
+
+def _is_strong_closed_set_override(candidate: Dict[str, object] | None, margin: float) -> bool:
+    if candidate is None:
+        return False
+    character_name = str(candidate.get("Character", "") or "")
+    confidence = float(candidate.get("CharacterMatchConfidence", 0.0) or 0.0)
+    if is_risky_character_family(character_name):
+        return (
+            confidence >= MII_PRIOR_OVERRIDE_RISKY_MIN_CONFIDENCE
+            and margin >= MII_PRIOR_OVERRIDE_RISKY_MIN_MARGIN
+        )
+    return (
+        confidence >= MII_PRIOR_OVERRIDE_MIN_CONFIDENCE
+        and margin >= MII_PRIOR_OVERRIDE_MIN_MARGIN
+    )
+
+
+def _prior_state_is_mii_likely(prior_state: Dict[str, object] | None) -> bool:
+    if not prior_state:
+        return False
+    if bool(prior_state.get("mii_likely", False)):
+        return True
+    try:
+        closed_set_samples = int(prior_state.get("closed_set_samples", 0) or 0)
+    except (TypeError, ValueError):
+        closed_set_samples = 0
+    if closed_set_samples < MII_PRIOR_EARLY_MIN_SAMPLES:
+        return False
+    winner_counts = prior_state.get("winner_counts") or {}
+    if not isinstance(winner_counts, dict) or not winner_counts:
+        return False
+    dominant_count = max(int(value or 0) for value in winner_counts.values())
+    dominant_ratio = float(dominant_count) / max(1, closed_set_samples)
+    avg_confidence = float(prior_state.get("confidence_sum", 0.0) or 0.0) / max(1, closed_set_samples)
+    avg_margin = float(prior_state.get("margin_sum", 0.0) or 0.0) / max(1, closed_set_samples)
+    avg_spread = float(prior_state.get("spread_sum", 0.0) or 0.0) / max(1, closed_set_samples)
+    avg_family_count = float(prior_state.get("family_count_sum", 0.0) or 0.0) / max(1, closed_set_samples)
+    closed_set_is_stable = (
+        dominant_ratio >= 0.75
+        and avg_confidence >= 50.0
+        and avg_margin >= 3.0
+        and avg_spread >= 8.0
+        and avg_family_count <= 3.5
+    )
+    if closed_set_samples < MII_PRIOR_MIN_SAMPLES:
+        # Only allow early Mii-likely activation when the short history is already
+        # visibly unstable. This prevents stable hard cases like Inkling Boy from
+        # entering the open-set path just because their confidence is modest.
+        return (
+            dominant_ratio < 1.0
+            and (
+                avg_margin < 3.0
+                or avg_spread < 8.0
+                or avg_family_count > 3.5
+            )
+        )
+    return not closed_set_is_stable
+
+
+def _merge_prior_candidate_indices(
+    existing_candidates: object,
+    new_candidates: object,
+) -> List[int]:
+    merged: List[int] = []
+    seen: set[int] = set()
+    for source in (existing_candidates or [], new_candidates or []):
+        try:
+            iterator = list(source)
+        except TypeError:
+            continue
+        for value in iterator:
+            try:
+                index = int(value)
+            except (TypeError, ValueError):
+                continue
+            if index in EXCLUDED_CHARACTER_TEMPLATE_INDICES or index == MII_CHARACTER_INDEX:
+                continue
+            if index in seen:
+                continue
+            seen.add(index)
+            merged.append(index)
+            if len(merged) >= MII_PRIOR_MAX_CANDIDATES:
+                return merged
+    return merged
+
+
+def _character_match_raw_stats(ranked_matches: List[Dict[str, object]] | None) -> Dict[str, object]:
+    if not ranked_matches:
+        return {
+            "CharacterMatchRawBest": np.nan,
+            "CharacterMatchRawMargin": np.nan,
+            "CharacterMatchRawTop5Spread": np.nan,
+            "CharacterMatchRawTop5FamilyCount": np.nan,
+        }
+    best_confidence = float(ranked_matches[0].get("CharacterMatchConfidence", 0.0) or 0.0)
+    second_confidence = float(ranked_matches[1].get("CharacterMatchConfidence", 0.0) or 0.0) if len(ranked_matches) > 1 else best_confidence
+    fifth_confidence = float(ranked_matches[4].get("CharacterMatchConfidence", 0.0) or 0.0) if len(ranked_matches) > 4 else best_confidence
+    family_count = len(
+        {
+            int(match.get("CharacterRosterIndex"))
+            for match in ranked_matches[:5]
+            if match.get("CharacterRosterIndex") is not None
+        }
+    )
+    return {
+        "CharacterMatchRawBest": round(best_confidence, 1),
+        "CharacterMatchRawMargin": round(best_confidence - second_confidence, 1),
+        "CharacterMatchRawTop5Spread": round(best_confidence - fifth_confidence, 1),
+        "CharacterMatchRawTop5FamilyCount": int(family_count),
+    }
+
+
+def _character_prior_trace_enabled() -> bool:
+    return os.environ.get("MK8_TRACE_CHARACTER_PRIORS", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _character_prior_trace_keys() -> set[str]:
+    raw_keys = os.environ.get("MK8_TRACE_CHARACTER_PRIOR_KEYS", "").strip()
+    if not raw_keys:
+        return set()
+    return {
+        player_identity_key(value)
+        for value in re.split(r"[,;]", raw_keys)
+        if player_identity_key(value)
+    }
+
+
+def _json_safe(value):
+    try:
+        if pd.isna(value):
+            return None
+    except (TypeError, ValueError):
+        pass
+    if isinstance(value, (np.integer,)):
+        return int(value)
+    if isinstance(value, (np.floating,)):
+        return float(value)
+    if isinstance(value, np.ndarray):
+        return value.tolist()
+    if isinstance(value, tuple):
+        return list(value)
+    if isinstance(value, list):
+        return [_json_safe(item) for item in value]
+    if isinstance(value, dict):
+        return {str(key): _json_safe(item) for key, item in value.items()}
+    return value
+
+
+def _prior_state_trace_summary(prior_state: Dict[str, object] | None) -> Dict[str, object]:
+    if not prior_state:
+        return {}
+    closed_set_samples = int(prior_state.get("closed_set_samples", 0) or 0)
+    winner_counts = prior_state.get("winner_counts") if isinstance(prior_state.get("winner_counts"), dict) else {}
+    dominant_count = max((int(value or 0) for value in winner_counts.values()), default=0)
+    return {
+        "Character": str(prior_state.get("Character", "")),
+        "CharacterIndex": prior_state.get("CharacterIndex"),
+        "CharacterMatchConfidence": prior_state.get("CharacterMatchConfidence"),
+        "seen_count": int(prior_state.get("seen_count", 0) or 0),
+        "fast_accepts_since_revalidation": int(prior_state.get("fast_accepts_since_revalidation", 0) or 0),
+        "last_race_id": int(prior_state.get("last_race_id", 0) or 0),
+        "mii_likely": bool(prior_state.get("mii_likely", False)),
+        "closed_set_samples": closed_set_samples,
+        "winner_counts": dict(winner_counts),
+        "dominant_ratio": round(float(dominant_count) / max(1, closed_set_samples), 4) if closed_set_samples else 0.0,
+        "avg_confidence": round(float(prior_state.get("confidence_sum", 0.0) or 0.0) / max(1, closed_set_samples), 4) if closed_set_samples else 0.0,
+        "avg_margin": round(float(prior_state.get("margin_sum", 0.0) or 0.0) / max(1, closed_set_samples), 4) if closed_set_samples else 0.0,
+        "avg_spread": round(float(prior_state.get("spread_sum", 0.0) or 0.0) / max(1, closed_set_samples), 4) if closed_set_samples else 0.0,
+        "avg_family_count": round(float(prior_state.get("family_count_sum", 0.0) or 0.0) / max(1, closed_set_samples), 4) if closed_set_samples else 0.0,
+        "candidate_indices": list(prior_state.get("candidate_indices") or []),
+    }
+
+
+def _append_character_prior_trace(payload: Dict[str, object]) -> None:
+    if not _character_prior_trace_enabled():
+        return
+    trace_label = os.environ.get("MK8_OCR_TRACE_LABEL", "").strip() or "adhoc"
+    trace_mode = os.environ.get("MK8_OCR_TRACE_MODE", "").strip() or "ocr"
+    trace_path = PROJECT_ROOT / "Output_Results" / "Debug" / "OCR_Tracing" / trace_label / trace_mode / "character_prior_updates.jsonl"
+    trace_path.parent.mkdir(parents=True, exist_ok=True)
+    with CHARACTER_PRIOR_TRACE_LOCK:
+        with trace_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(_json_safe(payload), ensure_ascii=False, sort_keys=True) + "\n")
+
+
+def update_player_character_prior(
+    video_context: str | None,
+    player_name: str,
+    match: Dict[str, object],
+    *,
+    race_id_number: int | None = None,
+) -> None:
+    if not video_context:
+        return
+    player_key = player_identity_key(player_name)
+    if len(player_key) < 3:
+        return
+    trace_keys = _character_prior_trace_keys()
+    trace_this_key = _character_prior_trace_enabled() and (not trace_keys or player_key in trace_keys)
+    character_index = match.get("CharacterIndex")
+    if character_index is None:
+        return
+    try:
+        current_race_id = int(race_id_number or 0)
+    except (TypeError, ValueError):
+        current_race_id = 0
+    with CHARACTER_SHORTLIST_LOCK:
+        player_priors = PLAYER_CHARACTER_PRIORS[str(video_context)]
+        existing = player_priors.get(player_key)
+        before_summary = _prior_state_trace_summary(existing) if trace_this_key else {}
+        if existing and int(existing["CharacterIndex"]) == int(character_index):
+            existing["seen_count"] = int(existing.get("seen_count", 1)) + 1
+            if match.get("CharacterMatchMethod") == "character_prior_confirm":
+                existing["fast_accepts_since_revalidation"] = int(existing.get("fast_accepts_since_revalidation", 0)) + 1
+            else:
+                existing["fast_accepts_since_revalidation"] = 0
+            existing["CharacterMatchConfidence"] = float(match.get("CharacterMatchConfidence", existing.get("CharacterMatchConfidence", 0.0)))
+            existing["Character"] = str(match.get("Character", existing.get("Character", "")))
+            existing["last_race_id"] = max(int(existing.get("last_race_id", 0) or 0), current_race_id)
+            state = existing
+        else:
+            player_priors[player_key] = {
+                "CharacterIndex": int(character_index),
+                "Character": str(match.get("Character", "")),
+                "CharacterMatchConfidence": float(match.get("CharacterMatchConfidence", 0.0)),
+                "seen_count": 1,
+                "fast_accepts_since_revalidation": 0,
+                "last_race_id": current_race_id,
+                "winner_counts": {},
+                "closed_set_samples": 0,
+                "confidence_sum": 0.0,
+                "margin_sum": 0.0,
+                "spread_sum": 0.0,
+                "family_count_sum": 0.0,
+                "mii_likely": False,
+                "candidate_indices": [],
+            }
+            state = player_priors[player_key]
+        state["candidate_indices"] = _merge_prior_candidate_indices(
+            state.get("candidate_indices"),
+            match.get("CharacterMatchTopCandidateIndices"),
+        )
+        if int(character_index) == MII_CHARACTER_INDEX:
+            state["mii_likely"] = True
+            if trace_this_key:
+                _append_character_prior_trace(
+                    {
+                        "event": "update_player_character_prior",
+                        "video_context": video_context,
+                        "race_id_number": current_race_id,
+                        "player_name": player_name,
+                        "player_key": player_key,
+                        "match": match,
+                        "before": before_summary,
+                        "after": _prior_state_trace_summary(state),
+                        "mii_likely_transition": bool(not before_summary.get("mii_likely", False)),
+                        "mii_likely_reason": "direct_mii_match",
+                    }
+                )
+            return
+        winner_counts = state.get("winner_counts")
+        if not isinstance(winner_counts, dict):
+            winner_counts = {}
+            state["winner_counts"] = winner_counts
+        winner_key = str(match.get("Character") or character_index)
+        winner_counts[winner_key] = int(winner_counts.get(winner_key, 0) or 0) + 1
+        state["closed_set_samples"] = int(state.get("closed_set_samples", 0) or 0) + 1
+        state["confidence_sum"] = float(state.get("confidence_sum", 0.0) or 0.0) + float(match.get("CharacterMatchConfidence", 0.0) or 0.0)
+        raw_margin = match.get("CharacterMatchRawMargin")
+        raw_spread = match.get("CharacterMatchRawTop5Spread")
+        raw_family_count = match.get("CharacterMatchRawTop5FamilyCount")
+        try:
+            if raw_margin is not None and not pd.isna(raw_margin):
+                state["margin_sum"] = float(state.get("margin_sum", 0.0) or 0.0) + float(raw_margin)
+        except (TypeError, ValueError):
+            pass
+        try:
+            if raw_spread is not None and not pd.isna(raw_spread):
+                state["spread_sum"] = float(state.get("spread_sum", 0.0) or 0.0) + float(raw_spread)
+        except (TypeError, ValueError):
+            pass
+        try:
+            if raw_family_count is not None and not pd.isna(raw_family_count):
+                state["family_count_sum"] = float(state.get("family_count_sum", 0.0) or 0.0) + float(raw_family_count)
+        except (TypeError, ValueError):
+            pass
+        state["mii_likely"] = _prior_state_is_mii_likely(state)
+        if trace_this_key:
+            after_summary = _prior_state_trace_summary(state)
+            _append_character_prior_trace(
+                {
+                    "event": "update_player_character_prior",
+                    "video_context": video_context,
+                    "race_id_number": current_race_id,
+                    "player_name": player_name,
+                    "player_key": player_key,
+                    "match": match,
+                    "before": before_summary,
+                    "after": after_summary,
+                    "mii_likely_transition": bool(
+                        after_summary.get("mii_likely", False)
+                        and not before_summary.get("mii_likely", False)
+                    ),
+                    "mii_likely_reason": "closed_set_instability" if after_summary.get("mii_likely", False) else "",
+                }
+            )
+
+
+def _template_match_score(source_image: np.ndarray, template_image: np.ndarray) -> float:
+    source_height, source_width = source_image.shape[:2]
+    template_height, template_width = template_image.shape[:2]
+    if source_height < template_height or source_width < template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_NEAREST)
+    result = cv2.matchTemplate(source_image, template_image, cv2.TM_CCOEFF_NORMED)
+    _, max_value, _, _ = cv2.minMaxLoc(result)
+    return float(max_value)
+
+
+def _masked_template_match_score(source_image: np.ndarray, template_image: np.ndarray, alpha_mask: np.ndarray | None) -> float:
+    source_height, source_width = source_image.shape[:2]
+    template_height, template_width = template_image.shape[:2]
+    if source_height < template_height or source_width < template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_NEAREST)
+    if alpha_mask is None:
+        result = cv2.matchTemplate(source_image, template_image, cv2.TM_CCOEFF_NORMED)
+    else:
+        result = cv2.matchTemplate(source_image, template_image, cv2.TM_CCOEFF_NORMED, mask=alpha_mask)
+    _, max_value, _, _ = cv2.minMaxLoc(result)
+    return float(max_value)
+
+
+def _best_template_overlap_metrics(source_image: np.ndarray, template_image: np.ndarray) -> Dict[str, float]:
+    """Measure binary overlap quality for the best template placement inside the ROI.
+
+    White IoU is intentionally foreground-centric:
+    - template white over ROI white: good
+    - template white over ROI black: bad
+    - template black over ROI white: bad
+    - template black over ROI black: ignored for the main overlap score
+
+    This keeps empty rows from scoring artificially high just because most of the
+    background is black.
+    """
+    source_height, source_width = source_image.shape[:2]
+    template_height, template_width = template_image.shape[:2]
+    if source_height < template_height or source_width < template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_NEAREST)
+        source_height, source_width = source_image.shape[:2]
+
+    template_white = template_image > 200
+    best_metrics = None
+    for offset_y in range(source_height - template_height + 1):
+        for offset_x in range(source_width - template_width + 1):
+            window = source_image[offset_y:offset_y + template_height, offset_x:offset_x + template_width]
+            row_white = window > 200
+            true_positive = int(np.count_nonzero(template_white & row_white))
+            false_positive = int(np.count_nonzero((~template_white) & row_white))
+            false_negative = int(np.count_nonzero(template_white & (~row_white)))
+            union = true_positive + false_positive + false_negative
+            weighted_union = true_positive + false_positive + (POSITION_FALSE_NEGATIVE_WEIGHT * false_negative)
+            white_iou = true_positive / union if union else 0.0
+            weighted_white_iou = true_positive / weighted_union if weighted_union else 0.0
+            white_f1 = (2 * true_positive) / (2 * true_positive + false_positive + false_negative) if (2 * true_positive + false_positive + false_negative) else 0.0
+            metrics = {
+                "white_iou": float(white_iou),
+                "weighted_white_iou": float(weighted_white_iou),
+                "white_f1": float(white_f1),
+                "tp": int(true_positive),
+                "fp": int(false_positive),
+                "fn": int(false_negative),
+                "offset_x": int(offset_x),
+                "offset_y": int(offset_y),
+            }
+            if best_metrics is None or metrics["weighted_white_iou"] > best_metrics["weighted_white_iou"]:
+                best_metrics = metrics
+
+    if best_metrics is None:
+        return {
+            "white_iou": 0.0,
+            "weighted_white_iou": 0.0,
+            "white_f1": 0.0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 0,
+            "offset_x": 0,
+            "offset_y": 0,
+        }
+    return best_metrics
+
+
+def _evaluate_position_template(row_image: np.ndarray, template_index: int, template: np.ndarray) -> Dict[str, float]:
+    coefficient = _template_match_score(row_image, template)
+    overlap_metrics = _best_template_overlap_metrics(row_image, template)
+    best_coefficient = float(coefficient)
+    best_overlap_metrics = overlap_metrics
+    if int(template_index) == 12:
+        inverse_template = cv2.bitwise_not(template)
+        inverse_coefficient = _template_match_score(row_image, inverse_template)
+        inverse_overlap_metrics = _best_template_overlap_metrics(row_image, inverse_template)
+        if (
+            float(inverse_coefficient) > best_coefficient
+            or (
+                float(inverse_coefficient) == best_coefficient
+                and float(inverse_overlap_metrics["weighted_white_iou"]) > float(best_overlap_metrics["weighted_white_iou"])
+            )
+        ):
+            best_coefficient = float(inverse_coefficient)
+            best_overlap_metrics = inverse_overlap_metrics
+    return {
+        "template_index": int(template_index),
+        "coefficient": float(best_coefficient),
+        "white_iou": float(best_overlap_metrics["white_iou"]),
+        "weighted_white_iou": float(best_overlap_metrics["weighted_white_iou"]),
+        "white_f1": float(best_overlap_metrics["white_f1"]),
+    }
+
+
+def _position_template_candidate_score(template_score: Dict[str, float]) -> float:
+    return (float(template_score["weighted_white_iou"]) * 10.0) + float(template_score["coefficient"])
+
+
+def _build_position_metrics_from_template_scores(
+    row_index: int,
+    template_scores: List[Dict[str, float]],
+    chosen_template_index: int | None = None,
+) -> Dict[str, float]:
+    coeff_sorted = sorted(template_scores, key=lambda item: item["coefficient"], reverse=True)
+    coeff_best = coeff_sorted[0] if coeff_sorted else {"template_index": 0, "coefficient": 0.0, "white_iou": 0.0, "weighted_white_iou": 0.0}
+    coeff_second = coeff_sorted[1] if len(coeff_sorted) > 1 else {"template_index": 0, "coefficient": 0.0, "white_iou": 0.0, "weighted_white_iou": 0.0}
+    iou_sorted = sorted(template_scores, key=lambda item: item["weighted_white_iou"], reverse=True)
+    iou_best = iou_sorted[0] if iou_sorted else {"template_index": 0, "coefficient": 0.0, "white_iou": 0.0, "weighted_white_iou": 0.0}
+
+    shortlist = coeff_sorted[:3] if len(coeff_sorted) >= 3 else coeff_sorted
+    hybrid_best = max(shortlist, key=lambda item: (item["weighted_white_iou"], item["coefficient"])) if shortlist else {"template_index": 0, "coefficient": 0.0, "white_iou": 0.0, "weighted_white_iou": 0.0}
+    expected_score = next(
+        (item for item in template_scores if int(item["template_index"]) == row_index + 1),
+        {"coefficient": 0.0, "white_iou": 0.0, "weighted_white_iou": 0.0},
+    )
+    chosen_score = next(
+        (item for item in template_scores if chosen_template_index is not None and int(item["template_index"]) == int(chosen_template_index)),
+        hybrid_best,
+    )
+    all_coefficients = {f"PositionTemplate{template_index:02}_Coeff": None for template_index in range(1, 13)}
+    for item in template_scores:
+        all_coefficients[f"PositionTemplate{int(item['template_index']):02}_Coeff"] = round(float(item["coefficient"]), 3)
+    return {
+        "expected_position_score": round(float(expected_score["coefficient"]), 3),
+        "expected_position_iou": round(float(expected_score["white_iou"]), 3),
+        "expected_position_weighted_iou": round(float(expected_score["weighted_white_iou"]), 3),
+        "best_position_score": round(float(coeff_best["coefficient"]), 3),
+        "second_best_position_score": round(float(coeff_second["coefficient"]), 3),
+        "position_margin": round(float(coeff_best["coefficient"]) - float(coeff_second["coefficient"]), 3),
+        "any_position_score": round(float(coeff_best["coefficient"]), 3),
+        "best_position_template": int(chosen_score["template_index"]),
+        "best_position_coeff_template": int(coeff_best["template_index"]),
+        "best_position_iou_template": int(iou_best["template_index"]),
+        "coeff_ranked_templates": [int(item["template_index"]) for item in coeff_sorted],
+        "best_position_iou": round(float(iou_best["white_iou"]), 3),
+        "best_position_weighted_iou": round(float(iou_best["weighted_white_iou"]), 3),
+        "best_position_template_score": round(float(chosen_score["coefficient"]), 3),
+        "best_position_template_iou": round(float(chosen_score["white_iou"]), 3),
+        "best_position_template_weighted_iou": round(float(chosen_score["weighted_white_iou"]), 3),
+        "position_template_coefficients": all_coefficients,
+    }
+
+
+def _build_position_signal_metrics_fast(position_rows: List[np.ndarray], templates: List[np.ndarray]) -> List[Dict[str, float]]:
+    beam = [{"score": 0.0, "prev_rank": 1, "chosen_ranks": [], "row_template_scores": []}]
+    for row_index, row_image in enumerate(position_rows):
+        row_number = row_index + 1
+        next_beam = []
+        for state in beam:
+            previous_rank = int(state["prev_rank"])
+            candidate_indices = {row_number} if row_index == 0 else {previous_rank, row_number}
+            candidate_scores = []
+            for candidate_index in sorted(candidate_indices):
+                template = templates[candidate_index - 1]
+                template_score = _evaluate_position_template(row_image, candidate_index, template)
+                candidate_scores.append(template_score)
+            for candidate_score in candidate_scores:
+                next_beam.append(
+                    {
+                        "score": float(state["score"]) + _position_template_candidate_score(candidate_score),
+                        "prev_rank": int(candidate_score["template_index"]),
+                        "chosen_ranks": list(state["chosen_ranks"]) + [int(candidate_score["template_index"])],
+                        "row_template_scores": list(state["row_template_scores"]) + [candidate_scores],
+                    }
+                )
+        next_beam.sort(key=lambda item: item["score"], reverse=True)
+        beam = next_beam[:POSITION_TEMPLATE_BEAM_WIDTH]
+    best_state = beam[0] if beam else {"chosen_ranks": [], "row_template_scores": []}
+    metrics = []
+    for row_index, template_scores in enumerate(best_state.get("row_template_scores", [])):
+        chosen_rank = None
+        if row_index < len(best_state.get("chosen_ranks", [])):
+            chosen_rank = int(best_state["chosen_ranks"][row_index])
+        metrics.append(_build_position_metrics_from_template_scores(row_index, template_scores, chosen_rank))
+    return metrics
+
+
+def _evaluate_position_tile_template(
+    row_image: np.ndarray,
+    template_index: int,
+    variant_templates: Dict[str, List[Tuple[np.ndarray, np.ndarray | None]]],
+) -> Dict[str, float]:
+    white_template, white_mask = variant_templates["white"][template_index - 1]
+    black_template, black_mask = variant_templates["black"][template_index - 1]
+    white_score = float(_masked_template_match_score(row_image, white_template, white_mask))
+    black_score = float(_masked_template_match_score(row_image, black_template, black_mask))
+    if white_score >= black_score:
+        best_score = white_score
+        best_variant = "white"
+    else:
+        best_score = black_score
+        best_variant = "black"
+    return {
+        "template_index": int(template_index),
+        "coefficient": float(best_score),
+        "white_iou": float(best_score),
+        "weighted_white_iou": float(best_score),
+        "white_f1": float(best_score),
+        "best_variant": best_variant,
+    }
+
+
+def _build_position_signal_metrics_black_white(
+    position_tiles: List[np.ndarray],
+    variant_templates: Dict[str, List[Tuple[np.ndarray, np.ndarray | None]]],
+) -> List[Dict[str, float]]:
+    beam = [{"score": 0.0, "prev_rank": 1, "chosen_ranks": [], "row_template_scores": []}]
+    for row_index, row_image in enumerate(position_tiles):
+        row_number = row_index + 1
+        next_beam = []
+        for state in beam:
+            previous_rank = int(state["prev_rank"])
+            candidate_indices = {row_number} if row_index == 0 else {previous_rank, row_number}
+            candidate_scores = []
+            for candidate_index in sorted(candidate_indices):
+                candidate_scores.append(
+                    _evaluate_position_tile_template(row_image, candidate_index, variant_templates)
+                )
+            for candidate_score in candidate_scores:
+                next_beam.append(
+                    {
+                        "score": float(state["score"]) + _position_template_candidate_score(candidate_score),
+                        "prev_rank": int(candidate_score["template_index"]),
+                        "chosen_ranks": list(state["chosen_ranks"]) + [int(candidate_score["template_index"])],
+                        "row_template_scores": list(state["row_template_scores"]) + [candidate_scores],
+                    }
+                )
+        next_beam.sort(key=lambda item: item["score"], reverse=True)
+        beam = next_beam[:POSITION_TEMPLATE_BEAM_WIDTH]
+    best_state = beam[0] if beam else {"chosen_ranks": [], "row_template_scores": []}
+    metrics = []
+    for row_index, template_scores in enumerate(best_state.get("row_template_scores", [])):
+        chosen_rank = None
+        if row_index < len(best_state.get("chosen_ranks", [])):
+            chosen_rank = int(best_state["chosen_ranks"][row_index])
+        metrics.append(_build_position_metrics_from_template_scores(row_index, template_scores, chosen_rank))
+    return metrics
+
+
+def _compare_black_white_position_path(
+    processed_image: np.ndarray,
+    baseline_metrics: List[Dict[str, float]],
+    score_layout_id: str | None = None,
+    *,
+    max_rows: int | None = None,
+    stats: dict | None = None,
+    stats_prefix: str = "score",
+) -> None:
+    compare_start = time.perf_counter()
+    row_tiles = extract_position_tile_match_crops(
+        processed_image,
+        score_layout_id=score_layout_id,
+        max_rows=max_rows,
+    )
+    templates_by_variant = load_position_row_template_tiles()
+    black_white_metrics = _build_position_signal_metrics_black_white(row_tiles, templates_by_variant)
+    compared_rows = min(len(black_white_metrics), len(baseline_metrics))
+    mismatch_count = 0
+    variant_counts = {"white": 0, "black": 0}
+    score_deltas = []
+    for row_index in range(compared_rows):
+        best_template_index = int(black_white_metrics[row_index].get("best_position_template", 0))
+        best_score = float(
+            black_white_metrics[row_index].get(
+                "best_position_template_score",
+                black_white_metrics[row_index].get("best_position_score", 0.0),
+            )
+        )
+        expected_coeffs = black_white_metrics[row_index].get("position_template_coefficients", {})
+        expected_key = f"PositionTemplate{row_index + 1:02}_Coeff"
+        white_score = float(expected_coeffs.get(expected_key, 0.0))
+        best_variant = "white" if white_score >= best_score else "black"
+        variant_counts[best_variant] = variant_counts.get(best_variant, 0) + 1
+        baseline_metric = baseline_metrics[row_index]
+        baseline_template = int(baseline_metric.get("best_position_template", 0))
+        baseline_score = float(baseline_metric.get("best_position_template_score", baseline_metric.get("best_position_score", 0.0)))
+        score_deltas.append(abs(best_score - baseline_score))
+        if baseline_template != best_template_index:
+            mismatch_count += 1
+    if stats is not None:
+        stats[f"{stats_prefix}_position_template_compare_calls"] += 1
+        stats[f"{stats_prefix}_position_template_compare_rows"] += int(compared_rows)
+        stats[f"{stats_prefix}_position_template_compare_mismatches"] += int(mismatch_count)
+        stats[f"{stats_prefix}_position_template_compare_white_rows"] += int(variant_counts.get("white", 0))
+        stats[f"{stats_prefix}_position_template_compare_black_rows"] += int(variant_counts.get("black", 0))
+        stats[f"{stats_prefix}_position_template_compare_avg_abs_delta"] += (
+            float(sum(score_deltas) / len(score_deltas)) if score_deltas else 0.0
+        )
+        stats[f"{stats_prefix}_position_template_compare_s"] += time.perf_counter() - compare_start
+
+
+def build_position_signal_metrics(
+    processed_image: np.ndarray,
+    score_layout_id: str | None = None,
+    *,
+    max_rows: int | None = None,
+    stats: dict | None = None,
+    stats_prefix: str = "score",
+) -> List[Dict[str, float]]:
+    """Measure whether each row still shows a position number in the fixed left strip."""
+    total_start = time.perf_counter()
+    bw_start = time.perf_counter()
+    position_tiles = extract_position_tile_match_crops(
+        processed_image,
+        score_layout_id=score_layout_id,
+        max_rows=max_rows,
+    )
+    variant_templates = load_position_row_template_tiles()
+    metrics = _build_position_signal_metrics_black_white(position_tiles, variant_templates)
+    if stats is not None:
+        stats[f"{stats_prefix}_position_metrics_black_white_calls"] += 1
+        stats[f"{stats_prefix}_position_metrics_rows_processed"] += int(len(position_tiles))
+        stats[f"{stats_prefix}_position_metrics_template_candidates"] += int(
+            sum(1 if row_index == 0 else 2 for row_index in range(len(position_tiles)))
+        )
+        stats[f"{stats_prefix}_position_metrics_black_white_s"] += time.perf_counter() - bw_start
+        stats[f"{stats_prefix}_position_metrics_total_calls"] += 1
+        stats[f"{stats_prefix}_position_metrics_total_s"] += time.perf_counter() - total_start
+    return metrics
+
+
+def build_normalized_position_strip(processed_image: np.ndarray, score_layout_id: str | None = None) -> np.ndarray:
+    """Return a legacy-sized strip view populated from the current black/white tiles."""
+    layout = get_score_layout(score_layout_id)
+    (strip_x1, strip_y1), (strip_x2, strip_y2) = position_strip_roi(score_layout_id=score_layout_id)
+    strip_height = max(0, int(strip_y2 - strip_y1))
+    strip_width = max(0, int(strip_x2 - strip_x1))
+    normalized_strip = np.zeros((strip_height, strip_width), dtype=np.uint8)
+    row_tiles = extract_position_tile_match_crops(processed_image, score_layout_id=score_layout_id)
+    tile_x1 = int(layout.base_position_strip_roi[0][0]) + int(POSITION_TEMPLATE_TILE_X_OFFSET)
+
+    for row_index, row_tile in enumerate(row_tiles):
+        tile = row_tile
+        if len(tile.shape) == 3:
+            tile = cv2.cvtColor(tile, cv2.COLOR_BGR2GRAY)
+        _, tile = cv2.threshold(tile, 180, 255, cv2.THRESH_BINARY)
+        tile = normalize_binary_foreground(tile)
+
+        absolute_y1 = int(layout.base_position_strip_roi[0][1]) + int(POSITION_TEMPLATE_TILE_Y_OFFSET) + (row_index * int(POSITION_TEMPLATE_TILE_HEIGHT))
+        relative_x1 = int(tile_x1 - strip_x1)
+        relative_y1 = int(absolute_y1 - strip_y1)
+        relative_x2 = relative_x1 + tile.shape[1]
+        relative_y2 = relative_y1 + tile.shape[0]
+
+        dest_x1 = max(0, relative_x1)
+        dest_y1 = max(0, relative_y1)
+        dest_x2 = min(strip_width, relative_x2)
+        dest_y2 = min(strip_height, relative_y2)
+        if dest_x2 <= dest_x1 or dest_y2 <= dest_y1:
+            continue
+
+        src_x1 = dest_x1 - relative_x1
+        src_y1 = dest_y1 - relative_y1
+        src_x2 = src_x1 + (dest_x2 - dest_x1)
+        src_y2 = src_y1 + (dest_y2 - dest_y1)
+        normalized_strip[dest_y1:dest_y2, dest_x1:dest_x2] = tile[src_y1:src_y2, src_x1:src_x2]
+
+    return normalized_strip
+
+
+def build_character_match_metrics(
+    frame_image: np.ndarray,
+    *,
+    names: List[str] | None = None,
+    name_confidences: List[int] | None = None,
+    video_context: str | None = None,
+    race_id_number: int | None = None,
+    score_layout_id: str | None = None,
+    character_match_mode: str = "stateful",
+) -> List[Dict[str, object]]:
+    """Template-match the full-color character icons for each scoreboard row."""
+    stateless_mode = str(character_match_mode or "").strip().lower() == "raw_stateless"
+    templates = load_character_templates()
+    if not templates:
+        return [
+            {
+                "Character": "",
+                "CharacterIndex": None,
+                "CharacterMatchConfidence": 0.0,
+                "CharacterMatchMethod": "missing_templates",
+            }
+            for _ in range(12)
+        ]
+
+    image_height, image_width = frame_image.shape[:2]
+    metrics = []
+    if CHARACTER_SHORTLIST_ACCELERATION_ENABLED and not stateless_mode:
+        with CHARACTER_SHORTLIST_LOCK:
+            shortlist_indices = _eligible_character_shortlist_indices(
+                CHARACTER_SHORTLIST_BY_VIDEO.get(str(video_context or ""), {}),
+                race_id_number,
+            )
+            prior_state_by_player = _eligible_player_character_priors(
+                PLAYER_CHARACTER_PRIORS.get(str(video_context or ""), {}),
+                race_id_number,
+            )
+    else:
+        shortlist_indices = set()
+        prior_state_by_player = {}
+    templates_by_index = {int(template["character_index"]): template for template in templates}
+    base_shortlist_templates = shortlist_character_templates(templates, shortlist_indices)
+    duplicate_player_keys: set[str] = set()
+    if names:
+        player_key_counts: Dict[str, int] = {}
+        for raw_name in names:
+            player_key = player_identity_key(str(raw_name or ""))
+            if len(player_key) < 3:
+                continue
+            player_key_counts[player_key] = player_key_counts.get(player_key, 0) + 1
+        duplicate_player_keys = {player_key for player_key, count in player_key_counts.items() if count > 1}
+    for row_index in range(12):
+        (x1, y1), (x2, y2) = character_row_roi(row_index, score_layout_id=score_layout_id)
+        crop_x1 = max(0, min(image_width, x1))
+        crop_x2 = max(crop_x1, min(image_width, x2))
+        crop_y1 = max(0, min(image_height, y1))
+        crop_y2 = max(crop_y1, min(image_height, y2))
+        row_roi = frame_image[crop_y1:crop_y2, crop_x1:crop_x2]
+        if row_roi.size == 0:
+            metrics.append(
+                {
+                    "Character": "",
+                    "CharacterIndex": None,
+                    "CharacterMatchConfidence": 0.0,
+                    "CharacterMatchMethod": "empty_roi",
+                }
+            )
+            continue
+
+        player_name = names[row_index] if names and row_index < len(names) else ""
+        player_name_confidence = float(name_confidences[row_index]) if name_confidences and row_index < len(name_confidences) else 0.0
+        player_key = player_identity_key(player_name)
+        duplicate_name_in_frame = player_key in duplicate_player_keys
+        prior_state = None if duplicate_name_in_frame else prior_state_by_player.get(player_key)
+        prepared_source_image, prepared_source_edges, prepared_source_rgb = _prepare_character_source_features(
+            row_roi,
+            templates[0]["template_image"].shape[:2],
+        )
+        shortlist_templates = base_shortlist_templates
+        prior_is_mii_likely = _prior_state_is_mii_likely(prior_state)
+        if prior_is_mii_likely:
+            mii_candidate_indices = set()
+            for candidate_index in prior_state.get("candidate_indices", []) or []:
+                try:
+                    mii_candidate_indices.add(int(candidate_index))
+                except (TypeError, ValueError):
+                    continue
+            if mii_candidate_indices:
+                shortlist_templates = shortlist_character_templates(templates, mii_candidate_indices)
+        if prior_state is not None and prior_state.get("CharacterIndex") is not None and int(prior_state["CharacterIndex"]) != MII_CHARACTER_INDEX:
+            prior_index = int(prior_state["CharacterIndex"])
+            if all(int(template["character_index"]) != prior_index for template in shortlist_templates):
+                prior_template = templates_by_index.get(prior_index)
+                if prior_template is not None:
+                    shortlist_templates = list(shortlist_templates) + [prior_template]
+        shortlist_matches = best_character_matches(
+            row_roi,
+            shortlist_templates,
+            limit=2,
+            prepared_source_image=prepared_source_image,
+            prepared_source_edges=prepared_source_edges,
+            prepared_source_rgb=prepared_source_rgb,
+        )
+        shortlist_best = shortlist_matches[0] if shortlist_matches else None
+        shortlist_second = shortlist_matches[1] if len(shortlist_matches) > 1 else {"CharacterMatchConfidence": 0.0}
+        shortlist_margin = (
+            float(shortlist_best["CharacterMatchConfidence"]) - float(shortlist_second["CharacterMatchConfidence"])
+            if shortlist_best is not None else 0.0
+        )
+        if (
+            prior_state
+            and prior_is_mii_likely
+            and player_name_confidence >= 80.0
+            and int(prior_state.get("seen_count", 0)) >= MII_PRIOR_MIN_SAMPLES
+            and int(prior_state.get("fast_accepts_since_revalidation", 0)) < CHARACTER_PRIOR_MAX_FAST_ACCEPTS
+            and not _is_strong_closed_set_override(shortlist_best, shortlist_margin)
+        ):
+            CHARACTER_SHORTLIST_STATS["prior_accepts"] += 1
+            CHARACTER_SHORTLIST_STATS["prior_mii_likely_accepts"] += 1
+            best_match = {
+                "Character": MII_CHARACTER_NAME,
+                "CharacterIndex": MII_CHARACTER_INDEX,
+                "CharacterMatchConfidence": round(float(shortlist_best.get("CharacterMatchConfidence", 0.0) or 0.0), 1) if shortlist_best else 0.0,
+                "CharacterMatchMethod": "character_prior_mii_likely",
+                **_character_match_raw_stats(shortlist_matches),
+            }
+            if not duplicate_name_in_frame:
+                update_player_character_prior(video_context, player_name, best_match, race_id_number=race_id_number)
+            metrics.append(best_match)
+            continue
+        if (
+            prior_state
+            and player_name_confidence >= 80.0
+            and int(prior_state.get("seen_count", 0)) >= CHARACTER_PRIOR_STABLE_MIN_SEEN
+            and int(prior_state.get("fast_accepts_since_revalidation", 0)) < CHARACTER_PRIOR_MAX_FAST_ACCEPTS
+        ):
+            prior_character_name = str(prior_state.get("Character", ""))
+            prior_is_best = (
+                shortlist_best is not None
+                and shortlist_best.get("CharacterIndex") is not None
+                and int(shortlist_best["CharacterIndex"]) == int(prior_state["CharacterIndex"])
+            )
+            if (
+                prior_is_best
+                and float(shortlist_best["CharacterMatchConfidence"]) >= character_confidence_threshold(prior_character_name)
+                and shortlist_margin >= character_margin_threshold(prior_character_name)
+            ):
+                CHARACTER_SHORTLIST_STATS["prior_accepts"] += 1
+                best_match = dict(shortlist_best)
+                best_match["CharacterMatchMethod"] = "character_prior_confirm"
+                best_match.update(_character_match_raw_stats(shortlist_matches))
+                if not duplicate_name_in_frame:
+                    update_player_character_prior(video_context, player_name, best_match, race_id_number=race_id_number)
+                metrics.append(best_match)
+                continue
+            CHARACTER_SHORTLIST_STATS["prior_fallbacks"] += 1
+            if not prior_is_best:
+                CHARACTER_SHORTLIST_STATS["reason_prior_not_best"] += 1
+                if is_risky_character_family(prior_character_name):
+                    CHARACTER_SHORTLIST_STATS["reason_prior_not_best_risky_family"] += 1
+                else:
+                    CHARACTER_SHORTLIST_STATS["reason_prior_not_best_non_risky"] += 1
+            elif float(shortlist_best["CharacterMatchConfidence"]) < character_confidence_threshold(prior_character_name):
+                CHARACTER_SHORTLIST_STATS["reason_prior_low_confidence"] += 1
+                if is_risky_character_family(prior_character_name):
+                    CHARACTER_SHORTLIST_STATS["reason_prior_low_confidence_risky_family"] += 1
+                else:
+                    CHARACTER_SHORTLIST_STATS["reason_prior_low_confidence_non_risky"] += 1
+            elif shortlist_margin < character_margin_threshold(prior_character_name):
+                CHARACTER_SHORTLIST_STATS["reason_prior_low_margin"] += 1
+            else:
+                CHARACTER_SHORTLIST_STATS["reason_prior_other"] += 1
+        elif prior_state:
+            CHARACTER_SHORTLIST_STATS["prior_fallbacks"] += 1
+            if player_name_confidence < 80.0:
+                CHARACTER_SHORTLIST_STATS["reason_prior_low_name_confidence"] += 1
+            elif int(prior_state.get("seen_count", 0)) < CHARACTER_PRIOR_STABLE_MIN_SEEN:
+                CHARACTER_SHORTLIST_STATS["reason_prior_not_stable"] += 1
+            elif int(prior_state.get("fast_accepts_since_revalidation", 0)) >= CHARACTER_PRIOR_MAX_FAST_ACCEPTS:
+                CHARACTER_SHORTLIST_STATS["reason_prior_revalidation_cap"] += 1
+            else:
+                CHARACTER_SHORTLIST_STATS["reason_prior_ineligible_other"] += 1
+        use_shortlist = (
+            shortlist_best is not None
+            and len(shortlist_templates) < len(templates)
+            and float(shortlist_best["CharacterMatchConfidence"]) >= character_confidence_threshold(str(shortlist_best.get("Character", "")))
+            and shortlist_margin >= character_margin_threshold(str(shortlist_best.get("Character", "")))
+        )
+
+        if use_shortlist:
+            CHARACTER_SHORTLIST_STATS["shortlist_accepts"] += 1
+            best_match = dict(shortlist_best)
+            best_match["CharacterMatchMethod"] = "character_shortlist_alpha_search"
+            best_match.update(_character_match_raw_stats(shortlist_matches))
+        else:
+            if len(shortlist_templates) < len(templates):
+                CHARACTER_SHORTLIST_STATS["shortlist_fallbacks"] += 1
+                if shortlist_best is None:
+                    CHARACTER_SHORTLIST_STATS["reason_shortlist_no_match"] += 1
+                elif float(shortlist_best["CharacterMatchConfidence"]) < character_confidence_threshold(str(shortlist_best.get("Character", ""))):
+                    CHARACTER_SHORTLIST_STATS["reason_shortlist_low_confidence"] += 1
+                    if is_risky_character_family(str(shortlist_best.get("Character", ""))):
+                        CHARACTER_SHORTLIST_STATS["reason_shortlist_low_confidence_risky_family"] += 1
+                    else:
+                        CHARACTER_SHORTLIST_STATS["reason_shortlist_low_confidence_non_risky"] += 1
+                elif shortlist_margin < character_margin_threshold(str(shortlist_best.get("Character", ""))):
+                    CHARACTER_SHORTLIST_STATS["reason_shortlist_low_margin"] += 1
+                else:
+                    CHARACTER_SHORTLIST_STATS["reason_shortlist_other"] += 1
+            else:
+                CHARACTER_SHORTLIST_STATS["reason_no_effective_shortlist"] += 1
+            CHARACTER_SHORTLIST_STATS["full_search_rows"] += 1
+            full_search_prefilter_limit = CHARACTER_FULL_SEARCH_PREFILTER_LIMIT
+            if shortlist_best is not None and is_risky_character_family(str(shortlist_best.get("Character", ""))):
+                full_search_prefilter_limit = CHARACTER_FULL_SEARCH_PREFILTER_LIMIT_RISKY_FAMILY
+            full_search_templates, full_source_image, full_source_edges, full_source_rgb = prefilter_character_templates(
+                row_roi,
+                templates,
+                limit=full_search_prefilter_limit,
+                prepared_source_image=prepared_source_image,
+                prepared_source_edges=prepared_source_edges,
+                prepared_source_rgb=prepared_source_rgb,
+            )
+            full_matches = best_character_matches(
+                row_roi,
+                full_search_templates,
+                limit=5,
+                prepared_source_image=full_source_image,
+                prepared_source_edges=full_source_edges,
+                prepared_source_rgb=full_source_rgb,
+            )
+            best_match = full_matches[0] if full_matches else None
+            second_match = full_matches[1] if len(full_matches) > 1 else None
+            if best_match is not None and video_context and not stateless_mode:
+                best_index = int(best_match["CharacterIndex"])
+                with CHARACTER_SHORTLIST_LOCK:
+                    shortlist = CHARACTER_SHORTLIST_BY_VIDEO[str(video_context)]
+                    existing_first_seen = shortlist.get(best_index)
+                    if existing_first_seen is None or (
+                        race_id_number is not None and int(race_id_number) < int(existing_first_seen)
+                    ):
+                        shortlist[best_index] = int(race_id_number or 0)
+                        CHARACTER_SHORTLIST_STATS["shortlist_expansions"] += 1
+            if best_match is not None:
+                best_match.update(_character_match_raw_stats(full_matches))
+                best_match["CharacterMatchTopCandidateIndices"] = tuple(
+                    int(match.get("CharacterIndex"))
+                    for match in full_matches[:5]
+                    if match.get("CharacterIndex") is not None
+                )
+                edge_agreement = float(best_match.get("CharacterMatchEdgeConfidence", 0.0) or 0.0) / 100.0
+                best_match["CharacterMatchEdgeAgreement"] = round(edge_agreement * 100.0, 1)
+                if _should_reject_character_match_as_mii(full_matches):
+                    best_match = {
+                        "Character": MII_CHARACTER_NAME,
+                        "CharacterIndex": MII_CHARACTER_INDEX,
+                        "CharacterMatchConfidence": round(float(best_match.get("CharacterMatchConfidence", 0.0) or 0.0), 1),
+                        "CharacterMatchMethod": "open_set_mii_reject",
+                        "CharacterMatchEdgeAgreement": round(edge_agreement * 100.0, 1),
+                        "CharacterMatchTopCandidateIndices": tuple(
+                            int(match.get("CharacterIndex"))
+                            for match in full_matches[:5]
+                            if match.get("CharacterIndex") is not None
+                        ),
+                        **_character_match_raw_stats(full_matches),
+                    }
+            if best_match is not None:
+                if int(best_match.get("CharacterIndex") or -1) == MII_CHARACTER_INDEX:
+                    CHARACTER_SHORTLIST_STATS["reason_full_search_result_mii"] += 1
+                elif is_risky_character_family(str(best_match.get("Character", ""))):
+                    CHARACTER_SHORTLIST_STATS["reason_full_search_result_risky_family"] += 1
+                else:
+                    CHARACTER_SHORTLIST_STATS["reason_full_search_result_non_risky"] += 1
+
+        metrics.append(best_match or {
+            "Character": "",
+            "CharacterIndex": None,
+            "CharacterMatchConfidence": 0.0,
+            "CharacterMatchMethod": "no_match",
+            **_character_match_raw_stats(None),
+        })
+
+        if (
+            CHARACTER_SHORTLIST_ACCELERATION_ENABLED
+            and not stateless_mode
+            and metrics[-1].get("CharacterIndex") is not None
+            and not duplicate_name_in_frame
+        ):
+            update_player_character_prior(video_context, player_name, metrics[-1], race_id_number=race_id_number)
+    return metrics
+
+
+def replay_character_prior_match(
+    video_context: str | None,
+    player_name: str,
+    name_confidence: float,
+    raw_match: Dict[str, object],
+    *,
+    race_id_number: int | None = None,
+    allow_prior: bool = True,
+) -> Dict[str, object]:
+    """Apply character-prior decisions in deterministic race order from stateless raw evidence."""
+    match = dict(raw_match or {})
+    character_index = match.get("CharacterIndex")
+    if (
+        not CHARACTER_SHORTLIST_ACCELERATION_ENABLED
+        or not allow_prior
+        or not video_context
+        or character_index is None
+    ):
+        return match
+
+    player_key = player_identity_key(player_name)
+    if len(player_key) < 3:
+        return match
+
+    try:
+        current_race = int(race_id_number or 0)
+    except (TypeError, ValueError):
+        current_race = 0
+
+    with CHARACTER_SHORTLIST_LOCK:
+        prior_state = _eligible_player_character_priors(
+            PLAYER_CHARACTER_PRIORS.get(str(video_context or ""), {}),
+            current_race,
+        ).get(player_key)
+
+    confidence = float(match.get("CharacterMatchConfidence", 0.0) or 0.0)
+    raw_margin = float(match.get("CharacterMatchRawMargin", 0.0) or 0.0)
+    prior_is_mii_likely = _prior_state_is_mii_likely(prior_state)
+    duplicate_or_low_confidence = float(name_confidence or 0.0) < 80.0
+
+    if (
+        prior_state
+        and prior_is_mii_likely
+        and not duplicate_or_low_confidence
+        and int(prior_state.get("seen_count", 0)) >= MII_PRIOR_MIN_SAMPLES
+        and int(prior_state.get("fast_accepts_since_revalidation", 0)) < CHARACTER_PRIOR_MAX_FAST_ACCEPTS
+        and not _is_strong_closed_set_override(match, raw_margin)
+    ):
+        CHARACTER_SHORTLIST_STATS["prior_accepts"] += 1
+        CHARACTER_SHORTLIST_STATS["prior_mii_likely_accepts"] += 1
+        replayed = {
+            "Character": MII_CHARACTER_NAME,
+            "CharacterIndex": MII_CHARACTER_INDEX,
+            "CharacterMatchConfidence": round(confidence, 1),
+            "CharacterMatchMethod": "character_prior_mii_likely",
+            "CharacterMatchRawBest": match.get("CharacterMatchRawBest"),
+            "CharacterMatchRawMargin": match.get("CharacterMatchRawMargin"),
+            "CharacterMatchRawTop5Spread": match.get("CharacterMatchRawTop5Spread"),
+            "CharacterMatchRawTop5FamilyCount": match.get("CharacterMatchRawTop5FamilyCount"),
+            "CharacterMatchTopCandidateIndices": match.get("CharacterMatchTopCandidateIndices"),
+        }
+        update_player_character_prior(video_context, player_name, replayed, race_id_number=current_race)
+        return replayed
+
+    if prior_state and not duplicate_or_low_confidence:
+        prior_is_best = (
+            match.get("CharacterIndex") is not None
+            and prior_state.get("CharacterIndex") is not None
+            and int(match["CharacterIndex"]) == int(prior_state["CharacterIndex"])
+        )
+        prior_character_name = str(prior_state.get("Character", ""))
+        if (
+            prior_is_best
+            and confidence >= character_confidence_threshold(prior_character_name)
+            and raw_margin >= character_margin_threshold(prior_character_name)
+            and int(prior_state.get("seen_count", 0)) >= CHARACTER_PRIOR_STABLE_MIN_SEEN
+            and int(prior_state.get("fast_accepts_since_revalidation", 0)) < CHARACTER_PRIOR_MAX_FAST_ACCEPTS
+        ):
+            CHARACTER_SHORTLIST_STATS["prior_accepts"] += 1
+            match["CharacterMatchMethod"] = "character_prior_confirm"
+            update_player_character_prior(video_context, player_name, match, race_id_number=current_race)
+            return match
+        CHARACTER_SHORTLIST_STATS["prior_fallbacks"] += 1
+
+    best_index = match.get("CharacterIndex")
+    if best_index is not None:
+        with CHARACTER_SHORTLIST_LOCK:
+            shortlist = CHARACTER_SHORTLIST_BY_VIDEO[str(video_context)]
+            existing_first_seen = shortlist.get(int(best_index))
+            if existing_first_seen is None or current_race < int(existing_first_seen):
+                shortlist[int(best_index)] = current_race
+                CHARACTER_SHORTLIST_STATS["shortlist_expansions"] += 1
+        update_player_character_prior(video_context, player_name, match, race_id_number=current_race)
+    return match
+
+
+def masked_character_match_score(source_image: np.ndarray, template_image: np.ndarray, template_alpha: np.ndarray) -> Dict[str, float]:
+    """Match a character icon while ignoring fully transparent template pixels.
+
+    The score is color-based and alpha-aware:
+    - only pixels where the template alpha is visible contribute
+    - transparent template background does not count toward confidence
+    - the best local placement inside the padded ROI is returned
+    """
+    source_height, source_width = source_image.shape[:2]
+    template_height, template_width = template_image.shape[:2]
+    if source_height < template_height or source_width < template_width:
+        source_image = cv2.resize(source_image, (template_width, template_height), interpolation=cv2.INTER_LINEAR)
+        source_height, source_width = source_image.shape[:2]
+
+    visible_mask = template_alpha > 16
+    visible_pixels = int(np.count_nonzero(visible_mask))
+    if visible_pixels <= 0:
+        return {"score": 0.0, "offset_x": 0, "offset_y": 0}
+
+    best_score = None
+    best_offset = (0, 0)
+    template_rgb = template_image.astype(np.float32)
+    mask_3d = np.repeat(visible_mask[:, :, None], 3, axis=2)
+
+    for offset_y in range(source_height - template_height + 1):
+        for offset_x in range(source_width - template_width + 1):
+            window = source_image[offset_y:offset_y + template_height, offset_x:offset_x + template_width].astype(np.float32)
+            masked_template = template_rgb[mask_3d]
+            masked_window = window[mask_3d]
+            if masked_window.size == 0:
+                continue
+            mean_abs_diff = float(np.mean(np.abs(masked_template - masked_window)))
+            score = max(0.0, 1.0 - (mean_abs_diff / 255.0))
+            if best_score is None or score > best_score:
+                best_score = score
+                best_offset = (offset_x, offset_y)
+
+    return {
+        "score": float(best_score or 0.0),
+        "offset_x": int(best_offset[0]),
+        "offset_y": int(best_offset[1]),
+    }
+
+
+def build_row_presence_metrics(names: List[str], confidence_scores: List[int], race_points: List[str], total_points: List[str]) -> List[Dict[str, object]]:
+    """Describe how strongly each of the 12 scoreboard rows looks occupied."""
+    metrics = []
+    for index, player_name in enumerate(names):
+        stripped_name = re.sub(r"[^a-zA-Z0-9]", "", player_name or "")
+        confidence = float(confidence_scores[index] if index < len(confidence_scores) else 0)
+        has_strong_name = len(stripped_name) >= 3 and len(set(stripped_name)) >= 3
+        has_any_name = bool(stripped_name)
+        has_race_points = bool(race_points[index]) if index < len(race_points) else False
+        has_total_points = bool(total_points[index]) if index < len(total_points) else False
+        legacy_row_present = bool(
+            has_strong_name
+            or has_race_points
+            or has_total_points
+            or confidence >= 35
+        )
+
+        occupancy_score = 0.0
+        if has_strong_name:
+            occupancy_score += 1.5
+        elif has_any_name:
+            occupancy_score += 0.4
+        if has_race_points:
+            occupancy_score += 1.0
+        if has_total_points:
+            occupancy_score += 1.0
+        if confidence >= 70:
+            occupancy_score += 0.5
+        elif confidence >= 35:
+            occupancy_score += 0.2
+
+        evidence_parts = []
+        if has_strong_name:
+            evidence_parts.append("strong_name")
+        elif has_any_name:
+            evidence_parts.append("weak_name")
+        if has_race_points:
+            evidence_parts.append("race_points")
+        if has_total_points:
+            evidence_parts.append("total_points")
+        if confidence >= 35:
+            evidence_parts.append(f"conf={int(round(confidence))}")
+
+        metrics.append(
+            {
+                "row_number": index + 1,
+                "legacy_row_present": legacy_row_present,
+                "occupancy_score": round(occupancy_score, 2),
+                "evidence": ",".join(evidence_parts) if evidence_parts else "empty",
+            }
+        )
+    return metrics
+
+
+def determine_position_guided_visible_rows(
+    row_metrics: List[Dict[str, object]],
+    occupancy_threshold: float = 1.0,
+    *,
+    is_low_res: bool = False,
+) -> int:
+    """Count visible rows using position-strip template presence only.
+
+    Player count should be based on whether a row visibly contains a plausible rank badge,
+    not on whether the exact row-number template wins there. This avoids undercounting on
+    ties or near-neighbour confusions such as row 12 visually preferring template 11.
+    """
+    for metric in reversed(row_metrics):
+        row_number = int(metric.get("row_number", 0))
+        best_position_score = max(
+            float(metric.get("best_position_score", 0.0)),
+            float(metric.get("raw_best_position_score", 0.0)),
+        )
+        # Guard against pathological template-match outputs (inf/NaN) creating
+        # phantom visible rows during player-count voting/recovery.
+        if not np.isfinite(best_position_score):
+            best_position_score = float("-inf")
+        if bool(is_low_res):
+            threshold = (
+                LOW_RES_POSITION_PRESENT_ROW1_COEFF_THRESHOLD
+                if row_number == 1
+                else LOW_RES_POSITION_PRESENT_COEFF_THRESHOLD
+            )
+        else:
+            threshold = POSITION_PRESENT_ROW1_COEFF_THRESHOLD if row_number == 1 else POSITION_PRESENT_COEFF_THRESHOLD
+        row_supported = best_position_score >= threshold
+        if row_supported:
+            return row_number
+    return 0
+
+
+def _pick_visible_rows_from_votes(
+    votes: Counter,
+    *,
+    fallback: int = 0,
+    prefer: int | None = None,
+) -> int:
+    if not votes:
+        return int(fallback)
+    ordered = votes.most_common()
+    top_count = int(ordered[0][1])
+    top_candidates = [int(value) for value, count in ordered if int(count) == top_count]
+    if prefer is not None and int(prefer) in top_candidates:
+        return int(prefer)
+    # Conservative tie-break: choose the lower row-count candidate.
+    return int(min(top_candidates))
+
+
+def _observation_supports_low_res_row12_character_fallback(observation: Dict[str, object]) -> bool:
+    row_metrics = observation.get("row_metrics") or []
+    character_metrics = observation.get("character_metrics") or []
+    if len(row_metrics) < 12 or len(character_metrics) < 12:
+        return False
+
+    row11 = row_metrics[10]
+    row12 = row_metrics[11]
+    row11_threshold = POSITION_PRESENT_COEFF_THRESHOLD
+    row11_supported = float(row11.get("best_position_score", 0.0)) >= row11_threshold
+    if not row11_supported:
+        return False
+
+    row12_character = character_metrics[11]
+    if row12_character.get("CharacterIndex") is None:
+        return False
+
+    row12_character_confidence = float(row12_character.get("CharacterMatchConfidence", 0.0))
+    if row12_character_confidence < LOW_RES_ROW12_CHARACTER_FALLBACK_MIN_CONFIDENCE:
+        return False
+
+    row12_position_score = max(
+        float(row12.get("expected_position_score", 0.0)),
+        float(row12.get("best_position_score", 0.0)),
+        float(row12.get("any_position_score", 0.0)),
+    )
+    return row12_position_score >= LOW_RES_ROW12_CHARACTER_FALLBACK_MIN_POSITION_SCORE
+
+
+def _frame_supports_low_res_row12_character_fallback(
+    frame_image: np.ndarray,
+    video_context: str | None = None,
+    score_layout_id: str | None = None,
+    character_match_mode: str = "stateful",
+) -> bool:
+    processed_image = process_image(frame_image, score_layout_id=score_layout_id)
+    position_metrics = build_position_signal_metrics(processed_image, score_layout_id=score_layout_id)
+    character_metrics = build_character_match_metrics(
+        frame_image,
+        video_context=video_context,
+        score_layout_id=score_layout_id,
+        character_match_mode=character_match_mode,
+    )
+    observation = {
+        "row_metrics": [
+            {
+                "best_position_score": float(metric.get("best_position_score", 0.0)),
+                "expected_position_score": float(metric.get("expected_position_score", 0.0)),
+                "any_position_score": float(metric.get("any_position_score", 0.0)),
+            }
+            for metric in position_metrics
+        ],
+        "character_metrics": character_metrics,
+    }
+    return _observation_supports_low_res_row12_character_fallback(observation)
+
+
+def _frame_supports_ultra_low_res_row12_blob_fallback(frame_image: np.ndarray, score_layout_id: str | None = None) -> bool:
+    image_height, image_width = frame_image.shape[:2]
+    (x1, y1), (x2, y2) = ultra_low_res_combined_row_roi(11, score_layout_id=score_layout_id)
+    crop_x1 = max(0, min(image_width, x1))
+    crop_x2 = max(crop_x1, min(image_width, x2))
+    crop_y1 = max(0, min(image_height, y1))
+    crop_y2 = max(crop_y1, min(image_height, y2))
+    row_roi = frame_image[crop_y1:crop_y2, crop_x1:crop_x2]
+    if row_roi.size == 0:
+        return False
+
+    gray = cv2.cvtColor(row_roi, cv2.COLOR_BGR2GRAY)
+    stddev = float(gray.std())
+    edges = cv2.Canny(gray, 80, 160)
+    edge_density = float(np.count_nonzero(edges)) / float(edges.size) if edges.size else 0.0
+    return stddev >= ULTRA_LOW_RES_ROW_MIN_STDDEV and edge_density >= ULTRA_LOW_RES_ROW_MIN_EDGE_DENSITY
+
+
+def summarize_row_metrics(row_metrics: List[Dict[str, object]]) -> str:
+    parts = []
+    for metric in row_metrics:
+        parts.append(
+            f"{int(metric['row_number']):02}:{float(metric['occupancy_score']):.2f}"
+            f"[{metric['evidence']};pos={float(metric.get('expected_position_score', 0.0)):.2f}/{float(metric.get('best_position_score', 0.0)):.2f}"
+            f"/{float(metric.get('second_best_position_score', 0.0)):.2f}"
+            f"/iou{float(metric.get('best_position_iou', 0.0)):.2f}"
+            f"/wiou{float(metric.get('best_position_weighted_iou', 0.0)):.2f}"
+            f"/m{float(metric.get('position_margin', 0.0)):.2f}"
+            f"#h{int(metric.get('best_position_template', 0))}"
+            f"/c{int(metric.get('best_position_coeff_template', 0))}"
+            f"/i{int(metric.get('best_position_iou_template', 0))}]"
+        )
+    return " | ".join(parts)
+
+
+def summarize_count_votes(observations: List[Dict[str, object]], key: str) -> str:
+    count_votes = Counter(int(observation.get(key, 0)) for observation in observations if int(observation.get(key, 0)) > 0)
+    if not count_votes:
+        return ""
+    return ", ".join(f"{count}x{votes}" for count, votes in count_votes.most_common())
+
+
+def apply_threshold(image: np.ndarray, threshold: int = 205) -> np.ndarray:
+    _, binary_image = cv2.threshold(image, threshold, 255, cv2.THRESH_BINARY)
+    return binary_image
+
+
+def apply_inversion(image: np.ndarray) -> np.ndarray:
+    return cv2.bitwise_not(image)
+
+
+def preprocess_image_v_channel(image: np.ndarray, threshold_value: int = 205) -> np.ndarray:
+    """Use the V channel because the scoreboard text survives there most consistently."""
+    if len(image.shape) == 2:
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+    hsv_image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+    _, _, v = cv2.split(hsv_image)
+    _, binary_v = cv2.threshold(v, threshold_value, 255, cv2.THRESH_BINARY)
+    return binary_v
+
+
+def crop_and_process_image(frame: np.ndarray, coordinates: List[Tuple[Tuple[int, int], Tuple[int, int]]],
+                           image_type: str) -> List[np.ndarray]:
+    """Prepare the scoreboard ROIs differently for names and digits."""
+    cropped_images = []
+    for (x1, y1), (x2, y2) in coordinates:
+        section_img = frame[y1:y2, x1:x2]
+        binary_section = preprocess_image_v_channel(section_img, 205)
+        black_pixels = np.count_nonzero(binary_section == 0)
+        white_pixels = np.count_nonzero(binary_section == 255)
+
+        if white_pixels > black_pixels:
+            section_img = Image.fromarray(cv2.bitwise_not(binary_section))
+        else:
+            section_img = Image.fromarray(binary_section)
+
+        if image_type in ["race_points", "total_points"]:
+            section_img_np = np.array(section_img)
+            if len(section_img_np.shape) == 3 and section_img_np.shape[2] == 3:
+                gray_image = cv2.cvtColor(section_img_np, cv2.COLOR_RGB2GRAY)
+            else:
+                gray_image = section_img_np
+            kernel = np.ones((2, 2), np.uint8)
+            dilated_image = cv2.dilate(gray_image, kernel, iterations=1)
+            section_img = Image.fromarray(cv2.cvtColor(dilated_image, cv2.COLOR_GRAY2RGB))
+
+        cropped_images.append(np.array(section_img))
+    return cropped_images
+
+
+def process_image(
+    image_source,
+    score_layout_id: str | None = None,
+    *,
+    stats: dict | None = None,
+    stats_prefix: str = "score",
+) -> np.ndarray:
+    """Rewrite the scoreboard into OCR-friendly blocks before digit and name reading."""
+    total_start = time.perf_counter()
+    score_layout = get_score_layout(score_layout_id)
+    coordinates = {
+        "player_name": score_layout.player_name_coords,
+        "race_points": score_layout.race_points_coords,
+        "total_points": score_layout.total_points_coords,
+    }
+
+    if isinstance(image_source, str):
+        image = cv2.imread(image_source, cv2.IMREAD_COLOR)
+        image_path = image_source
+    else:
+        image = image_source
+        image_path = "<array>"
+    if image is None:
+        raise FileNotFoundError(f"Image not found at path: {image_path}")
+
+    preprocess_start = time.perf_counter()
+    processed_image = preprocess_image_v_channel(image)
+    if len(processed_image.shape) == 2:
+        processed_image = cv2.cvtColor(processed_image, cv2.COLOR_GRAY2BGR)
+    if stats is not None:
+        stats[f"{stats_prefix}_process_image_preprocess_s"] += time.perf_counter() - preprocess_start
+
+    block_rewrite_start = time.perf_counter()
+    for region_type, coord_list in coordinates.items():
+        rois = crop_and_process_image(processed_image, coord_list, region_type)
+        for roi, ((x1, y1), (x2, y2)) in zip(rois, coord_list):
+            if len(roi.shape) == 2:
+                roi = cv2.cvtColor(roi, cv2.COLOR_GRAY2BGR)
+            processed_image[y1:y2, x1:x2] = roi
+    if stats is not None:
+        stats[f"{stats_prefix}_process_image_internal_calls"] += 1
+        stats[f"{stats_prefix}_process_image_block_rewrite_s"] += time.perf_counter() - block_rewrite_start
+        stats[f"{stats_prefix}_process_image_total_s"] += time.perf_counter() - total_start
+    return processed_image
+
+
+def is_white_box(
+    image: Image.Image,
+    top_left: Tuple[int, int],
+    box_size: Tuple[int, int] = (3, 2),
+    *,
+    neighborhood_radius: int = 1,
+    white_threshold: int = 180,
+    min_white_ratio: float = 0.35,
+) -> bool:
+    x, y = top_left
+    width, height = box_size
+    white_pixels = 0
+    total_pixels = width * height
+    for offset_x in range(width):
+        for offset_y in range(height):
+            sample_x = x + offset_x
+            sample_y = y + offset_y
+            found_white = False
+            for delta_x in range(-neighborhood_radius, neighborhood_radius + 1):
+                for delta_y in range(-neighborhood_radius, neighborhood_radius + 1):
+                    pixel_x = sample_x + delta_x
+                    pixel_y = sample_y + delta_y
+                    if pixel_x < 0 or pixel_y < 0 or pixel_x >= image.width or pixel_y >= image.height:
+                        continue
+                    r, g, b = image.getpixel((pixel_x, pixel_y))
+                    if r > white_threshold and g > white_threshold and b > white_threshold:
+                        found_white = True
+                        break
+                if found_white:
+                    break
+            if found_white:
+                white_pixels += 1
+    return white_pixels >= max(1, int(total_pixels * min_white_ratio))
+
+
+SEGMENT_LABELS_HORIZONTAL = {"top_middle", "center", "middle_bottom_edge"}
+SEGMENT_LABELS_VERTICAL = {
+    "left_middle",
+    "right_middle",
+    "left_bottom",
+    "right_bottom",
+    "middle_middle",
+    "middle_bottom",
+}
+DIGIT_PATTERNS = [
+    (8, {"top_middle", "left_middle", "right_middle", "center", "right_bottom", "left_bottom", "middle_bottom_edge"}),
+    (0, {"top_middle", "left_middle", "right_middle", "left_bottom", "right_bottom", "middle_bottom_edge"}),
+    (6, {"top_middle", "left_middle", "center", "right_bottom", "left_bottom", "middle_bottom_edge"}),
+    (9, {"top_middle", "left_middle", "right_middle", "center", "right_bottom", "middle_bottom_edge"}),
+    (2, {"top_middle", "right_middle", "center", "left_bottom", "middle_bottom_edge"}),
+    (3, {"top_middle", "right_middle", "center", "right_bottom", "middle_bottom_edge"}),
+    (5, {"top_middle", "left_middle", "center", "right_bottom", "middle_bottom_edge"}),
+    (4, {"right_middle", "left_middle", "center", "right_bottom"}),
+    (7, {"top_middle", "right_middle", "right_bottom"}),
+    (1, {"middle_middle", "middle_bottom"}),
+]
+
+
+def segment_roi_bounds(
+    box_top_left: Tuple[int, int],
+    point_offset: Union[Tuple[int, int], Dict[str, int]],
+    label: str,
+) -> Tuple[int, int, int, int]:
+    if isinstance(point_offset, dict):
+        return (
+            box_top_left[0] + point_offset["x"],
+            box_top_left[1] + point_offset["y"],
+            box_top_left[0] + point_offset["x"] + point_offset["width"],
+            box_top_left[1] + point_offset["y"] + point_offset["height"],
+        )
+
+    anchor_x = box_top_left[0] + point_offset[0]
+    anchor_y = box_top_left[1] + point_offset[1]
+    if label in SEGMENT_LABELS_HORIZONTAL:
+        half_width = 8
+        half_height = 3
+    elif label in SEGMENT_LABELS_VERTICAL:
+        half_width = 2
+        half_height = 8
+    else:
+        half_width = 3
+        half_height = 3
+    extra_right = 0
+    if label in {"left_middle", "right_middle", "left_bottom", "right_bottom"}:
+        extra_right = 12
+    return (
+        anchor_x - half_width,
+        anchor_y - half_height,
+        anchor_x + half_width + 1 + extra_right,
+        anchor_y + half_height + 1,
+    )
+
+
+def segment_roi_stats(
+    image: Image.Image,
+    bounds: Tuple[int, int, int, int],
+    *,
+    white_threshold: int = 180,
+) -> Dict[str, float]:
+    x1, y1, x2, y2 = bounds
+    x1 = max(0, x1)
+    y1 = max(0, y1)
+    x2 = min(image.width, x2)
+    y2 = min(image.height, y2)
+    if x2 <= x1 or y2 <= y1:
+        return {"white_ratio": 0.0, "black_ratio": 1.0}
+    # Vectorized white/black pixel ratio (bit-identical to the prior per-pixel
+    # getpixel loop: same strict > threshold on each RGB channel and the same
+    # counts). Replaces an 11M-call PIL.getpixel hot loop in selection + digit
+    # stats; output is identical so OCR/selection behavior is unchanged.
+    arr = np.asarray(image.crop((x1, y1, x2, y2)))
+    if arr.ndim == 3:
+        white = np.all(arr[:, :, :3] > white_threshold, axis=2)
+    else:
+        white = arr > white_threshold
+    total_pixels = int(white.size)
+    white_pixels = int(np.count_nonzero(white))
+    if total_pixels == 0:
+        return {"white_ratio": 0.0, "black_ratio": 1.0}
+    return {
+        "white_ratio": white_pixels / total_pixels,
+        "black_ratio": (total_pixels - white_pixels) / total_pixels,
+    }
+
+
+def score_digit_candidate(
+    segment_stats: Dict[str, Dict[str, float]],
+    pattern: set[str],
+    *,
+    active_black_penalty: float,
+) -> float:
+    score = 0.0
+    for label, stats in segment_stats.items():
+        white_ratio = stats["white_ratio"]
+        black_ratio = stats["black_ratio"]
+        if label in pattern:
+            score += white_ratio
+            score -= black_ratio * active_black_penalty
+        else:
+            score += (1.0 - white_ratio) * 0.08
+            score -= white_ratio * 0.45
+    return score
+
+
+def analyze_digit_segments(
+    image: Image.Image,
+    box_top_left: Tuple[int, int],
+    red_pixels: Dict[str, Tuple[int, int]],
+) -> Tuple[int, Dict[str, Dict[str, float]], set[str]]:
+    """Identify a digit and return segment stats for debug rendering."""
+    segment_stats = {
+        label: segment_roi_stats(image, segment_roi_bounds(box_top_left, offset, label))
+        for label, offset in red_pixels.items()
+    }
+    # The digit decision is the central score profile (packages/icon-matcher segment_digits,
+    # CENTRAL_RECOGNITION section 8.6), the same rule as below, moved there unchanged.
+    central = _central_score_decoder()
+    if central:
+        digit, strong = central(segment_stats)
+        return digit, segment_stats, strong
+    strong_active_labels = {
+        label for label, stats in segment_stats.items() if stats["white_ratio"] >= 0.45
+    }
+    for digit, pattern in DIGIT_PATTERNS:
+        if pattern.issubset(strong_active_labels):
+            return digit, segment_stats, strong_active_labels
+    if not strong_active_labels:
+        return -1, segment_stats, strong_active_labels
+
+    method_votes: list[int] = []
+    aggregate_scores: Dict[int, float] = {}
+    pattern_lookup = {digit: pattern for digit, pattern in DIGIT_PATTERNS}
+    for active_black_penalty in (1.0, 2.0, 3.0):
+        best_digit = -1
+        best_score = float("-inf")
+        for digit, pattern in DIGIT_PATTERNS:
+            candidate_score = score_digit_candidate(
+                segment_stats,
+                pattern,
+                active_black_penalty=active_black_penalty,
+            )
+            aggregate_scores[digit] = aggregate_scores.get(digit, 0.0) + candidate_score
+            if candidate_score > best_score:
+                best_score = candidate_score
+                best_digit = digit
+        if best_digit != -1:
+            method_votes.append(best_digit)
+
+    if method_votes:
+        vote_counts = Counter(method_votes)
+        best_digit, best_count = vote_counts.most_common(1)[0]
+        if best_count >= 2:
+            return best_digit, segment_stats, strong_active_labels
+
+    best_digit = max(aggregate_scores.items(), key=lambda item: item[1])[0]
+    best_pattern = pattern_lookup[best_digit]
+    matched_ratio = len(best_pattern & strong_active_labels) / max(1, len(best_pattern))
+    return (best_digit if matched_ratio >= 0.5 else -1), segment_stats, strong_active_labels
+
+
+def identify_digit(image: Image.Image, box_top_left: Tuple[int, int], red_pixels: Dict[str, Tuple[int, int]]) -> int:
+    """Identify a digit from segment ROIs instead of single-point hits."""
+    digit, _segment_stats, _strong_active_labels = analyze_digit_segments(image, box_top_left, red_pixels)
+    return digit
+
+
+def ocr_digit_row_fallback(
+    image: Image.Image,
+    start_coords: List[Tuple[int, int]],
+    row_offset: int,
+    box_dims: Tuple[int, int],
+    row_index: int,
+    boxes_per_row: int,
+    *,
+    valid_min: int,
+    valid_max: int,
+    bundle_kind: str,
+    field_name: str,
+) -> str:
+    y_offset = row_index * row_offset
+    x1 = start_coords[0][0]
+    y1 = start_coords[0][1] + y_offset
+    x2 = start_coords[boxes_per_row - 1][0] + box_dims[0]
+    y2 = y1 + box_dims[1]
+    padding = 6
+    crop = image.crop((x1 - padding, y1 - padding, x2 + padding, y2 + padding)).convert('L')
+    crop = crop.resize((crop.width * 3, crop.height * 3), Image.NEAREST)
+    crop_np = np.array(crop)
+    _, crop_np = cv2.threshold(crop_np, 180, 255, cv2.THRESH_BINARY)
+    reader = _get_digit_easyocr_reader()
+    if reader is None:
+        return ''
+    start_time = time.perf_counter()
+    result = reader.readtext(crop_np, detail=0, paragraph=False, allowlist='0123456789')
+    record_call_matrix(bundle_kind, field_name, "ocr_fallback", time.perf_counter() - start_time)
+    text = ' '.join(str(item).strip() for item in result if str(item).strip())
+    digits_only = re.sub(r'[^0-9]', '', text)
+    if not digits_only:
+        return ''
+    try:
+        value = int(digits_only)
+    except ValueError:
+        return ''
+    if valid_min <= value <= valid_max:
+        return digits_only
+    return ''
+
+
+def _get_digit_easyocr_reader():
+    global _DIGIT_EASYOCR_READER
+    if _DIGIT_EASYOCR_READER is not None:
+        return _DIGIT_EASYOCR_READER
+    if easyocr is None:
+        return None
+    with _DIGIT_EASYOCR_LOCK:
+        if _DIGIT_EASYOCR_READER is None:
+            _DIGIT_EASYOCR_READER = easyocr.Reader(['en'], gpu=easyocr_gpu_enabled(), verbose=False)
+        return _DIGIT_EASYOCR_READER
+
+
+def _digit_box_bounds(top_left: Tuple[int, int], box_dims: Tuple[int, int]) -> Tuple[int, int, int, int]:
+    return (
+        int(top_left[0]),
+        int(top_left[1]),
+        int(top_left[0] + box_dims[0]),
+        int(top_left[1] + box_dims[1]),
+    )
+
+
+def _row_bounds(
+    start_coords: List[Tuple[int, int]],
+    row_offset: int,
+    box_dims: Tuple[int, int],
+    row_index: int,
+    boxes_per_row: int,
+) -> Tuple[int, int, int, int]:
+    y_offset = row_index * row_offset
+    x1 = int(start_coords[0][0])
+    y1 = int(start_coords[0][1] + y_offset)
+    x2 = int(start_coords[boxes_per_row - 1][0] + box_dims[0])
+    y2 = int(y1 + box_dims[1])
+    return (x1, y1, x2, y2)
+
+
+def _rescale_bounds(
+    bounds: Tuple[int, int, int, int],
+    draw_scale_divisor: int,
+) -> Tuple[int, int, int, int]:
+    if int(draw_scale_divisor) <= 1:
+        return bounds
+    x1, y1, x2, y2 = bounds
+    return (
+        int(round(float(x1) / float(draw_scale_divisor))),
+        int(round(float(y1) / float(draw_scale_divisor))),
+        int(round(float(x2) / float(draw_scale_divisor))),
+        int(round(float(y2) / float(draw_scale_divisor))),
+    )
+
+
+def detect_digits_in_image(image: Image.Image, start_coords: List[Tuple[int, int]], row_offset: int,
+                           box_dims: Tuple[int, int], red_pixels: Dict[str, Tuple[int, int]],
+                           num_rows: int, boxes_per_row: int, *, valid_min: int, valid_max: int,
+                           annotation_prefix: str = "", bundle_kind: str = "", field_name: str = "",
+                           draw_image: Image.Image | None = None, draw_scale_divisor: int = 1) -> Tuple[List[str], List[str]]:
+    coordinate_set = []
+    coordinate_sources = []
+    draw = ImageDraw.Draw(draw_image if draw_image is not None else image)
+    for row_index in range(num_rows):
+        row_stage_start = time.perf_counter()
+        y_offset = row_index * row_offset
+        row_bounds = _row_bounds(start_coords, row_offset, box_dims, row_index, boxes_per_row)
+        draw.rectangle(_rescale_bounds(row_bounds, draw_scale_divisor), outline="cyan", width=1)
+        row_digits = []
+        has_unknown_digit = False
+        for box_index in range(boxes_per_row):
+            start_x, start_y = start_coords[box_index]
+            top_left = (start_x, start_y + y_offset)
+            digit_bounds = _digit_box_bounds(top_left, box_dims)
+            scaled_digit_bounds = _rescale_bounds(digit_bounds, draw_scale_divisor)
+            draw.rectangle(scaled_digit_bounds, outline="yellow", width=1)
+            digit, segment_stats, strong_active_labels = analyze_digit_segments(image, top_left, red_pixels)
+            if digit != -1:
+                row_digits.append(str(digit))
+            else:
+                row_digits.append('')
+                has_unknown_digit = True
+            digit_label = str(digit) if digit != -1 else "?"
+            draw.text((scaled_digit_bounds[0] + 2, scaled_digit_bounds[1] + 2), digit_label, fill="cyan")
+            for label, offset in red_pixels.items():
+                roi_bounds = segment_roi_bounds(top_left, offset, label)
+                segment_is_on = label in strong_active_labels
+                outline_color = "lime" if segment_is_on else "red"
+                draw.rectangle(_rescale_bounds(roi_bounds, draw_scale_divisor), outline=outline_color, width=1)
+        row_number = ''.join(row_digits)
+        numeric_value = parse_detected_int(row_number)
+        recognized_indices = [index for index, digit_text in enumerate(row_digits) if digit_text]
+        contiguous_digit_block = False
+        if recognized_indices:
+            first_recognized_index = recognized_indices[0]
+            last_recognized_index = recognized_indices[-1]
+            contiguous_digit_block = all(
+                digit_text != '' for digit_text in row_digits[first_recognized_index:last_recognized_index + 1]
+            )
+        should_fallback = numeric_value is None or not (valid_min <= int(numeric_value) <= valid_max)
+        if has_unknown_digit and not contiguous_digit_block:
+            should_fallback = True
+        row_source = "7-segment"
+        record_call_matrix(bundle_kind, field_name, "seven_segment", time.perf_counter() - row_stage_start)
+        if should_fallback and DIGIT_OCR_FALLBACK_ENABLED:
+            fallback_value = ocr_digit_row_fallback(
+                image,
+                start_coords,
+                row_offset,
+                box_dims,
+                row_index,
+                boxes_per_row,
+                valid_min=valid_min,
+                valid_max=valid_max,
+                bundle_kind=bundle_kind,
+                field_name=field_name,
+            )
+            if fallback_value:
+                row_number = fallback_value
+                row_source = "ocr_fallback"
+        coordinate_set.append(row_number)
+        coordinate_sources.append(row_source)
+    return coordinate_set, coordinate_sources
+
+
+def scale_coords(coords, scale_factor):
+    return [(x * scale_factor, y * scale_factor) for x, y in coords]
+
+
+def scale_pixel_positions(pixels, scale_factor):
+    scaled = {}
+    for label, value in pixels.items():
+        if isinstance(value, dict):
+            scaled[label] = {
+                "x": int(value["x"] * scale_factor),
+                "y": int(value["y"] * scale_factor),
+                "width": int(value["width"] * scale_factor),
+                "height": int(value["height"] * scale_factor),
+            }
+        else:
+            x, y = value
+            scaled[label] = (x * scale_factor, y * scale_factor)
+    return scaled
+
+
+CANONICAL_SEVEN_SEGMENT_BOXES = {
+    "top_middle": {"x": 28, "y": 8, "width": 17, "height": 9},
+    "left_middle": {"x": 9, "y": 17, "width": 16, "height": 23},
+    "middle_middle": {"x": 32, "y": 21, "width": 9, "height": 18},
+    "right_middle": {"x": 51, "y": 17, "width": 15, "height": 23},
+    "left_bottom": {"x": 9, "y": 57, "width": 16, "height": 23},
+    "middle_bottom": {"x": 32, "y": 59, "width": 9, "height": 18},
+    "right_bottom": {"x": 51, "y": 57, "width": 16, "height": 23},
+    "middle_bottom_edge": {"x": 28, "y": 82, "width": 17, "height": 9},
+    "center": {"x": 24, "y": 44, "width": 25, "height": 9},
+}
+
+
+def _scale_segment_boxes(
+    segment_boxes: Dict[str, Dict[str, int]],
+    *,
+    source_box_width: int,
+    source_box_height: int,
+    target_box_width: int,
+    target_box_height: int,
+) -> Dict[str, Dict[str, int]]:
+    scale_x = float(target_box_width) / float(source_box_width)
+    scale_y = float(target_box_height) / float(source_box_height)
+    scaled: Dict[str, Dict[str, int]] = {}
+    for label, box in segment_boxes.items():
+        scaled[label] = {
+            "x": int(round(float(box["x"]) * scale_x)),
+            "y": int(round(float(box["y"]) * scale_y)),
+            "width": max(1, int(round(float(box["width"]) * scale_x))),
+            "height": max(1, int(round(float(box["height"]) * scale_y))),
+        }
+    return scaled
+
+
+def parse_detected_int(value: str) -> int | None:
+    if value is None:
+        return None
+    if isinstance(value, (int, np.integer)):
+        return int(value)
+    if isinstance(value, (float, np.floating)):
+        if np.isnan(value):
+            return None
+        return int(round(float(value)))
+
+    text = str(value).strip()
+    if not text or text.lower() == "nan":
+        return None
+    if re.fullmatch(r"[+-]?\d+(?:\.0+)?", text):
+        return int(float(text))
+
+    stripped = re.sub(r"[^0-9]", "", text)
+    if not stripped:
+        return None
+    return int(stripped)
+
+
+def score_digit_layout(scale_factor: int = 5, score_layout_id: str | None = None):
+    score_layout = get_score_layout(score_layout_id)
+    start_coords_run1 = scale_coords(score_layout.race_digit_starts, scale_factor)
+    race_digit_box = (13 * scale_factor, 19 * scale_factor)
+    total_digit_box = (16 * scale_factor, 24 * scale_factor)
+    red_pixels_run1 = {
+        label: {key: int(value) for key, value in box.items()}
+        for label, box in CANONICAL_SEVEN_SEGMENT_BOXES.items()
+    }
+    start_coords_run2 = scale_coords(score_layout.total_digit_starts, scale_factor)
+    red_pixels_run2 = _scale_segment_boxes(
+        CANONICAL_SEVEN_SEGMENT_BOXES,
+        source_box_width=race_digit_box[0],
+        source_box_height=race_digit_box[1],
+        target_box_width=total_digit_box[0],
+        target_box_height=total_digit_box[1],
+    )
+    return {
+        "race_points": (start_coords_run1, 52 * scale_factor, race_digit_box, red_pixels_run1, 12, 2),
+        "total_points": (start_coords_run2, 52 * scale_factor, total_digit_box, red_pixels_run2, 12, 3),
+    }
+
+
+def extract_scoreboard_observation(
+    frame_image: np.ndarray,
+    extract_player_names_batched,
+    annotate_path: str | None = None,
+    annotation_prefix: str = "",
+    video_context: str | None = None,
+    race_id_number: int | None = None,
+    score_layout_id: str | None = None,
+    bundle_kind: str = "",
+    name_field_name: str = "",
+    race_points_field_name: str = "",
+    total_points_field_name: str = "",
+    include_name_ocr: bool = True,
+    is_low_res: bool = False,
+    character_match_mode: str = "stateful",
+) -> Dict[str, object]:
+    """Read one score frame into names, race points, totals, and a visible-row estimate."""
+    score_layout = get_score_layout(score_layout_id)
+    stage_start = time.perf_counter()
+    processed_img = process_image(frame_image, score_layout_id=score_layout.layout_id)
+    record_observation_stage("process_image", time.perf_counter() - stage_start)
+
+    (position_x1, position_y1), (position_x2, position_y2) = position_strip_roi(score_layout_id=score_layout.layout_id)
+
+    stage_start = time.perf_counter()
+    raw_position_metrics = build_position_signal_metrics(processed_img, score_layout_id=score_layout.layout_id)
+    record_observation_stage("build_position_signal_metrics_raw", time.perf_counter() - stage_start)
+
+    stage_start = time.perf_counter()
+    normalized_position_strip = build_normalized_position_strip(processed_img, score_layout_id=score_layout.layout_id)
+    record_observation_stage("normalize_position_strip", time.perf_counter() - stage_start)
+
+    processed_img[position_y1:position_y2, position_x1:position_x2] = cv2.cvtColor(normalized_position_strip, cv2.COLOR_GRAY2BGR)
+
+    processed_img_pil = Image.fromarray(processed_img).convert("RGB")
+    annotation_image = processed_img_pil.copy()
+    scale_factor = 5
+    stage_start = time.perf_counter()
+    scaled_image = processed_img_pil.resize(
+        (processed_img_pil.width * scale_factor, processed_img_pil.height * scale_factor),
+        Image.NEAREST,
+    )
+    record_observation_stage("scale_image", time.perf_counter() - stage_start)
+    layout = score_digit_layout(scale_factor, score_layout_id=score_layout.layout_id)
+
+    race_points = [""] * layout["race_points"][4]
+    race_point_sources = ["skipped"] * layout["race_points"][4]
+    if race_points_field_name and (
+        race_points_field_name != "RacePointsOnTotalScore" or TOTAL_SCORE_RACE_POINTS_ENABLED
+    ):
+        stage_start = time.perf_counter()
+        race_points, race_point_sources = detect_digits_in_image(
+            scaled_image,
+            *layout["race_points"],
+            valid_min=1,
+            valid_max=15,
+            annotation_prefix=f"{annotation_prefix}RP",
+            bundle_kind=bundle_kind,
+            field_name=race_points_field_name,
+            draw_image=annotation_image,
+            draw_scale_divisor=scale_factor,
+        )
+        record_observation_stage("detect_race_points", time.perf_counter() - stage_start)
+
+    stage_start = time.perf_counter()
+    total_points, total_point_sources = detect_digits_in_image(
+        scaled_image,
+        *layout["total_points"],
+        valid_min=0,
+        valid_max=999,
+        annotation_prefix=f"{annotation_prefix}TP",
+        bundle_kind=bundle_kind,
+        field_name=total_points_field_name,
+        draw_image=annotation_image,
+        draw_scale_divisor=scale_factor,
+    )
+    record_observation_stage("detect_total_points", time.perf_counter() - stage_start)
+
+    annotated_image = None
+    if include_name_ocr:
+        stage_start = time.perf_counter()
+        annotated_image = cv2.cvtColor(np.array(annotation_image), cv2.COLOR_RGB2BGR)
+        record_observation_stage("prepare_name_image", time.perf_counter() - stage_start)
+    if annotate_path:
+        Path(annotate_path).parent.mkdir(parents=True, exist_ok=True)
+        save_kwargs = {"format": "JPEG", "quality": 95} if EXPORT_IMAGE_FORMAT == "jpg" else {"format": "PNG"}
+        annotation_image.save(annotate_path, **save_kwargs)
+
+    if include_name_ocr:
+        stage_start = time.perf_counter()
+        names, confidence_scores = extract_player_names_batched(
+            annotated_image,
+            score_layout.player_name_coords,
+            bundle_kind=bundle_kind,
+            field_name=name_field_name,
+        )
+        record_observation_stage("extract_player_names", time.perf_counter() - stage_start)
+
+        stage_start = time.perf_counter()
+        character_metrics = build_character_match_metrics(
+            frame_image,
+            names=names,
+            name_confidences=confidence_scores,
+            video_context=video_context,
+            race_id_number=race_id_number,
+            score_layout_id=score_layout.layout_id,
+            character_match_mode=character_match_mode,
+        )
+        record_observation_stage("character_metrics", time.perf_counter() - stage_start)
+    else:
+        row_count = len(score_layout.player_name_coords)
+        names = [""] * row_count
+        confidence_scores = [0] * row_count
+        character_metrics = [{} for _ in range(row_count)]
+
+    stage_start = time.perf_counter()
+    row_metrics = build_row_presence_metrics(names, confidence_scores, race_points, total_points)
+    record_observation_stage("build_row_presence_metrics", time.perf_counter() - stage_start)
+
+    stage_start = time.perf_counter()
+    position_metrics = build_position_signal_metrics(processed_img, score_layout_id=score_layout.layout_id)
+    record_observation_stage("build_position_signal_metrics", time.perf_counter() - stage_start)
+    for row_metric, position_metric, raw_position_metric in zip(row_metrics, position_metrics, raw_position_metrics):
+        row_metric.update(position_metric)
+        row_metric["raw_expected_position_score"] = round(float(raw_position_metric.get("expected_position_score", 0.0)), 3)
+        row_metric["raw_best_position_score"] = round(float(raw_position_metric.get("best_position_score", 0.0)), 3)
+        row_metric["raw_best_position_template"] = int(raw_position_metric.get("best_position_template", 0) or 0)
+    valid_rows = [bool(metric["legacy_row_present"]) for metric in row_metrics]
+
+    visible_rows = 0
+    for index, row_present in enumerate(valid_rows, start=1):
+        if row_present:
+            visible_rows = index
+
+    position_guided_visible_rows = determine_position_guided_visible_rows(
+        row_metrics,
+        is_low_res=bool(is_low_res),
+    )
+
+    template_row_confidence = max(0.0, min(1.0, visible_rows / 12.0))
+    return {
+        "names": names,
+        "name_confidences": confidence_scores,
+        "race_points": race_points,
+        "race_point_sources": race_point_sources,
+        "total_points": total_points,
+        "total_point_sources": total_point_sources,
+        "character_metrics": character_metrics,
+        "row_metrics": row_metrics,
+        "row_metrics_summary": summarize_row_metrics(row_metrics),
+        "visible_rows": visible_rows,
+        "position_guided_visible_rows": position_guided_visible_rows,
+        "template_row_confidence": template_row_confidence,
+        "score_layout_id": score_layout.layout_id,
+    }
+
+
+def extract_points_transition_observation(
+    frame_image: np.ndarray,
+    *,
+    score_layout_id: str | None = None,
+) -> Dict[str, object]:
+    """Read only the scoreboard point fields used for animation transition detection."""
+    score_layout = get_score_layout(score_layout_id)
+    processed_img = process_image(frame_image, score_layout_id=score_layout.layout_id)
+    processed_img_pil = Image.fromarray(processed_img).convert("RGB")
+    scale_factor = 5
+    scaled_image = processed_img_pil.resize(
+        (processed_img_pil.width * scale_factor, processed_img_pil.height * scale_factor),
+        Image.NEAREST,
+    )
+    layout = score_digit_layout(scale_factor, score_layout_id=score_layout.layout_id)
+    race_points, race_point_sources = detect_digits_in_image(
+        scaled_image,
+        *layout["race_points"],
+        valid_min=1,
+        valid_max=15,
+        annotation_prefix="",
+        bundle_kind="2RaceScore",
+        field_name="RacePoints",
+        draw_image=None,
+        draw_scale_divisor=scale_factor,
+    )
+    total_points, total_point_sources = detect_digits_in_image(
+        scaled_image,
+        *layout["total_points"],
+        valid_min=0,
+        valid_max=999,
+        annotation_prefix="",
+        bundle_kind="2RaceScore",
+        field_name="OldTotalScore",
+        draw_image=None,
+        draw_scale_divisor=scale_factor,
+    )
+    return {
+        "race_points": race_points,
+        "race_point_sources": race_point_sources,
+        "total_points": total_points,
+        "total_point_sources": total_point_sources,
+        "score_layout_id": score_layout.layout_id,
+    }
+
+
+def extract_total_points_observation(
+    frame_image: np.ndarray,
+    *,
+    score_layout_id: str | None = None,
+) -> Dict[str, object]:
+    """Read only total-score digits used for stable total-signature checks."""
+    score_layout = get_score_layout(score_layout_id)
+    processed_img = process_image(frame_image, score_layout_id=score_layout.layout_id)
+    processed_img_pil = Image.fromarray(processed_img).convert("RGB")
+    scale_factor = 5
+    scaled_image = processed_img_pil.resize(
+        (processed_img_pil.width * scale_factor, processed_img_pil.height * scale_factor),
+        Image.NEAREST,
+    )
+    layout = score_digit_layout(scale_factor, score_layout_id=score_layout.layout_id)
+    total_points, total_point_sources = detect_digits_in_image(
+        scaled_image,
+        *layout["total_points"],
+        valid_min=0,
+        valid_max=999,
+        annotation_prefix="",
+        bundle_kind="3TotalScore",
+        field_name="NewTotalScore",
+        draw_image=None,
+        draw_scale_divisor=scale_factor,
+    )
+    return {
+        "total_points": total_points,
+        "total_point_sources": total_point_sources,
+        "score_layout_id": score_layout.layout_id,
+    }
+
+
+def normalize_name_for_vote(name: str) -> str:
+    return collapse_name_whitespace(name)
+
+
+def _normalize_name_key(name: str) -> str:
+    return normalize_name_key(name)
+
+
+def weighted_name_vote_details(values: List[Tuple[str, float]]) -> Tuple[str, float, dict[str, object]]:
+    normalized_entries = []
+    total_weight = 0.0
+    for index, (value, weight) in enumerate(values):
+        if value in (None, ""):
+            continue
+        numeric_weight = max(0.0, float(weight))
+        if numeric_weight <= 0:
+            continue
+        raw_value = normalize_name_for_vote(str(value))
+        key_value = _normalize_name_key(str(value))
+        if not key_value:
+            continue
+        normalized_entries.append(
+            {
+                "raw": raw_value,
+                "key": key_value,
+                "weight": numeric_weight,
+                "allowed_ratio": allowed_name_char_ratio(raw_value),
+                "index": index,
+            }
+        )
+        total_weight += numeric_weight
+    if not normalized_entries:
+        return "", 0.0, {
+            "allowed_ratio": 0.0,
+            "unknown_chars": "",
+            "flags": "low_name_confidence|low_name_stability",
+        }
+
+    clusters: list[dict[str, object]] = []
+    for entry in normalized_entries:
+        assigned_cluster = None
+        best_similarity = 0.0
+        for cluster in clusters:
+            cluster_key = str(cluster["representative_key"])
+            similarity = difflib.SequenceMatcher(None, entry["key"], cluster_key).ratio()
+            if similarity >= 0.72 and similarity > best_similarity:
+                best_similarity = similarity
+                assigned_cluster = cluster
+        if assigned_cluster is None:
+            assigned_cluster = {
+                "members": [],
+                "weight": 0.0,
+                "representative_raw": entry["raw"],
+                "representative_key": entry["key"],
+                "representative_weight": entry["weight"],
+                "representative_allowed_ratio": entry["allowed_ratio"],
+                "representative_index": entry["index"],
+            }
+            clusters.append(assigned_cluster)
+        assigned_cluster["members"].append(entry)
+        assigned_cluster["weight"] = float(assigned_cluster["weight"]) + entry["weight"]
+        current_rep_weight = float(assigned_cluster["representative_weight"])
+        current_rep_raw = str(assigned_cluster["representative_raw"])
+        if (
+            entry["weight"] > current_rep_weight
+            or (
+                entry["weight"] == current_rep_weight
+                and (
+                    float(entry["allowed_ratio"]) > float(assigned_cluster["representative_allowed_ratio"])
+                    or (
+                        float(entry["allowed_ratio"]) == float(assigned_cluster["representative_allowed_ratio"])
+                        and visible_name_length(str(entry["raw"])) >= visible_name_length(str(assigned_cluster["representative_raw"]))
+                    )
+                )
+                and entry["raw"] != current_rep_raw
+            )
+        ):
+            assigned_cluster["representative_raw"] = entry["raw"]
+            assigned_cluster["representative_key"] = entry["key"]
+            assigned_cluster["representative_weight"] = entry["weight"]
+            assigned_cluster["representative_allowed_ratio"] = entry["allowed_ratio"]
+            assigned_cluster["representative_index"] = entry["index"]
+
+    best_cluster = max(
+        clusters,
+        key=lambda cluster: (
+            float(cluster["weight"]),
+            sum(float(member["allowed_ratio"]) for member in cluster["members"]) / max(len(cluster["members"]), 1),
+            float(cluster["representative_weight"]),
+            float(cluster["representative_allowed_ratio"]),
+            -int(cluster["representative_index"]),
+        ),
+    )
+    best_name = str(best_cluster["representative_raw"])
+    best_weight = float(best_cluster["weight"])
+    best_ratio = best_weight / total_weight if total_weight > 0 else 0.0
+    mean_confidence = best_weight / max(len(best_cluster["members"]), 1)
+    flags = []
+    unknown_chars = unknown_name_chars(best_name)
+    if unknown_chars:
+        flags.append("unknown_chars")
+    if mean_confidence < 50.0:
+        flags.append("low_name_confidence")
+    if best_ratio < 0.6:
+        flags.append("low_name_stability")
+    return best_name, best_ratio, {
+        "allowed_ratio": round(allowed_name_char_ratio(best_name) * 100, 1),
+        "unknown_chars": unknown_chars,
+        "flags": "|".join(flags),
+    }
+
+
+def weighted_name_vote(values: List[Tuple[str, float]]) -> Tuple[str, float]:
+    best_name, best_ratio, _details = weighted_name_vote_details(values)
+    return best_name, best_ratio
+
+
+_CENTRAL_FIELD_VOTE = None
+_CENTRAL_SCORE_DECODER = None
+
+
+def _central_score_decoder():
+    """The central score-digit decode (``segment_digits.decode_score_segments``); False when the
+    central package is not staged (then the identical rule in analyze_digit_segments runs)."""
+    global _CENTRAL_SCORE_DECODER
+    if _CENTRAL_SCORE_DECODER is None:
+        _CENTRAL_SCORE_DECODER = False
+        if _central_field_vote():  # makes the central package importable when it is in this repository
+            try:
+                from mk8dx_icon_matcher.segment_digits import decode_score_segments
+                _CENTRAL_SCORE_DECODER = decode_score_segments
+            except ImportError:
+                pass
+    return _CENTRAL_SCORE_DECODER
+
+
+def _central_field_vote():
+    """The central multi-frame field vote (packages/icon-matcher ``sequence_decision.field_vote``; the
+    same vote the Web scanner, Android and LiveTrial use; CENTRAL_RECOGNITION section 8.6, phase 6).
+    Found as an installed package or in this repository; False when it is not staged."""
+    global _CENTRAL_FIELD_VOTE
+    if _CENTRAL_FIELD_VOTE is None:
+        _CENTRAL_FIELD_VOTE = False
+        try:
+            from mk8dx_icon_matcher.sequence_decision import field_vote
+            _CENTRAL_FIELD_VOTE = field_vote
+        except ImportError:
+            import sys
+            from pathlib import Path
+            for parent in Path(__file__).resolve().parents:
+                candidate = parent / "packages" / "icon-matcher" / "python"
+                if (candidate / "mk8dx_icon_matcher" / "sequence_decision.py").is_file():
+                    sys.path.insert(0, str(candidate))
+                    try:
+                        from mk8dx_icon_matcher.sequence_decision import field_vote
+                        _CENTRAL_FIELD_VOTE = field_vote
+                    except ImportError:
+                        pass
+                    break
+    return _CENTRAL_FIELD_VOTE
+
+
+def weighted_vote(values: List[Tuple[object, float]]) -> Tuple[object, float]:
+    """The weighted vote of one field over a bundle: the central ``field_vote`` with no minimum
+    support or lead (Tournament's preset): the highest weight sum wins, the first on a tie; returns
+    the value and its share of the weight."""
+    field_vote = _central_field_vote()
+    if field_vote:
+        won = field_vote(values, 0.0, 0.0)
+        return (None, 0.0) if won is None else (won["value"], won["share"])
+    score_by_value = defaultdict(float)
+    total_weight = 0.0
+    for value, weight in values:
+        if value in (None, ""):
+            continue
+        numeric_weight = max(0.0, float(weight))
+        score_by_value[value] += numeric_weight
+        total_weight += numeric_weight
+    if not score_by_value:
+        return None, 0.0
+    best_value, best_weight = max(score_by_value.items(), key=lambda item: item[1])
+    return best_value, (best_weight / total_weight if total_weight > 0 else 0.0)
+
+
+def weighted_vote_with_source(values: List[Tuple[object, float, str]]) -> Tuple[object, float, str]:
+    score_by_value = defaultdict(float)
+    source_scores_by_value = defaultdict(lambda: defaultdict(float))
+    total_weight = 0.0
+    for value, weight, source in values:
+        if value in (None, ""):
+            continue
+        numeric_weight = max(0.0, float(weight))
+        score_by_value[value] += numeric_weight
+        source_scores_by_value[value][str(source or "7-segment")] += numeric_weight
+        total_weight += numeric_weight
+    if not score_by_value:
+        return None, 0.0, ""
+    best_value, best_weight = max(score_by_value.items(), key=lambda item: item[1])
+    best_source = max(source_scores_by_value[best_value].items(), key=lambda item: item[1])[0]
+    return best_value, (best_weight / total_weight if total_weight > 0 else 0.0), best_source
+
+
+TOTAL_SCORE_CONSENSUS_WINDOW_SIZE = 3
+RACE_SCORE_POINT_WINDOW_SIZE = 5
+
+
+def select_consensus_window(observations: List[Dict[str, object]], mode: str, size: int = 3) -> List[Dict[str, object]]:
+    """Pick a stable observation subset for a specific OCR signal."""
+    if not observations:
+        return []
+    if len(observations) <= size or mode == "all":
+        return observations
+    if mode == "early":
+        return observations[:size]
+    if mode == "late":
+        return observations[-size:]
+    if mode == "center":
+        start_index = max(0, (len(observations) - size) // 2)
+        return observations[start_index:start_index + size]
+    return observations
+
+
+def _parse_observation_value(observation: Dict[str, object], key: str, row_index: int) -> int | None:
+    values = observation.get(key, [])
+    if row_index >= len(values):
+        return None
+    return parse_detected_int(values[row_index])
+
+
+def find_points_animation_transition_index(
+    observations: List[Dict[str, object]],
+    *,
+    max_rows: int = 6,
+) -> int | None:
+    """Find the first frame where stable pre-rollup rows begin transitioning."""
+    if len(observations) < 2:
+        return None
+
+    for index in range(1, len(observations)):
+        previous = observations[index - 1]
+        current = observations[index]
+        previous_visible_rows = int(previous.get("position_guided_visible_rows") or previous.get("visible_rows") or 0)
+        current_visible_rows = int(current.get("position_guided_visible_rows") or current.get("visible_rows") or 0)
+        rows_to_check = min(max_rows, previous_visible_rows, current_visible_rows)
+        if rows_to_check <= 0:
+            rows_to_check = min(max_rows, 6)
+
+        changed_total_rows = 0
+        changed_race_rows = 0
+        changed_any_rows = 0
+        for row_index in range(rows_to_check):
+            previous_race = _parse_observation_value(previous, "race_points", row_index)
+            current_race = _parse_observation_value(current, "race_points", row_index)
+            previous_total = _parse_observation_value(previous, "total_points", row_index)
+            current_total = _parse_observation_value(current, "total_points", row_index)
+            race_changed = previous_race is not None and current_race is not None and previous_race != current_race
+            total_changed = previous_total is not None and current_total is not None and previous_total != current_total
+            changed_race_rows += int(race_changed)
+            changed_total_rows += int(total_changed)
+            changed_any_rows += int(race_changed or total_changed)
+
+        min_total_changes = min(2, rows_to_check) if rows_to_check > 0 else 0
+        min_any_changes = min(3, rows_to_check) if rows_to_check > 0 else 0
+        if changed_total_rows >= min_total_changes and (
+            changed_race_rows >= 1 or changed_any_rows >= min_any_changes
+        ):
+            return index
+    return None
+
+
+def build_consensus_rows(
+    *,
+    name_observations: List[Dict[str, object]],
+    point_observations: List[Dict[str, object]],
+    visible_rows: int,
+    points_key: str,
+    points_source_key: str,
+    secondary_points_key: str | None = None,
+    secondary_points_source_key: str | None = None,
+    character_observations: List[Dict[str, object]] | None = None,
+    keep_all_visible_rows: bool = False,
+) -> List[Dict[str, object]]:
+    """Collapse multiple nearby frames into one best-effort row list."""
+    character_observations = character_observations or point_observations
+    rows = []
+    for row_index in range(max(visible_rows, 1)):
+        name_votes = []
+        point_votes = []
+        secondary_point_votes = []
+        character_votes = []
+        character_method_votes = defaultdict(float)
+        character_raw_best_votes = []
+        character_raw_margin_votes = []
+        character_raw_top5_spread_votes = []
+        character_raw_top5_family_votes = []
+        for observation in name_observations:
+            name = normalize_name_for_vote(observation["names"][row_index]) if row_index < len(observation["names"]) else ""
+            name_conf = observation["name_confidences"][row_index] if row_index < len(observation["name_confidences"]) else 0
+            name_votes.append((name, max(1.0, float(name_conf))))
+        for observation in point_observations:
+            point_value = parse_detected_int(observation[points_key][row_index])
+            point_source_values = observation.get(points_source_key, [])
+            point_source = point_source_values[row_index] if row_index < len(point_source_values) else "7-segment"
+            point_votes.append((point_value, 1.0, point_source))
+            if secondary_points_key and secondary_points_source_key:
+                secondary_point_value = parse_detected_int(observation[secondary_points_key][row_index])
+                secondary_source_values = observation.get(secondary_points_source_key, [])
+                secondary_point_source = secondary_source_values[row_index] if row_index < len(secondary_source_values) else "7-segment"
+                secondary_point_votes.append((secondary_point_value, 1.0, secondary_point_source))
+        for observation in character_observations:
+            if row_index < len(observation.get("character_metrics", [])):
+                character_match = observation["character_metrics"][row_index]
+                if character_match.get("CharacterIndex") is not None:
+                    character_weight = max(1.0, float(character_match.get("CharacterMatchConfidence", 0.0)))
+                    character_key = (
+                        int(character_match["CharacterIndex"]),
+                        str(character_match.get("Character", "")),
+                    )
+                    character_votes.append(
+                        (
+                            character_key,
+                            character_weight,
+                        )
+                    )
+                    character_method_votes[(character_key, str(character_match.get("CharacterMatchMethod", "")))] += character_weight
+                    raw_best = character_match.get("CharacterMatchRawBest")
+                    raw_margin = character_match.get("CharacterMatchRawMargin")
+                    raw_top5_spread = character_match.get("CharacterMatchRawTop5Spread")
+                    raw_top5_family_count = character_match.get("CharacterMatchRawTop5FamilyCount")
+                    if raw_best is not None and not pd.isna(raw_best):
+                        character_raw_best_votes.append((float(raw_best), character_weight))
+                    if raw_margin is not None and not pd.isna(raw_margin):
+                        character_raw_margin_votes.append((float(raw_margin), character_weight))
+                    if raw_top5_spread is not None and not pd.isna(raw_top5_spread):
+                        character_raw_top5_spread_votes.append((float(raw_top5_spread), character_weight))
+                    if raw_top5_family_count is not None and not pd.isna(raw_top5_family_count):
+                        character_raw_top5_family_votes.append((float(raw_top5_family_count), character_weight))
+
+        player_name, name_confidence, name_vote_details = weighted_name_vote_details(name_votes)
+        detected_value, point_confidence, detected_value_source = weighted_vote_with_source(point_votes)
+        secondary_detected_value, _secondary_point_confidence, secondary_detected_value_source = weighted_vote_with_source(secondary_point_votes)
+        character_vote, character_vote_confidence = weighted_vote(character_votes)
+        visible_name = str(player_name or "")
+        if visible_name_length(visible_name) < 3 or distinct_visible_name_count(visible_name) < 3:
+            if detected_value is None:
+                if not keep_all_visible_rows:
+                    continue
+                if not player_name:
+                    player_name = f"PlayerNameMissing_{row_index + 1}"
+
+        character_index = None
+        character_name = ""
+        character_method = ""
+        if character_vote is not None:
+            character_index, character_name = character_vote
+            matching_methods = {
+                method: weight
+                for (method_key, method), weight in character_method_votes.items()
+                if method_key == character_vote
+            }
+            if matching_methods:
+                character_method = max(matching_methods.items(), key=lambda item: item[1])[0]
+
+        def _weighted_numeric_average(values: List[Tuple[float, float]]) -> float | None:
+            if not values:
+                return None
+            total_weight = sum(max(0.0, float(weight)) for _value, weight in values)
+            if total_weight <= 0:
+                return None
+            weighted_sum = sum(float(value) * max(0.0, float(weight)) for value, weight in values)
+            return float(weighted_sum / total_weight)
+
+        raw_best_average = _weighted_numeric_average(character_raw_best_votes)
+        raw_margin_average = _weighted_numeric_average(character_raw_margin_votes)
+        raw_top5_spread_average = _weighted_numeric_average(character_raw_top5_spread_votes)
+        raw_top5_family_average = _weighted_numeric_average(character_raw_top5_family_votes)
+
+        rows.append(
+            {
+                "RowIndex": row_index,
+                "PlayerName": player_name or "",
+                "NameConfidence": round(name_confidence * 100, 1),
+                "NameAllowedCharRatio": name_vote_details["allowed_ratio"],
+                "NameUnknownChars": name_vote_details["unknown_chars"],
+                "NameValidationFlags": name_vote_details["flags"],
+                "DetectedValue": detected_value,
+                "DetectedValueSource": detected_value_source,
+                "DetectedSecondaryValue": secondary_detected_value,
+                "DetectedSecondaryValueSource": secondary_detected_value_source,
+                "DigitConfidence": round(point_confidence * 100, 1),
+                "Character": character_name,
+                "CharacterIndex": character_index,
+                "CharacterMatchConfidence": round(character_vote_confidence * 100, 1),
+                "CharacterMatchMethod": character_method or "",
+                "CharacterMatchRawBest": round(raw_best_average, 1) if raw_best_average is not None else np.nan,
+                "CharacterMatchRawMargin": round(raw_margin_average, 1) if raw_margin_average is not None else np.nan,
+                "CharacterMatchRawTop5Spread": round(raw_top5_spread_average, 1) if raw_top5_spread_average is not None else np.nan,
+                "CharacterMatchRawTop5FamilyCount": int(round(raw_top5_family_average)) if raw_top5_family_average is not None else np.nan,
+            }
+        )
+    return rows
+
+
+def map_total_rows_to_race_rows(
+    score_rows: List[Dict[str, object]],
+    total_rows: List[Dict[str, object]],
+    preprocess_name,
+    weighted_similarity,
+    total_row_metrics: List[Dict[str, object]] | None = None,
+) -> List[Dict[str, object]]:
+    """Attach total-score rows to race-score rows, preferring same-name matches over row order."""
+    mapped_rows = []
+    total_row_metrics = total_row_metrics or []
+    if not score_rows:
+        return mapped_rows
+    if not total_rows:
+        for score_row in score_rows:
+            mapped_rows.append(
+                {
+                    "RacePosition": len(mapped_rows) + 1,
+                    "PositionAfterRace": None,
+                    "PlayerName": score_row["PlayerName"],
+                    "Character": score_row.get("Character", ""),
+                    "CharacterIndex": score_row.get("CharacterIndex"),
+                    "CharacterMatchConfidence": score_row.get("CharacterMatchConfidence", 0.0),
+                    "CharacterMatchMethod": score_row.get("CharacterMatchMethod", ""),
+                    "DetectedRacePoints": score_row["DetectedValue"],
+                    "DetectedRacePointsSource": score_row.get("DetectedValueSource", ""),
+                    "DetectedOldTotalScore": score_row.get("DetectedSecondaryValue"),
+                    "DetectedOldTotalScoreSource": score_row.get("DetectedSecondaryValueSource", ""),
+                    "DetectedTotalScore": None,
+                    "DetectedNewTotalScore": None,
+                    "DetectedTotalScoreSource": "",
+                    "DetectedNewTotalScoreSource": "",
+                    "NameConfidence": score_row["NameConfidence"],
+                    "NameAllowedCharRatio": score_row.get("NameAllowedCharRatio", 0.0),
+                    "NameUnknownChars": score_row.get("NameUnknownChars", ""),
+                    "NameValidationFlags": score_row.get("NameValidationFlags", ""),
+                    "DigitConsensus": score_row["DigitConfidence"],
+                    "TotalScoreMappingMethod": "missing_total_rows",
+                    "TotalScoreMappingScore": None,
+                    "TotalScoreMappingMargin": None,
+                    "TotalScoreNameSimilarity": None,
+                    **{f"PositionTemplate{template_index:02}_Coeff": None for template_index in range(1, 13)},
+                }
+            )
+        return mapped_rows
+
+    def _expected_total_similarity(score_row: Dict[str, object], total_row: Dict[str, object]) -> float:
+        detected_old_total = parse_detected_int(score_row.get("DetectedSecondaryValue"))
+        detected_race_points = parse_detected_int(score_row.get("DetectedValue"))
+        detected_total = parse_detected_int(total_row.get("DetectedValue"))
+        if detected_old_total is None or detected_race_points is None or detected_total is None:
+            return 0.0
+        expected_total = int(detected_old_total) + int(detected_race_points)
+        gap = abs(int(detected_total) - expected_total)
+        if gap == 0:
+            return 1.0
+        if gap == 1:
+            return 0.75
+        if gap == 2:
+            return 0.45
+        if gap <= 4:
+            return 0.15
+        return -0.35
+
+    score_name_counts = Counter(
+        preprocess_name(str(score_row["PlayerName"] or ""))
+        for score_row in score_rows
+        if preprocess_name(str(score_row["PlayerName"] or ""))
+    )
+    total_name_counts = Counter(
+        preprocess_name(str(total_row["PlayerName"] or ""))
+        for total_row in total_rows
+        if preprocess_name(str(total_row["PlayerName"] or ""))
+    )
+
+    candidate_matches = []
+    candidate_matches_by_score_index = defaultdict(list)
+    for score_index, score_row in enumerate(score_rows):
+        normalized_score_name = preprocess_name(str(score_row["PlayerName"] or ""))
+        for total_index, total_row in enumerate(total_rows):
+            normalized_total_name = preprocess_name(str(total_row["PlayerName"] or ""))
+            if not normalized_score_name or not normalized_total_name:
+                continue
+            similarity = 1.0 if normalized_score_name == normalized_total_name else weighted_similarity(score_row["PlayerName"], total_row["PlayerName"])
+            confidence_floor = min(float(score_row["NameConfidence"]), float(total_row["NameConfidence"])) / 100.0
+            score_character = score_row.get("CharacterIndex")
+            total_character = total_row.get("CharacterIndex")
+            if score_character is not None and total_character is not None:
+                character_score = 1.0 if int(score_character) == int(total_character) else -0.25
+            elif score_character is None and total_character is None:
+                character_score = 0.0
+            else:
+                character_score = 0.1
+            duplicate_name = max(score_name_counts[normalized_score_name], total_name_counts[normalized_total_name]) > 1
+            if duplicate_name:
+                expected_total_score = _expected_total_similarity(score_row, total_row)
+                effective_name_score = 0.25 if normalized_score_name == normalized_total_name else similarity * 0.25
+                combined_score = (
+                    (effective_name_score * 0.20)
+                    + (confidence_floor * 0.10)
+                    + (character_score * 0.25)
+                    + (expected_total_score * 0.45)
+                )
+            else:
+                combined_score = (similarity * 0.65) + (confidence_floor * 0.15) + (character_score * 0.20)
+            if similarity >= 0.72 or normalized_score_name == normalized_total_name:
+                candidate_matches.append((combined_score, similarity, duplicate_name, score_index, total_index))
+                candidate_matches_by_score_index[score_index].append((combined_score, similarity, total_index))
+
+    assigned_score_indices = set()
+    assigned_total_indices = set()
+    matched_totals_by_score_index = {}
+    for _combined_score, similarity, duplicate_name, score_index, total_index in sorted(candidate_matches, reverse=True):
+        if score_index in assigned_score_indices or total_index in assigned_total_indices:
+            continue
+        if duplicate_name:
+            mapping_method = "duplicate_name_expected_total"
+        else:
+            mapping_method = "name_exact" if similarity >= 0.999 else "name_fuzzy"
+        matched_totals_by_score_index[score_index] = (total_index, mapping_method)
+        assigned_score_indices.add(score_index)
+        assigned_total_indices.add(total_index)
+
+    remaining_total_indices = [index for index in range(len(total_rows)) if index not in assigned_total_indices]
+    remaining_pointer = 0
+    for score_index, score_row in enumerate(score_rows):
+        matched_total_index = None
+        mapping_method = "row_fallback"
+        if score_index in matched_totals_by_score_index:
+            matched_total_index, mapping_method = matched_totals_by_score_index[score_index]
+        elif remaining_pointer < len(remaining_total_indices):
+            matched_total_index = remaining_total_indices[remaining_pointer]
+            remaining_pointer += 1
+
+        mapping_score = None
+        mapping_margin = None
+        mapping_similarity = None
+        scored_candidates = sorted(candidate_matches_by_score_index.get(score_index, []), reverse=True)
+        if matched_total_index is not None and scored_candidates:
+            matched_candidate = next((item for item in scored_candidates if int(item[2]) == int(matched_total_index)), None)
+            if matched_candidate is not None:
+                mapping_score = float(matched_candidate[0])
+                mapping_similarity = float(matched_candidate[1])
+                best_other_score = next((float(item[0]) for item in scored_candidates if int(item[2]) != int(matched_total_index)), None)
+                mapping_margin = mapping_score - best_other_score if best_other_score is not None else mapping_score
+
+        total_score = None
+        total_digit_confidence = 0.0
+        mapped_character = score_row.get("Character", "")
+        mapped_character_index = score_row.get("CharacterIndex")
+        mapped_character_confidence = score_row.get("CharacterMatchConfidence", 0.0)
+        mapped_character_method = score_row.get("CharacterMatchMethod", "")
+        total_row_position_coefficients = {f"PositionTemplate{template_index:02}_Coeff": None for template_index in range(1, 13)}
+        if matched_total_index is not None:
+            total_row = total_rows[matched_total_index]
+            total_score = total_row["DetectedValue"]
+            total_digit_confidence = float(total_row["DigitConfidence"])
+            if mapped_character_index is None and total_row.get("CharacterIndex") is not None:
+                mapped_character = total_row.get("Character", mapped_character)
+                mapped_character_index = total_row.get("CharacterIndex")
+                mapped_character_confidence = total_row.get("CharacterMatchConfidence", mapped_character_confidence)
+                mapped_character_method = total_row.get("CharacterMatchMethod", mapped_character_method)
+            total_row_index = int(total_row.get("RowIndex", -1))
+            if 0 <= total_row_index < len(total_row_metrics):
+                total_row_position_coefficients.update(
+                    total_row_metrics[total_row_index].get("position_template_coefficients", {})
+                )
+
+        mapped_rows.append(
+            {
+                "RacePosition": len(mapped_rows) + 1,
+                "PositionAfterRace": (matched_total_index + 1) if matched_total_index is not None else None,
+                "PlayerName": score_row["PlayerName"],
+                "Character": mapped_character,
+                "CharacterIndex": mapped_character_index,
+                "CharacterMatchConfidence": mapped_character_confidence,
+                "CharacterMatchMethod": mapped_character_method,
+                "DetectedRacePoints": score_row["DetectedValue"],
+                "DetectedRacePointsSource": score_row.get("DetectedValueSource", ""),
+                "DetectedOldTotalScore": score_row.get("DetectedSecondaryValue"),
+                "DetectedOldTotalScoreSource": score_row.get("DetectedSecondaryValueSource", ""),
+                "DetectedTotalScore": total_score,
+                "DetectedNewTotalScore": total_score,
+                "DetectedTotalScoreSource": total_row.get("DetectedValueSource", "") if matched_total_index is not None else "",
+                "DetectedNewTotalScoreSource": total_row.get("DetectedValueSource", "") if matched_total_index is not None else "",
+                "NameConfidence": score_row["NameConfidence"],
+                "NameAllowedCharRatio": score_row.get("NameAllowedCharRatio", 0.0),
+                "NameUnknownChars": score_row.get("NameUnknownChars", ""),
+                "NameValidationFlags": score_row.get("NameValidationFlags", ""),
+                "DigitConsensus": round((float(score_row["DigitConfidence"]) + total_digit_confidence) / 2.0, 1),
+                "TotalScoreMappingMethod": mapping_method,
+                "TotalScoreMappingScore": round(mapping_score, 4) if mapping_score is not None else None,
+                "TotalScoreMappingMargin": round(mapping_margin, 4) if mapping_margin is not None else None,
+                "TotalScoreNameSimilarity": round(mapping_similarity, 4) if mapping_similarity is not None else None,
+                **total_row_position_coefficients,
+            }
+        )
+    return mapped_rows
+
+
+def reconcile_race_points_with_total_delta(
+    rows: List[Dict[str, object]],
+    score_observations: List[Dict[str, object]],
+) -> List[Dict[str, object]]:
+    """Prefer the old->new total delta when it is at least as well-supported as the selected point vote."""
+    if not rows or not score_observations:
+        return rows
+
+    reconciled_rows = []
+    for row_index, row in enumerate(rows):
+        updated_row = dict(row)
+        detected_race_points = parse_detected_int(updated_row.get("DetectedRacePoints"))
+        detected_old_total = parse_detected_int(updated_row.get("DetectedOldTotalScore"))
+        detected_new_total = parse_detected_int(updated_row.get("DetectedTotalScore"))
+        if detected_old_total is None or detected_new_total is None:
+            reconciled_rows.append(updated_row)
+            continue
+
+        implied_race_points = int(detected_new_total) - int(detected_old_total)
+        if implied_race_points < 1 or implied_race_points > 15:
+            reconciled_rows.append(updated_row)
+            continue
+        if detected_race_points == implied_race_points:
+            reconciled_rows.append(updated_row)
+            continue
+
+        vote_counter = Counter()
+        for observation in score_observations:
+            observation_race_points = observation.get("race_points", [])
+            if row_index >= len(observation_race_points):
+                continue
+            voted_value = parse_detected_int(observation_race_points[row_index])
+            if voted_value is None or not (1 <= int(voted_value) <= 15):
+                continue
+            vote_counter[int(voted_value)] += 1
+
+        implied_support = int(vote_counter.get(int(implied_race_points), 0))
+        current_support = int(vote_counter.get(int(detected_race_points), 0)) if detected_race_points is not None else 0
+        if implied_support >= max(1, current_support):
+            updated_row["DetectedRacePoints"] = int(implied_race_points)
+            updated_row["DetectedRacePointsSource"] = "total_delta_consensus"
+        reconciled_rows.append(updated_row)
+
+    return reconciled_rows
+
+
+def select_race_score_recovery(
+    score_observations: List[Dict[str, object]],
+    *,
+    current_score_rows: int,
+    current_confidence: float,
+    total_score_rows: int,
+) -> Dict[str, object]:
+    """Try a slightly later RaceScore frame when the chosen frame is obscured by the black results bar."""
+    if not score_observations:
+        return {"used": False, "source": "", "count": current_score_rows}
+
+    suspicious = (
+        current_confidence < 60.0
+        or (total_score_rows and current_score_rows < total_score_rows)
+    )
+    if not suspicious:
+        return {"used": False, "source": "", "count": current_score_rows}
+
+    center_index = len(score_observations) // 2
+    candidate_indices = [index for index in range(center_index + 3, len(score_observations))]
+    if not candidate_indices:
+        candidate_indices = [index for index in range(center_index + 1, len(score_observations))]
+
+    best_candidate = None
+    for candidate_index in candidate_indices:
+        candidate_observation = score_observations[candidate_index]
+        candidate_count = int(candidate_observation.get("position_guided_visible_rows", 0))
+        candidate_strength = float(candidate_observation.get("template_row_confidence", 0.0))
+        if candidate_count <= 0:
+            continue
+        if best_candidate is None or (candidate_count, candidate_strength) > (best_candidate["count"], best_candidate["strength"]):
+            best_candidate = {
+                "used": candidate_count > current_score_rows or (
+                    candidate_count == current_score_rows and candidate_strength > (current_confidence / 100.0)
+                ),
+                "source": f"late_frame_plus_{candidate_index - center_index}",
+                "count": candidate_count,
+                "strength": candidate_strength,
+                "index": candidate_index,
+            }
+
+    if best_candidate and best_candidate["used"]:
+        return best_candidate
+    return {"used": False, "source": "", "count": current_score_rows}
+
+
+def _should_promote_low_res_score_row_count_with_legacy(
+    *,
+    is_low_res: bool,
+    score_rows: int,
+    total_rows: int,
+    legacy_score_rows: int,
+    legacy_total_rows: int,
+    legacy_confidence: float,
+) -> bool:
+    """Allow low-res score-row count promotion when both legacy paths consistently agree.
+
+    This is intentionally strict: only promote when the current low-res position-guided
+    race count is lower than the total-score count and the legacy race/total counts both
+    support that higher value with high confidence.
+    """
+    if not is_low_res:
+        return False
+    if total_rows < 12:
+        return False
+    if score_rows >= total_rows:
+        return False
+    if legacy_score_rows < total_rows or legacy_total_rows < total_rows:
+        return False
+    return legacy_confidence >= 0.80
+
+
+def build_consensus_observation(frames: List[np.ndarray], total_frames: List[np.ndarray], extract_player_names_batched,
+                                preprocess_name, weighted_similarity, annotate_path: str | None = None,
+                                frame_numbers: List[int] | None = None,
+                                total_annotate_path: str | None = None,
+                                annotate_paths: List[str | None] | None = None,
+                                total_annotate_paths: List[str | None] | None = None,
+                                video_context: str | None = None, is_low_res: bool = False,
+                                race_id_number: int | None = None,
+                                score_layout_id: str | None = None,
+                                preselected_race_point_anchor_frame: int | None = None,
+                                preselected_point_frames: List[np.ndarray] | None = None,
+                                preselected_late_frames: List[np.ndarray] | None = None,
+                                character_match_mode: str = "stateful") -> Dict[str, object]:
+    """Combine several neighbouring score frames into one stable observation."""
+    if not frames:
+        return {"rows": [], "visible_rows": 0, "row_count_confidence": 0.0, "name_confidence": 0.0, "digit_consensus": 0.0}
+
+    names_from_late_override = bool(preselected_late_frames)
+    score_observations = []
+    total_observations = []
+    for index, frame in enumerate(frames):
+        current_annotate_path = None
+        if annotate_paths and index < len(annotate_paths):
+            current_annotate_path = annotate_paths[index]
+        elif index == len(frames) // 2:
+            current_annotate_path = annotate_path
+        score_observations.append(
+            extract_scoreboard_observation(
+                frame,
+                extract_player_names_batched,
+                current_annotate_path,
+                annotation_prefix="RS-",
+                video_context=video_context,
+                race_id_number=race_id_number,
+                score_layout_id=score_layout_id,
+                bundle_kind="2RaceScore",
+                name_field_name="RacePlayerName",
+                race_points_field_name="RacePoints",
+                total_points_field_name="OldTotalScore",
+                include_name_ocr=not names_from_late_override,
+                is_low_res=bool(is_low_res),
+                character_match_mode=character_match_mode,
+            )
+        )
+    score_core_observations = score_observations[-APP_CONFIG.ocr_consensus_frames:] or score_observations
+    total_frames_for_observation = select_consensus_window(
+        total_frames,
+        "center",
+        size=TOTAL_SCORE_CONSENSUS_WINDOW_SIZE,
+    )
+    for frame in total_frames_for_observation:
+        total_index = len(total_observations)
+        current_total_annotate_path = None
+        if total_annotate_paths and total_index < len(total_annotate_paths):
+            current_total_annotate_path = total_annotate_paths[total_index]
+        elif total_index == len(total_frames_for_observation) // 2:
+            current_total_annotate_path = total_annotate_path
+        total_observations.append(
+            extract_scoreboard_observation(
+                frame,
+                extract_player_names_batched,
+                current_total_annotate_path,
+                annotation_prefix="TS-",
+                video_context=video_context,
+                race_id_number=race_id_number,
+                score_layout_id=score_layout_id,
+                bundle_kind="3TotalScore",
+                name_field_name="TotalPlayerName",
+                race_points_field_name="RacePointsOnTotalScore",
+                total_points_field_name="NewTotalScore",
+                is_low_res=bool(is_low_res),
+                character_match_mode=character_match_mode,
+            )
+        )
+    if not total_observations:
+        total_observations = score_observations
+
+    frame_numbers = frame_numbers or list(range(len(frames)))
+    race_point_anchor_frame = frame_numbers[-1] if frame_numbers else None
+    score_name_observations = select_consensus_window(score_core_observations, "all")
+    score_point_source_observations = score_observations
+    late_override_observations = []
+    if preselected_late_frames:
+        for frame in preselected_late_frames:
+            late_override_observations.append(
+                extract_scoreboard_observation(
+                    frame,
+                    extract_player_names_batched,
+                    None,
+                    annotation_prefix="RSL-",
+                    video_context=video_context,
+                    score_layout_id=score_layout_id,
+                    bundle_kind="2RaceScore",
+                    name_field_name="RacePlayerName",
+                    race_points_field_name="RacePoints",
+                    total_points_field_name="OldTotalScore",
+                    is_low_res=bool(is_low_res),
+                    character_match_mode=character_match_mode,
+                )
+            )
+    point_override_observations = []
+    if preselected_point_frames:
+        for frame in preselected_point_frames:
+            point_override_observations.append(
+                extract_scoreboard_observation(
+                    frame,
+                    extract_player_names_batched,
+                    None,
+                    annotation_prefix="RSP-",
+                    video_context=video_context,
+                    score_layout_id=score_layout_id,
+                    bundle_kind="2RaceScore",
+                    name_field_name="RacePlayerName",
+                    race_points_field_name="RacePoints",
+                    total_points_field_name="OldTotalScore",
+                    include_name_ocr=False,
+                    is_low_res=bool(is_low_res),
+                    character_match_mode=character_match_mode,
+                )
+            )
+    if late_override_observations:
+        score_name_observations = late_override_observations
+    if preselected_race_point_anchor_frame is not None and frame_numbers:
+        try:
+            anchor_index = next(
+                index for index, value in enumerate(frame_numbers)
+                if int(value) == int(preselected_race_point_anchor_frame)
+            )
+        except StopIteration:
+            anchor_index = None
+        if anchor_index is not None:
+            point_window_start = max(0, anchor_index - (RACE_SCORE_POINT_WINDOW_SIZE - 1))
+            score_point_source_observations = score_observations[point_window_start:anchor_index + 1]
+            race_point_anchor_frame = frame_numbers[anchor_index]
+    elif len(score_observations) > APP_CONFIG.ocr_consensus_frames:
+        transition_index = find_points_animation_transition_index(score_observations)
+        if transition_index is not None:
+            score_point_source_observations = score_observations[max(0, transition_index - RACE_SCORE_POINT_WINDOW_SIZE):transition_index]
+            if transition_index - 1 < len(frame_numbers):
+                race_point_anchor_frame = frame_numbers[max(0, transition_index - 1)]
+        else:
+            score_radius = max(0, APP_CONFIG.ocr_consensus_frames // 2)
+            anchor_index = max(0, len(score_observations) - score_radius - 1)
+            point_window_start = max(0, anchor_index - (RACE_SCORE_POINT_WINDOW_SIZE - 1))
+            score_point_source_observations = score_observations[point_window_start:anchor_index + 1]
+            if anchor_index < len(frame_numbers):
+                race_point_anchor_frame = frame_numbers[anchor_index]
+    if point_override_observations:
+        score_point_source_observations = point_override_observations
+    score_point_observations = select_consensus_window(score_point_source_observations, "early")
+    score_character_observations = (
+        late_override_observations if late_override_observations
+        else select_consensus_window(score_core_observations, "late")
+    )
+    score_position_observations = (
+        late_override_observations if late_override_observations
+        else select_consensus_window(score_core_observations, "late")
+    )
+    score_count_observations = (
+        select_consensus_window(late_override_observations, "late", size=TOTAL_SCORE_CONSENSUS_WINDOW_SIZE)
+        if late_override_observations
+        else select_consensus_window(score_core_observations, "late")
+    )
+    total_consensus_observations = total_observations
+    visible_votes = Counter(observation["visible_rows"] for observation in score_count_observations if observation["visible_rows"] > 0)
+    visible_rows = _pick_visible_rows_from_votes(visible_votes, fallback=0)
+    row_count_confidence = (visible_votes[visible_rows] / len(score_count_observations)) if visible_rows and score_count_observations else 0.0
+    position_guided_visible_votes = Counter(
+        observation["position_guided_visible_rows"] for observation in score_count_observations if observation["position_guided_visible_rows"] > 0
+    )
+    position_guided_visible_rows = _pick_visible_rows_from_votes(position_guided_visible_votes, fallback=0)
+    position_guided_row_count_confidence = (
+        position_guided_visible_votes[position_guided_visible_rows] / len(score_count_observations)
+        if position_guided_visible_rows and score_count_observations else 0.0
+    )
+    total_visible_votes = Counter(
+        observation["visible_rows"] for observation in total_consensus_observations if observation["visible_rows"] > 0
+    )
+    total_visible_rows = _pick_visible_rows_from_votes(total_visible_votes, fallback=visible_rows, prefer=visible_rows)
+    total_position_guided_visible_votes = Counter(
+        observation["position_guided_visible_rows"]
+        for observation in total_consensus_observations
+        if observation["position_guided_visible_rows"] > 0
+    )
+    total_position_guided_visible_rows = _pick_visible_rows_from_votes(
+        total_position_guided_visible_votes,
+        fallback=position_guided_visible_rows,
+        prefer=position_guided_visible_rows,
+    )
+
+    low_res_row12_character_support_votes = 0
+    low_res_center_frame_row12_support = False
+    ultra_low_res_center_frame_row12_support = False
+    if (
+        is_low_res
+        and position_guided_visible_rows == 11
+        and total_position_guided_visible_rows >= 12
+    ):
+        if frames:
+            center_frame = frames[len(frames) // 2]
+            low_res_center_frame_row12_support = _frame_supports_low_res_row12_character_fallback(
+                center_frame,
+                video_context=video_context,
+                score_layout_id=score_layout_id,
+                character_match_mode=character_match_mode,
+            )
+            ultra_low_res_center_frame_row12_support = _frame_supports_ultra_low_res_row12_blob_fallback(
+                center_frame,
+                score_layout_id=score_layout_id,
+            )
+        if score_observations:
+            low_res_row12_character_support_votes = sum(
+                1
+                for observation in score_observations
+                if _observation_supports_low_res_row12_character_fallback(observation)
+            )
+        if (
+            low_res_center_frame_row12_support
+            or low_res_row12_character_support_votes >= 1
+            or ultra_low_res_center_frame_row12_support
+        ):
+            position_guided_visible_rows = 12
+            position_guided_row_count_confidence = max(
+                position_guided_row_count_confidence,
+                max(
+                    (low_res_row12_character_support_votes / len(score_observations)) if score_observations else 0.0,
+                    1.0 if low_res_center_frame_row12_support else 0.0,
+                    1.0 if ultra_low_res_center_frame_row12_support else 0.0,
+                ),
+            )
+
+    recovery = select_race_score_recovery(
+        score_position_observations,
+        current_score_rows=position_guided_visible_rows,
+        current_confidence=round(position_guided_row_count_confidence * 100, 1),
+        total_score_rows=total_position_guided_visible_rows,
+    )
+    if recovery["used"]:
+        position_guided_visible_rows = int(recovery["count"])
+        position_guided_row_count_confidence = max(position_guided_row_count_confidence, 0.85)
+    low_res_legacy_count_alignment_source = ""
+    if _should_promote_low_res_score_row_count_with_legacy(
+        is_low_res=is_low_res,
+        score_rows=int(position_guided_visible_rows),
+        total_rows=int(total_position_guided_visible_rows),
+        legacy_score_rows=int(visible_rows),
+        legacy_total_rows=int(total_visible_rows),
+        legacy_confidence=float(row_count_confidence),
+    ):
+        position_guided_visible_rows = int(total_position_guided_visible_rows)
+        position_guided_row_count_confidence = max(position_guided_row_count_confidence, float(row_count_confidence))
+        low_res_legacy_count_alignment_source = "low_res_legacy_count_alignment"
+
+    representative_score_observation = score_position_observations[len(score_position_observations) // 2] if score_position_observations else {}
+    representative_total_observation = (
+        total_consensus_observations[len(total_consensus_observations) // 2] if total_consensus_observations else {}
+    )
+
+    # Use the position-guided count as the official row count. The older OCR-only count
+    # is still returned in debug data as a legacy reference.
+    score_rows = build_consensus_rows(
+        name_observations=score_name_observations,
+        point_observations=score_point_observations,
+        visible_rows=position_guided_visible_rows,
+        points_key="race_points",
+        points_source_key="race_point_sources",
+        secondary_points_key="total_points",
+        secondary_points_source_key="total_point_sources",
+        character_observations=score_character_observations,
+        keep_all_visible_rows=is_low_res,
+    )
+    total_rows = build_consensus_rows(
+        name_observations=total_consensus_observations,
+        point_observations=total_consensus_observations,
+        visible_rows=total_position_guided_visible_rows,
+        points_key="total_points",
+        points_source_key="total_point_sources",
+        character_observations=total_consensus_observations,
+        keep_all_visible_rows=is_low_res,
+    )
+    rows = map_total_rows_to_race_rows(
+        score_rows,
+        total_rows,
+        preprocess_name,
+        weighted_similarity,
+        representative_total_observation.get("row_metrics", []),
+    )
+    rows = reconcile_race_points_with_total_delta(rows, score_observations)
+    name_confidences = [float(row["NameConfidence"]) / 100.0 for row in rows if row.get("NameConfidence") is not None]
+    digit_confidences = [float(row["DigitConsensus"]) / 100.0 for row in rows if row.get("DigitConsensus") is not None]
+
+    return {
+        "rows": rows,
+        "visible_rows": len(rows),
+        "score_visible_rows": position_guided_visible_rows,
+        "total_visible_rows": total_position_guided_visible_rows,
+        "legacy_score_visible_rows": visible_rows,
+        "legacy_total_visible_rows": total_visible_rows,
+        "row_count_confidence": round(position_guided_row_count_confidence * 100, 1),
+        "legacy_row_count_confidence": round(row_count_confidence * 100, 1),
+        "score_count_votes": summarize_count_votes(score_count_observations, "position_guided_visible_rows"),
+        "total_count_votes": summarize_count_votes(total_consensus_observations, "position_guided_visible_rows"),
+        "legacy_score_count_votes": summarize_count_votes(score_count_observations, "visible_rows"),
+        "legacy_total_count_votes": summarize_count_votes(total_consensus_observations, "visible_rows"),
+        "score_row_metrics_summary": representative_score_observation.get("row_metrics_summary", ""),
+        "total_row_metrics_summary": representative_total_observation.get("row_metrics_summary", ""),
+        "representative_score_observation": representative_score_observation,
+        "representative_total_observation": representative_total_observation,
+        "race_point_anchor_frame": race_point_anchor_frame,
+        "race_score_recovery_used": bool(recovery["used"]),
+        "race_score_recovery_source": str(recovery.get("source", "")) or (
+            low_res_legacy_count_alignment_source
+            or
+            (
+                "ultra_low_res_row12_blob_fallback_center_frame"
+                if ultra_low_res_center_frame_row12_support
+                else
+                "low_res_row12_character_fallback_center_frame"
+                if low_res_center_frame_row12_support
+                else f"low_res_row12_character_fallback_{low_res_row12_character_support_votes}of{len(score_observations)}"
+            )
+            if (
+                ultra_low_res_center_frame_row12_support
+                or low_res_center_frame_row12_support
+                or low_res_row12_character_support_votes
+            )
+            and position_guided_visible_rows == 12 and not recovery["used"]
+            else ""
+        ),
+        "race_score_recovery_count": int(recovery.get("count", position_guided_visible_rows)),
+        "name_confidence": round((sum(name_confidences) / len(name_confidences)) * 100, 1) if name_confidences else 0.0,
+        "digit_consensus": round((sum(digit_confidences) / len(digit_confidences)) * 100, 1) if digit_confidences else 0.0,
+        "score_layout_id": get_score_layout(score_layout_id).layout_id,
+    }
+
+
+def build_race_warning_messages(expected_players: int | None, race_score_players: int, total_score_players: int,
+                                row_count_confidence: float) -> List[str]:
+    messages = []
+    if expected_players is not None and race_score_players != expected_players:
+        messages.append(f"{expected_players} players expected, but only {race_score_players} were found")
+    if total_score_players and total_score_players != race_score_players:
+        messages.append("player count does not match between the race score screen and total score screen")
+    if row_count_confidence < 60:
+        messages.append("player count could not be read with enough confidence")
+    return messages
+
+
+def exact_total_score_fallback(prepared_rows: List[Dict[str, object]]) -> Dict[int, int]:
+    detected_totals = [row["detected_total"] for row in prepared_rows if row["detected_total"] is not None]
+    expected_totals = [row["session_new_total"] for row in prepared_rows]
+    if not detected_totals or len(detected_totals) != len(expected_totals):
+        return {}
+    if Counter(int(value) for value in detected_totals) != Counter(int(value) for value in expected_totals):
+        return {}
+    return {row["index"]: int(row["session_new_total"]) for row in prepared_rows}

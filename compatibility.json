@@ -1,0 +1,13 @@
+{
+  "apiContract": "v1",
+  "assetCatalog": "schema9-asset-catalog-v1",
+  "assetCollectionVersion": "master-schema9-v5.10-pack-0.4.1-2026-11-02-r9d",
+  "coordinatedImages": [
+    "api",
+    "web"
+  ],
+  "databaseMigration": "0083",
+  "nativeClientSupport": "android-livetrial-tournament-build-from-this-repository",
+  "productVersion": "0.1.0-rc.8",
+  "schemaVersion": "mk8dx.compatibility.v1"
+}

@@ -1,0 +1,14 @@
+# LiveTrial — Python dependencies (tested versions).
+# Install into a fresh venv:  python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
+#
+# easyocr pulls in torch + torchvision + scipy automatically. The tested torch
+# build was CUDA (2.11.0+cu128); a CPU-only torch works too (identity/OCR run
+# fine on CPU) — plain `pip install easyocr` picks the right wheel for your box.
+opencv-python==4.13.0.92
+numpy==2.4.5
+Pillow==12.2.0
+easyocr==1.7.2
+
+# NOT a pip package — required on PATH for capture + clip recording:
+#   ffmpeg   (https://ffmpeg.org)  -> `ffmpeg -version` must work
+# easyocr downloads its recognition models to ~/.EasyOCR on first run (~100MB).

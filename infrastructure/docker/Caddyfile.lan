@@ -1,0 +1,37 @@
+https://{$MK8DX_DOMAIN} {
+  tls internal
+  encode zstd gzip
+  @api path /api/* /v1/* /health/*
+  handle @api {
+    reverse_proxy api:8080
+  }
+  handle /.well-known/assetlinks.json {
+    root * /srv
+    header Content-Type application/json
+    file_server
+  }
+  handle /client-config.json {
+    root * /srv
+    header Content-Type application/json
+    file_server
+  }
+  handle_path /scanner/* {
+    root * /srv/scanner
+    file_server
+    header Cross-Origin-Opener-Policy same-origin
+    header Cross-Origin-Embedder-Policy require-corp
+    header Cross-Origin-Resource-Policy same-origin
+  }
+  handle /assets/* {
+    root * /srv
+    file_server
+  }
+  handle {
+    root * /srv
+    try_files {path} /index.html
+    file_server
+  }
+  header X-Content-Type-Options nosniff
+  header Referrer-Policy same-origin
+  header X-Frame-Options DENY
+}

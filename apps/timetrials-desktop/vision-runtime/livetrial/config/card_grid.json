@@ -1,0 +1,273 @@
+{
+ "version": 1,
+ "note": "Card-relative geometry. Icon slots are the database's uniform cells; text/digit geometry is fitted from the COCO labels. Edit at /grid.",
+ "canvas": [
+  1280,
+  720
+ ],
+ "layoutOffsetY": 0,
+ "layoutOffsetYNewGhost": -30,
+ "cards": {
+  "3lap": {
+   "reference": "2025062717535900_s_jpg.rf.9bCS6aKazkikfJ14fFXS.jpg",
+   "card": {
+    "x": 551,
+    "y": 134,
+    "w": 677,
+    "h": 220,
+    "bottomDy": 232
+   },
+   "icons": {
+    "character": {
+     "x": 19.5,
+     "y": 6.5,
+     "w": 47.5,
+     "h": 47.5
+    },
+    "flag": {
+     "x": 385,
+     "y": 12,
+     "w": 55,
+     "h": 36
+    },
+    "parts": {
+     "x": 41,
+     "y0": 56.5,
+     "w": 80,
+     "h": 50.5,
+     "pitch": 52,
+     "n": 3,
+     "order": [
+      "kart",
+      "wheel",
+      "glider"
+     ]
+    }
+   },
+   "text": {
+    "name": {
+     "x": 67,
+     "y": 16.5,
+     "w": 290,
+     "h": 30
+    },
+    "partName": {
+     "x": 121,
+     "y0": 69,
+     "w": 290,
+     "h": 30,
+     "pitch": 51.5,
+     "n": 3
+    },
+    "lapIndex": {
+     "x": 468,
+     "y0": 75,
+     "w": 29,
+     "h": 29,
+     "pitch": 44,
+     "n": 3
+    },
+    "lapTime": {
+     "x": 501,
+     "y0": 76.5,
+     "w": 127,
+     "h": 25,
+     "pitch": 44,
+     "n": 3
+    },
+    "totalTime": {
+     "x": 493,
+     "y0": 15.5,
+     "w": 154,
+     "h": 28,
+     "pitch": 0,
+     "n": 1
+    }
+   },
+   "digits": {
+    "lapTime": {
+     "pattern": "n:nn.nnn",
+     "h": 25,
+     "numW": 17.5,
+     "sepW": 6,
+     "x": 501,
+     "slots": [
+      0,
+      19,
+      26,
+      45,
+      64,
+      71,
+      90,
+      109
+     ],
+     "y0": 76,
+     "pitch": 44,
+     "n": 3
+    },
+    "totalTime": {
+     "pattern": "n:nn.nnn",
+     "h": 28,
+     "numW": 19,
+     "sepW": 6,
+     "x": 493,
+     "slots": [
+      0,
+      24,
+      33,
+      56,
+      79,
+      89,
+      112,
+      135
+     ],
+     "y0": 15,
+     "pitch": 0,
+     "n": 1
+    }
+   }
+  },
+  "7lap": {
+   "reference": "2025062312333400-16851BE00BC6068871FE49D98876D6C5_jpg.rf.GS0IEzEORlNgDqxhRUxi.jpg",
+   "card": {
+    "x": 552,
+    "y": 62,
+    "w": 676,
+    "h": 292,
+    "bottomDy": 304
+   },
+   "icons": {
+    "character": {
+     "x": 18,
+     "y": 4,
+     "w": 48,
+     "h": 48
+    },
+    "flag": {
+     "x": 384,
+     "y": 9.5,
+     "w": 55,
+     "h": 37
+    },
+    "parts": {
+     "x": 40,
+     "y0": 93,
+     "w": 80,
+     "h": 50,
+     "pitch": 52,
+     "n": 3,
+     "order": [
+      "kart",
+      "wheel",
+      "glider"
+     ]
+    }
+   },
+   "text": {
+    "name": {
+     "x": 66,
+     "y": 14,
+     "w": 290,
+     "h": 30
+    },
+    "partName": {
+     "x": 121.5,
+     "y0": 103,
+     "w": 290,
+     "h": 30,
+     "pitch": 51.5,
+     "n": 3
+    },
+    "lapIndex": {
+     "x": 467,
+     "y0": 59,
+     "w": 29,
+     "h": 29,
+     "pitch": 32,
+     "n": 7
+    },
+    "lapTime": {
+     "x": 500,
+     "y0": 60,
+     "w": 128,
+     "h": 26,
+     "pitch": 32,
+     "n": 7
+    },
+    "totalTime": {
+     "x": 492,
+     "y0": 13,
+     "w": 154,
+     "h": 29,
+     "pitch": 0,
+     "n": 1
+    }
+   },
+   "digits": {
+    "lapTime": {
+     "pattern": "n:nn.nnn",
+     "h": 26,
+     "numW": 17.5,
+     "sepW": 7,
+     "x": 500,
+     "slots": [
+      0,
+      19,
+      26,
+      45,
+      64,
+      71,
+      91,
+      110
+     ],
+     "y0": 59,
+     "pitch": 32,
+     "n": 7
+    },
+    "totalTime": {
+     "pattern": "n:nn.nnn",
+     "h": 29,
+     "numW": 19,
+     "sepW": 7,
+     "x": 492,
+     "slots": [
+      0,
+      24,
+      33,
+      56,
+      79,
+      89,
+      112,
+      135
+     ],
+     "y0": 12,
+     "pitch": 0,
+     "n": 1
+    }
+   }
+  }
+ },
+ "productionAnchor": {
+  "3lap": {
+   "bottom": [
+    2,
+    6
+   ],
+   "top": [
+    2,
+    4
+   ]
+  },
+  "7lap": {
+   "top": [
+    3,
+    3
+   ],
+   "bottom": [
+    3,
+    1
+   ]
+  }
+ },
+ "productionAnchorNote": "Constant (dx,dy) from the card box identity.py finds (lap-index probe, yp - HEADER) to this grid's card origin, per lap mode and card slot. Measured on grid_refs/. Adding it lets the grid's offsets ride on production's per-frame localisation instead of fixed origins - see CARD_GRID.md section 5."
+}

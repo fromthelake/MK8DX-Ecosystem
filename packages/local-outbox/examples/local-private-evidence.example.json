@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "mk8dx.local-private-evidence.v1",
+  "entryKey": "0000000000000000000000000000000000000000000000000000000000000000",
+  "createdAtMs": 1767225600000,
+  "privateEvidence": {
+    "sourceInput": "synthetic://capture/session-1",
+    "events": ["synthetic_result_confirmed"]
+  }
+}

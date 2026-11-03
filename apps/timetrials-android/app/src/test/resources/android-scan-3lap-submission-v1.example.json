@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.ANDROIDSCAN0001",
+  "revision": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 106784,
+  "laps": [
+    { "lapNumber": 1, "timeMs": 37121 },
+    { "lapNumber": 2, "timeMs": 35399 },
+    { "lapNumber": 3, "timeMs": 34264 }
+  ],
+  "loadout": {
+    "characterId": "character.yoshi",
+    "characterVariantId": "character_variant.yoshi.018_black",
+    "bodyId": "body.standard_kart",
+    "tireId": "tire.azure_roller",
+    "gliderId": "glider.super_glider"
+  },
+  "countryId": "country.nl",
+  "playerReference": {
+    "namespace": "producer_local_profile",
+    "value": "scan-local-profile"
+  },
+  "observedPlayerName": "Synthetic Driver",
+  "source": {
+    "kind": "android_scan",
+    "captureLayout": "time_trial_result",
+    "producerVersion": "tt-scan-adapter-test",
+    "localRecordId": "synthetic-scan-3lap"
+  },
+  "timestamps": {
+    "capturedAtMs": 1786900000000,
+    "createdAtMs": 1786900060000
+  },
+  "evidence": [
+    {
+      "kind": "scan_result",
+      "reference": "scan-result.synthetic-3lap.json",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "mediaType": "application/json"
+    }
+  ],
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "tt_scan_lap_sum_v1",
+    "lapSumMatches": true,
+    "fieldConfidence": {
+      "characterVariant": 0.91,
+      "body": 0.88,
+      "tire": 0.85,
+      "glider": 0.83,
+      "country": 0.95
+    }
+  }
+}

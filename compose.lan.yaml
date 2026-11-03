@@ -1,0 +1,15 @@
+services:
+  web:
+    environment:
+      MK8DX_DOMAIN: ${MK8DX_DOMAIN:?}
+    volumes:
+      - ./infrastructure/docker/Caddyfile.lan:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports: !override
+      - "${MK8DX_BIND_ADDRESS:?}:443:443"
+    healthcheck:
+      test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile"]
+volumes:
+  caddy_data:
+  caddy_config:

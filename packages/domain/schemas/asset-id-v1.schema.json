@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json",
+  "title": "MK8DX Stable Asset Identifier V1",
+  "description": "A typed stable identifier from the schema-9 asset namespace. Pattern validity does not prove that an identifier exists in a particular asset release.",
+  "oneOf": [
+    { "$ref": "#/$defs/trackId" },
+    { "$ref": "#/$defs/characterId" },
+    { "$ref": "#/$defs/characterVariantId" },
+    { "$ref": "#/$defs/bodyId" },
+    { "$ref": "#/$defs/bodyVariantId" },
+    { "$ref": "#/$defs/tireId" },
+    { "$ref": "#/$defs/gliderId" },
+    { "$ref": "#/$defs/gliderVariantId" },
+    { "$ref": "#/$defs/countryId" }
+  ],
+  "$defs": {
+    "trackId": {
+      "title": "TrackId",
+      "type": "string",
+      "pattern": "^track\\.[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "characterId": {
+      "title": "CharacterId",
+      "type": "string",
+      "pattern": "^character\\.[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "characterVariantId": {
+      "title": "CharacterVariantId",
+      "type": "string",
+      "pattern": "^character_variant\\.[a-z0-9]+(?:_[a-z0-9]+)*\\.[0-9]{3}_[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "bodyId": {
+      "title": "BodyId",
+      "type": "string",
+      "pattern": "^body\\.[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "bodyVariantId": {
+      "title": "BodyVariantId",
+      "type": "string",
+      "pattern": "^body_variant\\.[a-z0-9]+(?:_[a-z0-9]+)*\\.[0-9]{3}_[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "tireId": {
+      "title": "TireId",
+      "type": "string",
+      "pattern": "^tire\\.[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "gliderId": {
+      "title": "GliderId",
+      "type": "string",
+      "pattern": "^glider\\.[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "gliderVariantId": {
+      "title": "GliderVariantId",
+      "type": "string",
+      "pattern": "^glider_variant\\.[a-z0-9]+(?:_[a-z0-9]+)*\\.[0-9]{3}_[a-z0-9]+(?:_[a-z0-9]+)*$"
+    },
+    "countryId": {
+      "title": "CountryId",
+      "description": "A schema-9 country ID derived from the lowercase ISO 3166-1 alpha-2 code.",
+      "type": "string",
+      "pattern": "^country\\.[a-z]{2}$"
+    }
+  }
+}

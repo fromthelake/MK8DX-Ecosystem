@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "mk8dx.local-time-trial-outbox-state.v1",
+  "entryKey": "670c54bf140b7fa905dee4ecbc78f49ac663bbb7e893aa8ca5ae4ffd8537e7d3",
+  "stateRevision": 1,
+  "state": "pending",
+  "attemptCount": 0,
+  "updatedAtMs": 1786900070000
+}

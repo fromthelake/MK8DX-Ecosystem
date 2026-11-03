@@ -1,0 +1,35 @@
+# Editor defaults that match the existing code. https://editorconfig.org
+#
+# Deliberately not set yet: end_of_line and trim_trailing_whitespace. Many existing files use CRLF or
+# carry trailing spaces, and an editor that rewrote them on save would turn a one-line change into a
+# whole-file diff. Keep the line endings a file already has (see .gitattributes and
+# docs/audits/remediation-plan.md, P1-1).
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+
+[*.{py,kt,kts,java,gradle}]
+indent_size = 4
+
+[*.{cmd,bat,ps1}]
+indent_size = 4
+
+[*.sh]
+indent_size = 4
+
+[Makefile]
+indent_style = tab
+
+[*.md]
+indent_size = unset
+
+[{packages/assets/collection/**,infrastructure/mysql/migrations/**,infrastructure/mysql/reference/**,packages/icon-matcher/vectors/**,packages/assets/test-set/**}]
+# Hash-pinned content: never let an editor touch it.
+charset = unset
+indent_style = unset
+indent_size = unset
+insert_final_newline = unset

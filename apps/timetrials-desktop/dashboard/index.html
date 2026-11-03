@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MK8DX Time Trials · Windows PC</title>
+  <link rel="icon" href="/app-icon">
+  <link rel="stylesheet" href="/app.css?v=500">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon"><img src="/app-icon" alt="" id="app-icon"></div>
+      <div class="brand-copy">
+        <p class="eyebrow">MK8DX</p>
+        <div class="brand-title-row">
+          <h1>TIME TRIALS</h1>
+          <span class="platform-badge"><span class="windows-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>WINDOWS PC</span>
+        </div>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Dashboard sections">
+      <button class="tab active" type="button" data-tab="records" aria-selected="true">My records</button>
+      <button class="tab" type="button" data-tab="rank" aria-selected="false">Rank</button>
+      <button class="tab" type="button" data-tab="build" aria-selected="false">Build</button>
+      <button class="tab app-only hidden" type="button" data-tab="live" aria-selected="false">Live</button>
+      <button class="tab" type="button" data-tab="history" aria-selected="false">Run history</button>
+    </nav>
+    <div class="top-actions">
+      <button id="account-toggle" class="account-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="account-panel"><span class="account-avatar" aria-hidden="true"></span><span id="account-name">Account</span><span aria-hidden="true">▾</span></button>
+      <button id="sync-status" class="status-action synchronized" type="button" aria-label="All results synchronized" title="Saved result synchronization">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 8.5A7 7 0 0 1 18 7l2 5M17.9 15.5A7 7 0 0 1 6 17l-2-5"/></svg><span class="counter"></span>
+      </button>
+      <button id="notifications-toggle" class="status-action" type="button" aria-label="Notifications" aria-expanded="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span class="counter"></span>
+      </button>
+      <button id="settings-toggle" class="status-action app-only hidden" type="button" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+      </button>
+      <button id="quit-toggle" class="status-action app-only hidden" type="button" aria-label="Quit LiveTrial" title="Quit LiveTrial">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v9M6.4 6.4a8 8 0 1 0 11.2 0"/></svg>
+      </button>
+      <button id="refresh" class="refresh" type="button" data-sync="loading"><span class="sync-dot" aria-hidden="true"></span><span class="sync-copy"><b id="sync-label">Refresh progress</b><small id="sync-detail"></small></span></button>
+    </div>
+  </header>
+  <aside id="account-panel" class="notification-panel hidden" aria-label="Accounts on this PC">
+    <div class="notification-head"><strong id="account-panel-title">Accounts on this PC</strong><button id="account-close" type="button" aria-label="Close">×</button></div>
+    <div id="account-list" class="account-list"></div>
+    <div id="youtube-block" class="youtube-block hidden" aria-live="polite"></div>
+    <button id="account-add" class="account-add" type="button">+ Add account</button>
+  </aside>
+  <aside id="waiting-panel" class="notification-panel hidden" aria-label="Results waiting to be sent">
+    <div class="notification-head"><strong id="waiting-title">Waiting to be sent</strong><button id="waiting-close" type="button" aria-label="Close">×</button></div>
+    <div id="waiting-list" class="waiting-list"></div>
+    <div class="waiting-actions"><button id="waiting-send" class="account-add" type="button">Send now</button><button id="waiting-history" class="link-button" type="button">Open run history</button></div>
+  </aside>
+  <div id="signin-dialog" class="signin-backdrop hidden">
+    <section class="signin-dialog" role="dialog" aria-modal="true" aria-labelledby="signin-title">
+      <div class="notification-head"><strong id="signin-title">Sign in</strong><button id="signin-close" type="button" aria-label="Close">×</button></div>
+      <div id="signin-body"></div>
+    </section>
+  </div>
+  <aside id="notifications-panel" class="notification-panel hidden" aria-label="Notifications">
+    <div class="notification-head"><strong>Notifications</strong><button id="notifications-close" type="button" aria-label="Close notifications">×</button></div>
+    <div id="notifications-list"></div>
+  </aside>
+
+  <div id="app-dialog" class="signin-backdrop hidden">
+    <section class="signin-dialog app-dialog" role="dialog" aria-modal="true" aria-labelledby="app-dialog-title">
+      <div class="notification-head"><strong id="app-dialog-title"></strong><button id="app-dialog-close" type="button" aria-label="Close">×</button></div>
+      <div id="app-dialog-body"></div>
+    </section>
+  </div>
+
+  <main>
+    <!-- ADR-0208 step 2: everything the console menu did, as buttons on every tab. -->
+    <section id="update-banner" class="update-banner hidden" role="alert"></section>
+    <section id="capture-bar" class="capture-bar app-only hidden" aria-live="polite">
+      <div class="capture-actions">
+        <button id="capture-button" class="capture-button" type="button">● Start capture</button>
+        <button id="analyze-button" class="capture-secondary" type="button">Analyse a video</button>
+      </div>
+      <p id="capture-status" class="capture-status"></p>
+      <div id="last-run" class="last-run hidden" aria-live="polite"></div>
+    </section>
+    <section id="progress-panel" class="panel active" aria-live="polite">
+      <div id="status" class="status loading">
+        <span class="status-dot"></span>
+        <span id="status-copy">Loading your MK8DX progress…</span>
+      </div>
+
+      <section id="empty" class="empty hidden">
+        <div class="empty-mark">🏁</div>
+        <h2 id="empty-title">RACE. RECORD. IMPROVE.</h2>
+        <p id="empty-copy">Your Mario Kart 8 Deluxe times, captured locally and synchronized when you sign in.</p>
+      </section>
+
+      <div id="content" class="hidden" data-view="records">
+        <section class="hero records-hero" data-view-of="records">
+          <div id="hero-art" class="hero-art" aria-hidden="true"></div>
+          <div class="hero-main">
+            <p class="eyebrow">MY RECORDS &amp; STATS</p>
+            <h2 id="player-name">Player</h2>
+            <p id="player-meta" class="hero-meta"></p>
+            <p id="hero-rank" class="hero-rank"></p>
+          </div>
+          <div class="hero-side">
+            <div class="mode-tabs" role="group" aria-label="Engine class">
+              <button type="button" class="mode mode-150 active" data-mode="150">150cc</button>
+              <button type="button" class="mode mode-200" data-mode="200">200cc</button>
+            </div>
+            <div id="records-summary" class="summary-grid records-summary" aria-live="polite"></div>
+          </div>
+        </section>
+
+        <div class="records-overview" data-view-of="records">
+          <section class="block levels-block">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">MASTERY</p><h2>Mastery across your tracks</h2></div>
+            </div>
+            <div id="level-bar" class="level-bar" role="img"></div>
+            <div id="level-legend" class="level-legend" role="group" aria-label="Filter the record book by Mastery"></div>
+            <p class="section-note">Click a level to see those tracks in the record book.</p>
+          </section>
+          <section id="momentum-block" class="block momentum-block hidden">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">MOMENTUM</p><h2>Your runs per week</h2></div>
+            </div>
+            <p id="momentum-line" class="momentum-line"></p>
+            <div id="momentum-chart" class="momentum-chart" role="img"></div>
+          </section>
+        </div>
+
+        <section id="highlights-block" class="highlights-block" data-view-of="records">
+          <p class="eyebrow">HIGHLIGHTS</p>
+          <div id="highlights" class="highlight-grid"></div>
+        </section>
+
+        <section class="block record-book-block" data-view-of="records">
+          <div class="section-heading">
+            <div><p class="eyebrow">RECORD BOOK</p><h2>Every track, your best time</h2></div>
+            <div id="record-sort" class="rank-controls record-sort" role="group" aria-label="Order"></div>
+          </div>
+          <p id="record-book-note" class="section-note"></p>
+          <div id="record-filter" class="record-filter hidden"></div>
+          <div id="record-book"></div>
+        </section>
+
+        <section id="tournaments-block" class="block tournaments-block hidden" data-view-of="records">
+          <div class="section-heading">
+            <div><p class="eyebrow">TOURNAMENTS</p><h2>Your tournament career</h2></div>
+            <p>Tournament figures count every race, whatever the engine class it was raced in.</p>
+          </div>
+          <div id="tournament-stats" class="summary-grid tournament-stats"></div>
+          <div id="tournament-bar" class="finish-bar"></div>
+          <div id="rating-graph" class="rating-graph"></div>
+        </section>
+
+        <p id="records-totals" class="records-totals" data-view-of="records"></p>
+
+        <section class="block rank-workspace" data-view-of="rank">
+          <div class="section-heading">
+            <div><p class="eyebrow">RANK</p><h2>Compare totals, medals, Mastery and tracks</h2></div>
+            <div class="mode-tabs" role="group" aria-label="Engine class">
+              <button type="button" class="mode mode-150 active" data-mode="150">150cc</button>
+              <button type="button" class="mode mode-200" data-mode="200">200cc</button>
+            </div>
+          </div>
+          <p class="section-note">Compact filters use the same saved Global, rivals and private Group scope as Web and Android.</p>
+          <div id="rank-scopes" class="rank-controls"></div>
+          <div class="rank-player-compare">
+            <input id="rank-player-search" class="rank-search" type="search" placeholder="Search player name" aria-label="Search player name to compare">
+            <div id="rank-player-results" class="rank-controls"></div>
+            <div id="rank-selected-players" class="rank-controls" aria-label="Selected comparison players"></div>
+          </div>
+          <div class="rank-controls" role="tablist" aria-label="Rank view">
+            <button type="button" class="rank-tab active" data-rank-tab="total">Total</button>
+            <button type="button" class="rank-tab" data-rank-tab="medals">Medals</button>
+            <button type="button" class="rank-tab" data-rank-tab="mastery">Mastery</button>
+            <button type="button" class="rank-tab" data-rank-tab="tracks">Delta per track</button>
+          </div>
+          <input id="track-search" class="rank-search hidden" type="search" placeholder="Search track" aria-label="Search track">
+          <div id="rank-content"></div>
+        </section>
+
+        <section class="block build-workspace" data-view-of="build">
+          <div class="section-heading">
+            <div><p class="eyebrow">BUILD</p><h2>Kart builder</h2></div>
+            <p>Search every part, keep full names visible and see whether the setup meets the Magic 8 and Meta rules.</p>
+          </div>
+          <div id="build-pickers" class="build-pickers"></div>
+          <section class="build-stats-panel" aria-labelledby="build-stats-title">
+            <h3 id="build-stats-title" class="build-stats-title">Build stats</h3>
+            <ul id="build-legend" class="build-legend"></ul>
+            <div id="build-feedback" class="build-feedback"></div>
+            <div id="build-stats" class="build-stats"></div>
+          </section>
+        </section>
+
+        <section class="two-column" data-view-of="rank">
+          <section class="block rivals-block">
+            <div class="section-heading compact"><div><p class="eyebrow">RIVALS</p><h2>Your chosen Players</h2></div></div>
+            <div id="rivals" class="rivals"></div>
+          </section>
+          <section class="block battles-block">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">CLOSEST BATTLES</p><h2 id="battle-count">Shared comparisons</h2></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr>
+                  <th><button type="button" class="sort-head" data-battle-sort="track">Track</button> <button type="button" class="sort-head" data-battle-sort="cup">Cup</button></th>
+                  <th><button type="button" class="sort-head" data-battle-sort="rival">Rival</button></th>
+                  <th class="number"><button type="button" class="sort-head" data-battle-sort="closest">Closest</button> <button type="button" class="sort-head" data-battle-sort="delta">Delta</button></th>
+                </tr></thead>
+                <tbody id="battles"></tbody>
+              </table>
+            </div>
+            <button type="button" id="battles-more" class="battles-more hidden"></button>
+          </section>
+        </section>
+      </div>
+    </section>
+
+    <section id="live-panel" class="panel live-panel">
+      <div class="history-head"><div><p class="eyebrow">LIVE</p><h2 id="live-title">Live capture</h2></div></div>
+      <div id="live-idle" class="block live-idle"><p id="live-idle-text"></p><button id="live-start" class="capture-button" type="button">● Start capture</button></div>
+      <iframe id="live-frame" class="hidden" title="Live capture picture" scrolling="no"></iframe>
+      <section id="session-block" class="block session-block app-only hidden">
+        <div class="section-heading compact"><div><p class="eyebrow" id="session-eyebrow">THIS SESSION</p><h2 id="session-title">Races as they come in</h2></div></div>
+        <div id="session-rows" class="session-rows"></div>
+      </section>
+    </section>
+
+    <section id="history-panel" class="panel history-panel">
+      <div class="history-head">
+        <div><p class="eyebrow">LOCAL EVIDENCE</p><h2>Run history</h2></div>
+        <span class="heading-actions"><button id="clips-open" class="capture-secondary app-only hidden" type="button">Clips &amp; YouTube</button>
+        <a id="history-new" href="http://127.0.0.1:8777/" target="_blank" rel="noreferrer">Open in a separate window</a></span>
+      </div>
+      <div class="history-switch app-only hidden" role="tablist" aria-label="Run history view">
+        <button type="button" id="history-all" data-history-view="all" aria-pressed="true">All runs</button>
+        <button type="button" id="history-status" data-history-view="status" aria-pressed="false">Send status</button>
+      </div>
+      <section id="results-block" class="block results-block hidden">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">RESULTS ON THIS PC</p><h2 id="results-title">Recognized runs</h2></div>
+          <button id="results-refresh" class="capture-secondary" type="button">Refresh</button>
+        </div>
+        <p class="section-note" id="results-note">A correction saves a new version; the earlier one is kept.</p>
+        <div class="table-wrap"><table><thead><tr><th>When</th><th>Player</th><th>Track</th><th>Time</th><th>State</th><th></th></tr></thead><tbody id="results-rows"></tbody></table></div>
+      </section>
+      <p id="history-loading" class="section-note hidden">Run history is starting…</p>
+      <iframe id="history-frame" title="Time Trial run history"></iframe>
+    </section>
+  </main>
+  <script src="/dutch-presentation.generated.js?v=380"></script>
+  <script src="/app.js?v=501"></script>
+</body>
+</html>

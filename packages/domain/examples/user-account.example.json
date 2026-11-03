@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "mk8dx.user-account.v1",
+  "userAccountId": "user_account.synthetic_account_01",
+  "revision": 1,
+  "privacyClass": "private",
+  "accountStatus": "active",
+  "createdAtMs": 1735689600000,
+  "updatedAtMs": 1735689600000
+}

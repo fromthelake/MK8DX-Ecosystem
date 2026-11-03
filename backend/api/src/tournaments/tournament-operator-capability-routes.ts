@@ -1,0 +1,14 @@
+import type { FastifyInstance } from "fastify";
+import type { ActorContext, ActorResolver } from "../identity/types.js";
+import { TournamentOperatorCapabilityError, type TournamentOperatorCapabilityService } from "./tournament-operator-capability-service.js";
+
+export async function registerTournamentOperatorCapabilityRoutes(app: FastifyInstance, options: Readonly<{ resolveActor: ActorResolver; service: TournamentOperatorCapabilityService; csrfVerifier: Readonly<{ verify(actor: ActorContext, token: string): boolean }> }>): Promise<void> {
+  const account = { type:"string", pattern:"^user_account\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$", maxLength:141 } as const;
+  const reason = { type:"string", pattern:"^[a-z0-9]+(?:[._-][a-z0-9]+)*$", maxLength:64 } as const;
+  const headers = { type:"object", required:["x-mk8dx-csrf"], properties:{"x-mk8dx-csrf":{type:"string",minLength:20,maxLength:512}} } as const;
+  const actor = async (request: Parameters<ActorResolver>[0], token: string | undefined) => { const value=await options.resolveActor(request); if(!token || !options.csrfVerifier.verify(value,token)) throw new TournamentOperatorCapabilityError("forbidden","CSRF rejected"); return value; };
+  const handle = async (reply: any, work:()=>Promise<unknown>) => { try{return await work();}catch(error){if(error instanceof TournamentOperatorCapabilityError)return reply.code(error.code==="forbidden"?403:error.code==="not_found"?404:error.code==="conflict"?409:400).send({code:`tournament_operator_${error.code}`,message:error.message});throw error;} };
+  app.get("/v1/administrator/tournament-operation-capabilities", async(request,reply)=>handle(reply,async()=>options.service.list(await options.resolveActor(request))));
+  app.post<{Headers:{"x-mk8dx-csrf"?:string};Body:{userAccountId:string;reasonCode:string}}>("/v1/administrator/tournament-operation-capabilities",{schema:{headers,body:{type:"object",additionalProperties:false,required:["userAccountId","reasonCode"],properties:{userAccountId:account,reasonCode:reason}}}}, async(request,reply)=>handle(reply,async()=>options.service.grant(await actor(request,request.headers["x-mk8dx-csrf"]),request.body.userAccountId,request.body.reasonCode)));
+  app.post<{Params:{userAccountId:string};Headers:{"x-mk8dx-csrf"?:string};Body:{reasonCode:string}}>("/v1/administrator/tournament-operation-capabilities/:userAccountId/actions/revoke",{schema:{headers,params:{type:"object",additionalProperties:false,required:["userAccountId"],properties:{userAccountId:account}},body:{type:"object",additionalProperties:false,required:["reasonCode"],properties:{reasonCode:reason}}}}, async(request,reply)=>handle(reply,async()=>options.service.revoke(await actor(request,request.headers["x-mk8dx-csrf"]),request.params.userAccountId,request.body.reasonCode)));
+}

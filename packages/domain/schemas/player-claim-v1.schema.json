@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/player-claim-v1.schema.json",
+  "title": "PlayerClaimV1",
+  "description": "A private, administrator-reviewed relationship request between one UserAccount and one human Player, with durable lifecycle and provenance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "playerClaimId",
+    "revision",
+    "privacyClass",
+    "playerId",
+    "userAccountId",
+    "claimStatus",
+    "disputeStatus",
+    "evidence",
+    "lifecycle",
+    "createdAtMs",
+    "updatedAtMs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "mk8dx.player-claim.v1" },
+    "playerClaimId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerClaimId"
+    },
+    "revision": { "type": "integer", "minimum": 1 },
+    "privacyClass": { "const": "private" },
+    "playerId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerId"
+    },
+    "userAccountId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/userAccountId"
+    },
+    "claimStatus": {
+      "enum": ["requested", "under_review", "verified", "rejected", "released", "revoked"]
+    },
+    "disputeStatus": { "enum": ["none", "open", "resolved"] },
+    "evidence": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/evidenceReference" }
+    },
+    "lifecycle": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/lifecycleEvent" }
+    },
+    "createdAtMs": { "type": "integer", "minimum": 0 },
+    "updatedAtMs": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["evidenceId", "sourceType", "capturedAtMs"],
+      "properties": {
+        "evidenceId": {
+          "type": "string",
+          "pattern": "^restricted_evidence\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$",
+          "description": "Opaque reference into restricted evidence storage; never raw evidence content or a legacy identifier."
+        },
+        "sourceType": {
+          "enum": ["account_submission", "administrator_observation", "legacy_reconciliation"]
+        },
+        "capturedAtMs": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "actor": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actorType", "userAccountId"],
+          "properties": {
+            "actorType": { "const": "requesting_account" },
+            "userAccountId": {
+              "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/userAccountId"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["actorType", "userAccountId"],
+          "properties": {
+            "actorType": { "const": "administrator" },
+            "userAccountId": {
+              "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/userAccountId"
+            }
+          }
+        }
+      ]
+    },
+    "lifecycleEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "eventType", "actor", "occurredAtMs", "evidenceIds"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "eventType": {
+          "enum": [
+            "claim_requested",
+            "review_started",
+            "claim_verified",
+            "claim_rejected",
+            "claim_released",
+            "claim_revoked",
+            "dispute_opened",
+            "dispute_resolved"
+          ]
+        },
+        "actor": { "$ref": "#/$defs/actor" },
+        "occurredAtMs": { "type": "integer", "minimum": 0 },
+        "evidenceIds": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^restricted_evidence\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+          }
+        },
+        "reasonCode": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        },
+        "privateReviewReference": {
+          "type": "string",
+          "pattern": "^restricted_review\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$"
+        }
+      }
+    }
+  }
+}

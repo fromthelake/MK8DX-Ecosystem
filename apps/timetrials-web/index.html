@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="referrer" content="same-origin">
+    <!-- The resolved appearance's page colour; the boot script below rewrites it
+         per device before the first paint (ADR-0205). -->
+    <meta name="theme-color" content="#080C1C">
+    <!-- The bundled scanner is served on this same origin. -->
+    <meta name="mk8dx-scanner-base" content="/scanner/">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="MK8DX">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'">
+    <title>MK8DX Time Trials · Web</title>
+    <link rel="icon" href="./styles/app-icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="./styles/app-icon-192.png">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <!-- Appearance before the first paint (ADR-0205 §3). A classic, blocking,
+         same-origin script: the CSP forbids inline script, and this document is
+         static with no server templating. It sets data-appearance-choice on
+         <html> so the stylesheets below already resolve to the chosen profile -
+         there is no flash of the wrong theme and no transition to hide. -->
+    <script src="./styles/ds-appearance-boot.js"></script>
+    <!-- The three first-view font styles (DESIGN_SYSTEM §3.1): the shell's UI
+         text and its numbers. The display face loads on use. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./styles/ds-font-plex-sans-400-latin1.b5ad7bd39f.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./styles/ds-font-plex-sans-600-latin1.fff0ab3a88.woff2">
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="./styles/ds-font-plex-mono-600-latin1.b7acd05041.woff2">
+    <link rel="stylesheet" href="./styles/ds-tokens.css">
+    <link rel="stylesheet" href="./styles/ds-fonts.css">
+    <link rel="stylesheet" href="./styles/ds-base.css">
+    <link rel="stylesheet" href="./styles/ds-workflows.css">
+    <link rel="stylesheet" href="./styles/ds-components.css">
+    <link rel="stylesheet" href="./styles/ds-shell.css">
+    <link rel="stylesheet" href="./styles/ds-legal.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- Plain links, readable without JavaScript: what LiveTrial and its optional YouTube upload are,
+         the privacy policy and the terms (ADR-0213; Google's reviews read them from the home page). -->
+    <footer class="site-legal" aria-label="About this site">
+      <a href="/livetrial">LiveTrial &amp; YouTube upload</a>
+      <a href="/privacy">Privacy policy</a>
+      <a href="/terms">Terms of use</a>
+    </footer>
+    <noscript>JavaScript is required to use MK8DX Time Trials on the web.</noscript>
+    <script type="module" src="./dist/main.js"></script>
+  </body>
+</html>

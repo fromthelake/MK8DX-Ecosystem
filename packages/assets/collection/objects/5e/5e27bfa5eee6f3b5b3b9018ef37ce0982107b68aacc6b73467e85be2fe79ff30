@@ -1,0 +1,40 @@
+{
+  "app_scope": "standalone_android_offline_reference",
+  "runtime_claim": "camera_preview_and_endscreen_gate_only_until_android_detector_ocr_parity_is verified",
+  "workflow_reference": "runtime/webcam_experiments/player_card_node_lab/workflows/mk8_webcam_card_ocr_v001.json",
+  "workflow_ocr_critical_hash": "d962557d3cc2603855850a8c7de3f7c7f0167b256326836f12518448dd037c51",
+  "model_asset": "model/inference_model.onnx",
+  "model_source_export": "runtime/performance_runs/mobile_android_feasibility_20260601_115157/onnx_export/inference_model.onnx",
+  "checkpoint_dir": "artifacts/ckpt_rfdetr_3class_large_20260526_ownerfix_release01",
+  "selected_weight": "artifacts/ckpt_rfdetr_3class_large_20260526_ownerfix_release01/checkpoint_best_total.pth",
+  "detector_classes": [
+    "ghost_timetrail_box",
+    "player_timetrail_box",
+    "lap_index"
+  ],
+  "detect_threshold": 0.2,
+  "known_7lap_fixture": {
+    "frame_set_id": "webcam_latest_pose_20260528_race7_dual",
+    "player_total": "1:13.025",
+    "player_laps": [
+      "0:14.669",
+      "0:10.950",
+      "0:09.852",
+      "0:09.675",
+      "0:09.844",
+      "0:09.774",
+      "0:08.261"
+    ],
+    "ghost_total": "1:16.561",
+    "ghost_laps": [
+      "0:15.451",
+      "0:09.980",
+      "0:10.680",
+      "0:09.857",
+      "0:10.328",
+      "0:09.532",
+      "0:10.733"
+    ],
+    "usage": "validation_only_never_runtime_fallback"
+  }
+}

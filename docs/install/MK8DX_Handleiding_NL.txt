@@ -1,0 +1,620 @@
+MK8DX installeren en gebruiken
+
+Handleiding voor de MK8DX 0.1.0-releasekandidaten, release 0.1.0-rc.8 · 3 november 2026
+
+Welkom
+
+MK8DX is een website voor Mario Kart 8 Deluxe Time Trials en toernooien. Je kunt er circuits en referentietijden bekijken, je aanmelden met een e-maillink en eigen resultaten insturen. Een beheerder kan inzendingen beoordelen. De scanner, Android-app en Windows-programma's zijn afzonderlijke hulpmiddelen.
+
+Releasepakketten hangen aan de GitHub Releases van het project. Open de releasepagina, https://github.com/fromthelake/MK8DX-Ecosystem/releases, en kies de nieuwste release. Kies daar onder Assets het pakket voor jouw route en download SHA256SUMS.txt erbij. De knop Source code (zip) op GitHub is niet het installatiepakket. Werk je met een kloon van de broncode, dan kun je de pakketten ook zelf bouwen; zie ‘Als het niet lukt en zelf bouwen’. De revisie in de bestandsnaam van een pakket (rc8 in deze handleiding; een nieuwere release heeft een hoger nummer) nummert het releasepakket; de Docker-images in het hostpakket hebben hun eigen vaste tags, en de mappen in deze handleiding dragen de revisie niet.
+
+Kies één manier om de website te gebruiken. Op één Windows-computer kan dat met Docker of met XAMPP, Node.js en de meegeleverde actuele MariaDB. Een tweede Windows-pc in je eigen netwerk kan de uitgewerkte Docker-netwerkroute gebruiken. Voor een openbaar domein kies je gedeelde webhosting met Node.js (het hoofdstuk gebruikt mijn.host Starter als voorbeeld) of een eigen VPS met Docker. Je hoeft de hoofdstukken niet na elkaar uit te voeren. De telefoon- en Windowsprogramma's komen na de websiteroutes.
+
+De lokale Docker- en XAMPP/Node-installaties zijn op Windows 11 met een x86-64-processor getest, met accounts en LiveTrial- en Tournament Processor/Connect-resultaten tot in database en website. Fysieke Tournament Live-capture is daarmee niet volledig geaccepteerd. Voor iemand die alleen Linux of macOS heeft, zonder Windows-computer of andere server, zijn de mogelijkheden beperkter. De twee hoofdstukken aan het eind leggen uit wat je op diezelfde computer lokaal kunt proberen en welke onderdelen nog niet voor jouw besturingssysteem bestaan.
+
+De volgorde in deze handleiding
+
+1. Op één computer proberen
+2. Lokaal zonder Docker: XAMPP en Node.js
+3. Op je eigen netwerk gebruiken
+4. Publiek op gedeelde Node.js-hosting zonder Docker
+5. Een openbare website op een VPS maken
+6. Android, LiveTrial, scanner en Tournament gebruiken
+7. Instellingen en dagelijks beheer
+8. Backup, herstel en updates
+9. Als het niet lukt en zelf bouwen
+10. Linux gebruiken
+11. macOS gebruiken
+
+Op één computer proberen
+
+Dit is een proef op één Windows 11-computer met een x86-64-processor. Reken op 8 GB werkgeheugen en ongeveer 15 GB vrije werkruimte als aanbevolen marge. Dit zijn geen gemeten harde ondergrenzen. In Windows vind je processor en geheugen onder Instellingen → Systeem → Info. Vrije ruimte staat in Verkenner → Deze pc. Je hebt geen domein en geen betaalde maildienst nodig.
+
+1. Installeer Docker Desktop via de officiële Windows-pagina. Kies de optie met WSL2 en Linux-containers. Herstart Windows als het installatieprogramma daarom vraagt. Open Docker Desktop en wacht tot ‘Engine running’ verschijnt.
+
+Docker Desktop voor Windows: https://docs.docker.com/desktop/setup/install/windows-install/
+
+Open daarna PowerShell via het Startmenu. Met deze opdracht hoort een versienummer te verschijnen:
+
+docker compose version
+
+Als Docker niet start, volg dan eerst de WSL- of virtualisatiemelding van Docker. Een gesloten Docker Desktop kan MK8DX niet starten.
+
+2. Installeer Python 3.12 of nieuwer voor Windows x86-64 vanaf de officiële downloadpagina. Vink in het installatievenster ‘Add python.exe to PATH’ aan en kies ‘Install Now’. Sluit PowerShell en open het opnieuw. Controleer de installatie:
+
+Python voor Windows: https://www.python.org/downloads/windows/
+
+python --version
+
+Zie je geen versie 3.12 of hoger, herstel Python via dezelfde installer. Controleer ook of Windows een Microsoft Store-alias opent in plaats van de geïnstalleerde Python. Je gebruikt Python hier alleen voor de installatiehulp; je hoeft geen software te bouwen.
+
+3. Leg mk8dx-host-local-rc8-amd64.zip en SHA256SUMS.txt in dezelfde downloadmap. Open PowerShell in die map en controleer het hostpakket:
+
+Get-FileHash '.\mk8dx-host-local-rc8-amd64.zip' -Algorithm SHA256
+
+Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\host. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
+
+4. Dubbelklik op Start-MK8DX.cmd. Het eerste venster vraagt om een route. Kies A1. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. Kies in het menu 1 voor de eerste installatie. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
+
+Schrijf het getoonde adres bij ‘Web origin’ en het adres bij ‘Local mail inbox’ op. Het webadres lijkt op http://127.0.0.1:18080 en de testbrievenbus op http://127.0.0.1:18025. De laatste cijfers kunnen bij jou anders zijn. Gebruik altijd de werkelijk getoonde adressen.
+
+Ben je de adressen later kwijt? Open Start-MK8DX.cmd opnieuw en kies 3 voor status. Bij ‘origin’ staat het volledige websiteadres voor je browser en voor LiveTrial. Bij ‘localMailInbox’ staat het adres van Mailpit. Open dat tweede adres alleen in je browser om lokale aanmeldmail te lezen. Het deel na de dubbele punt is de poort. ‘127.0.0.1’ betekent deze computer; deze A1-adressen werken dus niet op een andere pc of telefoon.
+
+De persoonlijke installatiegegevens staan buiten het uitgepakte pakket in %LOCALAPPDATA%\MK8DX\Server. Laat deze map en het Docker-databasevolume staan, ook als je later een nieuw softwarepakket krijgt.
+
+5. Open het getoonde webadres in de browser op dezelfde computer. Klik ‘Sign in’ of ‘Aanmelden’ en vul precies het e-mailadres uit stap 4 in. Open in een tweede tab het adres bij ‘Local mail inbox’. Dat is Mailpit, een testbrievenbus op deze computer. Open daar je nieuwste aanmeldmail en volg de link. Zoek deze proefmail niet in je gewone inbox.
+
+Je bent nu aangemeld, maar nog geen beheerder. Open Start-MK8DX.cmd opnieuw en kies 5. Bij de eerste toekenning verschijnt ‘created’; bij een herhaling ‘unchanged’. Ververs de website of meld je opnieuw aan. De beheerweergave hoort nu beschikbaar te zijn. Een willekeurige eerste registratie krijgt nooit automatisch beheerrechten.
+
+6. Open Tracks of Circuits, kies een circuit en bekijk Nintendo Staff en World Records. Je kunt een eigen proefrit indienen via ‘Submit a Time Trial’. Controleer je gegevens vóór verzenden. Een inzending is nog geen publieke goedkeuring.
+
+Mailpit toont aanmeldlinks. Deel deze testbrievenbus dus niet met anderen. Voor een publiek bereikbare site kies je de webhosting- of VPS-route met echte uitgaande mail.
+
+Lokaal zonder Docker: XAMPP en Node.js
+
+Dit is een afzonderlijke proef op één Windows 11-computer. Docker is niet nodig. XAMPP levert Apache, het venster waarmee je de lokale website start. MK8DX zelf draait op Node.js. De huidige XAMPP-download levert MariaDB 10.4.32; die versie wordt niet voor deze route gebruikt. Het MK8DX-pakket bevat een aparte, actuele MariaDB 11.4.13 die alleen op 127.0.0.1:18306 voor deze installatie draait. Bestaande XAMPP-databases en andere websites blijven buiten de MK8DX-installatie. Reken op 8 GB geheugen en enkele GB vrije ruimte voor pakket, database, scanner en backups.
+
+1. Download XAMPP voor Windows vanaf de officiële site en installeer het op een plek die je kunt terugvinden, bijvoorbeeld C:\xampp. Je gebruikt alleen Apache uit het XAMPP Control Panel. Klik bij deze MK8DX-route niet op MySQL, FileZilla, Mercury of Tomcat. Heb je XAMPP al voor andere projecten, laat hun databases en instellingen staan.
+
+XAMPP voor Windows: https://www.apachefriends.org/download.html
+
+2. Installeer Node.js 24 voor Windows vanaf de officiële Node.js-site. Installeer ook Python 3.12 of nieuwer vanaf de officiële Windows-pagina; vink ‘Add python.exe to PATH’ aan. Sluit PowerShell en open het opnieuw. Controleer:
+
+Node.js: https://nodejs.org/en/download
+Python: https://www.python.org/downloads/windows/
+node --version
+python --version
+
+Je hoort Node 24 en Python 3.12 of nieuwer te zien. Deze programma's voeren de reeds gebouwde MK8DX-bestanden uit. Je bouwt de website niet zelf. Als een opdracht onbekend is, sluit PowerShell en open het opnieuw; herstel daarna zo nodig die installatie.
+
+3. Leg mk8dx-xampp-node-windows-rc8.zip en SHA256SUMS.txt in dezelfde downloadmap. Controleer in PowerShell de volledige SHA-256-reeks met de regel voor deze ZIP:
+
+Get-FileHash '.\mk8dx-xampp-node-windows-rc8.zip' -Algorithm SHA256
+
+Klik bij een gelijke reeks met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\nodocker-rc8. Open de uitgepakte map met Start-MK8DX-No-Docker.cmd. De bestanden bin\mailpit.exe en bin\mariadb-11.4.13-winx64.zip zitten er al in. Je hoeft geen applicatiebron te compileren of een oude XAMPP-database te vervangen. Zet deze pakketmap niet in htdocs.
+
+4. Maak Apache geschikt voor alleen deze lokale site. Open PowerShell in de uitgepakte MK8DX-map. Vul achter -XamppRoot de plek in waar jij XAMPP hebt geïnstalleerd en voer de hulp uit:
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp'
+
+De hulp bewaart eerst een kopie van apache\conf\httpd.conf in %LOCALAPPDATA%\MK8DX\ApacheBackup. Zij voegt uitsluitend ‘Include conf/extra/mk8dx-local.conf’ en een eigen poort 18090 toe, en controleert de Apache-syntax. Verwacht ‘Apache syntax OK’. Is poort 18090 al bezet of ziet de hulp afwijkende instellingen, stop dan en lees de fout; verwijder geen andere XAMPP-site. Bij een andere XAMPP-map, ook met spaties, vervang je alleen C:\xampp in deze opdracht.
+
+5. Dubbelklik in de MK8DX-map op Start-MK8DX-No-Docker.cmd. Kies de getoonde route A3 en typ het e-mailadres waarmee je later beheerder wilt worden. Het venster maakt één private installatie in %LOCALAPPDATA%\MK8DX\NoDocker. Bij de eerste start pakt het alleen daar MariaDB 11.4.13 uit, maakt een eigen database en beperkte gebruiker aan, voert de migraties en Nintendo Staff- en World Records-referenties uit, en start Node.js en Mailpit. Dit kan enkele minuten duren. Laat dit MK8DX-venster open. Bij een herstart blijven sleutels, accounts, resultaten en de database staan.
+
+In dit venster zie je bij iedere start ook ‘origin’ en ‘localMailInbox’. ‘origin’ is het volledige adres voor je browser en LiveTrial: http://127.0.0.1:18090. ‘localMailInbox’ is de lokale testbrievenbus: http://127.0.0.1:18227. Open Mailpit alleen in je browser. De cijfers na de dubbele punt zijn de poorten. ‘127.0.0.1’ betekent deze computer, dus deze adressen werken niet op een ander apparaat. Ben je ze vergeten, kijk dan bovenaan hetzelfde MK8DX-venster wanneer je het de volgende keer start.
+
+6. Open het XAMPP Control Panel. Is Apache al groen, klik dan alleen bij Apache op Stop, wacht tot de regel niet meer groen is en klik weer op Start. Zo leest Apache de nieuwe site-instelling uit stap 4. Was Apache nog uit, klik dan meteen op Start. Open in je browser http://127.0.0.1:18090. De testbrievenbus staat op http://127.0.0.1:18227. Zie je geen site, controleer eerst het MK8DX-venster, dan in XAMPP of Apache groen is. In een nieuw PowerShell-venster, in de MK8DX-pakketmap, controleer je de database en API:
+
+python tooling/install.py check-database --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+‘MariaDB 11.4.13’ en ‘ready’ zijn de verwachte uitkomsten. De website, scanner, database en testmail luisteren alleen op deze computer. Zet geen routerpoort open en maak phpMyAdmin of de testbrievenbus niet voor anderen bereikbaar.
+
+7. Klik op de website op Aanmelden en gebruik precies het beheeradres uit stap 5. Open de nieuwste brief in Mailpit en volg de aanmeldlink. Je bent daarna nog een gewone gebruiker. Voer in het tweede PowerShell-venster, vanuit de pakketmap, deze aparte eerste beheerstap uit:
+
+python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, bij herhaling, ‘unchanged’. Ververs de website. Een andere eerste aanmelder wordt niet automatisch beheerder.
+
+8. Open een circuit. Bekijk Nintendo Staff en World Records, ook onder Total. Stuur één proef-Time Trial in en open /scanner/ op dezelfde computer. Kies daar een afbeelding om de uploadketen te proberen. De scanner kan een resultaat laten nakijken; uploaden betekent niet automatisch openbaar maken.
+
+9. Voor dagelijks gebruik start je eerst het MK8DX-venster en daarna Apache in het XAMPP Control Panel. Laat het MK8DX-venster open zolang je de site gebruikt. Na een Windows-herstart doe je dit opnieuw. Stop Apache via Stop in het paneel; druk daarna Ctrl+C in jouw MK8DX-venster. Alleen de Node-, Mailpit- en MariaDB-processen van deze installatie worden gestopt. Sluit niet zomaar alle node.exe-processen en wijzig geen bestaande XAMPP-service.
+
+10. Voor een backup laat je het MK8DX-venster en zijn database draaien. Stop Apache kort als je tijdens de laatste kopie geen nieuwe website-inzendingen wilt. Open PowerShell in de pakketmap en kies een nieuwe, private mapnaam:
+
+python tooling/install.py backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+
+‘Backup verified’ bevestigt de databasekopie, het profiel en de sleutels. Bewaar die hele map ook op een beschermd medium buiten deze computer. In dezelfde map controleer je later opnieuw met:
+
+python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+
+11. Voor een software-update stop je Apache en maak en controleer je eerst een backup terwijl het oude MK8DX-venster nog draait. Druk daarna Ctrl+C in dat venster. Controleer en pak de nieuwe A3-ZIP uit naast de oude pakketmap. Gebruik dezelfde map %LOCALAPPDATA%\MK8DX\NoDocker; verwijder haar niet. Open PowerShell in het nieuwe pakket en start tijdelijk alleen de eigen database:
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Laat dat venster open. Open een tweede PowerShell in dezelfde nieuwe pakketmap en voer de update uit met een nieuwe backupmap:
+
+python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
+
+Wacht op ‘unchanged’ voor de twee referentiesets en ‘Backup verified’. Druk Ctrl+C in het onderhoudsvenster. Start daarna Start-MK8DX-No-Docker.cmd uit het nieuwe pakket en Apache opnieuw. De hulp leidt pakketpaden opnieuw af zonder accounts, sleutels of data te resetten. Controleer dezelfde aanmelding, referenties en jouw proefresultaat. Een database-enginewissel voer je niet als gewone MK8DX-update uit.
+
+12. Voor een herstelproef op een andere Windows-computer installeer je daar eerst XAMPP Apache, Node 24 en Python zoals in stappen 1 en 2. Pak hetzelfde A3-pakket daar uit en stel Apache met configure_xampp.ps1 in zoals in stap 4. Kopieer de hele geverifieerde backupmap privé naar Documenten\MK8DX-backups. Gebruik geen bestaande gegevensmap op die computer. Open PowerShell in de nieuwe pakketmap en maak alleen het nieuwe profiel aan:
+
+python tooling/install.py wizard --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Kies A3 en geef voorlopig je eigen beheeradres op; de herstelstap zet het oorspronkelijke accountprofiel terug. Open een tweede PowerShell-venster in dezelfde pakketmap. Start in het eerste venster alleen de nieuwe, nog lege MariaDB:
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Laat dit venster open. Gebruik in het tweede venster de echte naam van jouw backupmap, zonder punthaken:
+
+python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Verwacht ‘Backup verified’ en daarna een geslaagde controle van alle migraties. Druk Ctrl+C in het onderhoudsvenster. Open nu Start-MK8DX-No-Docker.cmd en start Apache in het XAMPP Control Panel. Meld je aan met een bestaand account uit de backup en controleer beheer en een bekend resultaat. De eerste beheerder wordt niet opnieuw toegekend. Als de doelcomputer al een MK8DX-installatie of een proces op poort 18306 heeft, gebruik haar niet als hersteldoel; de hulp wist geen bestaande database. Houd de originele backup intact.
+
+Op je eigen netwerk gebruiken
+
+Deze route maakt op een Windows-host een tweede, afzonderlijke MK8DX-installatie. Je bestaande proef op één computer blijft behouden. De aangetoonde eerste route is een tweede Windows-pc met Chrome of Edge, inclusief scanner-upload. Een fysieke tweede pc of telefoon is nog niet in een echte gebruikersproef getest. De generieke Android-app vertrouwt het lokale certificaat niet automatisch; gebruik daarvoor een openbaar HTTPS-communityadres op webhosting of een VPS.
+
+De netwerkwebsite gebruikt poort 443 op de host. Als XAMPP Apache op diezelfde computer draait, kan die poort al bezet zijn. A2 en die Apache-site kunnen dan niet tegelijk op deze host starten. Gebruik voor A2 een andere Windows-host, of stop Apache alleen tijdens een gepland moment via het XAMPP Control Panel. Andere XAMPP-websites zijn tijdens die stop niet bereikbaar.
+
+Bereid op de host eerst Docker Desktop, Python en het gecontroleerde, uitgepakte hostpakket voor zoals in de eerste drie stappen van ‘Op één computer’. Je hoeft geen A1-installatie aan te maken. Beide pc's moeten op hetzelfde vertrouwde privé-netwerk zitten. Gebruik geen gasten-wifi en zet geen routerpoort naar internet open. Laat de host wakker blijven.
+
+1. Zoek op de host onder Instellingen → Netwerk en internet → Ethernet of Wi-Fi → Eigenschappen het IPv4-adres. In deze uitleg is 192.168.0.50 alleen een voorbeeld. Noteer je echte adres. Stel het Windows-netwerkprofiel uitsluitend op Privé wanneer dit werkelijk jouw vertrouwde netwerk is. Een adres dat later verandert moet op beide pc's worden bijgewerkt; een DHCP-reservering in je router kan dat voorkomen.
+
+2. Gebruik op beide Windows-pc's dezelfde privénaam. Open Kladblok via Start met ‘Als administrator uitvoeren’. Kies Bestand → Openen, ga naar de volgende map en verander het bestandsfilter in ‘Alle bestanden’:
+
+C:\Windows\System32\drivers\etc\
+
+Open het bestand hosts. Voeg een regel toe met jouw echte host-IP en de privénaam, bijvoorbeeld:
+
+192.168.0.50 mk8dx.home.arpa
+
+Sla het bestand op als hosts, zonder .txt. Doe dit op de host én op de tweede pc. Controleer in PowerShell op beide apparaten:
+
+ping -n 1 mk8dx.home.arpa
+
+Vóór de pingregels moet jouw host-IP staan. De ping zelf mag door een firewall worden geweigerd. De hosts-regel hoort op elk apparaat apart omdat er voor deze privénaam geen publiek DNS-record is.
+
+3. Voor aanmeldlinks van andere gebruikers heb je een echte maildienst nodig. Verzamel bij je mailprovider de SMTP-servernaam, poort 465 met impliciete TLS, login, wachtwoord en toegestaan afzenderadres. Een dienst die alleen STARTTLS op poort 587 aanbiedt, past niet bij de huidige wizard. Je eigen toekomstige MK8DX-beheeradres is een afzonderlijk gegeven. Gebruik Mailpit niet als gedeelde aanmeldbrievenbus.
+
+4. Dubbelklik op de host op Start-MK8DX-LAN.cmd. Kies A2 en bevestig mk8dx.home.arpa, of vul precies de naam uit je hosts-regels in. Vul daarnaast je echte host-IPv4 in. Daarna vraagt de wizard de mailgegevens en je eigen toekomstige beheeradres. Het mailwachtwoord blijft tijdens typen verborgen. Kies vervolgens 1. De aparte gegevensmap is %LOCALAPPDATA%\MK8DX\LAN. Het getoonde webadres hoort https://mk8dx.home.arpa te zijn.
+
+Gebruik op de host en de tweede pc dit HTTPS-adres ook in LiveTrial. De standaardpoort 443 hoef je niet achter de naam te schrijven. Het gevonden IPv4-adres gebruik je voor de hosts-regel en de netwerkconfiguratie, niet als communityadres in LiveTrial. Deze netwerkroute gebruikt je echte mailprovider: aanmeldmail verschijnt in de gewone inbox van het opgegeven e-mailadres. Er is hier geen lokaal Mailpit-adres voor gebruikers.
+
+5. Open op de host Windows-beveiliging → Firewall en netwerkbeveiliging → Geavanceerde instellingen → Regels voor binnenkomende verbindingen → Nieuwe regel. Kies Poort, TCP, specifieke lokale poort 443, ‘Verbinding toestaan’ en uitsluitend het profiel Privé. Geef de regel bijvoorbeeld de naam ‘MK8DX LAN HTTPS’. Beperk onder Bereik de externe adressen tot je eigen netwerk als je het subnet kent. Maak geen publieke regel voor de database of Mailpit.
+
+6. De tweede Windows-pc moet het lokale certificaat van precies deze installatie leren vertrouwen. Doe dit alleen op een pc die je beheert. Open PowerShell op de host in de uitgepakte pakketmap en voer de volgende drie regels één voor één uit:
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose cp web:/data/caddy/pki/authorities/local/root.crt (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt')
+
+Controleer de vingerafdruk van het certificaat op de host:
+
+Get-FileHash (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt') -Algorithm SHA256
+
+Breng alleen mk8dx-lan-root.crt via een vertrouwde overdracht naar de tweede pc. Noteer de reeks afzonderlijk. Kopieer nooit root.key, de complete Caddy-map of de MK8DX-geheimen. Controleer op de tweede pc in de downloadmap:
+
+Get-FileHash '.\mk8dx-lan-root.crt' -Algorithm SHA256
+
+Bij exact dezelfde reeks dubbelklik je het certificaat. Kies Certificaat installeren → Huidige gebruiker → Alle certificaten in het onderstaande archief plaatsen → Bladeren → Vertrouwde basiscertificeringsinstanties → Voltooien. Herstart de browser. Wijkt de reeks af, installeer het certificaat niet. Klik ook geen browserwaarschuwing weg.
+
+7. Open op de tweede pc https://mk8dx.home.arpa. Er hoort geen certificaatwaarschuwing te verschijnen. Probeer ook https://mk8dx.home.arpa/scanner/ met een eigen testafbeelding. Meld je met je eigen adres aan en volg de link in je echte inbox. Na die aanmelding kun je op de host Start-MK8DX-LAN.cmd opnieuw openen en met menu 5 je opgeslagen beheeradres eenmalig beheerrechten geven. A1-gebruikers en beheerders gaan niet automatisch mee naar A2.
+
+Verandert later het host-IP, pas dan eerst de hosts-regel op beide pc's aan. Open PowerShell in de pakketmap op de host en vervang het voorbeeld-IP in deze opdrachten door het nieuwe echte adres:
+
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN') --lan-bind-address '192.168.0.51'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+Controleer daarna opnieuw het adres, de site en de aanmeldmail. De tweede pc blijft het certificaat vertrouwen zolang het dezelfde A2-installatie is. Bij herstel naar een nieuw project ontstaat een nieuwe lokale certificaatautoriteit; zie ‘Een backup herstellen’.
+
+Publiek op gedeelde Node.js-hosting zonder Docker
+
+Deze route gebruikt Node.js met Passenger en MariaDB, zoals webhosting als mijn.host Starter die aanbiedt. Zij vraagt geen VPS, Docker, root-toegang of eigen Caddy-server. Het pakket is getest op een lokale Linux- en MariaDB-opstelling; jouw eigen DirectAdmin-account en echte mailbezorging controleer je bij je installatie. Neem een apart (sub)domein en een lege database. Raak een bestaande website of database niet aan. Starter noemt momenteel 2 GB RAM en 5 GB opslag; controleer in jouw paneel de vrije ruimte voor de upload, npm-dependencies, gegevens en backups.
+
+1. Download mk8dx-mijnhost-node-rc8.zip en SHA256SUMS.txt van de releasepagina die bij Welkom staat. Dit is het uploadpakket; de Docker-host-ZIP en het volledige bronpakket zijn hiervoor niet geschikt. Leg beide bestanden op je Windows-pc in dezelfde map. Open PowerShell in die map en vergelijk de volledige SHA-256-reeks met de regel in SHA256SUMS.txt:
+
+Get-FileHash '.\mk8dx-mijnhost-node-rc8.zip' -Algorithm SHA256
+
+Stop bij een verschil.
+
+2. Log op je eigen pc in op het mijn.host-klantenpaneel en open je hostingpakket, daarna DirectAdmin. Kies rechtsboven het domein of subdomein dat voor deze nieuwe MK8DX-site bedoeld is. Een voorbeeldvorm is www.mijneigenwebsite.nl; gebruik jouw werkelijke naam. Controleer in Account Beheer → SSL certificaten dat ‘Krijg automatisch certificaat van ACME Provider’ voor precies die naam is aangevraagd. Een browser mag later geen certificaatwaarschuwing geven. Als je DNS elders beheert, laat het gekozen hostadres eerst naar dit hostingpakket wijzen. Wijzig geen bestaande mailrecords alleen voor deze website.
+
+DirectAdmin Node.js-handleiding: https://mijn.host/kb/web-apps/node-js-applicatie-draaien-op-je-hostingpakket
+Let's Encrypt in DirectAdmin: https://mijn.host/kb/webhosting/lets-encrypt-ssl-certificaat-aanvragen
+
+3. Maak in DirectAdmin onder Account Beheer → MySQL beheer of Databases een nieuwe lege database en een gebruiker voor alleen deze database. Schrijf de volledige namen op zoals het paneel ze toont, inclusief een eventueel accountvoorvoegsel, bijvoorbeeld account_mk8dx en account_mk8dxuser. Bewaar het gegenereerde wachtwoord privé. Kies geen root-account. Zoek ook de databasehost in het paneel of de bijbehorende accountinformatie; dat kan localhost zijn, maar vul alleen de werkelijk getoonde waarde in. Poort 3306 is de normale voorbeeldwaarde. MK8DX controleert straks de echte engine en versie vóór migraties. Voor deze release is MariaDB 11.4 of hoger, of MySQL 8.4 of hoger nodig; het woord ‘MySQL’ op een paneel bewijst die versie niet.
+
+4. Open in DirectAdmin E-mail Manager → E-mail Accounts. Maak een eigen mailbox voor de site of kies een bestaande mailbox die jij mag gebruiken. Schrijf het volledige mailboxadres, wachtwoord en de bijbehorende uitgaande servernaam op. Een gebruikelijke vorm is mail.mijneigenwebsite.nl met poort 465 en SSL/TLS; de juiste servernaam komt uit jouw eigen account. Het SMTP-loginadres, het zichtbare afzenderadres en jouw latere MK8DX-beheeradres hebben verschillende functies. De inbegrepen mailbox is voldoende als zij van dit account mag verzenden.
+
+Mailinstellingen bij mijn.host: https://mijn.host/kb/email/e-mail-account-instellen-in-gmail
+
+5. Open in DirectAdmin links Extra Kenmerken → Setup Node.js App → Create Application. Kies Node.js 24 als jouw paneel die aanbiedt. Kies Production voor de uiteindelijke site, Application root apps/mk8dx buiten public_html, Application URL op de gekozen domeinwortel en Application startup file api/dist/composition/passenger-hosted-main.js. Het paneel kan eerst een standaard app.js tonen; verander de startupinstelling naar het genoemde bestand voordat je MK8DX herstart. Schrijf de exacte activatieregel voor de Node-omgeving op die het paneel bovenaan laat zien. Staat Node 24 of de startupinstelling niet in jouw paneel, ga dan niet gokken met een oudere Node-versie; dit blijft een concrete accountcontrole.
+
+6. Controleer op de Windows-pc via het mijn.host-paneel welke servernaam en SSH-gebruikersnaam bij dit pakket horen. Open PowerShell en maak via de officiële SSH-poort 26 verbinding. Vergelijk de hostkeyvingerafdruk met een onafhankelijk door mijn.host opgegeven waarde voordat je haar accepteert. Vervang de haakjes door je eigen waarden; laat de punthaken zelf weg:
+
+ssh -p 26 <jouw-gebruikersnaam>@<jouw-servernaam>
+
+Een SSH-sessie geeft een Linux-prompt. Bewaar het accountwachtwoord in je wachtwoordbeheerder. Je gebruikt hier geen VPS-root. Dezelfde SSH-verbinding draagt de gecontroleerde ZIP over; open een tweede PowerShell op je pc, in de downloadmap:
+
+scp -P 26 '.\mk8dx-mijnhost-node-rc8.zip' <jouw-gebruikersnaam>@<jouw-servernaam>:
+
+De ZIP verschijnt in je eigen thuismap op de hostingserver. Een andere SFTP-functie in het paneel kan andere gegevens hebben; deze route gebruikt uitsluitend de officieel beschreven SSH/SCP-toegang.
+
+SSH bij mijn.host: https://mijn.host/kb/webhosting/verbinden-met-ssh
+
+7. Ga terug naar je SSH-venster. Controleer of Python 3.9 of hoger, unzip en de MariaDB-dumpclient beschikbaar zijn. Het pakket is al gebouwd; Python bedient hier alleen de bestaande installatiehulp:
+
+python3 --version
+command -v unzip
+command -v mariadb-dump || command -v mysqldump
+
+Is één van deze opdrachten afwezig, leg dan de concrete ontbrekende voorziening naast je hostingpaneel of de hulp van mijn.host. Maak voor dit pakket geen onbeveiligde publieke setup-URL. Pak de ZIP in je eigen appmap uit, niet in public_html:
+
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-rc8.zip" -d "$HOME/apps/mk8dx"
+cd "$HOME/apps/mk8dx"
+
+Je ziet nu api, web, scanner, assets, mysql en tooling. De appmap is privé. De installer bewaart profiel, secrets en backups straks eveneens buiten public_html.
+
+8. Plak in hetzelfde SSH-venster de exacte Node-activatieregel uit jouw Setup Node.js App-scherm. Die regel begint gewoonlijk met source en eindigt met cd naar jouw Application root. Typ daarna:
+
+node --version
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+Je ziet Node 24 en een afgeronde installatie van de vergrendelde productieafhankelijkheden. Dit compileert geen TypeScript. De map api/node_modules hoort bij jouw Linux-host; kopieer geen Windows-node_modules. Als de host onvoldoende ruimte meldt, stop en controleer de vrije ruimte; verwijder geen bestaande accountdata.
+
+9. Start de begeleide invoer vanuit de appmap:
+
+python3 tooling/install.py wizard --state-dir "$HOME/mk8dx-private"
+
+Kies B2. Vul je exacte HTTPS-websiteadres zonder https:// in, daarna de databasehost, poort, volledige database- en gebruikersnaam en het verborgen databasewachtwoord uit stap 3. Vul de SMTP-host, poort 465, volledige mailboxlogin, verborgen mailboxwachtwoord en toegestaan afzenderadres uit stap 4 in. Geef als beheeradres het eigen e-mailadres waarmee jij straks een aanmeldlink ontvangt. Dat mag anders zijn dan de SMTP-login. De hulp schrijft operator-profile.json, secrets.json en operator.json onder $HOME/mk8dx-private met beperkte rechten. Vul dezelfde betekenis niet in een tweede .env in.
+
+10. Controleer de databaseversie en voer daarna alleen op je eigen nieuwe lege database alle migraties en beide referentiesets uit:
+
+python3 tooling/install.py check-database --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py setup --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py check --state-dir "$HOME/mk8dx-private"
+
+De eerste regel hoort de werkelijk gemeten MariaDB- of MySQL-versie en tableCount 0 te tonen. Stop als de engine te oud is of de database onverwachte tabellen bevat. Na setup zie je alle migraties toegepast, Nintendo Staff en World Records als applied en daarna ready. De installer reset geen onbekend gevuld schema.
+
+11. Maak de afgeleide Passenger-instellingen en start de app via het paneel:
+
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+Dit maakt mk8dx-hosted.env.json in de private Application root, buiten public_html. Zet deze map en $HOME/mk8dx-private nooit in een openbare bestandsmap. Open DirectAdmin → Extra Kenmerken → Setup Node.js App, kies jouw MK8DX-app en klik Restart. De provider beheert het proces en HTTPS; houd geen eigen nohup- of PM2-server in leven. Controleer https://www.mijneigenwebsite.nl/health/ready, de startpagina, /scanner/, /client-config.json en /.well-known/assetlinks.json, telkens met jouw echte hostnaam. Een onbekende JSON- of API-route mag geen HTML-startpagina teruggeven. Een verzoek naar /secrets.json, /.env of een backup mag geen inhoud opleveren.
+
+12. Klik op de site op Aanmelden met het beheeradres uit stap 9. Open de link in je echte inbox en meld je aan. Pas daarna keer je terug naar SSH, activeer je zo nodig opnieuw de Node-omgeving uit het paneel, ga je naar de appmap en voer je uit:
+
+cd "$HOME/apps/mk8dx"
+python3 tooling/install.py admin --state-dir "$HOME/mk8dx-private"
+
+Verwacht created of, bij een herhaling, unchanged. Ververs de website. Eerste signup alleen geeft geen beheerrechten. Controleer een circuit, de Staff- en World Records-Total, een eigen Time Trial en de scanner-upload. Werkt de echte aanmeldmail niet, controleer de mailboxlogin, afzender en TLS-instellingen; een ready-melding bewijst geen aflevering bij een externe inbox.
+
+13. Voor een backup stop je bezoekersverkeer tijdelijk via de Stop-knop van deze Node-app in DirectAdmin; de MariaDB-database blijft beschikbaar. Gebruik in SSH, vanuit de appmap, een nieuwe private mapnaam:
+
+python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
+
+De hulp meldt Backup verified. Maak daarna zelf een beschermde kopie buiten dit hostingaccount. Herstart de Node-app in DirectAdmin en controleer ready. De backup bevat ook accounts, beheerrechten en sleutels; upload haar nooit naar public_html of een openbare link.
+
+14. Voor een update controleer je de nieuwe B2-ZIP op je pc. Stop de Node-app in DirectAdmin en maak op de oude appmap eerst een geverifieerde backup. Upload de nieuwe ZIP via dezelfde SSH/SCP-route. Bewaar de oude appmap door haar in je SSH-venster te hernoemen, en maak daarna een nieuwe lege appmap. Gebruik deze opdrachten alleen als de nieuwe ZIP in je thuismap staat en er nog geen map mk8dx-voor-update bestaat:
+
+cd "$HOME"
+mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-voor-update"
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-rc8.zip" -d "$HOME/apps/mk8dx"
+
+Plak de Node 24-activatieregel uit het DirectAdmin-scherm opnieuw. Installeer de vergrendelde Linux-afhankelijkheden in de nieuwe api-map en keer terug naar de appmap:
+
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+Gebruik dezelfde private gegevensmap. Voer met een andere nieuwe backupmap uit:
+
+python3 tooling/install.py upgrade --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-update-2026-10-01"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+Restart daarna uitsluitend deze app via DirectAdmin. Controleer website, aanmelding, beheer en bekende resultaten. Schakel niet blind alleen oude Web-bestanden terug na een schemamigratie. Een MariaDB-versiewissel is geen gewone MK8DX-update.
+
+15. Voor herstel gebruik je een nieuwe lege database en een apart testsubdomein op hetzelfde geteste databasetype en dezelfde versieserie. Breng het gecontroleerde B2-pakket en de volledige private backup naar die aparte opstelling. Maak in DirectAdmin voor de herstelproef een afzonderlijke Node-app met Application root apps/mk8dx-herstel en Application URL op het testsubdomein. Pak de B2-ZIP in die nieuwe private map uit. Activeer daar de Node 24-regel uit het nieuwe appscherm, voer in apps/mk8dx-herstel/api opnieuw npm ci --omit=dev --ignore-scripts --no-audit --no-fund uit en ga daarna naar apps/mk8dx-herstel. De begeleide herstelstap vraagt de nieuwe databasegegevens verborgen en hergebruikt de oude account- en sleutelstaat:
+
+python3 tooling/install.py restore-wizard --backup-input "$HOME/mk8dx-backups/b2-2026-10-01" --state-dir "$HOME/mk8dx-private-herstel"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private-herstel"
+
+Koppel in DirectAdmin deze aparte Passenger-app aan het testsubdomein en de genoemde private Application root, start haar en controleer ready, een bestaande aanmelding, beheer en resultaten. Geef geen nieuwe eerste admin. Een echte domeinomschakeling en providerbackup zijn afzonderlijke stappen die je zelf uitvoert.
+
+Een openbare website op een VPS maken
+
+Een VPS is een eigen computer op internet. Voor deze route is Ubuntu 24.04 LTS op x86-64 uitgewerkt. Aanbevolen zijn 2 processorkernen, 8 GB geheugen en 40 GB SSD, plus ruimte voor latere gegevens en backups. Mijn.host unmanaged VPS M noemt deze capaciteit en root/SSH op zijn VPS-pagina, maar MK8DX is niet op dat exacte abonnement getest. Jij blijft verantwoordelijk voor Ubuntu, Docker, mail, beveiliging en backups.
+
+Mijn.host VPS-overzicht: https://mijn.host/vps
+
+Mijn.host Starter gebruikt de afzonderlijke Node/Passenger-route hierboven. Deze VPS-route gebruikt Docker en past niet bij een gewoon Starter-pakket.
+
+Mijn.host webhostingoverzicht: https://mijn.host/webhosting
+
+Je hebt vóór de eerste start een eigen domein, een geschikt VPS-account met IPv4 en Ubuntu, toegang tot het DNS-beheer, en een maildienst met SMTP 465 en impliciete TLS nodig. Het voorbeeld www.mijneigenwebsite.nl vervang je overal door jouw eigen hostnaam. Het voorbeeld-IP 203.0.113.10 is geen echte server. Providerlogin, SSH-sleutel, MK8DX-beheeradres en SMTP-login hebben ieder een andere functie. Bewaar wachtwoorden en sleutels privé.
+
+1. Maak vanaf je Windows-pc een toegangssleutel als jouw VPS met SSH-sleutels werkt. Open PowerShell en voer uit:
+
+New-Item -ItemType Directory -Force (Join-Path $env:USERPROFILE '.ssh')
+ssh-keygen -t ed25519 -f (Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519')
+
+Kies een sterke wachtzin wanneer daarom wordt gevraagd. Het bestand zonder .pub is privé. Open het bestand met .pub in Kladblok en voeg uitsluitend die openbare sleutel toe via de SSH-sleutelfunctie van jouw VPS-beheerportaal. De exacte knop verschilt per aanbieder; laat de provider de plek aanwijzen als die ontbreekt. Zet de privésleutel nooit in een webmap of op de server.
+
+2. Installeer WinSCP vanaf de officiële site. Open WinSCP → New Site. Kies SFTP en vul het echte VPS-IP in bij Host name, de echte SSH-poort bij Port number en het VPS-account bij User name. Gebruik bij de uitgewerkte root-route root, mits jouw provider dit account geeft. Ga voor sleutelaanmelding naar Advanced → SSH → Authentication → Private key file en kies de privésleutel uit stap 1. WinSCP biedt aan de OpenSSH-sleutel om te zetten naar een .ppk-bestand; bewaar dat naast je privésleutel en gebruik het in WinSCP. De wachtzin blijft nodig.
+
+WinSCP: https://winscp.net/eng/download.php
+WinSCP sleutelformaten: https://winscp.net/eng/docs/ui_login_authentication
+
+Vraag de SSH-hostkeyvingerafdruk op via de onafhankelijke VPS-console of ondersteuning van jouw aanbieder. Vergelijk die met de melding bij de eerste WinSCP-verbinding. Accepteer alleen bij een exacte overeenkomst. Sleep daarna het gecontroleerde mk8dx-host-local-rc8-amd64.zip van links op je pc naar /root/ rechts op de server. Upload geen backup of secrets naar public_html.
+
+3. Open op je pc PowerShell voor de serverterminal. Vul jouw echte IP, poort en sleutelpad in. De sleutel is dezelfde OpenSSH-sleutel uit stap 1, niet het omgezette .ppk-bestand:
+
+$serverIp = '203.0.113.10'
+$sshPort = 22
+$key = Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519'
+ssh -i $key -p $sshPort "root@$serverIp"
+
+Vergelijk ook hier de hostkeyvingerafdruk met de onafhankelijk verkregen reeks. Typ pas daarna je sleutelwachtzin. Als jouw provider een andere VPS-gebruikersnaam of SSH-poort opgeeft, vervang dan root of 22. De poorten van gewone webhosting zijn geen VPS-instellingen.
+
+In het Ubuntu-venster controleer je de machine:
+
+cat /etc/os-release
+uname -m
+free -h
+df -h /
+python3 --version
+
+Je verwacht Ubuntu 24.04, x86_64 en Python 3.12 of hoger. Ontbreekt Python, voer op een nieuwe Ubuntu 24.04-server uit:
+
+apt update
+apt install python3
+python3 --version
+
+Ga niet door als de machine geen Linux x86-64 is; het meegeleverde imagepakket is amd64.
+
+4. Controleer of Docker al werkt:
+
+command -v docker
+docker compose version
+
+Ontbreekt Docker, gebruik dan op deze Ubuntu-server de officiële Docker-apt-methode. Voer elke groep in dezelfde serverterminal uit en stop bij een fout:
+
+Docker voor Ubuntu: https://docs.docker.com/engine/install/ubuntu/
+
+apt update
+apt install ca-certificates curl unzip
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+Voeg daarna de officiële pakketbron toe. Kopieer deze regels samen, inclusief de afsluitende EOF:
+
+cat > /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+Controleer:
+
+systemctl is-active docker
+docker compose version
+
+Het eerste antwoord hoort active te zijn. Installeer bij een fout niet zomaar een tweede Docker-variant; lees de fout en de officiële pagina.
+
+5. Open in het DNS-paneel van de partij die jouw domein beheert de records voor je domein. Maak voor bijvoorbeeld www.mijneigenwebsite.nl een A-record met naam www en waarde jouw echte VPS-IPv4. Laat bestaande mailrecords staan. Gebruik de standaard-TTL of 300 seconden. Controleer op je pc na verspreiding:
+
+Resolve-DnsName www.mijneigenwebsite.nl -Type A
+
+Het antwoord hoort jouw VPS-IP te tonen. Controleer een bestaand AAAA-record voor dezelfde naam: laat het alleen staan als het naar een werkende IPv6-site wijst. Zorg in het VPS-providerpaneel dat inkomend TCP 80 en 443 is toegestaan. Houd jouw SSH-poort bereikbaar en publiceer MySQL-poort 3306 niet. Wijzig geen brede firewallregels zonder te weten hoe je de server terug bereikt.
+
+6. Verzamel bij je mailprovider de uitgaande SMTP-host, poort 465 met impliciete TLS, login, wachtwoord en toegestaan afzenderadres. Controleer dat verzenden vanaf jouw VPS mag. Dat is iets anders dan je MK8DX-beheeradres. Deze handleiding heeft geen echte provider-mailbezorging getest; de proef slaagt pas als jouw aanmeldlink in je eigen inbox aankomt.
+
+7. In de Ubuntu-terminal staat de ZIP uit WinSCP onder /root/. Controleer en pak hem uit:
+
+pwd
+ls -lh /root/mk8dx-host-local-rc8-amd64.zip
+mkdir -p /opt/mk8dx/host /var/lib/mk8dx
+unzip -q /root/mk8dx-host-local-rc8-amd64.zip -d /opt/mk8dx/host
+cd /opt/mk8dx/host
+ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
+
+Als een naam ontbreekt, kijk dan of je de juiste ZIP volledig hebt uitgepakt. Start daarna de bestaande installatiehulp:
+
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+Kies B1. Vul jouw exacte hostnaam in zonder https://. Vul daarna de vijf mailgegevens en jouw eigen toekomstige MK8DX-beheeradres in. Het SMTP-wachtwoord is verborgen. Kies menu 1. De hulp maakt de interne database, sleutels en verbindingen zelf. Bij herhalen gebruik je dezelfde map /var/lib/mk8dx/instance; maak niet een tweede profiel om een DNS- of mailfout te omzeilen.
+
+8. Open op je eigen pc eerst de gereedheidscontrole en daarna de website, met jouw eigen hostnaam op de plek van het voorbeeld:
+
+https://www.mijneigenwebsite.nl/health/ready
+https://www.mijneigenwebsite.nl
+
+De browser hoort geen certificaatwaarschuwing te tonen. Klik op Aanmelden, gebruik je opgeslagen beheeradres en open de aanmeldlink in je echte inbox. Pas ná die geverifieerde aanmelding ga je in de serverterminal terug naar de pakketmap en kies je menu 5:
+
+cd /opt/mk8dx/host
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+Het antwoord is created of, bij herhaling, unchanged. Ververs de site. Controleer ook een circuit en een eigen Time Trial-inzending. Een draaiende container alleen bewijst nog geen DNS, certificaat of mailbezorging.
+
+Android, LiveTrial, scanner en Tournament gebruiken
+
+Deze hulpmiddelen gebruiken het adres van een bestaande community. De website-installatie komt eerst. Voor LiveTrial en Tournament op dezelfde Windows-computer mag dat http://127.0.0.1:18080 (A1) of http://127.0.0.1:18090 (A3) zijn. Voor een openbare website gebruik je het vertrouwde HTTPS-adres. Android vraagt een vertrouwde HTTPS-site; de lokale Windows-proef bewijst geen Android-verbinding. De generieke Android-app en de Windows-clients laten je het communityadres zelf kiezen; een ander domein vereist dus geen broncodewijziging. In de publieke clientinstellingen staan geen serverwachtwoorden. Geef een app nooit het interne adres mysql, een API-containeradres of een SSH-IP.
+
+Neem steeds het volledige websiteadres uit ‘origin’ of ‘Web origin’ van jouw eigen installatie, inclusief de poort als die wordt getoond. Vul nooit het adres ‘localMailInbox’ in LiveTrial in: dat opent alleen de lokale testbrievenbus. Op een tweede apparaat gebruik je het HTTPS-netwerkadres of je openbare domein, niet 127.0.0.1 van de server.
+
+Voor Android heb je een toestel met Android 8.0 of nieuwer nodig; arm64 is aanbevolen. De debug-APK is ongeveer 459 MB. Houd minstens 1 GB vrij als installatiemarge. Controleer mk8dx-android-debug-r10.apk met de regel in SHA256SUMS.txt op je pc, kopieer hem naar je telefoon en open hem vanuit Bestanden of Downloads. Als Android toestemming vraagt voor installeren uit deze bestandsapp, geef die alleen voor het gecontroleerde pakket. Je kunt die toestemming na installatie weer uitzetten.
+
+Bij de eerste start vraagt ‘Community website’ of ‘Communitywebsite’ om het volledige vertrouwde HTTPS-communityadres, bijvoorbeeld https://www.mijneigenwebsite.nl, zonder pad of afsluitende schuine streep. Tik ‘Save’ of ‘Opslaan’. Later verander je dit onder Settings / Instellingen → Community server → Change server. De app vraagt bevestiging; sessies en wachtende ritten van de vorige server verhuizen niet automatisch. Controleer bij een fout hetzelfde adres in de telefoonbrowser. Meld je daarna via de browsercode met je eigen account aan. De debug-APK is geen Play Store-release en kan niet vanzelf met een anders ondertekende APK worden bijgewerkt.
+
+Een APK wordt ondertekend door de maker van de app, niet afzonderlijk voor elk domein. Voor automatische Android App Links is wél een publieke koppeling tussen de echte app-identiteit, het gebruikte ondertekeningscertificaat en jouw domein nodig. Het standaardbestand /.well-known/assetlinks.json bevat daarom [] als JSON. Handmatig server kiezen en aanmelden werkt zonder die automatische koppeling. Een eigen definitief ondertekende app hoort bij de afzonderlijke ontwikkelaarsroute.
+
+Voor LiveTrial op Windows x86-64 controleer je desktop-client-v0.1.0-rc.8.zip met SHA256SUMS.txt en pak je de volledige ZIP uit, bijvoorbeeld onder Documenten. Houd ongeveer 2 GB ruimte vrij voor uitpakken en eigen opnamen; dit is een marge, geen gemeten minimum. Open LiveTrial.exe. Live opnemen van een capturekaart heeft ook FFmpeg nodig, dat vanwege de licentie niet is meegeleverd: voer eenmalig winget install Gyan.FFmpeg uit in PowerShell en start LiveTrial opnieuw (video's analyseren werkt zonder). Ga naar Instellingen → Adres van je communitywebsite, vul het exacte adres van jouw installatie in en kies Server opslaan. Bevestig de wissel.
+
+LiveTrial slaat het adres op en start daarna zelf opnieuw. Laat het venster open terwijl dit gebeurt. Kijk na de herstart bij Instellingen of precies jouw adres zichtbaar is. Meld je pas dan aan; de aanmelding hoort jouw community te openen. Open je daarna Ritgeschiedenis, dan wacht dit onderdeel zo nodig even tot de lokale geschiedenis is gestart en verschijnt de inhoud vanzelf. Vernieuwen met F5 hoort niet nodig te zijn. Als LiveTrial meldt dat automatisch opnieuw starten niet lukte, kies dan in de app LiveTrial afsluiten, wacht tot het programma is gesloten en open LiveTrial.exe opnieuw. Alleen het browservenster sluiten is niet genoeg: LiveTrial kan dan op de achtergrond blijven draaien.
+
+Staat er nog een leeg veld met https://www.example.org of opent de verkeerde website? Stop dan en sluit de bestaande LiveTrial-instantie via LiveTrial afsluiten. Dat kan ook een instantie onder een ander Windows-account op dezelfde computer zijn. Start daarna opnieuw en controleer het adres. Bewerk server.json niet met de hand en verstuur niets naar de verkeerde website. Voor een videobestand heb je geen capturekaart nodig. Live capture vraagt een passende kaart en driver. Lokale resultaten en wachtrijen blijven per server gescheiden.
+
+De browserscanner zit al in de website. Open op jouw vertrouwde HTTPS-adres /scanner/ en begin met ‘afbeelding uploaden’. Kies een eigen resultaatfoto, bekijk de herkende gegevens en bevestig ze pas daarna. Live cameragebruik vraagt browsertoestemming en een vertrouwde HTTPS-verbinding buiten localhost. Herkenning hangt ook van de opname af. Op A2 is alleen de beschreven tweede Windows-browserroute ondersteund.
+
+Voor Tournament op Windows x86-64 controleer je tournament-tools-v0.1.0-rc.8.zip en pak je de hele ZIP uit. Open Install-MK8DX-TournamentTools.cmd. Houd meerdere GB vrije ruimte beschikbaar: de ZIP van ongeveer 160 MB en ongeveer 1 GB voor uitpakken zijn niet het hele ruimtegebruik. De installer kan Python 3.12, publieke pakketten en bij OCR-gebruik een model ophalen. Een exact minimum voor alle afhankelijkheden en eigen media is niet gemeten. Begin met de normale CPU-route; extra GPU- of CUDA-instellingen zijn voor later. Wacht op SUCCESS en houd runtime-assets intact. Bij een fout kijk je in install.log in de pakketmap.
+
+Sleep een .mp4- of .mkv-opname op TournamentProcessor.cmd. Het programma maakt naast de video een sessiemap met Excel, CSV en een bestand dat op _TournamentRaceResultsV1.json eindigt. Voor TournamentLive.cmd met live capture heb je passende hardware en driver nodig.
+
+Je kunt Tournament Live ook zonder capturekaart met een bestaande video proberen. Open TournamentLive.cmd, kies Videobestand toevoegen, selecteer een .mp4- of .mkv-bestand en kies Alles starten. Wacht tot de video en analyse zijn afgelopen. Bekijk de Bevestigde stand en kies Exports openen voor het resultaatbestand. Deze normale videoroute gebruikt de scoreselectie die wacht tot de puntenanimatie en eindstand stabiel zijn. Controleer namen, plaatsen en punten zelf; OCR kan afwijken. Een videoreplay is geen proef met een fysieke capturekaart. De aparte opdracht TournamentLiveCli.cmd replay is alleen diagnostiek en vervangt deze bediening niet.
+
+Voor de optionele websitekoppeling open je PowerShell in de pakketmap en start je:
+
+.\TournamentConnect.cmd sign-in
+
+Vul bij de eerste keer het exacte adres van jouw installatie in en rond de browseraanmelding af. Deze opdrachten tonen of veranderen het adres; een wijziging vraagt bevestiging:
+
+.\TournamentConnect.cmd server
+.\TournamentConnect.cmd server https://www.example.org
+
+Vervang example.org door jouw echte community. Oude wachtende uploads blijven bij de oude server. Wil je een bestand met TournamentConnect.cmd send afleveren, dan geeft de beheerder de aangemelde speler eerst toegang via Administration → Tournaments → Tournament operators. Zoek de speler en kies zijn naam. Daarmee krijgt hij toernooirechten, geen algemeen beheer. Laat de client daarna opnieuw afleveren; de race blijft eerst in Incoming results en vraagt beoordeling. Op de website importeert een beheerder een gecontroleerd resultaat via Administration → Tournaments → Import canonical race results, of binnen een groep via Import races from a Processor / Live file. Uploaden is geen automatische publicatie.
+
+Voor een nieuw toernooi opent de beheerder Administration → Tournaments en maakt daar het toernooi aan. Voeg de spelers toe, markeer wie aanwezig is, deel de beschikbare Switches in en bevestig de groepsindeling. Open daarna bij die groep Incoming results. Koppel de herkende namen aan de juiste spelers, controleer circuit en finishplaatsen en kies Confirm voor de gecontroleerde race. De voorlopige live stand is nog geen officiële uitslag. Rond de stappen voor de finale op de website af. Kies vóór Review finalization bovenaan Set edition number en vul het nummer van deze editie in, bijvoorbeeld 1. Controleer de eindstand en kies daarna Review finalization → Finalize Tournament. Open de publieke toernooipagina in een nieuw browservenster om de gepubliceerde uitslag te zien.
+
+Instellingen en dagelijks beheer
+
+De installatiehulp vraagt elk logisch gegeven één keer. Zij bewaart het profiel in operator-profile.json en wachtwoorden en sleutels apart in secrets.json, binnen jouw private gegevensmap. Ze leidt daaruit zelf de Web-, API-, Docker- en publieke clientinstellingen af. Bewerk api.env, compose.env, operator.json of public-client.json niet los. Het openbare /client-config.json bevat alleen het websiteadres. Een herhaalde start maakt geen nieuwe accounts, beheerder, sleutels of database aan.
+
+Op Windows staat A1 standaard in %LOCALAPPDATA%\MK8DX\Server en A2 in %LOCALAPPDATA%\MK8DX\LAN. Op de VPS staat B1 in /var/lib/mk8dx/instance. Dit zijn gegevensmappen, geen mappen die je bij een software-update vervangt. Je providerlogin en VPS-SSH-sleutel blijven buiten MK8DX. Elk Android- of Windows-apparaat bewaart zijn eigen communitykeuze en sessie.
+
+Voor starten, status, stoppen, admin en backup open je op Windows opnieuw het passende Start-MK8DX.cmd of Start-MK8DX-LAN.cmd. Op Ubuntu ga je naar /opt/mk8dx/host en start je sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance. Het menu gebruikt 2 voor starten, 3 voor status, 4 voor stoppen, 5 voor de geverifieerde eerste admin, 6 voor backup en 7 voor een update met vooraf gecontroleerde backup. Optie 1 kan een onderbroken eerste installatie hervatten. Gebruik nooit docker compose down -v voor een installatie die je wilt houden: de optie -v verwijdert het databasevolume. Een proefinstallatie helemaal verwijderen (dit wist de database, accounts en sleutels; kies eerst 6 voor een backup als je die misschien terug wilt): kies 4 om te stoppen, open PowerShell in de pakketmap en voer docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v uit; verwijder daarna de map %LOCALAPPDATA%\MK8DX\Server (gebruik compose.lan.yaml voor de thuisnetwerkroute). Op Ubuntu voer je dezelfde opdracht uit met --env-file /var/lib/mk8dx/instance/compose.env (compose.production.yaml voor een VPS) en verwijder je daarna /var/lib/mk8dx/instance.
+
+Wil je op A2 of B1 de maildienst of het mailwachtwoord wijzigen? Maak eerst via menu 6 een backup. Open PowerShell in de uitgepakte hostmap op A2 en voer uit:
+
+python tooling/install.py change-smtp --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+Op Ubuntu voer je in /opt/mk8dx/host dezelfde acties met python3 en --state-dir /var/lib/mk8dx/instance uit. De invoer noemt smtp.host, smtp.port, smtp.username, smtp.fromAddress en vraagt het verborgen wachtwoord. Enter behoudt een bestaande waarde. Controleer daarna met een nieuwe aanmeldmail in je eigen inbox; check alleen bewijst geen mailbezorging. Beheeradres, mailafzender en SMTP-login hoeven niet gelijk te zijn.
+
+Een publiek websiteadres wijzig je pas nadat het nieuwe DNS-adres en HTTPS klaarstaan. Maak eerst een backup. Op A1 toont dit voorbeeld de exacte wijzigactie; vervang de voorbeeldpoort door de gewenste vrije poort:
+
+python tooling/install.py change-origin --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server') --origin 'http://127.0.0.1:18090'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+
+Op B1 gebruik je python3, /var/lib/mk8dx/instance en jouw nieuwe volledige https://-adres. Controleer de status, /client-config.json en een nieuwe aanmeldlink. Stel elk apparaat daarna ook op het nieuwe adres in. Een verkeerd adminadres vóór de eerste beheertoekenning kun je via de installatiehulp wijzigen; een al gebruikte eerste toekenning wordt daarmee niet opnieuw geopend. Een bestaande beheerder laat een andere geverifieerde beheerder alleen via de begrensde herstelprocedure en een expliciet eigenaarsbesluit toevoegen.
+
+Backup, herstel en updates
+
+Kies op de passende host menu 6. Op Windows komt de backup onder Documenten\MK8DX-backups\<tijdstip>; op Ubuntu onder /root/mk8dx-backups/<tijdstip> als je als root werkt. De backup bevat database, accounts, beheerrechten, instellingen en sleutels. Bewaar de hele map privé en kopieer haar ook naar een beschermd medium buiten de host. Een kopie op dezelfde defecte VPS is onvoldoende.
+
+Controleer de werkelijk aangemaakte map. Vervang <ECHTE_MAPNAAM> in deze voorbeelden door de mapnaam die de hulp toont. Op Windows, in PowerShell vanuit het hostpakket:
+
+python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ECHTE_MAPNAAM>"
+
+Op Ubuntu, in de hostpakketmap:
+
+python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ECHTE_MAPNAAM>'
+
+‘Backup verified’ is het verwachte antwoord. Deel de backup nooit in een issue, e-mail of openbare cloudlink.
+
+Een backup herstellen
+
+Een herstelproef gebruikt een nieuwe gegevensmap en een nieuw Docker-project. Zo raakt zij de bestaande installatie niet. Herstellen zelf start eerst alleen een nieuwe database. Start daarna pas de herstelde website volgens de passende route. Bewaar de oorspronkelijke backup ook na de proef.
+
+Voor A1 open je PowerShell in het hostpakket. Kies een doelmap die nog niet bestaat en voer uit:
+
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ECHTE_MAPNAAM>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+
+De herstelde A1-site krijgt eigen vrije lokale poorten. Open het nieuwe Web origin uit status. Controleer een bekend account, de beheerweergave en je resultaten. De oorspronkelijke site mag tegelijk blijven draaien. Geef de herstelproef niet opnieuw een eerste admin.
+
+Voor een publieke B1-vervanging gebruik je een nieuwe Ubuntu 24.04-VPS met het gecontroleerde hostpakket, Docker, Python en open poorten 80/443. Bewaar de oude VPS voorlopig. Spreek een kort onderhoudsmoment af. Stop op de oude VPS eerst alleen Web en API, zodat er na de laatste backup geen nieuwe resultaten binnenkomen. Ga in de oude hostpakketmap staan en voer uit:
+
+docker compose --env-file /var/lib/mk8dx/instance/compose.env -f compose.yaml -f compose.production.yaml -f compose.images.yaml stop web api
+
+De website is nu tijdelijk niet bereikbaar. Kies op de oude VPS menu 6 voor een nieuwe backup terwijl MySQL nog draait. Verifieer precies deze nieuwe backup met de bovenstaande verify-opdracht. Als dat mislukt, hervat de oude site via menu 2 en onderzoek de fout. Kopieer de hele geverifieerde backupmap via de geverifieerde WinSCP-verbinding naar een private map op de nieuwe VPS, nooit naar een webmap. Zet haar bijvoorbeeld onder /root/mk8dx-backups/. In /opt/mk8dx/host op de nieuwe server voer je uit, met jouw echte backupmapnaam:
+
+docker load --input images/docker-images-amd64.tar
+python3 tooling/lifecycle.py restore-new --backup '/root/mk8dx-backups/<ECHTE_MAPNAAM>' --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py status --state-dir /var/lib/mk8dx/herstelproef
+
+De nieuwe database staat nu apart klaar. Controleer de herstelde gegevens met de bestaande private backup en status. Plan een kort overstapmoment. Wijzig in het DNS-paneel alleen het A-record van jouw MK8DX-hostnaam naar het IPv4-adres van de nieuwe VPS. Laat mailrecords staan en wacht tot Resolve-DnsName op jouw pc het nieuwe IP toont. Start op de nieuwe VPS daarna de herstelde diensten:
+
+python3 tooling/install.py start --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py check --state-dir /var/lib/mk8dx/herstelproef
+
+Open op je pc https://<jouw-echte-hostnaam>/health/ready en de website. Controleer het geldige certificaat, een eigen aanmeldmail in de echte inbox, je bekende account, beheerweergave en resultaten. De nieuwe Docker-installatie vraagt haar eigen publieke certificaat aan; poorten 80/443 en het nieuwe DNS-doel moeten daarvoor bereikbaar zijn. Houd de oude VPS uit de bezoekersroute en bewaar haar voorlopig voor onderzoek of terugkeer. Als een controle mislukt, laat de backup intact, onderzoek DNS, poorten, certificaat en SMTP en plan een bewuste terugschakeling van het A-record naar het oude IP. Verwijder geen volume als snelle reparatie. Een echte overstap met externe diensten is nog niet door deze lokale kandidaat uitgevoerd.
+
+Voor A2 herstel je op een andere Windows-host in hetzelfde vertrouwde netwerk. Bereid Docker, Python en het hostpakket voor. Stop op de oude host tijdens een kort onderhoudsmoment alleen Web en API. De database blijft voor de laatste backup draaien. Open PowerShell in de oude pakketmap:
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose stop web api
+
+Kies daarna op de oude host menu 6 en verifieer de nieuwe backup. Bij een fout hervat je de oude installatie via menu 2. Breng de geverifieerde backupmap privé naar de nieuwe host. Zet haar onder Documenten\MK8DX-backups\ met dezelfde mapnaam, of pas het backuppad in de volgende opdracht aan. Herstel daar met restore-new naar een nog niet bestaande LAN-herstelmap. Wijzig vóór het starten het opgeslagen bindadres naar het echte IPv4 van de nieuwe host:
+
+docker load --input images/docker-images-amd64.tar
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ECHTE_MAPNAAM>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel') --lan-bind-address '192.168.0.51'
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+
+Vervang het voorbeeld-IP en zorg dat TCP 443 op de nieuwe host alleen voor Privé is toegestaan. Pas op host en tweede pc de hosts-regel voor mk8dx.home.arpa aan naar het nieuwe IP. Dit nieuwe Docker-project heeft een nieuwe lokale certificaatautoriteit. Haal daarom het nieuwe root.crt uit precies dit herstelproject met de certificaatopdrachten uit het netwerkhoofdstuk, maar gebruik LAN-Herstel als $state. Vergelijk opnieuw de SHA-256 en installeer het nieuwe certificaat op de tweede pc. Verwijder het oude certificaat via certmgr.msc onder Vertrouwde basiscertificeringsinstanties → Certificaten op basis van de oude vingerafdruk. Open pas daarna de site zonder waarschuwing en controleer aanmelden en bestaande resultaten. Een fysieke A2-overstap is nog niet getest; bewaar de oorspronkelijke host en backup.
+
+Voor een software-update controleer je eerst de SHA-256 van het nieuwe hostpakket. Pak het naast de oude softwaremap uit. Gebruik dezelfde private gegevensmap en kies in het nieuwe pakket menu 7. De hulp maakt en verifieert eerst een backup, voert ontbrekende migraties uit en vervangt alleen de meegeleverde serverprogramma's. Controleer daarna dezelfde projectidentiteit, je website, aanmelding en gegevens. Bewaar bij een fout de backup en draai niet blind een ouder image terug na een databaseschemawijziging.
+
+Als het niet lukt en zelf bouwen
+
+Bij een lege website begin je met menu 3 en controleer je of Docker draait. Bij A1 staat de aanmeldmail in Mailpit, bij A2 en B1 hoort hij in een echte inbox. Controleer altijd of je dezelfde installatie, hetzelfde adres en hetzelfde e-mailadres gebruikt. Een ontbrekende aanmeldmail op een publieke route vraagt controle van de echte SMTP-gegevens en providerbereik. /health/ready zegt iets over de API en database, niet over bezorging in een inbox.
+
+Bij A2 controleer je eerst de hosts-regel op beide pc's, het privé-netwerk, de firewallpoort en de vingerafdruk van het certificaat. Bij B1 controleer je DNS-A-record, providerpoort 80/443, geldig HTTPS en daarna mail. Negeer geen certificaatwaarschuwing. Deel bij hulpvragen nooit secrets.json, een backup, aanmeldlinks, SSH-sleutels of logregels met wachtwoorden.
+
+Wil je zelf code, branding of een definitief ondertekende APK bouwen, download dan het mk8dx-full-local-pakket van dezelfde releasepagina. Daarin staan de broncode, interne assetcollectie en bouwrecepten. De ontwikkelaarsinstructies staan in docs/CLIENT_BUILDS.md en docs/install/ONTWIKKELEN.md. Vanuit een kloon van de repository (git clone https://github.com/fromthelake/MK8DX-Ecosystem.git) of dat pakket bouw je het Docker-hostpakket en de webhosting- en XAMPP-pakketten met docs/guides/HOSTING.md (‘Build the host package from a clone’) en de Android-, LiveTrial- en toernooipakketten met docs/CLIENT_BUILDS.md. Gewone installatie en serverkeuze vereisen geen Android Studio, broncodewijziging of eigen Dockerbuild. Spelmateriaal in de pakketten houdt zijn eigen voorwaarden; zie docs/THIRD_PARTY_MATERIALS.md.
+
+Linux gebruiken
+
+Wat je nu lokaal kunt proberen
+
+Je hebt alleen je eigen Linux-computer nodig, geen Windows-computer. Heb je Ubuntu 24.04 op x86-64, dan is het meegeleverde Docker-hostpakket de lokale serverroute. Controleer eerst met uname -m dat de uitkomst x86_64 is. Installeer Docker Engine met de Compose-plugin, Python 3.12 of nieuwer en unzip. De Ubuntu-Docker-installatie staat stap voor stap in ‘Een openbare website op een VPS maken’; voor deze lokale proef sla je daar DNS, firewall-openstelling en echte SMTP over. Download mk8dx-host-local-rc8-amd64.zip en de bijbehorende SHA256SUMS.txt uit dezelfde release. Open Terminal in de downloadmap en controleer de ZIP. Vergelijk de uitkomst met de regel in SHA256SUMS.txt. Stop bij een verschil:
+
+sha256sum mk8dx-host-local-rc8-amd64.zip
+
+Pak het pakket daarna uit en ga naar de pakketmap:
+
+mkdir -p "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-rc8-amd64.zip -d "$HOME/MK8DX/host"
+cd "$HOME/MK8DX/host"
+
+De bestaande Linux-starter is:
+
+sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
+
+Kies A1 en daarna 1. De starter toont het volledige websiteadres bij ‘Web origin’ en Mailpit bij ‘Local mail inbox’. Beide adressen met 127.0.0.1 werken op deze Linux-computer. Open het websiteadres in de browser en Mailpit in een tweede tab voor de aanmeldlink. Als de site start, kun je de website en browserscanner daar lokaal gebruiken. Controleer zelf of aanmelden, een inzending en de websiteweergave echt werken. Deze volledige lokale proef is voor Linux nog niet uitgevoerd; een geslaagde Docker-start alleen bewijst die keten niet.
+
+Wat nog ontwikkeling vraagt
+
+De website en browserscanner zijn browseronderdelen. De meegeleverde LiveTrial- en Tournament-programma's zijn Windows-programma's en starten niet rechtstreeks op Linux. Ook de XAMPP-ZIP met Windows Apache-hulp is geen Linux-installer. Er is geen native Linux-client of captureproef. Wie alles op Linux wil gebruiken, moet de desktopclients met hun herkennings- en captureafhankelijkheden porten, bouwen en daarna aanmelden, verzenden, database en website testen. Het Android-pakket installeer je op Android, niet op Linux. Een Linux ARM-machine heeft nog geen native MK8DX-image; de huidige images zijn amd64.
+
+macOS gebruiken
+
+Wat je nu lokaal kunt proberen
+
+Je hebt alleen je eigen Mac, zonder Windows-computer of andere server. Op een Intel Mac kan een ontwikkelaar proberen de meegeleverde Linux/amd64-Docker-images lokaal te draaien. Als website, API en database daadwerkelijk starten, open je het getoonde A1-websiteadres en Mailpit op diezelfde Mac in de browser. De browserscanner hoort bij de website. Er is nog geen Mac-proef met een nieuw account, inzending, database en zichtbare websiteuitslag; beloof jezelf dus geen complete installatie op basis van alleen een draaiende homepage.
+
+Installeer op een Intel Mac Docker Desktop voor Mac en Python 3.12 of nieuwer. Download dezelfde host-ZIP en SHA256SUMS.txt. Open Terminal in de downloadmap, voer shasum -a 256 mk8dx-host-local-rc8-amd64.zip uit en vergelijk de uitkomst met SHA256SUMS.txt. Stop bij een verschil. Gebruik daarna de mkdir-, unzip- en cd-opdrachten uit het Linux-hoofdstuk. Start dezelfde shellstarter en kies A1. Dit is een ontwikkelaarsproef, geen geteste Mac-gebruikersroute. Op een Mac met Apple Silicon vraagt hetzelfde pakket emulatie van de amd64-images; er is geen native arm64-pakket. Ook met emulatie is werking en snelheid hier niet bewezen. Voor een betrouwbaar lokaal Apple Silicon-pakket zijn arm64-images en een eigen Mac-acceptatieproef nodig.
+
+Docker Desktop voor Mac: https://docs.docker.com/desktop/setup/install/mac-install/
+
+Wat nog ontwikkeling vraagt
+
+De XAMPP/Node-ZIP en de voorgebouwde LiveTrial- en Tournament-clients zijn Windows-pakketten; je krijgt er geen Mac-app mee. Een Mac-ontwikkelaar die ook deze clients zonder Windows wil gebruiken, moet een macOS-versie bouwen en testen, met passende OCR-afhankelijkheden en eventuele capturekaart. Een Windows-VM of compatibiliteitslaag is niet als werkende clientroute geaccepteerd. Het Android-pakket blijft voor een Android-toestel.

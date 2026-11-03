@@ -1,0 +1,259 @@
+/* Camera-UI van het ontwerpsysteem (DESIGN_SYSTEM §5 MINIMAL; ADR-0206/0207). Het eigen palet van
+   veertien kleuren is weg: ze komen uit ds-tokens.generated.css. Donker in elke verschijning. */
+:root { color-scheme: dark; }
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { margin: 0; height: 100%; background: var(--ds-surface-app); color: var(--ds-text-primary); font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; overflow: hidden; overscroll-behavior: none; }
+button { font-family: inherit; }
+
+#app { position: fixed; inset: 0; display: grid; grid-template-columns: 1fr 104px; }
+
+/* ---- preview ---- */
+.stage { position: relative; overflow: hidden; background: #000; }
+.stage video, .stage img.frozen { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; }
+.stage video { transform-origin: 50% 50%; transition: transform 160ms ease-out; }
+.stage img.frozen { display: none; }
+.stage.frozen video { visibility: hidden; }
+.stage.frozen img.frozen { display: block; }
+.stage canvas.overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+.status {
+  position: absolute; top: 6px; left: 16px; right: 16px; z-index: 5;
+  padding: 6px 14px; border-radius: 18px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 0.04em;
+  color: #cdd6e0; background: rgba(17, 22, 29, 0.92); border: 1px solid var(--ds-border-subtle);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none;
+}
+
+/* ---- knoppenkolom ---- */
+.controls { display: flex; flex-direction: column; align-items: stretch; justify-content: center; gap: 6px; padding: 8px; background: rgba(4, 6, 10, 0.75); overflow-y: auto; }
+.controls button {
+  min-height: 40px; padding: 3px 4px; border-radius: 18px; border: 1px solid rgba(255, 255, 255, 0.37);
+  background: rgba(22, 26, 34, 0.86); color: #eef3fa; font-size: 12px; font-weight: 600; line-height: 1.15; white-space: pre-line;
+  touch-action: manipulation;
+}
+.controls button:active { filter: brightness(1.3); }
+.controls button.scan { min-height: 52px; font-size: 14px; color: #14181e; background: var(--ds-action-primary); border: 2px solid #fff; }
+.controls button.scan.stop { background: #a4222c; color: #fff; }
+.controls button.hidden { display: none; }
+
+/* ---- voortgangspaneel (Rainbow Road) ---- */
+.progress {
+  position: absolute; left: 50%; bottom: 28px; transform: translateX(-50%); z-index: 6; width: 368px; max-width: calc(100% - 24px);
+  padding: 14px; border-radius: 12px; background: var(--ds-surface-raised); border: 1px solid var(--ds-border-subtle); display: none;
+}
+.progress.visible { display: block; }
+.progress .cycle { display: flex; align-items: center; gap: 8px; }
+.progress .cycle .tile { width: 32px; height: 32px; padding: 3px; border-radius: 7px; background: var(--ds-surface-control); border: 2px solid var(--ds-border-subtle); display: grid; place-items: center; }
+.progress .cycle .tile img { max-width: 100%; max-height: 100%; }
+.progress .cycle .tile.c { border-color: var(--ds-rank-gold); }
+.progress .cycle .tile.b { border-color: var(--ds-engine-150); }
+.progress .cycle .tile.t { border-color: var(--ds-status-success); }
+.progress .cycle .tile.g { border-color: var(--ds-group-wild); }
+.progress .cycle .time { flex: 1; text-align: right; font: 700 15px ui-monospace, Menlo, Consolas, monospace; color: var(--ds-text-tertiary); }
+.progress .head { display: flex; align-items: baseline; margin-top: 8px; font-size: 15px; font-weight: 700; }
+.progress .head .phase { flex: 1; }
+.progress .head .pct { color: var(--ds-status-error); }
+.progress .attempt { font-size: 12px; color: #94a3b8; min-height: 16px; }
+.progress .bar { position: relative; height: 34px; margin-top: 4px; }
+.progress .bar .track { position: absolute; left: 0; right: 0; top: 50%; height: 24%; transform: translateY(-50%); border-radius: 999px; background: rgba(148, 163, 184, 0.27); overflow: hidden; }
+.progress .bar .fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #ff4040, #ffa000, #ffdc00, #50dc64, #40a0ff, #be5aff); background-size: 368px 100%; }
+.progress .bar .headicon { position: absolute; top: 0; height: 34px; width: 34px; left: 0; }
+.progress .bar .headicon img { width: 100%; height: 100%; object-fit: contain; }
+.progress .bar .headicon .emoji { font-size: 30px; line-height: 34px; transform: scaleX(-1); display: inline-block; }
+
+/* ---- resultaat ---- */
+.result { position: absolute; inset: 0; z-index: 8; overflow-y: auto; background: #0a0d12; display: none; }
+.result.visible { display: block; }
+.result .inner { min-height: 100%; padding: 10px 14px 8px; display: flex; flex-direction: column; justify-content: center; }
+.result .enter { animation: rise 420ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes rise { from { opacity: 0; transform: translateY(42px); } to { opacity: 1; transform: none; } }
+.caps { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ds-text-tertiary); }
+.panel { padding: 10px; border-radius: 12px; background: var(--ds-surface-raised); border: 1px solid var(--ds-border-subtle); }
+.result .header { display: flex; align-items: center; margin: 0 2px 6px; }
+.result .header .sp { flex: 1; }
+.pill { font-size: 9px; font-weight: 700; color: var(--ds-status-success); padding: 3px 10px; border-radius: 12px; background: rgba(34, 120, 80, 0.24); border: 1px solid rgba(74, 222, 128, 0.47); }
+.result .columns { display: grid; grid-template-columns: 5fr 6fr; gap: 8px; align-items: start; }
+.result .left { display: flex; flex-direction: column; gap: 6px; }
+.hero { text-align: center; }
+.hero .delta { font: 700 26px ui-monospace, Menlo, Consolas, monospace; margin-top: 2px; }
+.hero .delta.win { color: var(--ds-status-success); }
+.hero .delta.loss { color: var(--ds-status-error); }
+.hero .caps.win { color: #96f0b4; }
+.hero .caps.loss { color: var(--ds-status-error); }
+.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.owner-tile { text-align: center; }
+.owner-tile .head { display: flex; justify-content: center; align-items: center; gap: 6px; font-size: 8px; font-weight: 700; letter-spacing: 0.18em; color: var(--ds-text-tertiary); }
+.owner-tile .head img { width: 20px; height: 14px; object-fit: contain; }
+.owner-tile .total { font: 700 17px ui-monospace, Menlo, Consolas, monospace; padding-top: 2px; }
+.owner-tile .total.win { color: #ffaa3c; }
+.owner-tile .total.dim { color: var(--ds-text-tertiary); }
+table.laps { width: 100%; border-collapse: collapse; }
+table.laps th { text-align: left; font-size: 9px; font-weight: 700; padding-bottom: 2px; }
+table.laps th.you { color: #ffd65a; }
+table.laps th.ghost { color: #cdd6e0; }
+table.laps th.delta, table.laps td.delta { text-align: right; color: #96dcb4; }
+table.laps td { font: 12px ui-monospace, Menlo, Consolas, monospace; padding: 1px 0; }
+table.laps td.mark { font-family: system-ui; color: rgba(190, 200, 212, 0.67); width: 28px; }
+table.laps td.you { color: #ffd65a; }
+table.laps td.ghost { color: #cdd6e0; }
+table.laps td.b { font-weight: 700; }
+table.laps td.delta.neg { color: #6ef096; }
+table.laps td.delta.pos { color: #ff7878; }
+table.laps td.delta.none { color: rgba(190, 200, 212, 0.43); }
+.setup { display: grid; grid-template-columns: 0.9fr 0.9fr 1.5fr; gap: 4px; }
+.setup .col { display: flex; flex-direction: column; gap: 3px; }
+.setup-tile { text-align: center; }
+.setup-tile .kind { font-size: 7px; color: var(--ds-text-tertiary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.setup-tile .kind.you { font-size: 8px; font-weight: 700; color: var(--ds-status-warning); }
+.setup-tile .kind.ghost { font-size: 8px; font-weight: 700; color: var(--ds-text-primary); }
+.setup-tile .box { width: 46px; height: 34px; margin: 0 auto; border-radius: 8px; background: var(--ds-surface-control); border: 2px solid; display: grid; place-items: center; }
+.setup-tile .box img { max-width: 34px; max-height: 28px; }
+.setup-tile .name { font-size: 8px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.setup-tile .name.unsure { color: #ffc878; }
+.setup-tile .alternatives { font-size: 7px; color: #c9c2b4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.stats { font-size: 8px; }
+.stats .row { display: flex; align-items: center; padding-top: 1px; }
+.stats .row .n { flex: 1; color: var(--ds-text-tertiary); }
+.stats .row .v { width: 34px; text-align: right; font-family: ui-monospace, Menlo, Consolas, monospace; }
+.stats .row .v.mine { color: #ffd65a; }
+.stats .row .v.theirs { color: #cdd6e0; }
+.stats .row .d { width: 42px; text-align: right; font: 700 8px ui-monospace, Menlo, Consolas, monospace; }
+.stats .row .d.pos { color: var(--ds-status-success); }
+.stats .row .d.neg { color: var(--ds-status-error); }
+.specs-entry { margin-top: 8px; display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 10px; background: var(--ds-surface-control); border: 1px solid var(--ds-border-subtle); cursor: pointer; }
+.specs-entry .t { flex: 1; }
+.specs-entry .t b { display: block; font-size: 10px; }
+.specs-entry .t span { font-size: 8px; color: var(--ds-text-tertiary); }
+.footer-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; padding-right: 2px; }
+.footer-row .btn { padding: 4px 10px; border-radius: 9px; background: var(--ds-surface-control); border: 1px solid var(--ds-border-subtle); font-size: 10px; font-weight: 700; cursor: pointer; }
+.footer-row .note { flex: 1; text-align: right; font-size: 8px; color: var(--ds-text-tertiary); }
+.back { font-size: 12px; font-weight: 700; padding: 2px 14px 2px 4px; cursor: pointer; }
+
+/* specs */
+.specs .groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.specs .caps.g { color: var(--ds-status-success); font-size: 9px; }
+.specs .stat { padding-top: 5px; }
+.specs .stat .n { font-size: 10px; }
+.specs .brow { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+.specs .brow .bar { flex: 1; height: 9px; border-radius: 3px; background: #1e252e; display: flex; overflow: hidden; }
+.specs .brow .bar i { display: block; height: 100%; }
+.specs .brow .v { width: 34px; text-align: right; font: 700 9px ui-monospace, Menlo, Consolas, monospace; }
+.specs .brow.dim .v { color: var(--ds-text-tertiary); font-weight: 400; }
+.specs .brow.dim .bar i { opacity: 0.43; }
+.specs .dchip { font: 700 8px ui-monospace, Menlo, Consolas, monospace; padding-top: 2px; }
+.specs .legend { display: flex; align-items: center; gap: 4px; margin-top: 5px; font-size: 8px; color: var(--ds-text-tertiary); }
+.specs .legend i { width: 9px; height: 9px; display: inline-block; margin-left: 10px; margin-right: 4px; }
+.specs .legend .note { flex: 1; text-align: right; }
+
+/* verify / history */
+.verify .body { display: grid; grid-template-columns: 62fr 38fr; gap: 10px; }
+.verify img.frame { width: 100%; object-fit: contain; }
+.verify .pair { display: inline-flex; flex-direction: column; gap: 2px; padding: 2px 8px 2px 0; }
+.verify .pair img { width: 44px; height: 34px; object-fit: contain; background: var(--ds-surface-control); }
+.verify .frow { display: flex; align-items: center; gap: 6px; padding: 1px 0; }
+.verify .frow img { width: 110px; max-height: 24px; object-fit: contain; }
+.verify .frow .v { font: 700 11px ui-monospace, Menlo, Consolas, monospace; }
+.verify .frow .v.total { color: var(--ds-status-warning); }
+.history .item { display: flex; align-items: center; gap: 8px; padding: 5px 6px; margin-top: 5px; border-radius: 8px; background: var(--ds-surface-control); border: 1px solid var(--ds-border-subtle); cursor: pointer; }
+.history .item img { width: 64px; height: 36px; object-fit: cover; }
+.history .item .line { font-size: 11px; font-weight: 700; }
+
+/* dialog */
+.modal { position: absolute; inset: 0; z-index: 20; background: rgba(0, 0, 0, 0.6); display: none; place-items: center; }
+.modal.visible { display: grid; }
+.modal .box { min-width: 220px; padding: 14px; border-radius: 12px; background: var(--ds-surface-raised); border: 1px solid var(--ds-border-subtle); }
+.modal .box h3 { margin: 0 0 8px; font-size: 14px; }
+.modal .box label { display: block; padding: 6px 4px; font-size: 13px; cursor: pointer; }
+
+.hint { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 4; padding: 10px 14px; border-radius: 16px; background: rgba(5, 7, 10, 0.72); border: 1px solid rgba(255, 255, 255, 0.27); font-size: 12px; font-weight: 700; text-align: center; display: none; }
+.hint.visible { display: block; }
+
+@media (orientation: portrait) {
+  #app { grid-template-columns: 1fr 88px; }
+}
+
+/* ---- portret (telefoon): gestapelde compositie — beeld boven, knoppenrij onder, resultaat één kolom ----
+   Landschap blijft de native compositie (rechterkolom met knoppen). */
+@media (orientation: portrait) {
+  #app { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+  /* knoppenrij onderin, schaalt met de schermbreedte (telefoon ~360 px -> tablet ~800 px) */
+  .controls { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: clamp(6px, 1.2vw, 12px); padding: clamp(8px, 1.5vw, 14px) clamp(8px, 1.5vw, 14px) calc(clamp(8px, 1.5vw, 14px) + env(safe-area-inset-bottom)); overflow: visible; }
+  .controls button { flex: 1 1 calc(33% - 12px); min-width: clamp(96px, 26vw, 220px); min-height: clamp(44px, 7vw, 64px); font-size: clamp(12px, 2vw, 18px); }
+  .controls button.scan { flex-basis: 100%; min-height: clamp(56px, 9vw, 84px); font-size: clamp(16px, 2.6vw, 24px); }
+  .result .inner { justify-content: flex-start; padding: 12px 12px 16px; }
+  .result .columns { grid-template-columns: 1fr; gap: 10px; }
+  .hero .delta { font-size: 30px; }
+  .owner-tile .total { font-size: 20px; }
+  table.laps td { font-size: 14px; padding: 3px 0; }
+  table.laps th { font-size: 10px; }
+  .setup { grid-template-columns: 1fr 1fr; }
+  .setup .col:nth-child(3) { grid-column: 1 / -1; }
+  .setup-tile .box { width: 60px; height: 44px; }
+  .setup-tile .box img { max-width: 46px; max-height: 38px; }
+  .setup-tile .name, .setup-tile .kind.you, .setup-tile .kind.ghost { font-size: 10px; }
+  .stats { font-size: 10px; }
+  .stats .row .v { width: 44px; }
+  .stats .row .d { width: 52px; font-size: 10px; }
+  .progress { left: 8px; right: 8px; width: auto; transform: none; }
+}
+/* ---- tablet (liggend): grotere tegels en tekst, zelfde compositie ----
+   Alleen liggend: een staande tablet (900 px breed, 1200 px hoog) viel eerder
+   ook onder deze regel, kreeg de rechterkolom van 132 px terug terwijl de
+   knoppen hun portret-breedte (220 px) hielden, en die staken buiten het
+   scherm. Staand blijft de gestapelde compositie hierboven gelden. ---- */
+@media (min-width: 900px) and (min-height: 700px) and (orientation: landscape) {
+  #app { grid-template-columns: 1fr 132px; }
+  .controls button { min-height: 52px; font-size: 14px; }
+  .controls button.scan { min-height: 64px; font-size: 17px; }
+  .result .inner { padding: 20px 28px; }
+  .hero .delta { font-size: 36px; }
+  .owner-tile .total { font-size: 24px; }
+  .owner-tile .head { font-size: 10px; }
+  table.laps td { font-size: 16px; padding: 3px 0; }
+  table.laps th { font-size: 11px; }
+  .setup-tile .box { width: 64px; height: 48px; }
+  .setup-tile .box img { max-width: 50px; max-height: 40px; }
+  .setup-tile .name, .setup-tile .kind.you, .setup-tile .kind.ghost { font-size: 11px; }
+  .setup-tile .kind { font-size: 9px; }
+  .stats { font-size: 11px; }
+  .stats .row .v { width: 48px; }
+  .stats .row .d { width: 56px; font-size: 11px; }
+  .progress { max-width: 560px; }
+}
+
+/* ---- GALLERY-kiezer: eigen foto of meegeleverde testafbeeldingen ---- */
+.modal .box.gallery-box { width: min(92vw, 640px); max-height: 86vh; overflow-y: auto; }
+.gallery-own { display: block; width: 100%; padding: 12px; margin-bottom: 8px; border-radius: 10px; border: 2px solid #fff; background: var(--ds-action-primary); color: #14181e; font: 700 15px system-ui; }
+.gallery-sub { font-size: 12px; color: var(--ds-text-tertiary); margin: 6px 0; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.gallery-tile { padding: 0; border-radius: 8px; border: 1px solid var(--ds-border-subtle); background: var(--ds-surface-control); color: var(--ds-text-primary); overflow: hidden; text-align: center; font: 600 11px system-ui; }
+.gallery-tile img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.gallery-tile span { display: block; padding: 4px 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* ---- eerste-keer-setup-overlay (laadbalk met % en MB tot de engine klaar is) ---- */
+.firstrun { position: absolute; inset: 0; z-index: 12; display: grid; place-items: center; background: rgba(4, 6, 10, 0.82); }
+.firstrun.done { display: none; }
+.firstrun .box { width: min(88vw, 420px); padding: 18px; border-radius: 14px; background: var(--ds-surface-raised); border: 1px solid var(--ds-border-subtle); }
+.firstrun h3 { margin: 0 0 4px; font-size: 16px; }
+.firstrun .note { font-size: 12px; color: var(--ds-text-tertiary); margin-bottom: 12px; }
+.firstrun .bar { height: 12px; border-radius: 999px; background: rgba(148, 163, 184, 0.27); overflow: hidden; }
+.firstrun .bar .fill { height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, #ff4040, #ffa000, #ffdc00, #50dc64, #40a0ff, #be5aff); transition: width 200ms linear; }
+.firstrun .line { display: flex; justify-content: space-between; margin-top: 6px; font: 700 13px ui-monospace, Menlo, Consolas, monospace; }
+.firstrun .step { margin-top: 6px; font-size: 11px; color: var(--ds-text-tertiary); min-height: 14px; }
+.firstrun.error .step { color: var(--ds-status-error); font-weight: 700; }
+.controls button:disabled { opacity: 0.45; filter: none; }
+
+.modal .diag { margin-top: 10px; font: 10px ui-monospace, Menlo, Consolas, monospace; color: var(--ds-text-tertiary); word-break: break-all; }
+
+/* ---- debug-kopieerknop na hang/fout ---- */
+.debug-copy { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 9; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--ds-border-subtle); background: var(--ds-surface-raised); color: var(--ds-text-primary); font: 700 12px system-ui; }
+.debug-text { position: absolute; left: 8px; right: 8px; bottom: 44px; height: 140px; z-index: 9; background: #0b1017; color: #cbd5e1; border: 1px solid var(--ds-border-subtle); border-radius: 8px; font: 10px ui-monospace, Menlo, Consolas, monospace; }
+
+/* Terug naar MK8DX: de enige knop in de voettekst die iets buiten de scanner
+   doet, dus als enige geaccentueerd. */
+.footer-row .btn.save-mk8dx {
+  color: #14181e;
+  background: var(--ds-action-primary);
+  border-color: #fff;
+  font-weight: 800;
+}

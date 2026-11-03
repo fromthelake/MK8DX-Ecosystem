@@ -1,0 +1,88 @@
+{
+ "deploy_card": {
+  "3laps": [
+   682.0,
+   227.0
+  ],
+  "7laps": [
+   682.0,
+   297.4
+  ]
+ },
+ "offsets": {
+  "3lap": {
+   "characters": [
+    21,
+    9
+   ],
+   "bodies": [
+    43,
+    61
+   ],
+   "tires": [
+    43,
+    113
+   ],
+   "gliders": [
+    43,
+    164
+   ],
+   "flags": [
+    388,
+    14
+   ]
+  },
+  "7lap": {
+   "characters": [
+    21,
+    9
+   ],
+   "bodies": [
+    43,
+    97
+   ],
+   "tires": [
+    43,
+    149
+   ],
+   "gliders": [
+    43,
+    200
+   ],
+   "flags": [
+    388,
+    14
+   ]
+  }
+ },
+ "box_sizes": {
+  "characters": [
+   48,
+   48
+  ],
+  "bodies": [
+   80,
+   50
+  ],
+  "tires": [
+   80,
+   50
+  ],
+  "gliders": [
+   80,
+   50
+  ],
+  "flags": [
+   55,
+   38
+  ]
+ },
+ "reg_half": 0.5,
+ "pad": [
+  26,
+  34,
+  50
+ ],
+ "score_min": 0.35,
+ "template_note": "edge-magnitude, half-res, uint8-genormaliseerd (meta.json bron)"
+}

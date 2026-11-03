@@ -1,0 +1,10 @@
+# Check out every file with exactly the bytes that are committed, whatever core.autocrlf says.
+#
+# Many files are hash-pinned (asset collection, migrations, reference data, parity vectors, the public
+# test set) and the repository is kept byte-identical with the maintainer's tree by tooling/intake.py.
+# Git for Windows installs with core.autocrlf=true, which would rewrite LF files to CRLF on checkout.
+#
+# Line-ending normalization (text=auto eol=lf) is deferred: the source files were converted to LF upstream, about
+# 65 tracked files are still CRLF or mixed (mostly hash-pinned data), see docs/audits/remediation-plan.md, P1-1.
+# New files: use LF, except Windows .cmd/.bat/.ps1 scripts, which may use CRLF.
+* -text

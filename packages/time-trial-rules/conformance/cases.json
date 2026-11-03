@@ -1,0 +1,3371 @@
+{
+  "rulesVersion": "1.0.0",
+  "submissionContract": "mk8dx.time-trial-submission.v1",
+  "schema": "TESTING_STRATEGY §4.10; see packages/time-trial-rules/SPEC.md §6",
+  "categories": [
+    "valid",
+    "invalid",
+    "edge_times",
+    "lap_totals",
+    "engine_context",
+    "required_fields",
+    "optional_fields",
+    "scanner_populated",
+    "corrected_scanner_fields",
+    "offline"
+  ],
+  "cases": [
+    {
+      "id": "valid-total-only-blank-rows",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": []
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-total-only-no-rows",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": []
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": []
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-total-and-3-laps",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-7-lap-track",
+      "category": "valid",
+      "context": {
+        "engine": 200,
+        "trackLapCount": 7,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.gcn_baby_park",
+        "totalDigits": "105100",
+        "laps": [
+          {
+            "timeDigits": "009000"
+          },
+          {
+            "timeDigits": "009100"
+          },
+          {
+            "timeDigits": "009200"
+          },
+          {
+            "timeDigits": "009300"
+          },
+          {
+            "timeDigits": "009400"
+          },
+          {
+            "timeDigits": "009500"
+          },
+          {
+            "timeDigits": "009600"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 200,
+          "trackId": "track.gcn_baby_park",
+          "totalTimeMs": 65100,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 9000
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 9100
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 9200
+            },
+            {
+              "lapNumber": 4,
+              "timeMs": 9300
+            },
+            {
+              "lapNumber": 5,
+              "timeMs": 9400
+            },
+            {
+              "lapNumber": 6,
+              "timeMs": 9500
+            },
+            {
+              "lapNumber": 7,
+              "timeMs": 9600
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-full-setup",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 4,
+            "mushroomsUsed": 1
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": 3,
+            "mushroomsUsed": 1
+          },
+          {
+            "timeDigits": "035220",
+            "coinChange": 3,
+            "mushroomsUsed": 1
+          }
+        ],
+        "loadout": {
+          "characterId": "character.yoshi",
+          "characterVariantId": "character_variant.yoshi.018_black",
+          "bodyId": "body.bounder",
+          "bodyVariantId": "body_variant.bounder.001_pink",
+          "tireId": "tire.roller",
+          "gliderId": "glider.cloud_glider"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392,
+              "coinsCollected": 4,
+              "mushroomsUsed": 1
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300,
+              "coinsCollected": 7,
+              "mushroomsUsed": 1
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220,
+              "coinsCollected": 10,
+              "mushroomsUsed": 1
+            }
+          ],
+          "loadout": {
+            "characterId": "character.yoshi",
+            "characterVariantId": "character_variant.yoshi.018_black",
+            "bodyId": "body.bounder",
+            "bodyVariantId": "body_variant.bounder.001_pink",
+            "tireId": "tire.roller",
+            "gliderId": "glider.cloud_glider"
+          }
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-coins-mushrooms-at-bounds",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "+10 then an empty change (counts as 0, balance carried) then -10; 3 mushrooms on lap 1 only.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 10,
+            "mushroomsUsed": 3
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": null,
+            "mushroomsUsed": null
+          },
+          {
+            "timeDigits": "035220",
+            "coinChange": -10
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392,
+              "coinsCollected": 10,
+              "mushroomsUsed": 3
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300,
+              "coinsCollected": 10
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220,
+              "coinsCollected": 0
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-mushrooms-without-coins",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "mushroomsUsed": 0
+          },
+          {
+            "timeDigits": "035300",
+            "mushroomsUsed": 1
+          },
+          {
+            "timeDigits": "035220",
+            "mushroomsUsed": 2
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392,
+              "mushroomsUsed": 0
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300,
+              "mushroomsUsed": 1
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220,
+              "mushroomsUsed": 2
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "valid-coin-change-zero-everywhere",
+      "category": "valid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "An explicit 0 change is an entered coin value: every lap then carries coinsCollected.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 0
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392,
+              "coinsCollected": 0
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300,
+              "coinsCollected": 0
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220,
+              "coinsCollected": 0
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-empty-total",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "",
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_required",
+            "messageKey": "tt.rules.total_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-seconds-60",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "160000",
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_seconds_range",
+            "messageKey": "tt.rules.total_seconds_range",
+            "params": {
+              "seconds": 60
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-seconds-tens-digit-7",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "075000",
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_seconds_range",
+            "messageKey": "tt.rules.total_seconds_range",
+            "params": {
+              "seconds": 75
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-ten-minutes",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "10:00.000 cannot be written in six digits; the payload probe sends 600000 ms.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "1000000",
+        "laps": []
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 600000,
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_format",
+            "messageKey": "tt.rules.total_format"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "submission scalar is invalid"
+        }
+      }
+    },
+    {
+      "id": "invalid-non-digits-formatted",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "1:45.912",
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_format",
+            "messageKey": "tt.rules.total_format"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-non-digit-letter",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "14591a",
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_format",
+            "messageKey": "tt.rules.total_format"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-incomplete-total",
+      "category": "invalid",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "14591",
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_format",
+            "messageKey": "tt.rules.total_format"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "invalid-everything-missing",
+      "category": "invalid",
+      "context": {
+        "engine": null,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": null,
+        "totalDigits": null,
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "trackId",
+            "rule": "track_required",
+            "messageKey": "tt.rules.track_required"
+          },
+          {
+            "field": "mode",
+            "rule": "engine_required",
+            "messageKey": "tt.rules.engine_required"
+          },
+          {
+            "field": "totalDigits",
+            "rule": "total_required",
+            "messageKey": "tt.rules.total_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "edge-min-total",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "000001",
+        "laps": []
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 1,
+          "laps": []
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "edge-max-total",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "959999",
+        "laps": []
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 599999,
+          "laps": []
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "edge-zero-total",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "000000",
+        "laps": []
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 0,
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_range",
+            "messageKey": "tt.rules.total_range"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "submission scalar is invalid"
+        }
+      }
+    },
+    {
+      "id": "edge-laps-sum-exactly-at-max",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "959999",
+        "laps": [
+          {
+            "timeDigits": "320000"
+          },
+          {
+            "timeDigits": "320000"
+          },
+          {
+            "timeDigits": "319999"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 599999,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 200000
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 200000
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 199999
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "edge-laps-off-by-plus-1ms",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035221"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35221
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_sum_equals_total",
+            "messageKey": "tt.rules.lap_sum_equals_total",
+            "params": {
+              "lapSumMs": 105913,
+              "totalMs": 105912
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "lap semantics are invalid"
+        }
+      }
+    },
+    {
+      "id": "edge-laps-off-by-minus-1ms",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035391"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35391
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_sum_equals_total",
+            "messageKey": "tt.rules.lap_sum_equals_total",
+            "params": {
+              "lapSumMs": 105911,
+              "totalMs": 105912
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "lap semantics are invalid"
+        }
+      }
+    },
+    {
+      "id": "edge-lap-zero",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "000000"
+          },
+          {
+            "timeDigits": "110520"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 0
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 70520
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].timeDigits",
+            "rule": "lap_time_range",
+            "messageKey": "tt.rules.lap_time_range",
+            "params": {
+              "lap": 2
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "laps are invalid"
+        }
+      }
+    },
+    {
+      "id": "edge-lap-seconds-60",
+      "category": "edge_times",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "060000"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].timeDigits",
+            "rule": "lap_seconds_range",
+            "messageKey": "tt.rules.lap_seconds_range",
+            "params": {
+              "lap": 1,
+              "seconds": 60
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-sum-mismatch-3",
+      "category": "lap_totals",
+      "context": {
+        "engine": 200,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035320"
+          }
+        ],
+        "origin": {
+          "laps[1]": "scanned"
+        },
+        "corrected": [
+          "laps"
+        ]
+      },
+      "serverProbe": {
+        "mode": 200,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35320
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_sum_equals_total",
+            "messageKey": "tt.rules.lap_sum_equals_total",
+            "params": {
+              "lapSumMs": 106012,
+              "totalMs": 105912
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "lap semantics are invalid"
+        }
+      }
+    },
+    {
+      "id": "lap-missing-with-suggestion",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing_suggested",
+            "params": {
+              "lap": 3,
+              "suggestionMs": 35392,
+              "suggestionDigits": "035392"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-first-lap-suggestion",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing_suggested",
+            "params": {
+              "lap": 1,
+              "suggestionMs": 35392,
+              "suggestionDigits": "035392"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-two-laps-no-suggestion",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing",
+            "params": {
+              "lap": 2
+            }
+          },
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing",
+            "params": {
+              "lap": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-no-suggestion-without-total",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_required",
+            "messageKey": "tt.rules.total_required"
+          },
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing",
+            "params": {
+              "lap": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-no-suggestion-when-laps-exceed-total",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "100000"
+          },
+          {
+            "timeDigits": "100000"
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing",
+            "params": {
+              "lap": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-no-suggestion-when-other-lap-invalid",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "03539"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].timeDigits",
+            "rule": "lap_time_format",
+            "messageKey": "tt.rules.lap_time_format",
+            "params": {
+              "lap": 1
+            }
+          },
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing",
+            "params": {
+              "lap": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-missing-7-lap-track-suggestion",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 7,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.gcn_baby_park",
+        "totalDigits": "105100",
+        "laps": [
+          {
+            "timeDigits": "009000"
+          },
+          {
+            "timeDigits": "009100"
+          },
+          {
+            "timeDigits": "009200"
+          },
+          {
+            "timeDigits": "009300"
+          },
+          {
+            "timeDigits": "009400"
+          },
+          {
+            "timeDigits": "009500"
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[6].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing_suggested",
+            "params": {
+              "lap": 7,
+              "suggestionMs": 9600,
+              "suggestionDigits": "009600"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "lap-count-3-laps-on-7-lap-track",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 7,
+        "connectivity": "online"
+      },
+      "note": "Open discrepancy D1: the server accepts any 3- or 7-lap list for any track.",
+      "draft": {
+        "trackId": "track.gcn_baby_park",
+        "totalDigits": "146100",
+        "laps": [
+          {
+            "timeDigits": "035000"
+          },
+          {
+            "timeDigits": "035500"
+          },
+          {
+            "timeDigits": "035600"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.gcn_baby_park",
+        "totalTimeMs": 106100,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35000
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35500
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35600
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_count_matches_track",
+            "messageKey": "tt.rules.lap_count_matches_track",
+            "params": {
+              "expected": 7,
+              "actual": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": true,
+          "discrepancy": "D1"
+        }
+      }
+    },
+    {
+      "id": "lap-count-5-rows-on-3-lap-track",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "020000"
+          },
+          {
+            "timeDigits": "020000"
+          },
+          {
+            "timeDigits": "020000"
+          },
+          {
+            "timeDigits": "020000"
+          },
+          {
+            "timeDigits": "025912"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 20000
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 20000
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 20000
+          },
+          {
+            "lapNumber": 4,
+            "timeMs": 20000
+          },
+          {
+            "lapNumber": 5,
+            "timeMs": 25912
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_count_matches_track",
+            "messageKey": "tt.rules.lap_count_matches_track",
+            "params": {
+              "expected": 3,
+              "actual": 5
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "laps are invalid"
+        }
+      }
+    },
+    {
+      "id": "lap-time-incomplete-digits",
+      "category": "lap_totals",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "03530"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].timeDigits",
+            "rule": "lap_time_format",
+            "messageKey": "tt.rules.lap_time_format",
+            "params": {
+              "lap": 2
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "engine-150-payload-mode",
+      "category": "engine_context",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "engine-200-payload-mode",
+      "category": "engine_context",
+      "context": {
+        "engine": 200,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Same draft as engine-150-payload-mode: only the payload mode differs.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 200,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "engine-missing",
+      "category": "engine_context",
+      "context": {
+        "engine": null,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": []
+      },
+      "serverProbe": {
+        "mode": 250,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "mode",
+            "rule": "engine_required",
+            "messageKey": "tt.rules.engine_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "submission scalar is invalid"
+        }
+      }
+    },
+    {
+      "id": "engine-unsupported-value",
+      "category": "engine_context",
+      "context": {
+        "engine": 100,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "mode",
+            "rule": "engine_required",
+            "messageKey": "tt.rules.engine_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "engine-switch-disarms-armed-state",
+      "category": "engine_context",
+      "context": {
+        "engine": 200,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "deferred": "phase-7-form-state",
+      "note": "Form state machine, not validation: a mode switch disarms the two-press confirm and recomputes prediction (ENGINE_CONTEXT_INVENTORY §4).",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": []
+      },
+      "steps": [
+        {
+          "action": "arm"
+        },
+        {
+          "action": "select_mode",
+          "mode": 150
+        }
+      ],
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": []
+        },
+        "sourceKind": null,
+        "armed": false
+      }
+    },
+    {
+      "id": "required-missing-track",
+      "category": "required_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Never publishable, whatever else is valid.",
+      "draft": {
+        "trackId": null,
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "trackId",
+            "rule": "track_required",
+            "messageKey": "tt.rules.track_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "submission scalar is invalid"
+        }
+      }
+    },
+    {
+      "id": "required-malformed-track",
+      "category": "required_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "Mario Kart Stadium",
+        "totalDigits": "145912",
+        "laps": []
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "Mario Kart Stadium",
+        "totalTimeMs": 105912,
+        "laps": []
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "trackId",
+            "rule": "track_required",
+            "messageKey": "tt.rules.track_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "submission scalar is invalid"
+        }
+      }
+    },
+    {
+      "id": "required-missing-total",
+      "category": "required_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_required",
+            "messageKey": "tt.rules.total_required"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-coins-without-laps",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "",
+            "coinChange": 4
+          },
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_details_require_lap_times",
+            "messageKey": "tt.rules.lap_details_require_lap_times"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-mushrooms-without-laps",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": ""
+          },
+          {
+            "timeDigits": "",
+            "mushroomsUsed": 1
+          },
+          {
+            "timeDigits": ""
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_details_require_lap_times",
+            "messageKey": "tt.rules.lap_details_require_lap_times"
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-mushrooms-race-total-4",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "mushroomsUsed": 2
+          },
+          {
+            "timeDigits": "035300",
+            "mushroomsUsed": 2
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392,
+            "mushroomsUsed": 2
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300,
+            "mushroomsUsed": 2
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "mushrooms_race_total",
+            "messageKey": "tt.rules.mushrooms_race_total",
+            "params": {
+              "total": 4
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "lap semantics are invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-mushrooms-4-in-one-lap",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "mushroomsUsed": 4
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392,
+            "mushroomsUsed": 4
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].mushroomsUsed",
+            "rule": "mushrooms_per_lap_range",
+            "messageKey": "tt.rules.mushrooms_per_lap_range",
+            "params": {
+              "lap": 1
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "laps are invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-mushrooms-negative",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220",
+            "mushroomsUsed": -1
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[2].mushroomsUsed",
+            "rule": "mushrooms_per_lap_range",
+            "messageKey": "tt.rules.mushrooms_per_lap_range",
+            "params": {
+              "lap": 3
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-coin-balance-below-zero",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 1
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": -2
+          },
+          {
+            "timeDigits": "035220",
+            "coinChange": 1
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392,
+            "coinsCollected": 1
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300,
+            "coinsCollected": -1
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220,
+            "coinsCollected": 0
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].coinChange",
+            "rule": "coin_balance_range",
+            "messageKey": "tt.rules.coin_balance_below_zero",
+            "params": {
+              "lap": 2,
+              "balance": -1
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "laps are invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-coin-balance-above-ten",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 6
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": 5
+          },
+          {
+            "timeDigits": "035220",
+            "coinChange": -1
+          }
+        ]
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [
+          {
+            "lapNumber": 1,
+            "timeMs": 35392,
+            "coinsCollected": 6
+          },
+          {
+            "lapNumber": 2,
+            "timeMs": 35300,
+            "coinsCollected": 11
+          },
+          {
+            "lapNumber": 3,
+            "timeMs": 35220,
+            "coinsCollected": 10
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].coinChange",
+            "rule": "coin_balance_range",
+            "messageKey": "tt.rules.coin_balance_above_ten",
+            "params": {
+              "lap": 2,
+              "balance": 11
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "laps are invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-coin-balance-first-lap-negative",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "The race starts at 0 coins, so a negative first change is out of range; later laps are not reported.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": -1
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": -3
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].coinChange",
+            "rule": "coin_balance_range",
+            "messageKey": "tt.rules.coin_balance_below_zero",
+            "params": {
+              "lap": 1,
+              "balance": -1
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-coin-change-plus-11",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 11
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[0].coinChange",
+            "rule": "coin_change_range",
+            "messageKey": "tt.rules.coin_change_range",
+            "params": {
+              "lap": 1,
+              "change": 11
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-coin-change-minus-11",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392",
+            "coinChange": 10
+          },
+          {
+            "timeDigits": "035300",
+            "coinChange": -11
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[1].coinChange",
+            "rule": "coin_change_range",
+            "messageKey": "tt.rules.coin_change_range",
+            "params": {
+              "lap": 2,
+              "change": -11
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-character-variant-without-base",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "characterVariantId": "character_variant.yoshi.018_black"
+        }
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [],
+        "loadout": {
+          "characterVariantId": "character_variant.yoshi.018_black"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "loadout.characterVariantId",
+            "rule": "loadout_variant_requires_base",
+            "messageKey": "tt.rules.loadout_variant_requires_base",
+            "params": {
+              "part": "characterVariantId"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "loadout is invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-body-and-glider-variant-without-base",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "characterId": "character.yoshi",
+          "bodyVariantId": "body_variant.bounder.001_pink",
+          "gliderVariantId": "glider_variant.cloud_glider.000_white"
+        }
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [],
+        "loadout": {
+          "characterId": "character.yoshi",
+          "bodyVariantId": "body_variant.bounder.001_pink"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "loadout.bodyVariantId",
+            "rule": "loadout_variant_requires_base",
+            "messageKey": "tt.rules.loadout_variant_requires_base",
+            "params": {
+              "part": "bodyVariantId"
+            }
+          },
+          {
+            "field": "loadout.gliderVariantId",
+            "rule": "loadout_variant_requires_base",
+            "messageKey": "tt.rules.loadout_variant_requires_base",
+            "params": {
+              "part": "gliderVariantId"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "loadout is invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-loadout-malformed-id",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "characterId": "Mario",
+          "tireId": "tire.roller"
+        }
+      },
+      "serverProbe": {
+        "mode": 150,
+        "trackId": "track.mario_kart_stadium",
+        "totalTimeMs": 105912,
+        "laps": [],
+        "loadout": {
+          "characterId": "Mario",
+          "tireId": "tire.roller"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "loadout.characterId",
+            "rule": "loadout_id_format",
+            "messageKey": "tt.rules.loadout_id_format",
+            "params": {
+              "part": "characterId"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null,
+        "server": {
+          "accepts": false,
+          "reason": "loadout is invalid"
+        }
+      }
+    },
+    {
+      "id": "optional-loadout-wrong-kind",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "bodyId": "tire.roller"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "loadout.bodyId",
+            "rule": "loadout_id_format",
+            "messageKey": "tt.rules.loadout_id_format",
+            "params": {
+              "part": "bodyId"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-loadout-empty-values-omitted",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Empty strings mean not recorded; an empty loadout is omitted (the server refuses {}).",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "characterId": "",
+          "bodyId": null,
+          "tireId": "",
+          "gliderId": ""
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": []
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "optional-loadout-single-part",
+      "category": "optional_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "tireId": "tire.roller"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [],
+          "loadout": {
+            "tireId": "tire.roller"
+          }
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "scan-total-and-laps-valid",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Validation ignores origin: identical result to valid-total-and-3-laps.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned",
+          "laps[2].timeDigits": "scanned"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "scan-parts-valid",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 200,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "loadout": {
+          "characterId": "character.yoshi",
+          "characterVariantId": "character_variant.yoshi.018_black",
+          "bodyId": "body.bounder",
+          "tireId": "tire.roller",
+          "gliderId": "glider.cloud_glider"
+        },
+        "origin": {
+          "loadout.characterId": "scanned",
+          "loadout.characterVariantId": "scanned",
+          "loadout.bodyId": "scanned",
+          "loadout.tireId": "scanned",
+          "loadout.gliderId": "scanned"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 200,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [],
+          "loadout": {
+            "characterId": "character.yoshi",
+            "characterVariantId": "character_variant.yoshi.018_black",
+            "bodyId": "body.bounder",
+            "tireId": "tire.roller",
+            "gliderId": "glider.cloud_glider"
+          }
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "scan-partial-laps-missing",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "A partial scan is validated exactly like partial typing; the suggestion is never auto-filled.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": ""
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps[2].timeDigits",
+            "rule": "lap_missing",
+            "messageKey": "tt.rules.lap_missing_suggested",
+            "params": {
+              "lap": 3,
+              "suggestionMs": 35220,
+              "suggestionDigits": "035220"
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "scan-misread-seconds",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "178000",
+        "laps": [],
+        "origin": {
+          "totalDigits": "scanned"
+        }
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "totalDigits",
+            "rule": "total_seconds_range",
+            "messageKey": "tt.rules.total_seconds_range",
+            "params": {
+              "seconds": 78
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "scan-source-kind-web-scan",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned",
+          "laps[2].timeDigits": "scanned"
+        },
+        "scan": {
+          "source": "endscreen"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": "web_scan",
+        "captureLayout": "time_trial_result",
+        "verificationStatus": "producer_check_passed"
+      }
+    },
+    {
+      "id": "scan-source-kind-android-scan",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned",
+          "laps[2].timeDigits": "scanned"
+        },
+        "scan": {
+          "source": "endscreen"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": "android_scan",
+        "captureLayout": "time_trial_result",
+        "verificationStatus": "producer_check_passed"
+      }
+    },
+    {
+      "id": "scan-capture-layout-ghost-details",
+      "category": "scanner_populated",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [],
+        "origin": {
+          "totalDigits": "scanned"
+        },
+        "scan": {
+          "source": "ghost_detail"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": []
+        },
+        "sourceKind": "web_scan",
+        "captureLayout": "ghost_details"
+      }
+    },
+    {
+      "id": "corrected-laps-valid",
+      "category": "corrected_scanner_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Scanned then corrected: the same rules; correction provenance is Phase 8.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned"
+        },
+        "corrected": [
+          "laps"
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "corrected-total-breaks-lap-sum",
+      "category": "corrected_scanner_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145913",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned",
+          "laps[2].timeDigits": "scanned"
+        },
+        "corrected": [
+          "totalTime"
+        ]
+      },
+      "expect": {
+        "valid": false,
+        "errors": [
+          {
+            "field": "laps",
+            "rule": "lap_sum_equals_total",
+            "messageKey": "tt.rules.lap_sum_equals_total",
+            "params": {
+              "lapSumMs": 105912,
+              "totalMs": 105913
+            }
+          }
+        ],
+        "payload": null,
+        "sourceKind": null
+      }
+    },
+    {
+      "id": "corrected-fields-not-checked",
+      "category": "corrected_scanner_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "scanned",
+          "laps[0].timeDigits": "scanned",
+          "laps[1].timeDigits": "scanned",
+          "laps[2].timeDigits": "scanned"
+        },
+        "corrected": [
+          "laps"
+        ],
+        "scan": {
+          "source": "endscreen"
+        }
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": "web_scan",
+        "verificationStatus": "not_checked",
+        "correctedFields": [
+          "laps"
+        ]
+      }
+    },
+    {
+      "id": "rescan-never-overwrites-typed",
+      "category": "corrected_scanner_fields",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "online"
+      },
+      "note": "Scanner autofill merge: a re-scan proposes, it never silently replaces a typed value.",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ],
+        "origin": {
+          "totalDigits": "typed"
+        }
+      },
+      "steps": [
+        {
+          "action": "rescan",
+          "totalDigits": "145999"
+        }
+      ],
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null,
+        "pendingProposal": [
+          "totalDigits"
+        ]
+      }
+    },
+    {
+      "id": "offline-android-queued-equals-online",
+      "category": "offline",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "offline"
+      },
+      "deferred": "phase-7-offline",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null,
+        "queued": true,
+        "queuedPayloadEqualsOnline": true
+      }
+    },
+    {
+      "id": "offline-web-retryable-draft-kept",
+      "category": "offline",
+      "context": {
+        "engine": 150,
+        "trackLapCount": 3,
+        "connectivity": "offline"
+      },
+      "deferred": "phase-7-offline",
+      "draft": {
+        "trackId": "track.mario_kart_stadium",
+        "totalDigits": "145912",
+        "laps": [
+          {
+            "timeDigits": "035392"
+          },
+          {
+            "timeDigits": "035300"
+          },
+          {
+            "timeDigits": "035220"
+          }
+        ]
+      },
+      "expect": {
+        "valid": true,
+        "errors": [],
+        "payload": {
+          "mode": 150,
+          "trackId": "track.mario_kart_stadium",
+          "totalTimeMs": 105912,
+          "laps": [
+            {
+              "lapNumber": 1,
+              "timeMs": 35392
+            },
+            {
+              "lapNumber": 2,
+              "timeMs": 35300
+            },
+            {
+              "lapNumber": 3,
+              "timeMs": 35220
+            }
+          ]
+        },
+        "sourceKind": null,
+        "retryable": true,
+        "draftKept": true
+      }
+    }
+  ]
+}

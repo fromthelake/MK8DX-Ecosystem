@@ -1,0 +1,10 @@
+{
+  "catalogVersion": "mk8dx.mysql-synthetic-seed-catalog.v1",
+  "targetEngine": "oracle-mysql",
+  "conformanceBaseline": "8.4",
+  "seedId": "synthetic_foundation_v1",
+  "applyPath": "seeds/synthetic_foundation_v1.apply.sql",
+  "applySha256": "95b02d47c47a169a47862744930b31db551be8225c4f3f03db7bc442fede9dd7",
+  "cleanupPath": "seeds/synthetic_foundation_v1.cleanup.sql",
+  "cleanupSha256": "376c94d49f3da3d836869cad895f9c16cb474b8ab4b882ff549fd4197e551a95"
+}

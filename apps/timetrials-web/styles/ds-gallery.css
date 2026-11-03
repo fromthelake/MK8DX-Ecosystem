@@ -1,0 +1,45 @@
+/* Layout of the Checkpoint-1 component gallery (src/ds-gallery.ts). Development and QA mirror only:
+   the hosted release builder drops this file. Tokens only. */
+@layer legacy, tokens, base, components;
+@layer components {
+  .ds-gallery { min-height: 100vh; padding: 0 var(--ds-gutter-phone) var(--ds-space-5xl); overflow-x: clip; }
+  @media (min-width: 600px) { .ds-gallery { padding-inline: var(--ds-gutter-tablet); } }
+  @media (min-width: 1100px) { .ds-gallery { padding-inline: var(--ds-gutter-desktop); } }
+  .ds-gallery > * { max-width: var(--ds-container-max); margin-inline: auto; }
+  .ds-gallery__skip { position: absolute; left: var(--ds-space-sm); top: -100px; padding: var(--ds-space-sm) var(--ds-space-md); background: var(--ds-surface-raised); color: var(--ds-text-primary); z-index: 40; }
+  .ds-gallery__skip:focus-visible { top: var(--ds-space-sm); }
+  .ds-gallery__header { display: grid; gap: var(--ds-space-lg); padding: var(--ds-space-2xl) 0 var(--ds-space-lg); border-bottom: 1px solid var(--ds-border-subtle); }
+  .ds-gallery__title { display: grid; gap: var(--ds-space-xs); }
+  .ds-gallery__controls { display: flex; flex-wrap: wrap; gap: var(--ds-space-md); }
+  .ds-gallery__index { display: flex; flex-wrap: wrap; gap: var(--ds-space-xs) var(--ds-space-lg); padding: var(--ds-space-md) 0; }
+  .ds-gallery__index-link { min-height: var(--ds-target-min-dense); display: inline-flex; align-items: center; color: var(--ds-text-secondary); font-size: var(--ds-type-body-s-size); }
+  .ds-gallery__main { display: grid; gap: var(--ds-space-3xl); }
+  .ds-gallery__section { display: grid; gap: var(--ds-space-lg); padding-top: var(--ds-space-2xl); border-top: 1px solid var(--ds-border-subtle); min-width: 0; }
+  .ds-gallery__intro { max-width: 70ch; }
+  .ds-gallery__stack { display: grid; gap: var(--ds-space-lg); min-width: 0; }
+  .ds-gallery__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-md); min-width: 0; }
+  .ds-gallery__sample { display: grid; gap: var(--ds-space-sm); min-width: 0; }
+  .ds-gallery__sample-body { display: grid; gap: var(--ds-space-md); justify-items: start; min-width: 0; }
+  .ds-gallery__sample-body > .ds-table, .ds-gallery__sample-body > .ds-lap-rows, .ds-gallery__sample-body > .ds-setup,
+  .ds-gallery__sample-body > .ds-picker, .ds-gallery__sample-body > .ds-gallery__pair { justify-self: stretch; }
+  .ds-gallery__pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--ds-space-lg); }
+  .ds-gallery__panel { display: grid; gap: var(--ds-space-md); justify-items: start; padding: var(--ds-space-lg); background: var(--ds-surface-app); box-shadow: inset 0 0 0 1px var(--ds-border-strong); }
+  .ds-gallery__narrow { max-width: 18ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ds-gallery__heroes { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--ds-space-md) var(--ds-space-2xl); }
+  .ds-gallery__swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--ds-space-sm); }
+  .ds-gallery__swatch { display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 2px var(--ds-space-sm); align-items: center; padding: var(--ds-space-sm); background: var(--ds-surface-raised); }
+  .ds-gallery__swatch > :not(.ds-gallery__chip-colour) { grid-column: 2; overflow-wrap: anywhere; }
+  .ds-gallery__chip-colour { grid-row: 1 / 3; width: 28px; height: 28px; box-shadow: inset 0 0 0 1px var(--ds-border-strong); }
+  .ds-gallery__swatch[data-token="action-primary"] .ds-gallery__chip-colour { background: var(--ds-action-primary); }
+  .ds-gallery__swatch[data-token="personal-accent"] .ds-gallery__chip-colour { background: var(--ds-personal-accent); }
+  .ds-gallery__swatch[data-token="engine-150"] .ds-gallery__chip-colour { background: var(--ds-engine-150); }
+  .ds-gallery__swatch[data-token="engine-200"] .ds-gallery__chip-colour { background: var(--ds-engine-200); }
+  .ds-gallery__swatch[data-token="status-success"] .ds-gallery__chip-colour { background: var(--ds-status-success); }
+  .ds-gallery__swatch[data-token="status-warning"] .ds-gallery__chip-colour { background: var(--ds-status-warning); }
+  .ds-gallery__swatch[data-token="status-error"] .ds-gallery__chip-colour { background: var(--ds-status-error); }
+  .ds-gallery__swatch[data-token="status-info"] .ds-gallery__chip-colour { background: var(--ds-status-info); }
+  .ds-gallery__swatch[data-token="live"] .ds-gallery__chip-colour { background: var(--ds-live); }
+  .ds-gallery__swatch[data-token="focus-ring"] .ds-gallery__chip-colour { background: var(--ds-focus-ring); }
+  .ds-gallery__grayscale { display: flex; flex-wrap: wrap; gap: var(--ds-space-md); align-items: center; filter: grayscale(1); }
+  .ds-gallery__list { display: grid; gap: var(--ds-space-xs); padding-left: var(--ds-space-lg); }
+}

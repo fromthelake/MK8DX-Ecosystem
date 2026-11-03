@@ -1,0 +1,55 @@
+{
+  "name": "@mk8dx/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "admin:bootstrap": "node dist/administration/administrator-bootstrap-main.js",
+    "admin:locate-account": "node dist/administration/administrator-account-lookup-main.js",
+    "admin:install": "node dist/administration/installer-administrator-main.js",
+    "admin:recover": "node dist/administration/administrator-recovery-main.js",
+    "reference:seed": "node dist/composition/reference-seed-main.js",
+    "auth:approve-android-device": "node dist/authentication/device-authorization-operator-main.js",
+    "migration:firebase-import": "node dist/migration/firebase-import-main.js",
+    "migration:firebase-backout": "node dist/migration/firebase-backout-main.js",
+    "rating:seed-import": "node dist/rating/rating-seed-import-main.js",
+    "rating:legacy-replay": "node dist/rating/legacy-replay-main.js",
+    "rating:import-legacy-races": "node dist/rating/legacy-race-import-main.js",
+    "rating:backfill-legacy-ratings": "node dist/rating/legacy-rating-backfill-main.js",
+    "rating:lifecycle": "node dist/rating/rating-lifecycle-main.js",
+    "start:hosted:passwordless": "node dist/composition/passwordless-hosted-main.js",
+    "deploy:preflight": "node dist/composition/hosted-preflight-main.js",
+    "migration:apply": "node dist/composition/migration-apply-main.js",
+    "start:local:anonymous": "node dist/composition/anonymous-local-main.js",
+    "test": "vitest run --config vitest.config.ts",
+    "test:web-product": "node test/live-web-product.browser.mjs",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "better-auth": "1.7.15",
+    "exceljs": "4.4.0",
+    "fastify": "5.12.8",
+    "mysql2": "3.23.3",
+    "nodemailer": "10.3.1",
+    "web-push": "^3.6.7"
+  },
+  "overrides": {
+    "uuid": "11.1.1",
+    "zod": "4.6.6",
+    "fast-uri@^3": "3.1.9",
+    "fast-uri@^4": "4.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.2.0",
+    "@types/nodemailer": "8.0.1",
+    "@types/web-push": "^3.6.4",
+    "axe-core": "4.13.0",
+    "playwright": "1.62.1",
+    "typescript": "7.0.2",
+    "vitest": "4.1.12"
+  }
+}

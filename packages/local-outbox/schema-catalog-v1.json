@@ -1,0 +1,28 @@
+{
+  "catalogVersion": "mk8dx.local-time-trial-outbox-schema-catalog.v1",
+  "validationOrder": [
+    "https://mk8dx.example/schemas/local-outbox/local-time-trial-outbox-entry-v1.schema.json",
+    "https://mk8dx.example/schemas/local-outbox/local-time-trial-outbox-state-v1.schema.json",
+    "https://mk8dx.example/schemas/local-outbox/local-private-evidence-v1.schema.json"
+  ],
+  "schemas": [
+    {
+      "name": "LocalTimeTrialOutboxEntryV1",
+      "schemaId": "https://mk8dx.example/schemas/local-outbox/local-time-trial-outbox-entry-v1.schema.json",
+      "path": "schemas/local-time-trial-outbox-entry-v1.schema.json",
+      "dependencies": []
+    },
+    {
+      "name": "LocalTimeTrialOutboxStateV1",
+      "schemaId": "https://mk8dx.example/schemas/local-outbox/local-time-trial-outbox-state-v1.schema.json",
+      "path": "schemas/local-time-trial-outbox-state-v1.schema.json",
+      "dependencies": []
+    },
+    {
+      "name": "LocalPrivateEvidenceV1",
+      "schemaId": "https://mk8dx.example/schemas/local-outbox/local-private-evidence-v1.schema.json",
+      "path": "schemas/local-private-evidence-v1.schema.json",
+      "dependencies": []
+    }
+  ]
+}

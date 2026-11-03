@@ -1,0 +1,143 @@
+{
+  "schemaVersion": "mk8dx.tournament-race-result.v1",
+  "raceResultId": "tournament_race_result.synthetic_workbook_003",
+  "revision": 1,
+  "raceNumber": 3,
+  "scoringSegment": 2,
+  "trackId": "track.sweet_sweet_canyon",
+  "countsTowardStandings": false,
+  "scoringNote": "Synthetic temporary player-drop race retained for review and excluded from cumulative standings.",
+  "context": {
+    "tournamentReference": {
+      "namespace": "tournament_manager_tournament",
+      "value": "synthetic_manager_tournament"
+    },
+    "stageReference": {
+      "namespace": "tournament_manager_stage",
+      "value": "qualifier"
+    },
+    "groupReference": {
+      "namespace": "tournament_manager_lobby",
+      "value": "synthetic_lobby_alpha"
+    }
+  },
+  "placements": [
+    {
+      "finishPosition": 1,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_01"
+      },
+      "observedPlayerName": "Participant One",
+      "characterId": "character.mario",
+      "scoring": {
+        "racePoints": 15,
+        "totalBeforeRace": 27,
+        "totalAfterRace": 27,
+        "rankAfterRace": 1
+      }
+    },
+    {
+      "finishPosition": 2,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_02"
+      },
+      "observedPlayerName": "Participant Two",
+      "characterId": "character.luigi",
+      "scoring": {
+        "racePoints": 12,
+        "totalBeforeRace": 27,
+        "totalAfterRace": 27,
+        "rankAfterRace": 1
+      }
+    },
+    {
+      "finishPosition": 3,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_03"
+      },
+      "observedPlayerName": "Participant Three",
+      "characterId": "character.peach",
+      "scoring": {
+        "racePoints": 10,
+        "totalBeforeRace": 20,
+        "totalAfterRace": 20,
+        "rankAfterRace": 3
+      }
+    },
+    {
+      "finishPosition": 4,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_04"
+      },
+      "observedPlayerName": "Participant Four",
+      "characterId": "character.daisy",
+      "scoring": {
+        "racePoints": 9,
+        "totalBeforeRace": 18,
+        "totalAfterRace": 18,
+        "rankAfterRace": 4
+      }
+    },
+    {
+      "finishPosition": 5,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_05"
+      },
+      "observedPlayerName": "Participant Five",
+      "characterId": "character.yoshi",
+      "scoring": {
+        "racePoints": 8,
+        "totalBeforeRace": 16,
+        "totalAfterRace": 16,
+        "rankAfterRace": 5
+      }
+    },
+    {
+      "finishPosition": 6,
+      "participantReference": {
+        "namespace": "tournament_manager_player",
+        "value": "synthetic_manager_player_06"
+      },
+      "observedPlayerName": "Participant Six",
+      "characterId": "character.toad",
+      "scoring": {
+        "racePoints": 7,
+        "totalBeforeRace": 14,
+        "totalAfterRace": 14,
+        "rankAfterRace": 6
+      }
+    }
+  ],
+  "source": {
+    "kind": "tournament_spreadsheet_import",
+    "transport": "excel_workbook",
+    "producerVersion": "synthetic-1.0.0",
+    "localRecordId": "workbook_results_rowset_003",
+    "sessionId": "synthetic_workbook_session",
+    "sourceMediaId": "synthetic_video_001"
+  },
+  "timestamps": {
+    "createdAtMs": 1767225960000
+  },
+  "evidence": [
+    {
+      "kind": "workbook",
+      "reference": "evidence.synthetic.workbook.qualifier_alpha"
+    }
+  ],
+  "verification": {
+    "status": "needs_review",
+    "method": "synthetic_workbook_import_validation",
+    "issues": [
+      {
+        "code": "scoring.temporary_player_drop",
+        "message": "The retained synthetic race is excluded from cumulative standings."
+      }
+    ]
+  }
+}

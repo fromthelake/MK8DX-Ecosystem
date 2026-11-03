@@ -1,0 +1,48 @@
+{
+  "manifestVersion": "mk8dx.schema9-release-baseline.v1",
+  "releaseRole": "canonical_runtime_asset_release",
+  "schemaVersion": 9,
+  "sourceSnapshotRelativePath": "../../MK8DX Clean Assets",
+  "futurePackageRelativePath": "packages/assets",
+  "rootEntries": [
+    "README.md",
+    "database.json",
+    "images"
+  ],
+  "database": {
+    "path": "database.json",
+    "sizeBytes": 5201840,
+    "sha256": "0fab082bd7768a363860bbef7ec896e22fc01e93268e339d129bf8a1dec87706"
+  },
+  "readme": {
+    "path": "README.md",
+    "sizeBytes": 43548,
+    "sha256": "cada4b85d8efb0efd144fc61e04ff4495c4bf98b758c042a99981616b8d50fad"
+  },
+  "inventory": {
+    "fileCount": 5321,
+    "totalBytes": 56470319,
+    "pngCount": 5319,
+    "assetReferenceCount": 5319,
+    "treeSha256": "8c88d9cfd78845f1d6142f2874d188be211362227c5865e45c8a201945224514"
+  },
+  "collections": {
+    "characters": 54,
+    "vehicleBodies": 41,
+    "vehicleTires": 22,
+    "vehicleGliders": 15,
+    "cups": 24,
+    "tracks": 96,
+    "countries": 249,
+    "items": 24,
+    "worldRecords": 192,
+    "nintendoStaffTimes": 192,
+    "hudTemplates": 91
+  },
+  "relationships": {
+    "bodyVariants": 227,
+    "gliderVariants": 49,
+    "characterVariants": 28,
+    "itemIconVariants": 37
+  }
+}

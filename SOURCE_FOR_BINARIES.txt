@@ -1,0 +1,18 @@
+MK8DX Ecosystem: source and material notices
+
+The original MK8DX Ecosystem code and documentation covered by the root
+LICENSE_SCOPE.md are offered under Mozilla Public License 2.0. The full text
+is in LICENSE. Separate component and dependency licenses remain in force.
+
+The matching, complete source package is the mk8dx-full-local-*.zip of the
+same release, listed beside this package in SHA256SUMS.txt and manifest.json.
+It contains the source, build recipes, and the internal asset collection.
+The automatically generated GitHub "Source code (zip)" is not a substitute
+for that checked package. Verify its checksum before use.
+
+Nintendo and other third-party material, including assets and models, is
+not licensed by the MK8DX MPL notice. Read LICENSE_SCOPE.md and
+docs/THIRD_PARTY_MATERIALS.md in the full source package. The project is
+independent and is not affiliated with or approved by Nintendo.
+
+Releases: https://github.com/fromthelake/MK8DX-Ecosystem/releases

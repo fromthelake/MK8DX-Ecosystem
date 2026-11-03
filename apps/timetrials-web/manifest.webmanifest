@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "MK8DX Time Trials",
+  "short_name": "MK8DX Time Trials",
+  "description": "Race, record and improve with the MK8DX community.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "lang": "en",
+  "background_color": "#080C1C",
+  "theme_color": "#080C1C",
+  "icons": [
+    { "src": "/styles/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/styles/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/styles/app-icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/styles/app-icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

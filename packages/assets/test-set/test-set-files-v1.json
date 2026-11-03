@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "mk8dx.public-test-set-files.v1",
+  "description": "Reviewed binary files of the public recognition test set. tooling/privacy_scan.py admits exactly these bytes; an unlisted or changed file fails the scan.",
+  "files": {
+    "packages/assets/test-set/ghost-select-mario_kart_stadium-200cc-phone.png": {
+      "sha256": "018ae050970482e3678339c46bf754936eb4ea5c852bfca0f4f5c5cde08f0f22",
+      "sizeBytes": 5307368
+    },
+    "packages/assets/test-set/ghost-select-sweet_sweet_canyon-150cc-phone.png": {
+      "sha256": "5ca44c625fd8bd26f85255fef2c4ec867915cd401a8992e3544a1c59d16d0fb8",
+      "sizeBytes": 5230574
+    },
+    "packages/assets/test-set/ghost-select-water_park-150cc-hdmi.png": {
+      "sha256": "6d1608bf40a4c07650a40ea5ca459d3f90fbf386a674012b79c7850057de9c00",
+      "sizeBytes": 2777646
+    },
+    "packages/assets/test-set/result-de-win.png": {
+      "sha256": "06b2475606486c1733f400c2333023aefcb25d23013a2217e3a8b1e040b13aa6",
+      "sizeBytes": 2423709
+    },
+    "packages/assets/test-set/result-en-solo-record.png": {
+      "sha256": "16c8e09cff715687aaf16d73946509328305bcd551aec56d0bfd249ca69f7856",
+      "sizeBytes": 1940027
+    },
+    "packages/assets/test-set/result-es-solo-record.png": {
+      "sha256": "f0f792fa3f18da7847afc07368e755c9a885c1e2184fde2e221395e0d6b974cf",
+      "sizeBytes": 1775186
+    },
+    "packages/assets/test-set/result-ja-won.png": {
+      "sha256": "9054fc6687378f08c26eddf672b16d3fb90a5b08f0e5b43845479dfd9eb6387b",
+      "sizeBytes": 2002617
+    },
+    "packages/assets/test-set/result-ko-solo-record.png": {
+      "sha256": "d5548aaa17701e329bcdc729f658009ca4e3868916d5704fe9d88e8e891c5eab",
+      "sizeBytes": 1116755
+    },
+    "packages/assets/test-set/result-nl-solo-record.png": {
+      "sha256": "f7b099dd48142a78ce631d9a4bed26cd0c2e82a4965143e7cdb9b8cf1f743b36",
+      "sizeBytes": 2156397
+    },
+    "packages/assets/test-set/result-screen-capture-3laps-dry_bowser.jpg": {
+      "sha256": "16f043155edd347f0d132d0d6e18d7a10932eeb83454c68b621b41456dd2fd50",
+      "sizeBytes": 286643
+    },
+    "packages/assets/test-set/result-screen-capture-7laps-inkling_boy.jpg": {
+      "sha256": "f76cef8b8b3f3baecf055e38314451c9c7aaaf058fd8727b6a9300cb16c070b6",
+      "sizeBytes": 268651
+    },
+    "packages/assets/test-set/result-zh-cn-solo-record.png": {
+      "sha256": "c857d4710ee0b7b1caa5310f43212cc87dd05c305775321b9d19eac468395002",
+      "sizeBytes": 2287843
+    }
+  }
+}

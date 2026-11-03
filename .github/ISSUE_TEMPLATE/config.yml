@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability (private)
+    url: https://github.com/fromthelake/MK8DX-Ecosystem/security/advisories/new
+    about: Please report security problems privately, never in a public issue. See SECURITY.md.
+  - name: Installation and user guides
+    url: https://github.com/fromthelake/MK8DX-Ecosystem/blob/main/README.md#guides
+    about: Hosting a server, running Tournament nights, the website and Android app, LiveTrial, and development.
+  - name: Getting help
+    url: https://github.com/fromthelake/MK8DX-Ecosystem/blob/main/SUPPORT.md
+    about: Where to ask a question and what to include.

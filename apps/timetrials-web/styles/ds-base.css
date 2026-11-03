@@ -1,0 +1,117 @@
+/* Design system base (DESIGN_SYSTEM.md §3, §8, §10, §21). Everything is scoped to .ds-root so the
+   self-hosted fonts and the system type attach to design-system components only; legacy routes keep
+   their current look until they migrate (IMPLEMENTATION_PLAN Phase 2.3). Values come from ds-tokens.css. */
+@layer legacy, tokens, base, components;
+@layer base {
+  .ds-root {
+    font-family: var(--ds-font-ui);
+    font-size: var(--ds-type-body-size);
+    line-height: var(--ds-type-body-line);
+    font-weight: var(--ds-type-body-weight);
+    color: var(--ds-text-body);
+    background: var(--ds-surface-app);
+    /* No faux bold or italics in the UI and data roles; the display role opts back in below. */
+    font-synthesis: none;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  .ds-root *, .ds-root *::before, .ds-root *::after { box-sizing: border-box; }
+  .ds-root :where(h1, h2, h3, h4, p, ul, ol, figure, dl, dd) { margin: 0; }
+  .ds-root :where(button, input, select, textarea) { font: inherit; color: inherit; letter-spacing: inherit; text-transform: none; }
+  .ds-root :where(a) { color: inherit; }
+  .ds-root :where(img, svg) { display: block; max-width: 100%; }
+
+  /* ---- type roles ---- */
+  .ds-display-1, .ds-display-2, .ds-display-3, .ds-display-4, .ds-display-5, .ds-display-6 {
+    font-family: var(--ds-font-display);
+    font-weight: 800;
+    font-style: italic;
+    /* Saira Condensed ships no italic upstream; the approved renders use the synthesized oblique. */
+    font-synthesis: style;
+    text-transform: uppercase;
+    color: var(--ds-text-primary);
+    /* Long words (Dutch compounds) hyphenate by the page language before they may break. */
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+  .ds-display-1 { font-size: var(--ds-type-display-1-size); line-height: var(--ds-type-display-1-line); }
+  .ds-display-2 { font-size: var(--ds-type-display-2-size); line-height: var(--ds-type-display-2-line); }
+  .ds-display-3 { font-size: var(--ds-type-display-3-size); line-height: var(--ds-type-display-3-line); }
+  .ds-display-4 { font-size: var(--ds-type-display-4-size); line-height: var(--ds-type-display-4-line); }
+  .ds-display-5 { font-size: var(--ds-type-display-5-size); line-height: var(--ds-type-display-5-line); }
+  .ds-display-6 { font-size: var(--ds-type-display-6-size); line-height: var(--ds-type-display-6-line); }
+  .ds-kicker {
+    font-family: var(--ds-font-display);
+    font-weight: 700;
+    font-size: var(--ds-type-label-size);
+    line-height: 1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ds-text-tertiary);
+  }
+  .ds-title { font-family: var(--ds-font-ui); font-size: var(--ds-type-title-size); line-height: var(--ds-type-title-line); font-weight: var(--ds-type-title-weight); color: var(--ds-text-primary); }
+  .ds-body { font-size: var(--ds-type-body-size); line-height: var(--ds-type-body-line); font-weight: var(--ds-type-body-weight); color: var(--ds-text-body); }
+  .ds-body-s { font-size: var(--ds-type-body-s-size); line-height: var(--ds-type-body-s-line); font-weight: var(--ds-type-body-s-weight); color: var(--ds-text-secondary); }
+  .ds-label { font-size: var(--ds-type-label-size); line-height: var(--ds-type-label-line); font-weight: var(--ds-type-label-weight); color: var(--ds-text-tertiary); }
+  .ds-micro { font-size: var(--ds-type-micro-size); line-height: var(--ds-type-micro-line); font-weight: var(--ds-type-micro-weight); color: var(--ds-text-tertiary); }
+
+  /* ---- numeric roles (§10): Plex Mono, tabular, lining, never wrapping ---- */
+  .ds-num, .ds-data-xl, .ds-data-l, .ds-data-m, .ds-data, .ds-data-s {
+    font-family: var(--ds-font-data);
+    font-variant-numeric: tabular-nums lining-nums;
+    white-space: nowrap;
+  }
+  .ds-data-xl { font-size: var(--ds-type-data-xl-size); line-height: var(--ds-type-data-xl-line); font-weight: var(--ds-type-data-xl-weight); color: var(--ds-text-primary); letter-spacing: -0.01em; }
+  .ds-data-l { font-size: var(--ds-type-data-l-size); line-height: var(--ds-type-data-l-line); font-weight: var(--ds-type-data-l-weight); color: var(--ds-text-primary); }
+  .ds-data-m { font-size: var(--ds-type-data-m-size); line-height: var(--ds-type-data-m-line); font-weight: var(--ds-type-data-m-weight); color: var(--ds-text-primary); }
+  .ds-data { font-size: var(--ds-type-data-size); line-height: var(--ds-type-data-line); font-weight: var(--ds-type-data-weight); }
+  .ds-data-s { font-size: var(--ds-type-data-s-size); line-height: var(--ds-type-data-s-line); font-weight: var(--ds-type-data-s-weight); }
+
+  /* ---- game art (§16): how much of a hero backdrop shows through its shade ----
+     Not a colour, a size or a breakpoint, so it is not a token literal; it lives here rather than in
+     the generated token file because adding a semantic entry regenerates the Android adapter too,
+     and that file belongs to the Android track of this migration. The four selectors below are the
+     same appearance resolution the generated tokens use (ADR-0205). */
+  :root, [data-appearance="dark"] { --ds-art-opacity: 0.42; }
+  [data-appearance="light"] { --ds-art-opacity: 0.8; }
+  :root[data-appearance-choice="light"] { --ds-art-opacity: 0.8; }
+  @media (prefers-color-scheme: light) {
+    :root[data-appearance-choice="system"] { --ds-art-opacity: 0.8; }
+  }
+
+  /* ---- focus (§8): always visible; slanted shapes draw it inside the clip (components layer) ---- */
+  .ds-root :focus-visible { outline: var(--ds-focus-width) solid var(--ds-focus-ring); outline-offset: 2px; }
+  .ds-visually-hidden {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  /* Components take every duration from the motion tokens, so reduced motion is one switch here.
+     Settings -> Appearance can also ask for it on a device whose OS does not (DESIGN_SYSTEM §19);
+     the two are the same switch, and neither ever hides information. */
+  @media (prefers-reduced-motion: reduce) {
+    .ds-root, .ds-root [data-ds-overlay] {
+      --ds-motion-state: 0ms;
+      --ds-motion-panel: 0ms;
+      --ds-motion-reveal: 0ms;
+      --ds-motion-highlight: 0ms;
+      scroll-behavior: auto;
+    }
+  }
+  :root[data-reduced-motion="on"] .ds-root,
+  :root[data-reduced-motion="on"] .ds-root [data-ds-overlay] {
+    --ds-motion-state: 0ms;
+    --ds-motion-panel: 0ms;
+    --ds-motion-reveal: 0ms;
+    --ds-motion-highlight: 0ms;
+    scroll-behavior: auto;
+  }
+  :root[data-reduced-motion="on"] .ds-root :where(*, *::before, *::after) {
+    animation-duration: 1ms;
+    animation-iteration-count: 1;
+    transition-duration: 1ms;
+  }
+  @media (forced-colors: active) {
+    .ds-root :focus-visible { outline-color: Highlight; }
+  }
+}

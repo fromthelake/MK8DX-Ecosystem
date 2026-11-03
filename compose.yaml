@@ -1,0 +1,61 @@
+name: ${MK8DX_PROJECT_NAME:?Run the installer first}
+services:
+  mysql:
+    image: mysql:8.4.11
+    environment:
+      MYSQL_DATABASE: ${MK8DX_DATABASE:?}
+      MYSQL_USER: ${MK8DX_DATABASE_USER:?}
+      MYSQL_PASSWORD: ${MK8DX_DATABASE_PASSWORD:?}
+      MYSQL_ROOT_PASSWORD: ${MK8DX_DATABASE_ROOT_PASSWORD:?}
+    volumes:
+      - database:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping --silent -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\""]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
+  api:
+    image: ${MK8DX_API_IMAGE:-mk8dx/api:local-20261001-r13-amd64}
+    build:
+      context: .
+      dockerfile: backend/api/Dockerfile
+    env_file: ${MK8DX_STATE_DIR:?}/api.env
+    volumes:
+      - ${MK8DX_STATE_DIR:?}/operator.json:/run/mk8dx/operator.json:ro
+    environment:
+      MK8DX_HOSTED_MYSQL_HOST: mysql
+      MK8DX_HOSTED_MYSQL_PORT: "3306"
+      MK8DX_HOSTED_API_HOST: 0.0.0.0
+      MK8DX_HOSTED_API_PORT: "8080"
+      MK8DX_HOSTED_SCHEMA9_CATALOG_PATH: /app/packages/assets/schema9-asset-catalog-v1.json
+    depends_on:
+      mysql: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
+  web:
+    image: ${MK8DX_WEB_IMAGE:-mk8dx/web:local-20261002-r14-amd64}
+    build:
+      context: .
+      dockerfile: apps/timetrials-web/Dockerfile
+    ports:
+      - "${MK8DX_BIND_ADDRESS:-127.0.0.1}:${MK8DX_HTTP_PORT:?}:80"
+    volumes:
+      - ${MK8DX_STATE_DIR:?}/public-client.json:/srv/client-config.json:ro
+    depends_on:
+      api: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
+volumes:
+  database:

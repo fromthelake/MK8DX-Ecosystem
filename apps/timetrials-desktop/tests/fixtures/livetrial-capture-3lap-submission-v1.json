@@ -1,0 +1,61 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.LIVETRIAL0001",
+  "revision": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 60000,
+  "laps": [
+    {
+      "lapNumber": 1,
+      "timeMs": 20000,
+      "coinsCollected": 1,
+      "mushroomsUsed": 0
+    },
+    {
+      "lapNumber": 2,
+      "timeMs": 19500,
+      "coinsCollected": 1,
+      "mushroomsUsed": 1
+    },
+    {
+      "lapNumber": 3,
+      "timeMs": 20500,
+      "coinsCollected": 1,
+      "mushroomsUsed": 0
+    }
+  ],
+  "playerReference": {
+    "namespace": "unresolved_observation",
+    "value": "desktop-local-player"
+  },
+  "source": {
+    "kind": "livetrial_capture",
+    "producerVersion": "livetrial-adapter-test",
+    "localRecordId": "run.synthetic-0007"
+  },
+  "timestamps": {
+    "createdAtMs": 1786900000100,
+    "occurredAtMs": 1786900000000,
+    "capturedAtMs": 1786900000000
+  },
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "livetrial_result_card_lap_sum_v1",
+    "lapSumMatches": true
+  },
+  "loadout": {
+    "characterId": "character.mario",
+    "bodyId": "body.standard_kart",
+    "tireId": "tire.normal",
+    "gliderId": "glider.super_glider"
+  },
+  "countryId": "country.nl",
+  "observedPlayerName": "Observed Driver",
+  "evidence": [
+    {
+      "kind": "capture_session",
+      "reference": "synthetic/session-1/run-7"
+    }
+  ]
+}

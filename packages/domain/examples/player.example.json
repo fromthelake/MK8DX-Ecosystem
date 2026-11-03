@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "mk8dx.player.v1",
+  "playerId": "player.synthetic_racer_01",
+  "revision": 2,
+  "playerKind": "human",
+  "username": {
+    "current": {
+      "value": "SyntheticRacer",
+      "comparisonKey": "syntheticracer"
+    },
+    "history": [
+      {
+        "sequence": 1,
+        "value": "SyntheticRacerOld",
+        "comparisonKey": "syntheticracerold",
+        "allocatedAtMs": 1735689600000,
+        "releasedAtMs": 1735776000000
+      },
+      {
+        "sequence": 2,
+        "value": "SyntheticRacer",
+        "comparisonKey": "syntheticracer",
+        "allocatedAtMs": 1735776000000,
+        "releasedAtMs": null
+      }
+    ]
+  },
+  "displayName": "Synthetic Racer",
+  "recordStatus": "active",
+  "createdAtMs": 1735689600000,
+  "updatedAtMs": 1735776000000
+}

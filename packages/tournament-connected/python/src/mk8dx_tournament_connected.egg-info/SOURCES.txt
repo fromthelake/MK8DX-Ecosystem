@@ -1,0 +1,11 @@
+pyproject.toml
+src/mk8dx_tournament_connected/__init__.py
+src/mk8dx_tournament_connected/cli.py
+src/mk8dx_tournament_connected/client.py
+src/mk8dx_tournament_connected/server.py
+src/mk8dx_tournament_connected/session.py
+src/mk8dx_tournament_connected.egg-info/PKG-INFO
+src/mk8dx_tournament_connected.egg-info/SOURCES.txt
+src/mk8dx_tournament_connected.egg-info/dependency_links.txt
+src/mk8dx_tournament_connected.egg-info/entry_points.txt
+src/mk8dx_tournament_connected.egg-info/top_level.txt

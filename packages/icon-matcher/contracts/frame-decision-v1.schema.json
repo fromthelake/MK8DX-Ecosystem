@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/recognition/frame-decision-v1.schema.json",
+  "title": "MK8DX Frame Decision V1",
+  "description": "The central decision for one frame (CENTRAL_RECOGNITION.md section 8.1): per field the selected choice, the accepted choice only when the reader is sure, the alternatives and the rule that decided. Products show selectedId, mark a field without acceptedId with '?', and never promote it themselves.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "frame", "fieldSemanticsVersion", "decisionVersion", "fields"],
+  "properties": {
+    "schema": { "const": "mk8dx.frame-decision.v1" },
+    "frame": { "type": "string" },
+    "fieldSemanticsVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "decisionVersion": {
+      "description": "Version of the frame-specific decision (e.g. the Select-a-Ghost picker).",
+      "type": "string"
+    },
+    "reliableColour": { "type": "boolean" },
+    "fields": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fieldDecision" }
+    }
+  },
+  "$defs": {
+    "fieldDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "selectedId", "acceptedId", "basis", "score", "alternatives"],
+      "properties": {
+        "field": { "type": "string" },
+        "selectedId": { "type": ["string", "null"] },
+        "acceptedId": {
+          "description": "Equal to selectedId when the reader is sure, otherwise null.",
+          "type": ["string", "null"]
+        },
+        "basis": { "type": "string", "description": "The rule that decided (e.g. band_ratio, name_family_character_colour)." },
+        "score": { "type": "number" },
+        "alternatives": {
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "score"],
+            "properties": { "id": { "type": "string" }, "score": { "type": "number" } }
+          }
+        },
+        "scope": {
+          "description": "Present when an app candidate scope applied.",
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["reason", "widened"],
+          "properties": { "reason": { "type": "string" }, "widened": { "type": "boolean" } }
+        },
+        "evidence": {
+          "description": "Decision-specific trace (offsets, name clue, shape and band measurements); for audit, not for products to decide on.",
+          "type": "object"
+        }
+      }
+    }
+  }
+}

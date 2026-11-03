@@ -1,0 +1,3567 @@
+{
+  "schema": "mk8dx.presentation-names.v1",
+  "locale": "nl-NL",
+  "provenance": {
+    "cleanAssets": "Clean Assets schema-9 database.json",
+    "characterVariants": "Video Result Extractor game_catalog.json"
+  },
+  "categories": {
+    "cups": [
+      {
+        "id": "cup.mushroom_cup",
+        "en": "Mushroom Cup",
+        "nl": "Paddenstoelbeker"
+      },
+      {
+        "id": "cup.flower_cup",
+        "en": "Flower Cup",
+        "nl": "Bloemenbeker"
+      },
+      {
+        "id": "cup.star_cup",
+        "en": "Star Cup",
+        "nl": "Sterrenbeker"
+      },
+      {
+        "id": "cup.special_cup",
+        "en": "Special Cup",
+        "nl": "Speciale beker"
+      },
+      {
+        "id": "cup.shell_cup",
+        "en": "Shell Cup",
+        "nl": "Schildbeker"
+      },
+      {
+        "id": "cup.banana_cup",
+        "en": "Banana Cup",
+        "nl": "Bananenbeker"
+      },
+      {
+        "id": "cup.leaf_cup",
+        "en": "Leaf Cup",
+        "nl": "Blaadjesbeker"
+      },
+      {
+        "id": "cup.lightning_cup",
+        "en": "Lightning Cup",
+        "nl": "Bliksembeker"
+      },
+      {
+        "id": "cup.egg_cup",
+        "en": "Egg Cup",
+        "nl": "Eierbeker"
+      },
+      {
+        "id": "cup.triforce_cup",
+        "en": "Triforce Cup",
+        "nl": "Triforce-beker"
+      },
+      {
+        "id": "cup.crossing_cup",
+        "en": "Crossing Cup",
+        "nl": "Crossing-beker"
+      },
+      {
+        "id": "cup.bell_cup",
+        "en": "Bell Cup",
+        "nl": "Superbelbeker"
+      },
+      {
+        "id": "cup.golden_dash_cup",
+        "en": "Golden Dash Cup",
+        "nl": "Goudensprintbeker"
+      },
+      {
+        "id": "cup.lucky_cat_cup",
+        "en": "Lucky Cat Cup",
+        "nl": "Gelukskatbeker"
+      },
+      {
+        "id": "cup.turnip_cup",
+        "en": "Turnip Cup",
+        "nl": "Knollenbeker"
+      },
+      {
+        "id": "cup.propeller_cup",
+        "en": "Propeller Cup",
+        "nl": "Propellerbeker"
+      },
+      {
+        "id": "cup.rock_cup",
+        "en": "Rock Cup",
+        "nl": "Rotsbeker"
+      },
+      {
+        "id": "cup.moon_cup",
+        "en": "Moon Cup",
+        "nl": "Maanbeker"
+      },
+      {
+        "id": "cup.fruit_cup",
+        "en": "Fruit Cup",
+        "nl": "Fruitbeker"
+      },
+      {
+        "id": "cup.boomerang_cup",
+        "en": "Boomerang Cup",
+        "nl": "Boemerangbeker"
+      },
+      {
+        "id": "cup.feather_cup",
+        "en": "Feather Cup",
+        "nl": "Veerbeker"
+      },
+      {
+        "id": "cup.cherry_cup",
+        "en": "Cherry Cup",
+        "nl": "Kersenbeker"
+      },
+      {
+        "id": "cup.acorn_cup",
+        "en": "Acorn Cup",
+        "nl": "Eikenbeker"
+      },
+      {
+        "id": "cup.spiny_cup",
+        "en": "Spiny Cup",
+        "nl": "Spiny-beker"
+      }
+    ],
+    "tracks": [
+      {
+        "id": "track.mario_kart_stadium",
+        "en": "Mario Kart Stadium",
+        "nl": "Mario Kart-Stadion"
+      },
+      {
+        "id": "track.water_park",
+        "en": "Water Park",
+        "nl": "Waterpretpark"
+      },
+      {
+        "id": "track.sweet_sweet_canyon",
+        "en": "Sweet Sweet Canyon",
+        "nl": "Zoetekauwcanyon"
+      },
+      {
+        "id": "track.thwomp_ruins",
+        "en": "Thwomp Ruins",
+        "nl": "Thwomps Tempel"
+      },
+      {
+        "id": "track.mario_circuit",
+        "en": "Mario Circuit",
+        "nl": "Mario's Circuit"
+      },
+      {
+        "id": "track.toad_harbour",
+        "en": "Toad Harbor",
+        "nl": "Toad-Baai"
+      },
+      {
+        "id": "track.twisted_mansion",
+        "en": "Twisted Mansion",
+        "nl": "Boo's Duizelhuis"
+      },
+      {
+        "id": "track.shy_guy_falls",
+        "en": "Shy Guy Falls",
+        "nl": "Shy Guys Kristalmijn"
+      },
+      {
+        "id": "track.sunshine_airport",
+        "en": "Sunshine Airport",
+        "nl": "Sunshine Airport"
+      },
+      {
+        "id": "track.dolphin_shoals",
+        "en": "Dolphin Shoals",
+        "nl": "Dolfijnenparadijs"
+      },
+      {
+        "id": "track.electrodrome",
+        "en": "Electrodrome",
+        "nl": "Electrodome"
+      },
+      {
+        "id": "track.mount_wario",
+        "en": "Mount Wario",
+        "nl": "Wario's Winterberg"
+      },
+      {
+        "id": "track.cloudtop_cruise",
+        "en": "Cloudtop Cruise",
+        "nl": "Wildewolkenweg"
+      },
+      {
+        "id": "track.bone_dry_dunes",
+        "en": "Bone-Dry Dunes",
+        "nl": "Dry Bowsers Woestijn"
+      },
+      {
+        "id": "track.bowsers_castle",
+        "en": "Bowser's Castle",
+        "nl": "Bowsers Kasteel"
+      },
+      {
+        "id": "track.rainbow_road",
+        "en": "Rainbow Road",
+        "nl": "Regenboogbaan"
+      },
+      {
+        "id": "track.wii_moo_moo_meadows",
+        "en": "Wii Moo Moo Meadows",
+        "nl": "Wii Boe-Boe-Boerenland"
+      },
+      {
+        "id": "track.gba_mario_circuit",
+        "en": "GBA Mario Circuit",
+        "nl": "GBA Mario's Circuit"
+      },
+      {
+        "id": "track.ds_cheep_cheep_beach",
+        "en": "DS Cheep Cheep Beach",
+        "nl": "DS Cheep Cheep Strand"
+      },
+      {
+        "id": "track.n64_toads_turnpike",
+        "en": "N64 Toad's Turnpike",
+        "nl": "N64 Toads Tolweg"
+      },
+      {
+        "id": "track.gcn_dry_dry_desert",
+        "en": "GCN Dry Dry Desert",
+        "nl": "GCN Zinderende Zandvlakte"
+      },
+      {
+        "id": "track.snes_donut_plains_3",
+        "en": "SNES Donut Plains 3",
+        "nl": "SNES Donutvlakte 3"
+      },
+      {
+        "id": "track.n64_royal_raceway",
+        "en": "N64 Royal Raceway",
+        "nl": "N64 Koninklijke Kartbaan"
+      },
+      {
+        "id": "track.3ds_dk_jungle",
+        "en": "3DS DK Jungle",
+        "nl": "3DS DK's Jungle"
+      },
+      {
+        "id": "track.ds_wario_stadium",
+        "en": "DS Wario Stadium",
+        "nl": "DS Wario's Stadion"
+      },
+      {
+        "id": "track.gcn_sherbet_land",
+        "en": "GCN Sherbet Land",
+        "nl": "GCN Ijzige Ijsbaan"
+      },
+      {
+        "id": "track.3ds_melody_motorway",
+        "en": "3DS Music Park",
+        "nl": "3DS Muziekcircuit"
+      },
+      {
+        "id": "track.n64_yoshi_valley",
+        "en": "N64 Yoshi Valley",
+        "nl": "N64 Yoshi's Vallei"
+      },
+      {
+        "id": "track.ds_tick_tock_clock",
+        "en": "DS Tick-Tock Clock",
+        "nl": "DS Tik-Tak-Klok"
+      },
+      {
+        "id": "track.3ds_piranha_plant_pipeway",
+        "en": "3DS Piranha Plant Slide",
+        "nl": "3DS Piranha Plant-Parkoers"
+      },
+      {
+        "id": "track.wii_grumble_volcano",
+        "en": "Wii Grumble Volcano",
+        "nl": "Wii Dondervulkaan"
+      },
+      {
+        "id": "track.n64_rainbow_road",
+        "en": "N64 Rainbow Road",
+        "nl": "N64 Regenboogbaan"
+      },
+      {
+        "id": "track.gcn_yoshi_circuit",
+        "en": "GCN Yoshi Circuit",
+        "nl": "GCN Yoshi's Circuit"
+      },
+      {
+        "id": "track.excitebike_arena",
+        "en": "Excitebike Arena",
+        "nl": "Excitebike-Arena"
+      },
+      {
+        "id": "track.dragon_driftway",
+        "en": "Dragon Driftway",
+        "nl": "Drakendreef"
+      },
+      {
+        "id": "track.mute_city",
+        "en": "Mute City",
+        "nl": "Mute City"
+      },
+      {
+        "id": "track.wii_warios_gold_mine",
+        "en": "Wii Wario's Gold Mine",
+        "nl": "Wii Wario's Goudmijn"
+      },
+      {
+        "id": "track.snes_rainbow_road",
+        "en": "SNES Rainbow Road",
+        "nl": "SNES Regenboogbaan"
+      },
+      {
+        "id": "track.ice_ice_outpost",
+        "en": "Ice Ice Outpost",
+        "nl": "Toads Poolbasis"
+      },
+      {
+        "id": "track.hyrule_circuit",
+        "en": "Hyrule Circuit",
+        "nl": "Hyrule-Circuit"
+      },
+      {
+        "id": "track.gcn_baby_park",
+        "en": "GCN Baby Park",
+        "nl": "GCN Babypark"
+      },
+      {
+        "id": "track.gba_cheese_land",
+        "en": "GBA Cheese Land",
+        "nl": "GBA Kaasland"
+      },
+      {
+        "id": "track.wild_woods",
+        "en": "Wild Woods",
+        "nl": "Wervelwoud"
+      },
+      {
+        "id": "track.animal_crossing",
+        "en": "Animal Crossing",
+        "nl": "Animal Crossing"
+      },
+      {
+        "id": "track.3ds_koopa_city",
+        "en": "3DS Neo Bowser City",
+        "nl": "3DS Bowser City"
+      },
+      {
+        "id": "track.gba_ribbon_road",
+        "en": "GBA Ribbon Road",
+        "nl": "GBA Sprintlint"
+      },
+      {
+        "id": "track.super_bell_subway",
+        "en": "Super Bell Subway",
+        "nl": "Mario's Metro"
+      },
+      {
+        "id": "track.big_blue",
+        "en": "Big Blue",
+        "nl": "Big Blue"
+      },
+      {
+        "id": "track.tour_paris_promenade",
+        "en": "Tour Paris Promenade",
+        "nl": "Tour Parijs-Promenade"
+      },
+      {
+        "id": "track.3ds_toad_circuit",
+        "en": "3DS Toad Circuit",
+        "nl": "3DS Toads Circuit"
+      },
+      {
+        "id": "track.n64_choco_mountain",
+        "en": "N64 Choco Mountain",
+        "nl": "N64 Chocokloof"
+      },
+      {
+        "id": "track.wii_coconut_mall",
+        "en": "Wii Coconut Mall",
+        "nl": "Wii Kokosnootplaza"
+      },
+      {
+        "id": "track.tour_tokyo_blur",
+        "en": "Tour Tokyo Blur",
+        "nl": "Tour Tokio-Toer"
+      },
+      {
+        "id": "track.ds_shroom_ridge",
+        "en": "DS Shroom Ridge",
+        "nl": "DS Paddenstoelenpas"
+      },
+      {
+        "id": "track.gba_sky_garden",
+        "en": "GBA Sky Garden",
+        "nl": "GBA Wolkenhof"
+      },
+      {
+        "id": "track.ninja_hideaway",
+        "en": "Ninja Hideaway",
+        "nl": "Ninjaschool"
+      },
+      {
+        "id": "track.tour_new_york_minute",
+        "en": "Tour New York Minute",
+        "nl": "Tour New York Drive"
+      },
+      {
+        "id": "track.snes_mario_circuit_3",
+        "en": "SNES Mario Circuit 3",
+        "nl": "SNES Mario Circuit 3"
+      },
+      {
+        "id": "track.n64_kalimari_desert",
+        "en": "N64 Kalimari Desert",
+        "nl": "N64 Wildwestwoestijn"
+      },
+      {
+        "id": "track.ds_waluigi_pinball",
+        "en": "DS Waluigi Pinball",
+        "nl": "DS Waluigi's Flipperkast"
+      },
+      {
+        "id": "track.tour_sydney_sprint",
+        "en": "Tour Sydney Sprint",
+        "nl": "Tour Sydney-Sprint"
+      },
+      {
+        "id": "track.gba_snow_land",
+        "en": "GBA Snow Land",
+        "nl": "GBA Sneeuwland"
+      },
+      {
+        "id": "track.wii_mushroom_gorge",
+        "en": "Wii Mushroom Gorge",
+        "nl": "Wii Paddenstoelengrot"
+      },
+      {
+        "id": "track.sky_high_sundae",
+        "en": "Sky-High Sundae",
+        "nl": "Stracciatellastraat"
+      },
+      {
+        "id": "track.tour_london_loop",
+        "en": "Tour London Loop",
+        "nl": "Tour Londen-Ronde"
+      },
+      {
+        "id": "track.gba_boo_lake",
+        "en": "GBA Boo Lake",
+        "nl": "GBA Boo-Bruggen"
+      },
+      {
+        "id": "track.3ds_alpine_pass",
+        "en": "3DS Rock Rock Mountain",
+        "nl": "3DS Kampioensberg"
+      },
+      {
+        "id": "track.wii_maple_treeway",
+        "en": "Wii Maple Treeway",
+        "nl": "Wii Wigglers Woud"
+      },
+      {
+        "id": "track.tour_berlin_byways",
+        "en": "Tour Berlin Byways",
+        "nl": "Tour Berlijn-Bezoek"
+      },
+      {
+        "id": "track.ds_peach_gardens",
+        "en": "DS Peach Gardens",
+        "nl": "DS Peach' Paleistuin"
+      },
+      {
+        "id": "track.merry_mountain",
+        "en": "Merry Mountain",
+        "nl": "Dennenboomdorp"
+      },
+      {
+        "id": "track.3ds_rainbow_road",
+        "en": "3DS Rainbow Road",
+        "nl": "3DS Regenboogbaan"
+      },
+      {
+        "id": "track.tour_amsterdam_drift",
+        "en": "Tour Amsterdam Drift",
+        "nl": "Tour Afslag Amsterdam"
+      },
+      {
+        "id": "track.gba_riverside_park",
+        "en": "GBA Riverside Park",
+        "nl": "GBA Rivieroever"
+      },
+      {
+        "id": "track.wii_dk_summit",
+        "en": "Wii DK Summit",
+        "nl": "Wii DK's Skipark"
+      },
+      {
+        "id": "track.yoshis_island",
+        "en": "Yoshi's Island",
+        "nl": "Yoshi's Eiland"
+      },
+      {
+        "id": "track.tour_bangkok_rush",
+        "en": "Tour Bangkok Rush",
+        "nl": "Tour Bangkok-Break"
+      },
+      {
+        "id": "track.ds_mario_circuit",
+        "en": "DS Mario Circuit",
+        "nl": "DS Mario's Circuit"
+      },
+      {
+        "id": "track.gcn_waluigi_stadium",
+        "en": "GCN Waluigi Stadium",
+        "nl": "GCN Waluigi's Stadion"
+      },
+      {
+        "id": "track.tour_singapore_speedway",
+        "en": "Tour Singapore Speedway",
+        "nl": "Tour Singapore-Skyline"
+      },
+      {
+        "id": "track.tour_athens_dash",
+        "en": "Tour Athens Dash",
+        "nl": "Tour Athene-Trip"
+      },
+      {
+        "id": "track.gcn_daisy_cruiser",
+        "en": "GCN Daisy Cruiser",
+        "nl": "GCN Daisy's Cruiseschip"
+      },
+      {
+        "id": "track.wii_moonview_highway",
+        "en": "Wii Moonview Highway",
+        "nl": "Wii Maanlichtlaan"
+      },
+      {
+        "id": "track.squeaky_clean_sprint",
+        "en": "Squeaky Clean Sprint",
+        "nl": "Badderbaan"
+      },
+      {
+        "id": "track.tour_los_angeles_laps",
+        "en": "Tour Los Angeles Laps",
+        "nl": "Tour Los Angeles-Boulevard"
+      },
+      {
+        "id": "track.gba_sunset_wilds",
+        "en": "GBA Sunset Wilds",
+        "nl": "GBA Schemersteppe"
+      },
+      {
+        "id": "track.wii_koopa_cape",
+        "en": "Wii Koopa Cape",
+        "nl": "Wii Kaap Koopa"
+      },
+      {
+        "id": "track.tour_vancouver_velocity",
+        "en": "Tour Vancouver Velocity",
+        "nl": "Tour Vancouver-Route"
+      },
+      {
+        "id": "track.tour_rome_avanti",
+        "en": "Tour Rome Avanti",
+        "nl": "Tour Rome-Run"
+      },
+      {
+        "id": "track.gcn_dk_mountain",
+        "en": "GCN DK Mountain",
+        "nl": "GCN DK-Gebergte"
+      },
+      {
+        "id": "track.wii_daisy_circuit",
+        "en": "Wii Daisy Circuit",
+        "nl": "Wii Daisy's Circuit"
+      },
+      {
+        "id": "track.piranha_plant_cove",
+        "en": "Piranha Plant Cove",
+        "nl": "Piranha Plant-Lagune"
+      },
+      {
+        "id": "track.tour_madrid_drive",
+        "en": "Tour Madrid Drive",
+        "nl": "Tour Madrid-Rit"
+      },
+      {
+        "id": "track.3ds_rosalinas_ice_world",
+        "en": "3DS Rosalina's Ice World",
+        "nl": "3DS Rosalina's Ijsplaneet"
+      },
+      {
+        "id": "track.snes_bowser_castle_3",
+        "en": "SNES Bowser Castle 3",
+        "nl": "SNES Bowsers Kasteel 3"
+      },
+      {
+        "id": "track.wii_rainbow_road",
+        "en": "Wii Rainbow Road",
+        "nl": "Wii Regenboogbaan"
+      }
+    ],
+    "characters": [
+      {
+        "id": "character.mario",
+        "en": "Mario",
+        "nl": "Mario"
+      },
+      {
+        "id": "character.luigi",
+        "en": "Luigi",
+        "nl": "Luigi"
+      },
+      {
+        "id": "character.peach",
+        "en": "Peach",
+        "nl": "Peach"
+      },
+      {
+        "id": "character.daisy",
+        "en": "Daisy",
+        "nl": "Daisy"
+      },
+      {
+        "id": "character.rosalina",
+        "en": "Rosalina",
+        "nl": "Rosalina"
+      },
+      {
+        "id": "character.tanooki_mario",
+        "en": "Tanooki Mario",
+        "nl": "Tanuki-Mario"
+      },
+      {
+        "id": "character.cat_peach",
+        "en": "Cat Peach",
+        "nl": "Kat-Peach"
+      },
+      {
+        "id": "character.birdo",
+        "en": "Birdo",
+        "nl": "Birdo"
+      },
+      {
+        "id": "character.yoshi",
+        "en": "Yoshi",
+        "nl": "Yoshi"
+      },
+      {
+        "id": "character.toad",
+        "en": "Toad",
+        "nl": "Toad"
+      },
+      {
+        "id": "character.koopa_troopa",
+        "en": "Koopa Troopa",
+        "nl": "Koopa Troopa"
+      },
+      {
+        "id": "character.shy_guy",
+        "en": "Shy Guy",
+        "nl": "Shy Guy"
+      },
+      {
+        "id": "character.lakitu",
+        "en": "Lakitu",
+        "nl": "Lakitu"
+      },
+      {
+        "id": "character.toadette",
+        "en": "Toadette",
+        "nl": "Toadette"
+      },
+      {
+        "id": "character.king_boo",
+        "en": "King Boo",
+        "nl": "King Boo"
+      },
+      {
+        "id": "character.petey_piranha",
+        "en": "Petey Piranha",
+        "nl": "Petey Piranha"
+      },
+      {
+        "id": "character.baby_mario",
+        "en": "Baby Mario",
+        "nl": "Baby Mario"
+      },
+      {
+        "id": "character.baby_luigi",
+        "en": "Baby Luigi",
+        "nl": "Baby Luigi"
+      },
+      {
+        "id": "character.baby_peach",
+        "en": "Baby Peach",
+        "nl": "Baby Peach"
+      },
+      {
+        "id": "character.baby_daisy",
+        "en": "Baby Daisy",
+        "nl": "Baby Daisy"
+      },
+      {
+        "id": "character.baby_rosalina",
+        "en": "Baby Rosalina",
+        "nl": "Baby Rosalina"
+      },
+      {
+        "id": "character.metal_mario",
+        "en": "Metal Mario",
+        "nl": "Metalen Mario"
+      },
+      {
+        "id": "character.gold_mario",
+        "en": "Gold Mario",
+        "nl": "Gouden Mario"
+      },
+      {
+        "id": "character.pink_gold_peach",
+        "en": "Pink Gold Peach",
+        "nl": "Rozegouden Peach"
+      },
+      {
+        "id": "character.wiggler",
+        "en": "Wiggler",
+        "nl": "Wiggler"
+      },
+      {
+        "id": "character.wario",
+        "en": "Wario",
+        "nl": "Wario"
+      },
+      {
+        "id": "character.waluigi",
+        "en": "Waluigi",
+        "nl": "Waluigi"
+      },
+      {
+        "id": "character.donkey_kong",
+        "en": "Donkey Kong",
+        "nl": "Donkey Kong"
+      },
+      {
+        "id": "character.bowser",
+        "en": "Bowser",
+        "nl": "Bowser"
+      },
+      {
+        "id": "character.dry_bones",
+        "en": "Dry Bones",
+        "nl": "Dry Bones"
+      },
+      {
+        "id": "character.bowser_jr",
+        "en": "Bowser Jr.",
+        "nl": "Bowser Jr."
+      },
+      {
+        "id": "character.dry_bowser",
+        "en": "Dry Bowser",
+        "nl": "Dry Bowser"
+      },
+      {
+        "id": "character.kamek",
+        "en": "Kamek",
+        "nl": "Kamek"
+      },
+      {
+        "id": "character.lemmy",
+        "en": "Lemmy",
+        "nl": "Lemmy"
+      },
+      {
+        "id": "character.larry",
+        "en": "Larry",
+        "nl": "Larry"
+      },
+      {
+        "id": "character.wendy",
+        "en": "Wendy",
+        "nl": "Wendy"
+      },
+      {
+        "id": "character.ludwig",
+        "en": "Ludwig",
+        "nl": "Ludwig"
+      },
+      {
+        "id": "character.iggy",
+        "en": "Iggy",
+        "nl": "Iggy"
+      },
+      {
+        "id": "character.roy",
+        "en": "Roy",
+        "nl": "Roy"
+      },
+      {
+        "id": "character.morton",
+        "en": "Morton",
+        "nl": "Morton"
+      },
+      {
+        "id": "character.peachette",
+        "en": "Peachette",
+        "nl": "Peachette"
+      },
+      {
+        "id": "character.inkling_girl",
+        "en": "Inkling Girl",
+        "nl": "Inkling-meisje"
+      },
+      {
+        "id": "character.inkling_boy",
+        "en": "Inkling Boy",
+        "nl": "Inkling-jongen"
+      },
+      {
+        "id": "character.villager_male",
+        "en": "Villager (Boy)",
+        "nl": "Dorpsbewoner"
+      },
+      {
+        "id": "character.villager_female",
+        "en": "Villager (Girl)",
+        "nl": "Dorpsbewoner"
+      },
+      {
+        "id": "character.isabelle",
+        "en": "Isabelle",
+        "nl": "Isabelle"
+      },
+      {
+        "id": "character.champion_link",
+        "en": "Link",
+        "nl": "Link"
+      },
+      {
+        "id": "character.link",
+        "en": "Link",
+        "nl": "Link"
+      },
+      {
+        "id": "character.diddy_kong",
+        "en": "Diddy Kong",
+        "nl": "Diddy Kong"
+      },
+      {
+        "id": "character.funky_kong",
+        "en": "Funky Kong",
+        "nl": "Funky Kong"
+      },
+      {
+        "id": "character.pauline",
+        "en": "Pauline",
+        "nl": "Pauline"
+      },
+      {
+        "id": "character.mii_light",
+        "en": "Mii (Small)",
+        "nl": "Mii (Small)"
+      },
+      {
+        "id": "character.mii_medium",
+        "en": "Mii (Medium)",
+        "nl": "Mii (Medium)"
+      },
+      {
+        "id": "character.mii_heavy",
+        "en": "Mii (Large)",
+        "nl": "Mii (Large)"
+      }
+    ],
+    "bodies": [
+      {
+        "id": "body.standard_kart",
+        "en": "Standard Kart",
+        "nl": "Standaardkart"
+      },
+      {
+        "id": "body.pipe_frame",
+        "en": "Pipe Frame",
+        "nl": "Skelter"
+      },
+      {
+        "id": "body.mach_8",
+        "en": "Mach 8",
+        "nl": "Mach 8"
+      },
+      {
+        "id": "body.steel_driver",
+        "en": "Steel Driver",
+        "nl": "Diepzeeduikkar"
+      },
+      {
+        "id": "body.cat_cruiser",
+        "en": "Cat Cruiser",
+        "nl": "Miauwto"
+      },
+      {
+        "id": "body.circuit_special",
+        "en": "Circuit Special",
+        "nl": "Sprinter 2.0"
+      },
+      {
+        "id": "body.tri_speeder",
+        "en": "Tri-Speeder",
+        "nl": "Driebander"
+      },
+      {
+        "id": "body.badwagon",
+        "en": "Badwagon",
+        "nl": "Blingbolide"
+      },
+      {
+        "id": "body.prancer",
+        "en": "Prancer",
+        "nl": "Paradepaardje"
+      },
+      {
+        "id": "body.buggybud",
+        "en": "Biddybuggy",
+        "nl": "Biddybuggy"
+      },
+      {
+        "id": "body.landship",
+        "en": "Landship",
+        "nl": "Flitsfregat"
+      },
+      {
+        "id": "body.bounder",
+        "en": "Sneeker",
+        "nl": "Koploper"
+      },
+      {
+        "id": "body.sports_coupe",
+        "en": "Sports Coupe",
+        "nl": "Topsporter"
+      },
+      {
+        "id": "body.gold_kart",
+        "en": "Gold Standard",
+        "nl": "Gouden kart"
+      },
+      {
+        "id": "body.gla",
+        "en": "GLA",
+        "nl": "GLA"
+      },
+      {
+        "id": "body.25_silver_arrow",
+        "en": "W 25 Silver Arrow",
+        "nl": "W 25 Zilverpijl"
+      },
+      {
+        "id": "body.300_sl_roadster",
+        "en": "300 SL Roadster",
+        "nl": "300 SL Roadster"
+      },
+      {
+        "id": "body.blue_falcon",
+        "en": "Blue Falcon",
+        "nl": "Blue Falcon"
+      },
+      {
+        "id": "body.tanooki_kart",
+        "en": "Tanooki Kart",
+        "nl": "Turbo-Tanuki"
+      },
+      {
+        "id": "body.b_dasher",
+        "en": "B Dasher",
+        "nl": "Sprinter"
+      },
+      {
+        "id": "body.streetle",
+        "en": "Streetle",
+        "nl": "Sjeesbeestje"
+      },
+      {
+        "id": "body.p_wing",
+        "en": "P-Wing",
+        "nl": "Vleugelflitser"
+      },
+      {
+        "id": "body.koopa_clown",
+        "en": "Koopa Clown",
+        "nl": "Koopa-clown"
+      },
+      {
+        "id": "body.standard_bike",
+        "en": "Standard Bike",
+        "nl": "Standaardmotor"
+      },
+      {
+        "id": "body.comet",
+        "en": "Comet",
+        "nl": "Megamoto Pro"
+      },
+      {
+        "id": "body.sport_bike",
+        "en": "Sport Bike",
+        "nl": "Circuitsrijder"
+      },
+      {
+        "id": "body.the_duke",
+        "en": "The Duke",
+        "nl": "Ultrascooter"
+      },
+      {
+        "id": "body.flame_rider",
+        "en": "Flame Rider",
+        "nl": "Turbochopper"
+      },
+      {
+        "id": "body.varmint",
+        "en": "Varmint",
+        "nl": "Offroadracer"
+      },
+      {
+        "id": "body.mr_scooty",
+        "en": "Mr. Scooty",
+        "nl": "Dreumes"
+      },
+      {
+        "id": "body.jet_bike",
+        "en": "Jet Bike",
+        "nl": "Straatjager"
+      },
+      {
+        "id": "body.yoshi_bike",
+        "en": "Yoshi Bike",
+        "nl": "Yoshi-crosser"
+      },
+      {
+        "id": "body.master_cycle",
+        "en": "Master Cycle",
+        "nl": "Triforcer"
+      },
+      {
+        "id": "body.master_cycle_zero",
+        "en": "Master Cycle Zero",
+        "nl": "Triforcer Zero"
+      },
+      {
+        "id": "body.city_tripper",
+        "en": "City Tripper",
+        "nl": "Stadscooter"
+      },
+      {
+        "id": "body.standard_quad",
+        "en": "Standard ATV",
+        "nl": "Standaardquad"
+      },
+      {
+        "id": "body.wild_wiggler",
+        "en": "Wild Wiggler",
+        "nl": "Wiggler-quad"
+      },
+      {
+        "id": "body.teddy_buggy",
+        "en": "Teddy Buggy",
+        "nl": "Knuffelquad"
+      },
+      {
+        "id": "body.bone_rattler",
+        "en": "Bone Rattler",
+        "nl": "Dry-Wieler"
+      },
+      {
+        "id": "body.splat_buggy",
+        "en": "Splat Buggy",
+        "nl": "Kladderquad"
+      },
+      {
+        "id": "body.inkstriker",
+        "en": "Inkstriker",
+        "nl": "Tornado"
+      }
+    ],
+    "tires": [
+      {
+        "id": "tire.normal",
+        "en": "Standard",
+        "nl": "Standaard"
+      },
+      {
+        "id": "tire.monster",
+        "en": "Monster",
+        "nl": "Monster"
+      },
+      {
+        "id": "tire.roller",
+        "en": "Roller",
+        "nl": "Mini"
+      },
+      {
+        "id": "tire.slim",
+        "en": "Slim",
+        "nl": "Klassiek"
+      },
+      {
+        "id": "tire.slick",
+        "en": "Slick",
+        "nl": "Glad"
+      },
+      {
+        "id": "tire.metal",
+        "en": "Metal",
+        "nl": "Metaal"
+      },
+      {
+        "id": "tire.button",
+        "en": "Button",
+        "nl": "Knopen"
+      },
+      {
+        "id": "tire.off_road",
+        "en": "Off-Road",
+        "nl": "Offroad"
+      },
+      {
+        "id": "tire.sponge",
+        "en": "Sponge",
+        "nl": "Sponzen"
+      },
+      {
+        "id": "tire.wooden",
+        "en": "Wood",
+        "nl": "Hout"
+      },
+      {
+        "id": "tire.cushion",
+        "en": "Cushion",
+        "nl": "Poefen"
+      },
+      {
+        "id": "tire.normal_blue",
+        "en": "Blue Standard",
+        "nl": "Standaard (blauw)"
+      },
+      {
+        "id": "tire.funky_monster",
+        "en": "Hot Monster",
+        "nl": "Monster (funky)"
+      },
+      {
+        "id": "tire.azure_roller",
+        "en": "Azure Roller",
+        "nl": "Mini (lichtblauw)"
+      },
+      {
+        "id": "tire.crimson_slim",
+        "en": "Crimson Slim",
+        "nl": "Klassiek (rood)"
+      },
+      {
+        "id": "tire.cyber_slick",
+        "en": "Cyber Slick",
+        "nl": "Glad (paars)"
+      },
+      {
+        "id": "tire.retro_off_road",
+        "en": "Retro Off-Road",
+        "nl": "Offroad (retro)"
+      },
+      {
+        "id": "tire.gold_wheels",
+        "en": "Gold Tires",
+        "nl": "Gouden wielen"
+      },
+      {
+        "id": "tire.gla_wheels",
+        "en": "GLA Tires",
+        "nl": "GLA-wielen"
+      },
+      {
+        "id": "tire.triforce_tyres",
+        "en": "Triforce Tires",
+        "nl": "Triforce"
+      },
+      {
+        "id": "tire.ancient_tyres",
+        "en": "Ancient Tires",
+        "nl": "Geavanceerd"
+      },
+      {
+        "id": "tire.leaf_tyres",
+        "en": "Leaf Tires",
+        "nl": "Crossing"
+      }
+    ],
+    "gliders": [
+      {
+        "id": "glider.super_glider",
+        "en": "Super Glider",
+        "nl": "Standaard"
+      },
+      {
+        "id": "glider.cloud_glider",
+        "en": "Cloud Glider",
+        "nl": "Wolkballonnen"
+      },
+      {
+        "id": "glider.wario_wing",
+        "en": "Wario Wing",
+        "nl": "Wario-vlieger"
+      },
+      {
+        "id": "glider.waddle_wing",
+        "en": "Waddle Wing",
+        "nl": "Waddlewing"
+      },
+      {
+        "id": "glider.peach_parasol",
+        "en": "Peach Parasol",
+        "nl": "Peach’ Parasol"
+      },
+      {
+        "id": "glider.parachute",
+        "en": "Parachute",
+        "nl": "Parachute"
+      },
+      {
+        "id": "glider.parafoil",
+        "en": "Parafoil",
+        "nl": "Glijscherm"
+      },
+      {
+        "id": "glider.flower_glider",
+        "en": "Flower Glider",
+        "nl": "Bloem"
+      },
+      {
+        "id": "glider.bowser_kite",
+        "en": "Bowser Kite",
+        "nl": "Bowser-vlieger"
+      },
+      {
+        "id": "glider.plane_glider",
+        "en": "Plane Glider",
+        "nl": "Zweefvliegtuig"
+      },
+      {
+        "id": "glider.mktv_parafoil",
+        "en": "MKTV Parafoil",
+        "nl": "MKTV-glijscherm"
+      },
+      {
+        "id": "glider.gold_glider",
+        "en": "Gold Glider",
+        "nl": "Gouden vleugel"
+      },
+      {
+        "id": "glider.hylian_kite",
+        "en": "Hylian Kite",
+        "nl": "Hyliaanse vlieger"
+      },
+      {
+        "id": "glider.paraglider",
+        "en": "Paraglider",
+        "nl": "Zweefzeil"
+      },
+      {
+        "id": "glider.paper_glider",
+        "en": "Paper Glider",
+        "nl": "Papieren vliegtuig"
+      }
+    ],
+    "countries": [
+      {
+        "id": "country.af",
+        "en": "Afghanistan",
+        "nl": "Afghanistan"
+      },
+      {
+        "id": "country.al",
+        "en": "Albania",
+        "nl": "Albanië"
+      },
+      {
+        "id": "country.dz",
+        "en": "Algeria",
+        "nl": "Algerije"
+      },
+      {
+        "id": "country.as",
+        "en": "American Samoa",
+        "nl": "Amerikaans-Samoa"
+      },
+      {
+        "id": "country.ad",
+        "en": "Andorra",
+        "nl": "Andorra"
+      },
+      {
+        "id": "country.ao",
+        "en": "Angola",
+        "nl": "Angola"
+      },
+      {
+        "id": "country.ai",
+        "en": "Anguilla",
+        "nl": "Anguilla"
+      },
+      {
+        "id": "country.aq",
+        "en": "Antarctica",
+        "nl": "Antarctica"
+      },
+      {
+        "id": "country.ag",
+        "en": "Antigua & Barbuda",
+        "nl": "Antigua en Barbuda"
+      },
+      {
+        "id": "country.ar",
+        "en": "Argentina",
+        "nl": "Argentinië"
+      },
+      {
+        "id": "country.am",
+        "en": "Armenia",
+        "nl": "Armenië"
+      },
+      {
+        "id": "country.aw",
+        "en": "Aruba",
+        "nl": "Aruba"
+      },
+      {
+        "id": "country.au",
+        "en": "Australia",
+        "nl": "Australië"
+      },
+      {
+        "id": "country.at",
+        "en": "Austria",
+        "nl": "Oostenrijk"
+      },
+      {
+        "id": "country.az",
+        "en": "Azerbaijan",
+        "nl": "Azerbeidzjan"
+      },
+      {
+        "id": "country.bs",
+        "en": "Bahamas",
+        "nl": "Bahama’s"
+      },
+      {
+        "id": "country.bh",
+        "en": "Bahrain",
+        "nl": "Bahrein"
+      },
+      {
+        "id": "country.bd",
+        "en": "Bangladesh",
+        "nl": "Bangladesh"
+      },
+      {
+        "id": "country.bb",
+        "en": "Barbados",
+        "nl": "Barbados"
+      },
+      {
+        "id": "country.by",
+        "en": "Belarus",
+        "nl": "Belarus"
+      },
+      {
+        "id": "country.be",
+        "en": "Belgium",
+        "nl": "België"
+      },
+      {
+        "id": "country.bz",
+        "en": "Belize",
+        "nl": "Belize"
+      },
+      {
+        "id": "country.bj",
+        "en": "Benin",
+        "nl": "Benin"
+      },
+      {
+        "id": "country.bm",
+        "en": "Bermuda",
+        "nl": "Bermuda"
+      },
+      {
+        "id": "country.bt",
+        "en": "Bhutan",
+        "nl": "Bhutan"
+      },
+      {
+        "id": "country.bo",
+        "en": "Bolivia",
+        "nl": "Bolivia"
+      },
+      {
+        "id": "country.bq",
+        "en": "Caribbean Netherlands",
+        "nl": "Caribisch Nederland"
+      },
+      {
+        "id": "country.ba",
+        "en": "Bosnia & Herzegovina",
+        "nl": "Bosnië en Herzegovina"
+      },
+      {
+        "id": "country.bw",
+        "en": "Botswana",
+        "nl": "Botswana"
+      },
+      {
+        "id": "country.bv",
+        "en": "Bouvet Island",
+        "nl": "Bouveteiland"
+      },
+      {
+        "id": "country.br",
+        "en": "Brazil",
+        "nl": "Brazilië"
+      },
+      {
+        "id": "country.io",
+        "en": "British Indian Ocean Territory",
+        "nl": "Brits Indische Oceaanterritorium"
+      },
+      {
+        "id": "country.bn",
+        "en": "Brunei",
+        "nl": "Brunei"
+      },
+      {
+        "id": "country.bg",
+        "en": "Bulgaria",
+        "nl": "Bulgarije"
+      },
+      {
+        "id": "country.bf",
+        "en": "Burkina Faso",
+        "nl": "Burkina Faso"
+      },
+      {
+        "id": "country.bi",
+        "en": "Burundi",
+        "nl": "Burundi"
+      },
+      {
+        "id": "country.cv",
+        "en": "Cape Verde",
+        "nl": "Kaapverdië"
+      },
+      {
+        "id": "country.kh",
+        "en": "Cambodia",
+        "nl": "Cambodja"
+      },
+      {
+        "id": "country.cm",
+        "en": "Cameroon",
+        "nl": "Kameroen"
+      },
+      {
+        "id": "country.ca",
+        "en": "Canada",
+        "nl": "Canada"
+      },
+      {
+        "id": "country.ky",
+        "en": "Cayman Islands",
+        "nl": "Kaaimaneilanden"
+      },
+      {
+        "id": "country.cf",
+        "en": "Central African Republic",
+        "nl": "Centraal-Afrikaanse Republiek"
+      },
+      {
+        "id": "country.td",
+        "en": "Chad",
+        "nl": "Tsjaad"
+      },
+      {
+        "id": "country.cl",
+        "en": "Chile",
+        "nl": "Chili"
+      },
+      {
+        "id": "country.cn",
+        "en": "China",
+        "nl": "China"
+      },
+      {
+        "id": "country.cx",
+        "en": "Christmas Island",
+        "nl": "Christmaseiland"
+      },
+      {
+        "id": "country.cc",
+        "en": "Cocos (Keeling) Islands",
+        "nl": "Cocoseilanden"
+      },
+      {
+        "id": "country.co",
+        "en": "Colombia",
+        "nl": "Colombia"
+      },
+      {
+        "id": "country.km",
+        "en": "Comoros",
+        "nl": "Comoren"
+      },
+      {
+        "id": "country.cg",
+        "en": "Congo - Brazzaville",
+        "nl": "Congo-Brazzaville"
+      },
+      {
+        "id": "country.cd",
+        "en": "Congo - Kinshasa",
+        "nl": "Congo-Kinshasa"
+      },
+      {
+        "id": "country.ck",
+        "en": "Cook Islands",
+        "nl": "Cookeilanden"
+      },
+      {
+        "id": "country.cr",
+        "en": "Costa Rica",
+        "nl": "Costa Rica"
+      },
+      {
+        "id": "country.hr",
+        "en": "Croatia",
+        "nl": "Kroatië"
+      },
+      {
+        "id": "country.cu",
+        "en": "Cuba",
+        "nl": "Cuba"
+      },
+      {
+        "id": "country.cw",
+        "en": "Curaçao",
+        "nl": "Curaçao"
+      },
+      {
+        "id": "country.cy",
+        "en": "Cyprus",
+        "nl": "Cyprus"
+      },
+      {
+        "id": "country.cz",
+        "en": "Czechia",
+        "nl": "Tsjechië"
+      },
+      {
+        "id": "country.ci",
+        "en": "Côte d’Ivoire",
+        "nl": "Ivoorkust"
+      },
+      {
+        "id": "country.dk",
+        "en": "Denmark",
+        "nl": "Denemarken"
+      },
+      {
+        "id": "country.dj",
+        "en": "Djibouti",
+        "nl": "Djibouti"
+      },
+      {
+        "id": "country.dm",
+        "en": "Dominica",
+        "nl": "Dominica"
+      },
+      {
+        "id": "country.do",
+        "en": "Dominican Republic",
+        "nl": "Dominicaanse Republiek"
+      },
+      {
+        "id": "country.ec",
+        "en": "Ecuador",
+        "nl": "Ecuador"
+      },
+      {
+        "id": "country.eg",
+        "en": "Egypt",
+        "nl": "Egypte"
+      },
+      {
+        "id": "country.sv",
+        "en": "El Salvador",
+        "nl": "El Salvador"
+      },
+      {
+        "id": "country.gq",
+        "en": "Equatorial Guinea",
+        "nl": "Equatoriaal-Guinea"
+      },
+      {
+        "id": "country.er",
+        "en": "Eritrea",
+        "nl": "Eritrea"
+      },
+      {
+        "id": "country.ee",
+        "en": "Estonia",
+        "nl": "Estland"
+      },
+      {
+        "id": "country.sz",
+        "en": "Eswatini",
+        "nl": "Eswatini"
+      },
+      {
+        "id": "country.et",
+        "en": "Ethiopia",
+        "nl": "Ethiopië"
+      },
+      {
+        "id": "country.fk",
+        "en": "Falkland Islands",
+        "nl": "Falklandeilanden"
+      },
+      {
+        "id": "country.fo",
+        "en": "Faroe Islands",
+        "nl": "Faeröer"
+      },
+      {
+        "id": "country.fj",
+        "en": "Fiji",
+        "nl": "Fiji"
+      },
+      {
+        "id": "country.fi",
+        "en": "Finland",
+        "nl": "Finland"
+      },
+      {
+        "id": "country.fr",
+        "en": "France",
+        "nl": "Frankrijk"
+      },
+      {
+        "id": "country.gf",
+        "en": "French Guiana",
+        "nl": "Frans-Guyana"
+      },
+      {
+        "id": "country.pf",
+        "en": "French Polynesia",
+        "nl": "Frans-Polynesië"
+      },
+      {
+        "id": "country.tf",
+        "en": "French Southern Territories",
+        "nl": "Franse Gebieden in de zuidelijke Indische Oceaan"
+      },
+      {
+        "id": "country.ga",
+        "en": "Gabon",
+        "nl": "Gabon"
+      },
+      {
+        "id": "country.gm",
+        "en": "Gambia",
+        "nl": "Gambia"
+      },
+      {
+        "id": "country.ge",
+        "en": "Georgia",
+        "nl": "Georgië"
+      },
+      {
+        "id": "country.de",
+        "en": "Germany",
+        "nl": "Duitsland"
+      },
+      {
+        "id": "country.gh",
+        "en": "Ghana",
+        "nl": "Ghana"
+      },
+      {
+        "id": "country.gi",
+        "en": "Gibraltar",
+        "nl": "Gibraltar"
+      },
+      {
+        "id": "country.gr",
+        "en": "Greece",
+        "nl": "Griekenland"
+      },
+      {
+        "id": "country.gl",
+        "en": "Greenland",
+        "nl": "Groenland"
+      },
+      {
+        "id": "country.gd",
+        "en": "Grenada",
+        "nl": "Grenada"
+      },
+      {
+        "id": "country.gp",
+        "en": "Guadeloupe",
+        "nl": "Guadeloupe"
+      },
+      {
+        "id": "country.gu",
+        "en": "Guam",
+        "nl": "Guam"
+      },
+      {
+        "id": "country.gt",
+        "en": "Guatemala",
+        "nl": "Guatemala"
+      },
+      {
+        "id": "country.gg",
+        "en": "Guernsey",
+        "nl": "Guernsey"
+      },
+      {
+        "id": "country.gn",
+        "en": "Guinea",
+        "nl": "Guinee"
+      },
+      {
+        "id": "country.gw",
+        "en": "Guinea-Bissau",
+        "nl": "Guinee-Bissau"
+      },
+      {
+        "id": "country.gy",
+        "en": "Guyana",
+        "nl": "Guyana"
+      },
+      {
+        "id": "country.ht",
+        "en": "Haiti",
+        "nl": "Haïti"
+      },
+      {
+        "id": "country.hm",
+        "en": "Heard & McDonald Islands",
+        "nl": "Heard en McDonaldeilanden"
+      },
+      {
+        "id": "country.va",
+        "en": "Vatican City",
+        "nl": "Vaticaanstad"
+      },
+      {
+        "id": "country.hn",
+        "en": "Honduras",
+        "nl": "Honduras"
+      },
+      {
+        "id": "country.hk",
+        "en": "Hong Kong SAR China",
+        "nl": "Hongkong SAR van China"
+      },
+      {
+        "id": "country.hu",
+        "en": "Hungary",
+        "nl": "Hongarije"
+      },
+      {
+        "id": "country.is",
+        "en": "Iceland",
+        "nl": "IJsland"
+      },
+      {
+        "id": "country.in",
+        "en": "India",
+        "nl": "India"
+      },
+      {
+        "id": "country.id",
+        "en": "Indonesia",
+        "nl": "Indonesië"
+      },
+      {
+        "id": "country.ir",
+        "en": "Iran",
+        "nl": "Iran"
+      },
+      {
+        "id": "country.iq",
+        "en": "Iraq",
+        "nl": "Irak"
+      },
+      {
+        "id": "country.ie",
+        "en": "Ireland",
+        "nl": "Ierland"
+      },
+      {
+        "id": "country.im",
+        "en": "Isle of Man",
+        "nl": "Isle of Man"
+      },
+      {
+        "id": "country.il",
+        "en": "Israel",
+        "nl": "Israël"
+      },
+      {
+        "id": "country.it",
+        "en": "Italy",
+        "nl": "Italië"
+      },
+      {
+        "id": "country.jm",
+        "en": "Jamaica",
+        "nl": "Jamaica"
+      },
+      {
+        "id": "country.jp",
+        "en": "Japan",
+        "nl": "Japan"
+      },
+      {
+        "id": "country.je",
+        "en": "Jersey",
+        "nl": "Jersey"
+      },
+      {
+        "id": "country.jo",
+        "en": "Jordan",
+        "nl": "Jordanië"
+      },
+      {
+        "id": "country.kz",
+        "en": "Kazakhstan",
+        "nl": "Kazachstan"
+      },
+      {
+        "id": "country.ke",
+        "en": "Kenya",
+        "nl": "Kenia"
+      },
+      {
+        "id": "country.ki",
+        "en": "Kiribati",
+        "nl": "Kiribati"
+      },
+      {
+        "id": "country.kp",
+        "en": "North Korea",
+        "nl": "Noord-Korea"
+      },
+      {
+        "id": "country.kr",
+        "en": "South Korea",
+        "nl": "Zuid-Korea"
+      },
+      {
+        "id": "country.kw",
+        "en": "Kuwait",
+        "nl": "Koeweit"
+      },
+      {
+        "id": "country.kg",
+        "en": "Kyrgyzstan",
+        "nl": "Kirgizië"
+      },
+      {
+        "id": "country.la",
+        "en": "Laos",
+        "nl": "Laos"
+      },
+      {
+        "id": "country.lv",
+        "en": "Latvia",
+        "nl": "Letland"
+      },
+      {
+        "id": "country.lb",
+        "en": "Lebanon",
+        "nl": "Libanon"
+      },
+      {
+        "id": "country.ls",
+        "en": "Lesotho",
+        "nl": "Lesotho"
+      },
+      {
+        "id": "country.lr",
+        "en": "Liberia",
+        "nl": "Liberia"
+      },
+      {
+        "id": "country.ly",
+        "en": "Libya",
+        "nl": "Libië"
+      },
+      {
+        "id": "country.li",
+        "en": "Liechtenstein",
+        "nl": "Liechtenstein"
+      },
+      {
+        "id": "country.lt",
+        "en": "Lithuania",
+        "nl": "Litouwen"
+      },
+      {
+        "id": "country.lu",
+        "en": "Luxembourg",
+        "nl": "Luxemburg"
+      },
+      {
+        "id": "country.mo",
+        "en": "Macao SAR China",
+        "nl": "Macau SAR van China"
+      },
+      {
+        "id": "country.mg",
+        "en": "Madagascar",
+        "nl": "Madagaskar"
+      },
+      {
+        "id": "country.mw",
+        "en": "Malawi",
+        "nl": "Malawi"
+      },
+      {
+        "id": "country.my",
+        "en": "Malaysia",
+        "nl": "Maleisië"
+      },
+      {
+        "id": "country.mv",
+        "en": "Maldives",
+        "nl": "Maldiven"
+      },
+      {
+        "id": "country.ml",
+        "en": "Mali",
+        "nl": "Mali"
+      },
+      {
+        "id": "country.mt",
+        "en": "Malta",
+        "nl": "Malta"
+      },
+      {
+        "id": "country.mh",
+        "en": "Marshall Islands",
+        "nl": "Marshalleilanden"
+      },
+      {
+        "id": "country.mq",
+        "en": "Martinique",
+        "nl": "Martinique"
+      },
+      {
+        "id": "country.mr",
+        "en": "Mauritania",
+        "nl": "Mauritanië"
+      },
+      {
+        "id": "country.mu",
+        "en": "Mauritius",
+        "nl": "Mauritius"
+      },
+      {
+        "id": "country.yt",
+        "en": "Mayotte",
+        "nl": "Mayotte"
+      },
+      {
+        "id": "country.mx",
+        "en": "Mexico",
+        "nl": "Mexico"
+      },
+      {
+        "id": "country.fm",
+        "en": "Micronesia",
+        "nl": "Micronesia"
+      },
+      {
+        "id": "country.md",
+        "en": "Moldova",
+        "nl": "Moldavië"
+      },
+      {
+        "id": "country.mc",
+        "en": "Monaco",
+        "nl": "Monaco"
+      },
+      {
+        "id": "country.mn",
+        "en": "Mongolia",
+        "nl": "Mongolië"
+      },
+      {
+        "id": "country.me",
+        "en": "Montenegro",
+        "nl": "Montenegro"
+      },
+      {
+        "id": "country.ms",
+        "en": "Montserrat",
+        "nl": "Montserrat"
+      },
+      {
+        "id": "country.ma",
+        "en": "Morocco",
+        "nl": "Marokko"
+      },
+      {
+        "id": "country.mz",
+        "en": "Mozambique",
+        "nl": "Mozambique"
+      },
+      {
+        "id": "country.mm",
+        "en": "Myanmar (Burma)",
+        "nl": "Myanmar (Birma)"
+      },
+      {
+        "id": "country.na",
+        "en": "Namibia",
+        "nl": "Namibië"
+      },
+      {
+        "id": "country.nr",
+        "en": "Nauru",
+        "nl": "Nauru"
+      },
+      {
+        "id": "country.np",
+        "en": "Nepal",
+        "nl": "Nepal"
+      },
+      {
+        "id": "country.nl",
+        "en": "Netherlands",
+        "nl": "Nederland"
+      },
+      {
+        "id": "country.nc",
+        "en": "New Caledonia",
+        "nl": "Nieuw-Caledonië"
+      },
+      {
+        "id": "country.nz",
+        "en": "New Zealand",
+        "nl": "Nieuw-Zeeland"
+      },
+      {
+        "id": "country.ni",
+        "en": "Nicaragua",
+        "nl": "Nicaragua"
+      },
+      {
+        "id": "country.ne",
+        "en": "Niger",
+        "nl": "Niger"
+      },
+      {
+        "id": "country.ng",
+        "en": "Nigeria",
+        "nl": "Nigeria"
+      },
+      {
+        "id": "country.nu",
+        "en": "Niue",
+        "nl": "Niue"
+      },
+      {
+        "id": "country.nf",
+        "en": "Norfolk Island",
+        "nl": "Norfolk"
+      },
+      {
+        "id": "country.mk",
+        "en": "North Macedonia",
+        "nl": "Noord-Macedonië"
+      },
+      {
+        "id": "country.mp",
+        "en": "Northern Mariana Islands",
+        "nl": "Noordelijke Marianen"
+      },
+      {
+        "id": "country.no",
+        "en": "Norway",
+        "nl": "Noorwegen"
+      },
+      {
+        "id": "country.om",
+        "en": "Oman",
+        "nl": "Oman"
+      },
+      {
+        "id": "country.pk",
+        "en": "Pakistan",
+        "nl": "Pakistan"
+      },
+      {
+        "id": "country.pw",
+        "en": "Palau",
+        "nl": "Palau"
+      },
+      {
+        "id": "country.ps",
+        "en": "Palestinian Territories",
+        "nl": "Palestijnse gebieden"
+      },
+      {
+        "id": "country.pa",
+        "en": "Panama",
+        "nl": "Panama"
+      },
+      {
+        "id": "country.pg",
+        "en": "Papua New Guinea",
+        "nl": "Papoea-Nieuw-Guinea"
+      },
+      {
+        "id": "country.py",
+        "en": "Paraguay",
+        "nl": "Paraguay"
+      },
+      {
+        "id": "country.pe",
+        "en": "Peru",
+        "nl": "Peru"
+      },
+      {
+        "id": "country.ph",
+        "en": "Philippines",
+        "nl": "Filipijnen"
+      },
+      {
+        "id": "country.pn",
+        "en": "Pitcairn Islands",
+        "nl": "Pitcairneilanden"
+      },
+      {
+        "id": "country.pl",
+        "en": "Poland",
+        "nl": "Polen"
+      },
+      {
+        "id": "country.pt",
+        "en": "Portugal",
+        "nl": "Portugal"
+      },
+      {
+        "id": "country.pr",
+        "en": "Puerto Rico",
+        "nl": "Puerto Rico"
+      },
+      {
+        "id": "country.qa",
+        "en": "Qatar",
+        "nl": "Qatar"
+      },
+      {
+        "id": "country.ro",
+        "en": "Romania",
+        "nl": "Roemenië"
+      },
+      {
+        "id": "country.ru",
+        "en": "Russia",
+        "nl": "Rusland"
+      },
+      {
+        "id": "country.rw",
+        "en": "Rwanda",
+        "nl": "Rwanda"
+      },
+      {
+        "id": "country.re",
+        "en": "Réunion",
+        "nl": "Réunion"
+      },
+      {
+        "id": "country.bl",
+        "en": "St. Barthélemy",
+        "nl": "Saint-Barthélemy"
+      },
+      {
+        "id": "country.sh",
+        "en": "St. Helena",
+        "nl": "Sint-Helena"
+      },
+      {
+        "id": "country.kn",
+        "en": "St. Kitts & Nevis",
+        "nl": "Saint Kitts en Nevis"
+      },
+      {
+        "id": "country.lc",
+        "en": "St. Lucia",
+        "nl": "Saint Lucia"
+      },
+      {
+        "id": "country.mf",
+        "en": "St. Martin",
+        "nl": "Saint-Martin"
+      },
+      {
+        "id": "country.pm",
+        "en": "St. Pierre & Miquelon",
+        "nl": "Saint-Pierre en Miquelon"
+      },
+      {
+        "id": "country.vc",
+        "en": "St. Vincent & Grenadines",
+        "nl": "Saint Vincent en de Grenadines"
+      },
+      {
+        "id": "country.ws",
+        "en": "Samoa",
+        "nl": "Samoa"
+      },
+      {
+        "id": "country.sm",
+        "en": "San Marino",
+        "nl": "San Marino"
+      },
+      {
+        "id": "country.st",
+        "en": "São Tomé & Príncipe",
+        "nl": "Sao Tomé en Principe"
+      },
+      {
+        "id": "country.sa",
+        "en": "Saudi Arabia",
+        "nl": "Saoedi-Arabië"
+      },
+      {
+        "id": "country.sn",
+        "en": "Senegal",
+        "nl": "Senegal"
+      },
+      {
+        "id": "country.rs",
+        "en": "Serbia",
+        "nl": "Servië"
+      },
+      {
+        "id": "country.sc",
+        "en": "Seychelles",
+        "nl": "Seychellen"
+      },
+      {
+        "id": "country.sl",
+        "en": "Sierra Leone",
+        "nl": "Sierra Leone"
+      },
+      {
+        "id": "country.sg",
+        "en": "Singapore",
+        "nl": "Singapore"
+      },
+      {
+        "id": "country.sx",
+        "en": "Sint Maarten",
+        "nl": "Sint-Maarten"
+      },
+      {
+        "id": "country.sk",
+        "en": "Slovakia",
+        "nl": "Slowakije"
+      },
+      {
+        "id": "country.si",
+        "en": "Slovenia",
+        "nl": "Slovenië"
+      },
+      {
+        "id": "country.sb",
+        "en": "Solomon Islands",
+        "nl": "Salomonseilanden"
+      },
+      {
+        "id": "country.so",
+        "en": "Somalia",
+        "nl": "Somalië"
+      },
+      {
+        "id": "country.za",
+        "en": "South Africa",
+        "nl": "Zuid-Afrika"
+      },
+      {
+        "id": "country.gs",
+        "en": "South Georgia & South Sandwich Islands",
+        "nl": "Zuid-Georgia en Zuidelijke Sandwicheilanden"
+      },
+      {
+        "id": "country.ss",
+        "en": "South Sudan",
+        "nl": "Zuid-Soedan"
+      },
+      {
+        "id": "country.es",
+        "en": "Spain",
+        "nl": "Spanje"
+      },
+      {
+        "id": "country.lk",
+        "en": "Sri Lanka",
+        "nl": "Sri Lanka"
+      },
+      {
+        "id": "country.sd",
+        "en": "Sudan",
+        "nl": "Soedan"
+      },
+      {
+        "id": "country.sr",
+        "en": "Suriname",
+        "nl": "Suriname"
+      },
+      {
+        "id": "country.sj",
+        "en": "Svalbard & Jan Mayen",
+        "nl": "Spitsbergen en Jan Mayen"
+      },
+      {
+        "id": "country.se",
+        "en": "Sweden",
+        "nl": "Zweden"
+      },
+      {
+        "id": "country.ch",
+        "en": "Switzerland",
+        "nl": "Zwitserland"
+      },
+      {
+        "id": "country.sy",
+        "en": "Syria",
+        "nl": "Syrië"
+      },
+      {
+        "id": "country.tw",
+        "en": "Taiwan",
+        "nl": "Taiwan"
+      },
+      {
+        "id": "country.tj",
+        "en": "Tajikistan",
+        "nl": "Tadzjikistan"
+      },
+      {
+        "id": "country.tz",
+        "en": "Tanzania",
+        "nl": "Tanzania"
+      },
+      {
+        "id": "country.th",
+        "en": "Thailand",
+        "nl": "Thailand"
+      },
+      {
+        "id": "country.tl",
+        "en": "Timor-Leste",
+        "nl": "Oost-Timor"
+      },
+      {
+        "id": "country.tg",
+        "en": "Togo",
+        "nl": "Togo"
+      },
+      {
+        "id": "country.tk",
+        "en": "Tokelau",
+        "nl": "Tokelau"
+      },
+      {
+        "id": "country.to",
+        "en": "Tonga",
+        "nl": "Tonga"
+      },
+      {
+        "id": "country.tt",
+        "en": "Trinidad & Tobago",
+        "nl": "Trinidad en Tobago"
+      },
+      {
+        "id": "country.tn",
+        "en": "Tunisia",
+        "nl": "Tunesië"
+      },
+      {
+        "id": "country.tr",
+        "en": "Türkiye",
+        "nl": "Turkije"
+      },
+      {
+        "id": "country.tm",
+        "en": "Turkmenistan",
+        "nl": "Turkmenistan"
+      },
+      {
+        "id": "country.tc",
+        "en": "Turks & Caicos Islands",
+        "nl": "Turks- en Caicoseilanden"
+      },
+      {
+        "id": "country.tv",
+        "en": "Tuvalu",
+        "nl": "Tuvalu"
+      },
+      {
+        "id": "country.ug",
+        "en": "Uganda",
+        "nl": "Oeganda"
+      },
+      {
+        "id": "country.ua",
+        "en": "Ukraine",
+        "nl": "Oekraïne"
+      },
+      {
+        "id": "country.ae",
+        "en": "United Arab Emirates",
+        "nl": "Verenigde Arabische Emiraten"
+      },
+      {
+        "id": "country.gb",
+        "en": "United Kingdom",
+        "nl": "Verenigd Koninkrijk"
+      },
+      {
+        "id": "country.us",
+        "en": "United States",
+        "nl": "Verenigde Staten"
+      },
+      {
+        "id": "country.um",
+        "en": "U.S. Outlying Islands",
+        "nl": "Kleine afgelegen eilanden van de Verenigde Staten"
+      },
+      {
+        "id": "country.uy",
+        "en": "Uruguay",
+        "nl": "Uruguay"
+      },
+      {
+        "id": "country.uz",
+        "en": "Uzbekistan",
+        "nl": "Oezbekistan"
+      },
+      {
+        "id": "country.vu",
+        "en": "Vanuatu",
+        "nl": "Vanuatu"
+      },
+      {
+        "id": "country.ve",
+        "en": "Venezuela",
+        "nl": "Venezuela"
+      },
+      {
+        "id": "country.vn",
+        "en": "Vietnam",
+        "nl": "Vietnam"
+      },
+      {
+        "id": "country.vg",
+        "en": "British Virgin Islands",
+        "nl": "Britse Maagdeneilanden"
+      },
+      {
+        "id": "country.vi",
+        "en": "U.S. Virgin Islands",
+        "nl": "Amerikaanse Maagdeneilanden"
+      },
+      {
+        "id": "country.wf",
+        "en": "Wallis & Futuna",
+        "nl": "Wallis en Futuna"
+      },
+      {
+        "id": "country.eh",
+        "en": "Western Sahara",
+        "nl": "Westelijke Sahara"
+      },
+      {
+        "id": "country.ye",
+        "en": "Yemen",
+        "nl": "Jemen"
+      },
+      {
+        "id": "country.zm",
+        "en": "Zambia",
+        "nl": "Zambia"
+      },
+      {
+        "id": "country.zw",
+        "en": "Zimbabwe",
+        "nl": "Zimbabwe"
+      },
+      {
+        "id": "country.ax",
+        "en": "Åland Islands",
+        "nl": "Åland"
+      }
+    ]
+  },
+  "byId": {
+    "body.25_silver_arrow": "W 25 Zilverpijl",
+    "body.300_sl_roadster": "300 SL Roadster",
+    "body.b_dasher": "Sprinter",
+    "body.badwagon": "Blingbolide",
+    "body.blue_falcon": "Blue Falcon",
+    "body.bone_rattler": "Dry-Wieler",
+    "body.bounder": "Koploper",
+    "body.buggybud": "Biddybuggy",
+    "body.cat_cruiser": "Miauwto",
+    "body.circuit_special": "Sprinter 2.0",
+    "body.city_tripper": "Stadscooter",
+    "body.comet": "Megamoto Pro",
+    "body.flame_rider": "Turbochopper",
+    "body.gla": "GLA",
+    "body.gold_kart": "Gouden kart",
+    "body.inkstriker": "Tornado",
+    "body.jet_bike": "Straatjager",
+    "body.koopa_clown": "Koopa-clown",
+    "body.landship": "Flitsfregat",
+    "body.mach_8": "Mach 8",
+    "body.master_cycle": "Triforcer",
+    "body.master_cycle_zero": "Triforcer Zero",
+    "body.mr_scooty": "Dreumes",
+    "body.p_wing": "Vleugelflitser",
+    "body.pipe_frame": "Skelter",
+    "body.prancer": "Paradepaardje",
+    "body.splat_buggy": "Kladderquad",
+    "body.sport_bike": "Circuitsrijder",
+    "body.sports_coupe": "Topsporter",
+    "body.standard_bike": "Standaardmotor",
+    "body.standard_kart": "Standaardkart",
+    "body.standard_quad": "Standaardquad",
+    "body.steel_driver": "Diepzeeduikkar",
+    "body.streetle": "Sjeesbeestje",
+    "body.tanooki_kart": "Turbo-Tanuki",
+    "body.teddy_buggy": "Knuffelquad",
+    "body.the_duke": "Ultrascooter",
+    "body.tri_speeder": "Driebander",
+    "body.varmint": "Offroadracer",
+    "body.wild_wiggler": "Wiggler-quad",
+    "body.yoshi_bike": "Yoshi-crosser",
+    "character.baby_daisy": "Baby Daisy",
+    "character.baby_luigi": "Baby Luigi",
+    "character.baby_mario": "Baby Mario",
+    "character.baby_peach": "Baby Peach",
+    "character.baby_rosalina": "Baby Rosalina",
+    "character.birdo": "Birdo",
+    "character.bowser": "Bowser",
+    "character.bowser_jr": "Bowser Jr.",
+    "character.cat_peach": "Kat-Peach",
+    "character.champion_link": "Link",
+    "character.daisy": "Daisy",
+    "character.diddy_kong": "Diddy Kong",
+    "character.donkey_kong": "Donkey Kong",
+    "character.dry_bones": "Dry Bones",
+    "character.dry_bowser": "Dry Bowser",
+    "character.funky_kong": "Funky Kong",
+    "character.gold_mario": "Gouden Mario",
+    "character.iggy": "Iggy",
+    "character.inkling_boy": "Inkling-jongen",
+    "character.inkling_girl": "Inkling-meisje",
+    "character.isabelle": "Isabelle",
+    "character.kamek": "Kamek",
+    "character.king_boo": "King Boo",
+    "character.koopa_troopa": "Koopa Troopa",
+    "character.lakitu": "Lakitu",
+    "character.larry": "Larry",
+    "character.lemmy": "Lemmy",
+    "character.link": "Link",
+    "character.ludwig": "Ludwig",
+    "character.luigi": "Luigi",
+    "character.mario": "Mario",
+    "character.metal_mario": "Metalen Mario",
+    "character.mii_heavy": "Mii (Large)",
+    "character.mii_light": "Mii (Small)",
+    "character.mii_medium": "Mii (Medium)",
+    "character.morton": "Morton",
+    "character.pauline": "Pauline",
+    "character.peach": "Peach",
+    "character.peachette": "Peachette",
+    "character.petey_piranha": "Petey Piranha",
+    "character.pink_gold_peach": "Rozegouden Peach",
+    "character.rosalina": "Rosalina",
+    "character.roy": "Roy",
+    "character.shy_guy": "Shy Guy",
+    "character.tanooki_mario": "Tanuki-Mario",
+    "character.toad": "Toad",
+    "character.toadette": "Toadette",
+    "character.villager_female": "Dorpsbewoner",
+    "character.villager_male": "Dorpsbewoner",
+    "character.waluigi": "Waluigi",
+    "character.wario": "Wario",
+    "character.wendy": "Wendy",
+    "character.wiggler": "Wiggler",
+    "character.yoshi": "Yoshi",
+    "country.ad": "Andorra",
+    "country.ae": "Verenigde Arabische Emiraten",
+    "country.af": "Afghanistan",
+    "country.ag": "Antigua en Barbuda",
+    "country.ai": "Anguilla",
+    "country.al": "Albanië",
+    "country.am": "Armenië",
+    "country.ao": "Angola",
+    "country.aq": "Antarctica",
+    "country.ar": "Argentinië",
+    "country.as": "Amerikaans-Samoa",
+    "country.at": "Oostenrijk",
+    "country.au": "Australië",
+    "country.aw": "Aruba",
+    "country.ax": "Åland",
+    "country.az": "Azerbeidzjan",
+    "country.ba": "Bosnië en Herzegovina",
+    "country.bb": "Barbados",
+    "country.bd": "Bangladesh",
+    "country.be": "België",
+    "country.bf": "Burkina Faso",
+    "country.bg": "Bulgarije",
+    "country.bh": "Bahrein",
+    "country.bi": "Burundi",
+    "country.bj": "Benin",
+    "country.bl": "Saint-Barthélemy",
+    "country.bm": "Bermuda",
+    "country.bn": "Brunei",
+    "country.bo": "Bolivia",
+    "country.bq": "Caribisch Nederland",
+    "country.br": "Brazilië",
+    "country.bs": "Bahama’s",
+    "country.bt": "Bhutan",
+    "country.bv": "Bouveteiland",
+    "country.bw": "Botswana",
+    "country.by": "Belarus",
+    "country.bz": "Belize",
+    "country.ca": "Canada",
+    "country.cc": "Cocoseilanden",
+    "country.cd": "Congo-Kinshasa",
+    "country.cf": "Centraal-Afrikaanse Republiek",
+    "country.cg": "Congo-Brazzaville",
+    "country.ch": "Zwitserland",
+    "country.ci": "Ivoorkust",
+    "country.ck": "Cookeilanden",
+    "country.cl": "Chili",
+    "country.cm": "Kameroen",
+    "country.cn": "China",
+    "country.co": "Colombia",
+    "country.cr": "Costa Rica",
+    "country.cu": "Cuba",
+    "country.cv": "Kaapverdië",
+    "country.cw": "Curaçao",
+    "country.cx": "Christmaseiland",
+    "country.cy": "Cyprus",
+    "country.cz": "Tsjechië",
+    "country.de": "Duitsland",
+    "country.dj": "Djibouti",
+    "country.dk": "Denemarken",
+    "country.dm": "Dominica",
+    "country.do": "Dominicaanse Republiek",
+    "country.dz": "Algerije",
+    "country.ec": "Ecuador",
+    "country.ee": "Estland",
+    "country.eg": "Egypte",
+    "country.eh": "Westelijke Sahara",
+    "country.er": "Eritrea",
+    "country.es": "Spanje",
+    "country.et": "Ethiopië",
+    "country.fi": "Finland",
+    "country.fj": "Fiji",
+    "country.fk": "Falklandeilanden",
+    "country.fm": "Micronesia",
+    "country.fo": "Faeröer",
+    "country.fr": "Frankrijk",
+    "country.ga": "Gabon",
+    "country.gb": "Verenigd Koninkrijk",
+    "country.gd": "Grenada",
+    "country.ge": "Georgië",
+    "country.gf": "Frans-Guyana",
+    "country.gg": "Guernsey",
+    "country.gh": "Ghana",
+    "country.gi": "Gibraltar",
+    "country.gl": "Groenland",
+    "country.gm": "Gambia",
+    "country.gn": "Guinee",
+    "country.gp": "Guadeloupe",
+    "country.gq": "Equatoriaal-Guinea",
+    "country.gr": "Griekenland",
+    "country.gs": "Zuid-Georgia en Zuidelijke Sandwicheilanden",
+    "country.gt": "Guatemala",
+    "country.gu": "Guam",
+    "country.gw": "Guinee-Bissau",
+    "country.gy": "Guyana",
+    "country.hk": "Hongkong SAR van China",
+    "country.hm": "Heard en McDonaldeilanden",
+    "country.hn": "Honduras",
+    "country.hr": "Kroatië",
+    "country.ht": "Haïti",
+    "country.hu": "Hongarije",
+    "country.id": "Indonesië",
+    "country.ie": "Ierland",
+    "country.il": "Israël",
+    "country.im": "Isle of Man",
+    "country.in": "India",
+    "country.io": "Brits Indische Oceaanterritorium",
+    "country.iq": "Irak",
+    "country.ir": "Iran",
+    "country.is": "IJsland",
+    "country.it": "Italië",
+    "country.je": "Jersey",
+    "country.jm": "Jamaica",
+    "country.jo": "Jordanië",
+    "country.jp": "Japan",
+    "country.ke": "Kenia",
+    "country.kg": "Kirgizië",
+    "country.kh": "Cambodja",
+    "country.ki": "Kiribati",
+    "country.km": "Comoren",
+    "country.kn": "Saint Kitts en Nevis",
+    "country.kp": "Noord-Korea",
+    "country.kr": "Zuid-Korea",
+    "country.kw": "Koeweit",
+    "country.ky": "Kaaimaneilanden",
+    "country.kz": "Kazachstan",
+    "country.la": "Laos",
+    "country.lb": "Libanon",
+    "country.lc": "Saint Lucia",
+    "country.li": "Liechtenstein",
+    "country.lk": "Sri Lanka",
+    "country.lr": "Liberia",
+    "country.ls": "Lesotho",
+    "country.lt": "Litouwen",
+    "country.lu": "Luxemburg",
+    "country.lv": "Letland",
+    "country.ly": "Libië",
+    "country.ma": "Marokko",
+    "country.mc": "Monaco",
+    "country.md": "Moldavië",
+    "country.me": "Montenegro",
+    "country.mf": "Saint-Martin",
+    "country.mg": "Madagaskar",
+    "country.mh": "Marshalleilanden",
+    "country.mk": "Noord-Macedonië",
+    "country.ml": "Mali",
+    "country.mm": "Myanmar (Birma)",
+    "country.mn": "Mongolië",
+    "country.mo": "Macau SAR van China",
+    "country.mp": "Noordelijke Marianen",
+    "country.mq": "Martinique",
+    "country.mr": "Mauritanië",
+    "country.ms": "Montserrat",
+    "country.mt": "Malta",
+    "country.mu": "Mauritius",
+    "country.mv": "Maldiven",
+    "country.mw": "Malawi",
+    "country.mx": "Mexico",
+    "country.my": "Maleisië",
+    "country.mz": "Mozambique",
+    "country.na": "Namibië",
+    "country.nc": "Nieuw-Caledonië",
+    "country.ne": "Niger",
+    "country.nf": "Norfolk",
+    "country.ng": "Nigeria",
+    "country.ni": "Nicaragua",
+    "country.nl": "Nederland",
+    "country.no": "Noorwegen",
+    "country.np": "Nepal",
+    "country.nr": "Nauru",
+    "country.nu": "Niue",
+    "country.nz": "Nieuw-Zeeland",
+    "country.om": "Oman",
+    "country.pa": "Panama",
+    "country.pe": "Peru",
+    "country.pf": "Frans-Polynesië",
+    "country.pg": "Papoea-Nieuw-Guinea",
+    "country.ph": "Filipijnen",
+    "country.pk": "Pakistan",
+    "country.pl": "Polen",
+    "country.pm": "Saint-Pierre en Miquelon",
+    "country.pn": "Pitcairneilanden",
+    "country.pr": "Puerto Rico",
+    "country.ps": "Palestijnse gebieden",
+    "country.pt": "Portugal",
+    "country.pw": "Palau",
+    "country.py": "Paraguay",
+    "country.qa": "Qatar",
+    "country.re": "Réunion",
+    "country.ro": "Roemenië",
+    "country.rs": "Servië",
+    "country.ru": "Rusland",
+    "country.rw": "Rwanda",
+    "country.sa": "Saoedi-Arabië",
+    "country.sb": "Salomonseilanden",
+    "country.sc": "Seychellen",
+    "country.sd": "Soedan",
+    "country.se": "Zweden",
+    "country.sg": "Singapore",
+    "country.sh": "Sint-Helena",
+    "country.si": "Slovenië",
+    "country.sj": "Spitsbergen en Jan Mayen",
+    "country.sk": "Slowakije",
+    "country.sl": "Sierra Leone",
+    "country.sm": "San Marino",
+    "country.sn": "Senegal",
+    "country.so": "Somalië",
+    "country.sr": "Suriname",
+    "country.ss": "Zuid-Soedan",
+    "country.st": "Sao Tomé en Principe",
+    "country.sv": "El Salvador",
+    "country.sx": "Sint-Maarten",
+    "country.sy": "Syrië",
+    "country.sz": "Eswatini",
+    "country.tc": "Turks- en Caicoseilanden",
+    "country.td": "Tsjaad",
+    "country.tf": "Franse Gebieden in de zuidelijke Indische Oceaan",
+    "country.tg": "Togo",
+    "country.th": "Thailand",
+    "country.tj": "Tadzjikistan",
+    "country.tk": "Tokelau",
+    "country.tl": "Oost-Timor",
+    "country.tm": "Turkmenistan",
+    "country.tn": "Tunesië",
+    "country.to": "Tonga",
+    "country.tr": "Turkije",
+    "country.tt": "Trinidad en Tobago",
+    "country.tv": "Tuvalu",
+    "country.tw": "Taiwan",
+    "country.tz": "Tanzania",
+    "country.ua": "Oekraïne",
+    "country.ug": "Oeganda",
+    "country.um": "Kleine afgelegen eilanden van de Verenigde Staten",
+    "country.us": "Verenigde Staten",
+    "country.uy": "Uruguay",
+    "country.uz": "Oezbekistan",
+    "country.va": "Vaticaanstad",
+    "country.vc": "Saint Vincent en de Grenadines",
+    "country.ve": "Venezuela",
+    "country.vg": "Britse Maagdeneilanden",
+    "country.vi": "Amerikaanse Maagdeneilanden",
+    "country.vn": "Vietnam",
+    "country.vu": "Vanuatu",
+    "country.wf": "Wallis en Futuna",
+    "country.ws": "Samoa",
+    "country.ye": "Jemen",
+    "country.yt": "Mayotte",
+    "country.za": "Zuid-Afrika",
+    "country.zm": "Zambia",
+    "country.zw": "Zimbabwe",
+    "cup.acorn_cup": "Eikenbeker",
+    "cup.banana_cup": "Bananenbeker",
+    "cup.bell_cup": "Superbelbeker",
+    "cup.boomerang_cup": "Boemerangbeker",
+    "cup.cherry_cup": "Kersenbeker",
+    "cup.crossing_cup": "Crossing-beker",
+    "cup.egg_cup": "Eierbeker",
+    "cup.feather_cup": "Veerbeker",
+    "cup.flower_cup": "Bloemenbeker",
+    "cup.fruit_cup": "Fruitbeker",
+    "cup.golden_dash_cup": "Goudensprintbeker",
+    "cup.leaf_cup": "Blaadjesbeker",
+    "cup.lightning_cup": "Bliksembeker",
+    "cup.lucky_cat_cup": "Gelukskatbeker",
+    "cup.moon_cup": "Maanbeker",
+    "cup.mushroom_cup": "Paddenstoelbeker",
+    "cup.propeller_cup": "Propellerbeker",
+    "cup.rock_cup": "Rotsbeker",
+    "cup.shell_cup": "Schildbeker",
+    "cup.special_cup": "Speciale beker",
+    "cup.spiny_cup": "Spiny-beker",
+    "cup.star_cup": "Sterrenbeker",
+    "cup.triforce_cup": "Triforce-beker",
+    "cup.turnip_cup": "Knollenbeker",
+    "glider.bowser_kite": "Bowser-vlieger",
+    "glider.cloud_glider": "Wolkballonnen",
+    "glider.flower_glider": "Bloem",
+    "glider.gold_glider": "Gouden vleugel",
+    "glider.hylian_kite": "Hyliaanse vlieger",
+    "glider.mktv_parafoil": "MKTV-glijscherm",
+    "glider.paper_glider": "Papieren vliegtuig",
+    "glider.parachute": "Parachute",
+    "glider.parafoil": "Glijscherm",
+    "glider.paraglider": "Zweefzeil",
+    "glider.peach_parasol": "Peach’ Parasol",
+    "glider.plane_glider": "Zweefvliegtuig",
+    "glider.super_glider": "Standaard",
+    "glider.waddle_wing": "Waddlewing",
+    "glider.wario_wing": "Wario-vlieger",
+    "tire.ancient_tyres": "Geavanceerd",
+    "tire.azure_roller": "Mini (lichtblauw)",
+    "tire.button": "Knopen",
+    "tire.crimson_slim": "Klassiek (rood)",
+    "tire.cushion": "Poefen",
+    "tire.cyber_slick": "Glad (paars)",
+    "tire.funky_monster": "Monster (funky)",
+    "tire.gla_wheels": "GLA-wielen",
+    "tire.gold_wheels": "Gouden wielen",
+    "tire.leaf_tyres": "Crossing",
+    "tire.metal": "Metaal",
+    "tire.monster": "Monster",
+    "tire.normal": "Standaard",
+    "tire.normal_blue": "Standaard (blauw)",
+    "tire.off_road": "Offroad",
+    "tire.retro_off_road": "Offroad (retro)",
+    "tire.roller": "Mini",
+    "tire.slick": "Glad",
+    "tire.slim": "Klassiek",
+    "tire.sponge": "Sponzen",
+    "tire.triforce_tyres": "Triforce",
+    "tire.wooden": "Hout",
+    "track.3ds_alpine_pass": "3DS Kampioensberg",
+    "track.3ds_dk_jungle": "3DS DK's Jungle",
+    "track.3ds_koopa_city": "3DS Bowser City",
+    "track.3ds_melody_motorway": "3DS Muziekcircuit",
+    "track.3ds_piranha_plant_pipeway": "3DS Piranha Plant-Parkoers",
+    "track.3ds_rainbow_road": "3DS Regenboogbaan",
+    "track.3ds_rosalinas_ice_world": "3DS Rosalina's Ijsplaneet",
+    "track.3ds_toad_circuit": "3DS Toads Circuit",
+    "track.animal_crossing": "Animal Crossing",
+    "track.big_blue": "Big Blue",
+    "track.bone_dry_dunes": "Dry Bowsers Woestijn",
+    "track.bowsers_castle": "Bowsers Kasteel",
+    "track.cloudtop_cruise": "Wildewolkenweg",
+    "track.dolphin_shoals": "Dolfijnenparadijs",
+    "track.dragon_driftway": "Drakendreef",
+    "track.ds_cheep_cheep_beach": "DS Cheep Cheep Strand",
+    "track.ds_mario_circuit": "DS Mario's Circuit",
+    "track.ds_peach_gardens": "DS Peach' Paleistuin",
+    "track.ds_shroom_ridge": "DS Paddenstoelenpas",
+    "track.ds_tick_tock_clock": "DS Tik-Tak-Klok",
+    "track.ds_waluigi_pinball": "DS Waluigi's Flipperkast",
+    "track.ds_wario_stadium": "DS Wario's Stadion",
+    "track.electrodrome": "Electrodome",
+    "track.excitebike_arena": "Excitebike-Arena",
+    "track.gba_boo_lake": "GBA Boo-Bruggen",
+    "track.gba_cheese_land": "GBA Kaasland",
+    "track.gba_mario_circuit": "GBA Mario's Circuit",
+    "track.gba_ribbon_road": "GBA Sprintlint",
+    "track.gba_riverside_park": "GBA Rivieroever",
+    "track.gba_sky_garden": "GBA Wolkenhof",
+    "track.gba_snow_land": "GBA Sneeuwland",
+    "track.gba_sunset_wilds": "GBA Schemersteppe",
+    "track.gcn_baby_park": "GCN Babypark",
+    "track.gcn_daisy_cruiser": "GCN Daisy's Cruiseschip",
+    "track.gcn_dk_mountain": "GCN DK-Gebergte",
+    "track.gcn_dry_dry_desert": "GCN Zinderende Zandvlakte",
+    "track.gcn_sherbet_land": "GCN Ijzige Ijsbaan",
+    "track.gcn_waluigi_stadium": "GCN Waluigi's Stadion",
+    "track.gcn_yoshi_circuit": "GCN Yoshi's Circuit",
+    "track.hyrule_circuit": "Hyrule-Circuit",
+    "track.ice_ice_outpost": "Toads Poolbasis",
+    "track.mario_circuit": "Mario's Circuit",
+    "track.mario_kart_stadium": "Mario Kart-Stadion",
+    "track.merry_mountain": "Dennenboomdorp",
+    "track.mount_wario": "Wario's Winterberg",
+    "track.mute_city": "Mute City",
+    "track.n64_choco_mountain": "N64 Chocokloof",
+    "track.n64_kalimari_desert": "N64 Wildwestwoestijn",
+    "track.n64_rainbow_road": "N64 Regenboogbaan",
+    "track.n64_royal_raceway": "N64 Koninklijke Kartbaan",
+    "track.n64_toads_turnpike": "N64 Toads Tolweg",
+    "track.n64_yoshi_valley": "N64 Yoshi's Vallei",
+    "track.ninja_hideaway": "Ninjaschool",
+    "track.piranha_plant_cove": "Piranha Plant-Lagune",
+    "track.rainbow_road": "Regenboogbaan",
+    "track.shy_guy_falls": "Shy Guys Kristalmijn",
+    "track.sky_high_sundae": "Stracciatellastraat",
+    "track.snes_bowser_castle_3": "SNES Bowsers Kasteel 3",
+    "track.snes_donut_plains_3": "SNES Donutvlakte 3",
+    "track.snes_mario_circuit_3": "SNES Mario Circuit 3",
+    "track.snes_rainbow_road": "SNES Regenboogbaan",
+    "track.squeaky_clean_sprint": "Badderbaan",
+    "track.sunshine_airport": "Sunshine Airport",
+    "track.super_bell_subway": "Mario's Metro",
+    "track.sweet_sweet_canyon": "Zoetekauwcanyon",
+    "track.thwomp_ruins": "Thwomps Tempel",
+    "track.toad_harbour": "Toad-Baai",
+    "track.tour_amsterdam_drift": "Tour Afslag Amsterdam",
+    "track.tour_athens_dash": "Tour Athene-Trip",
+    "track.tour_bangkok_rush": "Tour Bangkok-Break",
+    "track.tour_berlin_byways": "Tour Berlijn-Bezoek",
+    "track.tour_london_loop": "Tour Londen-Ronde",
+    "track.tour_los_angeles_laps": "Tour Los Angeles-Boulevard",
+    "track.tour_madrid_drive": "Tour Madrid-Rit",
+    "track.tour_new_york_minute": "Tour New York Drive",
+    "track.tour_paris_promenade": "Tour Parijs-Promenade",
+    "track.tour_rome_avanti": "Tour Rome-Run",
+    "track.tour_singapore_speedway": "Tour Singapore-Skyline",
+    "track.tour_sydney_sprint": "Tour Sydney-Sprint",
+    "track.tour_tokyo_blur": "Tour Tokio-Toer",
+    "track.tour_vancouver_velocity": "Tour Vancouver-Route",
+    "track.twisted_mansion": "Boo's Duizelhuis",
+    "track.water_park": "Waterpretpark",
+    "track.wii_coconut_mall": "Wii Kokosnootplaza",
+    "track.wii_daisy_circuit": "Wii Daisy's Circuit",
+    "track.wii_dk_summit": "Wii DK's Skipark",
+    "track.wii_grumble_volcano": "Wii Dondervulkaan",
+    "track.wii_koopa_cape": "Wii Kaap Koopa",
+    "track.wii_maple_treeway": "Wii Wigglers Woud",
+    "track.wii_moo_moo_meadows": "Wii Boe-Boe-Boerenland",
+    "track.wii_moonview_highway": "Wii Maanlichtlaan",
+    "track.wii_mushroom_gorge": "Wii Paddenstoelengrot",
+    "track.wii_rainbow_road": "Wii Regenboogbaan",
+    "track.wii_warios_gold_mine": "Wii Wario's Goudmijn",
+    "track.wild_woods": "Wervelwoud",
+    "track.yoshis_island": "Yoshi's Eiland"
+  },
+  "byEnglish": {
+    "300 SL Roadster": "300 SL Roadster",
+    "3DS DK Jungle": "3DS DK's Jungle",
+    "3DS Music Park": "3DS Muziekcircuit",
+    "3DS Neo Bowser City": "3DS Bowser City",
+    "3DS Piranha Plant Slide": "3DS Piranha Plant-Parkoers",
+    "3DS Rainbow Road": "3DS Regenboogbaan",
+    "3DS Rock Rock Mountain": "3DS Kampioensberg",
+    "3DS Rosalina's Ice World": "3DS Rosalina's Ijsplaneet",
+    "3DS Toad Circuit": "3DS Toads Circuit",
+    "Acorn Cup": "Eikenbeker",
+    "Afghanistan": "Afghanistan",
+    "Åland Islands": "Åland",
+    "Albania": "Albanië",
+    "Algeria": "Algerije",
+    "American Samoa": "Amerikaans-Samoa",
+    "Ancient Tires": "Geavanceerd",
+    "Andorra": "Andorra",
+    "Angola": "Angola",
+    "Anguilla": "Anguilla",
+    "Animal Crossing": "Animal Crossing",
+    "Antarctica": "Antarctica",
+    "Antigua & Barbuda": "Antigua en Barbuda",
+    "Argentina": "Argentinië",
+    "Armenia": "Armenië",
+    "Aruba": "Aruba",
+    "Australia": "Australië",
+    "Austria": "Oostenrijk",
+    "Azerbaijan": "Azerbeidzjan",
+    "Azure Roller": "Mini (lichtblauw)",
+    "B Dasher": "Sprinter",
+    "Baby Daisy": "Baby Daisy",
+    "Baby Luigi": "Baby Luigi",
+    "Baby Mario": "Baby Mario",
+    "Baby Peach": "Baby Peach",
+    "Baby Rosalina": "Baby Rosalina",
+    "Badwagon": "Blingbolide",
+    "Bahamas": "Bahama’s",
+    "Bahrain": "Bahrein",
+    "Banana Cup": "Bananenbeker",
+    "Bangladesh": "Bangladesh",
+    "Barbados": "Barbados",
+    "Belarus": "Belarus",
+    "Belgium": "België",
+    "Belize": "Belize",
+    "Bell Cup": "Superbelbeker",
+    "Benin": "Benin",
+    "Bermuda": "Bermuda",
+    "Bhutan": "Bhutan",
+    "Biddybuggy": "Biddybuggy",
+    "Big Blue": "Big Blue",
+    "Birdo": "Birdo",
+    "Birdo (Black)": "Birdo (zwart)",
+    "Birdo (Blue)": "Birdo (blauw)",
+    "Birdo (Green)": "Birdo (groen)",
+    "Birdo (Light Blue)": "Birdo (lichtblauw)",
+    "Birdo (Orange)": "Birdo (oranje)",
+    "Birdo (Red)": "Birdo (rood)",
+    "Birdo (White)": "Birdo (wit)",
+    "Birdo (Yellow)": "Birdo (geel)",
+    "Black Shy Guy": "Zwarte Shy Guy",
+    "Black Yoshi": "Zwarte Yoshi",
+    "Blue Falcon": "Blue Falcon",
+    "Blue Shy Guy": "Blauwe Shy Guy",
+    "Blue Standard": "Standaard (blauw)",
+    "Blue Yoshi": "Blauwe Yoshi",
+    "Bolivia": "Bolivia",
+    "Bone Rattler": "Dry-Wieler",
+    "Bone-Dry Dunes": "Dry Bowsers Woestijn",
+    "Boomerang Cup": "Boemerangbeker",
+    "Bosnia & Herzegovina": "Bosnië en Herzegovina",
+    "Botswana": "Botswana",
+    "Bouvet Island": "Bouveteiland",
+    "Bowser": "Bowser",
+    "Bowser Jr.": "Bowser Jr.",
+    "Bowser Kite": "Bowser-vlieger",
+    "Bowser's Castle": "Bowsers Kasteel",
+    "Brazil": "Brazilië",
+    "British Indian Ocean Territory": "Brits Indische Oceaanterritorium",
+    "British Virgin Islands": "Britse Maagdeneilanden",
+    "Brunei": "Brunei",
+    "Bulgaria": "Bulgarije",
+    "Burkina Faso": "Burkina Faso",
+    "Burundi": "Burundi",
+    "Button": "Knopen",
+    "Cambodia": "Cambodja",
+    "Cameroon": "Kameroen",
+    "Canada": "Canada",
+    "Cape Verde": "Kaapverdië",
+    "Caribbean Netherlands": "Caribisch Nederland",
+    "Cat Cruiser": "Miauwto",
+    "Cat Peach": "Kat-Peach",
+    "Cayman Islands": "Kaaimaneilanden",
+    "Central African Republic": "Centraal-Afrikaanse Republiek",
+    "Chad": "Tsjaad",
+    "Champion Link": "Kampioen Link",
+    "Cherry Cup": "Kersenbeker",
+    "Chile": "Chili",
+    "China": "China",
+    "Christmas Island": "Christmaseiland",
+    "Circuit Special": "Sprinter 2.0",
+    "City Tripper": "Stadscooter",
+    "Cloud Glider": "Wolkballonnen",
+    "Cloudtop Cruise": "Wildewolkenweg",
+    "Cocos (Keeling) Islands": "Cocoseilanden",
+    "Colombia": "Colombia",
+    "Comet": "Megamoto Pro",
+    "Comoros": "Comoren",
+    "Congo - Brazzaville": "Congo-Brazzaville",
+    "Congo - Kinshasa": "Congo-Kinshasa",
+    "Cook Islands": "Cookeilanden",
+    "Costa Rica": "Costa Rica",
+    "Côte d’Ivoire": "Ivoorkust",
+    "Crimson Slim": "Klassiek (rood)",
+    "Croatia": "Kroatië",
+    "Crossing Cup": "Crossing-beker",
+    "Cuba": "Cuba",
+    "Curaçao": "Curaçao",
+    "Cushion": "Poefen",
+    "Cyan Inkling Boy": "Cyaan Inkling-jongen",
+    "Cyber Slick": "Glad (paars)",
+    "Cyprus": "Cyprus",
+    "Czechia": "Tsjechië",
+    "Daisy": "Daisy",
+    "Denmark": "Denemarken",
+    "Diddy Kong": "Diddy Kong",
+    "Djibouti": "Djibouti",
+    "Dolphin Shoals": "Dolfijnenparadijs",
+    "Dominica": "Dominica",
+    "Dominican Republic": "Dominicaanse Republiek",
+    "Donkey Kong": "Donkey Kong",
+    "Dragon Driftway": "Drakendreef",
+    "Dry Bones": "Dry Bones",
+    "Dry Bowser": "Dry Bowser",
+    "DS Cheep Cheep Beach": "DS Cheep Cheep Strand",
+    "DS Mario Circuit": "DS Mario's Circuit",
+    "DS Peach Gardens": "DS Peach' Paleistuin",
+    "DS Shroom Ridge": "DS Paddenstoelenpas",
+    "DS Tick-Tock Clock": "DS Tik-Tak-Klok",
+    "DS Waluigi Pinball": "DS Waluigi's Flipperkast",
+    "DS Wario Stadium": "DS Wario's Stadion",
+    "Ecuador": "Ecuador",
+    "Egg Cup": "Eierbeker",
+    "Egypt": "Egypte",
+    "El Salvador": "El Salvador",
+    "Electrodrome": "Electrodome",
+    "Equatorial Guinea": "Equatoriaal-Guinea",
+    "Eritrea": "Eritrea",
+    "Estonia": "Estland",
+    "Eswatini": "Eswatini",
+    "Ethiopia": "Ethiopië",
+    "Excitebike Arena": "Excitebike-Arena",
+    "Falkland Islands": "Falklandeilanden",
+    "Faroe Islands": "Faeröer",
+    "Feather Cup": "Veerbeker",
+    "Fiji": "Fiji",
+    "Finland": "Finland",
+    "Flame Rider": "Turbochopper",
+    "Flower Cup": "Bloemenbeker",
+    "Flower Glider": "Bloem",
+    "France": "Frankrijk",
+    "French Guiana": "Frans-Guyana",
+    "French Polynesia": "Frans-Polynesië",
+    "French Southern Territories": "Franse Gebieden in de zuidelijke Indische Oceaan",
+    "Fruit Cup": "Fruitbeker",
+    "Funky Kong": "Funky Kong",
+    "Gabon": "Gabon",
+    "Gambia": "Gambia",
+    "GBA Boo Lake": "GBA Boo-Bruggen",
+    "GBA Cheese Land": "GBA Kaasland",
+    "GBA Mario Circuit": "GBA Mario's Circuit",
+    "GBA Ribbon Road": "GBA Sprintlint",
+    "GBA Riverside Park": "GBA Rivieroever",
+    "GBA Sky Garden": "GBA Wolkenhof",
+    "GBA Snow Land": "GBA Sneeuwland",
+    "GBA Sunset Wilds": "GBA Schemersteppe",
+    "GCN Baby Park": "GCN Babypark",
+    "GCN Daisy Cruiser": "GCN Daisy's Cruiseschip",
+    "GCN DK Mountain": "GCN DK-Gebergte",
+    "GCN Dry Dry Desert": "GCN Zinderende Zandvlakte",
+    "GCN Sherbet Land": "GCN Ijzige Ijsbaan",
+    "GCN Waluigi Stadium": "GCN Waluigi's Stadion",
+    "GCN Yoshi Circuit": "GCN Yoshi's Circuit",
+    "Georgia": "Georgië",
+    "Germany": "Duitsland",
+    "Ghana": "Ghana",
+    "Gibraltar": "Gibraltar",
+    "GLA": "GLA",
+    "GLA Tires": "GLA-wielen",
+    "Gold Glider": "Gouden vleugel",
+    "Gold Mario": "Goud Mario",
+    "Gold Standard": "Gouden kart",
+    "Gold Tires": "Gouden wielen",
+    "Golden Dash Cup": "Goudensprintbeker",
+    "Greece": "Griekenland",
+    "Green Inkling Girl": "Groene Inkling-meisje",
+    "Green Shy Guy": "Groen Shy Guy",
+    "Greenland": "Groenland",
+    "Grenada": "Grenada",
+    "Guadeloupe": "Guadeloupe",
+    "Guam": "Guam",
+    "Guatemala": "Guatemala",
+    "Guernsey": "Guernsey",
+    "Guinea": "Guinee",
+    "Guinea-Bissau": "Guinee-Bissau",
+    "Guyana": "Guyana",
+    "Haiti": "Haïti",
+    "Heard & McDonald Islands": "Heard en McDonaldeilanden",
+    "Honduras": "Honduras",
+    "Hong Kong SAR China": "Hongkong SAR van China",
+    "Hot Monster": "Monster (funky)",
+    "Hungary": "Hongarije",
+    "Hylian Kite": "Hyliaanse vlieger",
+    "Hyrule Circuit": "Hyrule-Circuit",
+    "Ice Ice Outpost": "Toads Poolbasis",
+    "Iceland": "IJsland",
+    "Iggy": "Iggy",
+    "India": "India",
+    "Indonesia": "Indonesië",
+    "Inkling Boy": "Inkling-jongen",
+    "Inkling Girl": "Inkling-meisje",
+    "Inkstriker": "Tornado",
+    "Iran": "Iran",
+    "Iraq": "Irak",
+    "Ireland": "Ierland",
+    "Isabelle": "Isabelle",
+    "Isle of Man": "Isle of Man",
+    "Israel": "Israël",
+    "Italy": "Italië",
+    "Jamaica": "Jamaica",
+    "Japan": "Japan",
+    "Jersey": "Jersey",
+    "Jet Bike": "Straatjager",
+    "Jordan": "Jordanië",
+    "Kamek": "Kamek",
+    "Kazakhstan": "Kazachstan",
+    "Kenya": "Kenia",
+    "King Boo": "King Boo",
+    "Kiribati": "Kiribati",
+    "Koopa Clown": "Koopa-clown",
+    "Koopa Troopa": "Koopa Troopa",
+    "Kuwait": "Koeweit",
+    "Kyrgyzstan": "Kirgizië",
+    "Lakitu": "Lakitu",
+    "Landship": "Flitsfregat",
+    "Laos": "Laos",
+    "Larry": "Larry",
+    "Latvia": "Letland",
+    "Leaf Cup": "Blaadjesbeker",
+    "Leaf Tires": "Crossing",
+    "Lebanon": "Libanon",
+    "Lemmy": "Lemmy",
+    "Lesotho": "Lesotho",
+    "Liberia": "Liberia",
+    "Libya": "Libië",
+    "Liechtenstein": "Liechtenstein",
+    "Light-Blue Shy Guy": "Lichtblauwe Shy Guy",
+    "Light-Blue Yoshi": "Lichtblauwe Yoshi",
+    "Lightning Cup": "Bliksembeker",
+    "Link": "Link",
+    "Lithuania": "Litouwen",
+    "Lucky Cat Cup": "Gelukskatbeker",
+    "Ludwig": "Ludwig",
+    "Luigi": "Luigi",
+    "Luxembourg": "Luxemburg",
+    "Macao SAR China": "Macau SAR van China",
+    "Mach 8": "Mach 8",
+    "Madagascar": "Madagaskar",
+    "Malawi": "Malawi",
+    "Malaysia": "Maleisië",
+    "Maldives": "Maldiven",
+    "Mali": "Mali",
+    "Malta": "Malta",
+    "Mario": "Mario",
+    "Mario Circuit": "Mario's Circuit",
+    "Mario Kart Stadium": "Mario Kart-Stadion",
+    "Marshall Islands": "Marshalleilanden",
+    "Martinique": "Martinique",
+    "Master Cycle": "Triforcer",
+    "Master Cycle Zero": "Triforcer Zero",
+    "Mauritania": "Mauritanië",
+    "Mauritius": "Mauritius",
+    "Mayotte": "Mayotte",
+    "Merry Mountain": "Dennenboomdorp",
+    "Metal": "Metaal",
+    "Metal Mario": "Metalen Mario",
+    "Mexico": "Mexico",
+    "Micronesia": "Micronesia",
+    "Mii (Heavy) ": "Mii (Zwaar) ",
+    "Mii (Large)": "Mii (Large)",
+    "Mii (Light)": "Mii (Licht)",
+    "Mii (Medium)": "Mii (Normaal)",
+    "Mii (Small)": "Mii (Small)",
+    "MKTV Parafoil": "MKTV-glijscherm",
+    "Moldova": "Moldavië",
+    "Monaco": "Monaco",
+    "Mongolia": "Mongolië",
+    "Monster": "Monster",
+    "Montenegro": "Montenegro",
+    "Montserrat": "Montserrat",
+    "Moon Cup": "Maanbeker",
+    "Morocco": "Marokko",
+    "Morton": "Morton",
+    "Mount Wario": "Wario's Winterberg",
+    "Mozambique": "Mozambique",
+    "Mr. Scooty": "Dreumes",
+    "Mushroom Cup": "Paddenstoelbeker",
+    "Mute City": "Mute City",
+    "Myanmar (Burma)": "Myanmar (Birma)",
+    "N64 Choco Mountain": "N64 Chocokloof",
+    "N64 Kalimari Desert": "N64 Wildwestwoestijn",
+    "N64 Rainbow Road": "N64 Regenboogbaan",
+    "N64 Royal Raceway": "N64 Koninklijke Kartbaan",
+    "N64 Toad's Turnpike": "N64 Toads Tolweg",
+    "N64 Yoshi Valley": "N64 Yoshi's Vallei",
+    "Namibia": "Namibië",
+    "Nauru": "Nauru",
+    "Nepal": "Nepal",
+    "Netherlands": "Nederland",
+    "New Caledonia": "Nieuw-Caledonië",
+    "New Zealand": "Nieuw-Zeeland",
+    "Nicaragua": "Nicaragua",
+    "Niger": "Niger",
+    "Nigeria": "Nigeria",
+    "Ninja Hideaway": "Ninjaschool",
+    "Niue": "Niue",
+    "Norfolk Island": "Norfolk",
+    "North Korea": "Noord-Korea",
+    "North Macedonia": "Noord-Macedonië",
+    "Northern Mariana Islands": "Noordelijke Marianen",
+    "Norway": "Noorwegen",
+    "Off-Road": "Offroad",
+    "Oman": "Oman",
+    "Orange Shy Guy": "Oranje Shy Guy",
+    "Orange Yoshi": "Oranje Yoshi",
+    "P-Wing": "Vleugelflitser",
+    "Pakistan": "Pakistan",
+    "Palau": "Palau",
+    "Palestinian Territories": "Palestijnse gebieden",
+    "Panama": "Panama",
+    "Paper Glider": "Papieren vliegtuig",
+    "Papua New Guinea": "Papoea-Nieuw-Guinea",
+    "Parachute": "Parachute",
+    "Parafoil": "Glijscherm",
+    "Paraglider": "Zweefzeil",
+    "Paraguay": "Paraguay",
+    "Pauline": "Pauline",
+    "Peach": "Peach",
+    "Peach Parasol": "Peach’ Parasol",
+    "Peachette": "Peachette",
+    "Peru": "Peru",
+    "Petey Piranha": "Petey Piranha",
+    "Philippines": "Filipijnen",
+    "Pink Gold Peach": "Rozegouden Peach",
+    "Pink Inkling Girl": "Roze Inkling-meisje",
+    "Pink Shy Guy": "Roze Shy Guy",
+    "Pink Yoshi": "Roze Yoshi",
+    "Pipe Frame": "Skelter",
+    "Piranha Plant Cove": "Piranha Plant-Lagune",
+    "Pitcairn Islands": "Pitcairneilanden",
+    "Plane Glider": "Zweefvliegtuig",
+    "Poland": "Polen",
+    "Portugal": "Portugal",
+    "Prancer": "Paradepaardje",
+    "Propeller Cup": "Propellerbeker",
+    "Puerto Rico": "Puerto Rico",
+    "Purple Inkling Boy": "Paarse Inkling-jongen",
+    "Qatar": "Qatar",
+    "Rainbow Road": "Regenboogbaan",
+    "Red Yoshi": "Rode Yoshi",
+    "Retro Off-Road": "Offroad (retro)",
+    "Réunion": "Réunion",
+    "Rock Cup": "Rotsbeker",
+    "Roller": "Mini",
+    "Romania": "Roemenië",
+    "Rosalina": "Rosalina",
+    "Roy": "Roy",
+    "Russia": "Rusland",
+    "Rwanda": "Rwanda",
+    "Samoa": "Samoa",
+    "San Marino": "San Marino",
+    "São Tomé & Príncipe": "Sao Tomé en Principe",
+    "Saudi Arabia": "Saoedi-Arabië",
+    "Senegal": "Senegal",
+    "Serbia": "Servië",
+    "Seychelles": "Seychellen",
+    "Shell Cup": "Schildbeker",
+    "Shy Guy": "Shy Guy",
+    "Shy Guy Falls": "Shy Guys Kristalmijn",
+    "Sierra Leone": "Sierra Leone",
+    "Singapore": "Singapore",
+    "Sint Maarten": "Sint-Maarten",
+    "Sky-High Sundae": "Stracciatellastraat",
+    "Slick": "Glad",
+    "Slim": "Klassiek",
+    "Slovakia": "Slowakije",
+    "Slovenia": "Slovenië",
+    "Sneeker": "Koploper",
+    "SNES Bowser Castle 3": "SNES Bowsers Kasteel 3",
+    "SNES Donut Plains 3": "SNES Donutvlakte 3",
+    "SNES Mario Circuit 3": "SNES Mario Circuit 3",
+    "SNES Rainbow Road": "SNES Regenboogbaan",
+    "Solomon Islands": "Salomonseilanden",
+    "Somalia": "Somalië",
+    "South Africa": "Zuid-Afrika",
+    "South Georgia & South Sandwich Islands": "Zuid-Georgia en Zuidelijke Sandwicheilanden",
+    "South Korea": "Zuid-Korea",
+    "South Sudan": "Zuid-Soedan",
+    "Spain": "Spanje",
+    "Special Cup": "Speciale beker",
+    "Spiny Cup": "Spiny-beker",
+    "Splat Buggy": "Kladderquad",
+    "Sponge": "Sponzen",
+    "Sport Bike": "Circuitsrijder",
+    "Sports Coupe": "Topsporter",
+    "Squeaky Clean Sprint": "Badderbaan",
+    "Sri Lanka": "Sri Lanka",
+    "St. Barthélemy": "Saint-Barthélemy",
+    "St. Helena": "Sint-Helena",
+    "St. Kitts & Nevis": "Saint Kitts en Nevis",
+    "St. Lucia": "Saint Lucia",
+    "St. Martin": "Saint-Martin",
+    "St. Pierre & Miquelon": "Saint-Pierre en Miquelon",
+    "St. Vincent & Grenadines": "Saint Vincent en de Grenadines",
+    "Standard": "Standaard",
+    "Standard ATV": "Standaardquad",
+    "Standard Bike": "Standaardmotor",
+    "Standard Kart": "Standaardkart",
+    "Star Cup": "Sterrenbeker",
+    "Steel Driver": "Diepzeeduikkar",
+    "Streetle": "Sjeesbeestje",
+    "Sudan": "Soedan",
+    "Sunshine Airport": "Sunshine Airport",
+    "Super Bell Subway": "Mario's Metro",
+    "Super Glider": "Standaard",
+    "Suriname": "Suriname",
+    "Svalbard & Jan Mayen": "Spitsbergen en Jan Mayen",
+    "Sweden": "Zweden",
+    "Sweet Sweet Canyon": "Zoetekauwcanyon",
+    "Switzerland": "Zwitserland",
+    "Syria": "Syrië",
+    "Taiwan": "Taiwan",
+    "Tajikistan": "Tadzjikistan",
+    "Tanooki Kart": "Turbo-Tanuki",
+    "Tanooki Mario": "Tanuki-Mario",
+    "Tanzania": "Tanzania",
+    "Teddy Buggy": "Knuffelquad",
+    "Thailand": "Thailand",
+    "The Duke": "Ultrascooter",
+    "Thwomp Ruins": "Thwomps Tempel",
+    "Timor-Leste": "Oost-Timor",
+    "Toad": "Toad",
+    "Toad Harbor": "Toad-Baai",
+    "Toadette": "Toadette",
+    "Togo": "Togo",
+    "Tokelau": "Tokelau",
+    "Tonga": "Tonga",
+    "Tour Amsterdam Drift": "Tour Afslag Amsterdam",
+    "Tour Athens Dash": "Tour Athene-Trip",
+    "Tour Bangkok Rush": "Tour Bangkok-Break",
+    "Tour Berlin Byways": "Tour Berlijn-Bezoek",
+    "Tour London Loop": "Tour Londen-Ronde",
+    "Tour Los Angeles Laps": "Tour Los Angeles-Boulevard",
+    "Tour Madrid Drive": "Tour Madrid-Rit",
+    "Tour New York Minute": "Tour New York Drive",
+    "Tour Paris Promenade": "Tour Parijs-Promenade",
+    "Tour Rome Avanti": "Tour Rome-Run",
+    "Tour Singapore Speedway": "Tour Singapore-Skyline",
+    "Tour Sydney Sprint": "Tour Sydney-Sprint",
+    "Tour Tokyo Blur": "Tour Tokio-Toer",
+    "Tour Vancouver Velocity": "Tour Vancouver-Route",
+    "Tri-Speeder": "Driebander",
+    "Triforce Cup": "Triforce-beker",
+    "Triforce Tires": "Triforce",
+    "Trinidad & Tobago": "Trinidad en Tobago",
+    "Tunisia": "Tunesië",
+    "Türkiye": "Turkije",
+    "Turkmenistan": "Turkmenistan",
+    "Turks & Caicos Islands": "Turks- en Caicoseilanden",
+    "Turnip Cup": "Knollenbeker",
+    "Tuvalu": "Tuvalu",
+    "Twisted Mansion": "Boo's Duizelhuis",
+    "U.S. Outlying Islands": "Kleine afgelegen eilanden van de Verenigde Staten",
+    "U.S. Virgin Islands": "Amerikaanse Maagdeneilanden",
+    "Uganda": "Oeganda",
+    "Ukraine": "Oekraïne",
+    "United Arab Emirates": "Verenigde Arabische Emiraten",
+    "United Kingdom": "Verenigd Koninkrijk",
+    "United States": "Verenigde Staten",
+    "Uruguay": "Uruguay",
+    "Uzbekistan": "Oezbekistan",
+    "Vanuatu": "Vanuatu",
+    "Varmint": "Offroadracer",
+    "Vatican City": "Vaticaanstad",
+    "Venezuela": "Venezuela",
+    "Vietnam": "Vietnam",
+    "Villager (Boy)": "Dorpsbewoner",
+    "Villager (Female)": "Dorpsbewoner (vrouw)",
+    "Villager (Girl)": "Dorpsbewoner",
+    "Villager (Male)": "Dorpsbewoner (man)",
+    "W 25 Silver Arrow": "W 25 Zilverpijl",
+    "Waddle Wing": "Waddlewing",
+    "Wallis & Futuna": "Wallis en Futuna",
+    "Waluigi": "Waluigi",
+    "Wario": "Wario",
+    "Wario Wing": "Wario-vlieger",
+    "Water Park": "Waterpretpark",
+    "Wendy": "Wendy",
+    "Western Sahara": "Westelijke Sahara",
+    "White Shy Guy": "Witte Shy Guy",
+    "White Yoshi": "Witte Yoshi",
+    "Wiggler": "Wiggler",
+    "Wii Coconut Mall": "Wii Kokosnootplaza",
+    "Wii Daisy Circuit": "Wii Daisy's Circuit",
+    "Wii DK Summit": "Wii DK's Skipark",
+    "Wii Grumble Volcano": "Wii Dondervulkaan",
+    "Wii Koopa Cape": "Wii Kaap Koopa",
+    "Wii Maple Treeway": "Wii Wigglers Woud",
+    "Wii Moo Moo Meadows": "Wii Boe-Boe-Boerenland",
+    "Wii Moonview Highway": "Wii Maanlichtlaan",
+    "Wii Mushroom Gorge": "Wii Paddenstoelengrot",
+    "Wii Rainbow Road": "Wii Regenboogbaan",
+    "Wii Wario's Gold Mine": "Wii Wario's Goudmijn",
+    "Wild Wiggler": "Wiggler-quad",
+    "Wild Woods": "Wervelwoud",
+    "Wood": "Hout",
+    "Yellow Shy Guy": "Gele Shy Guy",
+    "Yellow Yoshi": "Gele Yoshi",
+    "Yemen": "Jemen",
+    "Yoshi": "Yoshi",
+    "Yoshi Bike": "Yoshi-crosser",
+    "Yoshi's Island": "Yoshi's Eiland",
+    "Zambia": "Zambia",
+    "Zimbabwe": "Zimbabwe"
+  }
+}

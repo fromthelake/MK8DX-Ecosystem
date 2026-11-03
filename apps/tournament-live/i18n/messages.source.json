@@ -1,0 +1,1268 @@
+{
+ "schemaVersion": "mk8dx.tournament-live-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_desktop_messages.py",
+ "messages": [
+  {
+   "key": "ARMING MKV RECORDINGS",
+   "nl": "MKV-OPNAMEN STARTEN",
+   "places": [
+    "qt_app.py:220"
+   ]
+  },
+  {
+   "key": "Add capture device",
+   "nl": "Opnameapparaat toevoegen",
+   "places": [
+    "qt_app.py:199"
+   ]
+  },
+  {
+   "key": "Add this URL as an OBS Browser source.",
+   "nl": "Voeg deze URL toe als OBS-browserbron.",
+   "places": [
+    "qt_app.py:245"
+   ]
+  },
+  {
+   "key": "Add video",
+   "nl": "Video toevoegen",
+   "places": [
+    "qt_app.py:272"
+   ]
+  },
+  {
+   "key": "Add video file",
+   "nl": "Videobestand toevoegen",
+   "places": [
+    "qt_app.py:199"
+   ]
+  },
+  {
+   "key": "Analysis engine: starting…",
+   "nl": "Analyse-engine: starten…",
+   "places": [
+    "qt_app.py:250"
+   ]
+  },
+  {
+   "key": "Assembling recordings…",
+   "nl": "Opnamen samenvoegen…",
+   "places": [
+    "qt_app.py:233"
+   ]
+  },
+  {
+   "key": "Auto",
+   "nl": "Automatisch",
+   "places": [
+    "qt_app.py:286"
+   ]
+  },
+  {
+   "key": "Cancel",
+   "nl": "Annuleren",
+   "places": [
+    "qt_app.py:236"
+   ]
+  },
+  {
+   "key": "Capture",
+   "nl": "Opname",
+   "places": [
+    "qt_app.py:200"
+   ]
+  },
+  {
+   "key": "Capture device",
+   "nl": "Opnameapparaat",
+   "places": [
+    "qt_app.py:273"
+   ]
+  },
+  {
+   "key": "Capture-card audio",
+   "nl": "Audio van capturekaart",
+   "places": [
+    "qt_app.py:216"
+   ]
+  },
+  {
+   "key": "Card label (for example CC Group 1). Empty restores the device name. Always verify the feed.",
+   "nl": "Naam op de card (bijvoorbeeld CC Groep 1). Leeg herstelt de apparaatnaam. Controleer altijd het beeld.",
+   "places": [
+    "qt_app.py:203"
+   ]
+  },
+  {
+   "key": "Change Tournament",
+   "nl": "Toernooi wijzigen",
+   "places": [
+    "qt_app.py:191"
+   ]
+  },
+  {
+   "key": "Character",
+   "nl": "Coureur",
+   "places": [
+    "qt_app.py:281"
+   ]
+  },
+  {
+   "key": "Checking Tournament…",
+   "nl": "Toernooi controleren…",
+   "places": [
+    "qt_app.py:193"
+   ]
+  },
+  {
+   "key": "Clear Frames folder",
+   "nl": "Frames-map opschonen",
+   "places": [
+    "qt_app.py:241"
+   ]
+  },
+  {
+   "key": "Clear all",
+   "nl": "Alles wissen",
+   "places": [
+    "qt_app.py:200"
+   ]
+  },
+  {
+   "key": "Closing MKV working parts…",
+   "nl": "MKV-werkbestanden veilig sluiten…",
+   "places": [
+    "qt_app.py:227"
+   ]
+  },
+  {
+   "key": "Completing final analysis…",
+   "nl": "Laatste analyse voltooien…",
+   "places": [
+    "qt_app.py:228"
+   ]
+  },
+  {
+   "key": "Confirmed standings",
+   "nl": "Bevestigde stand",
+   "places": [
+    "qt_app.py:283"
+   ]
+  },
+  {
+   "key": "Connect to Tournament Manager",
+   "nl": "Verbinden met Tournament Manager",
+   "places": [
+    "qt_app.py:191"
+   ]
+  },
+  {
+   "key": "Console language",
+   "nl": "Consoletaal",
+   "places": [
+    "qt_app.py:286"
+   ]
+  },
+  {
+   "key": "Could not archive stale Frames: {0}",
+   "places": [
+    "qt_app.py:696"
+   ]
+  },
+  {
+   "key": "Delivering results to Tournament Manager…",
+   "nl": "Uitslagen naar Tournament Manager verzenden…",
+   "places": [
+    "qt_app.py:231"
+   ]
+  },
+  {
+   "key": "DirectShow audio device for this feed:",
+   "nl": "DirectShow-audioapparaat voor deze feed:",
+   "places": [
+    "qt_app.py:218"
+   ]
+  },
+  {
+   "key": "DirectShow video device:",
+   "nl": "DirectShow-videoapparaat:",
+   "places": [
+    "qt_app.py:273"
+   ]
+  },
+  {
+   "key": "Driver",
+   "nl": "Speler",
+   "places": [
+    "qt_app.py:281"
+   ]
+  },
+  {
+   "key": "End Round",
+   "nl": "Eindronde",
+   "places": [
+    "qt_app.py:196"
+   ]
+  },
+  {
+   "key": "Export current results",
+   "nl": "Huidige uitslagen exporteren",
+   "places": [
+    "qt_app.py:241"
+   ]
+  },
+  {
+   "key": "Fast pace (baseline analysis sampling)",
+   "nl": "Snel tempo (standaard analysesampling)",
+   "places": [
+    "qt_app.py:248"
+   ]
+  },
+  {
+   "key": "Feed preview",
+   "nl": "Feedvoorbeeld",
+   "places": [
+    "qt_app.py:246"
+   ]
+  },
+  {
+   "key": "Finalizing local results…",
+   "nl": "Lokale uitslagen afronden…",
+   "places": [
+    "qt_app.py:229"
+   ]
+  },
+  {
+   "key": "Frames archived to {0}",
+   "places": [
+    "qt_app.py:694"
+   ]
+  },
+  {
+   "key": "Frames folder was already empty; clean folder is ready",
+   "nl": "De Frames-map was al leeg en is klaar voor gebruik",
+   "places": [
+    "qt_app.py:266"
+   ]
+  },
+  {
+   "key": "Full speed (baseline analysis sampling)",
+   "nl": "Volledige snelheid (standaard analysesampling)",
+   "places": [
+    "qt_app.py:249"
+   ]
+  },
+  {
+   "key": "Group",
+   "nl": "Groep",
+   "places": [
+    "qt_app.py:197"
+   ]
+  },
+  {
+   "key": "Highlight",
+   "nl": "Markering",
+   "places": [
+    "qt_app.py:195"
+   ]
+  },
+  {
+   "key": "Highlight the top 3 of each group (podium).",
+   "nl": "Markeer de top 3 van elke groep (podium).",
+   "places": [
+    "qt_app.py:278"
+   ]
+  },
+  {
+   "key": "LOCAL / OFFLINE",
+   "nl": "LOKAAL / OFFLINE",
+   "places": [
+    "qt_app.py:189"
+   ]
+  },
+  {
+   "key": "Language",
+   "nl": "Taal",
+   "places": [
+    "qt_app.py:194"
+   ]
+  },
+  {
+   "key": "Latest race",
+   "nl": "Laatste race",
+   "places": [
+    "qt_app.py:283"
+   ]
+  },
+  {
+   "key": "Latest race {0}: couldn't read results",
+   "places": [
+    "qt_app.py:723"
+   ]
+  },
+  {
+   "key": "Latest race {0}: {1} drivers · awaiting confirmation",
+   "places": [
+    "qt_app.py:725"
+   ]
+  },
+  {
+   "key": "Latest race: reading results for race {0}",
+   "places": [
+    "qt_app.py:722"
+   ]
+  },
+  {
+   "key": "Latest race: waiting for next race",
+   "nl": "Laatste race: wacht op de volgende race",
+   "places": [
+    "qt_app.py:282"
+   ]
+  },
+  {
+   "key": "Live pace (baseline analysis sampling)",
+   "nl": "Live tempo (standaard analysesampling)",
+   "places": [
+    "qt_app.py:247"
+   ]
+  },
+  {
+   "key": "Live race capture · scoreboard · OBS overlay",
+   "nl": "Live race-opname · scorebord · OBS-overlay",
+   "places": [
+    "qt_app.py:188"
+   ]
+  },
+  {
+   "key": "Live scoreboard",
+   "nl": "Live scorebord",
+   "places": [
+    "qt_app.py:268"
+   ]
+  },
+  {
+   "key": "Live scoreboard (OBS / browser)",
+   "nl": "Live scorebord (OBS / browser)",
+   "places": [
+    "qt_app.py:242"
+   ]
+  },
+  {
+   "key": "Live status",
+   "nl": "Livestatus",
+   "places": [
+    "qt_app.py:246"
+   ]
+  },
+  {
+   "key": "Load con-error preset",
+   "nl": "Verbindingsfoutvoorbeeld laden",
+   "places": [
+    "qt_app.py:198"
+   ]
+  },
+  {
+   "key": "Load preset videos",
+   "nl": "Voorbeeldvideo's laden",
+   "places": [
+    "qt_app.py:198"
+   ]
+  },
+  {
+   "key": "MK8DX Tournament Live",
+   "nl": "MK8DX Tournament Live",
+   "places": [
+    "qt_app.py:187"
+   ]
+  },
+  {
+   "key": "MKV recording is off",
+   "nl": "MKV-opnames staan uit",
+   "places": [
+    "qt_app.py:211"
+   ]
+  },
+  {
+   "key": "MKV recording ready — starts with Start all",
+   "nl": "MKV-opname gereed — begint bij Alles starten",
+   "places": [
+    "qt_app.py:212"
+   ]
+  },
+  {
+   "key": "Maximum {0} feeds supported.",
+   "places": [
+    "qt_app.py:691"
+   ]
+  },
+  {
+   "key": "Name capture card",
+   "nl": "Capturecard benoemen",
+   "places": [
+    "qt_app.py:201"
+   ]
+  },
+  {
+   "key": "No Sources Selected or Loaded",
+   "nl": "Geen bronnen geselecteerd of geladen",
+   "places": [
+    "qt_app.py:267"
+   ]
+  },
+  {
+   "key": "No audio (video only)",
+   "nl": "Geen audio (alleen video)",
+   "places": [
+    "qt_app.py:217"
+   ]
+  },
+  {
+   "key": "No preview",
+   "nl": "Geen voorbeeld",
+   "places": [
+    "qt_app.py:282"
+   ]
+  },
+  {
+   "key": "No unassigned DirectShow video devices found.\nCheck the USB connection (each card should appear as its own camera device) and try again.",
+   "nl": "Geen niet-toegewezen DirectShow-videoapparaten gevonden.\nControleer de USB-verbinding (elke kaart hoort als afzonderlijke camera te verschijnen) en probeer het opnieuw.",
+   "places": [
+    "qt_app.py:276"
+   ]
+  },
+  {
+   "key": "Not now",
+   "nl": "Niet nu",
+   "places": [
+    "qt_app.py:225"
+   ]
+  },
+  {
+   "key": "OCR engine warmed. Readers: {0}. Assets: {1}. Recording/capture are independent.",
+   "places": [
+    "qt_app.py:726"
+   ]
+  },
+  {
+   "key": "OCR warm-up incomplete: {0}. Recording/capture are unaffected; readers build on first use.",
+   "places": [
+    "qt_app.py:727"
+   ]
+  },
+  {
+   "key": "OCR/analysis engine warm-up status (recording is independent).",
+   "nl": "Opwarmstatus van de OCR-/analyse-engine (opnemen werkt onafhankelijk).",
+   "places": [
+    "qt_app.py:277"
+   ]
+  },
+  {
+   "key": "Open Live_Output",
+   "nl": "Live_Output openen",
+   "places": [
+    "qt_app.py:240"
+   ]
+  },
+  {
+   "key": "Open diagnostics",
+   "nl": "Diagnostiek openen",
+   "places": [
+    "qt_app.py:240"
+   ]
+  },
+  {
+   "key": "Open exports",
+   "nl": "Exports openen",
+   "places": [
+    "qt_app.py:239"
+   ]
+  },
+  {
+   "key": "Open fixed all-feeds scoreboard",
+   "nl": "Vast scorebord met alle feeds openen",
+   "places": [
+    "qt_app.py:244"
+   ]
+  },
+  {
+   "key": "Open folder",
+   "nl": "Map openen",
+   "places": [
+    "qt_app.py:268"
+   ]
+  },
+  {
+   "key": "Open live scoreboard",
+   "nl": "Live scorebord openen",
+   "places": [
+    "qt_app.py:243"
+   ]
+  },
+  {
+   "key": "Open recordings",
+   "nl": "Opnamen openen",
+   "places": [
+    "qt_app.py:239"
+   ]
+  },
+  {
+   "key": "Optional: sign in to upload this run as an independent evidence record. A Tournament choice is only a suggestion; recording and analysis stay local.",
+   "nl": "Optioneel: meld je aan om deze run als zelfstandig bewijsrecord te uploaden. Een gekozen toernooi is alleen een voorstel; opname en analyse blijven lokaal.",
+   "places": [
+    "qt_app.py:190"
+   ]
+  },
+  {
+   "key": "Pause all",
+   "nl": "Alles pauzeren",
+   "places": [
+    "qt_app.py:238"
+   ]
+  },
+  {
+   "key": "Per-feed standings",
+   "nl": "Stand per feed",
+   "places": [
+    "qt_app.py:246"
+   ]
+  },
+  {
+   "key": "Pos",
+   "nl": "Pos",
+   "places": [
+    "qt_app.py:281"
+   ]
+  },
+  {
+   "key": "Qualifier",
+   "nl": "Kwalificatie",
+   "places": [
+    "qt_app.py:196"
+   ]
+  },
+  {
+   "key": "RECORDING ACTIVE",
+   "nl": "OPNAME ACTIEF",
+   "places": [
+    "qt_app.py:221"
+   ]
+  },
+  {
+   "key": "RECORDING ACTIVE — {0}/{1} FEEDS",
+   "places": [
+    "qt_app.py:717"
+   ]
+  },
+  {
+   "key": "RECORDING ERROR",
+   "nl": "OPNAMEFOUT",
+   "places": [
+    "qt_app.py:222"
+   ]
+  },
+  {
+   "key": "RECORDING ERROR — {0} FEED(S) HAVE INCOMPLETE VIDEO EVIDENCE. LIVE VIEW AND ANALYSIS CONTINUE.",
+   "places": [
+    "qt_app.py:718"
+   ]
+  },
+  {
+   "key": "RECORDINGS SAFELY SAVED",
+   "nl": "OPNAMEN VEILIG OPGESLAGEN",
+   "places": [
+    "qt_app.py:223"
+   ]
+  },
+  {
+   "key": "Races per group",
+   "nl": "Races per groep",
+   "places": [
+    "qt_app.py:195"
+   ]
+  },
+  {
+   "key": "Record feeds to MKV 1280x720 @ 12 Mbps",
+   "nl": "Feeds opnemen als MKV 1280x720 @ 12 Mbps",
+   "places": [
+    "qt_app.py:210"
+   ]
+  },
+  {
+   "key": "Recording active · part {0} · {1} MiB · audio · {2}h remaining · analysis drops {3}",
+   "places": [
+    "qt_app.py:719"
+   ]
+  },
+  {
+   "key": "Recording active · part {0} · {1} MiB · video only · {2}h remaining · analysis drops {3}",
+   "places": [
+    "qt_app.py:720"
+   ]
+  },
+  {
+   "key": "Recording error · part {0} retained · {1} MiB",
+   "places": [
+    "qt_app.py:721"
+   ]
+  },
+  {
+   "key": "Recording: off",
+   "nl": "Opname: uit",
+   "places": [
+    "qt_app.py:219"
+   ]
+  },
+  {
+   "key": "Recover previous recording",
+   "nl": "Vorige opname herstellen",
+   "places": [
+    "qt_app.py:224"
+   ]
+  },
+  {
+   "key": "Recovering previous recordings…",
+   "nl": "Vorige opnamen herstellen…",
+   "places": [
+    "qt_app.py:235"
+   ]
+  },
+  {
+   "key": "Remove selected",
+   "nl": "Selectie verwijderen",
+   "places": [
+    "qt_app.py:200"
+   ]
+  },
+  {
+   "key": "Reset session",
+   "nl": "Sessie herstellen",
+   "places": [
+    "qt_app.py:238"
+   ]
+  },
+  {
+   "key": "Resume all",
+   "nl": "Alles hervatten",
+   "places": [
+    "qt_app.py:238"
+   ]
+  },
+  {
+   "key": "Retry upload",
+   "nl": "Upload opnieuw proberen",
+   "places": [
+    "qt_app.py:192"
+   ]
+  },
+  {
+   "key": "Round {0} | Track UK: {1} | Track NL: {2} | Cup UK: {3} | Cup NL: {4}",
+   "places": [
+    "qt_app.py:729"
+   ]
+  },
+  {
+   "key": "Round {0} | waiting for track/cup OCR",
+   "places": [
+    "qt_app.py:728"
+   ]
+  },
+  {
+   "key": "Saved audio is unavailable or ambiguous. Select and verify the audio for this card:",
+   "nl": "De bewaarde audio is niet beschikbaar of niet eenduidig. Kies en controleer de audio voor deze card:",
+   "places": [
+    "qt_app.py:208"
+   ]
+  },
+  {
+   "key": "Saving ecosystem data…",
+   "nl": "Ecosysteemgegevens opslaan…",
+   "places": [
+    "qt_app.py:230"
+   ]
+  },
+  {
+   "key": "Select at least 1 video feed before starting.",
+   "nl": "Selecteer minstens één videofeed voordat je start.",
+   "places": [
+    "qt_app.py:274"
+   ]
+  },
+  {
+   "key": "Select no more than {0} video feeds.",
+   "places": [
+    "qt_app.py:692"
+   ]
+  },
+  {
+   "key": "Select one capture card in the source list first.",
+   "nl": "Selecteer eerst één capturecard in de bronnenlijst.",
+   "places": [
+    "qt_app.py:202"
+   ]
+  },
+  {
+   "key": "Sources",
+   "nl": "Bronnen",
+   "places": [
+    "qt_app.py:274"
+   ]
+  },
+  {
+   "key": "Split each group's overall standings into advancement bands: top 4 = Kampioen, then the rest evenly into Talent and Wild.",
+   "nl": "Verdeel de eindstand van elke groep in doorstroombanden: top 4 = Kampioen, daarna de rest gelijk over Talent en Wild.",
+   "places": [
+    "qt_app.py:280"
+   ]
+  },
+  {
+   "key": "Start a session first. The workbook can be exported after at least one race is confirmed.",
+   "nl": "Start eerst een sessie. De werkmap kan worden geëxporteerd zodra minstens één race is bevestigd.",
+   "places": [
+    "qt_app.py:270"
+   ]
+  },
+  {
+   "key": "Start all",
+   "nl": "Alles starten",
+   "places": [
+    "qt_app.py:270"
+   ]
+  },
+  {
+   "key": "Start without MKV recording",
+   "nl": "Start zonder MKV-opname",
+   "places": [
+    "qt_app.py:215"
+   ]
+  },
+  {
+   "key": "Status",
+   "nl": "Status",
+   "places": [
+    "qt_app.py:197"
+   ]
+  },
+  {
+   "key": "Status: idle",
+   "nl": "Status: inactief",
+   "places": [
+    "qt_app.py:250"
+   ]
+  },
+  {
+   "key": "Stop all",
+   "nl": "Alles stoppen",
+   "places": [
+    "qt_app.py:237"
+   ]
+  },
+  {
+   "key": "Stop the current session before clearing Live_Output\\Frames.",
+   "nl": "Stop de huidige sessie voordat je Live_Output\\Frames opschoont.",
+   "places": [
+    "qt_app.py:271"
+   ]
+  },
+  {
+   "key": "Stopping capture…",
+   "nl": "Opname stoppen…",
+   "places": [
+    "qt_app.py:226"
+   ]
+  },
+  {
+   "key": "Stopping…",
+   "nl": "Stoppen…",
+   "places": [
+    "qt_app.py:237"
+   ]
+  },
+  {
+   "key": "Stream",
+   "nl": "Stream",
+   "places": [
+    "qt_app.py:196"
+   ]
+  },
+  {
+   "key": "That name already belongs to another capture card.",
+   "nl": "Die naam hoort al bij een andere capturecard.",
+   "places": [
+    "qt_app.py:206"
+   ]
+  },
+  {
+   "key": "The capture-card name could not be saved.",
+   "nl": "De naam van de capturecard kon niet worden opgeslagen.",
+   "places": [
+    "qt_app.py:207"
+   ]
+  },
+  {
+   "key": "The game language of this console (for English, French and Spanish also its region). Auto finds it from the race-end banner; a chosen language reads only that language.",
+   "nl": "De speltaal van deze console (bij Engels, Frans en Spaans ook de regio). Automatisch herkent hem aan de eindbanner van de race; een gekozen taal leest alleen die taal.",
+   "places": [
+    "qt_app.py:287"
+   ]
+  },
+  {
+   "key": "The scoreboard server is not running.",
+   "nl": "De scorebordserver is niet actief.",
+   "places": [
+    "qt_app.py:269"
+   ]
+  },
+  {
+   "key": "The video feeds will not be saved as MKV files.",
+   "nl": "De videofeeds worden niet als MKV-bestanden opgeslagen.",
+   "places": [
+    "qt_app.py:214"
+   ]
+  },
+  {
+   "key": "This device has no unique video ID; a remembered name cannot be assigned.",
+   "nl": "Dit apparaat heeft geen uniek video-ID; een vaste naam kan niet worden opgeslagen.",
+   "places": [
+    "qt_app.py:204"
+   ]
+  },
+  {
+   "key": "This race",
+   "nl": "Deze race",
+   "places": [
+    "qt_app.py:281"
+   ]
+  },
+  {
+   "key": "Total",
+   "nl": "Totaal",
+   "places": [
+    "qt_app.py:281"
+   ]
+  },
+  {
+   "key": "Total races in each group/cup. Shown on the overlay as \"Race X of Y\". Leave at — to show only the current race number.",
+   "nl": "Totaalaantal races per groep/beker. De overlay toont dit als \"Race X van Y\". Laat op — staan om alleen het huidige racenummer te tonen.",
+   "places": [
+    "qt_app.py:279"
+   ]
+  },
+  {
+   "key": "Use a single-line name of at most 40 characters.",
+   "nl": "Gebruik één regel van maximaal 40 tekens.",
+   "places": [
+    "qt_app.py:205"
+   ]
+  },
+  {
+   "key": "Verifying recordings…",
+   "nl": "Opnamen controleren…",
+   "places": [
+    "qt_app.py:234"
+   ]
+  },
+  {
+   "key": "Video",
+   "nl": "Video",
+   "places": [
+    "qt_app.py:197"
+   ]
+  },
+  {
+   "key": "Video checks are still running or a source failed.",
+   "nl": "De videocontrole is nog bezig of een bron is mislukt.",
+   "places": [
+    "qt_app.py:275"
+   ]
+  },
+  {
+   "key": "Video files (*.mkv *.mp4 *.avi);;All files (*.*)",
+   "nl": "Videobestanden (*.mkv *.mp4 *.avi);;Alle bestanden (*.*)",
+   "places": [
+    "qt_app.py:272"
+   ]
+  },
+  {
+   "key": "Videos not found:\n{0}",
+   "places": [
+    "qt_app.py:693"
+   ]
+  },
+  {
+   "key": "Virtual capture mode",
+   "nl": "Virtuele opnamemodus",
+   "places": [
+    "qt_app.py:209"
+   ]
+  },
+  {
+   "key": "WARNING: MKV RECORDINGS ARE OFF!\n\nDo you really want to START?",
+   "nl": "LET OP: MKV-OPNAMES STAAN UIT!\n\nWil je echt STARTEN?",
+   "places": [
+    "qt_app.py:213"
+   ]
+  },
+  {
+   "key": "Waiting for Tournament Manager delivery — recordings retained",
+   "nl": "Wachten op levering aan Tournament Manager — opnamen zijn veilig bewaard",
+   "places": [
+    "qt_app.py:232"
+   ]
+  },
+  {
+   "key": "Work offline",
+   "nl": "Offline werken",
+   "places": [
+    "qt_app.py:192"
+   ]
+  },
+  {
+   "key": "a video feed failed",
+   "nl": "een videofeed is uitgevallen",
+   "places": [
+    "qt_app.py:264"
+   ]
+  },
+  {
+   "key": "already running",
+   "nl": "al actief",
+   "places": [
+    "qt_app.py:260"
+   ]
+  },
+  {
+   "key": "analysis complete",
+   "nl": "analyse voltooid",
+   "places": [
+    "qt_app.py:263"
+   ]
+  },
+  {
+   "key": "analyzing race footage",
+   "nl": "racebeelden analyseren",
+   "places": [
+    "qt_app.py:263"
+   ]
+  },
+  {
+   "key": "black borders on {0} — fix playback fullscreen/overscan",
+   "places": [
+    "qt_app.py:712"
+   ]
+  },
+  {
+   "key": "border calibration {0}: {1}",
+   "places": [
+    "qt_app.py:714"
+   ]
+  },
+  {
+   "key": "capture signal lost on {0} (retrying)",
+   "places": [
+    "qt_app.py:710"
+   ]
+  },
+  {
+   "key": "capture signal restored on {0}",
+   "places": [
+    "qt_app.py:711"
+   ]
+  },
+  {
+   "key": "checking",
+   "nl": "controleren",
+   "places": [
+    "qt_app.py:252"
+   ]
+  },
+  {
+   "key": "checking selected videos before start",
+   "nl": "geselecteerde video's controleren vóór de start",
+   "places": [
+    "qt_app.py:256"
+   ]
+  },
+  {
+   "key": "completed",
+   "nl": "voltooid",
+   "places": [
+    "qt_app.py:254"
+   ]
+  },
+  {
+   "key": "couldn't read latest race for {0}",
+   "places": [
+    "qt_app.py:702"
+   ]
+  },
+  {
+   "key": "couldn't read track name for {0}: {1}",
+   "places": [
+    "qt_app.py:706"
+   ]
+  },
+  {
+   "key": "export failed: {0}",
+   "places": [
+    "qt_app.py:697"
+   ]
+  },
+  {
+   "key": "exporting current workbook...",
+   "nl": "huidige werkmap exporteren...",
+   "places": [
+    "qt_app.py:265"
+   ]
+  },
+  {
+   "key": "failed",
+   "nl": "mislukt",
+   "places": [
+    "qt_app.py:252"
+   ]
+  },
+  {
+   "key": "feed started for {0}",
+   "places": [
+    "qt_app.py:709"
+   ]
+  },
+  {
+   "key": "idle",
+   "nl": "inactief",
+   "places": [
+    "qt_app.py:251"
+   ]
+  },
+  {
+   "key": "latest race results ready for {0}",
+   "places": [
+    "qt_app.py:701"
+   ]
+  },
+  {
+   "key": "monitoring on: CPU/GPU/RAM sampler started",
+   "nl": "monitoring actief: CPU/GPU/RAM-meting gestart",
+   "places": [
+    "qt_app.py:285"
+   ]
+  },
+  {
+   "key": "new race detected for {0}",
+   "places": [
+    "qt_app.py:703"
+   ]
+  },
+  {
+   "key": "no signal",
+   "nl": "geen signaal",
+   "places": [
+    "qt_app.py:283"
+   ]
+  },
+  {
+   "key": "not loaded",
+   "nl": "niet geladen",
+   "places": [
+    "qt_app.py:252"
+   ]
+  },
+  {
+   "key": "paused",
+   "nl": "gepauzeerd",
+   "places": [
+    "qt_app.py:253"
+   ]
+  },
+  {
+   "key": "paused with feeds",
+   "nl": "gepauzeerd met actieve feeds",
+   "places": [
+    "qt_app.py:260"
+   ]
+  },
+  {
+   "key": "previous run is still stopping — wait a moment",
+   "nl": "de vorige sessie wordt nog gestopt — wacht even",
+   "places": [
+    "qt_app.py:259"
+   ]
+  },
+  {
+   "key": "queued",
+   "nl": "in wachtrij",
+   "places": [
+    "qt_app.py:253"
+   ]
+  },
+  {
+   "key": "reading latest race results for {0}",
+   "places": [
+    "qt_app.py:700"
+   ]
+  },
+  {
+   "key": "reading track name for {0}",
+   "places": [
+    "qt_app.py:705"
+   ]
+  },
+  {
+   "key": "ready",
+   "nl": "gereed",
+   "places": [
+    "qt_app.py:252"
+   ]
+  },
+  {
+   "key": "recording completed for {0}",
+   "places": [
+    "qt_app.py:716"
+   ]
+  },
+  {
+   "key": "recording {0} to MKV",
+   "places": [
+    "qt_app.py:715"
+   ]
+  },
+  {
+   "key": "resumed",
+   "nl": "hervat",
+   "places": [
+    "qt_app.py:260"
+   ]
+  },
+  {
+   "key": "review",
+   "nl": "controleren",
+   "places": [
+    "qt_app.py:254"
+   ]
+  },
+  {
+   "key": "running",
+   "nl": "actief",
+   "places": [
+    "qt_app.py:253"
+   ]
+  },
+  {
+   "key": "selected videos ready",
+   "nl": "geselecteerde video's zijn gereed",
+   "places": [
+    "qt_app.py:257"
+   ]
+  },
+  {
+   "key": "stale Frames archived to {0}",
+   "places": [
+    "qt_app.py:695"
+   ]
+  },
+  {
+   "key": "standings updated for {0} ({1} drivers)",
+   "places": [
+    "qt_app.py:699"
+   ]
+  },
+  {
+   "key": "stop failed: {0}",
+   "places": [
+    "qt_app.py:698"
+   ]
+  },
+  {
+   "key": "stopped",
+   "nl": "gestopt",
+   "places": [
+    "qt_app.py:253"
+   ]
+  },
+  {
+   "key": "stopping feeds and workers...",
+   "nl": "feeds en verwerking stoppen...",
+   "places": [
+    "qt_app.py:261"
+   ]
+  },
+  {
+   "key": "stopping feeds before exit...",
+   "nl": "feeds stoppen vóór afsluiten...",
+   "places": [
+    "qt_app.py:262"
+   ]
+  },
+  {
+   "key": "stopping...",
+   "nl": "stoppen...",
+   "places": [
+    "qt_app.py:261"
+   ]
+  },
+  {
+   "key": "track identified for {0}: {1}",
+   "places": [
+    "qt_app.py:704"
+   ]
+  },
+  {
+   "key": "unavailable ({0})",
+   "places": [
+    "qt_app.py:690"
+   ]
+  },
+  {
+   "key": "validated",
+   "nl": "gecontroleerd",
+   "places": [
+    "qt_app.py:254"
+   ]
+  },
+  {
+   "key": "video check failed for one or more sources",
+   "nl": "videocontrole is mislukt voor een of meer bronnen",
+   "places": [
+    "qt_app.py:258"
+   ]
+  },
+  {
+   "key": "waiting for detection",
+   "nl": "wachten op detectie",
+   "places": [
+    "qt_app.py:284"
+   ]
+  },
+  {
+   "key": "waiting for live capture signal",
+   "nl": "wachten op het live opnamesignaal",
+   "places": [
+    "qt_app.py:255"
+   ]
+  },
+  {
+   "key": "workbook export failed: {0}",
+   "places": [
+    "qt_app.py:708"
+   ]
+  },
+  {
+   "key": "{0} fills the frame again",
+   "places": [
+    "qt_app.py:713"
+   ]
+  },
+  {
+   "key": "{0} workbook updated: {1}",
+   "places": [
+    "qt_app.py:707"
+   ]
+  },
+  {
+   "key": "{0} | {1} | Race: {2} | Found: {3} | Completed: {4}",
+   "places": [
+    "qt_app.py:724"
+   ]
+  }
+ ]
+}

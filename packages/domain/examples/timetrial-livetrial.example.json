@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.01SYNTHETICLIVETRIAL",
+  "revision": 2,
+  "mode": 150,
+  "trackId": "track.gcn_baby_park",
+  "totalTimeMs": 62000,
+  "laps": [
+    {
+      "lapNumber": 1,
+      "timeMs": 10300,
+      "coinsCollected": 4,
+      "mushroomsUsed": 1
+    },
+    {
+      "lapNumber": 2,
+      "timeMs": 8600,
+      "coinsCollected": 3,
+      "mushroomsUsed": 0
+    },
+    {
+      "lapNumber": 3,
+      "timeMs": 8700,
+      "coinsCollected": 2,
+      "mushroomsUsed": 1
+    },
+    {
+      "lapNumber": 4,
+      "timeMs": 8800,
+      "coinsCollected": 1,
+      "mushroomsUsed": 0
+    },
+    {
+      "lapNumber": 5,
+      "timeMs": 8600,
+      "coinsCollected": 0,
+      "mushroomsUsed": 0
+    },
+    {
+      "lapNumber": 6,
+      "timeMs": 8500,
+      "coinsCollected": 0,
+      "mushroomsUsed": 1
+    },
+    {
+      "lapNumber": 7,
+      "timeMs": 8500,
+      "coinsCollected": 0,
+      "mushroomsUsed": 0
+    }
+  ],
+  "loadout": {
+    "characterId": "character.mario",
+    "bodyId": "body.standard_kart",
+    "bodyVariantId": "body_variant.standard_kart.001_blue",
+    "tireId": "tire.normal",
+    "gliderId": "glider.super_glider",
+    "gliderVariantId": "glider_variant.super_glider.001_blue"
+  },
+  "countryId": "country.be",
+  "playerReference": {
+    "namespace": "producer_local_profile",
+    "value": "livetrial.synthetic-profile-02"
+  },
+  "observedPlayerName": "Synthetic Racer B",
+  "source": {
+    "kind": "livetrial_recorded_video",
+    "producerVersion": "synthetic-example",
+    "localRecordId": "run.synthetic-0007"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786902000000,
+    "capturedAtMs": 1786902000000,
+    "createdAtMs": 1786902060000
+  },
+  "evidence": [
+    {
+      "kind": "video",
+      "reference": "synthetic/livetrial-run-0007.mkv",
+      "sha256": "2222222222222222222222222222222222222222222222222222222222222222",
+      "mediaType": "video/x-matroska"
+    },
+    {
+      "kind": "capture_session",
+      "reference": "synthetic/session-0002/run-0007"
+    }
+  ],
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "livetrial result-card lap-sum and state-machine checks",
+    "lapSumMatches": true,
+    "confidence": 0.97,
+    "fieldConfidence": {
+      "totalTime": 0.99,
+      "track": 0.98,
+      "character": 0.96,
+      "body": 0.95,
+      "tire": 0.97,
+      "glider": 0.94,
+      "country": 0.91,
+      "playerName": 0.84
+    }
+  }
+}

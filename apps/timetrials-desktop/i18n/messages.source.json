@@ -1,0 +1,3805 @@
+{
+ "schemaVersion": "mk8dx.livetrial-dashboard-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_desktop_messages.py",
+ "messages": [
+  {
+   "key": "    it is at http://127.0.0.1:8777/ if you close it.",
+   "nl": "    het staat op http://127.0.0.1:8777/ als je het sluit.",
+   "places": [
+    "livetrial_app.py:225"
+   ]
+  },
+  {
+   "key": "    or click Stop capture on the dashboard.",
+   "nl": "    of klik op Opname stoppen op het dashboard.",
+   "places": [
+    "livetrial_app.py:223"
+   ]
+  },
+  {
+   "key": "  - The dashboard with the live picture opens in your browser by itself;",
+   "nl": "  - Het dashboard met het livebeeld opent vanzelf in je browser;",
+   "places": [
+    "livetrial_app.py:224"
+   ]
+  },
+  {
+   "key": "  - To stop and come back to this menu: press Ctrl+C in this window,",
+   "nl": "  - Stoppen en terug naar dit menu: druk op Ctrl+C in dit venster,",
+   "places": [
+    "livetrial_app.py:222"
+   ]
+  },
+  {
+   "key": " (your name {0})",
+   "nl": " (je naam {0})",
+   "places": [
+    "app.js:1727"
+   ]
+  },
+  {
+   "key": " needs to sign in again: until then results wait on this PC and progress is not refreshed.",
+   "nl": " moet opnieuw aanmelden: tot die tijd wachten resultaten op deze pc en wordt de voortgang niet vernieuwd.",
+   "places": [
+    "livetrial_app.py:249"
+   ]
+  },
+  {
+   "key": " to check it is the right one. This takes a few seconds while the device starts...",
+   "nl": " om te controleren of het de juiste is. Dit duurt een paar seconden terwijl het apparaat opstart...",
+   "places": [
+    "livetrial_app.py:237"
+   ]
+  },
+  {
+   "key": "#{0} of {1}",
+   "nl": "#{0} van {1}",
+   "places": [
+    "app.js:450",
+    "app.js:469"
+   ]
+  },
+  {
+   "key": "(used last time)",
+   "nl": "(vorige keer gebruikt)",
+   "places": [
+    "livetrial_app.py:235"
+   ]
+  },
+  {
+   "key": "+ Add account",
+   "nl": "+ Account toevoegen",
+   "places": [
+    "app.js:1099"
+   ]
+  },
+  {
+   "key": "96-track standing",
+   "nl": "stand over 96 circuits",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "A Player reacted to your Time Trial",
+   "nl": "Een speler reageerde op jouw Time Trial",
+   "places": [
+    "app.js:831"
+   ]
+  },
+  {
+   "key": "A correction saves a new version; the earlier one is kept.",
+   "nl": "Een correctie bewaart een nieuwe versie; de eerdere blijft bewaard.",
+   "places": [
+    "app.js:1650"
+   ]
+  },
+  {
+   "key": "A new {0}cc World Record was set; Mastery has been recalculated",
+   "nl": "Er is een nieuw {0}cc-wereldrecord; Mastery is opnieuw berekend",
+   "places": [
+    "app.js:834"
+   ]
+  },
+  {
+   "key": "A title is one line.",
+   "nl": "Een titel is één regel.",
+   "places": [
+    "app.js:2083"
+   ]
+  },
+  {
+   "key": "AVERAGE",
+   "nl": "GEMIDDELDE",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "AVERAGE FINISH",
+   "nl": "GEMIDDELDE FINISH",
+   "places": [
+    "app.js:546"
+   ]
+  },
+  {
+   "key": "Account",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Accounts on this PC",
+   "nl": "Accounts op deze pc",
+   "places": [
+    "app.js:1098"
+   ]
+  },
+  {
+   "key": "Add a Player with the search above, or the Nintendo Ghost or World Record, to see the gap on every track.",
+   "nl": "Voeg met de zoekbalk hierboven een speler toe, of de Nintendo-ghost of het wereldrecord, om op elk circuit het verschil te zien.",
+   "places": [
+    "app.js:736"
+   ]
+  },
+  {
+   "key": "Add an account",
+   "nl": "Een account toevoegen",
+   "places": [
+    "livetrial_app.py:247"
+   ]
+  },
+  {
+   "key": "Add missing details",
+   "nl": "Ontbrekende details toevoegen",
+   "places": [
+    "app.js:1698"
+   ]
+  },
+  {
+   "key": "Added to your website result: {0}",
+   "nl": "Toegevoegd aan je websiteresultaat: {0}",
+   "places": [
+    "app.js:1729"
+   ]
+  },
+  {
+   "key": "Address saved. LiveTrial is restarting…",
+   "nl": "Adres opgeslagen. LiveTrial start opnieuw…",
+   "places": [
+    "app.js:1572"
+   ]
+  },
+  {
+   "key": "Adds what this ghost shows and your website result lacks (laps, coins, mushrooms, parts); nothing is replaced",
+   "nl": "Voegt toe wat deze ghost laat zien en je websiteresultaat mist (rondes, munten, paddenstoelen, onderdelen); niets wordt vervangen",
+   "places": [
+    "app.js:1698"
+   ]
+  },
+  {
+   "key": "All results",
+   "nl": "Alle ritten",
+   "places": [
+    "app.js:1249"
+   ]
+  },
+  {
+   "key": "All results synchronized",
+   "nl": "Alle resultaten zijn gesynchroniseerd",
+   "places": [
+    "app.js:847"
+   ]
+  },
+  {
+   "key": "All runs",
+   "nl": "Alle ritten",
+   "places": [
+    "app.js:1394"
+   ]
+  },
+  {
+   "key": "All tracks",
+   "nl": "Alle circuits",
+   "places": [
+    "app.js:501"
+   ]
+  },
+  {
+   "key": "Already on the website",
+   "nl": "Staat al op de website",
+   "places": [
+    "app.js:1685",
+    "app.js:1686"
+   ]
+  },
+  {
+   "key": "Already saved",
+   "nl": "Al bewaard",
+   "places": [
+    "app.js:1687"
+   ]
+  },
+  {
+   "key": "Also forget locally stored YouTube upload history for this Player ({0} clip(s)).",
+   "nl": "Ook de lokaal bewaarde YouTube-uploadgeschiedenis van deze speler vergeten ({0} clip(s)).",
+   "places": [
+    "app.js:2060"
+   ]
+  },
+  {
+   "key": "Among rivals",
+   "nl": "Onder rivalen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Analyse",
+   "nl": "Analyseren",
+   "places": [
+    "app.js:1483"
+   ]
+  },
+  {
+   "key": "Analyse a video",
+   "nl": "Video analyseren",
+   "places": [
+    "app.js:1299",
+    "app.js:1478"
+   ]
+  },
+  {
+   "key": "Analysing <b>{0}</b>",
+   "nl": "<b>{0}</b> analyseren",
+   "places": [
+    "app.js:1304"
+   ]
+  },
+  {
+   "key": "Analysis finished.",
+   "nl": "Analyse klaar.",
+   "places": [
+    "app.js:1309"
+   ]
+  },
+  {
+   "key": "Analyze a video",
+   "nl": "Een video analyseren",
+   "places": [
+    "livetrial_app.py:246"
+   ]
+  },
+  {
+   "key": "Asking example.invalid for a sign-in code…",
+   "nl": "Aanmeldcode opvragen bij example.invalid…",
+   "places": [
+    "app.js:1150"
+   ]
+  },
+  {
+   "key": "Automatic send",
+   "nl": "Automatisch verzenden",
+   "places": [
+    "livetrial_app.py:258"
+   ]
+  },
+  {
+   "key": "Automatic — recognised at the start of each session",
+   "nl": "Automatisch — herkend bij de start van elke sessie",
+   "places": [
+    "app.js:1534"
+   ]
+  },
+  {
+   "key": "Average",
+   "nl": "Gemiddelde",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "BEST STANDING",
+   "nl": "BESTE POSITIE",
+   "places": [
+    "app.js:449"
+   ]
+  },
+  {
+   "key": "BUILD",
+   "nl": "VOERTUIG",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Back",
+   "nl": "Terug",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Best {0}",
+   "nl": "Beste {0}",
+   "places": [
+    "app.js:455"
+   ]
+  },
+  {
+   "key": "Body",
+   "nl": "Chassis",
+   "places": [
+    "app.js:1885"
+   ]
+  },
+  {
+   "key": "Build",
+   "nl": "Voertuig",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Build stats",
+   "nl": "Kartstatistieken",
+   "places": [
+    "app.js:808"
+   ]
+  },
+  {
+   "key": "By clicking 'Upload to YouTube', you certify that the content you are uploading complies with the <a href=\"{0}\" target=\"_blank\" rel=\"noreferrer\">YouTube Terms of Service</a>, including the <a href=\"{1}\" target=\"_blank\" rel=\"noreferrer\">YouTube Community Guidelines</a>.",
+   "nl": "Door op 'Uploaden naar YouTube' te klikken, verklaar je dat de inhoud die je uploadt voldoet aan de <a href=\"{0}\" target=\"_blank\" rel=\"noreferrer\">Servicevoorwaarden van YouTube</a>, inclusief de <a href=\"{1}\" target=\"_blank\" rel=\"noreferrer\">Communityrichtlijnen van YouTube</a>.",
+   "places": [
+    "app.js:2092"
+   ]
+  },
+  {
+   "key": "CLOSEST BATTLES",
+   "nl": "KLEINSTE DUELS",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "CLOSEST TO THE NEXT LEVEL",
+   "nl": "DICHTST BIJ HET VOLGENDE NIVEAU",
+   "places": [
+    "app.js:443"
+   ]
+  },
+  {
+   "key": "CLOSEST TO THE PLAYER ABOVE",
+   "nl": "DICHTST BIJ DE SPELER BOVEN JE",
+   "places": [
+    "app.js:446"
+   ]
+  },
+  {
+   "key": "COMBINED TIME",
+   "nl": "GECOMBINEERDE TIJD",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "COMMUNITY ACTIVITY",
+   "nl": "COMMUNITYACTIVITEIT",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "COUNTED RACES",
+   "nl": "GETELDE RACES",
+   "places": [
+    "app.js:545"
+   ]
+  },
+  {
+   "key": "Calculated from your latest synchronized results.",
+   "nl": "Berekend uit je laatst gesynchroniseerde resultaten.",
+   "places": [
+    "app.js:560"
+   ]
+  },
+  {
+   "key": "Cancel",
+   "nl": "Annuleren",
+   "places": [
+    "app.js:2020",
+    "app.js:2105"
+   ]
+  },
+  {
+   "key": "Capture and local run history still work normally.",
+   "nl": "Opname en lokale geschiedenis blijven normaal werken.",
+   "places": [
+    "app.js:951"
+   ]
+  },
+  {
+   "key": "Capture and sending stop until you start LiveTrial again. Everything saved stays on this PC.",
+   "nl": "Opnemen en verzenden stoppen tot je LiveTrial weer start. Alles wat is opgeslagen blijft op deze pc.",
+   "places": [
+    "app.js:1621"
+   ]
+  },
+  {
+   "key": "Capture ended.",
+   "nl": "Opname beëindigd.",
+   "places": [
+    "app.js:1309"
+   ]
+  },
+  {
+   "key": "Capture from the capture card",
+   "nl": "Opnemen via de capturekaart",
+   "places": [
+    "livetrial_app.py:233"
+   ]
+  },
+  {
+   "key": "Capture is off",
+   "nl": "Opname staat uit",
+   "places": [
+    "app.js:1338"
+   ]
+  },
+  {
+   "key": "Capture is on",
+   "nl": "Opname staat aan",
+   "places": [
+    "app.js:1338"
+   ]
+  },
+  {
+   "key": "Capture needs FFmpeg; Start capture explains how to install it. Analysing a video works without it.",
+   "nl": "Opnemen heeft FFmpeg nodig; Opname starten legt uit hoe je het installeert. Een video analyseren werkt zonder.",
+   "places": [
+    "app.js:1315"
+   ]
+  },
+  {
+   "key": "Capturing from <b>{0}</b>",
+   "nl": "Opname van <b>{0}</b>",
+   "places": [
+    "app.js:1303"
+   ]
+  },
+  {
+   "key": "Capturing. This menu is not available while capturing.",
+   "nl": "Bezig met opnemen. Dit menu is tijdens het opnemen niet beschikbaar.",
+   "places": [
+    "livetrial_app.py:221"
+   ]
+  },
+  {
+   "key": "Change automatic send setting",
+   "nl": "Instelling automatisch verzenden wijzigen",
+   "places": [
+    "livetrial_app.py:243"
+   ]
+  },
+  {
+   "key": "Change language / Taal wijzigen",
+   "nl": "Taal wijzigen / Change language",
+   "places": [
+    "livetrial_app.py:245"
+   ]
+  },
+  {
+   "key": "Changing server keeps accounts and waiting runs separate. LiveTrial restarts after saving.",
+   "nl": "Bij een andere server blijven accounts en wachtende ritten gescheiden. LiveTrial start opnieuw na opslaan.",
+   "places": [
+    "app.js:1527"
+   ]
+  },
+  {
+   "key": "Character",
+   "nl": "Coureur",
+   "places": [
+    "app.js:1885"
+   ]
+  },
+  {
+   "key": "Check capture requirements",
+   "nl": "Opnamevereisten controleren",
+   "places": [
+    "livetrial_app.py:242"
+   ]
+  },
+  {
+   "key": "Check that the site shows this code:",
+   "nl": "Controleer dat de site deze code toont:",
+   "places": [
+    "app.js:1173"
+   ]
+  },
+  {
+   "key": "Check the picture",
+   "nl": "Beeld controleren",
+   "places": [
+    "app.js:1454",
+    "app.js:1464"
+   ]
+  },
+  {
+   "key": "Choose a video, or paste its path.",
+   "nl": "Kies een video of plak het pad.",
+   "places": [
+    "app.js:1496"
+   ]
+  },
+  {
+   "key": "Choose an account in the account menu to upload clips.",
+   "nl": "Kies een account in het accountmenu om clips te uploaden.",
+   "places": [
+    "app.js:2168"
+   ]
+  },
+  {
+   "key": "Choose or add an account to connect its YouTube channel.",
+   "nl": "Kies of voeg een account toe om het YouTube-kanaal ervan te koppelen.",
+   "places": [
+    "app.js:2017"
+   ]
+  },
+  {
+   "key": "Choose the video",
+   "nl": "Kies de video",
+   "places": [
+    "app.js:1479"
+   ]
+  },
+  {
+   "key": "Clear comparisons with your own best and the platform used to submit each result.",
+   "nl": "Duidelijke vergelijkingen met je eigen beste tijd en het platform waarop elke uitslag is ingestuurd.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Click a level to see those tracks in the record book.",
+   "nl": "Klik op een niveau om die circuits in het recordboek te zien.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Clips & YouTube",
+   "nl": "Clips & YouTube",
+   "places": [
+    "app.js:1396"
+   ]
+  },
+  {
+   "key": "Clips on this PC",
+   "nl": "Clips op deze pc",
+   "places": [
+    "app.js:2248"
+   ]
+  },
+  {
+   "key": "Clips you upload go to {0}'s YouTube channel.",
+   "nl": "Clips die je uploadt gaan naar het YouTube-kanaal van {0}.",
+   "places": [
+    "app.js:2023"
+   ]
+  },
+  {
+   "key": "Close",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Close notifications",
+   "nl": "Meldingen sluiten",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Closest",
+   "nl": "Dichtstbij",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Code accepted. Signing in…",
+   "nl": "Code geaccepteerd. Aanmelden…",
+   "places": [
+    "app.js:1198"
+   ]
+  },
+  {
+   "key": "Code from the email",
+   "nl": "Code uit de e-mail",
+   "places": [
+    "app.js:1166"
+   ]
+  },
+  {
+   "key": "Combined time",
+   "nl": "Gecombineerde tijd",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Community activity",
+   "nl": "Communityactiviteit",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Community website address",
+   "nl": "Adres van je communitywebsite",
+   "places": [
+    "app.js:1525"
+   ]
+  },
+  {
+   "key": "Compact filters use the same saved Global, rivals and private Group scope as Web and Android.",
+   "nl": "Compacte filters gebruiken dezelfde opgeslagen wereldwijde, rivalen- en privégroepsselectie als Web en Android.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Compare totals, medals, Mastery and circuits",
+   "nl": "Vergelijk totalen, medailles, Mastery en circuits",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Compare totals, medals, Mastery and tracks",
+   "nl": "Vergelijk totalen, medailles, Mastery en circuits",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Connect YouTube",
+   "nl": "YouTube koppelen",
+   "places": [
+    "app.js:2032"
+   ]
+  },
+  {
+   "key": "Connect YouTube in the account menu (top right) to upload clips.",
+   "nl": "Koppel YouTube in het accountmenu (rechtsboven) om clips te uploaden.",
+   "places": [
+    "app.js:2169"
+   ]
+  },
+  {
+   "key": "Connect again",
+   "nl": "Opnieuw koppelen",
+   "places": [
+    "app.js:1997",
+    "app.js:2032"
+   ]
+  },
+  {
+   "key": "Connect the capture card, wait a few seconds and try again.",
+   "nl": "Sluit de capturekaart aan, wacht een paar seconden en probeer het opnieuw.",
+   "places": [
+    "livetrial_app.py:216"
+   ]
+  },
+  {
+   "key": "Connect {0}'s YouTube channel to upload clips as evidence. LiveTrial never sees your Google password.",
+   "nl": "Koppel het YouTube-kanaal van {0} om clips als bewijs te uploaden. LiveTrial ziet nooit je Google-wachtwoord.",
+   "places": [
+    "app.js:2031"
+   ]
+  },
+  {
+   "key": "Connected",
+   "nl": "Gekoppeld",
+   "places": [
+    "app.js:1995"
+   ]
+  },
+  {
+   "key": "Connected to",
+   "nl": "Verbonden met",
+   "places": [
+    "livetrial_app.py:256"
+   ]
+  },
+  {
+   "key": "Connecting…",
+   "nl": "Koppelen…",
+   "places": [
+    "app.js:1996"
+   ]
+  },
+  {
+   "key": "Copy from {0}",
+   "nl": "Kopie van {0}",
+   "places": [
+    "app.js:893"
+   ]
+  },
+  {
+   "key": "Copy link",
+   "nl": "Link kopiëren",
+   "places": [
+    "app.js:2120"
+   ]
+  },
+  {
+   "key": "Copy this link:",
+   "nl": "Kopieer deze link:",
+   "places": [
+    "app.js:2195"
+   ]
+  },
+  {
+   "key": "Correct",
+   "nl": "Corrigeren",
+   "places": [
+    "app.js:1655",
+    "app.js:1740"
+   ]
+  },
+  {
+   "key": "Correct a recognized result",
+   "nl": "Een herkend resultaat corrigeren",
+   "places": [
+    "livetrial_app.py:244"
+   ]
+  },
+  {
+   "key": "Correct a recognized run",
+   "nl": "Een herkende rit corrigeren",
+   "places": [
+    "app.js:1871"
+   ]
+  },
+  {
+   "key": "Correction saved ({0}). It goes out with the next send.",
+   "nl": "Correctie opgeslagen ({0}). Die gaat mee met de volgende verzending.",
+   "places": [
+    "app.js:1984"
+   ]
+  },
+  {
+   "key": "Country not selected",
+   "nl": "Land niet geselecteerd",
+   "places": [
+    "app.js:970"
+   ]
+  },
+  {
+   "key": "Cup",
+   "nl": "Beker",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Dashboard opened at",
+   "nl": "Dashboard geopend op",
+   "places": [
+    "livetrial_app.py:262"
+   ]
+  },
+  {
+   "key": "Dashboard sections",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Delta",
+   "nl": "Verschil",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Delta per track",
+   "nl": "Verschil per circuit",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Description",
+   "nl": "Beschrijving",
+   "places": [
+    "app.js:2098"
+   ]
+  },
+  {
+   "key": "Differs from your website result; nothing added",
+   "nl": "Wijkt af van je websiteresultaat; niets toegevoegd",
+   "places": [
+    "app.js:1724"
+   ]
+  },
+  {
+   "key": "Disconnect",
+   "nl": "Ontkoppelen",
+   "places": [
+    "app.js:2062"
+   ]
+  },
+  {
+   "key": "Disconnect YouTube",
+   "nl": "YouTube ontkoppelen",
+   "places": [
+    "app.js:2024"
+   ]
+  },
+  {
+   "key": "Disconnect YouTube for {0}? LiveTrial's access is removed from this PC. Videos already on YouTube are not deleted.",
+   "nl": "YouTube ontkoppelen voor {0}? De toegang van LiveTrial wordt van deze pc gehaald. Video's die al op YouTube staan worden niet verwijderd.",
+   "places": [
+    "app.js:2059"
+   ]
+  },
+  {
+   "key": "Disconnecting removes LiveTrial's access from this PC. Videos already on YouTube stay there.",
+   "nl": "Ontkoppelen haalt de toegang van LiveTrial van deze pc. Video's die al op YouTube staan blijven staan.",
+   "places": [
+    "app.js:2025"
+   ]
+  },
+  {
+   "key": "Does not match its account; kept here",
+   "nl": "Past niet bij het account; blijft hier bewaard",
+   "places": [
+    "app.js:1246"
+   ]
+  },
+  {
+   "key": "Download the update",
+   "nl": "Update downloaden",
+   "places": [
+    "app.js:871"
+   ]
+  },
+  {
+   "key": "Email me a link and code",
+   "nl": "Mail me een link en code",
+   "places": [
+    "app.js:1162"
+   ]
+  },
+  {
+   "key": "Email of your MK8DX account",
+   "nl": "E-mail van je MK8DX-account",
+   "places": [
+    "app.js:1160"
+   ]
+  },
+  {
+   "key": "Engine class",
+   "nl": "Motorklasse",
+   "places": [
+    "app.js:1873"
+   ]
+  },
+  {
+   "key": "Enter a title for the video.",
+   "nl": "Vul een titel voor de video in.",
+   "places": [
+    "app.js:2081"
+   ]
+  },
+  {
+   "key": "Every track, your best time",
+   "nl": "Elk circuit, je beste tijd",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Everything has been sent.",
+   "nl": "Alles is verzonden.",
+   "places": [
+    "app.js:1250"
+   ]
+  },
+  {
+   "key": "Export this ghost as JSON",
+   "nl": "Deze ghost als JSON exporteren",
+   "places": [
+    "app.js:1701"
+   ]
+  },
+  {
+   "key": "Filter the record book by Mastery",
+   "nl": "Filter het recordboek op Mastery",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Find a {0}…",
+   "nl": "{0} zoeken…",
+   "places": [
+    "app.js:1906"
+   ]
+  },
+  {
+   "key": "Finish in your browser: sign in with Google and allow uploads.",
+   "nl": "Rond het af in je browser: meld je aan bij Google en sta uploaden toe.",
+   "places": [
+    "app.js:2019"
+   ]
+  },
+  {
+   "key": "Finishing…",
+   "nl": "Afronden…",
+   "places": [
+    "app.js:2125"
+   ]
+  },
+  {
+   "key": "Forget this upload",
+   "nl": "Deze upload vergeten",
+   "places": [
+    "app.js:2121"
+   ]
+  },
+  {
+   "key": "Forget this upload on this PC? The video stays on YouTube; delete it there in YouTube Studio if you want it gone.",
+   "nl": "Deze upload op deze pc vergeten? De video blijft op YouTube staan; verwijder hem daar in YouTube Studio als je hem weg wilt.",
+   "places": [
+    "app.js:2113"
+   ]
+  },
+  {
+   "key": "From your ghost",
+   "nl": "Van je ghost",
+   "places": [
+    "app.js:1739"
+   ]
+  },
+  {
+   "key": "GLOBAL STANDING",
+   "nl": "WERELDWIJDE STAND",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Ghost race",
+   "nl": "Ghostrit",
+   "places": [
+    "app.js:1710"
+   ]
+  },
+  {
+   "key": "Ghost replay",
+   "nl": "Ghost-replay",
+   "places": [
+    "app.js:2149"
+   ]
+  },
+  {
+   "key": "Glider",
+   "nl": "Paraglider",
+   "places": [
+    "app.js:1885"
+   ]
+  },
+  {
+   "key": "Global",
+   "nl": "Wereldwijd",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Global progress and Rival battles use the same canonical bests as the website and phone app.",
+   "nl": "Wereldwijde voortgang en duels met rivalen gebruiken dezelfde canonieke beste tijden als de website en telefoonapp.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Goes out with this account",
+   "nl": "Gaat mee met dit account",
+   "places": [
+    "app.js:1241"
+   ]
+  },
+  {
+   "key": "Google Privacy Policy",
+   "nl": "Privacybeleid van Google",
+   "places": [
+    "app.js:2005"
+   ]
+  },
+  {
+   "key": "Google allows only Private uploads until LiveTrial's YouTube review is done. A Private video can only be watched by you, so it is not yet visible as evidence on the website.",
+   "nl": "Google staat alleen privé-uploads toe tot de YouTube-controle van LiveTrial klaar is. Een privévideo kan alleen jij bekijken, dus die is nog niet zichtbaar als bewijs op de website.",
+   "places": [
+    "app.js:2101"
+   ]
+  },
+  {
+   "key": "Google ended LiveTrial's access (while the Google app is in testing, after 7 days). Connect again to upload.",
+   "nl": "Google heeft de toegang van LiveTrial beëindigd (zolang de Google-app in de testfase is, na 7 dagen). Koppel opnieuw om te uploaden.",
+   "places": [
+    "app.js:2030"
+   ]
+  },
+  {
+   "key": "HIGHLIGHTS",
+   "nl": "UITGELICHT",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "If you keep it, LiveTrial keeps showing those clips as on YouTube with their links, and will not upload them again.",
+   "nl": "Als je hem bewaart, blijft LiveTrial die clips als 'op YouTube' met hun link tonen en uploadt hij ze niet opnieuw.",
+   "places": [
+    "app.js:2061"
+   ]
+  },
+  {
+   "key": "If {0} belongs to an MK8DX account with a Player, a link and a code are on their way.",
+   "nl": "Als {0} bij een MK8DX-account met een speler hoort, zijn een link en een code onderweg.",
+   "places": [
+    "app.js:1185"
+   ]
+  },
+  {
+   "key": "In use",
+   "nl": "In gebruik",
+   "places": [
+    "app.js:1104"
+   ]
+  },
+  {
+   "key": "Install {0} to send results again. Capture, analysis and your saved runs keep working; nothing is lost.",
+   "nl": "Installeer {0} om weer te versturen. Opnemen, analyseren en je opgeslagen ritten blijven werken; er gaat niets verloren.",
+   "places": [
+    "app.js:870"
+   ]
+  },
+  {
+   "key": "Is that your Switch?",
+   "nl": "Is dat je Switch?",
+   "places": [
+    "app.js:1451"
+   ]
+  },
+  {
+   "key": "Is that your Switch? (y/n) [y]",
+   "nl": "Is dat je Switch? (j/n) [j]",
+   "places": [
+    "livetrial_app.py:220"
+   ]
+  },
+  {
+   "key": "It may be in use by another program (OBS, a browser), or it is not the capture card.",
+   "nl": "Mogelijk is het in gebruik door een ander programma (OBS, een browser), of het is niet de capturekaart.",
+   "places": [
+    "livetrial_app.py:217"
+   ]
+  },
+  {
+   "key": "Its account was removed from this PC; kept here",
+   "nl": "Het account is van deze pc verwijderd; blijft hier bewaard",
+   "places": [
+    "app.js:1243"
+   ]
+  },
+  {
+   "key": "Kart builder",
+   "nl": "Voertuigbouwer",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Kart combination",
+   "nl": "Kartcombinatie",
+   "places": [
+    "app.js:1875"
+   ]
+  },
+  {
+   "key": "Keep",
+   "nl": "Houden",
+   "places": [
+    "app.js:1110",
+    "app.js:2115"
+   ]
+  },
+  {
+   "key": "Keep connected",
+   "nl": "Gekoppeld houden",
+   "places": [
+    "app.js:2063"
+   ]
+  },
+  {
+   "key": "Keep open",
+   "nl": "Openhouden",
+   "places": [
+    "app.js:1623"
+   ]
+  },
+  {
+   "key": "Keep recording times to unlock this comparison.",
+   "nl": "Blijf tijden vastleggen om deze vergelijking te ontgrendelen.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "LAST RACE",
+   "nl": "LAATSTE RIT",
+   "places": [
+    "app.js:1863"
+   ]
+  },
+  {
+   "key": "LAST SESSION",
+   "nl": "VORIGE SESSIE",
+   "places": [
+    "app.js:1797"
+   ]
+  },
+  {
+   "key": "LIVE",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "LOCAL EVIDENCE",
+   "nl": "LOKAAL BEWIJS",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Language",
+   "nl": "Taal",
+   "places": [
+    "app.js:1529"
+   ]
+  },
+  {
+   "key": "Language / Taal: English.",
+   "nl": "Taal / Language: Engels.",
+   "places": [
+    "livetrial_app.py:212"
+   ]
+  },
+  {
+   "key": "Language / Taal: Nederlands.",
+   "nl": "Taal / Language: Nederlands.",
+   "places": [
+    "livetrial_app.py:211"
+   ]
+  },
+  {
+   "key": "Language of your Switch",
+   "nl": "Taal van je Switch",
+   "places": [
+    "app.js:1532"
+   ]
+  },
+  {
+   "key": "Lap {0}: coins are a whole number from 0 to 10 (what you hold at the end of the lap).",
+   "nl": "Ronde {0}: munten zijn een heel getal van 0 tot 10 (wat je aan het eind van de ronde hebt).",
+   "places": [
+    "app.js:1947"
+   ]
+  },
+  {
+   "key": "Lap {0}: mushrooms are a whole number from 0 to 3.",
+   "nl": "Ronde {0}: paddenstoelen zijn een heel getal van 0 tot 3.",
+   "places": [
+    "app.js:1949"
+   ]
+  },
+  {
+   "key": "Lap {0}: use a time such as 0:34.567.",
+   "nl": "Ronde {0}: gebruik een tijd zoals 0:34.567.",
+   "places": [
+    "app.js:1937"
+   ]
+  },
+  {
+   "key": "Laps",
+   "nl": "Rondes",
+   "places": [
+    "app.js:2152"
+   ]
+  },
+  {
+   "key": "Laps: time, coins, mushrooms",
+   "nl": "Rondes: tijd, munten, paddenstoelen",
+   "places": [
+    "app.js:1877"
+   ]
+  },
+  {
+   "key": "Last try failed · click to retry",
+   "nl": "Laatste poging mislukt · klik om opnieuw te proberen",
+   "places": [
+    "app.js:890"
+   ]
+  },
+  {
+   "key": "Linked by your name {0}",
+   "nl": "Gekoppeld via je naam {0}",
+   "places": [
+    "app.js:1739"
+   ]
+  },
+  {
+   "key": "Live",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Live capture",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Live capture picture",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "LiveTrial asks Google only for permission to upload videos, and uploads only the clip you choose.",
+   "nl": "LiveTrial vraagt Google alleen toestemming om video's te uploaden, en uploadt alleen de clip die jij kiest.",
+   "places": [
+    "app.js:2033"
+   ]
+  },
+  {
+   "key": "LiveTrial is closed. You can close this window.",
+   "nl": "LiveTrial is afgesloten. Je kunt dit venster sluiten.",
+   "places": [
+    "app.js:1638"
+   ]
+  },
+  {
+   "key": "LiveTrial privacy policy",
+   "nl": "Privacybeleid LiveTrial",
+   "places": [
+    "app.js:2005"
+   ]
+  },
+  {
+   "key": "Loading your MK8DX progress…",
+   "nl": "Jouw MK8DX-voortgang laden…",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Loading…",
+   "nl": "Laden…",
+   "places": [
+    "app.js:1521",
+    "app.js:2248"
+   ]
+  },
+  {
+   "key": "Looking for video devices…",
+   "nl": "Videoapparaten zoeken…",
+   "places": [
+    "app.js:1439"
+   ]
+  },
+  {
+   "key": "MASTERY",
+   "nl": "MASTERY",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "MK8DX",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "MK8DX Time Trials · Windows PC",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "MOMENTUM",
+   "nl": "VORM",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "MOST ATTEMPTS",
+   "nl": "MEESTE POGINGEN",
+   "places": [
+    "app.js:453"
+   ]
+  },
+  {
+   "key": "MY RECORDS & STATS",
+   "nl": "MIJN RECORDS EN CIJFERS",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Mario Kart shows its banners, menus and track names in the Switch's system language. Automatic recognises it in the menus (track, character and part names) and keeps it until you stop, so start LiveTrial before you choose a track; a language you choose here stays chosen.",
+   "nl": "Mario Kart toont banners, menu's en baannamen in de systeemtaal van de Switch. Automatisch herkent die in de menu's (namen van banen, characters en onderdelen) en houdt hem vast tot je stopt; start LiveTrial dus voordat je een baan kiest. Een taal die je hier kiest blijft gekozen.",
+   "places": [
+    "app.js:1537"
+   ]
+  },
+  {
+   "key": "Mastery",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Mastery across your tracks",
+   "nl": "Mastery over je circuits",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Medals",
+   "nl": "Medailles",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Meta target: combine any character, body, tires and glider that reach exactly 3.25 Ground Speed and 4.75 Mini-Turbo. Optimum alternatives follow the Magic 8 rule: both stats total 8.00 and Ground Speed is not higher than Mini-Turbo.",
+   "nl": "Meta-doel: combineer een coureur, chassis, banden en paraglider die samen exact 3.25 grondsnelheid en 4.75 Mini-Turbo bereiken. Optimale alternatieven volgen de Magic 8-regel: beide waarden zijn samen 8.00 en grondsnelheid is niet hoger dan Mini-Turbo.",
+   "places": [
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "Mine ({0})",
+   "nl": "Van mij ({0})",
+   "places": [
+    "app.js:1692"
+   ]
+  },
+  {
+   "key": "More languages",
+   "nl": "Meer talen",
+   "places": [
+    "app.js:1531"
+   ]
+  },
+  {
+   "key": "Moved to {0}; it goes out with the next send",
+   "nl": "Naar {0} gezet; gaat mee met de volgende verzending",
+   "places": [
+    "app.js:1840"
+   ]
+  },
+  {
+   "key": "Mushrooms per lap",
+   "nl": "Paddenstoelen per ronde",
+   "places": [
+    "app.js:320"
+   ]
+  },
+  {
+   "key": "My ghost names",
+   "nl": "Mijn ghostnamen",
+   "places": [
+    "app.js:1541"
+   ]
+  },
+  {
+   "key": "My records",
+   "nl": "Mijn records",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Needs to sign in again",
+   "nl": "Moet opnieuw aanmelden",
+   "places": [
+    "app.js:1104"
+   ]
+  },
+  {
+   "key": "Nintendo Ghost",
+   "nl": "Nintendo-ghost",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Nintendo staff",
+   "nl": "Nintendo-staff",
+   "places": [
+    "app.js:1682"
+   ]
+  },
+  {
+   "key": "No account",
+   "nl": "Geen account",
+   "places": [
+    "app.js:1249",
+    "app.js:1653"
+   ]
+  },
+  {
+   "key": "No accounts yet. Runs are still recorded and kept on this PC.",
+   "nl": "Nog geen accounts. Ritten worden nog steeds op deze pc vastgelegd en bewaard.",
+   "places": [
+    "app.js:1111"
+   ]
+  },
+  {
+   "key": "No clips on this PC yet. LiveTrial keeps one clip per race while it captures.",
+   "nl": "Nog geen clips op deze pc. LiveTrial bewaart tijdens het opnemen één clip per rit.",
+   "places": [
+    "app.js:2176"
+   ]
+  },
+  {
+   "key": "No finished race yet. Each race you finish appears here with whether it is on the website, and every ghost you look at on the ghost menu as a Ghost race.",
+   "nl": "Nog geen uitgereden rit. Elke rit die je uitrijdt verschijnt hier, met of hij al op de website staat, en elke ghost die je in het ghostmenu bekijkt als Ghostrit.",
+   "places": [
+    "app.js:1808"
+   ]
+  },
+  {
+   "key": "No finished runs with a recognized time yet.",
+   "nl": "Nog geen uitgereden ritten met een herkende tijd.",
+   "places": [
+    "app.js:2176"
+   ]
+  },
+  {
+   "key": "No new personal bests in the last 30 days — the record book shows where the next one is closest.",
+   "nl": "Geen nieuwe persoonlijke records in de laatste 30 dagen — het recordboek laat zien waar de volgende het dichtst bij is.",
+   "places": [
+    "app.js:415"
+   ]
+  },
+  {
+   "key": "No notifications yet.",
+   "nl": "Nog geen meldingen.",
+   "places": [
+    "app.js:860"
+   ]
+  },
+  {
+   "key": "No picture came from ",
+   "nl": "Er kwam geen beeld van ",
+   "places": [
+    "livetrial_app.py:238"
+   ]
+  },
+  {
+   "key": "No race was saved in this session.",
+   "nl": "In deze sessie is geen rit opgeslagen.",
+   "places": [
+    "app.js:1808"
+   ]
+  },
+  {
+   "key": "No recognized runs on this PC yet.",
+   "nl": "Nog geen herkende ritten op deze pc.",
+   "places": [
+    "app.js:1656"
+   ]
+  },
+  {
+   "key": "No rivals selected yet. Choose them in your website settings.",
+   "nl": "Nog geen rivalen gekozen. Kies ze in je instellingen op de website.",
+   "places": [
+    "app.js:583"
+   ]
+  },
+  {
+   "key": "No shared {0}cc Rival times yet.",
+   "nl": "Nog geen gedeelde {0}cc-tijden met rivalen.",
+   "places": [
+    "app.js:604"
+   ]
+  },
+  {
+   "key": "No target yet",
+   "nl": "Nog geen doel",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "No tracks at this level.",
+   "nl": "Geen circuits op dit niveau.",
+   "places": [
+    "app.js:509"
+   ]
+  },
+  {
+   "key": "No video device was found on this PC.",
+   "nl": "Er is geen videoapparaat gevonden op deze pc.",
+   "places": [
+    "livetrial_app.py:215"
+   ]
+  },
+  {
+   "key": "No video device was found. Connect the capture card, wait a few seconds and try again.",
+   "nl": "Er is geen videoapparaat gevonden. Sluit de capturekaart aan, wacht een paar seconden en probeer het opnieuw.",
+   "places": [
+    "app.js:1443"
+   ]
+  },
+  {
+   "key": "Not capturing. Start capture and the live picture appears here, with every trigger the engine recognises and each finished race as it comes in.",
+   "nl": "Er loopt geen opname. Start een opname en het livebeeld verschijnt hier, met elke trigger die de engine herkent en elke uitgereden rit zodra die binnenkomt.",
+   "places": [
+    "app.js:1350"
+   ]
+  },
+  {
+   "key": "Not connected",
+   "nl": "Niet gekoppeld",
+   "places": [
+    "app.js:1999"
+   ]
+  },
+  {
+   "key": "Not finished",
+   "nl": "Niet uitgereden",
+   "places": [
+    "app.js:2149"
+   ]
+  },
+  {
+   "key": "Not mine",
+   "nl": "Niet van mij",
+   "places": [
+    "app.js:1695"
+   ]
+  },
+  {
+   "key": "Not raced",
+   "nl": "Niet gereden",
+   "places": [
+    "app.js:379",
+    "app.js:382"
+   ]
+  },
+  {
+   "key": "Not raced yet",
+   "nl": "Nog niet gereden",
+   "places": [
+    "app.js:465"
+   ]
+  },
+  {
+   "key": "Not sent yet",
+   "nl": "Nog niet verzonden",
+   "places": [
+    "app.js:1819"
+   ]
+  },
+  {
+   "key": "Not set up",
+   "nl": "Niet ingesteld",
+   "places": [
+    "app.js:1998"
+   ]
+  },
+  {
+   "key": "Nothing matches.",
+   "nl": "Niets gevonden.",
+   "places": [
+    "app.js:1910"
+   ]
+  },
+  {
+   "key": "Nothing was changed",
+   "nl": "Er is niets gewijzigd",
+   "places": [
+    "livetrial_app.py:259"
+   ]
+  },
+  {
+   "key": "Nothing was lost",
+   "nl": "Er is niets verloren gegaan",
+   "places": [
+    "livetrial_app.py:260"
+   ]
+  },
+  {
+   "key": "Notifications",
+   "nl": "Meldingen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Now {0} · {1}",
+   "nl": "Nu {0} · {1}",
+   "places": [
+    "app.js:445"
+   ]
+  },
+  {
+   "key": "OVERALL MASTERY",
+   "nl": "TOTALE MASTERY",
+   "places": [
+    "app.js:358"
+   ]
+  },
+  {
+   "key": "Off",
+   "nl": "Uit",
+   "places": [
+    "app.js:1539"
+   ]
+  },
+  {
+   "key": "Older copy · click to refresh",
+   "nl": "Oudere kopie · klik om te vernieuwen",
+   "places": [
+    "app.js:892"
+   ]
+  },
+  {
+   "key": "On",
+   "nl": "Aan",
+   "places": [
+    "app.js:1539"
+   ]
+  },
+  {
+   "key": "On YouTube",
+   "nl": "Op YouTube",
+   "places": [
+    "app.js:2118"
+   ]
+  },
+  {
+   "key": "On the website",
+   "nl": "Op de website",
+   "places": [
+    "app.js:1816",
+    "app.js:1857"
+   ]
+  },
+  {
+   "key": "One result",
+   "nl": "Eén resultaat",
+   "places": [
+    "livetrial_app.py:267"
+   ]
+  },
+  {
+   "key": "Only on this PC",
+   "nl": "Alleen op deze pc",
+   "places": [
+    "app.js:1815"
+   ]
+  },
+  {
+   "key": "Open download",
+   "nl": "Download openen",
+   "places": [
+    "app.js:858"
+   ]
+  },
+  {
+   "key": "Open in a separate window",
+   "nl": "In een apart venster openen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Open it on the website",
+   "nl": "Open hem op de website",
+   "places": [
+    "app.js:1685"
+   ]
+  },
+  {
+   "key": "Open local dashboard and run history",
+   "nl": "Lokaal dashboard en ritgeschiedenis openen",
+   "places": [
+    "livetrial_app.py:231"
+   ]
+  },
+  {
+   "key": "Open public profile",
+   "nl": "Openbaar profiel openen",
+   "places": [
+    "app.js:970",
+    "app.js:972"
+   ]
+  },
+  {
+   "key": "Open run history",
+   "nl": "Ritgeschiedenis openen",
+   "places": [
+    "app.js:1239"
+   ]
+  },
+  {
+   "key": "Open the approval page",
+   "nl": "Open de goedkeuringspagina",
+   "places": [
+    "app.js:1175"
+   ]
+  },
+  {
+   "key": "Optimum: Magic 8 is met and the build leans toward Mini-Turbo.",
+   "nl": "Optimaal: Magic 8 is behaald en de combinatie leunt naar Mini-Turbo.",
+   "places": [
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "Optional. To use it, place your Google Desktop client file here:",
+   "nl": "Optioneel. Zet daarvoor je Google Desktop-clientbestand hier:",
+   "places": [
+    "app.js:2015"
+   ]
+  },
+  {
+   "key": "Or approve on example.invalid",
+   "nl": "Of keur goed op example.invalid",
+   "places": [
+    "app.js:1172"
+   ]
+  },
+  {
+   "key": "Or click the button in the email. No email? Check spam, or send it again.",
+   "nl": "Of klik op de knop in de e-mail. Geen e-mail? Kijk in je spam of stuur hem opnieuw.",
+   "places": [
+    "app.js:1169"
+   ]
+  },
+  {
+   "key": "Or paste its path",
+   "nl": "Of plak het pad",
+   "places": [
+    "app.js:1480"
+   ]
+  },
+  {
+   "key": "Order",
+   "nl": "Volgorde",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Other podiums",
+   "nl": "Overige podiumplaatsen",
+   "places": [
+    "app.js:548"
+   ]
+  },
+  {
+   "key": "PLAYER PROGRESS",
+   "nl": "SPELERSVOORTGANG",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "PODIUMS",
+   "nl": "PODIUMPLAATSEN",
+   "places": [
+    "app.js:546"
+   ]
+  },
+  {
+   "key": "PUBLIC PLAYER PREFERENCES",
+   "nl": "OPENBARE SPELERSVOORKEUREN",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "PUBLISHED BESTS",
+   "nl": "GEPUBLICEERDE BESTE TIJDEN",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Player",
+   "nl": "Speler",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Player progress",
+   "nl": "Spelervoortgang",
+   "places": [
+    "livetrial_app.py:253"
+   ]
+  },
+  {
+   "key": "Player progress is unavailable",
+   "nl": "Spelervoortgang is niet beschikbaar",
+   "places": [
+    "app.js:948"
+   ]
+  },
+  {
+   "key": "Please type one of the numbers above.",
+   "nl": "Typ een van de bovenstaande nummers.",
+   "places": [
+    "livetrial_app.py:209"
+   ]
+  },
+  {
+   "key": "Post a time",
+   "nl": "Plaats een tijd",
+   "places": [
+    "app.js:465"
+   ]
+  },
+  {
+   "key": "Preparing…",
+   "nl": "Voorbereiden…",
+   "places": [
+    "app.js:2125"
+   ]
+  },
+  {
+   "key": "Private",
+   "nl": "Privé",
+   "places": [
+    "app.js:2090",
+    "app.js:2118"
+   ]
+  },
+  {
+   "key": "Private: only you can watch it, so it is not usable as public evidence on the website.",
+   "nl": "Privé: alleen jij kunt hem bekijken, dus hij is niet bruikbaar als openbaar bewijs op de website.",
+   "places": [
+    "app.js:2117"
+   ]
+  },
+  {
+   "key": "Probably yours",
+   "nl": "Waarschijnlijk van jou",
+   "places": [
+    "app.js:1688"
+   ]
+  },
+  {
+   "key": "Progress & rivals",
+   "nl": "Voortgang en rivalen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Progress could not be loaded. Capture and run history still work.",
+   "nl": "Voortgang kon niet worden geladen. Opname en ritgeschiedenis blijven werken.",
+   "places": [
+    "app.js:994"
+   ]
+  },
+  {
+   "key": "Public",
+   "nl": "Openbaar",
+   "places": [
+    "app.js:2090"
+   ]
+  },
+  {
+   "key": "Public Rank is unavailable right now.",
+   "nl": "De openbare ranglijst is nu niet beschikbaar.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Public community Rank · Nintendo Ghost selected as reference.",
+   "nl": "Openbare communityranglijst · Nintendo-ghost geselecteerd als referentie.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Quit",
+   "nl": "Afsluiten",
+   "places": [
+    "app.js:1623"
+   ]
+  },
+  {
+   "key": "Quit LiveTrial",
+   "nl": "LiveTrial afsluiten",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Quit LiveTrial?",
+   "nl": "LiveTrial afsluiten?",
+   "places": [
+    "app.js:1619"
+   ]
+  },
+  {
+   "key": "Quitting stops the analysis. Runs it found so far are kept; the rest of the video is not read.",
+   "nl": "Afsluiten stopt de analyse. Ritten die tot nu toe gevonden zijn blijven bewaard; de rest van de video wordt niet gelezen.",
+   "places": [
+    "app.js:1617"
+   ]
+  },
+  {
+   "key": "Quitting stops the capture first, the same way Stop does. Races you finished are already saved; a race still in progress is not.",
+   "nl": "Afsluiten stopt eerst de opname, net als Stoppen. Ritten die je hebt uitgereden zijn al bewaard; een race die nog bezig is niet.",
+   "places": [
+    "app.js:1615"
+   ]
+  },
+  {
+   "key": "RACE. RECORD. IMPROVE.",
+   "nl": "RACE. LEG VAST. VERBETER.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "RANK",
+   "nl": "RANGLIJST",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "RATING",
+   "nl": "RATING",
+   "places": [
+    "app.js:531"
+   ]
+  },
+  {
+   "key": "RECORD BOOK",
+   "nl": "RECORDBOEK",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "RESULTS ON THIS PC",
+   "nl": "RESULTATEN OP DEZE PC",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "RIVALS",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Races as they come in",
+   "nl": "Ritten zodra ze binnenkomen",
+   "places": [
+    "app.js:1798"
+   ]
+  },
+  {
+   "key": "Rank",
+   "nl": "Ranglijst",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Rank view",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Rating distribution",
+   "nl": "Verdeling van niveaus",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Read from the Select-a-Ghost panel; not linked to any account",
+   "nl": "Gelezen van het Select-a-Ghost-paneel; aan geen account gekoppeld",
+   "places": [
+    "app.js:1710"
+   ]
+  },
+  {
+   "key": "Ready. Choose Start capture to record from the capture card.",
+   "nl": "Klaar. Kies Opname starten om van de capturekaart op te nemen.",
+   "places": [
+    "app.js:1314"
+   ]
+  },
+  {
+   "key": "Recent Time Trials",
+   "nl": "Recente Time Trials",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Recognized runs",
+   "nl": "Herkende ritten",
+   "places": [
+    "app.js:1649"
+   ]
+  },
+  {
+   "key": "Recognized runs are saved as they are found and can be sent afterwards.",
+   "nl": "Herkende ritten worden opgeslagen zodra ze gevonden zijn en kunnen daarna verzonden worden.",
+   "places": [
+    "app.js:1484"
+   ]
+  },
+  {
+   "key": "Recorded while no account was signed in, so it is only on this PC. Choose Send as to put it on your account.",
+   "nl": "Opgenomen terwijl er geen account was aangemeld, dus alleen op deze pc. Kies Verstuur als om hem op je account te zetten.",
+   "places": [
+    "app.js:1245"
+   ]
+  },
+  {
+   "key": "Reference Players:",
+   "nl": "Referentiespelers:",
+   "places": [
+    "app.js:716"
+   ]
+  },
+  {
+   "key": "Refresh",
+   "nl": "Vernieuwen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Refresh Player progress and rivals",
+   "nl": "Spelervoortgang en rivalen vernieuwen",
+   "places": [
+    "livetrial_app.py:232"
+   ]
+  },
+  {
+   "key": "Refresh progress",
+   "nl": "Voortgang vernieuwen",
+   "places": [
+    "app.js:888"
+   ]
+  },
+  {
+   "key": "Refreshing from example.invalid…",
+   "nl": "Vernieuwen vanaf example.invalid…",
+   "places": [
+    "app.js:985"
+   ]
+  },
+  {
+   "key": "Refreshing…",
+   "nl": "Vernieuwen…",
+   "places": [
+    "app.js:887"
+   ]
+  },
+  {
+   "key": "Remove",
+   "nl": "Verwijderen",
+   "places": [
+    "app.js:1108"
+   ]
+  },
+  {
+   "key": "Remove an account",
+   "nl": "Een account verwijderen",
+   "places": [
+    "livetrial_app.py:251"
+   ]
+  },
+  {
+   "key": "Remove {0}",
+   "nl": "{0} verwijderen",
+   "places": [
+    "app.js:1108"
+   ]
+  },
+  {
+   "key": "Remove {0} from this PC? Saved runs stay on this PC.",
+   "nl": "{0} van deze pc verwijderen? Opgeslagen ritten blijven op deze pc.",
+   "places": [
+    "app.js:1110"
+   ]
+  },
+  {
+   "key": "Removed account",
+   "nl": "Verwijderd account",
+   "places": [
+    "app.js:1653"
+   ]
+  },
+  {
+   "key": "Reset filters",
+   "nl": "Filters resetten",
+   "places": [
+    "app.js:696"
+   ]
+  },
+  {
+   "key": "Rest",
+   "nl": "Rest",
+   "places": [
+    "app.js:548"
+   ]
+  },
+  {
+   "key": "Results waiting to be sent",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Rival",
+   "nl": "Rivaal",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Rivals",
+   "nl": "Rivalen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Run history",
+   "nl": "Ritgeschiedenis",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Run history & live capture",
+   "nl": "Ritgeschiedenis en live-opname",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Run history is starting…",
+   "nl": "Ritgeschiedenis wordt gestart…",
+   "places": [
+    "app.js:1406"
+   ]
+  },
+  {
+   "key": "Run history view",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Runs are always saved on this PC first; without a connection they wait and go out later.",
+   "nl": "Ritten worden altijd eerst op deze pc opgeslagen; zonder verbinding wachten ze en gaan ze later mee.",
+   "places": [
+    "app.js:1540"
+   ]
+  },
+  {
+   "key": "STRONGEST TRACK",
+   "nl": "STERKSTE CIRCUIT",
+   "places": [
+    "app.js:362"
+   ]
+  },
+  {
+   "key": "Save a run from a finished report",
+   "nl": "Een rit uit een voltooid rapport opslaan",
+   "places": [
+    "livetrial_app.py:240"
+   ]
+  },
+  {
+   "key": "Save correction",
+   "nl": "Correctie opslaan",
+   "places": [
+    "app.js:1880"
+   ]
+  },
+  {
+   "key": "Save names",
+   "nl": "Namen bewaren",
+   "places": [
+    "app.js:1544"
+   ]
+  },
+  {
+   "key": "Save server",
+   "nl": "Server opslaan",
+   "places": [
+    "app.js:1528"
+   ]
+  },
+  {
+   "key": "Saved on this PC only: no account was signed in",
+   "nl": "Alleen op deze pc bewaard: er was geen account aangemeld",
+   "places": [
+    "app.js:1856"
+   ]
+  },
+  {
+   "key": "Saved result synchronization",
+   "nl": "Synchronisatie van opgeslagen resultaten",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Saved results",
+   "nl": "Opgeslagen resultaten",
+   "places": [
+    "livetrial_app.py:264"
+   ]
+  },
+  {
+   "key": "Saved, waiting to be sent",
+   "nl": "Opgeslagen, wacht op verzending",
+   "places": [
+    "app.js:1859"
+   ]
+  },
+  {
+   "key": "Search body",
+   "nl": "Chassis zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search character",
+   "nl": "Coureur zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search every part, keep full names visible and see whether the setup meets the Magic 8 and Meta rules.",
+   "nl": "Zoek elk onderdeel, houd volledige namen zichtbaar en bekijk of de combinatie aan de Magic 8- en metaregels voldoet.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search glider",
+   "nl": "Paraglider zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search player name",
+   "nl": "Spelersnaam zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search player name to compare",
+   "nl": "Spelersnaam zoeken om te vergelijken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search tire",
+   "nl": "Banden zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Search track",
+   "nl": "Circuit zoeken",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Selected comparison players",
+   "nl": "Geselecteerde vergelijkingsspelers",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Send again",
+   "nl": "Opnieuw sturen",
+   "places": [
+    "app.js:1169"
+   ]
+  },
+  {
+   "key": "Send all waiting results",
+   "nl": "Alle wachtende resultaten verzenden",
+   "places": [
+    "livetrial_app.py:241"
+   ]
+  },
+  {
+   "key": "Send as {0}",
+   "nl": "Verstuur als {0}",
+   "places": [
+    "app.js:1826"
+   ]
+  },
+  {
+   "key": "Send new runs automatically",
+   "nl": "Nieuwe ritten automatisch verzenden",
+   "places": [
+    "app.js:1538"
+   ]
+  },
+  {
+   "key": "Send now",
+   "nl": "Nu verzenden",
+   "places": [
+    "app.js:1238",
+    "app.js:1740",
+    "app.js:1859"
+   ]
+  },
+  {
+   "key": "Send status",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Send status & corrections",
+   "nl": "Verzendstatus & correcties",
+   "places": [
+    "app.js:1395"
+   ]
+  },
+  {
+   "key": "Sent {0} of {1}.",
+   "nl": "{0} van {1} verzonden.",
+   "places": [
+    "app.js:1268"
+   ]
+  },
+  {
+   "key": "Settings",
+   "nl": "Instellingen",
+   "places": [
+    "app.js:1521"
+   ]
+  },
+  {
+   "key": "Shared comparisons",
+   "nl": "Gedeelde vergelijkingen",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Show all {0}",
+   "nl": "Toon alle {0}",
+   "places": [
+    "app.js:600"
+   ]
+  },
+  {
+   "key": "Show every track",
+   "nl": "Toon alle circuits",
+   "places": [
+    "app.js:493"
+   ]
+  },
+  {
+   "key": "Show the closest 12",
+   "nl": "Toon de dichtste 12",
+   "places": [
+    "app.js:600"
+   ]
+  },
+  {
+   "key": "Show unfinished runs ({0})",
+   "nl": "Niet uitgereden ritten tonen ({0})",
+   "places": [
+    "app.js:2174"
+   ]
+  },
+  {
+   "key": "Showing",
+   "nl": "Alleen",
+   "places": [
+    "app.js:493"
+   ]
+  },
+  {
+   "key": "Showing the latest safe offline copy.",
+   "nl": "De laatste veilig opgeslagen offline versie wordt getoond.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Showing tracks not raced yet.",
+   "nl": "Alleen nog niet gereden circuits.",
+   "places": [
+    "app.js:493"
+   ]
+  },
+  {
+   "key": "Sign in",
+   "nl": "Aanmelden",
+   "places": [
+    "app.js:1091",
+    "app.js:1149",
+    "app.js:1168"
+   ]
+  },
+  {
+   "key": "Sign in again",
+   "nl": "Opnieuw aanmelden",
+   "places": [
+    "app.js:925",
+    "app.js:940",
+    "app.js:1106"
+   ]
+  },
+  {
+   "key": "Sign in again as",
+   "nl": "Opnieuw aanmelden als",
+   "places": [
+    "livetrial_app.py:248"
+   ]
+  },
+  {
+   "key": "Sign in again as {0}",
+   "nl": "Opnieuw aanmelden als {0}",
+   "places": [
+    "app.js:936"
+   ]
+  },
+  {
+   "key": "Sign in again now? (y/n) [y]",
+   "nl": "Nu opnieuw aanmelden? (j/n) [j]",
+   "places": [
+    "livetrial_app.py:206"
+   ]
+  },
+  {
+   "key": "Sign in to claim it",
+   "nl": "Meld je aan om hem te claimen",
+   "places": [
+    "app.js:1693"
+   ]
+  },
+  {
+   "key": "Sign in to send it",
+   "nl": "Meld je aan om te versturen",
+   "places": [
+    "app.js:1825"
+   ]
+  },
+  {
+   "key": "Sign-in cancelled.",
+   "nl": "Aanmelden geannuleerd.",
+   "places": [
+    "app.js:1216"
+   ]
+  },
+  {
+   "key": "Signed in",
+   "nl": "Aangemeld",
+   "places": [
+    "app.js:1104"
+   ]
+  },
+  {
+   "key": "Signed in as {0}.",
+   "nl": "Aangemeld als {0}.",
+   "places": [
+    "app.js:1213"
+   ]
+  },
+  {
+   "key": "Signed out · sign in again",
+   "nl": "Afgemeld · meld opnieuw aan",
+   "places": [
+    "app.js:890"
+   ]
+  },
+  {
+   "key": "Signing in did not finish. Nothing was changed.",
+   "nl": "Aanmelden is niet gelukt. Er is niets gewijzigd.",
+   "places": [
+    "app.js:1217"
+   ]
+  },
+  {
+   "key": "Someone",
+   "nl": "Iemand",
+   "places": [
+    "app.js:829"
+   ]
+  },
+  {
+   "key": "Speed",
+   "nl": "Snelheid",
+   "places": [
+    "app.js:795",
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "Speed is too high.",
+   "nl": "Snelheid is te hoog.",
+   "places": [
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "Start capture",
+   "nl": "Opname starten",
+   "places": [
+    "app.js:1439",
+    "app.js:1455"
+   ]
+  },
+  {
+   "key": "State",
+   "nl": "Status",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Stop analysis and quit",
+   "nl": "Analyse stoppen en afsluiten",
+   "places": [
+    "app.js:1623"
+   ]
+  },
+  {
+   "key": "Stop capture and quit",
+   "nl": "Opname stoppen en afsluiten",
+   "places": [
+    "app.js:1623"
+   ]
+  },
+  {
+   "key": "Stopping the analysis…",
+   "nl": "Analyse stoppen…",
+   "places": [
+    "app.js:1631"
+   ]
+  },
+  {
+   "key": "Stopping the capture and saving what is finished…",
+   "nl": "Opname stoppen en bewaren wat klaar is…",
+   "places": [
+    "app.js:1631"
+   ]
+  },
+  {
+   "key": "Stopping…",
+   "nl": "Stoppen…",
+   "places": [
+    "app.js:1297"
+   ]
+  },
+  {
+   "key": "Switch account",
+   "nl": "Van account wisselen",
+   "places": [
+    "livetrial_app.py:250"
+   ]
+  },
+  {
+   "key": "Switch to this community and restart LiveTrial? Existing accounts and pending runs stay with their old server.",
+   "nl": "Naar deze community wisselen en LiveTrial opnieuw starten? Bestaande accounts en wachtende ritten blijven bij de oude server.",
+   "places": [
+    "app.js:1560"
+   ]
+  },
+  {
+   "key": "Synced {0}",
+   "nl": "Gesynchroniseerd {0}",
+   "places": [
+    "app.js:888"
+   ]
+  },
+  {
+   "key": "THIS SESSION",
+   "nl": "DEZE SESSIE",
+   "places": [
+    "app.js:1797"
+   ]
+  },
+  {
+   "key": "TIME TRIALS",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "TOP 3 ON A TRACK",
+   "nl": "TOP 3 OP EEN CIRCUIT",
+   "places": [
+    "app.js:361"
+   ]
+  },
+  {
+   "key": "TOURNAMENTS",
+   "nl": "TOERNOOIEN",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "TRACKS RACED",
+   "nl": "GEREDEN CIRCUITS",
+   "places": [
+    "app.js:360"
+   ]
+  },
+  {
+   "key": "Taking a picture from ",
+   "nl": "Er wordt een foto gemaakt van ",
+   "places": [
+    "livetrial_app.py:236"
+   ]
+  },
+  {
+   "key": "Taking a picture…",
+   "nl": "Foto maken…",
+   "places": [
+    "app.js:1459"
+   ]
+  },
+  {
+   "key": "Terms of use",
+   "nl": "Gebruiksvoorwaarden",
+   "places": [
+    "app.js:2005"
+   ]
+  },
+  {
+   "key": "That did not work. Nothing was changed.",
+   "nl": "Dat lukte niet. Er is niets gewijzigd.",
+   "places": [
+    "app.js:1080"
+   ]
+  },
+  {
+   "key": "That is not one of the numbers above.",
+   "nl": "Dat is niet een van de bovenstaande nummers.",
+   "places": [
+    "livetrial_app.py:226"
+   ]
+  },
+  {
+   "key": "The Meta is active.",
+   "nl": "De meta is actief.",
+   "places": [
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "The address was saved, but LiveTrial did not reopen. Open LiveTrial again to use the new community.",
+   "nl": "Het adres is opgeslagen, maar LiveTrial is niet opnieuw geopend. Open LiveTrial opnieuw voor de nieuwe community.",
+   "places": [
+    "app.js:1581"
+   ]
+  },
+  {
+   "key": "The address was saved, but the automatic restart did not start. Quit LiveTrial and open it again.",
+   "nl": "Het adres is opgeslagen, maar automatisch opnieuw starten lukte niet. Sluit LiveTrial af en open het opnieuw.",
+   "places": [
+    "app.js:1567"
+   ]
+  },
+  {
+   "key": "The approval was refused on the site. Nothing was changed.",
+   "nl": "De goedkeuring is geweigerd op de site. Er is niets gewijzigd.",
+   "places": [
+    "app.js:1214"
+   ]
+  },
+  {
+   "key": "The code expired. Start again for a new one.",
+   "nl": "De code is verlopen. Begin opnieuw voor een nieuwe.",
+   "places": [
+    "app.js:1215"
+   ]
+  },
+  {
+   "key": "The description is too long for YouTube ({0} of 5000 bytes).",
+   "nl": "De beschrijving is te lang voor YouTube ({0} van 5000 bytes).",
+   "places": [
+    "app.js:2084"
+   ]
+  },
+  {
+   "key": "The engine is starting: it loads the recognition first, which takes about 20 seconds. The live picture appears here by itself.",
+   "nl": "De engine start op: eerst wordt de herkenning geladen, dat duurt ongeveer 20 seconden. Het livebeeld verschijnt hier vanzelf.",
+   "places": [
+    "app.js:1348"
+   ]
+  },
+  {
+   "key": "The laps add up to {0}, the total time is {1}.",
+   "nl": "De rondes tellen op tot {0}, de totaaltijd is {1}.",
+   "places": [
+    "app.js:1942"
+   ]
+  },
+  {
+   "key": "The picture has opened in your image viewer.",
+   "nl": "De foto is geopend in je fotoviewer.",
+   "places": [
+    "livetrial_app.py:219"
+   ]
+  },
+  {
+   "key": "The picture is saved as ",
+   "nl": "De foto is opgeslagen als ",
+   "places": [
+    "livetrial_app.py:239"
+   ]
+  },
+  {
+   "key": "The proposed time is highly unreasonable, please double check all information.",
+   "nl": "De voorgestelde tijd is zeer onwaarschijnlijk, controleer alle gegevens nog eens.",
+   "places": [
+    "app.js:1818"
+   ]
+  },
+  {
+   "key": "The recognition engine is not part of this installation.",
+   "nl": "De herkenningsengine hoort niet bij deze installatie.",
+   "places": [
+    "app.js:1312"
+   ]
+  },
+  {
+   "key": "The title is {0} characters; YouTube allows 100.",
+   "nl": "De titel is {0} tekens; YouTube staat er 100 toe.",
+   "places": [
+    "app.js:2082"
+   ]
+  },
+  {
+   "key": "The video could not be copied. Try again, or paste its path.",
+   "nl": "De video kon niet worden gekopieerd. Probeer het opnieuw of plak het pad.",
+   "places": [
+    "app.js:1512",
+    "app.js:1514"
+   ]
+  },
+  {
+   "key": "There is nothing waiting to be sent.",
+   "nl": "Er wacht niets op verzending.",
+   "places": [
+    "livetrial_app.py:210"
+   ]
+  },
+  {
+   "key": "This LiveTrial ({0}) is no longer supported.",
+   "nl": "Deze LiveTrial ({0}) wordt niet meer ondersteund.",
+   "places": [
+    "app.js:869"
+   ]
+  },
+  {
+   "key": "This LiveTrial version is no longer supported; update it to send",
+   "nl": "Deze LiveTrial-versie wordt niet meer ondersteund; update om te versturen",
+   "places": [
+    "app.js:1244"
+   ]
+  },
+  {
+   "key": "This community is already selected.",
+   "nl": "Deze community is al gekozen.",
+   "places": [
+    "app.js:1559"
+   ]
+  },
+  {
+   "key": "This is the world record time. Is it really your own ghost?",
+   "nl": "Dit is de wereldrecordtijd. Is dit echt je eigen ghost?",
+   "places": [
+    "app.js:1757"
+   ]
+  },
+  {
+   "key": "Time",
+   "nl": "Tijd",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Time Trial notification",
+   "nl": "Time Trial-melding",
+   "places": [
+    "app.js:839"
+   ]
+  },
+  {
+   "key": "Time Trial run history",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "Tire",
+   "nl": "Banden",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Tires",
+   "nl": "Banden",
+   "places": [
+    "app.js:1885"
+   ]
+  },
+  {
+   "key": "Title on YouTube",
+   "nl": "Titel op YouTube",
+   "places": [
+    "app.js:2096"
+   ]
+  },
+  {
+   "key": "To also remove the permission at Google:",
+   "nl": "Om de toestemming ook bij Google in te trekken:",
+   "places": [
+    "app.js:2026"
+   ]
+  },
+  {
+   "key": "Top level",
+   "nl": "Hoogste niveau",
+   "places": [
+    "app.js:359",
+    "app.js:470"
+   ]
+  },
+  {
+   "key": "Total",
+   "nl": "Totaal",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Total time",
+   "nl": "Totaaltijd",
+   "places": [
+    "app.js:1874"
+   ]
+  },
+  {
+   "key": "Total time: use a time such as 1:42.123.",
+   "nl": "Totaaltijd: gebruik een tijd zoals 1:42.123.",
+   "places": [
+    "app.js:1932"
+   ]
+  },
+  {
+   "key": "Totals",
+   "nl": "Totalen",
+   "places": [
+    "app.js:560"
+   ]
+  },
+  {
+   "key": "Tournament figures count every race, whatever the engine class it was raced in.",
+   "nl": "Toernooicijfers tellen elke race, in welke motorklasse die ook is gereden.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Tournament rating per race",
+   "nl": "Toernooirating per race",
+   "places": [
+    "app.js:532"
+   ]
+  },
+  {
+   "key": "Track",
+   "nl": "Circuit",
+   "places": [
+    "app.js:1872"
+   ]
+  },
+  {
+   "key": "Track not read",
+   "nl": "Baan niet gelezen",
+   "places": [
+    "app.js:1680"
+   ]
+  },
+  {
+   "key": "Troubleshooting: the numbered menu is still available as",
+   "nl": "Probleemoplossing: het genummerde menu is nog beschikbaar als",
+   "places": [
+    "app.js:1546"
+   ]
+  },
+  {
+   "key": "Try again…",
+   "nl": "Opnieuw proberen…",
+   "places": [
+    "app.js:2136"
+   ]
+  },
+  {
+   "key": "Try another device? (y/n) [y]",
+   "nl": "Een ander apparaat proberen? (j/n) [j]",
+   "places": [
+    "livetrial_app.py:218"
+   ]
+  },
+  {
+   "key": "Type en for English or nl for Nederlands",
+   "nl": "Typ en voor Engels of nl voor Nederlands",
+   "places": [
+    "livetrial_app.py:213"
+   ]
+  },
+  {
+   "key": "Undo",
+   "nl": "Ongedaan maken",
+   "places": [
+    "app.js:1740"
+   ]
+  },
+  {
+   "key": "Unknown",
+   "nl": "Onbekend",
+   "places": [
+    "app.js:257"
+   ]
+  },
+  {
+   "key": "Unknown track",
+   "nl": "Onbekend circuit",
+   "places": [
+    "app.js:2149"
+   ]
+  },
+  {
+   "key": "Unlisted",
+   "nl": "Niet vermeld",
+   "places": [
+    "app.js:2090"
+   ]
+  },
+  {
+   "key": "Up to date with example.invalid.",
+   "nl": "Bijgewerkt met example.invalid.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Up to date · click to refresh",
+   "nl": "Actueel · klik om te vernieuwen",
+   "places": [
+    "app.js:891"
+   ]
+  },
+  {
+   "key": "Upload history of {0} clip(s) forgotten on this PC. The videos are still on YouTube.",
+   "nl": "Uploadgeschiedenis van {0} clip(s) op deze pc vergeten. De video's staan nog op YouTube.",
+   "places": [
+    "app.js:2037"
+   ]
+  },
+  {
+   "key": "Upload to YouTube",
+   "nl": "Uploaden naar YouTube",
+   "places": [
+    "app.js:2104"
+   ]
+  },
+  {
+   "key": "Upload to YouTube…",
+   "nl": "Uploaden naar YouTube…",
+   "places": [
+    "app.js:2136"
+   ]
+  },
+  {
+   "key": "Uploading uses the YouTube API Services: by uploading you agree to the",
+   "nl": "Uploaden gebruikt de YouTube API Services: door te uploaden ga je akkoord met de",
+   "places": [
+    "app.js:2005"
+   ]
+  },
+  {
+   "key": "Uploading {0}%",
+   "nl": "Uploaden {0}%",
+   "places": [
+    "app.js:2125"
+   ]
+  },
+  {
+   "key": "Uploads go to {0}'s YouTube channel. Nothing is uploaded until you review a clip's title, description and visibility and press Upload to YouTube.",
+   "nl": "Uploads gaan naar het YouTube-kanaal van {0}. Er wordt niets geüpload tot je de titel, beschrijving en zichtbaarheid van een clip hebt bekeken en op Uploaden naar YouTube drukt.",
+   "places": [
+    "app.js:2166"
+   ]
+  },
+  {
+   "key": "Use",
+   "nl": "Gebruiken",
+   "places": [
+    "app.js:1107"
+   ]
+  },
+  {
+   "key": "Use the lap sum ({0}) as total",
+   "nl": "Som van de rondes ({0}) als totaal",
+   "places": [
+    "app.js:1960"
+   ]
+  },
+  {
+   "key": "Version {0} is available. This reminder stays until you install it.",
+   "nl": "Versie {0} is beschikbaar. Deze herinnering blijft staan totdat je deze installeert.",
+   "places": [
+    "app.js:858"
+   ]
+  },
+  {
+   "key": "Video devices on this PC:",
+   "nl": "Videoapparaten op deze pc:",
+   "places": [
+    "livetrial_app.py:214"
+   ]
+  },
+  {
+   "key": "Visibility on YouTube",
+   "nl": "Zichtbaarheid op YouTube",
+   "places": [
+    "app.js:2100"
+   ]
+  },
+  {
+   "key": "WINDOWS PC",
+   "places": [
+    "index.html"
+   ]
+  },
+  {
+   "key": "WINS",
+   "nl": "OVERWINNINGEN",
+   "places": [
+    "app.js:545"
+   ]
+  },
+  {
+   "key": "Waiting for your approval…",
+   "nl": "Wachten op je goedkeuring…",
+   "places": [
+    "app.js:1178"
+   ]
+  },
+  {
+   "key": "Waiting to be sent",
+   "nl": "Wacht op verzending",
+   "places": [
+    "app.js:1237",
+    "app.js:1820"
+   ]
+  },
+  {
+   "key": "Waiting to send",
+   "nl": "Wacht op verzending",
+   "places": [
+    "livetrial_app.py:257"
+   ]
+  },
+  {
+   "key": "Waits until this account signs in again",
+   "nl": "Wacht tot dit account opnieuw aanmeldt",
+   "places": [
+    "app.js:1242"
+   ]
+  },
+  {
+   "key": "Watch",
+   "nl": "Bekijken",
+   "places": [
+    "app.js:2153"
+   ]
+  },
+  {
+   "key": "Week of {0}: {1} runs",
+   "nl": "Week van {0}: {1} ritten",
+   "places": [
+    "app.js:423"
+   ]
+  },
+  {
+   "key": "Welcome to MK8DX Time Trials for Windows PC.",
+   "nl": "Welkom bij MK8DX Time Trials voor Windows-pc.",
+   "places": [
+    "livetrial_app.py:204"
+   ]
+  },
+  {
+   "key": "When",
+   "nl": "Wanneer",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Where the next gain is waiting",
+   "nl": "Waar jouw volgende verbetering ligt",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Which one is the capture card?",
+   "nl": "Welke is de capturekaart?",
+   "places": [
+    "app.js:1448"
+   ]
+  },
+  {
+   "key": "Which one is the capture card? Type its number",
+   "nl": "Welke is de capturekaart? Typ het nummer",
+   "places": [
+    "livetrial_app.py:234"
+   ]
+  },
+  {
+   "key": "While this account is the active one, a ghost with exactly one of these names is linked to it by itself once you leave it; Nintendo staff ghosts, world-record times and times you already have never are. Separate names with commas. You can undo a link until it is sent.",
+   "nl": "Zolang dit account actief is, wordt een ghost met precies een van deze namen vanzelf eraan gekoppeld zodra je hem verlaat; Nintendo-staffghosts, wereldrecordtijden en tijden die je al hebt nooit. Scheid namen met komma's. Je kunt een koppeling ongedaan maken tot hij verzonden is.",
+   "places": [
+    "app.js:1543"
+   ]
+  },
+  {
+   "key": "Windows update available",
+   "nl": "Windows-update beschikbaar",
+   "places": [
+    "app.js:858"
+   ]
+  },
+  {
+   "key": "Windows update required",
+   "nl": "Windows-update vereist",
+   "places": [
+    "app.js:858"
+   ]
+  },
+  {
+   "key": "Wins",
+   "nl": "Overwinningen",
+   "places": [
+    "app.js:548"
+   ]
+  },
+  {
+   "key": "World Record",
+   "nl": "Wereldrecord",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "World record",
+   "nl": "Wereldrecord",
+   "places": [
+    "app.js:1683"
+   ]
+  },
+  {
+   "key": "YOUR FOCUS",
+   "nl": "JOUW FOCUS",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "YOUR GO-TO COMBO",
+   "nl": "JE FAVORIETE COMBINATIE",
+   "places": [
+    "app.js:456"
+   ]
+  },
+  {
+   "key": "Yes, forget",
+   "nl": "Ja, vergeten",
+   "places": [
+    "app.js:2114"
+   ]
+  },
+  {
+   "key": "Yes, remove",
+   "nl": "Ja, verwijderen",
+   "places": [
+    "app.js:1110"
+   ]
+  },
+  {
+   "key": "Yes, this time is right",
+   "nl": "Ja, deze tijd klopt",
+   "places": [
+    "app.js:1962"
+   ]
+  },
+  {
+   "key": "You are #1 on {0} tracks at {1}cc",
+   "nl": "Je staat #1 op {0} circuits in {1}cc",
+   "places": [
+    "app.js:451"
+   ]
+  },
+  {
+   "key": "You are #{0} with {1}",
+   "nl": "Je staat #{0} met {1}",
+   "places": [
+    "app.js:448"
+   ]
+  },
+  {
+   "key": "YouTube Terms of Service",
+   "nl": "YouTube-servicevoorwaarden",
+   "places": [
+    "app.js:2005"
+   ]
+  },
+  {
+   "key": "YouTube does not accept < or > in a title or description.",
+   "nl": "YouTube accepteert geen < of > in een titel of beschrijving.",
+   "places": [
+    "app.js:2085"
+   ]
+  },
+  {
+   "key": "YouTube integration is not configured",
+   "nl": "YouTube-koppeling is niet ingesteld",
+   "places": [
+    "app.js:2014"
+   ]
+  },
+  {
+   "key": "YouTube integration is not configured. Clips stay on this PC.",
+   "nl": "YouTube-koppeling is niet ingesteld. Clips blijven op deze pc.",
+   "places": [
+    "app.js:2167"
+   ]
+  },
+  {
+   "key": "Your Mario Kart 8 Deluxe times, captured locally and synchronized when you sign in.",
+   "nl": "Jouw Mario Kart 8 Deluxe-tijden, lokaal vastgelegd en gesynchroniseerd zodra je inlogt.",
+   "places": [
+    "app.js:950"
+   ]
+  },
+  {
+   "key": "Your Player claim was approved",
+   "nl": "Jouw spelerclaim is goedgekeurd",
+   "places": [
+    "app.js:832"
+   ]
+  },
+  {
+   "key": "Your Player claim was declined",
+   "nl": "Jouw spelerclaim is afgewezen",
+   "places": [
+    "app.js:832"
+   ]
+  },
+  {
+   "key": "Your Time Trial was published",
+   "nl": "Jouw Time Trial is gepubliceerd",
+   "places": [
+    "app.js:833"
+   ]
+  },
+  {
+   "key": "Your chosen Players",
+   "nl": "Jouw gekozen spelers",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Your progress and waiting results come back once you sign in again. Capture and run history keep working meanwhile.",
+   "nl": "Je voortgang en wachtende resultaten komen terug zodra je opnieuw aanmeldt. Opnemen en ritgeschiedenis blijven intussen werken.",
+   "places": [
+    "app.js:937"
+   ]
+  },
+  {
+   "key": "Your published times from example.invalid, together with Mastery and the people you chose as rivals.",
+   "nl": "Jouw gepubliceerde tijden op example.invalid, samen met Mastery en de spelers die je als rivalen hebt gekozen.",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Your runs per week",
+   "nl": "Je ritten per week",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Your tournament career",
+   "nl": "Je toernooicarrière",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "Your website result already has everything",
+   "nl": "Je websiteresultaat heeft alles al",
+   "places": [
+    "app.js:1730"
+   ]
+  },
+  {
+   "key": "after {0} counted races · high {1}",
+   "nl": "na {0} getelde races · hoogste {1}",
+   "places": [
+    "app.js:531"
+   ]
+  },
+  {
+   "key": "e.g. BAwSer, BasAi",
+   "nl": "bijv. BAwSer, BasAi",
+   "places": [
+    "app.js:1542"
+   ]
+  },
+  {
+   "key": "example.invalid",
+   "nl": "example.invalid",
+   "places": [
+    "app.js:889"
+   ]
+  },
+  {
+   "key": "from today",
+   "nl": "van vandaag",
+   "places": [
+    "app.js:915"
+   ]
+  },
+  {
+   "key": "from {0}, {1} {2} old",
+   "nl": "van {0}, {1} {2} oud",
+   "places": [
+    "app.js:915"
+   ]
+  },
+  {
+   "key": "in the last 30 days",
+   "nl": "in de laatste 30 dagen",
+   "places": [
+    "app.js:416"
+   ]
+  },
+  {
+   "key": "just now",
+   "nl": "zojuist",
+   "places": [
+    "app.js:280"
+   ]
+  },
+  {
+   "key": "latest",
+   "nl": "laatste",
+   "places": [
+    "app.js:417"
+   ]
+  },
+  {
+   "key": "nobody signed in (runs are still recorded and kept on this PC)",
+   "nl": "niemand aangemeld (ritten worden nog steeds op deze pc vastgelegd en bewaard)",
+   "places": [
+    "livetrial_app.py:208"
+   ]
+  },
+  {
+   "key": "not read",
+   "nl": "niet gelezen",
+   "places": [
+    "app.js:1897"
+   ]
+  },
+  {
+   "key": "of {0}",
+   "nl": "van {0}",
+   "places": [
+    "app.js:350"
+   ]
+  },
+  {
+   "key": "per 150cc track",
+   "nl": "per 150cc-circuit",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "podium places",
+   "nl": "podiumplaatsen",
+   "places": [
+    "app.js:361"
+   ]
+  },
+  {
+   "key": "rating",
+   "nl": "rating",
+   "places": [
+    "app.js:527"
+   ]
+  },
+  {
+   "key": "recognized result",
+   "nl": "herkend resultaat",
+   "places": [
+    "livetrial_app.py:266"
+   ]
+  },
+  {
+   "key": "results are safe",
+   "nl": "resultaten zijn veilig",
+   "places": [
+    "livetrial_app.py:268"
+   ]
+  },
+  {
+   "key": "results stay on this PC",
+   "nl": "resultaten blijven op deze pc",
+   "places": [
+    "livetrial_app.py:269"
+   ]
+  },
+  {
+   "key": "show the live picture",
+   "nl": "toon het livebeeld",
+   "places": [
+    "app.js:1305"
+   ]
+  },
+  {
+   "key": "target",
+   "nl": "doel",
+   "places": [
+    "app.js:795"
+   ]
+  },
+  {
+   "key": "the Player above",
+   "nl": "de speler boven je",
+   "places": [
+    "app.js:447"
+   ]
+  },
+  {
+   "key": "they lead",
+   "nl": "zij leiden",
+   "places": [
+    "app.js:582"
+   ]
+  },
+  {
+   "key": "to",
+   "nl": "tot",
+   "places": [
+    "app.js:359",
+    "app.js:444",
+    "app.js:447",
+    "app.js:470"
+   ]
+  },
+  {
+   "key": "total",
+   "nl": "totaal",
+   "places": [
+    "app.js:350"
+   ]
+  },
+  {
+   "key": "track / mode records",
+   "nl": "circuit-/klasserecords",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "tracks driven in this class",
+   "nl": "circuits gereden in deze klasse",
+   "places": [
+    "app.js:dutchUiCopy"
+   ]
+  },
+  {
+   "key": "used last time",
+   "nl": "vorige keer gebruikt",
+   "places": [
+    "app.js:1449"
+   ]
+  },
+  {
+   "key": "waiting results",
+   "nl": "wachtende resultaten",
+   "places": [
+    "livetrial_app.py:265"
+   ]
+  },
+  {
+   "key": "with a published time",
+   "nl": "met een gepubliceerde tijd",
+   "places": [
+    "app.js:360"
+   ]
+  },
+  {
+   "key": "you lead",
+   "nl": "jij leidt",
+   "places": [
+    "app.js:581"
+   ]
+  },
+  {
+   "key": "your data",
+   "nl": "je gegevens",
+   "places": [
+    "app.js:1546"
+   ]
+  },
+  {
+   "key": "{0} beat your Time Trial time",
+   "nl": "{0} heeft jouw Time Trial-tijd verbeterd",
+   "places": [
+    "app.js:830"
+   ]
+  },
+  {
+   "key": "{0} has {1} laps; this run has {2}.",
+   "nl": "{0} heeft {1} rondes; deze rit heeft er {2}.",
+   "places": [
+    "app.js:1939"
+   ]
+  },
+  {
+   "key": "{0} invited you to {1}",
+   "nl": "{0} heeft je uitgenodigd voor {1}",
+   "places": [
+    "app.js:835"
+   ]
+  },
+  {
+   "key": "{0} is faster than the World Record ({1}{2}). Is this time right?",
+   "nl": "{0} is sneller dan het wereldrecord ({1}{2}). Klopt deze tijd echt?",
+   "places": [
+    "app.js:1956"
+   ]
+  },
+  {
+   "key": "{0} is signed out on this PC.",
+   "nl": "{0} is afgemeld op deze pc.",
+   "places": [
+    "app.js:934"
+   ]
+  },
+  {
+   "key": "{0} is signed out: this is your copy {1}. Sign in again in the LiveTrial window (choose S) to update it and send waiting results.",
+   "nl": "{0} is afgemeld: dit is je kopie {1}. Meld je opnieuw aan in het LiveTrial-venster (kies S) om hem bij te werken en wachtende resultaten te verzenden.",
+   "places": [
+    "app.js:920"
+   ]
+  },
+  {
+   "key": "{0} is signed out: this is your copy {1}. Sign in again to update it and send waiting results.",
+   "nl": "{0} is afgemeld: dit is je kopie {1}. Meld je opnieuw aan om hem bij te werken en wachtende resultaten te verzenden.",
+   "places": [
+    "app.js:918"
+   ]
+  },
+  {
+   "key": "{0} joined {1}",
+   "nl": "{0} is lid geworden van {1}",
+   "places": [
+    "app.js:836"
+   ]
+  },
+  {
+   "key": "{0} left {1}",
+   "nl": "{0} heeft {1} verlaten",
+   "places": [
+    "app.js:837"
+   ]
+  },
+  {
+   "key": "{0} mushrooms in total; a time trial has 3.",
+   "nl": "{0} paddenstoelen in totaal; een time trial heeft er 3.",
+   "places": [
+    "app.js:1952"
+   ]
+  },
+  {
+   "key": "{0} of your last {1} {2}cc runs",
+   "nl": "{0} van je laatste {1} {2}cc-ritten",
+   "places": [
+    "app.js:456"
+   ]
+  },
+  {
+   "key": "{0} of {1} tracks at {2}cc. Every card opens the track's leaderboard on example.invalid.",
+   "nl": "{0} van {1} circuits op {2}cc. Elke kaart opent de ranglijst van het circuit op example.invalid.",
+   "places": [
+    "app.js:487"
+   ]
+  },
+  {
+   "key": "{0} personal bests (150cc {1} · 200cc {2})",
+   "nl": "{0} persoonlijke records (150cc {1} · 200cc {2})",
+   "places": [
+    "app.js:559"
+   ]
+  },
+  {
+   "key": "{0} personal {1}",
+   "nl": "{0} persoonlijke {1}",
+   "places": [
+    "app.js:416"
+   ]
+  },
+  {
+   "key": "{0} results waiting to sync",
+   "nl": "{0} resultaten wachten op synchronisatie",
+   "places": [
+    "app.js:847"
+   ]
+  },
+  {
+   "key": "{0} run(s) saved",
+   "nl": "{0} rit(ten) opgeslagen",
+   "places": [
+    "app.js:1306"
+   ]
+  },
+  {
+   "key": "{0} runs",
+   "nl": "{0} ritten",
+   "places": [
+    "app.js:454"
+   ]
+  },
+  {
+   "key": "{0} runs submitted (150cc {1} · 200cc {2})",
+   "nl": "{0} ingezonden ritten (150cc {1} · 200cc {2})",
+   "places": [
+    "app.js:558"
+   ]
+  },
+  {
+   "key": "{0} shared comparisons",
+   "nl": "{0} gedeelde vergelijkingen",
+   "places": [
+    "app.js:584"
+   ]
+  },
+  {
+   "key": "{0} was updated",
+   "nl": "{0} is gewijzigd",
+   "places": [
+    "app.js:838"
+   ]
+  },
+  {
+   "key": "{0}:{1} left",
+   "nl": "nog {0}:{1}",
+   "places": [
+    "app.js:2129"
+   ]
+  },
+  {
+   "key": "{0}cc runs per week, last 12 weeks",
+   "nl": "{0}cc-ritten per week, laatste 12 weken",
+   "places": [
+    "app.js:420"
+   ]
+  },
+  {
+   "key": "■ Stop",
+   "nl": "■ Stoppen",
+   "places": [
+    "app.js:1297"
+   ]
+  },
+  {
+   "key": "● Start capture",
+   "nl": "● Opname starten",
+   "places": [
+    "app.js:1297",
+    "app.js:1352"
+   ]
+  },
+  {
+   "key": "✓ Copied",
+   "nl": "✓ Gekopieerd",
+   "places": [
+    "app.js:2194"
+   ]
+  },
+  {
+   "key": "✓ Saved",
+   "nl": "✓ Bewaard",
+   "places": [
+    "app.js:1604"
+   ]
+  },
+  {
+   "key": "✓ Saved for {0}",
+   "nl": "✓ Bewaard voor {0}",
+   "places": [
+    "app.js:1761"
+   ]
+  },
+  {
+   "key": "✓ Sent as {0}",
+   "nl": "✓ Verstuurd als {0}",
+   "places": [
+    "app.js:1761",
+    "app.js:1840"
+   ]
+  }
+ ]
+}

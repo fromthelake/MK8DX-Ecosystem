@@ -1,0 +1,155 @@
+{
+  "schemaVersion": "mk8dx.tournament-race-result.v1",
+  "raceResultId": "tournament_race_result.synthetic_recorded_001",
+  "revision": 1,
+  "raceNumber": 1,
+  "scoringSegment": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "countsTowardStandings": true,
+  "context": {
+    "tournamentReference": {
+      "namespace": "producer_local_tournament",
+      "value": "synthetic_tournament_2026"
+    },
+    "stageReference": {
+      "namespace": "producer_local_stage",
+      "value": "qualifier"
+    },
+    "groupReference": {
+      "namespace": "producer_local_group",
+      "value": "group_alpha"
+    },
+    "observedStageLabel": "Qualifier",
+    "observedGroupLabel": "Group Alpha"
+  },
+  "placements": [
+    {
+      "finishPosition": 1,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_01"
+      },
+      "observedPlayerName": "Player Alpha",
+      "characterId": "character.mario",
+      "scoring": {
+        "racePoints": 15,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 15,
+        "rankAfterRace": 1
+      }
+    },
+    {
+      "finishPosition": 2,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_02"
+      },
+      "observedPlayerName": "Player Bravo",
+      "characterId": "character.luigi",
+      "scoring": {
+        "racePoints": 12,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 12,
+        "rankAfterRace": 2
+      }
+    },
+    {
+      "finishPosition": 3,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_03"
+      },
+      "observedPlayerName": "Player Charlie",
+      "characterId": "character.peach",
+      "scoring": {
+        "racePoints": 10,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 10,
+        "rankAfterRace": 3
+      }
+    },
+    {
+      "finishPosition": 4,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_04"
+      },
+      "observedPlayerName": "Player Delta",
+      "characterId": "character.daisy",
+      "scoring": {
+        "racePoints": 9,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 9,
+        "rankAfterRace": 4
+      }
+    },
+    {
+      "finishPosition": 5,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_05"
+      },
+      "observedPlayerName": "Player Echo",
+      "characterId": "character.yoshi",
+      "characterVariantId": "character_variant.yoshi.018_black",
+      "scoring": {
+        "racePoints": 8,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 8,
+        "rankAfterRace": 5
+      }
+    },
+    {
+      "finishPosition": 6,
+      "participantReference": {
+        "namespace": "unresolved_observation",
+        "value": "synthetic.recorded.group_alpha.player_06"
+      },
+      "observedPlayerName": "Player Foxtrot",
+      "characterId": "character.toad",
+      "scoring": {
+        "racePoints": 7,
+        "totalBeforeRace": 0,
+        "totalAfterRace": 7,
+        "rankAfterRace": 6
+      }
+    }
+  ],
+  "source": {
+    "kind": "tournament_recorded_video",
+    "transport": "native_contract",
+    "producerVersion": "synthetic-1.0.0",
+    "localRecordId": "recorded_race_001",
+    "sessionId": "synthetic_recorded_session",
+    "sourceMediaId": "synthetic_video_001",
+    "raceOffsetMs": 120000,
+    "frameIndex": 3600
+  },
+  "timestamps": {
+    "capturedAtMs": 1767225720000,
+    "createdAtMs": 1767225780000
+  },
+  "evidence": [
+    {
+      "kind": "race_score_screen",
+      "reference": "evidence.synthetic.recorded.race_001.score"
+    },
+    {
+      "kind": "total_score_screen",
+      "reference": "evidence.synthetic.recorded.race_001.total"
+    }
+  ],
+  "verification": {
+    "status": "producer_check_passed",
+    "method": "synthetic_confirmed_pair_consensus",
+    "confidence": 0.98,
+    "fieldConfidence": {
+      "track": 0.99,
+      "playerCount": 1.0,
+      "finishPositions": 0.99,
+      "racePoints": 0.99,
+      "totalScores": 0.98
+    }
+  }
+}

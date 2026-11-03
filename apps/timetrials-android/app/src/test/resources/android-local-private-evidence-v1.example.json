@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "mk8dx.local-private-evidence.v1",
+  "entryKey": "670c54bf140b7fa905dee4ecbc78f49ac663bbb7e893aa8ca5ae4ffd8537e7d3",
+  "createdAtMs": 1786900070000,
+  "privateEvidence": {
+    "sourceInput": "synthetic://manual"
+  }
+}

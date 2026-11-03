@@ -1,0 +1,86 @@
+{
+  "catalogVersion": "mk8dx.domain-schema-catalog.v1",
+  "baseUri": "https://mk8dx.example/schemas/domain/",
+  "validationOrder": [
+    "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/player-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/user-account-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/player-claim-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/alias-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/time-trial-submission-v1.schema.json",
+    "https://mk8dx.example/schemas/domain/tournament-race-result-v1.schema.json"
+  ],
+  "schemas": [
+    {
+      "name": "AssetIdV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json",
+      "path": "schemas/asset-id-v1.schema.json",
+      "dependencies": [],
+      "exampleGlobs": []
+    },
+    {
+      "name": "CentralIdentityReferenceV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json",
+      "path": "schemas/identity-reference-v1.schema.json",
+      "dependencies": [],
+      "exampleGlobs": []
+    },
+    {
+      "name": "PlayerV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/player-v1.schema.json",
+      "path": "schemas/player-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/player.example.json"]
+    },
+    {
+      "name": "UserAccountV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/user-account-v1.schema.json",
+      "path": "schemas/user-account-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/user-account.example.json"]
+    },
+    {
+      "name": "PlayerClaimV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/player-claim-v1.schema.json",
+      "path": "schemas/player-claim-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/player-claim.example.json"]
+    },
+    {
+      "name": "AliasV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/alias-v1.schema.json",
+      "path": "schemas/alias-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/alias.example.json"]
+    },
+    {
+      "name": "TimeTrialSubmissionV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/time-trial-submission-v1.schema.json",
+      "path": "schemas/time-trial-submission-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json",
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/timetrial-*.example.json"]
+    },
+    {
+      "name": "TournamentRaceResultV1",
+      "schemaId": "https://mk8dx.example/schemas/domain/tournament-race-result-v1.schema.json",
+      "path": "schemas/tournament-race-result-v1.schema.json",
+      "dependencies": [
+        "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json",
+        "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json"
+      ],
+      "exampleGlobs": ["examples/tournament-*.example.json"]
+    }
+  ]
+}

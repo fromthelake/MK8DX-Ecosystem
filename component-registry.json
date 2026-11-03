@@ -1,0 +1,477 @@
+{
+  "schemaVersion": "mk8dx.component-registry.v1",
+  "ecosystemVersion": "0.1.0-rc.8",
+  "components": [
+    {
+      "id": "web",
+      "paths": [
+        "apps/timetrials-web"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "HTTP pages",
+        "API client"
+      ],
+      "dependencies": [
+        "api",
+        "domain",
+        "assets",
+        "design-tokens",
+        "time-trial-rules",
+        "scanner"
+      ],
+      "generatedArtifacts": [
+        "dist"
+      ],
+      "canonicalInputOwners": [
+        "design-tokens",
+        "assets"
+      ],
+      "tests": [
+        "apps/timetrials-web/src/**/*.test.ts",
+        "backend/api/test/local-compose.browser.mjs"
+      ],
+      "reverseConsumers": []
+    },
+    {
+      "id": "api",
+      "paths": [
+        "backend/api"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "/v1 HTTP API",
+        "/health/ready"
+      ],
+      "dependencies": [
+        "mysql",
+        "domain",
+        "assets",
+        "time-trial-rules"
+      ],
+      "generatedArtifacts": [
+        "dist"
+      ],
+      "canonicalInputOwners": [
+        "mysql",
+        "assets"
+      ],
+      "tests": [
+        "backend/api/test/**/*.test.ts"
+      ],
+      "reverseConsumers": [
+        "android",
+        "livetrial",
+        "tournament-connected",
+        "tournament-live",
+        "tournament-processor",
+        "web"
+      ]
+    },
+    {
+      "id": "mysql",
+      "paths": [
+        "infrastructure/mysql"
+      ],
+      "kind": "infrastructure",
+      "sourceStatus": "included",
+      "buildStatus": "migration-verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "hash-pinned migration catalog",
+        "reference seed format"
+      ],
+      "dependencies": [],
+      "generatedArtifacts": [],
+      "canonicalInputOwners": [
+        "mysql"
+      ],
+      "tests": [
+        "backend/api/test/reference-seed.integration.test.ts"
+      ],
+      "reverseConsumers": [
+        "api"
+      ]
+    },
+    {
+      "id": "icon-matcher",
+      "paths": [
+        "packages/icon-matcher"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "parity-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "field reader (Python reference, TypeScript, Java)",
+        "scan result",
+        "parity vectors"
+      ],
+      "dependencies": [],
+      "generatedArtifacts": [
+        "vectors/*.json from the Python reference"
+      ],
+      "canonicalInputOwners": [
+        "assets"
+      ],
+      "tests": [
+        "packages/icon-matcher/ts/*.test.mjs",
+        "packages/icon-matcher/python/tests"
+      ],
+      "reverseConsumers": [
+        "scanner"
+      ]
+    },
+    {
+      "id": "domain",
+      "paths": [
+        "packages/domain"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "consumer-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "domain contracts"
+      ],
+      "dependencies": [],
+      "generatedArtifacts": [],
+      "canonicalInputOwners": [
+        "domain"
+      ],
+      "tests": [
+        "backend/api/test/**/*.test.ts"
+      ],
+      "reverseConsumers": [
+        "android",
+        "api",
+        "livetrial",
+        "time-trial-rules",
+        "tournament-connected",
+        "tournament-extraction",
+        "tournament-live",
+        "tournament-processor",
+        "web"
+      ]
+    },
+    {
+      "id": "assets",
+      "paths": [
+        "packages/assets"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "consumer-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "schema9 asset catalog",
+        "versioned internal object collection and consumer selections"
+      ],
+      "dependencies": [],
+      "generatedArtifacts": [
+        "Web, Android, scanner, LiveTrial and Tournament asset views"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "mysql"
+      ],
+      "tests": [
+        "python tooling/assets/shared_asset_source.py verify"
+      ],
+      "reverseConsumers": [
+        "android",
+        "api",
+        "livetrial",
+        "scanner",
+        "time-trial-rules",
+        "tournament-extraction",
+        "tournament-live",
+        "tournament-processor",
+        "web"
+      ]
+    },
+    {
+      "id": "design-tokens",
+      "paths": [
+        "packages/design-tokens"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "consumer-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "tokens and generated adapters"
+      ],
+      "dependencies": [],
+      "generatedArtifacts": [
+        "web style adapters"
+      ],
+      "canonicalInputOwners": [
+        "design-tokens"
+      ],
+      "tests": [
+        "tooling/design-system/css-metrics.mjs"
+      ],
+      "reverseConsumers": [
+        "scanner",
+        "web"
+      ]
+    },
+    {
+      "id": "time-trial-rules",
+      "paths": [
+        "packages/time-trial-rules"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "consumer-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "time trial validation rules"
+      ],
+      "dependencies": [
+        "domain",
+        "assets"
+      ],
+      "generatedArtifacts": [],
+      "canonicalInputOwners": [
+        "time-trial-rules"
+      ],
+      "tests": [
+        "backend/api/test/**/*.test.ts"
+      ],
+      "reverseConsumers": [
+        "android",
+        "api",
+        "web"
+      ]
+    },
+    {
+      "id": "scanner",
+      "paths": [
+        "apps/timetrials-scanner-web"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "internal-collection-build-and-recognition-verified",
+      "runtimeStatus": "local-preview-verified",
+      "publicInterfaces": [
+        "/scanner/ PWA",
+        "scan handoff"
+      ],
+      "dependencies": [
+        "assets",
+        "design-tokens",
+        "icon-matcher"
+      ],
+      "generatedArtifacts": [
+        "dist from internal collection"
+      ],
+      "canonicalInputOwners": [
+        "assets"
+      ],
+      "tests": [
+        "apps/timetrials-scanner-web/tests/*.spec.ts"
+      ],
+      "reverseConsumers": [
+        "web"
+      ]
+    },
+    {
+      "id": "android",
+      "paths": [
+        "apps/timetrials-android"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "APK",
+        "canonical time-trial outbox"
+      ],
+      "dependencies": [
+        "api",
+        "assets",
+        "domain",
+        "time-trial-rules"
+      ],
+      "generatedArtifacts": [
+        "debug APK"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        ":app:testDebugUnitTest",
+        ":app:connectedDebugAndroidTest"
+      ],
+      "reverseConsumers": []
+    },
+    {
+      "id": "livetrial",
+      "paths": [
+        "apps/timetrials-desktop"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "Windows capture and canonical outbox"
+      ],
+      "dependencies": [
+        "api",
+        "assets",
+        "domain"
+      ],
+      "generatedArtifacts": [
+        "LiveTrial.exe",
+        "LiveTrialCli.exe"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        "tooling/livetrial/prepare_engine.py",
+        "representative copied clip"
+      ],
+      "reverseConsumers": []
+    },
+    {
+      "id": "tournament-extraction",
+      "paths": [
+        "packages/tournament-extraction"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "recorded/live OCR extraction"
+      ],
+      "dependencies": [
+        "assets",
+        "domain"
+      ],
+      "generatedArtifacts": [
+        "Python wheel"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        "representative copied tournament video"
+      ],
+      "reverseConsumers": [
+        "tournament-live",
+        "tournament-processor"
+      ]
+    },
+    {
+      "id": "tournament-connected",
+      "paths": [
+        "packages/tournament-connected"
+      ],
+      "kind": "library",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "library",
+      "publicInterfaces": [
+        "operator-chosen server connection"
+      ],
+      "dependencies": [
+        "api",
+        "domain"
+      ],
+      "generatedArtifacts": [
+        "Python wheel"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        "package installer smoke"
+      ],
+      "reverseConsumers": [
+        "tournament-live",
+        "tournament-processor"
+      ]
+    },
+    {
+      "id": "tournament-live",
+      "paths": [
+        "apps/tournament-live"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "capture/replay and canonical races"
+      ],
+      "dependencies": [
+        "api",
+        "assets",
+        "domain",
+        "tournament-extraction",
+        "tournament-connected"
+      ],
+      "generatedArtifacts": [
+        "Python wheel",
+        "TournamentLive.cmd"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        "package installer smoke",
+        "synthetic confirmed CSV"
+      ],
+      "reverseConsumers": []
+    },
+    {
+      "id": "tournament-processor",
+      "paths": [
+        "apps/tournament-processor"
+      ],
+      "kind": "application",
+      "sourceStatus": "included",
+      "buildStatus": "local-package-verified",
+      "runtimeStatus": "local-verified",
+      "publicInterfaces": [
+        "recorded video and canonical races"
+      ],
+      "dependencies": [
+        "api",
+        "assets",
+        "domain",
+        "tournament-extraction",
+        "tournament-connected"
+      ],
+      "generatedArtifacts": [
+        "Python wheel",
+        "TournamentProcessor.cmd"
+      ],
+      "canonicalInputOwners": [
+        "assets",
+        "domain"
+      ],
+      "tests": [
+        "copied demo-video recognition"
+      ],
+      "reverseConsumers": []
+    }
+  ]
+}

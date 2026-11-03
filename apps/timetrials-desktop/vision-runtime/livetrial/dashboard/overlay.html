@@ -1,0 +1,107 @@
+<meta charset="utf-8">
+<title>LiveTrial overlay</title>
+<style>
+/* OBS browser source: transparent background, nothing but the run state.
+   Add as a Browser Source at 1920x1080 with "Shutdown when not visible" OFF.
+   Query params:  ?scale=1.4  ?pos=tl|tr|bl|br  ?dark=0                     */
+html, body { margin: 0; background: transparent; overflow: hidden;
+             font-family: "Segoe UI", system-ui, sans-serif; color: #fff; }
+#wrap { position: fixed; display: inline-flex; flex-direction: column; gap: 6px;
+        transform-origin: top left; padding: 14px; }
+.card { background: rgba(12, 12, 10, .82); border-radius: 14px; padding: 10px 14px;
+        box-shadow: 0 6px 22px rgba(0, 0, 0, .45); backdrop-filter: blur(3px);
+        border: 1px solid rgba(255, 255, 255, .09); }
+.row { display: flex; align-items: baseline; gap: 10px; white-space: nowrap; }
+.trk { font-weight: 700; font-size: 20px; letter-spacing: .2px; }
+.sub { font-size: 13px; color: #b9b9ad; font-weight: 600; }
+.clock { font-size: 44px; font-weight: 900; font-style: italic;
+         font-variant-numeric: tabular-nums; line-height: 1.05; }
+.delta { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.ahead { color: #57d977; } .behind { color: #ff6b6b; }
+.laps { display: flex; gap: 8px; margin-top: 2px; }
+.lap { background: rgba(255, 255, 255, .08); border-radius: 8px; padding: 3px 9px;
+       font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.lap b { color: #ffd54a; }
+.pb { font-size: 14px; font-weight: 750; color: #ffd54a; }
+.hide { display: none; }
+</style>
+
+<div id="wrap"><div class="card" id="card">
+  <div class="row"><span class="trk" id="trk">—</span><span class="sub" id="ctx"></span></div>
+  <div class="row"><span class="clock" id="clock">0:00.000</span>
+    <span class="delta" id="delta"></span></div>
+  <div class="laps" id="laps"></div>
+  <div class="row"><span class="pb" id="pb"></span></div>
+</div></div>
+
+<script>
+const q = new URLSearchParams(location.search);
+const el = id => document.getElementById(id);
+const wrap = el("wrap");
+wrap.style.transform = `scale(${parseFloat(q.get("scale") || 1)})`;
+const pos = q.get("pos") || "tl";
+Object.assign(wrap.style, { top: pos[0] === "t" ? 0 : "auto", bottom: pos[0] === "b" ? 0 : "auto",
+                            left: pos[1] === "l" ? 0 : "auto", right: pos[1] === "r" ? 0 : "auto",
+                            transformOrigin: `${pos[0] === "t" ? "top" : "bottom"} ${pos[1] === "l" ? "left" : "right"}` });
+const fmt = ms => ms == null ? "—" :
+  `${Math.floor(ms / 60000)}:${((ms % 60000) / 1000).toFixed(3).padStart(6, "0")}`;
+const fmtD = ms => (ms >= 0 ? "+" : "−") + fmt(Math.abs(ms));
+
+let META = null, PB = {}, LASTKEY = "";
+fetch("api/meta").then(r => r.json()).then(m => META = m).catch(() => {});
+
+/* personal bests per track|cc|category, so the overlay can show the gap that
+   matters while driving instead of only after the result screen */
+async function refreshPB() {
+  try {
+    const d = await (await fetch("api/runs")).json();
+    const pb = {};
+    for (const r of d.runs || []) {
+      const p = ((r.results || {}).player || {});
+      const tid = ((r.context || {}).trackName || {}).trackId;
+      if (r.aborted || !tid || p.totalMs == null) continue;
+      const k = `${tid}|${(r.context || {}).cc}|${r.category || "nsc"}`;
+      if (!pb[k] || p.totalMs < pb[k]) pb[k] = p.totalMs;
+    }
+    PB = pb;
+  } catch (e) {}
+}
+refreshPB(); setInterval(refreshPB, 20000);
+
+async function tick() {
+  let s = null;
+  try { s = (await (await fetch("api/live")).json()).liveState; } catch (e) {}
+  const card = el("card");
+  if (!s || !s.state) { card.classList.add("hide"); return; }
+  card.classList.remove("hide");
+  const ctx = s.ctx || {}, cur = s.current || {};
+  const t = ctx.track && META && META.tracks && META.tracks[ctx.track];
+  el("trk").textContent = t ? t.name : (ctx.track || "—");
+  el("ctx").textContent = [ctx.cc && ctx.cc + "cc", ctx.mode,
+                           cur.lapCount ? cur.lapCount + " laps" : ""].filter(Boolean).join(" · ");
+  el("clock").textContent = s.clock || "0:00.000";
+  const laps = el("laps");
+  laps.innerHTML = cur.lap
+    ? `<span class="lap">Lap <b>${cur.lap}</b>/${cur.lapCount || "?"}</span>
+       <span class="lap">🪙 ${cur.coins ?? 0}</span>
+       <span class="lap">🍄 ${cur.mushrooms ?? 0}</span>` : "";
+  // Gap to the ghost — the number a viewer actually wants. It was searched for
+  // and then thrown away: the element was cleared unconditionally, so the
+  // ahead/behind styling below it had never once been used. The engine reports
+  // the gap at every lap crossing and the ticker carries it structured, so
+  // take the newest lapReport that has one.
+  const dg = el("delta");
+  const rep = (s.ticker || []).find(x => x.kind === "lapReport" && x.data
+                                    && x.data.deltaMs != null);
+  if (rep && s.state === "RACING" && cur.lap) {
+    dg.textContent = fmtD(rep.data.deltaMs);
+    dg.className = "delta " + (rep.data.deltaMs < 0 ? "ahead" : "behind");
+  } else {
+    dg.textContent = "";          // solo runs have none, and neither does a
+    dg.className = "delta";       // finished run whose ticker still holds one
+  }
+  const pbk = `${ctx.track}|${ctx.cc}|nsc`;
+  el("pb").textContent = PB[pbk] != null ? `PB ${fmt(PB[pbk])}` : "";
+}
+tick(); setInterval(tick, 250);
+</script>

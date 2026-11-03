@@ -1,0 +1,347 @@
+<meta charset="utf-8">
+<title>LiveTrial — ghost-delta digit calibration</title>
+<style>
+:root { color-scheme: dark; --bg:#14140f; --pan:#1e1e18; --ln:#33332a; --ink:#e8e8dd;
+        --dim:#9a9a8a; --acc:#ffd54a; --ok:#57d977; --bad:#ff6b6b; }
+* { box-sizing: border-box; }
+html, body { margin:0; height:100%; background:var(--bg); color:var(--ink);
+             font:13px/1.45 "Segoe UI", system-ui, sans-serif; }
+#wrap { display:flex; height:100vh; }
+#left { flex:1; min-width:0; display:flex; flex-direction:column; }
+#bar { display:flex; gap:8px; align-items:center; padding:8px 10px;
+       border-bottom:1px solid var(--ln); flex-wrap:wrap; }
+#stage { flex:1; overflow:auto; padding:12px; }
+canvas { image-rendering:pixelated; display:block; margin-bottom:10px;
+         box-shadow:0 3px 14px #0009; }
+#side { width:360px; border-left:1px solid var(--ln); overflow-y:auto; background:var(--pan); }
+h2 { font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--dim);
+     margin:14px 10px 6px; }
+button, select, input { font:inherit; background:#2a2a22; color:var(--ink);
+                        border:1px solid var(--ln); border-radius:7px; padding:4px 9px; }
+button { cursor:pointer; } button.on { background:var(--acc); color:#1a1a12;
+                                       font-weight:700; border-color:transparent; }
+.row { display:flex; align-items:center; gap:6px; margin:3px 10px; }
+.row label { width:78px; color:var(--dim); font-size:12px; }
+.row input { width:72px; text-align:right; padding:3px 6px; }
+.hint { color:var(--dim); font-size:11.5px; margin:6px 10px 12px; }
+#score { padding:8px 10px; font-family:ui-monospace,Consolas,monospace; font-size:11.5px;
+         white-space:pre-wrap; border-top:1px solid var(--ln); }
+.ok { color:var(--ok); } .bad { color:var(--bad); }
+kbd { background:#2a2a22; border:1px solid var(--ln); border-radius:4px; padding:0 4px; }
+</style>
+
+<div id="wrap">
+  <div id="left">
+    <div id="bar">
+      <select id="target">
+        <option value="delta">ghost delta</option>
+        <option value="clock">race clock / lap time</option>
+        <option value="lap">lap counter</option>
+        <option value="coins">coins</option>
+      </select>
+      <select id="grp">
+        <option value="+">positive (behind)</option>
+        <option value="-">negative (ahead)</option>
+        <option value="*">all</option>
+      </select>
+      <select id="zoom"><option>2</option><option selected>3</option><option>4</option></select>
+      <button id="btnSeg" class="on">segment boxes</button>
+      <button id="btnCell" class="on">glyph cells</button>
+      <span style="flex:1"></span>
+      <button id="btnSave">save</button>
+      <button id="btnReset">reload</button>
+    </div>
+    <div id="stage"></div>
+  </div>
+  <div id="side">
+    <h2>shared</h2>
+    <div id="shared"></div>
+    <h2>columns — <span id="grpname">positive</span></h2>
+    <div id="cols"></div>
+    <div class="hint">Click a field then <kbd>↑</kbd><kbd>↓</kbd> to nudge 1 px,
+      <kbd>Shift</kbd> for 10. <b>→</b>/<b>←</b> beside a column shifts it and every
+      column after it. Positive and negative keep their own columns because the
+      <code>−</code> glyph is narrower than <code>+</code>, so the digits after it
+      sit further left.</div>
+    <div id="score"></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let G = null, MAN = [], IMGS = {}, SEG = true, CELL = true;
+
+/* the canonical 7-segment cell and digit patterns, mirrored from
+   detection.sevenSegment so the overlay shows exactly what the decoder reads */
+let SEGS = {}, DIGITS = {};
+
+const grp = () => $("#grp").value;
+
+/* Every 7-segment field this page can place. `signed` is the odd one out:
+   the delta keeps one column set per sign, because '-' is narrower than '+'
+   and shifts every digit after it. The rest have a single set. */
+const TGT = {
+  delta: { api: "api/deltagrid", file: "delta_grid.json", signed: true,
+           label: "ghost delta", names: ["M", "S1", "S2", "ms1", "ms2", "ms3"] },
+  clock: { api: "api/clockgrid", file: "clock_grid.json", signed: false,
+           label: "race clock",  names: ["M", "S1", "S2", "ms1", "ms2", "ms3"] },
+  lap:   { api: "api/lapgrid",   file: "lap_grid.json",   signed: false,
+           label: "lap counter", names: ["lap"] },
+  coins: { api: "api/coinsgrid", file: "coins_grid.json", signed: false,
+           label: "coins",       names: ["tens", "ones"] },
+};
+const tgt = () => TGT[$("#target").value] || TGT.delta;
+const signed = () => tgt().signed;
+function cols(sign) {
+  return signed() ? G.columns[sign === "-" ? "-" : "+"] : G.columns;
+}
+/* a cell is a PARALLELOGRAM: x is its left edge at the BOTTOM row, and it
+   slides by `tilt` for every row above. Top and bottom stay horizontal. */
+/* ONE bar size for every segment, turned 90 degrees for the verticals — which
+   is what a real 7-segment display is. SEGS carries each segment's centre in the
+   canonical 65x95 cell plus its orientation. */
+function segBox(k, col, gy0, gy1, sx, sy) {
+  const [bcx, bcy, orient] = SEGS[k];
+  const [odx, ody] = (G.segOffsets && G.segOffsets[k]) || [0, 0];
+  const cy = gy0 + bcy * sy + ody;
+  const cx = col.x + bcx * sx + col.tilt * (cy - gy1) + odx;
+  return { cx, cy,
+           w: Math.max(2, (orient === "h" ? G.segLong : G.segShort) * sx),
+           h: Math.max(2, (orient === "h" ? G.segShort : G.segLong) * sy) };
+}
+
+function cellPath(c, col, gy0, gy1, w, z, yoff) {
+  const xb = col.x, xt = col.x + col.tilt * (gy0 - gy1);
+  c.beginPath();
+  c.moveTo(xt * z, yoff + gy0 * z);
+  c.lineTo((xt + w) * z, yoff + gy0 * z);
+  c.lineTo((xb + w) * z, yoff + gy1 * z);
+  c.lineTo(xb * z, yoff + gy1 * z);
+  c.closePath();
+}
+
+function draw() {
+  if (!G || !MAN.length) return;
+  const stage = $("#stage"); stage.innerHTML = "";
+  const z = +$("#zoom").value;
+  const [rx, ry, rw, rh] = G.roi;
+  const [gy0, gy1] = G.glyphRows;
+  const sy = (gy1 - gy0) / 95.0, sx = G.glyphW / 65.0;
+  let lines = [];
+  for (const m of MAN) {
+    if ((m.target || "delta") !== $("#target").value) continue;
+    if (signed() && grp() !== "*" && m.sign !== grp()) continue;
+    const im = IMGS[m.file];
+    if (!im || !im.complete) continue;
+    const cv = document.createElement("canvas");
+    cv.width = rw * z; cv.height = rh * z + 22;
+    const c = cv.getContext("2d");
+    c.imageSmoothingEnabled = false;
+    c.drawImage(im, rx, ry, rw, rh, 0, 22, rw * z, rh * z);
+    c.fillStyle = "#000"; c.fillRect(0, 0, cv.width, 22);
+    c.fillStyle = "#fff"; c.font = "12px system-ui";
+    c.fillText(`${m.expectedText}   ${m.track.replace("track.", "")} lap${m.lap}`, 5, 15);
+    const X = cols(m.sign);
+    c.lineWidth = 1;
+    for (const col of X) {
+      if (CELL) { c.strokeStyle = "#4ad6ff"; cellPath(c, col, gy0, gy1, G.glyphW, z, 22); c.stroke(); }
+      if (SEG) {
+        c.strokeStyle = "#ff5bd7";
+        for (const k in SEGS) {
+          const b = segBox(k, col, gy0, gy1, sx, sy);
+          c.strokeRect((b.cx - b.w / 2) * z, 22 + (b.cy - b.h / 2) * z, b.w * z, b.h * z);
+        }
+      }
+    }
+    // the sign cell — '+' has a vertical stem, '-' does not. Drawn so it can be
+    // placed by eye like everything else; it was invisible before, which made
+    // every negative delta silently read as positive.
+    if (CELL && G.signBox && signed()) {
+      const [sxx, sww] = G.signBox;
+      c.strokeStyle = "#ffd54a";
+      c.strokeRect(sxx * z, 22 + gy0 * z, sww * z, (gy1 - gy0) * z);
+      c.fillStyle = "#ffd54a"; c.font = "10px system-ui";
+      c.fillText("sign", sxx * z + 2, 22 + gy0 * z + 10);
+    }
+    stage.appendChild(cv);
+    lines.push(m);
+  }
+  score(lines);
+}
+
+/* decode client-side so the readout follows every nudge with no round-trip */
+function decode(m) {
+  const im = IMGS[m.file];
+  if (!im || !im.complete) return null;
+  const [rx, ry, rw, rh] = G.roi, [gy0, gy1] = G.glyphRows;
+  const cn = document.createElement("canvas"); cn.width = rw; cn.height = rh;
+  const cx2 = cn.getContext("2d"); cx2.imageSmoothingEnabled = false;
+  cx2.drawImage(im, rx, ry, rw, rh, 0, 0, rw, rh);
+  const px = cx2.getImageData(0, 0, rw, rh).data;
+  const gray = new Float32Array(rw * rh);
+  for (let i = 0; i < rw * rh; i++)
+    gray[i] = 0.114 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.299 * px[i * 4 + 2];
+  const srt = Float32Array.from(gray).sort();
+  const lo = srt[Math.floor(srt.length * .10)], hi = srt[Math.floor(srt.length * .90)];
+  const span = Math.max(20, hi - lo);
+  const sy = (gy1 - gy0) / 95.0, sx = G.glyphW / 65.0;
+  // The readers search +/-1 in both axes before giving up; decoding only at
+  // (0,0) here made the tool STRICTER than production and showed '?' on glyphs
+  // that read fine — you would be chasing a placement that is already correct.
+  const glyph = (col, dx, dy) => {
+    const on = new Set();
+    for (const k in SEGS) {
+      const b = segBox(k, col, gy0, gy1, sx, sy);
+      const w = Math.max(2, Math.floor(b.w)), h = Math.max(2, Math.floor(b.h));
+      const x1 = Math.floor(b.cx + dx - w / 2), y1 = Math.floor(b.cy + dy - h / 2);
+      let lit = 0, n = 0;
+      for (let y = y1; y < y1 + h; y++) for (let x = x1; x < x1 + w; x++) {
+        if (x < 0 || y < 0 || x >= rw || y >= rh) continue;
+        if ((gray[y * rw + x] - lo) / span > (G.pixelThresh ?? 0.55)) lit++;
+        n++;
+      }
+      if (n && lit / n >= (G.areaFrac ?? 0.40)) on.add(k);
+    }
+    let best = "?", bd = 99, second = 99;
+    /* per-field glyph model: the lap and coin counters draw '1' CENTERED,
+       the clock draws it on the right. The two central verticals were already
+       in the segment set and used by no digit, so the override only turns
+       them on. G.digits merges over detection.sevenSegment. */
+    const DIG = G.digits ? { ...DIGITS, ...G.digits } : DIGITS;
+    /* compare only over the segments this field's model USES. The two centred
+       verticals mean nothing to the clock, and counting them there would let a
+       single stray lit pixel push a good read over the reject distance. */
+    const USED = new Set([].concat(...Object.values(DIG)));
+    for (const d in DIG) {
+      let dist = 0;
+      for (const k of USED) if (on.has(k) !== DIG[d].includes(k)) dist++;
+      if (dist < bd) { best = d; second = bd; bd = dist; } else if (dist < second) second = dist;
+    }
+    return (bd > 1 || second - bd < 1) ? { d: "?", dist: 9 } : { d: best, dist: bd };
+  };
+  let out = "", bestAll = null;
+  for (const dy of [0, -1, 1]) for (const dx of [0, -1, 1]) {
+    let str = "", tot = 0, okAll = true;
+    for (const col of cols(m.sign)) {
+      const r = glyph(col, dx, dy);
+      if (r.d === "?") { okAll = false; break; }
+      str += r.d; tot += r.dist;
+    }
+    if (okAll && (bestAll === null || tot < bestAll[1])) bestAll = [str, tot];
+  }
+  if (bestAll) out = bestAll[0];
+  else out = cols(m.sign).map(c => glyph(c, 0, 0).d).join("");
+  return out;
+}
+
+function score(list) {
+  let ok = 0, rows = [];
+  for (const m of list) {
+    const got = decode(m);
+    const want = m.expectedText.replace(/[+\-:.]/g, "");
+    const good = got === want;
+    if (good) ok++;
+    rows.push(`${good ? "ok  " : "BAD "} ${m.expectedText.padEnd(11)} got ${(got || "??????")}`);
+  }
+  $("#score").innerHTML = `<b class="${ok === list.length ? "ok" : "bad"}">`
+    + `${ok}/${list.length} decode correctly</b>\n` + rows.join("\n");
+}
+
+function field(obj, key, label, after) {
+  const r = document.createElement("div"); r.className = "row";
+  r.innerHTML = `<label>${label}</label>`;
+  const i = document.createElement("input");
+  i.type = "number"; i.step = /tilt|thresh|frac/.test(String(label)) ? "0.02" : "1"; i.value = obj[key];
+  const set = v => { obj[key] = v; i.value = v; draw(); };
+  i.oninput = () => set(parseFloat(i.value));
+  i.onkeydown = e => {
+    if (e.key !== "ArrowUp" && e.key !== "ArrowDown") return;
+    e.preventDefault();
+    const st = /tilt/.test(String(label)) ? 0.002
+             : /thresh|frac/.test(String(label)) ? 0.02 : (e.shiftKey ? 10 : 1);
+    set(Math.round(((parseFloat(i.value) || 0) + (e.key === "ArrowUp" ? st : -st)) * 1000) / 1000);
+  };
+  r.appendChild(i);
+  if (after) after(r);
+  return r;
+}
+
+function panel() {
+  const sh = $("#shared"); sh.innerHTML = "";
+  ["x", "y", "w", "h"].forEach((k, i) => {
+    const o = { get v() { return G.roi[i]; }, set v(n) { G.roi[i] = n; } };
+    sh.appendChild(field(o, "v", "roi " + k));
+  });
+  [0, 1].forEach(i => {
+    const o = { get v() { return G.glyphRows[i]; }, set v(n) { G.glyphRows[i] = n; } };
+    sh.appendChild(field(o, "v", i ? "row bottom" : "row top"));
+  });
+  sh.appendChild(field(G, "glyphW", "glyph w"));
+  if (signed() && G.signBox) {
+    [0, 1].forEach(j => {
+      const o = { get v() { return G.signBox[j]; }, set v(n) { G.signBox[j] = n; } };
+      sh.appendChild(field(o, "v", j ? "sign w" : "sign x"));
+    });
+  }
+  sh.appendChild(field(G, "pixelThresh", "px thresh"));
+  sh.appendChild(field(G, "areaFrac", "area frac"));
+  sh.appendChild(field(G, "segLong", "bar long"));
+  sh.appendChild(field(G, "segShort", "bar short"));
+  // per-segment nudges, shared by every column
+  for (const k in SEGS) {
+    [0, 1].forEach(j => {
+      const o = { get v() { return (G.segOffsets[k] || [0, 0])[j]; },
+                  set v(n) { (G.segOffsets[k] = G.segOffsets[k] || [0, 0])[j] = n; } };
+      sh.appendChild(field(o, "v", `${k.replace(/_/g, " ").slice(0, 11)} ${j ? "dy" : "dx"}`));
+    });
+  }
+
+  const cs = $("#cols"); cs.innerHTML = "";
+  const sign = grp() === "-" ? "-" : "+";
+  $("#grpname").textContent = !signed() ? tgt().label
+                            : sign === "-" ? "negative (ahead)" : "positive (behind)";
+  const arr = cols(sign);
+  const names = tgt().names;
+  arr.forEach((_, i) => {
+    const t = { get v() { return arr[i].tilt; }, set v(n) { arr[i].tilt = n; } };
+    const o = { get v() { return arr[i].x; }, set v(n) { arr[i].x = n; } };
+    cs.appendChild(field(t, "v", names[i] + " tilt"));
+    cs.appendChild(field(o, "v", names[i] + " x", r => {
+      for (const [txt, d] of [["←", -1], ["→", 1]]) {
+        const b = document.createElement("button");
+        b.textContent = txt; b.style.padding = "2px 7px";
+        b.title = "shift this column and all after it";
+        b.onclick = () => { for (let j = i; j < arr.length; j++) arr[j].x += d; panel(); draw(); };
+        r.appendChild(b);
+      }
+    }));
+  });
+}
+
+async function load() {
+  G = await (await fetch(tgt().api)).json();
+  const meta = await (await fetch("api/deltagrid/segments")).json();
+  SEGS = meta.segs; DIGITS = meta.digits;
+  MAN = await (await fetch("api/deltagrid/refs")).json();
+  let pending = MAN.length;
+  MAN.forEach(m => {
+    const im = new Image();
+    im.onload = () => { if (--pending <= 0) { panel(); draw(); } };
+    im.src = "api/deltagrid/ref?f=" + encodeURIComponent(m.file);
+    IMGS[m.file] = im;
+  });
+}
+
+$("#grp").onchange = () => { panel(); draw(); };
+$("#target").onchange = load;
+$("#zoom").onchange = draw;
+$("#btnSeg").onclick = e => { SEG = !SEG; e.target.classList.toggle("on", SEG); draw(); };
+$("#btnCell").onclick = e => { CELL = !CELL; e.target.classList.toggle("on", CELL); draw(); };
+$("#btnReset").onclick = load;
+$("#btnSave").onclick = async () => {
+  const r = await fetch(tgt().api, { method: "POST", body: JSON.stringify(G) });
+  $("#score").textContent = (await r.json()).ok
+    ? ("saved to config/" + tgt().file) : "save FAILED";
+};
+load();
+</script>

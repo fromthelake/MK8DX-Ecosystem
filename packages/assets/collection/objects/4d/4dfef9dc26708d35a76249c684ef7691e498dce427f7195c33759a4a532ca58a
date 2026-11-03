@@ -1,0 +1,18 @@
+{
+  "schema_version": "mk8_live_aiming_guide_v1",
+  "source": "coco_player_ghost_box_geometry",
+  "source_coordinate_space": {
+    "width": 1280,
+    "height": 720
+  },
+  "normalized_box": {
+    "left": 0.405,
+    "top": 0.060,
+    "right": 0.982,
+    "bottom": 0.940
+  },
+  "display_only": true,
+  "runtime_crop": false,
+  "runtime_fallback": false,
+  "notes": "Guide covers the expected player/ghost Time Trial result-panel region. The APK still processes the full camera frame through the automatic 00-26 workflow."
+}

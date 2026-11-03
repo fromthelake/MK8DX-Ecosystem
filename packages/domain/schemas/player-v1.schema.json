@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/player-v1.schema.json",
+  "title": "PlayerV1",
+  "description": "A central human Player identity. It remains distinct from authentication accounts, claims, aliases, and non-human source/system references.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "playerId",
+    "revision",
+    "playerKind",
+    "username",
+    "displayName",
+    "recordStatus",
+    "createdAtMs",
+    "updatedAtMs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "mk8dx.player.v1" },
+    "playerId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerId"
+    },
+    "revision": { "type": "integer", "minimum": 1 },
+    "playerKind": {
+      "const": "human",
+      "description": "V1 Player records represent humans. NintendoStaff, WorldRecord, and other source/system references are not Player records."
+    },
+    "username": { "$ref": "#/$defs/usernameState" },
+    "displayName": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "recordStatus": { "enum": ["active", "archived"] },
+    "createdAtMs": { "type": "integer", "minimum": 0 },
+    "updatedAtMs": { "type": "integer", "minimum": 0 }
+  },
+  "$defs": {
+    "usernameAllocation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sequence", "value", "comparisonKey", "allocatedAtMs", "releasedAtMs"],
+      "properties": {
+        "sequence": { "type": "integer", "minimum": 1 },
+        "value": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "comparisonKey": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "description": "Central-service generated Unicode NFC plus full case-fold key. It is not an alias or display value."
+        },
+        "allocatedAtMs": { "type": "integer", "minimum": 0 },
+        "releasedAtMs": {
+          "description": "Null only for the current allocation.",
+          "oneOf": [
+            { "type": "integer", "minimum": 0 },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "usernameState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["current", "history"],
+      "properties": {
+        "current": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["value", "comparisonKey"],
+          "properties": {
+            "value": { "type": "string", "minLength": 1, "maxLength": 64 },
+            "comparisonKey": { "type": "string", "minLength": 1, "maxLength": 128 }
+          }
+        },
+        "history": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/usernameAllocation" }
+        }
+      }
+    }
+  }
+}

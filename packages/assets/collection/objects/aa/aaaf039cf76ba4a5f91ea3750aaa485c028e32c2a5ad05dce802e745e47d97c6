@@ -1,0 +1,849 @@
+{
+  "schemaVersion": "mk8dx.tournament-locale-templates.v1",
+  "templates": [
+    {
+      "locale": "EUfr",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUfr.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/fr/064_lan_results_banner.png",
+      "sourceSha256": "8e4307cc0e2765717af3129be378c7868ed9858bea70dc316bbcc58cfd8455c8"
+    },
+    {
+      "locale": "USfr",
+      "kind": "twelfth",
+      "file": "locale/twelfth_USfr.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/fr-ca/064_lan_results_banner.png",
+      "sourceSha256": "2610ad759cbbc76b84f370ebe6710ebe35d66d722a505518f1c6b4c6a3723f6f"
+    },
+    {
+      "locale": "EUde",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUde.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/de/064_lan_results_banner.png",
+      "sourceSha256": "8be129cac8085696dbb15e69ef8f060f5806f8b11be97ff5f28059c1e5ededa5"
+    },
+    {
+      "locale": "EUes",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUes.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/es/064_lan_results_banner.png",
+      "sourceSha256": "fd5a862fc7505168062c564331af51c279b4d09cf2dbb1f86fe6a7360ef34d78"
+    },
+    {
+      "locale": "USes",
+      "kind": "twelfth",
+      "file": "locale/twelfth_USes.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/es-419/064_lan_results_banner.png",
+      "sourceSha256": "fd5a862fc7505168062c564331af51c279b4d09cf2dbb1f86fe6a7360ef34d78"
+    },
+    {
+      "locale": "EUit",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUit.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/it/064_lan_results_banner.png",
+      "sourceSha256": "bf31942c77b426ecc66b0fecc014ae2ceeebf0a4d619fb5564d8bae9a97fd480"
+    },
+    {
+      "locale": "EUpt",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUpt.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/pt/064_lan_results_banner.png",
+      "sourceSha256": "598d08b7c3fac22d1ab33ac1bfa2ed0670e5aed376b2f72c3a8d9c0d0ada50ec"
+    },
+    {
+      "locale": "EUru",
+      "kind": "twelfth",
+      "file": "locale/twelfth_EUru.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ru/064_lan_results_banner.png",
+      "sourceSha256": "cd029f6706818312da1a396d7b15ed667d61f36b69af7621ea57994b6889ba87"
+    },
+    {
+      "locale": "JPja",
+      "kind": "twelfth",
+      "file": "locale/twelfth_JPja.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ja/064_lan_results_banner.png",
+      "sourceSha256": "9f091544c5bebd9e85fe90e54f30dcdacc6a9bec64a38bf5c2d7b7d7120040ed"
+    },
+    {
+      "locale": "KRko",
+      "kind": "twelfth",
+      "file": "locale/twelfth_KRko.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ko/064_lan_results_banner.png",
+      "sourceSha256": "541f274b210839a72067b686d6e9a1a86fd1968c60fdf068d4fce109f035fa13"
+    },
+    {
+      "locale": "CNzh",
+      "kind": "twelfth",
+      "file": "locale/twelfth_CNzh.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/zh-cn/064_lan_results_banner.png",
+      "sourceSha256": "242bf86ba6daba3ce77d5a8023c6a064592b6f37f78d5d69b67dc03fb30992c8"
+    },
+    {
+      "locale": "TWzh",
+      "kind": "twelfth",
+      "file": "locale/twelfth_TWzh.png",
+      "roi": [
+        100,
+        646,
+        1080,
+        64
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/zh-tw/064_lan_results_banner.png",
+      "sourceSha256": "f18b3fb90a53e4fc941bf2982cc81226d65ea90dbb003794a7a0432a51805327"
+    },
+    {
+      "locale": "EUfr",
+      "kind": "race",
+      "file": "locale/race_EUfr.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/fr/091_lan_race_counter_word.png",
+      "sourceSha256": "ea53de3aebd842a5c6c56197279737807f66afb7b56392409d588a9591b3dd52"
+    },
+    {
+      "locale": "USfr",
+      "kind": "race",
+      "file": "locale/race_USfr.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/fr-ca/091_lan_race_counter_word.png",
+      "sourceSha256": "ea53de3aebd842a5c6c56197279737807f66afb7b56392409d588a9591b3dd52"
+    },
+    {
+      "locale": "EUde",
+      "kind": "race",
+      "file": "locale/race_EUde.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/de/091_lan_race_counter_word.png",
+      "sourceSha256": "9f68d9997cb7d4cc76c02d516657e71cd6ea23b001641d959703bfe0460ec307"
+    },
+    {
+      "locale": "EUes",
+      "kind": "race",
+      "file": "locale/race_EUes.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/es/091_lan_race_counter_word.png",
+      "sourceSha256": "437df165914e932f3a03d525ace40dd43fa30127baccaec0b1a5c14309e6acf0"
+    },
+    {
+      "locale": "USes",
+      "kind": "race",
+      "file": "locale/race_USes.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/es-419/091_lan_race_counter_word.png",
+      "sourceSha256": "437df165914e932f3a03d525ace40dd43fa30127baccaec0b1a5c14309e6acf0"
+    },
+    {
+      "locale": "EUit",
+      "kind": "race",
+      "file": "locale/race_EUit.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/it/091_lan_race_counter_word.png",
+      "sourceSha256": "3db2db665dd38ffd04af174edbe342e1e06584ab3f2c1f2edf3e1ceda017bcb4"
+    },
+    {
+      "locale": "EUpt",
+      "kind": "race",
+      "file": "locale/race_EUpt.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/pt/091_lan_race_counter_word.png",
+      "sourceSha256": "c90f3bd6f83157b5d5e2ca9bca3e2f82c73e02d46a2c3f1230b6cacbacf19988"
+    },
+    {
+      "locale": "EUru",
+      "kind": "race",
+      "file": "locale/race_EUru.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/ru/091_lan_race_counter_word.png",
+      "sourceSha256": "a5917f8f7e4c9dd4674f6ebed4f589074dc184867bebc93bf50324bb85c14f75"
+    },
+    {
+      "locale": "JPja",
+      "kind": "race",
+      "file": "locale/race_JPja.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/ja/091_lan_race_counter_word.png",
+      "sourceSha256": "d09d24e54a7db33384ba826c7bb3850d89db55d6ed1e117e4c7e6cc792cc2a85"
+    },
+    {
+      "locale": "KRko",
+      "kind": "race",
+      "file": "locale/race_KRko.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/ko/091_lan_race_counter_word.png",
+      "sourceSha256": "6f4dd0058969a9e8e58c64b220d46b8241e5643f39d4b950188d426c254232e6"
+    },
+    {
+      "locale": "CNzh",
+      "kind": "race",
+      "file": "locale/race_CNzh.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/zh-cn/091_lan_race_counter_word.png",
+      "sourceSha256": "a2c3a4d9bd0991bd3e31c0d0ad250872501eb8898027428918419791ab597d7e"
+    },
+    {
+      "locale": "TWzh",
+      "kind": "race",
+      "file": "locale/race_TWzh.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/zh-tw/091_lan_race_counter_word.png",
+      "sourceSha256": "c97459ec621b152c32f8e62aa5c2268f50846537a132b446a9539cc6220d6bc8"
+    },
+    {
+      "locale": "EUru",
+      "kind": "race",
+      "file": "locale/race_final_EUru.png",
+      "roi": [
+        400,
+        584,
+        520,
+        60
+      ],
+      "threshold": 0.5,
+      "source": "Clean Assets images/hud/templates/ru/093_lan_race_counter_final_word.png",
+      "sourceSha256": "f025d9d64e85bdd58d2e7d41088600ff0855ed864a96838e5ec6cb41bc69d960"
+    },
+    {
+      "locale": "50cc",
+      "kind": "track",
+      "file": "locale/track_50cc.png"
+    },
+    {
+      "locale": "100cc",
+      "kind": "track",
+      "file": "locale/track_100cc.png"
+    },
+    {
+      "locale": "200cc",
+      "kind": "track",
+      "file": "locale/track_200cc.png"
+    },
+    {
+      "locale": "mirror",
+      "kind": "track",
+      "file": "locale/track_mirror.png"
+    },
+    {
+      "locale": "ns2",
+      "kind": "ignore",
+      "file": "locale/ignore_ns2_controller.png",
+      "roi": [
+        50,
+        640,
+        75,
+        73
+      ],
+      "threshold": 0.75
+    },
+    {
+      "locale": "EUnl",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUnl.png",
+      "roi": [
+        545,
+        661,
+        684,
+        50
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/nl/066_system_album_list_bar.png",
+      "sourceSha256": "bc41d0e618098cf8a0e49f70ebcd4ef55614da41f1511a9ed3dd219836d48792"
+    },
+    {
+      "locale": "EUfr",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUfr.png",
+      "roi": [
+        540,
+        665,
+        684,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/fr/066_system_album_list_bar.png",
+      "sourceSha256": "6fd67da922010a1c9fc6d701f2fbbebdeaad3698eccf5ed81174b85620ae5161"
+    },
+    {
+      "locale": "EUde",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUde.png",
+      "roi": [
+        580,
+        665,
+        644,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/de/066_system_album_list_bar.png",
+      "sourceSha256": "13f1bdffa424647f639021a2f3911c19b74f082355cb1f85627494d8c10a25fa"
+    },
+    {
+      "locale": "EUes",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUes.png",
+      "roi": [
+        663,
+        665,
+        560,
+        40
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/es/066_system_album_list_bar.png",
+      "sourceSha256": "7a31420a68aa6b9c700202e3b14e544758918ffd21aaae858b67b8c80f0322ea"
+    },
+    {
+      "locale": "EUit",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUit.png",
+      "roi": [
+        671,
+        665,
+        553,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/it/066_system_album_list_bar.png",
+      "sourceSha256": "8fb4389dd06e73e92a6e87a2e715fac73c8c6b4632fa000ae1fa10349ed75a55"
+    },
+    {
+      "locale": "EUpt",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUpt.png",
+      "roi": [
+        606,
+        665,
+        618,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/pt/066_system_album_list_bar.png",
+      "sourceSha256": "92cbcc3a9a29b4b502c9c0f2601e335435b827b45678999998ddd22bf540d810"
+    },
+    {
+      "locale": "EUru",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_EUru.png",
+      "roi": [
+        514,
+        665,
+        710,
+        40
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ru/066_system_album_list_bar.png",
+      "sourceSha256": "8e0c6a0ff0de0b0128439b96f6b5cd205643595a6b2d44a1ef15b23f87aa6848"
+    },
+    {
+      "locale": "JPja",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_JPja.png",
+      "roi": [
+        589,
+        665,
+        634,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ja/066_system_album_list_bar.png",
+      "sourceSha256": "0f49720ac9c62a51fc4c6b501e7c9d24ad37c7754c73676eaf2c765efb0176bb"
+    },
+    {
+      "locale": "KRko",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_KRko.png",
+      "roi": [
+        714,
+        665,
+        507,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ko/066_system_album_list_bar.png",
+      "sourceSha256": "067886b2ddf623d82a995f50f3e385d1edb5a9d0690715237131abfbaba94b5f"
+    },
+    {
+      "locale": "CNzh",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_CNzh.png",
+      "roi": [
+        699,
+        665,
+        524,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/zh-cn/066_system_album_list_bar.png",
+      "sourceSha256": "030cd320a84bbc7dc40270f1e5bd4836a6b42986af31bb74f9485a0d940feb7d"
+    },
+    {
+      "locale": "TWzh",
+      "kind": "ignore",
+      "file": "locale/ignore_album_list_TWzh.png",
+      "roi": [
+        699,
+        665,
+        524,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/zh-tw/066_system_album_list_bar.png",
+      "sourceSha256": "f222251e9eed4853b3b83140dad2e2e875f4085ab1edf62239afc81e8402af38"
+    },
+    {
+      "locale": "EUnl",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUnl.png",
+      "roi": [
+        449,
+        662,
+        777,
+        47
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/nl/067_system_album_view_bar.png",
+      "sourceSha256": "7040b4d9c01f6bffa7b8f6bf53df460713cefa8c7568f3dfb945b98d2d4389de"
+    },
+    {
+      "locale": "EUfr",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUfr.png",
+      "roi": [
+        487,
+        665,
+        736,
+        40
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/fr/067_system_album_view_bar.png",
+      "sourceSha256": "4d2d0cbc7e0b1067073fca666b789e14278358b1f9f4c381a3c8f765a31e83cf"
+    },
+    {
+      "locale": "EUde",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUde.png",
+      "roi": [
+        457,
+        665,
+        766,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/de/067_system_album_view_bar.png",
+      "sourceSha256": "7a7efe432d912fc3be52ad19f2f1700efe2c9a22cdfa08b4bc4581c0ea7ab482"
+    },
+    {
+      "locale": "EUes",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUes.png",
+      "roi": [
+        553,
+        665,
+        670,
+        40
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/es/067_system_album_view_bar.png",
+      "sourceSha256": "0932265e0dc7c6d1fa79d4e73d44187a16411afae7b1290e3e55c20d1b98c333"
+    },
+    {
+      "locale": "EUit",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUit.png",
+      "roi": [
+        440,
+        665,
+        783,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/it/067_system_album_view_bar.png",
+      "sourceSha256": "d98f8dc2ac8fb5eac6d9c53941fb9a66c0ca4252f966ed8f56cabde2bd888c9e"
+    },
+    {
+      "locale": "EUpt",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUpt.png",
+      "roi": [
+        501,
+        665,
+        722,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/pt/067_system_album_view_bar.png",
+      "sourceSha256": "53423b7e0469b8e414bba89c2b5e51e62c99f9913dd19608749bab5857307f69"
+    },
+    {
+      "locale": "EUru",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_EUru.png",
+      "roi": [
+        409,
+        665,
+        814,
+        40
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ru/067_system_album_view_bar.png",
+      "sourceSha256": "245ff3c4d88b1efe74b55ca11e90e616eda092693e385c4b06b94ea00e9000b0"
+    },
+    {
+      "locale": "JPja",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_JPja.png",
+      "roi": [
+        655,
+        665,
+        568,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ja/067_system_album_view_bar.png",
+      "sourceSha256": "c254e4e8a1bc5d26c8562585ca9992f47a127d714ac0512cbca2b406eca6f1cc"
+    },
+    {
+      "locale": "KRko",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_KRko.png",
+      "roi": [
+        669,
+        665,
+        552,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/ko/067_system_album_view_bar.png",
+      "sourceSha256": "2e69ba4f067f61d203caf7b56c1ab3dc9b6c468245b37c10289149af02e3e246"
+    },
+    {
+      "locale": "CNzh",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_CNzh.png",
+      "roi": [
+        699,
+        665,
+        524,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/zh-cn/067_system_album_view_bar.png",
+      "sourceSha256": "3b4a66231ef05bc8db0a081cc4d425311dd066c7c1e1c0b4dc918e494757b688"
+    },
+    {
+      "locale": "TWzh",
+      "kind": "ignore",
+      "file": "locale/ignore_album_view_TWzh.png",
+      "roi": [
+        677,
+        665,
+        546,
+        38
+      ],
+      "threshold": 0.7,
+      "source": "Clean Assets images/hud/templates/zh-tw/067_system_album_view_bar.png",
+      "sourceSha256": "8ba7eb594fb443302d35e36f0b9850d326fbe6ef5a72eea46c2f2f0ea9611e2b"
+    },
+    {
+      "locale": "EUnl",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUnl.png",
+      "roi": [
+        269,
+        662,
+        957,
+        47
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/nl/068_system_video_replay_bar.png",
+      "sourceSha256": "32c08183813ac8727697398086c7b8bb534a25fcca0eadb3961dfe4fc29c65ed"
+    },
+    {
+      "locale": "EUfr",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUfr.png",
+      "roi": [
+        344,
+        665,
+        879,
+        40
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/fr/068_system_video_replay_bar.png",
+      "sourceSha256": "1f361eb4aa97ec22cd14e716b35c3c263d428f046b4e249f4d214416fcdb2659"
+    },
+    {
+      "locale": "EUde",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUde.png",
+      "roi": [
+        314,
+        665,
+        909,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/de/068_system_video_replay_bar.png",
+      "sourceSha256": "ac74844063adda60ea0363d9c21f299271432bb92e6f7c0f247b8be2249b1835"
+    },
+    {
+      "locale": "EUes",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUes.png",
+      "roi": [
+        402,
+        665,
+        821,
+        40
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/es/068_system_video_replay_bar.png",
+      "sourceSha256": "e3afbb7efbe1b40f558d93fb83595ecfc2e60f1866cd70e3dd0c411b65f3e8d0"
+    },
+    {
+      "locale": "EUit",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUit.png",
+      "roi": [
+        297,
+        665,
+        926,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/it/068_system_video_replay_bar.png",
+      "sourceSha256": "99a74fa9c6c9bbcacb62c8039451364b42a89e61a9eed6caab148f1a55b81ace"
+    },
+    {
+      "locale": "EUpt",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUpt.png",
+      "roi": [
+        358,
+        665,
+        865,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/pt/068_system_video_replay_bar.png",
+      "sourceSha256": "c09f1aad5097f81835d829454f2f54ae874f4a6ea2e3213b888b5bd85b533488"
+    },
+    {
+      "locale": "EUru",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_EUru.png",
+      "roi": [
+        264,
+        665,
+        959,
+        40
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ru/068_system_video_replay_bar.png",
+      "sourceSha256": "925046bfb6ff2896a52026d8c50a0524a2b73423e71b724872a32ca5324269eb"
+    },
+    {
+      "locale": "JPja",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_JPja.png",
+      "roi": [
+        489,
+        665,
+        734,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ja/068_system_video_replay_bar.png",
+      "sourceSha256": "9bf957c38a17da34eb25062b28a10117ac1b502ce54c92e48861e85ed982b657"
+    },
+    {
+      "locale": "KRko",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_KRko.png",
+      "roi": [
+        496,
+        665,
+        725,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/ko/068_system_video_replay_bar.png",
+      "sourceSha256": "70dd60ede80307430ae5056e3fe09631d3f95446885bc1e5ae4bb2b9dcfd461b"
+    },
+    {
+      "locale": "CNzh",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_CNzh.png",
+      "roi": [
+        577,
+        665,
+        646,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/zh-cn/068_system_video_replay_bar.png",
+      "sourceSha256": "8540ac5cbd614675010b556b795c3097df322634d93f99d07699145d64ad8ce1"
+    },
+    {
+      "locale": "TWzh",
+      "kind": "ignore",
+      "file": "locale/ignore_video_replay_TWzh.png",
+      "roi": [
+        555,
+        665,
+        668,
+        38
+      ],
+      "threshold": 0.6,
+      "source": "Clean Assets images/hud/templates/zh-tw/068_system_video_replay_bar.png",
+      "sourceSha256": "305081367a8323b388d5267e8d63953e61995332c022a1d2d9fcc9af6546b11d"
+    }
+  ]
+}

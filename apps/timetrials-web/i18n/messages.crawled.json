@@ -1,0 +1,1033 @@
+{
+ "schemaVersion": "mk8dx.web-message-crawl.v1",
+ "generatedBy": "tooling/i18n/crawl_web_leftovers.mjs (normalised: numbers, @handles and display names as {n}; no raw page text)",
+ "note": "English texts a catalog language still showed on the page (QA mirror crawl in Japanese, 2026-10-31).",
+ "messages": [
+  {
+   "key": "About this site",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Acceleration",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Active and retired",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Active only",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Add rival",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv A",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv B",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv B {0} Adv C {1} Int A {2} Int B {3} Int C {4} Beg A {5}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv B: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv C",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adv C: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Adventure",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "All — {0}cc and {1}cc",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Any publication state",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Any source",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Any speed",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Bast geert",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Beg A",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Beg A: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Blaasie",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Blaasle",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Bokkie",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Byron",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Challenge accepted",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Champion",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Coins per lap",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Cool",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Counted over every race in a finalized tournament.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Counts for TrueSkill again",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Deutsch",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Exp A",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Exp B",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Exp C",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Follow",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Followed Players appear more prominently in your Home activity. Your selection is private — the other Player is not notified, and there are no follower counts.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "From {0} players at TN{1} to {2} at TN{3} {4} {5} people have raced one at some point.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Funny",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "GBA Snow Land, Propeller Cup",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "GLA · Blue",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "GLA · Purple",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Good job",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Handling",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Head-to-head: you {0} · {1} them over {2} shared races →",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Hero A",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Hilarious",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "How it was recorded",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "How often each finishing position happened, counted over every race in a finalized tournament.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Huge improvement",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "I recorded it twice",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int A",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int A: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int B",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int B: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int C",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Int C: {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Invincibility",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Iron {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "It was only a test",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Italiano",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "JAy kiler",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "JavaScript is required to use MK{0}DX Time Trials on the web.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Jensie",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Laps",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Light-blue Yoshi · Cat Cruiser · Cushion · Paper Glider",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "LiveTrial & YouTube upload",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Love it",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "MJ hihi!",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Marcou",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mario Kart Stadium leaderboard",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mark",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mastery",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Measured over {0} tournament races whose track is known, from {1} races per track. Every counted race carries a track.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mike",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mike HDAD",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Mikeman",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Morphonic",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Most leaderboard {0}s",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Most podiums",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Most published times",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "My rivals",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Nailed it",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Napoleon",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Nederlands",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "None",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Noob",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Nooo",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Number one",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "On fire",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Over {0} races whose track is known.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Party",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Player id",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Podium places.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Privacy policy",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Private Player",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Public Player",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Public — visible on leaderboards and your profile.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Reason code",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Respect",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Results count again",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Retire this result",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Retired only",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Retirement",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Rivals personalise your Home challenges and comparisons. Your selection is private — the other Player is not notified.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Royalty",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "SNES Mario Circuit {0} Turnip Cup",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Sebas",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Shin",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "So fast",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Sockit",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Sounder",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Source",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Strong",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Talent",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Terms of use",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "That was close",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "The account is misused",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "The apps are not available right now.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "The person asked for it",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "The run was not valid",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "The time is wrong",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Tour London Loop, Rock Cup",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Tour Vancouver Velocity, Cherry Cup",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Track id",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Tracks led.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Track–engine combinations out of {0}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Traction",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Unbelievable",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Verified Player: {0} (@{1}).",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Watching you",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Weight",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Where it shows",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Widest track coverage",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Wii Koopa Cape, Cherry Cup, {0}cc",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Wii Wario's Gold Mine, Triforce Cup",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Wild",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Windows",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Winner",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Withheld",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Wrong track or mode",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Yoshi · White",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Your times appear on leaderboards, in the record book and in community activity, and other players can find your profile.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "Your times stay in your account and are taken out of leaderboards, records, activity and Player search. Nothing is deleted, and you can go public again whenever you like.",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "captured live by the Windows app",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "entered in the Android app",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "entered on the website",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "gast geert",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "read from a recording by the Windows app",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "scanned in the Android app",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "scanned on the website",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} Black",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} Players · WR and Nintendo ghost as references",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} against {1}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} ahead",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} finished",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} gap",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} met C",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} min",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} races",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} races · average {1}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} races · average {1} · {2} won",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} runs",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} to Beg C",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} tracks",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} unread",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} · Adv B",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0} · {1}{2}{3} · finalized · step {4}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "{0}: {1} wins, {2} {3}nd/{4}rd, {5} {6}",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "’s Switch",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "✂️ Scissors",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "📄 Paper",
+   "kinds": [
+    "crawl"
+   ]
+  },
+  {
+   "key": "🪨 Rock",
+   "kinds": [
+    "crawl"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,252 @@
+{
+ "$description": "Self-hosted design-system fonts (DESIGN_SYSTEM.md §3.1). Written by tooling/design-system/vendor-fonts.mjs; unmodified upstream files.",
+ "licence": "SIL Open Font License 1.1 (Reserved Font Names: \"Plex\", \"Saira\")",
+ "licences": [
+  {
+   "file": "ds-fonts-OFL-IBM-Plex.txt",
+   "families": [
+    "IBM Plex Sans",
+    "IBM Plex Mono"
+   ]
+  },
+  {
+   "file": "ds-fonts-OFL-Saira.txt",
+   "families": [
+    "Saira Condensed"
+   ]
+  }
+ ],
+ "faces": [
+  {
+   "family": "IBM Plex Sans",
+   "weight": 400,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-sans-400-latin1.b5ad7bd39f.woff2",
+   "bytes": 20984,
+   "sha256": "b5ad7bd39f996144915f0ad9849a90183b27d8c28ad97ed98af5b1bebc51f6b1",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Regular-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 400,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-sans-400-latin2.fcfa82e0d4.woff2",
+   "bytes": 15212,
+   "sha256": "fcfa82e0d46ed01a8df38610b451860ca7e7518770c52fdd2a1d136247c40f28",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Regular-Latin2.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 500,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-sans-500-latin1.b5610af04d.woff2",
+   "bytes": 21960,
+   "sha256": "b5610af04d0d4b5a14a621d96d974b993e945a065db1a8861918f69ef9321934",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Medium-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 500,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-sans-500-latin2.46fbe4f398.woff2",
+   "bytes": 15372,
+   "sha256": "46fbe4f398e7ff3cc7773a1156b1efef0f81e4d034f682369c221de587f443ca",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Medium-Latin2.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 600,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-sans-600-latin1.fff0ab3a88.woff2",
+   "bytes": 22260,
+   "sha256": "fff0ab3a88b0b4aa0b693e4f0201359a15183b08e3fa5696d1918d8f0ade8ad5",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-SemiBold-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 600,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-sans-600-latin2.2bc85a8e53.woff2",
+   "bytes": 15624,
+   "sha256": "2bc85a8e53540c4c211f7af36e806bb045ba7da8946bb221d87144c12c83d577",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-SemiBold-Latin2.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 700,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-sans-700-latin1.914f1400f3.woff2",
+   "bytes": 21256,
+   "sha256": "914f1400f363e636b6f9cc7965aa807ff01e93586e1437617525cba0a62aa78d",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Bold-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Sans",
+   "weight": 700,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-sans-700-latin2.56e3282a50.woff2",
+   "bytes": 15376,
+   "sha256": "56e3282a5068bfabb5c71cb19400695a707e710e03393a67d3bd059156b60933",
+   "source": "@ibm/plex-sans@1.1.0 fonts/split/woff2/IBMPlexSans-Bold-Latin2.woff2"
+  },
+  {
+   "family": "IBM Plex Mono",
+   "weight": 500,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-mono-500-latin1.41201b658a.woff2",
+   "bytes": 17868,
+   "sha256": "41201b658a328b9d00368215c2f1102770f80b15952ab82631e4006255e6365d",
+   "source": "@ibm/plex-mono@2.5.0 fonts/split/woff2/IBMPlexMono-Medium-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Mono",
+   "weight": 500,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-mono-500-latin2.86208dbe8e.woff2",
+   "bytes": 13424,
+   "sha256": "86208dbe8e00256a77bc3edd09aa6a584b0da393caa1fb200d44eac1d578512c",
+   "source": "@ibm/plex-mono@2.5.0 fonts/split/woff2/IBMPlexMono-Medium-Latin2.woff2"
+  },
+  {
+   "family": "IBM Plex Mono",
+   "weight": 600,
+   "style": "normal",
+   "subset": "latin1",
+   "unicodeRange": "U+0000, U+000D, U+0020-007E, U+00A0-00A3, U+00A4-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2013-2014, U+2018-201A, U+201C-201E, U+2020-2022, U+2026, U+2030, U+2039-203A, U+2044, U+2074, U+20AC, U+2122, U+2212, U+FB01-FB02",
+   "file": "ds-font-plex-mono-600-latin1.b7acd05041.woff2",
+   "bytes": 17872,
+   "sha256": "b7acd05041ab65f3b7039e218ddd893065e11a07e85ea85019473152a51b6b7d",
+   "source": "@ibm/plex-mono@2.5.0 fonts/split/woff2/IBMPlexMono-SemiBold-Latin1.woff2"
+  },
+  {
+   "family": "IBM Plex Mono",
+   "weight": 600,
+   "style": "normal",
+   "subset": "latin2",
+   "unicodeRange": "U+0100-024F, U+0259, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF, U+FB01-FB02",
+   "file": "ds-font-plex-mono-600-latin2.68730f933d.woff2",
+   "bytes": 13556,
+   "sha256": "68730f933dc5bbd8b011abaf59fdc151bd1eeb8461979aafa84c14c33f5869d2",
+   "source": "@ibm/plex-mono@2.5.0 fonts/split/woff2/IBMPlexMono-SemiBold-Latin2.woff2"
+  },
+  {
+   "family": "Saira Condensed",
+   "weight": 700,
+   "style": "normal",
+   "subset": "latin",
+   "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+   "file": "ds-font-saira-condensed-700-latin.eb1cf59a1f.woff2",
+   "bytes": 17808,
+   "sha256": "eb1cf59a1f785a890ac30d69bb59fffef3989fef4e7a2ae2367c85e861077fda",
+   "source": "@fontsource/saira-condensed@5.3.0 files/saira-condensed-latin-700-normal.woff2"
+  },
+  {
+   "family": "Saira Condensed",
+   "weight": 700,
+   "style": "normal",
+   "subset": "latin-ext",
+   "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
+   "file": "ds-font-saira-condensed-700-latin-ext.f15c9a22d2.woff2",
+   "bytes": 14716,
+   "sha256": "f15c9a22d2d8f00bebdf7f005f95b75e502813de13ad70879a5c8bba65d6f4ea",
+   "source": "@fontsource/saira-condensed@5.3.0 files/saira-condensed-latin-ext-700-normal.woff2"
+  },
+  {
+   "family": "Saira Condensed",
+   "weight": 800,
+   "style": "normal",
+   "subset": "latin",
+   "unicodeRange": "U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD",
+   "file": "ds-font-saira-condensed-800-latin.5afa98eefc.woff2",
+   "bytes": 17984,
+   "sha256": "5afa98eefcd54d5e7c4d9e5dc5a01a8ae61dc6ad91e2bbc0aaed82525063ae91",
+   "source": "@fontsource/saira-condensed@5.3.0 files/saira-condensed-latin-800-normal.woff2"
+  },
+  {
+   "family": "Saira Condensed",
+   "weight": 800,
+   "style": "normal",
+   "subset": "latin-ext",
+   "unicodeRange": "U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF",
+   "file": "ds-font-saira-condensed-800-latin-ext.645272c3bc.woff2",
+   "bytes": 14868,
+   "sha256": "645272c3bc699905d0314b17bc4f4145987051f199968364adc43c0fe689b29e",
+   "source": "@fontsource/saira-condensed@5.3.0 files/saira-condensed-latin-ext-800-normal.woff2"
+  }
+ ],
+ "fallbacks": [
+  {
+   "family": "IBM Plex Sans Fallback",
+   "for": "IBM Plex Sans",
+   "localRegular": [
+    "Arial",
+    "ArialMT"
+   ],
+   "localBold": [
+    "Arial Bold",
+    "Arial-BoldMT"
+   ],
+   "boldFrom": 600,
+   "sizeAdjust": 101.79,
+   "ascentOverride": 100.7,
+   "descentOverride": 27.02,
+   "lineGapOverride": 0,
+   "measuredAgainst": "Arial"
+  },
+  {
+   "family": "IBM Plex Mono Fallback",
+   "for": "IBM Plex Mono",
+   "localRegular": [
+    "Consolas"
+   ],
+   "localBold": [
+    "Consolas Bold",
+    "Consolas-Bold"
+   ],
+   "boldFrom": 600,
+   "sizeAdjust": 109.13,
+   "ascentOverride": 93.92,
+   "descentOverride": 25.2,
+   "lineGapOverride": 0,
+   "measuredAgainst": "Consolas"
+  },
+  {
+   "family": "Saira Condensed Fallback",
+   "for": "Saira Condensed",
+   "localRegular": [
+    "Arial Narrow Bold",
+    "ArialNarrow-Bold"
+   ],
+   "localBold": [
+    "Arial Narrow Bold",
+    "ArialNarrow-Bold"
+   ],
+   "boldFrom": 700,
+   "sizeAdjust": 93.26,
+   "ascentOverride": 121.7,
+   "descentOverride": 47.07,
+   "lineGapOverride": 0,
+   "measuredAgainst": "Arial Narrow"
+  }
+ ]
+}

@@ -1,0 +1,3714 @@
+{
+ "fixtureKind": "mk8dx.synthetic-trueskill-golden.v1",
+ "generator": "python trueskill 0.4.5, mu=25 sigma=25/3 beta=25/6 tau=25/300 draw=0 (ADR-0154)",
+ "races": [
+  {
+   "race": 1,
+   "participants": [
+    {
+     "player": "synthetic_06",
+     "rank": 4,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 26.137636670704563,
+     "sigmaAfter": 4.9276128366141645
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 5,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 23.862363329579484,
+     "sigmaAfter": 4.927612836590621
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 3,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 28.52695036801183,
+     "sigmaAfter": 5.0029892996813645
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 6,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 21.473049632290124,
+     "sigmaAfter": 5.00298929961152
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 35.61723691096335,
+     "sigmaAfter": 5.8706261915345115
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 7,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 18.642791281528805,
+     "sigmaAfter": 5.211201924668768
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 31.35720871879644,
+     "sigmaAfter": 5.2112019247758115
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 8,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 14.382763089167067,
+     "sigmaAfter": 5.870626191682618
+    }
+   ]
+  },
+  {
+   "race": 2,
+   "participants": [
+    {
+     "player": "synthetic_13",
+     "rank": 6,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 22.298331094335943,
+     "sigmaAfter": 4.560611981715898
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 4,
+     "muBefore": 23.862363329579484,
+     "sigmaBefore": 4.927612836590621,
+     "muAfter": 25.08374706119631,
+     "sigmaAfter": 3.6647808545551444
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 5,
+     "muBefore": 21.473049632290124,
+     "sigmaBefore": 5.00298929961152,
+     "muAfter": 22.781892230402264,
+     "sigmaAfter": 3.695414663250939
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 26.137636670704563,
+     "sigmaBefore": 4.9276128366141645,
+     "muAfter": 29.185061854809575,
+     "sigmaAfter": 3.7759372054423395
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 1,
+     "muBefore": 28.52695036801183,
+     "sigmaBefore": 5.0029892996813645,
+     "muAfter": 32.82948917369022,
+     "sigmaAfter": 4.08898044028191
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 3,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 27.81041859611414,
+     "sigmaAfter": 4.570188187054344
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 7,
+     "muBefore": 31.35720871879644,
+     "sigmaBefore": 5.2112019247758115,
+     "muAfter": 24.03816236787281,
+     "sigmaAfter": 3.897568459179642
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 8,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 15.832209389120894,
+     "sigmaAfter": 5.711955816226478
+    }
+   ]
+  },
+  {
+   "race": 3,
+   "participants": [
+    {
+     "player": "synthetic_07",
+     "rank": 3,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 21.761123807542443,
+     "sigmaAfter": 6.911792431780449
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 2,
+     "muBefore": 32.82948917369022,
+     "sigmaBefore": 4.08898044028191,
+     "muAfter": 32.32764604022236,
+     "sigmaAfter": 3.7437467773025035
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 35.61723691096335,
+     "sigmaBefore": 5.8706261915345115,
+     "muAfter": 38.2590288295795,
+     "sigmaAfter": 5.070384808044111
+    }
+   ]
+  },
+  {
+   "race": 4,
+   "participants": [
+    {
+     "player": "synthetic_00",
+     "rank": 4,
+     "muBefore": 38.2590288295795,
+     "sigmaBefore": 5.070384808044111,
+     "muAfter": 32.032104158796265,
+     "sigmaAfter": 3.5879148647653136
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 10,
+     "muBefore": 22.298331094335943,
+     "sigmaBefore": 4.560611981715898,
+     "muAfter": 19.97180220344112,
+     "sigmaAfter": 3.391920494728206
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 8,
+     "muBefore": 21.761123807542443,
+     "sigmaBefore": 6.911792431780449,
+     "muAfter": 21.067098410484263,
+     "sigmaAfter": 4.021719078481381
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 24.03816236787281,
+     "sigmaBefore": 3.897568459179642,
+     "muAfter": 27.621228179760323,
+     "sigmaAfter": 3.1820096074050883
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 12,
+     "muBefore": 29.185061854809575,
+     "sigmaBefore": 3.7759372054423395,
+     "muAfter": 22.52413129783681,
+     "sigmaAfter": 3.1307212084268676
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 9,
+     "muBefore": 18.642791281528805,
+     "sigmaBefore": 5.211201924668768,
+     "muAfter": 19.111016444677446,
+     "sigmaAfter": 3.6066726930542816
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 6,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 24.073576159236293,
+     "sigmaAfter": 4.258405969774927
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 5,
+     "muBefore": 14.382763089167067,
+     "sigmaBefore": 5.870626191682618,
+     "muAfter": 21.750956437522817,
+     "sigmaAfter": 3.813544969720884
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 7,
+     "muBefore": 15.832209389120894,
+     "sigmaBefore": 5.711955816226478,
+     "muAfter": 19.983664776590768,
+     "sigmaAfter": 3.7494315680723567
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 11,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 18.109567175779393,
+     "sigmaAfter": 4.358361459999169
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 3,
+     "muBefore": 22.781892230402264,
+     "sigmaBefore": 3.695414663250939,
+     "muAfter": 25.69242884878162,
+     "sigmaAfter": 3.0110302419289603
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 34.79341654000087,
+     "sigmaAfter": 5.536963563066445
+    }
+   ]
+  },
+  {
+   "race": 5,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 34.79341654000087,
+     "sigmaBefore": 5.536963563066445,
+     "muAfter": 36.97315553306097,
+     "sigmaAfter": 4.714308565581005
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 2,
+     "muBefore": 25.08374706119631,
+     "sigmaBefore": 3.6647808545551444,
+     "muAfter": 27.533483073240884,
+     "sigmaAfter": 3.0868470781938204
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 4,
+     "muBefore": 27.621228179760323,
+     "sigmaBefore": 3.1820096074050883,
+     "muAfter": 26.8669040922983,
+     "sigmaAfter": 2.698593845828989
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 7,
+     "muBefore": 18.109567175779393,
+     "sigmaBefore": 4.358361459999169,
+     "muAfter": 18.679762069207964,
+     "sigmaAfter": 3.336166254570495
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 5,
+     "muBefore": 22.52413129783681,
+     "sigmaBefore": 3.1307212084268676,
+     "muAfter": 22.803673253531556,
+     "sigmaAfter": 2.662500120024083
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 3,
+     "muBefore": 21.750956437522817,
+     "sigmaBefore": 3.813544969720884,
+     "muAfter": 24.408461233892478,
+     "sigmaAfter": 3.0716834296425395
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 6,
+     "muBefore": 19.111016444677446,
+     "sigmaBefore": 3.6066726930542816,
+     "muAfter": 19.98072387523198,
+     "sigmaAfter": 2.9430023546257353
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 8,
+     "muBefore": 32.032104158796265,
+     "sigmaBefore": 3.5879148647653136,
+     "muAfter": 25.760604468177345,
+     "sigmaAfter": 3.0086199964191875
+    }
+   ]
+  },
+  {
+   "race": 6,
+   "participants": [
+    {
+     "player": "synthetic_11",
+     "rank": 1,
+     "muBefore": 26.8669040922983,
+     "sigmaBefore": 2.698593845828989,
+     "muAfter": 27.97454998216663,
+     "sigmaAfter": 2.534456949150701
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 3,
+     "muBefore": 27.81041859611414,
+     "sigmaBefore": 4.570188187054344,
+     "muAfter": 24.363931571572294,
+     "sigmaAfter": 3.862569656331946
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 2,
+     "muBefore": 25.69242884878162,
+     "sigmaBefore": 3.0110302419289603,
+     "muAfter": 25.810386006182434,
+     "sigmaAfter": 2.7310667009606955
+    }
+   ]
+  },
+  {
+   "race": 7,
+   "participants": [
+    {
+     "player": "synthetic_15",
+     "rank": 7,
+     "muBefore": 25.0,
+     "sigmaBefore": 8.333333333333334,
+     "muAfter": 21.209730982362686,
+     "sigmaAfter": 4.284576229958281
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 5,
+     "muBefore": 25.760604468177345,
+     "sigmaBefore": 3.0086199964191875,
+     "muAfter": 25.034703251858698,
+     "sigmaAfter": 2.558593064321579
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 6,
+     "muBefore": 25.810386006182434,
+     "sigmaBefore": 2.7310667009606955,
+     "muAfter": 24.71507476225661,
+     "sigmaAfter": 2.390665344025945
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 4,
+     "muBefore": 24.363931571572294,
+     "sigmaBefore": 3.862569656331946,
+     "muAfter": 24.64181343185791,
+     "sigmaAfter": 3.017689788491428
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 22.803673253531556,
+     "sigmaBefore": 2.662500120024083,
+     "muAfter": 24.428812868731626,
+     "sigmaAfter": 2.3632335447734563
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 3,
+     "muBefore": 18.679762069207964,
+     "sigmaBefore": 3.336166254570495,
+     "muAfter": 21.666550204149203,
+     "sigmaAfter": 2.756408496712958
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 8,
+     "muBefore": 27.97454998216663,
+     "sigmaBefore": 2.534456949150701,
+     "muAfter": 25.31158961486804,
+     "sigmaAfter": 2.307118001857869
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 1,
+     "muBefore": 27.533483073240884,
+     "sigmaBefore": 3.0868470781938204,
+     "muAfter": 29.247108663006877,
+     "sigmaAfter": 2.768810612493816
+    }
+   ]
+  },
+  {
+   "race": 8,
+   "participants": [
+    {
+     "player": "synthetic_01",
+     "rank": 1,
+     "muBefore": 19.983664776590768,
+     "sigmaBefore": 3.7494315680723567,
+     "muAfter": 22.486460116886665,
+     "sigmaAfter": 3.356623410084969
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 25.31158961486804,
+     "sigmaBefore": 2.307118001857869,
+     "muAfter": 24.363202052157067,
+     "sigmaAfter": 2.2198960748027825
+    }
+   ]
+  },
+  {
+   "race": 9,
+   "participants": [
+    {
+     "player": "synthetic_01",
+     "rank": 2,
+     "muBefore": 22.486460116886665,
+     "sigmaBefore": 3.356623410084969,
+     "muAfter": 23.053733408436546,
+     "sigmaAfter": 2.9085466502251776
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 3,
+     "muBefore": 29.247108663006877,
+     "sigmaBefore": 2.768810612493816,
+     "muAfter": 26.792524789233926,
+     "sigmaAfter": 2.5355707725064747
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 1,
+     "muBefore": 19.98072387523198,
+     "sigmaBefore": 2.9430023546257353,
+     "muAfter": 22.317417704147775,
+     "sigmaAfter": 2.6746752037558266
+    }
+   ]
+  },
+  {
+   "race": 10,
+   "participants": [
+    {
+     "player": "synthetic_00",
+     "rank": 7,
+     "muBefore": 25.034703251858698,
+     "sigmaBefore": 2.558593064321579,
+     "muAfter": 24.592006696966855,
+     "sigmaAfter": 2.242470762190533
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 8,
+     "muBefore": 24.428812868731626,
+     "sigmaBefore": 2.3632335447734563,
+     "muAfter": 23.903241635143356,
+     "sigmaAfter": 2.1100619745158506
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 1,
+     "muBefore": 21.067098410484263,
+     "sigmaBefore": 4.021719078481381,
+     "muAfter": 26.48870155617072,
+     "sigmaAfter": 3.2309924112590767
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 4,
+     "muBefore": 32.32764604022236,
+     "sigmaBefore": 3.7437467773025035,
+     "muAfter": 29.99205835725727,
+     "sigmaAfter": 2.927033211840428
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 9,
+     "muBefore": 24.71507476225661,
+     "sigmaBefore": 2.390665344025945,
+     "muAfter": 23.78965264106852,
+     "sigmaAfter": 2.1354858114852124
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 3,
+     "muBefore": 24.408461233892478,
+     "sigmaBefore": 3.0716834296425395,
+     "muAfter": 25.77415110268592,
+     "sigmaAfter": 2.5804161231091203
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 6,
+     "muBefore": 21.209730982362686,
+     "sigmaBefore": 4.284576229958281,
+     "muAfter": 22.894593334365126,
+     "sigmaAfter": 3.144371270307197
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 2,
+     "muBefore": 22.317417704147775,
+     "sigmaBefore": 2.6746752037558266,
+     "muAfter": 24.47978719570887,
+     "sigmaAfter": 2.3472270383901312
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 11,
+     "muBefore": 24.073576159236293,
+     "sigmaBefore": 4.258405969774927,
+     "muAfter": 19.89205056696418,
+     "sigmaAfter": 3.439583257344916
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 10,
+     "muBefore": 26.792524789233926,
+     "sigmaBefore": 2.5355707725064747,
+     "muAfter": 24.776483369676495,
+     "sigmaAfter": 2.254061454106407
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 5,
+     "muBefore": 21.666550204149203,
+     "sigmaBefore": 2.756408496712958,
+     "muAfter": 22.884507561304016,
+     "sigmaAfter": 2.3738462510841694
+    }
+   ]
+  },
+  {
+   "race": 11,
+   "participants": [
+    {
+     "player": "synthetic_00",
+     "rank": 5,
+     "muBefore": 24.592006696966855,
+     "sigmaBefore": 2.242470762190533,
+     "muAfter": 24.672837019672418,
+     "sigmaAfter": 2.020849403503885
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 8,
+     "muBefore": 22.894593334365126,
+     "sigmaBefore": 3.144371270307197,
+     "muAfter": 22.29947840387973,
+     "sigmaAfter": 2.607719481840696
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 2,
+     "muBefore": 19.97180220344112,
+     "sigmaBefore": 3.391920494728206,
+     "muAfter": 23.782312950665993,
+     "sigmaAfter": 2.8000039075065675
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 3,
+     "muBefore": 24.776483369676495,
+     "sigmaBefore": 2.254061454106407,
+     "muAfter": 25.438936826887307,
+     "sigmaAfter": 2.0395277727941465
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 1,
+     "muBefore": 29.99205835725727,
+     "sigmaBefore": 2.927033211840428,
+     "muAfter": 31.282079740945353,
+     "sigmaAfter": 2.6633871307056225
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 9,
+     "muBefore": 22.884507561304016,
+     "sigmaBefore": 2.3738462510841694,
+     "muAfter": 22.17763174406808,
+     "sigmaAfter": 2.1228396204595956
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 6,
+     "muBefore": 23.903241635143356,
+     "sigmaBefore": 2.1100619745158506,
+     "muAfter": 23.86003767112553,
+     "sigmaAfter": 1.9220812975542267
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 4,
+     "muBefore": 24.363202052157067,
+     "sigmaBefore": 2.2198960748027825,
+     "muAfter": 24.779161687792275,
+     "sigmaAfter": 2.0073312817062305
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 11,
+     "muBefore": 26.48870155617072,
+     "sigmaBefore": 3.2309924112590767,
+     "muAfter": 22.608678102252377,
+     "sigmaAfter": 2.7622029605619645
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 10,
+     "muBefore": 24.64181343185791,
+     "sigmaBefore": 3.017689788491428,
+     "muAfter": 22.52827932733356,
+     "sigmaAfter": 2.5628558383332303
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 7,
+     "muBefore": 19.89205056696418,
+     "sigmaBefore": 3.439583257344916,
+     "muAfter": 20.91563185810414,
+     "sigmaAfter": 2.7626646562812125
+    }
+   ]
+  },
+  {
+   "race": 12,
+   "participants": [
+    {
+     "player": "synthetic_11",
+     "rank": 8,
+     "muBefore": 24.779161687792275,
+     "sigmaBefore": 2.0073312817062305,
+     "muAfter": 23.425716945586423,
+     "sigmaAfter": 1.88194985609676
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 7,
+     "muBefore": 25.438936826887307,
+     "sigmaBefore": 2.0395277727941465,
+     "muAfter": 24.40208268466912,
+     "sigmaAfter": 1.8823514491808901
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 1,
+     "muBefore": 22.608678102252377,
+     "sigmaBefore": 2.7622029605619645,
+     "muAfter": 24.923291538310707,
+     "sigmaAfter": 2.4710045321863823
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 3,
+     "muBefore": 23.86003767112553,
+     "sigmaBefore": 1.9220812975542267,
+     "muAfter": 24.194460427310872,
+     "sigmaAfter": 1.78517336393682
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 2,
+     "muBefore": 22.29947840387973,
+     "sigmaBefore": 2.607719481840696,
+     "muAfter": 23.754754272219703,
+     "sigmaAfter": 2.3048033722299635
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 4,
+     "muBefore": 23.78965264106852,
+     "sigmaBefore": 2.1354858114852124,
+     "muAfter": 23.896191683021268,
+     "sigmaAfter": 1.9476730982602535
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 5,
+     "muBefore": 20.91563185810414,
+     "sigmaBefore": 2.7626646562812125,
+     "muAfter": 21.519508889076114,
+     "sigmaAfter": 2.384441257316683
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 6,
+     "muBefore": 24.47978719570887,
+     "sigmaBefore": 2.3472270383901312,
+     "muAfter": 23.787804909670594,
+     "sigmaAfter": 2.105632097186782
+    }
+   ]
+  },
+  {
+   "race": 13,
+   "participants": [
+    {
+     "player": "synthetic_05",
+     "rank": 4,
+     "muBefore": 24.40208268466912,
+     "sigmaBefore": 1.8823514491808901,
+     "muAfter": 24.886799308019896,
+     "sigmaAfter": 1.7454909719588676
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 12,
+     "muBefore": 23.425716945586423,
+     "sigmaBefore": 1.88194985609676,
+     "muAfter": 22.241276545556545,
+     "sigmaAfter": 1.7749004437091729
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 5,
+     "muBefore": 22.52827932733356,
+     "sigmaBefore": 2.5628558383332303,
+     "muAfter": 23.464992109416016,
+     "sigmaAfter": 2.237450561488912
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 9,
+     "muBefore": 24.923291538310707,
+     "sigmaBefore": 2.4710045321863823,
+     "muAfter": 24.06969632732244,
+     "sigmaAfter": 2.1764521852320393
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 10,
+     "muBefore": 23.754754272219703,
+     "sigmaBefore": 2.3048033722299635,
+     "muAfter": 22.97259900761879,
+     "sigmaAfter": 2.065678848956613
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 11,
+     "muBefore": 24.194460427310872,
+     "sigmaBefore": 1.78517336393682,
+     "muAfter": 23.37459712895379,
+     "sigmaAfter": 1.673860315476954
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 6,
+     "muBefore": 23.787804909670594,
+     "sigmaBefore": 2.105632097186782,
+     "muAfter": 23.998374446542382,
+     "sigmaAfter": 1.9131380199137669
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 7,
+     "muBefore": 23.896191683021268,
+     "sigmaBefore": 1.9476730982602535,
+     "muAfter": 23.871944621424994,
+     "sigmaAfter": 1.792446298804204
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 8,
+     "muBefore": 22.17763174406808,
+     "sigmaBefore": 2.1228396204595956,
+     "muAfter": 22.284077155009182,
+     "sigmaAfter": 1.9262230110425123
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 2,
+     "muBefore": 24.672837019672418,
+     "sigmaBefore": 2.020849403503885,
+     "muAfter": 25.744581734265253,
+     "sigmaAfter": 1.8660705891910716
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 3,
+     "muBefore": 31.282079740945353,
+     "sigmaBefore": 2.6633871307056225,
+     "muAfter": 30.579595257698006,
+     "sigmaAfter": 2.319622131831674
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 1,
+     "muBefore": 23.053733408436546,
+     "sigmaBefore": 2.9085466502251776,
+     "muAfter": 26.19050498984044,
+     "sigmaAfter": 2.5487480118816843
+    }
+   ]
+  },
+  {
+   "race": 14,
+   "participants": [
+    {
+     "player": "synthetic_07",
+     "rank": 3,
+     "muBefore": 24.06969632732244,
+     "sigmaBefore": 2.1764521852320393,
+     "muAfter": 24.534900998386036,
+     "sigmaAfter": 1.9811006411296632
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 22.284077155009182,
+     "sigmaBefore": 1.9262230110425123,
+     "muAfter": 23.268949874501157,
+     "sigmaAfter": 1.794589865212803
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 21.519508889076114,
+     "sigmaBefore": 2.384441257316683,
+     "muAfter": 22.3392882991415,
+     "sigmaAfter": 2.129248569479237
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 1,
+     "muBefore": 23.782312950665993,
+     "sigmaBefore": 2.8000039075065675,
+     "muAfter": 25.957672560312105,
+     "sigmaAfter": 2.502435193459894
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 5,
+     "muBefore": 30.579595257698006,
+     "sigmaBefore": 2.319622131831674,
+     "muAfter": 28.942160521356307,
+     "sigmaAfter": 2.0832560219766245
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 7,
+     "muBefore": 23.871944621424994,
+     "sigmaBefore": 1.792446298804204,
+     "muAfter": 23.276777261454765,
+     "sigmaAfter": 1.686981928979504
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 8,
+     "muBefore": 23.464992109416016,
+     "sigmaBefore": 2.237450561488912,
+     "muAfter": 22.064440705920052,
+     "sigmaAfter": 2.078036622319886
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 6,
+     "muBefore": 22.241276545556545,
+     "sigmaBefore": 1.7749004437091729,
+     "muAfter": 22.19046905412148,
+     "sigmaAfter": 1.6664291348368983
+    }
+   ]
+  },
+  {
+   "race": 15,
+   "participants": [
+    {
+     "player": "synthetic_02",
+     "rank": 1,
+     "muBefore": 28.942160521356307,
+     "sigmaBefore": 2.0832560219766245,
+     "muAfter": 29.346485736938437,
+     "sigmaAfter": 2.014560194179222
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 3,
+     "muBefore": 25.77415110268592,
+     "sigmaBefore": 2.5804161231091203,
+     "muAfter": 24.525798681622394,
+     "sigmaAfter": 2.4127280658821513
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 23.268949874501157,
+     "sigmaBefore": 1.794589865212803,
+     "muAfter": 23.573210100315205,
+     "sigmaAfter": 1.7270099873856728
+    }
+   ]
+  },
+  {
+   "race": 16,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 36.97315553306097,
+     "sigmaBefore": 4.714308565581005,
+     "muAfter": 30.36395598718307,
+     "sigmaAfter": 3.5445883312020263
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 1,
+     "muBefore": 24.525798681622394,
+     "sigmaBefore": 2.4127280658821513,
+     "muAfter": 26.00054112603123,
+     "sigmaAfter": 2.244487281974211
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 23.573210100315205,
+     "sigmaBefore": 1.7270099873856728,
+     "muAfter": 24.11425563890872,
+     "sigmaAfter": 1.6511034870766252
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 4,
+     "muBefore": 23.37459712895379,
+     "sigmaBefore": 1.673860315476954,
+     "muAfter": 22.990558546631146,
+     "sigmaAfter": 1.6287851636569997
+    }
+   ]
+  },
+  {
+   "race": 17,
+   "participants": [
+    {
+     "player": "synthetic_07",
+     "rank": 2,
+     "muBefore": 24.534900998386036,
+     "sigmaBefore": 1.9811006411296632,
+     "muAfter": 24.927503050769015,
+     "sigmaAfter": 1.8737836793703149
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 3,
+     "muBefore": 22.3392882991415,
+     "sigmaBefore": 2.129248569479237,
+     "muAfter": 22.528355835694015,
+     "sigmaAfter": 1.9920893273833233
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 1,
+     "muBefore": 29.346485736938437,
+     "sigmaBefore": 2.014560194179222,
+     "muAfter": 29.80686560704475,
+     "sigmaAfter": 1.9421399317095043
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 4,
+     "muBefore": 26.19050498984044,
+     "sigmaBefore": 2.5487480118816843,
+     "muAfter": 24.533929043849927,
+     "sigmaAfter": 2.355925574642548
+    }
+   ]
+  },
+  {
+   "race": 18,
+   "participants": [
+    {
+     "player": "synthetic_04",
+     "rank": 6,
+     "muBefore": 22.064440705920052,
+     "sigmaBefore": 2.078036622319886,
+     "muAfter": 22.62886173253731,
+     "sigmaAfter": 1.8886689644124388
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 1,
+     "muBefore": 24.886799308019896,
+     "sigmaBefore": 1.7454909719588676,
+     "muAfter": 25.899829842224523,
+     "sigmaAfter": 1.6579924643183155
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 11,
+     "muBefore": 25.744581734265253,
+     "sigmaBefore": 1.8660705891910716,
+     "muAfter": 24.72699625106263,
+     "sigmaAfter": 1.7368488468809968
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 9,
+     "muBefore": 24.11425563890872,
+     "sigmaBefore": 1.6511034870766252,
+     "muAfter": 23.851470566533965,
+     "sigmaAfter": 1.5540174477192206
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 10,
+     "muBefore": 23.998374446542382,
+     "sigmaBefore": 1.9131380199137669,
+     "muAfter": 23.482207960044633,
+     "sigmaAfter": 1.7682018580822625
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 8,
+     "muBefore": 26.00054112603123,
+     "sigmaBefore": 2.244487281974211,
+     "muAfter": 25.372004696849555,
+     "sigmaAfter": 2.01168683728242
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 3,
+     "muBefore": 22.990558546631146,
+     "sigmaBefore": 1.6287851636569997,
+     "muAfter": 23.62886457263938,
+     "sigmaAfter": 1.5370673910950294
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 12,
+     "muBefore": 24.927503050769015,
+     "sigmaBefore": 1.8737836793703149,
+     "muAfter": 23.650677475194612,
+     "sigmaAfter": 1.7639956402756958
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 5,
+     "muBefore": 22.19046905412148,
+     "sigmaBefore": 1.6664291348368983,
+     "muAfter": 22.68227976399226,
+     "sigmaAfter": 1.5654046184757373
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 7,
+     "muBefore": 30.36395598718307,
+     "sigmaBefore": 3.5445883312020263,
+     "muAfter": 27.742364223469792,
+     "sigmaAfter": 2.7854894206096534
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 2,
+     "muBefore": 22.528355835694015,
+     "sigmaBefore": 1.9920893273833233,
+     "muAfter": 23.76936032700119,
+     "sigmaAfter": 1.8362508061109808
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 4,
+     "muBefore": 25.957672560312105,
+     "sigmaBefore": 2.502435193459894,
+     "muAfter": 26.168183665934983,
+     "sigmaAfter": 2.1928351602056955
+    }
+   ]
+  },
+  {
+   "race": 19,
+   "participants": [
+    {
+     "player": "synthetic_11",
+     "rank": 3,
+     "muBefore": 22.68227976399226,
+     "sigmaBefore": 1.5654046184757373,
+     "muAfter": 22.308001546906276,
+     "sigmaAfter": 1.5292590776665487
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 1,
+     "muBefore": 26.168183665934983,
+     "sigmaBefore": 2.1928351602056955,
+     "muAfter": 26.773011696540607,
+     "sigmaAfter": 2.099935838366844
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 2,
+     "muBefore": 23.482207960044633,
+     "sigmaBefore": 1.7682018580822625,
+     "muAfter": 23.565882372575913,
+     "sigmaAfter": 1.7003877834266536
+    }
+   ]
+  },
+  {
+   "race": 20,
+   "participants": [
+    {
+     "player": "synthetic_10",
+     "rank": 5,
+     "muBefore": 23.276777261454765,
+     "sigmaBefore": 1.686981928979504,
+     "muAfter": 23.479183896105386,
+     "sigmaAfter": 1.5835880265361082
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 2,
+     "muBefore": 22.62886173253731,
+     "sigmaBefore": 1.8886689644124388,
+     "muAfter": 23.60361957111118,
+     "sigmaAfter": 1.755833305667855
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 6,
+     "muBefore": 24.533929043849927,
+     "sigmaBefore": 2.355925574642548,
+     "muAfter": 24.342817343413888,
+     "sigmaAfter": 2.092765432071284
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 9,
+     "muBefore": 25.899829842224523,
+     "sigmaBefore": 1.6579924643183155,
+     "muAfter": 25.157044384590165,
+     "sigmaAfter": 1.5648028512635164
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 8,
+     "muBefore": 22.308001546906276,
+     "sigmaBefore": 1.5292590776665487,
+     "muAfter": 22.228789989561033,
+     "sigmaAfter": 1.4533856168384651
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 3,
+     "muBefore": 23.851470566533965,
+     "sigmaBefore": 1.5540174477192206,
+     "muAfter": 24.22579323592886,
+     "sigmaAfter": 1.4749396620977584
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 1,
+     "muBefore": 23.565882372575913,
+     "sigmaBefore": 1.7003877834266536,
+     "muAfter": 24.586641858669424,
+     "sigmaAfter": 1.6186855381643925
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 10,
+     "muBefore": 29.80686560704475,
+     "sigmaBefore": 1.9421399317095043,
+     "muAfter": 27.83088597972278,
+     "sigmaAfter": 1.8097695777123866
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 4,
+     "muBefore": 23.62886457263938,
+     "sigmaBefore": 1.5370673910950294,
+     "muAfter": 23.882976927487483,
+     "sigmaAfter": 1.458914428648047
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 7,
+     "muBefore": 24.72699625106263,
+     "sigmaBefore": 1.7368488468809968,
+     "muAfter": 24.43344363098048,
+     "sigmaAfter": 1.6250321190277004
+    }
+   ]
+  },
+  {
+   "race": 21,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 10,
+     "muBefore": 27.742364223469792,
+     "sigmaBefore": 2.7854894206096534,
+     "muAfter": 25.316247179250624,
+     "sigmaAfter": 2.4018147568910715
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 4,
+     "muBefore": 26.773011696540607,
+     "sigmaBefore": 2.099935838366844,
+     "muAfter": 26.810706083659777,
+     "sigmaAfter": 1.9099656573839556
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 2,
+     "muBefore": 24.586641858669424,
+     "sigmaBefore": 1.6186855381643925,
+     "muAfter": 25.24636040318818,
+     "sigmaAfter": 1.5340655453785688
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 9,
+     "muBefore": 23.60361957111118,
+     "sigmaBefore": 1.755833305667855,
+     "muAfter": 23.251260726272513,
+     "sigmaAfter": 1.6438990869424226
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 1,
+     "muBefore": 25.157044384590165,
+     "sigmaBefore": 1.5648028512635164,
+     "muAfter": 26.004969709710995,
+     "sigmaAfter": 1.501472705531203
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 3,
+     "muBefore": 24.43344363098048,
+     "sigmaBefore": 1.6250321190277004,
+     "muAfter": 24.921587090012697,
+     "sigmaAfter": 1.5351423058565985
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 7,
+     "muBefore": 23.650677475194612,
+     "sigmaBefore": 1.7639956402756958,
+     "muAfter": 23.647756145181575,
+     "sigmaAfter": 1.6469096822659037
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 11,
+     "muBefore": 24.22579323592886,
+     "sigmaBefore": 1.4749396620977584,
+     "muAfter": 23.474249039302364,
+     "sigmaAfter": 1.422242248155386
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 8,
+     "muBefore": 22.228789989561033,
+     "sigmaBefore": 1.4533856168384651,
+     "muAfter": 22.252948463127915,
+     "sigmaAfter": 1.387734044317232
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 5,
+     "muBefore": 23.479183896105386,
+     "sigmaBefore": 1.5835880265361082,
+     "muAfter": 23.77491421868664,
+     "sigmaAfter": 1.4977228582765874
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 27.83088597972278,
+     "sigmaBefore": 1.8097695777123866,
+     "muAfter": 27.349758796948905,
+     "sigmaAfter": 1.683225349345343
+    }
+   ]
+  },
+  {
+   "race": 22,
+   "participants": [
+    {
+     "player": "synthetic_05",
+     "rank": 3,
+     "muBefore": 26.004969709710995,
+     "sigmaBefore": 1.501472705531203,
+     "muAfter": 25.737608987940046,
+     "sigmaAfter": 1.4475925905488654
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 1,
+     "muBefore": 22.252948463127915,
+     "sigmaBefore": 1.387734044317232,
+     "muAfter": 22.903339197872278,
+     "sigmaAfter": 1.3508992912235391
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 4,
+     "muBefore": 23.77491421868664,
+     "sigmaBefore": 1.4977228582765874,
+     "muAfter": 23.343024160112265,
+     "sigmaAfter": 1.4581615247241448
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 2,
+     "muBefore": 26.810706083659777,
+     "sigmaBefore": 1.9099656573839556,
+     "muAfter": 26.714437012726442,
+     "sigmaAfter": 1.7974285320763417
+    }
+   ]
+  },
+  {
+   "race": 23,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 25.316247179250624,
+     "sigmaBefore": 2.4018147568910715,
+     "muAfter": 25.86112241620366,
+     "sigmaAfter": 2.309352024723046
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 2,
+     "muBefore": 23.343024160112265,
+     "sigmaBefore": 1.4581615247241448,
+     "muAfter": 23.141780153297926,
+     "sigmaAfter": 1.4397257423159031
+    }
+   ]
+  },
+  {
+   "race": 24,
+   "participants": [
+    {
+     "player": "synthetic_12",
+     "rank": 2,
+     "muBefore": 23.76936032700119,
+     "sigmaBefore": 1.8362508061109808,
+     "muAfter": 23.420815296776983,
+     "sigmaAfter": 1.792843786507718
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 1,
+     "muBefore": 25.24636040318818,
+     "sigmaBefore": 1.5340655453785688,
+     "muAfter": 25.48984351977453,
+     "sigmaAfter": 1.5099797627834457
+    }
+   ]
+  },
+  {
+   "race": 25,
+   "participants": [
+    {
+     "player": "synthetic_03",
+     "rank": 1,
+     "muBefore": 23.474249039302364,
+     "sigmaBefore": 1.422242248155386,
+     "muAfter": 23.89488117225884,
+     "sigmaAfter": 1.3902241760715777
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 25.48984351977453,
+     "sigmaBefore": 1.5099797627834457,
+     "muAfter": 24.936872557401973,
+     "sigmaAfter": 1.469488385572405
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 2,
+     "muBefore": 23.251260726272513,
+     "sigmaBefore": 1.6438990869424226,
+     "muAfter": 23.34487891248349,
+     "sigmaAfter": 1.5808909040188706
+    }
+   ]
+  },
+  {
+   "race": 26,
+   "participants": [
+    {
+     "player": "synthetic_05",
+     "rank": 4,
+     "muBefore": 25.737608987940046,
+     "sigmaBefore": 1.4475925905488654,
+     "muAfter": 25.83031837324366,
+     "sigmaAfter": 1.3814471800556583
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 7,
+     "muBefore": 22.903339197872278,
+     "sigmaBefore": 1.3508992912235391,
+     "muAfter": 22.97734367084781,
+     "sigmaAfter": 1.2962202329167756
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 11,
+     "muBefore": 23.647756145181575,
+     "sigmaBefore": 1.6469096822659037,
+     "muAfter": 23.039332302203064,
+     "sigmaAfter": 1.5573361563404031
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 23.89488117225884,
+     "sigmaBefore": 1.3902241760715777,
+     "muAfter": 24.424145423234627,
+     "sigmaAfter": 1.3360556300867807
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 9,
+     "muBefore": 23.141780153297926,
+     "sigmaBefore": 1.4397257423159031,
+     "muAfter": 22.997950478147978,
+     "sigmaAfter": 1.3745214395108147
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 12,
+     "muBefore": 23.34487891248349,
+     "sigmaBefore": 1.5808909040188706,
+     "muAfter": 22.507106435932958,
+     "sigmaAfter": 1.5158172966855892
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 3,
+     "muBefore": 22.97259900761879,
+     "sigmaBefore": 2.065678848956613,
+     "muAfter": 23.90692308843765,
+     "sigmaAfter": 1.8852277827416055
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 6,
+     "muBefore": 23.420815296776983,
+     "sigmaBefore": 1.792843786507718,
+     "muAfter": 23.603844790358764,
+     "sigmaAfter": 1.667185673102999
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 10,
+     "muBefore": 26.714437012726442,
+     "sigmaBefore": 1.7974285320763417,
+     "muAfter": 25.771801761604973,
+     "sigmaAfter": 1.6752288308171774
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 5,
+     "muBefore": 23.882976927487483,
+     "sigmaBefore": 1.458914428648047,
+     "muAfter": 24.065568451330954,
+     "sigmaAfter": 1.3903478453908007
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 8,
+     "muBefore": 25.86112241620366,
+     "sigmaBefore": 2.309352024723046,
+     "muAfter": 25.14011241121505,
+     "sigmaAfter": 2.0564670596801964
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 1,
+     "muBefore": 24.342817343413888,
+     "sigmaBefore": 2.092765432071284,
+     "muAfter": 25.8125934043983,
+     "sigmaAfter": 1.9453390485937943
+    }
+   ]
+  },
+  {
+   "race": 27,
+   "participants": [
+    {
+     "player": "synthetic_11",
+     "rank": 4,
+     "muBefore": 22.97734367084781,
+     "sigmaBefore": 1.2962202329167756,
+     "muAfter": 22.63827014036104,
+     "sigmaAfter": 1.2718163684277477
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 25.14011241121505,
+     "sigmaBefore": 2.0564670596801964,
+     "muAfter": 26.014154728942874,
+     "sigmaAfter": 1.9546094398188658
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 2,
+     "muBefore": 25.83031837324366,
+     "sigmaBefore": 1.3814471800556583,
+     "muAfter": 25.849872196489958,
+     "sigmaAfter": 1.3423811137093493
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 3,
+     "muBefore": 23.039332302203064,
+     "sigmaBefore": 1.5573361563404031,
+     "muAfter": 23.00146391988141,
+     "sigmaAfter": 1.5001221822595823
+    }
+   ]
+  },
+  {
+   "race": 28,
+   "participants": [
+    {
+     "player": "synthetic_02",
+     "rank": 7,
+     "muBefore": 27.349758796948905,
+     "sigmaBefore": 1.683225349345343,
+     "muAfter": 26.715847309602832,
+     "sigmaAfter": 1.5816221346296897
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 3,
+     "muBefore": 22.997950478147978,
+     "sigmaBefore": 1.3745214395108147,
+     "muAfter": 23.411348960176596,
+     "sigmaAfter": 1.3203186509240783
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 2,
+     "muBefore": 26.014154728942874,
+     "sigmaBefore": 1.9546094398188658,
+     "muAfter": 26.541793867156876,
+     "sigmaAfter": 1.8119629353932818
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 5,
+     "muBefore": 23.603844790358764,
+     "sigmaBefore": 1.667185673102999,
+     "muAfter": 23.778824698827588,
+     "sigmaAfter": 1.5675983052408993
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 6,
+     "muBefore": 24.424145423234627,
+     "sigmaBefore": 1.3360556300867807,
+     "muAfter": 24.372327335325373,
+     "sigmaAfter": 1.2845246240183466
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 1,
+     "muBefore": 23.90692308843765,
+     "sigmaBefore": 1.8852277827416055,
+     "muAfter": 25.166015399855983,
+     "sigmaAfter": 1.7771531839158332
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 9,
+     "muBefore": 22.63827014036104,
+     "sigmaBefore": 1.2718163684277477,
+     "muAfter": 22.395373432441296,
+     "sigmaAfter": 1.2318337444044254
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 4,
+     "muBefore": 23.00146391988141,
+     "sigmaBefore": 1.5001221822595823,
+     "muAfter": 23.338808037364934,
+     "sigmaAfter": 1.427749095029379
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 8,
+     "muBefore": 24.936872557401973,
+     "sigmaBefore": 1.469488385572405,
+     "muAfter": 24.557709704242527,
+     "sigmaAfter": 1.403075979520557
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 10,
+     "muBefore": 24.065568451330954,
+     "sigmaBefore": 1.3903478453908007,
+     "muAfter": 23.396219101120327,
+     "sigmaAfter": 1.3467502719404059
+    }
+   ]
+  },
+  {
+   "race": 29,
+   "participants": [
+    {
+     "player": "synthetic_04",
+     "rank": 2,
+     "muBefore": 22.507106435932958,
+     "sigmaBefore": 1.5158172966855892,
+     "muAfter": 23.271270244687255,
+     "sigmaAfter": 1.4436848686846593
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 9,
+     "muBefore": 23.411348960176596,
+     "sigmaBefore": 1.3203186509240783,
+     "muAfter": 23.286578269525556,
+     "sigmaAfter": 1.26982036737831
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 1,
+     "muBefore": 23.396219101120327,
+     "sigmaBefore": 1.3467502719404059,
+     "muAfter": 24.131115722662134,
+     "sigmaAfter": 1.3039574652024162
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 10,
+     "muBefore": 24.372327335325373,
+     "sigmaBefore": 1.2845246240183466,
+     "muAfter": 24.07735198980132,
+     "sigmaAfter": 1.2390730484147225
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 5,
+     "muBefore": 25.372004696849555,
+     "sigmaBefore": 2.01168683728242,
+     "muAfter": 25.444983182913248,
+     "sigmaAfter": 1.8379142826542985
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 23.778824698827588,
+     "sigmaBefore": 1.5675983052408993,
+     "muAfter": 24.14164418742371,
+     "sigmaAfter": 1.4831612789835742
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 8,
+     "muBefore": 25.8125934043983,
+     "sigmaBefore": 1.9453390485937943,
+     "muAfter": 25.314076551823824,
+     "sigmaAfter": 1.7868891719137874
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 6,
+     "muBefore": 25.166015399855983,
+     "sigmaBefore": 1.7771531839158332,
+     "muAfter": 25.115167045796625,
+     "sigmaAfter": 1.6540857724695623
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 7,
+     "muBefore": 22.395373432441296,
+     "sigmaBefore": 1.2318337444044254,
+     "muAfter": 22.517137741135933,
+     "sigmaAfter": 1.1905301955997885
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 3,
+     "muBefore": 25.771801761604973,
+     "sigmaBefore": 1.6752288308171774,
+     "muAfter": 26.05309570117009,
+     "sigmaAfter": 1.5747547071653847
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 11,
+     "muBefore": 24.557709704242527,
+     "sigmaBefore": 1.403075979520557,
+     "muAfter": 24.058196051000486,
+     "sigmaAfter": 1.3461228264556988
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 12,
+     "muBefore": 26.541793867156876,
+     "sigmaBefore": 1.8119629353932818,
+     "muAfter": 25.125063970610075,
+     "sigmaAfter": 1.7068320234702785
+    }
+   ]
+  },
+  {
+   "race": 30,
+   "participants": [
+    {
+     "player": "synthetic_15",
+     "rank": 4,
+     "muBefore": 25.115167045796625,
+     "sigmaBefore": 1.6540857724695623,
+     "muAfter": 25.09595395150522,
+     "sigmaAfter": 1.561249891351666
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 7,
+     "muBefore": 23.338808037364934,
+     "sigmaBefore": 1.427749095029379,
+     "muAfter": 23.01141297910937,
+     "sigmaAfter": 1.3721068786017532
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 24.058196051000486,
+     "sigmaBefore": 1.3461228264556988,
+     "muAfter": 24.27528107161405,
+     "sigmaAfter": 1.2968286204698163
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 5,
+     "muBefore": 25.849872196489958,
+     "sigmaBefore": 1.3423811137093493,
+     "muAfter": 25.637134941598116,
+     "sigmaAfter": 1.2927840962558228
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 25.125063970610075,
+     "sigmaBefore": 1.7068320234702785,
+     "muAfter": 25.94235357636472,
+     "sigmaAfter": 1.631466392961039
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 2,
+     "muBefore": 23.286578269525556,
+     "sigmaBefore": 1.26982036737831,
+     "muAfter": 23.688287184360064,
+     "sigmaAfter": 1.230929651706734
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 6,
+     "muBefore": 22.517137741135933,
+     "sigmaBefore": 1.1905301955997885,
+     "muAfter": 22.475589667490283,
+     "sigmaAfter": 1.1573483486418406
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 8,
+     "muBefore": 24.131115722662134,
+     "sigmaBefore": 1.3039574652024162,
+     "muAfter": 23.561857017691214,
+     "sigmaAfter": 1.2694565037605412
+    }
+   ]
+  },
+  {
+   "race": 31,
+   "participants": [
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 24.27528107161405,
+     "sigmaBefore": 1.2968286204698163,
+     "muAfter": 23.92920936443999,
+     "sigmaAfter": 1.273378488213929
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 1,
+     "muBefore": 24.14164418742371,
+     "sigmaBefore": 1.4831612789835742,
+     "muAfter": 24.549708966384216,
+     "sigmaAfter": 1.448001434552123
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 23.561857017691214,
+     "sigmaBefore": 1.2694565037605412,
+     "muAfter": 23.594247158268907,
+     "sigmaAfter": 1.2421784800402669
+    }
+   ]
+  },
+  {
+   "race": 32,
+   "participants": [
+    {
+     "player": "synthetic_06",
+     "rank": 7,
+     "muBefore": 23.594247158268907,
+     "sigmaBefore": 1.2421784800402669,
+     "muAfter": 23.311594724537265,
+     "sigmaAfter": 1.2056052151797536
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 4,
+     "muBefore": 26.05309570117009,
+     "sigmaBefore": 1.5747547071653847,
+     "muAfter": 25.88581822048784,
+     "sigmaAfter": 1.494351948999879
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 6,
+     "muBefore": 22.475589667490283,
+     "sigmaBefore": 1.1573483486418406,
+     "muAfter": 22.422635764968188,
+     "sigmaAfter": 1.126823636678929
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 2,
+     "muBefore": 23.271270244687255,
+     "sigmaBefore": 1.4436848686846593,
+     "muAfter": 23.751411506006352,
+     "sigmaAfter": 1.385623389948551
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 8,
+     "muBefore": 25.09595395150522,
+     "sigmaBefore": 1.561249891351666,
+     "muAfter": 24.20140743010602,
+     "sigmaAfter": 1.4988533207129047
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 23.92920936443999,
+     "sigmaBefore": 1.273378488213929,
+     "muAfter": 24.115017520690596,
+     "sigmaAfter": 1.2318782014173668
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 1,
+     "muBefore": 24.549708966384216,
+     "sigmaBefore": 1.448001434552123,
+     "muAfter": 25.181413662771885,
+     "sigmaAfter": 1.4010937406051196
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 5,
+     "muBefore": 23.01141297910937,
+     "sigmaBefore": 1.3721068786017532,
+     "muAfter": 23.032035035544617,
+     "sigmaAfter": 1.3189339888144376
+    }
+   ]
+  },
+  {
+   "race": 33,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 1,
+     "muBefore": 25.444983182913248,
+     "sigmaBefore": 1.8379142826542985,
+     "muAfter": 25.953172788205823,
+     "sigmaAfter": 1.7752415544843587
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 22.422635764968188,
+     "sigmaBefore": 1.126823636678929,
+     "muAfter": 22.544589976088638,
+     "sigmaAfter": 1.109145130008562
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 25.94235357636472,
+     "sigmaBefore": 1.631466392961039,
+     "muAfter": 25.286777904408748,
+     "sigmaAfter": 1.5803190906570797
+    }
+   ]
+  },
+  {
+   "race": 34,
+   "participants": [
+    {
+     "player": "synthetic_08",
+     "rank": 7,
+     "muBefore": 24.115017520690596,
+     "sigmaBefore": 1.2318782014173668,
+     "muAfter": 23.885620529697626,
+     "sigmaAfter": 1.196512863902519
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 8,
+     "muBefore": 25.953172788205823,
+     "sigmaBefore": 1.7752415544843587,
+     "muAfter": 24.861990055776776,
+     "sigmaAfter": 1.6855977225805763
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 26.715847309602832,
+     "sigmaBefore": 1.5816221346296897,
+     "muAfter": 26.246678960650843,
+     "sigmaAfter": 1.501001403052976
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 25.286777904408748,
+     "sigmaBefore": 1.5803190906570797,
+     "muAfter": 26.037409366142803,
+     "sigmaAfter": 1.5188836980544982
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 25.181413662771885,
+     "sigmaBefore": 1.4010937406051196,
+     "muAfter": 25.22664163607382,
+     "sigmaAfter": 1.344081983689976
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 2,
+     "muBefore": 23.751411506006352,
+     "sigmaBefore": 1.385623389948551,
+     "muAfter": 24.23343217782245,
+     "sigmaAfter": 1.334130047870264
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 5,
+     "muBefore": 24.20140743010602,
+     "sigmaBefore": 1.4988533207129047,
+     "muAfter": 24.214051293883315,
+     "sigmaAfter": 1.4290031587728516
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 3,
+     "muBefore": 24.921587090012697,
+     "sigmaBefore": 1.5351423058565985,
+     "muAfter": 25.1686773477503,
+     "sigmaAfter": 1.461378704069205
+    }
+   ]
+  },
+  {
+   "race": 35,
+   "participants": [
+    {
+     "player": "synthetic_06",
+     "rank": 3,
+     "muBefore": 23.311594724537265,
+     "sigmaBefore": 1.2056052151797536,
+     "muAfter": 23.04421324281847,
+     "sigmaAfter": 1.1881581573630688
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 2,
+     "muBefore": 23.688287184360064,
+     "sigmaBefore": 1.230929651706734,
+     "muAfter": 23.688850966025235,
+     "sigmaAfter": 1.2065180523261438
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 1,
+     "muBefore": 24.07735198980132,
+     "sigmaBefore": 1.2390730484147225,
+     "muAfter": 24.35914184503494,
+     "sigmaAfter": 1.219861102747288
+    }
+   ]
+  },
+  {
+   "race": 36,
+   "participants": [
+    {
+     "player": "synthetic_08",
+     "rank": 2,
+     "muBefore": 23.885620529697626,
+     "sigmaBefore": 1.196512863902519,
+     "muAfter": 24.04006630222741,
+     "sigmaAfter": 1.1700010483551548
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 3,
+     "muBefore": 25.22664163607382,
+     "sigmaBefore": 1.344081983689976,
+     "muAfter": 25.053921637491367,
+     "sigmaAfter": 1.3051997009225749
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 25.1686773477503,
+     "sigmaBefore": 1.461378704069205,
+     "muAfter": 25.62579200976493,
+     "sigmaAfter": 1.4229187856190992
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 4,
+     "muBefore": 24.35914184503494,
+     "sigmaBefore": 1.219861102747288,
+     "muAfter": 24.02206792649392,
+     "sigmaAfter": 1.1981594657915635
+    }
+   ]
+  },
+  {
+   "race": 37,
+   "participants": [
+    {
+     "player": "synthetic_05",
+     "rank": 9,
+     "muBefore": 25.637134941598116,
+     "sigmaBefore": 1.2927840962558228,
+     "muAfter": 25.282171563264587,
+     "sigmaAfter": 1.2471229929855265
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 10,
+     "muBefore": 24.04006630222741,
+     "sigmaBefore": 1.1700010483551548,
+     "muAfter": 23.74698028585325,
+     "sigmaAfter": 1.1386906040568576
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 5,
+     "muBefore": 24.214051293883315,
+     "sigmaBefore": 1.4290031587728516,
+     "muAfter": 24.39074785959919,
+     "sigmaAfter": 1.3651252651534462
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 7,
+     "muBefore": 26.246678960650843,
+     "sigmaBefore": 1.501001403052976,
+     "muAfter": 25.9729694247942,
+     "sigmaAfter": 1.4268345840189136
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 2,
+     "muBefore": 25.053921637491367,
+     "sigmaBefore": 1.3051997009225749,
+     "muAfter": 25.478715008150157,
+     "sigmaAfter": 1.2610082659061643
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 8,
+     "muBefore": 24.02206792649392,
+     "sigmaBefore": 1.1981594657915635,
+     "muAfter": 23.927173827778155,
+     "sigmaAfter": 1.1614026999323368
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 1,
+     "muBefore": 25.314076551823824,
+     "sigmaBefore": 1.7868891719137874,
+     "muAfter": 26.39159800927771,
+     "sigmaAfter": 1.6935918647206092
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 4,
+     "muBefore": 26.037409366142803,
+     "sigmaBefore": 1.5188836980544982,
+     "muAfter": 26.155975046940082,
+     "sigmaAfter": 1.4432231764086478
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 3,
+     "muBefore": 25.62579200976493,
+     "sigmaBefore": 1.4229187856190992,
+     "muAfter": 25.904373090998078,
+     "sigmaAfter": 1.362116125399397
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 11,
+     "muBefore": 24.23343217782245,
+     "sigmaBefore": 1.334130047870264,
+     "muAfter": 23.61958326674753,
+     "sigmaAfter": 1.295163981472013
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 6,
+     "muBefore": 23.04421324281847,
+     "sigmaBefore": 1.1881581573630688,
+     "muAfter": 23.179396848027174,
+     "sigmaAfter": 1.1518986324156935
+    }
+   ]
+  },
+  {
+   "race": 38,
+   "participants": [
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 25.9729694247942,
+     "sigmaBefore": 1.4268345840189136,
+     "muAfter": 25.877836760854926,
+     "sigmaAfter": 1.3625997576879745
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 23.179396848027174,
+     "sigmaBefore": 1.1518986324156935,
+     "muAfter": 23.609641884125008,
+     "sigmaAfter": 1.1210011997806917
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 5,
+     "muBefore": 26.155975046940082,
+     "sigmaBefore": 1.4432231764086478,
+     "muAfter": 26.141430816362426,
+     "sigmaAfter": 1.37679922879634
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 25.478715008150157,
+     "sigmaBefore": 1.2610082659061643,
+     "muAfter": 25.604220652926077,
+     "sigmaAfter": 1.217335856534774
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 7,
+     "muBefore": 25.88581822048784,
+     "sigmaBefore": 1.494351948999879,
+     "muAfter": 25.678941627027772,
+     "sigmaAfter": 1.4209897988461895
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 9,
+     "muBefore": 22.544589976088638,
+     "sigmaBefore": 1.109145130008562,
+     "muAfter": 22.485064158530317,
+     "sigmaAfter": 1.08142600412922
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 10,
+     "muBefore": 25.904373090998078,
+     "sigmaBefore": 1.362116125399397,
+     "muAfter": 25.351521015555146,
+     "sigmaAfter": 1.3113793109584317
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 3,
+     "muBefore": 25.282171563264587,
+     "sigmaBefore": 1.2471229929855265,
+     "muAfter": 25.506215586679183,
+     "sigmaAfter": 1.2056548367066326
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 11,
+     "muBefore": 23.61958326674753,
+     "sigmaBefore": 1.295163981472013,
+     "muAfter": 23.09093927118251,
+     "sigmaAfter": 1.260554662107561
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 1,
+     "muBefore": 23.032035035544617,
+     "sigmaBefore": 1.3189339888144376,
+     "muAfter": 23.780627171876766,
+     "sigmaAfter": 1.278113995389612
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 8,
+     "muBefore": 26.39159800927771,
+     "sigmaBefore": 1.6935918647206092,
+     "muAfter": 25.90722317290225,
+     "sigmaAfter": 1.5890707682687901
+    }
+   ]
+  },
+  {
+   "race": 39,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 9,
+     "muBefore": 24.861990055776776,
+     "sigmaBefore": 1.6855977225805763,
+     "muAfter": 24.365122382342275,
+     "sigmaAfter": 1.5848463994024837
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 25.604220652926077,
+     "sigmaBefore": 1.217335856534774,
+     "muAfter": 25.695789402710567,
+     "sigmaAfter": 1.1785517247230897
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 2,
+     "muBefore": 23.780627171876766,
+     "sigmaBefore": 1.278113995389612,
+     "muAfter": 24.259358499555578,
+     "sigmaAfter": 1.2362556137655984
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 1,
+     "muBefore": 25.90722317290225,
+     "sigmaBefore": 1.5890707682687901,
+     "muAfter": 26.67661219881696,
+     "sigmaAfter": 1.5243567122816262
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 7,
+     "muBefore": 23.927173827778155,
+     "sigmaBefore": 1.1614026999323368,
+     "muAfter": 23.90663494253127,
+     "sigmaAfter": 1.1278208752237118
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 11,
+     "muBefore": 23.74698028585325,
+     "sigmaBefore": 1.1386906040568576,
+     "muAfter": 23.304411229867515,
+     "sigmaAfter": 1.1155822039104422
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 5,
+     "muBefore": 26.141430816362426,
+     "sigmaBefore": 1.37679922879634,
+     "muAfter": 26.103229208560823,
+     "sigmaAfter": 1.3194903914239098
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 10,
+     "muBefore": 24.39074785959919,
+     "sigmaBefore": 1.3651252651534462,
+     "muAfter": 23.946039591704313,
+     "sigmaAfter": 1.3140979973686526
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 8,
+     "muBefore": 23.688850966025235,
+     "sigmaBefore": 1.2065180523261438,
+     "muAfter": 23.599146689166208,
+     "sigmaAfter": 1.1690135548976377
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 25.877836760854926,
+     "sigmaBefore": 1.3625997576879745,
+     "muAfter": 25.76658255759322,
+     "sigmaAfter": 1.3069597263560664
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 3,
+     "muBefore": 23.09093927118251,
+     "sigmaBefore": 1.260554662107561,
+     "muAfter": 23.491181343910874,
+     "sigmaAfter": 1.2181290207153652
+    }
+   ]
+  },
+  {
+   "race": 40,
+   "participants": [
+    {
+     "player": "synthetic_13",
+     "rank": 11,
+     "muBefore": 25.678941627027772,
+     "sigmaBefore": 1.4209897988461895,
+     "muAfter": 24.855266305163244,
+     "sigmaAfter": 1.3710003888703355
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 10,
+     "muBefore": 23.609641884125008,
+     "sigmaBefore": 1.1210011997806917,
+     "muAfter": 23.358080098866722,
+     "sigmaAfter": 1.093387511705214
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 1,
+     "muBefore": 23.946039591704313,
+     "sigmaBefore": 1.3140979973686526,
+     "muAfter": 24.612329809033927,
+     "sigmaAfter": 1.2753916637336948
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 7,
+     "muBefore": 24.365122382342275,
+     "sigmaBefore": 1.5848463994024837,
+     "muAfter": 24.254560654599135,
+     "sigmaAfter": 1.4973441386229518
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 5,
+     "muBefore": 22.485064158530317,
+     "sigmaBefore": 1.08142600412922,
+     "muAfter": 22.670710036967357,
+     "sigmaAfter": 1.0547051555417224
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 25.76658255759322,
+     "sigmaBefore": 1.3069597263560664,
+     "muAfter": 25.65093883782551,
+     "sigmaAfter": 1.2577255983427786
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 3,
+     "muBefore": 26.67661219881696,
+     "sigmaBefore": 1.5243567122816262,
+     "muAfter": 26.802014840792687,
+     "sigmaAfter": 1.4489582658033358
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 8,
+     "muBefore": 23.491181343910874,
+     "sigmaBefore": 1.2181290207153652,
+     "muAfter": 23.409540502400766,
+     "sigmaAfter": 1.1791261407790343
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 4,
+     "muBefore": 24.259358499555578,
+     "sigmaBefore": 1.2362556137655984,
+     "muAfter": 24.440850020702275,
+     "sigmaAfter": 1.1954765495555586
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 9,
+     "muBefore": 25.506215586679183,
+     "sigmaBefore": 1.2056548367066326,
+     "muAfter": 25.18420770037541,
+     "sigmaAfter": 1.168673744488169
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 23.90663494253127,
+     "sigmaBefore": 1.1278208752237118,
+     "muAfter": 24.262231112434268,
+     "sigmaAfter": 1.0996172149992884
+    }
+   ]
+  },
+  {
+   "race": 41,
+   "participants": [
+    {
+     "player": "synthetic_02",
+     "rank": 8,
+     "muBefore": 25.65093883782551,
+     "sigmaBefore": 1.2577255983427786,
+     "muAfter": 25.36258955171639,
+     "sigmaAfter": 1.2160017503255565
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 6,
+     "muBefore": 24.440850020702275,
+     "sigmaBefore": 1.1954765495555586,
+     "muAfter": 24.442917626940016,
+     "sigmaAfter": 1.1587865427887112
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 9,
+     "muBefore": 23.304411229867515,
+     "sigmaBefore": 1.1155822039104422,
+     "muAfter": 23.12395057565453,
+     "sigmaAfter": 1.088938941861803
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 7,
+     "muBefore": 26.802014840792687,
+     "sigmaBefore": 1.4489582658033358,
+     "muAfter": 26.438877878270162,
+     "sigmaAfter": 1.3830711184857878
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 3,
+     "muBefore": 24.855266305163244,
+     "sigmaBefore": 1.3710003888703355,
+     "muAfter": 25.13500968874491,
+     "sigmaAfter": 1.3163999422237302
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 5,
+     "muBefore": 25.18420770037541,
+     "sigmaBefore": 1.168673744488169,
+     "muAfter": 25.206489932403123,
+     "sigmaAfter": 1.134562750861027
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 10,
+     "muBefore": 26.103229208560823,
+     "sigmaBefore": 1.3194903914239098,
+     "muAfter": 25.406214891405124,
+     "sigmaAfter": 1.280544400781929
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 2,
+     "muBefore": 23.599146689166208,
+     "sigmaBefore": 1.1690135548976377,
+     "muAfter": 24.00615144704185,
+     "sigmaAfter": 1.1375928826917738
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 4,
+     "muBefore": 24.254560654599135,
+     "sigmaBefore": 1.4973441386229518,
+     "muAfter": 24.515253466743747,
+     "sigmaAfter": 1.4246697821772663
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 1,
+     "muBefore": 25.695789402710567,
+     "sigmaBefore": 1.1785517247230897,
+     "muAfter": 26.14059394675175,
+     "sigmaAfter": 1.1529240879354874
+    }
+   ]
+  },
+  {
+   "race": 42,
+   "participants": [
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 23.12395057565453,
+     "sigmaBefore": 1.088938941861803,
+     "muAfter": 22.94200242385958,
+     "sigmaAfter": 1.078342140061626
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 2,
+     "muBefore": 24.515253466743747,
+     "sigmaBefore": 1.4246697821772663,
+     "muAfter": 24.5222273731898,
+     "sigmaAfter": 1.3873279610507812
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 1,
+     "muBefore": 26.14059394675175,
+     "sigmaBefore": 1.1529240879354874,
+     "muAfter": 26.33984899581932,
+     "sigmaAfter": 1.1397619763505866
+    }
+   ]
+  },
+  {
+   "race": 43,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 4,
+     "muBefore": 24.5222273731898,
+     "sigmaBefore": 1.3873279610507812,
+     "muAfter": 24.033761879762885,
+     "sigmaAfter": 1.3527795610064226
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 2,
+     "muBefore": 24.442917626940016,
+     "sigmaBefore": 1.1587865427887112,
+     "muAfter": 24.50970260589856,
+     "sigmaAfter": 1.1348305541895842
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 3,
+     "muBefore": 23.409540502400766,
+     "sigmaBefore": 1.1791261407790343,
+     "muAfter": 23.35648856709539,
+     "sigmaAfter": 1.1537242781010832
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 1,
+     "muBefore": 24.00615144704185,
+     "sigmaBefore": 1.1375928826917738,
+     "muAfter": 24.320183497260892,
+     "sigmaAfter": 1.1201626592224436
+    }
+   ]
+  },
+  {
+   "race": 44,
+   "participants": [
+    {
+     "player": "synthetic_15",
+     "rank": 1,
+     "muBefore": 24.612329809033927,
+     "sigmaBefore": 1.2753916637336948,
+     "muAfter": 25.197518099261156,
+     "sigmaAfter": 1.242358899995533
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 2,
+     "muBefore": 26.33984899581932,
+     "sigmaBefore": 1.1397619763505866,
+     "muAfter": 26.532211136572105,
+     "sigmaAfter": 1.1122704307267413
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 4,
+     "muBefore": 26.438877878270162,
+     "sigmaBefore": 1.3830711184857878,
+     "muAfter": 26.390425149186058,
+     "sigmaAfter": 1.328583027116093
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 6,
+     "muBefore": 23.35648856709539,
+     "sigmaBefore": 1.1537242781010832,
+     "muAfter": 23.322509702859353,
+     "sigmaAfter": 1.1236573739676161
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 5,
+     "muBefore": 25.36258955171639,
+     "sigmaBefore": 1.2160017503255565,
+     "muAfter": 25.29234910411297,
+     "sigmaAfter": 1.1795958654940295
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 7,
+     "muBefore": 24.50970260589856,
+     "sigmaBefore": 1.1348305541895842,
+     "muAfter": 24.279842223655923,
+     "sigmaAfter": 1.1078406999537198
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 25.406214891405124,
+     "sigmaBefore": 1.280544400781929,
+     "muAfter": 25.57817059714495,
+     "sigmaAfter": 1.2382894210954372
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 8,
+     "muBefore": 25.13500968874491,
+     "sigmaBefore": 1.3163999422237302,
+     "muAfter": 24.55303146291986,
+     "sigmaAfter": 1.2805784276741559
+    }
+   ]
+  },
+  {
+   "race": 45,
+   "participants": [
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 25.351521015555146,
+     "sigmaBefore": 1.3113793109584317,
+     "muAfter": 25.537770395385063,
+     "sigmaAfter": 1.2964962541233818
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 2,
+     "muBefore": 24.033761879762885,
+     "sigmaBefore": 1.3527795610064226,
+     "muAfter": 23.83561512754489,
+     "sigmaAfter": 1.3361013405752136
+    }
+   ]
+  },
+  {
+   "race": 46,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 1,
+     "muBefore": 23.83561512754489,
+     "sigmaBefore": 1.3361013405752136,
+     "muAfter": 24.226721069706304,
+     "sigmaAfter": 1.309417639270311
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 3,
+     "muBefore": 24.279842223655923,
+     "sigmaBefore": 1.1078406999537198,
+     "muAfter": 24.04997417563904,
+     "sigmaAfter": 1.0948571113494425
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 2,
+     "muBefore": 25.197518099261156,
+     "sigmaBefore": 1.242358899995533,
+     "muAfter": 25.14790950608845,
+     "sigmaAfter": 1.216546104243126
+    }
+   ]
+  },
+  {
+   "race": 47,
+   "participants": [
+    {
+     "player": "synthetic_05",
+     "rank": 1,
+     "muBefore": 25.206489932403123,
+     "sigmaBefore": 1.134562750861027,
+     "muAfter": 25.623479306750504,
+     "sigmaAfter": 1.1122540441542967
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 9,
+     "muBefore": 22.94200242385958,
+     "sigmaBefore": 1.078342140061626,
+     "muAfter": 22.728901614204016,
+     "sigmaAfter": 1.0544859572892642
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 5,
+     "muBefore": 23.322509702859353,
+     "sigmaBefore": 1.1236573739676161,
+     "muAfter": 23.412714044515734,
+     "sigmaAfter": 1.0939511821179992
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 7,
+     "muBefore": 23.358080098866722,
+     "sigmaBefore": 1.093387511705214,
+     "muAfter": 23.290317983661286,
+     "sigmaAfter": 1.0664808855559564
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 6,
+     "muBefore": 24.226721069706304,
+     "sigmaBefore": 1.309417639270311,
+     "muAfter": 24.161533053835164,
+     "sigmaAfter": 1.2610034509281614
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 8,
+     "muBefore": 22.670710036967357,
+     "sigmaBefore": 1.0547051555417224,
+     "muAfter": 22.571298220493766,
+     "sigmaAfter": 1.0314449112185549
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 3,
+     "muBefore": 24.55303146291986,
+     "sigmaBefore": 1.2805784276741559,
+     "muAfter": 24.778843308207783,
+     "sigmaAfter": 1.2368637136795466
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 4,
+     "muBefore": 25.57817059714495,
+     "sigmaBefore": 1.2382894210954372,
+     "muAfter": 25.60314043777941,
+     "sigmaAfter": 1.1980729568494417
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 10,
+     "muBefore": 25.537770395385063,
+     "sigmaBefore": 1.2964962541233818,
+     "muAfter": 24.827290419371764,
+     "sigmaAfter": 1.2590676838594188
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 2,
+     "muBefore": 24.262231112434268,
+     "sigmaBefore": 1.0996172149992884,
+     "muAfter": 24.55355847743003,
+     "sigmaAfter": 1.0744097789492109
+    }
+   ]
+  },
+  {
+   "race": 48,
+   "participants": [
+    {
+     "player": "synthetic_13",
+     "rank": 8,
+     "muBefore": 24.778843308207783,
+     "sigmaBefore": 1.2368637136795466,
+     "muAfter": 24.283955103173085,
+     "sigmaAfter": 1.2073664705424323
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 2,
+     "muBefore": 25.623479306750504,
+     "sigmaBefore": 1.1122540441542967,
+     "muAfter": 25.802185367534012,
+     "sigmaAfter": 1.0862746333324875
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 3,
+     "muBefore": 24.04997417563904,
+     "sigmaBefore": 1.0948571113494425,
+     "muAfter": 24.224114997417477,
+     "sigmaAfter": 1.0689591705785049
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 1,
+     "muBefore": 22.728901614204016,
+     "sigmaBefore": 1.0544859572892642,
+     "muAfter": 23.191562102872435,
+     "sigmaAfter": 1.0361958841533008
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 26.532211136572105,
+     "sigmaBefore": 1.1122704307267413,
+     "muAfter": 26.460187160245518,
+     "sigmaAfter": 1.0845549137817052
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 6,
+     "muBefore": 23.412714044515734,
+     "sigmaBefore": 1.0939511821179992,
+     "muAfter": 23.366453772895927,
+     "sigmaAfter": 1.0682874686974624
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 5,
+     "muBefore": 24.320183497260892,
+     "sigmaBefore": 1.1201626592224436,
+     "muAfter": 24.304718108687076,
+     "sigmaAfter": 1.0918339409637714
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 7,
+     "muBefore": 26.390425149186058,
+     "sigmaBefore": 1.328583027116093,
+     "muAfter": 25.91024001874086,
+     "sigmaAfter": 1.2826662821981616
+    }
+   ]
+  },
+  {
+   "race": 49,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 7,
+     "muBefore": 24.161533053835164,
+     "sigmaBefore": 1.2610034509281614,
+     "muAfter": 23.92647078063177,
+     "sigmaAfter": 1.2228908003128958
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 5,
+     "muBefore": 25.91024001874086,
+     "sigmaBefore": 1.2826662821981616,
+     "muAfter": 25.79743171457185,
+     "sigmaAfter": 1.239047962862151
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 26.460187160245518,
+     "sigmaBefore": 1.0845549137817052,
+     "muAfter": 26.427539542622853,
+     "sigmaAfter": 1.0591854416677424
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 2,
+     "muBefore": 24.224114997417477,
+     "sigmaBefore": 1.0689591705785049,
+     "muAfter": 24.503250585474177,
+     "sigmaAfter": 1.0462615705016407
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 1,
+     "muBefore": 24.283955103173085,
+     "sigmaBefore": 1.2073664705424323,
+     "muAfter": 24.80928737459478,
+     "sigmaAfter": 1.179174219672947
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 25.60314043777941,
+     "sigmaBefore": 1.1980729568494417,
+     "muAfter": 25.729133916332323,
+     "sigmaAfter": 1.1633131537855868
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 8,
+     "muBefore": 25.14790950608845,
+     "sigmaBefore": 1.216546104243126,
+     "muAfter": 24.655377526246863,
+     "sigmaAfter": 1.1888812511437685
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 6,
+     "muBefore": 25.29234910411297,
+     "sigmaBefore": 1.1795958654940295,
+     "muAfter": 25.13218608992158,
+     "sigmaAfter": 1.1469295097728778
+    }
+   ]
+  },
+  {
+   "race": 50,
+   "participants": [
+    {
+     "player": "synthetic_06",
+     "rank": 12,
+     "muBefore": 23.290317983661286,
+     "sigmaBefore": 1.0664808855559564,
+     "muAfter": 22.907033128953223,
+     "sigmaAfter": 1.048017258608878
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 11,
+     "muBefore": 23.92647078063177,
+     "sigmaBefore": 1.2228908003128958,
+     "muAfter": 23.575453276386646,
+     "sigmaAfter": 1.1863406828694838
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 9,
+     "muBefore": 24.80928737459478,
+     "sigmaBefore": 1.179174219672947,
+     "muAfter": 24.616520833190233,
+     "sigmaAfter": 1.1437044452302205
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 2,
+     "muBefore": 26.427539542622853,
+     "sigmaBefore": 1.0591854416677424,
+     "muAfter": 26.630470494575768,
+     "sigmaAfter": 1.036655851425138
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 3,
+     "muBefore": 25.802185367534012,
+     "sigmaBefore": 1.0862746333324875,
+     "muAfter": 25.95407931709526,
+     "sigmaAfter": 1.0600687018206965
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 8,
+     "muBefore": 25.729133916332323,
+     "sigmaBefore": 1.1633131537855868,
+     "muAfter": 25.5474323691415,
+     "sigmaAfter": 1.1289032178315321
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 7,
+     "muBefore": 24.55355847743003,
+     "sigmaBefore": 1.0744097789492109,
+     "muAfter": 24.52622701086541,
+     "sigmaAfter": 1.0477924821113982
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 10,
+     "muBefore": 24.827290419371764,
+     "sigmaBefore": 1.2590676838594188,
+     "muAfter": 24.51002285101551,
+     "sigmaAfter": 1.2165190590733082
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 1,
+     "muBefore": 25.13218608992158,
+     "sigmaBefore": 1.1469295097728778,
+     "muAfter": 25.61939412590799,
+     "sigmaAfter": 1.1225783820491173
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 5,
+     "muBefore": 23.366453772895927,
+     "sigmaBefore": 1.0682874686974624,
+     "muAfter": 23.521959151746866,
+     "sigmaAfter": 1.0423265758149032
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 6,
+     "muBefore": 24.655377526246863,
+     "sigmaBefore": 1.1888812511437685,
+     "muAfter": 24.680550938701145,
+     "sigmaAfter": 1.151788062342985
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 4,
+     "muBefore": 22.571298220493766,
+     "sigmaBefore": 1.0314449112185549,
+     "muAfter": 22.82141515378577,
+     "sigmaAfter": 1.0087634793020959
+    }
+   ]
+  },
+  {
+   "race": 51,
+   "participants": [
+    {
+     "player": "synthetic_07",
+     "rank": 9,
+     "muBefore": 24.503250585474177,
+     "sigmaBefore": 1.0462615705016407,
+     "muAfter": 24.348571097953954,
+     "sigmaAfter": 1.0225506311612913
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 6,
+     "muBefore": 25.5474323691415,
+     "sigmaBefore": 1.1289032178315321,
+     "muAfter": 25.50248693685301,
+     "sigmaAfter": 1.0976289480332646
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 22.82141515378577,
+     "sigmaBefore": 1.0087634793020959,
+     "muAfter": 23.183553289275963,
+     "sigmaAfter": 0.9894475066024622
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 8,
+     "muBefore": 24.51002285101551,
+     "sigmaBefore": 1.2165190590733082,
+     "muAfter": 24.388822502122423,
+     "sigmaAfter": 1.1770094142707546
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 12,
+     "muBefore": 23.191562102872435,
+     "sigmaBefore": 1.0361958841533008,
+     "muAfter": 22.81401072412624,
+     "sigmaAfter": 1.0194399252119315
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 1,
+     "muBefore": 26.630470494575768,
+     "sigmaBefore": 1.036655851425138,
+     "muAfter": 26.945310493470473,
+     "sigmaAfter": 1.0205968954539273
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 4,
+     "muBefore": 25.61939412590799,
+     "sigmaBefore": 1.1225783820491173,
+     "muAfter": 25.701933372848508,
+     "sigmaAfter": 1.092389713846985
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 10,
+     "muBefore": 23.521959151746866,
+     "sigmaBefore": 1.0423265758149032,
+     "muAfter": 23.352488012662725,
+     "sigmaAfter": 1.0196075019977677
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 3,
+     "muBefore": 24.616520833190233,
+     "sigmaBefore": 1.1437044452302205,
+     "muAfter": 24.850346549792754,
+     "sigmaAfter": 1.1123352554656694
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 5,
+     "muBefore": 23.575453276386646,
+     "sigmaBefore": 1.1863406828694838,
+     "muAfter": 23.743679982101305,
+     "sigmaAfter": 1.1497774891348287
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 7,
+     "muBefore": 24.680550938701145,
+     "sigmaBefore": 1.151788062342985,
+     "muAfter": 24.628538394083126,
+     "sigmaAfter": 1.1184238925431427
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 11,
+     "muBefore": 22.907033128953223,
+     "sigmaBefore": 1.048017258608878,
+     "muAfter": 22.679270648920255,
+     "sigmaAfter": 1.026301963195768
+    }
+   ]
+  },
+  {
+   "race": 52,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 2,
+     "muBefore": 25.50248693685301,
+     "sigmaBefore": 1.0976289480332646,
+     "muAfter": 25.283498891058887,
+     "sigmaAfter": 1.087689959122147
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 1,
+     "muBefore": 22.81401072412624,
+     "sigmaBefore": 1.0194399252119315,
+     "muAfter": 23.00308342769838,
+     "sigmaAfter": 1.0123410895173857
+    }
+   ]
+  },
+  {
+   "race": 53,
+   "participants": [
+    {
+     "player": "synthetic_02",
+     "rank": 2,
+     "muBefore": 25.701933372848508,
+     "sigmaBefore": 1.092389713846985,
+     "muAfter": 25.67136090416725,
+     "sigmaAfter": 1.0756523730112229
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 24.388822502122423,
+     "sigmaBefore": 1.1770094142707546,
+     "muAfter": 24.70026534357511,
+     "sigmaAfter": 1.1594059789853133
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 25.283498891058887,
+     "sigmaBefore": 1.087689959122147,
+     "muAfter": 25.047615972049257,
+     "sigmaAfter": 1.0751442380876306
+    }
+   ]
+  },
+  {
+   "race": 54,
+   "participants": [
+    {
+     "player": "synthetic_10",
+     "rank": 1,
+     "muBefore": 24.304718108687076,
+     "sigmaBefore": 1.0918339409637714,
+     "muAfter": 24.7555003087114,
+     "sigmaAfter": 1.070998399624316
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 11,
+     "muBefore": 22.679270648920255,
+     "sigmaBefore": 1.026301963195768,
+     "muAfter": 22.359003355617546,
+     "sigmaAfter": 1.0108590412742822
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 2,
+     "muBefore": 24.850346549792754,
+     "sigmaBefore": 1.1123352554656694,
+     "muAfter": 25.13162193003297,
+     "sigmaAfter": 1.08540345596901
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 10,
+     "muBefore": 25.047615972049257,
+     "sigmaBefore": 1.0751442380876306,
+     "muAfter": 24.713768331655974,
+     "sigmaAfter": 1.0513909383549342
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 5,
+     "muBefore": 25.67136090416725,
+     "sigmaBefore": 1.0756523730112229,
+     "muAfter": 25.65707883159459,
+     "sigmaAfter": 1.04931136763067
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 6,
+     "muBefore": 23.00308342769838,
+     "sigmaBefore": 1.0123410895173857,
+     "muAfter": 23.08459475172475,
+     "sigmaAfter": 0.9909133842289294
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 4,
+     "muBefore": 23.352488012662725,
+     "sigmaBefore": 1.0196075019977677,
+     "muAfter": 23.52718024439124,
+     "sigmaAfter": 0.9979294222443107
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 7,
+     "muBefore": 25.95407931709526,
+     "sigmaBefore": 1.0600687018206965,
+     "muAfter": 25.80615936477307,
+     "sigmaAfter": 1.0350189262054792
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 9,
+     "muBefore": 23.183553289275963,
+     "sigmaBefore": 0.9894475066024622,
+     "muAfter": 23.078053094052795,
+     "sigmaAfter": 0.9706376944741779
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 8,
+     "muBefore": 25.79743171457185,
+     "sigmaBefore": 1.239047962862151,
+     "muAfter": 25.527719961529463,
+     "sigmaAfter": 1.197856973527408
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 3,
+     "muBefore": 24.52622701086541,
+     "sigmaBefore": 1.0477924821113982,
+     "muAfter": 24.70985336055163,
+     "sigmaAfter": 1.0245504984589693
+    }
+   ]
+  },
+  {
+   "race": 55,
+   "participants": [
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 24.70026534357511,
+     "sigmaBefore": 1.1594059789853133,
+     "muAfter": 25.011297058473918,
+     "sigmaAfter": 1.140529438528389
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 4,
+     "muBefore": 26.945310493470473,
+     "sigmaBefore": 1.0205968954539273,
+     "muAfter": 26.6082944771717,
+     "sigmaAfter": 1.0074693789721094
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 3,
+     "muBefore": 24.628538394083126,
+     "sigmaBefore": 1.1184238925431427,
+     "muAfter": 24.557681905450785,
+     "sigmaAfter": 1.0961104128860286
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 23.078053094052795,
+     "sigmaBefore": 0.9706376944741779,
+     "muAfter": 23.218086030836876,
+     "sigmaAfter": 0.9575879596436074
+    }
+   ]
+  },
+  {
+   "race": 56,
+   "participants": [
+    {
+     "player": "synthetic_01",
+     "rank": 8,
+     "muBefore": 25.527719961529463,
+     "sigmaBefore": 1.197856973527408,
+     "muAfter": 25.334695486314715,
+     "sigmaAfter": 1.1604594636635588
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 1,
+     "muBefore": 24.713768331655974,
+     "sigmaBefore": 1.0513909383549342,
+     "muAfter": 25.113130262718734,
+     "sigmaAfter": 1.0331425530075267
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 10,
+     "muBefore": 25.011297058473918,
+     "sigmaBefore": 1.140529438528389,
+     "muAfter": 24.693515411510734,
+     "sigmaAfter": 1.1110637037526123
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 2,
+     "muBefore": 23.218086030836876,
+     "sigmaBefore": 0.9575879596436074,
+     "muAfter": 23.512584134488264,
+     "sigmaAfter": 0.941480934588493
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 4,
+     "muBefore": 24.7555003087114,
+     "sigmaBefore": 1.070998399624316,
+     "muAfter": 24.873549816747836,
+     "sigmaAfter": 1.0451090409571295
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 5,
+     "muBefore": 23.743679982101305,
+     "sigmaBefore": 1.1497774891348287,
+     "muAfter": 23.881690383979244,
+     "sigmaAfter": 1.1166745606423072
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 3,
+     "muBefore": 24.557681905450785,
+     "sigmaBefore": 1.0961104128860286,
+     "muAfter": 24.763699266175394,
+     "sigmaAfter": 1.0687204835388864
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 7,
+     "muBefore": 25.65707883159459,
+     "sigmaBefore": 1.04931136763067,
+     "muAfter": 25.55438115817828,
+     "sigmaAfter": 1.0249069504685233
+    },
+    {
+     "player": "synthetic_12",
+     "rank": 9,
+     "muBefore": 26.6082944771717,
+     "sigmaBefore": 1.0074693789721094,
+     "muAfter": 26.348802041734775,
+     "sigmaAfter": 0.9870169249004008
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 6,
+     "muBefore": 24.348571097953954,
+     "sigmaBefore": 1.0225506311612913,
+     "muAfter": 24.374724253224713,
+     "sigmaAfter": 1.0001688693567092
+    },
+    {
+     "player": "synthetic_03",
+     "rank": 11,
+     "muBefore": 24.70985336055163,
+     "sigmaBefore": 1.0245504984589693,
+     "muAfter": 24.333932937464926,
+     "sigmaAfter": 1.00816071277719
+    }
+   ]
+  },
+  {
+   "race": 57,
+   "participants": [
+    {
+     "player": "synthetic_10",
+     "rank": 10,
+     "muBefore": 24.873549816747836,
+     "sigmaBefore": 1.0451090409571295,
+     "muAfter": 24.639694801582674,
+     "sigmaAfter": 1.0216138388546383
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 5,
+     "muBefore": 23.52718024439124,
+     "sigmaBefore": 0.9979294222443107,
+     "muAfter": 23.634867994711772,
+     "sigmaAfter": 0.9773526466542037
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 11,
+     "muBefore": 25.334695486314715,
+     "sigmaBefore": 1.1604594636635588,
+     "muAfter": 24.92330320570188,
+     "sigmaAfter": 1.1286672318507998
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 9,
+     "muBefore": 24.763699266175394,
+     "sigmaBefore": 1.0687204835388864,
+     "muAfter": 24.589704016181724,
+     "sigmaAfter": 1.0428061994693625
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 8,
+     "muBefore": 22.359003355617546,
+     "sigmaBefore": 1.0108590412742822,
+     "muAfter": 22.38590506870888,
+     "sigmaAfter": 0.989268728336356
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 2,
+     "muBefore": 23.08459475172475,
+     "sigmaBefore": 0.9909133842289294,
+     "muAfter": 23.40688012568109,
+     "sigmaAfter": 0.9727831565861931
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 6,
+     "muBefore": 23.881690383979244,
+     "sigmaBefore": 1.1166745606423072,
+     "muAfter": 23.93017600622642,
+     "sigmaAfter": 1.0862683551393286
+    },
+    {
+     "player": "synthetic_05",
+     "rank": 1,
+     "muBefore": 25.80615936477307,
+     "sigmaBefore": 1.0350189262054792,
+     "muAfter": 26.145056122612896,
+     "sigmaAfter": 1.0186077362095756
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 3,
+     "muBefore": 25.55438115817828,
+     "sigmaBefore": 1.0249069504685233,
+     "muAfter": 25.676188885944025,
+     "sigmaAfter": 1.0032411951899614
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 4,
+     "muBefore": 23.512584134488264,
+     "sigmaBefore": 0.941480934588493,
+     "muAfter": 23.658392991118163,
+     "sigmaAfter": 0.9251082462946337
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 12,
+     "muBefore": 24.693515411510734,
+     "sigmaBefore": 1.1110637037526123,
+     "muAfter": 24.212007176156206,
+     "sigmaAfter": 1.0882553895910703
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 7,
+     "muBefore": 24.374724253224713,
+     "sigmaBefore": 1.0001688693567092,
+     "muAfter": 24.339580753579646,
+     "sigmaAfter": 0.9792832860950186
+    }
+   ]
+  },
+  {
+   "race": 58,
+   "participants": [
+    {
+     "player": "synthetic_09",
+     "rank": 3,
+     "muBefore": 25.113130262718734,
+     "sigmaBefore": 1.0331425530075267,
+     "muAfter": 24.843772561956925,
+     "sigmaAfter": 1.0219768925056203
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 22.38590506870888,
+     "sigmaBefore": 0.989268728336356,
+     "muAfter": 22.450560561484416,
+     "sigmaAfter": 0.9777652910581314
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 1,
+     "muBefore": 23.93017600622642,
+     "sigmaBefore": 1.0862683551393286,
+     "muAfter": 24.149901290284944,
+     "sigmaAfter": 1.0740267806177006
+    }
+   ]
+  },
+  {
+   "race": 59,
+   "participants": [
+    {
+     "player": "synthetic_04",
+     "rank": 6,
+     "muBefore": 23.634867994711772,
+     "sigmaBefore": 0.9773526466542037,
+     "muAfter": 23.56210354826022,
+     "sigmaAfter": 0.9600667453530566
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 4,
+     "muBefore": 22.450560561484416,
+     "sigmaBefore": 0.9777652910581314,
+     "muAfter": 22.577378271490115,
+     "sigmaAfter": 0.96019459728447
+    },
+    {
+     "player": "synthetic_02",
+     "rank": 7,
+     "muBefore": 25.676188885944025,
+     "sigmaBefore": 1.0032411951899614,
+     "muAfter": 25.40460243909177,
+     "sigmaAfter": 0.9851675607084088
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 1,
+     "muBefore": 24.589704016181724,
+     "sigmaBefore": 1.0428061994693625,
+     "muAfter": 24.946070608533326,
+     "sigmaAfter": 1.0266666459136435
+    },
+    {
+     "player": "synthetic_13",
+     "rank": 3,
+     "muBefore": 25.13162193003297,
+     "sigmaBefore": 1.08540345596901,
+     "muAfter": 25.21190693276772,
+     "sigmaAfter": 1.0605963680613797
+    },
+    {
+     "player": "synthetic_14",
+     "rank": 5,
+     "muBefore": 24.149901290284944,
+     "sigmaBefore": 1.0740267806177006,
+     "muAfter": 24.11437570501638,
+     "sigmaAfter": 1.0494270861570436
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 8,
+     "muBefore": 24.212007176156206,
+     "sigmaBefore": 1.0882553895910703,
+     "muAfter": 23.828777708018592,
+     "sigmaAfter": 1.069121824836088
+    },
+    {
+     "player": "synthetic_01",
+     "rank": 2,
+     "muBefore": 24.92330320570188,
+     "sigmaBefore": 1.1286672318507998,
+     "muAfter": 25.142141370852915,
+     "sigmaAfter": 1.1019764006985204
+    }
+   ]
+  },
+  {
+   "race": 60,
+   "participants": [
+    {
+     "player": "synthetic_14",
+     "rank": 7,
+     "muBefore": 24.11437570501638,
+     "sigmaBefore": 1.0494270861570436,
+     "muAfter": 24.01584202412726,
+     "sigmaAfter": 1.0255729958436435
+    },
+    {
+     "player": "synthetic_10",
+     "rank": 4,
+     "muBefore": 24.639694801582674,
+     "sigmaBefore": 1.0216138388546383,
+     "muAfter": 24.689793071211884,
+     "sigmaAfter": 0.9999077574833546
+    },
+    {
+     "player": "synthetic_04",
+     "rank": 6,
+     "muBefore": 23.56210354826022,
+     "sigmaBefore": 0.9600667453530566,
+     "muAfter": 23.557765231894024,
+     "sigmaAfter": 0.9425646556912228
+    },
+    {
+     "player": "synthetic_11",
+     "rank": 5,
+     "muBefore": 23.658392991118163,
+     "sigmaBefore": 0.9251082462946337,
+     "muAfter": 23.697009628633623,
+     "sigmaAfter": 0.9099094035342704
+    },
+    {
+     "player": "synthetic_08",
+     "rank": 3,
+     "muBefore": 23.40688012568109,
+     "sigmaBefore": 0.9727831565861931,
+     "muAfter": 23.57422415497159,
+     "sigmaAfter": 0.9549769194409725
+    },
+    {
+     "player": "synthetic_06",
+     "rank": 2,
+     "muBefore": 22.577378271490115,
+     "sigmaBefore": 0.96019459728447,
+     "muAfter": 22.8526653621411,
+     "sigmaAfter": 0.9441432324343484
+    },
+    {
+     "player": "synthetic_15",
+     "rank": 9,
+     "muBefore": 24.946070608533326,
+     "sigmaBefore": 1.0266666459136435,
+     "muAfter": 24.65922845036375,
+     "sigmaAfter": 1.0061628473760011
+    },
+    {
+     "player": "synthetic_00",
+     "rank": 1,
+     "muBefore": 23.828777708018592,
+     "sigmaBefore": 1.069121824836088,
+     "muAfter": 24.233087039521756,
+     "sigmaAfter": 1.0500556430192185
+    },
+    {
+     "player": "synthetic_09",
+     "rank": 8,
+     "muBefore": 24.843772561956925,
+     "sigmaBefore": 1.0219768925056203,
+     "muAfter": 24.64522417961128,
+     "sigmaAfter": 1.000686984683277
+    },
+    {
+     "player": "synthetic_07",
+     "rank": 10,
+     "muBefore": 24.339580753579646,
+     "sigmaBefore": 0.9792832860950186,
+     "muAfter": 23.98880046021826,
+     "sigmaAfter": 0.9654379308975877
+    }
+   ]
+  }
+ ]
+}

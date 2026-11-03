@@ -1,0 +1,448 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/tournament-race-result-v1.schema.json",
+  "title": "TournamentRaceResultV1",
+  "description": "Language-neutral canonical result for one completed MK8DX tournament race. Contract version, result revision, identity resolution, and tournament assignment are distinct concerns.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "raceResultId",
+    "revision",
+    "raceNumber",
+    "scoringSegment",
+    "trackId",
+    "countsTowardStandings",
+    "placements",
+    "source",
+    "timestamps"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "mk8dx.tournament-race-result.v1"
+    },
+    "raceResultId": {
+      "description": "Stable across revisions. The opaque suffix must not contain a player name.",
+      "type": "string",
+      "pattern": "^tournament_race_result\\.[A-Za-z0-9][A-Za-z0-9_-]{5,127}$"
+    },
+    "revision": {
+      "description": "One-based revision of this raceResultId; unrelated to schemaVersion.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "raceNumber": {
+      "description": "One-based race sequence in the producer's local session or assigned group.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "scoringSegment": {
+      "description": "One-based continuous scoring segment. A connection reset can start a later segment without resetting raceNumber.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "mode": {
+      "description": "Engine class when the producer knows it (ADR-0217: read from the track-intro class badge). Existing Tournament workbook exports do not always carry this field.",
+      "type": "integer",
+      "enum": [50, 100, 150, 200]
+    },
+    "mirror": {
+      "description": "A Mirror race: the 150cc class with the course mirrored (ADR-0217). Only true, only with mode 150; absent means not mirrored or not known.",
+      "const": true
+    },
+    "trackId": {
+      "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/trackId"
+    },
+    "countsTowardStandings": {
+      "description": "Whether racePoints affect the cumulative totals. This is explicit because current processors retain some excluded races for review.",
+      "type": "boolean"
+    },
+    "scoringNote": {
+      "description": "Required explanation when the race is retained but excluded from cumulative standings.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 240
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "placements": {
+      "description": "Finishing-order rows for this race. Producer support may be narrower, but the MK8DX domain allows one through twelve racers.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 12,
+      "items": {
+        "$ref": "#/$defs/placement"
+      }
+    },
+    "source": {
+      "$ref": "#/$defs/source"
+    },
+    "timestamps": {
+      "$ref": "#/$defs/timestamps"
+    },
+    "evidence": {
+      "type": "array",
+      "maxItems": 16,
+      "items": {
+        "$ref": "#/$defs/evidenceReference"
+      }
+    },
+    "verification": {
+      "$ref": "#/$defs/verification"
+    }
+  },
+  "dependentRequired": {
+    "mirror": ["mode"]
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "countsTowardStandings": { "const": false }
+        },
+        "required": ["countsTowardStandings"]
+      },
+      "then": {
+        "required": ["scoringNote"]
+      }
+    },
+    {
+      "if": { "required": ["mirror"] },
+      "then": { "properties": { "mode": { "const": 150 } } }
+    }
+  ],
+  "$defs": {
+    "contextReference": {
+      "description": "A namespaced opaque local or central context reference. It does not imply that the referenced entity already exists centrally.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["namespace", "value"],
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,63}$"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      }
+    },
+    "context": {
+      "description": "Optional assignment context. Local extraction may finish before a race is assigned to a central Tournament, stage, or group.",
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "tournamentReference": { "$ref": "#/$defs/contextReference" },
+        "stageReference": { "$ref": "#/$defs/contextReference" },
+        "groupReference": { "$ref": "#/$defs/contextReference" },
+        "observedStageLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96
+        },
+        "observedGroupLabel": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 96
+        }
+      }
+    },
+    "participantReference": {
+      "description": "A namespaced opaque participant reference. Only the player namespace asserts an already-resolved central Player.",
+      "oneOf": [
+        {
+          "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/playerReference"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["namespace", "value"],
+          "properties": {
+            "namespace": {
+              "type": "string",
+              "enum": [
+                "tournament_manager_player",
+                "producer_local_player",
+                "unresolved_observation"
+              ]
+            },
+            "value": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        }
+      ]
+    },
+    "placement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finishPosition",
+        "participantReference",
+        "scoring"
+      ],
+      "properties": {
+        "finishPosition": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        },
+        "participantReference": {
+          "$ref": "#/$defs/participantReference"
+        },
+        "observedPlayerName": {
+          "description": "Source-observed text. It is not an identity merge key and case-distinct names may coexist.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "characterId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/characterId"
+        },
+        "characterVariantId": {
+          "$ref": "https://mk8dx.example/schemas/domain/asset-id-v1.schema.json#/$defs/characterVariantId"
+        },
+        "scoring": {
+          "$ref": "#/$defs/scoring"
+        },
+        "confidence": {
+          "$ref": "#/$defs/placementConfidence"
+        }
+      },
+      "dependentRequired": {
+        "characterVariantId": ["characterId"]
+      }
+    },
+    "scoring": {
+      "description": "The race points and cumulative standings snapshot exported by the current processors.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "racePoints",
+        "totalBeforeRace",
+        "totalAfterRace",
+        "rankAfterRace"
+      ],
+      "properties": {
+        "racePoints": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalBeforeRace": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalAfterRace": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "rankAfterRace": {
+          "description": "Competition rank after this race; ties can share a rank.",
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 12
+        }
+      }
+    },
+    "placementConfidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "finishPosition": { "$ref": "#/$defs/confidence" },
+        "playerName": { "$ref": "#/$defs/confidence" },
+        "character": { "$ref": "#/$defs/confidence" },
+        "racePoints": { "$ref": "#/$defs/confidence" },
+        "totalAfterRace": { "$ref": "#/$defs/confidence" }
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "tournament_recorded_video",
+            "tournament_live_capture",
+            "tournament_spreadsheet_import",
+            "tournament_manual_entry"
+          ]
+        },
+        "transport": {
+          "description": "How this contract instance crossed the producer boundary; not the original observation kind.",
+          "type": "string",
+          "enum": ["native_contract", "excel_workbook", "csv", "web_form"]
+        },
+        "producerVersion": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "localRecordId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sessionId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "streamId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "sourceMediaId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "raceOffsetMs": {
+          "description": "Race-related offset within recorded source media when available.",
+          "type": "integer",
+          "minimum": 0
+        },
+        "frameIndex": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "timestamps": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAtMs"],
+      "properties": {
+        "occurredAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "capturedAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "createdAtMs": { "$ref": "#/$defs/epochMilliseconds" },
+        "submittedAtMs": { "$ref": "#/$defs/epochMilliseconds" }
+      }
+    },
+    "epochMilliseconds": {
+      "description": "Unix epoch milliseconds in UTC.",
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 253402300799999
+    },
+    "evidenceReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["kind", "reference"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "race_score_screen",
+            "total_score_screen",
+            "video",
+            "capture_session",
+            "workbook"
+          ]
+        },
+        "reference": {
+          "description": "Opaque reference to separately managed evidence; raw media is not embedded in the contract.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "mediaType": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9!#$&^_.+-]*/[a-z0-9][a-z0-9!#$&^_.+-]*$"
+        }
+      }
+    },
+    "verification": {
+      "description": "Producer validation state, not central moderation or identity verification.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "not_checked",
+            "producer_check_passed",
+            "producer_check_failed",
+            "needs_review"
+          ]
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "confidence": { "$ref": "#/$defs/confidence" },
+        "fieldConfidence": {
+          "type": "object",
+          "additionalProperties": false,
+          "minProperties": 1,
+          "properties": {
+            "track": { "$ref": "#/$defs/confidence" },
+            "playerCount": { "$ref": "#/$defs/confidence" },
+            "finishPositions": { "$ref": "#/$defs/confidence" },
+            "playerNames": { "$ref": "#/$defs/confidence" },
+            "characters": { "$ref": "#/$defs/confidence" },
+            "racePoints": { "$ref": "#/$defs/confidence" },
+            "totalScores": { "$ref": "#/$defs/confidence" }
+          }
+        },
+        "issues": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 32,
+          "items": { "$ref": "#/$defs/verificationIssue" }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": ["producer_check_failed", "needs_review"]
+              }
+            },
+            "required": ["status"]
+          },
+          "then": {
+            "required": ["issues"]
+          }
+        }
+      ]
+    },
+    "verificationIssue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message"],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]{1,63}$"
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        }
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    }
+  }
+}

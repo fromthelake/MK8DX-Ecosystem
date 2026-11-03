@@ -1,0 +1,4 @@
+[console_scripts]
+mk8dx-tournament-live = live_processor.run_gui:main
+mk8dx-tournament-live-cli = live_processor.cli:main
+mk8dx-tournament-live-results = tournament_live.cli:main

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    The start-screen icon when the build has no owner-private launcher icon:
+    the committed code-native foreground, as before. A build with the private
+    icon uses the generated mk8dx_splash_icon from build.gradle.kts instead,
+    so the start screen always shows the same icon as the launcher.
+-->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_launcher_foreground"
+    android:inset="0dp" />

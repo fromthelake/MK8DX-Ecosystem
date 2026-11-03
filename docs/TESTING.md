@@ -1,0 +1,136 @@
+# Testing
+
+[Nederlandse versie](TESTING_NL.md)
+
+Test what your change can affect, not everything. Find the component that owns the change and its reverse
+consumers in [component-registry.json](../component-registry.json), then run the checks below for each of
+them. A shared contract, catalog, CSS token or the central reader needs its provider **and** its consumers.
+Skipped or "todo" tests are not passes. Set up Node and the Python test dependencies first
+([Developer guide](DEVELOPMENT.md#clone-and-verify)); on Linux and macOS use `python3` where this page says `python`.
+
+## Every change
+
+```sh
+python tooling/privacy_scan.py
+python tooling/check_boundaries.py
+python tooling/check_docs.py
+git diff --check
+```
+
+## Per component
+
+| Component | Commands (from the repository root) |
+| --- | --- |
+| API (`backend/api`) | `npm ci --prefix backend/api`, then `npm run typecheck`, `npm test` and `npm run build` with `--prefix backend/api` |
+| Website (`apps/timetrials-web`) | the same four commands with `--prefix apps/timetrials-web` |
+| Shared CSS | `node tooling/design-system/css-metrics.mjs --check` |
+| Browser scanner (`apps/timetrials-scanner-web`) | `npm ci --ignore-scripts`, `npm run sync-assets`, `npm run typecheck`, `npm run build` in that folder |
+| Public recognition test set | `node tooling/test-set/score_test_set.mjs` after the scanner's `npm ci` and `sync-assets` and `npx --prefix apps/timetrials-scanner-web playwright install chromium` ([test set](../packages/assets/test-set/README.md)) |
+| Central reader (`packages/icon-matcher`) | see below |
+| Database migrations and seeds | `python tooling/reference/generate_benchmark_manifest.py --check`, plus the API's [MySQL integration tests](#database-integration-tests) |
+| Design tokens (Web and Android) | `node packages/design-tokens/generate.mjs --check` |
+| Installer, privacy scan (`tooling/`) | `python -m unittest discover -s tooling/tests` |
+| Intake tool | `MK8DX_INTAKE_TEST_ROOT=<temporary folder outside the repository> python tooling/test_intake.py -v` |
+| LiveTrial (`apps/timetrials-desktop`) | see below |
+| Android, Tournament | the build and test steps in [Client builds](CLIENT_BUILDS.md) |
+
+Central reader, TypeScript and Python:
+
+```sh
+node --experimental-strip-types --no-warnings \
+  --experimental-loader ./packages/icon-matcher/ts/ts_resolve_hook.mjs \
+  --test "packages/icon-matcher/ts/*.test.mjs"
+PYTHONPATH=packages/icon-matcher/python python -m pytest -q packages/icon-matcher/python/tests
+```
+
+The Python tests need the pinned packages in [requirements-dev.txt](../requirements-dev.txt). Tests that use
+private evaluation images skip when those are not configured.
+
+LiveTrial desktop tests (Windows; one test asserts Windows paths):
+
+```powershell
+$env:PYTHONPATH = "apps/timetrials-desktop"
+python -m pytest -q -p no:cacheprovider apps/timetrials-desktop/tests
+```
+
+In a POSIX shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps/timetrials-desktop/tests`. The
+dashboard test runs with `node apps/timetrials-desktop/tests/history-startup.test.js` (also in CI). `engine-overlay/livetrial/tests/test_names.py` needs the full
+LiveTrial engine snapshot and its Clean Assets database, which are not in this repository.
+
+## Database integration tests
+
+The API's MySQL tests (`backend/api/test/*.integration.test.ts`, 35 files) are opt-in and skip without the
+settings below. Run them against a **disposable** MySQL 8.4 server, never against an installation's database.
+
+| Variable | Value |
+| --- | --- |
+| `MK8DX_MYSQL_INTEGRATION` | `1` |
+| `MK8DX_MYSQL_TEST_HOST`, `MK8DX_MYSQL_TEST_PORT` | the test server, for example `127.0.0.1` and `33406` |
+| `MK8DX_MYSQL_TEST_USER`, `MK8DX_MYSQL_TEST_PASSWORD` | an account that may use the test schema (the disposable server's `root` is simplest) |
+| `MK8DX_MYSQL_TEST_DATABASE` | the schema; its name must end in `_test` or `_contract` |
+
+Rules that the suites enforce or rely on:
+
+- The schema must already be **migrated**: apply the whole catalog with `migration-apply-main.js
+  --fresh-empty-database` (below). Without it most suites fail with "table doesn't exist".
+- `protected-value-rotation.integration.test.ts` refuses a schema whose name does not end in `_rotation_contract`.
+- Several suites need a schema nobody else used: `tournament-operation` (fixed participant counts),
+  `administrator-claim-review` (it uses the one-time first-administrator bootstrap) and
+  `mysql-firebase-backout-repository` (row counts). The simplest reliable procedure is one fresh schema per suite.
+- `reference-seed.integration.test.ts` also needs `MK8DX_REFERENCE_TEST_CONFIG` (a private installation
+  configuration for a `_contract` schema) and skips without it.
+
+The procedure below ran all 34 suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02. It uses
+a POSIX shell (Git Bash works on Windows); the password is a throw-away value for the disposable container.
+
+```sh
+docker run -d --name mk8dx-test-mysql -e MYSQL_ROOT_PASSWORD=throwaway-test-pw -p 127.0.0.1:33406:3306 mysql:8.4.11
+until docker exec mk8dx-test-mysql mysqladmin ping -uroot -pthrowaway-test-pw --silent; do sleep 2; done
+npm ci --prefix backend/api && npm run build --prefix backend/api
+cd backend/api
+export MK8DX_MYSQL_INTEGRATION=1 MK8DX_MYSQL_TEST_HOST=127.0.0.1 MK8DX_MYSQL_TEST_PORT=33406 \
+  MK8DX_MYSQL_TEST_USER=root MK8DX_MYSQL_TEST_PASSWORD=throwaway-test-pw
+env_file="$(mktemp)"; chmod 600 "$env_file"      # the migration CLI wants an owner-only file and an absolute path
+n=0
+for suite in test/*.integration.test.ts; do
+  case "$suite" in *reference-seed*) continue ;; esac
+  n=$((n + 1)); db="mk8dx_s${n}_test"
+  case "$suite" in *protected-value-rotation*) db="mk8dx_s${n}_rotation_contract" ;; esac
+  docker exec mk8dx-test-mysql mysql -uroot -p"$MK8DX_MYSQL_TEST_PASSWORD" -e "CREATE DATABASE $db"
+  printf '{"MK8DX_HOSTED_MYSQL_HOST":"127.0.0.1","MK8DX_HOSTED_MYSQL_PORT":"33406","MK8DX_HOSTED_MYSQL_USER":"root","MK8DX_HOSTED_MYSQL_PASSWORD":"%s","MK8DX_HOSTED_MYSQL_DATABASE":"%s"}' \
+    "$MK8DX_MYSQL_TEST_PASSWORD" "$db" > "$env_file"
+  node dist/composition/migration-apply-main.js --private-environment-file "$env_file" \
+    --migration-catalog ../../infrastructure/mysql/migration-catalog-v1.json --confirm-database "$db" --fresh-empty-database
+  MK8DX_MYSQL_TEST_DATABASE="$db" npx vitest run --config vitest.config.ts "$suite"
+done
+rm -f "$env_file"; cd ../..
+docker rm -f mk8dx-test-mysql
+```
+
+In Git Bash, give the migration CLI a Windows path: `--private-environment-file "$(cygpath -w "$env_file")"`.
+MariaDB 11.4, the documented engine for shared hosting, is not covered by these tests yet. Never share database
+configuration or output that contains secrets.
+
+## Browser checks
+
+For a change to a page, check it in a real browser at 320, 375, 768 and 1440 pixels wide, in English and
+Dutch: no horizontal scrolling, no clipped or unreachable content. With a running local installation, set
+`MK8DX_TEST_ORIGIN` to its loopback address and run `node test/local-compose.browser.mjs` from `backend/api`
+(Edge by default; `MK8DX_TEST_BROWSER_CHANNEL=chrome` selects Chrome).
+
+## Changes that need more
+
+Authentication, SQL, the installer, backup and restore need tests against a real, disposable database,
+including failure cases. Physical devices, capture hardware and a real hosting account are separate checks:
+say in your pull request when you could not run them.
+
+## What CI runs
+
+The [Verify workflow](../.github/workflows/verify.yml) runs on every pull request and push to `main`: the privacy,
+boundary and documentation checks; the API and Web checks; the central reader's TypeScript and Python tests; the
+CSS check, the intake rehearsal and the tooling tests; gitleaks over the history; `npm audit --omit=dev
+--audit-level=high` for the API, Web and scanner; the asset collection, the browser scanner build and the public
+test set; the Android unit tests and debug APK; the LiveTrial desktop tests (Windows) and a compile check of the
+LiveTrial and Tournament sources; the Tournament package build (Windows); and the Docker image builds.
+[CodeQL](../.github/workflows/codeql.yml) analyses JavaScript/TypeScript, Python and Java. The database
+integration tests do not run in CI yet.

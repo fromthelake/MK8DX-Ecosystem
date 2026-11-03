@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mk8dx.example/schemas/domain/user-account-v1.schema.json",
+  "title": "UserAccountV1",
+  "description": "Private central account identity. Authentication subjects, email addresses, credentials, and legacy reconciliation identifiers belong in separate restricted stores.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "userAccountId",
+    "revision",
+    "privacyClass",
+    "accountStatus",
+    "createdAtMs",
+    "updatedAtMs"
+  ],
+  "properties": {
+    "schemaVersion": { "const": "mk8dx.user-account.v1" },
+    "userAccountId": {
+      "$ref": "https://mk8dx.example/schemas/domain/identity-reference-v1.schema.json#/$defs/userAccountId"
+    },
+    "revision": { "type": "integer", "minimum": 1 },
+    "privacyClass": { "const": "private" },
+    "accountStatus": { "enum": ["active", "suspended", "closed"] },
+    "createdAtMs": { "type": "integer", "minimum": 0 },
+    "updatedAtMs": { "type": "integer", "minimum": 0 }
+  }
+}

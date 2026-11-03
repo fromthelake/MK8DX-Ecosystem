@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "mk8dx.player-claim.v1",
+  "playerClaimId": "player_claim.synthetic_claim_01",
+  "revision": 3,
+  "privacyClass": "private",
+  "playerId": "player.synthetic_racer_01",
+  "userAccountId": "user_account.synthetic_account_01",
+  "claimStatus": "verified",
+  "disputeStatus": "none",
+  "evidence": [
+    {
+      "evidenceId": "restricted_evidence.synthetic_claim_01",
+      "sourceType": "account_submission",
+      "capturedAtMs": 1735689600000
+    }
+  ],
+  "lifecycle": [
+    {
+      "sequence": 1,
+      "eventType": "claim_requested",
+      "actor": {
+        "actorType": "requesting_account",
+        "userAccountId": "user_account.synthetic_account_01"
+      },
+      "occurredAtMs": 1735689600000,
+      "evidenceIds": ["restricted_evidence.synthetic_claim_01"]
+    },
+    {
+      "sequence": 2,
+      "eventType": "review_started",
+      "actor": {
+        "actorType": "administrator",
+        "userAccountId": "user_account.synthetic_admin_01"
+      },
+      "occurredAtMs": 1735689660000,
+      "evidenceIds": ["restricted_evidence.synthetic_claim_01"],
+      "privateReviewReference": "restricted_review.synthetic_claim_01"
+    },
+    {
+      "sequence": 3,
+      "eventType": "claim_verified",
+      "actor": {
+        "actorType": "administrator",
+        "userAccountId": "user_account.synthetic_admin_01"
+      },
+      "occurredAtMs": 1735689720000,
+      "evidenceIds": ["restricted_evidence.synthetic_claim_01"],
+      "reasonCode": "evidence_confirmed",
+      "privateReviewReference": "restricted_review.synthetic_claim_01"
+    }
+  ],
+  "createdAtMs": 1735689600000,
+  "updatedAtMs": 1735689720000
+}

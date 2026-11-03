@@ -1,0 +1,64 @@
+{
+  "locked": true,
+  "accept_path": "lap_sum_consensus",
+  "locked_frame_index": 2,
+  "frames_analyzed": 5,
+  "ok_frames": 4,
+  "fields": {
+    "player_total": "1:46.784",
+    "player_lap_1": "0:37.121",
+    "player_lap_2": "0:35.399",
+    "player_lap_3": "0:34.264",
+    "ghost_total": "1:53.191",
+    "ghost_lap_1": "0:40.588",
+    "ghost_lap_2": "0:36.367",
+    "ghost_lap_3": "0:36.236"
+  },
+  "identity": {
+    "player": {
+      "character": {
+        "id": "character_variant.yoshi.018_black",
+        "index": -1,
+        "score": 0.91,
+        "ok": true,
+        "votes": 4,
+        "frames": 5,
+        "crop_path": "/data/user/0/source-only/player-character.png"
+      },
+      "kart": {
+        "id": "body.standard_kart",
+        "score": 0.88,
+        "ok": true
+      },
+      "wheel": {
+        "id": "",
+        "index": 13,
+        "score": 0.85,
+        "ok": true
+      },
+      "glider": {
+        "id": "glider.super_glider",
+        "score": 0.83,
+        "ok": true
+      },
+      "flag": {
+        "id": "",
+        "index": 155,
+        "score": 0.95,
+        "ok": true
+      },
+      "card_name": "Synthetic Driver"
+    },
+    "ghost": {
+      "character": {
+        "id": "character.mario",
+        "score": 1.0,
+        "ok": true,
+        "crop_path": "/private/ghost-must-not-propagate.png"
+      },
+      "card_name": "Ignored Ghost"
+    }
+  },
+  "timestamp_ms": 1786900000000,
+  "timing": [{ "stage": "locked", "wall_ms": 3600 }]
+}

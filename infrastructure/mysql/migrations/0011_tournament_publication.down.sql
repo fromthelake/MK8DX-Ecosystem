@@ -1,0 +1,6 @@
+DROP TABLE tournament_publication_current_members;
+DROP TABLE tournament_publication_lifecycle_members;
+DROP TABLE tournament_publication_lifecycle;
+DROP TABLE tournament_publications;
+ALTER TABLE tournament_race_result_revisions
+    DROP INDEX uq_tournament_race_revision_identity_result;

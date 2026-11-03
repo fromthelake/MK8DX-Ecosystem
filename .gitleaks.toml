@@ -1,0 +1,28 @@
+# Gitleaks configuration: the default rules plus a reviewed allowlist for one rule.
+# The allowlist covers only the false positives triaged in docs/audits/open-source-readiness.md
+# (section 2.1, "Secret scan of all refs"): the generic-api-key rule fires on field names that hold
+# identifiers (icon keys, outbox entry keys, key-version labels, storage keys) and on synthetic tokens
+# in tests. Every other rule (cloud keys, GitHub tokens, private keys, ...) still applies everywhere.
+#   docker run --rm -v "$PWD:/repo:ro" ghcr.io/gitleaks/gitleaks:v8.28.0 git /repo --log-opts=--all --redact --config /repo/.gitleaks.toml
+[extend]
+useDefault = true
+
+[[rules]]
+id = "generic-api-key"
+
+[[rules.allowlists]]
+description = "Identifier fields whose names contain 'key'"
+regexTarget = "match"
+regexes = [
+  '''iconKey"\s*:\s*"''',
+  '''entryKey"\s*:\s*"''',
+  '''encryptionKeyVersion\s*:\s*"''',
+  '''APPEARANCE_STORAGE_KEY\s*=\s*"''',
+]
+
+[[rules.allowlists]]
+description = "Synthetic bearer, CSRF and device tokens in API and Android tests"
+paths = [
+  '''(^|/)backend/api/test/''',
+  '''(^|/)apps/timetrials-android/app/src/(test|androidTest)/''',
+]

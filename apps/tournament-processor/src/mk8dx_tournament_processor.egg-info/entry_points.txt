@@ -1,0 +1,3 @@
+[console_scripts]
+mk8dx-tournament-processor = tournament_processor.cli:main
+mk8dx-tournament-video = tournament_processor.vision_cli:main

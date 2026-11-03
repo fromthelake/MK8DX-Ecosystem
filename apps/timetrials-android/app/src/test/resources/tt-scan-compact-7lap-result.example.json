@@ -1,0 +1,21 @@
+{
+  "locked": true,
+  "accept_path": "seven_lap_consensus",
+  "fields": {
+    "player_total": "1:10.128",
+    "player_lap_1": "0:12.584",
+    "player_lap_2": "0:10.100",
+    "player_lap_3": "0:09.875",
+    "player_lap_4": "0:09.615",
+    "player_lap_5": "0:09.812",
+    "player_lap_6": "0:09.042",
+    "player_lap_7": "0:09.100",
+    "ghost_total": "1:16.561"
+  },
+  "identity": {
+    "ghost": {
+      "card_name": "Ghost Only Identity Evidence"
+    }
+  },
+  "timestamp_ms": 1786900100000
+}
