@@ -17,7 +17,7 @@ same packages yourself; see [Building the packages](#building-the-packages).
 | `desktop-client-….zip` | LiveTrial for Windows, with its engine and an embedded Python | Capture-card and video recognition |
 | `tournament-tools-….zip` | Tournament Processor, Live and Connect for Windows, with an installer | Tournament nights |
 | `mk8dx-full-local-….zip` | The complete source with the hydrated asset collection and build recipes, without Git history | Building everything yourself |
-| `SBOM.spdx.json` | SPDX inventory of the automatically built release assets, including SHA-256 for each built file and Syft's discovered package records | Asset audit; nested dependencies are checked separately by Verify's dependency audits |
+| `SBOM.spdx.json` | SPDX inventory of the seven primary CI-built packages and full-source manifest sidecar, with SHA-256 and Syft's discovered package records | Package audit; ancillary notices/guides and nested dependencies are checked separately by checksums and Verify's dependency audits |
 
 The user guides are attached to each release as well: `MK8DX_User_Guide_EN.txt`/`.docx` and
 `MK8DX_Handleiding_NL.txt`/`.docx`. The same files are in [docs/install](install/) and inside the installation
