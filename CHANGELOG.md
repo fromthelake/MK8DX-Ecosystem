@@ -6,6 +6,8 @@ ISO format.
 
 ## Unreleased
 
+## 0.1.0-rc.8 — 2026-11-03
+
 ### Added
 
 - **Tournament ranking badge in eleven bands** (ranks 1–132): after Kampioen/Champion, Talent, Wild,

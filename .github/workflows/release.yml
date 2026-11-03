@@ -144,5 +144,5 @@ jobs:
             LICENSE LICENSE_SCOPE.md SOURCE_FOR_BINARIES.txt docs/THIRD_PARTY_MATERIALS.md)
           printf '{\n  "tag": "%s",\n  "sourceCommit": "%s"\n}\n' "$GITHUB_REF_NAME" "$GITHUB_SHA" > manifest.json
           sha256sum -- * > SHA256SUMS.txt
-          gh release create "$GITHUB_REF_NAME" --draft --verify-tag --title "$GITHUB_REF_NAME" \
+          gh release create "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft --verify-tag --title "$GITHUB_REF_NAME" \
             --notes "Draft built from $GITHUB_SHA. Attach the server packages (and a release-signed APK if any), then refresh SHA256SUMS.txt (docs/RELEASE_PACKAGES.md, Publishing a release), review and publish." -- *
