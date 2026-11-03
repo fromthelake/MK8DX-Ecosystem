@@ -105,8 +105,14 @@ docker rm -f mk8dx-test-mysql
 ```
 
 Geef in Git Bash de migratie-CLI een Windows-pad: `--private-environment-file "$(cygpath -w "$env_file")"`.
-MariaDB 11.4, de gedocumenteerde engine voor webhosting, wordt nog niet door deze tests gedekt. Deel nooit
-databaseconfiguratie of uitvoer met geheimen.
+Op 03-11-2026 zijn ook vijf suites geslaagd op een nieuwe wegwerp-MariaDB 11.4.12 met de niet-strikte
+SQL-modus van de host: `mysql-identity-read-repository` (2), `mysql-tournament-write-repository` (4),
+`mysql-time-trial-write-repository` (4), `mysql-claim-write-repository` (2) en
+`mysql-player-activity-repository` (3). Elke suite gebruikte een afzonderlijk gemigreerd leeg schema.
+Dit is een representatieve compatibiliteitscheck, niet de volledige opt-in databasesuite. Gebruik voor een
+herhaling de procedure hierboven met `mariadb:11.4`, een aparte testpoort en
+`SET GLOBAL sql_mode='ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'` vóór de migraties.
+Deel nooit databaseconfiguratie of uitvoer met geheimen.
 
 ## Browsercontroles
 
@@ -122,6 +128,14 @@ foutgevallen. Fysieke toestellen, capturehardware en een echt hostingaccount zij
 pull request als je die niet kon uitvoeren.
 
 ## Wat CI draait
+
+De Python-afhankelijkheidscontrole inventariseert alle getrackte `requirements*.txt` en `pyproject.toml`
+met `python tooling/security/python_dependency_audit.py prepare <tijdelijke-map>`. Verify scant de exacte
+derdepartijversies met OSV-Scanner zonder installatie of nieuwe resolverkeuzes en weigert CVSS 7.0+.
+Tijdelijke uitzonderingen zijn pakket- en advisoryspecifiek en hebben een reden en vervaldatum in
+[`python_audit_allowlist.toml`](../tooling/security/python_audit_allowlist.toml); een verlopen uitzondering
+laat Verify falen. Versiebereiken vereisen elders een exacte pin. Deze broncontrole vervangt geen audit van
+de geïnstalleerde transitieve runtime.
 
 De [Verify-workflow](../.github/workflows/verify.yml) draait bij elke pull request en push naar `main`: de privacy-,
 grens- en documentatiecontroles; de API- en Webcontroles; de TypeScript- en Python-tests van de centrale lezer;

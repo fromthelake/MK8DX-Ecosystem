@@ -1,5 +1,0 @@
-Metadata-Version: 2.4
-Name: mk8dx-tournament-connected
-Version: 0.2.0
-Summary: Optional device-authorized MK8DX Tournament pending-result upload
-Requires-Python: >=3.11

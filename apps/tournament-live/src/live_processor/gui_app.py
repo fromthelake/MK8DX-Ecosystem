@@ -927,7 +927,7 @@ class Mk8dxLiveGui(tk.Tk):
         if not path.exists():
             return None
         try:
-            with Image.open(path) as image:
+            with Image.open(path, formats=["PNG"]) as image:
                 image.thumbnail((54, 54))
                 return ImageTk.PhotoImage(image.copy())
         except Exception:

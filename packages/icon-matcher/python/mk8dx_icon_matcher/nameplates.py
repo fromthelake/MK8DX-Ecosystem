@@ -138,7 +138,7 @@ class Nameplates:
         cache: dict[str, np.ndarray] = {}
         for (loc, group, path), entry in plates.items():
             if path not in cache:
-                cache[path] = np.asarray(Image.open(root / path).convert("L")) > 127
+                cache[path] = np.asarray(Image.open(root / path, formats=["PNG"]).convert("L")) > 127
             self.locales.setdefault(loc, {}).setdefault(group, []).append(
                 (tuple(entry["ids"]), entry["text"], cache[path]))
 

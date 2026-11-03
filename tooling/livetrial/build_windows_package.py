@@ -15,6 +15,7 @@ from pathlib import Path
 
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 DESKTOP = REPOSITORY_ROOT / "apps" / "timetrials-desktop"
+VISION_REQUIREMENTS = DESKTOP / "vision-runtime" / "requirements.txt"
 PREPARE_ENGINE = REPOSITORY_ROOT / "tooling/livetrial/prepare_engine.py"
 
 # Only what the product actually reads at runtime travels with it.
@@ -206,6 +207,22 @@ def _install_embedded_interpreter(
     engine_venv: Path,
     resource_root: Path,
 ) -> dict:
+    pins = [line.split("==", 1)[1].strip() for line in
+            VISION_REQUIREMENTS.read_text(encoding="utf-8").splitlines()
+            if line.lower().startswith("pillow==")]
+    if len(pins) != 1:
+        raise BuildError("LiveTrial vision manifest must have one exact Pillow pin")
+    python = engine_venv / "Scripts" / "python.exe"
+    try:
+        installed = subprocess.run(
+            [str(python), "-c",
+             "import importlib.metadata as m; print(m.version('Pillow'))"],
+            check=True, capture_output=True, text=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as error:
+        raise BuildError("cannot verify Pillow in --engine-venv") from error
+    if installed != pins[0]:
+        raise BuildError(f"engine venv Pillow {installed} does not match active manifest {pins[0]}")
     if not embedded_zip:
         raise BuildError(
             "--embedded-python is required: a copied virtual environment "

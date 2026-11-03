@@ -108,8 +108,14 @@ docker rm -f mk8dx-test-mysql
 ```
 
 In Git Bash, give the migration CLI a Windows path: `--private-environment-file "$(cygpath -w "$env_file")"`.
-MariaDB 11.4, the documented engine for shared hosting, is not covered by these tests yet. Never share database
-configuration or output that contains secrets.
+On 2026-11-03, five suites also passed on a fresh disposable MariaDB 11.4.12 container with the host's
+non-strict SQL mode: `mysql-identity-read-repository` (2), `mysql-tournament-write-repository` (4),
+`mysql-time-trial-write-repository` (4), `mysql-claim-write-repository` (2), and
+`mysql-player-activity-repository` (3). Each suite used a separately migrated empty schema. This is a
+representative compatibility check, not coverage of every opt-in database suite. For a repeat, use the procedure
+above with `mariadb:11.4`, a separate test port, and
+`SET GLOBAL sql_mode='ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'` before migrating.
+Never share database configuration or output that contains secrets.
 
 ## Browser checks
 
@@ -125,6 +131,14 @@ including failure cases. Physical devices, capture hardware and a real hosting a
 say in your pull request when you could not run them.
 
 ## What CI runs
+
+The Python dependency audit inventories every tracked `requirements*.txt` and `pyproject.toml` with
+`python tooling/security/python_dependency_audit.py prepare <temporary-directory>`. Verify scans their exact
+third-party pins with OSV-Scanner (without installing or resolving them) and rejects CVSS 7.0+ findings.
+Temporary exceptions are specific to a package and advisory, carry a reason and an expiry date in
+[`python_audit_allowlist.toml`](../tooling/security/python_audit_allowlist.toml); an expired exception fails
+Verify. Ranged dependencies must have an exact companion pin in another manifest. This source-manifest
+audit does not replace an audit of the installed transitive runtime.
 
 The [Verify workflow](../.github/workflows/verify.yml) runs on every pull request and push to `main`: the privacy,
 boundary and documentation checks; the API and Web checks; the central reader's TypeScript and Python tests; the

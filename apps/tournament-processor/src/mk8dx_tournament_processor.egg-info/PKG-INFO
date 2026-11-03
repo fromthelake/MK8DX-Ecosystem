@@ -1,7 +1,0 @@
-Metadata-Version: 2.4
-Name: mk8dx-tournament-processor
-Version: 0.3.0
-Summary: Recorded-video MK8DX tournament processing product
-Requires-Python: <3.13,>=3.12
-Requires-Dist: mk8dx-tournament-extraction[vision]==0.1.0
-Requires-Dist: mk8dx-tournament-connected==0.2.0
