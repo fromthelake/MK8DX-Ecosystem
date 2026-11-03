@@ -11,6 +11,11 @@ a person's name is no name for code). In this public tree two help texts and one
 named the community site's owner and domain are neutral as well. Nothing else differs: mapping each `classic`
 identifier back gives the original bytes, except two help texts ("preview for the report writer").
 A change belongs in the original project; copy it again and repeat the same rename.
+On 2026-11-04 the public-only neutralized `classicFullHelper` sentence gained a
+typographic apostrophe: its previous ASCII apostrophe ended the JavaScript
+single-quoted string early, so the classic report export script could not parse.
+The private original remains unchanged. Recheck this public text after any
+future source refresh.
 
 | File here | Original (Seating & Standings Manager) | SHA-256 of the original |
 | --- | --- | --- |
