@@ -1,7 +1,2 @@
-# Exact, temporary exceptions for other open dependency risk streams.
+# Exact, temporary exceptions for open dependency risk streams.
 # Verify rejects expired entries, including those that no longer occur.
-[[exception]]
-id = "PYSEC-2026-139"
-package = "torch"
-expires = 2026-11-17
-reason = "Torch is pinned with torchvision for the Windows recognition runtime; assess separately."

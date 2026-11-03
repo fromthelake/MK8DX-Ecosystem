@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import platform
+import re
 import shutil
 import subprocess
 import sys
@@ -16,12 +17,13 @@ from dataclasses import asdict, dataclass
 from typing import Iterable
 
 
-TORCH_VERSION = "2.10.0"
-TORCHVISION_VERSION = "0.25.0"
+TORCH_VERSION = "2.15.0"
+TORCHVISION_VERSION = "0.29.2"
 CPU_SUFFIX = "cpu"
-CUDA_SUFFIX = "cu128"
+CUDA_SUFFIX = "cu132"
+CUDA_MIN_VERSION = (13, 2)
 
-CUDA_INDEX_URL = "https://download.pytorch.org/whl/cu128"
+CUDA_INDEX_URL = "https://download.pytorch.org/whl/cu132"
 CPU_INDEX_URL = "https://download.pytorch.org/whl/cpu"
 ROCM_FIND_LINKS_URL = "https://repo.radeon.com/rocm/manylinux/rocm-rel-7.2.3/"
 
@@ -32,6 +34,7 @@ class HardwareProfile:
     machine: str
     gpu_names: tuple[str, ...]
     nvidia_smi_available: bool = False
+    cuda_max_version: str = ""
 
     @property
     def normalized_system(self) -> str:
@@ -113,6 +116,21 @@ def _nvidia_smi_names() -> tuple[bool, tuple[str, ...]]:
     return True, _dedupe_names(output.splitlines())
 
 
+def _nvidia_smi_cuda_version() -> str:
+    if shutil.which("nvidia-smi") is None:
+        return ""
+    code, output = _run_command(["nvidia-smi"], timeout_seconds=8)
+    match = re.search(r"CUDA Version:\s*(\d+\.\d+)", output) if code == 0 else None
+    return match.group(1) if match else ""
+
+
+def _cuda_version_supported(version: str) -> bool:
+    if not version:
+        return True  # An unavailable driver report preserves the existing selection policy.
+    major, minor = (int(part) for part in version.split(".", 1))
+    return (major, minor) >= CUDA_MIN_VERSION
+
+
 def _windows_gpu_names() -> tuple[str, ...]:
     shell = shutil.which("pwsh") or shutil.which("powershell")
     if shell is None:
@@ -181,6 +199,7 @@ def detect_hardware_profile() -> HardwareProfile:
         machine=machine,
         gpu_names=gpu_names,
         nvidia_smi_available=nvidia_smi_available,
+        cuda_max_version=_nvidia_smi_cuda_version() if nvidia_smi_available else "",
     )
 
 
@@ -234,6 +253,10 @@ def select_torch_package(
         if system == "darwin":
             selected = "cpu"
             reason = "macOS defaults to CPU because CUDA is unavailable and MPS is experimental in this project."
+        elif profile.has_nvidia and not _cuda_version_supported(profile.cuda_max_version):
+            selected = "cpu"
+            reason = f"NVIDIA driver reports CUDA {profile.cuda_max_version}; PyTorch {TORCH_VERSION} requires CUDA 13.2."
+            warnings.append("Using CPU PyTorch until the NVIDIA driver supports CUDA 13.2.")
         elif profile.has_nvidia:
             selected = "cuda"
             reason = "NVIDIA hardware was detected; CUDA PyTorch is the recommended fast EasyOCR path."
@@ -251,6 +274,21 @@ def select_torch_package(
         reason = f"Manual TorchMode override selected: {mode}."
 
     if selected == "cuda":
+        if not _cuda_version_supported(profile.cuda_max_version):
+            return TorchPackageDecision(
+                requested_mode=mode,
+                selected_mode="cuda",
+                system=profile.system,
+                machine=profile.machine,
+                gpu_names=profile.gpu_names,
+                nvidia_smi_available=profile.nvidia_smi_available,
+                expected_gpu_ocr=False,
+                experimental=False,
+                requires_manual_setup=True,
+                index_url="",
+                pip_args=(),
+                reason=f"NVIDIA driver reports CUDA {profile.cuda_max_version}; PyTorch {TORCH_VERSION} requires CUDA 13.2. Use CPU mode or update the driver.",
+            )
         if not profile.has_nvidia:
             warnings.append("CUDA mode was forced, but NVIDIA hardware was not detected by setup.")
         return TorchPackageDecision(
