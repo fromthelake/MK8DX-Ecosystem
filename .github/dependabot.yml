@@ -1,39 +1,50 @@
 # Weekly dependency update pull requests. Security updates are opened as soon as an advisory appears
 # (enable "Dependabot security updates" in the repository settings).
 # Exact pins stay exact: review each pull request like any other change (docs/TESTING.md).
+# Group routine version updates per ecosystem; review majors separately.
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /backend/api
+    directories: [/backend/api, /apps/timetrials-web, /apps/timetrials-scanner-web]
     schedule: {interval: weekly}
     open-pull-requests-limit: 5
-  - package-ecosystem: npm
-    directory: /apps/timetrials-web
-    schedule: {interval: weekly}
-    open-pull-requests-limit: 5
-  - package-ecosystem: npm
-    directory: /apps/timetrials-scanner-web
-    schedule: {interval: weekly}
-    open-pull-requests-limit: 5
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: gradle
     directory: /apps/timetrials-android
     schedule: {interval: weekly}
     open-pull-requests-limit: 5
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: pip
-    directory: /
+    directories: [/, /apps/timetrials-desktop/vision-runtime]
     schedule: {interval: weekly}
     open-pull-requests-limit: 3
-  - package-ecosystem: pip
-    directory: /apps/timetrials-desktop/vision-runtime
-    schedule: {interval: weekly}
-    open-pull-requests-limit: 3
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: docker
     directories: [/backend/api, /apps/timetrials-web]
     schedule: {interval: weekly}
     open-pull-requests-limit: 3
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
     schedule: {interval: weekly}
     groups:
       actions:
+        applies-to: version-updates
         patterns: ["*"]
+        update-types: [minor, patch]
