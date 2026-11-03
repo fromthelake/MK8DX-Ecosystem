@@ -114,7 +114,10 @@ def main():
                 archive.writestr("PACKAGE_MANIFEST.json", json.dumps(receipt, indent=2) + "\n")
                 for name, payload in file_bytes.items():
                     archive.writestr(name, payload, compress_type=zipfile.ZIP_DEFLATED, compresslevel=6)
-                archive.write(tar, "images/docker-images-amd64.tar", compress_type=zipfile.ZIP_STORED)
+                # Linux runners save uncompressed Docker layers. Compressing the
+                # tar here keeps the offline package practical to download;
+                # the manifest still verifies the exact tar bytes after unzip.
+                archive.write(tar, "images/docker-images-amd64.tar", compress_type=zipfile.ZIP_DEFLATED, compresslevel=3)
         except Exception:
             output.unlink(missing_ok=True)
             raise
