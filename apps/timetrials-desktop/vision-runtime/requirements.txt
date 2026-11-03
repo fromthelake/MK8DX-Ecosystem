@@ -6,7 +6,7 @@
 # fine on CPU) — plain `pip install easyocr` picks the right wheel for your box.
 opencv-python==4.13.0.92
 numpy==2.4.5
-Pillow==12.2.0
+Pillow==13.0.0
 easyocr==1.7.2
 
 # NOT a pip package — required on PATH for capture + clip recording:
