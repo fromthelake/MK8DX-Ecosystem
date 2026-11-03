@@ -1,10 +1,11 @@
 # MK8DX Tournament Tools - locked third-party runtime closure (Windows x64, CPython 3.12).
 #
 # Source of the top-level pins: packages/tournament-extraction/python/pyproject.toml
-# [vision] extra, plus the Tournament Live GUI requirement PySide6>=6.6,<6.9 pinned to
-# the 6.8.3 release that the owner's working environment runs. The remaining lines are
-# the transitive closure resolved with `pip install --dry-run --report` on 2026-08-22
-# (CPython 3.12.10 win_amd64, PyPI only). opencv-python-headless is pinned to the same
+# [vision] extra, plus the Tournament Live GUI requirement PySide6==6.12.0 from
+# the v0.1.0 register. The remaining lines are
+# the original transitive closure resolved on 2026-08-22 and the v0.1.0 updated
+# closure installed on 2026-11-03 (CPython 3.12 win_amd64, PyPI only).
+# opencv-python-headless is pinned to the same
 # 4.10.0.84 build as opencv-python so that only one cv2 ABI is ever installed.
 #
 # torch/torchvision base versions constrain both CPU and CUDA local versions.
@@ -36,9 +37,11 @@ pandas==2.2.3
 pillow==13.0.0
 psutil==7.2.2
 pyclipper==1.4.0
-PySide6==6.8.3
-PySide6_Addons==6.8.3
-PySide6_Essentials==6.8.3
+PySide6==6.12.0
+PySide6_Addons==6.12.0
+PySide6_Essentials==6.12.0
+PySide6_Pdf==6.12.0.140
+PySide6_WebEngine==6.12.0.140
 python-bidi==0.6.12
 python-dateutil==2.9.0.post0
 pytz==2026.6
@@ -47,7 +50,7 @@ scikit-image==0.26.0
 scipy==1.18.1
 setuptools==84.2.1
 shapely==2.2.0
-shiboken6==6.8.3
+shiboken6==6.12.0
 six==1.17.0
 sympy==1.14.0
 textdistance==4.6.3
