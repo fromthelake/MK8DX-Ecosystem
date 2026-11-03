@@ -63,7 +63,8 @@ Install 64-bit Python 3.12, Node 24 and FFmpeg (for example `winget install Gyan
 include FFmpeg, and live capture finds it on PATH or under `%LOCALAPPDATA%\MK8DX\LiveTrial\tools\ffmpeg\bin\`). Create a
 new build venv outside the repository; install the packages pinned in
 `apps/timetrials-desktop/vision-runtime/requirements.txt` plus
-`jsonschema==4.25.1` and `pyinstaller==6.16.0`. Obtain the official Python
+`pyinstaller==6.16.0`; the manifest already pins the runtime's `jsonschema`.
+Obtain the official Python
 3.12.10 64-bit embeddable ZIP from python.org; the builder checks its pinned
 SHA-256. Then, from the repository root:
 

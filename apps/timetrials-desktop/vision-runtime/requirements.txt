@@ -5,6 +5,7 @@
 # build was CUDA (2.11.0+cu128); a CPU-only torch works too (identity/OCR run
 # fine on CPU) — plain `pip install easyocr` picks the right wheel for your box.
 opencv-python==4.13.0.92
+opencv-python-headless==4.13.0.92
 numpy==2.4.5
 Pillow==13.0.0
 easyocr==1.7.2
