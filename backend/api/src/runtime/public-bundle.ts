@@ -38,7 +38,10 @@ export async function registerPublicBundleRoutes(
         if (relative(root, canonical).startsWith(`..${sep}`) || canonical === root ||
             (await lstat(file)).isSymbolicLink()) throw new PublicBundleError("public path escapes bundle");
         const extension = entry.name.slice(entry.name.lastIndexOf(".")).toLowerCase();
-        const type = types[extension];
+        // The scanner's packaged shared-icon masks use .bin; keep the allowance
+        // inside that generated public tree, not for arbitrary bundle files.
+        const type = extension === ".bin" && route.startsWith("/scanner/shared-icon/")
+          ? "application/octet-stream" : types[extension];
         if (type === undefined) throw new PublicBundleError("unsupported public file type");
         files.set(route, { path: canonical, type });
       }
