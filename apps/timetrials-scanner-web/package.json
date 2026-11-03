@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@techstark/opencv-js": "4.10.0-release.1",
-    "onnxruntime-web": "1.29.0",
+    "onnxruntime-web": "1.31.1",
     "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
