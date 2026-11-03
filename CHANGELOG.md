@@ -6,6 +6,10 @@ ISO format.
 
 ## Unreleased
 
+### Security
+
+- Docker gateways now send route-specific Content-Security-Policy-Report-Only headers; the browser scanner's policy allows its local WASM and blob workers. Node and Caddy base images are pinned by digest for repeatable builds.
+
 ## 0.1.0-rc.8 — 2026-11-03
 
 ### Added

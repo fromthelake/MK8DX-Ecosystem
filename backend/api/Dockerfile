@@ -1,4 +1,4 @@
-FROM node:26.13.0-bookworm-slim AS build
+FROM node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9 AS build
 WORKDIR /build/backend/api
 COPY backend/api/package.json backend/api/package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -6,7 +6,7 @@ COPY backend/api/tsconfig*.json ./
 COPY backend/api/src ./src
 RUN npm run build
 
-FROM node:26.13.0-bookworm-slim
+FROM node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9
 ENV NODE_ENV=production
 WORKDIR /app/backend/api
 COPY backend/api/package.json backend/api/package-lock.json ./

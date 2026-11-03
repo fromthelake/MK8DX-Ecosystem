@@ -1,4 +1,4 @@
-FROM node:26.13.0-bookworm-slim AS build
+FROM node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9 AS build
 WORKDIR /build/apps/timetrials-web
 COPY apps/timetrials-web/package.json apps/timetrials-web/package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -10,7 +10,7 @@ COPY packages/assets/web-asset-selection-v1.json /build/packages/assets/web-asse
 COPY tooling/assets/materialize_collection.mjs /build/tooling/assets/materialize_collection.mjs
 RUN node /build/tooling/assets/materialize_collection.mjs web /build/web-assets
 
-FROM node:26.13.0-bookworm-slim AS scanner
+FROM node:26.13.0-bookworm-slim@sha256:bc0a2afd3b74ce12222fc8bab99271e66257f021078f5f4a5d687a77d280c1d9 AS scanner
 WORKDIR /build/apps/timetrials-scanner-web
 COPY apps/timetrials-scanner-web/package.json apps/timetrials-scanner-web/package-lock.json ./
 RUN npm ci --ignore-scripts
@@ -23,7 +23,7 @@ RUN mkdir -p public && node /build/tooling/assets/materialize_collection.mjs sca
 RUN npm run sync-assets
 RUN MK8_BASE_PATH=/scanner/ npm run build
 
-FROM caddy:2.11.7-alpine
+FROM caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
 COPY apps/timetrials-web/index.html apps/timetrials-web/manifest.webmanifest apps/timetrials-web/sw.js apps/timetrials-web/assetlinks.json /srv/
 COPY apps/timetrials-web/assetlinks.json /srv/.well-known/assetlinks.json
 COPY apps/timetrials-web/styles /srv/styles
