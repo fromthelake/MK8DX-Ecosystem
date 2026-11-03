@@ -19,6 +19,7 @@ DOC_GLOBS = ("*.md", "docs/**/*.md", "docs/install/*.txt", ".github/**/*.md", "t
 LINK = re.compile(r"(?<!!)\[[^\]]*\]\(([^)\s]+)(?:\s+\"[^\"]*\")?\)")
 FENCE = re.compile(r"^(```|~~~)")
 MIGRATION_COUNT = re.compile(r"\b(\d+)\s+(?:applied\s+)?(?:migrations|migraties)\b", re.IGNORECASE)
+ADR_ID = re.compile(r"\bADR-[0-9]{4}\b")
 
 
 def tracked(patterns):
@@ -61,6 +62,21 @@ def links(path):
 
 def main():
     findings = []
+    rationale_path = ROOT / "docs/decisions/PUBLIC_RATIONALE.md"
+    index_path = ROOT / "docs/decisions/README.md"
+    rationale_ids = re.findall(r"^## (ADR-[0-9]{4})\s*$", rationale_path.read_text(encoding="utf-8"), re.MULTILINE)
+    if len(rationale_ids) != len(set(rationale_ids)):
+        findings.append("docs/decisions/PUBLIC_RATIONALE.md: duplicate decision heading")
+    indexed_ids = set(re.findall(r"\[(ADR-[0-9]{4})\]\(PUBLIC_RATIONALE\.md#adr-[0-9]{4}\)",
+                                 index_path.read_text(encoding="utf-8")))
+    for decision_id in sorted(set(rationale_ids) - indexed_ids):
+        findings.append(f"docs/decisions/README.md: missing index link for {decision_id}")
+    cited = subprocess.run(["git", "grep", "-I", "-o", "-h", "-E", "ADR-[0-9]{4}", "--", "."],
+                           cwd=ROOT, check=False, capture_output=True, text=True)
+    if cited.returncode not in (0, 1):
+        findings.append("could not inspect tracked ADR citations")
+    for decision_id in sorted(set(ADR_ID.findall(cited.stdout)) - set(rationale_ids)):
+        findings.append(f"public ADR citation has no rationale: {decision_id}")
     catalog = json.loads((ROOT / "infrastructure/mysql/migration-catalog-v1.json").read_text(encoding="utf-8"))
     migration_count = len(catalog["migrations"])
     for path in tracked(DOC_GLOBS):

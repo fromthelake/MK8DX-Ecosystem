@@ -100,6 +100,26 @@ jobs:
           set -e
           if [ "$scan_status" -gt 1 ]; then exit "$scan_status"; fi
           python tooling/security/python_dependency_audit.py evaluate "$RUNNER_TEMP/python-audit-report.json"
+  database-integration:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [mysql, mariadb]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.12.0
+          cache: npm
+          cache-dependency-path: backend/api/package-lock.json
+      - name: Build API for disposable database tests
+        run: |
+          npm ci --prefix backend/api
+          npm run build --prefix backend/api
+      - name: Migrate a fresh schema and run every suite
+        run: bash tooling/run_database_integration_ci.sh '${{ matrix.engine }}'
   scanner:
     runs-on: ubuntu-24.04
     timeout-minutes: 45
@@ -141,7 +161,7 @@ jobs:
       - name: Design tokens
         run: node packages/design-tokens/generate.mjs --check
   windows-clients:
-    runs-on: ubuntu-24.04
+    runs-on: windows-2022
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -151,6 +171,10 @@ jobs:
       - name: LiveTrial and Tournament sources compile
         run: |
           python -m compileall -q apps/timetrials-desktop apps/tournament-live/src apps/tournament-processor/src packages/tournament-extraction/python/src packages/tournament-connected/python/src tooling/livetrial tooling/tournament
+      - name: Synthetic Windows client boundary tests
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
+          python -m pytest -q -p no:cacheprovider tests/windows_clients
   livetrial-tests:
     # LiveTrial is a Windows application; its tests assert Windows paths.
     runs-on: windows-2022
