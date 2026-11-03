@@ -141,7 +141,7 @@ jobs:
       - name: Design tokens
         run: node packages/design-tokens/generate.mjs --check
   windows-clients:
-    runs-on: ubuntu-24.04
+    runs-on: windows-2022
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -151,6 +151,10 @@ jobs:
       - name: LiveTrial and Tournament sources compile
         run: |
           python -m compileall -q apps/timetrials-desktop apps/tournament-live/src apps/tournament-processor/src packages/tournament-extraction/python/src packages/tournament-connected/python/src tooling/livetrial tooling/tournament
+      - name: Synthetic Windows client boundary tests
+        run: |
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
+          python -m pytest -q -p no:cacheprovider tests/windows_clients
   livetrial-tests:
     # LiveTrial is a Windows application; its tests assert Windows paths.
     runs-on: windows-2022

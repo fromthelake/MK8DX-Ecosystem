@@ -53,6 +53,16 @@ $env:PYTHONPATH = "apps/timetrials-desktop"
 python -m pytest -q -p no:cacheprovider apps/timetrials-desktop/tests
 ```
 
+The Windows client boundary tests use invented score rows and a local outbox;
+they need no private recording, account or server. They cover Tournament
+extraction, Processor, Live export, Connect receipt readback, local outbox state,
+and LiveTrial corrections. Verify runs them on Windows:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python -m pytest -q -p no:cacheprovider tests/windows_clients
+```
+
 In a POSIX shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps/timetrials-desktop/tests`. The
 dashboard test runs with `node apps/timetrials-desktop/tests/history-startup.test.js` (also in CI). `engine-overlay/livetrial/tests/test_names.py` needs the full
 LiveTrial engine snapshot and its Clean Assets database, which are not in this repository.
