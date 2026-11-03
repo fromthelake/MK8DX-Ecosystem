@@ -27,10 +27,10 @@ docker run -d --name "$mk8dx_container" \
 
 mk8dx_ready=0
 for _attempt in $(seq 1 90); do
-  # mysqladmin ping can report success for a server that still rejects root;
-  # the first schema must wait for an authenticated query.
+  # The bootstrap server accepts socket queries before it shuts down and the
+  # final server starts. TCP is available only on the final server.
   if docker exec -e "MYSQL_PWD=$mk8dx_password" "$mk8dx_container" \
-      "$mk8dx_client" -uroot -N -e 'SELECT 1' >/dev/null 2>&1; then
+      "$mk8dx_client" --protocol=TCP -h127.0.0.1 -uroot -N -e 'SELECT 1' >/dev/null 2>&1; then
     mk8dx_ready=1
     break
   fi
