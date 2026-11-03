@@ -81,7 +81,7 @@ docker image rm mk8dx-source/api:local mk8dx-source/web:local
 In a POSIX shell: the same `docker compose ... down -v` with `"$state/compose.env"`, then `rm -rf "$state"`. Remove
 the state directory only after `down -v`, which needs its `compose.env`. The images are shared by every source
 installation on this computer; keep them if another one still runs. `mysql:8.4.11` and
-`axllent/mailpit:v1.31.3` can be removed with `docker image rm` too when nothing else uses them. A host-package
+`axllent/mailpit:v1.32.0` can be removed with `docker image rm` too when nothing else uses them. A host-package
 installation is removed from its package folder: see [Host a community server](guides/HOSTING.md#remove-an-installation).
 
 ## Production source-build profile

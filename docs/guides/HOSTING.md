@@ -44,9 +44,10 @@ Working from a clone of the repository instead? Build the host package yourself
 
 ### Package revision and image tags
 
-The revision in a package's file name (for example `r14`) numbers that release package. The Docker images inside
-the host package have fixed tags of their own (`mk8dx/api:local-…-amd64`, `mk8dx/web:local-…-amd64`), which the
-launchers and `compose.yaml` look for; their date and number need not match the package revision. On its first
+The revision in a package's file name (for example `v0.1.0`) names that release package. Official release
+packages contain versioned `ghcr.io/fromthelake/mk8dx-{api,web}:<tag>-amd64` images. Their packaged launchers
+and `compose.yaml` refer to the same tags. A manual clone build without `--version` still uses the current local
+image tags. On its first
 start a package always loads its own images, also over older images with the same tags, and notes that in
 `images/loaded.txt`; later starts load them again only when one is missing. Because an update is extracted into
 a new folder, it always runs the images of the new package. The folder
@@ -72,9 +73,10 @@ mkdir -p "$HOME/mk8dx-packages"
 python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host-local-r0-local-amd64.zip" --revision r0-local
 ```
 
-- `--output` must be a **new absolute `.zip` path outside the repository**; the script refuses anything else and
-  writes a `.manifest.json` with the archive's SHA-256 next to it. `--revision` is your own label for the package
-  (shown in `README-FIRST.txt` and the manifest); it does not change the image tags.
+  - `--output` must be a **new absolute `.zip` path outside the repository**; the script refuses anything else and
+    writes a `.manifest.json` with the archive's SHA-256 next to it. `--revision` is your own label for the package.
+    For a versioned release build, pass the same `--version vX.Y.Z` (or `vX.Y.Z-rc.N`) to `--list-images` and to
+    the packaging invocation; this selects matching GHCR image names in the archive, launchers and Compose file.
 - The script runs `tooling/privacy_scan.py` first and stops on a finding, so build from a clean clone.
 - The image builds replace any images with the same tags on this machine, including those of an installed host
   package. Build on a machine that does not run one, or accept that it will run your build from then on.
