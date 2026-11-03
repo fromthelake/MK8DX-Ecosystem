@@ -2,6 +2,7 @@
 **/dist/
 **/build/
 **/.gradle/
+**/.kotlin/
 **/.cache/
 **/coverage/
 **/__pycache__/
