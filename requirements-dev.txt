@@ -8,6 +8,6 @@
 # apps/timetrials-desktop/vision-runtime/requirements.txt, the Tournament tools in
 # tooling/tournament/requirements.lock.txt.
 numpy==2.5.4
-opencv-python-headless==4.10.0.84
+opencv-python-headless==5.0.0.93
 jsonschema==4.26.0
 pytest==9.2.0
