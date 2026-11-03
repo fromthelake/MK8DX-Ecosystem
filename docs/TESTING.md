@@ -61,7 +61,8 @@ LiveTrial engine snapshot and its Clean Assets database, which are not in this r
 
 The API's database tests (`backend/api/test/*.integration.test.ts`, 35 files) are opt-in and skip without the
 settings below. Verify runs all 35 against both disposable MySQL 8.4.11 and MariaDB 11.4.12 containers.
-Each suite gets its own newly migrated schema; the reference-seed suite uses a synthetic configuration.
+Each suite gets its own newly migrated schema; the reference-seed suite uses a synthetic configuration and an
+initial reference seed before testing its update path.
 Run them only against a **disposable** server, never against an installation's database. The CI entry point is
 `bash tooling/run_database_integration_ci.sh mysql` or `mariadb` after `npm ci` and the API build on Linux.
 

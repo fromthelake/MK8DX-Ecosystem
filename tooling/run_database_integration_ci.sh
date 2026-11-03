@@ -73,6 +73,13 @@ for mk8dx_suite in test/*.integration.test.ts; do
     --private-environment-file "$mk8dx_env_file" \
     --migration-catalog ../../infrastructure/mysql/migration-catalog-v1.json \
     --confirm-database "$mk8dx_database" --fresh-empty-database
+  if [[ "$mk8dx_suite" == *reference-seed* ]]; then
+    # This suite checks an update from an existing reference baseline.
+    node dist/composition/reference-seed-main.js \
+      --private-environment-file "$mk8dx_env_file" \
+      --staff-seed ../../infrastructure/mysql/reference/nintendo-staff-v1.json \
+      --world-record-seed ../../infrastructure/mysql/reference/world-records-v1.json
+  fi
   MK8DX_MYSQL_TEST_DATABASE="$mk8dx_database" \
     MK8DX_REFERENCE_TEST_CONFIG="$mk8dx_env_file" \
     npx vitest run --config vitest.config.ts "$mk8dx_suite"
