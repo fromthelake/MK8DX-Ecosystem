@@ -25,6 +25,8 @@ The project is self-hosted: every community runs its own installation, with its 
   Tournament Live captures during the event. After the organizer has checked players and places, the website
   computes scores, standings and finals and publishes a report, also as a WordPress export.
 
+The [public decision index](docs/decisions/README.md) explains the product rules cited as ADRs in source and docs.
+
 Recognition alone never makes a result official. Where the rules require it, an authorized person reviews
 a submission before it appears publicly.
 
