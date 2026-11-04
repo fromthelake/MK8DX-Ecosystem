@@ -52,8 +52,8 @@ android {
         applicationId = "nl.mariokart8.mk8dxtimetrials"
         minSdk = if (enableScanRuntime) 26 else 24
         targetSdk = 36
-        versionCode = 159
-        versionName = "2.93.0"
+        versionCode = 160
+        versionName = "2.94.0"
 
         manifestPlaceholders["mk8dxLauncherIcon"] = "@mipmap/ic_launcher"
         manifestPlaceholders["mk8dxApiHost"] = mk8dxApiUri.host
@@ -159,6 +159,9 @@ val stageMk8dxCollectionProductAssets = tasks.register<Exec>("stageMk8dxCollecti
         generatedCollectionProductAssets.get().asFile.absolutePath)
 }
 tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
+    dependsOn(stageMk8dxCollectionProductAssets)
+}
+tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
     dependsOn(stageMk8dxCollectionProductAssets)
 }
 android.sourceSets.getByName("main").res.srcDir("src/fallbackSplash/res")
