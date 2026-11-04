@@ -14,6 +14,7 @@ val mk8dxApiOrigin = providers.gradleProperty("mk8dxApiOrigin").orNull
 val mk8dxApiUri = URI(mk8dxApiOrigin)
 val repositoryRoot = rootProject.projectDir.parentFile.parentFile
 val internalCollection = repositoryRoot.resolve("packages/assets/collection")
+val productLauncherSource = repositoryRoot.resolve("apps/timetrials-web/styles/app-icon-512.png")
 val mk8dxDebugCaCertificate = providers.gradleProperty("mk8dxDebugCaCertificate").orNull
 // Owner-private release signing. All four properties must be supplied
 // together (outside Git, e.g. through a gradle.properties in GRADLE_USER_HOME
@@ -32,6 +33,11 @@ val generatedDebugNetworkSecurityResources =
     layout.buildDirectory.dir("generated/mk8dxDebugNetworkSecurity/res")
 val generatedCollectionProductAssets =
     layout.buildDirectory.dir("generated/mk8dxCollectionProductAssets/assets")
+val generatedProductLauncherResources =
+    layout.buildDirectory.dir("generated/mk8dxProductLauncher/res")
+require(productLauncherSource.isFile) {
+    "The shared Web/Android product icon is missing: $productLauncherSource"
+}
 require(
     mk8dxApiUri.scheme == "https" &&
         !mk8dxApiUri.host.isNullOrEmpty() &&
@@ -55,7 +61,7 @@ android {
         versionCode = 160
         versionName = "2.94.0"
 
-        manifestPlaceholders["mk8dxLauncherIcon"] = "@mipmap/ic_launcher"
+        manifestPlaceholders["mk8dxLauncherIcon"] = "@mipmap/mk8dx_product_launcher"
         manifestPlaceholders["mk8dxApiHost"] = mk8dxApiUri.host
 
         buildConfigField("String", "MK8DX_API_ORIGIN", "\"$mk8dxApiOrigin\"")
@@ -165,6 +171,25 @@ tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
     dependsOn(stageMk8dxCollectionProductAssets)
 }
 android.sourceSets.getByName("main").res.srcDir("src/fallbackSplash/res")
+
+// The Web's 512 px derivative is pixel-identical to the owner's original
+// Play Store icon; stage that one committed source for Android as well.
+val stageMk8dxProductLauncher = tasks.register<Copy>("stageMk8dxProductLauncher") {
+    inputs.file(productLauncherSource)
+    outputs.dir(generatedProductLauncherResources)
+    into(generatedProductLauncherResources)
+    from(productLauncherSource) {
+        into("mipmap-xxxhdpi")
+        rename { "mk8dx_product_launcher.png" }
+    }
+}
+android.sourceSets.getByName("main").res.srcDir(generatedProductLauncherResources)
+tasks.matching { it.name.startsWith("pre") && it.name.endsWith("Build") }.configureEach {
+    dependsOn(stageMk8dxProductLauncher)
+}
+tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
+    dependsOn(stageMk8dxProductLauncher)
+}
 
 if (mk8dxDebugCaCertificate != null) {
     val certificate = file(mk8dxDebugCaCertificate).canonicalFile
