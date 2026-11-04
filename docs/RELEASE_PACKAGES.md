@@ -95,7 +95,10 @@ without it, local clone builds continue to use the current local image tags.
 4. Check that every asset has a line (`wc -l SHA256SUMS.txt` equals the number of other assets). Verify the
    unchanged downloaded CI assets with `gh attestation verify <file> -R fromthelake/MK8DX-Ecosystem` and inspect
    `SBOM.spdx.json`. The locally signed APK has separate signing-certificate evidence, not CI provenance.
-   Install the downloaded A1 and A3 packages and test an upgrade with data before publishing the draft. Check
-   anonymous pulls of the matching GHCR images: newly created GitHub container packages default to private
+   At draft review, start **every route called supported** in the release notes afresh from that draft's downloaded
+   assets. Record its source commit, migrations, readiness and affected routes. For A1, load the Docker images
+   inside the downloaded host ZIP even if a local image already has the same tag; a cached tag is not package
+   evidence. For v0.1.0, this means fresh A1 and A3 installations. Test an upgrade with data before publishing.
+   Check anonymous pulls of the matching GHCR images: newly created GitHub container packages default to private
    visibility even when linked to a public repository. The maintainer must make them public in GitHub package
    settings before describing them as public downloads.
