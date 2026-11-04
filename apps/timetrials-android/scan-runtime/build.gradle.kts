@@ -63,6 +63,11 @@ val stageMk8dxScanAssets = tasks.register<Exec>("stageMk8dxScanAssets") {
 tasks.matching { it.name.startsWith("merge") && it.name.endsWith("Assets") }.configureEach {
     dependsOn(stageMk8dxScanAssets)
 }
+// AGP's release lint model reads the generated source-set assets too. Gradle 9
+// rejects that implicit read unless staging is an explicit task dependency.
+tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
+    dependsOn(stageMk8dxScanAssets)
+}
 
 dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.31.1")

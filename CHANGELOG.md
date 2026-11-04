@@ -6,6 +6,10 @@ ISO format.
 
 ## Unreleased
 
+### Fixed
+
+- The owner-signed Android release APK builds under Gradle 9: generated product and scanner assets are staged before the release lint model reads them. Android version 2.94.0 (build 160) updates the prior owner-signed build 159 in place.
+
 ### Security
 
 - Docker gateways now send route-specific Content-Security-Policy-Report-Only headers; the browser scanner's policy allows its local WASM and blob workers. Node and Caddy base images are pinned by digest for repeatable builds.
