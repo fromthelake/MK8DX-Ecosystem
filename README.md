@@ -48,10 +48,12 @@ Dutch: [MK8DX_Handleiding_NL.txt](docs/install/MK8DX_Handleiding_NL.txt)). Quest
 
 ## Project status
 
-**Pre-release.** Release candidates of version 0.1.0 are published on the project's
+The 0.1.0 series is published through the project's
 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) page; the
-[changelog](CHANGELOG.md) lists what changed. The website, API, browser scanner and installer are tested
-on Windows 11 with the Linux/amd64 Docker images and with XAMPP/Node.js. Other platforms are described under
+[changelog](CHANGELOG.md) lists what changed. **A1 (Docker on one computer) and A3
+(XAMPP/Node.js on Windows) are supported** after installation and upgrade tests.
+A2 (home network), B1 (Docker VPS) and B2 (shared Node.js hosting) are documented
+but have not been tested end to end. Other platforms are described under
 [Platform support](#platform-support).
 
 ## Get it
@@ -61,15 +63,17 @@ Release packages are attached to the project's
 from the latest release, together with `SHA256SUMS.txt`, and check the checksum as the guide explains. [Release packages](docs/RELEASE_PACKAGES.md) explains which file belongs to
 which route. GitHub's automatic **Source code (zip)** is the complete source, not an installation package.
 
-| Route | Package |
-| --- | --- |
-| Website on one computer or a home network, with Docker | `mk8dx-host-local-…-amd64.zip` |
-| Website on Windows without Docker (XAMPP and Node.js) | `mk8dx-xampp-node-windows-….zip` |
-| Website on shared hosting with Node.js and MariaDB | `mk8dx-mijnhost-node-….zip` |
-| Android app | `mk8dx-android-debug-….apk` with its notices ZIP |
-| LiveTrial (Windows) | `desktop-client-….zip` |
-| Tournament tools (Windows) | `tournament-tools-….zip` |
-| Complete source with the asset collection | `mk8dx-full-local-….zip` |
+| Route | Package | Status |
+| --- | --- | --- |
+| A1: website on one computer with Docker | `mk8dx-host-local-…-amd64.zip` | Supported |
+| A2: website on a home network with Docker | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
+| A3: website on Windows with XAMPP and Node.js | `mk8dx-xampp-node-windows-….zip` | Supported |
+| B1: website on a Docker VPS | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
+| B2: website on shared Node.js hosting | `mk8dx-mijnhost-node-….zip` | Documented; not tested end to end |
+| Android app | Locally release-signed `mk8dx-android-release-….apk` with its notices ZIP | Earlier public debug APKs require one uninstall before installing the release-signed app |
+| LiveTrial (Windows) | `desktop-client-….zip` | Windows package |
+| Tournament tools (Windows) | `tournament-tools-….zip` | Windows package |
+| Complete source with the asset collection | `mk8dx-full-local-….zip` | Source package |
 
 Then follow the [guide](#guides) for your group, or the complete user guide:
 [English](docs/install/MK8DX_User_Guide_EN.txt) ([Word](docs/install/MK8DX_User_Guide_EN.docx)) or

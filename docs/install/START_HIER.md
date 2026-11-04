@@ -6,13 +6,13 @@ Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag 
 
 ## Welke route past bij jou?
 
-| Route | Voor wie | Naslag |
-| --- | --- | --- |
-| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) |
-| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | in de handleiding |
-| **A2** — je eigen vertrouwde netwerk | Andere apparaten thuis of op een toernooilocatie laten meedoen | [A2_EIGEN_NETWERK.md](A2_EIGEN_NETWERK.md) |
-| **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | [B1_VPS.md](B1_VPS.md) |
-| **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
+| Route | Voor wie | Status | Naslag |
+| --- | --- | --- | --- |
+| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Ondersteund | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) |
+| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Ondersteund | in de handleiding |
+| **A2** — je eigen vertrouwde netwerk | Andere apparaten thuis of op een toernooilocatie laten meedoen | Gedocumenteerd; nog niet end-to-end getest | [A2_EIGEN_NETWERK.md](A2_EIGEN_NETWERK.md) |
+| **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | Gedocumenteerd; nog niet end-to-end getest | [B1_VPS.md](B1_VPS.md) |
+| **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | Gedocumenteerd; nog niet end-to-end getest | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
 
 Daarna: [apps koppelen](CLIENTS.md), [instellingen](INSTELLINGEN.md), [beheer, updates en herstel](BEHEER.md)
 en [zelf bouwen](ONTWIKKELEN.md).
@@ -39,7 +39,7 @@ samen met `SHA256SUMS.txt`:
 | A1, A2, B1 | `mk8dx-host-local-…-amd64.zip` |
 | A3 | `mk8dx-xampp-node-windows-….zip` |
 | B2 | `mk8dx-mijnhost-node-….zip` |
-| Android | `mk8dx-android-debug-….apk` en `mk8dx-android-notices-….zip` |
+| Android | `mk8dx-android-release-….apk` en `mk8dx-android-notices-….zip` |
 | LiveTrial | `desktop-client-….zip` |
 | Toernooitools | `tournament-tools-….zip` |
 
@@ -51,3 +51,6 @@ Get-FileHash '.\<pakketnaam>.zip' -Algorithm SHA256
 
 Vergelijk de volledige waarde met de regel voor dat bestand in `SHA256SUMS.txt`. Wijkt hij af, pak dan niets
 uit en download opnieuw. GitHubs knop **Source code (zip)** is geen installatiepakket.
+Eerdere publieke APK's waren met een debugsleutel ondertekend: bewaar nog niet verzonden resultaten en verwijder
+die app één keer voordat je de release-APK installeert. Latere APK's met dezelfde releasesleutel kunnen ter
+plekke worden bijgewerkt.

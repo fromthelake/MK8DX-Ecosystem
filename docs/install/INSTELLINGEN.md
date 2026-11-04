@@ -15,7 +15,7 @@ De **gezaghebbende installatie-invoer** staat per installatie in `operator-profi
 | Databasehost intern `MK8DX_HOSTED_MYSQL_HOST` | Automatisch `mysql` in Docker; A3 `127.0.0.1:18306`; B2 volgens DirectAdmin | `localhost:3306` | Alleen servergebruik. Gebruik dit **niet** als websiteadres of DNS-record. B2 vereist gemeten MariaDB ≥11.4 of MySQL ≥8.4 vóór migraties. |
 | DNS, VPS-SSH, providerwachtwoord | Externe provideractie, nooit in MK8DX-profiel | A-record `www → VPS-IPv4` | DNS-portaal, WinSCP/SSH. Zie [B1](B1_VPS.md). De provider bepaalt de werkelijke gebruikersnaam, poort en hostkey. |
 | Android-/LiveTrial-server | Jij kiest op elk apparaat de **publieke URL**; geen serversecret | `https://www.example.org` | Android eerste scherm/Instellingen; LiveTrial Instellingen. Sessies en wachtende resultaten worden per server apart opgeslagen. |
-| Android App Links-certificaatfingerprint | Eigen APK-ondertekenaar, afzonderlijk | geen vaste voorbeeldfingerprint | Alleen voor geavanceerde, per domein ondertekende APK. Standaard `assetlinks.json` is `[]` en JSON; de debug-APK krijgt geen valse domeinclaim. Private signingkey blijft buiten gedeelde installatie. |
+| Android App Links-certificaatfingerprint | APK-ondertekenaar, afzonderlijk | geen vaste voorbeeldfingerprint | Alleen voor een geteste koppeling tussen het echte certificaat en jouw domein. Standaard `assetlinks.json` is `[]` en JSON; de release-APK claimt geen willekeurig domein. Private signingkey blijft buiten gedeelde installatie. |
 
 ## Precieze mappen en voorrang
 
@@ -52,5 +52,5 @@ Op de VPS gebruik je in het SSH-venster `python3 tooling/install.py change-smtp 
 - **Mailbox versus admin:** SMTP is het transport; het adminadres is een geverifieerde MK8DX-gebruiker. Het SMTP-secret blijft op de host, nooit in een APK.
 - **Providerhost versus publiek domein:** een VPS-IP is voor SSH/DNS; het domein is voor bezoekers. `mysql` is alleen binnen Docker bereikbaar.
 - **Clients:** elk apparaat bewaart zijn eigen login. Een serverwissel vraagt bevestiging; eerdere resultaten gaan niet automatisch naar de nieuwe community.
-- **Signing en App Links:** een certificaatfingerprint hoort bij de specifieke ondertekende APK. De generieke debug-APK en een willekeurig domein kunnen niet vooraf een echte association bewijzen.
+- **Signing en App Links:** een certificaatfingerprint hoort bij de specifieke ondertekende APK. Ook de generieke release-APK kan voor een willekeurig domein niet vooraf een echte association bewijzen.
 - **Backuplocatie:** kies een ander opslagmedium buiten de server; de app kan de externe bestemming niet raden. De backup bevat echte secrets en accounts en moet privé blijven.

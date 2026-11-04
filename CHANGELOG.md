@@ -1,19 +1,34 @@
 # Changelog
 
-All notable changes to MK8DX Ecosystem are recorded here. The project is pre-1.0: releases are
-release candidates of `0.1.0`, and interfaces can still change between them. Dates are in
-ISO format.
+All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
+`0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
 ## Unreleased
 
-### Fixed
+## 0.1.0 — 2026-11-04
 
-- The owner-signed Android release APK builds under Gradle 9: generated product and scanner assets are staged before the release lint model reads them. Android version 2.94.0 (build 160) updates the prior owner-signed build 159 in place.
+### Release packages and support
 
-### Security
+- A1 (Docker on one computer) and A3 (XAMPP/Node.js on Windows) passed fresh installation and upgrade tests with retained results and are supported. A2, B1 and B2 are documented but have not been tested end to end.
+- The release workflow builds the Windows clients, full source and three server packages from a verified commit. The host ZIP includes versioned Web/API images; the release has checked SHA-256 values, provenance attestations and an SPDX asset inventory. The server packages also contain checked internal manifests. The Android APK is signed locally with the owner's retained key, outside CI.
+- The owner-signed Android app is version 2.94.0 (build 160). It updates a prior owner-signed build in place. Earlier public APKs were debug signed and require one uninstall before installing this release; save any results not yet sent first.
 
-- Docker gateways now send route-specific Content-Security-Policy-Report-Only headers; the browser scanner's policy allows its local WASM and blob workers. Node and Caddy base images are pinned by digest for repeatable builds.
+### Security and dependencies
+
+- Docker gateways add separate Web and scanner Content Security Policy headers in Report-Only mode. The scanner policy allows its local WASM and blob workers; Node and Caddy base images are pinned by digest.
+- All 19 Dependabot version PRs in the 3 November 2026 register were handled through their specific checks, including Node 26, scanner PWA 2, Android AGP 9/SDK 37/ONNX 1.31, OpenCV 5, pandas 3, filelock 4, torch 2.15, Qt 6.12 and npm/Actions updates. SymPy 1.14 still requires mpmath below 1.4, so mpmath remains pinned to 1.3.0 with a documented exception.
+- Mailpit 1.32.0 replaces the vulnerable 1.31.3 bundle; Verify audits Python and npm dependencies and tests both MySQL and MariaDB.
+
+### Fixes
+
+- The owner-signed Android release APK builds under Gradle 9: generated product and scanner assets are staged before the release lint model reads them.
 - The classic Tournament report export script parses again after a public-only help-text apostrophe was corrected.
+- The A3 package serves the browser scanner's included binary masks from their restricted path.
+
+## 0.1.0-rc.9 — 2026-11-03
+
+- Coordinated Pillow 13 security fix in the Windows clients, with targeted recognition and package checks.
+- Updated the rc.9 release dependency installation and refreshed the Web/API test runners and selected dependency groups.
 
 ## 0.1.0-rc.8 — 2026-11-03
 

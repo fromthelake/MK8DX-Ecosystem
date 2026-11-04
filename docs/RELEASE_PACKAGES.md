@@ -23,6 +23,11 @@ The user guides are attached to each release as well: `MK8DX_User_Guide_EN.txt`/
 `MK8DX_Handleiding_NL.txt`/`.docx`. The same files are in [docs/install](install/) and inside the installation
 packages.
 
+A1 and A3 are supported after fresh-install and upgrade tests with data. A2, B1 and B2 are documented but
+have not been tested end to end. The Android release APK is signed locally with the maintainer's retained key;
+earlier public debug APKs require one uninstall before installing it. Save any results not yet sent before that
+uninstall. Later updates signed with the same release key install in place.
+
 ## Check a download
 
 ```powershell
@@ -43,9 +48,10 @@ the project's own code and documentation only; the game material inside the pack
 
 ## Building the packages
 
-The product version is SemVer: before 1.0, releases are release candidates of `0.1.0` (tags `v0.1.0-rc.N`).
-`productVersion` in [compatibility.json](../compatibility.json) names the release that the current *Unreleased*
-section of the [changelog](../CHANGELOG.md) becomes; set it to the next candidate right after tagging.
+The product version is SemVer: the `v0.1.0-rc.N` tags are candidates and `v0.1.0` is the stable release tag.
+`productVersion` in [compatibility.json](../compatibility.json) matches the version being packaged.
+The [changelog](../CHANGELOG.md) keeps future work under *Unreleased*; advance the version for the next
+development release after tagging.
 
 Pushing a tag `v*` runs `.github/workflows/release.yml`. It first checks that the tagged commit passed `Verify`,
 then builds all seven client/source/server packages from that exact commit. The Web and API images receive tags
@@ -78,7 +84,7 @@ without it, local clone builds continue to use the current local image tags.
    guides tell people to stop when a package has no matching line:
 
    ```sh
-   tag=v0.1.0-rc.N
+   tag=v0.1.0
    mkdir release-check && cd release-check
    gh release download "$tag" --repo fromthelake/MK8DX-Ecosystem
    rm SHA256SUMS.txt
