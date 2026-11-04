@@ -52,7 +52,7 @@ The app offers a faster scan on the phone itself, your times and notifications. 
 
 ### Requirements
 
-- Android 8.0 or newer; an arm64 phone is recommended. The debug APK is large (several hundred MB): keep about
+- Android 8.0 or newer; an arm64 phone is recommended. The release APK is large (about 484 MB): keep about
   1 GB free while installing.
 - A community address with **trusted HTTPS** (a public website). A computer-local address (`http://127.0.0.1:…`)
   or a home-network address with a self-made certificate does not work in the app.
@@ -62,17 +62,17 @@ The app offers a faster scan on the phone itself, your times and notifications. 
 1. Get the APK from your community's **Get the app** page when it offers downloads (you must be signed in to see
    them; that is the build your community supports), or from the project's
    [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) page: take
-   `mk8dx-android-release-….apk` if the release has one, otherwise `mk8dx-android-debug-….apk`. With a clone of the repository you can also build the APK yourself:
+   `mk8dx-android-release-….apk`. With a clone of the repository you can also build the APK yourself:
    [Client builds](../CLIENT_BUILDS.md#android).
 2. Check the file against `SHA256SUMS.txt` from the same release (on a computer: `Get-FileHash` in PowerShell,
    `sha256sum` on Linux, `shasum -a 256` on macOS).
 3. Copy the APK to the phone and open it from **Files** or **Downloads**. Android asks to allow installing from
    that app; allow it only for this checked file and turn it off again afterwards if you like.
 
-Neither is a Play Store app. The `debug` APK is signed with a build key, the `release` APK with the maintainer's
-key. Android only updates an app with an APK signed by the same key, so switching between them (or to a
-community's or a self-built APK) means uninstalling first, which removes results that were not yet sent. Stay
-with one source.
+This is not a Play Store app. Earlier public APKs were signed with a debug build key; the release APK uses the
+maintainer's retained key. Save any results not yet sent and uninstall an earlier debug APK once before installing
+this release. Later APKs signed with the same release key update in place. Switching to a community's or a
+self-built APK with a different key also requires an uninstall.
 
 ### First start
 
