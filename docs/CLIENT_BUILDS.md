@@ -59,6 +59,11 @@ recognition corpus test skips when its separately held corpus is absent.
 The launcher, in-app header and splash use the owner Time Trials icon staged
 from `apps/timetrials-web/styles/app-icon-512.png`. The source is pixel-identical
 to the historical Play Store icon; no private path is needed for this artwork.
+On Android 26+, the round launcher uses a stopwatch/8 mark derived from that
+image so the system mask does not crop the lettering or frame the square image
+in white. The full artwork remains in the splash and other clients. Run
+`python tooling/assets/derive_android_launcher_mark.py` to check the derived
+bitmap, or add `--write` to regenerate it after changing the owner icon.
 
 ## LiveTrial Windows
 

@@ -1,6 +1,10 @@
 {
   "schemaVersion": "mk8dx.native-binaries.v1",
   "files": {
+    "apps/timetrials-android/app/src/main/res/drawable-nodpi/mk8dx_product_launcher_mark.png": {
+      "sha256": "460b1c865de913a6067e32f5c3cbad9657248eade74c1930b8182b07d3afa9f4",
+      "sizeBytes": 58059
+    },
     "apps/timetrials-android/app/src/main/res/drawable/mk8dx_ethernet.png": {
       "sha256": "fa2a490a42a40d546674019be80b74a5671c002bb5516439978c1c5fafd8114b",
       "sizeBytes": 467
