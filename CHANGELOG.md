@@ -5,8 +5,6 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
-- Use the original Time Trials artwork for the Android launcher, Android splash and Windows LiveTrial icon; Web and scanner already use it.
-
 ## 0.1.0 — 2026-11-04
 
 ### Release packages and support
@@ -23,6 +21,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixes
 
+- The original Time Trials artwork appears in the Android launcher and splash and the Windows LiveTrial client, matching Web and scanner.
 - The owner-signed Android release APK builds under Gradle 9: generated product and scanner assets are staged before the release lint model reads them.
 - The classic Tournament report export script parses again after a public-only help-text apostrophe was corrected.
 - The A3 package serves the browser scanner's included binary masks from their restricted path.
