@@ -99,8 +99,13 @@ jobs:
           $embed = "$env:RUNNER_TEMP\python-3.12.10-embed-amd64.zip"
           Invoke-WebRequest -Uri https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip -OutFile $embed
           $out = "$env:RUNNER_TEMP\desktop-client-$env:PACKAGE_VERSION"
-          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:PACKAGE_VERSION"
+          & "$venv\Scripts\python.exe" tooling/livetrial/build_windows_package.py --output $out --engine-venv $venv --embedded-python $embed --version "$env:PACKAGE_VERSION" --product-icon apps/timetrials-web/styles/app-icon-512.png
           if ($LASTEXITCODE -ne 0) { throw "LiveTrial package build failed" }
+          $icon = Join-Path $out "_internal\apps\timetrials-desktop\dashboard\app-icon.png"
+          if (-not (Test-Path -LiteralPath $icon)) { throw "LiveTrial product icon missing from package" }
+          if ((Get-FileHash -LiteralPath $icon -Algorithm SHA256).Hash -ne (Get-FileHash -LiteralPath apps/timetrials-web/styles/app-icon-512.png -Algorithm SHA256).Hash) {
+            throw "LiveTrial product icon differs from Web"
+          }
           New-Item -ItemType Directory -Force "$env:RUNNER_TEMP\out" | Out-Null
           Compress-Archive -Path "$out\*" -DestinationPath "$env:RUNNER_TEMP\out\desktop-client-$env:PACKAGE_VERSION.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

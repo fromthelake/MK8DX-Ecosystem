@@ -22,8 +22,7 @@
         <item name="android:windowBackground">@color/mk8dx_splash_background</item>
     </style>
 
-    <!-- core-splashscreen: the launcher's own icon on the product surface, on every supported release
-         (mk8dx_splash_icon: the owner-private icon when the build has it, the fallback otherwise). -->
+    <!-- core-splashscreen: the same shared owner artwork as the launcher. -->
     <style name="Theme.Mk8dxSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/mk8dx_splash_background</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/mk8dx_splash_icon</item>

@@ -335,8 +335,10 @@ inside the Desktop process and never serves a bearer token. Friendly track
 names and preview images come from the internal collection packaged at build
 time.
 
-The dashboard uses a neutral icon by default. An operator may set
-`MK8DX_LIVETRIAL_PRODUCT_ICON` to their own `.png`/`.ico` locally.
+The release package embeds the same owner Time Trials artwork used by the
+website and Android launcher. A source run without a packaged icon uses the
+neutral fallback. An operator may set `MK8DX_LIVETRIAL_PRODUCT_ICON` to their
+own `.png`/`.ico` locally.
 
 When the account in use has an expired sign-in, the console asks at start-up
 whether to sign in again and lists **S) Sign in again as <Player>** above the

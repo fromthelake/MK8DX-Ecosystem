@@ -56,6 +56,9 @@ installs an update signed with the same key as the installed app, so switching b
 self-built APK means uninstalling first, which removes results that were not yet sent.
 Device tests run with `:app:connectedDebugAndroidTest`; the optional private
 recognition corpus test skips when its separately held corpus is absent.
+The launcher, in-app header and splash use the owner Time Trials icon staged
+from `apps/timetrials-web/styles/app-icon-512.png`. The source is pixel-identical
+to the historical Play Store icon; no private path is needed for this artwork.
 
 ## LiveTrial Windows
 
@@ -69,7 +72,7 @@ Obtain the official Python
 SHA-256. Then, from the repository root:
 
 ```powershell
-C:\path\to\new-build-venv\Scripts\python.exe tooling/livetrial/build_windows_package.py --output C:\path\to\new-live-package --engine-venv C:\path\to\new-build-venv --embedded-python C:\path\to\python-3.12.10-embed-amd64.zip --version local
+C:\path\to\new-build-venv\Scripts\python.exe tooling/livetrial/build_windows_package.py --output C:\path\to\new-live-package --engine-venv C:\path\to\new-build-venv --embedded-python C:\path\to\python-3.12.10-embed-amd64.zip --version local --product-icon apps/timetrials-web/styles/app-icon-512.png
 ```
 
 The output contains the real engine, internal game/OCR assets, two executables

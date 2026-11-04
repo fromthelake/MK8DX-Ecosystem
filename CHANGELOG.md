@@ -5,6 +5,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+- Use the original Time Trials artwork for the Android launcher, Android splash and Windows LiveTrial icon; Web and scanner already use it.
+
 ## 0.1.0 — 2026-11-04
 
 ### Release packages and support
