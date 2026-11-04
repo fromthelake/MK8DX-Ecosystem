@@ -1,4 +1,4 @@
-"""Generate original, neutral MK8DX distribution icons (Pillow 11.3.0)."""
+"""Generate the project's neutral console icons, leaving owner app art intact."""
 
 from pathlib import Path
 
@@ -6,23 +6,6 @@ from PIL import Image, ImageDraw
 
 
 STYLES = Path(__file__).resolve().parents[2] / "apps" / "timetrials-web" / "styles"
-
-
-def app_icon(size: int) -> None:
-    scale = size / 512
-    image = Image.new("RGB", (size, size), "#102035")
-    draw = ImageDraw.Draw(image)
-
-    def box(coords):
-        return tuple(round(value * scale) for value in coords)
-
-    draw.rounded_rectangle(box((35, 35, 477, 477)), radius=round(92 * scale), fill="#163756")
-    draw.ellipse(box((101, 101, 411, 411)), outline="#f4f7fb", width=max(2, round(30 * scale)))
-    draw.arc(box((101, 101, 411, 411)), 200, 325, fill="#ef654d", width=max(2, round(30 * scale)))
-    draw.arc(box((101, 101, 411, 411)), 20, 145, fill="#52acd1", width=max(2, round(30 * scale)))
-    draw.ellipse(box((188, 139, 324, 257)), outline="#f7d46a", width=max(2, round(29 * scale)))
-    draw.ellipse(box((174, 245, 338, 380)), outline="#f7d46a", width=max(2, round(31 * scale)))
-    image.save(STYLES / f"app-icon-{size}.png", optimize=True)
 
 
 def console_icon(number: int) -> None:
@@ -43,7 +26,5 @@ def console_icon(number: int) -> None:
 
 if __name__ == "__main__":
     STYLES.mkdir(parents=True, exist_ok=True)
-    for size in (192, 512):
-        app_icon(size)
     for number in (1, 2):
         console_icon(number)

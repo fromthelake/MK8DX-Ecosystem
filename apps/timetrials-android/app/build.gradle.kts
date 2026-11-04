@@ -179,8 +179,8 @@ val stageMk8dxProductLauncher = tasks.register<Copy>("stageMk8dxProductLauncher"
     outputs.dir(generatedProductLauncherResources)
     into(generatedProductLauncherResources)
     from(productLauncherSource) {
-        into("mipmap-xxxhdpi")
-        rename { "mk8dx_product_launcher.png" }
+        into("drawable-nodpi")
+        rename { "mk8dx_product_launcher_art.png" }
     }
 }
 android.sourceSets.getByName("main").res.srcDir(generatedProductLauncherResources)

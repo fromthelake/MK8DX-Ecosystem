@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Keep the original square artwork inside Android's circular splash mask. -->
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
-    android:drawable="@mipmap/mk8dx_product_launcher"
+    android:drawable="@drawable/mk8dx_product_launcher_art"
     android:inset="27%" />

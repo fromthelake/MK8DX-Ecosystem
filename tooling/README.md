@@ -68,7 +68,8 @@ working folder, private recordings or review crops, which are not in this reposi
 | `assets/schema9_asset_catalog.py`, `assets/export_schema9_catalog_snapshot.py`, `assets/verify_schema9_release.py` | Build and verify the stable-ID game catalog. | a Clean Assets release |
 | `assets/export_android_*.py`, `assets/export_android_product_catalogs.mjs`, `assets/export_web_track_catalog.py`, `assets/export_scanner_tire_names.py` | Export catalogs for Android, the website and the scanners. | a Clean Assets release |
 | `assets/generate_dutch_presentation_catalog.mjs`, `assets/generate_loadout_variants.mjs`, `assets/stage_loadout_variant_assets.mjs` | Presentation catalogs and loadout colour variants. | the Icon Matcher references |
-| `assets/generate_public_icons.py` | The project's own app icons. | `Pillow` |
+| `assets/generate_public_icons.py` | Neutral console icons; leaves the owner Time Trials app icon untouched. | `Pillow` |
+| `assets/derive_android_launcher_mark.py` | Checks or regenerates the round Android mark from the owner Web icon. | `Pillow` |
 | `assets/validate_offline_asset_consumers.py` | Read-only checks of a built APK or Tournament asset tree. | a built package |
 | `assets/shared_asset_source.mjs` | Build-time counterpart of `shared_asset_source.py`. | none |
 | `tournament/build_*_templates.py`, `tournament/build_track_names.py`, `tournament/badge_cutouts.py`, `tournament/lan_cutouts.py`, `tournament/cup_final_cells.py` | Build Tournament recognition templates and tables in 15 game languages. | Clean Assets, captured frames |
