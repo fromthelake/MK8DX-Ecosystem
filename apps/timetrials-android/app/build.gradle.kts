@@ -231,7 +231,7 @@ if (mk8dxDebugCaCertificate != null) {
 }
 
 dependencies {
-    implementation(platform("androidx.compose:compose-bom:2025.10.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.09.00"))
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.core:core:1.19.1")
     // The splash screen the product already gets on Android 12+, backported to
@@ -260,7 +260,7 @@ dependencies {
 
     testImplementation("junit:junit:4.13.2")
 
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.10.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2026.09.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     androidTestImplementation("androidx.test:runner:1.7.0")
     androidTestImplementation("androidx.test.ext:junit:1.3.0")
