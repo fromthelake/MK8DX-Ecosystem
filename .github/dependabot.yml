@@ -26,6 +26,10 @@ updates:
     directories: [/, /apps/timetrials-desktop/vision-runtime, /packages/tournament-extraction/python, /tooling/tournament]
     schedule: {interval: weekly}
     open-pull-requests-limit: 3
+    # SymPy 1.14.0 requires mpmath<1.4. Reassess when a new SymPy release permits 1.4+.
+    ignore:
+      - dependency-name: mpmath
+        versions: [">=1.4"]
     groups:
       minor-patch:
         applies-to: version-updates
