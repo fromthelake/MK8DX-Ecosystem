@@ -70,7 +70,7 @@ Results keep the exact human state visible, and manual **Sync now** remains an
 explicit recovery action. Each transport invocation is still one bounded
 attempt with an exact acknowledgement—retry policy lives outside the transport.
 
-The generated loadout catalog derives private image filenames from the
+The generated loadout catalog derives image filenames from the
 canonical manifest `iconPath`, not from filtered picker position. This matters
 for character variants: stable record IDs, displayed names and packaged icons
 must resolve through the same mapping. See
@@ -78,36 +78,23 @@ must resolve through the same mapping. See
 
 ## Offline scanner packaging
 
-Normal public builds compile without a recognition payload and report that
-offline scanner assets are unavailable. An explicitly private build may enable
-the staged scanner with:
+Normal public builds include the offline scanner and materialize its model,
+templates and product images from `packages/assets/collection/`. Build with:
 
 ```powershell
-.\gradlew.bat -PenableScanRuntime=true :app:assembleDebug
+.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug
 ```
 
-Additional presentation assets and test fixtures can be staged from a local folder outside Git:
+For a deliberately scanner-free custom build, set the opt-out property:
 
 ```powershell
-.\gradlew.bat -PenableScanRuntime=true `
-  -Pmk8dxPrivateProductAssetsRoot=C:\path\to\private\assets `
-  -Pmk8dxPrivateScanTestFixturesRoot=C:\path\to\private\testkit\frames `
-  :app:assembleRelease
+.\gradlew.bat -PenableScanRuntime=false :app:assembleDebug
 ```
 
-Color-family character/body/glider presentation variants are staged separately
-from a local reference folder. Only generated IDs, family metadata and paths are checked in:
-
-```powershell
-.\gradlew.bat `
-  -Pmk8dxPrivateCleanAssetsRoot=C:\path\to\clean-assets `
-  -Pmk8dxPrivateVariantAssetsRoot=C:\path\to\icon-matcher\refs `
-  :app:assembleDebug
-```
-
-That graph bundles the unchanged locally staged recognition model/assets and
-keeps core gallery/camera scanning offline. The model, game-derived references,
-and evaluation corpus are game-derived material; see
+The public build does not stage owner-private test fixtures or reference
+images from paths outside this repository. The release APK uses the published
+asset collection, and gallery/camera scanning works offline. Game-derived
+material has its own terms; see
 [Third-party materials](../../docs/THIRD_PARTY_MATERIALS.md).
 
 The preserved source projects remain read-only evidence. Normal app runtime
@@ -128,9 +115,8 @@ default is `https://example.invalid`:
 
 Use the checked-in Gradle wrapper with process-local Android SDK and JDK paths.
 For product changes, run JVM tests, lint, APK build, emulator device tests,
-explicit install/cold launch, and logcat review. The scanner-enabled graph must
-also pass when private local artifacts are available.
+explicit install/cold launch, and logcat review.
 
 `local.properties`, credentials, Firebase configuration, bearer sessions,
-generated builds, private scanner payloads, and emulator state must stay
+generated builds, local signing keys, and emulator state must stay
 outside Git.
