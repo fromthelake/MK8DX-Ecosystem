@@ -1,0 +1,77 @@
+/** Better Auth session redemption for the isolated A2 offline LAN mode. */
+import { APIError, createAuthEndpoint } from "better-auth/api";
+import { setSessionCookie } from "better-auth/cookies";
+import type { BetterAuthPlugin } from "better-auth";
+
+import {
+  OfflineInvitationTicketService,
+  type OfflineInvitationTarget,
+} from "./offline-invitation-ticket.js";
+
+export type OfflineInvitationAuthPluginOptions = Readonly<{
+  origin: string;
+  tickets: OfflineInvitationTicketService;
+  bindAccount(authUserId: string, target: OfflineInvitationTarget): Promise<void>;
+}>;
+
+export function offlineInvitationAuthPlugin(options: OfflineInvitationAuthPluginOptions) {
+  return {
+    id: "mk8dx-offline-invitation",
+    endpoints: {
+      redeemOfflineInvitation: createAuthEndpoint("/offline-invitation/redeem", {
+        method: "POST",
+        requireHeaders: true,
+      }, async (ctx) => {
+        // A token is submitted only in the JSON body, never a path or query.
+        // Requiring the exact HTTPS origin also prevents a foreign LAN page
+        // from spending somebody else's one-use ticket with the victim browser.
+        if (ctx.headers?.get("origin") !== options.origin) {
+          throw new APIError("FORBIDDEN", { code: "offline_invitation_origin_invalid" });
+        }
+        const body: unknown = ctx.body;
+        if (typeof body !== "object" || body === null || Array.isArray(body) ||
+            Object.keys(body).length !== 1 ||
+            typeof (body as Record<string, unknown>)["token"] !== "string") {
+          throw new APIError("BAD_REQUEST", { code: "offline_invitation_invalid" });
+        }
+        const token = (body as { token: string }).token;
+        let target: OfflineInvitationTarget;
+        try {
+          target = await options.tickets.redeem(token);
+        } catch {
+          // Do not disclose whether a ticket was unknown, expired or revoked.
+          throw new APIError("UNAUTHORIZED", { code: "offline_invitation_unavailable" });
+        }
+        const existing = await ctx.context.internalAdapter.findUserByEmail(target.authEmail);
+        let user = existing?.user;
+        if (user !== undefined && user.emailVerified !== true) {
+          throw new APIError("UNAUTHORIZED", { code: "offline_invitation_account_unavailable" });
+        }
+        if (user === undefined) {
+          user = await ctx.context.internalAdapter.createUser({
+            email: target.authEmail,
+            emailVerified: true,
+            name: "MK8DX account",
+          }, { method: "offline-invitation" });
+        }
+        if (user === undefined || user === null) {
+          throw new APIError("INTERNAL_SERVER_ERROR", { code: "offline_invitation_account_unavailable" });
+        }
+        // The existing binding service enforces that the verified Better Auth
+        // subject can only resolve to this explicit UserAccount.
+        await options.bindAccount(user.id, target);
+        const session = await ctx.context.internalAdapter.createSession(user.id);
+        if (session === null) {
+          throw new APIError("INTERNAL_SERVER_ERROR", { code: "offline_invitation_session_unavailable" });
+        }
+        await setSessionCookie(ctx, { session, user });
+        return ctx.json({ ok: true });
+      }),
+    },
+    rateLimit: [{
+      pathMatcher: (path: string) => path === "/offline-invitation/redeem",
+      window: 60,
+      max: 5,
+    }],
+  } satisfies BetterAuthPlugin;
+}
