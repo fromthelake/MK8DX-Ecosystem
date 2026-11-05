@@ -37,7 +37,10 @@ class GhostSelectGateTest {
                 fields.put(kind, JSONObject()
                     .put("id", slot.opt("id") ?: JSONObject.NULL)
                     .put("index", slot.opt("index") ?: JSONObject.NULL)
-                    .put("ok", slot.optBoolean("ok", false)))
+                    .put("ok", slot.optBoolean("ok", false))
+                    .put("score", slot.opt("score") ?: JSONObject.NULL)
+                    .put("margin", slot.opt("margin") ?: JSONObject.NULL)
+                    .put("ratio", slot.opt("ratio") ?: JSONObject.NULL))
             }
             owners.put(owner, fields)
         }
