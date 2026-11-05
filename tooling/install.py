@@ -9,8 +9,12 @@ import subprocess
 import getpass
 import ipaddress
 import stat
+import sys
 from pathlib import Path
 from urllib.parse import urlsplit
+
+if __package__ in (None, ""):
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 PROFILE = "operator-profile.json"
 SECRET = "secrets.json"
@@ -36,6 +40,22 @@ def safe_state_dir(value, *, existing):
                               getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
             raise ValueError("Installation file is a link or junction")
     return path
+
+
+def source_collection_dir(value):
+    """Validate a separately supplied source-build collection before state creation."""
+    path = Path(value)
+    if not path.is_absolute():
+        raise ValueError("Asset collection path must be absolute")
+    path = Path(os.path.abspath(path))
+    for part in (*reversed(path.parents), path):
+        if part.exists() and (part.is_symlink() or
+                              getattr(part.lstat(), "st_file_attributes", 0) &
+                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
+            raise ValueError("Asset collection path contains a link or junction")
+    if path.is_relative_to(ROOT) or not (path / "collection-manifest.v1.json").is_file() or not (path / "objects").is_dir():
+        raise ValueError("Use a complete external asset collection outside this repository")
+    return path
 SECRET_KEYS = ("MK8DX_HOSTED_MYSQL_PASSWORD", "MK8DX_HOSTED_AUTHENTICATION_LOOKUP_HMAC_KEY_BASE64",
                "MK8DX_HOSTED_TIME_TRIAL_ENCRYPTION_KEY_BASE64", "MK8DX_HOSTED_TIME_TRIAL_LOOKUP_HMAC_KEY_BASE64",
                "MK8DX_HOSTED_TOURNAMENT_ENCRYPTION_KEY_BASE64", "MK8DX_HOSTED_TOURNAMENT_LOOKUP_HMAC_KEY_BASE64",
@@ -55,20 +75,6 @@ def free_port(start):
             except OSError:
                 continue
     raise RuntimeError("No loopback port available")
-
-
-def container_readable(state):
-    """Let the API image's operator user (uid 10001) read operator.json through its bind mount.
-
-    A Linux Docker Engine applies host file permissions inside the container (Docker Desktop does not),
-    so a 0600 file owned by the installing account cannot be read by the operator commands. The file
-    becomes 0644 only inside a private (0700) installation directory, which keeps other host accounts out.
-    """
-    if os.name != "posix":
-        return
-    state = Path(state)
-    if stat.S_IMODE(state.stat().st_mode) & 0o077 == 0 and (state / "operator.json").is_file():
-        os.chmod(state / "operator.json", 0o644)
 
 
 def write_new(path, content):
@@ -178,6 +184,14 @@ def status(state):
         raise ValueError("Profile and Compose project differ; refusing ambiguous installation")
     if profile["bindAddress"] != compose["MK8DX_BIND_ADDRESS"]:
         raise ValueError("Profile and gateway bind address differ")
+    if profile["route"] == "A2_OFFLINE":
+        from tooling.offline_lan_ca_lifecycle import validate_signer
+        signer = validate_signer(state)
+        expected_ip = compose.get("MK8DX_LAN_IP")
+        if (expected_ip != profile["bindAddress"] or
+                profile["origin"] != f"https://{expected_ip}" or
+                signer["rootCertificateSha256"] != profile.get("rootCertificateSha256")):
+            raise ValueError("Offline CA, selected IP and installation profile disagree")
     api = read_dotenv(state / "api.env")
     operator = json.loads((state / "operator.json").read_text(encoding="utf-8"))
     public = json.loads((state / PUBLIC).read_text(encoding="utf-8"))
@@ -220,6 +234,8 @@ def change_origin(state, origin):
     state = safe_state_dir(state, existing=True)
     origin = valid_origin(origin)
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
+    if profile["route"] == "A2_OFFLINE":
+        raise ValueError("Offline LAN origin changes require CA signer and setup-QR rotation")
     if profile["origin"] == origin:
         print("unchanged")
         return
@@ -321,23 +337,31 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def compose_command(state):
     state = safe_state_dir(state, existing=True)
-    container_readable(state)
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
     values = read_dotenv(state / "compose.env")
     if values["MK8DX_PROJECT_NAME"] != profile["project"] or values["MK8DX_STATE_DIR"] != state.as_posix():
         raise ValueError("Saved profile and Compose path/project disagree")
     route = profile["route"]
-    suffix = {"A1": "compose.local.yaml", "A2": "compose.lan.yaml", "B1": "compose.production.yaml"}[route]
+    suffix = {"A1": "compose.local.yaml", "A2": "compose.lan.yaml",
+              "A2_OFFLINE": "compose.offline-lan.yaml", "B1": "compose.production.yaml"}[route]
     return ["docker", "compose", "--env-file", str(state / "compose.env"), "-f", str(ROOT / "compose.yaml"),
             "-f", str(ROOT / suffix), "-f", str(ROOT / "compose.images.yaml")]
 
 
 def run_compose(state, *parts):
     clean_env = {k: v for k, v in os.environ.items() if not k.startswith(("COMPOSE_", "MK8DX_"))}
-    subprocess.run(compose_command(state) + list(parts), cwd=ROOT, env=clean_env, check=True)
+    command = compose_command(state)
+    route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
+    arguments = list(parts)
+    if route == "A2_OFFLINE" and arguments and arguments[0] in ("up", "run"):
+        arguments[1:1] = ["--pull", "never"]
+    subprocess.run(command + arguments, cwd=ROOT, env=clean_env, check=True)
 
 
 def operate(state, action, backup_output=None):
+    route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
+    if route == "A2_OFFLINE" and action in ("setup", "start", "apply", "upgrade", "admin"):
+        raise ValueError("Offline LAN startup waits for the local invitation runtime; this profile is a foundation only")
     if action == "check":
         status(state)
         run_compose(state, "config", "--quiet")
@@ -394,7 +418,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "check", "check-database", "apply", "admin", "upgrade", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
     parser.add_argument("--state-dir", type=Path, required=True)
-    parser.add_argument("--mode", choices=["local", "lan", "production", "xampp", "shared"], default="local")
+    parser.add_argument("--mode", choices=["local", "lan", "offline-lan", "production", "xampp", "shared"], default="local")
     parser.add_argument("--domain", help="Production DNS name; HTTPS must reach this host")
     parser.add_argument("--smtp-host")
     parser.add_argument("--smtp-port", type=int, default=465)
@@ -411,6 +435,8 @@ def main():
     parser.add_argument("--db-user")
     parser.add_argument("--db-password-file", type=Path)
     parser.add_argument("--backup-input", type=Path)
+    parser.add_argument("--asset-collection-root", type=Path,
+                        help="External collection for a source-built Web/scanner image; kept outside Git")
     args = parser.parse_args()
     if args.action == "restore-local":
         from native_install import restore_local
@@ -431,7 +457,7 @@ def main():
         return
     native_route = None
     if args.action == "wizard":
-        print("A1: one computer with Docker; A2: private network; A3: XAMPP and Node.js; B1: Docker VPS; B2: shared Node.js hosting (documented for mijn.host)")
+        print("A1: one computer with Docker; A2: private network; A3: XAMPP and Node.js; B1: Docker VPS; B2: mijn.host Node.js hosting")
         selected = input("Choose A1, A2, A3, B1 or B2: ").strip().upper()
         if selected in ("A3", "B2"):
             from native_install import wizard as native_wizard
@@ -512,23 +538,36 @@ def main():
     target = safe_state_dir(args.state_dir, existing=False)
     if target.exists():
         raise SystemExit("Installation directory exists; reuse it, never regenerate keys")
-    if args.mode != "local" and not all((args.domain, args.smtp_host, args.smtp_user,
+    offline = args.mode == "offline-lan"
+    if offline:
+        from tooling.offline_lan_ca import private_lan_ip
+        if sys.platform != "win32":
+            raise SystemExit("Offline LAN CA provisioning currently requires a Windows host")
+        if not args.lan_bind_address:
+            raise SystemExit("Offline LAN needs --lan-bind-address")
+        args.domain = str(private_lan_ip(args.lan_bind_address))
+    if args.mode not in ("local", "offline-lan") and not all((args.domain, args.smtp_host, args.smtp_user,
                                         (getattr(args, "smtp_password", None) or args.smtp_password_file), args.smtp_from)):
         raise SystemExit("LAN/production requires address and operator SMTP settings")
-    if args.mode != "local" and args.smtp_port != 465:
+    if args.mode not in ("local", "offline-lan") and args.smtp_port != 465:
         raise SystemExit("LAN/production currently requires SMTP port 465 with implicit TLS")
     if args.mode != "local" and (not args.domain.isascii() or
                                       any(c not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-" for c in args.domain) or
                                       "." not in args.domain):
         raise SystemExit("Invalid website host name or LAN IP")
-    if args.mode == "lan":
+    if args.mode in ("lan", "offline-lan"):
         if not args.lan_bind_address:
             raise SystemExit("LAN needs --lan-bind-address")
         lan_address(args.lan_bind_address)
+    asset_collection = source_collection_dir(args.asset_collection_root) if args.asset_collection_root else None
     target.mkdir(mode=0o700, parents=True)
     os.chmod(target, 0o700)
+    ca_metadata = None
+    if offline:
+        from tooling.offline_lan_ca import provision
+        ca_metadata = provision(target, args.domain)
     local = args.mode == "local"
-    lan = args.mode == "lan"
+    lan = args.mode in ("lan", "offline-lan")
     http_port = free_port(18080) if local else (443 if lan else 80)
     mailpit_port = free_port(18025) if local else None
     origin = f"http://127.0.0.1:{http_port}" if local else f"https://{args.domain}"
@@ -561,23 +600,24 @@ def main():
         "MK8DX_HOSTED_AUTH_SECRETS_JSON": json.dumps([{"version": 1, "value": key()}], separators=(",", ":")),
         "MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON": json.dumps(["x-real-ip"]),
         "MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON": json.dumps(["127.0.0.1"]),
-        "MK8DX_HOSTED_SMTP_HOST": "mailpit" if local else args.smtp_host,
+        "MK8DX_HOSTED_SMTP_HOST": "mailpit" if local else ("" if offline else args.smtp_host),
         "MK8DX_HOSTED_SMTP_PORT": "1025" if local else str(args.smtp_port),
-        "MK8DX_HOSTED_SMTP_SECURE": "false" if local else "true",
-        "MK8DX_HOSTED_SMTP_USERNAME": "" if local else args.smtp_user,
-        "MK8DX_HOSTED_SMTP_PASSWORD": "" if local else (getattr(args, "smtp_password", None) or args.smtp_password_file.read_text(encoding="utf-8").strip()),
-        "MK8DX_HOSTED_SMTP_FROM_ADDRESS": "demo@mk8dx.example" if local else args.smtp_from,
+        "MK8DX_HOSTED_SMTP_SECURE": "false" if local or offline else "true",
+        "MK8DX_HOSTED_SMTP_USERNAME": "" if local or offline else args.smtp_user,
+        "MK8DX_HOSTED_SMTP_PASSWORD": "" if local or offline else (getattr(args, "smtp_password", None) or args.smtp_password_file.read_text(encoding="utf-8").strip()),
+        "MK8DX_HOSTED_SMTP_FROM_ADDRESS": "demo@mk8dx.example" if local else ("" if offline else args.smtp_from),
         "MK8DX_HOSTED_WEB_PRODUCER_VERSION": "timetrials-web-v1",
     }
     if local:
         runtime["MK8DX_LOCAL_DEMO"] = "true"
+    if offline:
+        runtime["MK8DX_OFFLINE_LAN"] = "true"
     smtp_password = runtime.pop("MK8DX_HOSTED_SMTP_PASSWORD")
     runtime["MK8DX_HOSTED_SMTP_PASSWORD_BASE64"] = base64.b64encode(smtp_password.encode("utf-8")).decode("ascii")
     write_new(target / "api.env", "".join(dotenv(runtime)))
     write_new(target / "operator.json", json.dumps({k: v for k, v in runtime.items()
                                                     if k.startswith("MK8DX_HOSTED_") and k != "MK8DX_HOSTED_SMTP_PASSWORD_BASE64"} |
                                                     {"MK8DX_HOSTED_SMTP_PASSWORD": smtp_password}, indent=2) + "\n")
-    container_readable(target)
     compose = {
         "MK8DX_PROJECT_NAME": "mk8dx-os-" + secrets.token_hex(5),
         "MK8DX_STATE_DIR": target.as_posix(),
@@ -592,16 +632,21 @@ def main():
         compose["MK8DX_MAILPIT_PORT"] = str(mailpit_port)
     else:
         compose["MK8DX_DOMAIN"] = args.domain
+        if offline:
+            compose["MK8DX_LAN_IP"] = args.domain
+    if asset_collection is not None:
+        compose["MK8DX_ASSET_COLLECTION_ROOT"] = asset_collection.as_posix()
     if not (ROOT / "images").is_dir():
         # A source checkout builds its own images: give them their own names so a build never replaces the release
         # images an installed host package runs (compose.yaml defaults to the release tags).
         compose["MK8DX_API_IMAGE"] = "mk8dx-source/api:local"
         compose["MK8DX_WEB_IMAGE"] = "mk8dx-source/web:local"
     write_new(target / "compose.env", "".join(dotenv(compose)))
-    write_json(target / PROFILE, {"schemaVersion": "mk8dx.operator.v1", "route": "A1" if local else ("A2" if lan else "B1"),
+    write_json(target / PROFILE, {"schemaVersion": "mk8dx.operator.v1", "route": "A1" if local else ("A2_OFFLINE" if offline else ("A2" if lan else "B1")),
                                   "origin": origin, "project": compose["MK8DX_PROJECT_NAME"],
                                   "httpPort": http_port, "bindAddress": compose["MK8DX_BIND_ADDRESS"],
-                                  "adminEmail": args.admin_email,
+                                  "adminEmail": None if offline else args.admin_email,
+                                  **({"rootCertificateSha256": ca_metadata["root"]["certificateSha256"]} if ca_metadata else {}),
                                   "smtp": {"host": runtime["MK8DX_HOSTED_SMTP_HOST"],
                                            "port": int(runtime["MK8DX_HOSTED_SMTP_PORT"]),
                                            "secure": runtime["MK8DX_HOSTED_SMTP_SECURE"] == "true",
