@@ -34,7 +34,7 @@ function config(overrides: Partial<EmbeddedAuthConfig> = {}): EmbeddedAuthConfig
 
 type Harness = Awaited<ReturnType<typeof harness>>;
 
-async function harness() {
+async function harness(offlineLan = false) {
   const database: MemoryDB = {
     mk8dx_auth_user: [],
     mk8dx_auth_session: [],
@@ -52,7 +52,7 @@ async function harness() {
     { async record(event) { audit.push(event); } },
   );
   const app = Fastify({ logger: false });
-  await registerEmbeddedAuthRoutes(app, auth, baseUrl);
+  await registerEmbeddedAuthRoutes(app, auth, baseUrl, offlineLan);
   const resolveSubject = createEmbeddedVerifiedSubjectResolver(auth);
   app.get("/test/subject", async (request, reply) => {
     const subject = await resolveSubject(request);
@@ -105,6 +105,28 @@ async function redeem(h: Harness, parsed: URL) {
 }
 
 describe("embedded passwordless auth", () => {
+  it("does not expose e-mail issuance or verification in offline LAN mode", async () => {
+    const h = await harness(true);
+    try {
+      const issued = await h.app.inject({
+        method: "POST", url: "/api/auth/sign-in/magic-link",
+        headers: browserHeaders, payload: { email: "player@example.test" },
+      });
+      expect(issued.statusCode).toBe(404);
+      expect(h.links).toHaveLength(0);
+      const verified = await h.app.inject({
+        method: "GET", url: "/api/auth/magic-link/verify?token=synthetic",
+      });
+      expect(verified.statusCode).toBe(404);
+      const encoded = await h.app.inject({
+        method: "GET", url: "/api/auth/magic-link%2Fverify?token=synthetic",
+      });
+      expect(encoded.statusCode).toBe(404);
+      expect(h.database.mk8dx_auth_session).toHaveLength(0);
+    } finally {
+      await h.app.close();
+    }
+  });
   it("rejects unsafe origin, secret, proxy, and client configuration", () => {
     const database = memoryAdapter({});
     const mail = { async sendMagicLink() {} };
