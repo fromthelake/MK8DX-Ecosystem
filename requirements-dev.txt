@@ -12,3 +12,8 @@ opencv-python-headless==5.0.0.93
 Pillow==13.0.0
 jsonschema==4.26.0
 pytest==9.2.0
+# Offline LAN CA provisioning tests; the isolated host closure is in
+# tooling/requirements-offline-lan.txt and ships only with that optional route.
+cryptography==50.0.0
+cffi==2.0.0
+pycparser==3.0
