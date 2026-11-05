@@ -17,6 +17,13 @@ updates:
     directory: /apps/timetrials-android
     schedule: {interval: weekly}
     open-pull-requests-limit: 5
+    # OpenCV 5 changes Hough Mat shape and warp pixels, crossing an active
+    # recognition margin. See docs/qa/OPENCV5_QUALIFICATION_2026-11-04.md.
+    # Reassess with the unified searcher/matcher/decision pipeline or OpenCV 5.1,
+    # no later than 2027-02-01. Security advisories still require review.
+    ignore:
+      - dependency-name: org.opencv:opencv
+        versions: ["[5.0,6.0)"]
     groups:
       minor-patch:
         applies-to: version-updates
@@ -30,6 +37,12 @@ updates:
     ignore:
       - dependency-name: mpmath
         versions: [">=1.4"]
+      # The OpenCV 5 QA comparison crosses an active recognition margin.
+      # Reassess with pipeline unification or OpenCV 5.1 by 2027-02-01.
+      - dependency-name: opencv-python
+        versions: [">=5,<6"]
+      - dependency-name: opencv-python-headless
+        versions: [">=5,<6"]
     groups:
       minor-patch:
         applies-to: version-updates
