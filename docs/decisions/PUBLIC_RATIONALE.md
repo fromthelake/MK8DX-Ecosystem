@@ -288,3 +288,17 @@ workflow; revisions and audit events record each settings change.
 may separately enable bounded sign-up with a closing time and a stated
 selection rule; sign-ups join the same roster and waiting-list workflow rather
 than replacing it.
+
+## ADR-0223
+
+**Optional offline LAN.** A separate, fully offline A2 installation will use a
+per-installation local CA for one LAN-IP HTTPS origin. HTTP exposes only setup
+instructions and the public CA certificate. The host-only administrator screen
+shows the setup QR and CA fingerprint; Android pairing requires explicit
+confirmation of that exact origin and CA key. Local, short-lived, one-use
+invitations activate accounts without automatically claiming a Player. Existing
+online authentication, routes and link grammar remain unchanged. Root trust
+constraints are not assumed to work until tested on each platform; protected
+CA backup, renewal, trust removal and an offline restart are required before
+the route is described as supported. This is an approved design direction,
+not an implemented or qualified installation mode; see [issue #90](https://github.com/fromthelake/MK8DX-Ecosystem/issues/90).
