@@ -17,6 +17,7 @@ import json
 import os
 import plistlib
 import re
+import stat
 import subprocess
 import sys
 import uuid
@@ -35,6 +36,19 @@ INTERMEDIATE_DAYS = 7
 SCHEMA = "mk8dx.offline-lan-ca.v1"
 PRIVATE_NETWORKS = tuple(ipaddress.ip_network(value) for value in
                          ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"))
+REPO_ROOT = Path(__file__).resolve().parents[1]
+
+
+def safe_private_path(value: Path) -> Path:
+    path = Path(os.path.abspath(value))
+    for part in (*reversed(path.parents), path):
+        if part.exists() and (part.is_symlink() or
+                              getattr(part.lstat(), "st_file_attributes", 0) &
+                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
+            raise ValueError("Private CA path contains a link or junction")
+    if path.is_relative_to(REPO_ROOT):
+        raise ValueError("Private CA state must remain outside Git")
+    return path
 
 
 def private_lan_ip(value: str) -> ipaddress.IPv4Address:
@@ -191,11 +205,39 @@ def _setup_files(directory: Path, cert: x509.Certificate, address: ipaddress.IPv
     _write_new(directory / "root.mobileconfig", plistlib.dumps(profile))
 
 
-def provision(state_dir: Path, ip: str, *, protect: Callable[[bytes], bytes] = protect_root) -> dict:
-    address = private_lan_ip(ip)
-    state_dir = state_dir.resolve()
-    if not state_dir.is_dir() or state_dir.is_symlink():
+def _issue_intermediate(root_key: ec.EllipticCurvePrivateKey, root: x509.Certificate,
+                        address: ipaddress.IPv4Address,
+                        now: datetime) -> tuple[ec.EllipticCurvePrivateKey, x509.Certificate]:
+    key = ec.generate_private_key(ec.SECP256R1())
+    cert = _ca_extensions(_builder(_name("MK8DX offline LAN intermediate"), root.subject,
+                                   key, now, INTERMEDIATE_DAYS), key, root_key,
+                          (ipaddress.ip_network(f"{address}/32"),), 0).sign(root_key, hashes.SHA256())
+    return key, cert
+
+
+def _verify_root(root_key: ec.EllipticCurvePrivateKey, root: x509.Certificate,
+                 now: datetime) -> None:
+    if root_key.public_key().public_numbers() != root.public_key().public_numbers():
+        raise ValueError("Root key and certificate disagree")
+    if root.not_valid_before_utc > now or root.not_valid_after_utc <= now + timedelta(days=8):
+        raise ValueError("Root certificate is not usable for a new intermediate")
+    root.public_key().verify(root.signature, root.tbs_certificate_bytes,
+                             ec.ECDSA(root.signature_hash_algorithm))
+    if root.extensions.get_extension_for_class(x509.BasicConstraints).value.path_length != 1:
+        raise ValueError("Root path constraint is invalid")
+    expected = [x509.IPAddress(network) for network in PRIVATE_NETWORKS]
+    if root.extensions.get_extension_for_class(x509.NameConstraints).value.permitted_subtrees != expected:
+        raise ValueError("Root IP constraints are invalid")
+
+
+def _provision_material(state_dir: Path, address: ipaddress.IPv4Address,
+                        root_key: ec.EllipticCurvePrivateKey, root: x509.Certificate,
+                        protect: Callable[[bytes], bytes]) -> dict:
+    state_dir = safe_private_path(state_dir)
+    if not state_dir.is_dir():
         raise ValueError("Use an existing, private installation state directory")
+    now = datetime.now(timezone.utc)
+    _verify_root(root_key, root, now)
     target = state_dir / "offline-ca"
     if target.exists():
         raise FileExistsError("Offline CA already exists; never regenerate it during an update")
@@ -206,17 +248,7 @@ def provision(state_dir: Path, ip: str, *, protect: Callable[[bytes], bytes] = p
     setup.mkdir(mode=0o700)
     _restrict(serving, directory=True)
     _restrict(setup, directory=True)
-    now = datetime.now(timezone.utc)
-    root_key = ec.generate_private_key(ec.SECP256R1())
-    root_name = _name("MK8DX offline LAN root")
-    root = _ca_extensions(_builder(root_name, root_name, root_key, now, ROOT_DAYS),
-                          root_key, root_key, PRIVATE_NETWORKS, 1).sign(root_key, hashes.SHA256())
-    intermediate_key = ec.generate_private_key(ec.SECP256R1())
-    intermediate_name = _name("MK8DX offline LAN intermediate")
-    intermediate = _ca_extensions(_builder(intermediate_name, root_name, intermediate_key,
-                                           now, INTERMEDIATE_DAYS), intermediate_key,
-                                  root_key, (ipaddress.ip_network(f"{address}/32"),),
-                                  0).sign(root_key, hashes.SHA256())
+    intermediate_key, intermediate = _issue_intermediate(root_key, root, address, now)
     _write_new(target / "root.key.dpapi", protect(_private_pem(root_key)))
     _write_new(serving / "root.pem", root.public_bytes(serialization.Encoding.PEM))
     _write_new(serving / "intermediate.pem", intermediate.public_bytes(serialization.Encoding.PEM))
@@ -228,6 +260,16 @@ def provision(state_dir: Path, ip: str, *, protect: Callable[[bytes], bytes] = p
                 "rotationDueAt": (now + timedelta(days=5)).isoformat()}
     _write_new(target / "metadata.json", (json.dumps(metadata, indent=2) + "\n").encode())
     return metadata
+
+
+def provision(state_dir: Path, ip: str, *, protect: Callable[[bytes], bytes] = protect_root) -> dict:
+    address = private_lan_ip(ip)
+    now = datetime.now(timezone.utc)
+    root_key = ec.generate_private_key(ec.SECP256R1())
+    root_name = _name("MK8DX offline LAN root")
+    root = _ca_extensions(_builder(root_name, root_name, root_key, now, ROOT_DAYS),
+                          root_key, root_key, PRIVATE_NETWORKS, 1).sign(root_key, hashes.SHA256())
+    return _provision_material(state_dir, address, root_key, root, protect)
 
 
 def main() -> None:
