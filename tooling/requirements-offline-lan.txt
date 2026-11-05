@@ -1,0 +1,5 @@
+# Exact host-side closure for the optional offline LAN CA provisioner.
+# Bundle these Windows wheels with the offline installer; never download at install time.
+cryptography==50.0.0
+cffi==2.0.0
+pycparser==3.0

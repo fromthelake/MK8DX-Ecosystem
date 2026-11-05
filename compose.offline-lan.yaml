@@ -1,0 +1,18 @@
+services:
+  web:
+    environment:
+      MK8DX_LAN_IP: ${MK8DX_LAN_IP:?}
+    volumes:
+      - ./infrastructure/docker/Caddyfile.offline-lan:/etc/caddy/Caddyfile:ro
+      - ${MK8DX_STATE_DIR:?}/offline-ca/serving:/run/mk8dx/ca:ro
+      - ${MK8DX_STATE_DIR:?}/offline-ca/setup:/run/mk8dx/setup:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports: !override
+      - "${MK8DX_BIND_ADDRESS:?}:80:80"
+      - "${MK8DX_BIND_ADDRESS:?}:443:443"
+    healthcheck:
+      test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile"]
+volumes:
+  caddy_data:
+  caddy_config:

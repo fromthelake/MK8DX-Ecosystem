@@ -1,0 +1,89 @@
+{
+  auto_https disable_redirects
+  default_sni {$MK8DX_LAN_IP}
+  skip_install_trust
+  pki {
+    ca mk8dx_offline {
+      root {
+        cert /run/mk8dx/ca/root.pem
+      }
+      intermediate {
+        cert /run/mk8dx/ca/intermediate.pem
+        key /run/mk8dx/ca/intermediate.key
+      }
+    }
+  }
+}
+
+http://{$MK8DX_LAN_IP} {
+  header Cache-Control "no-store"
+  header Referrer-Policy "no-referrer"
+  header X-Content-Type-Options "nosniff"
+  @setup_index path /setup /setup/
+  handle @setup_index {
+    rewrite * /index.html
+    root * /run/mk8dx/setup
+    file_server
+  }
+  handle /setup/root.crt {
+    header Content-Type "application/x-x509-ca-cert"
+    rewrite * /root.crt
+    root * /run/mk8dx/setup
+    file_server
+  }
+  handle /setup/root.mobileconfig {
+    header Content-Type "application/x-apple-aspen-config"
+    rewrite * /root.mobileconfig
+    root * /run/mk8dx/setup
+    file_server
+  }
+  handle {
+    redir https://{$MK8DX_LAN_IP}{uri} 308
+  }
+}
+
+https://{$MK8DX_LAN_IP} {
+  tls {
+    issuer internal {
+      ca mk8dx_offline
+    }
+  }
+  encode zstd gzip
+  @api path /api/* /v1/* /health/*
+  handle @api {
+    reverse_proxy api:8080
+  }
+  handle /.well-known/assetlinks.json {
+    root * /srv
+    header Content-Type application/json
+    file_server
+  }
+  handle /client-config.json {
+    root * /srv
+    header Content-Type application/json
+    file_server
+  }
+  handle_path /scanner/* {
+    root * /srv/scanner
+    file_server
+    header Cross-Origin-Opener-Policy same-origin
+    header Cross-Origin-Embedder-Policy require-corp
+    header Cross-Origin-Resource-Policy same-origin
+  }
+  handle /assets/* {
+    root * /srv
+    file_server
+  }
+  handle {
+    root * /srv
+    try_files {path} /index.html
+    file_server
+  }
+  @scanner_csp path /scanner/*
+  @web_csp not path /scanner/*
+  header @scanner_csp Content-Security-Policy-Report-Only "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+  header @web_csp Content-Security-Policy-Report-Only "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+  header X-Content-Type-Options nosniff
+  header Referrer-Policy same-origin
+  header X-Frame-Options DENY
+}
