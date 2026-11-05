@@ -20,7 +20,9 @@ import type { WebPushConfiguration } from "../notifications/web-push-delivery.js
 export type PasswordlessHostedRuntimeConfig = Readonly<{
   core: HostedApiCoreRuntimeConfig;
   authentication: EmbeddedAuthConfig;
-  smtp: SmtpMagicLinkConfig;
+  smtp?: SmtpMagicLinkConfig;
+  /** Isolated A2 mode: no e-mail delivery, Web Push or external imports. */
+  offlineLan?: boolean;
   webManual: Readonly<{
     producerVersion: string;
     csrfKeys: WebCsrfKeyMaterial;
@@ -50,12 +52,23 @@ export async function createPasswordlessHostedRuntime(
   config: PasswordlessHostedRuntimeConfig,
   createDelivery: HostedMagicLinkDeliveryFactory = createSmtpMagicLinkDelivery,
 ): Promise<PasswordlessHostedRuntime> {
-  const delivery = createDelivery(config.smtp);
+  if (config.offlineLan === true && (config.smtp !== undefined || config.webPush !== undefined)) {
+    throw new Error("offline LAN cannot configure SMTP or Web Push");
+  }
+  if (config.offlineLan !== true && config.smtp === undefined) {
+    throw new Error("hosted SMTP configuration is required");
+  }
+  const delivery = config.offlineLan === true ? null : createDelivery(config.smtp!);
   try {
-    await delivery.verify();
+    await delivery?.verify();
     const authentication: EmbeddedAuthenticationRuntimePolicy = {
       config: config.authentication,
-      emailDelivery: delivery,
+      emailDelivery: delivery ?? {
+        async sendMagicLink(): Promise<void> {
+          throw new Error("offline LAN sign-in requires a local invitation");
+        },
+      },
+      offlineLan: config.offlineLan === true,
     };
     const runtime = await createHostedApiRuntime(
       config.core,
@@ -95,12 +108,12 @@ export async function createPasswordlessHostedRuntime(
         try {
           await runtime.close();
         } finally {
-          delivery.close();
+          delivery?.close();
         }
       },
     };
   } catch (error) {
-    delivery.close();
+    delivery?.close();
     throw error;
   }
 }

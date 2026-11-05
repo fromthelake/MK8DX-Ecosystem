@@ -105,6 +105,33 @@ describe("passwordless hosted runtime configuration", () => {
     expect(config.webPush).toMatchObject({ subject: "mailto:operator@example.test" });
   });
 
+  it("keeps offline LAN on one private HTTPS IP without SMTP or Web Push", () => {
+    const offline = environment({
+      MK8DX_OFFLINE_LAN: "true",
+      MK8DX_HOSTED_AUTH_BASE_URL: "https://192.168.7.20",
+      MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON: JSON.stringify(["https://192.168.7.20"]),
+      MK8DX_HOSTED_SMTP_HOST: "",
+      MK8DX_HOSTED_SMTP_USERNAME: "",
+      MK8DX_HOSTED_SMTP_PASSWORD: "",
+      MK8DX_HOSTED_SMTP_FROM_ADDRESS: "",
+    });
+    const config = loadPasswordlessHostedRuntimeConfig(offline);
+    expect(config.offlineLan).toBe(true);
+    expect(config.smtp).toBeUndefined();
+    expect(config.webPush).toBeUndefined();
+    for (const override of [
+      { MK8DX_HOSTED_AUTH_BASE_URL: "https://mk8dx.example.test" },
+      { MK8DX_HOSTED_AUTH_BASE_URL: "https://8.8.8.8" },
+      { MK8DX_HOSTED_AUTH_BASE_URL: "http://192.168.7.20" },
+      { MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON: JSON.stringify(["https://192.168.7.20", "https://mk8dx.example.test"]) },
+      { MK8DX_HOSTED_SMTP_HOST: "smtp.example.test" },
+      { MK8DX_HOSTED_WEB_PUSH_SUBJECT: "mailto:owner@example.test" },
+    ]) {
+      expect(() => loadPasswordlessHostedRuntimeConfig(environment({ ...offline, ...override })))
+        .toThrow(HostedRuntimeConfigurationError);
+    }
+  });
+
   it("rejects unsafe database, path, JSON, key, boolean, and secret reuse", () => {
     for (const overrides of [
       { MK8DX_HOSTED_MYSQL_DATABASE: "mysql" },

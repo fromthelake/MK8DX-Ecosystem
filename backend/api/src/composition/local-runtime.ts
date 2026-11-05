@@ -603,6 +603,7 @@ export type LocalApiRuntimeRoutePolicies = Readonly<{
 export type EmbeddedAuthenticationRuntimePolicy = Readonly<{
   config: EmbeddedAuthConfig;
   emailDelivery: PasswordlessEmailDelivery;
+  offlineLan?: boolean;
 }>;
 
 function ensureWebCsrfKeySeparation(
@@ -1159,6 +1160,7 @@ async function createMysqlApiRuntime(
               baseUrl: authentication.kind === "embedded"
                 ? authentication.policy.config.baseUrl
                 : "",
+              offlineLan: authentication.kind === "embedded" && authentication.policy.offlineLan === true,
             },
           }),
       administratorOverview: {

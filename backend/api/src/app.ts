@@ -254,6 +254,7 @@ export type AppDependencies = Readonly<{
   embeddedAuth?: Readonly<{
     auth: EmbeddedPasswordlessAuth;
     baseUrl: string;
+    offlineLan?: boolean;
   }>;
   nativeEmailApproval?: Readonly<{
     service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
@@ -786,6 +787,7 @@ export async function buildApp(
       app,
       dependencies.embeddedAuth.auth,
       dependencies.embeddedAuth.baseUrl,
+      dependencies.embeddedAuth.offlineLan === true,
     );
   }
   if (dependencies.nativeEmailApproval !== undefined) {

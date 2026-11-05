@@ -465,6 +465,7 @@ export async function registerEmbeddedAuthRoutes(
   app: FastifyInstance,
   auth: EmbeddedPasswordlessAuth,
   baseUrl: string,
+  offlineLan = false,
 ): Promise<void> {
   const origin = exactOrigin(baseUrl, "auth route base URL");
   app.route({
@@ -472,6 +473,19 @@ export async function registerEmbeddedAuthRoutes(
     url: `${MK8DX_AUTH_BASE_PATH}/*`,
     async handler(request, reply) {
       const url = new URL(request.raw.url ?? request.url, origin);
+      const offlinePath = (() => {
+        try { return decodeURIComponent(url.pathname).toLowerCase(); }
+        catch { return ""; }
+      })();
+      if (offlineLan && (offlinePath === "" || [
+        `${MK8DX_AUTH_BASE_PATH}/sign-in/magic-link`,
+        `${MK8DX_AUTH_BASE_PATH}/magic-link/verify`,
+        `${MK8DX_AUTH_BASE_PATH}/change-email`,
+        `${MK8DX_AUTH_BASE_PATH}/verify-email`,
+      ].some((path) => offlinePath === path || offlinePath.startsWith(`${path}/`)))) {
+        return reply.code(404).send({ code: "offline_email_auth_unavailable",
+          message: "Use a local invitation from the host administrator." });
+      }
       const headers = fromNodeHeaders(request.headers);
       const requestBody = request.method === "GET" || request.body === undefined
         ? undefined

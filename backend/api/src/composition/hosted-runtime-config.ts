@@ -378,7 +378,33 @@ export function loadPasswordlessHostedRuntimeConfig(
   ]);
 
   const baseUrl = required(environment, "MK8DX_HOSTED_AUTH_BASE_URL");
+  const trustedOrigins = stringArray(environment, "MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON", 1, 8);
   const localDemo = environment["MK8DX_LOCAL_DEMO"] === "true";
+  const offlineLan = environment["MK8DX_OFFLINE_LAN"] === "true";
+  if (environment["MK8DX_OFFLINE_LAN"] !== undefined &&
+      !["true", "false"].includes(environment["MK8DX_OFFLINE_LAN"]!)) {
+    throw new HostedRuntimeConfigurationError("MK8DX_OFFLINE_LAN is invalid");
+  }
+  if (offlineLan) {
+    let origin: URL;
+    try { origin = new URL(baseUrl); } catch {
+      throw new HostedRuntimeConfigurationError("offline LAN origin is invalid");
+    }
+    const octets = origin.hostname.split(".").map(Number);
+    const privateIp = octets.length === 4 &&
+      (octets[0] === 10 || (octets[0] === 172 && octets[1]! >= 16 && octets[1]! <= 31) ||
+       (octets[0] === 192 && octets[1] === 168));
+    if (localDemo || origin.protocol !== "https:" || isIP(origin.hostname) !== 4 ||
+        !privateIp || origin.origin !== baseUrl || origin.pathname !== "/" ||
+        origin.search || origin.hash || origin.username || origin.password ||
+        trustedOrigins.length !== 1 || trustedOrigins[0] !== baseUrl ||
+        configuredWebPush !== undefined ||
+        ["MK8DX_HOSTED_SMTP_HOST", "MK8DX_HOSTED_SMTP_USERNAME",
+         "MK8DX_HOSTED_SMTP_PASSWORD", "MK8DX_HOSTED_SMTP_FROM_ADDRESS"]
+          .some((name) => (environment[name] ?? "").length > 0)) {
+      throw new HostedRuntimeConfigurationError("offline LAN requires an exact private-IP HTTPS origin and no external delivery");
+    }
+  }
   if (environment["MK8DX_LOCAL_DEMO"] !== undefined &&
       environment["MK8DX_LOCAL_DEMO"] !== "true") {
     throw new HostedRuntimeConfigurationError("MK8DX_LOCAL_DEMO is invalid");
@@ -405,6 +431,7 @@ export function loadPasswordlessHostedRuntimeConfig(
     );
   }
   return {
+    ...(offlineLan ? { offlineLan: true } : {}),
     core: {
       mysql,
       schema9CatalogPath,
@@ -426,12 +453,7 @@ export function loadPasswordlessHostedRuntimeConfig(
     authentication: {
       baseUrl,
       production: !localDemo,
-      trustedOrigins: stringArray(
-        environment,
-        "MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON",
-        1,
-        8,
-      ),
+      trustedOrigins,
       secrets,
       nativeClientIds: [
         MK8DX_ANDROID_CLIENT_ID,
@@ -451,7 +473,7 @@ export function loadPasswordlessHostedRuntimeConfig(
         16,
       ),
     },
-    smtp: {
+    ...(offlineLan ? {} : { smtp: {
       host: required(environment, "MK8DX_HOSTED_SMTP_HOST"),
       port: integer(environment, "MK8DX_HOSTED_SMTP_PORT", 465, 1, 65535),
       secure: boolean(environment, "MK8DX_HOSTED_SMTP_SECURE"),
@@ -462,7 +484,7 @@ export function loadPasswordlessHostedRuntimeConfig(
       fromAddress: required(environment, "MK8DX_HOSTED_SMTP_FROM_ADDRESS"),
       allowedLinkOrigin: baseUrl,
       localDemo,
-    },
+    } }),
     webManual: { producerVersion, csrfKeys: configuredCsrfKeys },
     ...(configuredWebPush === undefined ? {} : { webPush: configuredWebPush }),
   };
