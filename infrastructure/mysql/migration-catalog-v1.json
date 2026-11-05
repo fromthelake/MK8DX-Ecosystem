@@ -749,6 +749,15 @@
       "downPath": "migrations/0083_better_auth_account_issuer_optional.down.sql",
       "downSha256": "e3103f215a4dc8f71394000e31cfa07700c0b921a0f5c32ea479d3d55f8d2207",
       "destructiveDown": true
+    },
+    {
+      "version": "0084",
+      "name": "offline_lan_invitations",
+      "upPath": "migrations/0084_offline_lan_invitations.up.sql",
+      "upSha256": "7cdce8985a2000e10c9404576bdaea4a5efd738ef0af82f25aeaac4fe6b553c2",
+      "downPath": "migrations/0084_offline_lan_invitations.down.sql",
+      "downSha256": "8ab456494bac8abb5e34f8aa8c63f226bb78d5b0be2961384b37c869b304a9a4",
+      "destructiveDown": true
     }
   ]
 }
