@@ -4,6 +4,10 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { bearer, deviceAuthorization, magicLink } from "better-auth/plugins";
+import {
+  offlineInvitationAuthPlugin,
+  type OfflineInvitationAuthPluginOptions,
+} from "./offline-invitation-auth-plugin.js";
 
 export const MK8DX_PASSWORDLESS_ISSUER = "mk8dx_passwordless_v1";
 export const MK8DX_AUTH_BASE_PATH = "/api/auth";
@@ -258,6 +262,7 @@ export function createEmbeddedPasswordlessAuth(
   emailDelivery: PasswordlessEmailDelivery,
   auditSink: EmbeddedAuthAuditSink,
   accountLookup?: PasswordlessAccountLookup,
+  offlineInvitation?: OfflineInvitationAuthPluginOptions,
 ) {
   const validated = validateConfig(config);
   const currentSecret = validated.secrets[0]!.value;
@@ -387,6 +392,7 @@ export function createEmbeddedPasswordlessAuth(
         schema: { deviceCode: { modelName: "mk8dx_auth_device_code" } },
       }),
       bearer(),
+      ...(offlineInvitation === undefined ? [] : [offlineInvitationAuthPlugin(offlineInvitation)]),
     ],
     databaseHooks: {
       user: {

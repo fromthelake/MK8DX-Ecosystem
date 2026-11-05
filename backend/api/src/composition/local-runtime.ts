@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { isAbsolute } from "node:path";
-import { randomBytes, randomUUID } from "node:crypto";
+import { createHmac, randomBytes, randomUUID } from "node:crypto";
 import {
   MysqlSubmissionFeedbackRepository,
   SubmissionFeedbackService,
@@ -66,6 +66,10 @@ import { MysqlEmbeddedAuthAuditSink } from
   "../authentication/mysql-embedded-auth-audit-sink.js";
 import { MysqlPasswordlessAccountLookup } from
   "../authentication/mysql-passwordless-account-lookup.js";
+import { MysqlOfflineInvitationTicketRepository } from
+  "../authentication/mysql-offline-invitation-tickets.js";
+import { OfflineInvitationTicketService } from
+  "../authentication/offline-invitation-ticket.js";
 import {
   Schema9AssetCatalog,
   TimeTrialSchema9AssetCatalogAdapter,
@@ -665,6 +669,34 @@ async function createMysqlApiRuntime(
     retained: config.authenticationRetainedKeys ?? [],
   });
   const bindingRepository = new MysqlAuthenticationBindingRepository(pool, clock);
+  const offlineInvitation = authentication.kind === "embedded" &&
+      authentication.policy.offlineLan === true
+    ? {
+        origin: new URL(authentication.policy.config.baseUrl).origin,
+        tickets: new OfflineInvitationTicketService(
+          new MysqlOfflineInvitationTicketRepository(pool),
+          createHmac("sha256", Buffer.from(authentication.policy.config.secrets[0]!.value, "base64"))
+            .update("mk8dx.offline-invitation-digest.v1", "ascii").digest(),
+        ),
+        async bindAccount(authUserId: string,
+                          target: import("../authentication/offline-invitation-ticket.js").OfflineInvitationTarget) {
+          const subject = authenticationSubjectProtector
+            .protectVerifiedSubjectCandidates(MK8DX_PASSWORDLESS_ISSUER, authUserId)[0];
+          if (subject === undefined) { throw new Error("offline auth subject unavailable"); }
+          await new AuthenticationProvisioningService(
+            new MysqlAuthenticationProvisioningRepository(pool),
+            { async decide() { return { action: "link_account" as const,
+              userAccountId: target.userAccountId }; } },
+            {
+              newUserAccountId: () => `user_account.${randomUUID()}`,
+              newAuthenticationBindingId: () => `restricted_auth_binding.${randomUUID()}`,
+            },
+            clock,
+            "authentication_provisioner.offline_invitation_v1",
+          ).provision(subject);
+        },
+      }
+    : undefined;
   const embeddedAuth = authentication.kind === "embedded"
     ? createEmbeddedPasswordlessAuth(
         pool,
@@ -672,6 +704,7 @@ async function createMysqlApiRuntime(
         authentication.policy.emailDelivery,
         new MysqlEmbeddedAuthAuditSink(pool, clock),
         new MysqlPasswordlessAccountLookup(pool),
+        offlineInvitation,
       )
     : null;
   const rawSubjectResolver = authentication.kind === "external"
