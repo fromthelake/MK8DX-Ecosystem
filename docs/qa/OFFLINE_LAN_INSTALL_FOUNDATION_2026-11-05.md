@@ -22,5 +22,7 @@ update all origin-bound fields as one reviewed operation.
 
 On Windows, the separate disposable CA venv ran eight focused CA/lifecycle/
 installer tests, and `docker compose config --quiet` succeeded for the new
-profile. The existing four installation-route tests passed. No container,
+profile. Of the existing OSS installation-route tests, three passed on Windows
+and one Linux permission test was skipped there; Verify exercises that test
+on Linux. No container,
 browser, Android device or physical phone was used for this foundation step.

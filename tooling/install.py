@@ -42,20 +42,6 @@ def safe_state_dir(value, *, existing):
     return path
 
 
-def source_collection_dir(value):
-    """Validate a separately supplied source-build collection before state creation."""
-    path = Path(value)
-    if not path.is_absolute():
-        raise ValueError("Asset collection path must be absolute")
-    path = Path(os.path.abspath(path))
-    for part in (*reversed(path.parents), path):
-        if part.exists() and (part.is_symlink() or
-                              getattr(part.lstat(), "st_file_attributes", 0) &
-                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
-            raise ValueError("Asset collection path contains a link or junction")
-    if path.is_relative_to(ROOT) or not (path / "collection-manifest.v1.json").is_file() or not (path / "objects").is_dir():
-        raise ValueError("Use a complete external asset collection outside this repository")
-    return path
 SECRET_KEYS = ("MK8DX_HOSTED_MYSQL_PASSWORD", "MK8DX_HOSTED_AUTHENTICATION_LOOKUP_HMAC_KEY_BASE64",
                "MK8DX_HOSTED_TIME_TRIAL_ENCRYPTION_KEY_BASE64", "MK8DX_HOSTED_TIME_TRIAL_LOOKUP_HMAC_KEY_BASE64",
                "MK8DX_HOSTED_TOURNAMENT_ENCRYPTION_KEY_BASE64", "MK8DX_HOSTED_TOURNAMENT_LOOKUP_HMAC_KEY_BASE64",
@@ -75,6 +61,15 @@ def free_port(start):
             except OSError:
                 continue
     raise RuntimeError("No loopback port available")
+
+
+def container_readable(state):
+    """Allow the API's uid 10001 to read operator.json inside a private state directory."""
+    if os.name != "posix":
+        return
+    state = Path(state)
+    if stat.S_IMODE(state.stat().st_mode) & 0o077 == 0 and (state / "operator.json").is_file():
+        os.chmod(state / "operator.json", 0o644)
 
 
 def write_new(path, content):
@@ -337,6 +332,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def compose_command(state):
     state = safe_state_dir(state, existing=True)
+    container_readable(state)
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
     values = read_dotenv(state / "compose.env")
     if values["MK8DX_PROJECT_NAME"] != profile["project"] or values["MK8DX_STATE_DIR"] != state.as_posix():
@@ -435,8 +431,6 @@ def main():
     parser.add_argument("--db-user")
     parser.add_argument("--db-password-file", type=Path)
     parser.add_argument("--backup-input", type=Path)
-    parser.add_argument("--asset-collection-root", type=Path,
-                        help="External collection for a source-built Web/scanner image; kept outside Git")
     args = parser.parse_args()
     if args.action == "restore-local":
         from native_install import restore_local
@@ -457,7 +451,7 @@ def main():
         return
     native_route = None
     if args.action == "wizard":
-        print("A1: one computer with Docker; A2: private network; A3: XAMPP and Node.js; B1: Docker VPS; B2: mijn.host Node.js hosting")
+        print("A1: one computer with Docker; A2: private network; A3: XAMPP and Node.js; B1: Docker VPS; B2: shared Node.js hosting (documented for mijn.host)")
         selected = input("Choose A1, A2, A3, B1 or B2: ").strip().upper()
         if selected in ("A3", "B2"):
             from native_install import wizard as native_wizard
@@ -559,7 +553,6 @@ def main():
         if not args.lan_bind_address:
             raise SystemExit("LAN needs --lan-bind-address")
         lan_address(args.lan_bind_address)
-    asset_collection = source_collection_dir(args.asset_collection_root) if args.asset_collection_root else None
     target.mkdir(mode=0o700, parents=True)
     os.chmod(target, 0o700)
     ca_metadata = None
@@ -618,6 +611,7 @@ def main():
     write_new(target / "operator.json", json.dumps({k: v for k, v in runtime.items()
                                                     if k.startswith("MK8DX_HOSTED_") and k != "MK8DX_HOSTED_SMTP_PASSWORD_BASE64"} |
                                                     {"MK8DX_HOSTED_SMTP_PASSWORD": smtp_password}, indent=2) + "\n")
+    container_readable(target)
     compose = {
         "MK8DX_PROJECT_NAME": "mk8dx-os-" + secrets.token_hex(5),
         "MK8DX_STATE_DIR": target.as_posix(),
@@ -634,8 +628,6 @@ def main():
         compose["MK8DX_DOMAIN"] = args.domain
         if offline:
             compose["MK8DX_LAN_IP"] = args.domain
-    if asset_collection is not None:
-        compose["MK8DX_ASSET_COLLECTION_ROOT"] = asset_collection.as_posix()
     if not (ROOT / "images").is_dir():
         # A source checkout builds its own images: give them their own names so a build never replaces the release
         # images an installed host package runs (compose.yaml defaults to the release tags).
