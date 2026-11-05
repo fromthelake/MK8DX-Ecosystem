@@ -29,8 +29,9 @@ const CATALOGED_MIGRATIONS = CATALOGED_MIGRATION_VERSIONS.length;
 // defaults) and two per-night rating columns on tournaments (ADR-0221); 0082 adds the empty open sign-up tables, an empty
 // notification column and three notification kinds (ADR-0222); 0083 makes the Better Auth account issuer optional
 // (auth tables are never restored from a snapshot). A snapshot taken
-// before these migrations reached production is completed locally.
-const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083"]);
+// before these migrations reached production is completed locally. 0084 adds only
+// empty offline-LAN account and invitation tables; no snapshot row maps into them.
+const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084"]);
 // Nullable columns those migrations add to tables the snapshot carries. A snapshot taken before the migration lacks
 // them; its rows restore into the remaining columns and the new column stays NULL, as it would in production.
 const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
