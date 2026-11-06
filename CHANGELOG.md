@@ -5,6 +5,20 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Recognition
+
+- Android and the browser scanner move from OpenCV 4.10 to OpenCV 5.0; the
+  Python clients already pin OpenCV 5.0. The Android geometry/Hough adapter
+  and the browser WASM loader follow the new APIs.
+- Shared Ghost Select picker 2 (field semantics 0.4.2) lets a reliable icon
+  resolve a shorter OCR name within a longer catalog name, such as
+  `Normal`/`Normal Blue`. The earlier two HDMI misreads are corrected without
+  changing thresholds; see the [qualification report](docs/qa/OPENCV5_REQUALIFICATION_2026-11-05.md).
+- Three-lap ghost time fields are aligned before the shifted column read;
+  when several lap-sum repairs fit the pixels, only a uniquely improving
+  field fit is selected. The seven-lap order and recognition thresholds stay
+  unchanged. Same-source 4.10/5.0 qualification is recorded in the report.
+
 ## 0.1.0 — 2026-11-04
 
 ### Release packages and support

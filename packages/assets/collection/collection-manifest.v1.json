@@ -86850,7 +86850,7 @@
       ],
       "format": "json",
       "role": "central-recognition-pack",
-      "sha256": "2f16d813bd258bedad18070415c568eee0a47c84e6f43cddda56b31f50a7833b",
+      "sha256": "4bcbfeea283007e887d5c6d6a2c8c605b5c3b14b8b687f9af3f0726547889ab3",
       "sizeBytes": 972449,
       "sourceId": "recognition-pack",
       "sourceRelativePath": "manifest.json"
@@ -105304,7 +105304,7 @@
       ],
       "format": "json",
       "role": "native-scan-runtime",
-      "sha256": "041203126252fac2fe911744dba5f532a85d6b7f943ae8a773c24b356341495d",
+      "sha256": "39ce30df7a1a1d901335cab6a1eea631fab503db44e757743a8f4a8250a3c6be",
       "sizeBytes": 244,
       "sourceId": "scan-stage",
       "sourceRelativePath": "shared_icon/recognition-pack.json"
@@ -207074,7 +207074,7 @@
       "sourceRelativePath": "segment_templates/template_7segments_18x29.png"
     }
   },
-  "releaseVersion": "master-schema9-v5.10-pack-0.4.1-2026-11-02-r9d",
+  "releaseVersion": "master-schema9-v5.10-pack-0.4.2-2026-11-05-r1",
   "schemaVersion": "mk8dx.internal-asset-collection.v1",
   "selection": "catalog runtime images; pinned scanner and icon variants; distinct recorded/live tournament resources",
   "sources": {
@@ -207123,7 +207123,7 @@
       ],
       "fileCount": 5397,
       "role": "central-recognition-pack",
-      "treeSha256": "5a9d047cbe4db4ad05dc3960e6d261d801fe39329449cfb7455675bb42315c8f"
+      "treeSha256": "f4da47a39e2e3c24e71fd16f89fce5366b516c0afba703298a5bcc11f07e0e7f"
     },
     "scan-stage": {
       "consumers": [
@@ -207132,7 +207132,7 @@
       ],
       "fileCount": 1515,
       "role": "native-scan-runtime",
-      "treeSha256": "a8347218b5c1e9290fad4643a001369037edc129f9bc4dd9aacf3a0fac85c0b8"
+      "treeSha256": "3cd153a63f40c7e2a35b749a8aa3a29d11d90ab3c00be5aea7dd5266e775819d"
     },
     "scanner-runtime": {
       "consumers": [

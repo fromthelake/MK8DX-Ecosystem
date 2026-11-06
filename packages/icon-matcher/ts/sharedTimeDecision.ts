@@ -103,3 +103,10 @@ export function repairGuard(lapSumOk: boolean, repairCount: number, minDigitConf
   if (!lapSumOk || repairCount === 0 || minDigitConfidence >= REPAIR_MIN_DIGIT_CONFIDENCE) return null;
   return { kind: 'repair_confidence_guard', min_digit_confidence: minDigitConfidence, threshold: REPAIR_MIN_DIGIT_CONFIDENCE };
 }
+
+/** A refinement cannot displace a closed seed if its own closure fails the confidence guard. */
+export function preferClosedSeed(seedLapSumOk: boolean, refinedLapSumOk: boolean,
+  refinedRepairCount: number, refinedMinDigitConfidence: number): boolean {
+  return seedLapSumOk && (!refinedLapSumOk
+    || repairGuard(refinedLapSumOk, refinedRepairCount, refinedMinDigitConfidence) !== null);
+}

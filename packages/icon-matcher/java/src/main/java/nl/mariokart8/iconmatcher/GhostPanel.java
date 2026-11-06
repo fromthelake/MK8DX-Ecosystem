@@ -21,7 +21,7 @@ import org.json.JSONObject;
  * decides every field on its own (frame-decision-v1). Pixels come through a {@link CropSource}.
  */
 public final class GhostPanel {
-    public static final String PICKER_VERSION = "1";
+    public static final String PICKER_VERSION = "2";
     public static final double RELIABLE_COLOUR_RESIDUAL = 28.0;
     private static final double FAMILY_MARGIN_MIN = 0.02;
     private static final double SHAPE_BACKING_MIN = 0.75;
@@ -298,6 +298,35 @@ public final class GhostPanel {
         return family == null ? id : family;
     }
 
+    /** A complete word sequence from a shorter catalog name within a longer one. */
+    private static boolean nameWordsWithin(String shorter, String longer) {
+        List<String> part = nameWords(shorter), whole = nameWords(longer);
+        if (part.isEmpty() || whole.size() <= part.size()) return false;
+        for (int start = 0; start <= whole.size() - part.size(); start++) {
+            if (whole.subList(start, start + part.size()).equals(part)) return true;
+        }
+        return false;
+    }
+
+    private static List<String> nameWords(String value) {
+        List<String> out = new ArrayList<>();
+        if (value == null) return out;
+        String lower = value.toLowerCase(Locale.ROOT);
+        StringBuilder word = new StringBuilder();
+        for (int i = 0; i < lower.length();) {
+            int cp = lower.codePointAt(i);
+            i += Character.charCount(cp);
+            if (Character.isLetter(cp) || Character.isDigit(cp)) {
+                word.appendCodePoint(cp);
+            } else if (word.length() > 0) {
+                out.add(word.toString());
+                word.setLength(0);
+            }
+        }
+        if (word.length() > 0) out.add(word.toString());
+        return out;
+    }
+
     /** Eroded-cutout RGB distance inside the chosen family (Python refinement cutout_rgb). */
     private static String cutoutTop(Placed placed, IconGroup group) {
         Family family = placed.match.familyTop.get(0);
@@ -415,7 +444,11 @@ public final class GhostPanel {
         String topFamily = familyOf(refs, topIds.get(0));
         String[] result = null;
         boolean accepted = false;
-        if (strong != null) {
+        if (strong != null && reliable && used.match.accepted && !strong.equals(topFamily)
+                && nameWordsWithin(names.get(nameId), names.get(topFamily))) {
+            result = new String[]{topIds.get(0), "partial_name_top_icon"};
+            accepted = true;
+        } else if (strong != null) {
             List<String> inIcons = new ArrayList<>();
             for (String id : topIds) if (strong.equals(familyOf(refs, id))) inIcons.add(id);
             if (strong.equals(familyOf(refs, shapeId))) inIcons.add(shapeId);

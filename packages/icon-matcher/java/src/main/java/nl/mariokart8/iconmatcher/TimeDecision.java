@@ -145,4 +145,12 @@ public final class TimeDecision {
     public static boolean repairGuardApplies(boolean lapSumOk, int repairCount, double minDigitConfidence) {
         return lapSumOk && repairCount > 0 && minDigitConfidence < REPAIR_MIN_DIGIT_CONFIDENCE;
     }
+
+
+    /** A refinement cannot displace a closed seed if its closure fails the confidence guard. */
+    public static boolean preferClosedSeed(boolean seedLapSumOk, boolean refinedLapSumOk,
+            int refinedRepairCount, double refinedMinDigitConfidence) {
+        return seedLapSumOk && (!refinedLapSumOk || repairGuardApplies(
+                refinedLapSumOk, refinedRepairCount, refinedMinDigitConfidence));
+    }
 }

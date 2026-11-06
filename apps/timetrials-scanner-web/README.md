@@ -4,6 +4,9 @@ The scanner reads a Mario Kart 8 Deluxe Time Trial result from a camera image or
 browser. A detector (ONNX model) finds the result card, the [central reader](../../packages/icon-matcher/README.md)
 decides times, character, kart parts and flag, and the result goes to the website's review form on the same
 origin. The website serves the scanner at `/scanner/`.
+The scanner uses the pinned OpenCV.js 5.0.0 WASM build; the Android scan runtime
+uses OpenCV 5.0.0.1. Both were qualified against their 4.x baselines on the
+same source and recognition inputs before this update.
 
 ## Build
 

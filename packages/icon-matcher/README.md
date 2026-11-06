@@ -10,8 +10,15 @@ the lap rows and the Select-a-Ghost panel are. It exists three times, kept equal
 | TypeScript | `ts/` | the browser scanner (`apps/timetrials-scanner-web`) |
 | Java | `java/`, `java-result/` | the Android scan runtime |
 
-The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, currently `0.4.1`). The Python,
+The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, source candidate `0.4.2`). The Python,
 TypeScript and Java declarations must be equal; `python/tests/test_version.py` checks this.
+
+Ghost Select picker version 2 can use an independently accepted top icon to
+complete a shorter printed name contained as whole words in a longer catalog
+name (for example `Normal`/`Normal Blue`), provided panel colour is reliable.
+It leaves the OCR variant order and acceptance thresholds unchanged. See
+[`OPENCV5_REQUALIFICATION_2026-11-05.md`](../../docs/qa/OPENCV5_REQUALIFICATION_2026-11-05.md)
+for the same-source qualification.
 
 > In this repository the browser scanner uses the reader. The Android, LiveTrial and Tournament sources here
 > are an earlier snapshot that still carries its own recognition; they move to the central reader in a later

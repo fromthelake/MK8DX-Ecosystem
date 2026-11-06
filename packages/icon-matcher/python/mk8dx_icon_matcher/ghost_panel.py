@@ -37,7 +37,7 @@ from .flag_rank import flag_band_ratio
 from .matcher import BOX, IconMatcher, MatchResult
 from .shape_rank import rank_icon_shape
 
-GHOST_PANEL_PICKER_VERSION = "1"
+GHOST_PANEL_PICKER_VERSION = "2"
 # Panel colour-fit residual (panel_photometric) above which colours are not trusted:
 # HDMI 5-19, phone 15-23, webcam 33-45 on the labelled sets.
 RELIABLE_COLOUR_RESIDUAL = 28.0
@@ -159,6 +159,26 @@ def _family(matcher: IconMatcher, rid: str | None) -> str | None:
     return None if rid is None else matcher.references.family.get(rid, rid)
 
 
+def _name_words_within(shorter: str, longer: str) -> bool:
+    """Whether a shorter catalog name occurs as complete words in a longer one."""
+    def words(value: str) -> list[str]:
+        out: list[str] = []
+        current: list[str] = []
+        for char in value.lower():
+            if char.isalpha() or char.isdecimal():
+                current.append(char)
+            elif current:
+                out.append("".join(current))
+                current = []
+        if current:
+            out.append("".join(current))
+        return out
+
+    part, whole = words(shorter), words(longer)
+    return bool(part) and len(whole) > len(part) and any(
+        whole[start:start + len(part)] == part for start in range(len(whole) - len(part) + 1))
+
+
 def _cutout_top(placed: Placed, matcher: IconMatcher) -> str | None:
     """The second colour opinion: eroded-cutout RGB ranking inside the chosen family."""
     family = placed.match.family_top[0]
@@ -264,6 +284,12 @@ def decide_part(field: str, placed: Placed, matcher: IconMatcher, text: str | No
                 "top": [[c.id, round(c.score, 4)] for c in used.match.top[:3]]}
 
     if strong:
+        # A shorter printed name is incomplete evidence when the independently
+        # accepted top icon names a longer catalog entry containing those words.
+        top_family = _family(matcher, top_ids[0])
+        if (reliable and used.match.status == "accepted" and top_family != strong
+                and _name_words_within(names.get(name_id, ""), names.get(top_family, ""))):
+            return result(top_ids[0], True, "partial_name_top_icon")
         in_icons = [rid for rid in top_ids if _family(matcher, rid) == strong]
         if _family(matcher, shape_id) == strong:
             in_icons.append(shape_id)
@@ -272,7 +298,6 @@ def decide_part(field: str, placed: Placed, matcher: IconMatcher, text: str | No
             return result(relation, bool(in_icons), "name_family_character_colour")
         if in_icons:
             return result(in_icons[0], not has_variants(strong) or reliable, "name_family_icon_colour")
-        top_family = _family(matcher, top_ids[0])
         if (_family(matcher, shape_id) == top_family and top_family and top_family.startswith(strong + "_")):
             return result(top_ids[0], True, "icons_over_name_prefix")
         if fuzzy >= NAME_ALONE_FUZZY and margin >= NAME_ALONE_MARGIN:

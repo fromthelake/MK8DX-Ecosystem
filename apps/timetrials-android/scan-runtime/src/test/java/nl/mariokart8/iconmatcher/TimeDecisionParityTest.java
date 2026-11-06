@@ -14,6 +14,15 @@ import org.junit.Test;
 
 /** The Java time decision against the Python reference (packages/icon-matcher/vectors/time-decision-v1.json). */
 public class TimeDecisionParityTest {
+    @Test
+    public void weakRepairedRefinementCannotDisplaceClosedSeed() {
+        assertEquals(true, TimeDecision.preferClosedSeed(true, true, 1, 0.609));
+        assertEquals(false, TimeDecision.preferClosedSeed(true, true, 1, 0.65));
+        assertEquals(false, TimeDecision.preferClosedSeed(true, true, 0, 0.609));
+        assertEquals(true, TimeDecision.preferClosedSeed(true, false, 0, 1));
+        assertEquals(false, TimeDecision.preferClosedSeed(false, true, 1, 0.609));
+    }
+
     private static List<String> strings(JSONArray array) throws Exception {
         List<String> out = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) out.add(array.getString(i));

@@ -14,7 +14,7 @@
     "test": "playwright test"
   },
   "dependencies": {
-    "@techstark/opencv-js": "4.10.0-release.1",
+    "@techstark/opencv-js": "5.0.0-release.1",
     "onnxruntime-web": "1.31.1",
     "tesseract.js": "^7.0.0"
   },

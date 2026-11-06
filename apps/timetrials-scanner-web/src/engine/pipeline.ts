@@ -21,7 +21,7 @@ import { fitOpticalBadgeRowQuad } from './opticalBadgeRowQuad';
 import { fitCanonicalPunctuationShear } from './canonicalPunctuationShear';
 import { withholdSparseRecoveryIdentities } from './sparseRecoveryIdentityGuard';
 import { SEGMENT_KEYS, SegmentTemplate, bestSegmentCandidate, canonicalSegmentSlotSize, decodePattern, segmentScores } from './segments';
-import { lapSumClosure, lapSumComplete, repairGuard } from '../../../../packages/icon-matcher/ts/sharedTimeDecision';
+import { lapSumClosure, lapSumComplete, preferClosedSeed, repairGuard } from '../../../../packages/icon-matcher/ts/sharedTimeDecision';
 import type { Detection, DetectionResult, FieldDetail, Frame, FrameDiagnostics, FrameResult, IdentityEntry, KartConfigResult, LayoutProfile, OwnerIdentity } from './types';
 
 const CANONICAL_PLAYER_BOX_RACE7 = [548.0, 362.0, 1231.0, 661.0];
@@ -246,7 +246,9 @@ function cleanupMask(input: any): any {
     const fillCoverage = c.countNonZero(holes) / Math.max(1.0, holes.rows * holes.cols);
     if (fillCoverage <= 0.85) holes.copyTo(cleaned);
     holes.delete();
-    return cleaned.clone();
+    const output = new c.Mat();
+    cleaned.copyTo(output);
+    return output;
   } finally {
     binary.delete();
     labels.delete();
@@ -258,7 +260,8 @@ function cleanupMask(input: any): any {
 
 function fillHoles(mask: any): any {
   const c = cv();
-  const flood = mask.clone();
+  const flood = new c.Mat();
+  mask.copyTo(flood);
   const floodMask = c.Mat.zeros(mask.rows + 2, mask.cols + 2, c.CV_8UC1);
   const inverted = new c.Mat();
   const filled = new c.Mat();
@@ -266,7 +269,9 @@ function fillHoles(mask: any): any {
     c.floodFill(flood, floodMask, new c.Point(0, 0), new c.Scalar(255));
     c.bitwise_not(flood, inverted);
     c.bitwise_or(mask, inverted, filled);
-    return filled.clone();
+    const output = new c.Mat();
+    filled.copyTo(output);
+    return output;
   } finally {
     flood.delete();
     floodMask.delete();
@@ -282,7 +287,9 @@ function houghLines(edges: any): Line[] {
   try {
     c.HoughLinesP(edges, raw, 1.0, Math.PI / 180.0, 35, HOUGH_MIN_LINE_LENGTH_PX, 22.0);
     const d = raw.data32S as Int32Array;
-    for (let i = 0; i < raw.rows; i++) lines.push(new Line(d[i * 4], d[i * 4 + 1], d[i * 4 + 2], d[i * 4 + 3]));
+    // OpenCV 4 returns N×1 and OpenCV 5 returns 1×N for the same line values.
+    // The data buffer contains every segment in both layouts.
+    for (let i = 0; i < d.length / 4; i++) lines.push(new Line(d[i * 4], d[i * 4 + 1], d[i * 4 + 2], d[i * 4 + 3]));
     return lines;
   } finally {
     raw.delete();
@@ -835,7 +842,15 @@ function buildSlotDetails(canonical: any, grid: DynamicGrid, ghostDetail: boolea
     if (!read.validFormat) read.rejectionReason = 'invalid_format_or_unknown_digit';
     details.fields.push(read);
   }
-  if (ghostLapColumnCandidate) applyGhostLapColumnCandidate(canonical, details, lapTemplate, totalTemplate);
+  if (ghostLapColumnCandidate) {
+    const ghostLapRows = details.fields.filter((read) => read.field.type === 'lap'
+      && semanticOwner(read.field.owner, details.yellowPlayerSlot) === 'ghost');
+    // Align the three-lap field and its punctuation before scoring digit columns.
+    // Seven-lap cards retain the existing order for their lap/total repair path.
+    if (ghostLapRows.length === 3)
+      applyGuardedFieldFits(canonical, details, lapTemplate, totalTemplate);
+    applyGhostLapColumnCandidate(canonical, details, lapTemplate, totalTemplate);
+  }
   if (playerLapColumnCandidate) applyPlayerLapColumnCandidate(canonical, details, lapTemplate, totalTemplate);
   applyGuardedFieldFits(canonical, details, lapTemplate, totalTemplate);
   applySemanticDecodedValues(details, yellow.position);
@@ -1047,8 +1062,8 @@ function applyTotalRefit(canonical: any, details: SlotDetails, lapTemplate: Segm
     if (unread.length === 0 && totalMs !== null && totalMs === lapSum) continue;
     // One field is refit: the total to the laps' sum, or a single lap to the
     // total minus the other laps (a lap drifts like the total does), also a lap
-    // that did not read at all. Taken only when exactly one field reads its
-    // value from the pixels.
+    // that did not read at all. When several fields can be refit, use the
+    // single fit that improves on its own pixel reading; otherwise abstain.
     const options: { field: FieldRead; fit: FieldFitResult }[] = [];
     if (unread.length === 0) {
       const totalFit = refitTo(canonical, total, formatSegmentTime(lapSum), 'total_lap_sum_refit', lapTemplate, totalTemplate, []);
@@ -1064,8 +1079,10 @@ function applyTotalRefit(canonical: any, details: SlotDetails, lapTemplate: Segm
         if (lapFit) options.push({ field: lap, fit: lapFit });
       }
     }
-    if (options.length !== 1) continue;
-    const { field, fit } = options[0];
+    const improving = options.filter(({ field, fit }) => compareFit(fit, baselineFit(field)) > 0);
+    const selected = options.length === 1 ? options[0] : improving.length === 1 ? improving[0] : null;
+    if (!selected) continue;
+    const { field, fit } = selected;
     const from = field.assembled;
     applyFieldFitResult(field, fit);
     details.lapSumRepairs.push({ kind: field === total ? 'total_refit' : 'lap_refit', owner, field: field.field.name, from, to: fit.text, method: fit.method, dx: fit.dx });
@@ -1524,12 +1541,16 @@ function fieldsLapSumComplete(details: SlotDetails): boolean {
 // 5 as 3 in the next), and a confirmed repair would lock them. Same rule as the
 // APK engine overlay (ADR-0203).
 
-function applyRepairConfidenceGuard(details: SlotDetails): void {
+function minDigitConfidence(details: SlotDetails): number {
   let min = 1;
   for (const read of details.fields) {
     for (const slot of read.slots) if (slot.type === 'digit') min = Math.min(min, slot.confidence);
   }
-  const guard = repairGuard(details.lapSumOk === true, details.lapSumRepairs.length, min);
+  return min;
+}
+
+function applyRepairConfidenceGuard(details: SlotDetails): void {
+  const guard = repairGuard(details.lapSumOk === true, details.lapSumRepairs.length, minDigitConfidence(details));
   if (!guard) return;
   details.lapSumOk = false;
   details.lapSumRepairs.push(guard);
@@ -2300,10 +2321,12 @@ async function runLateStages(canonical: any, deps: PipelineDeps, options: RunOpt
       !!options.ghostLapColumnCandidate, !!options.playerLapColumnCandidate, !!options.ghostTotalVerticalCandidate,
       badgeSeed)
     : seedDetails;
-  // A repeated ghost-column shift is only a rescue. Preserve a closed ordinary
-  // read when the shifted digits break its lap/total consistency.
-  const details = options.ghostLapColumnCandidate && seedDetails.lapSumOk === true
-    && refinedDetails.lapSumOk !== true ? seedDetails : refinedDetails;
+  // A shifted read can also appear closed through compensating digit errors.
+  // Apply the existing repair-confidence guard before it displaces a closed seed.
+  const details = options.ghostLapColumnCandidate && preferClosedSeed(
+    seedDetails.lapSumOk === true, refinedDetails.lapSumOk === true,
+    options.repairConfidenceGuardCandidate ? refinedDetails.lapSumRepairs.length : 0,
+    minDigitConfidence(refinedDetails)) ? seedDetails : refinedDetails;
   if (options.ghostLapColumnCandidate && details === refinedDetails)
     preserveClosedGhostSide(seedDetails, refinedDetails);
   if (options.repairConfidenceGuardCandidate) applyRepairConfidenceGuard(details);

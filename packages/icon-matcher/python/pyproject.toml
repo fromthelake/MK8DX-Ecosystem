@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mk8dx-icon-matcher"
-version = "0.4.1"
+version = "0.4.2"
 description = "Shared MK8DX visual field matcher"
 requires-python = ">=3.12,<3.13"
 dependencies = [

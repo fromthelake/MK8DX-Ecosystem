@@ -6,9 +6,9 @@
 
 `collection/collection-manifest.v1.json` is the release inventory for physical
 runtime objects. Its current release version is
-`master-schema9-v5.10-pack-0.4.1-2026-11-02-r9d` (the same value as `assetCollectionVersion` in
+`master-schema9-v5.10-pack-0.4.2-2026-11-05-r1` (the same value as `assetCollectionVersion` in
 `compatibility.json`): group `schema9` is Clean Assets v5.10 (catalog `2375050f…`) and group `recognition-pack`
-is the central recognition pack (field semantics 0.4.1, `recognition-pack/manifest.json`) that the scanner,
+is the central recognition pack (field semantics 0.4.2, `recognition-pack/manifest.json`) that the scanner,
 Android, LiveTrial and Tournament builds take with `--recognition-pack` (materialize it with
 `node tooling/assets/materialize_collection.mjs recognition-pack <dir>`). Group `scan-stage` holds the
 Android scanner's staged runtime (view `android-scan`), and groups `tournament` and `legacy-live` carry the
