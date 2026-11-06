@@ -36,6 +36,7 @@ class OfflineLanInstallTest(unittest.TestCase):
             self.assertEqual(runtime["MK8DX_OFFLINE_LAN"], "true")
             self.assertEqual(runtime["MK8DX_HOSTED_SMTP_HOST"], "")
             self.assertEqual(compose["MK8DX_LAN_IP"], "192.168.50.20")
+            self.assertGreater(int(compose["MK8DX_OFFLINE_HOST_PORT"]), 0)
             self.assertIn("compose.offline-lan.yaml", " ".join(install.compose_command(state)))
             config = subprocess.run(install.compose_command(state) + ["config", "--quiet"],
                                     cwd=ROOT, capture_output=True, text=True)

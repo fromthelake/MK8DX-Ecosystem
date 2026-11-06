@@ -628,6 +628,7 @@ def main():
         compose["MK8DX_DOMAIN"] = args.domain
         if offline:
             compose["MK8DX_LAN_IP"] = args.domain
+            compose["MK8DX_OFFLINE_HOST_PORT"] = str(free_port(19090))
     if not (ROOT / "images").is_dir():
         # A source checkout builds its own images: give them their own names so a build never replaces the release
         # images an installed host package runs (compose.yaml defaults to the release tags).

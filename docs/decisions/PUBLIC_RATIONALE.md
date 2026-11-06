@@ -302,3 +302,9 @@ constraints are not assumed to work until tested on each platform; protected
 CA backup, renewal, trust removal and an offline restart are required before
 the route is described as supported. This is an approved design direction,
 not an implemented or qualified installation mode; see [issue #90](https://github.com/fromthelake/MK8DX-Ecosystem/issues/90).
+
+The host access foundation uses a five-minute local unlock code, a loopback-only
+listener and a session that checks the administrator grant again on each use.
+A2 also includes LiveTrial on another Windows PC: its saved result must reach
+the same local API after trusted HTTPS setup and browser device approval.
+Neither account management nor this LiveTrial path is qualified yet.
