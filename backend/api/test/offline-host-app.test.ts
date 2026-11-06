@@ -26,7 +26,7 @@ async function fixture(accountId: string | null) {
   let allowed = true;
   const sessions = new OfflineHostSessions(async () => allowed, () => 1000);
   const app = createOfflineHostApp({ origin, unlocks, sessions });
-  return { app, issued, forbid: () => { allowed = false; } };
+  return { app, issued, unlocks, sessions, forbid: () => { allowed = false; } };
 }
 
 describe("isolated offline host listener", () => {
@@ -71,13 +71,17 @@ describe("isolated offline host listener", () => {
   });
 
   it("labels the first unbound session only as bootstrap", async () => {
-    const { app, issued } = await fixture(null);
+    const { app, issued, unlocks, sessions } = await fixture(null);
     try {
       const unlocked = await app.inject({ method: "POST", url: "/api/unlock",
         headers: { host, origin, "content-type": "application/json" }, payload: { code: issued.code } });
       const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
       const session = await app.inject({ method: "GET", url: "/api/session", headers: { host, cookie } });
       expect(session.json()).toEqual({ active: true, role: "bootstrap" });
+      expect(await sessions.bootstrapCode(cookie.split("=")[1])).toBe(issued.code);
+      // The bootstrap form will spend this capability only after its account
+      // transaction commits, so opening the form does not lose it on failure.
+      await expect(unlocks.verify(issued.code)).resolves.toBeNull();
     } finally { await app.close(); }
   });
 });

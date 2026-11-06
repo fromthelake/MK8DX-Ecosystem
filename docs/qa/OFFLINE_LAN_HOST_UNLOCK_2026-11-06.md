@@ -16,7 +16,9 @@ or production installation changed.
 - The HttpOnly, SameSite=Strict host cookie is held only in memory (15-minute
   idle, 60-minute absolute limit). Each session read rechecks the active
   administrator grant; the bootstrap session is valid only before any grant.
-  Restart loses sessions. The page exposes no setup QR, account action or
+  The bootstrap code stays valid until the future account transaction commits;
+  simply opening the form does not spend it. Restart loses sessions. The page
+  exposes no setup QR, account action or
   invitation yet.
 
 ## Observed checks

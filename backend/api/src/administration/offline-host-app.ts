@@ -82,8 +82,10 @@ export function createOfflineHostApp(options: Readonly<{
       return reply.code(400).send({ active: false });
     }
     try {
-      const accountId = await options.unlocks.consume((body as { code: string }).code);
-      const token = await options.sessions.create(accountId);
+      const code = (body as { code: string }).code;
+      const accountId = await options.unlocks.verify(code);
+      if (accountId !== null) { await options.unlocks.consume(code); }
+      const token = await options.sessions.create(accountId, accountId === null ? code : undefined);
       if (token === null) { return reply.code(401).send({ active: false }); }
       reply.header("Set-Cookie", `${cookieName}=${token}; HttpOnly; SameSite=Strict; Path=/; Max-Age=3600`);
       return { active: true };

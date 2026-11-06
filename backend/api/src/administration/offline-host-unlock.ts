@@ -84,16 +84,9 @@ export class OfflineHostUnlockStore {
   }
 
   public async consume(code: string): Promise<string | null> {
-    if (!codePattern.test(code)) { throw new OfflineHostUnlockError("invalid"); }
+    await this.verify(code);
     const now = this.clock();
     const expected = digest(code);
-    let current: UnlockRecord;
-    try { current = record(JSON.parse(await readFile(this.path, "utf8"))); }
-    catch { throw new OfflineHostUnlockError("unavailable"); }
-    if (now >= current.expiresAtMs ||
-        !timingSafeEqual(expected, Buffer.from(current.digest, "hex"))) {
-      throw new OfflineHostUnlockError("unavailable");
-    }
     // Claim the file atomically. Recheck after the rename because an issue
     // command may have replaced it between the first read and this claim.
     const claimed = join(dirname(this.path), `.unlock-claimed-${randomBytes(12).toString("hex")}`);
@@ -112,6 +105,21 @@ export class OfflineHostUnlockStore {
         if ((error as NodeJS.ErrnoException).code !== "ENOENT") { throw error; }
       });
     }
+  }
+
+  /** Bootstrap checks without spending the code; the durable account action spends it. */
+  public async verify(code: string): Promise<string | null> {
+    if (!codePattern.test(code)) { throw new OfflineHostUnlockError("invalid"); }
+    const now = this.clock();
+    const expected = digest(code);
+    let current: UnlockRecord;
+    try { current = record(JSON.parse(await readFile(this.path, "utf8"))); }
+    catch { throw new OfflineHostUnlockError("unavailable"); }
+    if (now >= current.expiresAtMs ||
+        !timingSafeEqual(expected, Buffer.from(current.digest, "hex"))) {
+      throw new OfflineHostUnlockError("unavailable");
+    }
+    return current.accountId;
   }
 
   private clock(): number {
