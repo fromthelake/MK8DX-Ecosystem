@@ -1,8 +1,10 @@
+import Fastify from "fastify";
 import { describe, expect, it } from "vitest";
 
 import {
   PlayerProfilePreferenceError,
   PlayerProfilePreferenceService,
+  registerPlayerProfilePreferenceRoutes,
   type PlayerProfilePreferences,
 } from "../src/profiles/player-profile-preferences.js";
 import type { ActorContext } from "../src/identity/types.js";
@@ -17,6 +19,31 @@ const value: PlayerProfilePreferences = {
 };
 
 describe("Player profile preferences", () => {
+  it("rejects script markup at the HTTP boundary without reflecting HTML", async () => {
+    const app = Fastify();
+    let updated = false;
+    await registerPlayerProfilePreferenceRoutes(app, {
+      resolveActor: async () => actor,
+      service: {
+        readMine: async () => value,
+        updateMine: async () => { updated = true; return value; },
+      },
+    });
+    try {
+      const response = await app.inject({
+        method: "PUT",
+        url: "/v1/account/player-profile-preferences",
+        payload: { ...value, countryId: "country.nl<script>alert(1)</script>" },
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.headers["content-type"]).toMatch(/^application\/json/);
+      expect(response.body).not.toContain("<script>");
+      expect(updated).toBe(false);
+    } finally {
+      await app.close();
+    }
+  });
+
   it("reads and atomically saves catalog-backed preferences for a verified Player", async () => {
     let stored = value;
     const service = new PlayerProfilePreferenceService({
