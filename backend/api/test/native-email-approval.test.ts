@@ -13,7 +13,10 @@ import {
 } from "../src/authentication/embedded-passwordless-auth.js";
 import {
   NATIVE_EMAIL_CODE_ATTEMPTS,
+  NATIVE_EMAIL_LIFETIME_SECONDS,
   NativeEmailApprovalService,
+  NativeEmailRateLimiter,
+  type NativeEmailAttemptLimiter,
   type NativeEmailAuditEvent,
   type NativeEmailSignIn,
 } from "../src/authentication/native-email-approval.js";
@@ -35,7 +38,7 @@ function config(): EmbeddedAuthConfig {
   };
 }
 
-async function harness(options: { eligible?: Set<string> | "all"; clock?: { now: number } } = {}) {
+async function harness(options: { eligible?: Set<string> | "all"; clock?: { now: number }; attemptLimiter?: NativeEmailAttemptLimiter } = {}) {
   const database: MemoryDB = {
     mk8dx_auth_user: [], mk8dx_auth_session: [], mk8dx_auth_account: [],
     mk8dx_auth_verification: [], mk8dx_auth_rate_limit: [], mk8dx_auth_device_code: [],
@@ -50,12 +53,17 @@ async function harness(options: { eligible?: Set<string> | "all"; clock?: { now:
   );
   const eligible = options.eligible ?? "all";
   const clock = options.clock;
+  const localLimit = new NativeEmailRateLimiter(
+    NATIVE_EMAIL_CODE_ATTEMPTS, NATIVE_EMAIL_LIFETIME_SECONDS * 1000,
+    clock === undefined ? Date.now : () => clock.now,
+  );
+  const attemptLimiter = options.attemptLimiter ?? { consume: async (id: string) => localLimit.allow(id) };
   const service = new NativeEmailApprovalService(
     auth,
     { async sendNativeSignIn(message) { mails.push(message); } },
     { async isEligible(userId) { return eligible === "all" || eligible.has(userId); } },
     { async record(event) { audit.push(event); } },
-    { linkOrigin: baseUrl, ...(clock === undefined ? {} : { now: () => clock.now }) },
+    { linkOrigin: baseUrl, attemptLimiter, ...(clock === undefined ? {} : { now: () => clock.now }) },
   );
   const app = Fastify({ logger: false });
   await registerEmbeddedAuthRoutes(app, auth, baseUrl);
@@ -189,6 +197,52 @@ describe("native email approval", () => {
     expect((await verify(h, device.user_code, right)).status).toMatch(/locked|expired/);
     expect((await redeemToken(h, device)).json()).toMatchObject({ error: "authorization_pending" });
     expect(h.audit.some((event) => event.kind === "native_email_approval_locked")).toBe(true);
+  });
+
+  it("shares the code-attempt budget across concurrent service instances", async () => {
+    const counts = new Map<string, number>();
+    const attemptLimiter: NativeEmailAttemptLimiter = {
+      async consume(id) {
+        const count = (counts.get(id) ?? 0) + 1;
+        counts.set(id, count);
+        return count <= NATIVE_EMAIL_CODE_ATTEMPTS;
+      },
+    };
+    const h = await harness({ attemptLimiter });
+    await account(h, "parallel@example.test");
+    const device = await deviceCode(h);
+    await requestEmail(h, device.user_code, "parallel@example.test");
+    const right = h.mails[0]!.code;
+    const wrong = right === "000000" ? "111111" : "000000";
+    const another = () => new NativeEmailApprovalService(
+      h.auth,
+      { async sendNativeSignIn() {} },
+      { async isEligible() { return true; } },
+      { async record() {} },
+      { linkOrigin: baseUrl, attemptLimiter },
+    );
+    const second = another();
+    await Promise.all(Array.from({ length: 10 }, (_, index) =>
+      (index % 2 === 0 ? h.service : second).verifyCode(device.user_code, wrong)));
+    const outcome = await another().verifyCode(device.user_code, right);
+    expect(outcome.status).toMatch(/locked|expired/);
+  });
+
+  it("does not approve a code when the durable attempt budget is unavailable", async () => {
+    const h = await harness({ attemptLimiter: {
+      async consume() { throw new Error("attempt storage unavailable"); },
+    } });
+    await account(h, "unavailable@example.test");
+    const device = await deviceCode(h);
+    await requestEmail(h, device.user_code, "unavailable@example.test");
+    const response = await h.app.inject({
+      method: "POST",
+      url: "/v1/native/device-authorization/email/verify",
+      headers: browserHeaders,
+      payload: { userCode: device.user_code, code: h.mails[0]!.code },
+    });
+    expect(response.statusCode).toBe(500);
+    expect((await redeemToken(h, device)).json()).toMatchObject({ error: "authorization_pending" });
   });
 
   it("answers the same for unknown, unverified and ineligible addresses and sends nothing", async () => {

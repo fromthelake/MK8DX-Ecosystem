@@ -85,8 +85,8 @@ for mk8dx_suite in test/*.integration.test.ts; do
     npx vitest run --config vitest.config.ts "$mk8dx_suite"
 done
 popd >/dev/null
-if [[ "$mk8dx_count" != 38 ]]; then
-  echo "Expected 38 database suites; found $mk8dx_count" >&2
+if [[ "$mk8dx_count" != 39 ]]; then
+  echo "Expected 39 database suites; found $mk8dx_count" >&2
   exit 1
 fi
 echo "$mk8dx_engine: all $mk8dx_count integration suites passed"

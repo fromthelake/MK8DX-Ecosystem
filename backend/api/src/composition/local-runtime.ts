@@ -201,6 +201,7 @@ import {
   MysqlAccountAppearancePreferenceRepository,
 } from "../profiles/account-appearance-preference.js";
 import { MysqlMutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import { MysqlNativeEmailAttemptLimiter } from "../authentication/mysql-native-email-attempt-limiter.js";
 import { MysqlActivityStoryRepository } from
   "../home/mysql-activity-story-repository.js";
 import { MysqlFollowPreferenceRepository } from
@@ -1543,7 +1544,10 @@ async function createMysqlApiRuntime(
                   { async record(event) {
                     await auditSink.record({ kind: event.kind, subjectId: event.subjectId, clientId: event.clientId });
                   } },
-                  { linkOrigin: authentication.policy.config.baseUrl },
+                  {
+                    linkOrigin: authentication.policy.config.baseUrl,
+                    attemptLimiter: new MysqlNativeEmailAttemptLimiter(pool, clock.nowMs),
+                  },
                 ),
               },
             };

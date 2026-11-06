@@ -69,6 +69,11 @@ export interface NativeEmailAuditSink {
   record(event: NativeEmailAuditEvent): Promise<void>;
 }
 
+/** Shared, durable attempt budget for one pending device challenge. */
+export interface NativeEmailAttemptLimiter {
+  consume(deviceCodeId: string): Promise<boolean>;
+}
+
 export type NativeEmailCodeOutcome =
   | Readonly<{ status: "approved" }>
   | Readonly<{ status: "invalid"; attemptsLeft: number }>
@@ -154,8 +159,8 @@ export class NativeEmailRateLimiter {
 export class NativeEmailApprovalService {
   private readonly perEmail: NativeEmailRateLimiter;
   private readonly perAddress: NativeEmailRateLimiter;
-  // Guesses per device code, counted in memory as well: the stored attempt
-  // counter is not updated atomically, so parallel guesses must not add up.
+  // Local early throttle; the injected durable limiter is authoritative across
+  // API instances. The challenge's stored attempt count is not atomic.
   private readonly guesses: NativeEmailRateLimiter;
 
   public constructor(
@@ -168,6 +173,7 @@ export class NativeEmailApprovalService {
       now?: () => number;
       newLinkToken?: () => string;
       newCode?: () => string;
+      attemptLimiter: NativeEmailAttemptLimiter;
     }>,
   ) {
     const now = options.now ?? Date.now;
@@ -327,6 +333,11 @@ export class NativeEmailApprovalService {
       return { status: "expired" };
     }
     const { challenge } = stored;
+    if (!(await this.options.attemptLimiter.consume(challenge.deviceCodeId))) {
+      await this.forget(challenge);
+      await this.audit.record({ kind: "native_email_approval_locked", subjectId: challenge.userId, clientId: challenge.clientId });
+      return { status: "locked" };
+    }
     if (sameHash(challenge.codeHash, sha256(`${deviceCode.id}:${code}`))) {
       return (await this.approve(challenge, "code")) ? { status: "approved" } : { status: "expired" };
     }
