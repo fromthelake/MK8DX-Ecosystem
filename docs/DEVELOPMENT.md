@@ -13,7 +13,7 @@ package and the [guides](../README.md#guides) instead.
 | Node.js | 24 (CI uses 24.12.0, see `.nvmrc`) | website, API, browser scanner, TypeScript reader, design tokens |
 | Python | 3.12 (see `.python-version`) | tooling, privacy and boundary checks, Python reader, LiveTrial and Tournament sources |
 | Docker with Linux containers and Compose | Docker Desktop or Docker Engine | the local server from source |
-| JDK 17 or 21, Android SDK platform 36 | | only the Android app ([Client builds](CLIENT_BUILDS.md)) |
+| JDK 17 or 21, Android SDK platform 37 | | only the Android app ([Client builds](CLIENT_BUILDS.md)); `targetSdk` is a separate setting |
 
 The clone is large (about 280 MB of Git objects, mostly the asset collection, including a 121 MB scanner model).
 

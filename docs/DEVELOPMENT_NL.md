@@ -13,7 +13,7 @@ neem je de [gebruikershandleiding](install/MK8DX_Handleiding_NL.txt) en een kant
 - Python 3.12 voor tooling, de Python-implementatie van de centrale lezer, LiveTrial en de toernooitools (zie
   `.python-version`). Gebruik op macOS of Linux `python3` waar hieronder `python` staat.
 - Docker met Linux-containers voor de lokale serverroute.
-- De Android SDK en JDK alleen voor de Android-app; zie [Client builds](CLIENT_BUILDS.md).
+- De Android SDK (compileerplatform 37) en JDK alleen voor de Android-app; zie [Client builds](CLIENT_BUILDS.md). `targetSdk` is een afzonderlijke instelling.
 
 Installatie per besturingssysteem (Windows met `core.longpaths`, Ubuntu met apt, macOS met Homebrew) staat in de
 [Engelse versie](DEVELOPMENT.md#requirements). De macOS-stappen zijn niet getest: er was geen Mac beschikbaar.
