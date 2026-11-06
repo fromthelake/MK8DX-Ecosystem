@@ -5,6 +5,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Offline LAN (in development)
+
+- The QA setup page and host screen now distinguish the one-time administrator
+  code from the CA fingerprint and give clearer certificate import guidance.
+- NL/EN QA instructions explain which addresses work on the host and on a
+  phone, how an invitation activates a local account, and why a phone may show
+  the light theme. The public offline A2 installer remains unqualified.
+
 ### LiveTrial
 
 - A newly linked player with no published times now sees an empty progress view

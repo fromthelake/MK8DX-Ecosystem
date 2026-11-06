@@ -60,6 +60,9 @@ class OfflineLanCaTest(unittest.TestCase):
                 page = (ca / "setup/index.html").read_text(encoding="utf-8")
                 self.assertIn(metadata["root"]["certificateSha256"], page)
                 self.assertIn(metadata["root"]["spkiSha256"], page)
+                self.assertIn("fingerprint below is not that code", page)
+                self.assertIn("Trusted Root Certification Authorities", page)
+                self.assertIn("Linux is not yet tested end to end", page)
                 self.assertNotIn("token", page.lower())
                 with self.assertRaises(FileExistsError):
                     offline_lan_ca.provision(state, "192.168.12.34",
