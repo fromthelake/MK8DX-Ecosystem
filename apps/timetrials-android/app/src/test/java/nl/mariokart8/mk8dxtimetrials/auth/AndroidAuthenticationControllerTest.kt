@@ -1,6 +1,7 @@
 package nl.mariokart8.mk8dxtimetrials.auth
 
 import java.net.URI
+import javax.net.ssl.SSLHandshakeException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -61,6 +62,42 @@ private class MutableExecutor : AndroidAuthenticationRequestExecutor {
 }
 
 class AndroidAuthenticationControllerTest {
+    @Test
+    fun reportsOnlyBoundedExceptionTypesWhenAuthorizationFails() {
+        val secret = "token=private-value; Cookie: private-session; /device?user_code=SECRET"
+        val cause = IllegalStateException(secret, SSLHandshakeException(secret))
+        val diagnostics = mutableListOf<String>()
+        val controller = AndroidAuthenticationController(
+            AndroidDeviceAuthorizationClient(
+                URI("https://example.invalid"),
+                AndroidAuthenticationRequestExecutor { throw cause },
+            ),
+            MemorySessionStore(),
+            diagnosticSink = diagnostics::add,
+        )
+
+        val failure = runCatching { controller.requestAuthorization() }.exceptionOrNull()
+        assertTrue(failure is AndroidAuthenticationException)
+        assertEquals(AndroidAuthenticationState.Failed("request"), controller.state.value)
+        assertEquals(
+            listOf("requestAuthorization failed: IllegalStateException > SSLHandshakeException"),
+            diagnostics,
+        )
+        assertFalse(diagnostics.single().contains("SECRET"))
+        assertFalse(diagnostics.single().contains("private"))
+    }
+
+    @Test
+    fun redactedExceptionChainStopsAfterFourTypes() {
+        val nested = IllegalStateException("secret", RuntimeException("secret",
+            IllegalArgumentException("secret", SSLHandshakeException("secret"))))
+        val tooDeep = UnsupportedOperationException("secret", nested)
+        assertEquals(
+            "UnsupportedOperationException > IllegalStateException > RuntimeException > IllegalArgumentException",
+            redactedAuthenticationCauseTypes(tooDeep),
+        )
+    }
+
     @Test
     fun restoresOnlyANonExpiredProtectedSession() {
         val stored = AndroidAuthenticatedNativeSession(
