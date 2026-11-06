@@ -46,6 +46,16 @@ DASH = HERE / "dashboard"
 DEFAULT_ASSETS = HERE.parent / "MK8DX Clean Assets"
 
 
+def _calibration_image(root: Path, filename: str, suffix: str) -> Path | None:
+    """Serve only a named local calibration image, never a caller-chosen path."""
+    if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", filename)
+            or not filename.lower().endswith(suffix)):
+        return None
+    base = root.resolve()
+    target = (base / filename).resolve()
+    return target if target.parent == base and target.is_file() else None
+
+
 def _internal_session_dir(name: str) -> bool:
     """Internal replay/corpus outputs must not pollute user-facing history."""
     return name == "latest" or name.startswith("_")
@@ -719,8 +729,9 @@ def make_handler(store: RunStore):
             elif path == "/api/grid/ref":
                 from urllib.parse import parse_qs, urlparse
                 mode = (parse_qs(urlparse(self.path).query).get("mode") or ["3lap"])[0]
-                rp = DASH.parent / "config" / "grid_refs" / f"{mode}.jpg"
-                if rp.is_file():
+                rp = (_calibration_image(DASH.parent / "config" / "grid_refs", f"{mode}.jpg", ".jpg")
+                      if mode in ("3lap", "7lap") else None)
+                if rp is not None:
                     self._send(200, rp.read_bytes(), "image/jpeg")
                 else:
                     self._send(404, b"no reference frame", "text/plain")
@@ -729,7 +740,10 @@ def make_handler(store: RunStore):
             elif path == "/api/grid/assets":
                 from urllib.parse import parse_qs, urlparse
                 mode = (parse_qs(urlparse(self.path).query).get("mode") or ["3lap"])[0]
-                self._send(200, json.dumps(_grid_assets(mode)).encode(), "application/json")
+                if mode in ("3lap", "7lap"):
+                    self._send(200, json.dumps(_grid_assets(mode)).encode(), "application/json")
+                else:
+                    self._send(404, b"unknown grid mode", "text/plain")
             elif path in ("/deltagrid", "/deltagrid.html"):
                 self._send(200, (DASH / "deltagrid.html").read_bytes(),
                            "text/html; charset=utf-8")
@@ -757,11 +771,9 @@ def make_handler(store: RunStore):
                 from urllib.parse import parse_qs, urlparse
                 f = (parse_qs(urlparse(self.path).query).get("f") or [""])[0]
                 cfg = DASH.parent / "config"
-                rp = (cfg / "lapcoin_refs" / f).resolve()
-                if not rp.is_file():
-                    rp = (cfg / "delta_refs" / f).resolve()
-                base = cfg.resolve()
-                if rp.is_file() and str(rp).startswith(str(base)):
+                rp = (_calibration_image(cfg / "lapcoin_refs", f, ".png")
+                      or _calibration_image(cfg / "delta_refs", f, ".png"))
+                if rp is not None:
                     self._send(200, rp.read_bytes(), "image/png")
                 else:
                     self._send(404, b"no such reference", "text/plain")
@@ -1093,6 +1105,8 @@ def _grid_assets(mode: str) -> dict:
         from livetrial.identity import IdentityReader
         from livetrial import identity_matcher as cam
     except Exception:
+        return {}
+    if mode not in ("3lap", "7lap"):
         return {}
     ref = Path(__file__).resolve().parent / "config" / "grid_refs" / f"{mode}.jpg"
     if not ref.is_file():
