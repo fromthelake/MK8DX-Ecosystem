@@ -17,7 +17,7 @@ services:
     depends_on:
       mysql: {condition: service_healthy}
     healthcheck:
-      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8081/health/ready',{headers:{host:process.env.MK8DX_OFFLINE_HOST_ORIGIN.replace('http://','')}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      test: ["CMD", "node", "-e", "require('node:http').get({hostname:'127.0.0.1',port:8081,path:'/health/ready',headers:{Host:process.env.MK8DX_OFFLINE_HOST_ORIGIN.replace('http://','')}},r=>{r.resume();process.exit(r.statusCode===200?0:1)}).on('error',()=>process.exit(1))"]
       interval: 10s
       timeout: 5s
       retries: 12
