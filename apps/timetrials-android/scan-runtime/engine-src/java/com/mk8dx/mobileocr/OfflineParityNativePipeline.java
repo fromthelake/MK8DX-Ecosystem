@@ -9,7 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.android.Utils;
 import org.opencv.core.Core;
-import org.opencv.calib3d.Calib3d;
+import org.opencv.geometry.Geometry;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint2f;
@@ -625,17 +625,25 @@ public class OfflineParityNativePipeline {
 
     private List<Line> houghLines(Mat edges) {
         Mat raw = new Mat();
+        Mat lineRows = null;
         List<Line> lines = new ArrayList<>();
         try {
             Imgproc.HoughLinesP(edges, raw, 1.0, Math.PI / 180.0, 35, HOUGH_MIN_LINE_LENGTH_PX, 22.0);
-            for (int i = 0; i < raw.rows(); i++) {
-                double[] values = raw.get(i, 0);
+            if (raw.empty()) {
+                return lines;
+            }
+            lineRows = raw.reshape(4, (int) raw.total());
+            for (int i = 0; i < lineRows.rows(); i++) {
+                double[] values = lineRows.get(i, 0);
                 if (values != null && values.length >= 4) {
                     lines.add(new Line(values[0], values[1], values[2], values[3]));
                 }
             }
             return lines;
         } finally {
+            if (lineRows != null) {
+                lineRows.release();
+            }
             raw.release();
         }
     }
@@ -660,7 +668,7 @@ public class OfflineParityNativePipeline {
         Mat homography = new Mat();
         Mat warped = new Mat();
         try {
-            homography = Imgproc.getPerspectiveTransform((MatOfPoint2f) src, (MatOfPoint2f) dst);
+            homography = Geometry.getPerspectiveTransform((MatOfPoint2f) src, (MatOfPoint2f) dst);
             if (lastPerspectiveHomography != null) {
                 lastPerspectiveHomography.release();
             }
@@ -1001,7 +1009,7 @@ public class OfflineParityNativePipeline {
         }
         org.opencv.core.MatOfPoint2f src = new org.opencv.core.MatOfPoint2f(fullQuad.tl, fullQuad.tr, fullQuad.br, fullQuad.bl);
         org.opencv.core.MatOfPoint2f dst = new org.opencv.core.MatOfPoint2f(destQuad.tl, destQuad.tr, destQuad.br, destQuad.bl);
-        Mat homography = Imgproc.getPerspectiveTransform(src, dst);
+        Mat homography = Geometry.getPerspectiveTransform(src, dst);
         List<RfDetrDetector.Detection> out = new ArrayList<>();
         try {
             for (RfDetrDetector.Detection detection : roiDetections) {
@@ -1153,7 +1161,10 @@ public class OfflineParityNativePipeline {
             SlotDetails slotDetails = seedDetails;
             if (SCAN_TIME_CHECKS) {
                 SlotDetails timeChecked = buildSlotDetails(imageDir, canonical, grid, true);
-                if (Boolean.TRUE.equals(seedDetails.lapSumOk) && !Boolean.TRUE.equals(timeChecked.lapSumOk)) {
+                if (nl.mariokart8.iconmatcher.TimeDecision.preferClosedSeed(
+                        Boolean.TRUE.equals(seedDetails.lapSumOk), Boolean.TRUE.equals(timeChecked.lapSumOk),
+                        timeChecked.lapSumRepairs == null ? 0 : timeChecked.lapSumRepairs.length(),
+                        minDigitConfidence(timeChecked))) {
                     slotDetails = seedDetails;
                 } else {
                     preserveClosedGhostSide(seedDetails, timeChecked);
@@ -1704,6 +1715,14 @@ public class OfflineParityNativePipeline {
         }
         Map<Integer, int[]> playerColumnOffsets = null;
         if (timeChecks) {
+            int ghostLapRows = 0;
+            for (FieldRead read : details.fields) {
+                if ("lap".equals(read.field.type)
+                        && "ghost".equals(semanticOwner(read.field.owner, details.yellowPlayerSlot))) ghostLapRows++;
+            }
+            // Keep punctuation and digit columns on the same aligned three-lap field.
+            // Seven-lap cards retain their existing lap/total repair order.
+            if (ghostLapRows == 3) applyGuardedFieldFits(imageDir, cropDir, canonical, details);
             applyGhostLapColumnCandidate(canonical, details);
             playerColumnOffsets = applyPlayerLapColumnCandidate(canonical, details);
         }
@@ -1978,14 +1997,19 @@ public class OfflineParityNativePipeline {
     // one lap, 5 as 3 in the next), and a confirmed repair would lock them.
     static final double REPAIR_MIN_DIGIT_CONFIDENCE = nl.mariokart8.iconmatcher.TimeDecision.REPAIR_MIN_DIGIT_CONFIDENCE;
 
-    private void applyRepairConfidenceGuard(SlotDetails details) throws Exception {
-        if (details.lapSumRepairs == null) return;
+    private double minDigitConfidence(SlotDetails details) {
         double min = 1.0;
         for (FieldRead read : details.fields) {
             for (SlotRead slot : read.slots) {
                 if ("digit".equals(slot.type)) min = Math.min(min, slot.confidence);
             }
         }
+        return min;
+    }
+
+    private void applyRepairConfidenceGuard(SlotDetails details) throws Exception {
+        if (details.lapSumRepairs == null) return;
+        double min = minDigitConfidence(details);
         if (!nl.mariokart8.iconmatcher.TimeDecision.repairGuardApplies(Boolean.TRUE.equals(details.lapSumOk),
                 details.lapSumRepairs.length(), min)) return;
         details.lapSumOk = false;
@@ -2076,17 +2100,26 @@ public class OfflineParityNativePipeline {
             boolean totalClean = totalMs != null && total.validFormat && digitsReadCleanly(total.slots);
             // One field is refit: the total to the laps' sum, or a single lap to
             // the total minus the other laps (a lap drifts like the total does),
-            // also a lap that did not read at all. Taken only when exactly one
-            // field reads its value from the pixels.
+            // also a lap that did not read at all. When several fields can be
+            // refit, use the single fit that improves on its own pixel reading;
+            // otherwise abstain.
             FieldRead chosenField = null;
             FieldFitResult chosen = null;
             int options = 0;
+            FieldRead improvingField = null;
+            FieldFitResult improvingFit = null;
+            int improvingOptions = 0;
             if (unreadCount == 0) {
                 FieldFitResult totalFit = refitTo(canonical, total, formatSegmentTime(lapSum), "total_lap_sum_refit", null);
                 if (totalFit != null) {
                     chosenField = total;
                     chosen = totalFit;
                     options++;
+                    if (totalFit.compareTo(FieldFitResult.baseline(total)) > 0) {
+                        improvingField = total;
+                        improvingFit = totalFit;
+                        improvingOptions++;
+                    }
                 }
             }
             if (totalClean) {
@@ -2103,8 +2136,18 @@ public class OfflineParityNativePipeline {
                         chosenField = lap;
                         chosen = lapFit;
                         options++;
+                        if (lapFit.compareTo(FieldFitResult.baseline(lap)) > 0) {
+                            improvingField = lap;
+                            improvingFit = lapFit;
+                            improvingOptions++;
+                        }
                     }
                 }
+            }
+            if (options > 1 && improvingOptions == 1) {
+                chosenField = improvingField;
+                chosen = improvingFit;
+                options = 1;
             }
             if (options != 1) {
                 continue;
@@ -3895,7 +3938,7 @@ public class OfflineParityNativePipeline {
                             MatOfPoint2f srcMat = new MatOfPoint2f(src);
                             MatOfPoint2f dstMat = new MatOfPoint2f(dst);
                             Mat inlierMask = new Mat();
-                            Mat h = Calib3d.findHomography(srcMat, dstMat, Calib3d.RANSAC,
+                            Mat h = Geometry.findHomography(srcMat, dstMat, Geometry.RANSAC,
                                     nl.mariokart8.iconmatcher.PanelRegistration.RANSAC_THRESHOLD, inlierMask);
                             srcMat.release();
                             dstMat.release();

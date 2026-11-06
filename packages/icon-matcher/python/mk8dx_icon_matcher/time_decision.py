@@ -119,3 +119,10 @@ def repair_guard(lap_sum_ok: bool, repair_count: int, min_digit_confidence: floa
         return None
     return {"kind": "repair_confidence_guard", "min_digit_confidence": min_digit_confidence,
             "threshold": REPAIR_MIN_DIGIT_CONFIDENCE}
+
+
+def prefer_closed_seed(seed_lap_sum_ok: bool, refined_lap_sum_ok: bool,
+                       refined_repair_count: int, refined_min_digit_confidence: float) -> bool:
+    """A refinement cannot displace a closed seed if its closure fails the confidence guard."""
+    return seed_lap_sum_ok and (not refined_lap_sum_ok or repair_guard(
+        refined_lap_sum_ok, refined_repair_count, refined_min_digit_confidence) is not None)

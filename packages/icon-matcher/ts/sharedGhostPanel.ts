@@ -13,7 +13,7 @@ import { scoreIconTensorAll, type IconTensorGroup } from './sharedIconScorer';
 import { partRelationKey } from './sharedPartContext';
 import { rankIconShape } from './sharedShapeRank';
 
-export const GHOST_PANEL_PICKER_VERSION = '1';
+export const GHOST_PANEL_PICKER_VERSION = '2';
 export const RELIABLE_COLOUR_RESIDUAL = 28.0;
 const FAMILY_MARGIN_MIN = 0.02;
 const SHAPE_BACKING_MIN = 0.75;
@@ -191,6 +191,15 @@ function shapeTop(placed: Placed, group: IconTensorGroup): [string, number] {
 const familyOf = (refs: GhostPanelReferences, id: string | null): string | null =>
   id === null ? null : refs.familyById.get(id) ?? id;
 
+/** A whole-word catalog name can also name a more specific icon (Normal/Normal Blue). */
+function nameWordsWithin(shorter: string, longer: string): boolean {
+  const words = (value: string) => value.toLowerCase().match(/[\p{L}\p{Nd}]+/gu) ?? [];
+  const part = words(shorter);
+  const whole = words(longer);
+  return part.length > 0 && whole.length > part.length
+    && whole.some((_, start) => part.every((word, offset) => whole[start + offset] === word));
+}
+
 /** The second colour opinion: eroded-cutout RGB distance inside the chosen family
  * (Python refinement.refine_family_variants, cutout_rgb route). */
 function cutoutTop(placed: Placed, group: IconTensorGroup, minPixels = 24): string | null {
@@ -308,12 +317,18 @@ function decidePart(field: PartField, placed: Placed, refs: GhostPanelReferences
       shapeTop: shapeId, shapeScore, wide: wide !== null, offset: [used.dx, used.dy], scale: used.scale },
   });
   if (strong) {
+    // A shorter printed name is incomplete evidence when the independently
+    // accepted top icon names a longer catalog entry containing those words.
+    const topFamily = familyOf(refs, topIds[0]);
+    if (reliable && used.match.status === 'accepted' && topFamily !== strong
+        && nameWordsWithin(names[nameId!] ?? '', topFamily ? names[topFamily] ?? '' : '')) {
+      return result(topIds[0], true, 'partial_name_top_icon');
+    }
     const inIcons = topIds.filter((id) => familyOf(refs, id) === strong);
     if (familyOf(refs, shapeId) === strong) inIcons.push(shapeId);
     const relation = related(strong);
     if (relation) return result(relation, inIcons.length > 0, 'name_family_character_colour');
     if (inIcons.length) return result(inIcons[0], !hasVariants(strong) || reliable, 'name_family_icon_colour');
-    const topFamily = familyOf(refs, topIds[0]);
     if (familyOf(refs, shapeId) === topFamily && topFamily && topFamily.startsWith(`${strong}_`)) {
       return result(topIds[0], true, 'icons_over_name_prefix');
     }

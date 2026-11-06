@@ -3,7 +3,7 @@
 # One version names the field semantics every product adapter implements
 # (ranking, families/variants, proposedId/acceptedId, absent/unknown/?).
 # Python, TypeScript (ts/sharedFieldVersion.ts) and pyproject must agree.
-__version__ = "0.4.1"
+__version__ = "0.4.2"
 FIELD_SEMANTICS_VERSION = __version__
 
 from .matcher import FlagWindowResult, IconMatcher, MatchResult, ReferenceBank, WindowMatchResult

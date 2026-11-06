@@ -22,3 +22,11 @@ def test_fill_and_flip_close_the_sum():
     assert filled["kind"] == "fill" and filled["to"] == "0:30.000"
     assert td.lap_sum_closure(clean) is None
     assert td.repair_guard(True, 1, 0.5)["threshold"] == 0.65 and td.repair_guard(True, 1, 0.7) is None
+
+
+def test_weak_repaired_refinement_cannot_displace_closed_seed():
+    assert td.prefer_closed_seed(True, True, 1, 0.609)
+    assert not td.prefer_closed_seed(True, True, 1, 0.65)
+    assert not td.prefer_closed_seed(True, True, 0, 0.609)
+    assert td.prefer_closed_seed(True, False, 0, 1)
+    assert not td.prefer_closed_seed(False, True, 1, 0.609)

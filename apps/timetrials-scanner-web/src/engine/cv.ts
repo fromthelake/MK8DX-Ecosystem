@@ -1,10 +1,11 @@
-// OpenCV.js (4.10.0, dezelfde OpenCV-versie als de APK: org.opencv:opencv:4.10.0).
+// OpenCV.js uit de gepinde scannerdependency; de Android-versie wordt
+// afzonderlijk via de gelijkbron-herkenningspoort gekwalificeerd.
 // De WASM-build draait dezelfde C++-implementatie van CLAHE, Canny, HoughLinesP,
 // warpPerspective, matchTemplate enz. — daarom niet herschreven in TS: dat zou
 // pariteitsrisico introduceren zonder winst (eis §7/§16).
 //
-// Laadpad: /cv/opencv.js + /cv/opencv_js.wasm (gesplitst door
-// tools/split_opencv.mjs); de single-file-variant hangt in workers.
+// Laadpad: /cv/opencv.js + /cv/opencv_js.wasm, afgeleid door
+// tools/split_opencv.mjs. De 5.x-wrapper levert eerst een Promise op.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CV = any;
 
@@ -23,6 +24,11 @@ export async function loadCv(base = '/cv/'): Promise<CV> {
       await import(/* @vite-ignore */ `${cvBase}opencv.js`);
       const start = performance.now();
       let candidate = g.cv;
+      // OpenCV.js 5 exports a Promise for its initialized module.
+      if (candidate && typeof candidate.then === 'function' && typeof candidate.Mat !== 'function') {
+        candidate = await candidate;
+        g.cv = candidate;
+      }
       while (!candidate || typeof candidate.Mat !== 'function') {
         await new Promise((r) => setTimeout(r, 25));
         candidate = g.cv;

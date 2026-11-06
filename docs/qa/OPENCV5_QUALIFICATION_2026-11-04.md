@@ -1,5 +1,9 @@
 # OpenCV 5-kwalificatie voor MK8DX (2026-11-04)
 
+> Historisch eerste besluit. De latere gelijkbronproef met de centrale
+> Ghost Select-picker 2 staat in
+> [de herkwalificatie van 5 november](OPENCV5_REQUALIFICATION_2026-11-05.md).
+
 Dit verslag hoort bij [PR #93](https://github.com/fromthelake/MK8DX-Ecosystem/pull/93).
 Het volgt de doelpipeline uit
 [`COMPONENTS.md`](../architecture/COMPONENTS.md):
