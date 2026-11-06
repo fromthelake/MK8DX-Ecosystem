@@ -1,4 +1,26 @@
 services:
+  host-admin:
+    image: ${MK8DX_API_IMAGE:-mk8dx/api:local-v010-node26-amd64}
+    env_file: ${MK8DX_STATE_DIR:?}/api.env
+    command: ["node", "dist/administration/offline-host-main.js"]
+    environment:
+      MK8DX_HOSTED_MYSQL_HOST: mysql
+      MK8DX_HOSTED_MYSQL_PORT: "3306"
+      MK8DX_OFFLINE_HOST_STATE_DIR: /run/mk8dx/host-state
+      MK8DX_OFFLINE_HOST_ORIGIN: http://127.0.0.1:${MK8DX_OFFLINE_HOST_PORT:?}
+    volumes:
+      - offline_host_state:/run/mk8dx/host-state
+    ports:
+      - "127.0.0.1:${MK8DX_OFFLINE_HOST_PORT:?}:8081"
+    depends_on:
+      mysql: {condition: service_healthy}
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8081/health/ready',{headers:{host:process.env.MK8DX_OFFLINE_HOST_ORIGIN.replace('http://','')}}).then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
   web:
     environment:
       MK8DX_LAN_IP: ${MK8DX_LAN_IP:?}
@@ -14,5 +36,6 @@ services:
     healthcheck:
       test: ["CMD", "caddy", "validate", "--config", "/etc/caddy/Caddyfile"]
 volumes:
+  offline_host_state:
   caddy_data:
   caddy_config:
