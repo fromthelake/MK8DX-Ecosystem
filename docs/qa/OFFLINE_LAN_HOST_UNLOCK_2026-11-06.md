@@ -12,7 +12,8 @@ or production installation changed.
   a newer issue invalidates the previous code.
 - A separate Fastify listener accepts the code only in a JSON POST body with
   the exact loopback Host and Origin. It has no Caddy route and Docker publishes
-  its port only on the host's `127.0.0.1`.
+  its port only on the host's `127.0.0.1`. The unlock endpoint allows at most
+  five attempts per minute; the listener also has a global request limit.
 - The HttpOnly, SameSite=Strict host cookie is held only in memory (15-minute
   idle, 60-minute absolute limit). Each session read rechecks the active
   administrator grant; the bootstrap session is valid only before any grant.
@@ -25,7 +26,7 @@ or production installation changed.
 
 | Check | Result |
 | --- | --- |
-| API unit/boundary tests | 8/8 passed across three files; one-use, expiry, replacement, Host/Origin/query rejection, session recheck and bootstrap role. |
+| API unit/boundary tests | 9/9 passed across three files; one-use, expiry, replacement, Host/Origin/query rejection, rate limit, session recheck and bootstrap role. |
 | API typecheck and build | Passed with the current Node/TypeScript closure. |
 | Windows offline installer profile | 2/2 focused Python tests passed with Python 3.12 and the pinned cryptography closure; generated Compose config validated. |
 | API Docker image | Built from the private source without additional runtime dependencies. |

@@ -1,5 +1,6 @@
 /** A2 management listener: never register these routes on the public API. */
 import Fastify, { type FastifyInstance } from "fastify";
+import rateLimit from "@fastify/rate-limit";
 
 import { OfflineHostSessions } from "./offline-host-session.js";
 import { OfflineHostUnlockStore } from "./offline-host-unlock.js";
@@ -42,11 +43,11 @@ logout.addEventListener("click",async()=>{
 });
 void status();`;
 
-export function createOfflineHostApp(options: Readonly<{
+export async function createOfflineHostApp(options: Readonly<{
   origin: string;
   unlocks: OfflineHostUnlockStore;
   sessions: OfflineHostSessions;
-}>): FastifyInstance {
+}>): Promise<FastifyInstance> {
   const parsed = new URL(options.origin);
   if (parsed.protocol !== "http:" || parsed.hostname !== "127.0.0.1" ||
       !parsed.port || parsed.pathname !== "/" || parsed.search || parsed.hash) {
@@ -54,6 +55,7 @@ export function createOfflineHostApp(options: Readonly<{
   }
   const host = parsed.host;
   const app = Fastify({ logger: false, trustProxy: false, bodyLimit: 1024 });
+  await app.register(rateLimit, { global: true, max: 60, timeWindow: "1 minute" });
   app.addHook("onRequest", async (request, reply) => {
     reply.header("Cache-Control", "no-store")
       .header("Referrer-Policy", "no-referrer")
@@ -75,7 +77,8 @@ export function createOfflineHostApp(options: Readonly<{
     if (session === null) { return reply.code(401).send({ active: false }); }
     return { active: true, role: session.accountId === null ? "bootstrap" : "administrator" };
   });
-  app.post("/api/unlock", async (request, reply) => {
+  app.post("/api/unlock", { config: { rateLimit: { max: 5, timeWindow: "1 minute" } } },
+    async (request, reply) => {
     const body = request.body;
     if (typeof body !== "object" || body === null || Array.isArray(body) ||
         Object.keys(body).length !== 1 || typeof (body as Record<string, unknown>)["code"] !== "string") {
@@ -92,7 +95,7 @@ export function createOfflineHostApp(options: Readonly<{
     } catch {
       return reply.code(401).send({ active: false });
     }
-  });
+    });
   app.post("/api/logout", async (request, reply) => {
     options.sessions.revoke(cookie(request.headers.cookie));
     reply.header("Set-Cookie", `${cookieName}=; HttpOnly; SameSite=Strict; Path=/; Max-Age=0`);

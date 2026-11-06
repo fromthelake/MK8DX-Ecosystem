@@ -25,7 +25,7 @@ async function fixture(accountId: string | null) {
   const issued = await unlocks.issue(accountId);
   let allowed = true;
   const sessions = new OfflineHostSessions(async () => allowed, () => 1000);
-  const app = createOfflineHostApp({ origin, unlocks, sessions });
+  const app = await createOfflineHostApp({ origin, unlocks, sessions });
   return { app, issued, unlocks, sessions, forbid: () => { allowed = false; } };
 }
 
@@ -67,6 +67,20 @@ describe("isolated offline host listener", () => {
       forbid();
       const session = await app.inject({ method: "GET", url: "/api/session", headers: { host, cookie } });
       expect(session.statusCode).toBe(401);
+    } finally { await app.close(); }
+  });
+
+  it("rate-limits repeated host unlock attempts", async () => {
+    const { app } = await fixture(administrator);
+    try {
+      const attempts = [];
+      for (let index = 0; index < 6; index++) {
+        attempts.push(await app.inject({ method: "POST", url: "/api/unlock",
+          headers: { host, origin, "content-type": "application/json" },
+          payload: { code: "A".repeat(43) } }));
+      }
+      expect(attempts.slice(0, 5).map((attempt) => attempt.statusCode)).toEqual([401, 401, 401, 401, 401]);
+      expect(attempts[5]!.statusCode).toBe(429);
     } finally { await app.close(); }
   });
 

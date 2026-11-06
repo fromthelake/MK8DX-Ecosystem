@@ -23,7 +23,7 @@ export async function startOfflineHost(environment: NodeJS.ProcessEnv): Promise<
     const sessions = new OfflineHostSessions(async (accountId) => accountId === null
       ? !await hasAdministratorGrant(pool)
       : await activeOfflineAdministrator(pool, accountId));
-    const app = createOfflineHostApp({ origin,
+    const app = await createOfflineHostApp({ origin,
       unlocks: new OfflineHostUnlockStore(path), sessions });
     await app.listen({ host: "0.0.0.0", port: 8081 });
     return async () => { await app.close(); await pool.end(); };
