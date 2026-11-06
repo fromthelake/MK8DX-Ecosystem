@@ -278,6 +278,7 @@ export type AppDependencies = Readonly<{
     csrfVerifier: Readonly<{
       verify(actor: ActorContext, token: string): boolean;
     }>;
+    rateLimiter: MutationRateLimiter;
   }>;
   aliasRepository?: AliasReadRepository;
   aliasService?: Pick<AliasService, "createAlias" | "updateAlias">;
@@ -817,6 +818,7 @@ export async function buildApp(
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.administratorGrants.service,
       csrfVerifier: dependencies.administratorGrants.csrfVerifier,
+      rateLimiter: dependencies.administratorGrants.rateLimiter,
     });
   }
   if (

@@ -7,6 +7,10 @@ import {
 } from "./administrator-grant-service.js";
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
 
 type ErrorResponse = { code: string; message: string };
 type GrantBody = { userAccountId: string; reasonCode: string };
@@ -17,6 +21,7 @@ export type AdministratorGrantRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   service: Pick<AdministratorGrantService, "grantAdministrator" | "revokeAdministrator">;
   csrfVerifier: Readonly<{ verify(actor: ActorContext, token: string): boolean }>;
+  rateLimiter: MutationRateLimiter;
 }>;
 
 const accountIdSchema = {
@@ -57,13 +62,20 @@ const errors = {
   403: errorResponseSchema,
   404: errorResponseSchema,
   409: errorResponseSchema,
+  429: errorResponseSchema,
   500: errorResponseSchema,
 } as const;
 
 function failure(error: unknown): Readonly<{
-  statusCode: 400 | 403 | 404 | 409 | 500;
+  statusCode: 400 | 403 | 404 | 409 | 429 | 500;
   response: ErrorResponse;
 }> {
+  if (error instanceof MutationRateLimitExceeded) {
+    return { statusCode: 429, response: {
+      code: "administrator_grant_rate_limited",
+      message: "Too many administrator grant actions were received. Wait before retrying.",
+    } };
+  }
   if (!(error instanceof AdministratorGrantServiceError)) {
     return { statusCode: 500, response: {
       code: "administrator_grant_operation_failed",
@@ -83,6 +95,16 @@ function failure(error: unknown): Readonly<{
 function csrfToken(headers: Readonly<Record<string, unknown>>): string | null {
   const value = headers["x-mk8dx-csrf"];
   return typeof value === "string" ? value : null;
+}
+
+async function limitAdministratorAction(
+  actor: ActorContext,
+  rateLimiter: MutationRateLimiter,
+): Promise<void> {
+  if (actor.role === "account" || actor.role === "administrator") {
+    // Grant and revoke share one durable budget, including failed attempts.
+    await rateLimiter.consume(actor.userAccountId, "administrator-grants-hour", 3_600, 20);
+  }
 }
 
 export async function registerAdministratorGrantRoutes(
@@ -112,6 +134,7 @@ export async function registerAdministratorGrantRoutes(
             message: "The administrator grant operation is not authorized.",
           });
         }
+        await limitAdministratorAction(actor, options.rateLimiter);
         const result = await options.service.grantAdministrator(
           actor,
           request.body.userAccountId,
@@ -119,6 +142,9 @@ export async function registerAdministratorGrantRoutes(
         );
         return reply.code(201).send(result);
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+        }
         const mapped = failure(error);
         return reply.code(mapped.statusCode).send(mapped.response);
       }
@@ -158,12 +184,16 @@ export async function registerAdministratorGrantRoutes(
             message: "The administrator grant operation is not authorized.",
           });
         }
+        await limitAdministratorAction(actor, options.rateLimiter);
         return await options.service.revokeAdministrator(
           actor,
           request.params.userAccountId,
           request.body.reasonCode,
         );
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+        }
         const mapped = failure(error);
         return reply.code(mapped.statusCode).send(mapped.response);
       }

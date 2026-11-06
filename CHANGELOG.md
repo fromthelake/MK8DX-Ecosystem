@@ -5,6 +5,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Security
+
+- Administrator grant and revoke actions share a durable per-account limit of
+  20 attempts per hour. Excess requests return 429 with `Retry-After`.
+
 ### Offline LAN (in development)
 
 - The QA setup page and host screen now distinguish the one-time administrator

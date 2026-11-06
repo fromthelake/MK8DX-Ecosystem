@@ -1251,6 +1251,7 @@ async function createMysqlApiRuntime(
             administratorGrants: {
               service: administratorGrantService,
               csrfVerifier: webCsrfService,
+              rateLimiter: mutationRateLimiter,
             },
           }),
       aliasRepository: new MysqlAliasReadRepository(pool),
