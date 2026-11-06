@@ -49,6 +49,15 @@ De pack bevat de frameposities, ankers en referenties. Controleer bij een
 release zowel de codeversie **als** de pack-ID in het gebouwde pakket. Private
 testbeelden en labels komen niet in Git of openbare diagnoserapporten.
 
+Het normale lokale LiveTrial-dashboard haalt namen, iconen, vlaggen en
+circuitbeelden uit de verpakte `MK8DX Clean Assets/database.json` en serveert
+beeldpaden onder de lokale `/assets/`-root. Het haalt deze afbeeldingen niet
+van de Web-server. De oude pagina's `/grid` en `/deltagrid` zijn
+kalibratiehulpen: hun `/api/grid/ref`- en `/api/deltagrid/ref`-routes kiezen
+afzonderlijke lokale QA-referentiefoto's. De pakketbouwer sluit alle drie de
+kalibratiefotomappen uit; ze zijn geen canonieke herkenningsreferenties
+en geen runtimeafhankelijkheid.
+
 ## Een herkenningsregel aanpassen
 
 1. Zoek op dezelfde invoer en bronprofiel de eerste afwijkende stap. Vergelijk
