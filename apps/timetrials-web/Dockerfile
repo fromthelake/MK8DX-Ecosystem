@@ -27,6 +27,7 @@ FROM caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079e
 COPY apps/timetrials-web/index.html apps/timetrials-web/manifest.webmanifest apps/timetrials-web/sw.js apps/timetrials-web/assetlinks.json /srv/
 COPY apps/timetrials-web/assetlinks.json /srv/.well-known/assetlinks.json
 COPY apps/timetrials-web/styles /srv/styles
+COPY infrastructure/docker/offline-invite /opt/mk8dx/offline-invite
 COPY --from=build /build/apps/timetrials-web/dist /srv/dist
 COPY --from=build /build/web-assets /srv/assets
 COPY --from=scanner /build/apps/timetrials-scanner-web/dist /srv/scanner

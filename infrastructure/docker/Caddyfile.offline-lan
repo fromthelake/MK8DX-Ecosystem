@@ -63,6 +63,17 @@ https://{$MK8DX_LAN_IP} {
     header Content-Type application/json
     file_server
   }
+  # The invitation page is present only in the offline gateway. Its one-use
+  # bearer arrives in a fragment and is never sent in a GET request.
+  handle /offline-invite {
+    rewrite * /index.html
+    root * /opt/mk8dx/offline-invite
+    file_server
+  }
+  handle_path /offline-invite/* {
+    root * /opt/mk8dx/offline-invite
+    file_server
+  }
   handle_path /scanner/* {
     root * /srv/scanner
     file_server
@@ -80,10 +91,15 @@ https://{$MK8DX_LAN_IP} {
     file_server
   }
   @scanner_csp path /scanner/*
+  @offline_invite path /offline-invite /offline-invite/*
+  @not_offline_invite not path /offline-invite /offline-invite/*
+  header @offline_invite Cache-Control "no-store"
+  header @offline_invite Referrer-Policy "no-referrer"
+  header @offline_invite Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
   @web_csp not path /scanner/*
   header @scanner_csp Content-Security-Policy-Report-Only "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
   header @web_csp Content-Security-Policy-Report-Only "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
   header X-Content-Type-Options nosniff
-  header Referrer-Policy same-origin
+  header @not_offline_invite Referrer-Policy same-origin
   header X-Frame-Options DENY
 }
