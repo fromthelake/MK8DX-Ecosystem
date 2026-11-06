@@ -5,6 +5,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### LiveTrial
+
+- A newly linked player with no published times now sees an empty progress view
+  instead of an unavailable-progress message. Zero standing, player count and
+  total time are valid until the first published run.
+
 ### Recognition
 
 - Android and the browser scanner move from OpenCV 4.10 to OpenCV 5.0; the
