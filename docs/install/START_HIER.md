@@ -9,13 +9,20 @@ Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag 
 | Route | Voor wie | Status | Naslag |
 | --- | --- | --- | --- |
 | **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Ondersteund | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) |
-| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Ondersteund | in de handleiding |
+| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Ondersteund | [Nederlandse handleiding, hoofdstuk 2](MK8DX_Handleiding_NL.txt); [English guide, chapter 2](MK8DX_User_Guide_EN.txt) |
 | **A2** — je eigen vertrouwde netwerk | Andere apparaten thuis of op een toernooilocatie laten meedoen | Gedocumenteerd; nog niet end-to-end getest | [A2_EIGEN_NETWERK.md](A2_EIGEN_NETWERK.md) |
 | **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | Gedocumenteerd; nog niet end-to-end getest | [B1_VPS.md](B1_VPS.md) |
 | **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | Gedocumenteerd; nog niet end-to-end getest | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
 
 Daarna: [apps koppelen](CLIENTS.md), [instellingen](INSTELLINGEN.md), [beheer, updates en herstel](BEHEER.md)
 en [zelf bouwen](ONTWIKKELEN.md).
+
+Voor A1 en A3 gebruik je het **hostpakket** uit de release. Je hoeft geen broncode te
+bewerken, geen Python-pakketten met `pip` te installeren en geen Docker-image
+te bouwen. De handleiding legt de installatie van Docker Desktop (A1) of
+XAMPP/Node.js (A3), de kleine Python-installer, het eerste beheeraccount en
+latere backup/updates stap voor stap uit. Begin met de route die je kiest;
+de hoofdstukken zijn geen opeenvolgende installatiestappen.
 
 ## Vereisten vóór aanschaf of installatie
 
