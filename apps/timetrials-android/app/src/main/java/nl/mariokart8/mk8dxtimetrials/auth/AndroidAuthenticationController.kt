@@ -27,11 +27,26 @@ internal data class AndroidRememberedAccountsState(
     val activeSlotId: String? = null,
 )
 
+/** Class names only: exception messages and stack traces may contain URLs or credentials. */
+internal fun redactedAuthenticationCauseTypes(error: Throwable): String {
+    val types = mutableListOf<String>()
+    var current: Throwable? = error
+    while (current != null && types.size < 4) {
+        types += current.javaClass.simpleName.takeIf { it.matches(Regex("[A-Za-z0-9_$]{1,80}")) }
+            ?: "Throwable"
+        current = current.cause
+    }
+    return types.joinToString(" > ")
+}
+
 internal class AndroidAuthenticationController(
     private val client: AndroidDeviceAuthorizationClient,
     private val store: AndroidNativeSessionStore,
     private val clock: () -> Long = System::currentTimeMillis,
     private val onAccountRemoved: (String) -> Unit = {},
+    private val diagnosticSink: (String) -> Unit = { message ->
+        android.util.Log.w("MK8DXAuth", message)
+    },
 ) {
     private val mutableAccounts = MutableStateFlow(AndroidRememberedAccountsState())
     val accounts: StateFlow<AndroidRememberedAccountsState> = mutableAccounts.asStateFlow()
@@ -66,7 +81,10 @@ internal class AndroidAuthenticationController(
                 Math.addExact(now, authorization.pollingIntervalSeconds * 1_000L),
             )
             authorization
-        } catch (_: Exception) {
+        } catch (error: Exception) {
+            runCatching {
+                diagnosticSink("requestAuthorization failed: ${redactedAuthenticationCauseTypes(error)}")
+            }
             mutableState.value = AndroidAuthenticationState.Failed("request")
             throw AndroidAuthenticationException("Android authorization request failed.")
         }
