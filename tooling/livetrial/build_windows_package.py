@@ -30,7 +30,7 @@ RESOURCE_TREES = (
 )
 # The calibration corpora are dashboard-only and account for most of the
 # engine's size, so they stay out of an owner package.
-ENGINE_EXCLUDED = ("runs", "__pycache__")
+ENGINE_EXCLUDED = ("config/grid_refs", "config/lapcoin_refs", "config/delta_refs", "runs", "__pycache__")
 
 
 class BuildError(RuntimeError):
@@ -340,6 +340,10 @@ def main() -> int:
         if not source.is_dir():
             raise BuildError(f"prepared engine is missing {name}")
         _copy_tree(source, engine_target / name)
+    for excluded in ENGINE_EXCLUDED:
+        candidate = engine_target / "livetrial" / excluded
+        if candidate.is_dir():
+            shutil.rmtree(candidate)
     # Beside the Clean Assets folder: the shared card presence templates, the Time Trial frame geometry the engine's
     # time grid reads (ocr.py) and the record of the central recognition pack the engine carries.
     for name in ("card-anchors-v1.json", "frame-definitions-v1.json", "recognition-pack.json"):

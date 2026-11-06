@@ -51,9 +51,14 @@ def _calibration_image(root: Path, filename: str, suffix: str) -> Path | None:
     if (not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,127}", filename)
             or not filename.lower().endswith(suffix)):
         return None
+    if not root.is_dir():
+        return None
     base = root.resolve()
-    target = (base / filename).resolve()
-    return target if target.parent == base and target.is_file() else None
+    for entry in root.iterdir():
+        if entry.name == filename:
+            target = entry.resolve()
+            return target if target.parent == base and target.is_file() else None
+    return None
 
 
 def _internal_session_dir(name: str) -> bool:

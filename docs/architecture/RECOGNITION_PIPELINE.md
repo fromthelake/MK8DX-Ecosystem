@@ -57,7 +57,7 @@ from its packaged `MK8DX Clean Assets/database.json` and serves image paths
 under its local `/assets/` root. It does not fetch those pictures from the Web
 server. The old `/grid` and `/deltagrid` pages are calibration tools: their
 `/api/grid/ref` and `/api/deltagrid/ref` routes select separate, local QA
-reference photos. The release builder excludes the delta/lap-coin photo sets;
+reference photos. The release builder excludes all three calibration photo sets;
 they are not the canonical recognition references or a runtime dependency.
 
 ## Changing a decision safely

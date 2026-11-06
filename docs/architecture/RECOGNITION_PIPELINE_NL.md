@@ -54,8 +54,8 @@ circuitbeelden uit de verpakte `MK8DX Clean Assets/database.json` en serveert
 beeldpaden onder de lokale `/assets/`-root. Het haalt deze afbeeldingen niet
 van de Web-server. De oude pagina's `/grid` en `/deltagrid` zijn
 kalibratiehulpen: hun `/api/grid/ref`- en `/api/deltagrid/ref`-routes kiezen
-afzonderlijke lokale QA-referentiefoto's. De pakketbouwer sluit de
-delta-/rondereferentiefoto's uit; ze zijn geen canonieke herkenningsreferenties
+afzonderlijke lokale QA-referentiefoto's. De pakketbouwer sluit alle drie de
+kalibratiefotomappen uit; ze zijn geen canonieke herkenningsreferenties
 en geen runtimeafhankelijkheid.
 
 ## Een herkenningsregel aanpassen
