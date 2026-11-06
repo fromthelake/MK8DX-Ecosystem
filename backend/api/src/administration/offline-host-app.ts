@@ -25,7 +25,7 @@ const page = `<!doctype html><html lang="nl"><meta charset="utf-8">
 <button id="logout" type="button" hidden>Afmelden</button></header>
 <p id="message" role="status" aria-live="polite"></p>
 <section id="access"><h2>Ontgrendelen</h2>
-<form id="unlock"><label>Eenmalige code <input id="code" type="password" autocomplete="off" required></label>
+<form id="unlock"><label>Eenmalige beheercode (niet de certificaatvingerafdruk) <input id="code" type="password" autocomplete="off" required></label>
 <button type="submit">Ontgrendelen</button></form></section>
 <section id="management" hidden>
 <section><h2>Installatie koppelen</h2><p>Vergelijk de certificaatvingerafdruk hieronder met /setup voordat je het certificaat vertrouwt.</p>
