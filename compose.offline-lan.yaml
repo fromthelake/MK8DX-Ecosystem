@@ -8,6 +8,8 @@ services:
       MK8DX_HOSTED_MYSQL_PORT: "3306"
       MK8DX_OFFLINE_HOST_STATE_DIR: /run/mk8dx/host-state
       MK8DX_OFFLINE_HOST_ORIGIN: http://127.0.0.1:${MK8DX_OFFLINE_HOST_PORT:?}
+      MK8DX_OFFLINE_ROOT_CERT_SHA256: ${MK8DX_OFFLINE_ROOT_CERT_SHA256:?}
+      MK8DX_OFFLINE_ROOT_SPKI_SHA256: ${MK8DX_OFFLINE_ROOT_SPKI_SHA256:?}
     volumes:
       - offline_host_state:/run/mk8dx/host-state
     ports:

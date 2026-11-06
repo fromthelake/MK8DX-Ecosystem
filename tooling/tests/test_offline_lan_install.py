@@ -37,6 +37,9 @@ class OfflineLanInstallTest(unittest.TestCase):
             self.assertEqual(runtime["MK8DX_HOSTED_SMTP_HOST"], "")
             self.assertEqual(compose["MK8DX_LAN_IP"], "192.168.50.20")
             self.assertGreater(int(compose["MK8DX_OFFLINE_HOST_PORT"]), 0)
+            self.assertEqual(compose["MK8DX_OFFLINE_ROOT_CERT_SHA256"],
+                             profile["rootCertificateSha256"])
+            self.assertEqual(len(compose["MK8DX_OFFLINE_ROOT_SPKI_SHA256"]), 64)
             self.assertIn("compose.offline-lan.yaml", " ".join(install.compose_command(state)))
             config = subprocess.run(install.compose_command(state) + ["config", "--quiet"],
                                     cwd=ROOT, capture_output=True, text=True)
@@ -52,6 +55,14 @@ class OfflineLanInstallTest(unittest.TestCase):
                 install.change_lan_address(state, "192.168.50.21")
             with self.assertRaisesRegex(ValueError, "waits for the local invitation runtime"):
                 install.operate(state, "start")
+            with patch.object(install, "run_compose") as run_host:
+                install.operate(state, "host-unlock")
+                self.assertIn("--bootstrap", run_host.call_args.args)
+                install.operate(state, "host-unlock", user_account_id=
+                                "user_account.12345678-1234-1234-1234-123456789abc")
+                self.assertIn("--user-account-id", run_host.call_args.args)
+            with self.assertRaisesRegex(ValueError, "canonical UserAccount"):
+                install.operate(state, "host-unlock", user_account_id="user_account.other")
             self.assertEqual(profile, json.loads((state / "operator-profile.json").read_text()))
 
     def test_invalid_offline_ip_fails_before_creating_state(self):

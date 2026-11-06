@@ -57,7 +57,7 @@ function duplicate(error: unknown): boolean {
   return candidate.code === "ER_DUP_ENTRY" || candidate.errno === 1062;
 }
 
-class MysqlAdministratorGrantTransaction implements AdministratorGrantWriteTransaction {
+export class MysqlAdministratorGrantTransaction implements AdministratorGrantWriteTransaction {
   public constructor(private readonly connection: PoolConnection) {}
 
   public async findUserAccountStatus(userAccountId: string): Promise<AccountStatus | null> {

@@ -25,8 +25,27 @@ async function fixture(accountId: string | null) {
   const issued = await unlocks.issue(accountId);
   let allowed = true;
   const sessions = new OfflineHostSessions(async () => allowed, () => 1000);
-  const app = await createOfflineHostApp({ origin, unlocks, sessions });
-  return { app, issued, unlocks, sessions, forbid: () => { allowed = false; } };
+  const created: { accountKey: string; userAccountId: string; displayLabel: string;
+    role: "account" | "administrator"; active: true }[] = [];
+  const revoked: string[] = [];
+  const accounts = {
+    async create(_actor: string | null, displayLabel: string, role: "account" | "administrator") {
+      const account = { accountKey: "offline_account.12345678-1234-1234-1234-123456789abc",
+        userAccountId: administrator, displayLabel, role, active: true as const };
+      created.push(account);
+      return account;
+    },
+    async list() { return created; },
+  };
+  const tickets = {
+    async issue() { return { invitationId: "offline_invitation.12345678-1234-1234-1234-123456789abc",
+      token: "A".repeat(43), expiresAtMs: 901_000 }; },
+    async revoke(_actor: unknown, invitationId: string) { revoked.push(invitationId); },
+  };
+  const app = await createOfflineHostApp({ origin, unlocks, sessions, accounts, tickets,
+    publicOrigin: "https://192.168.50.20",
+    rootCertificateSha256: "a".repeat(64), rootSpkiSha256: "b".repeat(64) });
+  return { app, issued, unlocks, sessions, created, revoked, forbid: () => { allowed = false; } };
 }
 
 describe("isolated offline host listener", () => {
@@ -96,6 +115,41 @@ describe("isolated offline host listener", () => {
       // The bootstrap form will spend this capability only after its account
       // transaction commits, so opening the form does not lose it on failure.
       await expect(unlocks.verify(issued.code)).resolves.toBeNull();
+      const created = await app.inject({ method: "POST", url: "/api/accounts",
+        headers: { host, origin, cookie, "content-type": "application/json" },
+        payload: { displayLabel: "Host owner", role: "administrator" } });
+      expect(created.statusCode).toBe(200);
+      await expect(unlocks.verify(issued.code)).rejects.toMatchObject({ code: "unavailable" });
+    } finally { await app.close(); }
+  });
+
+  it("keeps setup and invitation QR actions behind an administrator session", async () => {
+    const { app, issued, revoked } = await fixture(administrator);
+    try {
+      const anonymous = await app.inject({ method: "GET", url: "/api/setup", headers: { host } });
+      expect(anonymous.statusCode).toBe(401);
+      const unlocked = await app.inject({ method: "POST", url: "/api/unlock",
+        headers: { host, origin, "content-type": "application/json" }, payload: { code: issued.code } });
+      const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
+      const setup = await app.inject({ method: "GET", url: "/api/setup", headers: { host, cookie } });
+      expect(setup.json()).toMatchObject({ setupUrl: "http://192.168.50.20/setup",
+        rootCertificateSha256: "a".repeat(64) });
+      expect(setup.json().qrDataUrl).toMatch(/^data:image\/png;base64,/);
+      const account = await app.inject({ method: "POST", url: "/api/accounts",
+        headers: { host, origin, cookie, "content-type": "application/json" },
+        payload: { displayLabel: "Player", role: "account" } });
+      expect(account.statusCode).toBe(200);
+      const invitation = await app.inject({ method: "POST", url: "/api/invitations",
+        headers: { host, origin, cookie, "content-type": "application/json" },
+        payload: { accountKey: account.json().account.accountKey, role: "account" } });
+      expect(invitation.statusCode).toBe(200);
+      expect(invitation.json().invitationUrl).toMatch(/^https:\/\/192\.168\.50\.20\/offline-invite#token=/);
+      expect(invitation.headers["cache-control"]).toBe("no-store");
+      const revoke = await app.inject({ method: "POST", url: "/api/invitations/revoke",
+        headers: { host, origin, cookie, "content-type": "application/json" },
+        payload: { invitationId: invitation.json().invitationId } });
+      expect(revoke.statusCode).toBe(200);
+      expect(revoked).toHaveLength(1);
     } finally { await app.close(); }
   });
 });

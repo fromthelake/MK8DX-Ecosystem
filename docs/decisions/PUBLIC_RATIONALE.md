@@ -305,6 +305,11 @@ not an implemented or qualified installation mode; see [issue #90](https://githu
 
 The host access foundation uses a five-minute local unlock code, a loopback-only
 listener and a session that checks the administrator grant again on each use.
-A2 also includes LiveTrial on another Windows PC: its saved result must reach
-the same local API after trusted HTTPS setup and browser device approval.
-Neither account management nor this LiveTrial path is qualified yet.
+The next source slice creates the first local account and grant in one database
+transaction, and lets the host administrator create accounts and issue/revoke
+one-use invitations. It creates no Player claim. These host actions passed
+focused MySQL/MariaDB and disposable-host checks; the complete A2 installation
+remains closed until the device and offline gates pass. A2 also includes
+LiveTrial on another Windows PC: its saved result must reach the same local
+API after trusted HTTPS setup and browser device approval. That LiveTrial path
+is not yet qualified.

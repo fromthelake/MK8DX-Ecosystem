@@ -8,6 +8,7 @@ import socket
 import subprocess
 import getpass
 import ipaddress
+import re
 import stat
 import sys
 from pathlib import Path
@@ -354,10 +355,21 @@ def run_compose(state, *parts):
     subprocess.run(command + arguments, cwd=ROOT, env=clean_env, check=True)
 
 
-def operate(state, action, backup_output=None):
+def operate(state, action, backup_output=None, user_account_id=None):
     route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
     if route == "A2_OFFLINE" and action in ("setup", "start", "apply", "upgrade", "admin"):
         raise ValueError("Offline LAN startup waits for the local invitation runtime; this profile is a foundation only")
+    if action == "host-unlock":
+        if route != "A2_OFFLINE":
+            raise ValueError("Host unlock applies only to the offline LAN route")
+        if user_account_id is not None and not re.fullmatch(
+                r"user_account\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
+                user_account_id):
+            raise ValueError("Use one canonical UserAccount ID")
+        run_compose(state, "run", "-T", "--rm", "--no-deps", "host-admin", "node",
+                    "dist/administration/offline-host-unlock-main.js",
+                    *(["--bootstrap"] if user_account_id is None else ["--user-account-id", user_account_id]))
+        return
     if action == "check":
         status(state)
         run_compose(state, "config", "--quiet")
@@ -412,7 +424,7 @@ def operate(state, action, backup_output=None):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "check", "check-database", "apply", "admin", "upgrade", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
+    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "check", "check-database", "apply", "admin", "host-unlock", "upgrade", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=["local", "lan", "offline-lan", "production", "xampp", "shared"], default="local")
     parser.add_argument("--domain", help="Production DNS name; HTTPS must reach this host")
@@ -423,6 +435,7 @@ def main():
     parser.add_argument("--smtp-from")
     parser.add_argument("--origin", help="New exact external origin for change-origin")
     parser.add_argument("--admin-email", help="Email you will verify before the one-time administrator step")
+    parser.add_argument("--user-account-id", help="Existing offline administrator for host-unlock; omit during first bootstrap")
     parser.add_argument("--backup-output", type=Path, help="New private backup directory for upgrade")
     parser.add_argument("--lan-bind-address", help="Private IPv4 interface of the Windows LAN host")
     parser.add_argument("--db-host")
@@ -496,8 +509,8 @@ def main():
             raise SystemExit("--lan-bind-address is required")
         change_lan_address(args.state_dir, args.lan_bind_address)
         return
-    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "upgrade"):
-        operate(args.state_dir, args.action, args.backup_output)
+    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "host-unlock", "upgrade"):
+        operate(args.state_dir, args.action, args.backup_output, args.user_account_id)
         return
     if args.action == "wizard":
         route = native_route
@@ -629,6 +642,8 @@ def main():
         if offline:
             compose["MK8DX_LAN_IP"] = args.domain
             compose["MK8DX_OFFLINE_HOST_PORT"] = str(free_port(19090))
+            compose["MK8DX_OFFLINE_ROOT_CERT_SHA256"] = ca_metadata["root"]["certificateSha256"]
+            compose["MK8DX_OFFLINE_ROOT_SPKI_SHA256"] = ca_metadata["root"]["spkiSha256"]
     if not (ROOT / "images").is_dir():
         # A source checkout builds its own images: give them their own names so a build never replaces the release
         # images an installed host package runs (compose.yaml defaults to the release tags).
