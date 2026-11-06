@@ -61,8 +61,9 @@ Grenzen om rekening mee te houden:
   `infrastructure/mysql/migration-catalog-v1.json`. Referentiegegevens veranderen via een nieuwe seedversie,
   nooit bij het opstarten.
 - De **centrale lezer** (`packages/icon-matcher/`) heeft een Python-, TypeScript- en Java-implementatie. Een
-  wijziging in de ene vraagt dezelfde wijziging in de andere en opnieuw gegenereerde pariteitsvectoren; de
-  README legt uit hoe.
+  wijziging in de ene vraagt dezelfde wijziging in de andere en opnieuw gegenereerde pariteitsvectoren.
+  De [pijplijnkaart](architecture/RECOGNITION_PIPELINE_NL.md) beschrijft de echte app-adapters en pakketgrenzen;
+  de README legt de lezer zelf uit.
 - Gedeelde contracten in `packages/domain/` (JSON Schema) en regels in `packages/time-trial-rules/` hebben
   gebruikers in de API, website en clients. Controleer ze allemaal.
 

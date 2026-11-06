@@ -42,6 +42,10 @@ Start with the guide for what you want to do:
 | **record Time Trials with a capture card or from videos** | [LiveTrial](docs/guides/LIVETRIAL.md) | Windows |
 | **change the code**, run the tests or send a pull request | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) | Windows, Linux; macOS untested |
 
+For recognition maintenance, use the [pipeline map](docs/architecture/RECOGNITION_PIPELINE.md):
+it distinguishes shared Python/TypeScript/Java decisions from each app's local
+capture and pixel work and shows how the code reaches a release package.
+
 The complete step-by-step user guide for every installation route, with backups, restores and updates, is
 [docs/install/MK8DX_User_Guide_EN.txt](docs/install/MK8DX_User_Guide_EN.txt) ([Word](docs/install/MK8DX_User_Guide_EN.docx);
 Dutch: [MK8DX_Handleiding_NL.txt](docs/install/MK8DX_Handleiding_NL.txt)). Questions: [Getting help](SUPPORT.md).

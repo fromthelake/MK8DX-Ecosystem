@@ -20,9 +20,11 @@ It leaves the OCR variant order and acceptance thresholds unchanged. See
 [`OPENCV5_REQUALIFICATION_2026-11-05.md`](../../docs/qa/OPENCV5_REQUALIFICATION_2026-11-05.md)
 for the same-source qualification.
 
-> In this repository the browser scanner uses the reader. The Android, LiveTrial and Tournament sources here
-> are an earlier snapshot that still carries its own recognition; they move to the central reader in a later
-> update.
+> The browser scanner, Android and LiveTrial use this reader for their integrated
+> fields. Tournament uses it for exported character rows and selected geometry,
+> digit and name rules. Pixel processing and some sequence rules remain local;
+> the exact boundary and package paths are in the
+> [recognition pipeline](../../docs/architecture/RECOGNITION_PIPELINE.md).
 
 ## What it decides
 

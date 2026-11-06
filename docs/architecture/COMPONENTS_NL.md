@@ -45,6 +45,10 @@ De lokale eind-tot-eindproeven bewezen deze keten voor LiveTrial en Tournament P
 
 Het [componentenregister](../../component-registry.json) bevat de gedetailleerde afhankelijkheden en testkoppelingen. [Compatibility](../../compatibility.json) legt de gezamenlijke API-, migratie- en assetversies vast. `python tooling/check_boundaries.py` controleert het register en de gegenereerde graaf. Houd hier geen tweede handmatige afhankelijkhedengraaf bij.
 
+De [herkenningspijplijn](RECOGNITION_PIPELINE_NL.md) laat zien welke zoek-,
+match-, beslis- en resultaatregels gedeeld zijn, welk pixel- en opnamewerk
+nog per client gebeurt en hoe de lokale code in elk pakket komt.
+
 ### Verwijzingen in codecommentaar
 
 Codecommentaar noemt vaak interne beslisdocumenten (`ADR-0178` en andere `ADR-NNNN`-nummers), de interne
