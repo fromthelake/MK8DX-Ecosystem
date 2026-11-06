@@ -6,6 +6,10 @@ import { registerAdministratorGrantRoutes } from
 import { AdministratorGrantServiceError } from
   "../src/administration/administrator-grant-service.js";
 import type { ActorContext } from "../src/identity/types.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../src/security/mysql-mutation-rate-limiter.js";
 
 const administrator: ActorContext = {
   role: "administrator",
@@ -28,6 +32,7 @@ describe("administrator grant routes", () => {
   function app(
     actor: ActorContext = administrator,
     csrfValid = true,
+    rateLimiter: MutationRateLimiter = { consume: async () => undefined },
   ) {
     const instance = Fastify();
     apps.push(instance);
@@ -35,6 +40,7 @@ describe("administrator grant routes", () => {
     void registerAdministratorGrantRoutes(instance, {
       resolveActor: async () => actor,
       csrfVerifier: { verify: (_actor, token) => csrfValid && token === "valid-csrf" },
+      rateLimiter,
       service: {
         async grantAdministrator(...arguments_) {
           if (arguments_[0].role !== "administrator") {
@@ -127,6 +133,58 @@ describe("administrator grant routes", () => {
       payload: { userAccountId: "owner@example.test", reasonCode: "free text" },
     });
     expect(response.statusCode).toBe(400);
+    expect(calls).toHaveLength(0);
+  });
+
+  it("shares the grant and revoke budget and rejects excess attempts before mutation", async () => {
+    const consumed: unknown[][] = [];
+    const { instance, calls } = app(administrator, true, {
+      async consume(...arguments_) {
+        consumed.push(arguments_);
+        if (consumed.length > 1) {
+          throw new MutationRateLimitExceeded(29);
+        }
+      },
+    });
+    const grant = await instance.inject({
+      method: "POST",
+      url: "/v1/administrator-grants",
+      headers: { "x-mk8dx-csrf": "valid-csrf" },
+      payload: {
+        userAccountId: "user_account.synthetic_operator",
+        reasonCode: "owner_approved_operator",
+      },
+    });
+    const revoke = await instance.inject({
+      method: "POST",
+      url: "/v1/administrator-grants/user_account.synthetic_operator/actions/revoke",
+      headers: { "x-mk8dx-csrf": "valid-csrf" },
+      payload: { reasonCode: "operator_access_ended" },
+    });
+    expect(grant.statusCode).toBe(201);
+    expect(revoke.statusCode).toBe(429);
+    expect(revoke.headers["retry-after"]).toBe("29");
+    expect(calls).toHaveLength(1);
+    expect(consumed).toEqual([
+      [administrator.userAccountId, "administrator-grants-hour", 3_600, 20],
+      [administrator.userAccountId, "administrator-grants-hour", 3_600, 20],
+    ]);
+  });
+
+  it("fails closed when the durable limiter is unavailable", async () => {
+    const { instance, calls } = app(administrator, true, {
+      async consume() { throw new Error("synthetic storage failure"); },
+    });
+    const response = await instance.inject({
+      method: "POST",
+      url: "/v1/administrator-grants",
+      headers: { "x-mk8dx-csrf": "valid-csrf" },
+      payload: {
+        userAccountId: "user_account.synthetic_operator",
+        reasonCode: "owner_approved_operator",
+      },
+    });
+    expect(response.statusCode).toBe(500);
     expect(calls).toHaveLength(0);
   });
 });
