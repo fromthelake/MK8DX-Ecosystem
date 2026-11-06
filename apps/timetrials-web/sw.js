@@ -38,6 +38,9 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET" || new URL(event.request.url).origin !== self.location.origin) return;
+  // Never replace a failed offline invitation navigation with the cached
+  // product home page while a one-use token is in the browser address.
+  if (new URL(event.request.url).pathname.startsWith("/offline-invite")) return;
   // Network first; offline falls back to the cached copy. `ignoreSearch` is what makes the fallback
   // work at all: every release cache-busts the stylesheets and the bundle with a ?v= hash, which no
   // precached entry can carry.
