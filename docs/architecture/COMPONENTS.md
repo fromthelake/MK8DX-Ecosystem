@@ -45,6 +45,10 @@ The local end-to-end checks proved this chain for LiveTrial and Tournament Proce
 
 The [component registry](../../component-registry.json) is the detailed dependency and test map. [Compatibility](../../compatibility.json) records the coordinated API, migration and asset versions. `python tooling/check_boundaries.py` checks the registry and generated graph. Do not keep a separate hand-maintained dependency graph in this page.
 
+The [recognition pipeline](RECOGNITION_PIPELINE.md) identifies which search,
+match, decision and result rules are shared and which pixel/capture steps still
+belong to each client. It also shows how each product packages its local copy.
+
 ### References in code comments
 
 Code comments often cite internal decision records (`ADR-0178` and other `ADR-NNNN` numbers), the internal

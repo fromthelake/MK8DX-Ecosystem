@@ -82,8 +82,8 @@ LiveTrial engine snapshot and its Clean Assets database, which are not in this r
 
 ## Database integration tests
 
-The API's database tests (`backend/api/test/*.integration.test.ts`, 35 files) are opt-in and skip without the
-settings below. Verify runs all 35 against both disposable MySQL 8.4.11 and MariaDB 11.4.12 containers.
+The API's database tests (`backend/api/test/*.integration.test.ts`) are opt-in and skip without the
+settings below. Verify runs its current suite inventory against both disposable MySQL 8.4.11 and MariaDB 11.4.12 containers.
 Each suite gets its own newly migrated schema; the reference-seed suite uses a synthetic configuration and an
 initial reference seed before testing its update path.
 Run them only against a **disposable** server, never against an installation's database. The CI entry point is
@@ -107,7 +107,7 @@ Rules that the suites enforce or rely on:
 - `reference-seed.integration.test.ts` also needs `MK8DX_REFERENCE_TEST_CONFIG` (a disposable synthetic
   configuration for a `_contract` schema) and skips without it.
 
-The procedure below ran all 34 suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02. It uses
+The procedure below ran the then-current suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02. It uses
 a POSIX shell (Git Bash works on Windows); the password is a throw-away value for the disposable container.
 
 ```sh

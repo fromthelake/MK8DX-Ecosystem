@@ -108,7 +108,9 @@ Some boundaries to keep in mind:
 - **Database migrations** are append-only and hash-pinned in `infrastructure/mysql/migration-catalog-v1.json`.
   Reference data changes through a new versioned seed, never at startup.
 - The **central reader** (`packages/icon-matcher/`) has a Python, a TypeScript and a Java implementation.
-  A change to one needs the same change in the others and regenerated parity vectors; its README explains how.
+  A change to one needs the same change in the others and regenerated parity vectors;
+  [the pipeline map](architecture/RECOGNITION_PIPELINE.md) shows the actual app
+  adapters and package boundaries. Its README explains the reader itself.
 - Shared contracts in `packages/domain/` (JSON Schema) and rules in `packages/time-trial-rules/` have consumers
   in the API, website and clients. Check all of them.
 
