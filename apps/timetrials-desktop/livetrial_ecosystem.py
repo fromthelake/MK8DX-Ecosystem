@@ -911,7 +911,7 @@ def player_progress_view(cache: dict, track_catalog: dict | None = None) -> dict
         standing_total = time_trials.get("totalMs") if isinstance(time_trials, dict) else None
         for value in (standing, standing_of, standing_total):
             if value is not None:
-                _bounded_integer(value, 1)
+                _bounded_integer(value)
         global_standings = [row for row in bootstrap.get("rankStandings", []) if isinstance(row, dict) and row.get("mode") in {150, 200}]
 
         return {
