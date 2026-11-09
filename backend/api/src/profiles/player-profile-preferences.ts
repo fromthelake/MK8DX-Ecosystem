@@ -4,6 +4,11 @@ import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from "../timetrials/submission-routes.js";
+import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 
 export type PlayerProfilePreferences = Readonly<{
   countryId: string | null;
@@ -167,6 +172,7 @@ export async function registerPlayerProfilePreferenceRoutes(
     resolveActor: ActorResolver;
     service: Pick<PlayerProfilePreferenceService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>,
 ): Promise<void> {
   app.get("/v1/account/player-profile-preferences", { schema: { response: {
@@ -177,7 +183,7 @@ export async function registerPlayerProfilePreferenceRoutes(
   });
   app.put<{ Body: PlayerProfilePreferences }>("/v1/account/player-profile-preferences", { schema: {
     body: { type: "object", additionalProperties: false, required: preferenceFields, properties: preferenceProperties },
-    response: { 200: responseSchema, 400: errorResponseSchema, 401: errorResponseSchema, 409: errorResponseSchema, 503: errorResponseSchema },
+    response: { 200: responseSchema, 400: errorResponseSchema, 401: errorResponseSchema, 409: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema },
   } }, async (request, reply) => {
     try {
       const actor = await options.resolveActor(request);
@@ -185,7 +191,16 @@ export async function registerPlayerProfilePreferenceRoutes(
       if (options.csrfVerifier !== undefined && (typeof proof !== "string" || !await options.csrfVerifier.verify(actor, proof))) {
         throw new PlayerProfilePreferenceError("not_authenticated");
       }
+      await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
       return reply.send({ schemaVersion: "mk8dx.player-profile-preferences.v1", ...await options.service.updateMine(actor, request.body) });
-    } catch (error) { const value = failure(error); return reply.code(value.status).send(value.body); }
+    } catch (error) {
+      const limited = accountSettingRateLimitFailure(error);
+      if (limited !== null) {
+        void reply.header("retry-after", String(limited.retryAfterSeconds));
+        return reply.code(429).send(limited.body);
+      }
+      const value = failure(error);
+      return reply.code(value.status).send(value.body);
+    }
   });
 }

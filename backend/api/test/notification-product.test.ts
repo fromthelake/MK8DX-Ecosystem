@@ -75,7 +75,10 @@ async function appWith(
 ): Promise<ReturnType<typeof buildApp>> {
   return buildApp({
     identityRepository,
-    notifications: { service: new NotificationService({ repository }) },
+    notifications: {
+      service: new NotificationService({ repository }),
+      rateLimiter: { async consume() {} },
+    },
     resolveActor: async () => actor,
   });
 }

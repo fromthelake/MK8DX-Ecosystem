@@ -4,6 +4,11 @@ import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from "../timetrials/submission-routes.js";
+import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 
 export type TimeTrialModePreference = "all" | "150" | "200";
 export type TimeTrialTrackAccess = "unknown" | "base_only" | "base_and_bcp";
@@ -153,6 +158,7 @@ export async function registerAccountTimeTrialPreferenceRoutes(
     resolveActor: ActorResolver;
     service: Pick<AccountTimeTrialPreferencesService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>,
 ): Promise<void> {
   app.get("/v1/account/time-trial-preferences", { schema: { response: { 200: preferenceSchema, 401: errorResponseSchema, 503: errorResponseSchema } } }, async (request, reply) => {
@@ -171,7 +177,7 @@ export async function registerAccountTimeTrialPreferenceRoutes(
         screenName: { anyOf: [{ type: "string", minLength: 1, maxLength: 32 }, { type: "null" }] },
         trackAccess: { type: "string", enum: ["unknown", "base_only", "base_and_bcp"] },
       } },
-      response: { 200: preferenceSchema, 400: errorResponseSchema, 401: errorResponseSchema, 503: errorResponseSchema },
+      response: { 200: preferenceSchema, 400: errorResponseSchema, 401: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema },
     } },
     async (request, reply) => {
       try {
@@ -180,8 +186,17 @@ export async function registerAccountTimeTrialPreferenceRoutes(
         if (options.csrfVerifier !== undefined && (typeof proof !== "string" || !await options.csrfVerifier.verify(actor, proof))) {
           throw new AccountTimeTrialPreferencesError("not_authenticated");
         }
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         return reply.send({ schemaVersion: "mk8dx.account-time-trial-preferences.v1", ...await options.service.updateMine(actor, request.body) });
-      } catch (error) { const value = failure(error); return reply.code(value.status).send(value.body); }
+      } catch (error) {
+        const limited = accountSettingRateLimitFailure(error);
+        if (limited !== null) {
+          void reply.header("retry-after", String(limited.retryAfterSeconds));
+          return reply.code(429).send(limited.body);
+        }
+        const value = failure(error);
+        return reply.code(value.status).send(value.body);
+      }
     },
   );
 }

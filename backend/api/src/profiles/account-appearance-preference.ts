@@ -16,6 +16,11 @@ import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from "../timetrials/submission-routes.js";
+import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 
 export type AppearanceChoice = "system" | "light" | "dark";
 export const APPEARANCE_CHOICES: readonly AppearanceChoice[] = ["system", "light", "dark"];
@@ -144,6 +149,7 @@ export async function registerAccountAppearancePreferenceRoutes(
     resolveActor: ActorResolver;
     service: Pick<AccountAppearancePreferenceService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>,
 ): Promise<void> {
   app.get(
@@ -168,7 +174,7 @@ export async function registerAccountAppearancePreferenceRoutes(
       },
       response: {
         200: appearanceSchema, 400: errorResponseSchema,
-        401: errorResponseSchema, 503: errorResponseSchema,
+        401: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema,
       },
     } },
     async (request, reply) => {
@@ -179,9 +185,15 @@ export async function registerAccountAppearancePreferenceRoutes(
             (typeof proof !== "string" || !await options.csrfVerifier.verify(actor, proof))) {
           throw new AccountAppearancePreferenceError("not_authenticated");
         }
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         const appearance = await options.service.updateMine(actor, request.body?.appearance);
         return reply.send({ schemaVersion: "mk8dx.account-appearance-preference.v1", appearance });
       } catch (error) {
+        const limited = accountSettingRateLimitFailure(error);
+        if (limited !== null) {
+          void reply.header("retry-after", String(limited.retryAfterSeconds));
+          return reply.code(429).send(limited.body);
+        }
         const value = failure(error);
         return reply.code(value.status).send(value.body);
       }
