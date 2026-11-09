@@ -54,4 +54,11 @@ describe("report markup", () => {
     expect(sanitizeReportMarkup(stored)).toBe(stored);
     expect(stored).toBe("<p class=\"rt-align-right\">Rechts <span class=\"rt-size-s\">klein</span> <a href=\"mailto:test1@example.invalid\" rel=\"noopener\" target=\"_blank\">mail</a></p>");
   });
+
+  it("handles long unfinished comments and tags without regex backtracking", () => {
+    const unfinishedComment = `<p>${"<!--".repeat(10_000)}safe</p>`;
+    const unfinishedTag = `<p>${"<A ".repeat(10_000)}safe`;
+    expect(sanitizeReportMarkup(unfinishedComment)).toContain("&lt;!--");
+    expect(sanitizeReportMarkup(unfinishedTag)).toContain("&lt;A ");
+  });
 });

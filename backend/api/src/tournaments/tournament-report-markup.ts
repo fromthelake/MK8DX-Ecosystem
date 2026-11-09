@@ -76,33 +76,61 @@ function parseAttributes(source: string): Record<string, string> {
 function parse(source: string): Node[] {
   const root: Node = { kind: "element", tag: "#root", attributes: {}, children: [] };
   const stack: Array<Node & { kind: "element" }> = [root];
-  const pattern = /<!--[\s\S]*?-->|<\/([a-zA-Z][a-zA-Z0-9]*)\s*>|<([a-zA-Z][a-zA-Z0-9]*)((?:\s+[^>]*?)?)\/?>|([^<]+)|(<)/g;
   let dropping: string | null = null;
-  for (const match of source.matchAll(pattern)) {
-    const [whole, closer, opener, attributeSource, text, stray] = match;
-    if (dropping !== null) {
-      if (closer !== undefined && closer.toLowerCase() === dropping) { dropping = null; }
+  const letter = (character: string | undefined): boolean =>
+    character !== undefined && /[a-zA-Z]/.test(character);
+  const nameCharacter = (character: string | undefined): boolean =>
+    character !== undefined && /[a-zA-Z0-9]/.test(character);
+  const appendText = (value: string): void => {
+    if (dropping === null && value.length > 0) {
+      stack[stack.length - 1]!.children.push({ kind: "text", text: decodeEntities(value) });
+    }
+  };
+  let cursor = 0;
+  while (cursor < source.length) {
+    if (source.startsWith("<!--", cursor)) {
+      const end = source.indexOf("-->", cursor + 4);
+      if (end < 0) { appendText(source.slice(cursor)); break; }
+      cursor = end + 3;
       continue;
     }
-    if (whole.startsWith("<!--")) { continue; }
-    if (text !== undefined || stray !== undefined) {
-      stack[stack.length - 1]!.children.push({ kind: "text", text: decodeEntities(text ?? stray ?? "") });
+    if (source[cursor] !== "<") {
+      const next = source.indexOf("<", cursor);
+      appendText(source.slice(cursor, next < 0 ? source.length : next));
+      cursor = next < 0 ? source.length : next;
       continue;
     }
-    if (opener !== undefined) {
-      const tag = opener.toLowerCase();
-      if (DROP_WITH_CONTENT.has(tag)) { dropping = whole.endsWith("/>") ? null : tag; continue; }
-      const element: Node & { kind: "element" } = { kind: "element", tag, attributes: parseAttributes(attributeSource ?? ""), children: [] };
-      stack[stack.length - 1]!.children.push(element);
-      if (!VOID.has(tag) && !whole.endsWith("/>")) { stack.push(element); }
-      continue;
-    }
-    if (closer !== undefined) {
-      const tag = closer.toLowerCase();
+    const start = cursor;
+    const closing = source[cursor + 1] === "/";
+    cursor += closing ? 2 : 1;
+    if (!letter(source[cursor])) { appendText("<"); cursor = start + 1; continue; }
+    const nameStart = cursor;
+    while (nameCharacter(source[cursor])) cursor += 1;
+    const tag = source.slice(nameStart, cursor).toLowerCase();
+    const end = source.indexOf(">", cursor);
+    if (end < 0) { appendText(source.slice(start)); break; }
+    const trailing = source.slice(cursor, end);
+    if (closing) {
+      if (trailing.trim().length !== 0) { appendText(source.slice(start, end + 1)); cursor = end + 1; continue; }
+      cursor = end + 1;
+      if (dropping !== null) { if (tag === dropping) dropping = null; continue; }
       for (let index = stack.length - 1; index > 0; index -= 1) {
         if (stack[index]!.tag === tag) { stack.length = index; break; }
       }
+      continue;
     }
+    if (trailing.length > 0 && !/\s/.test(trailing[0]!) && trailing !== "/") {
+      appendText(source.slice(start, end + 1));
+      cursor = end + 1;
+      continue;
+    }
+    const selfClosing = trailing.endsWith("/");
+    cursor = end + 1;
+    if (dropping !== null) continue;
+    if (DROP_WITH_CONTENT.has(tag)) { dropping = selfClosing ? null : tag; continue; }
+    const element: Node & { kind: "element" } = { kind: "element", tag, attributes: parseAttributes(trailing), children: [] };
+    stack[stack.length - 1]!.children.push(element);
+    if (!VOID.has(tag) && !selfClosing) stack.push(element);
   }
   return root.children;
 }
