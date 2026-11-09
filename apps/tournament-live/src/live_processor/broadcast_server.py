@@ -273,7 +273,7 @@ class BroadcastServer:
             def do_GET(self) -> None:  # noqa: N802 - http.server API
                 path = self.path.split("?", 1)[0]
                 if path in ("/", "/index.html"):
-                    self._send_file(WEB_ROOT / "index.html")
+                    self._send_static("index.html")
                 elif path.startswith("/static/"):
                     self._send_static(path[len("/static/"):])
                 elif path.startswith("/assets/"):
@@ -312,8 +312,9 @@ class BroadcastServer:
 
             # -- responses ------------------------------------------------
             def _send_static(self, rel: str) -> None:
-                candidate = (WEB_ROOT / rel).resolve()
-                if WEB_ROOT not in candidate.parents or not candidate.is_file():
+                static_root = WEB_ROOT.resolve()
+                candidate = (static_root / rel).resolve()
+                if not candidate.is_relative_to(static_root) or not candidate.is_file():
                     self.send_error(404)
                     return
                 self._send_file(candidate)
@@ -336,8 +337,9 @@ class BroadcastServer:
                 if kind not in _ASSET_KINDS or not _ASSET_NAME_RE.match(name):
                     self.send_error(404)
                     return
-                candidate = (IMPORTED_ASSETS_ROOT / kind / name).resolve()
-                if not candidate.is_file():
+                imported_root = IMPORTED_ASSETS_ROOT.resolve()
+                candidate = (imported_root / kind / name).resolve()
+                if not candidate.is_relative_to(imported_root) or not candidate.is_file():
                     self.send_error(404)
                     return
                 self._send_file(candidate, cache=True)
