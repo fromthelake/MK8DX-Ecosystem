@@ -2,6 +2,11 @@ import type { FastifyInstance } from "fastify";
 
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
+import { consumeTournamentMutationBudget } from "../security/tournament-mutation-budget.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
 import {
   TournamentResultServiceError,
   type TournamentRaceResultService,
@@ -37,6 +42,7 @@ export type TournamentSubmissionRouteOptions = Readonly<{
   // an authenticated actor must present the same-origin CSRF proof header.
   csrfVerifier?: TournamentWebCsrfVerifier;
   service: Pick<TournamentRaceResultService, "submit">;
+  rateLimiter: MutationRateLimiter;
 }>;
 
 const resultSchema = {
@@ -119,6 +125,7 @@ export async function registerTournamentSubmissionRoutes(
         body: { type: "object" },
         response: {
           201: resultSchema,
+          429: errorResponseSchema,
           ...errorResponses,
         },
       },
@@ -155,9 +162,17 @@ export async function registerTournamentSubmissionRoutes(
             message: "The Tournament race-result submission is not authorized.",
           });
         }
+        await consumeTournamentMutationBudget(actor, options.rateLimiter, "race-result");
         const result = await options.service.submit(request.body);
         return reply.code(201).send(result);
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({
+            code: "tournament_submission_rate_limited",
+            message: "Too many Tournament race results were received. Wait before retrying.",
+          });
+        }
         const mapped = failure(error);
         return reply.code(mapped.statusCode).send(mapped.response);
       }

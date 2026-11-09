@@ -425,6 +425,7 @@ export type AppDependencies = Readonly<{
     service: Pick<TournamentRaceResultService, "submit">;
     authorizer: TournamentSubmissionAuthorizer;
     csrfVerifier?: TournamentWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   tournamentRevisionRead?: Readonly<{
     service: Pick<TournamentRevisionReadService, "readRevision">;
@@ -437,6 +438,7 @@ export type AppDependencies = Readonly<{
     csrfVerifier: Readonly<{
       verify(actor: ActorContext, token: string): boolean;
     }>;
+    rateLimiter: MutationRateLimiter;
     onPublished?: (publicationId: string) => Promise<void>;
   }>;
   publicTournaments?: Readonly<{
@@ -1130,6 +1132,7 @@ export async function buildApp(
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.tournamentSubmission.service,
       authorizer: dependencies.tournamentSubmission.authorizer,
+      rateLimiter: dependencies.tournamentSubmission.rateLimiter,
       ...(dependencies.tournamentSubmission.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.tournamentSubmission.csrfVerifier }),
@@ -1146,6 +1149,7 @@ export async function buildApp(
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.tournamentPublications.service,
       csrfVerifier: dependencies.tournamentPublications.csrfVerifier,
+      rateLimiter: dependencies.tournamentPublications.rateLimiter,
       ...(dependencies.tournamentPublications.onPublished === undefined
         ? {}
         : { onPublished: dependencies.tournamentPublications.onPublished }),

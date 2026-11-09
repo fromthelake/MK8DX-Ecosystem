@@ -1418,6 +1418,7 @@ async function createMysqlApiRuntime(
             tournamentPublications: {
               service: tournamentPublicationService,
               csrfVerifier: webCsrfService,
+              rateLimiter: mutationRateLimiter,
               // Publishing a tournament applies its races to the rating
               // (ADR-0155); an excluded or already applied publication is
               // a normal no-op and real failures reach the operational log
@@ -1570,6 +1571,7 @@ async function createMysqlApiRuntime(
       // and then no CSRF proof is required.
       tournamentSubmission: {
         service: tournamentRaceResultService,
+        rateLimiter: mutationRateLimiter,
         authorizer: routePolicies.tournamentSubmissionAuthorizer
           ?? new AdministratorTournamentSubmissionAuthorizer(),
         ...(routePolicies.tournamentSubmissionAuthorizer !== undefined
