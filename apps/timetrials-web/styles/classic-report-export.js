@@ -772,14 +772,78 @@ function classicApplyEditorCommand(command, value = '', sourceNode = null) {
 function sanitizeClientEditableHtml(source) {
   const html = String(source || '');
   if (!html) return '';
-  return html
-    .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-    .replace(/<style[\s\S]*?>[\s\S]*?<\/style>/gi, '')
-    .replace(/\son\w+="[^"]*"/gi, '')
-    .replace(/\son\w+='[^']*'/gi, '')
-    .replace(/\r\n/g, '\n')
-    .replace(/\r/g, '\n')
-    .replace(/\n/g, '<br>');
+  const allowed = new Set(['p', 'br', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li', 'blockquote', 'span', 'mark']);
+  const aliases = { b: 'strong', i: 'em', strike: 's', del: 's', div: 'p', font: 'span',
+    h1: 'p', h2: 'p', h3: 'p', h4: 'p', h5: 'p', h6: 'p' };
+  const dropped = new Set(['script', 'style', 'iframe', 'object', 'embed', 'svg', 'math', 'template', 'noscript', 'form', 'input', 'button']);
+  const styleRules = {
+    color: /^(?:#[0-9a-f]{3,8}|rgba?\([\d.,\s%]+\))$/i,
+    'background-color': /^(?:#[0-9a-f]{3,8}|rgba?\([\d.,\s%]+\))$/i,
+    'text-align': /^(?:left|center|right|justify)$/i,
+    'font-size': /^(?:[1-7]|\d{1,2}(?:px|pt|em|rem))$/i,
+    'font-family': /^(?:Noto Sans|Segoe UI|Georgia|Verdana|Courier New)$/i,
+    'margin-left': /^(?:0|\d{1,3}(?:px|em))$/i,
+  };
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  const clean = document.createElement('div');
+  const appendSafe = (sourceNode, destination) => {
+    if (sourceNode.nodeType === Node.TEXT_NODE) {
+      const parts = sourceNode.textContent.replace(/\r\n?|\n/g, '\n').split('\n');
+      parts.forEach((part, index) => {
+        if (index > 0) destination.appendChild(document.createElement('br'));
+        destination.appendChild(document.createTextNode(part));
+      });
+      return;
+    }
+    if (sourceNode.nodeType !== Node.ELEMENT_NODE) return;
+    const originalTag = sourceNode.localName.toLowerCase();
+    if (dropped.has(originalTag)) return;
+    const tag = aliases[originalTag] || originalTag;
+    if (!allowed.has(tag)) {
+      Array.from(sourceNode.childNodes).forEach((child) => appendSafe(child, destination));
+      return;
+    }
+    const href = tag === 'a' ? String(sourceNode.getAttribute('href') || '').trim() : '';
+    if (tag === 'a' && (!/^(?:https?:\/\/|mailto:)/i.test(href) || /[\s<>"']/u.test(href) || href.length > 2000)) {
+      Array.from(sourceNode.childNodes).forEach((child) => appendSafe(child, destination));
+      return;
+    }
+    const element = document.createElement(tag);
+    if (tag === 'a') {
+      element.setAttribute('href', href);
+      element.setAttribute('rel', 'noopener');
+      element.setAttribute('target', '_blank');
+    }
+    const safeClasses = String(sourceNode.getAttribute('class') || '').split(/\s+/)
+      .filter((name) => /^(?:rt-color-(?:red|orange|yellow|green|blue|purple|gray)|rt-bg-(?:yellow|green|blue|pink)|rt-size-(?:s|l|xl)|rt-font-(?:serif|mono)|rt-align-(?:center|right)|rt-indent-[1-3])$/.test(name));
+    if (safeClasses.length) element.className = [...new Set(safeClasses)].join(' ');
+    for (const property of Object.keys(styleRules)) {
+      const value = sourceNode.style?.getPropertyValue(property)?.trim() || '';
+      if (value && styleRules[property].test(value)) element.style.setProperty(property, value);
+    }
+    if (originalTag === 'font') {
+      const color = String(sourceNode.getAttribute('color') || '').trim();
+      const face = String(sourceNode.getAttribute('face') || '').trim();
+      const size = String(sourceNode.getAttribute('size') || '').trim();
+      if (styleRules.color.test(color)) element.style.setProperty('color', color);
+      if (styleRules['font-family'].test(face)) element.style.setProperty('font-family', face);
+      if (/^[1-7]$/.test(size)) {
+        element.style.setProperty('font-size', ['10px', '13px', '16px', '18px', '24px', '32px', '48px'][Number(size) - 1]);
+      }
+    }
+    const align = String(sourceNode.getAttribute('align') || '').trim();
+    if (styleRules['text-align'].test(align)) element.style.setProperty('text-align', align);
+    Array.from(sourceNode.childNodes).forEach((child) => appendSafe(child, element));
+    destination.appendChild(element);
+  };
+  Array.from(template.content.childNodes).forEach((child) => appendSafe(child, clean));
+  return clean.innerHTML;
+}
+
+function safeCssImageUrl(source) {
+  const url = String(source || '');
+  return /^(?:https?:\/\/|\/|\.\.?\/|assets\/)[a-z0-9/_:.?=&%#-]+$/i.test(url) ? url : '';
 }
 
 async function fetchClassicCustomization() {
@@ -1967,7 +2031,8 @@ function renderTopFiveList(entries, itemType, options = {}) {
       const trackIcon = entry.trackImage || entry.trackThumb || '';
       const trackBackground = entry.trackBackgroundImage || entry.trackImage || '';
       if (options.trackBackgroundRows) {
-        const rowStyle = trackBackground ? ` style="--top-track-bg:url('${String(trackBackground).replace(/'/g, "\\'")}')"` : '';
+        const safeBackground = safeCssImageUrl(trackBackground);
+        const rowStyle = safeBackground ? ` style="--top-track-bg:url('${esc(safeBackground)}')"` : '';
         return `<li class="top-track-row-bg"${rowStyle}><span class="top-index">${index + 1}</span><span class="top-name">${esc(entry.trackLabel)}</span><strong class="top-count">${esc(entry.count)}</strong></li>`;
       }
       const nameCell = options.staticExport
@@ -2729,7 +2794,7 @@ function renderCupOverview(cupOverview, trackDetail, filteredRaceCount, options 
       return `<template data-track-detail-template="${esc(entry.trackKey)}">${renderTrackDetail(detail, options)}</template>`;
     }).join('')}</div>`
     : '';
-  return `<section class="section-block"><div class="section-head"><div><h2>${esc(tr('cupTrackOverview'))}</h2><p>${esc(tr('uniqueRacesBasis', { count: filteredRaceCount }))}</p></div></div><div class="cup-overview-grid">${cupOverview.map((cup) => `<article class="cup-overview-card${topCupLabels.has(cup.cupLabel) ? ' is-top-five' : ''}"><div class="cup-overview-head">${cup.cupImage ? `<img src="${esc(cup.cupImage)}" alt="" loading="lazy" decoding="async" />` : ''}<div><h3>${esc(cup.cupLabel)}</h3><p>${esc(cup.count)} ${esc(tr('picks')).toLowerCase()} · ${esc(formatPercent(cup.percentage))}</p></div></div><div class="track-list">${cup.tracks.map((track) => { const prominence = Math.min(1, track.count / Math.max(filteredRaceCount || 1, 1)); const trackImage = track.image || track.thumb || ''; const trackBackgroundImage = track.backgroundImage || ''; const trackStyle = `--track-prominence:${prominence}${trackBackgroundImage ? `;--track-image:url('${trackBackgroundImage.replace(/'/g, "\\'")}')` : ''}`; if (options.staticExport && !interactiveTrackDetail) return `<div class="track-usage-row track-usage-row-static${track.count === 0 ? ' is-unused' : ''}${topTrackKeys.has(track.trackKey) ? ' is-top-five' : ''}" style="${esc(trackStyle)}"><span class="track-name">${trackImage ? `<img src="${esc(trackImage)}" alt="" loading="lazy" decoding="async" />` : ''}<span>${esc(track.trackLabel)}</span></span><span class="track-stats"><strong>${esc(track.count)}</strong><small>${esc(formatPercent(track.percentage))}</small></span></div>`; return `<button type="button" class="track-usage-row${track.count === 0 ? ' is-unused' : ''}${topTrackKeys.has(track.trackKey) ? ' is-top-five' : ''}${track.trackKey === trackDetail?.trackKey ? ' is-selected' : ''}" data-select-track="${esc(track.trackKey)}" style="${esc(trackStyle)}"><span class="track-name">${trackImage ? `<img src="${esc(trackImage)}" alt="" loading="lazy" decoding="async" />` : ''}<span>${esc(track.trackLabel)}</span></span><span class="track-stats"><strong>${esc(track.count)}</strong><small>${esc(formatPercent(track.percentage))}</small></span></button>`; }).join('')}</div></article>`).join('')}</div>${detailHost}${detailTemplates}</section>`;
+  return `<section class="section-block"><div class="section-head"><div><h2>${esc(tr('cupTrackOverview'))}</h2><p>${esc(tr('uniqueRacesBasis', { count: filteredRaceCount }))}</p></div></div><div class="cup-overview-grid">${cupOverview.map((cup) => `<article class="cup-overview-card${topCupLabels.has(cup.cupLabel) ? ' is-top-five' : ''}"><div class="cup-overview-head">${cup.cupImage ? `<img src="${esc(cup.cupImage)}" alt="" loading="lazy" decoding="async" />` : ''}<div><h3>${esc(cup.cupLabel)}</h3><p>${esc(cup.count)} ${esc(tr('picks')).toLowerCase()} · ${esc(formatPercent(cup.percentage))}</p></div></div><div class="track-list">${cup.tracks.map((track) => { const prominence = Math.min(1, track.count / Math.max(filteredRaceCount || 1, 1)); const trackImage = track.image || track.thumb || ''; const trackBackgroundImage = track.backgroundImage || ''; const trackStyle = `--track-prominence:${prominence}${trackBackgroundImage ? `;--track-image:url('${safeCssImageUrl(trackBackgroundImage)}')` : ''}`; if (options.staticExport && !interactiveTrackDetail) return `<div class="track-usage-row track-usage-row-static${track.count === 0 ? ' is-unused' : ''}${topTrackKeys.has(track.trackKey) ? ' is-top-five' : ''}" style="${esc(trackStyle)}"><span class="track-name">${trackImage ? `<img src="${esc(trackImage)}" alt="" loading="lazy" decoding="async" />` : ''}<span>${esc(track.trackLabel)}</span></span><span class="track-stats"><strong>${esc(track.count)}</strong><small>${esc(formatPercent(track.percentage))}</small></span></div>`; return `<button type="button" class="track-usage-row${track.count === 0 ? ' is-unused' : ''}${topTrackKeys.has(track.trackKey) ? ' is-top-five' : ''}${track.trackKey === trackDetail?.trackKey ? ' is-selected' : ''}" data-select-track="${esc(track.trackKey)}" style="${esc(trackStyle)}"><span class="track-name">${trackImage ? `<img src="${esc(trackImage)}" alt="" loading="lazy" decoding="async" />` : ''}<span>${esc(track.trackLabel)}</span></span><span class="track-stats"><strong>${esc(track.count)}</strong><small>${esc(formatPercent(track.percentage))}</small></span></button>`; }).join('')}</div></article>`).join('')}</div>${detailHost}${detailTemplates}</section>`;
 }
 
 function renderDeltaSection(derived) {
