@@ -1,4 +1,4 @@
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -16,10 +16,15 @@ const emptyRepository: IdentityReadRepository = {
 };
 
 let root: string;
+let outside: string;
 
 beforeAll(() => {
   root = mkdtempSync(join(tmpdir(), "mk8dx-game-assets-"));
+  outside = mkdtempSync(join(tmpdir(), "mk8dx-outside-assets-"));
+  writeFileSync(join(outside, "secret.png"), "not an asset");
   mkdirSync(join(root, "images", "cups"), { recursive: true });
+  symlinkSync(outside, join(root, "images", "linked"),
+    process.platform === "win32" ? "junction" : "dir");
   writeFileSync(
     join(root, "images", "cups", "000_mushroom_cup.png"),
     Buffer.from([0x89, 0x50, 0x4e, 0x47]),
@@ -38,6 +43,7 @@ beforeAll(() => {
 
 afterAll(() => {
   rmSync(root, { recursive: true, force: true });
+  rmSync(outside, { recursive: true, force: true });
 });
 
 describe("game asset serving", () => {
@@ -80,6 +86,7 @@ describe("game asset serving", () => {
       for (const url of [
         "/assets/secret.txt",
         "/assets/images/cups/absent.png",
+        "/assets/images/linked/secret.png",
         "/assets/../package.json",
         "/assets/images/..%2F..%2Fsecret.png",
         "/assets/images/cups/000_mushroom_cup.PNG",

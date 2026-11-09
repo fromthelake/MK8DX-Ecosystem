@@ -4,12 +4,12 @@
 // the host outside Git and outside the release package (production-only
 // visual assets; public redistribution is a separate Phase 10 decision).
 // Requests are validated fail-closed: a closed path grammar, resolution
-// pinned under the configured root, and a raster extension whitelist plus
-// one explicitly reviewed Nintendo wordmark SVG — traversal is structurally
-// impossible. Files stream from disk with strong validators so the 31MB pack
-// never has to live in process memory.
+// pinned under the configured root (including symlink targets), and a raster
+// extension whitelist plus one explicitly reviewed Nintendo wordmark SVG.
+// Files stream from disk with strong validators so the 31MB pack never has to
+// live in process memory.
 
-import { createReadStream, statSync } from "node:fs";
+import { createReadStream, realpathSync, statSync } from "node:fs";
 import { resolve, sep } from "node:path";
 
 import type { FastifyInstance } from "fastify";
@@ -53,7 +53,7 @@ export function validateGameAssetRoot(rootDirectory: string): string {
       "the configured game-asset root is not a directory",
     );
   }
-  return resolved;
+  return realpathSync(resolved);
 }
 
 export async function registerGameAssetRoutes(
@@ -80,8 +80,13 @@ export async function registerGameAssetRoutes(
         return reply.code(404).send();
       }
       let file;
+      let physical;
       try {
-        file = statSync(absolute);
+        physical = realpathSync(absolute);
+        if (!physical.startsWith(root + sep)) {
+          return reply.code(404).send();
+        }
+        file = statSync(physical);
       } catch {
         return reply.code(404).send();
       }
@@ -99,7 +104,7 @@ export async function registerGameAssetRoutes(
       reply.header("content-length", String(file.size));
       return reply
         .type(contentTypes[extension] ?? "application/octet-stream")
-        .send(createReadStream(absolute));
+        .send(createReadStream(physical));
     },
   );
 }
