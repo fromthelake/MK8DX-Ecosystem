@@ -82,7 +82,8 @@ class App {
   private readonly usingOfflineCache = 'serviceWorker' in navigator &&
     navigator.serviceWorker.controller !== null;
   private zoomIndex = 0;
-  private readonly zoomSteps = [1.0, 1.5, 2.0, 3.0];
+  private readonly zoomSteps = [1.0, 1.5, 2.0, 2.5, 3.0];
+  private zoomApplying = false;
   /** Extra centre crop when the camera has no (or insufficient) optical/hardware zoom. */
   private digitalZoom = 1.0;
   private state: ScanState = 'idle';
@@ -540,8 +541,18 @@ class App {
   }
 
   private async cycleZoom(): Promise<void> {
-    this.zoomIndex = (this.zoomIndex + 1) % this.zoomSteps.length;
-    await this.applyZoom(this.zoomSteps[this.zoomIndex], true);
+    if (this.zoomApplying || !this.engineReady || this.state === 'bursting' || this.state === 'analyzing') return;
+    this.zoomApplying = true;
+    this.zoomButton.disabled = true;
+    this.scanButton.disabled = true;
+    try {
+      this.zoomIndex = (this.zoomIndex + 1) % this.zoomSteps.length;
+      await this.applyZoom(this.zoomSteps[this.zoomIndex], true);
+    } finally {
+      this.zoomApplying = false;
+      this.zoomButton.disabled = !this.engineReady;
+      this.scanButton.disabled = !this.engineReady;
+    }
   }
 
   private cameraResolution(): string {
@@ -551,13 +562,18 @@ class App {
 
   private async applyZoom(requested: number, announce: boolean): Promise<void> {
     const caps: any = this.track?.getCapabilities?.() ?? {};
-    let hardwareZoom = 1;
+    const previousZoom = Number((this.track?.getSettings?.() as any)?.zoom ?? 1);
+    let hardwareZoom = Number.isFinite(previousZoom) && previousZoom > 0 ? previousZoom : 1;
     if (this.track && caps.zoom && Number(caps.zoom.max) > Number(caps.zoom.min ?? 1)) {
       const min = Number(caps.zoom.min ?? 1);
       const max = Number(caps.zoom.max ?? requested);
       const step = Number(caps.zoom.step ?? 0);
       let target = Math.max(min, Math.min(requested, max));
-      if (step > 0) target = min + Math.round((target - min) / step) * step;
+      if (step > 0) {
+        const lastStep = Math.max(0, Math.floor((max - min) / step + 1e-7));
+        const requestedStep = Math.max(0, Math.floor((target - min) / step + 1e-7));
+        target = min + Math.min(lastStep, requestedStep) * step;
+      }
       try {
         await this.track.applyConstraints({ advanced: [{ zoom: target } as any] });
         hardwareZoom = Number((this.track.getSettings() as any).zoom ?? target);
@@ -707,7 +723,7 @@ class App {
   }
 
   private async startScan(): Promise<void> {
-    if (!this.engineReady) return;
+    if (!this.engineReady || this.zoomApplying) return;
     if (!this.cameraReady) {
       this.setStatus(`MK8 | ${t('camera_denied')}`);
       return;

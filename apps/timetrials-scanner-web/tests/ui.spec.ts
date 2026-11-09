@@ -17,7 +17,8 @@ async function shot(page: Page, name: string): Promise<void> {
 
 async function launchWith(browserType: any, video: string, lang = 'nl') {
   const browser = await browserType.launch({
-    args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', `--use-file-for-fake-video-capture=${video}`],
+    args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream',
+      ...(video ? [`--use-file-for-fake-video-capture=${video}`] : [])],
   });
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, locale: lang === 'nl' ? 'nl-NL' : 'en-GB', permissions: ['camera'] });
   const page = await context.newPage();
@@ -31,7 +32,7 @@ async function waitReady(page: Page, href = '/'): Promise<void> {
 }
 
 test('camera uses its automatic maximum and zoom has a digital fallback', async ({ playwright }) => {
-  const { browser, page } = await launchWith(playwright.chromium, fake('endscreen.y4m'), 'en');
+  const { browser, page } = await launchWith(playwright.chromium, '', 'en');
   try {
     await waitReady(page, '/?track=track.gcn_baby_park&mode=150&handoff=mk8dx.scan-handoff.v1&return=%2F%3Fpost%3Dtrack.gcn_baby_park%26mode%3D150&layout=endscreen&laps=7');
     await expect(page.locator('.controls button', { hasText: 'LAPS' })).toBeHidden();
@@ -39,9 +40,57 @@ test('camera uses its automatic maximum and zoom has a digital fallback', async 
     await zoom.click();
     await expect(page.locator('.controls button', { hasText: '1.5x' })).toBeVisible();
     await expect(page.locator('.stage video')).toHaveCSS('transform', /matrix\(1\.5, 0, 0, 1\.5, 0, 0\)/);
+    await page.locator('.controls button', { hasText: '1.5x' }).click();
+    await expect(page.locator('.controls button', { hasText: '2.0x' })).toBeVisible();
+    await page.locator('.controls button', { hasText: '2.0x' }).click();
+    await expect(page.locator('.controls button', { hasText: '2.5x' })).toBeVisible();
+    await expect(page.locator('.stage video')).toHaveCSS('transform', /matrix\(2\.5, 0, 0, 2\.5, 0, 0\)/);
+    await shot(page, 'camera_zoom_2p5');
+    await page.locator('.controls button.scan').click();
+    await expect(page.locator('.stage')).toHaveClass(/frozen/, { timeout: 10_000 });
+    await expect(page.locator('.stage img.frozen')).toHaveAttribute('src', /^data:image\/jpeg/);
+    await shot(page, 'camera_zoom_2p5_capture');
+    await page.locator('.controls button.scan').click();
+    await page.locator('.controls button', { hasText: '2.5x' }).click();
+    await expect(page.locator('.controls button', { hasText: '3.0x' })).toBeVisible();
+    await page.locator('.controls button', { hasText: '3.0x' }).click();
+    await expect(page.locator('.controls button', { hasText: '1.0x' })).toBeVisible();
     await page.locator('.controls button.settings').click();
     await expect(page.locator('.modal')).toContainText('Automatic maximum');
     await expect(page.locator('.modal')).toContainText(/\d+ × \d+/);
+  } finally {
+    await browser.close();
+  }
+});
+
+test('scan waits until a hardware zoom change settles', async ({ playwright }) => {
+  const { browser, page } = await launchWith(playwright.chromium, '', 'en');
+  try {
+    await waitReady(page);
+    await page.evaluate(() => {
+      const video = document.querySelector('.stage video') as HTMLVideoElement;
+      const track = (video.srcObject as MediaStream).getVideoTracks()[0];
+      const originalSettings = track.getSettings.bind(track);
+      let appliedZoom = 1;
+      Object.defineProperty(track, 'getCapabilities', {
+        value: () => ({ zoom: { min: 1, max: 3, step: 1 } }),
+      });
+      Object.defineProperty(track, 'getSettings', {
+        value: () => ({ ...originalSettings(), zoom: appliedZoom }),
+      });
+      Object.defineProperty(track, 'applyConstraints', {
+        value: async (constraints: any) => {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          appliedZoom = Number(constraints.advanced?.[0]?.zoom ?? 1);
+        },
+      });
+    });
+    await page.locator('.controls button', { hasText: '1.0x' }).click();
+    await expect(page.locator('.controls button.scan')).toBeDisabled();
+    await expect(page.locator('.controls button', { hasText: '1.0x' })).toBeDisabled();
+    await expect(page.locator('.controls button', { hasText: '1.5x' })).toBeVisible();
+    await expect(page.locator('.controls button.scan')).toBeEnabled();
+    await expect(page.locator('.stage video')).toHaveCSS('transform', /matrix\(1\.5, 0, 0, 1\.5, 0, 0\)/);
   } finally {
     await browser.close();
   }
