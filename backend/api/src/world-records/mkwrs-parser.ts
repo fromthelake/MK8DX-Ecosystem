@@ -13,9 +13,14 @@ export type WorldRecordEntry = WorldRecordHolder & Readonly<{
 }>;
 
 export class MkwrsParseError extends Error { public constructor(message: string) { super(message); this.name = "MkwrsParseError"; } }
-const decode = (value: string): string => value
-  .replace(/&#0*39;|&apos;/gi, "'").replace(/&quot;/gi, '"').replace(/&amp;/gi, "&")
-  .replace(/&lt;/gi, "<").replace(/&gt;/gi, ">").replace(/&nbsp;/gi, " ");
+const ENTITY_VALUES: Readonly<Record<string, string>> = {
+  "&#39;": "'", "&apos;": "'", "&quot;": '"', "&amp;": "&",
+  "&lt;": "<", "&gt;": ">", "&nbsp;": " ",
+};
+const decode = (value: string): string => value.replace(
+  /&#0*39;|&(?:apos|quot|amp|lt|gt|nbsp);/gi,
+  (entity) => ENTITY_VALUES[entity.toLowerCase().replace(/^&#0+39;/, "&#39;")] ?? entity,
+);
 const text = (html: string): string => decode(html.replace(/<[^>]+>/g, " ")).replace(/\s+/g, " ").trim();
 const normalizedTrack = (name: string): string => name.toLocaleLowerCase().replace(/^tour\s+/, "").replace(/[^a-z0-9]+/g, "");
 // MKWRS publishes rounded three-decimal section splits. The current 200cc N64
