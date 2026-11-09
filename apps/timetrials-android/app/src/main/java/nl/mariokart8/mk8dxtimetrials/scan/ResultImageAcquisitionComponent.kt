@@ -727,6 +727,8 @@ private fun EmbeddedMk8dxCamera(
                                     imageCapture = capture
                                     cameraControl = camera.cameraControl
                                     cameraInfo = camera.cameraInfo
+                                    // A rebound camera starts at its own default zoom.
+                                    zoomRatio = 1f
                                     previewUseCase = preview
                                 }.onFailure { onFailure() }
                             }, executor)
@@ -782,9 +784,11 @@ private fun EmbeddedMk8dxCamera(
             },
         )
     }
-    val zoomTo: (Float) -> Unit = { next ->
-        zoomRatio = next
-        cameraControl?.setZoomRatio(next)
+    val zoomTo: (Float) -> Unit = zoom@{ next ->
+        val range = cameraInfo?.zoomState?.value ?: return@zoom
+        val supported = next.coerceIn(range.minZoomRatio, range.maxZoomRatio)
+        zoomRatio = supported
+        cameraControl?.setZoomRatio(supported)
     }
     if (ScanDebug.recorder != null) {
         val currentShoot by rememberUpdatedState(shoot)
@@ -822,16 +826,8 @@ private fun EmbeddedMk8dxCamera(
             onShutter = shoot,
             onGallery = onGallery,
             onZoom = {
-                // The scanner's zoom cycle: one control, four useful steps, so a
-                // result screen across the room can be framed without pinching.
-                zoomTo(
-                    when {
-                        zoomRatio < 1.4f -> 1.5f
-                        zoomRatio < 1.9f -> 2f
-                        zoomRatio < 2.9f -> 3f
-                        else -> 1f
-                    },
-                )
+                // Skip steps this camera cannot reach, keeping the label and capture aligned.
+                zoomTo(nextScannerZoom(zoomRatio, cameraInfo?.zoomState?.value?.maxZoomRatio ?: 1f))
             },
             onLayout = {
                 onLayoutChanged(
@@ -985,6 +981,10 @@ private fun zoomLabel(ratio: Float): String {
     val tenths = Math.round(ratio * 10f)
     return "${tenths / 10}.${tenths % 10}x"
 }
+
+internal fun nextScannerZoom(current: Float, maximum: Float): Float =
+    floatArrayOf(1f, 1.5f, 2f, 2.5f, 3f)
+        .firstOrNull { it > current + 0.05f && it <= maximum + 0.0001f } ?: 1f
 
 @Composable
 private fun ScanColumnButton(

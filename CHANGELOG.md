@@ -22,6 +22,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   phone, how an invitation activates a local account, and why a phone may show
   the light theme. The public offline A2 installer remains unqualified.
 
+### Camera
+
+- Web and Android scanner zoom controls now include 2.5× between 2× and 3×.
+  Web retains its digital crop fallback; Android skips steps above the camera's
+  supported zoom range. Physical camera acceptance remains open.
+
 ### LiveTrial
 
 - A newly linked player with no published times now sees an empty progress view
