@@ -20,7 +20,10 @@ ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "apps" / "timetrials-android" / "app" / "src" / "main" / "java"
 OUTPUT = ROOT / "apps" / "timetrials-android" / "i18n" / "messages.source.json"
 
-STRING = r'"(?:[^"\\$]|\\.|\$(?:\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}|[A-Za-z_][A-Za-z0-9_.]*))*"'
+# Each branch consumes a distinct leading character. Possessive repetition
+# keeps malformed, deeply repeated templates from backtracking through the
+# source file while preserving one nested brace pair inside ${...}.
+STRING = r'"(?:[^"\\$]|\\.|\$(?:\{(?:[^{}]|\{[^{}]*+\})*+\}|[A-Za-z_][A-Za-z0-9_.]*+))*+"'
 JOINED = rf'{STRING}(?:\s*\+\s*{STRING})*'
 # androidText and the local (english, dutch) helpers: Mk8dxAppearanceSection's t(), the activity headings.
 CALL = re.compile(rf'\b(?:androidText|t|ActivitySectionHeading)\(\s*(?:[A-Za-z_][A-Za-z0-9_.]*\s*,\s*)?({JOINED})\s*,\s*({JOINED})\s*[,)]', re.S)
