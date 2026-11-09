@@ -12,6 +12,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Offline LAN (in development)
 
+- Offline A2 client configuration now advertises personal host invitations;
+  the website explains that sign-in path and distinguishes it from the setup
+  certificate QR. Online installations keep their email-link form. The offline
+  installer is still gated pending the full installation and device checks.
 - The QA setup page and host screen now distinguish the one-time administrator
   code from the CA fingerprint and give clearer certificate import guidance.
 - NL/EN QA instructions explain which addresses work on the host and on a

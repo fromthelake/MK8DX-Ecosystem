@@ -3,7 +3,7 @@
 // never imported. A requested public Player receives a synthetic local
 // passwordless account and a canonical local-only verified PlayerClaim.
 
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import {
   appendFileSync,
   createReadStream,
@@ -656,6 +656,14 @@ async function main() {
   const magicLinkLog = `${handoffPath}.magic-links.jsonl`;
   writeFileSync(magicLinkLog, "", { flag: "wx" });
 
+  const staticWebFiles = new Map(await loadStaticWebFiles(webRoot));
+  const clientConfig = Buffer.from(JSON.stringify({
+    schemaVersion: "mk8dx.public-client.v1", websiteOrigin: baseUrl,
+  }));
+  staticWebFiles.set("/client-config.json", {
+    contentType: "application/json; charset=utf-8", body: clientConfig,
+    etag: `"${createHash("sha256").update(clientConfig).digest("hex").slice(0, 32)}"`,
+  });
   const runtime = await createPasswordlessHostedRuntime({
     core: {
       mysql: mysqlConfig,
@@ -699,7 +707,7 @@ async function main() {
     // runtime handoff, so the QA notification surface can be exercised without
     // ever borrowing production's keys.
     ...(webPushKeys === null ? {} : { webPush: webPushKeys }),
-    staticWeb: { files: await loadStaticWebFiles(webRoot) },
+    staticWeb: { files: staticWebFiles },
     gameAssets: { rootDirectory: gameAssetRoot },
   }, () => ({
     async verify() {},

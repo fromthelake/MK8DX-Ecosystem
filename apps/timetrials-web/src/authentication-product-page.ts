@@ -586,6 +586,9 @@ export function mountAuthenticationProductPage(
   // Only the two surfaces that act on it ever ask, and only once.
   let capabilitiesCache:
     ReturnType<WebAuthenticationClient["capabilities"]> | null = null;
+  let installationMode: "email-link" | "offline-invitation" | "checking" | "unavailable" =
+    client.installationMode === undefined ? "email-link" : "checking";
+  let installationModeRequest: Promise<void> | null = null;
   const loadCapabilityDocument = async () => {
     if (capabilitiesCache === null) {
       capabilitiesCache = client.capabilities();
@@ -1679,6 +1682,73 @@ export function mountAuthenticationProductPage(
         "One email address is all you need. Nothing to remember, nothing to reset.",
         "Eén e-mailadres is genoeg. Niets om te onthouden, niets om te herstellen.",
       );
+    if (installationMode === "checking") {
+      status.textContent = localized("Checking how to sign in…", "Aanmeldmethode controleren…");
+      const marker = document.createElement("p");
+      marker.className = "ds-body";
+      marker.textContent = status.textContent;
+      content.append(marker);
+      if (installationModeRequest === null) {
+        installationModeRequest = client.installationMode!().then((mode) => {
+          installationMode = mode;
+        }).catch(() => { installationMode = "unavailable"; });
+      }
+      void installationModeRequest.then(() => {
+        if (!disposed && marker.isConnected) { renderSignIn(); }
+      });
+      return;
+    }
+    if (installationMode === "unavailable") {
+      status.textContent = localized(
+        "We could not check how this installation signs in.",
+        "We konden de aanmeldmethode van deze installatie niet controleren.",
+      );
+      const retry = dsButton({
+        label: localized("Try again", "Opnieuw proberen"), variant: "secondary",
+        onPress: () => {
+          installationMode = "checking";
+          installationModeRequest = null;
+          renderSignIn();
+        },
+      });
+      content.append(retry.root);
+      return;
+    }
+    if (installationMode === "offline-invitation") {
+      const invitation = document.createElement("div");
+      invitation.className = "ds-stack";
+      const instruction = document.createElement("p");
+      instruction.className = "ds-body";
+      instruction.textContent = localized(
+        "Use the personal invitation link or QR code from the administrator's host screen to sign in. The invitation expires after 15 minutes and works once.",
+        "Gebruik de persoonlijke uitnodigingslink of QR-code van het beheerscherm op de host-pc om je aan te melden. De uitnodiging verloopt na 15 minuten en werkt één keer.",
+      );
+      const distinction = document.createElement("p");
+      distinction.className = "ds-body-s";
+      distinction.textContent = localized(
+        "The setup QR installs trust in this local server; it does not sign you in. Ask the host administrator for a new invitation if yours has expired.",
+        "De setup-QR installeert vertrouwen in deze lokale server; daarmee meld je je niet aan. Vraag de hostbeheerder om een nieuwe uitnodiging als de jouwe is verlopen.",
+      );
+      invitation.append(instruction, distinction);
+      if (isDevice) {
+        status.textContent = localized(
+          "Sign in with your invitation first, then return to approve this device.",
+          "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
+        );
+        content.append(dsPanel({ title: localized("Local invitation", "Lokale uitnodiging"),
+          titleLevel: 2, children: [invitation] }));
+      } else {
+        heading.hidden = true;
+        status.hidden = true;
+        const landingRoot = document.createElement("div");
+        content.append(landingRoot);
+        signedOutHome = mountSignedOutHome(landingRoot, {
+          signInPanel: invitation, signInFirst: explicit,
+          brandSrc: PRODUCT_ICON,
+        });
+      }
+      return;
+    }
     // A link that has expired, or that a mail scanner opened first, used to
     // land here silently: the person saw the marketing page and concluded
     // that clicking had done nothing. `errorCallbackURL` finally has a
@@ -1846,8 +1916,8 @@ export function mountAuthenticationProductPage(
     const explanation = document.createElement("p");
     explanation.className = "ds-micro";
     explanation.textContent = localized(
-      "Switching signs you out here first, then you sign in with the other email address.",
-      "Overstappen meldt je hier eerst af; daarna meld je je aan met het andere e-mailadres.");
+      "Switching signs you out here first, then you sign in with a different account.",
+      "Overstappen meldt je hier eerst af; daarna meld je je aan met een ander account.");
     group.append(actions, explanation);
     return group;
   };
@@ -1878,9 +1948,10 @@ export function mountAuthenticationProductPage(
         applyNavSession(false);
         renderSignIn();
         if (switching) {
-          status.textContent =
-            "Signed out. Sign in with the other email address to continue " +
-            "as someone else.";
+          status.textContent = localized(
+            "Signed out. Sign in with a different account to continue.",
+            "Afgemeld. Meld je aan met een ander account om verder te gaan.",
+          );
         }
       }).catch(() => {
         if (!disposed) { status.textContent = "Could not sign out. Please retry."; }

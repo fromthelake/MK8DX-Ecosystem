@@ -36,6 +36,20 @@ test("closed public inventory serves scanner/assets and no private file or HTML 
   } finally { await app.close(); }
 });
 
+test("offline public client config advertises invitations without changing the online shape", async () => {
+  const root = await mkdtemp(join(tmpdir(), "mk8dx-offline-bundle-")); directories.push(root);
+  await mkdir(join(root, "scanner")); await mkdir(join(root, "assets"));
+  await writeFile(join(root, "scanner/index.html"), "<p>scanner</p>");
+  const app = Fastify();
+  try {
+    await registerPublicBundleRoutes(app, root, "https://192.168.50.20", true);
+    expect((await app.inject("/client-config.json")).json()).toEqual({
+      schemaVersion: "mk8dx.public-client.v1", websiteOrigin: "https://192.168.50.20",
+      authenticationMode: "offline-invitation",
+    });
+  } finally { await app.close(); }
+});
+
 test("binary files outside the scanner mask tree remain refused", async () => {
   const root = await mkdtemp(join(tmpdir(), "mk8dx-public-bin-")); directories.push(root);
   await mkdir(join(root, "assets")); await mkdir(join(root, "scanner"));
