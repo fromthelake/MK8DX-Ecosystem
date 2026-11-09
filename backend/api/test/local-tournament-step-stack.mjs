@@ -23,6 +23,7 @@ import { createServer as createHttpServer, request as httpRequest } from "node:h
 import { createServer as createHttpsServer } from "node:https";
 import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { createLocalStackClient } from "./local-stack-http-client.mjs";
 
 import mysql from "mysql2/promise";
 
@@ -66,11 +67,6 @@ function sourceRacers() {
 }
 
 const racers = sourceRacers();
-
-// The stack deliberately serves a one-process self-signed certificate on
-// loopback. Android trusts it through `mk8dxDebugCaCertificate`; this process
-// trusts it here because it talks to itself.
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 function fail(message) {
   throw new Error(`Local Tournament step stack failed: ${message}`);
@@ -208,36 +204,6 @@ async function listen(server) {
   return address.port;
 }
 
-/** Minimal cookie-jar client, so no browser is needed for the local stack. */
-function createClient(baseUrl) {
-  const jar = new Map();
-  async function call(method, path, body, bearer, csrf) {
-    const headers = { accept: "application/json", origin: baseUrl, referer: `${baseUrl}/` };
-    if (jar.size > 0) {
-      headers.cookie = [...jar].map(([name, value]) => `${name}=${value}`).join("; ");
-    }
-    if (bearer !== undefined) headers.authorization = `Bearer ${bearer}`;
-    if (csrf !== undefined) headers["x-mk8dx-csrf"] = csrf;
-    if (body !== undefined) headers["content-type"] = "application/json";
-    const response = await fetch(`${baseUrl}${path}`, {
-      method,
-      headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
-      redirect: "manual",
-    });
-    for (const raw of response.headers.getSetCookie?.() ?? []) {
-      const [pair] = raw.split(";");
-      const separator = pair.indexOf("=");
-      if (separator > 0) jar.set(pair.slice(0, separator), pair.slice(separator + 1));
-    }
-    const text = await response.text();
-    let parsed;
-    try { parsed = text === "" ? undefined : JSON.parse(text); } catch { parsed = undefined; }
-    return { status: response.status, headers: response.headers, text, body: parsed };
-  }
-  return { call, jar };
-}
-
 async function waitForAccount(pool) {
   for (let attempt = 0; attempt < 100; attempt += 1) {
     const [rows] = await pool.execute(
@@ -361,7 +327,7 @@ async function main() {
   const backendAddress = await runtime.app.listen({ host: "127.0.0.1", port: 0 });
   gateway.setBackendPort(Number(new URL(backendAddress).port));
 
-  const client = createClient(baseUrl);
+  const client = createLocalStackClient(baseUrl, tls);
   const requested = await client.call("POST", "/api/auth/sign-in/magic-link", {
     email: directorEmail,
     callbackURL: "/",
