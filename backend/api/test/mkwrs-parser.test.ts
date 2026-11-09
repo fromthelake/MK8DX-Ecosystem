@@ -71,6 +71,12 @@ describe("atomic mkwrs import", () => {
     expect(() => parseMkwrsPage(200, page(today))).toThrow(/invalid record metadata/);
   });
 
+  it("decodes HTML entities once in imported names", () => {
+    const rows: PageRow[] = MKWRS_TRACKS.map((_, trackIndex) => ({ trackIndex,
+      ...(trackIndex === 0 ? { playerName: "A &amp;lt;B&amp;gt; &lt;C&gt; &amp; D" } : {}) }));
+    expect(parseMkwrsPage(150, page(rows))[0]!.playerName).toBe("A &lt;B&gt; <C> & D");
+  });
+
   it("keeps item splits in another grouping than one per lap as unknown", () => {
     const html = page().replace("'3-3-4-0-0-0-0','1-1-0-0-0-1-0'", "'7-3-0','2-1-0'");
     const babyPark = parseMkwrsPage(200, html).find((record) => record.trackId === "track.gcn_baby_park")!;
