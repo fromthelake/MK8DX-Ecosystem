@@ -52,7 +52,7 @@ async function doInit(config: EngineConfig, why: string): Promise<void> {
   initCount++;
   initPromise = (async () => {
     try {
-      console.log(`[worker] init start (${why}), crossOriginIsolated=`, (self as any).crossOriginIsolated, 'threads=', navigator.hardwareConcurrency);
+      console.log('[worker] init start, reason=', why, 'crossOriginIsolated=', (self as any).crossOriginIsolated, 'threads=', navigator.hardwareConcurrency);
       engine = await Engine.create({ ...config, onStatus: (m) => { console.log('[worker]', m); post({ type: 'status', message: m }); }, onProgress: (p) => post({ type: 'setup_progress', progress: p }) });
       console.log('[worker] init klaar', JSON.stringify(engine.status));
       scanner = new Scanner(engine);
