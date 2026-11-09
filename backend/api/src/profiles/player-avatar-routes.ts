@@ -5,6 +5,11 @@ import type { ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from
   "../timetrials/submission-routes.js";
 import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import {
   PlayerAvatarError,
   type PlayerAvatarService,
 } from "./player-avatar-service.js";
@@ -15,6 +20,7 @@ export type PlayerAvatarRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   service: Pick<PlayerAvatarService, "setOwnAvatar">;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  rateLimiter: MutationRateLimiter;
 }>;
 
 const bodySchema = {
@@ -99,6 +105,7 @@ export async function registerPlayerAvatarRoutes(
           400: errorResponseSchema,
           401: errorResponseSchema,
           409: errorResponseSchema,
+          429: errorResponseSchema,
           503: errorResponseSchema,
         },
       },
@@ -112,9 +119,15 @@ export async function registerPlayerAvatarRoutes(
              !await options.csrfVerifier.verify(actor, proof))) {
           throw new PlayerAvatarError("not_authenticated");
         }
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         await options.service.setOwnAvatar(actor, request.body.avatarId);
         return reply.send({ acknowledged: true });
       } catch (error) {
+        const limited = accountSettingRateLimitFailure(error);
+        if (limited !== null) {
+          void reply.header("retry-after", String(limited.retryAfterSeconds));
+          return reply.code(429).send(limited.body);
+        }
         const { status, body } = errorReply(error);
         return reply.code(status).send(body);
       }

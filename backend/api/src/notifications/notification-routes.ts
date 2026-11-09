@@ -5,6 +5,11 @@ import type { ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from
   "../timetrials/submission-routes.js";
 import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import {
   NOTIFICATION_KINDS,
   NotificationError,
   type NotificationService,
@@ -16,6 +21,7 @@ export type NotificationRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   service: Pick<NotificationService, "listMine" | "markRead" | "listEvents">;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  rateLimiter: MutationRateLimiter;
 }>;
 
 export const inboxResponseSchema = {
@@ -240,6 +246,7 @@ export async function registerNotificationRoutes(
           200: acknowledgedSchema,
           400: errorResponseSchema,
           401: errorResponseSchema,
+          429: errorResponseSchema,
           503: errorResponseSchema,
         },
       },
@@ -261,9 +268,15 @@ export async function registerNotificationRoutes(
         if (target === undefined) {
           throw new NotificationError("invalid_input");
         }
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         await options.service.markRead(actor, target);
         return reply.send({ acknowledged: true });
       } catch (error) {
+        const limited = accountSettingRateLimitFailure(error);
+        if (limited !== null) {
+          void reply.header("retry-after", String(limited.retryAfterSeconds));
+          return reply.code(429).send(limited.body);
+        }
         const { status, body } = errorReply(error);
         return reply.code(status).send(body);
       }

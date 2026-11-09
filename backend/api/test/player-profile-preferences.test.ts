@@ -24,6 +24,7 @@ describe("Player profile preferences", () => {
     let updated = false;
     await registerPlayerProfilePreferenceRoutes(app, {
       resolveActor: async () => actor,
+      rateLimiter: { async consume() {} },
       service: {
         readMine: async () => value,
         updateMine: async () => { updated = true; return value; },

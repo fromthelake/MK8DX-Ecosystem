@@ -5,6 +5,11 @@ import type { ActorResolver } from "../identity/types.js";
 import type { TimeTrialWebCsrfVerifier } from
   "../timetrials/submission-routes.js";
 import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import {
   PlayerCountryError,
   type PlayerCountryService,
 } from "./player-country-service.js";
@@ -15,6 +20,7 @@ export type PlayerCountryRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   service: Pick<PlayerCountryService, "setOwnCountry">;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  rateLimiter: MutationRateLimiter;
 }>;
 
 const bodySchema = {
@@ -95,6 +101,7 @@ export async function registerPlayerCountryRoutes(
           400: errorResponseSchema,
           401: errorResponseSchema,
           409: errorResponseSchema,
+          429: errorResponseSchema,
           503: errorResponseSchema,
         },
       },
@@ -108,9 +115,15 @@ export async function registerPlayerCountryRoutes(
              !await options.csrfVerifier.verify(actor, proof))) {
           throw new PlayerCountryError("not_authenticated");
         }
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         await options.service.setOwnCountry(actor, request.body.countryId);
         return reply.send({ acknowledged: true });
       } catch (error) {
+        const limited = accountSettingRateLimitFailure(error);
+        if (limited !== null) {
+          void reply.header("retry-after", String(limited.retryAfterSeconds));
+          return reply.code(429).send(limited.body);
+        }
         const { status, body } = errorReply(error);
         return reply.code(status).send(body);
       }

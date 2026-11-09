@@ -1298,12 +1298,14 @@ async function createMysqlApiRuntime(
       recordBook: { service: recordBookService },
       playerAvatar: {
         service: playerAvatarService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
       },
       playerCountry: {
         service: playerCountryService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
@@ -1367,6 +1369,7 @@ async function createMysqlApiRuntime(
       },
       notifications: {
         service: notificationService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
@@ -1379,18 +1382,21 @@ async function createMysqlApiRuntime(
       },
       accountTimeTrialPreferences: {
         service: accountTimeTrialPreferencesService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
       },
       accountAppearancePreference: {
         service: accountAppearancePreferenceService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
       },
       playerProfilePreferences: {
         service: playerProfilePreferenceService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),

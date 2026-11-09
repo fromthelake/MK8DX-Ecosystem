@@ -109,6 +109,7 @@ function dependencies(overrides: Record<string, unknown> = {}) {
       stories: { async listStories() { return [story]; } },
     },
     notifications: {
+      rateLimiter: { async consume() {} },
       service: {
         async listMine() { return { unreadCount: 2, notifications: [] }; },
         async markRead() {},

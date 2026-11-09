@@ -339,6 +339,7 @@ export type AppDependencies = Readonly<{
   playerCountry?: Readonly<{
     service: Pick<PlayerCountryService, "setOwnCountry">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   playerVisibility?: Readonly<{
     service: Pick<
@@ -373,6 +374,7 @@ export type AppDependencies = Readonly<{
   playerAvatar?: Readonly<{
     service: Pick<PlayerAvatarService, "setOwnAvatar">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   timeTrialSubmission?: Readonly<{
     service: Pick<TimeTrialSubmissionService, "submit">;
@@ -397,6 +399,7 @@ export type AppDependencies = Readonly<{
   notifications?: Readonly<{
     service: Pick<NotificationService, "listMine" | "markRead" | "listEvents">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   home?: Readonly<{
     comeback: Pick<HomeComebackService, "loadMine">;
@@ -474,14 +477,17 @@ export type AppDependencies = Readonly<{
   accountTimeTrialPreferences?: Readonly<{
     service: Pick<AccountTimeTrialPreferencesService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   accountAppearancePreference?: Readonly<{
     service: Pick<AccountAppearancePreferenceService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   playerProfilePreferences?: Readonly<{
     service: Pick<PlayerProfilePreferenceService, "readMine" | "updateMine">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rateLimiter: MutationRateLimiter;
   }>;
   socialGroups?: Readonly<{
     service: Pick<SocialGroupService, "listMine" | "create" | "invite" | "respond" | "leave" | "removeMember" | "setRole" | "archive" | "saveRankScope">;
@@ -939,6 +945,7 @@ export async function buildApp(
     await registerPlayerAvatarRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.playerAvatar.service,
+      rateLimiter: dependencies.playerAvatar.rateLimiter,
       ...(dependencies.playerAvatar.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.playerAvatar.csrfVerifier }),
@@ -948,6 +955,7 @@ export async function buildApp(
     await registerPlayerCountryRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.playerCountry.service,
+      rateLimiter: dependencies.playerCountry.rateLimiter,
       ...(dependencies.playerCountry.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.playerCountry.csrfVerifier }),
@@ -1078,6 +1086,7 @@ export async function buildApp(
     await registerNotificationRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.notifications.service,
+      rateLimiter: dependencies.notifications.rateLimiter,
       ...(dependencies.notifications.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.notifications.csrfVerifier }),
@@ -1213,6 +1222,7 @@ export async function buildApp(
     await registerAccountTimeTrialPreferenceRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.accountTimeTrialPreferences.service,
+      rateLimiter: dependencies.accountTimeTrialPreferences.rateLimiter,
       ...(dependencies.accountTimeTrialPreferences.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.accountTimeTrialPreferences.csrfVerifier }),
@@ -1222,6 +1232,7 @@ export async function buildApp(
     await registerAccountAppearancePreferenceRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.accountAppearancePreference.service,
+      rateLimiter: dependencies.accountAppearancePreference.rateLimiter,
       ...(dependencies.accountAppearancePreference.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.accountAppearancePreference.csrfVerifier }),
@@ -1231,6 +1242,7 @@ export async function buildApp(
     await registerPlayerProfilePreferenceRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.playerProfilePreferences.service,
+      rateLimiter: dependencies.playerProfilePreferences.rateLimiter,
       ...(dependencies.playerProfilePreferences.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.playerProfilePreferences.csrfVerifier }),
