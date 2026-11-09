@@ -73,15 +73,15 @@ test('scan waits until a hardware zoom change settles', async ({ playwright }) =
       const originalSettings = track.getSettings.bind(track);
       let appliedZoom = 1;
       Object.defineProperty(track, 'getCapabilities', {
-        value: () => ({ zoom: { min: 1, max: 3, step: 0.5 } }),
+        value: () => ({ zoom: { min: 1, max: 3, step: 1 } }),
       });
       Object.defineProperty(track, 'getSettings', {
         value: () => ({ ...originalSettings(), zoom: appliedZoom }),
       });
       Object.defineProperty(track, 'applyConstraints', {
-        value: async () => {
+        value: async (constraints: any) => {
           await new Promise((resolve) => setTimeout(resolve, 500));
-          appliedZoom = 1.5;
+          appliedZoom = Number(constraints.advanced?.[0]?.zoom ?? 1);
         },
       });
     });
@@ -90,6 +90,7 @@ test('scan waits until a hardware zoom change settles', async ({ playwright }) =
     await expect(page.locator('.controls button', { hasText: '1.0x' })).toBeDisabled();
     await expect(page.locator('.controls button', { hasText: '1.5x' })).toBeVisible();
     await expect(page.locator('.controls button.scan')).toBeEnabled();
+    await expect(page.locator('.stage video')).toHaveCSS('transform', /matrix\(1\.5, 0, 0, 1\.5, 0, 0\)/);
   } finally {
     await browser.close();
   }

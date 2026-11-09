@@ -571,7 +571,8 @@ class App {
       let target = Math.max(min, Math.min(requested, max));
       if (step > 0) {
         const lastStep = Math.max(0, Math.floor((max - min) / step + 1e-7));
-        target = min + Math.min(lastStep, Math.max(0, Math.round((target - min) / step))) * step;
+        const requestedStep = Math.max(0, Math.floor((target - min) / step + 1e-7));
+        target = min + Math.min(lastStep, requestedStep) * step;
       }
       try {
         await this.track.applyConstraints({ advanced: [{ zoom: target } as any] });
