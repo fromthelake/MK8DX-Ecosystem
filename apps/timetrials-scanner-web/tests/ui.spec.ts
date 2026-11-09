@@ -63,6 +63,38 @@ test('camera uses its automatic maximum and zoom has a digital fallback', async 
   }
 });
 
+test('scan waits until a hardware zoom change settles', async ({ playwright }) => {
+  const { browser, page } = await launchWith(playwright.chromium, '', 'en');
+  try {
+    await waitReady(page);
+    await page.evaluate(() => {
+      const video = document.querySelector('.stage video') as HTMLVideoElement;
+      const track = (video.srcObject as MediaStream).getVideoTracks()[0];
+      const originalSettings = track.getSettings.bind(track);
+      let appliedZoom = 1;
+      Object.defineProperty(track, 'getCapabilities', {
+        value: () => ({ zoom: { min: 1, max: 3, step: 0.5 } }),
+      });
+      Object.defineProperty(track, 'getSettings', {
+        value: () => ({ ...originalSettings(), zoom: appliedZoom }),
+      });
+      Object.defineProperty(track, 'applyConstraints', {
+        value: async () => {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+          appliedZoom = 1.5;
+        },
+      });
+    });
+    await page.locator('.controls button', { hasText: '1.0x' }).click();
+    await expect(page.locator('.controls button.scan')).toBeDisabled();
+    await expect(page.locator('.controls button', { hasText: '1.0x' })).toBeDisabled();
+    await expect(page.locator('.controls button', { hasText: '1.5x' })).toBeVisible();
+    await expect(page.locator('.controls button.scan')).toBeEnabled();
+  } finally {
+    await browser.close();
+  }
+});
+
 test('RESULT aiming, camera burst, freeze, progress, Finish, result screen (NL)', async ({ playwright }) => {
   const { browser, page } = await launchWith(playwright.chromium, fake('endscreen.y4m'), 'nl');
   try {

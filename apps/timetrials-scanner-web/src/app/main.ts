@@ -83,6 +83,7 @@ class App {
     navigator.serviceWorker.controller !== null;
   private zoomIndex = 0;
   private readonly zoomSteps = [1.0, 1.5, 2.0, 2.5, 3.0];
+  private zoomApplying = false;
   /** Extra centre crop when the camera has no (or insufficient) optical/hardware zoom. */
   private digitalZoom = 1.0;
   private state: ScanState = 'idle';
@@ -540,8 +541,18 @@ class App {
   }
 
   private async cycleZoom(): Promise<void> {
-    this.zoomIndex = (this.zoomIndex + 1) % this.zoomSteps.length;
-    await this.applyZoom(this.zoomSteps[this.zoomIndex], true);
+    if (this.zoomApplying || !this.engineReady || this.state === 'bursting' || this.state === 'analyzing') return;
+    this.zoomApplying = true;
+    this.zoomButton.disabled = true;
+    this.scanButton.disabled = true;
+    try {
+      this.zoomIndex = (this.zoomIndex + 1) % this.zoomSteps.length;
+      await this.applyZoom(this.zoomSteps[this.zoomIndex], true);
+    } finally {
+      this.zoomApplying = false;
+      this.zoomButton.disabled = !this.engineReady;
+      this.scanButton.disabled = !this.engineReady;
+    }
   }
 
   private cameraResolution(): string {
@@ -711,7 +722,7 @@ class App {
   }
 
   private async startScan(): Promise<void> {
-    if (!this.engineReady) return;
+    if (!this.engineReady || this.zoomApplying) return;
     if (!this.cameraReady) {
       this.setStatus(`MK8 | ${t('camera_denied')}`);
       return;

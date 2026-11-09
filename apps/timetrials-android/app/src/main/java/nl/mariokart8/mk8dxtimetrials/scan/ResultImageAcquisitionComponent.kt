@@ -61,6 +61,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -649,6 +650,8 @@ private fun EmbeddedMk8dxCamera(
     var cameraProvider by remember { mutableStateOf<ProcessCameraProvider?>(null) }
     var cameraControl by remember { mutableStateOf<CameraControl?>(null) }
     var zoomRatio by remember { mutableFloatStateOf(1f) }
+    var zoomSettling by remember { mutableStateOf(false) }
+    var zoomRequestId by remember { mutableIntStateOf(0) }
     // Only read by the debug bridge: what the camera reports and what the
     // Player saw, so a scan can be checked against the guide afterwards.
     var cameraInfo by remember { mutableStateOf<CameraInfo?>(null) }
@@ -677,6 +680,8 @@ private fun EmbeddedMk8dxCamera(
 
     DisposableEffect(lifecycleOwner) {
         onDispose {
+            zoomRequestId += 1
+            zoomSettling = false
             cameraProvider?.unbindAll()
             cameraProvider = null
             imageCapture = null
@@ -687,6 +692,8 @@ private fun EmbeddedMk8dxCamera(
     // camera is released the moment the frame is frozen.
     DisposableEffect(frozen) {
         if (frozen) {
+            zoomRequestId += 1
+            zoomSettling = false
             cameraProvider?.unbindAll()
             imageCapture = null
             cameraControl = null
@@ -728,7 +735,9 @@ private fun EmbeddedMk8dxCamera(
                                     cameraControl = camera.cameraControl
                                     cameraInfo = camera.cameraInfo
                                     // A rebound camera starts at its own default zoom.
-                                    zoomRatio = 1f
+                                    zoomRequestId += 1
+                                    zoomSettling = false
+                                    zoomRatio = camera.cameraInfo.zoomState.value?.zoomRatio ?: 1f
                                     previewUseCase = preview
                                 }.onFailure { onFailure() }
                             }, executor)
@@ -755,6 +764,7 @@ private fun EmbeddedMk8dxCamera(
         }
     }
     val shoot: () -> Unit = shoot@{
+        if (zoomSettling) return@shoot
         val capture = imageCapture ?: return@shoot
         val file = File(captureRoot, "capture-" + UUID.randomUUID() + ".jpg")
         // Taken at the press, before anything moves: the guide as drawn and
@@ -786,9 +796,21 @@ private fun EmbeddedMk8dxCamera(
     }
     val zoomTo: (Float) -> Unit = zoom@{ next ->
         val range = cameraInfo?.zoomState?.value ?: return@zoom
+        val control = cameraControl ?: return@zoom
         val supported = next.coerceIn(range.minZoomRatio, range.maxZoomRatio)
+        zoomRequestId += 1
+        val requestId = zoomRequestId
+        zoomSettling = true
         zoomRatio = supported
-        cameraControl?.setZoomRatio(supported)
+        val pending = control.setZoomRatio(supported)
+        pending.addListener({
+            if (requestId == zoomRequestId) {
+                if (runCatching { pending.get() }.isFailure) {
+                    zoomRatio = cameraInfo?.zoomState?.value?.zoomRatio ?: 1f
+                }
+                zoomSettling = false
+            }
+        }, executor)
     }
     if (ScanDebug.recorder != null) {
         val currentShoot by rememberUpdatedState(shoot)
@@ -822,7 +844,8 @@ private fun EmbeddedMk8dxCamera(
             busy = frozen,
             zoomRatio = zoomRatio,
             layout = layout,
-            shutterEnabled = imageCapture != null,
+            shutterEnabled = imageCapture != null && !zoomSettling,
+            zoomEnabled = imageCapture != null,
             onShutter = shoot,
             onGallery = onGallery,
             onZoom = {
@@ -885,6 +908,7 @@ private fun ScanControls(
     zoomRatio: Float,
     layout: ScanLayoutProfile,
     shutterEnabled: Boolean,
+    zoomEnabled: Boolean,
     onShutter: () -> Unit,
     onGallery: () -> Unit,
     onZoom: () -> Unit,
@@ -923,7 +947,7 @@ private fun ScanControls(
         )
         ScanColumnButton(
             "🔍 " + zoomLabel(zoomRatio),
-            enabled = !busy,
+            enabled = !busy && zoomEnabled,
             onClick = onZoom,
             modifier = slot,
             testTag = "embedded-scan-zoom",

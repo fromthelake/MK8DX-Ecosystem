@@ -26,7 +26,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 - Web and Android scanner zoom controls now include 2.5× between 2× and 3×.
   Web retains its digital crop fallback; Android skips steps above the camera's
-  supported zoom range. Physical camera acceptance remains open.
+  supported zoom range. Capture waits until a zoom adjustment has settled.
+  Physical camera acceptance remains open.
 
 ### LiveTrial
 
