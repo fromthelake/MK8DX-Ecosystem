@@ -2,6 +2,11 @@ import type { FastifyInstance } from "fastify";
 
 import { errorResponseSchema, playerIdParamsSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
+import { consumeTournamentMutationBudget } from "../security/tournament-mutation-budget.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
 import {
   PublicTournamentServiceError,
   type PublicTournament,
@@ -151,6 +156,7 @@ export async function registerTournamentPublicationRoutes(
       "listReview" | "createPublication" | "republish" | "retract"
     >;
     csrfVerifier: Readonly<{ verify(actor: ActorContext, token: string): boolean }>;
+    rateLimiter: MutationRateLimiter;
     // Called after a successful publish/republish so the rating lifecycle
     // can apply the published races (ADR-0155). The callback owns its own
     // error handling: a rating failure never un-publishes the tournament
@@ -193,7 +199,8 @@ export async function registerTournamentPublicationRoutes(
     "/v1/tournament-publications",
     { schema: { headers: csrfHeadersSchema, body: publishBodySchema, response: {
       200: snapshotSchema, 400: errorResponseSchema, 403: errorResponseSchema,
-      404: errorResponseSchema, 409: errorResponseSchema, 503: errorResponseSchema,
+      404: errorResponseSchema, 409: errorResponseSchema,
+      429: errorResponseSchema, 503: errorResponseSchema,
     } } },
     async (request, reply) => {
       try {
@@ -206,11 +213,16 @@ export async function registerTournamentPublicationRoutes(
           request,
           request.headers["x-mk8dx-csrf"],
         );
+        await consumeTournamentMutationBudget(actor, dependencies.rateLimiter, "publication");
         const snapshot =
           await dependencies.service.createPublication(actor, request.body);
         await notifyPublished(snapshot.publicationId);
         return snapshot;
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "tournament_publication_rate_limited", message: "Too many Tournament publication actions were received. Wait before retrying." });
+        }
         const mapped = failure(error);
         return reply.code(mapped.status).send(mapped.body);
       }
@@ -223,7 +235,7 @@ export async function registerTournamentPublicationRoutes(
       params: { type: "object", additionalProperties: false, required: ["publicationId"], properties: { publicationId: publicationIdSchema } },
       headers: csrfHeadersSchema,
       body: { ...publishBodySchema, required: ["expectedRevision", "eventName", "targets", "reasonCode"] },
-      response: { 200: snapshotSchema, 400: errorResponseSchema, 403: errorResponseSchema, 404: errorResponseSchema, 409: errorResponseSchema, 503: errorResponseSchema },
+      response: { 200: snapshotSchema, 400: errorResponseSchema, 403: errorResponseSchema, 404: errorResponseSchema, 409: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema },
     } },
     async (request, reply) => {
       try {
@@ -233,6 +245,7 @@ export async function registerTournamentPublicationRoutes(
           request,
           request.headers["x-mk8dx-csrf"],
         );
+        await consumeTournamentMutationBudget(actor, dependencies.rateLimiter, "publication");
         const snapshot = await dependencies.service.republish(
           actor,
           request.params.publicationId,
@@ -241,6 +254,10 @@ export async function registerTournamentPublicationRoutes(
         await notifyPublished(snapshot.publicationId);
         return snapshot;
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "tournament_publication_rate_limited", message: "Too many Tournament publication actions were received. Wait before retrying." });
+        }
         const mapped = failure(error);
         return reply.code(mapped.status).send(mapped.body);
       }
@@ -260,7 +277,7 @@ export async function registerTournamentPublicationRoutes(
           reasonCode: publishBodySchema.properties.reasonCode,
         },
       },
-      response: { 200: snapshotSchema, 400: errorResponseSchema, 403: errorResponseSchema, 404: errorResponseSchema, 409: errorResponseSchema, 503: errorResponseSchema },
+      response: { 200: snapshotSchema, 400: errorResponseSchema, 403: errorResponseSchema, 404: errorResponseSchema, 409: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema },
     } },
     async (request, reply) => {
       try {
@@ -270,12 +287,17 @@ export async function registerTournamentPublicationRoutes(
           request,
           request.headers["x-mk8dx-csrf"],
         );
+        await consumeTournamentMutationBudget(actor, dependencies.rateLimiter, "publication");
         return await dependencies.service.retract(
           actor,
           request.params.publicationId,
           request.body,
         );
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "tournament_publication_rate_limited", message: "Too many Tournament publication actions were received. Wait before retrying." });
+        }
         const mapped = failure(error);
         return reply.code(mapped.status).send(mapped.body);
       }

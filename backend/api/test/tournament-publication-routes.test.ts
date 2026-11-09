@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 
 import { buildApp } from "../src/app.js";
+import { MutationRateLimitExceeded } from "../src/security/mysql-mutation-rate-limiter.js";
 import type { IdentityReadRepository } from "../src/identity/types.js";
 import {
   PublicTournamentService,
@@ -80,6 +81,7 @@ const apps: FastifyInstance[] = [];
 afterEach(async () => Promise.all(apps.splice(0).map((app) => app.close())));
 
 function setup(role: "administrator" | "account" = "administrator") {
+  const consume = vi.fn(async () => {});
   const publicationRepository: TournamentPublicationRepository = {
     listReview: vi.fn(async () => ({ publications: [snapshot], candidates: [candidate] })),
     create: vi.fn(async () => snapshot),
@@ -125,10 +127,11 @@ function setup(role: "administrator" | "account" = "administrator") {
         { nowMs: () => 1_900_000_000_000 },
       ),
       csrfVerifier: { verify: (_actor, token) => token === "valid-csrf" },
+      rateLimiter: { consume },
     },
     publicTournaments: { service: new PublicTournamentService(publicRepository) },
   });
-  return { appPromise, publicationRepository, publicRepository };
+  return { appPromise, publicationRepository, publicRepository, consume };
 }
 
 describe("Tournament publication routes", () => {
@@ -159,7 +162,7 @@ describe("Tournament publication routes", () => {
 
   it("rejects ordinary accounts and invalid CSRF before mutation", async () => {
     for (const [role, token] of [["account", "valid-csrf"], ["administrator", "wrong"]] as const) {
-      const { appPromise, publicationRepository } = setup(role);
+      const { appPromise, publicationRepository, consume } = setup(role);
       const app = await appPromise;
       apps.push(app);
       const response = await app.inject({
@@ -174,7 +177,50 @@ describe("Tournament publication routes", () => {
       });
       expect(response.statusCode).toBe(403);
       expect(publicationRepository.create).not.toHaveBeenCalled();
+      if (token === "wrong") expect(consume).not.toHaveBeenCalled();
     }
+  });
+
+  it("shares one durable budget across create, publish and retract", async () => {
+    const { appPromise, publicationRepository, consume } = setup();
+    const app = await appPromise;
+    apps.push(app);
+    const requests = [
+      { url: "/v1/tournament-publications", payload: {
+        eventName: "Synthetic Cup", targets: [{ raceResultId, revision: 1 }], reasonCode: "event_completed",
+      } },
+      { url: `/v1/tournament-publications/${publicationId}/actions/publish`, payload: {
+        expectedRevision: 1, eventName: "Synthetic Cup",
+        targets: [{ raceResultId, revision: 1 }], reasonCode: "correction",
+      } },
+      { url: `/v1/tournament-publications/${publicationId}/actions/retract`, payload: {
+        expectedRevision: 1, reasonCode: "correction",
+      } },
+    ];
+    for (const request of requests) {
+      const response = await app.inject({ method: "POST", ...request,
+        headers: { "x-mk8dx-csrf": "valid-csrf" } });
+      expect(response.statusCode, request.url).toBe(200);
+    }
+    expect(consume.mock.calls).toEqual(Array.from({ length: 3 }, () => [
+      administrator.userAccountId, "tournament-publications-hour", 3_600, 20,
+    ]));
+    consume.mockRejectedValue(new MutationRateLimitExceeded(23));
+    for (const request of requests) {
+      const response = await app.inject({ method: "POST", ...request,
+        headers: { "x-mk8dx-csrf": "valid-csrf" } });
+      expect(response.statusCode, request.url).toBe(429);
+      expect(response.headers["retry-after"]).toBe("23");
+      expect(response.json()).toMatchObject({ code: "tournament_publication_rate_limited" });
+    }
+    expect(publicationRepository.create).toHaveBeenCalledOnce();
+    expect(publicationRepository.republish).toHaveBeenCalledOnce();
+    expect(publicationRepository.retract).toHaveBeenCalledOnce();
+    consume.mockRejectedValue(new Error("synthetic limiter storage failure"));
+    const unavailable = await app.inject({ method: "POST", ...requests[0]!,
+      headers: { "x-mk8dx-csrf": "valid-csrf" } });
+    expect(unavailable.statusCode).toBe(503);
+    expect(publicationRepository.create).toHaveBeenCalledOnce();
   });
 
   it("serves only closed anonymous publication and Player-history projections", async () => {

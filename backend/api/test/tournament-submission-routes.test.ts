@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 
 import { buildApp } from "../src/app.js";
+import { MutationRateLimitExceeded } from "../src/security/mysql-mutation-rate-limiter.js";
 import { AdministratorTournamentSubmissionAuthorizer } from
   "../src/tournaments/administrator-submission-authorizer.js";
 import type { IdentityReadRepository } from "../src/identity/types.js";
@@ -97,13 +98,14 @@ async function appHarness() {
     role: "account" as const,
     userAccountId: "user_account.synthetic_tournament_submitter_01",
   }));
+  const consume = vi.fn(async () => {});
   const app = await buildApp({
     identityRepository: new NullIdentityReads(),
     resolveActor,
-    tournamentSubmission: { service, authorizer },
+    tournamentSubmission: { service, authorizer, rateLimiter: { consume } },
   });
   openApps.push(app);
-  return { app, service, authorizer, resolveActor };
+  return { app, service, authorizer, resolveActor, consume };
 }
 
 class SyntheticCsrfVerifier {
@@ -122,13 +124,14 @@ async function csrfAppHarness(
   const service = new SyntheticTournamentService();
   const authorizer = new SyntheticAuthorizer();
   const csrfVerifier = new SyntheticCsrfVerifier();
+  const consume = vi.fn(async () => {});
   const app = await buildApp({
     identityRepository: new NullIdentityReads(),
     resolveActor: vi.fn(async () => actor),
-    tournamentSubmission: { service, authorizer, csrfVerifier },
+    tournamentSubmission: { service, authorizer, csrfVerifier, rateLimiter: { consume } },
   });
   openApps.push(app);
-  return { app, service, authorizer, csrfVerifier };
+  return { app, service, authorizer, csrfVerifier, consume };
 }
 
 afterEach(async () => {
@@ -137,7 +140,7 @@ afterEach(async () => {
 
 describe("Tournament race-result submission HTTP boundary", () => {
   it("authorizes safe metadata and returns an allow-listed created revision", async () => {
-    const { app, service, authorizer } = await appHarness();
+    const { app, service, authorizer, consume } = await appHarness();
     service.includePrivateOutput = true;
     const input = raceResult();
     const response = await app.inject({
@@ -149,6 +152,9 @@ describe("Tournament race-result submission HTTP boundary", () => {
     expect(response.statusCode).toBe(201);
     expect(response.json()).toEqual({ raceResultId: input.raceResultId, revision: 1 });
     expect(service.calls).toEqual([input]);
+    expect(consume.mock.calls).toEqual([[
+      "user_account.synthetic_tournament_submitter_01", "tournament-race-results-hour", 3_600, 240,
+    ]]);
     expect(authorizer.calls).toEqual([{
       actor: {
         role: "account",
@@ -164,7 +170,7 @@ describe("Tournament race-result submission HTTP boundary", () => {
   });
 
   it("denies through injected policy before the application service", async () => {
-    const { app, service, authorizer } = await appHarness();
+    const { app, service, authorizer, consume } = await appHarness();
     authorizer.allowed = false;
     const response = await app.inject({
       method: "POST",
@@ -176,6 +182,22 @@ describe("Tournament race-result submission HTTP boundary", () => {
       code: "tournament_submission_forbidden",
       message: "The Tournament race-result submission is not authorized.",
     });
+    expect(service.calls).toHaveLength(0);
+    expect(consume).not.toHaveBeenCalled();
+  });
+
+  it("refuses over-budget and unavailable durable counters before submission", async () => {
+    const { app, service, consume } = await appHarness();
+    consume.mockRejectedValueOnce(new MutationRateLimitExceeded(19));
+    const request = { method: "POST" as const, url: "/v1/tournament-race-results", payload: raceResult() };
+    const limited = await app.inject(request);
+    expect(limited.statusCode).toBe(429);
+    expect(limited.headers["retry-after"]).toBe("19");
+    expect(limited.json()).toMatchObject({ code: "tournament_submission_rate_limited" });
+    expect(service.calls).toHaveLength(0);
+    consume.mockRejectedValueOnce(new Error("synthetic limiter storage failure"));
+    const unavailable = await app.inject(request);
+    expect(unavailable.statusCode).toBe(500);
     expect(service.calls).toHaveLength(0);
   });
 
