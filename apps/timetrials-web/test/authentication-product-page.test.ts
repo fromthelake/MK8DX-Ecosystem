@@ -200,6 +200,37 @@ async function settle(): Promise<void> {
 }
 
 describe("passwordless authentication product page", () => {
+  it("shows only the host invitation route on an offline installation", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const requestMagicLink = vi.fn(async () => undefined);
+    const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+      client: client({ async installationMode() { return "offline-invitation"; }, requestMagicLink }),
+      pathname: "/", search: "?signin=1",
+    });
+    await mounted.ready;
+    await settle();
+    expect(String(root.textContent)).toContain("personal invitation link or QR code");
+    expect(String(root.textContent)).toContain("setup QR");
+    expect(descendants(root).some((node) => node.type === "email")).toBe(false);
+    expect(requestMagicLink).not.toHaveBeenCalled();
+    mounted.unmount();
+  });
+
+  it("explains offline invitation before device approval", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+      client: client({ async installationMode() { return "offline-invitation"; } }),
+      pathname: "/device", search: "?user_code=ABCD-1234",
+    });
+    await mounted.ready;
+    await settle();
+    expect(String(root.textContent)).toContain("return to approve this device");
+    expect(descendants(root).some((node) => node.type === "email")).toBe(false);
+    mounted.unmount();
+  });
+
   it("does not request the protected app catalog for an anonymous visitor", async () => {
     const document = new FakeDocument();
     const root = document.createElement("div");
@@ -663,8 +694,7 @@ describe("passwordless authentication product page", () => {
     await settle();
     expect(signOut).toHaveBeenCalledOnce();
     expect(mounted.status.textContent).toBe(
-      "Signed out. Sign in with the other email address to continue as " +
-      "someone else.",
+      "Signed out. Sign in with a different account to continue.",
     );
     mounted.unmount();
   });

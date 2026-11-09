@@ -17,7 +17,7 @@ export class PublicBundleError extends Error {}
 
 /** A closed startup inventory; no URL is ever interpreted as a filesystem path. */
 export async function registerPublicBundleRoutes(
-  app: FastifyInstance, bundleRoot: string, origin: string,
+  app: FastifyInstance, bundleRoot: string, origin: string, offlineLan = false,
 ): Promise<void> {
   if (!isAbsolute(bundleRoot)) throw new PublicBundleError("public bundle root must be absolute");
   const root = await realpath(bundleRoot);
@@ -67,6 +67,7 @@ export async function registerPublicBundleRoutes(
   }
   app.get("/client-config.json", async (_request, reply) => {
     reply.header("cache-control", "no-store");
-    return reply.send({ schemaVersion: "mk8dx.public-client.v1", websiteOrigin: origin });
+    return reply.send({ schemaVersion: "mk8dx.public-client.v1", websiteOrigin: origin,
+      ...(offlineLan ? { authenticationMode: "offline-invitation" } : {}) });
   });
 }

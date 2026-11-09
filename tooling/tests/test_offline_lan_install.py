@@ -28,6 +28,10 @@ class OfflineLanInstallTest(unittest.TestCase):
             self.assertEqual(profile["route"], "A2_OFFLINE")
             self.assertIsNone(profile["adminEmail"])
             self.assertEqual(profile["origin"], "https://192.168.50.20")
+            self.assertEqual(json.loads((state / "public-client.json").read_text()),
+                             {"schemaVersion": "mk8dx.public-client.v1",
+                              "websiteOrigin": "https://192.168.50.20",
+                              "authenticationMode": "offline-invitation"})
             self.assertEqual(profile["rootCertificateSha256"],
                              json.loads((state / "offline-ca/metadata.json").read_text())
                              ["root"]["certificateSha256"])

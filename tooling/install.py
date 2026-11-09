@@ -119,8 +119,9 @@ def write_json(path, payload):
     write_new(path, json.dumps(payload, indent=2, ensure_ascii=False) + "\n")
 
 
-def public_client(origin):
-    return {"schemaVersion": "mk8dx.public-client.v1", "websiteOrigin": origin}
+def public_client(origin, offline=False):
+    return {"schemaVersion": "mk8dx.public-client.v1", "websiteOrigin": origin,
+            **({"authenticationMode": "offline-invitation"} if offline else {})}
 
 
 def replace_group(paths, new):
@@ -663,7 +664,7 @@ def main():
     write_json(target / SECRET, {**{k: runtime[k] for k in SECRET_KEYS},
                                  "MK8DX_HOSTED_SMTP_PASSWORD": smtp_password,
                                  "MK8DX_DATABASE_ROOT_PASSWORD": compose["MK8DX_DATABASE_ROOT_PASSWORD"]})
-    write_json(target / PUBLIC, public_client(origin))
+    write_json(target / PUBLIC, public_client(origin, offline))
     print(f"Private installation: {target}")
     print(f"Web origin: {origin}")
     if local:

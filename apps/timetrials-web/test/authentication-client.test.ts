@@ -13,6 +13,26 @@ function json(document: unknown, status = 200): Response {
 }
 
 describe("same-origin web authentication client", () => {
+  it("reads the explicit offline invitation mode from public installation config", async () => {
+    const offline = vi.fn(async () => json({
+      schemaVersion: "mk8dx.public-client.v1", websiteOrigin: "https://192.168.50.20",
+      authenticationMode: "offline-invitation",
+    }));
+    await expect(createWebAuthenticationClient(offline).installationMode?.())
+      .resolves.toBe("offline-invitation");
+    expect(offline).toHaveBeenCalledWith("/client-config.json",
+      expect.objectContaining({ method: "GET", credentials: "same-origin", cache: "no-store" }));
+    await expect(createWebAuthenticationClient(async () => json({
+      schemaVersion: "mk8dx.public-client.v1", websiteOrigin: "https://example.invalid",
+    })).installationMode?.()).resolves.toBe("email-link");
+    await expect(createWebAuthenticationClient(async () => new Response("not found", { status: 404 }))
+      .installationMode?.()).resolves.toBe("email-link");
+    await expect(createWebAuthenticationClient(async () => json({
+      schemaVersion: "mk8dx.public-client.v1", websiteOrigin: "https://example.invalid",
+      authenticationMode: "untrusted",
+    })).installationMode?.()).rejects.toBeInstanceOf(WebAuthenticationError);
+  });
+
   it("maps only a verified server session to an opaque authenticated state", async () => {
     const fetchPort = vi.fn(async (_input: string, _init: RequestInit) =>
       json({

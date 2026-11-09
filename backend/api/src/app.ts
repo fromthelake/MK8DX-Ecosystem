@@ -788,7 +788,7 @@ export async function buildApp(
 
   if (dependencies.publicBundle !== undefined) {
     await registerPublicBundleRoutes(app, dependencies.publicBundle.root,
-      dependencies.publicBundle.origin);
+      dependencies.publicBundle.origin, dependencies.embeddedAuth?.offlineLan === true);
   }
 
   if (dependencies.embeddedAuth !== undefined) {

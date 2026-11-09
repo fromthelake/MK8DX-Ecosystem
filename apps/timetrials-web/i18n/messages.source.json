@@ -3453,6 +3453,16 @@
    ]
   },
   {
+   "key": "Checking how to sign in…",
+   "nl": "Aanmeldmethode controleren…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Checking how your Player appears…",
    "kinds": [
     "text"
@@ -10659,6 +10669,16 @@
     "dutch-ui-copy.ts",
     "notification-section.ts",
     "player-interactions-panel.ts"
+   ]
+  },
+  {
+   "key": "Local invitation",
+   "nl": "Lokale uitnodiging",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -20316,6 +20336,16 @@
    ]
   },
   {
+   "key": "Sign in with your invitation first, then return to approve this device.",
+   "nl": "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Sign in, or start racing with us",
    "nl": "Meld je aan, of begin met racen",
    "kinds": [
@@ -20428,9 +20458,10 @@
    ]
   },
   {
-   "key": "Signed out. Sign in with the other email address to continue as someone else.",
+   "key": "Signed out. Sign in with a different account to continue.",
+   "nl": "Afgemeld. Meld je aan met een ander account om verder te gaan.",
    "kinds": [
-    "text"
+    "localized"
    ],
    "places": [
     "authentication-product-page.ts"
@@ -21466,8 +21497,8 @@
    ]
   },
   {
-   "key": "Switching signs you out here first, then you sign in with the other email address.",
-   "nl": "Overstappen meldt je hier eerst af; daarna meld je je aan met het andere e-mailadres.",
+   "key": "Switching signs you out here first, then you sign in with a different account.",
+   "nl": "Overstappen meldt je hier eerst af; daarna meld je je aan met een ander account.",
    "kinds": [
     "localized"
    ],
@@ -23041,6 +23072,16 @@
    ],
    "places": [
     "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "The setup QR installs trust in this local server; it does not sign you in. Ask the host administrator for a new invitation if yours has expired.",
+   "nl": "De setup-QR installeert vertrouwen in deze lokale server; daarmee meld je je niet aan. Vraag de hostbeheerder om een nieuwe uitnodiging als de jouwe is verlopen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -24950,10 +24991,10 @@
     "localized"
    ],
    "places": [
+    "authentication-product-page.ts",
     "ds-track-board.ts",
     "post-time-task.ts",
-    "tournament-operation-view.ts",
-    "welcome-onboarding.ts"
+    "tournament-operation-view.ts"
    ]
   },
   {
@@ -25312,6 +25353,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Use the personal invitation link or QR code from the administrator's host screen to sign in. The invitation expires after 15 minutes and works once.",
+   "nl": "Gebruik de persoonlijke uitnodigingslink of QR-code van het beheerscherm op de host-pc om je aan te melden. De uitnodiging verloopt na 15 minuten en werkt één keer.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -25723,6 +25774,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "We could not check how this installation signs in.",
+   "nl": "We konden de aanmeldmethode van deze installatie niet controleren.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {

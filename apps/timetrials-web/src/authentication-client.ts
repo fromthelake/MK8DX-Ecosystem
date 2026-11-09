@@ -6,6 +6,7 @@ export const AUTH_SESSION_CAPABILITIES_PATH = "/v1/session/capabilities";
 export const AUTH_DEVICE_LOOKUP_PATH = "/api/auth/device";
 export const AUTH_DEVICE_APPROVE_PATH = "/api/auth/device/approve";
 export const AUTH_DEVICE_DENY_PATH = "/api/auth/device/deny";
+export const PUBLIC_CLIENT_CONFIG_PATH = "/client-config.json";
 
 const maximumResponseBytes = 16_384;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -40,6 +41,7 @@ export type WebDeviceAuthorization = Readonly<{
 
 export interface WebAuthenticationClient {
   session(signal?: AbortSignal): Promise<WebAuthenticationSession | null>;
+  installationMode?(signal?: AbortSignal): Promise<"email-link" | "offline-invitation">;
   // Asked for only where an answer changes what is rendered. It is not
   // part of signing in: the Home page never needed it, and requesting it
   // for a signed-out visitor produced a 401 in every console.
@@ -142,6 +144,30 @@ export function createWebAuthenticationClient(
   fetchPort: FetchPort = globalThis.fetch.bind(globalThis),
 ): WebAuthenticationClient {
   return {
+    async installationMode(signal) {
+      let response: Response;
+      try {
+        response = await fetchPort(PUBLIC_CLIENT_CONFIG_PATH, {
+          method: "GET", headers: { Accept: "application/json" },
+          credentials: "same-origin", mode: "same-origin", redirect: "error",
+          referrerPolicy: "same-origin", cache: "no-store",
+          ...(signal === undefined ? {} : { signal }),
+        });
+      } catch { fail("network_unavailable", true); }
+      // Older and source-built Web hosts have no public client config yet.
+      if (response.status === 404) { return "email-link"; }
+      if (response.status !== 200) { fail("invalid_response"); }
+      const document = await boundedJson(response);
+      if (!isObject(document) ||
+          document["schemaVersion"] !== "mk8dx.public-client.v1" ||
+          typeof document["websiteOrigin"] !== "string" ||
+          (document["authenticationMode"] !== undefined &&
+           document["authenticationMode"] !== "offline-invitation")) {
+        fail("invalid_response");
+      }
+      return document["authenticationMode"] === "offline-invitation"
+        ? "offline-invitation" : "email-link";
+    },
     async session(signal) {
       // Whether someone is signed in is one question with one answer.
       // What they are allowed to do is a second question, asked by the
