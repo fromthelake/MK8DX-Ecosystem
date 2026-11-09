@@ -313,7 +313,15 @@ class BroadcastServer:
             # -- responses ------------------------------------------------
             def _send_static(self, rel: str) -> None:
                 static_root = WEB_ROOT.resolve()
-                candidate = (static_root / rel).resolve()
+                if rel == "index.html":
+                    candidate = (static_root / "index.html").resolve()
+                elif rel == "app.js":
+                    candidate = (static_root / "app.js").resolve()
+                elif rel == "styles.css":
+                    candidate = (static_root / "styles.css").resolve()
+                else:
+                    self.send_error(404)
+                    return
                 if not candidate.is_relative_to(static_root) or not candidate.is_file():
                     self.send_error(404)
                     return

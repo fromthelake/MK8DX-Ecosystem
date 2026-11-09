@@ -70,5 +70,8 @@ def test_static_route_rejects_a_link_outside_its_root(tmp_path, monkeypatch):
         with pytest.raises(urllib.error.HTTPError) as error:
             urllib.request.urlopen(base + "/static/linked/escape.js", timeout=2)
         assert error.value.code == 404
+        with pytest.raises(urllib.error.HTTPError) as unknown:
+            urllib.request.urlopen(base + "/static/other.js", timeout=2)
+        assert unknown.value.code == 404
     finally:
         server.stop()
