@@ -518,6 +518,9 @@ export function mountAuthenticationProductPage(
       onConfirm: () => { endSession(false, true); },
     }).open();
   };
+  // The Player name the header currently shows (null when none): the device card says
+  // "you will be signed in as <name>" so it is clear the other device becomes this account.
+  let shownPlayerName: string | null = null;
 
   const shell: AppShellHandle = mountAppShell(root, {
     text: {
@@ -531,7 +534,7 @@ export function mountAuthenticationProductPage(
       signIn: localized("Sign in", "Aanmelden"),
       signOut: localized("Sign out", "Afmelden"),
       signOutEverywhere: localized("Sign out on all devices", "Op alle apparaten afmelden"),
-      addDevice: localized("Add another device", "Ander apparaat toevoegen"),
+      addDevice: localized("Sign in on another device too", "Ook op een ander apparaat inloggen"),
       switchAccount: localized("Switch account", "Ander account"),
       settings: localized("Settings", "Instellingen"),
       myStats: localized("My records & stats", "Mijn records en cijfers"),
@@ -561,7 +564,8 @@ export function mountAuthenticationProductPage(
     ...(client.signOutEverywhere === undefined ? {} : { onSignOutEverywhere: confirmSignOutEverywhere }),
     ...(client.createDeviceInvitation === undefined ? {} : {
       onAddDevice: () => {
-        openDeviceInvitationDialog((signal) => client.createDeviceInvitation!(signal)).open();
+        openDeviceInvitationDialog((signal) => client.createDeviceInvitation!(signal),
+          shownPlayerName === null ? {} : { playerName: shownPlayerName }).open();
       },
     }),
   });
@@ -648,6 +652,7 @@ export function mountAuthenticationProductPage(
     if (!signedIn) {
       identityLoaded = false;
       administratorResolved = false;
+      shownPlayerName = null;
       shell.setIdentity(null);
       shell.setUnread(0);
       shell.setAdministrator(false);
@@ -712,6 +717,7 @@ export function mountAuthenticationProductPage(
       username: string; displayName: string; avatarId?: string;
     }>): void => {
       const appearance = avatarAppearance(identity.avatarId);
+      shownPlayerName = identity.displayName;
       shell.setIdentity({
         displayName: identity.displayName,
         href: `/?player=${encodeURIComponent(identity.username)}`,
@@ -733,7 +739,7 @@ export function mountAuthenticationProductPage(
             // verified Player (for example the next person on a shared
             // device) must never keep showing the previous account's name.
             forgetNavIdentity();
-            if (!disposed) { shell.setIdentity(null); identityLoaded = false; }
+            if (!disposed) { shell.setIdentity(null); identityLoaded = false; shownPlayerName = null; }
           }
           return;
         }

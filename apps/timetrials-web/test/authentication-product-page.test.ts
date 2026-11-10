@@ -777,7 +777,7 @@ describe("passwordless authentication product page", () => {
         await mounted.ready;
         await vi.advanceTimersByTimeAsync(1_200);
         const items = descendants(root).filter((candidate) =>
-          candidate.textContent === "Add another device" && candidate.tagName === "button");
+          candidate.textContent === "Sign in on another device too" && candidate.tagName === "button");
         expect(items.length > 0).toBe(offered);
         if (offered) {
           items[0]!.dispatch("click");

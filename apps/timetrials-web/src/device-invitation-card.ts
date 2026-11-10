@@ -55,13 +55,15 @@ export type DeviceInvitationSource = (signal?: AbortSignal) => Promise<WebDevice
 
 export function openDeviceInvitationDialog(
   createInvitation: DeviceInvitationSource,
-  options: Readonly<{ nowMs?: () => number }> = {},
+  options: Readonly<{ nowMs?: () => number; playerName?: string }> = {},
 ): OverlayHandle {
   const nowMs = options.nowMs ?? Date.now;
   const intro = el("p", "ds-body", {}, localized(
-    "Scan this card with the other device's camera. It signs that device in to this account once and stops working after 15 minutes.",
-    "Scan deze kaart met de camera van het andere apparaat. Hij meldt dat apparaat één keer aan op dit account en werkt na 15 minuten niet meer.",
+    "Scan this card with the camera of your other phone, tablet or PC. There you will be signed in as yourself — the same account as here, with the same Players and records. The card works once and for 15 minutes.",
+    "Scan deze kaart met de camera van je andere telefoon, tablet of pc. Daar ben je dan ingelogd als jezelf — hetzelfde account als hier, met dezelfde Players en records. De kaart werkt één keer en 15 minuten lang.",
   ));
+  const who = options.playerName === undefined ? null : el("p", "ds-body ds-device-card__who", {},
+    `${localized("Signed in there as", "Daar ingelogd als")} ${options.playerName}`);
   const caution = el("p", "ds-body-s", {}, localized(
     "Only show it to a device of your own: whoever scans it is signed in as you. A new device first scans the 'Prepare a device' card once, so it trusts this installation.",
     "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Een nieuw apparaat scant eerst één keer de kaart 'Apparaat voorbereiden', zodat het deze installatie vertrouwt.",
@@ -140,8 +142,8 @@ export function openDeviceInvitationDialog(
   };
 
   handle = dsDialog({
-    title: localized("Add another device", "Ander apparaat toevoegen"),
-    body: [intro, caution, status, card],
+    title: localized("Sign in on another device", "Inloggen op een ander apparaat"),
+    body: who === null ? [intro, caution, status, card] : [intro, who, caution, status, card],
     actions: [newCard.root, close.root],
   });
   // The token must not stay in the document once the dialog is gone.

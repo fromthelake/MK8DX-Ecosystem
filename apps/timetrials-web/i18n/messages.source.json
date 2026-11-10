@@ -1270,17 +1270,6 @@
    ]
   },
   {
-   "key": "Add another device",
-   "nl": "Ander apparaat toevoegen",
-   "kinds": [
-    "localized"
-   ],
-   "places": [
-    "authentication-product-page.ts",
-    "device-invitation-card.ts"
-   ]
-  },
-  {
    "key": "Add name",
    "nl": "Naam toevoegen",
    "kinds": [
@@ -19213,8 +19202,8 @@
    ]
   },
   {
-   "key": "Scan this card with the other device's camera. It signs that device in to this account once and stops working after 15 minutes.",
-   "nl": "Scan deze kaart met de camera van het andere apparaat. Hij meldt dat apparaat één keer aan op dit account en werkt na 15 minuten niet meer.",
+   "key": "Scan this card with the camera of your other phone, tablet or PC. There you will be signed in as yourself — the same account as here, with the same Players and records. The card works once and for 15 minutes.",
+   "nl": "Scan deze kaart met de camera van je andere telefoon, tablet of pc. Daar ben je dan ingelogd als jezelf — hetzelfde account als hier, met dezelfde Players en records. De kaart werkt één keer en 15 minuten lang.",
    "kinds": [
     "localized"
    ],
@@ -20333,6 +20322,26 @@
    ]
   },
   {
+   "key": "Sign in on another device",
+   "nl": "Inloggen op een ander apparaat",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "Sign in on another device too",
+   "nl": "Ook op een ander apparaat inloggen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Sign in on your device",
    "nl": "Aanmelden op je apparaat",
    "kinds": [
@@ -20596,6 +20605,16 @@
    ],
    "places": [
     "tournament-signup-board-section.ts"
+   ]
+  },
+  {
+   "key": "Signed in there as",
+   "nl": "Daar ingelogd als",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
