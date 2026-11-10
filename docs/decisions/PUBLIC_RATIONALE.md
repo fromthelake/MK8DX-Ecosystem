@@ -313,3 +313,12 @@ remains closed until the device and offline gates pass. A2 also includes
 LiveTrial on another Windows PC: its saved result must reach the same local
 API after trusted HTTPS setup and browser device approval. That LiveTrial path
 is not yet qualified.
+
+## ADR-0224
+
+**Devices and switching accounts.** Phase 1: in an offline-invitation installation a signed-in
+Player account can create a one-use, 15-minute invitation for its own account to add another
+device (never another account, never an administrator account, rate-limited; a new card retires
+the previous self-issued one), and every account can sign out on all devices. Phase 2 (one-tap
+account switching on shared devices with an optional PIN, administrators always signing in
+afresh) follows after a design review. Identity rules are unchanged.
