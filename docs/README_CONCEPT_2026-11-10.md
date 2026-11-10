@@ -84,6 +84,22 @@ Playing in your language? Your help checking it is the most valuable contributio
 
 Self-hosted: every community runs its own installation with its own accounts and results.
 
+## 💡 The story behind it
+
+MK8DX Ecosystem has been in development since 2024. It was built with AI — "vibe coding" — but
+that does not mean the AI built it. I cannot imagine a world in which this would have reached a
+good result without constant steering and explaining the logic, over and over. The number of
+sessions that just kept running, burning credits without real results, still keeps me awake at
+night (haha).
+
+Probably because this had never been built before. The techniques existed; stitching the right
+ones together, in the right order, with a human checking every visual step in between and
+steering again, did not. The same goes for the game assets: bits and pieces exist here and there,
+but a complete package that contains everything, I had not seen before.
+
+It has been a great school — and it has made me able to build faster and more efficiently around
+image recognition and extraction from here on.
+
 ## 🛠️ Make it your own
 
 MK8DX is open source, built by players for players. Run it for your club, your family or your
