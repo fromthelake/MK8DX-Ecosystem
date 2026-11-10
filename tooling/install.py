@@ -606,7 +606,8 @@ def main():
         "MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON": json.dumps([origin]),
         "MK8DX_HOSTED_AUTH_SECRETS_JSON": json.dumps([{"version": 1, "value": key()}], separators=(",", ":")),
         "MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON": json.dumps(["x-real-ip"]),
-        "MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON": json.dumps(["127.0.0.1"]),
+        # The Compose gateway service; compose.yaml sets the same value for the API container.
+        "MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON": json.dumps(["web"]),
         "MK8DX_HOSTED_SMTP_HOST": "mailpit" if local else ("" if offline else args.smtp_host),
         "MK8DX_HOSTED_SMTP_PORT": "1025" if local else str(args.smtp_port),
         "MK8DX_HOSTED_SMTP_SECURE": "false" if local or offline else "true",

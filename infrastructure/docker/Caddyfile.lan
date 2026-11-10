@@ -3,7 +3,12 @@ https://{$MK8DX_DOMAIN} {
   encode zstd gzip
   @api path /api/* /v1/* /health/*
   handle @api {
-    reverse_proxy api:8080
+    # The API rate-limits sign-ins per client: hand it the connecting address,
+    # replacing any client-supplied X-Real-IP. (With no trusted proxy list Caddy
+    # already rewrites X-Forwarded-For to the connecting address.)
+    reverse_proxy api:8080 {
+      header_up X-Real-IP {remote_host}
+    }
   }
   handle /.well-known/assetlinks.json {
     root * /srv

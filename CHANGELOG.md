@@ -9,6 +9,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 - Administrator grant and revoke actions share a durable per-account limit of
   20 attempts per hour. Excess requests return 429 with `Retry-After`.
+- Docker installations (A1, A2, A2 offline, B1) rate-limit sign-in per client
+  again instead of in one shared bucket for everybody. Caddy now sends the
+  connecting address as `X-Real-IP` (replacing any client-supplied value),
+  and the API honours that header only when
+  the TCP peer is a trusted proxy. A trusted proxy may now also be a host name:
+  Docker routes trust exactly the Compose gateway service `web`, resolved on the
+  project network (other containers and LAN clients are never trusted).
+  `compose.yaml` sets this for the API container, so existing installations
+  only need the new package and an API/Web recreate (`install.py apply`); new
+  installations also write `["web"]` to `api.env`.
 
 ### Offline LAN (in development)
 

@@ -1,5 +1,3 @@
-import { isIP } from "node:net";
-
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { fromNodeHeaders } from "better-auth/node";
@@ -12,6 +10,10 @@ import {
   accountSwitchAuthPlugin,
   type AccountSwitchAuthPluginOptions,
 } from "./account-switch-auth-plugin.js";
+import {
+  createClientAddressResolver,
+  isValidTrustedProxy,
+} from "../security/client-address.js";
 
 export const MK8DX_PASSWORDLESS_ISSUER = "mk8dx_passwordless_v1";
 export const MK8DX_AUTH_BASE_PATH = "/api/auth";
@@ -235,17 +237,8 @@ function validateConfig(config: EmbeddedAuthConfig): Readonly<{
       "production auth requires an explicit trusted proxy address",
     );
   }
-  const validProxyAddress = (value: string): boolean => {
-    const separator = value.lastIndexOf("/");
-    if (separator === -1) { return isIP(value) !== 0; }
-    const address = value.slice(0, separator);
-    const prefix = value.slice(separator + 1);
-    const family = isIP(address);
-    const maximum = family === 4 ? 32 : family === 6 ? 128 : -1;
-    return /^[0-9]{1,3}$/.test(prefix) && Number(prefix) <= maximum;
-  };
   if (config.trustedProxyAddresses.length > 16 ||
-    config.trustedProxyAddresses.some((value) => !validProxyAddress(value))) {
+    config.trustedProxyAddresses.some((value) => !isValidTrustedProxy(value))) {
     throw new EmbeddedAuthConfigurationError("trusted proxy addresses are invalid");
   }
 
@@ -271,7 +264,11 @@ export function createEmbeddedPasswordlessAuth(
 ) {
   const validated = validateConfig(config);
   const currentSecret = validated.secrets[0]!.value;
-  return betterAuth({
+  const clientAddress = createClientAddressResolver({
+    headerNames: validated.clientIpHeaders,
+    trustedProxies: validated.trustedProxyAddresses,
+  });
+  const auth = betterAuth({
     appName: "MK8DX",
     baseURL: validated.baseUrl,
     basePath: MK8DX_AUTH_BASE_PATH,
@@ -349,9 +346,12 @@ export function createEmbeddedPasswordlessAuth(
         sameSite: "lax",
         path: "/",
       },
+      // The route handler resolves the client address itself (a forwarded
+      // header counts only from a trusted proxy peer) and hands Better Auth
+      // exactly one value in the first configured header, so Better Auth's
+      // own chain walking is not needed and must not drop that value.
       ipAddress: {
-        ipAddressHeaders: validated.clientIpHeaders,
-        trustedProxies: validated.trustedProxyAddresses,
+        ipAddressHeaders: [validated.clientIpHeaders[0]!],
       },
     },
     telemetry: { enabled: false },
@@ -434,6 +434,7 @@ export function createEmbeddedPasswordlessAuth(
       },
     },
   });
+  return Object.assign(auth, { clientAddress });
 }
 
 export type EmbeddedPasswordlessAuth = ReturnType<
@@ -500,6 +501,16 @@ export async function registerEmbeddedAuthRoutes(
           message: "Use a local invitation from the host administrator." });
       }
       const headers = fromNodeHeaders(request.headers);
+      // Only the address this API resolved reaches Better Auth's rate limiter:
+      // client-supplied forwarding headers are dropped, and a forwarded value
+      // survives only when the TCP peer is a trusted proxy.
+      const client = await auth.clientAddress.resolve(request.raw.socket?.remoteAddress, request.headers);
+      for (const name of [...auth.clientAddress.headerNames, "x-forwarded-for", "forwarded"]) {
+        headers.delete(name);
+      }
+      if (client !== null) {
+        headers.set(auth.clientAddress.headerNames[0]!, client);
+      }
       const requestBody = request.method === "GET" || request.body === undefined
         ? undefined
         : JSON.stringify(request.body);

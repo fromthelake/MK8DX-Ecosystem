@@ -106,5 +106,41 @@ class OperatorProfileTest(unittest.TestCase):
                 self.assertEqual(tournament_server.selected_origin(), "https://two.example.org")
 
 
+class ClientAddressForwardingTest(unittest.TestCase):
+    """Per-client sign-in limits need the gateway's client address and a trusted gateway peer."""
+
+    def test_new_installation_trusts_only_the_compose_gateway(self):
+        with tempfile.TemporaryDirectory(prefix="mk8dx client address ") as temp:
+            state = Path(temp) / "private state"
+            subprocess.run([sys.executable, str(ROOT / "tooling/install.py"), "init", "--state-dir", str(state),
+                            "--mode", "local"], check=True, capture_output=True)
+            runtime = install.read_dotenv(state / "api.env")
+            operator = json.loads((state / "operator.json").read_text(encoding="utf-8"))
+            for values in (runtime, operator):
+                self.assertEqual(json.loads(values["MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON"]), ["web"])
+                self.assertEqual(json.loads(values["MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON"]), ["x-real-ip"])
+            install.status(state)
+
+    def test_compose_sets_the_gateway_trust_for_existing_installations_too(self):
+        # compose.yaml `environment` overrides the api.env of an older installation
+        # (which still says 127.0.0.1), so recreating the API is the whole upgrade.
+        compose = (ROOT / "compose.yaml").read_text(encoding="utf-8")
+        api = compose[compose.index("\n  api:"):compose.index("\n  web:")]
+        self.assertIn("""MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON: '["web"]'""", api)
+        self.assertIn("""MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON: '["x-real-ip"]'""", api)
+        self.assertNotIn("\n  gateway:", compose)
+        self.assertIn("\n  web:", compose, "the trusted name is the Compose gateway service")
+
+    def test_every_gateway_overwrites_the_forwarded_client_address(self):
+        for path in sorted((ROOT / "infrastructure/docker").glob("Caddyfile.*")):
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(path.name):
+                self.assertEqual(text.count("reverse_proxy "), 1)
+                block = text[text.index("reverse_proxy api:8080 {"):]
+                block = block[:block.index("\n    }\n")]
+                self.assertIn("header_up X-Real-IP {remote_host}", block)
+                self.assertNotIn("trusted_proxies", text, "client-supplied forwarding headers stay untrusted")
+
+
 if __name__ == "__main__":
     unittest.main()

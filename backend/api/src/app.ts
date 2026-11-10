@@ -817,6 +817,9 @@ export async function buildApp(
   if (dependencies.nativeEmailApproval !== undefined) {
     await registerNativeEmailApprovalRoutes(app, {
       service: dependencies.nativeEmailApproval.service,
+      ...(dependencies.embeddedAuth === undefined
+        ? {}
+        : { clientAddress: dependencies.embeddedAuth.auth.clientAddress }),
     });
   }
 

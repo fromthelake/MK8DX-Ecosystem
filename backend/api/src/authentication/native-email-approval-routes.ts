@@ -1,6 +1,7 @@
 import type { FastifyInstance } from "fastify";
 
 import type { NativeEmailApprovalService } from "./native-email-approval.js";
+import type { ClientAddressResolver } from "../security/client-address.js";
 
 const SCHEMA_VERSION = "mk8dx.native-email-approval.v1";
 
@@ -38,9 +39,13 @@ const linkApprovalSchema = {
  */
 export async function registerNativeEmailApprovalRoutes(
   app: FastifyInstance,
-  options: Readonly<{ service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink"> }>,
+  options: Readonly<{
+    service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
+    /** Per-client address for the per-address limit; without it the TCP peer is the client. */
+    clientAddress?: Pick<ClientAddressResolver, "resolve">;
+  }>,
 ): Promise<void> {
-  const { service } = options;
+  const { service, clientAddress } = options;
 
   app.post<{ Body: { userCode: string; email: string } }>(
     "/v1/native/device-authorization/email",
@@ -68,7 +73,10 @@ export async function registerNativeEmailApprovalRoutes(
     },
     async (request, reply) => {
       reply.header("Cache-Control", "no-store");
-      const accepted = await service.request(request.body.userCode, request.body.email, request.ip);
+      const requester = (clientAddress === undefined
+        ? null
+        : await clientAddress.resolve(request.raw.socket?.remoteAddress, request.headers)) ?? request.ip;
+      const accepted = await service.request(request.body.userCode, request.body.email, requester);
       if (!accepted) {
         return reply.code(400).send({ code: "native_email_request_invalid", message: "Enter the sign-in code and a valid email address." });
       }
