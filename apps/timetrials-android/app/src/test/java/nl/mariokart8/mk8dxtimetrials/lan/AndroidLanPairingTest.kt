@@ -62,6 +62,14 @@ class AndroidLanPairingTest {
         ).forEach { raw -> assertTrue(raw, runCatching { AndroidLanRootFetcher.parseResponse(raw.toByteArray()) }.isFailure) }
     }
 
+    @Test fun stopsReadingOnceTheAnnouncedBodyArrived() {
+        val head = "HTTP/1.1 200 OK\r\nContent-Length: 3\r\n\r\n"
+        assertTrue(!AndroidLanRootFetcher.isComplete("HTTP/1.1 200 OK\r\nContent-Len".toByteArray()))
+        assertTrue(!AndroidLanRootFetcher.isComplete((head + "PE").toByteArray()))
+        assertTrue(AndroidLanRootFetcher.isComplete((head + "PEM").toByteArray()))
+        assertTrue(!AndroidLanRootFetcher.isComplete("HTTP/1.1 200 OK\r\nTransfer-Encoding: chunked\r\n\r\n3\r\nPEM".toByteArray()))
+    }
+
     @Test fun acceptsOnlyTheConfirmedSelfSignedCa() {
         val root = AndroidLanRoot.accept(CA.toByteArray(), spki)
         assertNotNull(root)
@@ -72,6 +80,21 @@ class AndroidLanPairingTest {
         assertNull(AndroidLanRoot.accept("not a certificate".toByteArray(), spki))
         assertNull(AndroidLanRoot.accept(CA.toByteArray(), spki, nowMs = 0L))
         assertNotNull(AndroidLanRoot.socketFactory(root))
+    }
+
+    @Test fun decodesTheSetupQrFromAPaddedCameraPlane() {
+        val text = AndroidLanPairingPayload.build("192.168.0.236", spki)
+        val matrix = com.google.zxing.qrcode.QRCodeWriter()
+            .encode(text, com.google.zxing.BarcodeFormat.QR_CODE, 480, 480)
+        val width = matrix.width
+        val height = matrix.height
+        val stride = width + 32 // camera planes often pad each row
+        val plane = ByteArray(stride * height) { 0x55 }
+        for (y in 0 until height) for (x in 0 until width) {
+            plane[y * stride + x] = if (matrix[x, y]) 0x10 else 0xF0.toByte()
+        }
+        assertEquals(text, AndroidQrDecoder.decode(plane, stride, width, height))
+        assertNull(AndroidQrDecoder.decode(ByteArray(stride * height) { 0x55 }, stride, width, height))
     }
 
     @Test fun groupsTheFingerprintForReading() {

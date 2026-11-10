@@ -30,18 +30,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.BinaryBitmap
-import com.google.zxing.DecodeHintType
-import com.google.zxing.PlanarYUVLuminanceSource
-import com.google.zxing.common.HybridBinarizer
-import com.google.zxing.qrcode.QRCodeReader
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -123,8 +118,13 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
                         message = t("Connecting…", "Verbinden…")
                         scope.launch {
                             val root = withContext(Dispatchers.IO) {
-                                runCatching { AndroidLanRootFetcher.fetch(pairing.host) }.getOrNull()
-                                    ?.let { AndroidLanRoot.accept(it, pairing.spkiSha256) }
+                                runCatching { AndroidLanRootFetcher.fetch(pairing.host) }
+                                    .onFailure { android.util.Log.w("MK8DXLanPairing", "root fetch failed: ${it.javaClass.simpleName}: ${it.message}") }
+                                    .getOrNull()
+                                    ?.let { bytes ->
+                                        AndroidLanRoot.accept(bytes, pairing.spkiSha256)
+                                            ?: null.also { android.util.Log.w("MK8DXLanPairing", "root refused (${bytes.size} bytes)") }
+                                    }
                             }
                             if (root == null) {
                                 step = PairingStep.Confirm(pairing)
@@ -168,9 +168,12 @@ private fun QrCameraPreview(onText: (String) -> Unit) {
             executor.shutdown()
         }
     }
-    Box(Modifier.fillMaxWidth().aspectRatio(1f)) {
+    Box(Modifier.fillMaxWidth().aspectRatio(1f).clipToBounds()) {
         AndroidView(factory = { viewContext ->
             PreviewView(viewContext).apply {
+                // A TextureView stays inside its Compose bounds; the default SurfaceView drew over the field below.
+                implementationMode = PreviewView.ImplementationMode.COMPATIBLE
+                scaleType = PreviewView.ScaleType.FILL_CENTER
                 val future = ProcessCameraProvider.getInstance(viewContext)
                 future.addListener({
                     runCatching {
@@ -179,22 +182,12 @@ private fun QrCameraPreview(onText: (String) -> Unit) {
                         val analysis = ImageAnalysis.Builder()
                             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                             .build()
-                        val reader = QRCodeReader()
-                        val hints = mapOf(
-                            DecodeHintType.POSSIBLE_FORMATS to listOf(BarcodeFormat.QR_CODE),
-                            DecodeHintType.TRY_HARDER to true,
-                        )
                         analysis.setAnalyzer(executor) { image ->
                             try {
                                 val plane = image.planes[0]
                                 val buffer = plane.buffer
                                 val data = ByteArray(buffer.remaining()).also { buffer.get(it) }
-                                val source = PlanarYUVLuminanceSource(
-                                    data, plane.rowStride, image.height, 0, 0, image.width, image.height, false,
-                                )
-                                val text = runCatching { reader.decode(BinaryBitmap(HybridBinarizer(source)), hints).text }
-                                    .getOrNull()
-                                reader.reset()
+                                val text = AndroidQrDecoder.decode(data, plane.rowStride, image.width, image.height)
                                 if (text != null && AndroidLanPairingPayload.parse(text) != null &&
                                     delivered.compareAndSet(false, true)) {
                                     ContextCompat.getMainExecutor(viewContext).execute { onText(text) }

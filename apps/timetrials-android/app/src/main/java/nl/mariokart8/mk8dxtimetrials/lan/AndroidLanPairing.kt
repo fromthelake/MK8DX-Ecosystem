@@ -114,13 +114,30 @@ internal object AndroidLanRoot {
 internal object AndroidLanRootFetcher {
     const val MAX_BYTES = 64 * 1024
 
-    fun fetch(host: String, timeoutMs: Int = 8_000): ByteArray {
+    /**
+     * The request leaves the connection open and the app closes it after the announced body: a
+     * server-side close right after the last byte sometimes lost that byte on the Android
+     * emulator's network. A failed read is retried; whatever arrives is still pinned-checked.
+     */
+    fun fetch(host: String, timeoutMs: Int = 8_000, attempts: Int = 3): ByteArray {
         require(AndroidLanPairingPayload.isPrivateIpv4(host)) { "not a private LAN address" }
+        var last: Exception? = null
+        repeat(attempts) {
+            try {
+                return fetchOnce(host, timeoutMs)
+            } catch (error: Exception) {
+                last = error
+            }
+        }
+        throw last ?: IllegalStateException("root certificate not fetched")
+    }
+
+    private fun fetchOnce(host: String, timeoutMs: Int): ByteArray {
         Socket().use { socket ->
             socket.connect(InetSocketAddress(host, 80), timeoutMs)
             socket.soTimeout = timeoutMs
             socket.getOutputStream().apply {
-                write("GET /setup/root.crt HTTP/1.1\r\nHost: $host\r\nAccept: */*\r\nConnection: close\r\n\r\n"
+                write("GET /setup/root.crt HTTP/1.1\r\nHost: $host\r\nAccept: */*\r\n\r\n"
                     .toByteArray(Charsets.US_ASCII))
                 flush()
             }
@@ -128,16 +145,32 @@ internal object AndroidLanRootFetcher {
         }
     }
 
+    /**
+     * Reads until the announced body is complete, or until the server closes. Stopping at the
+     * announced length matters: on the Android emulator's network the final byte before the
+     * server's close was sometimes lost when reading to end of stream.
+     */
     private fun readLimited(input: InputStream): ByteArray {
         val out = ByteArrayOutputStream()
         val buffer = ByteArray(8192)
         while (true) {
+            if (isComplete(out.toByteArray())) break
             val read = input.read(buffer)
             if (read < 0) break
             out.write(buffer, 0, read)
             if (out.size() > MAX_BYTES) throw IllegalStateException("root certificate response too large")
         }
         return out.toByteArray()
+    }
+
+    /** True once the headers are in and a Content-Length body has fully arrived. */
+    fun isComplete(raw: ByteArray): Boolean {
+        val split = indexOf(raw, "\r\n\r\n".toByteArray(Charsets.US_ASCII))
+        if (split <= 0) return false
+        val length = String(raw, 0, split, Charsets.ISO_8859_1).split("\r\n").drop(1)
+            .lastOrNull { it.substringBefore(':').trim().equals("content-length", ignoreCase = true) }
+            ?.substringAfter(':')?.trim()?.toIntOrNull() ?: return false
+        return raw.size - (split + 4) >= length
     }
 
     fun parseResponse(raw: ByteArray): ByteArray {
@@ -154,7 +187,7 @@ internal object AndroidLanRootFetcher {
         if (chunked) return dechunk(body)
         val length = headers.lastOrNull { it.first == "content-length" }?.second?.toIntOrNull()
         if (length != null) {
-            check(length in 0..body.size) { "truncated body" }
+            check(length in 0..body.size) { "truncated body: ${body.size} of $length bytes" }
             return body.copyOf(length)
         }
         return body
@@ -181,5 +214,21 @@ internal object AndroidLanRootFetcher {
             return i
         }
         return -1
+    }
+}
+
+/** Reads one QR code from a camera frame's luminance plane (row padding allowed). */
+internal object AndroidQrDecoder {
+    private val hints = mapOf(
+        com.google.zxing.DecodeHintType.POSSIBLE_FORMATS to listOf(com.google.zxing.BarcodeFormat.QR_CODE),
+        com.google.zxing.DecodeHintType.TRY_HARDER to true,
+    )
+
+    fun decode(luminance: ByteArray, rowStride: Int, width: Int, height: Int): String? = try {
+        val source = com.google.zxing.PlanarYUVLuminanceSource(luminance, rowStride, height, 0, 0, width, height, false)
+        com.google.zxing.qrcode.QRCodeReader()
+            .decode(com.google.zxing.BinaryBitmap(com.google.zxing.common.HybridBinarizer(source)), hints).text
+    } catch (_: Exception) {
+        null
     }
 }
