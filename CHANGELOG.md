@@ -19,6 +19,17 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   (`POST /v1/session/device-invitations`) is rate-limited, refused for
   administrators (they keep the host-computer flow) and absent in email-link
   installations. Real-device and browser checks are still open.
+- ADR-0224 phase 2 (both installation modes): a shared device remembers the
+  Player accounts that signed in on it, and "Switch account" (account menu,
+  Settings, and the signed-out sign-in panel) continues as one of them with one
+  tap. An account can turn on an optional 4-digit PIN in Settings; the server
+  checks it and limits attempts (5 per account per 15 minutes, 20 per device
+  per hour). Administrators are never remembered and always sign in afresh.
+  The browser holds labels only, under one HttpOnly SameSite=Strict device
+  cookie. "Sign out" removes the account from this device's list; "Sign out on
+  all devices" removes it from every device. Migration
+  `0085_account_switching`. Design: `docs/product/ACCOUNT_SWITCHING_DESIGN.md`.
+  Browser and real-device checks are still open.
 - The account menu offers "Sign out on all devices" after a confirmation. It
   ends every session of the account, apps included, then signs this browser
   out as before. "Sign out" itself still affects only this device.

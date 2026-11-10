@@ -723,6 +723,27 @@
    ]
   },
   {
+   "key": "A PIN is four digits.",
+   "nl": "Een pincode heeft vier cijfers.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts",
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "A PIN is on for this account.",
+   "nl": "Voor dit account staat een pincode aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "A Player already races under that name.",
    "nl": "Er rijdt al een speler onder die naam.",
    "kinds": [
@@ -1010,6 +1031,16 @@
    ]
   },
   {
+   "key": "Account without a Player",
+   "nl": "Account zonder Player",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Accounts and Players",
    "kinds": [
     "text"
@@ -1025,6 +1056,16 @@
    ],
    "places": [
     "administrator-identity-link-section.ts"
+   ]
+  },
+  {
+   "key": "Accounts that signed in on this device. Tap one to continue as that person.",
+   "nl": "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -2553,6 +2594,7 @@
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
    ]
@@ -3141,10 +3183,10 @@
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "administrator-claim-review-section.ts",
     "authentication-product-page.ts",
-    "dutch-ui-copy.ts",
-    "installation-settings-section.ts"
+    "dutch-ui-copy.ts"
    ]
   },
   {
@@ -3247,6 +3289,16 @@
    ],
    "places": [
     "tournament-tiers.ts"
+   ]
+  },
+  {
+   "key": "Change PIN",
+   "nl": "Pincode wijzigen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -5176,6 +5228,16 @@
    ]
   },
   {
+   "key": "Could not load the accounts on this device. Try again.",
+   "nl": "De accounts op dit apparaat konden niet worden geladen. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Could not make a card. Try again.",
    "nl": "Kon geen kaart maken. Probeer het opnieuw.",
    "kinds": [
@@ -5235,6 +5297,16 @@
    ]
   },
   {
+   "key": "Could not save the PIN. Try again.",
+   "nl": "De pincode kon niet worden opgeslagen. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "Could not share.",
    "nl": "Delen is niet gelukt.",
    "kinds": [
@@ -5264,6 +5336,16 @@
    "places": [
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Could not switch. Try again.",
+   "nl": "Overstappen is niet gelukt. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -5710,6 +5792,16 @@
    ],
    "places": [
     "tournament-operator-access-section.ts"
+   ]
+  },
+  {
+   "key": "Current PIN",
+   "nl": "Huidige pincode",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -6812,6 +6904,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Enter the current PIN first.",
+   "nl": "Vul eerst de huidige pincode in.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -10772,6 +10874,16 @@
    ]
   },
   {
+   "key": "Looking for accounts on this device…",
+   "nl": "Accounts op dit apparaat zoeken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Looking for the latest builds…",
    "nl": "Nieuwste versies zoeken…",
    "kinds": [
@@ -11972,6 +12084,16 @@
    ]
   },
   {
+   "key": "New PIN (4 digits)",
+   "nl": "Nieuwe pincode (4 cijfers)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "New Player",
    "nl": "Nieuwe speler",
    "kinds": [
@@ -12325,6 +12447,16 @@
    ]
   },
   {
+   "key": "No PIN: one tap switches to this account on a shared device.",
+   "nl": "Geen pincode: met één tik stap je op een gedeeld apparaat over naar dit account.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "No Player answers to that name yet.",
    "nl": "Nog geen speler met die naam.",
    "kinds": [
@@ -12567,6 +12699,16 @@
    ]
   },
   {
+   "key": "No connection. Check the network and try again.",
+   "nl": "Geen verbinding. Controleer het netwerk en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "No country",
    "nl": "Geen land",
    "kinds": [
@@ -12796,6 +12938,16 @@
    ],
    "places": [
     "tournament-operator-access-section.ts"
+   ]
+  },
+  {
+   "key": "No other accounts are remembered on this device yet. Each person signs in here once; after that one tap is enough.",
+   "nl": "Op dit apparaat worden nog geen andere accounts onthouden. Iedereen meldt zich hier één keer aan; daarna is één tik genoeg.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -14093,6 +14245,16 @@
    ]
   },
   {
+   "key": "On a shared device, anyone can switch to your account with one tap. A 4-digit PIN stops that: switching to you then asks for it. If you forget it, sign in again with your usual sign-in and change or remove it within 15 minutes.",
+   "nl": "Op een gedeeld apparaat kan iedereen met één tik naar jouw account overstappen. Een pincode van 4 cijfers voorkomt dat: overstappen naar jou vraagt er dan om. Vergeten? Meld je opnieuw aan zoals altijd en wijzig of verwijder hem binnen 15 minuten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "On an Android phone",
    "nl": "Op een Android-telefoon",
    "kinds": [
@@ -14139,6 +14301,16 @@
    ],
    "places": [
     "tournament-signup-section.ts"
+   ]
+  },
+  {
+   "key": "On this device",
+   "nl": "Op dit apparaat",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -15005,6 +15177,56 @@
    ],
    "places": [
     "ds-home.ts"
+   ]
+  },
+  {
+   "key": "PIN",
+   "nl": "pincode",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
+   "key": "PIN for",
+   "nl": "Pincode voor",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
+   "key": "PIN for switching accounts",
+   "nl": "Pincode voor ander account",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "PIN removed.",
+   "nl": "Pincode verwijderd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "PIN saved.",
+   "nl": "Pincode opgeslagen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -17687,6 +17909,16 @@
    ]
   },
   {
+   "key": "Remove PIN",
+   "nl": "Pincode verwijderen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "Remove participant",
    "nl": "Deelnemer verwijderen",
    "kinds": [
@@ -19165,10 +19397,10 @@
     "text"
    ],
    "places": [
+    "account-switch-pin-settings.ts",
     "account-time-trial-settings.ts",
     "administrator-time-trial-section.ts",
-    "avatar-settings.ts",
-    "country-settings.ts"
+    "avatar-settings.ts"
    ]
   },
   {
@@ -20456,6 +20688,16 @@
    ]
   },
   {
+   "key": "Sign in with another account",
+   "nl": "Met een ander account aanmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Sign in with your invitation first, then return to approve this device.",
    "nl": "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
    "kinds": [
@@ -21597,12 +21839,23 @@
    ]
   },
   {
+   "key": "Switch",
+   "nl": "Overstappen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Switch account",
    "nl": "Ander account",
    "kinds": [
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "authentication-product-page.ts"
    ]
   },
@@ -21667,6 +21920,16 @@
    ]
   },
   {
+   "key": "Switch to an account that signed in on this device, or sign in with another one. Signing out removes your account from this device's list.",
+   "nl": "Stap over naar een account dat op dit apparaat is aangemeld, of meld je aan met een ander account. Afmelden haalt je account van de lijst van dit apparaat.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Switched off under Which blocks the report shows, so not on the page: {0}.",
    "nl": "Uitgezet onder Welke blokken het verslag toont, dus niet op de pagina: {0}.",
    "kinds": [
@@ -21684,6 +21947,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Switching…",
+   "nl": "Bezig met overstappen…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -21907,6 +22180,16 @@
    ]
   },
   {
+   "key": "Tap your account to continue; no new link or invitation is needed.",
+   "nl": "Tik op je account om verder te gaan; je hebt geen nieuwe link of uitnodiging nodig.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Tap ‘Enable notifications’ below.",
    "nl": "Tik hieronder op ‘Meldingen inschakelen’.",
    "kinds": [
@@ -22023,6 +22306,16 @@
    ],
    "places": [
     "appearance-settings.ts"
+   ]
+  },
+  {
+   "key": "That PIN is not right.",
+   "nl": "Die pincode klopt niet.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -22646,6 +22939,16 @@
    ],
    "places": [
     "country-settings.ts"
+   ]
+  },
+  {
+   "key": "The current PIN is not right.",
+   "nl": "De huidige pincode klopt niet.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -23603,6 +23906,16 @@
    ]
   },
   {
+   "key": "This account is no longer remembered here. Sign in instead.",
+   "nl": "Dit account wordt hier niet meer onthouden. Meld je gewoon aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "This account may not write Tournament reports.",
    "nl": "Dit account mag geen toernooiverslagen schrijven.",
    "kinds": [
@@ -24285,6 +24598,17 @@
    ],
    "places": [
     "player-claim-section.ts"
+   ]
+  },
+  {
+   "key": "Too many attempts. Wait a few minutes and try again.",
+   "nl": "Te veel pogingen. Wacht een paar minuten en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts",
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -25225,6 +25549,16 @@
    ],
    "places": [
     "ds-cups.ts"
+   ]
+  },
+  {
+   "key": "Turn on PIN",
+   "nl": "Pincode aanzetten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -28127,6 +28461,7 @@
     "localized"
    ],
    "places": [
+    "account-switch-pin-settings.ts",
     "device-invitation-card.ts"
    ]
   },

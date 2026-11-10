@@ -233,6 +233,13 @@ import { mountInstallationSettingsSection, type MountedInstallationSettingsSecti
 import { mountDirectorHostRequest, type MountedDirectorHostRequest } from "./director-host-request-section.js";
 import { openDeviceInvitationDialog } from "./device-invitation-card.js";
 import {
+  accountChooser,
+  openAccountSwitchDialog,
+  type AccountChooser,
+  type AccountSwitchPort,
+} from "./account-switch-chooser.js";
+import { mountAccountSwitchPinSettings } from "./account-switch-pin-settings.js";
+import {
   forgetNavIdentity,
   readNavIdentity,
   rememberNavIdentity,
@@ -522,6 +529,41 @@ export function mountAuthenticationProductPage(
   // "you will be signed in as <name>" so it is clear the other device becomes this account.
   let shownPlayerName: string | null = null;
 
+  // ADR-0224 phase 2: one tap between the accounts this browser remembers. The server keeps the
+  // list and checks any PIN; the page only ever holds labels and opaque entry ids.
+  const switchingAvailable = client.rememberedAccounts !== undefined && client.switchAccount !== undefined;
+  const afterAccountSwitch = (): void => {
+    // The header identity must belong to the new active account: nothing the previous account
+    // left behind may repaint it, so the page starts over from the server's own answers.
+    forgetNavIdentity();
+    forgetRemembered();
+    forgetAppearanceSync();
+    globalThis.location?.reload();
+  };
+  const accountSwitchPort = (signedIn: boolean): AccountSwitchPort => {
+    let pushDetached = !signedIn;
+    return {
+      load: (signal) => client.rememberedAccounts!(signal),
+      switchTo: async (entryId, pin, signal) => {
+        // The previous account's notifications must not keep arriving on this device.
+        if (!pushDetached) {
+          pushDetached = true;
+          await detachCurrentWebPushSubscription().catch(() => undefined);
+        }
+        await client.switchAccount!(entryId, pin, signal);
+      },
+    };
+  };
+  const openAccountSwitch = (): void => {
+    if (!switchingAvailable) { endSession(true); return; }
+    openAccountSwitchDialog(accountSwitchPort(true), {
+      onSwitched: afterAccountSwitch,
+      // "Sign in with another account": signs out here but keeps this account one tap away.
+      onUseAnother: () => { endSession(true); },
+    }).open();
+  };
+  let signInChooser: AccountChooser | null = null;
+
   const shell: AppShellHandle = mountAppShell(root, {
     text: {
       skip: localized("Skip to content", "Naar de inhoud"),
@@ -560,7 +602,7 @@ export function mountAuthenticationProductPage(
     brandAssetBase: `${GAME_ASSET_BASE}images/brand/`,
     languageToggle,
     onSignOut: () => { endSession(false); },
-    onSwitchAccount: () => { endSession(true); },
+    onSwitchAccount: () => { openAccountSwitch(); },
     ...(client.signOutEverywhere === undefined ? {} : { onSignOutEverywhere: confirmSignOutEverywhere }),
     ...(client.createDeviceInvitation === undefined ? {} : {
       onAddDevice: () => {
@@ -800,6 +842,7 @@ export function mountAuthenticationProductPage(
   let followSettings: Pick<MountedRivalSettings, "unmount"> | null = null;
   let socialGroupSettings: Pick<MountedSocialGroupSettings, "unmount"> | null = null;
   let accountTimeTrialSettings: Readonly<{ unmount(): void }> | null = null;
+  let accountSwitchPinSettings: Readonly<{ unmount(): void }> | null = null;
   let webPushSettings: Readonly<{ unmount(): void }> | null = null;
   let community: Pick<MountedCommunityView, "ready" | "unmount"> | null = null;
   let records: Pick<MountedRecordsView, "ready" | "unmount"> | null = null;
@@ -866,6 +909,9 @@ export function mountAuthenticationProductPage(
     notifications?.unmount();
     profilePreferenceSettings?.unmount();
     accountTimeTrialSettings?.unmount();
+    accountSwitchPinSettings?.unmount();
+    signInChooser?.dispose();
+    signInChooser = null;
     appearanceSettings?.unmount();
     appearanceSettings = null;
     webPushSettings?.unmount();
@@ -909,6 +955,7 @@ export function mountAuthenticationProductPage(
     notifications = null;
     profilePreferenceSettings = null;
     accountTimeTrialSettings = null;
+    accountSwitchPinSettings = null;
     webPushSettings = null;
     rivalSettings = null;
     followSettings = null;
@@ -1712,7 +1759,37 @@ export function mountAuthenticationProductPage(
     )?.playerId ?? null;
   };
 
+  // Signed out on a shared device: the accounts it remembers are offered beside the sign-in, one
+  // tap each (ADR-0224 phase 2). Hidden unless there is at least one; asked for after the page's
+  // own opening burst so it never takes one of the host's first five request slots.
+  const rememberedOnThisDevice = (): HTMLElement | null => {
+    if (!switchingAvailable || isDevice) { return null; }
+    const chooser = accountChooser(accountSwitchPort(false), afterAccountSwitch);
+    signInChooser = chooser;
+    const section = document.createElement("div");
+    section.className = "ds-stack";
+    section.hidden = true;
+    const title = document.createElement("h3");
+    title.className = "ds-title";
+    title.textContent = localized("On this device", "Op dit apparaat");
+    const note = document.createElement("p");
+    note.className = "ds-body-s";
+    note.textContent = localized(
+      "Tap your account to continue; no new link or invitation is needed.",
+      "Tik op je account om verder te gaan; je hebt geen nieuwe link of uitnodiging nodig.");
+    section.append(title, note, chooser.root);
+    globalThis.setTimeout(() => {
+      if (disposed || signInChooser !== chooser) { return; }
+      void chooser.refresh().then((count) => {
+        if (count > 0 && signInChooser === chooser && !disposed) { section.hidden = false; }
+      });
+    }, 1_100);
+    return section;
+  };
+
   const renderSignIn = (): void => {
+    signInChooser?.dispose();
+    signInChooser = null;
     const activeQuery = new URLSearchParams(
       activeSearch.startsWith("?") ? activeSearch.slice(1) : activeSearch,
     );
@@ -1786,6 +1863,8 @@ export function mountAuthenticationProductPage(
         "De setup-QR installeert vertrouwen in deze lokale server; daarmee meld je je niet aan. Vraag de hostbeheerder om een nieuwe uitnodiging als de jouwe is verlopen.",
       );
       invitation.append(instruction, distinction);
+      const rememberedOffline = rememberedOnThisDevice();
+      if (rememberedOffline !== null) { invitation.prepend(rememberedOffline); }
       if (isDevice) {
         status.textContent = localized(
           "Sign in with your invitation first, then return to approve this device.",
@@ -1915,6 +1994,8 @@ export function mountAuthenticationProductPage(
           "Nieuw of terugkerend, het werkt hetzelfde: geef je e-mailadres en we sturen een eenmalige link. Nieuwe accounts kiezen daarna meteen hun racenaam.",
         );
       signInCopy.append(signInDetail, form);
+      const rememberedEmail = rememberedOnThisDevice();
+      if (rememberedEmail !== null) { signInCopy.prepend(rememberedEmail); }
       const landingRoot = document.createElement("div");
       content.append(landingRoot);
       signedOutHome = mountSignedOutHome(landingRoot, {
@@ -1961,7 +2042,7 @@ export function mountAuthenticationProductPage(
     });
     const switchAccount = dsButton({
       label: localized("Switch account", "Ander account"), variant: "quiet",
-      onPress: () => end(true),
+      onPress: () => { if (switchingAvailable) { openAccountSwitch(); } else { end(true); } },
     });
     const group = document.createElement("div");
     group.className = "ds-root ds-signin__account";
@@ -1971,9 +2052,13 @@ export function mountAuthenticationProductPage(
     actions.append(signOut.root, switchAccount.root);
     const explanation = document.createElement("p");
     explanation.className = "ds-micro";
-    explanation.textContent = localized(
-      "Switching signs you out here first, then you sign in with a different account.",
-      "Overstappen meldt je hier eerst af; daarna meld je je aan met een ander account.");
+    explanation.textContent = switchingAvailable
+      ? localized(
+        "Switch to an account that signed in on this device, or sign in with another one. Signing out removes your account from this device's list.",
+        "Stap over naar een account dat op dit apparaat is aangemeld, of meld je aan met een ander account. Afmelden haalt je account van de lijst van dit apparaat.")
+      : localized(
+        "Switching signs you out here first, then you sign in with a different account.",
+        "Overstappen meldt je hier eerst af; daarna meld je je aan met een ander account.");
     group.append(actions, explanation);
     return group;
   };
@@ -1988,7 +2073,9 @@ export function mountAuthenticationProductPage(
       void detachCurrentWebPushSubscription().catch(() => undefined)
         .then(() => everywhere && client.signOutEverywhere !== undefined
           ? client.signOutEverywhere()
-          : client.signOut()).then(() => {
+          : switching
+            ? client.signOut(undefined, { keepRemembered: true })
+            : client.signOut()).then(() => {
         sessionCache = null;
         capabilitiesCache = null;
         // The remembered header identity belongs to the session that just
@@ -2306,6 +2393,19 @@ export function mountAuthenticationProductPage(
     }
     accountRow.append(renderSignedInHeader());
     accountGroup.body.append(accountRow);
+    // ADR-0224 phase 2: the optional switching PIN, for Player accounts only (the server answers
+    // 403 to an administrator and the panel then stays away).
+    if (switchingAvailable && client.switchPin !== undefined && client.setSwitchPin !== undefined &&
+        client.clearSwitchPin !== undefined) {
+      const pinRoot = document.createElement("div");
+      accountGroup.body.append(pinRoot);
+      accountSwitchPinSettings?.unmount();
+      accountSwitchPinSettings = mountAccountSwitchPinSettings(pinRoot, {
+        read: (signal) => client.switchPin!(signal),
+        set: (pin, currentPin, signal) => client.setSwitchPin!(pin, currentPin, signal),
+        clear: (currentPin, signal) => client.clearSwitchPin!(currentPin, signal),
+      });
+    }
     const languageRoot = document.createElement("div");
     accountGroup.body.append(languageRoot);
     mountLanguageSettings(languageRoot);

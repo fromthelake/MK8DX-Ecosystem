@@ -319,6 +319,10 @@ is not yet qualified.
 **Devices and switching accounts.** Phase 1: in an offline-invitation installation a signed-in
 Player account can create a one-use, 15-minute invitation for its own account to add another
 device (never another account, never an administrator account, rate-limited; a new card retires
-the previous self-issued one), and every account can sign out on all devices. Phase 2 (one-tap
-account switching on shared devices with an optional PIN, administrators always signing in
-afresh) follows after a design review. Identity rules are unchanged.
+the previous self-issued one), and every account can sign out on all devices. Phase 2: a shared
+device remembers the Player accounts that signed in on it and switches between them with one tap;
+an account may add a 4-digit PIN that only the server checks, with a rate limit. Administrators are
+never remembered and always sign in afresh, the browser holds labels only (never a session token),
+and signing out removes the account from that device's list. Better Auth's multi-session plugin was
+reviewed and not used, because its remembered cookies are live sessions that would let a PIN be
+bypassed (docs/product/ACCOUNT_SWITCHING_DESIGN.md). Identity rules are unchanged.
