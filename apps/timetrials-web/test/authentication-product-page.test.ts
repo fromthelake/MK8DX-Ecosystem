@@ -94,6 +94,15 @@ class FakeNode {
       candidate.tagName === selector || candidate.className.split(" ").includes(wanted));
   }
 
+  // The confirmation and the device card are platform dialogs (ADR-0224).
+  open = false;
+  showModal(): void { this.open = true; }
+  close(): void { this.open = false; this.dispatch("close"); }
+  remove(): void { this.parentNode?.removeChild(this); }
+  contains(node: FakeNode | null): boolean {
+    return node !== null && (node === this || descendants(this).includes(node));
+  }
+
   removeChild(node: FakeNode): FakeNode {
     const index = this.children.indexOf(node);
     if (index < 0) { throw new Error("synthetic child missing"); }
@@ -697,6 +706,95 @@ describe("passwordless authentication product page", () => {
       "Signed out. Sign in with a different account to continue.",
     );
     mounted.unmount();
+  });
+
+  it("signs out on all devices only after the confirmation, through the revocation (ADR-0224)", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const signOut = vi.fn(async () => undefined);
+    const signOutEverywhere = vi.fn(async () => undefined);
+    const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+      client: client({
+        async session() { return { authenticated: true }; },
+        async capabilities() { return { administrator: false }; },
+        signOut,
+        signOutEverywhere,
+      }),
+      pathname: "/",
+      search: "?settings=1",
+      mountClaim: () => ({ ready: Promise.resolve(), unmount() {} }),
+      mountPlayerVisibility: () => ({ ready: Promise.resolve(), unmount() {} }),
+    });
+    await mounted.ready;
+    node(root, "Sign out on all devices").dispatch("click");
+    // Nothing happens before the person confirms.
+    expect(signOutEverywhere).not.toHaveBeenCalled();
+    const confirmation = descendants(document.body).find((candidate) => candidate.tagName === "dialog");
+    expect(confirmation?.open).toBe(true);
+    expect(String(confirmation?.textContent)).toContain("other browsers, phones and the apps");
+    node(document.body, "Sign out everywhere").dispatch("click");
+    await settle();
+    await settle();
+    await settle();
+    expect(signOutEverywhere).toHaveBeenCalledOnce();
+    expect(signOut).not.toHaveBeenCalled();
+    expect(mounted.status.textContent).toBe("Signed out on all devices.");
+    // The ordinary Sign out is still this device only.
+    expect(node(root, "Sign out")).toBeDefined();
+    mounted.unmount();
+  });
+
+  it("offers Add another device only to a Player account in an offline-invitation installation", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+    vi.stubGlobal("fetch", vi.fn(async () => { throw new Error("synthetic offline"); }));
+    try {
+      const card = {
+        invitationUrl: `https://192.168.1.20/offline-invite#token=${"A".repeat(43)}`,
+        expiresAtMs: Date.now() + 900_000,
+        qr: { size: 21, modules: Array.from({ length: 441 }, () => true) },
+      };
+      const cases = [
+        { mode: "offline-invitation", administrator: false, offered: true },
+        { mode: "offline-invitation", administrator: true, offered: false },
+        { mode: "email-link", administrator: false, offered: false },
+      ] as const;
+      for (const { mode, administrator, offered } of cases) {
+        const document = new FakeDocument();
+        const root = document.createElement("div");
+        const createDeviceInvitation = vi.fn(async () => card);
+        const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+          client: client({
+            async session() { return { authenticated: true }; },
+            async capabilities() { return { administrator }; },
+            async installationMode() { return mode; },
+            createDeviceInvitation,
+          }),
+          pathname: "/",
+          search: "?settings=1",
+          mountClaim: () => ({ ready: Promise.resolve(), unmount() {} }),
+          mountPlayerVisibility: () => ({ ready: Promise.resolve(), unmount() {} }),
+        });
+        await mounted.ready;
+        await vi.advanceTimersByTimeAsync(1_200);
+        const items = descendants(root).filter((candidate) =>
+          candidate.textContent === "Add another device" && candidate.tagName === "button");
+        expect(items.length > 0).toBe(offered);
+        if (offered) {
+          items[0]!.dispatch("click");
+          await settle();
+          await settle();
+          expect(createDeviceInvitation).toHaveBeenCalledOnce();
+          const dialog = descendants(document.body).find((candidate) => candidate.tagName === "dialog");
+          expect(dialog?.open).toBe(true);
+          expect(descendants(dialog!).some((candidate) => candidate.value === card.invitationUrl)).toBe(true);
+          dialog!.close();
+        }
+        mounted.unmount();
+      }
+    } finally {
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
   });
 
   it("shows the header signed out the moment the session ends", async () => {

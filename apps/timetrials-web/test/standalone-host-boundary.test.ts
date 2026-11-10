@@ -43,6 +43,7 @@ describe("integrated web production host boundary", () => {
       "claim-walk-client.ts",
       "competitive-presentation.ts",
       "country-settings.ts",
+      "device-invitation-card.ts",
       "director-host-request-client.ts",
       "director-host-request-section.ts",
       "ds-activity.ts",

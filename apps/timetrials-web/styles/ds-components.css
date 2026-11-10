@@ -424,6 +424,11 @@
     width: min(720px, calc(100vw - 2 * var(--ds-gutter-phone)));
     overflow-y: auto;
   }
+  /* ADR-0224 "Add another device": the QR keeps its own white field in either appearance. */
+  .ds-device-card { min-width: 0; }
+  .ds-device-card__code { display: flex; justify-content: center; }
+  .ds-device-card__qr { display: block; width: min(260px, 100%); height: auto; aspect-ratio: 1; }
+  .ds-device-card .ds-text-input { width: 100%; min-width: 0; }
   .ds-rank-mastery-help__tiers {
     display: grid; grid-template-columns: 4.5rem minmax(0, 1fr); gap: var(--ds-space-xs) var(--ds-space-md);
     margin: 0;

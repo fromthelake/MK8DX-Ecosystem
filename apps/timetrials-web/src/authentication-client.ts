@@ -7,6 +7,9 @@ export const AUTH_DEVICE_LOOKUP_PATH = "/api/auth/device";
 export const AUTH_DEVICE_APPROVE_PATH = "/api/auth/device/approve";
 export const AUTH_DEVICE_DENY_PATH = "/api/auth/device/deny";
 export const PUBLIC_CLIENT_CONFIG_PATH = "/client-config.json";
+export const AUTH_REVOKE_SESSIONS_PATH = "/api/auth/revoke-sessions";
+export const DEVICE_INVITATION_PATH = "/v1/session/device-invitations";
+const CSRF_PATH = "/v1/session/csrf";
 
 const maximumResponseBytes = 16_384;
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -19,6 +22,7 @@ export class WebAuthenticationError extends Error {
       | "network_unavailable"
       | "not_authenticated"
       | "invalid_device_code"
+      | "not_available"
       | "service_unavailable"
       | "invalid_response",
     public readonly retryable: boolean,
@@ -39,6 +43,14 @@ export type WebDeviceAuthorization = Readonly<{
   clientId: "mk8dx.timetrials.android.v1" | "mk8dx.timetrials.desktop.v1" | "mk8dx.tournament.desktop.v1";
 }>;
 
+/** ADR-0224 "add another device": a one-use card for the signed-in account itself. */
+export type WebDeviceInvitation = Readonly<{
+  invitationUrl: string;
+  expiresAtMs: number;
+  /** The QR matrix row by row; true is a dark module. */
+  qr: Readonly<{ size: number; modules: readonly boolean[] }>;
+}>;
+
 export interface WebAuthenticationClient {
   session(signal?: AbortSignal): Promise<WebAuthenticationSession | null>;
   installationMode?(signal?: AbortSignal): Promise<"email-link" | "offline-invitation">;
@@ -56,6 +68,13 @@ export interface WebAuthenticationClient {
   ): Promise<void>;
   changeEmail?(newEmail: string, callbackURL: string, signal?: AbortSignal): Promise<void>;
   signOut(signal?: AbortSignal): Promise<void>;
+  /**
+   * Ends every session of this account, other devices and apps included, then this browser's
+   * own cookie exactly as signOut does (ADR-0224).
+   */
+  signOutEverywhere?(signal?: AbortSignal): Promise<void>;
+  /** Offline-invitation installations only; anywhere else it fails with not_available. */
+  createDeviceInvitation?(signal?: AbortSignal): Promise<WebDeviceInvitation>;
   device(userCode: string, signal?: AbortSignal): Promise<WebDeviceAuthorization>;
   approveDevice(userCode: string, signal?: AbortSignal): Promise<void>;
   denyDevice(userCode: string, signal?: AbortSignal): Promise<void>;
@@ -143,6 +162,13 @@ function validCallback(value: string): boolean {
 export function createWebAuthenticationClient(
   fetchPort: FetchPort = globalThis.fetch.bind(globalThis),
 ): WebAuthenticationClient {
+  const signOut = async (signal?: AbortSignal): Promise<void> => {
+    const response = await request(fetchPort, AUTH_SIGN_OUT_PATH, post(signal, {}));
+    if (response.status !== 200 || !isObject(response.document) ||
+      response.document["success"] !== true) {
+      fail(response.status >= 500 ? "service_unavailable" : "invalid_response", true);
+    }
+  };
   return {
     async installationMode(signal) {
       let response: Response;
@@ -261,12 +287,46 @@ export function createWebAuthenticationClient(
       if (response.status !== 200 || !isObject(response.document) || response.document["status"] !== true) fail("invalid_response");
     },
 
-    async signOut(signal) {
-      const response = await request(fetchPort, AUTH_SIGN_OUT_PATH, post(signal, {}));
+    signOut,
+
+    async signOutEverywhere(signal) {
+      const response = await request(fetchPort, AUTH_REVOKE_SESSIONS_PATH, post(signal, {}));
+      if (response.status === 401) { fail("not_authenticated"); }
+      if (response.status === 429 || response.status >= 500) { fail("service_unavailable", true); }
       if (response.status !== 200 || !isObject(response.document) ||
-        response.document["success"] !== true) {
-        fail(response.status >= 500 ? "service_unavailable" : "invalid_response", true);
+        response.document["status"] !== true) {
+        fail("invalid_response");
       }
+      // The server already ended this session with the others; this clears the cookie.
+      await signOut(signal);
+    },
+
+    async createDeviceInvitation(signal) {
+      const proof = await request(fetchPort, CSRF_PATH, {
+        method: "GET",
+        headers: { Accept: "application/json" },
+        ...(signal === undefined ? {} : { signal }),
+      });
+      if (proof.status === 401 || proof.status === 403) { fail("not_authenticated"); }
+      if (proof.status >= 500) { fail("service_unavailable", true); }
+      if (proof.status !== 200 || !isObject(proof.document) ||
+        Object.keys(proof.document).length !== 3 ||
+        proof.document["schemaVersion"] !== "mk8dx.web-csrf.v1" ||
+        proof.document["headerName"] !== "X-MK8DX-CSRF" ||
+        typeof proof.document["value"] !== "string" || proof.document["value"].length === 0) {
+        fail("invalid_response");
+      }
+      const response = await request(fetchPort, DEVICE_INVITATION_PATH, {
+        ...post(signal, {}),
+        headers: {
+          Accept: "application/json", "Content-Type": "application/json",
+          "X-MK8DX-CSRF": proof.document["value"],
+        },
+      });
+      if (response.status === 401) { fail("not_authenticated"); }
+      if (response.status === 403 || response.status === 404) { fail("not_available"); }
+      if (response.status === 429 || response.status >= 500) { fail("service_unavailable", true); }
+      return parseDeviceInvitation(response.status, response.document);
     },
 
     async device(userCode, signal) {
@@ -328,4 +388,44 @@ async function deviceDecision(
     response.document["success"] !== true) {
     fail("invalid_response");
   }
+}
+
+const invitationTokenPattern = /^#token=[A-Za-z0-9_-]{43}$/;
+
+/** Key for key against the API's response schema (device-invitation-routes.ts). */
+export function parseDeviceInvitation(status: number, document: unknown): WebDeviceInvitation {
+  if (status !== 200 || !isObject(document) || Object.keys(document).length !== 4 ||
+    document["schemaVersion"] !== "mk8dx.device-invitation.v1" ||
+    typeof document["invitationUrl"] !== "string" ||
+    typeof document["expiresAtMs"] !== "number" ||
+    !Number.isSafeInteger(document["expiresAtMs"]) || document["expiresAtMs"] < 0 ||
+    !isObject(document["qr"]) || Object.keys(document["qr"]).length !== 2) {
+    fail("invalid_response");
+  }
+  const invitationUrl = document["invitationUrl"];
+  let parsed: URL;
+  try { parsed = new URL(invitationUrl); } catch { fail("invalid_response"); }
+  // Only this installation's own invitation page, never somewhere a page could be sent.
+  const ownOrigin = globalThis.location?.origin;
+  if (invitationUrl.length > 512 || parsed.protocol !== "https:" ||
+    parsed.pathname !== "/offline-invite" || parsed.search !== "" ||
+    parsed.username !== "" || parsed.password !== "" ||
+    !invitationTokenPattern.test(parsed.hash) ||
+    (typeof ownOrigin === "string" && ownOrigin !== "null" && ownOrigin.startsWith("https:") &&
+      parsed.origin !== ownOrigin)) {
+    fail("invalid_response");
+  }
+  const qr = document["qr"] as Record<string, unknown>;
+  const size = qr["size"];
+  const modules = qr["modules"];
+  if (typeof size !== "number" || !Number.isSafeInteger(size) || size < 21 || size > 73 ||
+    (size - 17) % 4 !== 0 || typeof modules !== "string" ||
+    modules.length !== size * size || !/^[01]+$/.test(modules)) {
+    fail("invalid_response");
+  }
+  return {
+    invitationUrl,
+    expiresAtMs: document["expiresAtMs"],
+    qr: { size, modules: [...modules].map((module) => module === "1") },
+  };
 }

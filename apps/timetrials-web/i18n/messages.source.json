@@ -1270,6 +1270,17 @@
    ]
   },
   {
+   "key": "Add another device",
+   "nl": "Ander apparaat toevoegen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts",
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Add name",
    "nl": "Naam toevoegen",
    "kinds": [
@@ -3142,9 +3153,9 @@
    ],
    "places": [
     "administrator-claim-review-section.ts",
+    "authentication-product-page.ts",
     "dutch-ui-copy.ts",
-    "installation-settings-section.ts",
-    "player-claim-walk.ts"
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -3165,6 +3176,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Card ready.",
+   "nl": "Kaart klaar.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -4203,8 +4224,8 @@
    "places": [
     "activity-story-summary.ts",
     "authentication-product-page.ts",
-    "ds-setup-picker.ts",
-    "dutch-ui-copy.ts"
+    "device-invitation-card.ts",
+    "ds-setup-picker.ts"
    ]
   },
   {
@@ -5166,6 +5187,16 @@
    ]
   },
   {
+   "key": "Could not make a card. Try again.",
+   "nl": "Kon geen kaart maken. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Could not open Post a time.",
    "nl": "Kon Tijd plaatsen niet openen.",
    "kinds": [
@@ -5222,6 +5253,16 @@
    ],
    "places": [
     "ds-tournaments.ts"
+   ]
+  },
+  {
+   "key": "Could not sign out on all devices. Please retry.",
+   "nl": "Afmelden op alle apparaten is niet gelukt. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -9527,6 +9568,16 @@
    ]
   },
   {
+   "key": "Invitation link",
+   "nl": "Uitnodigingslink",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Invite {0}",
    "kinds": [
     "text"
@@ -10913,6 +10964,16 @@
    ]
   },
   {
+   "key": "Making a card…",
+   "nl": "Kaart maken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Making {0} a Director…",
    "nl": "{0} Directeur maken…",
    "kinds": [
@@ -11970,6 +12031,26 @@
    ],
    "places": [
     "notification-section.ts"
+   ]
+  },
+  {
+   "key": "New card",
+   "nl": "Nieuwe kaart",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "New card ready. The previous card no longer works.",
+   "nl": "Nieuwe kaart klaar. De vorige kaart werkt niet meer.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -14334,6 +14415,16 @@
    ]
   },
   {
+   "key": "Only show it to a device of your own: whoever scans it is signed in as you. The other device must already trust this installation (the setup page on the host screen).",
+   "nl": "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Het andere apparaat moet deze installatie al vertrouwen (de setup-pagina op het beheerscherm).",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Only the Players you follow as rivals.",
    "nl": "Alleen de spelers die je als rivaal volgt.",
    "kinds": [
@@ -16613,6 +16704,16 @@
    ],
    "places": [
     "rating-graph.ts"
+   ]
+  },
+  {
+   "key": "QR code that signs another device in to this account",
+   "nl": "QR-code die een ander apparaat op dit account aanmeldt",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -19112,6 +19213,16 @@
    ]
   },
   {
+   "key": "Scan this card with the other device's camera. It signs that device in to this account once and stops working after 15 minutes.",
+   "nl": "Scan deze kaart met de camera van het andere apparaat. Hij meldt dat apparaat één keer aan op dit account en werkt na 15 minuten niet meer.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Scanned",
    "nl": "Gescand",
    "kinds": [
@@ -20368,6 +20479,36 @@
    ]
   },
   {
+   "key": "Sign out everywhere",
+   "nl": "Overal afmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Sign out on all devices",
+   "nl": "Op alle apparaten afmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Sign out on all devices?",
+   "nl": "Op alle apparaten afmelden?",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Sign up",
    "nl": "Aanmelden",
    "kinds": [
@@ -20458,8 +20599,28 @@
    ]
   },
   {
+   "key": "Signed out on all devices.",
+   "nl": "Op alle apparaten afgemeld.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Signed out. Sign in with a different account to continue.",
    "nl": "Afgemeld. Meld je aan met een ander account om verder te gaan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Signing out on all devices…",
+   "nl": "Op alle apparaten afmelden…",
    "kinds": [
     "localized"
    ],
@@ -23403,6 +23564,16 @@
    ]
   },
   {
+   "key": "This account cannot add a device here.",
+   "nl": "Dit account kan hier geen apparaat toevoegen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "This account cannot operate tournaments.",
    "nl": "Dit account mag geen toernooi bedienen.",
    "kinds": [
@@ -23440,6 +23611,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "This card has expired. Make a new card.",
+   "nl": "Deze kaart is verlopen. Maak een nieuwe kaart.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -23509,6 +23690,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "This ends every session of this account: other browsers, phones and the apps are signed out too, and so is this device. Each one has to sign in again.",
+   "nl": "Dit beëindigt elke sessie van dit account: andere browsers, telefoons en de apps worden ook afgemeld, net als dit apparaat. Elk apparaat moet daarna opnieuw aanmelden.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -24075,6 +24266,16 @@
    ],
    "places": [
     "player-claim-section.ts"
+   ]
+  },
+  {
+   "key": "Too many cards right now, or the server is busy. Wait a moment and try again.",
+   "nl": "Nu te veel kaarten, of de server is bezet. Wacht even en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -26555,6 +26756,16 @@
    ]
   },
   {
+   "key": "Works once, valid until",
+   "nl": "Werkt één keer, geldig tot",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "World Record",
    "nl": "Wereldrecord",
    "kinds": [
@@ -27888,6 +28099,16 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "Your session has ended. Sign in again.",
+   "nl": "Je sessie is beëindigd. Meld je opnieuw aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {

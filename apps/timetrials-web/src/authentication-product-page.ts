@@ -20,6 +20,7 @@ import {
 import { mountAppearanceSettings } from "./appearance-settings.js";
 import {
   button as dsButton,
+  confirmDialog as dsConfirmDialog,
   field as dsField,
   panel as dsPanel,
   statusMessage as dsStatusMessage,
@@ -230,6 +231,7 @@ import {
 import { mountTournamentOperatorAccess, type MountedTournamentOperatorAccess } from "./tournament-operator-access-section.js";
 import { mountInstallationSettingsSection, type MountedInstallationSettingsSection } from "./installation-settings-section.js";
 import { mountDirectorHostRequest, type MountedDirectorHostRequest } from "./director-host-request-section.js";
+import { openDeviceInvitationDialog } from "./device-invitation-card.js";
 import {
   forgetNavIdentity,
   readNavIdentity,
@@ -500,7 +502,22 @@ export function mountAuthenticationProductPage(
 
   // Signing out and handing the browser to somebody else are different intentions, so they stay
   // different controls. The account menu and the Settings page both reach this one implementation.
-  let endSession: (switching: boolean) => void = () => undefined;
+  let endSession: (switching: boolean, everywhere?: boolean) => void = () => undefined;
+  // ADR-0224: one confirmation, then every session of the account ends and this device behaves
+  // exactly as after an ordinary sign-out. Ordinary "Sign out" stays this-device-only.
+  const confirmSignOutEverywhere = (): void => {
+    dsConfirmDialog({
+      title: localized("Sign out on all devices?", "Op alle apparaten afmelden?"),
+      description: localized(
+        "This ends every session of this account: other browsers, phones and the apps are signed out too, and so is this device. Each one has to sign in again.",
+        "Dit beëindigt elke sessie van dit account: andere browsers, telefoons en de apps worden ook afgemeld, net als dit apparaat. Elk apparaat moet daarna opnieuw aanmelden.",
+      ),
+      confirmLabel: localized("Sign out everywhere", "Overal afmelden"),
+      cancelLabel: localized("Cancel", "Annuleren"),
+      tone: "danger",
+      onConfirm: () => { endSession(false, true); },
+    }).open();
+  };
 
   const shell: AppShellHandle = mountAppShell(root, {
     text: {
@@ -513,6 +530,8 @@ export function mountAuthenticationProductPage(
       notifications: localized("Notifications", "Meldingen"),
       signIn: localized("Sign in", "Aanmelden"),
       signOut: localized("Sign out", "Afmelden"),
+      signOutEverywhere: localized("Sign out on all devices", "Op alle apparaten afmelden"),
+      addDevice: localized("Add another device", "Ander apparaat toevoegen"),
       switchAccount: localized("Switch account", "Ander account"),
       settings: localized("Settings", "Instellingen"),
       myStats: localized("My records & stats", "Mijn records en cijfers"),
@@ -539,6 +558,12 @@ export function mountAuthenticationProductPage(
     languageToggle,
     onSignOut: () => { endSession(false); },
     onSwitchAccount: () => { endSession(true); },
+    ...(client.signOutEverywhere === undefined ? {} : { onSignOutEverywhere: confirmSignOutEverywhere }),
+    ...(client.createDeviceInvitation === undefined ? {} : {
+      onAddDevice: () => {
+        openDeviceInvitationDialog((signal) => client.createDeviceInvitation!(signal)).open();
+      },
+    }),
   });
   // The device-approval page has no product navigation, exactly as before.
   if (isDevice) { shell.setChrome("bare"); }
@@ -589,6 +614,17 @@ export function mountAuthenticationProductPage(
   let installationMode: "email-link" | "offline-invitation" | "checking" | "unavailable" =
     client.installationMode === undefined ? "email-link" : "checking";
   let installationModeRequest: Promise<void> | null = null;
+  const resolveInstallationMode = async (): Promise<typeof installationMode> => {
+    if (installationMode === "checking" && client.installationMode !== undefined) {
+      if (installationModeRequest === null) {
+        installationModeRequest = client.installationMode().then((mode) => {
+          installationMode = mode;
+        }).catch(() => { installationMode = "unavailable"; });
+      }
+      await installationModeRequest;
+    }
+    return installationMode;
+  };
   const loadCapabilityDocument = async () => {
     if (capabilitiesCache === null) {
       capabilitiesCache = client.capabilities();
@@ -615,6 +651,7 @@ export function mountAuthenticationProductPage(
       shell.setIdentity(null);
       shell.setUnread(0);
       shell.setAdministrator(false);
+      shell.setAddDevice(false);
       return;
     }
     // The host throttles at roughly five requests per second per IP
@@ -638,8 +675,15 @@ export function mountAuthenticationProductPage(
       administratorResolved = true;
       globalThis.setTimeout(() => {
         if (disposed) { return; }
-        void loadCapabilities().then((administrator) => {
-          if (!disposed) { shell.setAdministrator(administrator); }
+        void loadCapabilities().then(async (administrator) => {
+          if (disposed) { return; }
+          shell.setAdministrator(administrator);
+          // "Add another device" (ADR-0224) exists only in an offline-invitation installation and
+          // only for a Player account; administrators add devices on the host computer.
+          if (!administrator && client.createDeviceInvitation !== undefined &&
+              await resolveInstallationMode() === "offline-invitation" && !disposed) {
+            shell.setAddDevice(true);
+          }
         }).catch(() => undefined);
       }, 1_100);
     }
@@ -1928,13 +1972,17 @@ export function mountAuthenticationProductPage(
     return group;
   };
 
-  const endSessionImplementation = (switching: boolean): void => {
+  const endSessionImplementation = (switching: boolean, everywhere = false): void => {
       if (disposed) { return; }
-      status.textContent = switching
-        ? "Signing out so you can use another account…"
-        : "Signing out…";
+      status.textContent = everywhere
+        ? localized("Signing out on all devices…", "Op alle apparaten afmelden…")
+        : switching
+          ? "Signing out so you can use another account…"
+          : "Signing out…";
       void detachCurrentWebPushSubscription().catch(() => undefined)
-        .then(() => client.signOut()).then(() => {
+        .then(() => everywhere && client.signOutEverywhere !== undefined
+          ? client.signOutEverywhere()
+          : client.signOut()).then(() => {
         sessionCache = null;
         capabilitiesCache = null;
         // The remembered header identity belongs to the session that just
@@ -1958,9 +2006,19 @@ export function mountAuthenticationProductPage(
             "Signed out. Sign in with a different account to continue.",
             "Afgemeld. Meld je aan met een ander account om verder te gaan.",
           );
+        } else if (everywhere) {
+          status.textContent = localized(
+            "Signed out on all devices.",
+            "Op alle apparaten afgemeld.",
+          );
         }
       }).catch(() => {
-        if (!disposed) { status.textContent = "Could not sign out. Please retry."; }
+        if (!disposed) {
+          status.textContent = everywhere
+            ? localized("Could not sign out on all devices. Please retry.",
+              "Afmelden op alle apparaten is niet gelukt. Probeer het opnieuw.")
+            : "Could not sign out. Please retry.";
+        }
       });
   };
   endSession = endSessionImplementation;

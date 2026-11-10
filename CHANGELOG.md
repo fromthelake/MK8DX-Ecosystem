@@ -12,6 +12,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Offline LAN (in development)
 
+- ADR-0224 phase 1: a signed-in Player account in an offline-invitation
+  installation can add another device from the account menu. It shows a
+  one-use, 15-minute QR card (with the link, its expiry and "New card") for
+  that account only; a new card retires the previous one. The route
+  (`POST /v1/session/device-invitations`) is rate-limited, refused for
+  administrators (they keep the host-computer flow) and absent in email-link
+  installations. Real-device and browser checks are still open.
+- The account menu offers "Sign out on all devices" after a confirmation. It
+  ends every session of the account, apps included, then signs this browser
+  out as before. "Sign out" itself still affects only this device.
 - Offline A2 client configuration now advertises personal host invitations;
   the website explains that sign-in path and distinguishes it from the setup
   certificate QR. Online installations keep their email-link form. The offline
