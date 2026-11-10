@@ -758,6 +758,15 @@
       "downPath": "migrations/0084_offline_lan_invitations.down.sql",
       "downSha256": "8ab456494bac8abb5e34f8aa8c63f226bb78d5b0be2961384b37c869b304a9a4",
       "destructiveDown": true
+    },
+    {
+      "version": "0085",
+      "name": "account_switching",
+      "upPath": "migrations/0085_account_switching.up.sql",
+      "upSha256": "c4fb6d7b7f5ba0ba96d1eabde41bd7f9c21ee6800edc27e1216e32c263447715",
+      "downPath": "migrations/0085_account_switching.down.sql",
+      "downSha256": "59ee12b03be69605d3816c941aecc15633a3d9b406f178f902a7d3c60a075f60",
+      "destructiveDown": true
     }
   ]
 }

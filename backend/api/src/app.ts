@@ -1,3 +1,7 @@
+import {
+  registerAccountSwitchRoutes,
+  type AccountSwitchRouteOptions,
+} from "./authentication/account-switch-routes.js";
 import { randomBytes } from "node:crypto";
 
 import Fastify, { type FastifyInstance } from "fastify";
@@ -265,6 +269,8 @@ export type AppDependencies = Readonly<{
    * it the route is not registered, so an email-link installation answers 404.
    */
   deviceInvitations?: Omit<DeviceInvitationRouteOptions, "resolveActor">;
+  /** ADR-0224 phase 2: remembered accounts, one-tap switching and the optional PIN. */
+  accountSwitch?: Omit<AccountSwitchRouteOptions, "resolveActor">;
   nativeEmailApproval?: Readonly<{
     service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
   }>;
@@ -1119,6 +1125,12 @@ export async function buildApp(
     await registerWebCsrfRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.webCsrf.service,
+    });
+  }
+  if (dependencies.accountSwitch !== undefined) {
+    await registerAccountSwitchRoutes(app, {
+      ...dependencies.accountSwitch,
+      resolveActor: dependencies.resolveActor ?? anonymousActor,
     });
   }
   if (dependencies.deviceInvitations !== undefined) {

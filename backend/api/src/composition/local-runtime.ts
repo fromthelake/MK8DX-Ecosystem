@@ -62,6 +62,18 @@ import {
   type EmbeddedAuthConfig,
   type PasswordlessEmailDelivery,
 } from "../authentication/embedded-passwordless-auth.js";
+import {
+  AccountSwitchPinHasher,
+  AccountSwitchPins,
+  deriveAccountSwitchKeys,
+  type AccountSwitchDirectory,
+} from "../authentication/account-switch.js";
+import {
+  MysqlAccountSwitchLabels,
+  MysqlAccountSwitchPinStore,
+  MysqlAccountSwitchStore,
+} from "../authentication/mysql-account-switch-store.js";
+import type { AccountSwitchAuthApi } from "../authentication/account-switch-routes.js";
 import { MysqlEmbeddedAuthAuditSink } from
   "../authentication/mysql-embedded-auth-audit-sink.js";
 import { MysqlPasswordlessAccountLookup } from
@@ -698,6 +710,35 @@ async function createMysqlApiRuntime(
         },
       }
     : undefined;
+  // ADR-0224 phase 2: one-tap account switching on shared devices (embedded auth only).
+  const accountSwitch = authentication.kind === "embedded"
+    ? (() => {
+        const keys = deriveAccountSwitchKeys(authentication.policy.config.secrets);
+        const store = new MysqlAccountSwitchStore(pool);
+        const labels = new MysqlAccountSwitchLabels(pool);
+        const administratorStatus = new MysqlAdministratorGrantStatusRepository(pool);
+        const directory: AccountSwitchDirectory = {
+          async resolve(authUserId) {
+            for (const subject of authenticationSubjectProtector
+              .protectVerifiedSubjectCandidates(MK8DX_PASSWORDLESS_ISSUER, authUserId)) {
+              const bound = await bindingRepository.resolveActiveAccount(subject);
+              if (bound === null) { continue; }
+              const described = await labels.describe(bound.userAccountId);
+              return {
+                userAccountId: bound.userAccountId,
+                administrator: described.offlineAdministrator ||
+                  await administratorStatus.isActiveAdministrator(bound.userAccountId),
+                label: described.label,
+              };
+            }
+            return null;
+          },
+        };
+        const pins = new AccountSwitchPins(new MysqlAccountSwitchPinStore(pool),
+          new AccountSwitchPinHasher(keys), new MysqlMutationRateLimiter(pool, clock.nowMs));
+        return { keys, store, directory, pins, nowMs: clock.nowMs };
+      })()
+    : undefined;
   const embeddedAuth = authentication.kind === "embedded"
     ? createEmbeddedPasswordlessAuth(
         pool,
@@ -706,6 +747,7 @@ async function createMysqlApiRuntime(
         new MysqlEmbeddedAuthAuditSink(pool, clock),
         new MysqlPasswordlessAccountLookup(pool),
         offlineInvitation,
+        accountSwitch,
       )
     : null;
   const rawSubjectResolver = authentication.kind === "external"
@@ -1387,6 +1429,19 @@ async function createMysqlApiRuntime(
           ? {}
           : { csrfVerifier: webCsrfService }),
       },
+      ...(embeddedAuth === null || accountSwitch === undefined || authentication.kind !== "embedded"
+        ? {}
+        : {
+            accountSwitch: {
+              api: embeddedAuth.api as unknown as AccountSwitchAuthApi,
+              pins: accountSwitch.pins,
+              store: accountSwitch.store,
+              rateLimiter: mutationRateLimiter,
+              trustedOrigins: authentication.policy.config.trustedOrigins
+                .map((origin) => new URL(origin).origin),
+              ...(webCsrfService === null ? {} : { csrfVerifier: webCsrfService }),
+            },
+          }),
       ...(offlineInvitation === undefined
         ? {}
         : {

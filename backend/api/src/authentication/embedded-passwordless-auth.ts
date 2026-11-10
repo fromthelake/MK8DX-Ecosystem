@@ -8,6 +8,10 @@ import {
   offlineInvitationAuthPlugin,
   type OfflineInvitationAuthPluginOptions,
 } from "./offline-invitation-auth-plugin.js";
+import {
+  accountSwitchAuthPlugin,
+  type AccountSwitchAuthPluginOptions,
+} from "./account-switch-auth-plugin.js";
 
 export const MK8DX_PASSWORDLESS_ISSUER = "mk8dx_passwordless_v1";
 export const MK8DX_AUTH_BASE_PATH = "/api/auth";
@@ -263,6 +267,7 @@ export function createEmbeddedPasswordlessAuth(
   auditSink: EmbeddedAuthAuditSink,
   accountLookup?: PasswordlessAccountLookup,
   offlineInvitation?: OfflineInvitationAuthPluginOptions,
+  accountSwitch?: AccountSwitchAuthPluginOptions,
 ) {
   const validated = validateConfig(config);
   const currentSecret = validated.secrets[0]!.value;
@@ -393,6 +398,8 @@ export function createEmbeddedPasswordlessAuth(
       }),
       bearer(),
       ...(offlineInvitation === undefined ? [] : [offlineInvitationAuthPlugin(offlineInvitation)]),
+      // ADR-0224 phase 2. Its list and switch endpoints are server-only (never on the router).
+      ...(accountSwitch === undefined ? [] : [accountSwitchAuthPlugin(accountSwitch)]),
     ],
     databaseHooks: {
       user: {
