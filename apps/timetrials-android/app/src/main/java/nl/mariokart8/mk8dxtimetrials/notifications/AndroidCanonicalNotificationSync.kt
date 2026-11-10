@@ -23,6 +23,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HttpsURLConnection
+import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.AndroidLocalInstallationProfile
@@ -299,7 +300,7 @@ internal class AndroidCanonicalNotificationWorker(
             val client = AndroidTimeTrialsEcosystemClient(
                 server,
                 session,
-                AndroidEcosystemConnectionOpener { url -> url.openConnection() as HttpsURLConnection },
+                AndroidEcosystemConnectionOpener { url -> AndroidOriginTrust.open(applicationContext, url) },
             )
             // Which build this phone runs, said on the same pass that reads the
             // inbox: one small request, and the only place the server can
@@ -449,7 +450,7 @@ private fun projectAvailableUpdate(
     val client = AndroidTimeTrialsEcosystemClient(
         AndroidServerOrigin.current(context) ?: return,
         session,
-        AndroidEcosystemConnectionOpener { url -> url.openConnection() as HttpsURLConnection },
+        AndroidEcosystemConnectionOpener { url -> AndroidOriginTrust.open(context, url) },
     )
     val update = runCatching {
         client.latestAndroidRelease()?.availableAfter(BuildConfig.VERSION_CODE)

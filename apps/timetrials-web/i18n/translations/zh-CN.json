@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 更改小组",
   "🔗 Copy this view": "🔗 复制此视图",
   "🙂+ React": "🙂+ 回应",
-  "🪨 Rock": "🪨 石头"
+  "🪨 Rock": "🪨 石头",
+  "Address": "地址",
+  "Check this against the host screen": "请与主机屏幕核对",
+  "Connect": "连接",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "只有两者完全一致时才连接。之后应用将信任此安装，且仅限此地址。",
+  "Connect to a home or club installation": "连接到家中或俱乐部的安装",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "无法从 {0} 获取匹配的证书。请检查网络以及主机是否正在运行，然后重试。未做任何更改。",
+  "Next": "下一步",
+  "Or paste the setup link": "或粘贴设置链接",
+  "Root public key SHA-256 (SPKI)": "根公钥 SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "扫描主机屏幕上的设置二维码。手机必须在同一网络中。",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "这不是 MK8DX 安装的设置二维码。请扫描主机屏幕上的设置二维码，而不是个人邀请。",
+  "Use the camera": "使用相机"
  }
 }

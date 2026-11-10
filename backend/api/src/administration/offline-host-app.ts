@@ -29,7 +29,8 @@ const page = `<!doctype html><html lang="nl"><meta charset="utf-8">
 <button type="submit">Ontgrendelen</button></form></section>
 <section id="management" hidden>
 <section><h2>Installatie koppelen</h2><p>Vergelijk de certificaatvingerafdruk hieronder met /setup voordat je het certificaat vertrouwt.</p>
-<img id="setup-qr" alt="QR naar de publieke setup-pagina" width="220" height="220">
+<img id="setup-qr" alt="QR naar de publieke setup-pagina, ook om de app te koppelen" width="220" height="220">
+<p>Scan deze QR met de telefooncamera voor de setup-pagina, of in de MK8DX-app om de app te koppelen.</p>
 <p>Setupadres: <a id="setup-link"></a></p>
 <dl><dt>Rootcertificaat SHA-256</dt><dd id="cert-fingerprint"></dd>
 <dt>Root publieke sleutel SHA-256 (SPKI)</dt><dd id="spki-fingerprint"></dd></dl></section>
@@ -81,8 +82,8 @@ async function loadManagement(){
   const setupResponse=await request("/api/setup");
   if(!setupResponse.ok){say("Setupgegevens zijn niet beschikbaar.");return}
   const setup=await setupResponse.json();
-  $("setup-qr").src=setup.qrDataUrl;$("setup-link").href=setup.setupUrl;
-  $("setup-link").textContent=setup.setupUrl;
+  $("setup-qr").src=setup.qrDataUrl;$("setup-link").href=setup.pairingUrl;
+  $("setup-link").textContent=setup.pairingUrl;
   $("cert-fingerprint").textContent=setup.rootCertificateSha256;
   $("spki-fingerprint").textContent=setup.rootSpkiSha256;
   if(session.role!=="administrator")return;
@@ -215,10 +216,14 @@ export async function createOfflineHostApp(options: Readonly<{
     const session = await options.sessions.read(cookie(request.headers.cookie));
     if (session === null) { return reply.code(401).send(); }
     const setupUrl = `http://${publicUrl.hostname}/setup`;
-    return { setupUrl, origin: options.publicOrigin,
+    // One QR for both: a phone camera opens /setup (a fragment never reaches the server), the
+    // app reads the exact origin and CA key fingerprint from it to pair (ADR-0223 decision 7).
+    const pairingUrl = `${setupUrl}#mk8dx-pair=1&origin=${encodeURIComponent(options.publicOrigin)}` +
+      `&spki=${options.rootSpkiSha256}`;
+    return { setupUrl, pairingUrl, origin: options.publicOrigin,
       rootCertificateSha256: options.rootCertificateSha256,
       rootSpkiSha256: options.rootSpkiSha256,
-      qrDataUrl: await QRCode.toDataURL(setupUrl, { errorCorrectionLevel: "M", margin: 2 }) };
+      qrDataUrl: await QRCode.toDataURL(pairingUrl, { errorCorrectionLevel: "M", margin: 2 }) };
   });
   app.get("/api/accounts", async (request, reply) => {
     const session = await options.sessions.read(cookie(request.headers.cookie));

@@ -509,6 +509,13 @@
    "nl": "{0} toevoegen"
   },
   {
+   "key": "Address",
+   "places": [
+    "AndroidLanPairingScreen.kt:108"
+   ],
+   "nl": "Adres"
+  },
+  {
    "key": "Adjust",
    "places": [
     "AndroidDutchUiCopy.kt:51"
@@ -555,7 +562,7 @@
   {
    "key": "Aim at the ghost panel",
    "places": [
-    "ResultImageAcquisitionComponent.kt:875",
+    "ResultImageAcquisitionComponent.kt:894",
     "AndroidDutchUiCopy.kt:75"
    ],
    "nl": "Richt op het ghost-paneel"
@@ -563,7 +570,7 @@
   {
    "key": "Aim at the result screen",
    "places": [
-    "ResultImageAcquisitionComponent.kt:877",
+    "ResultImageAcquisitionComponent.kt:896",
     "AndroidDutchUiCopy.kt:74"
    ],
    "nl": "Richt op het resultaatscherm"
@@ -944,6 +951,7 @@
    "key": "Back",
    "places": [
     "AndroidAdministrationScreen.kt:203",
+    "AndroidLanPairingScreen.kt:119",
     "AndroidDutchUiCopy.kt:22"
    ],
    "nl": "Terug"
@@ -1246,7 +1254,7 @@
   {
    "key": "Camera",
    "places": [
-    "ResultImageAcquisitionComponent.kt:456",
+    "ResultImageAcquisitionComponent.kt:457",
     "AndroidDutchUiCopy.kt:31"
    ],
    "nl": "Camera"
@@ -1257,7 +1265,7 @@
     "AndroidAccountEcosystemScreens.kt:395",
     "AndroidIdentityLinkScreen.kt:203",
     "AndroidIdentityLinkScreen.kt:300",
-    "AndroidPostTimeTask.kt:920"
+    "AndroidLanPairingScreen.kt:101"
    ],
    "nl": "Annuleren"
   },
@@ -1386,6 +1394,13 @@
    "nl": "Controleer de totaaltijd — seconden gaan tot 59."
   },
   {
+   "key": "Check this against the host screen",
+   "places": [
+    "AndroidLanPairingScreen.kt:107"
+   ],
+   "nl": "Vergelijk dit met het hostscherm"
+  },
+  {
    "key": "Check this one",
    "places": [
     "AndroidPostTimeTask.kt:1349"
@@ -1487,7 +1502,7 @@
   {
    "key": "Choose a test result",
    "places": [
-    "ResultImageAcquisitionComponent.kt:525",
+    "ResultImageAcquisitionComponent.kt:526",
     "AndroidDutchUiCopy.kt:37"
    ],
    "nl": "Kies een testresultaat"
@@ -1884,7 +1899,7 @@
   {
    "key": "Community website / Communitywebsite",
    "places": [
-    "MainActivity.kt:263"
+    "MainActivity.kt:273"
    ]
   },
   {
@@ -2025,6 +2040,34 @@
    "nl": "Setup bevestigen…"
   },
   {
+   "key": "Connect",
+   "places": [
+    "AndroidLanPairingScreen.kt:140"
+   ],
+   "nl": "Verbinden"
+  },
+  {
+   "key": "Connect only if both match exactly. The app will then trust this installation, and only for this address.",
+   "places": [
+    "AndroidLanPairingScreen.kt:112"
+   ],
+   "nl": "Verbind alleen als beide precies gelijk zijn. De app vertrouwt daarna deze installatie, en alleen voor dit adres."
+  },
+  {
+   "key": "Connect to a home or club installation",
+   "places": [
+    "AndroidLanPairingScreen.kt:88"
+   ],
+   "nl": "Verbinden met een installatie thuis of bij de club"
+  },
+  {
+   "key": "Connecting…",
+   "places": [
+    "AndroidLanPairingScreen.kt:123"
+   ],
+   "nl": "Verbinden…"
+  },
+  {
    "key": "Connection errors",
    "places": [
     "AndroidTournamentScreen.kt:3716",
@@ -2136,6 +2179,13 @@
     "AndroidAccountEcosystemScreens.kt:958"
    ],
    "nl": "Kon dit spel niet beantwoorden."
+  },
+  {
+   "key": "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.",
+   "places": [
+    "AndroidLanPairingScreen.kt:131"
+   ],
+   "nl": "Geen passend certificaat gekregen van {0}. Controleer het netwerk en of de host draait, en probeer opnieuw. Er is niets gewijzigd."
   },
   {
    "key": "Could not load community times.",
@@ -2694,7 +2744,7 @@
   {
    "key": "End screen",
    "places": [
-    "ResultImageAcquisitionComponent.kt:939",
+    "ResultImageAcquisitionComponent.kt:959",
     "AndroidDutchUiCopy.kt:76"
    ],
    "nl": "Eindscherm"
@@ -2798,7 +2848,7 @@
   {
    "key": "Enter the exact HTTPS address supplied by your community. Existing accounts and waiting runs stay with their old server.",
    "places": [
-    "MainActivity.kt:264"
+    "MainActivity.kt:274"
    ]
   },
   {
@@ -3360,7 +3410,7 @@
   {
    "key": "Gallery",
    "places": [
-    "ResultImageAcquisitionComponent.kt:461",
+    "ResultImageAcquisitionComponent.kt:462",
     "AndroidDutchUiCopy.kt:87"
    ],
    "nl": "Galerij"
@@ -3410,7 +3460,7 @@
   {
    "key": "Ghost panel",
    "places": [
-    "ResultImageAcquisitionComponent.kt:937",
+    "ResultImageAcquisitionComponent.kt:957",
     "AndroidDutchUiCopy.kt:77"
    ],
    "nl": "Ghost-paneel"
@@ -4364,7 +4414,7 @@
   {
    "key": "MK8DX Time Trials {0} is ready",
    "places": [
-    "AndroidCanonicalNotificationSync.kt:470"
+    "AndroidCanonicalNotificationSync.kt:471"
    ],
    "nl": "MK8DX Time Trials {0} staat klaar"
   },
@@ -4871,6 +4921,13 @@
     "AndroidTournamentScreen.kt:2764"
    ],
    "nl": "Nieuw toernooi"
+  },
+  {
+   "key": "Next",
+   "places": [
+    "AndroidLanPairingScreen.kt:102"
+   ],
+   "nl": "Volgende"
   },
   {
    "key": "Next level",
@@ -5964,6 +6021,13 @@
     "AndroidPostTimeTask.kt:865"
    ],
    "nl": "Optioneel. Laat leeg om de video te verwijderen."
+  },
+  {
+   "key": "Or paste the setup link",
+   "places": [
+    "AndroidLanPairingScreen.kt:97"
+   ],
+   "nl": "Of plak de setup-link"
   },
   {
    "key": "Orange",
@@ -7530,6 +7594,13 @@
    "nl": "Gooi de dobbelsteen"
   },
   {
+   "key": "Root public key SHA-256 (SPKI)",
+   "places": [
+    "AndroidLanPairingScreen.kt:110"
+   ],
+   "nl": "Root publieke sleutel SHA-256 (SPKI)"
+  },
+  {
    "key": "Roster tools",
    "places": [
     "AndroidDutchUiCopy.kt:401"
@@ -7884,6 +7955,13 @@
     "AndroidPostTimeTask.kt:587"
    ],
    "nl": "Resultaat scannen — we vullen in wat kan"
+  },
+  {
+   "key": "Scan the setup QR on the host screen. The phone must be on the same network.",
+   "places": [
+    "AndroidLanPairingScreen.kt:89"
+   ],
+   "nl": "Scan de setup-QR op het hostscherm. De telefoon moet op hetzelfde netwerk zitten."
   },
   {
    "key": "Scanned",
@@ -9138,7 +9216,7 @@
   {
    "key": "TT SCAN",
    "places": [
-    "ResultImageAcquisitionComponent.kt:426",
+    "ResultImageAcquisitionComponent.kt:427",
     "AndroidDutchUiCopy.kt:249"
    ],
    "nl": "TT-SCAN"
@@ -9714,7 +9792,7 @@
   {
    "key": "The scanner runs locally. Nothing is saved until you review the result.",
    "places": [
-    "ResultImageAcquisitionComponent.kt:507"
+    "ResultImageAcquisitionComponent.kt:508"
    ]
   },
   {
@@ -9943,6 +10021,13 @@
    "nl": "Dit is geen Excel-werkmap (.xlsx)."
   },
   {
+   "key": "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.",
+   "places": [
+    "AndroidLanPairingScreen.kt:76"
+   ],
+   "nl": "Dit is niet de setup-QR van een MK8DX-installatie. Scan de setup-QR op het hostscherm, niet een persoonlijke uitnodiging."
+  },
+  {
    "key": "This part isn't in the catalogue — choose it again.",
    "places": [
     "AndroidPostTimeMessages.kt:118"
@@ -9974,7 +10059,7 @@
   {
    "key": "This runs the real scanner and sync. The saved result is labelled as a test and expires after 24 hours.",
    "places": [
-    "ResultImageAcquisitionComponent.kt:528"
+    "ResultImageAcquisitionComponent.kt:529"
    ]
   },
   {
@@ -10671,8 +10756,15 @@
   {
    "key": "Use one HTTPS address without a final slash, path or port.",
    "places": [
-    "MainActivity.kt:267"
+    "MainActivity.kt:277"
    ]
+  },
+  {
+   "key": "Use the camera",
+   "places": [
+    "AndroidLanPairingScreen.kt:158"
+   ],
+   "nl": "Camera gebruiken"
   },
   {
    "key": "Used",
@@ -11339,7 +11431,7 @@
   {
    "key": "You have {0} · tap to open the download page",
    "places": [
-    "AndroidCanonicalNotificationSync.kt:477"
+    "AndroidCanonicalNotificationSync.kt:478"
    ],
    "nl": "Jij hebt {0} · tik om de downloadpagina te openen"
   },
@@ -13354,7 +13446,7 @@
   {
    "key": "📷\nSCAN",
    "places": [
-    "ResultImageAcquisitionComponent.kt:912"
+    "ResultImageAcquisitionComponent.kt:932"
    ]
   },
   {

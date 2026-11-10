@@ -133,6 +133,7 @@ describe("isolated offline host listener", () => {
       const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
       const setup = await app.inject({ method: "GET", url: "/api/setup", headers: { host, cookie } });
       expect(setup.json()).toMatchObject({ setupUrl: "http://192.168.50.20/setup",
+        pairingUrl: `http://192.168.50.20/setup#mk8dx-pair=1&origin=https%3A%2F%2F192.168.50.20&spki=${"b".repeat(64)}`,
         rootCertificateSha256: "a".repeat(64) });
       expect(setup.json().qrDataUrl).toMatch(/^data:image\/png;base64,/);
       const account = await app.inject({ method: "POST", url: "/api/accounts",

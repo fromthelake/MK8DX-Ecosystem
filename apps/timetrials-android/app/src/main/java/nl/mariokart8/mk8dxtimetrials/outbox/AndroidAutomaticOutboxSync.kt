@@ -11,6 +11,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.HttpsURLConnection
+import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
 import nl.mariokart8.mk8dxtimetrials.BuildConfig
 import nl.mariokart8.mk8dxtimetrials.AndroidServerOrigin
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidHttpsConnectionOpener
@@ -104,7 +105,7 @@ class AndroidAutomaticSyncWorker(
         val outbox = createAndroidProductTimeTrialOutbox(context)
         val sessions = AndroidKeystoreNativeSessionStore(context)
         val opener = AndroidHttpsConnectionOpener { url ->
-            url.openConnection() as HttpsURLConnection
+            AndroidOriginTrust.open(context, url)
         }
         val clock = AndroidOutboxSynchronizationClock(System::currentTimeMillis)
         val dependencies = AndroidSavedResultSynchronizationScreenDependencyFactory(

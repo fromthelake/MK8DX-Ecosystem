@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 Изменить группу",
   "🔗 Copy this view": "🔗 Скопировать этот вид",
   "🙂+ React": "🙂+ Реакция",
-  "🪨 Rock": "🪨 Камень"
+  "🪨 Rock": "🪨 Камень",
+  "Address": "Адрес",
+  "Check this against the host screen": "Сверьте с экраном хоста",
+  "Connect": "Подключиться",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "Подключайтесь, только если оба значения точно совпадают. Тогда приложение будет доверять этой установке, и только для этого адреса.",
+  "Connect to a home or club installation": "Подключиться к установке дома или в клубе",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "Не удалось получить подходящий сертификат от {0}. Проверьте сеть и что хост запущен, затем попробуйте снова. Ничего не изменено.",
+  "Next": "Далее",
+  "Or paste the setup link": "Или вставьте ссылку настройки",
+  "Root public key SHA-256 (SPKI)": "Открытый ключ корня SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "Отсканируйте QR-код настройки на экране хоста. Телефон должен быть в той же сети.",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "Это не QR-код настройки установки MK8DX. Отсканируйте QR-код настройки на экране хоста, а не личное приглашение.",
+  "Use the camera": "Использовать камеру"
  }
 }

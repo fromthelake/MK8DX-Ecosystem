@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 變更組別",
   "🔗 Copy this view": "🔗 複製此檢視",
   "🙂+ React": "🙂+ 回應",
-  "🪨 Rock": "🪨 石頭"
+  "🪨 Rock": "🪨 石頭",
+  "Address": "位址",
+  "Check this against the host screen": "請與主機畫面核對",
+  "Connect": "連線",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "只有兩者完全一致時才連線。之後應用程式將信任此安裝，且僅限此位址。",
+  "Connect to a home or club installation": "連線到家中或俱樂部的安裝",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "無法從 {0} 取得相符的憑證。請檢查網路以及主機是否正在執行，然後再試一次。未做任何變更。",
+  "Next": "下一步",
+  "Or paste the setup link": "或貼上設定連結",
+  "Root public key SHA-256 (SPKI)": "根公開金鑰 SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "掃描主機畫面上的設定 QR 碼。手機必須在同一個網路中。",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "這不是 MK8DX 安裝的設定 QR 碼。請掃描主機畫面上的設定 QR 碼，而不是個人邀請。",
+  "Use the camera": "使用相機"
  }
 }

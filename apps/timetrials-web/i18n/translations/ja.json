@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 グループを変更",
   "🔗 Copy this view": "🔗 この表示をコピー",
   "🙂+ React": "🙂+ リアクション",
-  "🪨 Rock": "🪨 グー"
+  "🪨 Rock": "🪨 グー",
+  "Address": "アドレス",
+  "Check this against the host screen": "ホスト画面と照合してください",
+  "Connect": "接続",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "両方が完全に一致する場合のみ接続してください。アプリはこのインストールを、このアドレスに限って信頼します。",
+  "Connect to a home or club installation": "自宅またはクラブのインストールに接続",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "{0} から一致する証明書を取得できませんでした。ネットワークとホストが動作しているか確認して、もう一度お試しください。何も変更されていません。",
+  "Next": "次へ",
+  "Or paste the setup link": "またはセットアップリンクを貼り付け",
+  "Root public key SHA-256 (SPKI)": "ルート公開鍵 SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "ホスト画面のセットアップQRをスキャンしてください。スマートフォンは同じネットワークに接続している必要があります。",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "これはMK8DXインストールのセットアップQRではありません。個人用の招待ではなく、ホスト画面のセットアップQRをスキャンしてください。",
+  "Use the camera": "カメラを使う"
  }
 }

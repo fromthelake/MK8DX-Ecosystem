@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 Gruppe ändern",
   "🔗 Copy this view": "🔗 Diese Ansicht kopieren",
   "🙂+ React": "🙂+ Reagieren",
-  "🪨 Rock": "🪨 Stein"
+  "🪨 Rock": "🪨 Stein",
+  "Address": "Adresse",
+  "Check this against the host screen": "Vergleiche dies mit dem Host-Bildschirm",
+  "Connect": "Verbinden",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "Verbinde nur, wenn beides genau übereinstimmt. Die App vertraut dann dieser Installation, und nur für diese Adresse.",
+  "Connect to a home or club installation": "Mit einer Installation zu Hause oder im Verein verbinden",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "Kein passendes Zertifikat von {0} erhalten. Prüfe das Netzwerk und ob der Host läuft, und versuche es erneut. Es wurde nichts geändert.",
+  "Next": "Weiter",
+  "Or paste the setup link": "Oder den Setup-Link einfügen",
+  "Root public key SHA-256 (SPKI)": "Öffentlicher Root-Schlüssel SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "Scanne den Setup-QR-Code auf dem Host-Bildschirm. Das Telefon muss im selben Netzwerk sein.",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "Das ist nicht der Setup-QR-Code einer MK8DX-Installation. Scanne den Setup-QR-Code auf dem Host-Bildschirm, keine persönliche Einladung.",
+  "Use the camera": "Kamera verwenden"
  }
 }

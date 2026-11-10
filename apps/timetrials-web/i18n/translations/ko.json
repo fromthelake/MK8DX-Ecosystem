@@ -4899,6 +4899,18 @@
   "🔓 Change group": "🔓 그룹 변경",
   "🔗 Copy this view": "🔗 이 화면 복사",
   "🙂+ React": "🙂+ 반응",
-  "🪨 Rock": "🪨 바위"
+  "🪨 Rock": "🪨 바위",
+  "Address": "주소",
+  "Check this against the host screen": "호스트 화면과 비교하세요",
+  "Connect": "연결",
+  "Connect only if both match exactly. The app will then trust this installation, and only for this address.": "두 값이 정확히 일치할 때만 연결하세요. 그러면 앱이 이 설치를 이 주소에 한해서만 신뢰합니다.",
+  "Connect to a home or club installation": "집이나 클럽의 설치에 연결",
+  "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.": "{0}에서 일치하는 인증서를 받지 못했습니다. 네트워크와 호스트가 실행 중인지 확인한 뒤 다시 시도하세요. 아무것도 변경되지 않았습니다.",
+  "Next": "다음",
+  "Or paste the setup link": "또는 설정 링크 붙여넣기",
+  "Root public key SHA-256 (SPKI)": "루트 공개 키 SHA-256 (SPKI)",
+  "Scan the setup QR on the host screen. The phone must be on the same network.": "호스트 화면의 설정 QR을 스캔하세요. 휴대폰은 같은 네트워크에 있어야 합니다.",
+  "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "MK8DX 설치의 설정 QR이 아닙니다. 개인 초대가 아니라 호스트 화면의 설정 QR을 스캔하세요.",
+  "Use the camera": "카메라 사용"
  }
 }

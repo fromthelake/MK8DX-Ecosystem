@@ -249,6 +249,9 @@ dependencies {
     implementation("androidx.camera:camera-view:1.4.2")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
     implementation("androidx.work:work-runtime-ktx:2.12.0")
+    // Reads the host's setup QR to pair with an offline LAN installation (ADR-0223).
+    // Pure Java decoder (Apache-2.0); no Google service, nothing leaves the phone.
+    implementation("com.google.zxing:core:3.5.3")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     if (enableScanRuntime) {
