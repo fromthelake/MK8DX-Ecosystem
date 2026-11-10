@@ -135,7 +135,7 @@ export class MysqlAccountSwitchPinStore implements AccountSwitchPinStore {
        WHERE account.public_id = ? AND account.account_status = 'active'
        ON DUPLICATE KEY UPDATE pin_digest = VALUES(pin_digest), pin_salt = VALUES(pin_salt),
          pepper_version = VALUES(pepper_version),
-         updated_at_ms = GREATEST(created_at_ms, VALUES(updated_at_ms))`,
+         updated_at_ms = GREATEST(account_switch_pins.created_at_ms, VALUES(updated_at_ms))`,
       [pin.digest, pin.salt, pin.pepperVersion, nowMs, nowMs, userAccountId],
     );
     if (result.affectedRows < 1) { throw new Error("account unavailable for a PIN"); }
