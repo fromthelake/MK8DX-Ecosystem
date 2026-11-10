@@ -319,6 +319,30 @@ describe("Home bootstrap load order", () => {
     mounted.unmount();
   });
 
+  it("does not request Player-only sections the bootstrap already answered as 'no verified Player'", async () => {
+    const { comeback: _c, focus: _f, ...withoutPlayer } = bootstrapSections;
+    const calls = recordingFetch({
+      "/v1/bootstrap": () => new Response(JSON.stringify(withoutPlayer), {
+        status: 200, headers: { "content-type": "application/json" },
+      }),
+    });
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+      client: sessionClient(vi.fn(async () => ({ authenticated: true }))),
+      pathname: "/",
+      search: "",
+    });
+    await mounted.ready;
+    await settle();
+    await new Promise((resolve) => setTimeout(resolve, 1_300));
+    await settle();
+    // Answered locally from what the bootstrap said: no failing request, no console error.
+    expect(calls.filter((url) => url.startsWith("/v1/home/comeback") || url.startsWith("/v1/home/focus"))).toHaveLength(0);
+    expect(descendants(root).some((node) => node.className.includes("ds-home"))).toBe(true);
+    mounted.unmount();
+  });
+
   it("clears a previous account's remembered name when the signed-in account has no verified Player", async () => {
     // A shared family device: the last account remembered its Player for the
     // header, then someone else signed in whose claims are still empty.
