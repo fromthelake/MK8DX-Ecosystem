@@ -14415,8 +14415,8 @@
    ]
   },
   {
-   "key": "Only show it to a device of your own: whoever scans it is signed in as you. The other device must already trust this installation (the setup page on the host screen).",
-   "nl": "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Het andere apparaat moet deze installatie al vertrouwen (de setup-pagina op het beheerscherm).",
+   "key": "Only show it to a device of your own: whoever scans it is signed in as you. A new device first scans the 'Prepare a device' card once, so it trusts this installation.",
+   "nl": "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Een nieuw apparaat scant eerst één keer de kaart 'Apparaat voorbereiden', zodat het deze installatie vertrouwt.",
    "kinds": [
     "localized"
    ],

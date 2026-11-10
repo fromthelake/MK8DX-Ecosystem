@@ -63,8 +63,8 @@ export function openDeviceInvitationDialog(
     "Scan deze kaart met de camera van het andere apparaat. Hij meldt dat apparaat één keer aan op dit account en werkt na 15 minuten niet meer.",
   ));
   const caution = el("p", "ds-body-s", {}, localized(
-    "Only show it to a device of your own: whoever scans it is signed in as you. The other device must already trust this installation (the setup page on the host screen).",
-    "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Het andere apparaat moet deze installatie al vertrouwen (de setup-pagina op het beheerscherm).",
+    "Only show it to a device of your own: whoever scans it is signed in as you. A new device first scans the 'Prepare a device' card once, so it trusts this installation.",
+    "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Een nieuw apparaat scant eerst één keer de kaart 'Apparaat voorbereiden', zodat het deze installatie vertrouwt.",
   ));
   const status = el("p", "ds-body-s", { role: "status", "aria-live": "polite" });
   const card = el("div", "ds-device-card ds-stack");
