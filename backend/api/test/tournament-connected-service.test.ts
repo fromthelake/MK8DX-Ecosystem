@@ -457,6 +457,36 @@ it("projects live totals through opening balance reset excluded race and a short
   assert.deepEqual(group?.controlPoints, ["1 connection reset", "1 excluded race", "1 race awaiting recognition review"]);
 });
 
+it("keeps one live standing per observed player when every race brings new observation references", () => {
+  const race = (n: number, gianni: number, ivar: number) => ({
+    ...result(`race.live.${n}`), raceNumber: n,
+    verification: { status: "producer_check_passed" as const, method: "tournament_manager_human_confirmation" as const },
+    placements: [
+      { finishPosition: 1, observedPlayerName: "Gianni", participantReference: { namespace: "unresolved_observation" as const, value: `observation.g${n}` },
+        scoring: { racePoints: 15, totalBeforeRace: gianni - 15, totalAfterRace: gianni, rankAfterRace: 1 } },
+      { finishPosition: 2, observedPlayerName: "Ivar", participantReference: { namespace: "unresolved_observation" as const, value: `observation.i${n}` },
+        scoring: { racePoints: 12, totalBeforeRace: ivar - 12, totalAfterRace: ivar, rankAfterRace: 2 } },
+    ],
+  });
+  const record: StoredTournamentEvidenceRecord = {
+    recordId: "record.tn13", clientRecordId: "run.tn13", revision: 3,
+    status: "uploading", sourceKind: "tournament_live_capture",
+    uploadedBy: { userAccountId: "user_account.capture", displayName: "Capture" },
+    startedAtMs: 1, stoppedAtMs: null, analysisCompletedAtMs: null, complete: false,
+    suggestedTournamentId: "tournament.live", suggestedTournamentName: "Live",
+    linkedTournamentId: null, groups: [], resultCount: 3, createdAtMs: 1, updatedAtMs: 99,
+    entries: [1, 2, 3].map((n) => ({ entryKey: `race:${n}`, result: race(n, 15 * n, 12 * n), observedGroupLabel: "Groep 1",
+      suggestedPhase: "qualifier", suggestedGroupId: null, suggestedRaceNumber: n, occurredAtMs: n })),
+    live: {
+      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null,
+      mappings: [{ observedGroupLabel: "Groep 1", groupId: "group.one", phase: "qualifier" }],
+    },
+  };
+  const [group] = projectTournamentLiveGroups(record);
+  assert.equal(group?.countedRaces, 3);
+  assert.deepEqual(group?.standings.map((row) => [row.rank, row.observedPlayerName, row.total]), [[1, "Gianni", 45], [2, "Ivar", 36]]);
+});
+
 it("lets the Tournament director map a complete record before pending evidence is materialized", async () => {
   const repo = repository();
   const source = result("tournament_race_result.record_link");

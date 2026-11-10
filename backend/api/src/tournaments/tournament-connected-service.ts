@@ -161,7 +161,13 @@ export function projectTournamentLiveGroups(
       );
       for (const placement of entry.result.placements) {
         const reference = placement.participantReference;
-        const key = `${reference.namespace}:${reference.value}`;
+        // An unresolved observation is one sighting (race + position), not a participant
+        // (TournamentRaceResultV1); Live sends a new one every race. Within one group's
+        // stream the observed name is what stays stable until the director resolves it.
+        const observedName = placement.observedPlayerName?.trim();
+        const key = reference.namespace === "unresolved_observation" && observedName
+          ? `observed:${observedName.toLocaleLowerCase("en")}`
+          : `${reference.namespace}:${reference.value}`;
         latest.set(key, {
           observedPlayerName: placement.observedPlayerName?.trim() || reference.value,
           total: placement.scoring.totalAfterRace,
