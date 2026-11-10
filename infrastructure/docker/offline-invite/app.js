@@ -60,6 +60,9 @@ button.addEventListener("click", async () => {
       body: JSON.stringify({ token: submitted }),
     });
     if (!response.ok) throw new Error("invitation unavailable");
+    // A new account on this browser: drop the previous account's remembered
+    // header identity, exactly as signing out does (shared family devices).
+    try { window.localStorage.removeItem("mk8dx.nav-identity.v1"); } catch { /* storage refused */ }
     status.textContent = copy.accepted;
     continueLink.hidden = false;
   } catch {

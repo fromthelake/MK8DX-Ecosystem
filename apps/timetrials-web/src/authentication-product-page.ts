@@ -684,7 +684,13 @@ export function mountAuthenticationProductPage(
           (candidate) => candidate.claimStatus === "verified",
         )?.playerId ?? null;
         if (playerId === null || disposed) {
-          if (playerId === null) { forgetNavIdentity(); }
+          if (playerId === null) {
+            // The truth wins over the remembered chip: an account without a
+            // verified Player (for example the next person on a shared
+            // device) must never keep showing the previous account's name.
+            forgetNavIdentity();
+            if (!disposed) { shell.setIdentity(null); identityLoaded = false; }
+          }
           return;
         }
         const player = await createPublicPlayerClient().load(playerId);
