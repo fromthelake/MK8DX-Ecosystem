@@ -50,7 +50,7 @@ const homeExtras = {
 
 const comeback: HomeComeback = {
   player: { playerId: "player.ben", displayName: "Ben" },
-  tournament: { rank: 4, of: 61, score: 27.15 },
+  tournament: { rank: 4, of: 61, score: 27.15, played: true },
   timeTrials: { standing: 2, of: 12, totalMs: 11580277, previousStanding: 3 },
   rivals: [{
     playerId: "player.floyd",

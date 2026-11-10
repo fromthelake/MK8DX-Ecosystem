@@ -78,7 +78,7 @@ internal fun AndroidHomeHero(
     val colors = Mk8dxTheme.colors
     val language = androidNumberLanguage()
     val modePreference = home.focus?.modePreference ?: "all"
-    val tier = comeback.tournament?.let { androidTournamentTierByRank(it.rank) }
+    val tier = homeHeroTournamentTier(comeback.tournament)
     val masteryLabel = AndroidMasteryThresholds.tierLabels
         .getOrNull(AndroidMasteryThresholds.totalTier(150, comeback.timeTrials.totalMs))
     val showTimeTrials = comeback.timeTrials.standing > 0 && modePreference != "200"
@@ -339,3 +339,7 @@ internal fun androidMasteryLongLabel(label: String): String {
 internal fun androidParseColor(hex: String): Color? = runCatching {
     Color(android.graphics.Color.parseColor(hex))
 }.getOrNull()
+
+/** No tier before a first rated race: list order alone earns none (as on the web). */
+internal fun homeHeroTournamentTier(standing: AndroidTournamentStanding?) =
+    standing?.takeIf { it.played != false }?.let { androidTournamentTierByRank(it.rank) }

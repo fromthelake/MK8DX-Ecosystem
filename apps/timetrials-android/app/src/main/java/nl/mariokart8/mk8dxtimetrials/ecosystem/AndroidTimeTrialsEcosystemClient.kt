@@ -184,6 +184,8 @@ internal data class AndroidTournamentStanding(
     val rank: Int,
     val of: Int,
     val score: Double,
+    /** False until the Player has a rated race; older servers omit it (shown as before). */
+    val played: Boolean? = null,
 )
 
 @Serializable
