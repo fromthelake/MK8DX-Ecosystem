@@ -63,6 +63,33 @@ zonder gasten-wifi of router-portforwarding.
 4. Koppel een Player alleen via de bestaande expliciete claimstappen. Een
    uitnodiging of gelijke weergavenaam doet dit nooit vanzelf.
 
+### LiveTrial op een tweede Windows-pc
+
+Getest op een QA-installatie met LiveTrial 3.37.0 (10-11-2026). Zonder
+e-mailserver werkt aanmelden alleen via de goedkeuringspagina.
+
+1. Laat die pc de installatie eerst vertrouwen (stappen 2–3 bij *Telefoon of
+   tweede pc koppelen*, Windows: **Huidige gebruiker → Vertrouwde
+   basiscertificeringsinstanties**; Windows vraagt één keer om bevestiging).
+   Controleer in de browser dat `https://<LAN-IP>/` zonder waarschuwing opent.
+2. Zorg dat jouw account op de website een **Player** heeft. Zonder Player
+   eindigt het aanmelden in LiveTrial met de melding dat je eerst je speler
+   op de communitywebsite moet instellen.
+3. Open LiveTrial, klik op het tandwiel (**Instellingen**) en vul bij **Adres
+   van je communitywebsite** `https://<LAN-IP>` in. LiveTrial start daarna
+   opnieuw; lukt dat niet, sluit het af en open het opnieuw. Accounts en
+   wachtende ritten van een andere server blijven bij die server.
+4. Klik op **Aanmelden** en kies **Open de goedkeuringspagina**. Meld je in de
+   browser aan met je uitnodiging als dat nog niet gebeurd is, controleer dat
+   de site dezelfde code toont en keur het apparaat goed. LiveTrial toont
+   daarna je Player als aangemeld account.
+5. Ritten die LiveTrial opslaat, verstuur je met **Nu verzenden** (of zet
+   **Nieuwe ritten automatisch verzenden** aan in Instellingen). De tijd
+   verschijnt daarna op de website van de installatie.
+
+Gebruik je de pc niet meer voor deze installatie, verwijder dan het
+certificaat weer uit *Vertrouwde basiscertificeringsinstanties*.
+
 De website start op een nieuw apparaat met **Systeem** als thema. Een telefoon
 die licht is ingesteld toont dus een witte website, ook als de pc donker is.
 Na aanmelden kies je via **Account → Instellingen → Weergave → Donker** het

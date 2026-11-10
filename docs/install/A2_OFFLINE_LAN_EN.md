@@ -53,6 +53,33 @@ forwarding.
 4. Link a Player only through the existing explicit claim flow. An invitation
    or matching display name never does that automatically.
 
+## LiveTrial on a second Windows PC
+
+Tested on a QA installation with LiveTrial 3.37.0 (2026-11-10). Without an
+email server, sign-in only works through the approval page.
+
+1. Make the PC trust the installation first (steps 2–3 of *Connect a phone or
+   second PC*; on Windows: **Current User → Trusted Root Certification
+   Authorities**, which asks for one Windows confirmation). Check that
+   `https://<LAN-IP>/` opens in the browser without a warning.
+2. Make sure your account has a **Player** on the website. Without one,
+   LiveTrial's sign-in ends with a message to set up your Player on the
+   community website first.
+3. Open LiveTrial, click the gear (**Settings**) and enter `https://<LAN-IP>`
+   under **Community website address**. LiveTrial then restarts; if it does
+   not, quit it and open it again. Accounts and waiting runs for another
+   server stay with that server.
+4. Click **Sign in** and choose **Open the approval page**. In the browser,
+   sign in with your invitation if you have not yet, check that the site shows
+   the same code, and approve the device. LiveTrial then lists your Player as
+   a signed-in account.
+5. Send saved runs with **Send now** (or turn on **Send new runs
+   automatically** in Settings). The time then appears on the installation's
+   website.
+
+When you stop using this PC with the installation, remove the certificate
+from *Trusted Root Certification Authorities* again.
+
 The website defaults to **System** appearance on a new device. A phone set to
 Light therefore shows the light site even if the PC shows Dark. After sign-in,
 choose **Account → Settings → Appearance → Dark** if you prefer the dark look.
