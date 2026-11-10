@@ -1387,6 +1387,16 @@ async function createMysqlApiRuntime(
           ? {}
           : { csrfVerifier: webCsrfService }),
       },
+      ...(offlineInvitation === undefined
+        ? {}
+        : {
+            deviceInvitations: {
+              tickets: offlineInvitation.tickets,
+              origin: offlineInvitation.origin,
+              rateLimiter: mutationRateLimiter,
+              ...(webCsrfService === null ? {} : { csrfVerifier: webCsrfService }),
+            },
+          }),
       accountAppearancePreference: {
         service: accountAppearancePreferenceService,
         rateLimiter: mutationRateLimiter,

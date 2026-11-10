@@ -89,6 +89,20 @@ integration("offline invitation MySQL/MariaDB transaction", () => {
     } });
   });
 
+  it("lets the Player account add a device to itself; a new card retires only its own previous card", async () => {
+    const player = { role: "account" as const, userAccountId: targetId };
+    const fromHost = await service.issue(actor, accountKey, "account");
+    const first = await service.issueOwn(player);
+    const second = await service.issueOwn(player);
+    await expect(service.redeem(first.token)).rejects.toMatchObject({ code: "unavailable" });
+    expect(await service.redeem(second.token)).toMatchObject({ accountKey, userAccountId: targetId });
+    expect(await service.redeem(fromHost.token)).toMatchObject({ accountKey });
+    // The administrator has no offline account of its own here, and is refused before that.
+    await expect(service.issueOwn(actor)).rejects.toMatchObject({ code: "forbidden" });
+    await expect(service.issueOwn({ role: "account", userAccountId: issuerId }))
+      .rejects.toMatchObject({ code: "unavailable" });
+  });
+
   it("rejects revoked, expired, inactive and role-changed targets", async () => {
     const revoked = await service.issue(actor, accountKey, "account");
     await service.revoke(actor, revoked.invitationId);
