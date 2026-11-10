@@ -19,6 +19,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   `compose.yaml` sets this for the API container, so existing installations
   only need the new package and an API/Web recreate (`install.py apply`); new
   installations also write `["web"]` to `api.env`.
+- Offline invitation redemption no longer depends on the per-address limit
+  alone (on Windows Docker Desktop every LAN device arrives from the gateway's
+  address). Each presented card is limited to 5 attempts per 15 minutes, keyed
+  on a keyed hash of the token (the token is never stored); all redemption
+  attempts together are capped at 120 per minute; the per-address limit is
+  raised from 5 to 60 per minute so a LAN night sharing one address is not
+  blocked. Unknown and malformed tokens count against the same limits. Email
+  sign-in limits are unchanged.
 
 ### Offline LAN (in development)
 

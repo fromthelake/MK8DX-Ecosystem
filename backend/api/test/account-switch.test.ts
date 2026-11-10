@@ -156,6 +156,7 @@ async function harness(offline = false) {
         return { accountKey: "offline_account.dee", userAccountId: "user_account.dee",
           authEmail: "dee@accounts.mk8dx.invalid", role: "account" as const, active: true };
       } } as never,
+      attempts: { limiter, tokenKey: Buffer.alloc(32, 7) },
       async bindAccount() { /* the binding service is exercised by its own tests */ },
     } : undefined,
     { keys, store, directory, pins, nowMs },

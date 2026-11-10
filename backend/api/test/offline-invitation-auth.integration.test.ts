@@ -19,6 +19,7 @@ import { MysqlAuthenticationBindingRepository } from
   "../src/authentication/mysql-authentication-binding-repository.js";
 import { MysqlOfflineInvitationTicketRepository } from
   "../src/authentication/mysql-offline-invitation-tickets.js";
+import { MysqlMutationRateLimiter } from "../src/security/mysql-mutation-rate-limiter.js";
 import { OfflineInvitationTicketService } from
   "../src/authentication/offline-invitation-ticket.js";
 
@@ -96,6 +97,7 @@ integration("offline invitation Better Auth session", () => {
       {
         origin,
         tickets,
+        attempts: { limiter: new MysqlMutationRateLimiter(pool), tokenKey: Buffer.alloc(32, 47) },
         async bindAccount(authUserId, target) {
           const subject = protector.protectVerifiedSubjectCandidates(
             MK8DX_PASSWORDLESS_ISSUER, authUserId,

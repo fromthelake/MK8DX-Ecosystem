@@ -691,6 +691,11 @@ async function createMysqlApiRuntime(
           createHmac("sha256", Buffer.from(authentication.policy.config.secrets[0]!.value, "base64"))
             .update("mk8dx.offline-invitation-digest.v1", "ascii").digest(),
         ),
+        attempts: {
+          limiter: new MysqlMutationRateLimiter(pool, clock.nowMs),
+          tokenKey: createHmac("sha256", Buffer.from(authentication.policy.config.secrets[0]!.value, "base64"))
+            .update("mk8dx.offline-invitation-attempt.v1", "ascii").digest(),
+        },
         async bindAccount(authUserId: string,
                           target: import("../authentication/offline-invitation-ticket.js").OfflineInvitationTarget) {
           const subject = authenticationSubjectProtector
