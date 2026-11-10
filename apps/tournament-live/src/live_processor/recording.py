@@ -545,6 +545,16 @@ def assemble_recording(recording: DirectCaptureRecording) -> RecordingValidation
     return _validate_expected_recording(recording, final)
 
 
+# A capture card that delivers MJPEG (full-range JPEG colour) makes ffmpeg tag the encoded
+# yuv420p stream "yuvj420p": the same planar layout with a full-range flag. The group-2 card
+# of the LAN rig does this (TN13 replay on A2, 2026-11-10); the recording itself is fine.
+_EQUIVALENT_PIXEL_FORMATS = {"yuv420p": {"yuv420p", "yuvj420p"}}
+
+
+def _same_pixel_layout(found: str, expected: str) -> bool:
+    return found in _EQUIVALENT_PIXEL_FORMATS.get(expected, {expected})
+
+
 def _validate_expected_recording(
     recording: DirectCaptureRecording, final: Path,
 ) -> RecordingValidationResult:
@@ -558,7 +568,7 @@ def _validate_expected_recording(
                 f"Expected {recording.config.width}x{recording.config.height}, "
                 f"found {final_result.width}x{final_result.height}"
             )
-        if final_result.pixel_format != recording.config.pixel_format:
+        if not _same_pixel_layout(final_result.pixel_format, recording.config.pixel_format):
             expectation_errors.append(
                 f"Expected {recording.config.pixel_format}, found {final_result.pixel_format}"
             )
