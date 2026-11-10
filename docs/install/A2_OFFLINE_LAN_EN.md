@@ -80,6 +80,27 @@ email server, sign-in only works through the approval page.
 When you stop using this PC with the installation, remove the certificate
 from *Trusted Root Certification Authorities* again.
 
+## Pair the Android app
+
+Tested on a QA installation with a test build of the app (2026-11-10); no
+released app contains this pairing yet. The app does not need the
+certificate trusted in Android's settings.
+
+1. In the app open **Settings → Change server → Home or club installation
+   (scan QR)** and allow the camera.
+2. Scan the setup QR on the host screen (the same QR that opens the setup page
+   in an ordinary camera). If scanning fails, paste the setup link from the
+   host screen.
+3. Compare the address and the **Root public key SHA-256 (SPKI)** with the
+   host screen and choose **Connect**, then confirm the server change. The app
+   then trusts this installation, and only for that address.
+4. Choose **Sign in to synchronize**. The browser opens the approval page;
+   approve the device with your account (the browser must be signed in, for
+   example through your invitation).
+5. Times you post in the app appear on the installation's website.
+
+**Settings → Change server → Forget this installation** removes the pairing.
+
 The website defaults to **System** appearance on a new device. A phone set to
 Light therefore shows the light site even if the PC shows Dark. After sign-in,
 choose **Account → Settings → Appearance → Dark** if you prefer the dark look.

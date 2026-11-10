@@ -90,6 +90,29 @@ e-mailserver werkt aanmelden alleen via de goedkeuringspagina.
 Gebruik je de pc niet meer voor deze installatie, verwijder dan het
 certificaat weer uit *Vertrouwde basiscertificeringsinstanties*.
 
+### De Android-app koppelen
+
+Getest op een QA-installatie met een testbuild van de app (10-11-2026); deze
+koppeling zit nog in geen uitgebrachte app. De app hoeft het certificaat niet
+via de Android-instellingen te vertrouwen.
+
+1. Open in de app **Instellingen → Server wijzigen → Installatie thuis of bij
+   de club (QR scannen)** en sta de camera toe.
+2. Scan de setup-QR op het hostscherm (dezelfde QR die met de gewone camera
+   de setup-pagina opent). Lukt scannen niet, plak dan de setup-link van het
+   hostscherm.
+3. Vergelijk het adres en de **Root publieke sleutel SHA-256 (SPKI)** met het
+   hostscherm en kies **Verbinden**; bevestig daarna het wisselen van server.
+   De app vertrouwt deze installatie dan alleen voor dat adres.
+4. Kies **Aanmelden om te synchroniseren**. De browser opent de
+   goedkeuringspagina; keur het apparaat goed met je account (de browser moet
+   daarvoor ingelogd zijn, bijvoorbeeld via je uitnodiging).
+5. Tijden die je in de app plaatst, verschijnen op de website van de
+   installatie.
+
+**Instellingen → Server wijzigen → Deze installatie vergeten** maakt de
+koppeling ongedaan.
+
 De website start op een nieuw apparaat met **Systeem** als thema. Een telefoon
 die licht is ingesteld toont dus een witte website, ook als de pc donker is.
 Na aanmelden kies je via **Account → Instellingen → Weergave → Donker** het
