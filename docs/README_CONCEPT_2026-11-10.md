@@ -71,12 +71,31 @@ Every player gets their own records per track, a ranking with family, friends or
 to chase (with pokes, challenges and the odd dice duel), notifications when someone beats your
 time, and **23 mastery levels** measured against the current world records.
 
+## 🌍 Speaks your language — all 15 of them
+
+Mario Kart 8 Deluxe is played everywhere, so MK8DX is built for every game language: the website,
+the Android app, LiveTrial and the Tournament tools come in **15 languages**, and recognition is
+built for **all 15 game language variants** — from Dutch and English to Japanese, Korean,
+Chinese, Russian and more. English and Dutch are reviewed by people; the other languages are
+machine-translated and recognition in some of them is still being verified on real consoles.
+Playing in your language? Your help checking it is the most valuable contribution there is.
+
 ## 🏠 Yours
 
-Self-hosted: every community runs its own installation with its own accounts and results. The
-website, Android app, LiveTrial and Tournament tools speak **15 languages** (English and Dutch
-reviewed; the others machine-translated until reviewed), and recognition works with **all 15 game
-language variants**.
+Self-hosted: every community runs its own installation with its own accounts and results.
+
+## 🛠️ Make it your own
+
+MK8DX is open source, built by players for players. Run it for your club, your family or your
+city's LAN scene; adapt it to how *your* nights work; and build on it:
+
+- **Translate or review** your language (the website, the apps and the in-game recognition).
+- **Test recognition** with your own console, language and capture card, and report what it misses.
+- **Add what your community needs** — new tournament formats, statistics, ways to share results.
+- **Improve the docs** so the next organiser gets started even faster.
+
+Start with [Contributing](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
+Every pull request, bug report and translation fix makes the next LAN night better for everyone.
 
 ---
 
