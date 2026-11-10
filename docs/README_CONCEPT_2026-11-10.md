@@ -86,11 +86,13 @@ Self-hosted: every community runs its own installation with its own accounts and
 
 ## 💡 The story behind it
 
-MK8DX Ecosystem has been in development since 2024. It was built with AI — "vibe coding" — but
-that does not mean the AI built it. I cannot imagine a world in which this would have reached a
-good result without constant steering and explaining the logic, over and over. The number of
-sessions that just kept running, burning credits without real results, still keeps me awake at
-night (haha).
+MK8DX Ecosystem has been in development since 2024. It was built with AI — "vibe coding" — and
+honestly: I could not have built this without AI, and the AI could not have built it without me.
+I cannot imagine a world in which this would have reached a good result without constant
+steering and explaining the logic, over and over. The number of sessions that just kept running,
+burning credits without real results, still keeps me awake at night (haha). Part of the reason:
+with all the screenshots and videos involved, the context simply grows too large for an AI to
+hold — by now there are about 4 TB of AI-generated QA test material waiting for me to clean up.
 
 Probably because this had never been built before. The techniques existed; stitching the right
 ones together, in the right order, with a human checking every visual step in between and
@@ -99,6 +101,8 @@ but a complete package that contains everything, I had not seen before.
 
 It has been a great school — and it has made me able to build faster and more efficiently around
 image recognition and extraction from here on.
+
+— [fromthelake](https://github.com/fromthelake)
 
 ## 🛠️ Make it your own
 
