@@ -3430,6 +3430,8 @@
     .ds-home__hero .ds-hero__copy > .ds-cluster {
       grid-column: 1 / -1; grid-row: 3; margin-top: calc(var(--ds-space-lg) + var(--ds-space-md));
     }
+    /* A plain line (the no-Player welcome) spans the hero, never the 3rem thumb column. */
+    .ds-home__hero .ds-hero__copy > .ds-body { grid-column: 1 / -1; }
     .ds-home__hero .ds-hero__aside { padding-inline: 0; }
     .ds-home__hero .ds-hero__aside > .ds-stack { align-items: flex-start; gap: 14px; }
     .ds-home__hero .ds-button[data-variant="primary"] {
