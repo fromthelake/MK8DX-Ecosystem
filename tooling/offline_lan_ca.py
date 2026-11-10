@@ -166,39 +166,117 @@ def _fingerprints(cert: x509.Certificate) -> dict[str, str]:
             "spkiSha256": hashlib.sha256(public_key).hexdigest()}
 
 
+_SETUP_STYLE = (
+    "*{box-sizing:border-box}html,body{margin:0;background:#090d1c;color:#eef1fb;"
+    "font:18px/1.55 system-ui,'Segoe UI',sans-serif}main{max-width:640px;margin:0 auto;padding:22px 16px 40px}"
+    "h1{font-size:28px;line-height:1.2;margin:4px 0 10px}h2{font-size:20px;margin:0 0 8px}"
+    ".brand{font-weight:900;font-style:italic;font-size:22px;color:#f7c948}.lead{color:#a9b1cf}"
+    "section,details{background:#111833;border:1px solid #26305a;border-radius:14px;padding:16px;margin:14px 0}"
+    "summary{font-weight:700;cursor:pointer;font-size:18px}ol{padding-left:22px;margin:8px 0}li{margin:6px 0}"
+    ".button{display:block;text-align:center;background:#f7c948;color:#1b1400;font-weight:800;"
+    "text-decoration:none;border-radius:12px;padding:14px 16px;margin:12px 0}"
+    ".code{font:600 24px/1.3 Consolas,monospace;letter-spacing:1px;color:#f7c948;overflow-wrap:anywhere}"
+    "code,.mono{font-family:Consolas,monospace;overflow-wrap:anywhere;font-size:14px;color:#c9cfe8}"
+    ".muted{color:#a9b1cf;font-size:15px}[hidden]{display:none!important}")
+
+_SETUP_TEXT = {
+    "en": {
+        "title": "Prepare this device", "lead": "Do this once per phone, tablet or PC. Afterwards, scan your "
+        "personal sign-in card.", "check": "First check this code. It must match the code on the "
+        "'Prepare a device' card or in MK8DX beheer on the host computer:",
+        "full": "Full fingerprints", "other": "Another kind of device?", "done": "Done? Scan your personal "
+        "sign-in card, or open", "remove": "Leaving this installation? Remove the certificate again in the same settings.",
+        "android": ["Tap the button to download the certificate.",
+                    "Open Settings and search for “certificate” (often: Security → More security settings → "
+                    "Encryption & credentials → Install a certificate → CA certificate).",
+                    "Choose the downloaded MK8DX file and confirm with your PIN."],
+        "ios": ["Tap the button to download the profile and allow it.",
+                "Open Settings → Profile downloaded → Install.",
+                "Then Settings → General → About → Certificate Trust Settings → turn on MK8DX."],
+        "windows": ["Download the certificate and open it.",
+                    "Choose Install Certificate → Current User → Place all certificates in the following store → "
+                    "Trusted Root Certification Authorities. Do not choose Intermediate Certification Authorities.",
+                    "Restart the browser."],
+        "mac": ["Download the certificate and open it; Keychain Access opens.",
+                "Open the MK8DX certificate → Trust → Always Trust. (macOS is not yet tested end to end.)"],
+        "linux": ["Add the same certificate to your distribution's or browser's trusted root store.",
+                  "The exact steps differ by distribution; Linux is not yet tested end to end for this route."],
+        "dl_crt": "Download certificate", "dl_ios": "Download profile",
+        "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
+    },
+    "nl": {
+        "title": "Dit apparaat voorbereiden", "lead": "Doe dit één keer per telefoon, tablet of pc. Scan daarna je "
+        "persoonlijke inlogkaart.", "check": "Controleer eerst deze code. Hij moet gelijk zijn aan de code op "
+        "de kaart 'Apparaat voorbereiden' of in MK8DX beheer op de hostcomputer:",
+        "full": "Volledige vingerafdrukken", "other": "Ander soort apparaat?", "done": "Klaar? Scan je persoonlijke "
+        "inlogkaart, of open", "remove": "Stop je met deze installatie? Verwijder het certificaat weer via dezelfde instellingen.",
+        "android": ["Tik op de knop om het certificaat te downloaden.",
+                    "Open Instellingen en zoek op “certificaat” (vaak: Beveiliging → Meer beveiligingsinstellingen → "
+                    "Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat).",
+                    "Kies het gedownloade MK8DX-bestand en bevestig met je pincode."],
+        "ios": ["Tik op de knop om het profiel te downloaden en sta het toe.",
+                "Open Instellingen → Profiel gedownload → Installeer.",
+                "Daarna Instellingen → Algemeen → Info → Certificaatvertrouwen → zet MK8DX aan."],
+        "windows": ["Download het certificaat en open het.",
+                    "Kies Certificaat installeren → Huidige gebruiker → Alle certificaten in het onderstaande archief "
+                    "plaatsen → Vertrouwde basiscertificeringsinstanties. Kies niet Tussenliggende certificeringsinstanties.",
+                    "Herstart de browser."],
+        "mac": ["Download het certificaat en open het; Sleutelhangertoegang opent.",
+                "Open het MK8DX-certificaat → Vertrouw → Altijd vertrouwen. (macOS is nog niet volledig getest.)"],
+        "linux": ["Voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser.",
+                  "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route."],
+        "dl_crt": "Certificaat downloaden", "dl_ios": "Profiel downloaden",
+        "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
+    },
+}
+
+
+def setup_page(origin: str, fp: dict) -> str:
+    """Mobile-first /setup page: the visitor's own platform first, in the device language.
+
+    Static and self-contained (served over plain HTTP before trust exists); readable without
+    JavaScript, which only selects the language and opens the matching platform."""
+    short = " ".join(fp["certificateSha256"][i:i + 4].upper() for i in range(0, 16, 4))
+    parts = ["<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
+             "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
+             "<title>MK8DX</title><style>", _SETUP_STYLE, "</style></head><body><main>"]
+    for lang, text in _SETUP_TEXT.items():
+        parts.append(f"<div class=\"lang\" lang=\"{lang}\" data-lang=\"{lang}\">")
+        parts.append(f"<div class=\"brand\">MK8DX</div><h1>{html.escape(text['title'])}</h1>"
+                     f"<p class=\"lead\">{html.escape(text['lead'])}</p>")
+        parts.append(f"<section><p>{html.escape(text['check'])}</p><p class=\"code\">{short}</p>"
+                     f"<details><summary>{html.escape(text['full'])}</summary>"
+                     f"<p class=\"mono\">Root certificate SHA-256: {fp['certificateSha256']}</p>"
+                     f"<p class=\"mono\">Root public key SHA-256 (SPKI): {fp['spkiSha256']}</p></details></section>")
+        for platform in ("android", "ios", "windows", "mac", "linux"):
+            link = "/setup/root.mobileconfig" if platform == "ios" else "/setup/root.crt"
+            label = text["dl_ios"] if platform == "ios" else text["dl_crt"]
+            steps = "".join(f"<li>{html.escape(step)}</li>" for step in text[platform])
+            parts.append(f"<details class=\"platform\" data-platform=\"{platform}\"><summary>"
+                         f"{html.escape(text['names'][platform])}</summary>"
+                         f"<a class=\"button\" href=\"{link}\">{html.escape(label)}</a><ol>{steps}</ol></details>")
+        parts.append(f"<p class=\"other muted\" hidden>{html.escape(text['other'])}</p>")
+        parts.append(f"<section><p>{html.escape(text['done'])} <code>{html.escape(origin)}</code></p>"
+                     f"<p class=\"muted\">{html.escape(text['remove'])}</p></section></div>")
+    parts.append(
+        "<script>(function(){var nl=(navigator.language||'').toLowerCase().indexOf('nl')===0;"
+        "var ua=navigator.userAgent||'';var p=/android/i.test(ua)?'android':/iphone|ipad|ipod/i.test(ua)||"
+        "(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?'ios':/windows/i.test(ua)?'windows':"
+        "/Macintosh/.test(ua)?'mac':/linux/i.test(ua)?'linux':null;"
+        "document.querySelectorAll('.lang').forEach(function(b){var mine=b.dataset.lang===(nl?'nl':'en');"
+        "b.hidden=!mine;if(!mine)return;document.documentElement.lang=b.dataset.lang;"
+        "var first=b.querySelector('details.platform[data-platform=\"'+p+'\"]');"
+        "if(first){first.open=true;b.insertBefore(first,b.querySelector('details.platform'));"
+        "var o=b.querySelector('.other');o.hidden=false;first.after(o);}});})();</script>")
+    parts.append("</main></body></html>\n")
+    return "".join(parts)
+
+
 def _setup_files(directory: Path, cert: x509.Certificate, address: ipaddress.IPv4Address) -> None:
     der = cert.public_bytes(serialization.Encoding.DER)
     fp = _fingerprints(cert)
     origin = f"https://{address}"
-    page = ("<!doctype html><html lang=\"en\"><meta charset=\"utf-8\">"
-            "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
-            "<title>MK8DX offline LAN setup</title><h1>Offline LAN setup</h1>"
-            "<p>First open the host administration screen on the host PC at "
-            "<code>http://127.0.0.1:19090</code>. Unlock it with the separate "
-            "one-time administrator code. The certificate fingerprint below is "
-            "not that code.</p>"
-            "<p>Compare the fingerprints with that trusted host screen before "
-            "installing trust. This HTTP page cannot prove its own identity.</p>"
-            f"<p>HTTPS origin: <code>{html.escape(origin)}</code></p>"
-            f"<p>Root certificate SHA-256: <code>{fp['certificateSha256']}</code></p>"
-            f"<p>Root public key SHA-256 (SPKI): <code>{fp['spkiSha256']}</code></p>"
-            "<p><a href=\"/setup/root.crt\">Root certificate for Android, Windows or Linux (.crt)</a>"
-            " · <a href=\"/setup/root.mobileconfig\">iPhone/iPad profile (.mobileconfig)</a></p>"
-            "<p><strong>Windows:</strong> open the .crt and choose Install Certificate → "
-            "Current User → Place all certificates in the following store → "
-            "Trusted Root Certification Authorities. Do not choose Intermediate "
-            "Certification Authorities. Restart the browser.</p>"
-            "<p lang=\"nl\"><strong>Windows:</strong> open het .crt-bestand en kies "
-            "Certificaat installeren → Huidige gebruiker → Alle certificaten in "
-            "het onderstaande archief plaatsen → Vertrouwde basiscertificeringsinstanties. "
-            "Kies niet Tussenliggende certificeringsinstanties. Herstart de browser.</p>"
-            "<p><strong>Linux:</strong> use the same .crt in your distribution's or "
-            "browser's trusted root store. The exact steps differ by distribution; "
-            "Linux is not yet tested end to end for this route.</p>"
-            "<p><strong>Android:</strong> install the certificate only after comparing "
-            "the host screen. <strong>iPhone/iPad:</strong> install the profile, then "
-            "enable full trust in Settings. Remove trust when leaving this installation.</p></html>\n")
-    _write_new(directory / "index.html", page.encode("utf-8"))
+    _write_new(directory / "index.html", setup_page(origin, fp).encode("utf-8"))
     _write_new(directory / "root.crt", der)
     payload_id = f"nl.mariokart8.offline-lan.{uuid.uuid4()}"
     profile = {"PayloadContent": [{"PayloadCertificateFileName": "MK8DX Offline LAN Root.crt",
