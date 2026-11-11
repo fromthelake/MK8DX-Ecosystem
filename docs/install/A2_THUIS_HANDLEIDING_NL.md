@@ -355,7 +355,11 @@ Je router geeft de MK8DX-computer zijn adres. Na een nieuwe router of in een and
 
 **Updates**
 
-Een knop om MK8DX bij te werken bestaat voor thuis en de club nog niet. De installatie opent bij elke start de pagina MK8DX beheer, niet een updatemenu. Er is wel een opdracht voor IT'ers (hoofdstuk 12), maar die stapt nog niet over naar de programma's van een nieuwer pakket. Volg bij een nieuwe versie de aanwijzingen die bij die versie horen.
+1. **Doe:** download het nieuwe MK8DX-pakket en pak het uit naar een **nieuwe** map, net als in hoofdstuk 3 (ook het opheffen van de blokkering). Laat de oude map nog staan. → **Je ziet:** een tweede map met `Start-MK8DX-LAN.cmd`.
+2. **Doe:** dubbelklik in de **nieuwe** map op `Start-MK8DX-LAN.cmd`. → **Je ziet:** eerst het laden van de programma's met een lopende tijd, daarna in de browser **Een nieuwere versie van MK8DX** met de oude en de nieuwe versie. → **Zie je iets anders?** Opent gewoon MK8DX beheer, dan draait deze versie al. Staat er dat het pakket ouder is dan de installatie, gebruik dan het nieuwste pakket.
+3. **Doe:** klik op **Bijwerken**. → **Je ziet:** "Back-up maken en controleren" en daarna "Nieuwe versie installeren en starten", elk met een lopende tijd; na een paar minuten "MK8DX draait de nieuwe versie." Alle mensen, tijden, toernooien en inloggingen blijven bewaard; telefoons hoeven niets opnieuw te doen. De back-up van vlak ervoor staat in Documenten\MK8DX-backups met `before-update` in de naam.
+4. **Doe:** klik op **Volgende** tot het laatste scherm en klik op **Voltooien**. → **Je ziet:** het einde van MK8DX beheer. De automatische back-up, de certificaatvernieuwing en de snelkoppeling **MK8DX beheer** gebruiken nu de nieuwe map.
+5. **Doe:** verwijder daarna de oude map. → **Je ziet:** MK8DX blijft gewoon werken.
 
 Andere installatieroutes (één computer, eigen server, webhosting) staan in `docs/install/MK8DX_Handleiding_NL.txt`.
 

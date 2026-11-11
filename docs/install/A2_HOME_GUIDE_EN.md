@@ -355,7 +355,11 @@ Your router gives the MK8DX computer its address. After a new router or on anoth
 
 **Updates**
 
-A button to update MK8DX does not exist yet for home and club. The installation opens the MK8DX beheer page on every start, not an update menu. There is a command for IT people (chapter 12), but it does not switch to the programs of a newer package yet. With a new version, follow the instructions that come with that version.
+1. **Do:** download the new MK8DX package and unpack it into a **new** folder, just as in chapter 3 (including unblocking). Keep the old folder for now. → **You see:** a second folder with `Start-MK8DX-LAN.cmd`.
+2. **Do:** double-click `Start-MK8DX-LAN.cmd` in the **new** folder. → **You see:** first the programs loading with a running clock, then in the browser **A newer version of MK8DX** with the old and the new version. → **See something else?** If MK8DX beheer simply opens, this version is already running. If it says the package is older than the installation, use the newest package.
+3. **Do:** click **Update**. → **You see:** "Making and checking a backup" and then "Installing and starting the new version", each with a running clock; after a few minutes "MK8DX runs the new version." All people, times, tournaments and sign-ins are kept; phones do not need to do anything again. The backup from just before is in Documents\MK8DX-backups with `before-update` in its name.
+4. **Do:** click **Next** until the last screen and click **Finish**. → **You see:** the end of MK8DX beheer. The automatic backup, the certificate renewal and the **MK8DX beheer** shortcut now use the new folder.
+5. **Do:** then delete the old folder. → **You see:** MK8DX keeps working.
 
 Other installation routes (one computer, your own server, web hosting) are in `docs/install/MK8DX_User_Guide_EN.txt`.
 
