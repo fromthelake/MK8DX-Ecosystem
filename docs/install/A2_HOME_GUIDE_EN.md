@@ -177,7 +177,7 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 **Adding people**
 
 1. **Do:** type the names at **Names (one per line)** and click **Add**. → **You see:** the names under "In this installation:".
-2. **Do:** click **Next**. → **You see:** "Sign in on phones and PCs" with the **Prepare a device** card and, for every person, a box with the **Make card** button.
+2. **Do:** click **Next**. → **You see:** "Sign in on phones and PCs" in two steps: **Step 1 · Prepare the device** with the **Prepare a device** card (once per device, it does not sign you in yet) and **Step 2 · Sign in as the right person** with, for every person, a box with the **Make card** button.
 
 **Making and printing cards**
 
@@ -231,7 +231,7 @@ The steps on the Prepare this device page:
 
 1. **Do:** scan your own card (the card with your name) and tap the link. → **You see:** **Join this MK8DX installation** and "First check that this HTTPS address belongs to the host you trust. The invitation can be used once." The browser's address bar must show the website address, for example `https://192.168.1.50`. → **See something else?** A browser warning about the certificate or an insecure connection: never click it away. Do Prepare a device above first.
 2. **Do:** wait for "Invitation ready. Confirm to sign in." and tap **Accept invitation**. → **You see:** "You are signed in to this installation." and **Continue to MK8DX**. Tap it. → **See something else?** "This invitation is invalid. Ask the administrator for a new QR code." or "Sign-in failed. Ask the administrator for a new invitation.": the card was already used, expired or revoked. Let the administrator make a **New card**.
-3. **Do:** choose or claim your own Player on the website. → **You see:** your name and your times.
+3. **Do:** follow the welcome steps on the website: whether you already have times or tournaments here, and what you want to be called. That is how you choose or claim your own Player. → **You see:** your name and your times. → **See something else?** If the name on your card (for example 'Dad') is not filled in already: that is right. The name on the card is only the label in MK8DX administration; you choose your player name here yourself.
 
 **Another device for the same person**
 

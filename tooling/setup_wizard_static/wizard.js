@@ -34,14 +34,17 @@ const T = {
     showLog: "Details", installDone: "MK8DX draait. Nog twee korte stappen.",
     working: "Bezig", stillWorking: "nog bezig, dit kan een paar minuten duren",
     adminTitle: "Jouw beheerdersaccount", adminLead: "Jij beheert deze installatie. Hoe heet je?",
-    adminField: "Je naam", adminHint: "Bijvoorbeeld 'Papa', 'Sanne' of 'Clubleiding'. Alleen zichtbaar binnen deze installatie.",
+    adminField: "Je naam", adminHint: "Bijvoorbeeld 'Papa', 'Sanne' of 'Clubleiding'. Dit is alleen het label van het account in MK8DX beheer. Je spelersnaam op de website kies je zelf bij de eerste keer inloggen.",
     peopleTitle: "Wie spelen er mee?",
     peopleLead: "Wil je nu al accounts maken voor anderen — familie, vrienden, clubleden of collega's? Iedereen krijgt een eigen persoonlijke inlogkaart.",
     peopleLater: "Dit kan ook later, precies zo: open 'MK8DX beheer' op het bureaublad en kies 'Mensen'.",
     peopleField: "Namen (één per regel)", peopleAdd: "Toevoegen", peopleNow: "In deze installatie:", skip: "Overslaan",
     cardsTitle: "Inloggen op telefoons en pc's",
-    cardsLead: "Laat iedereen de QR-code van zijn eigen kaart scannen met de camera van zijn telefoon of tablet. Een kaart werkt één keer en 15 minuten lang; maak gerust een nieuwe.",
-    cardsTrust: "Eerste keer op een apparaat? Scan eerst de QR-code 'Apparaat voorbereiden'. Die laat zien hoe het apparaat deze installatie gaat vertrouwen.",
+    cardsLead: "Inloggen op een telefoon, tablet of pc gaat in twee stappen: eerst het apparaat voorbereiden, daarna inloggen als de juiste persoon.",
+    step1Title: "Stap 1 · Apparaat voorbereiden",
+    step1Text: "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
+    step2Title: "Stap 2 · Inloggen als de juiste persoon",
+    step2Text: "Klik bij de persoon die dit apparaat gebruikt op 'Kaart maken' en scan die QR-code met hetzelfde apparaat. Het apparaat is dan ingelogd als die persoon. Een kaart werkt één keer en 15 minuten lang; maak gerust een nieuwe.",
     setupCard: "Apparaat voorbereiden", makeCard: "Kaart maken", newCard: "Nieuwe kaart", print: "Kaarten afdrukken",
     validUntil: "Geldig tot", administrator: "beheerder", fingerprint: "Vingerafdruk",
     revokeCard: "Kaart intrekken", cardRevoked: "Ingetrokken: deze kaart werkt niet meer.",
@@ -105,14 +108,17 @@ const T = {
     showLog: "Details", installDone: "MK8DX is running. Two short steps left.",
     working: "Working", stillWorking: "still working, this can take a few minutes",
     adminTitle: "Your administrator account", adminLead: "You manage this installation. What's your name?",
-    adminField: "Your name", adminHint: "For example 'Dad', 'Sam' or 'Club team'. Only visible inside this installation.",
+    adminField: "Your name", adminHint: "For example 'Dad', 'Sam' or 'Club team'. This is only the account's label in MK8DX administration. Everyone picks their own player name on the website the first time they sign in.",
     peopleTitle: "Who plays?",
     peopleLead: "Do you want to create accounts for others now — family, friends, club members or colleagues? Everyone gets a personal sign-in card.",
     peopleLater: "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.",
     peopleField: "Names (one per line)", peopleAdd: "Add", peopleNow: "In this installation:", skip: "Skip",
     cardsTitle: "Sign in on phones and PCs",
-    cardsLead: "Let everyone scan the QR code on their own card with their phone or tablet camera. A card works once and for 15 minutes; feel free to make a new one.",
-    cardsTrust: "First time on a device? Scan 'Prepare a device' first. It shows how the device will trust this installation.",
+    cardsLead: "Signing in on a phone, tablet or PC takes two steps: first prepare the device, then sign in as the right person.",
+    step1Title: "Step 1 · Prepare the device",
+    step1Text: "Once per device. Scan this QR code with the camera. The device then learns to trust this installation (a security certificate), so the website opens safely. This does not sign you in yet. If the device was prepared before, go straight to step 2.",
+    step2Title: "Step 2 · Sign in as the right person",
+    step2Text: "Click 'Make card' for the person who uses this device and scan that QR code with the same device. The device is then signed in as that person. A card works once and for 15 minutes; feel free to make a new one.",
     setupCard: "Prepare a device", makeCard: "Make card", newCard: "New card", print: "Print cards",
     validUntil: "Valid until", administrator: "administrator", fingerprint: "Fingerprint",
     revokeCard: "Revoke card", cardRevoked: "Revoked: this card no longer works.",
@@ -383,10 +389,12 @@ const views = {
     area.addEventListener("input", () => { $("next").textContent = T.next; });
   },
   async cards() {
-    const cards = el("div", "cards");
-    main.replaceChildren(el("h1", "", T.cardsTitle), el("p", "lead", T.cardsLead), el("p", "muted", T.cardsTrust));
+    // Two visibly separate steps: the device card (trust, once per device), then one card per person.
+    const deviceCards = el("div", "cards"); const cards = el("div", "cards");
     const printBtn = el("button", "secondary small no-print", T.print); printBtn.type = "button"; printBtn.addEventListener("click", () => window.print());
-    main.append(printBtn, cards);
+    main.replaceChildren(el("h1", "", T.cardsTitle), el("p", "lead", T.cardsLead), printBtn,
+      el("h2", "step-title", T.step1Title), el("p", "muted", T.step1Text), deviceCards,
+      el("h2", "step-title", T.step2Title), el("p", "muted", T.step2Text), cards);
     setButtons();
     try {
       const setup = await api("/api/setup");
@@ -394,7 +402,7 @@ const views = {
       // The same short code the /setup page shows, in the same grouping, so comparing is easy.
       const code = setup.fingerprint.slice(0, 16).toUpperCase().match(/.{4}/g).join(" ");
       s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), el("div", "muted", T.fingerprint), el("div", "short-code", code));
-      cards.append(s);
+      deviceCards.append(s);
     } catch (error) { main.append(errorBox(error.message)); }
     for (const person of state.people) {
       const card = el("div", "person"); const name = el("h3", "", person.name);

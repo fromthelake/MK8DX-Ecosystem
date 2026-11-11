@@ -91,3 +91,4 @@ button.small { padding: 8px 14px; font-size: 15px; }
 .restore-offer { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line, rgba(127,127,127,.25)); }
 .restore-offer p { margin: 8px 0 0; }
 .list li .person-action { margin-left: auto; flex-shrink: 0; }
+.step-title { font-size: 20px; margin: 26px 0 4px; }

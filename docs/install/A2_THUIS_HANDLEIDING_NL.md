@@ -177,7 +177,7 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 **Mensen toevoegen**
 
 1. **Doe:** typ bij **Namen (één per regel)** de namen en klik op **Toevoegen**. → **Je ziet:** de namen onder "In deze installatie:".
-2. **Doe:** klik op **Volgende**. → **Je ziet:** "Inloggen op telefoons en pc's" met de kaart **Apparaat voorbereiden** en voor iedere persoon een vak met de knop **Kaart maken**.
+2. **Doe:** klik op **Volgende**. → **Je ziet:** "Inloggen op telefoons en pc's" in twee stappen: **Stap 1 · Apparaat voorbereiden** met de kaart **Apparaat voorbereiden** (één keer per apparaat, je bent daarmee nog niet ingelogd) en **Stap 2 · Inloggen als de juiste persoon** met voor iedere persoon een vak met de knop **Kaart maken**.
 
 **Kaarten maken en afdrukken**
 
@@ -231,7 +231,7 @@ De stappen op de pagina Dit apparaat voorbereiden:
 
 1. **Doe:** scan je eigen kaart (de kaart met jouw naam) en tik op de link. → **Je ziet:** **Doe mee met deze MK8DX-installatie** en "Controleer eerst of dit HTTPS-adres bij de vertrouwde host hoort. Deze uitnodiging werkt één keer." In de adresbalk van de browser moet het adres van de website staan, bijvoorbeeld `https://192.168.1.50`. → **Zie je iets anders?** Een waarschuwing van de browser over het certificaat of een onveilige verbinding: klik die nooit weg. Doe dan eerst Apparaat voorbereiden hierboven.
 2. **Doe:** wacht op "Uitnodiging klaar. Bevestig om in te loggen." en tik op **Uitnodiging accepteren**. → **Je ziet:** "Je bent ingelogd op deze installatie." en **Verder naar MK8DX**. Tik daarop. → **Zie je iets anders?** "Deze uitnodiging is ongeldig. Vraag de beheerder om een nieuwe QR-code." of "Inloggen is niet gelukt. Vraag de beheerder om een nieuwe uitnodiging.": de kaart was al gebruikt, verlopen of ingetrokken. Laat de beheerder een **Nieuwe kaart** maken.
-3. **Doe:** kies of claim op de website je eigen Player. → **Je ziet:** je naam en je tijden.
+3. **Doe:** volg op de website de welkomststappen: of je hier al tijden of toernooien hebt, en hoe je genoemd wilt worden. Kies of claim zo je eigen Player. → **Je ziet:** je naam en je tijden. → **Zie je iets anders?** Staat de naam van je kaart (bijvoorbeeld 'Papa') niet al ingevuld: dat klopt. De naam op de kaart is alleen het label in MK8DX beheer; je spelersnaam kies je hier zelf.
 
 **Nog een apparaat voor dezelfde persoon**
 
