@@ -3,7 +3,11 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## 0.2.0-rc.1 — 2026-11-11
+## 0.2.0-rc.2 — 2026-11-11
+
+The `v0.2.0-rc.1` tag produced no release: its A2 package build refused a second, redundant
+`cryptography` wheel for Python 3.15. The package builder now leaves such a wheel out.
+
 
 ### A2: MK8DX at home or at the club, without internet
 

@@ -1,6 +1,9 @@
 """Check that a release ZIP will start the images it actually contains."""
 
+import tempfile
 import unittest
+from pathlib import Path
+from unittest import mock
 
 from tooling.release import host_bundle
 
@@ -57,6 +60,21 @@ class HostBundlePlatformTest(unittest.TestCase):
                          ["cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl",
                           "cryptography-50.0.2-cp311-abi3-macosx_10_9_universal2.whl",
                           "pycparser-3.12-py3-none-any.whl"])
+
+    def test_a_newer_stable_abi_wheel_next_to_a_covering_one_is_left_out(self):
+        # Release CI 2026-11-11: pip fetched cryptography cp315-abi3.abi3t beside cp311-abi3 for Python 3.15.
+        names = ["cryptography-50.0.2-cp311-abi3-win_amd64.whl", "cryptography-50.0.2-cp315-abi3.abi3t-win_amd64.whl",
+                 "pycparser-3.12-py3-none-any.whl"] + [f"cffi-2.1.1-{v}-{v}-win_amd64.whl" for v in host_bundle.PYTHON_VERSIONS]
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            for name in names:
+                (folder / name).write_bytes(name.encode())
+            with mock.patch.object(host_bundle, "offline_pins",
+                                   return_value={"cryptography": "50.0.2", "cffi": "2.1.1", "pycparser": "3.12"}):
+                chosen = host_bundle.offline_wheels(folder, "windows", "amd64")
+        self.assertIn("cryptography-50.0.2-cp311-abi3-win_amd64.whl", chosen)
+        self.assertNotIn("cryptography-50.0.2-cp315-abi3.abi3t-win_amd64.whl", chosen)
+        self.assertEqual(len(chosen), 6)
 
     def test_versioned_images_follow_the_architecture(self):
         self.assertEqual(host_bundle.image_tags("v0.2.0", "arm64")[:2],

@@ -77,16 +77,34 @@ def wheel_fits(wheel_name: str, platform: str, arch: str) -> bool:
 def offline_wheels(folder: Path, platform: str = "windows", arch: str = "amd64") -> dict:
     """Per pinned requirement for this host: one universal (none-any/abi3) wheel, or exactly one wheel for every
     supported CPython version. Returns {wheel: sha256}."""
-    wheels = {}
+    wheels, superseded = {}, set()
+
+    def tags(path):
+        return path.name[:-4].split("-")[-3:]
+
+    def stable_abi(path):
+        return "abi3" in tags(path)[1].split(".")
+
+    def cp_number(tag):
+        return int(tag[2:]) if tag.startswith("cp") and tag[2:].isdigit() else None
+
+    oldest = min(cp_number(v) for v in PYTHON_VERSIONS)
     for name, version in offline_pins().items():
         stem = name.replace("-", "_").lower() + "-" + version + "-"
         found = [p for p in folder.glob("*.whl") if p.name.lower().startswith(stem)]
         compatible = [p for p in found if wheel_fits(p.name, platform, arch)]
-        universal = [p for p in compatible if p.name.endswith("-none-any.whl") or "-abi3-" in p.name]
-        per_version = {v: [p for p in compatible if p.name[:-4].split("-")[-3] == v and "-abi3-" not in p.name]
+        # A stable-ABI wheel built for the oldest supported CPython or earlier covers every supported version.
+        # pip may also fetch a newer stable-ABI build for one version (cryptography ships cp315-abi3.abi3t);
+        # with a covering wheel present that one is redundant and stays out of the package.
+        universal = [p for p in compatible if p.name.endswith("-none-any.whl") or
+                     (stable_abi(p) and (cp_number(tags(p)[0]) or 0) <= oldest)]
+        redundant = [p for p in compatible if universal and p not in universal and stable_abi(p)]
+        compatible = [p for p in compatible if p not in redundant]
+        per_version = {v: [p for p in compatible if tags(p)[0] == v and not stable_abi(p)]
                        for v in PYTHON_VERSIONS}
         if len(universal) == 1 and len(compatible) == 1:
             chosen = universal
+            superseded.update(p.name for p in redundant)
         elif not universal and all(len(rows) == 1 for rows in per_version.values()) and \
                 len(compatible) == len(PYTHON_VERSIONS):
             chosen = [rows[0] for rows in per_version.values()]
@@ -94,7 +112,7 @@ def offline_wheels(folder: Path, platform: str = "windows", arch: str = "amd64")
             raise SystemExit(f"Need one universal {platform}/{arch} wheel, or one per {', '.join(PYTHON_VERSIONS)}, "
                              f"for {name}=={version} in {folder}")
         wheels.update({p.name: sha256(p) for p in chosen})
-    if len(list(folder.glob("*.whl"))) != len(wheels):
+    if len(list(folder.glob("*.whl"))) != len(wheels) + len(superseded):
         raise SystemExit("The wheel folder holds wheels that are not pinned requirements")
     return wheels
 
