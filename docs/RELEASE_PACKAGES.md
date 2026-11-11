@@ -55,7 +55,7 @@ The [changelog](../CHANGELOG.md) keeps future work under *Unreleased*; advance t
 development release after tagging.
 
 Pushing a tag `v*` runs `.github/workflows/release.yml`. It first checks that the tagged commit passed `Verify`,
-then builds all seven client/source/server packages from that exact commit. The Web and API images receive tags
+then builds every client, source and server package (including the five A2 packages) from that exact commit. The Web and API images receive tags
 derived from the release version (`ghcr.io/fromthelake/mk8dx-{web,api}:<tag>-amd64`) and are also included in
 the host ZIP for offline installation. The workflow pushes those two images to GHCR, generates an SPDX SBOM,
 attests the exact release-asset bytes, writes `SHA256SUMS.txt` and `manifest.json`, and opens a **draft** release.
@@ -76,7 +76,7 @@ without it, local clone builds continue to use the current local image tags.
 
 ## Publishing a release
 
-1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the three server ZIPs,
+1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the server ZIPs (host-local, the A2 packages, A3 and B2),
    verify their `sourceCommit` equals the tag commit, and check their internal manifests and bytes.
 2. Attach the locally release-signed APK, remove the debug APK for a stable release, and keep the Android notices ZIP.
    Verify the APK signing certificate against the retained owner certificate. The earlier public APKs were debug

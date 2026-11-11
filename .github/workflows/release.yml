@@ -1,5 +1,5 @@
 name: Release
-# A tag v* builds the clients, source and three server packages from that commit, attests the release
+# A tag v* builds the clients, source and server packages (host-local, A2 per platform, A3, B2) from that commit, attests the release
 # assets, writes SHA256SUMS.txt and manifest.json, and opens a DRAFT release for review.
 # The Android APK here is debug-signed; an official signed APK is attached by the maintainer (docs/CLIENT_BUILDS.md).
 # Nothing is built unless the tagged commit already has a successful Verify run: tag a commit after its
