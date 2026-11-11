@@ -19,6 +19,9 @@ const CATALOGED_MIGRATIONS = JSON.parse(readFileSync(
 
 const EXPECTED_SCHEMA_TABLES = Object.freeze([
   "account_capability_grant_lifecycle", "account_capability_grants",
+  // Shared-device switching (ADR-0224, migration 0085): which accounts used which device and their
+  // PIN digests. Private by nature: the mirror knows their shape and copies none of it.
+  "account_switch_pins", "account_switch_remembered_accounts", "account_switch_sessions",
   "administrator_grant_lifecycle", "administrator_grants",
   "alias_lifecycle", "alias_provenance", "aliases", "api_mutation_rate_limits",
   // Which build each device runs (ADR-0200). Not a domain table: it is
@@ -40,6 +43,9 @@ const EXPECTED_SCHEMA_TABLES = Object.freeze([
   "notification_deliveries", "notification_events", "notification_preferences",
   "notification_producer_jobs",
   "notifications",
+  // Offline LAN accounts and one-use sign-in cards (ADR-0223, migration 0084). Only an A2 offline
+  // installation fills them; the mirror knows their shape and copies none of it.
+  "offline_auth_accounts", "offline_invitation_tickets",
   "player_claim_event_evidence", "player_claim_lifecycle", "player_claim_notes", "player_claims",
   "player_engagements", "player_follows", "player_rating_events", "player_ratings", "player_rivals",
   "player_username_history", "player_visibility_lifecycle", "players",
