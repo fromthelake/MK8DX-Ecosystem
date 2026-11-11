@@ -124,10 +124,10 @@ On the first run the launcher loads the images from `images/docker-images-amd64.
 2. For B1: your host name without `https://`, the SMTP server, port (Enter for 465), login, the authorized
    sender address and the SMTP password (hidden while you type).
 3. `Your own future MK8DX administrator email:` the address you will sign in with.
-4. The menu: choose **1** for first setup. It starts the database, applies every migration of the catalog,
+4. The first setup then starts by itself. It starts the database, applies every migration of the catalog,
    adds the two reference sets and starts the website and API. The first run takes a few minutes.
 
-Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows the same menu once:
+Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows this menu; it stays open until you choose **0**:
 
 | Choice | Does |
 | --- | --- |
@@ -136,8 +136,10 @@ Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows the
 | 3 | status (prints the website address and, for A1, the local mail inbox) and the container state |
 | 4 | stop (keeps all data) |
 | 5 | make the saved administrator address the first administrator (after its first sign-in) |
-| 6 | backup to `$HOME/mk8dx-backups/<UTC time>` |
+| 6 | backup to `$HOME/mk8dx-backups/<UTC time>`, checked right away |
 | 7 | update: verified backup first, then pending migrations, then the new images |
+| 8 | show the website address (Windows: also opens it) |
+| 0 | close |
 
 ### Become the administrator
 

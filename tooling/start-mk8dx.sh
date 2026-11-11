@@ -91,20 +91,55 @@ if [ "$candidate" = yes ] && { [ "$offline_install" = yes ] || [ ! -e "$state" ]
   # The guided setup / "MK8DX beheer" in the browser (docs/install/A2_HOME_GUIDE_EN.md).
   exec "$python" tooling/setup_wizard.py --state-dir "$state"
 fi
+fresh=no
 if [ -e "$state" ]; then
   [ ! -L "$state" ] && [ -f "$state/operator-profile.json" ] || { echo 'Existing path has no safe operator profile.' >&2; exit 1; }
 else
-  "$python" tooling/install.py wizard --state-dir "$state"
+  fresh=yes
+  "$python" tooling/install.py wizard --state-dir "$state" || { echo 'The guided setup did not finish.' >&2; exit 1; }
 fi
-printf 'Choose: 1 first setup/resume, 2 start, 3 status, 4 stop, 5 create administrator after sign-in, 6 backup, 7 update with verified backup\n'
-read -r choice
-case "$choice" in
-  1) "$python" tooling/install.py setup --state-dir "$state" ;;
-  2) "$python" tooling/install.py start --state-dir "$state" ;;
-  3) "$python" tooling/install.py check --state-dir "$state" ;;
-  4) "$python" tooling/install.py stop --state-dir "$state" ;;
-  5) "$python" tooling/install.py admin --state-dir "$state" ;;
-  6) stamp=$(date -u +%Y%m%d-%H%M%S); "$python" tooling/lifecycle.py backup --state-dir "$state" --output "$HOME/mk8dx-backups/$stamp" ;;
-  7) stamp=$(date -u +%Y%m%d-%H%M%S); "$python" tooling/install.py upgrade --state-dir "$state" --backup-output "$HOME/mk8dx-backups/$stamp" ;;
-  *) echo 'Choose a displayed number.' >&2; exit 1 ;;
-esac
+route=$("$python" -c 'import json,sys; print(json.load(open(sys.argv[1])).get("route", ""))' "$state/operator-profile.json")
+origin=$("$python" -c 'import json,sys; print(json.load(open(sys.argv[1])).get("origin", ""))' "$state/operator-profile.json")
+flag=
+admin_label='Make me administrator (after you signed in once)'
+if [ "$route" = A2_OFFLINE ]; then
+  [ "$candidate" = yes ] || { echo 'This installation is an A2 home or club installation; start it from the mk8dx-a2 package.' >&2; exit 1; }
+  flag=--qa-offline-candidate
+  admin_label='Unlock the host page (first administrator, invitations)'
+fi
+step() {
+  label=$1; shift
+  printf '\n[..] %s\n' "$label"
+  if "$@"; then printf 'OK  Done.\n'; else printf '!!  That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.\n'; fi
+}
+backup() {
+  "$python" tooling/lifecycle.py backup --state-dir "$state" --output "$1" &&
+    "$python" tooling/lifecycle.py verify --backup "$1" &&
+    printf 'Private backup (keep it safe, never share it): %s\n' "$1"
+}
+if [ "$fresh" = yes ]; then
+  step 'First setup: database, keys and reference times (the first time takes a few minutes)' \
+    "$python" tooling/install.py setup --state-dir "$state" $flag
+fi
+while :; do
+  printf '\nWhat do you want to do?\n'
+  printf '  1  First setup, or finish an interrupted one\n  2  Start MK8DX\n  3  Check that everything works\n  4  Stop MK8DX\n'
+  printf '  5  %s\n' "$admin_label"
+  printf '  6  Make a backup (it is checked right away)\n  7  Update to this package (makes a checked backup first)\n'
+  printf '  8  Show the website address\n  0  Close\n'
+  printf 'Type a number and press Enter: '
+  read -r choice || exit 0
+  stamp=$(date -u +%Y%m%d-%H%M%S)
+  case "$choice" in
+    1) step 'First setup' "$python" tooling/install.py setup --state-dir "$state" $flag ;;
+    2) step 'Starting MK8DX' "$python" tooling/install.py start --state-dir "$state" $flag ;;
+    3) step 'Checking MK8DX' "$python" tooling/install.py check --state-dir "$state" $flag ;;
+    4) step 'Stopping MK8DX' "$python" tooling/install.py stop --state-dir "$state" $flag ;;
+    5) step "$admin_label" "$python" tooling/install.py admin --state-dir "$state" $flag ;;
+    6) step 'Making and checking a backup' backup "$HOME/mk8dx-backups/$stamp" ;;
+    7) step 'Checked backup, then the update' "$python" tooling/install.py upgrade --state-dir "$state" --backup-output "$HOME/mk8dx-backups/$stamp" $flag ;;
+    8) printf 'Website: %s\n' "$origin" ;;
+    0) exit 0 ;;
+    *) printf "'%s' is not one of the numbers above.\n" "$choice" ;;
+  esac
+done

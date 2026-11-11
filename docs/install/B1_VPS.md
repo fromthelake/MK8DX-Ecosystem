@@ -94,7 +94,7 @@ ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd6
 sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
 ```
 
-Kies **B1**, vul alleen je exacte hostnaam zonder `https://` in, de SMTP-host/poort `465`/login/afzender, en je **eigen toekomstige MK8DX-adminadres**. Het SMTP-wachtwoord verschijnt niet tijdens typen. De wizard maakt de rest en laadt de voorgebouwde images. Kies **1**. **Je ziet:** `https://jouw-hostnaam`, alle migraties uit de catalogus, de twee referentiesets, daarna gezonde services. **Als het afwijkt:** lees de begrensde fout. Een SMTP-readinessfout hoort bij mailverbinding of providerinstellingen; een certificaatfout bij DNS/poorten/TLS. Herhaal na reparatie dezelfde installatie, zonder nieuwe map/volume/sleutels. Voer `sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance` opnieuw uit en kies **3** voor status.
+Kies **B1**, vul alleen je exacte hostnaam zonder `https://` in, de SMTP-host/poort `465`/login/afzender, en je **eigen toekomstige MK8DX-adminadres**. Het SMTP-wachtwoord verschijnt niet tijdens typen. De wizard maakt de rest en laadt de voorgebouwde images; de eerste installatie start daarna vanzelf. **Je ziet:** `https://jouw-hostnaam`, alle migraties uit de catalogus, de twee referentiesets, daarna gezonde services. **Als het afwijkt:** lees de begrensde fout. Een SMTP-readinessfout hoort bij mailverbinding of providerinstellingen; een certificaatfout bij DNS/poorten/TLS. Herhaal na reparatie dezelfde installatie, zonder nieuwe map/volume/sleutels. Voer `sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance` opnieuw uit en kies **3** voor status.
 
 ## 8. Controleer publiek adres, mail en eigen administrator
 

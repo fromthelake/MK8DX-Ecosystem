@@ -54,7 +54,7 @@ Get-FileHash '.\mk8dx-host-local-v0.2.0-amd64.zip' -Algorithm SHA256
 
 Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\host. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
 
-4. Dubbelklik op Start-MK8DX.cmd. Het eerste venster vraagt “Where will MK8DX run?” en noemt A1, A2 en B1. Typ A1 en druk op Enter. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. Kies in het menu 1 voor de eerste installatie. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
+4. Dubbelklik op Start-MK8DX.cmd. Het eerste venster vraagt “Where will MK8DX run?” en noemt A1, A2 en B1. Typ A1 en druk op Enter. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. De eerste installatie start daarna vanzelf. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
 
 Schrijf het getoonde adres bij ‘Web origin’ en het adres bij ‘Local mail inbox’ op. Het webadres lijkt op http://127.0.0.1:18080 en de testbrievenbus op http://127.0.0.1:18025. De laatste cijfers kunnen bij jou anders zijn. Gebruik altijd de werkelijk getoonde adressen.
 
@@ -186,7 +186,7 @@ Vóór de pingregels moet jouw host-IP staan. De ping zelf mag door een firewall
 
 3. Voor aanmeldlinks van andere gebruikers heb je een echte maildienst nodig. Verzamel bij je mailprovider de SMTP-servernaam, poort 465 met impliciete TLS, login, wachtwoord en toegestaan afzenderadres. Een dienst die alleen STARTTLS op poort 587 aanbiedt, past niet bij de huidige wizard. Je eigen toekomstige MK8DX-beheeradres is een afzonderlijk gegeven. Gebruik Mailpit niet als gedeelde aanmeldbrievenbus.
 
-4. Dubbelklik op de host op Start-MK8DX-LAN.cmd. Kies A2 en bevestig mk8dx.home.arpa, of vul precies de naam uit je hosts-regels in. Vul daarnaast je echte host-IPv4 in. Daarna vraagt de wizard de mailgegevens en je eigen toekomstige beheeradres. Het mailwachtwoord blijft tijdens typen verborgen. Kies vervolgens 1. De aparte gegevensmap is %LOCALAPPDATA%\MK8DX\LAN. Het getoonde webadres hoort https://mk8dx.home.arpa te zijn.
+4. Dubbelklik op de host op Start-MK8DX-LAN.cmd. Kies A2 en bevestig mk8dx.home.arpa, of vul precies de naam uit je hosts-regels in. Vul daarnaast je echte host-IPv4 in. Daarna vraagt de wizard de mailgegevens en je eigen toekomstige beheeradres. Het mailwachtwoord blijft tijdens typen verborgen. De eerste installatie start daarna vanzelf. De aparte gegevensmap is %LOCALAPPDATA%\MK8DX\LAN. Het getoonde webadres hoort https://mk8dx.home.arpa te zijn.
 
 Gebruik op de host en de tweede pc dit HTTPS-adres ook in LiveTrial. De standaardpoort 443 hoef je niet achter de naam te schrijven. Het gevonden IPv4-adres gebruik je voor de hosts-regel en de netwerkconfiguratie, niet als communityadres in LiveTrial. Deze netwerkroute gebruikt je echte mailprovider: aanmeldmail verschijnt in de gewone inbox van het opgegeven e-mailadres. Er is hier geen lokaal Mailpit-adres voor gebruikers.
 
@@ -607,7 +607,7 @@ De bestaande Linux-starter is:
 
 sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
-Kies A1 en daarna 1. De starter toont het volledige websiteadres bij ‘Web origin’ en Mailpit bij ‘Local mail inbox’. Beide adressen met 127.0.0.1 werken op deze Linux-computer. Open het websiteadres in de browser en Mailpit in een tweede tab voor de aanmeldlink. Als de site start, kun je de website en browserscanner daar lokaal gebruiken. Controleer zelf of aanmelden, een inzending en de websiteweergave echt werken. Deze volledige lokale proef is voor Linux nog niet uitgevoerd; een geslaagde Docker-start alleen bewijst die keten niet.
+Typ A1; de eerste installatie start vanzelf. De starter toont het volledige websiteadres bij ‘Web origin’ en Mailpit bij ‘Local mail inbox’. Beide adressen met 127.0.0.1 werken op deze Linux-computer. Open het websiteadres in de browser en Mailpit in een tweede tab voor de aanmeldlink. Als de site start, kun je de website en browserscanner daar lokaal gebruiken. Controleer zelf of aanmelden, een inzending en de websiteweergave echt werken. Deze volledige lokale proef is voor Linux nog niet uitgevoerd; een geslaagde Docker-start alleen bewijst die keten niet.
 
 Wat nog ontwikkeling vraagt
 

@@ -54,7 +54,7 @@ Get-FileHash '.\mk8dx-host-local-v0.2.0-amd64.zip' -Algorithm SHA256
 
 Compare the entire value with the line for that file in SHA256SUMS.txt. Stop and request a correct copy if they differ. Right-click the ZIP and choose “Extract All”. A suitable destination is Documents\MK8DX\host. Open the extracted folder containing Start-MK8DX.cmd and compose.yaml.
 
-4. Double-click Start-MK8DX.cmd. The first window asks “Where will MK8DX run?” and lists A1, A2 and B1. Type A1 and press Enter. Enter the email address you will later use to sign in and become an administrator. Choose 1 from the menu for first setup. MK8DX loads the supplied programs and creates its own keys, a database, and the standard reference data. The first start may take a while.
+4. Double-click Start-MK8DX.cmd. The first window asks “Where will MK8DX run?” and lists A1, A2 and B1. Type A1 and press Enter. Enter the email address you will later use to sign in and become an administrator. The first setup then starts by itself. MK8DX loads the supplied programs and creates its own keys, a database, and the standard reference data. The first start may take a while.
 
 Write down the address shown as “Web origin” and the one shown as “Local mail inbox”. The website address may look like http://127.0.0.1:18080 and the test inbox like http://127.0.0.1:18025. Your final digits may differ. Always use the addresses actually shown.
 
@@ -186,7 +186,7 @@ Your host IP should appear before the ping results. The firewall may block the p
 
 3. Sign-in links for other users need a real email service. Get the outgoing SMTP server name, port 465 with implicit TLS, login, password, and authorized sender address from your mail provider. A service offering only STARTTLS on port 587 does not fit the current wizard. Your future MK8DX administrator address is a separate value. Do not use Mailpit as a shared login inbox.
 
-4. On the host, double-click Start-MK8DX-LAN.cmd. Choose A2 and confirm mk8dx.home.arpa, or enter exactly the name in your hosts files. Enter the host's real IPv4 address separately. The wizard then asks for the mail values and your own future administrator address. The mail password is hidden as you type. Choose 1. The separate data folder is %LOCALAPPDATA%\MK8DX\LAN. The displayed website address should be https://mk8dx.home.arpa.
+4. On the host, double-click Start-MK8DX-LAN.cmd. Choose A2 and confirm mk8dx.home.arpa, or enter exactly the name in your hosts files. Enter the host's real IPv4 address separately. The wizard then asks for the mail values and your own future administrator address. The mail password is hidden as you type. The first setup starts by itself. The separate data folder is %LOCALAPPDATA%\MK8DX\LAN. The displayed website address should be https://mk8dx.home.arpa.
 
 Use this HTTPS address in LiveTrial on the host and second PC too. You do not need to write its standard port 443 after the name. Use the IPv4 address you found for the hosts entry and network settings, not as the community address in LiveTrial. This network route uses your real mail provider: sign-in mail arrives in the regular inbox of the address you entered. Users have no local Mailpit address here.
 
@@ -607,7 +607,7 @@ The existing Linux starter is:
 
 sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
-Choose A1, then 1. The starter shows the full website address as “Web origin” and Mailpit as “Local mail inbox”. Both 127.0.0.1 addresses work on this Linux computer. Open the website in your browser and Mailpit in a second tab for the sign-in link. If the site starts, you can use the website and browser scanner there locally. Check for yourself that sign-in, a submission, and its website view actually work. That complete local chain has not been run on Linux for this release; running containers alone do not prove it.
+Type A1; the first setup starts by itself. The starter shows the full website address as “Web origin” and Mailpit as “Local mail inbox”. Both 127.0.0.1 addresses work on this Linux computer. Open the website in your browser and Mailpit in a second tab for the sign-in link. If the site starts, you can use the website and browser scanner there locally. Check for yourself that sign-in, a submission, and its website view actually work. That complete local chain has not been run on Linux for this release; running containers alone do not prove it.
 
 What still needs development
 

@@ -130,7 +130,8 @@ if ($candidate -and ($offlineInstall -or -not (Test-Path -LiteralPath $StateDir)
   & $python tooling/setup_wizard.py --state-dir $StateDir
   exit $LASTEXITCODE
 }
-if (Test-Path -LiteralPath $StateDir) {
+$fresh = -not (Test-Path -LiteralPath $StateDir)
+if (-not $fresh) {
   $item = Get-Item -LiteralPath $StateDir
   if (($item.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0) { throw 'Installation path is a link; use a normal folder.' }
   if (-not (Test-Path -LiteralPath (Join-Path $StateDir 'operator-profile.json'))) {
@@ -140,28 +141,72 @@ if (Test-Path -LiteralPath $StateDir) {
   & $python tooling/install.py wizard --state-dir $StateDir
   if ($LASTEXITCODE -ne 0) { throw 'The guided setup did not finish.' }
 }
-$offline = (Get-Content -LiteralPath (Join-Path $StateDir 'operator-profile.json') -Raw | ConvertFrom-Json).route -eq 'A2_OFFLINE'
+$profileData = Get-Content -LiteralPath (Join-Path $StateDir 'operator-profile.json') -Raw | ConvertFrom-Json
+$offline = $profileData.route -eq 'A2_OFFLINE'
 $qaFlag = @()
 if ($offline) {
-  if (-not $candidate) { throw 'This package does not include the A2 offline candidate; use the A2 offline QA package.' }
+  if (-not $candidate) { throw 'This installation is an A2 home or club installation; start it from the mk8dx-a2 package.' }
   $qaFlag = @('--qa-offline-candidate')
-  Write-Host 'Choose 1 first setup/resume, 2 start, 3 status, 4 stop, 5 unlock the host page (first administrator, invitations), 6 backup, 7 update with verified backup.'
-} else {
-  Write-Host 'Choose 1 first setup/resume, 2 start, 3 status, 4 stop, 5 create administrator after sign-in, 6 backup, 7 update with verified backup.'
 }
-$choice = Read-Host 'Number'
-$actions = @{ '1' = 'setup'; '2' = 'start'; '3' = 'check'; '4' = 'stop'; '5' = 'admin' }
-if ($choice -eq '6' -or $choice -eq '7') {
+$adminLabel = if ($offline) { 'Unlock the host page (first administrator, invitations)' } else { 'Make me administrator (after you signed in once)' }
+
+function Invoke-MK8DXStep([string]$Label, [scriptblock]$Body) {
+  Write-Host ''
+  Write-Step '..' $Label
+  & $Body
+  if ($LASTEXITCODE -ne 0) {
+    Write-Host '!!  That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.' -ForegroundColor Red
+    return $false
+  }
+  Write-Host 'OK  Done.' -ForegroundColor Green
+  return $true
+}
+function Invoke-MK8DXBackup([string]$Output, [switch]$Update) {
+  if ($Update) {
+    & $python tooling/install.py upgrade --state-dir $StateDir --backup-output $Output @qaFlag
+  } else {
+    & $python tooling/lifecycle.py backup --state-dir $StateDir --output $Output
+    if ($LASTEXITCODE -eq 0) { & $python tooling/lifecycle.py verify --backup $Output }
+  }
+  if ($LASTEXITCODE -eq 0) { Write-Host "Private backup (keep it safe, never share it): $Output" }
+}
+
+if ($fresh) {
+  # A new installation goes straight to its first setup; the menu follows afterwards.
+  [void](Invoke-MK8DXStep 'First setup: database, keys and reference times (the first time takes a few minutes)' {
+    & $python tooling/install.py setup --state-dir $StateDir @qaFlag })
+}
+while ($true) {
+  Write-Host ''
+  Write-Host 'What do you want to do?' -ForegroundColor Cyan
+  Write-Host '  1  First setup, or finish an interrupted one'
+  Write-Host '  2  Start MK8DX'
+  Write-Host '  3  Check that everything works'
+  Write-Host '  4  Stop MK8DX'
+  Write-Host "  5  $adminLabel"
+  Write-Host '  6  Make a backup (it is checked right away)'
+  Write-Host '  7  Update to this package (makes a checked backup first)'
+  Write-Host '  8  Open the website in your browser'
+  Write-Host '  0  Close this window'
+  $choice = (Read-Host 'Type a number and press Enter').Trim()
   $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
   $output = Join-Path $env:USERPROFILE "Documents\MK8DX-backups\$stamp"
-  if ($choice -eq '6') {
-    & $python tooling/lifecycle.py backup --state-dir $StateDir --output $output
-  } else {
-    & $python tooling/install.py upgrade --state-dir $StateDir --backup-output $output @qaFlag
+  switch ($choice) {
+    '1' { [void](Invoke-MK8DXStep 'First setup' { & $python tooling/install.py setup --state-dir $StateDir @qaFlag }) }
+    '2' { [void](Invoke-MK8DXStep 'Starting MK8DX' { & $python tooling/install.py start --state-dir $StateDir @qaFlag }) }
+    '3' { [void](Invoke-MK8DXStep 'Checking MK8DX' { & $python tooling/install.py check --state-dir $StateDir @qaFlag }) }
+    '4' { [void](Invoke-MK8DXStep 'Stopping MK8DX' { & $python tooling/install.py stop --state-dir $StateDir @qaFlag }) }
+    '5' { [void](Invoke-MK8DXStep $adminLabel { & $python tooling/install.py admin --state-dir $StateDir @qaFlag }) }
+    '6' { [void](Invoke-MK8DXStep 'Making and checking a backup' { Invoke-MK8DXBackup $output }) }
+    '7' { [void](Invoke-MK8DXStep 'Checked backup, then the update' { Invoke-MK8DXBackup $output -Update }) }
+    '8' {
+      Write-Host "Website: $($profileData.origin)"
+      $mail = Get-Content -LiteralPath (Join-Path $StateDir 'compose.env') -ErrorAction SilentlyContinue |
+        Where-Object { $_ -match '^MK8DX_MAILPIT_PORT=' } | ForEach-Object { ($_ -split '=', 2)[1].Trim("'") }
+      if ($profileData.route -eq 'A1' -and $mail) { Write-Host "Sign-in mail for this trial arrives in the local inbox: http://127.0.0.1:$mail" }
+      Start-Process $profileData.origin
+    }
+    '0' { exit 0 }
+    default { Write-Host "'$choice' is not one of the numbers above." -ForegroundColor Yellow }
   }
-  if ($LASTEXITCODE -ne 0) { throw 'Backup/update failed. Keep any partial output private and investigate.' }
-  Write-Host "Private backup: $output"
-} elseif ($actions.ContainsKey($choice)) {
-  & $python tooling/install.py $actions[$choice] --state-dir $StateDir @qaFlag
-  if ($LASTEXITCODE -ne 0) { throw 'The selected step failed. Read the error above and retry only that step.' }
-} else { throw 'Choose one of the displayed numbers.' }
+}
