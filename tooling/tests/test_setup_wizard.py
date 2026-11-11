@@ -153,6 +153,46 @@ class WizardServerTest(unittest.TestCase):
         with patch.object(self.wizard, "addresses", return_value=[{"ip": "192.168.50.30"}]):
             self.assertTrue(self.wizard.status()["addressActive"])
 
+    def test_update_is_its_own_route_and_moves_the_tasks_itself(self):
+        # Owner 11-11: no clicking through people and cards after an update; the start window says it worked.
+        import io
+        import contextlib
+        sys.path.insert(0, str(setup_wizard.ROOT / "tooling"))
+        import lifecycle  # noqa: F401  (the job imports verify_backup from it)
+        from tooling import auto_backup
+        offer = {"available": True, "olderPackage": False, "from": "r10", "to": "r20"}
+        calls, printed = [], io.StringIO()
+        with patch.object(self.wizard, "installed", return_value=True),                 patch.object(install, "update_offer", return_value=offer),                 patch.object(auto_backup, "default_backup_root", return_value=Path(self.tmp.name) / "backups"),                 patch.object(auto_backup, "backup_with_stored_code", side_effect=lambda state, out: out),                 patch("lifecycle.verify_backup", return_value=None),                 patch.object(self.wizard, "run_cli", side_effect=lambda *a: calls.append(a)),                 patch.object(self.wizard, "finish", return_value={"task": True, "certificateRenewal": True}) as finish,                 contextlib.redirect_stdout(printed):
+            self.wizard.start_update()
+            for _ in range(100):
+                if self.wizard.job.done or self.wizard.job.error:
+                    break
+                threading.Event().wait(0.05)
+        snapshot = self.wizard.job.snapshot()
+        self.assertTrue(snapshot["done"], snapshot["error"])
+        self.assertEqual(calls[0][0], "update-package")
+        finish.assert_called_once_with(shortcut=True)
+        self.assertEqual((snapshot["updated"]["from"], snapshot["updated"]["to"], snapshot["updated"]["tasks"]),
+                         ("r10", "r20", True))
+        self.assertIn("MK8DX update completed: r10 -> r20", printed.getvalue())
+
+    def test_a_failed_update_says_so_in_the_start_window(self):
+        import io
+        import contextlib
+        sys.path.insert(0, str(setup_wizard.ROOT / "tooling"))
+        from tooling import auto_backup
+        offer = {"available": True, "olderPackage": False, "from": "r10", "to": "r20"}
+        printed = io.StringIO()
+        with patch.object(self.wizard, "installed", return_value=True),                 patch.object(install, "update_offer", return_value=offer),                 patch.object(auto_backup, "default_backup_root", return_value=Path(self.tmp.name) / "backups"),                 patch.object(auto_backup, "backup_with_stored_code", side_effect=RuntimeError("Docker is not running")),                 patch.object(self.wizard, "finish") as finish, contextlib.redirect_stdout(printed):
+            self.wizard.start_update()
+            for _ in range(100):
+                if self.wizard.job.done or self.wizard.job.error:
+                    break
+                threading.Event().wait(0.05)
+        self.assertIn("Docker is not running", self.wizard.job.snapshot()["error"])
+        finish.assert_not_called()
+        self.assertIn("MK8DX update FAILED: Docker is not running", printed.getvalue())
+
     def test_move_runs_the_installer_address_change(self):
         with self.assertRaisesRegex(ValueError, "not installed"):
             self.wizard.start_move("192.168.1.50")

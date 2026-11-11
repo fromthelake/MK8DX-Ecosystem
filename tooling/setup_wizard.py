@@ -109,11 +109,19 @@ class HostPage:
             raise RuntimeError("The host page did not accept the unlock")
 
 
+def console(message: str, ok: bool | None = None) -> None:
+    """A line for the start window (the person sees it after closing the browser)."""
+    line = "=" * min(78, max(40, len(message) + 4))
+    mark = "" if ok is None else ("OK  " if ok else "!!  ")
+    print(f"\n{line}\n  {mark}{message}\n{line}\n", flush=True)
+
+
 class Job:
     def __init__(self):
         self.lock = threading.Lock()
         self.lines, self.phase, self.done, self.error = [], "idle", False, None
         self.restored = False
+        self.updated = None
 
     def log(self, text):
         with self.lock:
@@ -123,7 +131,7 @@ class Job:
     def snapshot(self):
         with self.lock:
             return {"phase": self.phase, "done": self.done, "error": self.error, "lines": self.lines[-40:],
-                    "restored": self.restored}
+                    "restored": self.restored, "updated": self.updated}
 
 
 class Wizard:
@@ -243,6 +251,8 @@ class Wizard:
 
         def work():
             job = self.job
+            started = time.monotonic()
+            console(f"MK8DX update started: {offer.get('from') or 'earlier version'} -> {offer.get('to') or 'this folder'}")
             try:
                 from tooling import auto_backup
                 from lifecycle import verify_backup
@@ -259,10 +269,21 @@ class Wizard:
                 self.host = None
                 job.phase = "verify"
                 job.log("Website and setup page are reachable")
+                # What "Finish" did in the full wizard: tasks and the shortcut now use this folder.
+                job.phase = "finish"
+                result = self.finish(shortcut=True)
+                job.log(f"Automatic backup, certificate renewal and shortcut now use {ROOT}")
+                job.updated = {"from": offer.get("from"), "to": offer.get("to"), "backup": str(output),
+                               "tasks": bool(result.get("task")) and bool(result.get("certificateRenewal"))}
                 job.phase = "done"
                 job.done = True
+                console(f"MK8DX update completed: {offer.get('from') or 'earlier version'} -> "
+                        f"{offer.get('to') or 'this folder'} in {round(time.monotonic() - started)} s. "
+                        f"Backup from just before: {output}", ok=True)
             except Exception as error:  # surfaced in the page, never a stack trace
                 job.error = str(error)
+                console(f"MK8DX update FAILED: {error}. Nothing after the failed step was changed; "
+                        "see the details in the browser.", ok=False)
         self.job = Job()
         threading.Thread(target=work, daemon=True).start()
 

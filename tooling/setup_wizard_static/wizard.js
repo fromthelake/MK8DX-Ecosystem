@@ -89,6 +89,10 @@ const T = {
     updateGo: "Bijwerken", updateLater: "Niet nu", updateTitleRun: "Bijwerken", updatePrevious: "een eerdere versie",
     updateDone: "MK8DX draait de nieuwe versie. Klik op Volgende en daarna op Voltooien, zodat de automatische taken en de snelkoppeling de nieuwe map gebruiken.",
     phase_backup: "Back-up maken en controleren", phase_update: "Nieuwe versie installeren en starten",
+    phase_finish: "Automatische taken en snelkoppeling bijwerken",
+    updatedTitle: "MK8DX is bijgewerkt", updatedLead: "MK8DX draait nu {to} (was {from}). Alle mensen, tijden, toernooien en inloggingen zijn bewaard.",
+    updatedTasks: "De automatische back-up, de certificaatvernieuwing en de snelkoppeling 'MK8DX beheer' gebruiken nu deze map. De oude map mag je verwijderen.",
+    updatedBackup: "Back-up van vlak voor de update:", updatedManage: "Naar MK8DX beheer",
     moveTitle: "Deze computer heeft een nieuw netwerkadres",
     moveLead: "MK8DX stond op {old}, maar deze computer gebruikt nu een ander adres (bijvoorbeeld na een nieuwe router of een ander netwerk). Verhuis MK8DX naar:",
     moveGo: "Verhuizen", moveTitleRun: "Verhuizen", phase_move: "Naar het nieuwe adres verhuizen (Windows vraagt toestemming)",
@@ -179,6 +183,10 @@ const T = {
     updateGo: "Update", updateLater: "Not now", updateTitleRun: "Updating", updatePrevious: "an earlier version",
     updateDone: "MK8DX runs the new version. Click Next and then Finish, so the automatic tasks and the shortcut use the new folder.",
     phase_backup: "Making and checking a backup", phase_update: "Installing and starting the new version",
+    phase_finish: "Updating the automatic tasks and the shortcut",
+    updatedTitle: "MK8DX is updated", updatedLead: "MK8DX now runs {to} (was {from}). All people, times, tournaments and sign-ins are kept.",
+    updatedTasks: "The automatic backup, the certificate renewal and the 'MK8DX beheer' shortcut now use this folder. You may delete the old folder.",
+    updatedBackup: "Backup from just before the update:", updatedManage: "Go to MK8DX beheer",
     moveTitle: "This computer has a new network address",
     moveLead: "MK8DX was on {old}, but this computer now uses another address (for example after a new router or another network). Move MK8DX to:",
     moveGo: "Move", moveTitleRun: "Moving", phase_move: "Moving to the new address (Windows asks for permission)",
@@ -298,6 +306,16 @@ const views = {
     main.append(codeField);
     ready();
   },
+  updated() {
+    const u = state.updated || {};
+    main.replaceChildren(el("h1", "", T.updatedTitle),
+      el("p", "lead", T.updatedLead.replace("{to}", u.to || "?").replace("{from}", u.from || T.updatePrevious)),
+      el("p", "", T.updatedTasks), el("p", "muted", T.updatedBackup), el("p", "mono", u.backup || ""));
+    const manage = el("button", "secondary small", T.updatedManage); manage.type = "button";
+    manage.addEventListener("click", async () => { await manageFlow(); render(); });
+    main.append(manage);
+    setButtons({ next: T.close, back: false });
+  },
   update() {
     const text = T.updateLead.replace("{to}", state.update.to || "?").replace("{from}", state.update.from || T.updatePrevious);
     main.replaceChildren(el("h1", "", T.updateTitle), el("p", "lead", text), el("p", "", T.updateSteps),
@@ -353,7 +371,7 @@ const views = {
     toggle.type = "button"; toggle.addEventListener("click", () => log.classList.toggle("hidden"));
     main.replaceChildren(el("h1", "", state.updating ? T.updateTitleRun : state.moving ? T.moveTitleRun : state.restoring ? T.restoreTitleRun : T.installTitle), el("p", "lead", T.installLead), bar, phase, latest, toggle, log);
     setButtons({ nextEnabled: false, back: false });
-    const order = state.updating ? ["idle", "backup", "update", "verify", "done"] : state.moving ? ["idle", "move", "verify", "done"] : ["idle", state.restoring ? "restore" : "prepare", "network", "install", "verify", "done"];
+    const order = state.updating ? ["idle", "backup", "update", "finish", "done"] : state.moving ? ["idle", "move", "verify", "done"] : ["idle", state.restoring ? "restore" : "prepare", "network", "install", "verify", "done"];
     // The phase name with its own running clock, and the latest log line underneath: visibly alive.
     let shown = null; let since = Date.now();
     const clock = () => { const s = Math.floor((Date.now() - since) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
@@ -371,6 +389,7 @@ const views = {
           main.append(errorBox(job.error === "wrong-recovery-code" ? T.restoreWrongCode : job.error)); log.classList.remove("hidden");
           state.restored = job.restored; setButtons({ next: T.retry, back: !job.restored }); state.installFailed = true; return;
         }
+        if (job.done && state.updating) { state.updated = job.updated || {}; go("updated"); return; }
         if (job.done) { fill.className = "w4"; phase.textContent = state.updating ? T.updateDone : state.moving ? T.moveDone : state.restoring ? T.restoreDone : T.installDone; setButtons({ back: false }); return; }
         setTimeout(poll, 1000);
       } catch (error) { setTimeout(poll, 2000); }
@@ -541,6 +560,8 @@ const actions = {
   restore() { if (state.backup && state.restoreCode) forward(); },
   move() { if (state.ip) forward(); else render(); },
   update() { state.updating = true; forward(); },
+  async updated() { await api("/api/close", {}).catch(() => undefined); window.close();
+    main.replaceChildren(el("h1", "", T.updatedTitle), el("p", "lead", T.finished)); setButtons({ nextEnabled: false, back: false }); },
   network() {
     // Coming back after a failed attempt (for example a mistyped recovery code) starts a new job.
     if (state.installFailed) { state.installFailed = false; state.installStarted = false; }
@@ -621,7 +642,8 @@ async function manageFlow() {
       document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
     } else if (status.installed && status.update && status.update.available) {
       // A newer package opened on this installation: offer the update first ("Not now" goes to administration).
-      state.update = status.update; state.flow = ["update", "install", "people", "cards", "done"]; state.step = "update";
+      // An update is its own short route: offer, progress, done. The tasks are moved by the update itself.
+      state.update = status.update; state.flow = ["update", "install", "updated"]; state.step = "update";
       document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
     } else if (status.installed) {
       await manageFlow();
