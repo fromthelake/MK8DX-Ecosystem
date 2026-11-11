@@ -134,12 +134,18 @@ def wizard(state, route):
     if route == "A3":
         smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = "", 0, "", "", ""
     else:
+        print("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
+              "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.")
         smtp_host = input("Mailbox SMTP server name: ").strip()
         smtp_port = int(input("SMTP implicit-TLS port [465]: ").strip() or "465")
         smtp_user = input("Mailbox SMTP login: ").strip()
         smtp_password = getpass.getpass("Mailbox SMTP password (hidden): ")
         smtp_from = input("Authorized sender address: ").strip()
-    admin_email = input("Your own future MK8DX administrator email: ").strip()
+    admin_email = ""
+    while "@" not in admin_email or " " in admin_email or admin_email.startswith("@"):
+        if admin_email:
+            print("That does not look like one email address; try again.")
+        admin_email = input("Your own future MK8DX administrator email: ").strip()
     create(state, route, origin, admin_email, host, port, db_name, db_user,
            db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from)
 

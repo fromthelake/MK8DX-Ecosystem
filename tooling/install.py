@@ -1018,6 +1018,8 @@ def main():
                 args.lan_bind_address = input("This Windows host's private IPv4 address (for example 192.168.0.50): ").strip()
             else:
                 args.domain = input("Public website host name (without https://): ").strip()
+            print("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
+                  "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.")
             args.smtp_host = input("SMTP server name supplied by your mail provider: ").strip()
             args.smtp_port = int(input("SMTP implicit-TLS port [465]: ").strip() or "465")
             args.smtp_user = input("SMTP login (not your MK8DX admin account): ").strip()
@@ -1026,9 +1028,11 @@ def main():
         else:
             args.smtp_password = ""
         if route != "A2O":  # A2 offline has no email: the administrator is created on the host page
-            args.admin_email = input("Your own future MK8DX administrator email: ").strip()
-            if "@" not in args.admin_email or " " in args.admin_email:
-                raise SystemExit("Enter one valid-looking email address")
+            args.admin_email = ""
+            while "@" not in args.admin_email or " " in args.admin_email or args.admin_email.startswith("@"):
+                if args.admin_email:
+                    print("That does not look like one email address; try again.")
+                args.admin_email = input("Your own future MK8DX administrator email: ").strip()
     if args.action == "adopt":
         adopt(args.state_dir)
         return
@@ -1179,3 +1183,5 @@ if __name__ == "__main__":
         main()
     except (OSError, ValueError, subprocess.CalledProcessError, KeyError, json.JSONDecodeError) as error:
         raise SystemExit(f"Installation step stopped: {error}") from None
+    except (EOFError, KeyboardInterrupt):
+        raise SystemExit("Setup cancelled. Start the same file again to continue.") from None
