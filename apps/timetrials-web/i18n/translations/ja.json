@@ -4916,6 +4916,11 @@
   "PIN (4 digits)": "PIN（4桁）",
   "PIN required": "PIN が必要です",
   "Too many PIN attempts. Wait before trying again.": "PIN の試行回数が多すぎます。しばらく待ってからもう一度お試しください。",
-  "This account signs in afresh every time.": "このアカウントは毎回あらためてサインインします。"
+  "This account signs in afresh every time.": "このアカウントは毎回あらためてサインインします。",
+  "Dismiss this live request": "このライブリクエストを破棄",
+  "Click again to dismiss": "もう一度クリックして破棄",
+  "Dismissing removes this live request from the list. It was never public and its races are not scored.": "破棄すると、このライブリクエストは一覧から削除されます。公開されたことはなく、レースは集計されません。",
+  "Dismissing the live request…": "ライブリクエストを破棄しています…",
+  "The live request could not be dismissed.": "ライブリクエストを破棄できませんでした。"
  }
 }

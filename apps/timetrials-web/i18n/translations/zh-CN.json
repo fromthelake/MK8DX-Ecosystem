@@ -4916,6 +4916,11 @@
   "PIN (4 digits)": "PIN（4 位数字）",
   "PIN required": "需要 PIN",
   "Too many PIN attempts. Wait before trying again.": "PIN 尝试次数过多。请稍后再试。",
-  "This account signs in afresh every time.": "此账户每次都需要重新登录。"
+  "This account signs in afresh every time.": "此账户每次都需要重新登录。",
+  "Dismiss this live request": "忽略此直播请求",
+  "Click again to dismiss": "再次点击以忽略",
+  "Dismissing removes this live request from the list. It was never public and its races are not scored.": "忽略会将此直播请求从列表中移除。它从未公开，其比赛不计分。",
+  "Dismissing the live request…": "正在忽略直播请求…",
+  "The live request could not be dismissed.": "无法忽略直播请求。"
  }
 }

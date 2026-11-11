@@ -4916,6 +4916,11 @@
   "PIN (4 digits)": "PIN-код (4 цифры)",
   "PIN required": "Нужен PIN-код",
   "Too many PIN attempts. Wait before trying again.": "Слишком много попыток ввода PIN-кода. Подождите и попробуйте снова.",
-  "This account signs in afresh every time.": "Эта учётная запись каждый раз входит заново."
+  "This account signs in afresh every time.": "Эта учётная запись каждый раз входит заново.",
+  "Dismiss this live request": "Отклонить этот Live-запрос",
+  "Click again to dismiss": "Нажмите ещё раз, чтобы отклонить",
+  "Dismissing removes this live request from the list. It was never public and its races are not scored.": "Отклонение убирает этот Live-запрос из списка. Он никогда не был публичным, и его гонки не засчитываются.",
+  "Dismissing the live request…": "Live-запрос отклоняется…",
+  "The live request could not be dismissed.": "Не удалось отклонить Live-запрос."
  }
 }
