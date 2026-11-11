@@ -4,7 +4,9 @@ import json
 import os
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 from cryptography import x509
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
@@ -48,7 +50,7 @@ class CaLifecycleTest(unittest.TestCase):
             self.assertEqual(second["origin"], "https://10.2.3.4")
             self.assertNotEqual((original / "offline-ca/serving/intermediate.pem").read_bytes(),
                                 (restored / "offline-ca/serving/intermediate.pem").read_bytes())
-            self.assertIn("10.2.3.4", (restored / "offline-ca/setup/index.html").read_text())
+            self.assertIn("10.2.3.4", (restored / "offline-ca/setup/index.html").read_text(encoding="utf-8"))
             self.assertEqual(x509.load_pem_x509_certificate(
                 (original / "offline-ca/serving/root.pem").read_bytes()),
                 x509.load_pem_x509_certificate(
@@ -76,6 +78,44 @@ class CaLifecycleTest(unittest.TestCase):
             metadata = json.loads((state / "offline-ca/metadata.json").read_text())
             self.assertEqual(metadata["intermediateExpiresAt"],
                              result["intermediateExpiresAt"])
+
+    def test_rotation_restores_old_signer_when_a_replace_fails(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary) / "state"
+            state.mkdir()
+            ca.provision(state, "172.20.1.2", protect=self.protect)
+            paths = [state / "offline-ca/serving/intermediate.pem",
+                     state / "offline-ca/serving/intermediate.key",
+                     state / "offline-ca/metadata.json"]
+            before = [path.read_bytes() for path in paths]
+            native_replace = os.replace
+            calls = 0
+
+            def fail_second_replace(source, destination):
+                nonlocal calls
+                calls += 1
+                if calls == 2:
+                    raise OSError("injected replacement failure")
+                return native_replace(source, destination)
+
+            with patch.object(lifecycle.os, "replace", side_effect=fail_second_replace):
+                with self.assertRaisesRegex(OSError, "injected replacement failure"):
+                    lifecycle.rotate_intermediate(state, unprotect=self.unprotect)
+            self.assertEqual([path.read_bytes() for path in paths], before)
+            lifecycle.validate_signer(state, unprotect=self.unprotect)
+
+    def test_expired_signer_can_be_checked_only_for_rotation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary) / "state"
+            state.mkdir()
+            ca.provision(state, "172.20.1.2", protect=self.protect)
+            future = datetime.now(timezone.utc) + timedelta(days=8)
+            with patch.object(lifecycle, "datetime") as clock:
+                clock.now.return_value = future
+                with self.assertRaisesRegex(ValueError, "outside its validity"):
+                    lifecycle.validate_signer(state, unprotect=self.unprotect)
+                self.assertIn("rotationDueAt", lifecycle.validate_signer(
+                    state, unprotect=self.unprotect, allow_expired=True))
 
     def test_mismatched_signer_refuses_recovery_export_and_start_validation(self):
         with tempfile.TemporaryDirectory() as temporary:

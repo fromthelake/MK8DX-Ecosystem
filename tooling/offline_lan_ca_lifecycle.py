@@ -64,7 +64,8 @@ def _derive(passphrase: str, salt: bytes) -> bytes:
 
 
 def validate_signer(state_dir: Path,
-                    *, unprotect: Callable[[bytes], bytes] = ca.unprotect_root) -> dict:
+                    *, unprotect: Callable[[bytes], bytes] = ca.unprotect_root,
+                    allow_expired: bool = False) -> dict:
     root_key, root, metadata = _material(state_dir, unprotect)
     serving = ca.safe_private_path(state_dir) / "offline-ca/serving"
     cert = x509.load_pem_x509_certificate(_regular(serving / "intermediate.pem"))
@@ -76,7 +77,7 @@ def validate_signer(state_dir: Path,
     root.public_key().verify(cert.signature, cert.tbs_certificate_bytes,
                              ec.ECDSA(cert.signature_hash_algorithm))
     now = datetime.now(timezone.utc)
-    if cert.not_valid_before_utc > now or cert.not_valid_after_utc <= now:
+    if cert.not_valid_before_utc > now or (not allow_expired and cert.not_valid_after_utc <= now):
         raise ValueError("Offline signer is outside its validity period")
     expected = [x509.IPAddress(ca.ipaddress.ip_network(f"{metadata['lanIp']}/32"))]
     if cert.extensions.get_extension_for_class(x509.NameConstraints).value.permitted_subtrees != expected or \
@@ -156,17 +157,97 @@ def rotate_intermediate(state_dir: Path,
     serving = ca.safe_private_path(state_dir) / "offline-ca/serving"
     paths = (("intermediate.pem", signer_cert.public_bytes(serialization.Encoding.PEM)),
              ("intermediate.key", ca._private_pem(signer_key)))
-    prepared = []
-    for name, content in paths:
-        temporary = serving / f".{name}.{uuid.uuid4().hex}.new"
-        ca._write_new(temporary, content)
-        prepared.append((temporary, serving / name))
-    for source, destination in prepared:
-        os.replace(source, destination)
+    previous = {name: _regular(serving / name) for name, _ in paths}
+    metadata_path = ca.safe_private_path(state_dir) / "offline-ca/metadata.json"
+    previous_metadata = _regular(metadata_path)
     metadata["intermediateExpiresAt"] = signer_cert.not_valid_after_utc.isoformat()
     metadata["rotationDueAt"] = (now + timedelta(days=5)).isoformat()
-    target = ca.safe_private_path(state_dir) / "offline-ca/metadata.json"
-    temporary = target.with_name(f".metadata.{uuid.uuid4().hex}.new")
-    ca._write_new(temporary, (json.dumps(metadata, indent=2) + "\n").encode())
-    os.replace(temporary, target)
-    return validate_signer(state_dir, unprotect=unprotect)
+    prepared = []
+    replaced = False
+    try:
+        for name, content in paths:
+            temporary = serving / f".{name}.{uuid.uuid4().hex}.new"
+            ca._write_new(temporary, content)
+            prepared.append((temporary, serving / name))
+        temporary = metadata_path.with_name(f".metadata.{uuid.uuid4().hex}.new")
+        ca._write_new(temporary, (json.dumps(metadata, indent=2) + "\n").encode())
+        prepared.append((temporary, metadata_path))
+        for source, destination in prepared:
+            os.replace(source, destination)
+            replaced = True
+        return validate_signer(state_dir, unprotect=unprotect)
+    except Exception:
+        # The gateway is stopped by the caller. Restore the old pair if a
+        # replacement or post-write validation fails before it is restarted.
+        if replaced:
+            for name, content in (*previous.items(), ("metadata.json", previous_metadata)):
+                destination = metadata_path if name == "metadata.json" else serving / name
+                rollback = destination.with_name(f".{name}.{uuid.uuid4().hex}.rollback")
+                ca._write_new(rollback, content)
+                os.replace(rollback, destination)
+        raise
+    finally:
+        for source, _ in prepared:
+            source.unlink(missing_ok=True)
+
+
+def move_signer(state_dir: Path, ip: str,
+                *, unprotect: Callable[[bytes], bytes] = ca.unprotect_root) -> dict:
+    """Move the installation to a new LAN address while Caddy is stopped (ADR-0223 IP change).
+
+    The root stays, so every device that trusts it keeps trusting the installation; a new signer
+    constrained to the new IP and a new setup page replace the old ones. Caller restarts Caddy."""
+    root_key, root, metadata = _material(state_dir, unprotect)
+    address = ca.private_lan_ip(ip)
+    if str(address) == metadata["lanIp"]:
+        return validate_signer(state_dir, unprotect=unprotect)
+    base = ca.safe_private_path(state_dir) / "offline-ca"
+    now = datetime.now(timezone.utc)
+    signer_key, signer_cert = ca._issue_intermediate(root_key, root, address, now)
+    token = uuid.uuid4().hex
+    staged_setup, old_setup = base / f".setup.{token}.new", base / f".setup.{token}.old"
+    staged_setup.mkdir(mode=0o700)
+    ca._restrict(staged_setup, directory=True)
+    serving, metadata_path = base / "serving", base / "metadata.json"
+    previous = {serving / "intermediate.pem": _regular(serving / "intermediate.pem"),
+                serving / "intermediate.key": _regular(serving / "intermediate.key"),
+                metadata_path: _regular(metadata_path)}
+    moved = dict(metadata, lanIp=str(address), origin=f"https://{address}",
+                 intermediateExpiresAt=signer_cert.not_valid_after_utc.isoformat(),
+                 rotationDueAt=(now + timedelta(days=5)).isoformat())
+    replacements = {serving / "intermediate.pem": signer_cert.public_bytes(serialization.Encoding.PEM),
+                    serving / "intermediate.key": ca._private_pem(signer_key),
+                    metadata_path: (json.dumps(moved, indent=2) + "\n").encode()}
+    prepared, swapped_setup, replaced = [], False, False
+    try:
+        ca._setup_files(staged_setup, root, address)
+        for destination, content in replacements.items():
+            temporary = destination.with_name(f".{destination.name}.{token}.new")
+            ca._write_new(temporary, content)
+            prepared.append((temporary, destination))
+        os.replace(base / "setup", old_setup)
+        os.replace(staged_setup, base / "setup")
+        swapped_setup = True
+        for source, destination in prepared:
+            os.replace(source, destination)
+            replaced = True
+        result = validate_signer(state_dir, unprotect=unprotect)
+    except Exception:
+        if replaced:
+            for destination, content in previous.items():
+                rollback = destination.with_name(f".{destination.name}.{token}.rollback")
+                ca._write_new(rollback, content)
+                os.replace(rollback, destination)
+        if swapped_setup:
+            os.replace(base / "setup", staged_setup)
+            os.replace(old_setup, base / "setup")
+        raise
+    finally:
+        for source, _ in prepared:
+            source.unlink(missing_ok=True)
+        for leftover in (staged_setup, old_setup):
+            if leftover.exists():
+                for item in leftover.iterdir():
+                    item.unlink()
+                leftover.rmdir()
+    return result
