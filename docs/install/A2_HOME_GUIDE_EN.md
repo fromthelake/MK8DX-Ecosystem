@@ -258,6 +258,7 @@ The steps on the Prepare this device page:
 - A player can make a card themselves: the account menu on the website has **Sign in on another device too**. It opens **Sign in on another device** with a card that "Works once, valid until" a time. Scan it with the other device. Show it only to your own device: whoever scans it is signed in to your account.
 - Administrators do not have that button. They make a **New card** for themselves in MK8DX beheer.
 - A new device always does Prepare a device once first.
+- **No camera, or signing in on the MK8DX computer itself?** Make that person's card in MK8DX beheer and click **Sign in on this computer** (opens the sign-in page in the MK8DX computer's browser) or **Copy link**. Send a copied link only to that person themselves, for example in a private message: whoever opens it can sign in as that person. It works once and for 15 minutes. On the Prepare a device card, **Copy address** copies the address; it is not secret.
 
 **Leaving this installation on a device:** remove the certificate again in the same settings you used to install it.
 

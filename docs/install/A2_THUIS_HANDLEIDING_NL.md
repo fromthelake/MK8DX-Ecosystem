@@ -258,6 +258,7 @@ De stappen op de pagina Dit apparaat voorbereiden:
 - Een speler kan zelf een kaart maken: in het accountmenu op de website staat **Ook op een ander apparaat inloggen**. Dat opent **Inloggen op een ander apparaat** met een kaart die "Werkt één keer, geldig tot" een tijd. Scan die met het andere apparaat. Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account ingelogd.
 - Beheerders hebben die knop niet. Zij maken in MK8DX beheer een **Nieuwe kaart** voor zichzelf.
 - Een nieuw apparaat doet altijd eerst één keer Apparaat voorbereiden.
+- **Geen camera, of inloggen op de MK8DX-computer zelf?** Maak in MK8DX beheer de kaart van die persoon en klik op **Op deze computer inloggen** (opent de inlogpagina in de browser van de MK8DX-computer) of op **Link kopiëren**. Een gekopieerde link stuur je alleen naar die persoon zelf, bijvoorbeeld in een privébericht: wie hem opent, kan inloggen als die persoon. Hij werkt één keer en 15 minuten lang. Bij de kaart Apparaat voorbereiden kopieer je met **Adres kopiëren** het adres; dat is niet geheim.
 
 **Stoppen met deze installatie op een apparaat:** verwijder het certificaat weer via dezelfde instellingen waarmee je het installeerde.
 

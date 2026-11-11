@@ -43,6 +43,9 @@ const T = {
     cardsLead: "Inloggen op een telefoon, tablet of pc gaat in twee stappen: eerst het apparaat voorbereiden, daarna inloggen als de juiste persoon.",
     step1Title: "Stap 1 · Apparaat voorbereiden",
     step1Text: "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
+    copyLink: "Link kopiëren", copied: "Gekopieerd", openHere: "Op deze computer inloggen",
+    linkWarn: "Kan iemand niet scannen? Stuur deze link alleen naar {name} zelf, bijvoorbeeld in een privébericht. Wie de link opent, kan inloggen als {name}. Hij werkt één keer en tot {until}.",
+    copySetup: "Adres kopiëren",
     hostTitle: "Deze computer",
     hostTrusted: "Deze computer vertrouwt MK8DX al. De website opent hier zonder waarschuwing.",
     hostNeeded: "Ook deze computer moet MK8DX één keer vertrouwen, anders waarschuwt de browser hier bij de website. Klik op de knop. Windows vraagt dan of je het certificaat wilt installeren: controleer dat de vingerafdruk (sha1) hieronder overeenkomt en klik op Ja.",
@@ -130,6 +133,9 @@ const T = {
     cardsLead: "Signing in on a phone, tablet or PC takes two steps: first prepare the device, then sign in as the right person.",
     step1Title: "Step 1 · Prepare the device",
     step1Text: "Once per device. Scan this QR code with the camera. The device then learns to trust this installation (a security certificate), so the website opens safely. This does not sign you in yet. If the device was prepared before, go straight to step 2.",
+    copyLink: "Copy link", copied: "Copied", openHere: "Sign in on this computer",
+    linkWarn: "Cannot scan? Send this link only to {name} themselves, for example in a private message. Whoever opens the link can sign in as {name}. It works once and until {until}.",
+    copySetup: "Copy address",
     hostTitle: "This computer",
     hostTrusted: "This computer already trusts MK8DX. The website opens here without a warning.",
     hostNeeded: "This computer must trust MK8DX once too, otherwise the browser warns here about the website. Click the button. Windows then asks whether you want to install the certificate: check that the thumbprint (sha1) below matches and click Yes.",
@@ -456,7 +462,8 @@ const views = {
       const s = el("div", "person"); const img = el("img"); img.src = setup.qr; img.alt = T.setupCard;
       // The same short code the /setup page shows, in the same grouping, so comparing is easy.
       const code = setup.fingerprint.slice(0, 16).toUpperCase().match(/.{4}/g).join(" ");
-      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), el("div", "muted", T.fingerprint), el("div", "short-code", code));
+      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), copyButton(T.copySetup, setup.setupUrl),
+        el("div", "muted", T.fingerprint), el("div", "short-code", code));
       deviceCards.append(s);
     } catch (error) { main.append(errorBox(error.message)); }
     for (const person of state.people) {
@@ -476,6 +483,12 @@ const views = {
         const img = el("img"); img.src = c.qr; img.alt = person.name;
         const until = new Date(c.expiresAtMs).toLocaleTimeString(LANG, { hour: "2-digit", minute: "2-digit" });
         card.replaceChildren(name, img, el("div", "muted", `${T.validUntil} ${until}`));
+        // Without a camera: the same one-use link, copied for a private message or opened here.
+        const copy = copyButton(T.copyLink, c.url);
+        const open = el("button", "secondary small no-print", T.openHere); open.type = "button";
+        open.addEventListener("click", () => window.open(c.url, "_blank", "noopener"));
+        card.append(el("div", "muted small no-print link-warn",
+          T.linkWarn.replaceAll("{name}", person.name).replace("{until}", until)), copy, open);
         const stop = el("button", "secondary small no-print", T.revokeCard); stop.type = "button";
         stop.addEventListener("click", async () => {
           stop.disabled = true; await revoke();
@@ -577,6 +590,16 @@ const actions = {
 };
 
 function render() { drawSteps(); views[state.step](); }
+
+function copyButton(label, text) {
+  const button = el("button", "secondary small no-print", label); button.type = "button";
+  button.addEventListener("click", async () => {
+    try { await navigator.clipboard.writeText(text); button.textContent = `✓ ${T.copied}`; }
+    catch { window.prompt(label, text); }
+    setTimeout(() => { button.textContent = label; }, 2500);
+  });
+  return button;
+}
 
 async function manageFlow() {
   state.updating = false;
