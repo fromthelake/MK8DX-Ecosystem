@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { liveStatusAfterStop, MysqlTournamentConnectedRepository } from
+import { liveRequestIsDismissible, liveStatusAfterStop, MysqlTournamentConnectedRepository } from
   "../src/tournaments/mysql-tournament-connected-repository.js";
 
 describe("MySQL connected Tournament eligibility", () => {
@@ -8,6 +8,16 @@ describe("MySQL connected Tournament eligibility", () => {
     expect(liveStatusAfterStop("requested")).toBe("requested");
     expect(liveStatusAfterStop("active")).toBe("stopping");
     expect(liveStatusAfterStop("stopping")).toBe("stopping");
+  });
+
+  it("allows dismissing only a live request that never went public", () => {
+    expect(liveRequestIsDismissible("requested", null)).toBe(true);
+    expect(liveRequestIsDismissible("requested", 5)).toBe(true);
+    expect(liveRequestIsDismissible("stopping", null)).toBe(true);
+    expect(liveRequestIsDismissible("stopping", 5)).toBe(false);
+    for (const status of ["none", "active", "complete", "invalidated"]) {
+      expect(liveRequestIsDismissible(status, null)).toBe(false);
+    }
   });
 
   it("offers active workflow Tournaments and only the groups relevant to their current phase", async () => {

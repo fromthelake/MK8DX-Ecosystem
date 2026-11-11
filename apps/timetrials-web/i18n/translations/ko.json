@@ -4916,6 +4916,11 @@
   "PIN (4 digits)": "PIN(4자리)",
   "PIN required": "PIN 필요",
   "Too many PIN attempts. Wait before trying again.": "PIN 시도 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.",
-  "This account signs in afresh every time.": "이 계정은 매번 새로 로그인합니다."
+  "This account signs in afresh every time.": "이 계정은 매번 새로 로그인합니다.",
+  "Dismiss this live request": "이 라이브 요청 무시",
+  "Click again to dismiss": "무시하려면 다시 클릭하세요",
+  "Dismissing removes this live request from the list. It was never public and its races are not scored.": "무시하면 이 라이브 요청이 목록에서 제거됩니다. 공개된 적이 없으며 레이스는 점수에 반영되지 않습니다.",
+  "Dismissing the live request…": "라이브 요청을 무시하는 중…",
+  "The live request could not be dismissed.": "라이브 요청을 무시할 수 없습니다."
  }
 }

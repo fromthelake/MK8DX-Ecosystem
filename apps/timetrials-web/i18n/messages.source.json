@@ -4247,6 +4247,16 @@
    ]
   },
   {
+   "key": "Click again to dismiss",
+   "nl": "Klik nogmaals om te negeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "Click ‘Enable notifications’ below.",
    "nl": "Klik hieronder op ‘Meldingen inschakelen’.",
    "kinds": [
@@ -6306,6 +6316,36 @@
    ],
    "places": [
     "web-push-settings.ts"
+   ]
+  },
+  {
+   "key": "Dismiss this live request",
+   "nl": "Deze Live-aanvraag negeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Dismissing removes this live request from the list. It was never public and its races are not scored.",
+   "nl": "Negeren haalt deze Live-aanvraag uit de lijst. Hij was nooit openbaar en de races tellen niet mee.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Dismissing the live request…",
+   "nl": "Live-aanvraag wordt genegeerd…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -23188,6 +23228,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "The live request could not be dismissed.",
+   "nl": "De Live-aanvraag kon niet worden genegeerd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {

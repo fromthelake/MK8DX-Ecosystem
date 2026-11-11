@@ -233,4 +233,87 @@ integration("independent Tournament evidence records", () => {
     expect(completed.live?.status).toBe("complete");
     expect((await service.publicLiveGroups(tournamentId))[0]?.status).toBe("ready_for_final_review");
   });
+
+  it("dismisses only a never-public live request, audits it and drops it from the director's list", async () => {
+    const uploader = { role: "account" as const, userAccountId: uploaderId };
+    const director = { role: "administrator" as const, userAccountId: directorId };
+    const repository = new MysqlTournamentConnectedRepository(pool);
+    const stale = await service.uploadEvidenceRecord(uploader, {
+      clientRecordId: "run-evidence-integration-live-stale",
+      sourceKind: "tournament_live_capture", suggestedTournamentId: tournamentId,
+      complete: false, entries: [],
+      liveMappings: [{ observedGroupLabel: "Capture Card C", groupId: secondGroupId, phase: "qualifier" }],
+    });
+    expect(stale.live?.status).toBe("requested");
+    expect((await service.listEvidenceRecords(director, tournamentId)).map((record) => record.recordId)).toContain(stale.recordId);
+    const publicBefore = await service.publicLiveGroups(tournamentId);
+
+    await expect(repository.dismissLiveRequest({
+      recordId: stale.recordId, expectedRevision: stale.revision, tournamentId,
+      reviewedByUserAccountId: uploaderId, reason: "Not the director", nowMs: 1_900_000_200_000,
+    })).rejects.toThrow(/Only this Tournament's director/);
+    await expect(service.dismissLiveRequest(director, {
+      tournamentId, recordId: stale.recordId, expectedRevision: stale.revision + 1,
+    })).rejects.toThrow(/reload it/);
+
+    const dismissed = await service.dismissLiveRequest(director, {
+      tournamentId, recordId: stale.recordId, expectedRevision: stale.revision, reason: "Aborted run",
+    });
+    expect(dismissed.revision).toBe(stale.revision + 1);
+    expect(dismissed.live).toMatchObject({ status: "invalidated", mappings: [], approvedAtMs: null });
+    expect((await service.listEvidenceRecords(director, tournamentId)).map((record) => record.recordId))
+      .not.toContain(stale.recordId);
+    expect(await service.publicLiveGroups(tournamentId)).toEqual(publicBefore);
+    const [audit] = await pool.execute<mysql.RowDataPacket[]>(
+      `SELECT audit.previous_mappings_json, audit.next_mappings_json, audit.reason
+         FROM tournament_live_mapping_audit audit
+         JOIN tournament_evidence_records evidence
+           ON evidence.tournament_evidence_record_id = audit.tournament_evidence_record_id
+        WHERE evidence.public_id = ?`,
+      [stale.recordId],
+    );
+    expect(audit).toHaveLength(1);
+    const json = (value: unknown) => typeof value === "string" ? JSON.parse(value) as unknown : value;
+    expect(json(audit[0]?.["previous_mappings_json"])).toEqual([
+      { observedGroupLabel: "Capture Card C", groupId: secondGroupId, phase: "qualifier" },
+    ]);
+    expect(json(audit[0]?.["next_mappings_json"])).toEqual([]);
+    expect(audit[0]?.["reason"]).toBe("Aborted run");
+    await expect(service.dismissLiveRequest(director, {
+      tournamentId, recordId: stale.recordId, expectedRevision: dismissed.revision,
+    })).rejects.toThrow(/never went public/);
+    // A later upload of the same run keeps it dismissed.
+    const reuploaded = await service.uploadEvidenceRecord(uploader, {
+      clientRecordId: "run-evidence-integration-live-stale",
+      sourceKind: "tournament_live_capture", suggestedTournamentId: tournamentId,
+      complete: false, entries: [{ entryKey: "capture-c:1", observedGroupLabel: "Capture Card C", result: race(2) }],
+    });
+    expect(reuploaded.live?.status).toBe("invalidated");
+
+    // A stopped run that was never approved may be dismissed; one that was approved may not.
+    const stopped = await service.uploadEvidenceRecord(uploader, {
+      clientRecordId: "run-evidence-integration-live-stopped",
+      sourceKind: "tournament_live_capture", suggestedTournamentId: tournamentId,
+      complete: false, entries: [],
+      liveMappings: [{ observedGroupLabel: "Capture Card D", groupId: secondGroupId, phase: "qualifier" }],
+    });
+    await pool.execute("UPDATE tournament_evidence_records SET live_status = 'stopping', live_approved_at_ms = 5 WHERE public_id = ?", [stopped.recordId]);
+    await expect(service.dismissLiveRequest(director, {
+      tournamentId, recordId: stopped.recordId, expectedRevision: stopped.revision,
+    })).rejects.toThrow(/never went public/);
+    await pool.execute("UPDATE tournament_evidence_records SET live_approved_at_ms = NULL WHERE public_id = ?", [stopped.recordId]);
+    const stoppedDismissed = await service.dismissLiveRequest(director, {
+      tournamentId, recordId: stopped.recordId, expectedRevision: stopped.revision,
+    });
+    expect(stoppedDismissed.live?.status).toBe("invalidated");
+
+    // The completed public run from the previous case cannot be dismissed.
+    const [completeRows] = await pool.execute<mysql.RowDataPacket[]>(
+      "SELECT public_id, revision FROM tournament_evidence_records WHERE client_record_id = 'run-evidence-integration-live'",
+    );
+    await expect(service.dismissLiveRequest(director, {
+      tournamentId, recordId: String(completeRows[0]?.["public_id"]), expectedRevision: Number(completeRows[0]?.["revision"]),
+    })).rejects.toThrow(/never went public/);
+    expect((await service.publicLiveGroups(tournamentId))[0]?.status).toBe("ready_for_final_review");
+  });
 });

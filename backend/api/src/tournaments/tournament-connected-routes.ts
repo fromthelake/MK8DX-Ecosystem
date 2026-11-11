@@ -103,6 +103,22 @@ export function registerTournamentConnectedRoutes(app: FastifyInstance, dependen
     return { record: await dependencies.tournamentConnected.approveLiveAssociation(actor, { ...body, tournamentId, recordId }) };
   }));
 
+  app.post("/v1/administrator/tournaments/:tournamentId/evidence-records/:recordId/actions/dismiss-live", async (request, reply) => handle(reply, async () => {
+    const actor = await dependencies.resolveActor(request);
+    const token = request.headers["x-mk8dx-csrf"];
+    if (typeof token !== "string" || !dependencies.csrfVerifier.verify(actor, token)) {
+      throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
+    }
+    const { tournamentId, recordId } = request.params as { tournamentId: string; recordId: string };
+    const body = (request.body ?? {}) as Omit<Parameters<TournamentConnectedService["dismissLiveRequest"]>[1], "tournamentId" | "recordId">;
+    return { record: await dependencies.tournamentConnected.dismissLiveRequest(actor, {
+      expectedRevision: body.expectedRevision,
+      ...(body.reason === undefined ? {} : { reason: body.reason }),
+      tournamentId,
+      recordId,
+    }) };
+  }));
+
   app.get("/v1/administrator/tournaments/:tournamentId/incoming-results", async (request, reply) => handle(reply, async () => {
     const actor = await dependencies.resolveActor(request);
     const { tournamentId } = request.params as { tournamentId: string };

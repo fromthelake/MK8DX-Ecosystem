@@ -4916,6 +4916,11 @@
   "PIN (4 digits)": "PIN (4 dígitos)",
   "PIN required": "PIN necessário",
   "Too many PIN attempts. Wait before trying again.": "Demasiadas tentativas de PIN. Aguarda antes de tentar novamente.",
-  "This account signs in afresh every time.": "Esta conta inicia sessão de novo todas as vezes."
+  "This account signs in afresh every time.": "Esta conta inicia sessão de novo todas as vezes.",
+  "Dismiss this live request": "Ignorar este pedido Live",
+  "Click again to dismiss": "Clique novamente para ignorar",
+  "Dismissing removes this live request from the list. It was never public and its races are not scored.": "Ignorar remove este pedido Live da lista. Nunca foi público e as suas corridas não contam.",
+  "Dismissing the live request…": "A ignorar o pedido Live…",
+  "The live request could not be dismissed.": "Não foi possível ignorar o pedido Live."
  }
 }
