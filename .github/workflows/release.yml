@@ -208,7 +208,8 @@ jobs:
           - { platform: linux, arch: amd64, wheel_tags: "manylinux_2_34_x86_64 manylinux_2_28_x86_64 manylinux_2_17_x86_64 manylinux2014_x86_64" }
           - { platform: linux, arch: arm64, wheel_tags: "manylinux_2_34_aarch64 manylinux_2_28_aarch64 manylinux_2_17_aarch64 manylinux2014_aarch64" }
           - { platform: macos, arch: arm64, wheel_tags: "macosx_11_0_arm64 macosx_10_9_universal2 macosx_10_13_universal2" }
-          - { platform: macos, arch: amd64, wheel_tags: "macosx_10_9_x86_64 macosx_10_13_x86_64 macosx_10_9_universal2 macosx_10_13_universal2" }
+          # macOS on Intel is not built: cryptography 50 ships no x86_64 macOS wheel.
+          # - { platform: macos, arch: amd64, wheel_tags: "macosx_10_9_x86_64 macosx_10_13_x86_64 macosx_10_9_universal2 macosx_10_13_universal2" }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -222,7 +223,7 @@ jobs:
         run: |
           set -euo pipefail
           version="$PACKAGE_VERSION"
-          mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version" --arch "$A2_ARCH")
+          mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version" --platform "$A2_PLATFORM" --arch "$A2_ARCH")
           test "${#images[@]}" -eq 4
           python tooling/assets/shared_asset_source.py verify
           for pair in "0 backend/api/Dockerfile" "1 apps/timetrials-web/Dockerfile"; do

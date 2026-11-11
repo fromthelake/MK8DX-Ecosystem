@@ -69,7 +69,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 **Let op:** macOS is nog niet op een echte Mac getest. De stappen hieronder volgen wat de installatie op macOS verwacht.
 
-1. **Doe:** kies Apple-menu → **Over deze Mac** en kijk bij **Chip** of **Processor**. → **Je ziet:** een Apple-chip (M1, M2 en verder) of een Intel-processor. Onthoud welke: het MK8DX-pakket en Docker Desktop bestaan voor beide, en je hebt de passende versie nodig (Apple-chip heet arm64, Intel heet amd64).
+1. **Doe:** kies Apple-menu → **Over deze Mac** en kijk bij **Chip** of **Processor**. → **Je ziet:** een Apple-chip (M1, M2 en verder). Het MK8DX-pakket voor macOS heet `macos-arm64`. → **Zie je iets anders?** Een Intel-processor: daarvoor is er geen MK8DX-pakket, omdat een beveiligingsbibliotheek die het nodig heeft (`cryptography`) niet meer voor Intel-Macs bestaat. Gebruik dan een Windows- of Linux-computer.
 2. **Doe:** download op docker.com **Docker Desktop** voor Mac met de passende chip, open het gedownloade bestand en sleep Docker naar **Apps** (Programma's). → **Je ziet:** Docker in je map Apps.
 3. **Doe:** open Docker. Accepteer de voorwaarden; vraagt macOS om je wachtwoord, vul het in. → **Je ziet:** na een tijdje **Engine running** in het venster van Docker Desktop. → **Zie je iets anders?** Vraagt Docker om in te loggen: MK8DX heeft geen Docker-account nodig, sla dat over als Docker dat aanbiedt.
 4. **Doe:** download op python.org de macOS-installer van Python 3.15 en open hem. Klik de stappen door met **Ga door** en **Installeer**. → **Je ziet:** de melding dat de installatie gelukt is.

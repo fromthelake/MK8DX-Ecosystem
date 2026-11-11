@@ -3,16 +3,17 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## 0.2.0-rc.2 — 2026-11-11
+## 0.2.0-rc.3 — 2026-11-12
 
-The `v0.2.0-rc.1` tag produced no release: its A2 package build refused a second, redundant
-`cryptography` wheel for Python 3.15. The package builder now leaves such a wheel out.
+The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release: the A2 package build refused a second,
+redundant `cryptography` wheel for Python 3.15 (rc.1), asked for the arm64 image list as a Windows package and
+found no Intel Mac wheel (rc.2). The builder and workflow are fixed and the Intel Mac package is dropped.
 
 
 ### A2: MK8DX at home or at the club, without internet
 
 - New per-platform packages `mk8dx-a2-<platform>-<arch>-….zip` (Windows amd64, Linux amd64/arm64,
-  macOS amd64/arm64) with the Docker images, pinned Python wheels for Python 3.12–3.15 and a guided
+  macOS arm64; no Intel Mac package because `cryptography` 50 ships no wheel for it) with the Docker images, pinned Python wheels for Python 3.12–3.15 and a guided
   setup in the browser: start `Start-MK8DX-LAN.cmd` (Windows) or `tooling/start-mk8dx.sh`, click
   Next. It sets up a private certificate authority for HTTPS on the local network (new roots only
   allow names under `.invalid`), an administrator, people and printable sign-in cards, nightly
