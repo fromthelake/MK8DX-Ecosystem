@@ -173,8 +173,10 @@ export function openAccountSwitchDialog(
   let handle: OverlayHandle;
   const chooser = accountChooser(port, () => { handle.close(); options.onSwitched(); });
   const intro = el("p", "ds-body", {}, localized(
-    "Accounts that signed in on this device. Tap one to continue as that person.",
-    "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan."));
+    "Accounts that signed in on this device. Tap one to continue as that person. "
+      + "Administrator accounts are never listed here; sign in again with a card for those.",
+    "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan. "
+      + "Beheerdersaccounts staan hier nooit; meld je daarvoor opnieuw aan met een kaart."));
   const another = dsButton({
     label: localized("Sign in with another account", "Met een ander account aanmelden"), variant: "secondary",
     onPress: () => { handle.close(); options.onUseAnother(); },

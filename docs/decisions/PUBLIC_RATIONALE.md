@@ -329,6 +329,18 @@ launchd agents). Steps that need root on Linux (a firewall rule for 80/443 when
 ufw or firewalld is active, Docker Engine at boot) are shown as exact commands
 instead of being run. LiveTrial and Tournament Tools remain Windows programs.
 
+Amendment (2026-11-11), host names in the root: the root's name constraints
+permitted only the private IPv4 ranges, which by RFC 5280 leaves host names
+unconstrained, so whoever held the root key could have vouched for a website
+name on a device that trusts the root. A root made from now on also permits
+only names under the reserved `.invalid` top-level domain (RFC 6761), which no
+real website has. Checked with OpenSSL and the Windows chain engine: the leaf
+Caddy issues for the LAN IP still validates, and a leaf for `bank.example.com`
+under an unconstrained intermediate signed by the new root is refused
+(`permitted subtree violation`, `HasNotPermittedNameConstraint`), while the old
+root shape accepted it. Existing installations keep their root (replacing it
+would mean preparing every device again) and stay valid.
+
 ## ADR-0224
 
 **Devices and switching accounts.** Phase 1: in an offline-invitation installation a signed-in

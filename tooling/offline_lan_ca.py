@@ -36,6 +36,10 @@ INTERMEDIATE_DAYS = 7
 SCHEMA = "mk8dx.offline-lan-ca.v1"
 PRIVATE_NETWORKS = tuple(ipaddress.ip_network(value) for value in
                          ("10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"))
+# Host names: a new root permits only names under the reserved ".invalid" (RFC 6761), which no real website
+# can have, so even a stolen root key cannot vouch for a website name. IP constraints alone left host names
+# unconstrained (RFC 5280 constrains only the name types listed). Roots made before 11-11 lack it and stay valid.
+ROOT_NAME_SUBTREES = (x509.DNSName("invalid"),)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -74,14 +78,14 @@ def _builder(subject: x509.Name, issuer: x509.Name, key: ec.EllipticCurvePrivate
 def _ca_extensions(builder: x509.CertificateBuilder, key: ec.EllipticCurvePrivateKey,
                    issuer_key: ec.EllipticCurvePrivateKey,
                    networks: tuple[ipaddress.IPv4Network, ...],
-                   path_length: int) -> x509.CertificateBuilder:
+                   path_length: int, names: tuple[x509.GeneralName, ...] = ()) -> x509.CertificateBuilder:
     return (builder.add_extension(x509.BasicConstraints(ca=True, path_length=path_length), critical=True)
             .add_extension(x509.KeyUsage(digital_signature=False, content_commitment=False,
                            key_encipherment=False, data_encipherment=False, key_agreement=False,
                            key_cert_sign=True, crl_sign=True, encipher_only=False,
                            decipher_only=False), critical=True)
             .add_extension(x509.NameConstraints(permitted_subtrees=[x509.IPAddress(network)
-                                                                     for network in networks],
+                                                                     for network in networks] + list(names),
                            excluded_subtrees=None), critical=True)
             .add_extension(x509.SubjectKeyIdentifier.from_public_key(key.public_key()), critical=False)
             .add_extension(x509.AuthorityKeyIdentifier.from_issuer_public_key(
@@ -325,7 +329,8 @@ def _verify_root(root_key: ec.EllipticCurvePrivateKey, root: x509.Certificate,
     if root.extensions.get_extension_for_class(x509.BasicConstraints).value.path_length != 1:
         raise ValueError("Root path constraint is invalid")
     expected = [x509.IPAddress(network) for network in PRIVATE_NETWORKS]
-    if root.extensions.get_extension_for_class(x509.NameConstraints).value.permitted_subtrees != expected:
+    permitted = root.extensions.get_extension_for_class(x509.NameConstraints).value.permitted_subtrees
+    if permitted not in (expected, expected + list(ROOT_NAME_SUBTREES)):
         raise ValueError("Root IP constraints are invalid")
 
 
@@ -367,7 +372,7 @@ def provision(state_dir: Path, ip: str, *, protect: Callable[[bytes], bytes] = p
     root_key = ec.generate_private_key(ec.SECP256R1())
     root_name = _name("MK8DX offline LAN root")
     root = _ca_extensions(_builder(root_name, root_name, root_key, now, ROOT_DAYS),
-                          root_key, root_key, PRIVATE_NETWORKS, 1).sign(root_key, hashes.SHA256())
+                          root_key, root_key, PRIVATE_NETWORKS, 1, ROOT_NAME_SUBTREES).sign(root_key, hashes.SHA256())
     return _provision_material(state_dir, address, root_key, root, protect)
 
 
