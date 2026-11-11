@@ -945,7 +945,10 @@ def main():
             print(f"  {code:<4} {ROUTE_CHOICES[code]}")
         selected = ""
         while selected not in offered:
-            selected = input(f"Type {', '.join(offered[:-1])} or {offered[-1]} and press Enter: ").strip().upper().replace(" ", "")
+            try:
+                selected = input(f"Type {', '.join(offered[:-1])} or {offered[-1]} and press Enter: ").strip().upper().replace(" ", "")
+            except EOFError:
+                raise SystemExit("Setup cancelled before a choice was made; nothing was created.") from None
             if selected not in offered:
                 print(f"'{selected}' is not one of the choices above.")
         if selected in ("A3", "B2"):

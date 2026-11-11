@@ -88,9 +88,14 @@ def main():
         hosted = Path(temp) / "hosted"
         shutil.copytree(base, hosted)
         (hosted / "README-FIRST.txt").write_text(
-            f"MK8DX B2 Passenger/MariaDB package {args.revision}\n"
-            "Open docs/install/MK8DX_Handleiding_NL.docx or MK8DX_User_Guide_EN.docx.\n"
-            "Keep the application root outside public_html; run npm ci --omit=dev in api.\n",
+            f"MK8DX public website on shared hosting with Node.js (B2), package {args.revision}\n\n"
+            "You need: a hosting package with Node.js 24 (Passenger), MariaDB 11.4+ or MySQL 8.4+, SSH,\n"
+            "an empty database with its own limited user, and a mailbox for sign-in mail.\n"
+            "Upload this folder outside public_html, run npm ci --omit=dev in api, then:\n"
+            "  python3 tooling/install.py wizard --state-dir \"$HOME/mk8dx-private\"   (type B2)\n"
+            "Step by step: docs/install/MK8DX_User_Guide_EN.docx (English, chapter 4) or\n"
+            "docs/install/MK8DX_Handleiding_NL.docx (Nederlands, hoofdstuk 4).\n"
+            "Your installation data belongs outside this folder and outside public_html.\n",
             encoding="utf-8")
         hosted_result = write_zip(hosted, output / f"mk8dx-mijnhost-node-{args.revision}.zip", "B2", args.revision)
         windows = Path(temp) / "windows"
@@ -107,8 +112,13 @@ def main():
             raise ValueError("MariaDB 11.4.13 download differs from its official SHA-256")
         copy_file(args.mariadb_archive, windows / "bin/mariadb-11.4.13-winx64.zip")
         (windows / "README-FIRST.txt").write_text(
-            f"MK8DX A3 Windows/XAMPP/Node package {args.revision}\n"
-            "Open docs/install/MK8DX_Handleiding_NL.docx or MK8DX_User_Guide_EN.docx.\n"
+            f"MK8DX on one Windows computer without Docker (A3), package {args.revision}\n\n"
+            "1. Install XAMPP (only Apache is used), Node.js 24 and Python 3.12 or newer.\n"
+            "2. Once: run tooling\\configure_xampp.ps1 -XamppRoot C:\\xampp in PowerShell (see the guide).\n"
+            "3. Double-click Start-MK8DX-No-Docker.cmd and type A3.\n"
+            "Step by step: docs/install/MK8DX_User_Guide_EN.docx (English, chapter 2) or\n"
+            "docs/install/MK8DX_Handleiding_NL.docx (Nederlands, hoofdstuk 2).\n"
+            "B2 (shared hosting) uses the mk8dx-mijnhost-node package instead.\n"
             "Your installation data belongs outside this folder.\n",
             encoding="utf-8")
         copy_file(ROOT / "Start-MK8DX-No-Docker.cmd", windows / "Start-MK8DX-No-Docker.cmd")
