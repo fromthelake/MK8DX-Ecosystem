@@ -3,9 +3,10 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## 0.2.0-rc.3 — 2026-11-12
+## 0.2.0-rc.4 — 2026-11-12
 
-The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release: the A2 package build refused a second,
+The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release, and `v0.2.0-rc.3` stayed a draft because its A1
+menu hid each step's own output: the A2 package build refused a second,
 redundant `cryptography` wheel for Python 3.15 (rc.1), asked for the arm64 image list as a Windows package and
 found no Intel Mac wheel (rc.2). The builder and workflow are fixed and the Intel Mac package is dropped.
 
