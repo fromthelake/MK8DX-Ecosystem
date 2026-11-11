@@ -34,7 +34,7 @@ Wat je niet nodig hebt:
 MK8DX heeft twee gratis hulpprogramma's nodig:
 
 - **Docker** laat programma's draaien in afgeschermde "containers". De website en de database van MK8DX draaien daarin. Op Windows en macOS heet het programma Docker Desktop.
-- **Python** is een programmeertaal. Het installatieprogramma van MK8DX is ermee geschreven. Je hebt Python 3.12 of nieuwer nodig.
+- **Python** is een programmeertaal. Het installatieprogramma van MK8DX is ermee geschreven. Je hebt Python 3.12 tot en met 3.15 nodig.
 
 Doe alleen het deel voor jouw computer (2A, 2B of 2C) en sla de andere twee over.
 
@@ -46,8 +46,8 @@ Doe alleen het deel voor jouw computer (2A, 2B of 2C) en sla de andere twee over
 4. **Doe:** wacht tot de installatie klaar is en start de computer opnieuw op als Docker daarom vraagt. → **Je ziet:** na het opnieuw opstarten opent Docker Desktop (of open het zelf via het Startmenu). De eerste keer vraagt Docker de voorwaarden te accepteren. → **Zie je iets anders?** Vraagt Docker om in te loggen of een account te maken: MK8DX heeft geen Docker-account nodig, sla dat over als Docker dat aanbiedt. Meldt Docker toch dat WSL ontbreekt of bijgewerkt moet worden, doe dan stap 2 opnieuw (`wsl --install` of `wsl --update`) en start opnieuw op.
 5. **Doe:** wacht in het venster van Docker Desktop. → **Je ziet:** linksonder **Engine running**. → **Zie je iets anders?** "Engine starting" kan een paar minuten duren. Blijft het hangen of staat er een fout, start de computer opnieuw op en open Docker Desktop weer. Docker moet in de gewone stand voor Linux-containers staan (niet "Windows containers").
 6. **Doe:** ga naar python.org → **Downloads** en download de **Python install manager** voor Windows (het bestand eindigt op `.msix`). Dat is tegenwoordig de officiële manier om Python op Windows te installeren. Open het gedownloade bestand en klik op **Installeren**. → **Je ziet:** Windows installeert de Python install manager; daarna kun je het venster sluiten. → **Zie je iets anders?** Je kunt hem ook installeren via de Microsoft Store: zoek op "Python install manager" en klik op **Installeren**. Gebruik één van de twee, niet allebei.
-7. **Doe:** klik op Start, typ `PowerShell`, open **Windows PowerShell**, typ `py install 3.15` en druk op Enter. Dat installeert Python zelf (de install manager is alleen het hulpprogramma dat Python binnenhaalt). → **Je ziet:** de eerste keer een paar vragen om de instellingen te controleren; beantwoord die met Enter (de voorgestelde keuze) of met `y`. Daarna wordt Python gedownload en geïnstalleerd. Een vraag om een map aan je PATH toe te voegen mag je met `y` beantwoorden; nodig is het niet. → **Zie je iets anders?** Een nieuwere versie (3.16 of hoger) mag ook; MK8DX heeft 3.12 of nieuwer nodig.
-8. **Doe:** sluit PowerShell, open hem opnieuw, typ `python --version` en druk op Enter. → **Je ziet:** `Python 3.15` of een hoger nummer. → **Zie je iets anders?** Opent de Microsoft Store, of staat er dat python niet gevonden is: klik op Start, typ **App-uitvoeringsaliassen beheren** en open het. Zet **Python (default)** aan en zet **App-installatieprogramma python.exe** en **python3.exe** uit. Heb je vroeger een oude Python of de "Python launcher" geïnstalleerd, verwijder die dan via **Instellingen → Apps → Geïnstalleerde apps** en probeer het opnieuw.
+7. **Doe:** klik op Start, typ `PowerShell`, open **Windows PowerShell**, typ `py install 3.15` en druk op Enter. Dat installeert Python zelf (de install manager is alleen het hulpprogramma dat Python binnenhaalt). → **Je ziet:** de eerste keer een paar vragen om de instellingen te controleren; beantwoord die met Enter (de voorgestelde keuze) of met `y`. Daarna wordt Python gedownload en geïnstalleerd. Een vraag om een map aan je PATH toe te voegen mag je met `y` beantwoorden; nodig is het niet. → **Zie je iets anders?** Installeer precies 3.15 zoals hierboven; 3.12, 3.13 of 3.14 werkt ook, een nieuwere versie (3.16 of hoger) nog niet.
+8. **Doe:** sluit PowerShell, open hem opnieuw, typ `python --version` en druk op Enter. → **Je ziet:** `Python 3.15` met nog een nummer erachter, bijvoorbeeld `Python 3.15.2`. → **Zie je iets anders?** Opent de Microsoft Store, of staat er dat python niet gevonden is: klik op Start, typ **App-uitvoeringsaliassen beheren** en open het. Zet **Python (default)** aan en zet **App-installatieprogramma python.exe** en **python3.exe** uit. Heb je vroeger een oude Python of de "Python launcher" geïnstalleerd, verwijder die dan via **Instellingen → Apps → Geïnstalleerde apps** en probeer het opnieuw.
 
 (Afbeelding: docker-engine-running)
 
@@ -57,7 +57,7 @@ Doe alleen het deel voor jouw computer (2A, 2B of 2C) en sla de andere twee over
 
 Linux is nog niet volledig getest met MK8DX. De stappen zijn uitgewerkt voor Ubuntu 24.04 of nieuwer. Je typt ze in een **terminal**: een venster waarin je tekstopdrachten geeft (in Ubuntu open je die met Ctrl+Alt+T). Elke opdracht sluit je af met Enter. **sudo** voor een opdracht betekent "als beheerder van deze computer": Linux vraagt dan je wachtwoord, en tijdens het typen zie je geen tekens. Dat is normaal.
 
-1. **Doe:** typ `python3 --version`. → **Je ziet:** `Python 3.12` of een hoger nummer. → **Zie je iets anders?** Een lager nummer (Debian 12 heeft bijvoorbeeld 3.11) is te oud. Je hebt dan een nieuwere versie van je Linux nodig; Ubuntu 24.04 heeft Python 3.12.
+1. **Doe:** typ `python3 --version`. → **Je ziet:** `Python 3.12`, `3.13`, `3.14` of `3.15`. → **Zie je iets anders?** Een lager nummer (Debian 12 heeft bijvoorbeeld 3.11) is te oud; 3.16 of hoger wordt nog niet ondersteund. Je hebt dan een nieuwere versie van je Linux nodig; Ubuntu 24.04 heeft Python 3.12.
 2. **Doe:** typ `sudo apt update` en daarna `sudo apt install docker.io docker-compose-v2 python3-venv`. Beantwoord de vraag of je wilt doorgaan met J (of Y) en Enter. → **Je ziet:** de pakketten worden gedownload en geïnstalleerd. → **Zie je iets anders?** Kan apt een pakket niet vinden, dan heet het op jouw Linux anders (op Debian kan dat). Ga door en controleer in stap 5 of Docker Compose werkt.
 3. **Doe:** typ `sudo systemctl enable --now docker`. Dit start Docker nu en ook bij elke volgende keer dat de computer opstart. → **Je ziet:** geen foutmelding (soms een regel die met "Created symlink" begint).
 4. **Doe:** typ `sudo usermod -aG docker $USER`. Dit geeft jouw gebruiker het recht om Docker te gebruiken. Meld je daarna af en weer aan (of start opnieuw op): het recht werkt pas na opnieuw aanmelden. → **Je ziet:** geen foutmelding. → **Let op:** wie in de groep docker zit, heeft in feite beheerdersrechten op deze computer. Voeg alleen jezelf toe.
@@ -72,7 +72,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 1. **Doe:** kies Apple-menu → **Over deze Mac** en kijk bij **Chip** of **Processor**. → **Je ziet:** een Apple-chip (M1, M2 en verder) of een Intel-processor. Onthoud welke: het MK8DX-pakket en Docker Desktop bestaan voor beide, en je hebt de passende versie nodig (Apple-chip heet arm64, Intel heet amd64).
 2. **Doe:** download op docker.com **Docker Desktop** voor Mac met de passende chip, open het gedownloade bestand en sleep Docker naar **Apps** (Programma's). → **Je ziet:** Docker in je map Apps.
 3. **Doe:** open Docker. Accepteer de voorwaarden; vraagt macOS om je wachtwoord, vul het in. → **Je ziet:** na een tijdje **Engine running** in het venster van Docker Desktop. → **Zie je iets anders?** Vraagt Docker om in te loggen: MK8DX heeft geen Docker-account nodig, sla dat over als Docker dat aanbiedt.
-4. **Doe:** download op python.org de macOS-installer van Python 3.12 of nieuwer en open hem. Klik de stappen door met **Ga door** en **Installeer**. → **Je ziet:** de melding dat de installatie gelukt is.
+4. **Doe:** download op python.org de macOS-installer van Python 3.15 en open hem. Klik de stappen door met **Ga door** en **Installeer**. → **Je ziet:** de melding dat de installatie gelukt is.
 5. **Doe:** open **Terminal** (Apps → Hulpprogramma's → Terminal), typ `python3 --version` en druk op Enter. → **Je ziet:** `Python 3.12` of hoger. → **Zie je iets anders?** Een lager nummer (bijvoorbeeld 3.9 van Apple zelf): sluit Terminal en open hem opnieuw. Blijft het een lager nummer, installeer Python dan opnieuw van python.org.
 6. **Doe:** typ in Terminal `docker info`. → **Je ziet:** een lijst gegevens zonder foutmelding. → **Zie je iets anders?** Start Docker Desktop en wacht op Engine running.
 
@@ -92,7 +92,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 Meldingen in het zwarte venster op Windows:
 
-- **"Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
+- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wacht op Engine running en dubbelklik opnieuw.
 - Onder een fout staat **"The selected step stopped. Read the message above before retrying."** Lees de regel erboven, los dat op en druk op een toets om het venster te sluiten.
 
@@ -108,7 +108,7 @@ Meldingen in het zwarte venster op Windows:
 
 Meldingen in de terminal op Linux en macOS:
 
-- **"Python 3.12 or newer is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Doe hoofdstuk 2B of 2C opnieuw.
+- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Doe hoofdstuk 2B of 2C opnieuw.
 - **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** Linux: doe hoofdstuk 2B stap 3 en 4. macOS: start Docker Desktop.
 - **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** Installeer python3-venv zoals in hoofdstuk 2B stap 2.
 

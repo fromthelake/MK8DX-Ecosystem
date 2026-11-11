@@ -34,7 +34,7 @@ What you do not need:
 MK8DX needs two free helper programs:
 
 - **Docker** runs programs in shielded "containers". The MK8DX website and database run in those. On Windows and macOS the program is called Docker Desktop.
-- **Python** is a programming language. The MK8DX installer is written in it. You need Python 3.12 or newer.
+- **Python** is a programming language. The MK8DX installer is written in it. You need Python 3.12 to 3.15.
 
 Do only the part for your computer (2A, 2B or 2C) and skip the other two.
 
@@ -46,8 +46,8 @@ Do only the part for your computer (2A, 2B or 2C) and skip the other two.
 4. **Do:** wait until the installation is finished and restart the computer if Docker asks for it. → **You see:** after the restart Docker Desktop opens (or open it yourself from the Start menu). The first time, Docker asks you to accept its terms. → **See something else?** If Docker asks you to sign in or create an account: MK8DX does not need a Docker account, skip it if Docker offers that. If Docker still says WSL is missing or must be updated, do step 2 again (`wsl --install` or `wsl --update`) and restart.
 5. **Do:** wait in the Docker Desktop window. → **You see:** **Engine running** at the bottom left. → **See something else?** "Engine starting" can take a few minutes. If it hangs or shows an error, restart the computer and open Docker Desktop again. Docker must be in the normal Linux-containers mode (not "Windows containers").
 6. **Do:** go to python.org → **Downloads** and download the **Python install manager** for Windows (the file ends in `.msix`). This is now the official way to install Python on Windows. Open the downloaded file and click **Install**. → **You see:** Windows installs the Python install manager; you can then close the window. → **See something else?** You can also install it from the Microsoft Store: search for "Python install manager" and click **Install**. Use one of the two, not both.
-7. **Do:** click Start, type `PowerShell`, open **Windows PowerShell**, type `py install 3.15` and press Enter. This installs Python itself (the install manager is only the tool that fetches Python). → **You see:** the first time a few questions to check the settings; answer them with Enter (the suggested choice) or `y`. Then Python is downloaded and installed. A question about adding a folder to your PATH may be answered with `y`; it is not required. → **See something else?** A newer version (3.16 or later) is fine too; MK8DX needs 3.12 or newer.
-8. **Do:** close PowerShell, open it again, type `python --version` and press Enter. → **You see:** `Python 3.15` or a higher number. → **See something else?** If the Microsoft Store opens, or it says python was not found: click Start, type **Manage app execution aliases** and open it. Turn on **Python (default)** and turn off **App Installer python.exe** and **python3.exe**. If you installed an old Python or the "Python launcher" in the past, remove it via **Settings → Apps → Installed apps** and try again.
+7. **Do:** click Start, type `PowerShell`, open **Windows PowerShell**, type `py install 3.15` and press Enter. This installs Python itself (the install manager is only the tool that fetches Python). → **You see:** the first time a few questions to check the settings; answer them with Enter (the suggested choice) or `y`. Then Python is downloaded and installed. A question about adding a folder to your PATH may be answered with `y`; it is not required. → **See something else?** Install exactly 3.15 as above; 3.12, 3.13 or 3.14 also work, a newer version (3.16 or later) does not yet.
+8. **Do:** close PowerShell, open it again, type `python --version` and press Enter. → **You see:** `Python 3.15` followed by a number, for example `Python 3.15.2`. → **See something else?** If the Microsoft Store opens, or it says python was not found: click Start, type **Manage app execution aliases** and open it. Turn on **Python (default)** and turn off **App Installer python.exe** and **python3.exe**. If you installed an old Python or the "Python launcher" in the past, remove it via **Settings → Apps → Installed apps** and try again.
 
 (Image: docker-engine-running)
 
@@ -57,7 +57,7 @@ Do only the part for your computer (2A, 2B or 2C) and skip the other two.
 
 Linux has not been tested end to end with MK8DX yet. The steps are written for Ubuntu 24.04 or newer. You type them in a **terminal**: a window where you give text commands (in Ubuntu you open it with Ctrl+Alt+T). End every command with Enter. **sudo** in front of a command means "as the administrator of this computer": Linux then asks for your password, and you see no characters while typing. That is normal.
 
-1. **Do:** type `python3 --version`. → **You see:** `Python 3.12` or a higher number. → **See something else?** A lower number (Debian 12, for example, has 3.11) is too old. You then need a newer version of your Linux; Ubuntu 24.04 has Python 3.12.
+1. **Do:** type `python3 --version`. → **You see:** `Python 3.12`, `3.13`, `3.14` or `3.15`. → **See something else?** A lower number (Debian 12, for example, has 3.11) is too old; 3.16 or higher is not supported yet. You then need a newer version of your Linux; Ubuntu 24.04 has Python 3.12.
 2. **Do:** type `sudo apt update` and then `sudo apt install docker.io docker-compose-v2 python3-venv`. Answer the question whether to continue with Y and Enter. → **You see:** the packages are downloaded and installed. → **See something else?** If apt cannot find a package, it has another name on your Linux (this can happen on Debian). Continue and check in step 5 whether Docker Compose works.
 3. **Do:** type `sudo systemctl enable --now docker`. This starts Docker now and every time the computer starts. → **You see:** no error (sometimes a line starting with "Created symlink").
 4. **Do:** type `sudo usermod -aG docker $USER`. This gives your user the right to use Docker. Then sign out and in again (or restart): the right only works after signing in again. → **You see:** no error. → **Note:** anyone in the docker group effectively has administrator rights on this computer. Add only yourself.
@@ -72,7 +72,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 1. **Do:** choose Apple menu → **About This Mac** and look at **Chip** or **Processor**. → **You see:** an Apple chip (M1, M2 and later) or an Intel processor. Remember which one: the MK8DX package and Docker Desktop exist for both, and you need the matching version (Apple chip is called arm64, Intel is called amd64).
 2. **Do:** download **Docker Desktop** for Mac with the matching chip from docker.com, open the downloaded file and drag Docker to **Applications**. → **You see:** Docker in your Applications folder.
 3. **Do:** open Docker. Accept the terms; if macOS asks for your password, enter it. → **You see:** after a while **Engine running** in the Docker Desktop window. → **See something else?** If Docker asks you to sign in: MK8DX does not need a Docker account, skip it if Docker offers that.
-4. **Do:** download the macOS installer of Python 3.12 or newer from python.org and open it. Click through the steps with **Continue** and **Install**. → **You see:** the message that the installation was successful.
+4. **Do:** download the macOS installer of Python 3.15 from python.org and open it. Click through the steps with **Continue** and **Install**. → **You see:** the message that the installation was successful.
 5. **Do:** open **Terminal** (Applications → Utilities → Terminal), type `python3 --version` and press Enter. → **You see:** `Python 3.12` or higher. → **See something else?** A lower number (for example 3.9 from Apple itself): close Terminal and open it again. If it is still lower, install Python from python.org again.
 6. **Do:** type `docker info` in Terminal. → **You see:** a list of details without an error. → **See something else?** Start Docker Desktop and wait for Engine running.
 
@@ -92,7 +92,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 
 Messages in the black window on Windows:
 
-- **"Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Do chapter 2A steps 6 to 8 and then double-click Start-MK8DX-LAN.cmd again.
+- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Do chapter 2A steps 6 to 8 and then double-click Start-MK8DX-LAN.cmd again.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wait for Engine running and double-click again.
 - Below an error it shows **"The selected step stopped. Read the message above before retrying."** Read the line above it, fix that and press a key to close the window.
 
@@ -108,7 +108,7 @@ Messages in the black window on Windows:
 
 Messages in the terminal on Linux and macOS:
 
-- **"Python 3.12 or newer is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Do chapter 2B or 2C again.
+- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Do chapter 2B or 2C again.
 - **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** Linux: do chapter 2B steps 3 and 4. macOS: start Docker Desktop.
 - **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** Install python3-venv as in chapter 2B step 2.
 

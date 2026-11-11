@@ -6,11 +6,12 @@ Write-Host "MK8DX package: $root"
 Write-Host "Private installation: $StateDir"
 try {
   $python = (Get-Command python -ErrorAction Stop).Source
-  & $python -c 'import sys; assert sys.version_info >= (3,12), "Python 3.12 or newer is required"'
-  if ($LASTEXITCODE -ne 0) { throw 'old Python' }
+  # The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
+  & $python -c 'import sys; assert (3,12) <= sys.version_info[:2] <= (3,15)'
+  if ($LASTEXITCODE -ne 0) { throw 'unsupported Python' }
   & $python --version
 } catch {
-  throw 'Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.'
+  throw 'Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.'
 }
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
 $dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)

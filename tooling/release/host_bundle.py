@@ -60,23 +60,39 @@ WHEEL_PLATFORMS = {
 }
 
 
+# The CPython versions an offline package installs on. The launchers accept exactly this range, and the
+# guides tell people to install 3.15 (the Python install manager's current version, November 2026).
+PYTHON_VERSIONS = ("cp312", "cp313", "cp314", "cp315")
+
+
 def wheel_fits(wheel_name: str, platform: str, arch: str) -> bool:
     if wheel_name.endswith("-none-any.whl"):
         return True
-    return ("cp312" in wheel_name or "abi3" in wheel_name) and \
+    tags = wheel_name[:-4].split("-")[-3:]
+    return (tags[0] in PYTHON_VERSIONS or tags[1] == "abi3") and \
         WHEEL_PLATFORMS[(platform, arch)].search(wheel_name) is not None
 
 
 def offline_wheels(folder: Path, platform: str = "windows", arch: str = "amd64") -> dict:
-    """Exactly one CPython 3.12 wheel per pinned requirement for this host; returns {wheel: sha256}."""
+    """Per pinned requirement for this host: one universal (none-any/abi3) wheel, or exactly one wheel for every
+    supported CPython version. Returns {wheel: sha256}."""
     wheels = {}
     for name, version in offline_pins().items():
         stem = name.replace("-", "_").lower() + "-" + version + "-"
         found = [p for p in folder.glob("*.whl") if p.name.lower().startswith(stem)]
         compatible = [p for p in found if wheel_fits(p.name, platform, arch)]
-        if len(compatible) != 1:
-            raise SystemExit(f"Need exactly one {platform}/{arch} cp312 wheel for {name}=={version} in {folder}")
-        wheels[compatible[0].name] = sha256(compatible[0])
+        universal = [p for p in compatible if p.name.endswith("-none-any.whl") or "-abi3-" in p.name]
+        per_version = {v: [p for p in compatible if p.name[:-4].split("-")[-3] == v and "-abi3-" not in p.name]
+                       for v in PYTHON_VERSIONS}
+        if len(universal) == 1 and len(compatible) == 1:
+            chosen = universal
+        elif not universal and all(len(rows) == 1 for rows in per_version.values()) and \
+                len(compatible) == len(PYTHON_VERSIONS):
+            chosen = [rows[0] for rows in per_version.values()]
+        else:
+            raise SystemExit(f"Need one universal {platform}/{arch} wheel, or one per {', '.join(PYTHON_VERSIONS)}, "
+                             f"for {name}=={version} in {folder}")
+        wheels.update({p.name: sha256(p) for p in chosen})
     if len(list(folder.glob("*.whl"))) != len(wheels):
         raise SystemExit("The wheel folder holds wheels that are not pinned requirements")
     return wheels
@@ -132,7 +148,7 @@ def main():
                                             "--version or local tag)")
     parser.add_argument("--web-image", help="candidate Web image tag (with --offline-candidate, together with "
                                             "--api-image)")
-    parser.add_argument("--wheels-dir", type=Path, help="folder with the pinned cp312 wheels for --platform/--arch "
+    parser.add_argument("--wheels-dir", type=Path, help="folder with the pinned cp312-cp315 wheels for --platform/--arch "
                                                         "(with --offline-candidate)")
     parser.add_argument("--platform", choices=("windows", "linux", "macos"), default="windows",
                         help="the host operating system this package is for (default: windows)")
@@ -189,11 +205,12 @@ def main():
             file_bytes["images/images.json"] = (json.dumps({"api": images[0], "web": images[1],
                                                             "qaOfflineCandidate": True}, indent=2) + "\n").encode()
             pins = offline_pins()
-            hashes = []
-            for wheel, digest in wheels.items():
+            hashes = {}
+            for wheel, digest in sorted(wheels.items()):
                 name = next(n for n in pins if wheel.lower().startswith(n.replace("-", "_").lower() + "-"))
-                hashes.append(f"{name}=={pins[name]} --hash=sha256:{digest}")
-            file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(sorted(hashes)) + "\n").encode()
+                hashes.setdefault(name, []).append(f"--hash=sha256:{digest}")
+            lines = [f"{name}=={pins[name]} " + " ".join(rows) for name, rows in sorted(hashes.items())]
+            file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(lines) + "\n").encode()
         first = (f"MK8DX host package {args.revision}\n\n"
                  + ("A2 OFFLINE QA CANDIDATE: only for a disposable test host; not a qualified route yet.\n"
                     + START[args.platform] + "\n"

@@ -195,7 +195,7 @@ jobs:
           path: ${{ runner.temp }}/out/*.zip
   a2-packages:
     # A2 offline (ADR-0223): one package per host system and processor, each with its own image bundle and the
-    # pinned CPython 3.12 wheels for the local CA tools. The containers are always Linux images, built natively
+    # pinned CPython 3.12-3.15 wheels for the local CA tools. The containers are always Linux images, built natively
     # on an amd64 or arm64 runner (no emulation).
     needs: verified
     runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
@@ -237,8 +237,11 @@ jobs:
           platforms=()
           for tag in $WHEEL_TAGS; do platforms+=(--platform "$tag"); done
           mkdir -p "$RUNNER_TEMP/wheels" "$RUNNER_TEMP/out"
-          python -m pip download --only-binary=:all: --implementation cp --python-version 3.12 "${platforms[@]}" \
-            -r tooling/requirements-offline-lan.txt -d "$RUNNER_TEMP/wheels"
+          # One wheel per supported CPython (host_bundle.PYTHON_VERSIONS); abi3/none-any wheels arrive once.
+          for py in 3.12 3.13 3.14 3.15; do
+            python -m pip download --only-binary=:all: --implementation cp --python-version "$py" "${platforms[@]}" \
+              -r tooling/requirements-offline-lan.txt -d "$RUNNER_TEMP/wheels"
+          done
           python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
             --offline-candidate --platform "$A2_PLATFORM" --arch "$A2_ARCH" --wheels-dir "$RUNNER_TEMP/wheels" \
             --output "$RUNNER_TEMP/out/mk8dx-a2-$A2_PLATFORM-$A2_ARCH-${PACKAGE_VERSION}.zip"

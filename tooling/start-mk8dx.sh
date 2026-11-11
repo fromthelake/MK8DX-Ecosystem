@@ -9,8 +9,9 @@ case "$(uname -s)" in
 esac
 cd "$root"
 printf 'MK8DX package: %s\n' "$root"
-python3 -c 'import sys; assert sys.version_info >= (3, 12)' 2>/dev/null || {
-  echo 'Python 3.12 or newer is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.' >&2
+# The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
+python3 -c 'import sys; assert (3, 12) <= sys.version_info[:2] <= (3, 15)' 2>/dev/null || {
+  echo 'Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.' >&2
   exit 1
 }
 python3 --version
