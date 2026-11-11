@@ -31,20 +31,49 @@ class AutoBackupTest(unittest.TestCase):
                 self.assertEqual(task.call_count, 2)
                 self.assertEqual(auto_backup.read_recovery_code(state), first["recoveryCode"])
 
-    @unittest.skipUnless(sys.platform == "win32", "Windows task scheduler")
-    def test_tasks_run_for_the_current_user_without_elevation(self):
+    def _registered(self, call):
         with tempfile.TemporaryDirectory() as temporary:
             calls = []
-            with patch.object(auto_backup.subprocess, "run",
-                              side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
-                self.assertTrue(auto_backup.register_ca_renewal(Path(temporary), "py.exe"))
-                self.assertTrue(auto_backup.register_daily_task(Path(temporary), "py.exe"))
-            for args in calls:
-                self.assertEqual(args[:2], ["schtasks", "/Create"])
-                self.assertNotIn("/RU", args)  # current user: no stored password, no elevation
-                self.assertNotIn("/RL", args)
-            self.assertIn("maintain-ca", calls[0][-1])
-            self.assertIn("auto_backup.py", calls[1][-1])
+            with patch.object(auto_backup.sys, "platform", "win32"), \
+                    patch.object(auto_backup.subprocess, "run",
+                                 side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
+                result = call(Path(temporary))
+            return result, calls
+
+    def test_tasks_run_for_the_current_user_and_catch_up(self):
+        for call, name, needle in (
+                (lambda s: auto_backup.register_ca_renewal(s, "py.exe"), "MK8DX certificate renewal", "maintain-ca"),
+                (lambda s: auto_backup.register_daily_task(s, "py.exe"), "MK8DX backup", "auto_backup.py")):
+            result, calls = self._registered(call)
+            self.assertTrue(result)
+            self.assertEqual(len(calls), 1)
+            script = calls[0][-1]
+            self.assertEqual(calls[0][:4], ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command"])
+            self.assertIn(f"-TaskName '{name}'", script)
+            self.assertIn(needle, script)
+            # Missed nights (computer off, nobody signed in, on battery) still run afterwards.
+            for setting in ("-StartWhenAvailable", "-AllowStartIfOnBatteries", "-DontStopIfGoingOnBatteries",
+                            "-LogonType Interactive", "-RunLevel Limited", "-Daily"):
+                self.assertIn(setting, script)
+            self.assertNotIn("-Password", script)  # current user: no stored password, no elevation
+
+    def test_task_time_is_validated(self):
+        with self.assertRaises(ValueError):
+            auto_backup.register_daily_task(Path("."), "py.exe", when="3am; Remove-Item x")
+
+    def test_quotes_survive_paths_with_apostrophes(self):
+        self.assertEqual(auto_backup._quote("C:\\Users\\O'Neil"), "'C:\\Users\\O''Neil'")
+
+    def test_backup_waits_for_docker_and_gives_up_cleanly(self):
+        with patch.object(auto_backup, "wait_for_docker", return_value=False):
+            with tempfile.TemporaryDirectory() as temporary:
+                with self.assertRaisesRegex(RuntimeError, "Docker is not running"):
+                    auto_backup.run(Path(temporary), Path(temporary) / "backups")
+        answers = iter([1, 1, 0])
+        with patch.object(auto_backup.subprocess, "run",
+                          side_effect=lambda *a, **k: types.SimpleNamespace(returncode=next(answers))), \
+                patch.object(auto_backup.time, "sleep"):
+            self.assertTrue(auto_backup.wait_for_docker(timeout_s=60, poll_s=0))
 
     def test_run_removes_temporary_secret_and_keeps_seven(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -64,7 +93,8 @@ class AutoBackupTest(unittest.TestCase):
             (state / auto_backup.PHRASE_FILE).write_bytes(b"x")
             with patch.dict(sys.modules, {"tooling.offline_lan_ca": fake_ca,
                                           "lifecycle": types.SimpleNamespace(backup=fake_backup)}):
-                written = auto_backup.run(state, root)
+                with patch.object(auto_backup, "wait_for_docker", return_value=True):
+                    written = auto_backup.run(state, root)
             self.assertEqual(seen["secret"], "CODE-CODE-CODE-CODE-CODE")
             self.assertFalse(any(p.name.endswith(".tmp") for p in state.iterdir()))
             remaining = sorted(p.name for p in root.iterdir())
@@ -77,43 +107,26 @@ if __name__ == "__main__":
     unittest.main()
 
 
-class _FakeRunKey:
-    def __init__(self, values):
-        self.values = values
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, *exc):
-        return False
-
-
-def _fake_winreg(values):
-    def query(key, name):
-        if name not in key.values:
-            raise FileNotFoundError(name)
-        return key.values[name], 1
-
-    def set_value(key, name, _reserved, _type, value):
-        key.values[name] = value
-
-    return types.SimpleNamespace(HKEY_CURRENT_USER=0, KEY_READ=1, KEY_SET_VALUE=2, REG_SZ=1,
-                                 OpenKey=lambda *a: _FakeRunKey(values), QueryValueEx=query, SetValueEx=set_value)
-
-
 class DockerAutostartTest(unittest.TestCase):
-    def test_an_existing_sign_in_entry_is_enough_wherever_docker_lives(self):
-        values = {"Docker Desktop": r"D:\elsewhere\Docker Desktop.exe"}
-        with patch.object(sys, "platform", "win32"), patch.dict(sys.modules, {"winreg": _fake_winreg(values)}):
-            self.assertEqual(auto_backup.ensure_docker_autostart(), "present")
-
-    def test_a_per_user_docker_desktop_is_found(self):
+    def test_own_sign_in_task_starts_docker_desktop_only_when_needed(self):
         with tempfile.TemporaryDirectory() as temporary:
             exe = Path(temporary) / "Programs" / "DockerDesktop" / "Docker Desktop.exe"
             exe.parent.mkdir(parents=True)
             exe.write_bytes(b"")
-            values = {}
-            with patch.object(sys, "platform", "win32"), patch.dict(sys.modules, {"winreg": _fake_winreg(values)}), \
-                    patch.dict("os.environ", {"LOCALAPPDATA": temporary, "ProgramFiles": str(Path(temporary) / "none")}):
+            calls = []
+            with patch.object(auto_backup.sys, "platform", "win32"), \
+                    patch.dict("os.environ", {"LOCALAPPDATA": temporary, "ProgramFiles": str(Path(temporary) / "none")}), \
+                    patch.object(auto_backup.subprocess, "run",
+                                 side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
                 self.assertEqual(auto_backup.ensure_docker_autostart(), "enabled")
-            self.assertEqual(values["Docker Desktop"], f'"{exe}"')
+            script = calls[0][-1]
+            self.assertIn("-TaskName 'MK8DX start'", script)
+            self.assertIn("-AtLogOn -User $who", script)
+            self.assertIn("Get-Process -Name ''Docker Desktop''", script)
+            self.assertIn(str(exe).replace("'", "''"), script)
+
+    def test_missing_docker_desktop_is_reported(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            with patch.object(auto_backup.sys, "platform", "win32"), \
+                    patch.dict("os.environ", {"LOCALAPPDATA": temporary, "ProgramFiles": temporary}):
+                self.assertEqual(auto_backup.ensure_docker_autostart(), "docker-desktop-not-found")

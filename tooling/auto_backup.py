@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import re
 from pathlib import Path
 import secrets
 import shutil
@@ -54,56 +55,95 @@ def read_recovery_code(state: Path) -> str:
     return unprotect_root((state / PHRASE_FILE).read_bytes()).decode("utf-8")
 
 
-def register_daily_task(state: Path, python: str, when: str = "03:00") -> bool:
-    """Daily task for the signed-in user (runs while the user is signed in; no admin needed)."""
+def _quote(value: str) -> str:
+    """A PowerShell single-quoted literal."""
+    return "'" + str(value).replace("'", "''") + "'"
+
+
+def _register_task(name: str, execute: str, arguments: str, trigger: str) -> bool:
+    """A task for the signed-in user (no stored password, no elevation).
+
+    Docker Desktop only runs in that user's session, so the user's own interactive task is the
+    identity that can reach it. A run missed while the computer was off, asleep or nobody was
+    signed in starts as soon as possible afterwards, and laptops on battery still run it."""
     if sys.platform != "win32":
         return False
-    action = f'"{python}" "{ROOT / "tooling" / "auto_backup.py"}" run --state-dir "{state}"'
-    run = subprocess.run(["schtasks", "/Create", "/F", "/SC", "DAILY", "/ST", when, "/TN", TASK_NAME,
-                          "/TR", action], capture_output=True, text=True, check=False)
+    script = (
+        "$ErrorActionPreference='Stop';"
+        "$who=\"$env:USERDOMAIN\\$env:USERNAME\";"
+        f"$a=New-ScheduledTaskAction -Execute {_quote(execute)} -Argument {_quote(arguments)};"
+        f"$t={trigger};"
+        "$s=New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries "
+        "-DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 2);"
+        "$p=New-ScheduledTaskPrincipal -UserId $who -LogonType Interactive -RunLevel Limited;"
+        f"Register-ScheduledTask -TaskName {_quote(name)} -Action $a -Trigger $t -Settings $s "
+        "-Principal $p -Force | Out-Null")
+    run = subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
+                         capture_output=True, text=True, check=False)
     return run.returncode == 0
+
+
+def _daily(when: str) -> str:
+    if not re.fullmatch(r"[0-2]\d:[0-5]\d", when):
+        raise ValueError("Use HH:MM for a daily task")
+    return f"New-ScheduledTaskTrigger -Daily -At {_quote(when)}"
+
+
+def register_daily_task(state: Path, python: str, when: str = "03:00") -> bool:
+    """The nightly encrypted backup (catches up after a missed night)."""
+    return _register_task(TASK_NAME, python,
+                          f'"{ROOT / "tooling" / "auto_backup.py"}" run --state-dir "{state}"', _daily(when))
 
 
 CA_TASK_NAME = "MK8DX certificate renewal"
 
 
 def register_ca_renewal(state: Path, python: str, when: str = "03:30") -> bool:
-    """Daily `maintain-ca` for the signed-in user.
+    """Daily `maintain-ca`: does nothing until the signer is due, then renews it and the served
+    certificate with HTTPS verification (ADR-0223)."""
+    return _register_task(CA_TASK_NAME, python,
+                          f'"{ROOT / "tooling" / "install.py"}" maintain-ca --state-dir "{state}"', _daily(when))
 
-    Docker Desktop itself only runs inside the signed-in user's session, so this user's task is
-    the identity that can reach it; `maintain-ca` does nothing until the signer is due and then
-    renews it and the served certificate with HTTPS verification (ADR-0223)."""
-    if sys.platform != "win32":
-        return False
-    action = (f'"{python}" "{ROOT / "tooling" / "install.py"}" maintain-ca --state-dir "{state}"')
-    run = subprocess.run(["schtasks", "/Create", "/F", "/SC", "DAILY", "/ST", when, "/TN", CA_TASK_NAME,
-                          "/TR", action], capture_output=True, text=True, check=False)
-    return run.returncode == 0
+
+START_TASK_NAME = "MK8DX start"
+
+
+def docker_desktop_executable() -> Path | None:
+    candidates = [
+        Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Docker" / "Docker" / "Docker Desktop.exe",
+        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "DockerDesktop" / "Docker Desktop.exe",
+    ]
+    return next((c for c in candidates if c.is_file()), None)
 
 
 def ensure_docker_autostart() -> str:
-    """Start Docker Desktop at sign-in (per user, no admin); MK8DX containers restart with it."""
+    """Start Docker Desktop at sign-in (per user, no admin); MK8DX's containers restart with it.
+
+    MK8DX keeps its own sign-in task instead of relying on Docker Desktop's "start when you sign
+    in" entry: that entry can be switched off in Docker's settings or in Windows' startup apps
+    (a host restarted by Windows Update then stayed offline, 2026-11-11). The task starts Docker
+    Desktop only when it is not already running."""
     if sys.platform != "win32":
         return "skipped"
-    import winreg
-    key_path = r"Software\Microsoft\Windows\CurrentVersion\Run"
-    with winreg.OpenKey(winreg.HKEY_CURRENT_USER, key_path, 0, winreg.KEY_READ | winreg.KEY_SET_VALUE) as key:
-        try:
-            # Docker Desktop's own "start at sign-in" already does it, wherever it is installed.
-            winreg.QueryValueEx(key, "Docker Desktop")
-            return "present"
-        except FileNotFoundError:
-            pass
-        # Machine-wide install, or the per-user Docker Desktop install.
-        candidates = [
-            Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Docker" / "Docker" / "Docker Desktop.exe",
-            Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "DockerDesktop" / "Docker Desktop.exe",
-        ]
-        exe = next((c for c in candidates if c.is_file()), None)
-        if exe is None:
-            return "docker-desktop-not-found"
-        winreg.SetValueEx(key, "Docker Desktop", 0, winreg.REG_SZ, f'"{exe}"')
-        return "enabled"
+    exe = docker_desktop_executable()
+    if exe is None:
+        return "docker-desktop-not-found"
+    starter = (f"if (-not (Get-Process -Name 'Docker Desktop' -ErrorAction SilentlyContinue)) "
+               f"{{ Start-Process -FilePath {_quote(str(exe))} }}")
+    registered = _register_task(START_TASK_NAME, "powershell.exe",
+                                f'-NoProfile -NonInteractive -WindowStyle Hidden -Command "{starter}"',
+                                "New-ScheduledTaskTrigger -AtLogOn -User $who")
+    return "enabled" if registered else "failed"
+
+
+def wait_for_docker(timeout_s: float = 900.0, poll_s: float = 10.0) -> bool:
+    """At sign-in Docker Desktop needs a few minutes; a caught-up backup waits instead of failing."""
+    deadline = time.monotonic() + timeout_s
+    while True:
+        ready = subprocess.run(["docker", "info"], capture_output=True, check=False).returncode == 0
+        if ready or time.monotonic() >= deadline:
+            return ready
+        time.sleep(poll_s)
 
 
 def enable(state: Path, python: str) -> dict:
@@ -135,6 +175,8 @@ def backup_with_stored_code(state: Path, output: Path) -> Path:
 def run(state: Path, root: Path | None = None) -> Path:
     root = root or default_backup_root()
     root.mkdir(parents=True, exist_ok=True)
+    if not wait_for_docker():
+        raise RuntimeError("Docker is not running; the backup runs again at the next scheduled time")
     output = backup_with_stored_code(state, root / time.strftime("%Y%m%d-%H%M%S"))
     backups = sorted((p for p in root.iterdir() if p.is_dir() and p.name[:8].isdigit()), key=lambda p: p.name)
     for old in backups[:-KEEP]:
