@@ -141,7 +141,8 @@ class Wizard:
         return profile.is_file() and json.loads(profile.read_text(encoding="utf-8")).get("route") == "A2_OFFLINE"
 
     def status(self):
-        info = {"installed": self.installed(), "qaCandidate": self.qa_candidate, "stateDir": str(self.state)}
+        info = {"installed": self.installed(), "qaCandidate": self.qa_candidate, "stateDir": str(self.state),
+                "platform": "windows" if sys.platform == "win32" else "macos" if sys.platform == "darwin" else "linux"}
         if info["installed"]:
             info["addresses"] = install.offline_addresses(self.state)
             info["administrator"] = self.host is not None

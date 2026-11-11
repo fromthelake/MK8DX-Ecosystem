@@ -46,12 +46,14 @@ const T = {
     revokeCard: "Kaart intrekken", cardRevoked: "Ingetrokken: deze kaart werkt niet meer.",
     signOut: "Overal uitloggen", signOutConfirm: "Zeker? Klik nogmaals",
     signedOut: "Uitgelogd op alle apparaten. Met een nieuwe kaart kan deze persoon weer inloggen.",
-    signOutSelf: "Jezelf log je uit via het accountmenu op de website ('Uitloggen op alle apparaten').",
+    signOutSelf: "Jezelf log je uit via het accountmenu op de website ('Op alle apparaten afmelden').",
     doneTitle: "Klaar! Veel racegenot.",
     doneLead: "MK8DX draait op je thuisnetwerk.",
     doneWebsite: "Website", doneSetup: "Nieuw apparaat", doneManage: "Later mensen toevoegen of kaarten maken: dubbelklik 'MK8DX beheer' op het bureaublad.",
     shortcut: "Snelkoppeling 'MK8DX beheer' op het bureaublad zetten",
     autostart: "MK8DX starten met Windows", autostartHint: "Docker Desktop start mee bij het aanmelden; MK8DX komt daarna vanzelf online.",
+    autostartOther: "MK8DX starten als de computer opstart", autostartOtherHint: "Docker start mee; MK8DX komt daarna vanzelf online.",
+    autostartManual: "Laat Docker ook na een herstart starten met dit commando in een terminal:",
     backups: "Elke nacht een back-up maken", backupsHint: "Versleuteld, in Documenten\\MK8DX-backups. De laatste 7 blijven bewaard.",
     recoveryLead: "Bewaar deze herstelcode goed (opschrijven of afdrukken). Je hebt hem alleen nodig om een back-up op een andere computer terug te zetten.",
     recoveryTitle: "MK8DX herstelcode", recoveryText: "Zonder deze code is een back-up niet te openen. Hij wordt maar één keer getoond.",
@@ -59,7 +61,7 @@ const T = {
     finished: "Je kunt dit venster nu sluiten.",
     restoreOffer: "Een back-up terugzetten", restoreOfferHint: "Nieuwe computer? Zet je MK8DX met al je mensen, tijden en toernooien terug uit een back-up. Je hebt de herstelcode nodig.",
     restoreTitle: "Een back-up terugzetten", restoreLead: "Kies de back-up en vul de herstelcode in die je bij de eerste installatie hebt opgeschreven.",
-    restoreNone: "In deze map staat geen MK8DX-back-up. Kopieer de back-upmap (bijvoorbeeld vanaf een USB-stick) naar Documenten\\MK8DX-backups, of kies hieronder een andere map.",
+    restoreNone: "In deze map staat geen MK8DX-back-up. Kopieer de back-upmap (bijvoorbeeld vanaf een USB-stick) naar de map MK8DX-backups in je Documenten, of kies hieronder een andere map.",
     restoreFolder: "Andere map (bijvoorbeeld een USB-stick):", restoreLook: "Zoeken", restoreCode: "Herstelcode",
     restoreCodeHint: "Vijf groepjes van vier tekens, bijvoorbeeld ABCD-EFGH-…", restoreGo: "Terugzetten",
     restoreWrongCode: "Deze herstelcode opent de back-up niet. Controleer de code en probeer het opnieuw.",
@@ -120,6 +122,8 @@ const T = {
     doneWebsite: "Website", doneSetup: "New device", doneManage: "To add people or make cards later: double-click 'MK8DX beheer' on the desktop.",
     shortcut: "Put an 'MK8DX beheer' shortcut on the desktop",
     autostart: "Start MK8DX with Windows", autostartHint: "Docker Desktop starts when you sign in; MK8DX then comes online by itself.",
+    autostartOther: "Start MK8DX when the computer starts", autostartOtherHint: "Docker starts with it; MK8DX then comes online by itself.",
+    autostartManual: "Make Docker start after a restart too, with this command in a terminal:",
     backups: "Make a backup every night", backupsHint: "Encrypted, in Documents\\MK8DX-backups. The newest 7 are kept.",
     recoveryLead: "Keep this recovery code safe (write it down or print it). You only need it to restore a backup on another computer.",
     recoveryTitle: "MK8DX recovery code", recoveryText: "A backup cannot be opened without this code. It is shown only once.",
@@ -127,7 +131,7 @@ const T = {
     finished: "You can close this window now.",
     restoreOffer: "Restore a backup", restoreOfferHint: "New computer? Bring MK8DX back with all your people, times and tournaments from a backup. You need the recovery code.",
     restoreTitle: "Restore a backup", restoreLead: "Choose the backup and enter the recovery code you wrote down during the first installation.",
-    restoreNone: "There is no MK8DX backup in this folder. Copy the backup folder (for example from a USB stick) to Documents\\MK8DX-backups, or choose another folder below.",
+    restoreNone: "There is no MK8DX backup in this folder. Copy the backup folder (for example from a USB stick) to the MK8DX-backups folder in your Documents, or choose another folder below.",
     restoreFolder: "Another folder (for example a USB stick):", restoreLook: "Search", restoreCode: "Recovery code",
     restoreCodeHint: "Five groups of four characters, for example ABCD-EFGH-…", restoreGo: "Restore",
     restoreWrongCode: "This recovery code does not open the backup. Check the code and try again.",
@@ -276,7 +280,9 @@ const views = {
       if (!state.ip || !rows.some((r) => r.ip === state.ip)) state.ip = rows[0].ip;
       const chosen = rows.find((r) => r.ip === state.ip);
       main.append(el("p", "mono", `https://${chosen.ip}`));
-      main.append(el("p", "muted", chosen.category === "Private" ? T.netPrivate : T.netPublic));
+      // Only Windows reports a network category (Private/Public); Linux and macOS have none to show.
+      if (chosen.category === "Private") main.append(el("p", "muted", T.netPrivate));
+      else if (chosen.category === "Public") main.append(el("p", "muted", T.netPublic));
       if (state.advanced) {
         const field = el("label", "field", T.netAdvanced); const select = el("select");
         rows.forEach((r) => { const o = el("option", "", `${r.ip} — ${r.alias} (${r.category || "?"})`); o.value = r.ip; o.selected = r.ip === state.ip; select.append(o); });
@@ -417,7 +423,9 @@ const views = {
       row.append(box, text); return row;
     };
     const options = el("div", "list");
-    options.append(option("autostart", T.autostart, T.autostartHint), option("backups", T.backups, T.backupsHint),
+    const windows = (status.platform || "windows") === "windows";
+    options.append(option("autostart", windows ? T.autostart : T.autostartOther, windows ? T.autostartHint : T.autostartOtherHint),
+      option("backups", T.backups, T.backupsHint),
       option("shortcut", T.shortcut));
     main.replaceChildren(el("h1", "", T.doneTitle), el("p", "lead", T.doneLead), list, options, el("p", "muted", T.doneManage));
     if (state.restoring) main.append(el("p", "muted", T.restoreReconnect));
@@ -460,6 +468,10 @@ const actions = {
         autostart: $("autostart")?.checked !== false, backups: $("backups")?.checked !== false });
     } catch (error) { main.append(errorBox(error.message)); }
     main.replaceChildren(el("h1", "", T.doneTitle));
+    if (typeof result.autostart === "string" && result.autostart.startsWith("manual: ")) {
+      // Linux: Docker Engine at boot needs root, so the exact command is shown instead of run.
+      main.append(el("p", "lead", T.autostartManual), el("p", "mono", result.autostart.slice("manual: ".length)));
+    }
     if (result.recoveryCode) {
       const card = el("div", "person recovery");
       card.append(el("h3", "", T.recoveryTitle), el("div", "short-code", result.recoveryCode),
