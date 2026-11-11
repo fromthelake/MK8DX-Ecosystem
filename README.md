@@ -70,7 +70,7 @@ which route. GitHub's automatic **Source code (zip)** is the complete source, no
 
 | Route | Package | Status |
 | --- | --- | --- |
-| A1: website on one computer with Docker | `mk8dx-host-local-…-amd64.zip` | Supported |
+| A1: website on one computer with Docker | `mk8dx-host-local-…-amd64.zip` | Supported ([guide](docs/install/A1_ONE_COMPUTER_EN.md)) |
 | A2: website on a home or club network, guided setup | `mk8dx-a2-<platform>-<arch>-….zip` | Tested on Windows 11 ([guide](docs/install/A2_HOME_GUIDE_EN.md)); Linux in WSL 2; macOS untested |
 | A3: website on Windows with XAMPP and Node.js | `mk8dx-xampp-node-windows-….zip` | Supported |
 | B1: website on a Docker VPS | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
