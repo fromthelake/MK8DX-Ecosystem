@@ -11,6 +11,7 @@
  * - POST /v1/session/native-remember            remember the signed-in (bearer) account here
  * - GET  /v1/session/native-remembered-accounts the accounts this app device remembers
  * - POST /v1/session/native-account-switch      switch; answers with the new bearer token
+ * - POST /v1/session/native-forget              remove one account from this app device's list
  *
  * The switch itself runs in a server-only Better Auth endpoint; these routes add closed response
  * schemas, the Origin and bearer refusals, CSRF proof for the settings and the mutation limit.
@@ -49,6 +50,8 @@ export const ACCOUNT_SWITCH_PIN_SCHEMA_VERSION = "mk8dx.account-switch-pin.v1";
 export const NATIVE_REMEMBER_PATH = "/v1/session/native-remember";
 export const NATIVE_REMEMBERED_ACCOUNTS_PATH = "/v1/session/native-remembered-accounts";
 export const NATIVE_ACCOUNT_SWITCH_PATH = "/v1/session/native-account-switch";
+export const NATIVE_FORGET_PATH = "/v1/session/native-forget";
+export const NATIVE_REMEMBERED_ACCOUNTS_SCHEMA_VERSION = "mk8dx.native-remembered-accounts.v1";
 export const NATIVE_REMEMBER_SCHEMA_VERSION = "mk8dx.native-account-remember.v1";
 export const NATIVE_ACCOUNT_SWITCH_SCHEMA_VERSION = "mk8dx.native-account-switch.v1";
 /** Remembering is done once per sign-in (and once per account when an app upgrades). */
@@ -87,6 +90,42 @@ export const accountSwitchResponseSchema = {
   properties: {
     schemaVersion: { type: "string", const: ACCOUNT_SWITCH_SCHEMA_VERSION },
     switched: { type: "boolean", const: true },
+  },
+} as const;
+
+/** The browser list plus each account's Player id, which the app maps to its saved results. */
+export const nativeRememberedAccountsResponseSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "accounts"],
+  properties: {
+    schemaVersion: { type: "string", const: NATIVE_REMEMBERED_ACCOUNTS_SCHEMA_VERSION },
+    accounts: {
+      type: "array",
+      maxItems: REMEMBERED_ACCOUNTS_PER_DEVICE,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["entryId", "pinRequired", "current"],
+        properties: {
+          entryId: { type: "string", pattern: "^[A-Za-z0-9_-]{22}$" },
+          label: { type: "string", minLength: 1, maxLength: 128 },
+          playerId: { type: "string", pattern: "^player\\.[a-z0-9._-]{1,128}$" },
+          pinRequired: { type: "boolean" },
+          current: { type: "boolean" },
+        },
+      },
+    },
+  },
+} as const;
+
+export const nativeForgetResponseSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "forgotten"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.native-account-forget.v1" },
+    forgotten: { type: "boolean" },
   },
 } as const;
 
@@ -140,6 +179,7 @@ export interface AccountSwitchAuthApi {
   switchRememberedAccount(input: { headers: Headers; body: unknown; returnHeaders: true }):
     Promise<{ headers: Headers; response: AccountSwitchOutcome }>;
   rememberNativeAccount(input: { headers: Headers }): Promise<NativeRememberOutcome>;
+  forgetRememberedEntry(input: { headers: Headers; body: unknown }): Promise<{ forgotten: boolean }>;
   getSession(input: { headers: Headers }): Promise<{
     session: { id: string; createdAt: Date | string };
     user: { id: string };
@@ -237,8 +277,33 @@ export async function registerAccountSwitchRoutes(
       return reply.send({ schemaVersion: NATIVE_REMEMBER_SCHEMA_VERSION, remembered: outcome.outcome === "remembered" });
     });
 
-  app.get<{ Reply: RememberedAccountsDocument | ErrorResponse }>(NATIVE_REMEMBERED_ACCOUNTS_PATH, {
-    schema: { response: { 200: rememberedAccountsResponseSchema, ...errorResponses } },
+  app.post<{ Reply: Readonly<{ schemaVersion: "mk8dx.native-account-forget.v1"; forgotten: boolean }> | ErrorResponse }>(
+    NATIVE_FORGET_PATH, {
+      schema: { response: { 200: nativeForgetResponseSchema, ...errorResponses } },
+    }, async (request, reply) => {
+      reply.header("Cache-Control", "no-store");
+      if (!nativeApp(request)) {
+        return reply.code(403).send(failure("native_forget_forbidden", "Only the app can do this."));
+      }
+      const body: unknown = request.body;
+      if (!isPlainObject(body) || !onlyKeys(body, ["entryId"]) ||
+          typeof body["entryId"] !== "string" || !entryIdPattern.test(body["entryId"])) {
+        return reply.code(400).send(failure("native_forget_invalid", "Choose an account from the list."));
+      }
+      try {
+        const { forgotten } = await options.api.forgetRememberedEntry({
+          headers: fromNodeHeaders(request.headers), body: { entryId: body["entryId"] } });
+        return reply.send({ schemaVersion: "mk8dx.native-account-forget.v1", forgotten });
+      } catch {
+        return reply.code(503).send(failure("native_forget_unavailable", "Try again later."));
+      }
+    });
+
+  app.get<{ Reply: (Omit<RememberedAccountsDocument, "schemaVersion" | "accounts"> & {
+    schemaVersion: typeof NATIVE_REMEMBERED_ACCOUNTS_SCHEMA_VERSION;
+    accounts: readonly Readonly<{ entryId: string; label?: string; playerId?: string; pinRequired: boolean; current: boolean }>[];
+  }) | ErrorResponse }>(NATIVE_REMEMBERED_ACCOUNTS_PATH, {
+    schema: { response: { 200: nativeRememberedAccountsResponseSchema, ...errorResponses } },
   }, async (request, reply) => {
     reply.header("Cache-Control", "no-store");
     if (!nativeApp(request)) {
@@ -246,7 +311,16 @@ export async function registerAccountSwitchRoutes(
     }
     try {
       const { accounts } = await options.api.listRememberedAccounts({ headers: fromNodeHeaders(request.headers) });
-      return reply.send(listDocument(accounts));
+      return reply.send({
+        schemaVersion: NATIVE_REMEMBERED_ACCOUNTS_SCHEMA_VERSION,
+        accounts: accounts.slice(0, REMEMBERED_ACCOUNTS_PER_DEVICE).map((account) => ({
+          entryId: account.entryId,
+          ...(account.label === null || account.label.length === 0 ? {} : { label: account.label.slice(0, 128) }),
+          ...(account.playerId === null ? {} : { playerId: account.playerId }),
+          pinRequired: account.pinRequired,
+          current: account.current,
+        })),
+      });
     } catch {
       return reply.code(503).send(failure("remembered_accounts_unavailable",
         "Remembered accounts are temporarily unavailable."));

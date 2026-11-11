@@ -42,6 +42,8 @@ export const KEEP_REMEMBERED_HEADER = "x-mk8dx-keep-remembered";
 export type RememberedAccountView = Readonly<{
   entryId: string;
   label: string | null;
+  /** For the native route only; the browser route never forwards it. */
+  playerId: string | null;
   pinRequired: boolean;
   current: boolean;
 }>;
@@ -140,6 +142,7 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
           accounts.push({
             entryId: row.entryId,
             label: target.label,
+            playerId: target.playerId ?? null,
             pinRequired: await options.pins.enabled(target.userAccountId),
             current: current?.user.id === row.authUserId,
           });
@@ -198,6 +201,23 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
         }
         return answer({ outcome: "switched", token: session.token,
           expiresAtMs: new Date(session.expiresAt).getTime() });
+      }),
+
+      /** "Remove from this phone": the entry disappears from this device's list only. */
+      forgetRememberedEntry: createAuthEndpoint.serverOnly({
+        method: "POST",
+        requireHeaders: true,
+      }, async (ctx) => {
+        const body: unknown = ctx.body;
+        const entryId = typeof body === "object" && body !== null && !Array.isArray(body)
+          ? (body as Record<string, unknown>)["entryId"] : undefined;
+        const device = currentDevice(ctx as unknown as CookieContext);
+        if (typeof entryId !== "string" || !entryIdPattern.test(entryId) || device === null) {
+          return ctx.json({ forgotten: false });
+        }
+        const row = (await options.store.list(device, 0)).find((candidate) => candidate.entryId === entryId);
+        if (row !== undefined) { await options.store.forget(device, row.authUserId); }
+        return ctx.json({ forgotten: row !== undefined });
       }),
 
       /**

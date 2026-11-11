@@ -734,6 +734,7 @@ async function createMysqlApiRuntime(
                 administrator: described.offlineAdministrator ||
                   await administratorStatus.isActiveAdministrator(bound.userAccountId),
                 label: described.label,
+                playerId: described.playerId,
               };
             }
             return null;

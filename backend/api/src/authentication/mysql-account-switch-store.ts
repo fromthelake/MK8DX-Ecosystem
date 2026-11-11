@@ -151,7 +151,9 @@ export class MysqlAccountSwitchPinStore implements AccountSwitchPinStore {
   }
 }
 
-interface LabelRow extends RowDataPacket { playerName: unknown; offlineLabel: unknown; offlineRole: unknown; }
+interface LabelRow extends RowDataPacket {
+  playerName: unknown; playerPublicId: unknown; offlineLabel: unknown; offlineRole: unknown;
+}
 
 /**
  * The label a remembered account is shown under, and whether an offline account is an
@@ -162,6 +164,7 @@ export class MysqlAccountSwitchLabels {
 
   public async describe(userAccountId: string): Promise<Readonly<{
     label: string | null;
+    playerId: string | null;
     offlineAdministrator: boolean;
   }>> {
     const [rows] = await this.pool.execute<LabelRow[]>(
@@ -171,7 +174,13 @@ export class MysqlAccountSwitchLabels {
             INNER JOIN players AS player
               ON player.player_id = claim.player_id AND player.record_status = 'active'
            WHERE claim.user_account_id = account.user_account_id AND claim.claim_status = 'verified'
-           LIMIT 1) AS playerName,
+           ORDER BY claim.player_claim_id LIMIT 1) AS playerName,
+         (SELECT player.public_id
+            FROM player_claims AS claim
+            INNER JOIN players AS player
+              ON player.player_id = claim.player_id AND player.record_status = 'active'
+           WHERE claim.user_account_id = account.user_account_id AND claim.claim_status = 'verified'
+           ORDER BY claim.player_claim_id LIMIT 1) AS playerPublicId,
          (SELECT offline.display_label FROM offline_auth_accounts AS offline
            WHERE offline.user_account_id = account.user_account_id AND offline.active = TRUE
            LIMIT 1) AS offlineLabel,
@@ -188,6 +197,8 @@ export class MysqlAccountSwitchLabels {
       typeof value === "string" && value.trim().length > 0 ? value.trim().slice(0, 128) : null;
     return {
       label: row === undefined ? null : text(row.playerName) ?? text(row.offlineLabel),
+      playerId: typeof row?.playerPublicId === "string" && /^player\.[a-z0-9._-]{1,128}$/.test(row.playerPublicId)
+        ? row.playerPublicId : null,
       offlineAdministrator: row?.offlineRole === "administrator",
     };
   }

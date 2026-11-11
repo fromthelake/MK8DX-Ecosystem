@@ -151,6 +151,11 @@ bypassed by reading the app's storage and "Sign out on all devices" also empties
   signed-in user from the bearer token themselves (Better Auth's own bearer conversion is not
   guaranteed to have run in a *before* hook), so app sign-out forgets the account on that device
   and `/revoke-sessions` forgets it everywhere.
+- **Player ids for the app only:** the native list also carries each account's verified Player id
+  (`playerId`), so the app can show a remembered account next to the saved results that belong to
+  that Player. The browser list stays labels-only.
+- **Remove from this phone:** `POST /v1/session/native-forget` `{ entryId }` with the device header
+  removes that entry from this app device's list without signing in as it.
 - The browser routes are unchanged and still give a bearer caller an empty list.
 
 ## CSRF summary

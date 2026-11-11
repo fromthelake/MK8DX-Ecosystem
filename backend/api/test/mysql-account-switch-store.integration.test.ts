@@ -94,6 +94,6 @@ integration("account switching MySQL/MariaDB store (0085)", () => {
     await pins.clear(accountId);
     expect(await pins.get(accountId)).toBeNull();
     expect(await new MysqlAccountSwitchLabels(pool).describe(accountId))
-      .toEqual({ label: null, offlineAdministrator: false });
+      .toEqual({ label: null, playerId: null, offlineAdministrator: false });
   });
 });

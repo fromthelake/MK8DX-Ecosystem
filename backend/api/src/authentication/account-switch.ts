@@ -37,6 +37,11 @@ export type AccountSwitchTarget = Readonly<{
   administrator: boolean;
   /** The verified Player's display name, else the offline host label, else null. */
   label: string | null;
+  /**
+   * The verified Player's public id, given only to the native app so it can match a remembered
+   * account to the Player its saved results belong to. Browsers receive labels only.
+   */
+  playerId?: string | null;
 }>;
 
 /** Runtime answer for a Better Auth user; null when it is not (or no longer) an active account. */

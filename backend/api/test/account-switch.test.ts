@@ -95,8 +95,8 @@ class MemoryLimiter implements MutationRateLimiter {
 
 /** account -> who it is in the fake identity layer, keyed by e-mail. */
 const people: Record<string, AccountSwitchTarget> = {
-  "ann@example.test": { userAccountId: "user_account.ann", administrator: false, label: "Ann" },
-  "bob@example.test": { userAccountId: "user_account.bob", administrator: false, label: "Bob" },
+  "ann@example.test": { userAccountId: "user_account.ann", administrator: false, label: "Ann", playerId: "player.ann" },
+  "bob@example.test": { userAccountId: "user_account.bob", administrator: false, label: "Bob", playerId: "player.bob" },
   "cy@example.test": { userAccountId: "user_account.cy", administrator: false, label: null },
   "dee@accounts.mk8dx.invalid": { userAccountId: "user_account.dee", administrator: false, label: "Dee" },
   "root@example.test": { userAccountId: "user_account.root", administrator: true, label: "Root" },
@@ -563,7 +563,7 @@ async function nativeList(h: Harness, device: string, bearer?: string) {
   const response = await h.app.inject({ method: "GET", url: "/v1/session/native-remembered-accounts",
     headers: app(device, bearer) });
   expect(response.statusCode, response.body).toBe(200);
-  return response.json<{ accounts: Array<{ entryId: string; label?: string; pinRequired: boolean; current: boolean }> }>().accounts;
+  return response.json<{ accounts: Array<{ entryId: string; label?: string; playerId?: string; pinRequired: boolean; current: boolean }> }>().accounts;
 }
 async function nativeSwitch(h: Harness, device: string, entryId: string, bearer?: string, pin?: string) {
   return h.app.inject({ method: "POST", url: "/v1/session/native-account-switch", headers: app(device, bearer),
@@ -590,6 +590,8 @@ describe("account switching in the native app (ADR-0224 amendment)", () => {
       expect((await nativeRemember(h, appDevice, root)).json<{ remembered: boolean }>().remembered).toBe(false);
       const listed = await nativeList(h, appDevice, bob);
       expect(listed.map((account) => [account.label, account.current])).toEqual([["Bob", true], ["Ann", false]]);
+      // The app gets each account's Player id to match its saved results; a browser never does.
+      expect(listed.map((account) => account.playerId)).toEqual(["player.bob", "player.ann"]);
       // Another app device and a signed-out app on this device.
       expect(await nativeList(h, otherAppDevice)).toEqual([]);
       expect((await nativeList(h, appDevice)).map((account) => account.current)).toEqual([false, false]);
@@ -654,6 +656,8 @@ describe("account switching in the native app (ADR-0224 amendment)", () => {
       const browserList = await h.app.inject({ method: "GET", url: "/v1/session/remembered-accounts",
         headers: app(appDevice, ann) });
       expect(browserList.json<{ accounts: unknown[] }>().accounts).toEqual([]);
+      const ownBrowser = await list(h, jar);
+      expect(JSON.stringify(ownBrowser)).not.toContain("player.");
     } finally { await h.app.close(); }
   });
 
@@ -674,6 +678,17 @@ describe("account switching in the native app (ADR-0224 amendment)", () => {
       const left = await h.app.inject({ method: "POST", url: "/api/auth/sign-out",
         headers: app(appDevice, bobAgain), payload: {} });
       expect(left.statusCode).toBe(200);
+      expect((await nativeList(h, appDevice)).map((account) => account.label)).toEqual(["Ann"]);
+      // "Remove from this phone" without signing in as that account.
+      const carl = await nativeSignIn(h, "cy@example.test");
+      await nativeRemember(h, appDevice, carl);
+      const cyEntry = (await nativeList(h, appDevice)).find((account) => account.label === undefined)!;
+      const forgot = await h.app.inject({ method: "POST", url: "/v1/session/native-forget",
+        headers: app(appDevice), payload: { entryId: cyEntry.entryId } });
+      expect(forgot.json()).toEqual({ schemaVersion: "mk8dx.native-account-forget.v1", forgotten: true });
+      const otherDevice = await h.app.inject({ method: "POST", url: "/v1/session/native-forget",
+        headers: app(otherAppDevice), payload: { entryId: (await nativeList(h, appDevice))[0]!.entryId } });
+      expect(otherDevice.json<{ forgotten: boolean }>().forgotten).toBe(false);
       expect((await nativeList(h, appDevice)).map((account) => account.label)).toEqual(["Ann"]);
       const browser: Jar = new Map();
       await signIn(h, browser, "ann@example.test");
