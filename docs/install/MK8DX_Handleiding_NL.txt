@@ -110,9 +110,7 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 ‘MariaDB 11.4.13’ en ‘ready’ zijn de verwachte uitkomsten. De website, scanner, database en testmail luisteren alleen op deze computer. Zet geen routerpoort open en maak phpMyAdmin of de testbrievenbus niet voor anderen bereikbaar.
 
-7. Klik op de website op Aanmelden en gebruik precies het beheeradres uit stap 5. Open de nieuwste brief in Mailpit en volg de aanmeldlink. Je bent daarna nog een gewone gebruiker. Voer in het tweede PowerShell-venster, vanuit de pakketmap, deze aparte eerste beheerstap uit:
-
-python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+7. Klik op de website op Aanmelden en gebruik precies het beheeradres uit stap 5. Open de nieuwste brief in Mailpit en volg de aanmeldlink. Je bent daarna nog een gewone gebruiker. Dubbelklik nu in de pakketmap op Manage-MK8DX-No-Docker.cmd (laat het MK8DX-venster open), typ 2 en druk op Enter. Daarachter draait: python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
 
 De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, bij herhaling, ‘unchanged’. Ververs de website. Een andere eerste aanmelder wordt niet automatisch beheerder.
 
@@ -120,9 +118,7 @@ De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, 
 
 9. Voor dagelijks gebruik start je eerst het MK8DX-venster en daarna Apache in het XAMPP Control Panel. Laat het MK8DX-venster open zolang je de site gebruikt. Na een Windows-herstart doe je dit opnieuw. Stop Apache via Stop in het paneel; druk daarna Ctrl+C in jouw MK8DX-venster. Alleen de Node-, Mailpit- en MariaDB-processen van deze installatie worden gestopt. Sluit niet zomaar alle node.exe-processen en wijzig geen bestaande XAMPP-service.
 
-10. Voor een backup laat je het MK8DX-venster en zijn database draaien. Stop Apache kort als je tijdens de laatste kopie geen nieuwe website-inzendingen wilt. Open PowerShell in de pakketmap en kies een nieuwe, private mapnaam:
-
-python tooling/install.py backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+10. Voor een backup laat je het MK8DX-venster en zijn database draaien. Stop Apache kort als je tijdens de laatste kopie geen nieuwe website-inzendingen wilt. Dubbelklik op Manage-MK8DX-No-Docker.cmd, typ 3 en druk op Enter. De back-up komt in Documenten\MK8DX-backups\a3-<datum en tijd> en wordt meteen gecontroleerd.
 
 ‘Backup verified’ bevestigt de databasekopie, het profiel en de sleutels. Bewaar die hele map ook op een beschermd medium buiten deze computer. In dezelfde map controleer je later opnieuw met:
 

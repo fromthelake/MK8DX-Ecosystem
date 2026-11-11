@@ -122,6 +122,7 @@ def main():
             "Your installation data belongs outside this folder.\n",
             encoding="utf-8")
         copy_file(ROOT / "Start-MK8DX-No-Docker.cmd", windows / "Start-MK8DX-No-Docker.cmd")
+        copy_file(ROOT / "Manage-MK8DX-No-Docker.cmd", windows / "Manage-MK8DX-No-Docker.cmd")
         copy_file(ROOT / "tooling/configure_xampp.ps1", windows / "tooling/configure_xampp.ps1")
         subprocess.run(["npm.cmd", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
                        cwd=windows / "api", check=True)

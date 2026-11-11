@@ -110,9 +110,7 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Expect “MariaDB 11.4.13” and “ready”. The website, scanner, database, and test inbox are bound to this computer. Do not forward a router port or expose phpMyAdmin or the test inbox to other people.
 
-7. On the site, click Sign in and use exactly the administrator address from step 5. Open the newest message in Mailpit and follow its sign-in link. You are still an ordinary user. In the second PowerShell window, from the package folder, run the separate first-administrator step:
-
-python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+7. On the site, click Sign in and use exactly the administrator address from step 5. Open the newest message in Mailpit and follow its sign-in link. You are still an ordinary user. Now double-click Manage-MK8DX-No-Docker.cmd in the package folder (leave the MK8DX window open), type 2 and press Enter. Behind it runs: python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
 
 It works only for an account that has already verified its email. Expect “created”, or “unchanged” if repeated. Refresh the site. Another first registrant does not automatically become administrator.
 
@@ -120,9 +118,7 @@ It works only for an account that has already verified its email. Expect “crea
 
 9. For daily use, start the MK8DX window first, then start Apache in XAMPP Control Panel. Keep the MK8DX window open while using the site. After a Windows reboot, do these two starts again. Stop Apache with Stop in the panel, then press Ctrl+C in your MK8DX window. Only this installation's Node, Mailpit, and MariaDB processes stop. Do not kill every node.exe process or change an existing XAMPP service.
 
-10. For a backup, keep the MK8DX window and its database running. You may briefly stop Apache to prevent new web submissions during the final copy. Open PowerShell in the package folder and choose a new private folder name:
-
-python tooling/install.py backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+10. For a backup, keep the MK8DX window and its database running. You may briefly stop Apache to prevent new web submissions during the final copy. Double-click Manage-MK8DX-No-Docker.cmd, type 3 and press Enter. It writes the backup to Documents\MK8DX-backups\a3-<date and time> and checks it at once.
 
 “Backup verified” confirms the database copy, profile, and keys. Keep the entire folder on protected storage outside this computer too. To check this exact backup again, run:
 
