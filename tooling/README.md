@@ -38,7 +38,9 @@ script needs beyond a clone; a contributor never needs those.
 | `start-mk8dx.ps1` | operator | The same for Windows; started by `Start-MK8DX.cmd` and `Start-MK8DX-LAN.cmd`. | the host package's image bundle |
 | `install.py` | operator | The installer behind both launchers and the non-Docker routes: `init`, `wizard`, `setup`, `start`, `check`, `admin`, `upgrade`, `change-origin`, `change-smtp`, `backup`, `restore-new` and more (`--help`). | your installation directory |
 | `native_install.py` | operator | Non-Docker backend of `install.py` (A3 XAMPP/Node, B2 shared hosting). | your installation directory |
-| `lifecycle.py` | operator | Backup, `verify` and `restore-new` of a Docker installation into a new isolated project. | your installation directory and backups |
+| `lifecycle.py` | operator | Backup, `verify` and `restore-new` of a Docker installation into a new isolated project; an A2 offline backup is sealed with the recovery code (`mk8dx.install-backup.v3`) and `restore-new --lan-ip` moves it to another address. | your installation directory and backups |
+| `setup_wizard.py` | operator | A2 offline: the browser-based setup and "MK8DX beheer" on this computer only (install, restore, people and sign-in cards, address move); `start-mk8dx.ps1` opens it for an A2 offline package. Manual: `docs/install/A2_HOME_GUIDE_EN.md`. | your installation directory |
+| `auto_backup.py` | operator | A2 offline: the nightly sealed backup task, the stored recovery code and starting Docker Desktop with Windows, as chosen in the setup wizard. | your installation directory and backups |
 | `configure_xampp.ps1` | operator | Adds the MK8DX site to an existing XAMPP Apache (A3). | an XAMPP installation |
 | `docker/operator-command.sh` | operator | Runs an API command inside the API image with the installation's private settings (copied into the image). | your installation directory |
 | `prepare_preview_index.py` | contributor | Enables a separately staged scanner in a local-only website preview. | none |
@@ -48,7 +50,7 @@ script needs beyond a clone; a contributor never needs those.
 | Script | Audience | What it does | Private inputs |
 | --- | --- | --- | --- |
 | `release/full_archive.py` | maintainer | Complete source archive with the hydrated collection, from a clean commit. | none (clean Git tree) |
-| `release/host_bundle.py` | maintainer | Docker host package: the API/web/MySQL/Mailpit images (`--list-images` prints the exact tags) and the launchers; recipe in `docs/guides/HOSTING.md`. | locally built images |
+| `release/host_bundle.py` | maintainer | Docker host package: the API/web/MySQL/Mailpit images (`--list-images` prints the exact tags) and the launchers; recipe in `docs/guides/HOSTING.md`. `--offline-candidate --wheels-dir <folder>` adds the A2 offline files, the setup wizard, `images/images.json` and the pinned Windows wheels for an A2 offline QA candidate. | locally built images |
 | `release/non_docker_bundle.py` | maintainer | A3 (XAMPP/Node) and B2 (shared hosting) packages. | MariaDB and Mailpit Windows binaries |
 | `release/build_reading_guides.py` | maintainer | Renders the two user guides from their `.txt` to Word. | `python-docx` |
 | `livetrial/build_windows_package.py` | maintainer, contributor | LiveTrial Windows package ([Client builds](../docs/CLIENT_BUILDS.md)). | the Python embeddable ZIP from python.org |

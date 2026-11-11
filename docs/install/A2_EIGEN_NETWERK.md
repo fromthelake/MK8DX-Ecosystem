@@ -120,6 +120,11 @@ donkere thema. De keuze wordt bij het account bewaard; bij *Systeem* blijft elk
 apparaat zijn eigen systeeminstelling volgen.
 
 English orientation for this QA route: [A2 offline LAN (EN)](A2_OFFLINE_LAN_EN.md).
+De stap-voor-stap handleiding voor de begeleide installatie (installeren,
+aanmeldkaarten, nachtelijke backups, terugzetten op een nieuwe computer, een
+nieuw netwerkadres) is [MK8DX thuis of op de club](A2_THUIS_HANDLEIDING_NL.md)
+([English](A2_HOME_GUIDE_EN.md)); de installatiewizard opent hem ook via
+**Handleiding**.
 
 Dit is een **eigen installatieprofiel** op de Windows-host. De A1-proef blijft behouden en wordt niet automatisch gedeeld of omgezet. De A2-website, databasevolume en sleutels zijn afzonderlijk. `127.0.0.1` betekent op elke telefoon of pc *dat apparaat zelf*. A2 gebruikt daarom een vaste **privé-hostnaam** (`mk8dx.home.arpa`) die op beide pc's naar het LAN-IP van de host verwijst. Een kaal HTTPS-IP werkte in de lokale Windows-proef niet betrouwbaar wegens ontbrekende SNI.
 

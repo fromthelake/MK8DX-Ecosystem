@@ -5,6 +5,10 @@ progress. These steps explain an **existing QA installation prepared by its
 administrator**. They are not a claim that the public A2 route is ready. The
 older private-hostname/SMTP profile is documented separately in
 [A2 — delen op je eigen vertrouwde netwerk](A2_EIGEN_NETWERK.md).
+The step-by-step manual for the guided setup wizard (installing, sign-in cards,
+nightly backups, restoring on a new computer, a new network address) is
+[MK8DX at home or at your club](A2_HOME_GUIDE_EN.md); the setup wizard also
+opens it from its **Manual** link.
 
 | Device | Address | Purpose |
 | --- | --- | --- |
