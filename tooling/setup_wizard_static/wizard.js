@@ -32,6 +32,7 @@ const T = {
     phase_idle: "Starten…", phase_prepare: "Installatie voorbereiden", phase_network: "Netwerk toestaan (Windows vraagt toestemming)",
     phase_install: "Database en website starten", phase_verify: "Controleren", phase_done: "Klaar!",
     showLog: "Details", installDone: "MK8DX draait. Nog twee korte stappen.",
+    working: "Bezig", stillWorking: "nog bezig, dit kan een paar minuten duren",
     adminTitle: "Jouw beheerdersaccount", adminLead: "Jij beheert deze installatie. Hoe heet je?",
     adminField: "Je naam", adminHint: "Bijvoorbeeld 'Papa', 'Sanne' of 'Clubleiding'. Alleen zichtbaar binnen deze installatie.",
     peopleTitle: "Wie spelen er mee?",
@@ -102,6 +103,7 @@ const T = {
     phase_idle: "Starting…", phase_prepare: "Preparing the installation", phase_network: "Allowing the network (Windows asks for permission)",
     phase_install: "Starting the database and website", phase_verify: "Checking", phase_done: "Done!",
     showLog: "Details", installDone: "MK8DX is running. Two short steps left.",
+    working: "Working", stillWorking: "still working, this can take a few minutes",
     adminTitle: "Your administrator account", adminLead: "You manage this installation. What's your name?",
     adminField: "Your name", adminHint: "For example 'Dad', 'Sam' or 'Club team'. Only visible inside this installation.",
     peopleTitle: "Who plays?",
@@ -149,10 +151,15 @@ const T = {
 
 const $ = (id) => document.getElementById(id);
 function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
+let pending = 0;
 async function api(path, body) {
   const init = { headers: { "X-MK8DX-Wizard": TOKEN, Accept: "application/json" }, cache: "no-store" };
   if (body !== undefined) { init.method = "POST"; init.headers["Content-Type"] = "application/json"; init.body = JSON.stringify(body); }
-  const response = await fetch(path, init);
+  // Every button press that waits on the computer shows a spinner on Next, so a step never looks stuck.
+  if (init.method === "POST") { pending += 1; $("next").classList.add("busy"); }
+  let response;
+  try { response = await fetch(path, init); }
+  finally { if (init.method === "POST" && --pending === 0) $("next").classList.remove("busy"); }
   const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || response.statusText);
   return data;
@@ -294,17 +301,25 @@ const views = {
   },
   install() {
     const bar = el("div", "bar"); const fill = el("span", "w0"); bar.append(fill);
-    const phase = el("p", "", T.phase_idle); const log = el("div", "log hidden"); const toggle = el("button", "link small", T.showLog);
+    const phase = el("p", "alive", T.phase_idle); const latest = el("p", "muted mono latest");
+    const log = el("div", "log hidden"); const toggle = el("button", "link small", T.showLog);
     toggle.type = "button"; toggle.addEventListener("click", () => log.classList.toggle("hidden"));
-    main.replaceChildren(el("h1", "", state.moving ? T.moveTitleRun : state.restoring ? T.restoreTitleRun : T.installTitle), el("p", "lead", T.installLead), bar, phase, toggle, log);
+    main.replaceChildren(el("h1", "", state.moving ? T.moveTitleRun : state.restoring ? T.restoreTitleRun : T.installTitle), el("p", "lead", T.installLead), bar, phase, latest, toggle, log);
     setButtons({ nextEnabled: false, back: false });
     const order = state.moving ? ["idle", "move", "verify", "done"] : ["idle", state.restoring ? "restore" : "prepare", "network", "install", "verify", "done"];
+    // The phase name with its own running clock, and the latest log line underneath: visibly alive.
+    let shown = null; let since = Date.now();
+    const clock = () => { const s = Math.floor((Date.now() - since) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
     const poll = async () => {
       try {
         const job = await api("/api/job");
-        phase.textContent = T[`phase_${job.phase}`] || job.phase;
+        if (job.phase !== shown) { shown = job.phase; since = Date.now(); }
+        const elapsed = (Date.now() - since) / 1000;
+        phase.textContent = `${T[`phase_${job.phase}`] || job.phase} · ${clock()}${elapsed > 45 ? ` · ${T.stillWorking}` : ""}`;
+        latest.textContent = job.lines.length ? job.lines[job.lines.length - 1] : "";
         fill.className = `w${Math.min(4, Math.max(0, order.indexOf(job.phase) - 1))}`;
         log.textContent = job.lines.join("\n"); log.scrollTop = log.scrollHeight;
+        if (job.error || job.done) { phase.classList.remove("alive"); latest.textContent = ""; }
         if (job.error) {
           main.append(errorBox(job.error === "wrong-recovery-code" ? T.restoreWrongCode : job.error)); log.classList.remove("hidden");
           state.restored = job.restored; setButtons({ next: T.retry, back: !job.restored }); state.installFailed = true; return;

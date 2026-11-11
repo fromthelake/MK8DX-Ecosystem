@@ -65,9 +65,23 @@ foreach ($tag in $tags) {
   }
 }
 if ($load) {
-  Write-Host 'Loading the included Docker images. This can take several minutes.'
-  docker load --input $bundle | Out-Host
-  if ($LASTEXITCODE -ne 0) { throw 'Image loading failed.' }
+  $sizeGb = [math]::Round((Get-Item -LiteralPath $bundle).Length / 1GB, 1)
+  Write-Host "Loading the included Docker images ($sizeGb GB). This can take several minutes; the time below keeps counting."
+  # docker load shows no progress without a terminal, so print a line every 10 seconds while it runs.
+  $out = Join-Path $env:TEMP "mk8dx-docker-load-$PID.txt"
+  $err = Join-Path $env:TEMP "mk8dx-docker-load-$PID.err.txt"
+  $loader = Start-Process -FilePath docker -ArgumentList @('load', '--input', "`"$bundle`"") -NoNewWindow -PassThru `
+    -RedirectStandardOutput $out -RedirectStandardError $err
+  $null = $loader.Handle  # keeps ExitCode readable after the process ends
+  $began = Get-Date
+  while (-not $loader.WaitForExit(10000)) {
+    Write-Host ("  still loading... {0:mm\:ss}" -f ((Get-Date) - $began))
+  }
+  $loader.WaitForExit()
+  Get-Content -LiteralPath $out, $err -ErrorAction SilentlyContinue | Out-Host
+  Remove-Item -LiteralPath $out, $err -ErrorAction SilentlyContinue
+  if ($loader.ExitCode -ne 0) { throw 'Image loading failed.' }
+  Write-Host ("Images loaded in {0:mm\:ss}." -f ((Get-Date) - $began))
   try { Set-Content -LiteralPath $loaded -Value "Images of this package loaded $(Get-Date -Format o)" -ErrorAction Stop }
   catch { Write-Host 'Note: the package folder is read-only, so the next start loads the images again.' }
 }

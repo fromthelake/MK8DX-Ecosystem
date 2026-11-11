@@ -33,6 +33,13 @@ p { margin: 8px 0; color: var(--text); }
 .state.bad { background: var(--bad); color: #2a0000; }
 .state.wait { border: 3px solid var(--line); border-top-color: var(--accent); animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+.alive::before, button.busy::after { content: ""; display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+  border: 3px solid var(--line); border-top-color: var(--accent); animation: spin 1s linear infinite;
+  vertical-align: -2px; }
+.alive::before { margin-right: 10px; }
+button.busy::after { margin-left: 10px; border-color: currentColor; border-top-color: transparent; }
+.latest { min-height: 1.4em; overflow-wrap: anywhere; font-size: 13px; }
+@media (prefers-reduced-motion: reduce) { .alive::before, button.busy::after { animation-duration: 3s; } }
 .choice { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
 .choice input { margin-top: 6px; width: 20px; height: 20px; accent-color: var(--accent); }
 .badge { display: inline-block; background: var(--accent); color: var(--accent-ink); font-size: 12px; font-weight: 800;
