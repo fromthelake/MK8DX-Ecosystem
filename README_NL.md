@@ -62,16 +62,17 @@ het project. Download het pakket voor jouw route uit de nieuwste release, samen 
 controleer de checksum zoals de handleiding uitlegt. [Release packages](docs/RELEASE_PACKAGES.md) legt uit welk bestand bij
 welke route hoort. GitHubs automatische **Source code (zip)** is de volledige broncode, geen installatiepakket.
 
-| Route | Pakket |
-| --- | --- |
-| Website op één computer, met Docker | `mk8dx-host-local-…-amd64.zip` |
-| Thuis of op de club zonder internet (A2), met begeleide installatie | `mk8dx-a2-<platform>-<arch>-….zip` |
-| Website op Windows zonder Docker (XAMPP en Node.js) | `mk8dx-xampp-node-windows-….zip` |
-| Website op webhosting met Node.js en MariaDB | `mk8dx-mijnhost-node-….zip` |
-| Android-app | `mk8dx-android-debug-….apk` met de notices-ZIP |
-| LiveTrial (Windows) | `desktop-client-….zip` |
-| Toernooitools (Windows) | `tournament-tools-….zip` |
-| Volledige broncode met de assetcollectie | `mk8dx-full-local-….zip` |
+| Route | Pakket | Status |
+| --- | --- | --- |
+| A1: website op één computer, met Docker | `mk8dx-host-local-…-amd64.zip` | Ondersteund ([handleiding](docs/install/A1_EEN_COMPUTER.md)) |
+| A2: thuis of op de club zonder internet, met begeleide installatie | `mk8dx-a2-<platform>-<arch>-….zip` | Getest op Windows 11 ([handleiding](docs/install/A2_THUIS_HANDLEIDING_NL.md)); Linux in WSL 2; macOS niet getest |
+| A3: website op Windows zonder Docker (XAMPP en Node.js) | `mk8dx-xampp-node-windows-….zip` | Ondersteund |
+| B1: website op een eigen VPS met Docker | `mk8dx-host-local-…-amd64.zip` | Beschreven; nog niet van begin tot eind getest ([handleiding](docs/install/B1_VPS.md)) |
+| B2: website op webhosting met Node.js en MariaDB | `mk8dx-mijnhost-node-….zip` | Beschreven; nog niet van begin tot eind getest |
+| Android-app | Lokaal release-ondertekende `mk8dx-android-release-….apk` met de notices-ZIP | Eerdere publieke debug-APK's moeten één keer verwijderd worden |
+| LiveTrial (Windows) | `desktop-client-….zip` | Windows-pakket |
+| Toernooitools (Windows) | `tournament-tools-….zip` | Windows-pakket |
+| Volledige broncode met de assetcollectie | `mk8dx-full-local-….zip` | Bronpakket |
 
 Volg daarna de handleiding: [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)
 ([Word](docs/install/MK8DX_Handleiding_NL.docx)) of [English](docs/install/MK8DX_User_Guide_EN.txt)
