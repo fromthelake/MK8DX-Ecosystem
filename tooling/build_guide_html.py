@@ -82,7 +82,10 @@ def _step(raw: str, lang: str) -> str | None:
         return None
     # A step may open with its own short title, e.g. "**Welkom bij MK8DX.** **Doe:** …".
     title = raw[:start].strip()
-    parts = [part.strip() for part in raw[start:].split("→")]
+    # Split only where the next part starts (a label, or a bold note such as "→ **Op Linux en macOS**"
+    # that closes the step); arrows inside menu paths ("Instellingen → Apps") stay in the text.
+    labels_pattern = "|".join(re.escape(word) for word in words[1:])
+    parts = [part.strip() for part in re.split(rf"\s→\s(?=\*\*(?:{labels_pattern}))", raw[start:])]
     labels = {f"**{words[0]}**": ("do", TEXT[lang]["do"]), f"**{words[1]}**": ("see", TEXT[lang]["see"]),
               f"**{words[2]}**": ("else", TEXT[lang]["else"])}
     cells = []

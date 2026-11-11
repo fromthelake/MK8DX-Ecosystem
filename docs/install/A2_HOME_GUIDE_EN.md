@@ -45,13 +45,13 @@ Do only the part for your computer (2A, 2B or 2C) and skip the other two.
 3. **Do:** download **Docker Desktop** for Windows (x86_64 / AMD64) from docker.com and open the downloaded file. → **You see:** the Docker installer with the choice to use WSL 2. WSL is a part of Windows that Docker runs on. Leave that choice ticked and click **OK**. → **See something else?** If Windows asks whether this app may make changes, click **Yes**.
 4. **Do:** wait until the installation is finished and restart the computer if Docker asks for it. → **You see:** after the restart Docker Desktop opens (or open it yourself from the Start menu). The first time, Docker asks you to accept its terms. → **See something else?** If Docker asks you to sign in or create an account: MK8DX does not need a Docker account, skip it if Docker offers that. If Docker still says WSL is missing or must be updated, do step 2 again (`wsl --install` or `wsl --update`) and restart.
 5. **Do:** wait in the Docker Desktop window. → **You see:** **Engine running** at the bottom left. → **See something else?** "Engine starting" can take a few minutes. If it hangs or shows an error, restart the computer and open Docker Desktop again. Docker must be in the normal Linux-containers mode (not "Windows containers").
-6. **Do:** on python.org, under Downloads → Windows, download the **Windows installer (64-bit)** of Python 3.12 or newer and open the file. → **You see:** the first screen of the Python setup.
-7. **Do:** at the bottom of that screen, tick **Add python.exe to PATH** and click **Install Now**. That tick lets MK8DX find Python. → **You see:** "Setup was successful". Click **Close**. → **See something else?** If you forgot the tick: open the installer again, choose **Uninstall**, then install again with the tick.
-8. **Do:** check Python. Click Start, type `PowerShell`, open **Windows PowerShell**, type `python --version` and press Enter. → **You see:** `Python 3.12` or a higher number. → **See something else?** If the Microsoft Store opens or python is not found, the tick from step 6 is missing. Always close PowerShell after installing and open it again.
+6. **Do:** go to python.org → **Downloads** and download the **Python install manager** for Windows (the file ends in `.msix`). This is now the official way to install Python on Windows. Open the downloaded file and click **Install**. → **You see:** Windows installs the Python install manager; you can then close the window. → **See something else?** You can also install it from the Microsoft Store: search for "Python install manager" and click **Install**. Use one of the two, not both.
+7. **Do:** click Start, type `PowerShell`, open **Windows PowerShell**, type `py install 3.15` and press Enter. This installs Python itself (the install manager is only the tool that fetches Python). → **You see:** the first time a few questions to check the settings; answer them with Enter (the suggested choice) or `y`. Then Python is downloaded and installed. A question about adding a folder to your PATH may be answered with `y`; it is not required. → **See something else?** A newer version (3.16 or later) is fine too; MK8DX needs 3.12 or newer.
+8. **Do:** close PowerShell, open it again, type `python --version` and press Enter. → **You see:** `Python 3.15` or a higher number. → **See something else?** If the Microsoft Store opens, or it says python was not found: click Start, type **Manage app execution aliases** and open it. Turn on **Python (default)** and turn off **App Installer python.exe** and **python3.exe**. If you installed an old Python or the "Python launcher" in the past, remove it via **Settings → Apps → Installed apps** and try again.
 
 (Image: docker-engine-running)
 
-(Image: python-add-to-path)
+(Image: python-install-manager)
 
 ## 2B. Preparing Linux (Ubuntu or Debian)
 
@@ -92,7 +92,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 
 Messages in the black window on Windows:
 
-- **"Python 3.12+ is missing. Install it from python.org, enable Add python.exe to PATH, reopen PowerShell and retry."** Do chapter 2A steps 6 to 8 and then double-click Start-MK8DX-LAN.cmd again.
+- **"Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Do chapter 2A steps 6 to 8 and then double-click Start-MK8DX-LAN.cmd again.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wait for Engine running and double-click again.
 - Below an error it shows **"The selected step stopped. Read the message above before retrying."** Read the line above it, fix that and press a key to close the window.
 

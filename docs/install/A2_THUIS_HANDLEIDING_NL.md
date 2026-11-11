@@ -45,13 +45,13 @@ Doe alleen het deel voor jouw computer (2A, 2B of 2C) en sla de andere twee over
 3. **Doe:** download op docker.com **Docker Desktop** voor Windows (x86_64 / AMD64) en open het gedownloade bestand. → **Je ziet:** het installatieprogramma van Docker met de keuze om WSL 2 te gebruiken. WSL is een onderdeel van Windows waarop Docker draait. Laat die keuze aangevinkt en klik op **OK**. → **Zie je iets anders?** Vraagt Windows of dit programma wijzigingen mag aanbrengen, klik dan op **Ja**.
 4. **Doe:** wacht tot de installatie klaar is en start de computer opnieuw op als Docker daarom vraagt. → **Je ziet:** na het opnieuw opstarten opent Docker Desktop (of open het zelf via het Startmenu). De eerste keer vraagt Docker de voorwaarden te accepteren. → **Zie je iets anders?** Vraagt Docker om in te loggen of een account te maken: MK8DX heeft geen Docker-account nodig, sla dat over als Docker dat aanbiedt. Meldt Docker toch dat WSL ontbreekt of bijgewerkt moet worden, doe dan stap 2 opnieuw (`wsl --install` of `wsl --update`) en start opnieuw op.
 5. **Doe:** wacht in het venster van Docker Desktop. → **Je ziet:** linksonder **Engine running**. → **Zie je iets anders?** "Engine starting" kan een paar minuten duren. Blijft het hangen of staat er een fout, start de computer opnieuw op en open Docker Desktop weer. Docker moet in de gewone stand voor Linux-containers staan (niet "Windows containers").
-6. **Doe:** download op python.org bij Downloads → Windows de **Windows installer (64-bit)** van Python 3.12 of nieuwer en open het bestand. → **Je ziet:** het eerste scherm van de Python-installatie.
-7. **Doe:** zet onderaan dat scherm een vinkje bij **Add python.exe to PATH** en klik op **Install Now**. Dat vinkje zorgt dat MK8DX Python kan vinden. → **Je ziet:** "Setup was successful". Klik op **Close**. → **Zie je iets anders?** Vergat je het vinkje: open het installatiebestand opnieuw, kies **Uninstall**, en installeer daarna opnieuw met het vinkje.
-8. **Doe:** controleer Python. Klik op Start, typ `PowerShell`, open **Windows PowerShell**, typ `python --version` en druk op Enter. → **Je ziet:** `Python 3.12` of een hoger nummer. → **Zie je iets anders?** Opent de Microsoft Store of staat er dat python niet gevonden is, dan ontbreekt het vinkje uit stap 6. Sluit PowerShell na het installeren altijd en open hem opnieuw.
+6. **Doe:** ga naar python.org → **Downloads** en download de **Python install manager** voor Windows (het bestand eindigt op `.msix`). Dat is tegenwoordig de officiële manier om Python op Windows te installeren. Open het gedownloade bestand en klik op **Installeren**. → **Je ziet:** Windows installeert de Python install manager; daarna kun je het venster sluiten. → **Zie je iets anders?** Je kunt hem ook installeren via de Microsoft Store: zoek op "Python install manager" en klik op **Installeren**. Gebruik één van de twee, niet allebei.
+7. **Doe:** klik op Start, typ `PowerShell`, open **Windows PowerShell**, typ `py install 3.15` en druk op Enter. Dat installeert Python zelf (de install manager is alleen het hulpprogramma dat Python binnenhaalt). → **Je ziet:** de eerste keer een paar vragen om de instellingen te controleren; beantwoord die met Enter (de voorgestelde keuze) of met `y`. Daarna wordt Python gedownload en geïnstalleerd. Een vraag om een map aan je PATH toe te voegen mag je met `y` beantwoorden; nodig is het niet. → **Zie je iets anders?** Een nieuwere versie (3.16 of hoger) mag ook; MK8DX heeft 3.12 of nieuwer nodig.
+8. **Doe:** sluit PowerShell, open hem opnieuw, typ `python --version` en druk op Enter. → **Je ziet:** `Python 3.15` of een hoger nummer. → **Zie je iets anders?** Opent de Microsoft Store, of staat er dat python niet gevonden is: klik op Start, typ **App-uitvoeringsaliassen beheren** en open het. Zet **Python (default)** aan en zet **App-installatieprogramma python.exe** en **python3.exe** uit. Heb je vroeger een oude Python of de "Python launcher" geïnstalleerd, verwijder die dan via **Instellingen → Apps → Geïnstalleerde apps** en probeer het opnieuw.
 
 (Afbeelding: docker-engine-running)
 
-(Afbeelding: python-add-to-path)
+(Afbeelding: python-install-manager)
 
 ## 2B. Linux voorbereiden (Ubuntu of Debian)
 
@@ -92,7 +92,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 Meldingen in het zwarte venster op Windows:
 
-- **"Python 3.12+ is missing. Install it from python.org, enable Add python.exe to PATH, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
+- **"Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wacht op Engine running en dubbelklik opnieuw.
 - Onder een fout staat **"The selected step stopped. Read the message above before retrying."** Lees de regel erboven, los dat op en druk op een toets om het venster te sluiten.
 

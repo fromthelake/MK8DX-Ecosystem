@@ -10,7 +10,7 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'old Python' }
   & $python --version
 } catch {
-  throw 'Python 3.12+ is missing. Install it from python.org, enable Add python.exe to PATH, reopen PowerShell and retry.'
+  throw 'Python 3.12+ is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.'
 }
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
 $dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)
