@@ -60,7 +60,7 @@ A step counts as **demonstrated** only if it was run and observed to succeed. Ev
 | API MySQL integration suites (`MK8DX_MYSQL_INTEGRATION=1`) against a disposable MySQL 8.4.11 | Windows + Docker | Pass, after a setup procedure that had to be inferred (H2): 34 suites; `reference-seed` skipped (needs its own config). |
 | `tooling/install.py init` and `status` on Linux | Linux container | Pass; private files written with mode 0600. |
 | A small change (add a KB branch to `formatBytes`), then the affected test file, `typecheck`, the boundary check and `git diff --check` | Windows clone | Pass, then reverted. The edit exposed the mixed-EOL problem in H6. |
-| Secret scan of all refs (gitleaks 8.28, redacted) | Docker | 176 `generic-api-key` hits, all false positives on manual triage (`iconKey`, storage-key constants, synthetic test tokens). No real credential found. |
+| Secret scan of all refs (gitleaks 8.28, redacted) | Docker | 176 `generic-api-key` hits, all false positives on manual triage (`iconKey`, storage-key constants, synthetic test tokens). No real credential found. 2026-11-11: `KEYCHAIN_SERVICE` in `tooling/host_platform.py` (a macOS Keychain service name) triaged the same way and allowlisted. |
 | `npm audit` (API, Web, scanner) | Windows | See B2 and M1. |
 
 ### 2.2 Not demonstrated, and why
