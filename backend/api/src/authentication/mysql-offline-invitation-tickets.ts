@@ -10,6 +10,7 @@ type TargetRow = RowDataPacket & {
   accountKey: string; userAccountId: string; authEmail: string;
   accountRole: string; active: number;
 };
+type PreviewRow = RowDataPacket & { displayLabel: unknown };
 type TicketRow = TargetRow & {
   invitationId: string; expiresAtMs: number;
   consumedAtMs: number | null; revokedAtMs: number | null; ticketRole: string;
@@ -165,6 +166,25 @@ export class MysqlOfflineInvitationTicketRepository implements OfflineInvitation
     } finally {
       connection.release();
     }
+  }
+
+  public async preview(tokenDigest: Uint8Array, nowMs: number): Promise<string | null> {
+    // Exactly the acceptance conditions of consume, read without a lock and without writing.
+    const [rows] = await this.pool.execute<PreviewRow[]>(
+      `SELECT account.display_label displayLabel
+       FROM offline_invitation_tickets ticket
+       INNER JOIN offline_auth_accounts account ON account.account_key=ticket.account_key
+       INNER JOIN user_accounts user ON user.user_account_id=account.user_account_id
+       WHERE ticket.token_digest=? AND ticket.consumed_at_ms IS NULL AND ticket.revoked_at_ms IS NULL
+         AND ticket.expires_at_ms>? AND account.account_role=ticket.account_role
+         AND account.active=TRUE AND user.account_status='active' AND
+         (account.account_role<>'administrator' OR EXISTS (
+           SELECT 1 FROM administrator_grants target_grant
+           WHERE target_grant.user_account_id=user.user_account_id
+             AND target_grant.grant_status='active'))
+       LIMIT 1`, [Buffer.from(tokenDigest), nowMs]);
+    const label = rows[0]?.displayLabel;
+    return typeof label === "string" && label.length > 0 ? label : null;
   }
 
   public async revoke(invitationId: string, nowMs: number,

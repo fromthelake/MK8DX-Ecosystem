@@ -42,6 +42,16 @@ class Repository implements OfflineInvitationTicketRepository {
     return this.targetState;
   }
 
+  public async preview(digest: Uint8Array, nowMs: number): Promise<string | null> {
+    const record = [...this.records.values()].find((candidate) =>
+      Buffer.from(candidate.tokenDigest).equals(Buffer.from(digest)));
+    if (record === undefined || record.consumedAtMs !== undefined ||
+        record.revokedAtMs !== undefined || nowMs >= record.expiresAtMs ||
+        !this.targetState.active || record.accountKey !== this.targetState.accountKey ||
+        record.role !== this.targetState.role) { return null; }
+    return "Oma (synthetic)";
+  }
+
   public async ownTarget(userAccountId: string): Promise<OfflineInvitationTarget | null> {
     return userAccountId === this.targetState.userAccountId ? this.targetState : null;
   }
@@ -148,5 +158,25 @@ describe("offline invitation ticket boundary", () => {
     repository.targetState = { ...repository.targetState, active: true, role: "administrator" };
     await expect(tickets.issueOwn(ordinary)).rejects.toMatchObject({ code: "unavailable" });
     expect(repository.records.size).toBe(0);
+  });
+
+  it("names the account a card signs in as without using the card up", async () => {
+    const repository = new Repository();
+    let now = 10_000;
+    const tickets = new OfflineInvitationTicketService(repository, Buffer.alloc(32, 4), () => now);
+    const card = await tickets.issue(admin, accountKey, "account");
+    expect(await tickets.preview(card.token)).toBe("Oma (synthetic)");
+    expect(await tickets.preview(card.token)).toBe("Oma (synthetic)");
+    expect(repository.records.get(card.invitationId)?.consumedAtMs).toBeUndefined();
+    expect(await tickets.redeem(card.token)).toEqual(repository.targetState);
+    // A used, revoked, expired or malformed card names nobody.
+    await expect(tickets.preview(card.token)).rejects.toMatchObject({ code: "unavailable" });
+    const revoked = await tickets.issue(admin, accountKey, "account");
+    await tickets.revoke(admin, revoked.invitationId);
+    await expect(tickets.preview(revoked.token)).rejects.toMatchObject({ code: "unavailable" });
+    const expiring = await tickets.issue(admin, accountKey, "account");
+    now += OFFLINE_INVITATION_LIFETIME_MS;
+    await expect(tickets.preview(expiring.token)).rejects.toMatchObject({ code: "unavailable" });
+    await expect(tickets.preview("not-a-token")).rejects.toMatchObject({ code: "invalid" });
   });
 });

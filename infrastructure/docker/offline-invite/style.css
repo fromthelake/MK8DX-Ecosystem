@@ -8,3 +8,7 @@ button:disabled { opacity: .55; cursor: default; }
 a { color: #ffdc50; }
 a[hidden] { display: none; }
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+.who { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
+.who strong { display: block; font-size: 1.6rem; overflow-wrap: anywhere; }
+.not-you { font-size: 0.9rem; opacity: 0.8; }

@@ -38,6 +38,10 @@ async function harness() {
   };
   const cards = new Set<string>();
   const tickets = {
+    async preview(token: string) {
+      if (!cards.has(token)) { throw new Error("unavailable"); }
+      return "Dee (synthetic)";
+    },
     async redeem(token: string) {
       if (!cards.delete(token)) { throw new Error("unavailable"); }
       return { accountKey: "offline_account.dee", userAccountId: "user_account.dee",
@@ -68,8 +72,13 @@ async function harness() {
     headers: { origin, "content-type": "application/json", "x-real-ip": client },
     payload: { token },
   });
+  const preview = (token: string, client = "172.27.0.1", from = origin) => app.inject({
+    method: "POST", url: "/api/auth/offline-invitation/preview", remoteAddress: "127.0.0.1",
+    headers: { origin: from, "content-type": "application/json", "x-real-ip": client },
+    payload: { token },
+  });
   const issue = () => { const token = newToken(); cards.add(token); return token; };
-  return { app, database, limiter, redeem, issue };
+  return { app, database, limiter, redeem, preview, issue };
 }
 
 describe("offline invitation redemption limits", () => {
@@ -130,6 +139,30 @@ describe("offline invitation redemption limits", () => {
       const capped = await h.redeem(h.issue(), "10.9.9.9");
       expect(capped.statusCode).toBe(429);
       expect(capped.json()).toMatchObject({ code: "offline_invitation_rate_limited" });
+    } finally { await h.app.close(); }
+  });
+
+  it("names the card's account before confirming without using it, under the same limits", async () => {
+    const h = await harness();
+    try {
+      const card = h.issue();
+      const named = await h.preview(card);
+      expect(named.statusCode).toBe(200);
+      expect(named.json()).toEqual({ displayLabel: "Dee (synthetic)" });
+      expect(named.headers["set-cookie"]).toBeUndefined();
+      expect(h.database.mk8dx_auth_session).toHaveLength(0);
+      expect((await h.redeem(card)).statusCode).toBe(200);
+      // Used up: no name any more, the same answer as an unknown card.
+      expect((await h.preview(card)).statusCode).toBe(401);
+      expect((await h.preview(newToken())).statusCode).toBe(401);
+      expect((await h.preview(h.issue(), "172.27.0.1", "https://elsewhere.example.test")).statusCode).toBe(403);
+      // Previews count against the card's own redemption budget.
+      const hammered = h.issue();
+      for (let attempt = 0; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perToken.maximum; attempt += 1) {
+        expect((await h.preview(hammered)).statusCode).toBe(200);
+      }
+      expect((await h.preview(hammered)).statusCode).toBe(429);
+      expect((await h.redeem(hammered)).statusCode).toBe(429);
     } finally { await h.app.close(); }
   });
 });

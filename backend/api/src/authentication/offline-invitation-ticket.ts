@@ -27,6 +27,11 @@ export interface OfflineInvitationTicketRepository {
   create(record: OfflineInvitationRecord): Promise<void>;
   /** One atomic conditional consume checks expiry, revocation, account and role. */
   consume(tokenDigest: Uint8Array, nowMs: number): Promise<OfflineInvitationTarget | null>;
+  /**
+   * The account label of a card that `consume` would accept right now, without consuming it, so the
+   * invitation page can say who it signs in as before the holder confirms. Same conditions as consume.
+   */
+  preview(tokenDigest: Uint8Array, nowMs: number): Promise<string | null>;
   revoke(invitationId: string, nowMs: number, actorAccountId: string): Promise<boolean>;
   /** The signed-in account's own offline account, looked up by its UserAccount only. */
   ownTarget(userAccountId: string): Promise<OfflineInvitationTarget | null>;
@@ -112,6 +117,18 @@ export class OfflineInvitationTicketService {
     const target = await this.repository.consume(this.digest(token), this.clock());
     if (target === null || !target.active) { throw new OfflineInvitationTicketError("unavailable"); }
     return target;
+  }
+
+  /**
+   * Who a card signs in as, without using it up. The holder of the token could sign in with it anyway,
+   * so the label tells them nothing they could not get; an unknown, used, expired or revoked card gets
+   * the same "unavailable" as on redemption.
+   */
+  public async preview(token: string): Promise<string> {
+    if (!tokenPattern.test(token)) { throw new OfflineInvitationTicketError("invalid"); }
+    const label = await this.repository.preview(this.digest(token), this.clock());
+    if (label === null) { throw new OfflineInvitationTicketError("unavailable"); }
+    return label;
   }
 
   public async revoke(actor: ActorContext, invitationId: string): Promise<void> {
