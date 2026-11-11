@@ -355,7 +355,28 @@ This only works on a computer where MK8DX is not installed yet.
 
 **Another network address**
 
-Your router gives the MK8DX computer its address. After a new router or on another network (for example at the club) that address can change. So preferably give the computer a fixed reservation in your router (often called a "DHCP reservation"): then it always keeps the same address. Where that setting is differs per router.
+Your router gives the MK8DX computer its address. Usually it stays the same, but that is not guaranteed: after a new router, a power cut or when the computer was off for a long time, or on another network (for example at the club), the address can change. Then MK8DX has to move and everyone scans the card again. A fixed address prevents that.
+
+**Give the computer a fixed address (recommended, once)**
+
+A fixed address is best arranged in the router, with a **DHCP reservation**: the router then keeps one address for this computer and never gives it to another device.
+
+1. **Do:** find the computer's address and physical address. Windows: open **Command Prompt**, type `ipconfig /all` and press Enter. Linux: type `ip -br addr` and `ip -br link`. → **You see:** for the connection you use (**Wi-Fi** or **Ethernet**) an **IPv4 Address** (for example `192.168.1.50`) and a **Physical Address** (also called MAC address, for example `3C-52-82-AB-CD-EF`). Cable and Wi-Fi each have their own physical address: take the one of the connection the computer really uses (preferably a cable).
+2. **Do:** open your router's settings in the browser. The address and the password are often on a sticker on the router (for example `192.168.1.1` or `192.168.0.1`).
+3. **Do:** find the reservation. The name differs per brand, for example "DHCP reservation", "Address reservation", "Static IP", "Static lease" or "Always assign this device the same IPv4 address". It is usually under **LAN**, **Network**, **DHCP** or **Home network**, next to the list of connected devices.
+4. **Do:** choose the MK8DX computer in the list (or enter its physical address), keep its **current** address and save. → **You see:** the computer is in the list of reservations.
+5. **Do:** restart the computer and check with `ipconfig` that the address stayed the same. If it is the address MK8DX already uses, there is nothing else to do. If you chose another address in the router, move MK8DX as below.
+
+**Avoid an address conflict**
+
+An address conflict happens when two devices use the same address. One of them (sometimes the MK8DX computer) is then unreachable now and then or all the time; Windows sometimes says "There is an IP address conflict".
+
+- Use a reservation in the router, not an address you type yourself in the network settings of Windows or Linux. The router does not know a typed-in address: it can later give it to a phone or a console.
+- If you cannot reach the router (for example at the club) and it has to be manual: choose an address outside the range the router hands out (the "DHCP pool"; if the router hands out `192.168.1.100` to `192.168.1.199`, choose for example `192.168.1.50`) and first check that nobody uses it: `ping 192.168.1.50` must get no reply. Copy the subnet mask, gateway and DNS the router gave. Preferably ask whoever manages that network.
+- Let only one device hand out addresses in a network. Two routers behind each other (for example your provider's modem and your own Wi-Fi router) are two networks: put the MK8DX computer and all phones in the same network, or switch the second router to **access point mode**.
+- After a conflict: give the other device another address (or the MK8DX computer a reservation) and open MK8DX beheer. If you see **This computer has a new network address**, follow the steps below.
+
+**Moving to a new address**
 
 1. **Do:** if the computer got another address anyway, open **MK8DX beheer** (chapter 5). → **You see:** **This computer has a new network address** with "MK8DX was on" the old address and the new address below it.
 2. **Do:** click **Move**. With **Advanced** you can choose another address if needed. → **You see:** "Moving to the new address (Windows asks for permission)"; click **Yes** in the Windows window. Then "MK8DX runs on the new address."
@@ -424,7 +445,7 @@ This chapter is not needed for normal use.
 - `tooling/install.py stop --state-dir <folder>` and `tooling/install.py start --qa-offline-candidate --state-dir <folder>`: stop and start.
 - `tooling/install.py upgrade --backup-output <new folder> --qa-offline-candidate --state-dir <folder>`: first makes and verifies a backup, then applies database updates and restarts the containers with the images this installation was set up with. Switching to the images of a newer package is not part of it yet, and this route is not tested for A2.
 - `tooling/setup_wizard.py --state-dir <folder>`: the setup page itself; `--no-browser` opens no browser.
-- `--qa-offline-candidate` is required as long as A2 offline is not approved; the setup page switches it on by itself for an A2 package.
+- `--qa-offline-candidate` is the internal flag with which an A2 package switches on its own offline functions; the setup page and the start file pass it themselves.
 
 **Scheduled jobs and network**
 

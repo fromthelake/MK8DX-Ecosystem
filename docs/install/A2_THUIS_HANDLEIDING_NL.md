@@ -355,7 +355,28 @@ Dit werkt alleen op een computer waarop MK8DX nog niet geïnstalleerd is.
 
 **Een ander netwerkadres**
 
-Je router geeft de MK8DX-computer zijn adres. Na een nieuwe router of in een ander netwerk (bijvoorbeeld op de club) kan dat adres anders worden. Geef de computer daarom bij voorkeur een vaste reservering in je router (vaak "DHCP-reservering" genoemd): dan houdt hij altijd hetzelfde adres. Waar dat zit, verschilt per router.
+Je router geeft de MK8DX-computer zijn adres. Meestal blijft dat hetzelfde, maar het is niet gegarandeerd: na een nieuwe router, een stroomstoring of als de computer lang uit stond, of in een ander netwerk (bijvoorbeeld op de club), kan het adres anders worden. Dan moet MK8DX verhuizen en scant iedereen opnieuw de kaart. Dat voorkom je met een vast adres.
+
+**Een vast adres geven (aanbevolen, eenmalig)**
+
+Een vast adres regel je het best in de router, met een **DHCP-reservering**: de router bewaart dan één adres voor deze computer en geeft het nooit aan een ander apparaat.
+
+1. **Doe:** zoek het adres en het fysieke adres van de computer. Windows: open **Opdrachtprompt**, typ `ipconfig /all` en druk op Enter. Linux: typ `ip -br addr` en `ip -br link`. → **Je ziet:** bij de verbinding die je gebruikt (**Wi-Fi** of **Ethernet**) een **IPv4-adres** (bijvoorbeeld `192.168.1.50`) en een **Fysiek adres** (ook MAC-adres genoemd, bijvoorbeeld `3C-52-82-AB-CD-EF`). Kabel en wifi hebben elk een eigen fysiek adres: kies dat van de verbinding die de computer echt gebruikt (bij voorkeur een kabel).
+2. **Doe:** open de instellingen van je router in de browser. Het adres en het wachtwoord staan vaak op een sticker op de router (bijvoorbeeld `192.168.1.1` of `192.168.0.1`).
+3. **Doe:** zoek de reservering. De naam verschilt per merk, bijvoorbeeld "DHCP-reservering", "Adresreservering", "Vast IP-adres", "Statische lease" of "Altijd hetzelfde IPv4-adres toewijzen". Meestal staat het onder **LAN**, **Netwerk**, **DHCP** of **Thuisnetwerk**, bij de lijst met verbonden apparaten.
+4. **Doe:** kies de MK8DX-computer in de lijst (of vul het fysieke adres in), houd het **huidige** adres aan en sla op. → **Je ziet:** de computer staat in de lijst met reserveringen.
+5. **Doe:** herstart de computer en controleer met `ipconfig` dat het adres gelijk bleef. Is het hetzelfde adres dat MK8DX al gebruikt, dan hoef je verder niets te doen. Koos je in de router een ander adres, verhuis MK8DX dan zoals hieronder.
+
+**Een adresconflict voorkomen**
+
+Een adresconflict ontstaat als twee apparaten hetzelfde adres gebruiken. Een van beide (soms de MK8DX-computer) is dan steeds even of helemaal niet bereikbaar; Windows meldt soms "Er is een IP-adresconflict".
+
+- Gebruik een reservering in de router, geen adres dat je zelf in de netwerkinstellingen van Windows of Linux typt. Een zelf ingetypt adres kent de router niet: hij kan het later aan een telefoon of console geven.
+- Kun je niet bij de router (bijvoorbeeld op de club) en moet het toch handmatig: kies een adres buiten de reeks die de router uitdeelt (de "DHCP-pool"; deelt de router `192.168.1.100` tot `192.168.1.199` uit, kies dan bijvoorbeeld `192.168.1.50`) en controleer eerst dat niemand het gebruikt: `ping 192.168.1.50` mag geen antwoord geven. Neem subnetmasker, gateway en DNS over zoals de router ze gaf. Vraag het liefst de beheerder van dat netwerk.
+- Laat in één netwerk maar één apparaat adressen uitdelen. Staan er twee routers achter elkaar (bijvoorbeeld het modem van je provider en een eigen wifi-router), dan zijn dat twee netwerken: zet de MK8DX-computer en alle telefoons in hetzelfde netwerk, of zet de tweede router in **access-point-modus**.
+- Had je een conflict: geef het andere apparaat een ander adres (of de MK8DX-computer een reservering) en open MK8DX beheer. Zie je **Deze computer heeft een nieuw netwerkadres**, volg dan de stappen hieronder.
+
+**Verhuizen naar een nieuw adres**
 
 1. **Doe:** kreeg de computer toch een ander adres, open dan **MK8DX beheer** (hoofdstuk 5). → **Je ziet:** **Deze computer heeft een nieuw netwerkadres** met "MK8DX stond op" het oude adres en het nieuwe adres eronder.
 2. **Doe:** klik op **Verhuizen**. Met **Geavanceerd** kies je zo nodig een ander adres. → **Je ziet:** "Naar het nieuwe adres verhuizen (Windows vraagt toestemming)"; klik in het Windows-venster op **Ja**. Daarna "MK8DX draait op het nieuwe adres."
@@ -424,7 +445,7 @@ Dit hoofdstuk is niet nodig voor gewoon gebruik.
 - `tooling/install.py stop --state-dir <map>` en `tooling/install.py start --qa-offline-candidate --state-dir <map>`: stoppen en starten.
 - `tooling/install.py upgrade --backup-output <nieuwe map> --qa-offline-candidate --state-dir <map>`: maakt en controleert eerst een back-up, past daarna database-updates toe en start de containers opnieuw met de images waarmee deze installatie is opgezet. Overstappen op de images van een nieuwer pakket hoort daar nog niet bij, en deze route is voor A2 niet getest.
 - `tooling/setup_wizard.py --state-dir <map>`: de installatiepagina zelf; `--no-browser` opent geen browser.
-- `--qa-offline-candidate` is nodig zolang A2 offline nog niet is goedgekeurd; de installatiepagina zet het zelf aan voor een A2-pakket.
+- `--qa-offline-candidate` is de interne vlag waarmee een A2-pakket zijn eigen offline functies aanzet; de installatiepagina en het startbestand geven hem zelf mee.
 
 **Geplande taken en netwerk**
 
