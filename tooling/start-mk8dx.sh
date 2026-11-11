@@ -8,6 +8,18 @@ case "$(uname -s)" in
   *) data_home="${XDG_DATA_HOME:-$HOME/.local/share}/mk8dx" ;;
 esac
 cd "$root"
+if [ -t 1 ]; then
+  w=$(printf '\033[1;37m'); e=$(printf '\033[1;35m'); y=$(printf '\033[1;33m'); g=$(printf '\033[2m'); n=$(printf '\033[0m')
+else
+  w=; e=; y=; g=; n=
+fi
+printf '\n'
+printf '   %s __  __  _  __%s  ___  %s ____  __  __%s\n' "$w" "$e" "$w" "$n"
+printf '   %s|  \\/  || |/ /%s ( _ ) %s|  _ \\ \\ \\/ /%s\n' "$w" "$e" "$w" "$n"
+printf '   %s| |\\/| || '"'"' / %s / _ \\ %s| | | | \\  / %s\n' "$w" "$e" "$w" "$n"
+printf '   %s| |  | || . \\ %s| (_) |%s| |_| | /  \\ %s\n' "$w" "$e" "$w" "$n"
+printf '   %s|_|  |_||_|\\_\\%s \\___/ %s|____/ /_/\\_\\%s\n\n' "$w" "$e" "$w" "$n"
+printf '   %sT I M E   T R I A L S%s   %shome & club LAN%s\n\n' "$y" "$n" "$g" "$n"
 printf 'MK8DX package: %s\n' "$root"
 # The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
 python3 -c 'import sys; assert (3, 12) <= sys.version_info[:2] <= (3, 15)' 2>/dev/null || {

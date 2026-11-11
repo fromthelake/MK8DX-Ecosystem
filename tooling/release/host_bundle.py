@@ -37,6 +37,7 @@ OFFLINE_FILES = (
     "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/host_platform.py",
     "tooling/setup_wizard_static/index.html",
     "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
+    "tooling/setup_wizard_static/icon.png", "tooling/mk8dx.ico",
 )
 
 

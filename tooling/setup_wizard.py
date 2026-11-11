@@ -501,7 +501,8 @@ class Wizard:
             target = ROOT / "Start-MK8DX-LAN.cmd"
             script = ("$s=(New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop')+"
                       "'\\MK8DX beheer.lnk');"
-                      f"$s.TargetPath='{target}';$s.WorkingDirectory='{ROOT}';$s.Save()")
+                      f"$s.TargetPath='{target}';$s.WorkingDirectory='{ROOT}';"
+                      f"$s.IconLocation='{ROOT / 'tooling' / 'mk8dx.ico'},0';$s.Save()")
             made = install._powershell(script, timeout=60).returncode == 0
         return {**result, "shortcut": made}
 
@@ -598,7 +599,7 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     file = GUIDE / path[len("/guide/"):]
                     if file.is_file():
                         return self.send(200, file.read_bytes(), TYPES[file.suffix])
-                if path in ("/wizard.js", "/wizard.css", "/logo.svg"):
+                if path in ("/wizard.js", "/wizard.css", "/icon.png"):
                     file = STATIC / path[1:]
                     return self.send(200, file.read_bytes(), TYPES[file.suffix])
                 routes = {"/api/status": wizard.status, "/api/checks": wizard.checks,

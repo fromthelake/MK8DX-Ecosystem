@@ -52,6 +52,14 @@
     "apps/timetrials-android/gradle/wrapper/gradle-wrapper.jar": {
       "sha256": "3b8a25775a69158b5ad2b1d17a80a88dc7b40a352a73eb27d06c612a7ce68e98",
       "sizeBytes": 48749
+    },
+    "tooling/mk8dx.ico": {
+      "sha256": "2e728a217eb7f2a5da90c69a0833b0511705ed2b3e6e1a81841634f56faedcda",
+      "sizeBytes": 121181
+    },
+    "tooling/setup_wizard_static/icon.png": {
+      "sha256": "a91723c06b8b799b92b1fef2b4a45dbd5c6b42899a1f408040ea31d4257eefed",
+      "sizeBytes": 48598
     }
   }
 }

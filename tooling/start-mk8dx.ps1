@@ -10,6 +10,39 @@ function Invoke-NativeQuiet([scriptblock]$Command) {
 }
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location -LiteralPath $root
+function Show-Banner {
+  # MK8DX in block letters; the 8 in the logo's ribbon colours. ASCII only on purpose.
+  $rows = @(
+    @(' __  __ ', ' _  __', '  ___  ', ' ____  ', '__  __'),
+    @('|  \/  |', '| |/ /', ' ( _ ) ', '|  _ \ ', '\ \/ /'),
+    @('| |\/| |', "| ' / ", ' / _ \ ', '| | | |', ' \  / '),
+    @('| |  | |', '| . \ ', '| (_) |', '| |_| |', ' /  \ '),
+    @('|_|  |_|', '|_|\_\', ' \___/ ', '|____/ ', '/_/\_\'))
+  $eight = @('Cyan', 'Cyan', 'Magenta', 'Magenta', 'Red')
+  Write-Host ''
+  for ($i = 0; $i -lt $rows.Count; $i++) {
+    Write-Host '   ' -NoNewline
+    Write-Host ($rows[$i][0] + $rows[$i][1]) -NoNewline -ForegroundColor White
+    Write-Host $rows[$i][2] -NoNewline -ForegroundColor $eight[$i]
+    Write-Host ($rows[$i][3] + $rows[$i][4]) -ForegroundColor White
+  }
+  $revision = ''
+  $named = Join-Path $root 'images\images.json'
+  if (Test-Path -LiteralPath $named) {
+    try { $revision = (Get-Content -LiteralPath $named -Raw | ConvertFrom-Json).revision } catch { $revision = '' }
+  }
+  Write-Host ''
+  Write-Host '   T I M E   T R I A L S' -NoNewline -ForegroundColor Yellow
+  Write-Host ('   home & club LAN' + $(if ($revision) { "   package $revision" } else { '' })) -ForegroundColor DarkGray
+  Write-Host ('   ' + ('-' * 44)) -ForegroundColor DarkGray
+  Write-Host ''
+}
+function Write-Step([string]$Number, [string]$Text) {
+  Write-Host ('[' + $Number + '] ') -NoNewline -ForegroundColor Cyan
+  Write-Host $Text
+}
+Show-Banner
+Write-Step '1/4' 'Checking Python'
 Write-Host "MK8DX package: $root"
 Write-Host "Private installation: $StateDir"
 try {
@@ -21,6 +54,7 @@ try {
 } catch {
   throw 'Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.'
 }
+Write-Step '2/4' 'Checking Docker'
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
 $dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)
 $dockerRunning = $dockerFound -and ((Invoke-NativeQuiet { docker info }) -eq 0)
@@ -31,6 +65,7 @@ docker compose version | Out-Host
 # Images first: a source checkout has none, and must not run the wizard into the package's installation folder.
 # A package loads its own images on its first start, even when older images carry the same tags (an update
 # extracts into a new folder); later starts load again only when an image is missing.
+Write-Step '3/4' 'Preparing the MK8DX programs'
 $bundle = Join-Path $root 'images\docker-images-amd64.tar'
 $loaded = Join-Path $root 'images\loaded.txt'
 $load = (Test-Path -LiteralPath $bundle) -and -not (Test-Path -LiteralPath $loaded)
@@ -89,6 +124,7 @@ $profilePath = Join-Path $StateDir 'operator-profile.json'
 $offlineInstall = (Test-Path -LiteralPath $profilePath) -and
   ((Get-Content -LiteralPath $profilePath -Raw | ConvertFrom-Json).route -eq 'A2_OFFLINE')
 if ($candidate -and ($offlineInstall -or -not (Test-Path -LiteralPath $StateDir))) {
+  Write-Step '4/4' 'Opening MK8DX beheer in your browser'
   # The guided setup / "MK8DX beheer" in the browser (docs/install/A2_HOME_GUIDE_EN.md).
   & $python tooling/setup_wizard.py --state-dir $StateDir
   exit $LASTEXITCODE

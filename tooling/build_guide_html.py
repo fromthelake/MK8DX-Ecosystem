@@ -191,8 +191,11 @@ def render(lang: str, images: set[str] | None = None) -> str:
         '<!doctype html>\n<html lang="' + lang + '"><head><meta charset="utf-8">'
         '<meta name="viewport" content="width=device-width, initial-scale=1">'
         f"<title>{html.escape(text['title'])}</title>"
+        '<link rel="icon" href="img/mk8dx-icon.png">'
         '<link rel="stylesheet" href="guide.css"><script src="guide.js" defer></script></head>'
         '<body class="os-all device-all"><header class="bar">'
+        '<a class="brand" href="#guide"><img src="img/mk8dx-icon.png" alt="" width="40" height="40">'
+        '<span class="brand-word">MK8DX</span></a>'
         f'<div class="filters"><span class="filter-label">{text["computer"]}</span>'
         f'<div class="choice" role="group" aria-label="{text["computer"]}">{computers}'
         f'<button type="button" data-os="all">{text["all"]}</button></div>'

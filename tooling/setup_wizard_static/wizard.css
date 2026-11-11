@@ -9,7 +9,8 @@ body { margin: 0; background: radial-gradient(1200px 600px at 20% -10%, #1d2a63 
   color: var(--text); font: 17px/1.5 "Segoe UI", system-ui, sans-serif; min-height: 100vh; }
 .frame { max-width: 920px; margin: 0 auto; padding: 24px 16px 32px; display: flex; flex-direction: column; gap: 18px; min-height: 100vh; }
 .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.brand { display: flex; align-items: baseline; gap: 12px; }
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { width: 40px; height: 40px; border-radius: 9px; flex: none; }
 .brand-mark { font-weight: 900; font-style: italic; font-size: 30px; letter-spacing: .5px; }
 .brand-sub { color: var(--muted); font-size: 15px; }
 .help { color: var(--accent); text-decoration: none; font-weight: 600; }
