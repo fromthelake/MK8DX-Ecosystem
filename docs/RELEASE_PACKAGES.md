@@ -8,7 +8,8 @@ same packages yourself; see [Building the packages](#building-the-packages).
 
 | Package | Contents | Use it for |
 | --- | --- | --- |
-| `mk8dx-host-local-…-amd64.zip` | Prebuilt Linux/amd64 images for website and API, MySQL and Mailpit images, Compose files, the installer and launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) | Routes A1 (one computer), A2 (home network) and B1 (VPS) |
+| `mk8dx-host-local-…-amd64.zip` | Prebuilt Linux/amd64 images for website and API, MySQL and Mailpit images, Compose files, the installer and launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) | Routes A1 (one computer) and B1 (VPS) |
+| `mk8dx-a2-<platform>-<arch>-….zip` | Everything for A2 on that platform: website and API images, the guided setup, pinned Python wheels, launchers and the A2 guides | Route A2: home or club network without internet (`windows-amd64`, `linux-amd64`, `linux-arm64`, `macos-amd64`, `macos-arm64`) |
 | `mk8dx-xampp-node-windows-….zip` | Built website and API for Node.js, a private MariaDB, Mailpit and the Apache configuration helper | Route A3: Windows without Docker |
 | `mk8dx-mijnhost-node-….zip` | Built website and API for Node.js/Passenger hosting with MariaDB | Route B2: shared hosting |
 | `mk8dx-android-debug-….apk` | CI-built debug-signed Android app for testing; remove before publishing a stable release | Test phones |
@@ -23,8 +24,8 @@ The user guides are attached to each release as well: `MK8DX_User_Guide_EN.txt`/
 `MK8DX_Handleiding_NL.txt`/`.docx`. The same files are in [docs/install](install/) and inside the installation
 packages.
 
-A1 and A3 are supported after fresh-install and upgrade tests with data. A2, B1 and B2 are documented but
-have not been tested end to end. The Android release APK is signed locally with the maintainer's retained key;
+A1 and A3 are supported after fresh-install and upgrade tests with data. A2 is tested end to end on Windows 11
+(Linux in WSL 2; macOS built but not tested). B1 and B2 are documented but have not been tested end to end. The Android release APK is signed locally with the maintainer's retained key;
 earlier public debug APKs require one uninstall before installing it. Save any results not yet sent before that
 uninstall. Later updates signed with the same release key install in place.
 

@@ -56,7 +56,8 @@ The 0.1.0 series is published through the project's
 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) page; the
 [changelog](CHANGELOG.md) lists what changed. **A1 (Docker on one computer) and A3
 (XAMPP/Node.js on Windows) are supported** after installation and upgrade tests.
-A2 (home network), B1 (Docker VPS) and B2 (shared Node.js hosting) are documented
+**A2 (home or club network, guided setup) is new in 0.2.0** and tested end to end on Windows 11.
+B1 (Docker VPS) and B2 (shared Node.js hosting) are documented
 but have not been tested end to end. Other platforms are described under
 [Platform support](#platform-support).
 
@@ -70,7 +71,7 @@ which route. GitHub's automatic **Source code (zip)** is the complete source, no
 | Route | Package | Status |
 | --- | --- | --- |
 | A1: website on one computer with Docker | `mk8dx-host-local-…-amd64.zip` | Supported |
-| A2: website on a home network with Docker | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
+| A2: website on a home or club network, guided setup | `mk8dx-a2-<platform>-<arch>-….zip` | Tested on Windows 11 ([guide](docs/install/A2_HOME_GUIDE_EN.md)); Linux in WSL 2; macOS untested |
 | A3: website on Windows with XAMPP and Node.js | `mk8dx-xampp-node-windows-….zip` | Supported |
 | B1: website on a Docker VPS | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
 | B2: website on shared Node.js hosting | `mk8dx-mijnhost-node-….zip` | Documented; not tested end to end |

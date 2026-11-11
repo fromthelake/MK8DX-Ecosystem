@@ -3,7 +3,34 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.0-rc.1 — 2026-11-11
+
+### A2: MK8DX at home or at the club, without internet
+
+- New per-platform packages `mk8dx-a2-<platform>-<arch>-….zip` (Windows amd64, Linux amd64/arm64,
+  macOS amd64/arm64) with the Docker images, pinned Python wheels for Python 3.12–3.15 and a guided
+  setup in the browser: start `Start-MK8DX-LAN.cmd` (Windows) or `tooling/start-mk8dx.sh`, click
+  Next. It sets up a private certificate authority for HTTPS on the local network (new roots only
+  allow names under `.invalid`), an administrator, people and printable sign-in cards, nightly
+  verified backups with a paper recovery code, and certificate renewal.
+- MK8DX beheer (the same page, later) adds people, makes cards ("Copy link", "Sign in on this
+  computer"), prepares the host computer itself, moves the installation to a new network address,
+  and restores a backup on a new computer.
+- Updating: unpack a newer package in a new folder and start it. The update is its own short route:
+  a verified backup first, then the new images, database migrations, and the scheduled tasks and
+  shortcut moved to the new folder; the start window ends with `OK  MK8DX update completed` or
+  `MK8DX update FAILED: <reason>`. Release tags (`v0.2.0-rc.2`, `v0.2.0`) and QA builds are ordered;
+  an older package is refused.
+- Account switching on shared devices (website and Android app); administrators may appear in the
+  switch list behind a mandatory PIN (5th wrong PIN or 14 days unused forgets them on that device).
+  Migration `0086_account_switch_pin_failures`.
+- Guides: `docs/install/A2_HOME_GUIDE_EN.md` and `A2_THUIS_HANDLEIDING_NL.md` (also as illustrated
+  HTML in `docs/install/guide/`), including a fixed address for the host (DHCP reservation) and how to
+  avoid an address conflict.
+- Tested end to end on a clean Windows 11 computer and the maintainer's laptop: installation, update,
+  people and cards, phone and PC sign-in, account switching, a full tournament night with rating, and
+  live capture from another computer. Linux was tested in WSL 2 (Ubuntu 24.04); macOS is built and
+  unit-tested only.
 
 ### Security
 
@@ -28,7 +55,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   blocked. Unknown and malformed tokens count against the same limits. Email
   sign-in limits are unchanged.
 
-### Offline LAN (in development)
+### Offline LAN
 
 - ADR-0224 phase 1: a signed-in Player account in an offline-invitation
   installation can add another device from the account menu. It shows a
@@ -42,7 +69,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   Settings, and the signed-out sign-in panel) continues as one of them with one
   tap. An account can turn on an optional 4-digit PIN in Settings; the server
   checks it and limits attempts (5 per account per 15 minutes, 20 per device
-  per hour). Administrators are never remembered and always sign in afresh.
+  per hour). Administrators are remembered only with a PIN (see A2 above).
   The browser holds labels only, under one HttpOnly SameSite=Strict device
   cookie. "Sign out" removes the account from this device's list; "Sign out on
   all devices" removes it from every device. Migration
@@ -53,13 +80,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   out as before. "Sign out" itself still affects only this device.
 - Offline A2 client configuration now advertises personal host invitations;
   the website explains that sign-in path and distinguishes it from the setup
-  certificate QR. Online installations keep their email-link form. The offline
-  installer is still gated pending the full installation and device checks.
+  certificate QR. Online installations keep their email-link form.
 - The QA setup page and host screen now distinguish the one-time administrator
   code from the CA fingerprint and give clearer certificate import guidance.
 - NL/EN QA instructions explain which addresses work on the host and on a
   phone, how an invitation activates a local account, and why a phone may show
-  the light theme. The public offline A2 installer remains unqualified.
+  the light theme.
 
 ### Camera
 

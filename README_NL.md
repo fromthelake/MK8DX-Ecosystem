@@ -50,7 +50,9 @@ De volledige stap-voor-stap-handleiding voor elke installatieroute, met backup, 
 **Voorlopige versie.** Releasekandidaten van versie 0.1.0 verschijnen op de
 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)-pagina van het project; de
 [changelog](CHANGELOG.md) noemt wat er veranderde. Website, API, browserscanner en installer zijn getest op
-Windows 11 met de Linux/amd64-Docker-images en met XAMPP/Node.js. Andere platforms staan onder
+Windows 11 met de Linux/amd64-Docker-images en met XAMPP/Node.js. **Nieuw in 0.2.0: MK8DX thuis of op de club
+(A2)**, met een begeleide installatie zonder internet, van begin tot eind getest op Windows 11
+([handleiding](docs/install/A2_THUIS_HANDLEIDING_NL.md)). Andere platforms staan onder
 [Platforms](#platforms).
 
 ## Downloaden
@@ -62,7 +64,8 @@ welke route hoort. GitHubs automatische **Source code (zip)** is de volledige br
 
 | Route | Pakket |
 | --- | --- |
-| Website op één computer of thuisnetwerk, met Docker | `mk8dx-host-local-…-amd64.zip` |
+| Website op één computer, met Docker | `mk8dx-host-local-…-amd64.zip` |
+| Thuis of op de club zonder internet (A2), met begeleide installatie | `mk8dx-a2-<platform>-<arch>-….zip` |
 | Website op Windows zonder Docker (XAMPP en Node.js) | `mk8dx-xampp-node-windows-….zip` |
 | Website op webhosting met Node.js en MariaDB | `mk8dx-mijnhost-node-….zip` |
 | Android-app | `mk8dx-android-debug-….apk` met de notices-ZIP |
