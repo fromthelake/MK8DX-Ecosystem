@@ -547,9 +547,12 @@ def update_offer(state):
     if shipped is None:
         return {"available": False}
     running = installed_package(state)
-    differs = (running["api"], running["web"]) != (shipped["api"], shipped["web"])
     new, old = revision_number(shipped["revision"]), revision_number(running["revision"])
     older = new is not None and old is not None and new < old
+    # A newer package is an update even with the same images: its launcher, wizard and guide are new, and the
+    # scheduled tasks and the shortcut must move to its folder (owner 11-11, r20 -> r21 offered nothing).
+    newer = new is not None and old is not None and new > old
+    differs = (running["api"], running["web"]) != (shipped["api"], shipped["web"]) or newer
     return {"available": differs and not older, "olderPackage": differs and older,
             "from": running["revision"], "to": shipped["revision"]}
 

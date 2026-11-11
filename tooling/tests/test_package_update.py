@@ -35,6 +35,15 @@ class UpdateOfferTest(unittest.TestCase):
             with shipped("r10", OLD):
                 self.assertFalse(install.update_offer(state)["available"])
 
+    def test_a_newer_package_with_the_same_images_is_still_an_update(self):
+        # r20 -> r21 changed only the wizard and guide; the tasks must still move to the new folder.
+        with tempfile.TemporaryDirectory() as temporary:
+            state = installation(Path(temporary), images=NEW, revision="r20")
+            with shipped("r21"):
+                self.assertTrue(install.update_offer(state)["available"])
+            with shipped("r20"):
+                self.assertFalse(install.update_offer(state)["available"])
+
     def test_an_installation_without_a_record_is_offered_any_other_build(self):
         # Installed before the record existed (r10 on groep3): the revision is unknown, the images differ.
         with tempfile.TemporaryDirectory() as temporary:
