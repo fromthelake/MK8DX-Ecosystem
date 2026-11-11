@@ -26,6 +26,7 @@ Dubbelklik **MK8DX beheer** op het bureaublad van de computer waarop MK8DX draai
 - **Mensen toevoegen:** namen invullen, één per regel, en **Toevoegen**.
 - **Kaart maken:** kies bij een persoon **Kaart maken** en laat die scannen. **Kaarten afdrukken** drukt alle getoonde kaarten af.
 - **Kaart kwijt of verkeerd uitgedeeld?** Kies **Kaart intrekken**; de kaart werkt dan meteen niet meer. **Nieuwe kaart** trekt de vorige kaart van die persoon ook in.
+- **Telefoon kwijt of iemand moet er overal uit?** Kies bij die persoon **Overal uitloggen** en klik nogmaals om te bevestigen. Alle apparaten van die persoon zijn dan uitgelogd (website én app), het wisselen met één tik naar dat account verdwijnt en open kaarten werken niet meer. Met een nieuwe kaart kan de persoon weer inloggen.
 
 Iedereen kiest of claimt daarna op de website zijn eigen Player. Namen worden nooit automatisch aan elkaar gekoppeld.
 

@@ -44,6 +44,9 @@ const T = {
     setupCard: "Apparaat voorbereiden", makeCard: "Kaart maken", newCard: "Nieuwe kaart", print: "Kaarten afdrukken",
     validUntil: "Geldig tot", administrator: "beheerder", fingerprint: "Vingerafdruk",
     revokeCard: "Kaart intrekken", cardRevoked: "Ingetrokken: deze kaart werkt niet meer.",
+    signOut: "Overal uitloggen", signOutConfirm: "Zeker? Klik nogmaals",
+    signedOut: "Uitgelogd op alle apparaten. Met een nieuwe kaart kan deze persoon weer inloggen.",
+    signOutSelf: "Jezelf log je uit via het accountmenu op de website ('Uitloggen op alle apparaten').",
     doneTitle: "Klaar! Veel racegenot.",
     doneLead: "MK8DX draait op je thuisnetwerk.",
     doneWebsite: "Website", doneSetup: "Nieuw apparaat", doneManage: "Later mensen toevoegen of kaarten maken: dubbelklik 'MK8DX beheer' op het bureaublad.",
@@ -109,6 +112,9 @@ const T = {
     setupCard: "Prepare a device", makeCard: "Make card", newCard: "New card", print: "Print cards",
     validUntil: "Valid until", administrator: "administrator", fingerprint: "Fingerprint",
     revokeCard: "Revoke card", cardRevoked: "Revoked: this card no longer works.",
+    signOut: "Sign out everywhere", signOutConfirm: "Sure? Click again",
+    signedOut: "Signed out on every device. A new card lets this person sign in again.",
+    signOutSelf: "Sign yourself out from the account menu on the website ('Sign out on all devices').",
     doneTitle: "Done! Enjoy the races.",
     doneLead: "MK8DX is running on your home network.",
     doneWebsite: "Website", doneSetup: "New device", doneManage: "To add people or make cards later: double-click 'MK8DX beheer' on the desktop.",
@@ -321,7 +327,27 @@ const views = {
     const field = el("label", "field", T.peopleField); const area = el("textarea"); area.id = "people-names"; field.append(area);
     const add = el("button", "secondary small", T.peopleAdd); add.type = "button";
     const list = el("ul", "list");
-    const draw = () => { list.replaceChildren(); state.people.forEach((p) => { const li = el("li"); li.append(el("span", "state ok", "✓"), el("span", "", p.role === "administrator" ? `${p.name} (${T.administrator})` : p.name)); list.append(li); }); };
+    const draw = () => {
+      list.replaceChildren();
+      state.people.forEach((p) => {
+        const li = el("li"); const text = el("div");
+        text.append(el("span", "", p.role === "administrator" ? `${p.name} (${T.administrator})` : p.name));
+        li.append(el("span", "state ok", "✓"), text);
+        if (state.manage) {
+          // Lost phone or a card in the wrong hands: end every session of this person.
+          const out = el("button", "secondary small person-action", T.signOut); out.type = "button";
+          let armed = false;
+          out.addEventListener("click", async () => {
+            if (!armed) { armed = true; out.textContent = T.signOutConfirm; return; }
+            out.disabled = true;
+            try { await api("/api/people/sign-out", { accountKey: p.accountKey }); text.append(el("div", "muted", T.signedOut)); out.remove(); }
+            catch (error) { text.append(el("div", "muted", error.message === "own-account" ? T.signOutSelf : error.message)); out.remove(); }
+          });
+          li.append(out);
+        }
+        list.append(li);
+      });
+    };
     add.addEventListener("click", async () => {
       const names = area.value.split(/\r?\n/).map((n) => n.trim()).filter(Boolean);
       if (!names.length) return;

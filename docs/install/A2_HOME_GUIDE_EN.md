@@ -26,6 +26,7 @@ Double-click **MK8DX beheer** on the desktop of the computer that runs MK8DX. Yo
 - **Add people:** type names, one per line, and click **Add**.
 - **Make a card:** choose **Make card** next to a person and let them scan it. **Print cards** prints every card shown.
 - **Card lost or handed to the wrong person?** Choose **Revoke card**; it stops working at once. **New card** also revokes that person's previous card.
+- **Phone lost, or someone must be signed out everywhere?** Choose **Sign out everywhere** next to that person and click again to confirm. Every device of that person is signed out (website and app), one-tap switching to that account disappears and open cards stop working. A new card lets the person sign in again.
 
 Everyone then chooses or claims their own Player on the website. Names are never linked automatically.
 

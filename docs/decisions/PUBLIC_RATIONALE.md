@@ -326,3 +326,8 @@ never remembered and always sign in afresh, the browser holds labels only (never
 and signing out removes the account from that device's list. Better Auth's multi-session plugin was
 reviewed and not used, because its remembered cookies are live sessions that would let a PIN be
 bypassed (docs/product/ACCOUNT_SWITCHING_DESIGN.md). Identity rules are unchanged.
+Amendment (2026-11-11): an offline administrator can also sign *another* account out on every
+device from the loopback host administration (lost phone, card in the wrong hands). This ends all
+web and app sessions of that account (each audited as a revoked session), removes it from every
+shared device's list and revokes its open sign-in cards; an administrator signs their own account
+out with "Sign out on all devices" instead.

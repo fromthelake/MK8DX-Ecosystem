@@ -169,6 +169,21 @@ class WizardServerTest(unittest.TestCase):
         self.assertTrue(self.wizard.job.done, self.wizard.job.error)
         self.assertEqual(calls, [("change-lan-address", "--lan-bind-address", "192.168.1.50", "--qa-offline-candidate")])
 
+    def test_sign_out_calls_the_host_page_and_explains_own_account(self):
+        host = type("Host", (), {})()
+        calls = []
+        host.call = lambda method, path, body=None: (calls.append((method, path, body))
+                                                     or (200, {"sessions": 2, "invitations": 1}))
+        self.wizard.host = host
+        self.assertEqual(self.wizard.sign_out("offline_account.1"), {"sessions": 2, "invitations": 1})
+        self.assertEqual(calls, [("POST", "/api/accounts/sign-out", {"accountKey": "offline_account.1"})])
+        host.call = lambda method, path, body=None: (403, {})
+        with self.assertRaisesRegex(ValueError, "own-account"):
+            self.wizard.sign_out("offline_account.self")
+        host.call = lambda method, path, body=None: (404, {})
+        with self.assertRaisesRegex(RuntimeError, "could not be signed out"):
+            self.wizard.sign_out("offline_account.gone")
+
     def test_revoke_card_calls_the_host_page(self):
         host = type("Host", (), {})()
         calls = []

@@ -386,6 +386,15 @@ class Wizard:
             raise RuntimeError("This card could not be revoked; it may already be used or expired")
         return {"revoked": True}
 
+    def sign_out(self, account_key: str):
+        """End every session of another person (lost phone, card given to the wrong person)."""
+        status, payload = self.ensure_host().call("POST", "/api/accounts/sign-out", {"accountKey": account_key})
+        if status == 403:
+            raise ValueError("own-account")
+        if status != 200:
+            raise RuntimeError("This person could not be signed out")
+        return {"sessions": int(payload.get("sessions", 0)), "invitations": int(payload.get("invitations", 0))}
+
     def setup_info(self):
         status, payload = self.ensure_host().call("GET", "/api/setup")
         if status != 200:
@@ -531,6 +540,8 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     return self.send(200, {"people": wizard.add_people(names[:50] if isinstance(names, list) else [])})
                 if path == "/api/card":
                     return self.send(200, wizard.card(str(body.get("accountKey", "")), str(body.get("role", "account"))))
+                if path == "/api/people/sign-out":
+                    return self.send(200, wizard.sign_out(str(body.get("accountKey", ""))))
                 if path == "/api/card/revoke":
                     return self.send(200, wizard.revoke_card(str(body.get("invitationId", ""))))
                 if path == "/api/close":
