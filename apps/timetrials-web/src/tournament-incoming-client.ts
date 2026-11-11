@@ -256,6 +256,16 @@ export class TournamentIncomingClient {
     return evidence(record(value)["record"]);
   }
 
+  /** Retire a live request that never went public; the API answers the invalidated record. */
+  public async dismissLiveRequest(tournamentId: string, evidenceRecord: TournamentEvidenceRecord, signal?: AbortSignal): Promise<TournamentEvidenceRecord> {
+    const value = await this.post(
+      `/v1/administrator/tournaments/${encodeURIComponent(tournamentId)}/evidence-records/${encodeURIComponent(evidenceRecord.recordId)}/actions/dismiss-live`,
+      { expectedRevision: evidenceRecord.revision, reason: "Stale live request dismissed by Tournament director" },
+      signal,
+    );
+    return evidence(record(value)["record"]);
+  }
+
   public async reject(result: IncomingTournamentResult, reason: string, signal?: AbortSignal): Promise<void> {
     await this.post(`/v1/administrator/tournament-incoming-results/${encodeURIComponent(result.incomingResultId)}/actions/reject`, {
       expectedRevision: result.revision, reason,

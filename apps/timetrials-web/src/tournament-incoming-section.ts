@@ -208,6 +208,37 @@ function evidenceRecordCard(
     });
     card.append(liveButton);
   }
+  // A request that never went public (no approval was ever recorded) can be
+  // retired; aborted runs otherwise stay here forever.
+  if (evidence.live !== undefined && (evidence.live.status === "requested" ||
+      (evidence.live.status === "stopping" && evidence.live.approvedAtMs === null))) {
+    const dismissButton = document.createElement("button");
+    dismissButton.type = "button";
+    dismissButton.className = "tt-auth__button";
+    dismissButton.textContent = localized("Dismiss this live request", "Deze Live-aanvraag negeren");
+    let armed = false;
+    dismissButton.addEventListener("click", () => {
+      if (!armed) {
+        armed = true;
+        dismissButton.textContent = localized("Click again to dismiss", "Klik nogmaals om te negeren");
+        status.textContent = localized(
+          "Dismissing removes this live request from the list. It was never public and its races are not scored.",
+          "Negeren haalt deze Live-aanvraag uit de lijst. Hij was nooit openbaar en de races tellen niet mee.",
+        );
+        return;
+      }
+      dismissButton.disabled = true;
+      status.textContent = localized("Dismissing the live request…", "Live-aanvraag wordt genegeerd…");
+      void client.dismissLiveRequest(tournament.summary.tournamentId, evidence, options.signal)
+        .then(options.onChanged).catch((error: unknown) => {
+          status.textContent = error instanceof Error ? error.message : localized("The live request could not be dismissed.", "De Live-aanvraag kon niet worden genegeerd.");
+          armed = false;
+          dismissButton.textContent = localized("Dismiss this live request", "Deze Live-aanvraag negeren");
+          dismissButton.disabled = false;
+        });
+    });
+    card.append(dismissButton);
+  }
   if (evidence.complete && mappings.length > 0 &&
       tournament.groups.filter((group) => group.stage === phase).length > 0 &&
       evidence.status !== "uploading" && evidence.status !== "blocked") {
