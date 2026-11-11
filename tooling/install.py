@@ -560,9 +560,10 @@ def prepare_offline_network(state):
     """One UAC confirmation: mark this home network Private (if Public) and allow 80/443 for it.
 
     Used by the setup wizard, where the person explicitly chose 'make this home network
-    private and allow MK8DX'. A Domain network is never changed."""
+    private and allow MK8DX'. A Domain network is never changed. Linux/macOS: see host_platform.lan_firewall."""
     if sys.platform != "win32":
-        return "skipped (not Windows)"
+        from tooling import host_platform
+        return host_platform.lan_firewall(json.loads((Path(state) / PROFILE).read_text(encoding="utf-8"))["bindAddress"])
     category, exists = offline_network_state(state)
     if category == "Private" and exists:
         return "present"
@@ -591,7 +592,8 @@ def ensure_offline_firewall(state):
     Refuses when that network is not marked Private; creating the rule asks one UAC
     confirmation. An existing rule of this installation is left as it is."""
     if sys.platform != "win32":
-        return "skipped (not Windows)"
+        from tooling import host_platform
+        return host_platform.lan_firewall(json.loads((Path(state) / PROFILE).read_text(encoding="utf-8"))["bindAddress"])
     profile = json.loads((Path(state) / PROFILE).read_text(encoding="utf-8"))
     ip = profile["bindAddress"]
     rule = offline_rule_name(ip)
@@ -892,8 +894,8 @@ def main():
     offline = args.mode == "offline-lan"
     if offline:
         from tooling.offline_lan_ca import private_lan_ip
-        if sys.platform != "win32":
-            raise SystemExit("Offline LAN CA provisioning currently requires a Windows host")
+        if not (sys.platform == "win32" or sys.platform.startswith("linux") or sys.platform == "darwin"):
+            raise SystemExit("Offline LAN CA provisioning needs Windows, Linux or macOS")
         if not args.lan_bind_address:
             raise SystemExit("Offline LAN needs --lan-bind-address")
         args.domain = str(private_lan_ip(args.lan_bind_address))

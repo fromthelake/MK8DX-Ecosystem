@@ -163,10 +163,16 @@ class Wizard:
         result.append({"id": "docker", "ok": engine})
         free = shutil.disk_usage(self.state.anchor or str(Path.home())).free
         result.append({"id": "disk", "ok": free >= 6 * 1024 ** 3, "freeGb": round(free / 1024 ** 3, 1)})
-        result.append({"id": "windows", "ok": sys.platform == "win32"})
+        result.append({"id": "platform", "ok": sys.platform == "win32" or sys.platform.startswith("linux") or sys.platform == "darwin"})
         return result
 
     def addresses(self):
+        if sys.platform != "win32":
+            from tooling import host_platform
+            found = host_platform.local_addresses()
+            preferred = default_route_address()
+            found.sort(key=lambda r: (r["ip"] != preferred, not r["ip"].startswith("192.168."), r["ip"]))
+            return found
         rows = install._powershell(
             "Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.InterfaceAlias -notlike 'vEthernet*' -and "
             "$_.InterfaceAlias -notlike 'Loopback*' -and $_.AddressState -eq 'Preferred' } | ForEach-Object { "
@@ -411,7 +417,10 @@ class Wizard:
             # Certificate renewal is not optional: without it the LAN HTTPS signer expires in a week.
             result["certificateRenewal"] = auto_backup.register_ca_renewal(self.state, sys.executable)
         made = None
-        if shortcut and sys.platform == "win32":
+        if shortcut and sys.platform != "win32":
+            from tooling import host_platform
+            made = host_platform.desktop_shortcut(ROOT / "tooling" / "start-mk8dx.sh")
+        elif shortcut:
             target = ROOT / "Start-MK8DX-LAN.cmd"
             script = ("$s=(New-Object -ComObject WScript.Shell).CreateShortcut([Environment]::GetFolderPath('Desktop')+"
                       "'\\MK8DX beheer.lnk');"

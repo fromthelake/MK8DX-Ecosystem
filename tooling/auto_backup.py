@@ -91,6 +91,10 @@ def _daily(when: str) -> str:
 
 def register_daily_task(state: Path, python: str, when: str = "03:00") -> bool:
     """The nightly encrypted backup (catches up after a missed night)."""
+    if sys.platform != "win32":
+        from tooling import host_platform
+        return host_platform.schedule(TASK_NAME, [python, str(ROOT / "tooling" / "auto_backup.py"), "run",
+                                                  "--state-dir", str(state)], daily=when)
     return _register_task(TASK_NAME, python,
                           f'"{ROOT / "tooling" / "auto_backup.py"}" run --state-dir "{state}"', _daily(when))
 
@@ -101,6 +105,10 @@ CA_TASK_NAME = "MK8DX certificate renewal"
 def register_ca_renewal(state: Path, python: str, when: str = "03:30") -> bool:
     """Daily `maintain-ca`: does nothing until the signer is due, then renews it and the served
     certificate with HTTPS verification (ADR-0223)."""
+    if sys.platform != "win32":
+        from tooling import host_platform
+        return host_platform.schedule(CA_TASK_NAME, [python, str(ROOT / "tooling" / "install.py"), "maintain-ca",
+                                                     "--qa-offline-candidate", "--state-dir", str(state)], daily=when)
     return _register_task(CA_TASK_NAME, python,
                           f'"{ROOT / "tooling" / "install.py"}" maintain-ca --state-dir "{state}"', _daily(when))
 
@@ -122,9 +130,10 @@ def ensure_docker_autostart() -> str:
     MK8DX keeps its own sign-in task instead of relying on Docker Desktop's "start when you sign
     in" entry: that entry can be switched off in Docker's settings or in Windows' startup apps
     (a host restarted by Windows Update then stayed offline, 2026-11-11). The task starts Docker
-    Desktop only when it is not already running."""
+    Desktop only when it is not already running. Linux/macOS: host_platform.docker_autostart."""
     if sys.platform != "win32":
-        return "skipped"
+        from tooling import host_platform
+        return host_platform.docker_autostart()
     exe = docker_desktop_executable()
     if exe is None:
         return "docker-desktop-not-found"

@@ -124,11 +124,18 @@ def _dpapi(data: bytes, *, decrypt: bool) -> bytes:
 
 
 def protect_root(data: bytes) -> bytes:
-    return _dpapi(data, decrypt=False)
+    """Windows: DPAPI. Linux/macOS: tooling.host_platform (systemd-creds, Keychain or 0600 file)."""
+    if sys.platform == "win32":
+        return _dpapi(data, decrypt=False)
+    from tooling import host_platform
+    return host_platform.protect(data)
 
 
 def unprotect_root(data: bytes) -> bytes:
-    return _dpapi(data, decrypt=True)
+    if sys.platform == "win32":
+        return _dpapi(data, decrypt=True)
+    from tooling import host_platform
+    return host_platform.unprotect(data)
 
 
 def _current_sid() -> str:
@@ -144,7 +151,7 @@ def _current_sid() -> str:
 def _restrict(path: Path, *, directory: bool) -> None:
     os.chmod(path, 0o700 if directory else 0o600)
     if sys.platform != "win32":
-        return  # Linux unit tests only; the production CLI rejects non-Windows hosts.
+        return  # Linux/macOS: the owner-only mode bits above are the protection (ADR-0223 amendment).
     sid = _current_sid()
     suffix = ":(OI)(CI)F" if directory else ":F"
     principals = (sid, "S-1-5-18", "S-1-5-32-544")  # operator, SYSTEM, Administrators
@@ -369,8 +376,8 @@ def main() -> None:
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--lan-ip", required=True)
     args = parser.parse_args()
-    if sys.platform != "win32":
-        parser.error("offline LAN provisioning currently requires a Windows host")
+    if not (sys.platform == "win32" or sys.platform.startswith("linux") or sys.platform == "darwin"):
+        parser.error("offline LAN provisioning needs Windows, Linux or macOS")
     metadata = provision(args.state_dir, args.lan_ip)
     print(json.dumps({"origin": metadata["origin"],
                       "rootCertificateSha256": metadata["root"]["certificateSha256"],

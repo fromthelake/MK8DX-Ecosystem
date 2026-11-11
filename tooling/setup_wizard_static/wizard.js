@@ -19,7 +19,7 @@ const T = {
     checkTitle: "Even controleren", checkLead: "MK8DX draait in Docker Desktop. We kijken of alles klaarstaat.",
     check_docker: "Docker Desktop draait", check_docker_fix: "Start Docker Desktop, wacht tot 'Engine running' en klik op Opnieuw proberen.",
     check_disk: "Genoeg vrije schijfruimte", check_disk_fix: "Maak minstens 6 GB vrij op deze schijf.",
-    check_windows: "Windows", check_windows_fix: "Deze route ondersteunt nu Windows; andere systemen volgen.",
+    check_platform: "Windows, Linux of macOS", check_platform_fix: "Deze installatie werkt op Windows, Linux en macOS.",
     kindTitle: "Wat voor installatie?",
     kindHome: "Thuis-, club- of LAN-avondnetwerk, geen internet nodig", kindHomeText: "Iedereen op hetzelfde wifi- of kabelnetwerk kan meedoen met een persoonlijke inlogkaart — thuis, op de club of tijdens een LAN-toernooiavond. Er gaat niets naar internet.",
     recommended: "aanbevolen",
@@ -87,7 +87,7 @@ const T = {
     checkTitle: "Quick check", checkLead: "MK8DX runs in Docker Desktop. Let's see whether everything is ready.",
     check_docker: "Docker Desktop is running", check_docker_fix: "Start Docker Desktop, wait for 'Engine running' and click Try again.",
     check_disk: "Enough free disk space", check_disk_fix: "Free at least 6 GB on this drive.",
-    check_windows: "Windows", check_windows_fix: "This route supports Windows today; other systems follow.",
+    check_platform: "Windows, Linux or macOS", check_platform_fix: "This installation runs on Windows, Linux and macOS.",
     kindTitle: "What kind of installation?",
     kindHome: "Home, club or LAN-night network, no internet needed", kindHomeText: "Everyone on the same Wi-Fi or wired network can join with a personal sign-in card — at home, at the club or during a LAN tournament night. Nothing goes to the internet.",
     recommended: "recommended",
@@ -197,7 +197,7 @@ const views = {
     main.replaceChildren(el("h1", "", T.checkTitle), el("p", "lead", T.checkLead));
     const list = el("ul", "list"); main.append(list);
     setButtons({ nextEnabled: false });
-    ["docker", "disk", "windows"].forEach((id) => { const li = el("li"); li.append(el("span", "state wait"), el("span", "", T[`check_${id}`])); li.id = `c-${id}`; list.append(li); });
+    ["docker", "disk", "platform"].forEach((id) => { const li = el("li"); li.append(el("span", "state wait"), el("span", "", T[`check_${id}`])); li.id = `c-${id}`; list.append(li); });
     try {
       const checks = await api("/api/checks");
       let all = true;
