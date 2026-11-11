@@ -26,11 +26,39 @@ FILES = (
     "infrastructure/docker/Caddyfile.production", "docs/OPERATIONS_NL.md",
     "docs/CLIENT_BUILDS.md", "docs/THIRD_PARTY_MATERIALS.md",
 )
+# A2 offline LAN (ADR-0223): Compose/Caddy, local CA tools, the setup wizard and their pinned Python closure.
+OFFLINE_FILES = (
+    "compose.offline-lan.yaml", "infrastructure/docker/Caddyfile.offline-lan",
+    "tooling/offline_lan_ca.py", "tooling/offline_lan_ca_lifecycle.py", "tooling/requirements-offline-lan.txt",
+    "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/setup_wizard_static/index.html",
+    "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
+)
 
 
 def sha256(path):
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def offline_pins() -> dict:
+    return dict(line.split("==") for line in (ROOT / "tooling/requirements-offline-lan.txt").read_text(
+        encoding="utf-8").splitlines() if line.strip() and not line.startswith("#"))
+
+
+def offline_wheels(folder: Path) -> dict:
+    """Exactly one Windows/CPython 3.12 wheel per pinned requirement; returns {wheel: sha256}."""
+    wheels = {}
+    for name, version in offline_pins().items():
+        stem = name.replace("-", "_").lower() + "-" + version + "-"
+        found = [p for p in folder.glob("*.whl") if p.name.lower().startswith(stem)]
+        compatible = [p for p in found if ("win_amd64" in p.name or p.name.endswith("-none-any.whl"))
+                      and ("cp312" in p.name or "abi3" in p.name or "py3-none" in p.name)]
+        if len(compatible) != 1:
+            raise SystemExit(f"Need exactly one win_amd64/cp312 wheel for {name}=={version} in {folder}")
+        wheels[compatible[0].name] = sha256(compatible[0])
+    if len(list(folder.glob("*.whl"))) != len(wheels):
+        raise SystemExit("The wheel folder holds wheels that are not pinned requirements")
+    return wheels
 
 
 def image_tags(version):
@@ -68,13 +96,33 @@ def main():
     parser.add_argument("--version", help="release tag for versioned GHCR image references; omitted for local clone builds")
     parser.add_argument("--list-images", action="store_true",
                         help="print the image tags the package contains, one per line, and exit")
+    parser.add_argument("--offline-candidate", action="store_true",
+                        help="A2 offline QA candidate: add the offline files, the setup wizard and the pinned wheels")
+    parser.add_argument("--api-image", help="candidate API image tag (with --offline-candidate; default: the "
+                                            "--version or local tag)")
+    parser.add_argument("--web-image", help="candidate Web image tag (with --offline-candidate, together with "
+                                            "--api-image)")
+    parser.add_argument("--wheels-dir", type=Path, help="folder with the pinned win_amd64/cp312 wheels "
+                                                        "(with --offline-candidate)")
     args = parser.parse_args()
     images = image_tags(args.version)
+    if (args.api_image or args.web_image or args.wheels_dir) and not args.offline_candidate:
+        parser.error("--api-image, --web-image and --wheels-dir apply only with --offline-candidate")
+    if bool(args.api_image) != bool(args.web_image):
+        parser.error("Give --api-image and --web-image together")
+    if args.api_image:
+        images = (args.api_image, args.web_image, *images[2:])
     if args.list_images:
         print("\n".join(images))
         return
     if args.output is None or args.revision is None:
         parser.error("--output and --revision are required")
+    wheels = {}
+    if args.offline_candidate:
+        if args.wheels_dir is None:
+            parser.error("An offline candidate needs --wheels-dir")
+        args.wheels_dir = args.wheels_dir.resolve()
+        wheels = offline_wheels(args.wheels_dir)
     if not args.output.is_absolute():
         raise SystemExit("Choose a new absolute ZIP path outside repository")
     output = args.output.resolve()
@@ -82,8 +130,9 @@ def main():
         raise SystemExit("Choose a new absolute ZIP path outside repository")
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, str(ROOT / "tooling/privacy_scan.py")], cwd=ROOT, check=True)
-    paths = list(FILES) + [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install").iterdir())
-                           if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")]
+    paths = list(FILES) + (list(OFFLINE_FILES) if args.offline_candidate else []) + \
+        [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install").iterdir())
+         if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")]
     for name in paths:
         path = ROOT / name
         if not path.is_file() or path.is_symlink():
@@ -97,7 +146,20 @@ def main():
         tar = Path(temporary) / "docker-images-amd64.tar"
         subprocess.run(["docker", "save", "--output", str(tar), *images], check=True)
         file_bytes = {name: package_bytes(name, images) for name in paths}
+        if args.offline_candidate:
+            # The launcher and installer read the exact images from here and start the setup wizard.
+            file_bytes["images/images.json"] = (json.dumps({"api": images[0], "web": images[1],
+                                                            "qaOfflineCandidate": True}, indent=2) + "\n").encode()
+            pins = offline_pins()
+            hashes = []
+            for wheel, digest in wheels.items():
+                name = next(n for n in pins if wheel.lower().startswith(n.replace("-", "_").lower() + "-"))
+                hashes.append(f"{name}=={pins[name]} --hash=sha256:{digest}")
+            file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(sorted(hashes)) + "\n").encode()
         first = (f"MK8DX host package {args.revision}\n\n"
+                 + ("A2 OFFLINE QA CANDIDATE: only for a disposable test host; not a qualified route yet.\n"
+                    "Windows: double-click Start-MK8DX-LAN.cmd; the setup wizard opens in your browser.\n\n"
+                    if args.offline_candidate else "") +
                  "Open docs/install/MK8DX_Handleiding_NL.docx or .txt (Nederlands),\n"
                  "or docs/install/MK8DX_User_Guide_EN.docx or .txt (English).\n"
                  "Windows: double-click Start-MK8DX.cmd. Ubuntu: sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance.\n"
@@ -109,11 +171,17 @@ def main():
                                                         "sha256": hashlib.sha256(payload).hexdigest()}
                                                  for name, payload in file_bytes.items()}}
         receipt["files"]["images/docker-images-amd64.tar"] = {"bytes": tar.stat().st_size, "sha256": sha256(tar)}
+        for wheel, digest in wheels.items():
+            receipt["files"][f"wheels/{wheel}"] = {"bytes": (args.wheels_dir / wheel).stat().st_size, "sha256": digest}
+        if args.offline_candidate:
+            receipt["qaOfflineCandidate"] = True
         try:
             with zipfile.ZipFile(output, "x", allowZip64=True) as archive:
                 archive.writestr("PACKAGE_MANIFEST.json", json.dumps(receipt, indent=2) + "\n")
                 for name, payload in file_bytes.items():
                     archive.writestr(name, payload, compress_type=zipfile.ZIP_DEFLATED, compresslevel=6)
+                for wheel in wheels:
+                    archive.write(args.wheels_dir / wheel, f"wheels/{wheel}", compress_type=zipfile.ZIP_STORED)
                 # Linux runners save uncompressed Docker layers. Compressing the
                 # tar here keeps the offline package practical to download;
                 # the manifest still verifies the exact tar bytes after unzip.
