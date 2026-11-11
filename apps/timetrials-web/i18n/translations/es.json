@@ -159,7 +159,7 @@
   "Accounts and Players are temporarily unavailable.": "Las cuentas y los Jugadores no están disponibles temporalmente.",
   "Accounts and waiting runs are kept separately per server. Switching needs confirmation.": "Las cuentas y las carreras pendientes se guardan por separado para cada servidor. Cambiar requiere confirmación.",
   "Accounts on this PC": "Cuentas en este PC",
-  "Accounts that signed in on this device. Tap one to continue as that person.": "Accounts that signed in on this device. Tap one to continue as that person.",
+  "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).": "Cuentas que iniciaron sesión en este dispositivo. Toca una para continuar como esa persona. Una cuenta de administrador solo aparece aquí con un PIN (configúralo en tu cuenta).",
   "Across all 96 tracks": "En los 96 circuitos",
   "Across every finalized night, both engine classes together.": "En todas las noches finalizadas, ambas cilindradas juntas.",
   "Active Player settings": "Ajustes del Jugador activo",

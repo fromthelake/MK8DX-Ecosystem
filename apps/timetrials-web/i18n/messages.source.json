@@ -1059,8 +1059,8 @@
    ]
   },
   {
-   "key": "Accounts that signed in on this device. Tap one to continue as that person.",
-   "nl": "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan.",
+   "key": "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).",
+   "nl": "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan. Een beheerdersaccount staat hier alleen met een pincode (in te stellen bij je account).",
    "kinds": [
     "localized"
    ],

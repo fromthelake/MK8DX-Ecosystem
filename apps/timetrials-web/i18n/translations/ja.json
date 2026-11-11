@@ -159,7 +159,7 @@
   "Accounts and Players are temporarily unavailable.": "アカウントとプレイヤーは一時的に利用できません。",
   "Accounts and waiting runs are kept separately per server. Switching needs confirmation.": "アカウントと送信待ちの記録はサーバーごとに別々に保存されます。切り替えには確認が必要です。",
   "Accounts on this PC": "このPCのアカウント",
-  "Accounts that signed in on this device. Tap one to continue as that person.": "Accounts that signed in on this device. Tap one to continue as that person.",
+  "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).": "このデバイスでサインインしたアカウントです。タップするとその人として続行します。管理者アカウントは PIN を設定した場合のみここに表示されます（アカウントで設定できます）。",
   "Across all 96 tracks": "全96コース",
   "Across every finalized night, both engine classes together.": "確定したすべての大会、両排気量の合計。",
   "Active Player settings": "アクティブなプレイヤーの設定",

@@ -159,7 +159,7 @@
   "Accounts and Players are temporarily unavailable.": "帳號與玩家暫時無法使用。",
   "Accounts and waiting runs are kept separately per server. Switching needs confirmation.": "帳號與等待中的成績依伺服器分開保存。切換需要確認。",
   "Accounts on this PC": "此電腦上的帳號",
-  "Accounts that signed in on this device. Tap one to continue as that person.": "Accounts that signed in on this device. Tap one to continue as that person.",
+  "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).": "曾在此裝置登入的帳號。點一下即可以該使用者身分繼續。管理員帳號只有設定 PIN 後才會顯示在這裡（可在你的帳號中設定）。",
   "Across all 96 tracks": "涵蓋全部 96 條賽道",
   "Across every finalized night, both engine classes together.": "涵蓋所有已定案的賽事之夜，兩種排氣量合計。",
   "Active Player settings": "目前玩家設定",

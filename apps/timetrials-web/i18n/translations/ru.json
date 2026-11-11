@@ -159,7 +159,7 @@
   "Accounts and Players are temporarily unavailable.": "Аккаунты и игроки временно недоступны.",
   "Accounts and waiting runs are kept separately per server. Switching needs confirmation.": "Аккаунты и ожидающие заезды хранятся отдельно для каждого сервера. Для переключения нужно подтверждение.",
   "Accounts on this PC": "Аккаунты на этом ПК",
-  "Accounts that signed in on this device. Tap one to continue as that person.": "Accounts that signed in on this device. Tap one to continue as that person.",
+  "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).": "Аккаунты, которые входили на этом устройстве. Нажмите на один, чтобы продолжить от имени этого человека. Аккаунт администратора появляется здесь только с PIN-кодом (его можно задать в своём аккаунте).",
   "Across all 96 tracks": "По всем 96 трассам",
   "Across every finalized night, both engine classes together.": "По всем завершённым вечерам, оба класса двигателя вместе.",
   "Active Player settings": "Настройки активного игрока",

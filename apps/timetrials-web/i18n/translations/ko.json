@@ -159,7 +159,7 @@
   "Accounts and Players are temporarily unavailable.": "계정 및 플레이어를 일시적으로 사용할 수 없어요.",
   "Accounts and waiting runs are kept separately per server. Switching needs confirmation.": "계정과 대기 중인 기록은 서버별로 따로 보관돼요. 전환하려면 확인이 필요해요.",
   "Accounts on this PC": "이 PC의 계정",
-  "Accounts that signed in on this device. Tap one to continue as that person.": "Accounts that signed in on this device. Tap one to continue as that person.",
+  "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).": "이 기기에서 로그인한 계정입니다. 하나를 탭하면 그 사람으로 계속합니다. 관리자 계정은 PIN이 있을 때만 여기에 표시됩니다(계정에서 설정).",
   "Across all 96 tracks": "전체 96개 코스 기준",
   "Across every finalized night, both engine classes together.": "확정된 모든 대회 밤 기준, 두 배기량 합계.",
   "Active Player settings": "현재 플레이어 설정",
