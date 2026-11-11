@@ -30,5 +30,41 @@ class HostBundleImageReferencesTest(unittest.TestCase):
                 host_bundle.image_tags(version)
 
 
+class HostBundlePlatformTest(unittest.TestCase):
+    WHEELS = (
+        "cffi-2.1.1-cp312-cp312-win_amd64.whl",
+        "cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+        "cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+        "cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl",
+        "cryptography-50.0.2-cp311-abi3-macosx_10_9_universal2.whl",
+        "cffi-2.1.1-cp311-cp311-manylinux2014_x86_64.whl",
+        "pycparser-3.12-py3-none-any.whl",
+    )
+
+    def fits(self, platform, arch):
+        return sorted(w for w in self.WHEELS if host_bundle.wheel_fits(w, platform, arch))
+
+    def test_each_host_gets_only_its_own_cp312_wheels(self):
+        self.assertEqual(self.fits("windows", "amd64"),
+                         ["cffi-2.1.1-cp312-cp312-win_amd64.whl", "pycparser-3.12-py3-none-any.whl"])
+        self.assertEqual(self.fits("linux", "amd64"),
+                         ["cffi-2.1.1-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.whl",
+                          "pycparser-3.12-py3-none-any.whl"])
+        self.assertEqual(self.fits("linux", "arm64"),
+                         ["cffi-2.1.1-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.whl",
+                          "pycparser-3.12-py3-none-any.whl"])
+        self.assertEqual(self.fits("macos", "arm64"),
+                         ["cffi-2.1.1-cp312-cp312-macosx_11_0_arm64.whl",
+                          "cryptography-50.0.2-cp311-abi3-macosx_10_9_universal2.whl",
+                          "pycparser-3.12-py3-none-any.whl"])
+
+    def test_versioned_images_follow_the_architecture(self):
+        self.assertEqual(host_bundle.image_tags("v0.2.0", "arm64")[:2],
+                         ("ghcr.io/fromthelake/mk8dx-api:v0.2.0-arm64", "ghcr.io/fromthelake/mk8dx-web:v0.2.0-arm64"))
+
+    def test_offline_package_carries_the_platform_layer(self):
+        self.assertIn("tooling/host_platform.py", host_bundle.OFFLINE_FILES)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,4 +1,8 @@
-"""Package prebuilt local linux/amd64 images and the existing operator tooling."""
+"""Package prebuilt local Linux container images and the operator tooling for one host platform.
+
+Windows, Linux and macOS packages differ only in the launcher they point to, the pinned Python wheels
+for the A2 offline CA tools and the image architecture (amd64, or arm64 for Apple Silicon and ARM
+boards); the containers themselves are always Linux images."""
 from __future__ import annotations
 
 import argparse
@@ -30,7 +34,8 @@ FILES = (
 OFFLINE_FILES = (
     "compose.offline-lan.yaml", "infrastructure/docker/Caddyfile.offline-lan",
     "tooling/offline_lan_ca.py", "tooling/offline_lan_ca_lifecycle.py", "tooling/requirements-offline-lan.txt",
-    "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/setup_wizard_static/index.html",
+    "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/host_platform.py",
+    "tooling/setup_wizard_static/index.html",
     "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
 )
 
@@ -45,29 +50,54 @@ def offline_pins() -> dict:
         encoding="utf-8").splitlines() if line.strip() and not line.startswith("#"))
 
 
-def offline_wheels(folder: Path) -> dict:
-    """Exactly one Windows/CPython 3.12 wheel per pinned requirement; returns {wheel: sha256}."""
+# The binary-wheel platform tag each host package needs (pure-Python "none-any" wheels fit all).
+WHEEL_PLATFORMS = {
+    ("windows", "amd64"): re.compile(r"win_amd64"),
+    ("linux", "amd64"): re.compile(r"manylinux[0-9_]*_x86_64"),
+    ("linux", "arm64"): re.compile(r"manylinux[0-9_]*_aarch64"),
+    ("macos", "amd64"): re.compile(r"macosx_[0-9_]+_(x86_64|universal2)"),
+    ("macos", "arm64"): re.compile(r"macosx_[0-9_]+_(arm64|universal2)"),
+}
+
+
+def wheel_fits(wheel_name: str, platform: str, arch: str) -> bool:
+    if wheel_name.endswith("-none-any.whl"):
+        return True
+    return ("cp312" in wheel_name or "abi3" in wheel_name) and \
+        WHEEL_PLATFORMS[(platform, arch)].search(wheel_name) is not None
+
+
+def offline_wheels(folder: Path, platform: str = "windows", arch: str = "amd64") -> dict:
+    """Exactly one CPython 3.12 wheel per pinned requirement for this host; returns {wheel: sha256}."""
     wheels = {}
     for name, version in offline_pins().items():
         stem = name.replace("-", "_").lower() + "-" + version + "-"
         found = [p for p in folder.glob("*.whl") if p.name.lower().startswith(stem)]
-        compatible = [p for p in found if ("win_amd64" in p.name or p.name.endswith("-none-any.whl"))
-                      and ("cp312" in p.name or "abi3" in p.name or "py3-none" in p.name)]
+        compatible = [p for p in found if wheel_fits(p.name, platform, arch)]
         if len(compatible) != 1:
-            raise SystemExit(f"Need exactly one win_amd64/cp312 wheel for {name}=={version} in {folder}")
+            raise SystemExit(f"Need exactly one {platform}/{arch} cp312 wheel for {name}=={version} in {folder}")
         wheels[compatible[0].name] = sha256(compatible[0])
     if len(list(folder.glob("*.whl"))) != len(wheels):
         raise SystemExit("The wheel folder holds wheels that are not pinned requirements")
     return wheels
 
 
-def image_tags(version):
+def image_tags(version, arch="amd64"):
     if version is None:
         return IMAGES
     if not VERSION.fullmatch(version):
         raise SystemExit("--version must be a release tag such as v0.1.0 or v0.1.0-rc.9")
-    return (f"ghcr.io/fromthelake/mk8dx-api:{version}-amd64",
-            f"ghcr.io/fromthelake/mk8dx-web:{version}-amd64", *IMAGES[2:])
+    return (f"ghcr.io/fromthelake/mk8dx-api:{version}-{arch}",
+            f"ghcr.io/fromthelake/mk8dx-web:{version}-{arch}", *IMAGES[2:])
+
+
+START = {
+    "windows": "Windows: double-click Start-MK8DX-LAN.cmd; the setup wizard opens in your browser.\n",
+    "linux": "Linux: open a terminal in this folder and run: sh tooling/start-mk8dx.sh\n"
+             "The setup wizard opens in your browser (docs/install/A2_HOME_GUIDE_EN.md).\n",
+    "macos": "macOS: open Terminal in this folder and run: sh tooling/start-mk8dx.sh\n"
+             "The setup wizard opens in your browser (docs/install/A2_HOME_GUIDE_EN.md).\n",
+}
 
 
 def package_bytes(name, images):
@@ -102,10 +132,16 @@ def main():
                                             "--version or local tag)")
     parser.add_argument("--web-image", help="candidate Web image tag (with --offline-candidate, together with "
                                             "--api-image)")
-    parser.add_argument("--wheels-dir", type=Path, help="folder with the pinned win_amd64/cp312 wheels "
+    parser.add_argument("--wheels-dir", type=Path, help="folder with the pinned cp312 wheels for --platform/--arch "
                                                         "(with --offline-candidate)")
+    parser.add_argument("--platform", choices=("windows", "linux", "macos"), default="windows",
+                        help="the host operating system this package is for (default: windows)")
+    parser.add_argument("--arch", choices=("amd64", "arm64"), default="amd64",
+                        help="host processor: amd64 (Intel/AMD) or arm64 (Apple Silicon, ARM boards)")
     args = parser.parse_args()
-    images = image_tags(args.version)
+    if args.platform == "windows" and args.arch != "amd64":
+        parser.error("Windows packages are amd64")
+    images = image_tags(args.version, args.arch)
     if (args.api_image or args.web_image or args.wheels_dir) and not args.offline_candidate:
         parser.error("--api-image, --web-image and --wheels-dir apply only with --offline-candidate")
     if bool(args.api_image) != bool(args.web_image):
@@ -122,7 +158,7 @@ def main():
         if args.wheels_dir is None:
             parser.error("An offline candidate needs --wheels-dir")
         args.wheels_dir = args.wheels_dir.resolve()
-        wheels = offline_wheels(args.wheels_dir)
+        wheels = offline_wheels(args.wheels_dir, args.platform, args.arch)
     if not args.output.is_absolute():
         raise SystemExit("Choose a new absolute ZIP path outside repository")
     output = args.output.resolve()
@@ -140,10 +176,10 @@ def main():
     for image in images:
         platform = subprocess.check_output(["docker", "image", "inspect", "--format", "{{.Os}}/{{.Architecture}}", image],
                                            text=True).strip()
-        if platform != "linux/amd64":
+        if platform != f"linux/{args.arch}":
             raise SystemExit(f"Wrong image architecture: {image} is {platform}")
     with tempfile.TemporaryDirectory(prefix="mk8dx-host-bundle-", dir=output.parent) as temporary:
-        tar = Path(temporary) / "docker-images-amd64.tar"
+        tar = Path(temporary) / f"docker-images-{args.arch}.tar"
         subprocess.run(["docker", "save", "--output", str(tar), *images], check=True)
         file_bytes = {name: package_bytes(name, images) for name in paths}
         if args.offline_candidate:
@@ -158,7 +194,7 @@ def main():
             file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(sorted(hashes)) + "\n").encode()
         first = (f"MK8DX host package {args.revision}\n\n"
                  + ("A2 OFFLINE QA CANDIDATE: only for a disposable test host; not a qualified route yet.\n"
-                    "Windows: double-click Start-MK8DX-LAN.cmd; the setup wizard opens in your browser.\n\n"
+                    + START[args.platform] + "\n"
                     if args.offline_candidate else "") +
                  "Open docs/install/MK8DX_Handleiding_NL.docx or .txt (Nederlands),\n"
                  "or docs/install/MK8DX_User_Guide_EN.docx or .txt (English).\n"
@@ -166,11 +202,12 @@ def main():
                  "Your installation data is created outside this package. Never publish it or a backup.\n")
         file_bytes["README-FIRST.txt"] = first.encode("utf-8")
         receipt = {"schemaVersion": "mk8dx.host-bundle.v1", "revision": args.revision,
+                   "platform": args.platform, "arch": args.arch,
                    "sourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                    "images": list(images), "files": {name: {"bytes": len(payload),
                                                         "sha256": hashlib.sha256(payload).hexdigest()}
                                                  for name, payload in file_bytes.items()}}
-        receipt["files"]["images/docker-images-amd64.tar"] = {"bytes": tar.stat().st_size, "sha256": sha256(tar)}
+        receipt["files"][f"images/docker-images-{args.arch}.tar"] = {"bytes": tar.stat().st_size, "sha256": sha256(tar)}
         for wheel, digest in wheels.items():
             receipt["files"][f"wheels/{wheel}"] = {"bytes": (args.wheels_dir / wheel).stat().st_size, "sha256": digest}
         if args.offline_candidate:
@@ -185,7 +222,8 @@ def main():
                 # Linux runners save uncompressed Docker layers. Compressing the
                 # tar here keeps the offline package practical to download;
                 # the manifest still verifies the exact tar bytes after unzip.
-                archive.write(tar, "images/docker-images-amd64.tar", compress_type=zipfile.ZIP_DEFLATED, compresslevel=3)
+                archive.write(tar, f"images/docker-images-{args.arch}.tar", compress_type=zipfile.ZIP_DEFLATED,
+                              compresslevel=3)
         except Exception:
             output.unlink(missing_ok=True)
             raise
