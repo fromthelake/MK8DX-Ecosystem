@@ -3,7 +3,7 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## 0.2.0-rc.4 — 2026-11-12
+## 0.2.0-rc.5 — 2026-11-12
 
 The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release, and `v0.2.0-rc.3` stayed a draft because its A1
 menu hid each step's own output: the A2 package build refused a second,
@@ -30,6 +30,10 @@ found no Intel Mac wheel (rc.2). The builder and workflow are fixed and the Inte
 - Account switching on shared devices (website and Android app); administrators may appear in the
   switch list behind a mandatory PIN (5th wrong PIN or 14 days unused forgets them on that device).
   Migration `0086_account_switch_pin_failures`.
+- Other routes: the setup question offers only what the package can install, in plain words. A1/B1 start
+  the first setup by themselves and keep a menu open that reports each step and checks every backup.
+  A3 gets `Manage-MK8DX-No-Docker.cmd` (check, administrator, checked backup) and a launcher that checks
+  Python and Node.js; A3/B2 print one line for the database update and a clear message when stopped.
 - Guides: `docs/install/A2_HOME_GUIDE_EN.md` and `A2_THUIS_HANDLEIDING_NL.md` (also as illustrated
   HTML in `docs/install/guide/`), including a fixed address for the host (DHCP reservation) and how to
   avoid an address conflict.
