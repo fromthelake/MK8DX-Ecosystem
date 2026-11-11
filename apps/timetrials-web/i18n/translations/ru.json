@@ -4912,6 +4912,10 @@
   "Scan the setup QR on the host screen. The phone must be on the same network.": "Отсканируйте QR-код настройки на экране хоста. Телефон должен быть в той же сети.",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "Это не QR-код настройки установки MK8DX. Отсканируйте QR-код настройки на экране хоста, а не личное приглашение.",
   "Use the camera": "Использовать камеру",
-  "Matched by hand": "Сопоставлено вручную"
+  "Matched by hand": "Сопоставлено вручную",
+  "PIN (4 digits)": "PIN-код (4 цифры)",
+  "PIN required": "Нужен PIN-код",
+  "Too many PIN attempts. Wait before trying again.": "Слишком много попыток ввода PIN-кода. Подождите и попробуйте снова.",
+  "This account signs in afresh every time.": "Эта учётная запись каждый раз входит заново."
  }
 }

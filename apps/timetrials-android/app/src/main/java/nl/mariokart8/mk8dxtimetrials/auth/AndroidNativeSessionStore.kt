@@ -45,6 +45,10 @@ internal data class AndroidRememberedAccount(
     val expired: Boolean,
     /** Public display name, when a v2-bootstrap session stored it. */
     val displayName: String? = null,
+    /** The server's remembered entry for this Player on this phone: switchable with one tap. */
+    val entryId: String? = null,
+    /** Switching to it needs the account's 4-digit PIN (checked by the server). */
+    val pinRequired: Boolean = false,
 )
 
 internal interface AndroidNativeSessionStore {
@@ -54,7 +58,21 @@ internal interface AndroidNativeSessionStore {
     fun remove(slotId: String)
     fun activeSlotId(): String?
     fun setActiveSlotId(slotId: String?)
+
+    /**
+     * This installation's random account-device value (ADR-0224 amendment): created once, kept
+     * Keystore-encrypted, sent only to this server's native switching routes. Null when the store
+     * cannot provide one; the app then simply offers no server-side switching.
+     */
+    fun accountDeviceValue(): String? = null
+
+    /** Erases one account's stored sign-in but keeps its name for the results it owns. */
+    fun dropCredential(slotId: String) = Unit
 }
+
+/** The reserved vault address of the account-device value: no Player's slot hash is all zeros. */
+private const val ACCOUNT_DEVICE_SLOT = "slot.00000000000000000000000000000000"
+private const val ACCOUNT_DEVICE_PURPOSE = "device"
 
 /**
  * Slot ids are derived from the player id so one Player re-authorizing keeps the
@@ -187,6 +205,24 @@ internal class AndroidSlottedNativeSessionStore(
 
     override fun activeSlotId(): String? = directory.activeSlotId()
         ?.takeIf { isAndroidSessionSlotId(it) && it in directory.slotIds() }
+
+    override fun accountDeviceValue(): String? = try {
+        readVault(ACCOUNT_DEVICE_SLOT, ACCOUNT_DEVICE_PURPOSE)
+            ?.takeIf { it.matches(androidAccountDevicePattern) }
+            ?: run {
+                val bytes = ByteArray(32).also { java.security.SecureRandom().nextBytes(it) }
+                val value = java.util.Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)
+                vault.write(ACCOUNT_DEVICE_SLOT, ACCOUNT_DEVICE_PURPOSE, value)
+                value
+            }
+    } catch (_: Exception) {
+        null
+    }
+
+    override fun dropCredential(slotId: String) {
+        if (!isAndroidSessionSlotId(slotId)) return
+        eraseVault(slotId, ANDROID_SESSION_VAULT_PURPOSE_SESSION)
+    }
 
     override fun setActiveSlotId(slotId: String?) {
         if (slotId == null) {

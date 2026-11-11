@@ -4912,6 +4912,10 @@
   "Scan the setup QR on the host screen. The phone must be on the same network.": "호스트 화면의 설정 QR을 스캔하세요. 휴대폰은 같은 네트워크에 있어야 합니다.",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "MK8DX 설치의 설정 QR이 아닙니다. 개인 초대가 아니라 호스트 화면의 설정 QR을 스캔하세요.",
   "Use the camera": "카메라 사용",
-  "Matched by hand": "수동으로 연결됨"
+  "Matched by hand": "수동으로 연결됨",
+  "PIN (4 digits)": "PIN(4자리)",
+  "PIN required": "PIN 필요",
+  "Too many PIN attempts. Wait before trying again.": "PIN 시도 횟수가 너무 많습니다. 잠시 후 다시 시도하세요.",
+  "This account signs in afresh every time.": "이 계정은 매번 새로 로그인합니다."
  }
 }

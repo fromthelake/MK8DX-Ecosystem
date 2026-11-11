@@ -11,6 +11,9 @@ import androidx.compose.foundation.verticalScroll
 import nl.mariokart8.mk8dxtimetrials.ui.LocalizedText as Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.text.input.KeyboardType
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTextField
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -68,6 +71,27 @@ internal fun AndroidAuthenticationScreen(
     val state by controller.state.collectAsState()
     val accounts by controller.accounts.collectAsState()
     val scope = rememberCoroutineScope()
+    // The server keeps who is remembered on this phone (ADR-0224): fetch it on open and after
+    // every change of the signed-in Player.
+    val signedInPlayer = (state as? AndroidAuthenticationState.SignedIn)?.session?.playerId
+    LaunchedEffect(signedInPlayer) {
+        withContext(workerDispatcher) { runCatching { controller.syncServerAccounts() } }
+    }
+    // The row that asks for a PIN, and what the last switch attempt said.
+    var pinSlot by remember { mutableStateOf<String?>(null) }
+    var switchNotice by remember { mutableStateOf<AndroidSwitchOutcome?>(null) }
+    val attemptSwitch = { slotId: String, pin: String? ->
+        scope.launch {
+            val outcome = withContext(workerDispatcher) { controller.switchToRemembered(slotId, pin) }
+            when (outcome) {
+                AndroidSwitchOutcome.Switched -> { pinSlot = null; switchNotice = null }
+                AndroidSwitchOutcome.PinRequired -> { pinSlot = slotId; switchNotice = null }
+                AndroidSwitchOutcome.PinInvalid -> { pinSlot = slotId; switchNotice = outcome }
+                else -> { pinSlot = null; switchNotice = outcome }
+            }
+        }
+        Unit
+    }
     val openApproval = { uri: URI ->
         try {
             browser(uri)
@@ -92,6 +116,17 @@ internal fun AndroidAuthenticationScreen(
         scope.launch {
             val authorization = withContext(workerDispatcher) {
                 runCatching { controller.requestAuthorization() }.getOrNull()
+            }
+            authorization?.let { openApproval(it.verificationUriComplete) }
+        }
+        Unit
+    }
+    // "Add account" while signed in: the current Player stays one tap away on this phone.
+    val startAdditionalAuthorization = {
+        notApprovedYet = false
+        scope.launch {
+            val authorization = withContext(workerDispatcher) {
+                runCatching { controller.requestAdditionalAuthorization() }.getOrNull()
             }
             authorization?.let { openApproval(it.verificationUriComplete) }
         }
@@ -144,13 +179,27 @@ internal fun AndroidAuthenticationScreen(
                 tone = Mk8dxStatusTone.Warning,
             )
         }
+        switchNotice?.let { notice ->
+            Mk8dxStatusMessage(
+                androidLocalizedPresentation(
+                    when (notice) {
+                        AndroidSwitchOutcome.PinInvalid -> "That PIN is not right."
+                        AndroidSwitchOutcome.RateLimited -> "Too many PIN attempts. Wait before trying again."
+                        AndroidSwitchOutcome.Refused -> "This account signs in afresh every time."
+                        else -> "This account is no longer remembered here. Sign in instead."
+                    },
+                ),
+                tone = Mk8dxStatusTone.Warning,
+                modifier = Modifier.testTag("android-account-switch-notice"),
+            )
+        }
         AndroidRememberedAccountsSection(
             accounts = accounts,
             pendingEntryCount = pendingEntryCount,
-            onSwitch = { slotId ->
-                scope.launch { withContext(workerDispatcher) { controller.switchTo(slotId) } }
-                Unit
-            },
+            onSwitch = { slotId -> attemptSwitch(slotId, null) },
+            pinSlot = pinSlot,
+            onPin = { slotId, pin -> attemptSwitch(slotId, pin) },
+            onCancelPin = { pinSlot = null; switchNotice = null },
             onRemove = { slotId ->
                 scope.launch { withContext(workerDispatcher) { controller.forget(slotId) } }
                 Unit
@@ -241,7 +290,7 @@ internal fun AndroidAuthenticationScreen(
                     )
                     Mk8dxButton(
                         androidLocalizedPresentation("Add account"),
-                        startDeviceAuthorization,
+                        startAdditionalAuthorization,
                         variant = Mk8dxButtonVariant.Secondary,
                         tag = "android-account-add",
                         modifier = Modifier.fillMaxWidth(),
@@ -300,6 +349,9 @@ private fun AndroidRememberedAccountsSection(
     accounts: AndroidRememberedAccountsState,
     pendingEntryCount: (slotId: String) -> Int,
     onSwitch: (String) -> Unit,
+    pinSlot: String?,
+    onPin: (String, String) -> Unit,
+    onCancelPin: () -> Unit,
     onRemove: (String) -> Unit,
     onSignInAgain: () -> Unit,
     signInAgainEnabled: Boolean,
@@ -326,6 +378,9 @@ private fun AndroidRememberedAccountsSection(
                 pendingEntries = runCatching { pendingEntryCount(account.slotId) }
                     .getOrDefault(0),
                 onSwitch = { onSwitch(account.slotId) },
+                askingPin = pinSlot == account.slotId,
+                onPin = { pin -> onPin(account.slotId, pin) },
+                onCancelPin = onCancelPin,
                 onRemove = { onRemove(account.slotId) },
                 onSignInAgain = onSignInAgain,
                 signInAgainEnabled = signInAgainEnabled,
@@ -341,6 +396,9 @@ private fun AndroidRememberedAccountRow(
     active: Boolean,
     pendingEntries: Int,
     onSwitch: () -> Unit,
+    askingPin: Boolean,
+    onPin: (String) -> Unit,
+    onCancelPin: () -> Unit,
     onRemove: () -> Unit,
     onSignInAgain: () -> Unit,
     signInAgainEnabled: Boolean,
@@ -385,6 +443,42 @@ private fun AndroidRememberedAccountRow(
                 disabledReasonShown = false,
                 tag = "android-account-sign-in-again-$index",
                 modifier = Modifier.fillMaxWidth(),
+            )
+        }
+        if (askingPin) {
+            // Checked by the server, with a limit on attempts; the app never sees the PIN's digest.
+            var pin by remember(account.slotId) { mutableStateOf("") }
+            Mk8dxTextField(
+                androidLocalizedPresentation("PIN (4 digits)"),
+                pin,
+                { value -> pin = value.filter(Char::isDigit).take(4) },
+                keyboardType = KeyboardType.NumberPassword,
+                tag = "android-account-pin-$index",
+            )
+            Mk8dxButton(
+                androidLocalizedPresentation("Switch"),
+                { onPin(pin) },
+                variant = Mk8dxButtonVariant.Primary,
+                disabledReason = if (pin.length == 4) null else androidLocalizedPresentation("PIN (4 digits)"),
+                disabledReasonShown = false,
+                tag = "android-account-pin-switch-$index",
+                modifier = Modifier.fillMaxWidth(),
+            )
+            Mk8dxButton(
+                androidLocalizedPresentation("Cancel"),
+                onCancelPin,
+                variant = Mk8dxButtonVariant.Secondary,
+                tag = "android-account-pin-cancel-$index",
+                modifier = Modifier.fillMaxWidth(),
+            )
+            return@Mk8dxPanel
+        }
+        if (account.pinRequired && !active) {
+            Text(
+                text = "PIN required",
+                style = type.bodyS,
+                color = colors.textSecondary,
+                modifier = Modifier.testTag("android-account-pin-required-$index"),
             )
         }
         Mk8dxButton(

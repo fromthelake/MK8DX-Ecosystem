@@ -4912,6 +4912,10 @@
   "Scan the setup QR on the host screen. The phone must be on the same network.": "掃描主機畫面上的設定 QR 碼。手機必須在同一個網路中。",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "這不是 MK8DX 安裝的設定 QR 碼。請掃描主機畫面上的設定 QR 碼，而不是個人邀請。",
   "Use the camera": "使用相機",
-  "Matched by hand": "手動配對"
+  "Matched by hand": "手動配對",
+  "PIN (4 digits)": "PIN（4 位數字）",
+  "PIN required": "需要 PIN",
+  "Too many PIN attempts. Wait before trying again.": "PIN 嘗試次數過多。請稍後再試。",
+  "This account signs in afresh every time.": "此帳戶每次都需要重新登入。"
  }
 }

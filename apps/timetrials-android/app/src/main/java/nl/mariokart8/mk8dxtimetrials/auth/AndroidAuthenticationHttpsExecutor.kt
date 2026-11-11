@@ -13,6 +13,17 @@ private val allowedRequests = setOf(
     "POST $ANDROID_AUTH_DEVICE_TOKEN_PATH",
     "GET $ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH",
     "POST $ANDROID_AUTH_SIGN_OUT_PATH",
+    "POST $ANDROID_NATIVE_REMEMBER_PATH",
+    "GET $ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH",
+    "POST $ANDROID_NATIVE_ACCOUNT_SWITCH_PATH",
+    "POST $ANDROID_NATIVE_FORGET_PATH",
+)
+/** The routes that only exist for a remembered app device. */
+private val accountDevicePaths = setOf(
+    ANDROID_NATIVE_REMEMBER_PATH,
+    ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH,
+    ANDROID_NATIVE_ACCOUNT_SWITCH_PATH,
+    ANDROID_NATIVE_FORGET_PATH,
 )
 private val bearerPattern = Regex("^[A-Za-z0-9_-]{20,255}$")
 
@@ -49,6 +60,12 @@ internal class AndroidAuthenticationHttpsExecutor(
             request.bearerToken?.let {
                 connection.setRequestProperty("Authorization", "Bearer $it")
             }
+            request.accountDevice?.let {
+                connection.setRequestProperty("X-MK8DX-Account-Device", it)
+            }
+            if (request.keepRemembered) {
+                connection.setRequestProperty("X-MK8DX-Keep-Remembered", "1")
+            }
             request.body?.let { body ->
                 val bytes = body.toByteArray(Charsets.UTF_8)
                 connection.doOutput = true
@@ -81,8 +98,15 @@ private fun validate(request: AndroidAuthenticationRequest) {
         request.responseMaxBytes != ANDROID_AUTH_RESPONSE_MAX_BYTES ||
         request.body?.toByteArray(Charsets.UTF_8)?.size?.let { it !in 2..4_096 } == true ||
         request.bearerToken?.matches(bearerPattern) == false ||
-        (request.path in setOf(ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH, ANDROID_AUTH_SIGN_OUT_PATH)) !=
-        (request.bearerToken != null) ||
+        (request.path in setOf(ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH, ANDROID_AUTH_SIGN_OUT_PATH,
+            ANDROID_NATIVE_REMEMBER_PATH) && request.bearerToken == null) ||
+        (request.path in setOf(ANDROID_AUTH_DEVICE_CODE_PATH, ANDROID_AUTH_DEVICE_TOKEN_PATH,
+            ANDROID_NATIVE_FORGET_PATH) && request.bearerToken != null) ||
+        request.accountDevice?.matches(androidAccountDevicePattern) == false ||
+        (request.path in accountDevicePaths && request.accountDevice == null) ||
+        (request.accountDevice != null && request.path !in accountDevicePaths &&
+            request.path != ANDROID_AUTH_SIGN_OUT_PATH) ||
+        (request.keepRemembered && request.path != ANDROID_AUTH_SIGN_OUT_PATH) ||
         (request.method == "GET") != (request.body == null)) {
         throw AndroidAuthenticationException("Android authentication request is invalid.")
     }
