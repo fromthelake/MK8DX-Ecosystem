@@ -168,7 +168,9 @@ def main():
     subprocess.run([sys.executable, str(ROOT / "tooling/privacy_scan.py")], cwd=ROOT, check=True)
     paths = list(FILES) + (list(OFFLINE_FILES) if args.offline_candidate else []) + \
         [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install").iterdir())
-         if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")]
+         if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")] + \
+        [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install/guide").rglob("*"))
+         if p.is_file() and p.suffix.lower() in (".html", ".css", ".js", ".png")]
     for name in paths:
         path = ROOT / name
         if not path.is_file() or path.is_symlink():

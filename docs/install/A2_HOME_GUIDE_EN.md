@@ -82,6 +82,8 @@ A **firewall** is a protection that decides which connections a computer lets in
 1. **Do:** download the MK8DX package for home or club for your system: Windows, Linux or macOS, and for Linux and macOS also for your processor (amd64 or arm64). To check that the download is correct, see `docs/install/START_HIER.md`. → **You see:** a zip file in your Downloads folder.
 2. **Do:** unpack the zip file into a permanent folder, for example a folder MK8DX in Documents. Windows: right-click the zip file → **Extract All**. Choose a folder that stays: MK8DX always starts from this folder later, so do not move or delete it. → **You see:** a folder with, among others, `Start-MK8DX-LAN.cmd`, `README-FIRST.txt` and the folders `docs`, `images` and `tooling`. → **See something else?** If you only opened the zip file in File Explorer, really extract it: starting from inside the zip file does not work.
 
+<!-- os: windows -->
+
 **Starting on Windows**
 
 1. **Do:** in the unpacked folder, double-click **Start-MK8DX-LAN.cmd**. → **You see:** a black window with lines such as "MK8DX package:" and "Private installation:". The first time it also shows "Preparing the included Python packages (once, without internet)." and "Loading the included Docker images. This can take several minutes." That takes a few minutes. Then it shows "MK8DX setup is open in your browser:" and the setup opens in your browser. → **See something else?** See the messages below.
@@ -92,6 +94,10 @@ Messages in the black window on Windows:
 - **"Python 3.12+ is missing. Install it from python.org, enable Add python.exe to PATH, reopen PowerShell and retry."** Do chapter 2A steps 5 to 7 and then double-click Start-MK8DX-LAN.cmd again.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wait for Engine running and double-click again.
 - Below an error it shows **"The selected step stopped. Read the message above before retrying."** Read the line above it, fix that and press a key to close the window.
+
+<!-- /os -->
+
+<!-- os: linux macos -->
 
 **Starting on Linux and macOS**
 
@@ -104,6 +110,8 @@ Messages in the terminal on Linux and macOS:
 - **"Python 3.12 or newer is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Do chapter 2B or 2C again.
 - **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** Linux: do chapter 2B steps 3 and 4. macOS: start Docker Desktop.
 - **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** Install python3-venv as in chapter 2B step 2.
+
+<!-- /os -->
 
 **The setup in the browser**
 
@@ -208,11 +216,15 @@ A **certificate** is a digital proof of identity. With it a phone knows for sure
 
 The steps on the Prepare this device page:
 
+<!-- filter: device -->
+
 - **Android:** tap the button to download the certificate. Open Settings and search for "certificate" (often: Security → More security settings → Encryption & credentials → Install a certificate → CA certificate). Choose the downloaded MK8DX file and confirm with your PIN. Menu names differ per phone brand.
 - **iPhone and iPad (not yet tested with this installation):** tap the button to download the profile and allow it. Open Settings → Profile downloaded → Install. Then Settings → General → About → Certificate Trust Settings → turn on MK8DX.
 - **Windows:** download the certificate and open it. Choose Install Certificate → Current User → Place all certificates in the following store → Trusted Root Certification Authorities. Do not choose Intermediate Certification Authorities. Restart the browser.
 - **Mac (macOS is not yet tested end to end):** download the certificate and open it; Keychain Access opens. Open the MK8DX certificate → Trust → Always Trust.
 - **Linux (not yet tested end to end for this route):** add the same certificate to your distribution's or browser's trusted root store. The exact steps differ by distribution.
+
+<!-- /filter -->
 
 **Signing in with your personal card**
 

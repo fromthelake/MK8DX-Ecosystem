@@ -1,0 +1,114 @@
+{
+  "schemaVersion": "mk8dx.guide-images-reviewed.v1",
+  "note": "Each screenshot was looked at before it was listed: example data only.",
+  "files": {
+    "docs/install/guide/img/admin-cards-en.png": {
+      "sizeBytes": 79877,
+      "sha256": "f5721238c93dff98fd603dd9a6b6d90c2d8b5dc12a3448ac479f3edab8d6d414"
+    },
+    "docs/install/guide/img/admin-people-en.png": {
+      "sizeBytes": 103000,
+      "sha256": "166695549998ae9c7b3d62b93e873f773db4ea7e40735e9ac4b0416deb08be0c"
+    },
+    "docs/install/guide/img/android-change-server-en.png": {
+      "sizeBytes": 50142,
+      "sha256": "01c04b89e5ff1094a67242a618068c97237e406086af30967674ccd0c8315c06"
+    },
+    "docs/install/guide/img/android-compare-en.png": {
+      "sizeBytes": 107356,
+      "sha256": "667b0e75e2f205ceb89f42abbc21d39f2ba1edc1c53526fcfb5b36396d1fe988"
+    },
+    "docs/install/guide/img/android-server-wijzigen-nl.png": {
+      "sizeBytes": 54280,
+      "sha256": "cd5df04bf056a90078bb3870654b607fe8cab74adcf68f3797d4c183e9935d95"
+    },
+    "docs/install/guide/img/android-vergelijken-nl.png": {
+      "sizeBytes": 108552,
+      "sha256": "dc70d02af4266dede5cc9f68c01f318bda1a1b1130d48ca08ea63d633925aa8f"
+    },
+    "docs/install/guide/img/beheer-kaarten-nl.png": {
+      "sizeBytes": 87477,
+      "sha256": "126f458266b02ed79c694ceeaba00c77dd477f0f6a5382c3172276284258f8a7"
+    },
+    "docs/install/guide/img/beheer-mensen-nl.png": {
+      "sizeBytes": 101347,
+      "sha256": "0b9c0776af1f19d0335ff5fcd98599e4b3f36e66deff3224e02fd9455e972344"
+    },
+    "docs/install/guide/img/herstelcode-nl.png": {
+      "sizeBytes": 88932,
+      "sha256": "2acd49b733f54bd3d1d5163aca360d52709eb8e98f1d4628eab95c82dd119c1e"
+    },
+    "docs/install/guide/img/phone-accept-invitation-en.png": {
+      "sizeBytes": 45439,
+      "sha256": "2b80c4db6db8ba50d56c9fd32ee6babe5b1a1530f313a72ec8c79d6582f8b5d3"
+    },
+    "docs/install/guide/img/phone-prepare-device-en.png": {
+      "sizeBytes": 130005,
+      "sha256": "c6a817249ec42ca196259482e842a760bcd003debfa665ca1cd811407574daed"
+    },
+    "docs/install/guide/img/recovery-code-en.png": {
+      "sizeBytes": 86509,
+      "sha256": "45a23b985f7d0f19095ad1b6f1028ea1c6d27ad79535380005e5412a0b02f16e"
+    },
+    "docs/install/guide/img/telefoon-apparaat-voorbereiden-nl.png": {
+      "sizeBytes": 134779,
+      "sha256": "07d90a9af9286c3777a2d0123f6ea031e24da0a0b0906c651027076cf7b299a1"
+    },
+    "docs/install/guide/img/telefoon-uitnodiging-accepteren-nl.png": {
+      "sizeBytes": 50576,
+      "sha256": "08c0328f389600076d0e2647f63191f1f1672e086feff7a8b02de484341163c2"
+    },
+    "docs/install/guide/img/website-switch-account-en.png": {
+      "sizeBytes": 30981,
+      "sha256": "04eb64af99af065488f88e3beb4edd6fad7ef528113b74c1cf7fc80788be2599"
+    },
+    "docs/install/guide/img/wizard-check-en.png": {
+      "sizeBytes": 76668,
+      "sha256": "8eab6d430ccdc260f697526128a08d86bdabfb216c0422ace5f4f7f8957b9c07"
+    },
+    "docs/install/guide/img/wizard-controle-nl.png": {
+      "sizeBytes": 78088,
+      "sha256": "8b246f6171b1c5e4ce059369897341ea88c59ed7180aa7c90d92219dfb2cf30a"
+    },
+    "docs/install/guide/img/wizard-done-en.png": {
+      "sizeBytes": 97036,
+      "sha256": "2c2df164dbd655d8b00caa7a3d6948ff4f2e0669843aa1c55a62e33ff12a1756"
+    },
+    "docs/install/guide/img/wizard-klaar-nl.png": {
+      "sizeBytes": 99913,
+      "sha256": "a5c825798c0164fde177d483b893d4acde79107b084a02d2f0ea33f468b260aa"
+    },
+    "docs/install/guide/img/wizard-move-en.png": {
+      "sizeBytes": 89016,
+      "sha256": "e0f6431784528efdd4250f8df5933e40b955a651ac80bba557f8c9a0d9434b1d"
+    },
+    "docs/install/guide/img/wizard-netwerk-nl.png": {
+      "sizeBytes": 74468,
+      "sha256": "f7eba57b055d333779ec93955d1d63c79fb6dd5750179f65cc8e313b2e817f34"
+    },
+    "docs/install/guide/img/wizard-network-en.png": {
+      "sizeBytes": 73154,
+      "sha256": "6440566417bca2d8ee23823a4b948a5d3e526d6ac1d372b92dab14b7d05bbcb9"
+    },
+    "docs/install/guide/img/wizard-restore-en.png": {
+      "sizeBytes": 98596,
+      "sha256": "cec0e08580ad543f96b7f8dd7ffd42468c6eee1b409ea97a51e858bae953a5bb"
+    },
+    "docs/install/guide/img/wizard-terugzetten-nl.png": {
+      "sizeBytes": 98396,
+      "sha256": "c8aa76829427c6a1ac8dd8dee6a67ffd642d79feb45bf5a27d646527dfe5b9b9"
+    },
+    "docs/install/guide/img/wizard-verhuizen-nl.png": {
+      "sizeBytes": 92883,
+      "sha256": "94ac5ac354abc14978a9d075392a39425444eedf89332738cfc46a5a6292d894"
+    },
+    "docs/install/guide/img/wizard-welcome-en.png": {
+      "sizeBytes": 142601,
+      "sha256": "fc4b4d373c3f440bc69ab804dcfb043139d93930a1741f07eb8767b0cda0e1bb"
+    },
+    "docs/install/guide/img/wizard-welkom-nl.png": {
+      "sizeBytes": 144623,
+      "sha256": "61cd0a65ab223548ae1569c63a6c6eb05cc54b21298e2be4b852f1257149f572"
+    }
+  }
+}

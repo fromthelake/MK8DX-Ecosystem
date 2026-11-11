@@ -430,6 +430,10 @@ class Wizard:
         return {**result, "shortcut": made}
 
 
+# The illustrated guide (tooling/build_guide_html.py); the plain manual below is the fallback.
+GUIDE = ROOT / "docs" / "install" / "guide"
+GUIDE_FILE = re.compile(r"(nl|en)\.html|guide\.(css|js)|img/[a-z0-9-]+\.png")
+
 MANUALS = {"nl": ROOT / "docs" / "install" / "A2_THUIS_HANDLEIDING_NL.md",
            "en": ROOT / "docs" / "install" / "A2_HOME_GUIDE_EN.md"}
 
@@ -507,7 +511,17 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     return self.send(200, page.encode(), TYPES[".html"])
                 if path == "/help":
                     lang = "nl" if "lang=nl" in self.path else "en"
+                    if (GUIDE / f"{lang}.html").is_file():
+                        self.send_response(302)
+                        self.send_header("Location", f"/guide/{lang}.html")
+                        self.send_header("Content-Length", "0")
+                        self.end_headers()
+                        return None
                     return self.send(200, manual_html(lang), TYPES[".html"])
+                if path.startswith("/guide/") and GUIDE_FILE.fullmatch(path[len("/guide/"):]):
+                    file = GUIDE / path[len("/guide/"):]
+                    if file.is_file():
+                        return self.send(200, file.read_bytes(), TYPES[file.suffix])
                 if path in ("/wizard.js", "/wizard.css", "/logo.svg"):
                     file = STATIC / path[1:]
                     return self.send(200, file.read_bytes(), TYPES[file.suffix])

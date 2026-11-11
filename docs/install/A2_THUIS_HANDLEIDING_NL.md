@@ -82,6 +82,8 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 1. **Doe:** download het MK8DX-pakket voor thuis of de club voor jouw systeem: Windows, Linux of macOS, en bij Linux en macOS ook voor jouw processor (amd64 of arm64). Wil je controleren of de download klopt: dat staat in `docs/install/START_HIER.md`. → **Je ziet:** een zip-bestand in je map Downloads.
 2. **Doe:** pak het zip-bestand uit naar een vaste map, bijvoorbeeld in Documenten een map MK8DX. Windows: klik met rechts op het zip-bestand → **Alles uitpakken**. Kies een map die blijft staan: MK8DX start later steeds vanuit deze map, dus verplaats of verwijder hem niet. → **Je ziet:** een map met onder andere `Start-MK8DX-LAN.cmd`, `README-FIRST.txt` en de mappen `docs`, `images` en `tooling`. → **Zie je iets anders?** Opende je het zip-bestand alleen maar in Verkenner, pak het dan echt uit: vanuit het zip-bestand starten werkt niet.
 
+<!-- os: windows -->
+
 **Starten op Windows**
 
 1. **Doe:** dubbelklik in de uitgepakte map op **Start-MK8DX-LAN.cmd**. → **Je ziet:** een zwart venster met regels als "MK8DX package:" en "Private installation:". De eerste keer staan er ook "Preparing the included Python packages (once, without internet)." en "Loading the included Docker images. This can take several minutes." Dat duurt enkele minuten. Daarna staat er "MK8DX setup is open in your browser:" en opent de installatie in je browser. → **Zie je iets anders?** Zie de meldingen hieronder.
@@ -92,6 +94,10 @@ Meldingen in het zwarte venster op Windows:
 - **"Python 3.12+ is missing. Install it from python.org, enable Add python.exe to PATH, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 5 tot en met 7 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wacht op Engine running en dubbelklik opnieuw.
 - Onder een fout staat **"The selected step stopped. Read the message above before retrying."** Lees de regel erboven, los dat op en druk op een toets om het venster te sluiten.
+
+<!-- /os -->
+
+<!-- os: linux macos -->
 
 **Starten op Linux en macOS**
 
@@ -104,6 +110,8 @@ Meldingen in de terminal op Linux en macOS:
 - **"Python 3.12 or newer is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Doe hoofdstuk 2B of 2C opnieuw.
 - **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** Linux: doe hoofdstuk 2B stap 3 en 4. macOS: start Docker Desktop.
 - **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** Installeer python3-venv zoals in hoofdstuk 2B stap 2.
+
+<!-- /os -->
 
 **De installatie in de browser**
 
@@ -208,11 +216,15 @@ Een **certificaat** is een digitaal identiteitsbewijs. Daarmee weet een telefoon
 
 De stappen op de pagina Dit apparaat voorbereiden:
 
+<!-- filter: device -->
+
 - **Android:** tik op de knop om het certificaat te downloaden. Open Instellingen en zoek op "certificaat" (vaak: Beveiliging → Meer beveiligingsinstellingen → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat). Kies het gedownloade MK8DX-bestand en bevestig met je pincode. De menunamen verschillen per merk telefoon.
 - **iPhone en iPad (nog niet getest met deze installatie):** tik op de knop om het profiel te downloaden en sta het toe. Open Instellingen → Profiel gedownload → Installeer. Daarna Instellingen → Algemeen → Info → Certificaatvertrouwen → zet MK8DX aan.
 - **Windows:** download het certificaat en open het. Kies Certificaat installeren → Huidige gebruiker → Alle certificaten in het onderstaande archief plaatsen → Vertrouwde basiscertificeringsinstanties. Kies niet Tussenliggende certificeringsinstanties. Herstart de browser.
 - **Mac (macOS is nog niet volledig getest):** download het certificaat en open het; Sleutelhangertoegang opent. Open het MK8DX-certificaat → Vertrouw → Altijd vertrouwen.
 - **Linux (nog niet volledig getest voor deze route):** voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser. De stappen verschillen per distributie.
+
+<!-- /filter -->
 
 **Inloggen met je persoonlijke kaart**
 

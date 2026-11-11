@@ -89,6 +89,16 @@ def main():
         if binary_manifest.get("schemaVersion") != "mk8dx.native-binaries.v1":
             findings.append("unknown native binary schema")
         allowed_native = binary_manifest.get("files", {})
+    # Guide screenshots (docs/install/guide/img) are admitted one by one after a person looked at them:
+    # tooling/build_guide_html.py --review-images records their exact size and hash.
+    guide_manifest = ROOT / "docs/install/guide/images-reviewed-v1.json"
+    allowed_guide = {}
+    if guide_manifest.is_file():
+        guide_images = json.loads(guide_manifest.read_text(encoding="utf-8"))
+        if guide_images.get("schemaVersion") != "mk8dx.guide-images-reviewed.v1":
+            findings.append("unknown guide image schema")
+        allowed_guide = {relative: row for relative, row in guide_images.get("files", {}).items()
+                         if relative.startswith("docs/install/guide/img/") and relative.endswith(".png")}
     allowed_test_set = {}
     seen_test_set = set()
     test_set_manifest = ROOT / TEST_SET_MANIFEST
@@ -157,6 +167,9 @@ def main():
             admitted_object = relative in allowed_objects
             admitted_native = relative in allowed_native
             admitted_test_set = relative in allowed_test_set
+            guide_row = allowed_guide.get(relative)
+            admitted_guide = guide_row is not None and len(content) == guide_row.get("sizeBytes") and \
+                hashlib.sha256(content).hexdigest() == guide_row.get("sha256")
             if relative.startswith("packages/assets/collection/objects/"):
                 seen_objects.add(relative)
                 if not admitted_object or len(content) != allowed_objects.get(relative) or hashlib.sha256(content).hexdigest() != name:
@@ -182,7 +195,7 @@ def main():
             except UnicodeDecodeError:
                 undecodable = True
             if ((undecodable or suffix in (".png", ".woff2")) and not admitted_object and not admitted_native
-                    and not admitted_test_set):
+                    and not admitted_test_set and not admitted_guide):
                 if not relative.startswith("apps/timetrials-web/styles/") or suffix not in (".png", ".woff2"):
                     findings.append(f"unreviewed binary: {relative}")
     for digest, parts in sorted(split_parts.items()):

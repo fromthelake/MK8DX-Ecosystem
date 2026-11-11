@@ -195,6 +195,25 @@ class WizardServerTest(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, "could not be revoked"):
             self.wizard.revoke_card("invitation.2")
 
+    def test_help_opens_the_illustrated_guide_and_serves_only_its_files(self):
+        headers = {"Host": self.host}
+        connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
+        try:
+            connection.request("GET", "/help?lang=nl", headers=headers)
+            response = connection.getresponse()
+            response.read()
+            self.assertEqual((response.status, response.getheader("Location")), (302, "/guide/nl.html"))
+        finally:
+            connection.close()
+        status, body, csp = self.request("GET", "/guide/nl.html", headers)
+        self.assertEqual(status, 200)
+        self.assertIn(b'<script src="guide.js" defer></script>', body)
+        self.assertIn("script-src 'self'", csp)
+        self.assertEqual(self.request("GET", "/guide/guide.js", headers)[0], 200)
+        for path in ("/guide/../tooling/install.py", "/guide/secrets.json", "/guide/img/../../x.png", "/guide/nl.html.bak"):
+            with self.subTest(path=path):
+                self.assertEqual(self.request("GET", path, headers)[0], 404)
+
     def test_manual_is_escaped_and_both_languages_exist(self):
         for lang in ("nl", "en"):
             page = setup_wizard.manual_html(lang).decode()
