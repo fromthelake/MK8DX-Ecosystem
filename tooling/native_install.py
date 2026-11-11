@@ -186,10 +186,26 @@ def sync_package_paths(state, runtime):
     return runtime
 
 
-def node_command(state, script, *arguments, input_text=None):
+def node_command(state, script, *arguments, input_text=None, summarize_migrations=False):
     command = ["node", str(ROOT / "api/dist" / script), "--private-environment-file",
                str(state / "operator.json"), *map(str, arguments)]
-    subprocess.run(command, cwd=ROOT / "api", text=True, input=input_text, check=True)
+    if not summarize_migrations:
+        subprocess.run(command, cwd=ROOT / "api", text=True, input=input_text, check=True)
+        return
+    # The migration tool prints every applied number; people only need the count.
+    result = subprocess.run(command, cwd=ROOT / "api", text=True, input=input_text, capture_output=True)
+    if result.stderr:
+        print(result.stderr, end="", file=sys.stderr)
+    try:
+        report = json.loads(result.stdout)
+        applied = report.get("applied") or []
+        span = f" ({applied[0]}-{applied[-1]})" if applied else ""
+        print(f"Database {report.get('database', '')}: {len(applied)} new migrations{span}, "
+              f"{report.get('alreadyApplied', 0)} already applied")
+    except (ValueError, AttributeError):
+        print(result.stdout, end="")
+    if result.returncode != 0:
+        raise subprocess.CalledProcessError(result.returncode, command)
 
 
 def change_origin(state, origin):
@@ -555,7 +571,8 @@ def operate(state, action, backup_output=None):
         node_command(state, "composition/external-database-check-main.js")
         node_command(state, "composition/migration-apply-main.js", "--migration-catalog",
                      ROOT / "mysql/migration-catalog-v1.json", "--confirm-database",
-                     profile["database"]["name"], "--fresh-empty-database" if action == "setup" else "--backup-verified")
+                     profile["database"]["name"], "--fresh-empty-database" if action == "setup" else "--backup-verified",
+                     summarize_migrations=True)
         node_command(state, "composition/reference-seed-main.js", "--staff-seed",
                      ROOT / "mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
                      ROOT / "mysql/reference/world-records-v1.json")

@@ -974,10 +974,14 @@ def main():
                       (args.smtp_password_file.read_text(encoding="utf-8").strip() if args.smtp_password_file else None),
                       args.smtp_from)
         return
-    if args.action in ("status", "check", "check-database", "setup", "start", "serve", "maintenance", "admin", "upgrade", "backup", "verify-backup", "passenger-config", "change-origin", "change-smtp", "set-admin-email"):
+    if args.action in ("status", "check", "check-database", "setup", "start", "serve", "maintenance", "admin", "upgrade", "backup", "verify-backup", "passenger-config", "change-origin", "change-smtp", "set-admin-email", "stop"):
         candidate = safe_state_dir(args.state_dir, existing=True) / PROFILE
         if candidate.is_file() and json.loads(candidate.read_text(encoding="utf-8")).get("route") in ("A3", "B2"):
             from native_install import operate as native_operate, change_origin as native_origin, change_smtp as native_smtp
+            if args.action == "stop":
+                raise SystemExit("This installation runs without Docker. A3: press Ctrl+C in the MK8DX window "
+                                 "(Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in "
+                                 "your hosting panel.")
             if args.action == "change-origin": native_origin(args.state_dir, args.origin)
             elif args.action == "change-smtp": native_smtp(args.state_dir)
             elif args.action == "set-admin-email": change_admin_email(args.state_dir, args.admin_email)
@@ -1181,7 +1185,7 @@ def main():
 if __name__ == "__main__":
     try:
         main()
-    except (OSError, ValueError, subprocess.CalledProcessError, KeyError, json.JSONDecodeError) as error:
+    except (OSError, ValueError, RuntimeError, subprocess.CalledProcessError, KeyError, json.JSONDecodeError) as error:
         raise SystemExit(f"Installation step stopped: {error}") from None
     except (EOFError, KeyboardInterrupt):
         raise SystemExit("Setup cancelled. Start the same file again to continue.") from None
