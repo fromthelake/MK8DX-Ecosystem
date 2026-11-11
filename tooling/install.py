@@ -513,7 +513,74 @@ def verify_rotated_leaf(state, ip):
                                ec.ECDSA(served.signature_hash_algorithm))
 
 
-OFFLINE_GATED = ("setup", "start", "apply", "upgrade", "admin")
+OFFLINE_GATED = ("setup", "start", "apply", "upgrade", "admin", "update-package")
+PACKAGE_RECORD = "package.json"
+
+
+def package_images():
+    """The images (and revision) this package ships, or None for a source checkout."""
+    packaged = ROOT / "images" / "images.json"
+    if not packaged.is_file():
+        return None
+    tags = json.loads(packaged.read_text(encoding="utf-8"))
+    return {"api": tags["api"], "web": tags["web"], "revision": tags.get("revision")}
+
+
+def revision_number(revision):
+    match = re.fullmatch(r"r(\d+)", revision or "")
+    return int(match.group(1)) if match else None
+
+
+def installed_package(state):
+    """What an installation runs now: its compose images, and the package revision when one was recorded."""
+    state = Path(state)
+    values = read_dotenv(state / "compose.env")
+    record = state / PACKAGE_RECORD
+    revision = json.loads(record.read_text(encoding="utf-8")).get("revision") if record.is_file() else None
+    return {"api": values.get("MK8DX_API_IMAGE"), "web": values.get("MK8DX_WEB_IMAGE"), "revision": revision}
+
+
+def update_offer(state):
+    """Whether this package is a different (newer) build than the installation runs. A known older
+    revision is refused: its migration catalog cannot describe the newer database."""
+    shipped = package_images()
+    if shipped is None:
+        return {"available": False}
+    running = installed_package(state)
+    differs = (running["api"], running["web"]) != (shipped["api"], shipped["web"])
+    new, old = revision_number(shipped["revision"]), revision_number(running["revision"])
+    older = new is not None and old is not None and new < old
+    return {"available": differs and not older, "olderPackage": differs and older,
+            "from": running["revision"], "to": shipped["revision"]}
+
+
+def record_package(state):
+    """Remember which package revision this installation runs (shown and compared at the next update)."""
+    shipped = package_images()
+    if shipped is None:
+        return
+    path = Path(state) / PACKAGE_RECORD
+    content = json.dumps({"schemaVersion": "mk8dx.installed-package.v1", **shipped}, indent=2) + "\n"
+    if path.is_file():
+        replace_group([path], [content.encode("utf-8")])
+    else:
+        write_new(path, content)
+
+
+def use_package_images(state):
+    """Point the installation at this package's images; returns the previous compose values for a rollback."""
+    shipped = package_images()
+    if shipped is None:
+        raise ValueError("Only a host package can update an installation")
+    for image in (shipped["api"], shipped["web"]):
+        if subprocess.run(["docker", "image", "inspect", image], capture_output=True, check=False).returncode != 0:
+            raise RuntimeError(f"This package's image {image} is not loaded; start the package with its start file")
+    path = Path(state) / "compose.env"
+    before = path.read_bytes()
+    values = read_dotenv(path)
+    values["MK8DX_API_IMAGE"], values["MK8DX_WEB_IMAGE"] = shipped["api"], shipped["web"]
+    replace_group([path], ["".join(dotenv(values)).encode("utf-8")])
+    return before
 
 
 def route_services(route):
@@ -705,6 +772,39 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
                     "/app/infrastructure/mysql/reference/world-records-v1.json")
         run_compose(state, "up", "-d", "--no-build", "--force-recreate", *recreated)
         status(state)
+    elif action == "update-package":
+        # A2 offline: this (newer) package takes over an installation. The caller made and verified the
+        # encrypted backup first (the setup wizard, phase "backup"); nothing has changed before this point.
+        if route != "A2_OFFLINE":
+            raise ValueError("Package update applies to A2 offline; other routes use upgrade")
+        if backup_output is None or not Path(backup_output).is_dir():
+            raise ValueError("Package update requires --backup-output naming the verified backup made just before")
+        from lifecycle import verify_backup
+        verify_backup(backup_output)
+        offer = update_offer(state)
+        if offer.get("olderPackage"):
+            raise ValueError(f"This package ({offer['to']}) is older than the installation ({offer['from']})")
+        before = use_package_images(state)
+        try:
+            run_compose(state, "config", "--quiet")
+            run_compose(state, "up", "-d", "--wait", "--no-build", "mysql")
+        except Exception:
+            # Nothing ran on the new images yet: go back to the old ones exactly.
+            replace_group([Path(state) / "compose.env"], [before])
+            raise
+        print("Applying database updates of the new version")
+        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
+                    "dist/composition/migration-apply-main.js", "--migration-catalog",
+                    "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx", "--backup-verified")
+        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
+                    "dist/composition/reference-seed-main.js", "--staff-seed",
+                    "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
+                    "/app/infrastructure/mysql/reference/world-records-v1.json")
+        print("Starting the new version")
+        run_compose(state, "up", "-d", "--wait", "--no-build", "--force-recreate", *recreated)
+        status(state)
+        record_package(state)
+        print(f"Updated to package {offer.get('to') or 'of this folder'}")
     elif action in ("setup", "start"):
         run_compose(state, "config", "--quiet")
         if action == "setup":
@@ -750,7 +850,7 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "host-unlock", "upgrade", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
+    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "host-unlock", "upgrade", "update-package", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=["local", "lan", "offline-lan", "production", "xampp", "shared"], default="local")
     parser.add_argument("--domain", help="Production DNS name; HTTPS must reach this host")
@@ -847,7 +947,8 @@ def main():
             return
         change_lan_address(args.state_dir, args.lan_bind_address)
         return
-    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "host-unlock", "upgrade", "maintain-ca"):
+    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "host-unlock", "upgrade", "update-package",
+                       "maintain-ca"):
         operate(args.state_dir, args.action, args.backup_output, args.user_account_id,
                 args.force_ca_rotation, args.qa_offline_candidate)
         return

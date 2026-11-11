@@ -73,6 +73,13 @@ const T = {
     restoreReconnect: "Kreeg deze computer een ander adres? Telefoons en pc's vertrouwen MK8DX nog steeds; laat ze de kaart 'Apparaat voorbereiden' scannen en koppel apps opnieuw.",
     restoreSameCode: "Nieuwe back-ups gebruiken dezelfde herstelcode als voorheen.",
     phase_restore: "Back-up openen en terugzetten",
+    updateTitle: "Een nieuwere versie van MK8DX",
+    updateLead: "Deze map bevat een nieuwere versie van MK8DX ({to}) dan er nu draait ({from}). Bijwerken duurt een paar minuten; MK8DX is in die tijd even niet bereikbaar.",
+    updateSteps: "Eerst wordt een versleutelde back-up gemaakt en gecontroleerd. Daarna gaat MK8DX over op de nieuwe versie. Alle mensen, tijden, toernooien en inloggingen blijven bewaard; telefoons hoeven niets opnieuw te doen.",
+    updateFolder: "Bewaar deze map: MK8DX start na het bijwerken vanuit deze map. De oude map kun je daarna verwijderen.",
+    updateGo: "Bijwerken", updateLater: "Niet nu", updateTitleRun: "Bijwerken", updatePrevious: "een eerdere versie",
+    updateDone: "MK8DX draait de nieuwe versie. Klik op Volgende en daarna op Voltooien, zodat de automatische taken en de snelkoppeling de nieuwe map gebruiken.",
+    phase_backup: "Back-up maken en controleren", phase_update: "Nieuwe versie installeren en starten",
     moveTitle: "Deze computer heeft een nieuw netwerkadres",
     moveLead: "MK8DX stond op {old}, maar deze computer gebruikt nu een ander adres (bijvoorbeeld na een nieuwe router of een ander netwerk). Verhuis MK8DX naar:",
     moveGo: "Verhuizen", moveTitleRun: "Verhuizen", phase_move: "Naar het nieuwe adres verhuizen (Windows vraagt toestemming)",
@@ -147,6 +154,13 @@ const T = {
     restoreReconnect: "Did this computer get a different address? Phones and PCs still trust MK8DX; let them scan the 'Prepare a device' card and pair apps again.",
     restoreSameCode: "New backups use the same recovery code as before.",
     phase_restore: "Opening and restoring the backup",
+    updateTitle: "A newer version of MK8DX",
+    updateLead: "This folder holds a newer version of MK8DX ({to}) than the one running now ({from}). Updating takes a few minutes; MK8DX is briefly unreachable meanwhile.",
+    updateSteps: "First an encrypted backup is made and checked. Then MK8DX switches to the new version. All people, times, tournaments and sign-ins are kept; phones do not need to do anything again.",
+    updateFolder: "Keep this folder: after the update MK8DX starts from this folder. You can delete the old folder afterwards.",
+    updateGo: "Update", updateLater: "Not now", updateTitleRun: "Updating", updatePrevious: "an earlier version",
+    updateDone: "MK8DX runs the new version. Click Next and then Finish, so the automatic tasks and the shortcut use the new folder.",
+    phase_backup: "Making and checking a backup", phase_update: "Installing and starting the new version",
     moveTitle: "This computer has a new network address",
     moveLead: "MK8DX was on {old}, but this computer now uses another address (for example after a new router or another network). Move MK8DX to:",
     moveGo: "Move", moveTitleRun: "Moving", phase_move: "Moving to the new address (Windows asks for permission)",
@@ -266,6 +280,15 @@ const views = {
     main.append(codeField);
     ready();
   },
+  update() {
+    const text = T.updateLead.replace("{to}", state.update.to || "?").replace("{from}", state.update.from || T.updatePrevious);
+    main.replaceChildren(el("h1", "", T.updateTitle), el("p", "lead", text), el("p", "", T.updateSteps),
+      el("p", "muted", T.updateFolder));
+    const later = el("button", "secondary small", T.updateLater); later.type = "button";
+    later.addEventListener("click", async () => { await manageFlow(); render(); });
+    main.append(later);
+    setButtons({ next: T.updateGo, back: false });
+  },
   async move() {
     main.replaceChildren(el("h1", "", T.moveTitle), el("p", "lead", T.moveLead.replace("{old}", `https://${state.boundAddress}`)));
     setButtons({ nextEnabled: false, back: false, advanced: true });
@@ -310,9 +333,9 @@ const views = {
     const phase = el("p", "alive", T.phase_idle); const latest = el("p", "muted mono latest");
     const log = el("div", "log hidden"); const toggle = el("button", "link small", T.showLog);
     toggle.type = "button"; toggle.addEventListener("click", () => log.classList.toggle("hidden"));
-    main.replaceChildren(el("h1", "", state.moving ? T.moveTitleRun : state.restoring ? T.restoreTitleRun : T.installTitle), el("p", "lead", T.installLead), bar, phase, latest, toggle, log);
+    main.replaceChildren(el("h1", "", state.updating ? T.updateTitleRun : state.moving ? T.moveTitleRun : state.restoring ? T.restoreTitleRun : T.installTitle), el("p", "lead", T.installLead), bar, phase, latest, toggle, log);
     setButtons({ nextEnabled: false, back: false });
-    const order = state.moving ? ["idle", "move", "verify", "done"] : ["idle", state.restoring ? "restore" : "prepare", "network", "install", "verify", "done"];
+    const order = state.updating ? ["idle", "backup", "update", "verify", "done"] : state.moving ? ["idle", "move", "verify", "done"] : ["idle", state.restoring ? "restore" : "prepare", "network", "install", "verify", "done"];
     // The phase name with its own running clock, and the latest log line underneath: visibly alive.
     let shown = null; let since = Date.now();
     const clock = () => { const s = Math.floor((Date.now() - since) / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`; };
@@ -330,12 +353,12 @@ const views = {
           main.append(errorBox(job.error === "wrong-recovery-code" ? T.restoreWrongCode : job.error)); log.classList.remove("hidden");
           state.restored = job.restored; setButtons({ next: T.retry, back: !job.restored }); state.installFailed = true; return;
         }
-        if (job.done) { fill.className = "w4"; phase.textContent = state.moving ? T.moveDone : state.restoring ? T.restoreDone : T.installDone; setButtons({ back: false }); return; }
+        if (job.done) { fill.className = "w4"; phase.textContent = state.updating ? T.updateDone : state.moving ? T.moveDone : state.restoring ? T.restoreDone : T.installDone; setButtons({ back: false }); return; }
         setTimeout(poll, 1000);
       } catch (error) { setTimeout(poll, 2000); }
     };
     // A restore whose data is already back retries only the network and start steps (the install job).
-    const begin = () => (state.moving ? api("/api/move", { ip: state.ip })
+    const begin = () => (state.updating ? api("/api/update", {}) : state.moving ? api("/api/move", { ip: state.ip })
       : state.restoring && !state.restored
         ? api("/api/restore", { folder: state.backupFolder || "", name: state.backup, code: state.restoreCode, ip: state.ip })
         : api("/api/install", { ip: state.ip }));
@@ -462,6 +485,7 @@ const actions = {
   kind: forward,
   restore() { if (state.backup && state.restoreCode) forward(); },
   move() { if (state.ip) forward(); else render(); },
+  update() { state.updating = true; forward(); },
   network() {
     // Coming back after a failed attempt (for example a mistyped recovery code) starts a new job.
     if (state.installFailed) { state.installFailed = false; state.installStarted = false; }
@@ -469,7 +493,7 @@ const actions = {
   },
   async install() {
     if (state.installFailed) { state.installFailed = false; state.installStarted = false; render(); return; }
-    if (state.restoring || state.moving) {
+    if (state.restoring || state.moving || state.updating) {
       $("next").disabled = true;
       try { state.people = await api("/api/people"); state.manage = true; } catch (error) { main.append(errorBox(error.message)); $("next").disabled = false; return; }
     }
@@ -512,6 +536,16 @@ const actions = {
 
 function render() { drawSteps(); views[state.step](); }
 
+async function manageFlow() {
+  state.updating = false;
+  try {
+    state.people = await api("/api/people");
+    state.manage = true; state.flow = ["people", "cards", "done"]; state.step = "people";
+    document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
+    document.title = T.manageTitle;
+  } catch { state.flow = ["admin", "people", "cards", "done"]; state.step = "admin"; }
+}
+
 (async () => {
   try {
     const status = await api("/api/status");
@@ -520,13 +554,12 @@ function render() { drawSteps(); views[state.step](); }
       state.moving = true; state.boundAddress = status.boundAddress;
       state.flow = ["move", "install", "people", "cards", "done"]; state.step = "move";
       document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
+    } else if (status.installed && status.update && status.update.available) {
+      // A newer package opened on this installation: offer the update first ("Not now" goes to administration).
+      state.update = status.update; state.flow = ["update", "install", "people", "cards", "done"]; state.step = "update";
+      document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
     } else if (status.installed) {
-      try {
-        state.people = await api("/api/people");
-        state.manage = true; state.flow = ["people", "cards", "done"]; state.step = "people";
-        document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
-        document.title = T.manageTitle;
-      } catch { state.flow = ["admin", "people", "cards", "done"]; state.step = "admin"; }
+      await manageFlow();
     }
   } catch { /* first run */ }
   render();

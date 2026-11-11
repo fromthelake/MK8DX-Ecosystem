@@ -203,6 +203,7 @@ def main():
         if args.offline_candidate:
             # The launcher and installer read the exact images from here and start the setup wizard.
             file_bytes["images/images.json"] = (json.dumps({"api": images[0], "web": images[1],
+                                                            "revision": args.revision,
                                                             "qaOfflineCandidate": True}, indent=2) + "\n").encode()
             pins = offline_pins()
             hashes = {}

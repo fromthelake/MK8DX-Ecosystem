@@ -154,6 +154,11 @@ class Wizard:
                 active = None
             info["addressActive"] = active is None or bound in active
             info["boundAddress"] = bound
+            # A newer package opened on an existing installation offers to take it over.
+            try:
+                info["update"] = install.update_offer(self.state)
+            except (OSError, ValueError, KeyError):
+                info["update"] = {"available": False}
         return info
 
     def checks(self):
@@ -216,6 +221,42 @@ class Wizard:
                 job.log(f"Network: {install.prepare_offline_network(self.state)}")
                 job.phase = "install"
                 self.run_cli("start" if self.restored else "setup", "--qa-offline-candidate")
+                job.phase = "verify"
+                job.log("Website and setup page are reachable")
+                install.record_package(self.state)
+                job.phase = "done"
+                job.done = True
+            except Exception as error:  # surfaced in the page, never a stack trace
+                job.error = str(error)
+        self.job = Job()
+        threading.Thread(target=work, daemon=True).start()
+
+    def start_update(self):
+        """This newer package takes over the installation: verified backup first, then the switch."""
+        if not self.qa_candidate:
+            raise ValueError("This package is not the A2 offline candidate")
+        if not self.installed():
+            raise ValueError("MK8DX is not installed on this computer")
+        offer = install.update_offer(self.state)
+        if not offer.get("available"):
+            raise ValueError("This package is not newer than the installation")
+
+        def work():
+            job = self.job
+            try:
+                from tooling import auto_backup
+                from lifecycle import verify_backup
+                job.phase = "backup"
+                root = auto_backup.default_backup_root()
+                root.mkdir(parents=True, exist_ok=True)
+                output = root / (time.strftime("%Y%m%d-%H%M%S") + "-before-update")
+                job.log("Making an encrypted backup with your recovery code")
+                auto_backup.backup_with_stored_code(self.state, output)
+                verify_backup(output)
+                job.log(f"Backup checked: {output}")
+                job.phase = "update"
+                self.run_cli("update-package", "--backup-output", str(output), "--qa-offline-candidate")
+                self.host = None
                 job.phase = "verify"
                 job.log("Website and setup page are reachable")
                 job.phase = "done"
@@ -549,6 +590,9 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                 body = json.loads(self.rfile.read(length) or b"{}")
                 if path == "/api/install":
                     wizard.start_install(str(body.get("ip", "")))
+                    return self.send(200, {"started": True})
+                if path == "/api/update":
+                    wizard.start_update()
                     return self.send(200, {"started": True})
                 if path == "/api/move":
                     wizard.start_move(str(body.get("ip", "")))
