@@ -54,7 +54,7 @@ jobs:
           node tooling/design-system/css-metrics.mjs --check
           MK8DX_INTAKE_TEST_ROOT="$RUNNER_TEMP" python tooling/test_intake.py -v
           python -m unittest discover -s tooling/tests -v
-          python -m unittest tooling.release.test_host_bundle -v
+          python -m unittest tooling.release.test_host_bundle tooling.release.test_release_manifest -v
   secrets:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
