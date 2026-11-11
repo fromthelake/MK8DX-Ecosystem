@@ -149,6 +149,14 @@ export function liveStatusAfterStop(
   return status === "requested" ? "requested" : "stopping";
 }
 
+/**
+ * A live request may be dismissed only while it never went public: still
+ * `requested`, or `stopping` without a director/roster approval ever recorded.
+ */
+export function liveRequestIsDismissible(liveStatus: string, liveApprovedAtMs: number | null): boolean {
+  return liveStatus === "requested" || (liveStatus === "stopping" && liveApprovedAtMs === null);
+}
+
 const evidenceProjection = `
   SELECT evidence.public_id, evidence.client_record_id, evidence.revision,
          evidence.record_status, evidence.source_kind,
@@ -552,6 +560,72 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
         JSON.stringify(input.mappings), input.reason, input.nowMs]);
       const updated = await this.findEvidenceRecord(input.recordId, connection);
       if (updated === null) throw new Error("Confirmed live evidence record could not be loaded.");
+      const { entries: _entries, ...summary } = updated;
+      return summary;
+    });
+  }
+
+  public async dismissLiveRequest(input: Parameters<TournamentConnectedRepository["dismissLiveRequest"]>[0]): Promise<TournamentEvidenceRecord> {
+    return this.unit(async (connection) => {
+      const [reviewerRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT account.user_account_id AS id,
+               EXISTS (SELECT 1 FROM administrator_grants grant_row
+                         WHERE grant_row.user_account_id = account.user_account_id
+                           AND grant_row.grant_status = 'active') AS is_administrator
+          FROM user_accounts account
+         WHERE account.public_id = ? AND account.account_status = 'active'
+         LIMIT 1 FOR UPDATE
+      `, [input.reviewedByUserAccountId]);
+      const reviewer = reviewerRows[0];
+      if (reviewer === undefined) throw new TournamentOperationError("forbidden", "The reviewing account is not active.");
+      const [tournamentRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT tournament_id AS id, director_user_account_id AS director
+          FROM tournaments
+         WHERE public_id = ? AND lifecycle_status = 'active' AND stage <> 'finalized'
+         LIMIT 1 FOR UPDATE
+      `, [input.tournamentId]);
+      const tournament = tournamentRows[0];
+      if (tournament === undefined) throw new TournamentOperationError("not_found", "The active Tournament was not found.");
+      const reviewerInternalId = Number(reviewer["id"]);
+      const tournamentInternalId = Number(tournament["id"]);
+      if (Number(reviewer["is_administrator"]) !== 1 && Number(tournament["director"]) !== reviewerInternalId) {
+        throw new TournamentOperationError("forbidden", "Only this Tournament's director may dismiss live requests.");
+      }
+      const [recordRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT tournament_evidence_record_id AS id, revision, live_status,
+               live_mappings_json, live_approved_at_ms, suggested_tournament_id
+          FROM tournament_evidence_records WHERE public_id = ? LIMIT 1 FOR UPDATE
+      `, [input.recordId]);
+      const record = recordRows[0];
+      if (record === undefined) throw new TournamentOperationError("not_found", "The live evidence record was not found.");
+      if (Number(record["revision"]) !== input.expectedRevision) {
+        throw new TournamentOperationError("conflict", "The live request changed; reload it before dismissing it.");
+      }
+      if (record["suggested_tournament_id"] === null || Number(record["suggested_tournament_id"]) !== tournamentInternalId) {
+        throw new TournamentOperationError("conflict", "This live run belongs to another Tournament.");
+      }
+      if (!liveRequestIsDismissible(
+        String(record["live_status"]),
+        record["live_approved_at_ms"] === null ? null : Number(record["live_approved_at_ms"]),
+      )) {
+        throw new TournamentOperationError("conflict", "Only a live request that never went public can be dismissed.");
+      }
+      const oldMappings = record["live_mappings_json"] === null ? [] : parseJson(record["live_mappings_json"] as string);
+      await connection.execute(`
+        UPDATE tournament_evidence_records
+           SET revision = revision + 1, live_status = 'invalidated', live_mappings_json = ?,
+               updated_at_ms = ?
+         WHERE tournament_evidence_record_id = ?
+      `, [JSON.stringify([]), input.nowMs, Number(record["id"])]);
+      await connection.execute(`
+        INSERT INTO tournament_live_mapping_audit (
+          tournament_evidence_record_id, tournament_id, changed_by_user_account_id,
+          previous_mappings_json, next_mappings_json, reason, changed_at_ms
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+      `, [Number(record["id"]), tournamentInternalId, reviewerInternalId, JSON.stringify(oldMappings),
+        JSON.stringify([]), input.reason, input.nowMs]);
+      const updated = await this.findEvidenceRecord(input.recordId, connection);
+      if (updated === null) throw new Error("Dismissed live evidence record could not be loaded.");
       const { entries: _entries, ...summary } = updated;
       return summary;
     });

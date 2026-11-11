@@ -87,6 +87,7 @@ function repository(): TournamentConnectedRepository & { inserted: IncomingTourn
     async listEvidenceRecordsForTournament() { return []; },
     async findEvidenceRecord() { return null; },
     async approveLiveAssociation() { throw new Error("unused live association approval"); },
+    async dismissLiveRequest() { throw new Error("unused live request dismissal"); },
     async markOwnEvidenceStopping() { throw new Error("unused live stopping action"); },
     async listPublicLiveRecords() { return []; },
     // The group these fixtures confirm is seated by exactly these two Players;
@@ -319,6 +320,57 @@ it("registers a mapped live run before its first race and requires director appr
   });
   assert.equal(active.live?.status, "active");
   assert.equal(approved[0]?.reviewedByUserAccountId, administrator.userAccountId);
+});
+
+it("dismisses a stale live request through the reviewer's repository call with a bounded reason", async () => {
+  const repo = repository();
+  const dismissed: Parameters<TournamentConnectedRepository["dismissLiveRequest"]>[0][] = [];
+  repo.dismissLiveRequest = async (input) => {
+    dismissed.push(input);
+    return {
+      recordId: input.recordId, clientRecordId: "run-stale", revision: input.expectedRevision + 1,
+      status: "uploading", sourceKind: "tournament_live_capture",
+      uploadedBy: { userAccountId: captureOperator.userAccountId!, displayName: "Capture" },
+      startedAtMs: 1, stoppedAtMs: null, analysisCompletedAtMs: null,
+      complete: false, suggestedTournamentId: input.tournamentId,
+      suggestedTournamentName: "Live Tournament", linkedTournamentId: null,
+      groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: input.nowMs,
+      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null },
+    };
+  };
+  const service = new TournamentConnectedService(repo, { async submit() { throw new Error("unreachable"); } }, {
+    async attachRaces() { throw new Error("unreachable"); },
+  }, () => 1_800_000_300_000);
+  const record = await service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: "  Aborted run  ",
+  });
+  assert.equal(record.live?.status, "invalidated");
+  assert.deepEqual(dismissed[0], {
+    recordId: "evidence.stale", expectedRevision: 3, tournamentId: "tournament.synthetic_connected",
+    reviewedByUserAccountId: administrator.userAccountId, reason: "Aborted run", nowMs: 1_800_000_300_000,
+  });
+  await service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+  });
+  assert.equal(dismissed[1]?.reason, "Stale live request dismissed by Tournament director");
+
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 0,
+  }), /expectedRevision is invalid/);
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: "x".repeat(513),
+  }), /reason is invalid/);
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: 42 as unknown as string,
+  }), /reason is invalid/);
+  repo.canReviewTournament = async () => false;
+  await assert.rejects(service.dismissLiveRequest(captureOperator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+  }), /cannot review/);
+  assert.equal(dismissed.length, 2);
 });
 
 it("activates only the provisional public view after every feed has a strong exact roster match", async () => {
