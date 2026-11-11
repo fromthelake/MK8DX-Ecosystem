@@ -80,7 +80,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 **Het pakket uitpakken**
 
-1. **Doe:** download het MK8DX-pakket voor thuis of de club voor jouw systeem: Windows, Linux of macOS, en bij Linux en macOS ook voor jouw processor (amd64 of arm64). Wil je controleren of de download klopt: dat staat in `docs/install/START_HIER.md`. → **Je ziet:** een zip-bestand in je map Downloads.
+1. **Doe:** download het MK8DX-pakket voor thuis of de club voor jouw systeem: Windows, Linux of macOS, en bij Linux en macOS ook voor jouw processor (amd64 of arm64). Wil je controleren of de download klopt: dat staat in `docs/install/START_HIER.md`. → **Je ziet:** een zip-bestand in je map Downloads. → **Zie je iets anders?** Waarschuwt de browser dat het bestand onveilig of zelden gedownload is: kies **Bewaren** (Chrome: **Keep**). Windows: klik daarna met rechts op het zip-bestand → **Eigenschappen**, vink onderaan **Blokkering opheffen** aan en klik op **OK**. Doe dat vóór het uitpakken; anders kan Windows (Smart App Control) `Start-MK8DX-LAN.cmd` later blokkeren. Zet Smart App Control niet uit: dat kan daarna alleen nog met een nieuwe Windows-installatie weer aan.
 2. **Doe:** pak het zip-bestand uit naar een vaste map, bijvoorbeeld in Documenten een map MK8DX. Windows: klik met rechts op het zip-bestand → **Alles uitpakken**. Kies een map die blijft staan: MK8DX start later steeds vanuit deze map, dus verplaats of verwijder hem niet. → **Je ziet:** een map met onder andere `Start-MK8DX-LAN.cmd`, `README-FIRST.txt` en de mappen `docs`, `images` en `tooling`. → **Zie je iets anders?** Opende je het zip-bestand alleen maar in Verkenner, pak het dan echt uit: vanuit het zip-bestand starten werkt niet.
 
 <!-- os: windows -->

@@ -80,7 +80,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 
 **Unpacking the package**
 
-1. **Do:** download the MK8DX package for home or club for your system: Windows, Linux or macOS, and for Linux and macOS also for your processor (amd64 or arm64). To check that the download is correct, see `docs/install/START_HIER.md`. → **You see:** a zip file in your Downloads folder.
+1. **Do:** download the MK8DX package for home or club for your system: Windows, Linux or macOS, and for Linux and macOS also for your processor (amd64 or arm64). To check that the download is correct, see `docs/install/START_HIER.md`. → **You see:** a zip file in your Downloads folder. → **See something else?** If the browser warns that the file is unsafe or rarely downloaded: choose **Keep**. Windows: then right-click the zip file → **Properties**, tick **Unblock** at the bottom and click **OK**. Do this before unpacking; otherwise Windows (Smart App Control) may later block `Start-MK8DX-LAN.cmd`. Do not turn Smart App Control off: it can then only be turned on again with a new Windows installation.
 2. **Do:** unpack the zip file into a permanent folder, for example a folder MK8DX in Documents. Windows: right-click the zip file → **Extract All**. Choose a folder that stays: MK8DX always starts from this folder later, so do not move or delete it. → **You see:** a folder with, among others, `Start-MK8DX-LAN.cmd`, `README-FIRST.txt` and the folders `docs`, `images` and `tooling`. → **See something else?** If you only opened the zip file in File Explorer, really extract it: starting from inside the zip file does not work.
 
 <!-- os: windows -->
