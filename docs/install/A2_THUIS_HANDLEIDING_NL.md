@@ -208,6 +208,13 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 
 Een **certificaat** is een digitaal identiteitsbewijs. Daarmee weet een telefoon zeker dat hij met jouw MK8DX-computer praat en met niets anders, en is de verbinding versleuteld (https). Omdat MK8DX zonder internet werkt, maakt de installatie zijn eigen certificaat. Elk apparaat moet dat één keer leren vertrouwen. De **vingerafdruk** is een korte code die bij precies dit certificaat hoort; daarmee controleer je dat je het goede certificaat installeert.
 
+**De MK8DX-computer zelf**
+
+Ook de computer waarop MK8DX draait moet MK8DX één keer vertrouwen, anders waarschuwt de browser daar bij de website.
+
+1. **Doe:** open MK8DX beheer, klik op **Volgende** tot "Inloggen op telefoons en pc's" en kijk bij **Stap 1** naar het blok **Deze computer**. → **Je ziet:** "Deze computer vertrouwt MK8DX al." Dan ben je klaar. → **Zie je iets anders?** Staat er de knop **Deze computer voorbereiden**, ga dan naar stap 2.
+2. **Doe:** klik op **Deze computer voorbereiden**. → **Je ziet:** een venster van Windows, **Beveiligingswaarschuwing**, met de vraag of je het certificaat wilt installeren en een **vingerafdruk (sha1)**. Vergelijk die met de vingerafdruk in MK8DX beheer; zijn ze gelijk, klik dan op **Ja**. → **Je ziet:** "Deze computer vertrouwt MK8DX al." → **Zie je iets anders?** Klikte je op **Nee** of zijn de vingerafdrukken niet gelijk: klik niet op Ja, sluit het venster en vraag hulp. Op Linux of macOS staat er in plaats van de knop dat je in de browser van deze computer het adres onder Apparaat voorbereiden opent; volg dan de stappen hieronder op deze computer.
+
 **Eén keer per apparaat: Apparaat voorbereiden**
 
 1. **Doe:** zet de telefoon, tablet of pc op hetzelfde wifi- of kabelnetwerk als de MK8DX-computer. Zet bij een telefoon mobiele data niet in de plaats van wifi. → **Je ziet:** de naam van je eigen wifi bij de verbinding.

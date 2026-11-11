@@ -377,6 +377,16 @@ class Wizard:
             self.job.log(f"Remove or rename {self.state} before trying again")
 
     # ---------- people ------------------------------------------------------
+    def host_call(self, method, path, body=None):
+        """One host-page call that survives an expired session: the host page ends an idle session after
+        15 minutes (groep3: back to the cards after a while showed "Setup information unavailable").
+        An empty 401/403 means "no session"; a refusal with a code is a real answer and is returned."""
+        status, payload = self.ensure_host().call(method, path, body)
+        if status in (401, 403) and not payload.get("code"):
+            self.host = None
+            status, payload = self.ensure_host().call(method, path, body)
+        return status, payload
+
     def ensure_host(self):
         if self.host is None:
             admin = administrator_id(self.state)
@@ -402,25 +412,21 @@ class Wizard:
         return self.people()
 
     def people(self):
-        status, payload = self.ensure_host().call("GET", "/api/accounts")
-        if status == 403:
-            self.host = None
-            status, payload = self.ensure_host().call("GET", "/api/accounts")
+        status, payload = self.host_call("GET", "/api/accounts")
         return [{"accountKey": a["accountKey"], "name": a["displayLabel"], "role": a["role"]}
                 for a in payload.get("accounts", [])]
 
     def add_people(self, names):
-        host = self.ensure_host()
         for name in names:
             name = str(name).strip()
             if 1 <= len(name) <= 80:
-                status, _ = host.call("POST", "/api/accounts", {"displayLabel": name, "role": "account"})
+                status, _ = self.host_call("POST", "/api/accounts", {"displayLabel": name, "role": "account"})
                 if status != 200:
                     raise RuntimeError(f"Could not add {name}")
         return self.people()
 
     def card(self, account_key: str, role: str):
-        status, payload = self.ensure_host().call("POST", "/api/invitations", {"accountKey": account_key,
+        status, payload = self.host_call("POST", "/api/invitations", {"accountKey": account_key,
                                                                               "role": role})
         if status != 200:
             raise RuntimeError("No sign-in card could be made for this person")
@@ -429,22 +435,51 @@ class Wizard:
 
     def revoke_card(self, invitation_id: str):
         """A lost or replaced card stops working at once (it would otherwise stay valid 15 minutes)."""
-        status, _ = self.ensure_host().call("POST", "/api/invitations/revoke", {"invitationId": invitation_id})
+        status, _ = self.host_call("POST", "/api/invitations/revoke", {"invitationId": invitation_id})
         if status != 200:
             raise RuntimeError("This card could not be revoked; it may already be used or expired")
         return {"revoked": True}
 
     def sign_out(self, account_key: str):
         """End every session of another person (lost phone, card given to the wrong person)."""
-        status, payload = self.ensure_host().call("POST", "/api/accounts/sign-out", {"accountKey": account_key})
+        status, payload = self.host_call("POST", "/api/accounts/sign-out", {"accountKey": account_key})
         if status == 403:
             raise ValueError("own-account")
         if status != 200:
             raise RuntimeError("This person could not be signed out")
         return {"sessions": int(payload.get("sessions", 0)), "invitations": int(payload.get("invitations", 0))}
 
+    # ---------- this computer trusts its own installation ----------------
+    def root_certificate(self) -> Path:
+        return self.state / "offline-ca" / "setup" / "root.crt"
+
+    def host_trust(self):
+        """Whether this computer's own browser trusts MK8DX (Windows: the root in the user's or the computer's
+        Trusted Root store). Elsewhere the browser setup page is the route, so the answer is "manual"."""
+        import hashlib
+        der = self.root_certificate().read_bytes()
+        thumbprint = hashlib.sha1(der).hexdigest().upper()  # what Windows shows in its own warning
+        if sys.platform != "win32":
+            return {"platform": "manual", "trusted": None, "thumbprint": thumbprint}
+        found = install._powershell(
+            f"if ((Test-Path 'Cert:\\CurrentUser\\Root\\{thumbprint}') -or "
+            f"(Test-Path 'Cert:\\LocalMachine\\Root\\{thumbprint}')) {{ 'yes' }} else {{ 'no' }}", timeout=60)
+        return {"platform": "windows", "trusted": found.stdout.strip() == "yes", "thumbprint": thumbprint}
+
+    def trust_this_computer(self):
+        """Add the MK8DX root to this Windows user's Trusted Root store. Windows itself asks the person to
+        confirm (with the thumbprint); nothing is clicked for them and no administrator rights are used."""
+        if sys.platform != "win32":
+            raise ValueError("On this system, open the New device address in the browser and follow its steps")
+        if not self.installed():
+            raise ValueError("MK8DX is not installed on this computer")
+        path = self.root_certificate()
+        subprocess.run(["certutil", "-user", "-addstore", "Root", str(path)], capture_output=True, timeout=600,
+                       check=False)
+        return self.host_trust()
+
     def setup_info(self):
-        status, payload = self.ensure_host().call("GET", "/api/setup")
+        status, payload = self.host_call("GET", "/api/setup")
         if status != 200:
             raise RuntimeError("Setup information unavailable")
         return {"setupUrl": payload["setupUrl"], "qr": payload["qrDataUrl"], "origin": payload["origin"],
@@ -568,7 +603,8 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     return self.send(200, file.read_bytes(), TYPES[file.suffix])
                 routes = {"/api/status": wizard.status, "/api/checks": wizard.checks,
                           "/api/network": wizard.addresses, "/api/job": wizard.job.snapshot,
-                          "/api/people": wizard.people, "/api/setup": wizard.setup_info}
+                          "/api/people": wizard.people, "/api/setup": wizard.setup_info,
+                          "/api/host-trust": wizard.host_trust}
                 if path in routes:
                     return self.send(200, routes[path]())
                 if path == "/api/backups":
@@ -591,6 +627,8 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                 if path == "/api/install":
                     wizard.start_install(str(body.get("ip", "")))
                     return self.send(200, {"started": True})
+                if path == "/api/host-trust":
+                    return self.send(200, wizard.trust_this_computer())
                 if path == "/api/update":
                     wizard.start_update()
                     return self.send(200, {"started": True})

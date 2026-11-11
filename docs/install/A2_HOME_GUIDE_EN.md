@@ -208,6 +208,13 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 
 A **certificate** is a digital proof of identity. With it a phone knows for sure that it is talking to your MK8DX computer and nothing else, and the connection is encrypted (https). Because MK8DX works without internet, the setup makes its own certificate. Every device has to learn to trust it once. The **fingerprint** is a short code that belongs to exactly this certificate; with it you check that you install the right certificate.
 
+**The MK8DX computer itself**
+
+The computer MK8DX runs on must trust MK8DX once too, otherwise its browser warns about the website.
+
+1. **Do:** open MK8DX beheer, click **Next** until "Sign in on phones and PCs" and look at the **This computer** block under **Step 1**. → **You see:** "This computer already trusts MK8DX." Then you are done. → **See something else?** If it shows the **Prepare this computer** button, go to step 2.
+2. **Do:** click **Prepare this computer**. → **You see:** a Windows window, **Security Warning**, asking whether you want to install the certificate, with a **thumbprint (sha1)**. Compare it with the thumbprint in MK8DX beheer; if they match, click **Yes**. → **You see:** "This computer already trusts MK8DX." → **See something else?** If you clicked **No** or the thumbprints differ: do not click Yes, close the window and ask for help. On Linux or macOS, instead of the button it says to open the address under Prepare a device in this computer's browser; then follow the steps below on this computer.
+
 **Once per device: Prepare a device**
 
 1. **Do:** connect the phone, tablet or PC to the same Wi-Fi or wired network as the MK8DX computer. On a phone, do not use mobile data instead of Wi-Fi. → **You see:** the name of your own Wi-Fi at the connection.

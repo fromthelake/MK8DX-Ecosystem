@@ -43,6 +43,12 @@ const T = {
     cardsLead: "Inloggen op een telefoon, tablet of pc gaat in twee stappen: eerst het apparaat voorbereiden, daarna inloggen als de juiste persoon.",
     step1Title: "Stap 1 · Apparaat voorbereiden",
     step1Text: "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
+    hostTitle: "Deze computer",
+    hostTrusted: "Deze computer vertrouwt MK8DX al. De website opent hier zonder waarschuwing.",
+    hostNeeded: "Ook deze computer moet MK8DX één keer vertrouwen, anders waarschuwt de browser hier bij de website. Klik op de knop. Windows vraagt dan of je het certificaat wilt installeren: controleer dat de vingerafdruk (sha1) hieronder overeenkomt en klik op Ja.",
+    hostButton: "Deze computer voorbereiden", hostThumb: "Vingerafdruk (sha1) in de Windows-vraag",
+    hostNotYet: "Nog niet vertrouwd. Klikte je op Nee of sloot je het venster? Probeer het opnieuw.",
+    hostManual: "Ook deze computer moet MK8DX één keer vertrouwen. Open hier in de browser het adres onder 'Apparaat voorbereiden' en volg de stappen voor deze computer.",
     step2Title: "Stap 2 · Inloggen als de juiste persoon",
     step2Text: "Klik bij de persoon die dit apparaat gebruikt op 'Kaart maken' en scan die QR-code met hetzelfde apparaat. Het apparaat is dan ingelogd als die persoon. Een kaart werkt één keer en 15 minuten lang; maak gerust een nieuwe.",
     setupCard: "Apparaat voorbereiden", makeCard: "Kaart maken", newCard: "Nieuwe kaart", print: "Kaarten afdrukken",
@@ -124,6 +130,12 @@ const T = {
     cardsLead: "Signing in on a phone, tablet or PC takes two steps: first prepare the device, then sign in as the right person.",
     step1Title: "Step 1 · Prepare the device",
     step1Text: "Once per device. Scan this QR code with the camera. The device then learns to trust this installation (a security certificate), so the website opens safely. This does not sign you in yet. If the device was prepared before, go straight to step 2.",
+    hostTitle: "This computer",
+    hostTrusted: "This computer already trusts MK8DX. The website opens here without a warning.",
+    hostNeeded: "This computer must trust MK8DX once too, otherwise the browser warns here about the website. Click the button. Windows then asks whether you want to install the certificate: check that the thumbprint (sha1) below matches and click Yes.",
+    hostButton: "Prepare this computer", hostThumb: "Thumbprint (sha1) in the Windows question",
+    hostNotYet: "Not trusted yet. Did you click No or close the window? Try again.",
+    hostManual: "This computer must trust MK8DX once too. Open the address under 'Prepare a device' in this computer's browser and follow the steps for this computer.",
     step2Title: "Step 2 · Sign in as the right person",
     step2Text: "Click 'Make card' for the person who uses this device and scan that QR code with the same device. The device is then signed in as that person. A card works once and for 15 minutes; feel free to make a new one.",
     setupCard: "Prepare a device", makeCard: "Make card", newCard: "New card", print: "Print cards",
@@ -408,17 +420,37 @@ const views = {
     main.replaceChildren(el("h1", "", state.manage ? T.manageTitle : T.peopleTitle), el("p", "lead", T.peopleLead), field, add,
       el("h2", "", T.peopleNow), list, el("p", "muted", T.peopleLater));
     draw();
-    setButtons({ back: !state.manage, next: state.people.length > 1 ? T.next : T.skip });
+    setButtons({ back: false, next: state.people.length > 1 ? T.next : T.skip });
     area.addEventListener("input", () => { $("next").textContent = T.next; });
   },
   async cards() {
     // Two visibly separate steps: the device card (trust, once per device), then one card per person.
-    const deviceCards = el("div", "cards"); const cards = el("div", "cards");
+    const deviceCards = el("div", "cards"); const cards = el("div", "cards"); const host = el("div", "list host-trust");
     const printBtn = el("button", "secondary small no-print", T.print); printBtn.type = "button"; printBtn.addEventListener("click", () => window.print());
     main.replaceChildren(el("h1", "", T.cardsTitle), el("p", "lead", T.cardsLead), printBtn,
-      el("h2", "step-title", T.step1Title), el("p", "muted", T.step1Text), deviceCards,
+      el("h2", "step-title", T.step1Title), el("p", "muted", T.step1Text), host, deviceCards,
       el("h2", "step-title", T.step2Title), el("p", "muted", T.step2Text), cards);
     setButtons();
+    // The host computer is a device too: its own browser needs the root once.
+    const drawHost = (trust, tried) => {
+      const row = el("div", "person-row"); const text = el("div");
+      text.append(el("strong", "", T.hostTitle));
+      if (trust.platform !== "windows") text.append(el("div", "muted", T.hostManual));
+      else if (trust.trusted) text.append(el("div", "", `✓ ${T.hostTrusted}`));
+      else {
+        text.append(el("div", "muted", T.hostNeeded), el("div", "muted", T.hostThumb),
+          el("div", "mono", trust.thumbprint.match(/.{2}/g).join(" ")));
+        if (tried) text.append(el("div", "error", T.hostNotYet));
+        const go = el("button", "primary small no-print", T.hostButton); go.type = "button";
+        go.addEventListener("click", async () => {
+          go.disabled = true;
+          try { drawHost(await api("/api/host-trust", {}), true); } catch (error) { text.append(errorBox(error.message)); go.disabled = false; }
+        });
+        text.append(go);
+      }
+      row.append(text); host.replaceChildren(row);
+    };
+    api("/api/host-trust").then((trust) => drawHost(trust, false), () => undefined);
     try {
       const setup = await api("/api/setup");
       const s = el("div", "person"); const img = el("img"); img.src = setup.qr; img.alt = T.setupCard;
