@@ -153,7 +153,8 @@ $adminLabel = if ($offline) { 'Unlock the host page (first administrator, invita
 function Invoke-MK8DXStep([string]$Label, [scriptblock]$Body) {
   Write-Host ''
   Write-Step '..' $Label
-  & $Body
+  # Out-Host: a native command's output inside a function would otherwise become its return value.
+  & $Body | Out-Host
   if ($LASTEXITCODE -ne 0) {
     Write-Host '!!  That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.' -ForegroundColor Red
     return $false
@@ -171,10 +172,22 @@ function Invoke-MK8DXBackup([string]$Output, [switch]$Update) {
   if ($LASTEXITCODE -eq 0) { Write-Host "Private backup (keep it safe, never share it): $Output" }
 }
 
+function Show-MK8DXAddress([switch]$Next) {
+  $mail = Get-Content -LiteralPath (Join-Path $StateDir 'compose.env') -ErrorAction SilentlyContinue |
+    Where-Object { $_ -match '^MK8DX_MAILPIT_PORT=' } | ForEach-Object { ($_ -split '=', 2)[1].Trim("'") }
+  Write-Host ''
+  Write-Host "   Website: $($profileData.origin)" -ForegroundColor Cyan
+  if ($profileData.route -eq 'A1' -and $mail) {
+    Write-Host "   Sign-in mail arrives in the local test inbox: http://127.0.0.1:$mail" -ForegroundColor Cyan
+    if ($Next) { Write-Host '   Next: type 8 to open the website, sign in with your address, then type 5 to become administrator.' }
+  }
+}
+
 if ($fresh) {
   # A new installation goes straight to its first setup; the menu follows afterwards.
   [void](Invoke-MK8DXStep 'First setup: database, keys and reference times (the first time takes a few minutes)' {
     & $python tooling/install.py setup --state-dir $StateDir @qaFlag })
+  Show-MK8DXAddress -Next
 }
 while ($true) {
   Write-Host ''
@@ -194,7 +207,7 @@ while ($true) {
   switch ($choice) {
     '1' { [void](Invoke-MK8DXStep 'First setup' { & $python tooling/install.py setup --state-dir $StateDir @qaFlag }) }
     '2' { [void](Invoke-MK8DXStep 'Starting MK8DX' { & $python tooling/install.py start --state-dir $StateDir @qaFlag }) }
-    '3' { [void](Invoke-MK8DXStep 'Checking MK8DX' { & $python tooling/install.py check --state-dir $StateDir @qaFlag }) }
+    '3' { if (Invoke-MK8DXStep 'Checking MK8DX' { & $python tooling/install.py check --state-dir $StateDir @qaFlag }) { Show-MK8DXAddress } }
     '4' { [void](Invoke-MK8DXStep 'Stopping MK8DX' { & $python tooling/install.py stop --state-dir $StateDir @qaFlag }) }
     '5' { [void](Invoke-MK8DXStep $adminLabel { & $python tooling/install.py admin --state-dir $StateDir @qaFlag }) }
     '6' { [void](Invoke-MK8DXStep 'Making and checking a backup' { Invoke-MK8DXBackup $output }) }
