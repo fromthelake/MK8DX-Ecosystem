@@ -19,7 +19,9 @@ printf '   %s|  \\/  || |/ /%s ( _ ) %s|  _ \\ \\ \\/ /%s\n' "$w" "$e" "$w" "$n"
 printf '   %s| |\\/| || '"'"' / %s / _ \\ %s| | | | \\  / %s\n' "$w" "$e" "$w" "$n"
 printf '   %s| |  | || . \\ %s| (_) |%s| |_| | /  \\ %s\n' "$w" "$e" "$w" "$n"
 printf '   %s|_|  |_||_|\\_\\%s \\___/ %s|____/ /_/\\_\\%s\n\n' "$w" "$e" "$w" "$n"
-printf '   %sT I M E   T R I A L S%s   %shome & club LAN%s\n\n' "$y" "$n" "$g" "$n"
+tagline='community server'
+if [ -f images/images.json ] && grep -q '"qaOfflineCandidate": true' images/images.json; then tagline='home & club LAN'; fi
+printf '   %sT I M E   T R I A L S%s   %s%s%s\n\n' "$y" "$n" "$g" "$tagline" "$n"
 printf 'MK8DX package: %s\n' "$root"
 # The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
 python3 -c 'import sys; assert (3, 12) <= sys.version_info[:2] <= (3, 15)' 2>/dev/null || {

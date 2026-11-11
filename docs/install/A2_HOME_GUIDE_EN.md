@@ -290,7 +290,7 @@ LiveTrial is a Windows program that recognizes and keeps your Time Trials throug
 4. Click **Sign in** and choose **Open the approval page**. Approve the device in the browser.
 5. Send runs with **Send now**, or turn on **Send new runs automatically** in Settings.
 
-More explanation is in `docs/install/A2_OFFLINE_LAN_EN.md`, part "LiveTrial on a second Windows PC".
+Good to know: without a Player, LiveTrial's sign-in ends with a message to set up your Player on the website first. After you change the address LiveTrial restarts; if it does not, quit it and open it again. Accounts and waiting runs for another server stay with that server. When you stop using this PC with the installation, remove the MK8DX certificate from **Trusted Root Certification Authorities** again (chapter 6).
 
 (Image: android-change-server)
 

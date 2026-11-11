@@ -394,6 +394,34 @@ def move_offline_installation(state, value, qa_offline_candidate=False):
 
 ROOT = Path(__file__).resolve().parent.parent
 
+# The console setup question, in plain words. A package offers only the routes it can install.
+ROUTE_CHOICES = {
+    "A1": "Try MK8DX on this computer only (Docker; sign-in mail stays on this computer)",
+    "A2": "Home or club network with your own mail server (advanced; for most homes and clubs use the "
+          "mk8dx-a2 package, which needs no mail server)",
+    "A2O": "Home or club network without internet (the mk8dx-a2 package opens this setup in your browser)",
+    "B1": "Public website on your own server (a VPS with Docker, your own domain and a mail provider)",
+    "A3": "This Windows computer without Docker (XAMPP and Node.js)",
+    "B2": "Public website on shared hosting with Node.js and MariaDB",
+}
+
+
+def package_routes(root=ROOT):
+    """The routes this folder can install: a Docker host package, a package without Docker, or a source
+    checkout (everything)."""
+    docker = (root / "compose.yaml").is_file()
+    native = (root / "Start-MK8DX-No-Docker.cmd").is_file()
+    packaged = (root / "PACKAGE_MANIFEST.json").is_file()
+    if packaged and native and not docker:
+        return ["A3", "B2"]
+    if packaged and docker:
+        try:
+            lan = json.loads((root / "images" / "images.json").read_text(encoding="utf-8")).get("qaOfflineCandidate") is True
+        except (OSError, ValueError):
+            lan = False
+        return (["A2O"] if lan else []) + ["A1", "A2", "B1"]
+    return ["A1", "A2", "A2O", "B1", "A3", "B2"]
+
 
 def compose_command(state):
     state = safe_state_dir(state, existing=True)
@@ -911,10 +939,15 @@ def main():
         return
     native_route = None
     if args.action == "wizard":
-        print("A1: one computer with Docker; A2: private network with your own mail server; "
-              "A2O: private network without internet (personal invitations, QA candidate); "
-              "A3: XAMPP and Node.js; B1: Docker VPS; B2: shared Node.js hosting (documented for mijn.host)")
-        selected = input("Choose A1, A2, A2O, A3, B1 or B2: ").strip().upper().replace(" ", "")
+        offered = package_routes()
+        print("Where will MK8DX run?")
+        for code in offered:
+            print(f"  {code:<4} {ROUTE_CHOICES[code]}")
+        selected = ""
+        while selected not in offered:
+            selected = input(f"Type {', '.join(offered[:-1])} or {offered[-1]} and press Enter: ").strip().upper().replace(" ", "")
+            if selected not in offered:
+                print(f"'{selected}' is not one of the choices above.")
         if selected in ("A3", "B2"):
             from native_install import wizard as native_wizard
             native_wizard(args.state_dir, selected)

@@ -231,14 +231,20 @@ def main():
                 hashes.setdefault(name, []).append(f"--hash=sha256:{digest}")
             lines = [f"{name}=={pins[name]} " + " ".join(rows) for name, rows in sorted(hashes.items())]
             file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(lines) + "\n").encode()
-        first = (f"MK8DX host package {args.revision}\n\n"
-                 + ("A2 OFFLINE QA CANDIDATE: only for a disposable test host; not a qualified route yet.\n"
-                    + START[args.platform] + "\n"
-                    if args.offline_candidate else "") +
-                 "Open docs/install/MK8DX_Handleiding_NL.docx or .txt (Nederlands),\n"
-                 "or docs/install/MK8DX_User_Guide_EN.docx or .txt (English).\n"
-                 "Windows: double-click Start-MK8DX.cmd. Ubuntu: sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance.\n"
-                 "Your installation data is created outside this package. Never publish it or a backup.\n")
+        if args.offline_candidate:
+            first = (f"MK8DX at home or at the club (A2), package {args.revision}\n\n"
+                     + START[args.platform] + "\n"
+                     "Step by step, with pictures: docs/install/guide/en.html (English) or\n"
+                     "docs/install/guide/nl.html (Nederlands). The wizard's Manual link opens the same guide.\n"
+                     "Updating later: unpack a newer package in a new folder and start it the same way.\n\n"
+                     "Your installation data is created outside this package. Never publish it or a backup.\n")
+        else:
+            first = (f"MK8DX host package {args.revision}\n\n"
+                     "Open docs/install/MK8DX_Handleiding_NL.docx or .txt (Nederlands),\n"
+                     "or docs/install/MK8DX_User_Guide_EN.docx or .txt (English).\n"
+                     "Windows: double-click Start-MK8DX.cmd. Ubuntu: sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance.\n"
+                     "For home or club use without internet, download the mk8dx-a2-... package instead.\n"
+                     "Your installation data is created outside this package. Never publish it or a backup.\n")
         file_bytes["README-FIRST.txt"] = first.encode("utf-8")
         receipt = {"schemaVersion": "mk8dx.host-bundle.v1", "revision": args.revision,
                    "platform": args.platform, "arch": args.arch,

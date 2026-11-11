@@ -27,13 +27,14 @@ function Show-Banner {
     Write-Host ($rows[$i][3] + $rows[$i][4]) -ForegroundColor White
   }
   $revision = ''
+  $lan = $false
   $named = Join-Path $root 'images\images.json'
   if (Test-Path -LiteralPath $named) {
-    try { $revision = (Get-Content -LiteralPath $named -Raw | ConvertFrom-Json).revision } catch { $revision = '' }
+    try { $info = Get-Content -LiteralPath $named -Raw | ConvertFrom-Json; $revision = $info.revision; $lan = $info.qaOfflineCandidate -eq $true } catch { $revision = '' }
   }
   Write-Host ''
   Write-Host '   T I M E   T R I A L S' -NoNewline -ForegroundColor Yellow
-  Write-Host ('   home & club LAN' + $(if ($revision) { "   package $revision" } else { '' })) -ForegroundColor DarkGray
+  Write-Host ('   ' + $(if ($lan) { 'home & club LAN' } else { 'community server' }) + $(if ($revision) { "   package $revision" } else { '' })) -ForegroundColor DarkGray
   Write-Host ('   ' + ('-' * 44)) -ForegroundColor DarkGray
   Write-Host ''
 }

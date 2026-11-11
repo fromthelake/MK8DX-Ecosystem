@@ -290,7 +290,7 @@ LiveTrial is een Windows-programma dat je Time Trials via een capturekaart (een 
 4. Klik op **Aanmelden** en kies **Open de goedkeuringspagina**. Keur het apparaat in de browser goed.
 5. Verstuur ritten met **Nu verzenden**, of zet **Nieuwe ritten automatisch verzenden** aan in Instellingen.
 
-Meer uitleg staat in `docs/install/A2_EIGEN_NETWERK.md`, deel "LiveTrial op een tweede Windows-pc".
+Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding dat je eerst je Player op de website moet instellen. Na het wijzigen van het adres start LiveTrial opnieuw; gebeurt dat niet, sluit LiveTrial dan en open het opnieuw. Accounts en wachtende runs voor een andere server blijven bij die server. Gebruik je deze pc niet meer met de installatie, verwijder het MK8DX-certificaat dan weer uit **Vertrouwde basiscertificeringsinstanties** (hoofdstuk 6).
 
 (Afbeelding: android-server-wijzigen)
 
