@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createOfflineHostApp } from "../src/administration/offline-host-app.js";
+import { OfflineHostAccountError } from "../src/administration/offline-host-accounts.js";
 import { OfflineHostSessions } from "../src/administration/offline-host-session.js";
 import { OfflineHostUnlockStore } from "../src/administration/offline-host-unlock.js";
 
@@ -28,6 +29,7 @@ async function fixture(accountId: string | null) {
   const created: { accountKey: string; userAccountId: string; displayLabel: string;
     role: "account" | "administrator"; active: true }[] = [];
   const revoked: string[] = [];
+  const signedOut: [string, string][] = [];
   const accounts = {
     async create(_actor: string | null, displayLabel: string, role: "account" | "administrator") {
       const account = { accountKey: "offline_account.12345678-1234-1234-1234-123456789abc",
@@ -36,6 +38,13 @@ async function fixture(accountId: string | null) {
       return account;
     },
     async list() { return created; },
+    async signOutEverywhere(actor: string, accountKey: string) {
+      signedOut.push([actor, accountKey]);
+      if (accountKey === "offline_account.00000000-0000-0000-0000-000000000000") {
+        throw new OfflineHostAccountError("forbidden");
+      }
+      return { sessions: 2, invitations: 1 };
+    },
   };
   const tickets = {
     async issue() { return { invitationId: "offline_invitation.12345678-1234-1234-1234-123456789abc",
@@ -45,7 +54,8 @@ async function fixture(accountId: string | null) {
   const app = await createOfflineHostApp({ origin, unlocks, sessions, accounts, tickets,
     publicOrigin: "https://192.168.50.20",
     rootCertificateSha256: "a".repeat(64), rootSpkiSha256: "b".repeat(64) });
-  return { app, issued, unlocks, sessions, created, revoked, forbid: () => { allowed = false; } };
+  return { app, issued, unlocks, sessions, created, revoked, signedOut,
+    forbid: () => { allowed = false; } };
 }
 
 describe("isolated offline host listener", () => {
@@ -120,6 +130,31 @@ describe("isolated offline host listener", () => {
         payload: { displayLabel: "Host owner", role: "administrator" } });
       expect(created.statusCode).toBe(200);
       await expect(unlocks.verify(issued.code)).rejects.toMatchObject({ code: "unavailable" });
+    } finally { await app.close(); }
+  });
+
+  it("lets an administrator sign another account out everywhere, never anonymously", async () => {
+    const { app, issued, signedOut } = await fixture(administrator);
+    try {
+      const target = "offline_account.12345678-1234-1234-1234-123456789abc";
+      const anonymous = await app.inject({ method: "POST", url: "/api/accounts/sign-out",
+        headers: { host, origin, "content-type": "application/json" }, payload: { accountKey: target } });
+      expect(anonymous.statusCode).toBe(403);
+      const unlocked = await app.inject({ method: "POST", url: "/api/unlock",
+        headers: { host, origin, "content-type": "application/json" }, payload: { code: issued.code } });
+      const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
+      const headers = { host, origin, cookie, "content-type": "application/json" };
+      const extra = await app.inject({ method: "POST", url: "/api/accounts/sign-out", headers,
+        payload: { accountKey: target, everyone: true } });
+      expect(extra.statusCode).toBe(400);
+      const done = await app.inject({ method: "POST", url: "/api/accounts/sign-out", headers,
+        payload: { accountKey: target } });
+      expect(done.statusCode).toBe(200);
+      expect(done.json()).toEqual({ sessions: 2, invitations: 1 });
+      expect(signedOut).toEqual([[administrator, target]]);
+      const self = await app.inject({ method: "POST", url: "/api/accounts/sign-out", headers,
+        payload: { accountKey: "offline_account.00000000-0000-0000-0000-000000000000" } });
+      expect(self.statusCode).toBe(403);
     } finally { await app.close(); }
   });
 

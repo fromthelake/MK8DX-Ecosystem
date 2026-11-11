@@ -87,6 +87,57 @@ integration("offline host accounts on disposable MySQL/MariaDB", () => {
       accountKey: player.accountKey, role: "account" });
   });
 
+  it("signs another account out on every device and cannot sign out the actor", async () => {
+    const first = created[0]!;
+    const player = await accounts.create(first.userAccountId, "Lost phone", "account");
+    created.push(player);
+    const [emailRows] = await pool.execute<(RowDataPacket & { email: string })[]>(
+      "SELECT auth_email email FROM offline_auth_accounts WHERE account_key=?", [player.accountKey]);
+    const authUserId = "a5b2c3d4-0000-4000-8000-00000000c0de";
+    await pool.execute(
+      "INSERT INTO mk8dx_auth_user (id, name, email, emailVerified) VALUES (?, 'Lost phone', ?, TRUE)",
+      [authUserId, emailRows[0]!.email]);
+    try {
+      for (const id of ["a5b2c3d4-0000-4000-8000-0000000005e1", "a5b2c3d4-0000-4000-8000-0000000005e2"]) {
+        await pool.execute(
+          `INSERT INTO mk8dx_auth_session (id, expiresAt, token, updatedAt, userId)
+           VALUES (?, TIMESTAMPADD(DAY, 7, CURRENT_TIMESTAMP(3)), ?, CURRENT_TIMESTAMP(3), ?)`,
+          [id, `token-${id}`, authUserId]);
+      }
+      await pool.execute(
+        `INSERT INTO account_switch_remembered_accounts
+          (entry_id, device_digest, auth_user_id, remembered_at_ms, last_used_at_ms)
+         VALUES ('remembered000000000001', ?, ?, ?, ?)`, [Buffer.alloc(32, 7), authUserId, now, now]);
+      const tickets = new OfflineInvitationTicketService(
+        new MysqlOfflineInvitationTicketRepository(pool), Buffer.alloc(32, 23), () => now);
+      const open = await tickets.issue({ role: "administrator", userAccountId: first.userAccountId },
+        player.accountKey, "account");
+      invitations.push(open.invitationId);
+
+      await expect(accounts.signOutEverywhere(first.userAccountId, first.accountKey))
+        .rejects.toMatchObject({ code: "forbidden" });
+      await expect(accounts.signOutEverywhere(player.userAccountId, first.accountKey))
+        .rejects.toMatchObject({ code: "forbidden" });
+      expect(await accounts.signOutEverywhere(first.userAccountId, player.accountKey))
+        .toEqual({ sessions: 2, invitations: 1 });
+
+      const [sessions] = await pool.execute<RowDataPacket[]>(
+        "SELECT id FROM mk8dx_auth_session WHERE userId=?", [authUserId]);
+      expect(sessions).toHaveLength(0);
+      const [remembered] = await pool.execute<RowDataPacket[]>(
+        "SELECT entry_id FROM account_switch_remembered_accounts WHERE auth_user_id=?", [authUserId]);
+      expect(remembered).toHaveLength(0);
+      const [audit] = await pool.execute<RowDataPacket[]>(
+        `SELECT session_id FROM mk8dx_auth_audit_event
+         WHERE event_kind='auth_session_revoked' AND subject_id=?`, [authUserId]);
+      expect(audit).toHaveLength(2);
+      await expect(tickets.redeem(open.token)).rejects.toBeDefined();
+    } finally {
+      await pool.execute("DELETE FROM mk8dx_auth_audit_event WHERE subject_id=?", [authUserId]);
+      await pool.execute("DELETE FROM mk8dx_auth_user WHERE id=?", [authUserId]);
+    }
+  });
+
   it("grants a second offline administrator only through the existing policy", async () => {
     const first = created[0]!;
     const second = await accounts.create(first.userAccountId, "Second host admin", "administrator");

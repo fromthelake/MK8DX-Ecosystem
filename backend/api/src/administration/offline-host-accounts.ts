@@ -147,4 +147,70 @@ export class MysqlOfflineHostAccounts {
        ORDER BY offline.created_at_ms, offline.account_key LIMIT 500`);
     return rows.map(decode);
   }
+
+  /**
+   * An administrator signs another account out on every device (ADR-0224 amendment,
+   * owner 2026-11-11): every web and app session ends, no shared device can switch back
+   * to it with one tap, and its open sign-in cards stop working. Each ended session is
+   * audited as `auth_session_revoked`. The acting administrator uses "Sign out on all
+   * devices" for their own account instead.
+   */
+  public async signOutEverywhere(actorAccountId: string, accountKey: string):
+  Promise<{ sessions: number; invitations: number }> {
+    if (!/^offline_account\.[0-9a-f-]{36}$/.test(accountKey)) {
+      throw new OfflineHostAccountError("invalid");
+    }
+    const now = this.nowMs();
+    if (!Number.isSafeInteger(now) || now < 0) { throw new OfflineHostAccountError("invalid"); }
+    const connection = await this.pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      const [actor] = await connection.execute<RowDataPacket[]>(
+        `SELECT user.public_id FROM user_accounts user
+         INNER JOIN administrator_grants grant_record
+           ON grant_record.user_account_id=user.user_account_id AND grant_record.grant_status='active'
+         INNER JOIN offline_auth_accounts offline
+           ON offline.user_account_id=user.user_account_id
+           AND offline.account_role='administrator' AND offline.active=TRUE
+         WHERE user.public_id=? AND user.account_status='active' LIMIT 2 FOR UPDATE`, [actorAccountId]);
+      if (actor.length !== 1) { throw new OfflineHostAccountError("forbidden"); }
+      const [target] = await connection.execute<(RowDataPacket & {
+        authUserId: string | null; userAccountId: string; })[]>(
+        `SELECT auth_user.id authUserId, user.public_id userAccountId
+         FROM offline_auth_accounts offline
+         INNER JOIN user_accounts user ON user.user_account_id=offline.user_account_id
+         LEFT JOIN mk8dx_auth_user auth_user ON auth_user.email=offline.auth_email
+         WHERE offline.account_key=? LIMIT 2 FOR UPDATE`, [accountKey]);
+      if (target.length !== 1) { throw new OfflineHostAccountError("invalid"); }
+      if (target[0]!.userAccountId === actorAccountId) { throw new OfflineHostAccountError("forbidden"); }
+      const [invitations] = await connection.execute<ResultSetHeader>(
+        `UPDATE offline_invitation_tickets SET revoked_at_ms=?
+         WHERE account_key=? AND consumed_at_ms IS NULL AND revoked_at_ms IS NULL
+           AND expires_at_ms > ?`, [now, accountKey, now]);
+      const authUserId = target[0]!.authUserId;
+      let sessions = 0;
+      if (authUserId !== null) {
+        const [ended] = await connection.execute<(RowDataPacket & { id: string })[]>(
+          "SELECT id FROM mk8dx_auth_session WHERE userId=? FOR UPDATE", [authUserId]);
+        for (const session of ended) {
+          await connection.execute(
+            `INSERT INTO mk8dx_auth_audit_event
+              (event_kind, privacy_class, subject_id, session_id, client_id, occurred_at_ms)
+             VALUES ('auth_session_revoked', 'private', ?, ?, NULL, ?)`,
+            [authUserId, session.id, now]);
+        }
+        await connection.execute("DELETE FROM mk8dx_auth_session WHERE userId=?", [authUserId]);
+        await connection.execute(
+          "DELETE FROM account_switch_remembered_accounts WHERE auth_user_id=?", [authUserId]);
+        sessions = ended.length;
+      }
+      await connection.commit();
+      return { sessions, invitations: invitations.affectedRows };
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
+  }
 }

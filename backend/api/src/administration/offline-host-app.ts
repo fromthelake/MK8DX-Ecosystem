@@ -6,7 +6,7 @@ import QRCode from "qrcode";
 
 import { OfflineHostSessions } from "./offline-host-session.js";
 import { OfflineHostUnlockStore } from "./offline-host-unlock.js";
-import type { MysqlOfflineHostAccounts } from "./offline-host-accounts.js";
+import { OfflineHostAccountError, type MysqlOfflineHostAccounts } from "./offline-host-accounts.js";
 import type { OfflineInvitationTicketService } from "../authentication/offline-invitation-ticket.js";
 
 const cookieName = "mk8dx_host_session";
@@ -145,7 +145,7 @@ export async function createOfflineHostApp(options: Readonly<{
   origin: string;
   unlocks: OfflineHostUnlockStore;
   sessions: OfflineHostSessions;
-  accounts: Pick<MysqlOfflineHostAccounts, "create" | "list">;
+  accounts: Pick<MysqlOfflineHostAccounts, "create" | "list" | "signOutEverywhere">;
   tickets: Pick<OfflineInvitationTicketService, "issue" | "revoke">;
   publicOrigin: string;
   rootCertificateSha256: string;
@@ -290,6 +290,27 @@ export async function createOfflineHostApp(options: Readonly<{
         return reply.code(500).send({ code: "invitation_unavailable" });
       }
     } catch { return reply.code(404).send({ code: "invitation_unavailable" }); }
+  });
+  app.post("/api/accounts/sign-out", async (request, reply) => {
+    const session = await options.sessions.read(cookie(request.headers.cookie));
+    if (session?.accountId === undefined || session.accountId === null) {
+      return reply.code(403).send();
+    }
+    const body = request.body;
+    if (typeof body !== "object" || body === null || Array.isArray(body) ||
+        Object.keys(body).length !== 1 ||
+        typeof (body as Record<string, unknown>)["accountKey"] !== "string") {
+      return reply.code(400).send();
+    }
+    try {
+      return await options.accounts.signOutEverywhere(session.accountId,
+        (body as { accountKey: string }).accountKey);
+    } catch (error) {
+      if (error instanceof OfflineHostAccountError && error.code === "forbidden") {
+        return reply.code(403).send({ code: "sign_out_forbidden" });
+      }
+      return reply.code(404).send({ code: "account_unavailable" });
+    }
   });
   app.post("/api/invitations/revoke", async (request, reply) => {
     const session = await options.sessions.read(cookie(request.headers.cookie));
