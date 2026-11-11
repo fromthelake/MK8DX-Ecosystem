@@ -1,5 +1,13 @@
 param([string]$StateDir = (Join-Path $env:LOCALAPPDATA 'MK8DX\Server'))
 $ErrorActionPreference = 'Stop'
+# Windows PowerShell 5.1 turns any stderr line of a redirected native command into a terminating error
+# under 'Stop' (groep3 cold run: "No such image" from the image check). Quiet probes use only the exit code.
+function Invoke-NativeQuiet([scriptblock]$Command) {
+  $previous = $ErrorActionPreference
+  $ErrorActionPreference = 'Continue'
+  try { & $Command *> $null } finally { $ErrorActionPreference = $previous }
+  return $LASTEXITCODE
+}
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location -LiteralPath $root
 Write-Host "MK8DX package: $root"
@@ -15,8 +23,8 @@ try {
 }
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
 $dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)
-if ($dockerFound) { docker info *> $null }
-if (-not $dockerFound -or $LASTEXITCODE -ne 0) {
+$dockerRunning = $dockerFound -and ((Invoke-NativeQuiet { docker info }) -eq 0)
+if (-not $dockerRunning) {
   throw 'Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry.'
 }
 docker compose version | Out-Host
@@ -51,8 +59,7 @@ if (Test-Path -LiteralPath $wheels) {
   $python = Join-Path $venv 'Scripts\python.exe'
 }
 foreach ($tag in $tags) {
-  docker image inspect $tag *> $null
-  if ($LASTEXITCODE -ne 0) {
+  if ((Invoke-NativeQuiet { docker image inspect $tag }) -ne 0) {
     if (-not (Test-Path -LiteralPath $bundle)) { throw "Missing prebuilt image $tag. Use the complete host installation package." }
     $load = $true
   }
