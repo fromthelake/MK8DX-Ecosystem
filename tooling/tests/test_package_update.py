@@ -61,6 +61,29 @@ class UpdateOfferTest(unittest.TestCase):
             self.assertFalse(offer["available"])
             self.assertTrue(offer["olderPackage"])
 
+    def test_release_tags_are_ordered_and_a_candidate_comes_before_its_release(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            state = installation(Path(temporary), images=NEW, revision="v0.2.0-rc.1")
+            with shipped("v0.2.0-rc.2"):
+                self.assertTrue(install.update_offer(state)["available"])
+            with shipped("v0.2.0"):
+                self.assertTrue(install.update_offer(state)["available"])
+            with shipped("v0.1.9", OLD):
+                offer = install.update_offer(state)
+                self.assertFalse(offer["available"])
+                self.assertTrue(offer["olderPackage"])
+            with shipped("v0.2.0-rc.1"):
+                self.assertFalse(install.update_offer(state)["available"])
+
+    def test_a_qa_build_and_a_release_are_compared_by_their_images_only(self):
+        # A QA host (r23) moving to the first GitHub release: different images, so it is offered.
+        with tempfile.TemporaryDirectory() as temporary:
+            state = installation(Path(temporary), revision="r23")
+            with shipped("v0.2.0-rc.1"):
+                offer = install.update_offer(state)
+            self.assertTrue(offer["available"])
+            self.assertFalse(offer["olderPackage"])
+
     def test_a_source_checkout_offers_nothing(self):
         with tempfile.TemporaryDirectory() as temporary:
             state = installation(Path(temporary), revision="r10")

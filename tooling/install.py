@@ -527,8 +527,19 @@ def package_images():
 
 
 def revision_number(revision):
+    """A comparable key for a package revision, or None when it cannot be ordered.
+
+    QA builds are numbered rN; GitHub releases carry their tag, vX.Y.Z or vX.Y.Z-rc.N (a release
+    candidate sorts before its release). Only keys of the same kind are compared with each other.
+    """
     match = re.fullmatch(r"r(\d+)", revision or "")
-    return int(match.group(1)) if match else None
+    if match:
+        return ("qa", int(match.group(1)))
+    match = re.fullmatch(r"v(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?", revision or "")
+    if match:
+        major, minor, patch, rc = match.groups()
+        return ("release", int(major), int(minor), int(patch), int(rc) if rc is not None else float("inf"))
+    return None
 
 
 def installed_package(state):
@@ -548,10 +559,11 @@ def update_offer(state):
         return {"available": False}
     running = installed_package(state)
     new, old = revision_number(shipped["revision"]), revision_number(running["revision"])
-    older = new is not None and old is not None and new < old
+    comparable = new is not None and old is not None and new[0] == old[0]
+    older = comparable and new < old
     # A newer package is an update even with the same images: its launcher, wizard and guide are new, and the
     # scheduled tasks and the shortcut must move to its folder (owner 11-11, r20 -> r21 offered nothing).
-    newer = new is not None and old is not None and new > old
+    newer = comparable and new > old
     differs = (running["api"], running["web"]) != (shipped["api"], shipped["web"]) or newer
     return {"available": differs and not older, "olderPackage": differs and older,
             "from": running["revision"], "to": shipped["revision"]}
