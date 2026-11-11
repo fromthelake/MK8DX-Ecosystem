@@ -4911,6 +4911,7 @@
   "Root public key SHA-256 (SPKI)": "Открытый ключ корня SHA-256 (SPKI)",
   "Scan the setup QR on the host screen. The phone must be on the same network.": "Отсканируйте QR-код настройки на экране хоста. Телефон должен быть в той же сети.",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "Это не QR-код настройки установки MK8DX. Отсканируйте QR-код настройки на экране хоста, а не личное приглашение.",
-  "Use the camera": "Использовать камеру"
+  "Use the camera": "Использовать камеру",
+  "Matched by hand": "Сопоставлено вручную"
  }
 }

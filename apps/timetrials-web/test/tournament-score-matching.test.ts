@@ -46,12 +46,13 @@ describe("matching workbook names onto Players", () => {
     expect(scoreMatchLabel(0.5, true, false).tone).toBe("settled");
     // A hand-made link outranks everything, including no confidence at all.
     expect(scoreMatchLabel(null, false, true)).toEqual({
-      label: "Handmatig gekoppeld", tone: "settled",
+      label: "Matched by hand", tone: "settled",
     });
+    expect(scoreMatchLabel(1, false, false).label).toBe("Exact match");
   });
 
   it("shows the similarity as a whole percentage, and nothing when unknown", () => {
-    expect(scoreConfidencePercent(0.937)).toBe("93% overeenkomst");
+    expect(scoreConfidencePercent(0.937)).toBe("93% similar");
     expect(scoreConfidencePercent(null)).toBeNull();
   });
 

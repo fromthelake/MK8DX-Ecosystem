@@ -1,3 +1,5 @@
+import { localized } from "./product-language.js";
+
 // Matching an Excel score row to a participant, shared by Step 5 and Step 9.
 //
 // This is the source Manager's `scoreImportSimilarity` / `buildSuggestedScore
@@ -72,18 +74,18 @@ export function scoreMatchLabel(
   viaAlias: boolean,
   manual: boolean,
 ): Readonly<{ label: string; tone: ScoreMatchTone }> {
-  if (manual) { return { label: "Handmatig gekoppeld", tone: "settled" }; }
-  if (confidence === null) { return { label: "Controleren", tone: "attention" }; }
-  if (viaAlias) { return { label: "Naam-match", tone: "settled" }; }
-  if (confidence >= 0.999) { return { label: "Exacte match", tone: "settled" }; }
-  if (confidence >= 0.93) { return { label: "Zeer sterk", tone: "strong" }; }
-  if (confidence >= 0.75) { return { label: "Waarschijnlijk", tone: "likely" }; }
-  return { label: "Controleren", tone: "attention" };
+  if (manual) { return { label: localized("Matched by hand", "Handmatig gekoppeld"), tone: "settled" }; }
+  if (confidence === null) { return { label: localized("Check", "Controleren"), tone: "attention" }; }
+  if (viaAlias) { return { label: localized("Name match", "Naam-match"), tone: "settled" }; }
+  if (confidence >= 0.999) { return { label: localized("Exact match", "Exacte match"), tone: "settled" }; }
+  if (confidence >= 0.93) { return { label: localized("Very strong", "Zeer sterk"), tone: "strong" }; }
+  if (confidence >= 0.75) { return { label: localized("Likely", "Waarschijnlijk"), tone: "likely" }; }
+  return { label: localized("Check", "Controleren"), tone: "attention" };
 }
 
 /** The source shows the similarity beside the badge as a whole percentage. */
 export function scoreConfidencePercent(confidence: number | null): string | null {
-  return confidence === null ? null : `${Math.trunc(confidence * 100)}% overeenkomst`;
+  return confidence === null ? null : localized(`${Math.trunc(confidence * 100)}% similar`, `${Math.trunc(confidence * 100)}% overeenkomst`);
 }
 
 /** The source's `SCORE_IMPORT_MIN_SIMILARITY`: below this it is not a candidate. */

@@ -4911,6 +4911,7 @@
   "Root public key SHA-256 (SPKI)": "루트 공개 키 SHA-256 (SPKI)",
   "Scan the setup QR on the host screen. The phone must be on the same network.": "호스트 화면의 설정 QR을 스캔하세요. 휴대폰은 같은 네트워크에 있어야 합니다.",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "MK8DX 설치의 설정 QR이 아닙니다. 개인 초대가 아니라 호스트 화면의 설정 QR을 스캔하세요.",
-  "Use the camera": "카메라 사용"
+  "Use the camera": "카메라 사용",
+  "Matched by hand": "수동으로 연결됨"
  }
 }

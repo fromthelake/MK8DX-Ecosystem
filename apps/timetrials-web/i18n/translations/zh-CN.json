@@ -4911,6 +4911,7 @@
   "Root public key SHA-256 (SPKI)": "根公钥 SHA-256 (SPKI)",
   "Scan the setup QR on the host screen. The phone must be on the same network.": "扫描主机屏幕上的设置二维码。手机必须在同一网络中。",
   "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.": "这不是 MK8DX 安装的设置二维码。请扫描主机屏幕上的设置二维码，而不是个人邀请。",
-  "Use the camera": "使用相机"
+  "Use the camera": "使用相机",
+  "Matched by hand": "手动匹配"
  }
 }

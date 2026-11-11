@@ -132,7 +132,7 @@ describe("W02 · signed-in Home owner review", () => {
       await view.ready;
       await settle();
       results.push({
-        value: byClass(host, "ds-home__standing-value")?.textContent,
+        value: byClass(host, "ds-home__standing-value")?.textContent ?? undefined,
         badge: allByClass(host, "ds-home__standing-badge").some((node) => (node.textContent ?? "").includes("Tier:")),
       });
       view.unmount();

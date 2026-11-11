@@ -3453,7 +3453,8 @@
     "localized"
    ],
    "places": [
-    "tournament-operation-view.ts"
+    "tournament-operation-view.ts",
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -7162,6 +7163,16 @@
    ]
   },
   {
+   "key": "Exact match",
+   "nl": "Exacte match",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
+   ]
+  },
+  {
    "key": "Exactly equal to your best",
    "nl": "Precies gelijk aan jouw beste tijd",
    "kinds": [
@@ -10119,6 +10130,16 @@
    ]
   },
   {
+   "key": "Likely",
+   "nl": "Waarschijnlijk",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
+   ]
+  },
+  {
    "key": "Link",
    "kinds": [
     "text"
@@ -11401,6 +11422,16 @@
    ]
   },
   {
+   "key": "Matched by hand",
+   "nl": "Handmatig gekoppeld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
+   ]
+  },
+  {
    "key": "Matches your answers",
    "nl": "Past bij je antwoorden",
    "kinds": [
@@ -11971,6 +12002,16 @@
    ],
    "places": [
     "profile-alias-section.ts"
+   ]
+  },
+  {
+   "key": "Name match",
+   "nl": "Naam-match",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -26012,6 +26053,16 @@
    ]
   },
   {
+   "key": "Very strong",
+   "nl": "Zeer sterk",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
+   ]
+  },
+  {
    "key": "Video",
    "nl": "Video",
    "kinds": [
@@ -32407,6 +32458,16 @@
    ],
    "places": [
     "administrator-observed-identity-section.ts"
+   ]
+  },
+  {
+   "key": "{0}% similar",
+   "nl": "{0}% overeenkomst",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
