@@ -524,6 +524,169 @@ describe("account switching (ADR-0224 phase 2)", () => {
   });
 });
 
+/** A native (Android) sign-in through the device-authorization flow; returns its bearer token. */
+async function nativeSignIn(h: Harness, email: string): Promise<string> {
+  const jar: Jar = new Map();
+  await signIn(h, jar, email);
+  const code = (await h.app.inject({
+    method: "POST", url: "/api/auth/device/code", headers: browser, payload: { client_id: MK8DX_ANDROID_CLIENT_ID },
+  })).json<{ device_code: string; user_code: string }>();
+  await h.app.inject({
+    method: "GET", url: `/api/auth/device?user_code=${encodeURIComponent(code.user_code)}`,
+    headers: { cookie: header(jar), "x-real-ip": "203.0.113.7" },
+  });
+  await h.app.inject({
+    method: "POST", url: "/api/auth/device/approve", headers: { ...browser, cookie: header(jar) },
+    payload: { userCode: code.user_code },
+  });
+  const token = await h.app.inject({
+    method: "POST", url: "/api/auth/device/token", headers: { "content-type": "application/json", "x-real-ip": "203.0.113.7" },
+    payload: { grant_type: "urn:ietf:params:oauth:grant-type:device_code", device_code: code.device_code,
+      client_id: MK8DX_ANDROID_CLIENT_ID },
+  });
+  expect(token.statusCode, token.body).toBe(200);
+  return token.json<{ access_token: string }>().access_token;
+}
+
+const appDevice = "A".repeat(43);
+const otherAppDevice = "B".repeat(43);
+const app = (device: string, bearer?: string) => ({
+  "content-type": "application/json", "x-real-ip": "203.0.113.7", "x-mk8dx-account-device": device,
+  ...(bearer === undefined ? {} : { authorization: `Bearer ${bearer}` }),
+});
+
+async function nativeRemember(h: Harness, device: string, bearer: string) {
+  h.advance(1_000);
+  return h.app.inject({ method: "POST", url: "/v1/session/native-remember", headers: app(device, bearer), payload: {} });
+}
+async function nativeList(h: Harness, device: string, bearer?: string) {
+  const response = await h.app.inject({ method: "GET", url: "/v1/session/native-remembered-accounts",
+    headers: app(device, bearer) });
+  expect(response.statusCode, response.body).toBe(200);
+  return response.json<{ accounts: Array<{ entryId: string; label?: string; pinRequired: boolean; current: boolean }> }>().accounts;
+}
+async function nativeSwitch(h: Harness, device: string, entryId: string, bearer?: string, pin?: string) {
+  return h.app.inject({ method: "POST", url: "/v1/session/native-account-switch", headers: app(device, bearer),
+    payload: { entryId, ...(pin === undefined ? {} : { pin }) } });
+}
+async function whoIsBearer(h: Harness, token: string): Promise<string | null> {
+  const session = await (h.auth.api as unknown as AccountSwitchAuthApi)
+    .getSession({ headers: new Headers({ authorization: `Bearer ${token}` }) });
+  if (session === null) { return null; }
+  return (h.database["mk8dx_auth_user"] as Array<{ id: string; email: string }>)
+    .find((user) => user.id === session.user.id)?.email ?? null;
+}
+
+describe("account switching in the native app (ADR-0224 amendment)", () => {
+  it("remembers app accounts per app device, never administrators, and switches to a new bearer", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      const bob = await nativeSignIn(h, "bob@example.test");
+      const root = await nativeSignIn(h, "root@example.test");
+      expect((await nativeRemember(h, appDevice, ann)).json()).toEqual(
+        { schemaVersion: "mk8dx.native-account-remember.v1", remembered: true });
+      expect((await nativeRemember(h, appDevice, bob)).json<{ remembered: boolean }>().remembered).toBe(true);
+      expect((await nativeRemember(h, appDevice, root)).json<{ remembered: boolean }>().remembered).toBe(false);
+      const listed = await nativeList(h, appDevice, bob);
+      expect(listed.map((account) => [account.label, account.current])).toEqual([["Bob", true], ["Ann", false]]);
+      // Another app device and a signed-out app on this device.
+      expect(await nativeList(h, otherAppDevice)).toEqual([]);
+      expect((await nativeList(h, appDevice)).map((account) => account.current)).toEqual([false, false]);
+
+      const switched = await nativeSwitch(h, appDevice, listed[1]!.entryId, bob);
+      expect(switched.statusCode, switched.body).toBe(200);
+      const body = switched.json<{ schemaVersion: string; token: string; expiresIn: number }>();
+      expect(body.schemaVersion).toBe("mk8dx.native-account-switch.v1");
+      expect(Object.keys(body).sort()).toEqual(["expiresIn", "schemaVersion", "token"]);
+      expect(switched.headers["set-cookie"]).toBeUndefined();
+      expect(await whoIsBearer(h, body.token)).toBe("ann@example.test");
+      // Only this app's previous session ended; Bob stays one tap away.
+      expect(await whoIsBearer(h, bob)).toBeNull();
+      expect((await nativeList(h, appDevice, body.token)).map((account) => [account.label, account.current]))
+        .toEqual([["Ann", true], ["Bob", false]]);
+    } finally { await h.app.close(); }
+  });
+
+  it("checks the PIN on the server for the app too", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      const bob = await nativeSignIn(h, "bob@example.test");
+      await nativeRemember(h, appDevice, ann);
+      await nativeRemember(h, appDevice, bob);
+      await h.pins.set("user_account.ann", "4821", Date.now());
+      const target = (await nativeList(h, appDevice, bob)).find((account) => account.label === "Ann")!;
+      expect(target.pinRequired).toBe(true);
+      expect((await nativeSwitch(h, appDevice, target.entryId, bob)).json<{ code: string }>().code)
+        .toBe("account_switch_pin_required");
+      expect((await nativeSwitch(h, appDevice, target.entryId, bob, "0000")).json<{ code: string }>().code)
+        .toBe("account_switch_pin_invalid");
+      expect(await whoIsBearer(h, bob)).toBe("bob@example.test");
+      const right = await nativeSwitch(h, appDevice, target.entryId, bob, "4821");
+      expect(right.statusCode).toBe(200);
+    } finally { await h.app.close(); }
+  });
+
+  it("refuses browsers on the native routes and keeps the cookie and app namespaces apart", async () => {
+    const h = await harness();
+    try {
+      const jar: Jar = new Map();
+      await signIn(h, jar, "ann@example.test");
+      const cookieValue = jar.get(deviceCookieName)!;
+      // The browser's own device value presented as an app device finds nothing.
+      expect(await nativeList(h, cookieValue)).toEqual([]);
+      const withOrigin = await h.app.inject({ method: "GET", url: "/v1/session/native-remembered-accounts",
+        headers: { ...app(appDevice), origin: baseUrl } });
+      expect(withOrigin.statusCode).toBe(403);
+      const withCookie = await h.app.inject({ method: "POST", url: "/v1/session/native-account-switch",
+        headers: { ...app(appDevice), cookie: header(jar) }, payload: { entryId: "x".repeat(22) } });
+      expect(withCookie.statusCode).toBe(403);
+      const noBearer = await h.app.inject({ method: "POST", url: "/v1/session/native-remember",
+        headers: app(appDevice), payload: {} });
+      expect(noBearer.statusCode).toBe(403);
+      const badDevice = await h.app.inject({ method: "GET", url: "/v1/session/native-remembered-accounts",
+        headers: app("short") });
+      expect(badDevice.statusCode).toBe(403);
+      // The browser route still gives an app nothing.
+      const ann = await nativeSignIn(h, "ann@example.test");
+      await nativeRemember(h, appDevice, ann);
+      const browserList = await h.app.inject({ method: "GET", url: "/v1/session/remembered-accounts",
+        headers: app(appDevice, ann) });
+      expect(browserList.json<{ accounts: unknown[] }>().accounts).toEqual([]);
+    } finally { await h.app.close(); }
+  });
+
+  it("forgets on app sign-out unless switching, and everywhere on sign out on all devices", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      const bob = await nativeSignIn(h, "bob@example.test");
+      await nativeRemember(h, appDevice, ann);
+      await nativeRemember(h, appDevice, bob);
+      const kept = await h.app.inject({ method: "POST", url: "/api/auth/sign-out",
+        headers: { ...app(appDevice, bob), [KEEP_REMEMBERED_HEADER]: "1" }, payload: {} });
+      expect(kept.statusCode, kept.body).toBe(200);
+      expect((await nativeList(h, appDevice)).map((account) => account.label)).toEqual(["Bob", "Ann"]);
+      const bobAgain = (await nativeSwitch(h, appDevice,
+        (await nativeList(h, appDevice)).find((account) => account.label === "Bob")!.entryId))
+        .json<{ token: string }>().token;
+      const left = await h.app.inject({ method: "POST", url: "/api/auth/sign-out",
+        headers: app(appDevice, bobAgain), payload: {} });
+      expect(left.statusCode).toBe(200);
+      expect((await nativeList(h, appDevice)).map((account) => account.label)).toEqual(["Ann"]);
+      const browser: Jar = new Map();
+      await signIn(h, browser, "ann@example.test");
+      const everywhere = await h.app.inject({ method: "POST", url: "/api/auth/revoke-sessions",
+        headers: { ...browserHeaders, cookie: header(browser) }, payload: {} });
+      expect(everywhere.statusCode).toBe(200);
+      expect(await nativeList(h, appDevice)).toEqual([]);
+    } finally { await h.app.close(); }
+  });
+});
+
+const browserHeaders = browser;
+
 describe("PIN hashing", () => {
   it("peppers and salts, and refuses a PIN from a retired secret", async () => {
     const hasher = new AccountSwitchPinHasher(deriveAccountSwitchKeys(secrets));

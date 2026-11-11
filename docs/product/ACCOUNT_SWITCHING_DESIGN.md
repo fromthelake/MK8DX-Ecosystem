@@ -125,14 +125,39 @@ was created by a real sign-in less than 15 minutes ago (Better Auth's
 `account_switch_sessions`, deleted with the session). That is the "forgot my PIN"
 path: sign in afresh, then remove or change it.
 
-## Native clients and CSRF summary
+## Native clients (amendment 2026-11-11: switching in the Android app)
 
-- Native (bearer) clients: no new route accepts them for switching (an
-  `Authorization` header is refused), they never get a device cookie and their
-  sessions are never remembered. Their sign-in and polling flows are unchanged.
-- CSRF: Better Auth's own origin check still guards `/api/auth/*`; switching
-  needs a Strict cookie plus an exact trusted `Origin`; PIN management needs the
-  actor-bound CSRF proof.
+Owner decision 2026-11-11: the app switches accounts too, and the **server** keeps the list (the
+app holds only the active account's bearer token plus a device value), so the PIN cannot be
+bypassed by reading the app's storage and "Sign out on all devices" also empties the app's list.
+
+- **Device value:** the app creates 32 random bytes once and keeps them in app-private,
+  Keystore-encrypted storage. It sends them as `X-MK8DX-Account-Device` (43 base64url
+  characters). The server stores only `HMAC-SHA256(device key, "native:" + value)`: a separate
+  namespace, so a browser's device cookie value can never stand in for an app device, or the
+  reverse. The native routes refuse any request with an `Origin` or a `Cookie` header, so a
+  browser cannot use them.
+- **Remember:** `POST /v1/session/native-remember` with the bearer token and the device header,
+  right after a native sign-in (and once per account the app already held before this change, after
+  which the app forgets that token). Administrators are never remembered (`remembered: false`).
+  Limited to 30 per device per hour.
+- **List:** `GET /v1/session/native-remembered-accounts` with the device header (and the bearer
+  token when signed in, for `current`): the same labels-only document as the browser list.
+- **Switch:** `POST /v1/session/native-account-switch` `{ entryId, pin? }`: the same server-only
+  switch endpoint with the same administrator, PIN and rate-limit rules; it ends the app's current
+  session and answers `{ schemaVersion, token, expiresIn }` for the new bearer session (no cookie).
+- **Sign out / sign out everywhere:** the app sends the device header on `/api/auth/sign-out`
+  (with `X-MK8DX-Keep-Remembered: 1` only for "Sign in with another account"). The hooks find the
+  signed-in user from the bearer token themselves (Better Auth's own bearer conversion is not
+  guaranteed to have run in a *before* hook), so app sign-out forgets the account on that device
+  and `/revoke-sessions` forgets it everywhere.
+- The browser routes are unchanged and still give a bearer caller an empty list.
+
+## CSRF summary
+
+- Better Auth's own origin check still guards `/api/auth/*`; browser switching needs a Strict
+  cookie plus an exact trusted `Origin`; PIN management needs the actor-bound CSRF proof; native
+  routes need the device header and refuse `Origin` and cookies.
 
 ## Residual risks accepted by the owner decisions
 

@@ -11,9 +11,11 @@ import { setSessionCookie } from "better-auth/cookies";
 import {
   ACCOUNT_DEVICE_COOKIE,
   ACCOUNT_DEVICE_COOKIE_MAX_AGE_SECONDS,
+  NATIVE_ACCOUNT_DEVICE_HEADER,
   REMEMBERED_ACCOUNTS_PER_DEVICE,
   REMEMBERED_ACCOUNT_IDLE_MS,
   deviceDigest,
+  nativeDeviceDigest,
   entryIdPattern,
   newDeviceValue,
   newEntryId,
@@ -45,14 +47,21 @@ export type RememberedAccountView = Readonly<{
 }>;
 
 export type AccountSwitchOutcome =
-  | Readonly<{ outcome: "switched" }>
+  /** `token`/`expiresAtMs` are for the native route only; the browser route never forwards them. */
+  | Readonly<{ outcome: "switched"; token: string; expiresAtMs: number }>
   | Readonly<{ outcome: "unavailable" }>
   | Readonly<{ outcome: "forbidden" }>
   | Readonly<{ outcome: "pin_required" }>
   | Readonly<{ outcome: "pin_invalid" }>
   | Readonly<{ outcome: "rate_limited"; retryAfterSeconds: number }>;
 
+export type NativeRememberOutcome =
+  | Readonly<{ outcome: "remembered" }>
+  | Readonly<{ outcome: "administrator" }>
+  | Readonly<{ outcome: "unavailable" }>;
+
 type CookieContext = Readonly<{
+  headers?: Headers;
   getCookie(name: string): string | null | undefined;
   setCookie(name: string, value: string, attributes?: Record<string, unknown>): unknown;
   context: Readonly<{
@@ -71,10 +80,42 @@ function deviceCookie(ctx: CookieContext) {
   });
 }
 
+type HookContext = Readonly<{
+  headers?: Headers;
+  context: Readonly<{
+    internalAdapter: Readonly<{
+      findSession(token: string): Promise<{ session: { expiresAt: Date | string }; user: { id: string } } | null>;
+    }>;
+  }>;
+}>;
+
+/**
+ * The signed-in user in a *before* hook. A browser's cookie session is read as usual; a native
+ * app's bearer token is looked up directly, because Better Auth's bearer conversion runs in its own
+ * before hook, which is not guaranteed to have run yet.
+ */
+async function hookUserId(ctx: unknown): Promise<string | null> {
+  const session = await getSessionFromCtx(ctx as never).catch(() => null);
+  if (session !== null) { return session.user.id; }
+  const authorization = (ctx as HookContext).headers?.get("authorization");
+  if (typeof authorization !== "string" || !authorization.startsWith("Bearer ")) { return null; }
+  let token = authorization.slice(7).trim();
+  if (token.includes(".")) {
+    try { token = decodeURIComponent(token); } catch { return null; }
+    token = token.split(".")[0] ?? "";
+  }
+  if (!/^[A-Za-z0-9_-]{16,255}$/.test(token)) { return null; }
+  const found = await (ctx as HookContext).context.internalAdapter.findSession(token).catch(() => null);
+  if (found === null || new Date(found.session.expiresAt).getTime() <= Date.now()) { return null; }
+  return found.user.id;
+}
+
 export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions) {
   const nowMs = options.nowMs ?? Date.now;
+  /** The browser's device cookie, else a native app's device header (never both namespaces). */
   const currentDevice = (ctx: CookieContext): Buffer | null =>
-    deviceDigest(options.keys, ctx.getCookie(deviceCookie(ctx).name));
+    deviceDigest(options.keys, ctx.getCookie(deviceCookie(ctx).name)) ??
+      nativeDeviceDigest(options.keys, ctx.headers?.get(NATIVE_ACCOUNT_DEVICE_HEADER));
 
   return {
     id: "mk8dx-account-switch",
@@ -151,8 +192,36 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
         if (session === null) { return answer({ outcome: "unavailable" }); }
         await options.store.recordSwitchSession(session.id, now);
         await options.store.touch(device, row.entryId, now);
-        await setSessionCookie(ctx, { session, user: found });
-        return answer({ outcome: "switched" });
+        const native = nativeDeviceDigest(options.keys, ctx.headers?.get(NATIVE_ACCOUNT_DEVICE_HEADER));
+        if (native === null || !native.equals(device)) {
+          await setSessionCookie(ctx, { session, user: found });
+        }
+        return answer({ outcome: "switched", token: session.token,
+          expiresAtMs: new Date(session.expiresAt).getTime() });
+      }),
+
+      /**
+       * A native app remembers the account it just signed in with (or, once, the accounts it held
+       * before switching moved to the server). Administrators are never remembered.
+       */
+      rememberNativeAccount: createAuthEndpoint.serverOnly({
+        method: "POST",
+        requireHeaders: true,
+      }, async (ctx) => {
+        const answer = (value: NativeRememberOutcome) => ctx.json(value);
+        const device = nativeDeviceDigest(options.keys, ctx.headers?.get(NATIVE_ACCOUNT_DEVICE_HEADER));
+        if (device === null) { return answer({ outcome: "unavailable" }); }
+        const session = await getSessionFromCtx(ctx).catch(() => null);
+        if (session === null) { return answer({ outcome: "unavailable" }); }
+        const target = await options.directory.resolve(session.user.id);
+        if (target === null) { return answer({ outcome: "unavailable" }); }
+        if (target.administrator) {
+          await options.store.forget(device, session.user.id);
+          return answer({ outcome: "administrator" });
+        }
+        await options.store.remember(device, session.user.id, newEntryId(), nowMs(),
+          REMEMBERED_ACCOUNTS_PER_DEVICE);
+        return answer({ outcome: "remembered" });
       }),
     },
     hooks: {
@@ -163,23 +232,22 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
             if (ctx.headers?.get(KEEP_REMEMBERED_HEADER) === "1") { return; }
             const device = currentDevice(ctx as unknown as CookieContext);
             if (device === null) { return; }
-            const session = await getSessionFromCtx(ctx).catch(() => null);
+            const userId = await hookUserId(ctx);
             // Leaving a shared device means leaving it: no one-tap way back for this account.
-            if (session !== null) { await options.store.forget(device, session.user.id); }
+            if (userId !== null) { await options.store.forget(device, userId); }
           }),
         },
         {
           matcher: (context) => context.path === "/revoke-sessions" ||
             context.path === "/revoke-other-sessions",
           handler: createAuthMiddleware(async (ctx) => {
-            const session = await getSessionFromCtx(ctx).catch(() => null);
-            if (session === null) { return; }
+            const userId = await hookUserId(ctx);
+            if (userId === null) { return; }
             if (ctx.path === "/revoke-sessions") {
               // "Sign out on all devices": no device may tap back in afterwards.
-              await options.store.forgetEverywhere(session.user.id);
+              await options.store.forgetEverywhere(userId);
             } else {
-              await options.store.forgetElsewhere(session.user.id,
-                currentDevice(ctx as unknown as CookieContext));
+              await options.store.forgetElsewhere(userId, currentDevice(ctx as unknown as CookieContext));
             }
           }),
         },

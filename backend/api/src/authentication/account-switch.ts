@@ -99,6 +99,18 @@ export function deviceDigest(keys: AccountSwitchKeys, cookieValue: string | null
   return createHmac("sha256", keys.deviceKey).update(cookieValue, "ascii").digest();
 }
 
+/**
+ * A native app (Android) holds its own random device value in app-private, Keystore-protected
+ * storage and sends it in this header; it never has a cookie. Its digest lives in a separate
+ * namespace, so a browser cookie value can never stand in for an app device or the reverse.
+ */
+export const NATIVE_ACCOUNT_DEVICE_HEADER = "x-mk8dx-account-device";
+
+export function nativeDeviceDigest(keys: AccountSwitchKeys, headerValue: string | null | undefined): Buffer | null {
+  if (typeof headerValue !== "string" || !deviceValuePattern.test(headerValue)) { return null; }
+  return createHmac("sha256", keys.deviceKey).update(`native:${headerValue}`, "ascii").digest();
+}
+
 export function newDeviceValue(): string { return randomBytes(32).toString("base64url"); }
 export function newEntryId(): string { return randomBytes(16).toString("base64url"); }
 /** A limiter subject for a device that never contains the cookie value itself. */

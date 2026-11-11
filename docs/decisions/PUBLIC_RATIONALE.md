@@ -331,3 +331,7 @@ device from the loopback host administration (lost phone, card in the wrong hand
 web and app sessions of that account (each audited as a revoked session), removes it from every
 shared device's list and revokes its open sign-in cards; an administrator signs their own account
 out with "Sign out on all devices" instead.
+Amendment (2026-11-11): the Android app switches accounts as well. The server keeps the app's
+list (the app holds only the active bearer token and a random device value, in a separate
+namespace from browser device cookies), so the PIN and administrator rules apply unchanged and
+signing out everywhere also empties the app's list.
