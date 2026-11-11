@@ -132,6 +132,13 @@ internal open class AndroidAuthenticationException(message: String) : RuntimeExc
  * screen can hand the person to the one place that resolves it, instead of a
  * generic failure (the APK never invents a Player silently).
  */
+/**
+ * The server no longer knows this bearer session: signed out on all devices, by an administrator,
+ * or expired early. The app signs out locally instead of showing a stale "signed in".
+ */
+internal class AndroidSessionEndedException :
+    AndroidAuthenticationException("The server ended this Android session.")
+
 internal class AndroidPlayerSetupRequiredException(val playerSetupUri: URI) :
     AndroidAuthenticationException("The signed-in account has no verified Player yet.")
 
@@ -278,6 +285,7 @@ internal class AndroidDeviceAuthorizationClient(
             AndroidAuthenticationRequest("POST", ANDROID_NATIVE_REMEMBER_PATH, "{}", token,
                 accountDevice = accountDevice),
         )
+        if (response.statusCode == 401) throw AndroidSessionEndedException()
         val document = response.document(200)
         if (document.keys != setOf("schemaVersion", "remembered") ||
             document.string("schemaVersion") != "mk8dx.native-account-remember.v1") invalidResponse()

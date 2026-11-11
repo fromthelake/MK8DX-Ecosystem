@@ -118,12 +118,19 @@ internal class AndroidAuthenticationController(
                 store.dropCredential(account.slotId)
             }
             val activeSession = active?.let { store.load(it, now) }
-            var listed = client.listRemembered(device, activeSession?.bearerToken)
-            if (activeSession != null && listed.none { it.current } &&
-                client.rememberOnServer(activeSession.bearerToken, device)) {
-                listed = client.listRemembered(device, activeSession.bearerToken)
+            serverAccounts = client.listRemembered(device, activeSession?.bearerToken)
+            if (activeSession != null && serverAccounts.none { it.current }) {
+                try {
+                    if (client.rememberOnServer(activeSession.bearerToken, device)) {
+                        serverAccounts = client.listRemembered(device, activeSession.bearerToken)
+                    }
+                } catch (_: AndroidSessionEndedException) {
+                    // Signed out everywhere (by the person or an administrator): leave this phone too.
+                    store.dropCredential(active)
+                    store.setActiveSlotId(null)
+                    mutableState.value = AndroidAuthenticationState.SignedOut
+                }
             }
-            serverAccounts = listed
         } catch (error: Exception) {
             runCatching {
                 diagnosticSink("syncServerAccounts failed: ${redactedAuthenticationCauseTypes(error)}")

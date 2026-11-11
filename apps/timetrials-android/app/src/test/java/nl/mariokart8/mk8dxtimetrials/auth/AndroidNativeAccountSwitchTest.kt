@@ -65,7 +65,8 @@ private class FakeSwitchServer : AndroidAuthenticationRequestExecutor {
         val body = request.body?.let { Json.parseToJsonElement(it) as JsonObject }
         return when (request.path) {
             ANDROID_NATIVE_REMEMBER_PATH -> {
-                require(request.accountDevice == DEVICE && owner != null)
+                require(request.accountDevice == DEVICE)
+                if (owner == null) return error(401, "session_authentication_required")
                 if (owner in administrators) return ok("""{"schemaVersion":"mk8dx.native-account-remember.v1","remembered":false}""")
                 if (entries.none { it.playerId == owner }) entries += Entry("entry" + owner.takeLast(2).padStart(17, '0'), owner)
                 ok("""{"schemaVersion":"mk8dx.native-account-remember.v1","remembered":true}""")
@@ -200,6 +201,32 @@ class AndroidNativeAccountSwitchTest {
         val signOut = server.requests.last { it.path == ANDROID_AUTH_SIGN_OUT_PATH }
         assertEquals(DEVICE, signOut.accountDevice)
         assertFalse(signOut.keepRemembered)
+    }
+
+    @Test
+    fun aSessionEndedOnTheServerSignsThePhoneOutAndKeepsTheOthersSwitchable() {
+        val server = FakeSwitchServer()
+        val store = DeviceSessionStore()
+        val kind = session(server, "player.kind")
+        store.save(androidSessionSlotId(kind.playerId), kind)
+        store.setActiveSlotId(androidSessionSlotId(kind.playerId))
+        server.entries += FakeSwitchServer.Entry("entry00000000000000oma", "player.oma")
+        store.save(androidSessionSlotId("player.oma"), session(server, "player.oma"))
+        store.dropCredential(androidSessionSlotId("player.oma"))
+        // An administrator signed Kind out everywhere: the token and Kind's entries are gone.
+        server.tokens.remove(kind.bearerToken)
+        server.entries.removeAll { it.playerId == "player.kind" }
+        val controller = controller(server, store)
+
+        val state = controller.syncServerAccounts()
+
+        assertEquals(AndroidAuthenticationState.SignedOut, controller.state.value)
+        assertNull(store.activeSlotId())
+        assertNull(store.sessions[androidSessionSlotId("player.kind")])
+        val oma = state.accounts.first { it.playerId == "player.oma" }
+        assertFalse(oma.expired)
+        assertEquals("entry00000000000000oma", oma.entryId)
+        assertTrue(state.accounts.first { it.playerId == "player.kind" }.expired)
     }
 
     @Test

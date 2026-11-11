@@ -18,6 +18,7 @@ MK8DX runs on one Windows computer in your own network. Everyone on the same Wi-
 - **Sign in:** scan your **personal card** and tap **Accept invitation**. A card works once and for 15 minutes; ask for a new one when needed.
 - **Another device:** make a new card for yourself in MK8DX beheer and scan it with the other device.
 - **Sign out:** from the account menu at the top right of the website.
+- **One phone or tablet for the whole family:** everyone signs in once with their own card. After that you switch with one tap: on the website from the account menu (**Switch account**), in the Android app via **Settings → Switch Player**. Anyone can set a 4-digit PIN on the website under **Settings → PIN for switching accounts**; switching to that account then asks for it first. Administrators are never in that list and always sign in afresh.
 
 ## Administration (people and cards)
 

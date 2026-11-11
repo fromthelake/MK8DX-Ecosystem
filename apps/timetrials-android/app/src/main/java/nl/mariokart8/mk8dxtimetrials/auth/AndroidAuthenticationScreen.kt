@@ -207,7 +207,11 @@ internal fun AndroidAuthenticationScreen(
             // An expired Player signs in again from its own card: one tap starts
             // the device request and opens the approval page in the browser.
             // Approving the same account reuses this Player's slot.
-            onSignInAgain = startDeviceAuthorization,
+            // While someone is signed in, they stay one tap away (same as "Add account").
+            onSignInAgain = {
+                if (state is AndroidAuthenticationState.SignedIn) startAdditionalAuthorization()
+                else startDeviceAuthorization()
+            },
             signInAgainEnabled = state !is AndroidAuthenticationState.Working,
         )
         when (val current = state) {
@@ -453,6 +457,7 @@ private fun AndroidRememberedAccountRow(
                 pin,
                 { value -> pin = value.filter(Char::isDigit).take(4) },
                 keyboardType = KeyboardType.NumberPassword,
+                secret = true,
                 tag = "android-account-pin-$index",
             )
             Mk8dxButton(

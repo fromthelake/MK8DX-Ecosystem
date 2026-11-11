@@ -18,6 +18,7 @@ MK8DX draait op één Windows-computer in je eigen netwerk. Iedereen op hetzelfd
 - **Inloggen:** scan je **persoonlijke kaart** en tik op **Uitnodiging accepteren**. Een kaart werkt één keer en 15 minuten lang; vraag zo nodig een nieuwe.
 - **Nog een apparaat:** vraag in MK8DX beheer een nieuwe kaart voor jezelf en scan die met het andere apparaat.
 - **Uitloggen:** via het accountmenu rechtsboven op de website.
+- **Eén telefoon of tablet voor het hele gezin:** iedereen logt één keer in met zijn eigen kaart. Daarna wissel je met één tik: op de website via het accountmenu (**Ander account**), in de Android-app via **Instellingen → Van speler wisselen**. Wie wil, zet op de website bij **Instellingen → Pincode voor ander account** een pincode van 4 cijfers; dan vraagt het wisselen naar dat account eerst om die pincode. Beheerders staan nooit in die lijst en loggen altijd opnieuw in.
 
 ## Beheer (mensen en kaarten)
 
