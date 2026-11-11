@@ -177,12 +177,29 @@ class WizardServerTest(unittest.TestCase):
         self.wizard.host = host
         self.assertEqual(self.wizard.sign_out("offline_account.1"), {"sessions": 2, "invitations": 1})
         self.assertEqual(calls, [("POST", "/api/accounts/sign-out", {"accountKey": "offline_account.1"})])
-        host.call = lambda method, path, body=None: (403, {})
+        # The host page refuses one's own account with a code (an empty 403 would mean "no session").
+        host.call = lambda method, path, body=None: (403, {"code": "sign_out_forbidden"})
         with self.assertRaisesRegex(ValueError, "own-account"):
             self.wizard.sign_out("offline_account.self")
         host.call = lambda method, path, body=None: (404, {})
         with self.assertRaisesRegex(RuntimeError, "could not be signed out"):
             self.wizard.sign_out("offline_account.gone")
+
+    def test_an_expired_host_session_signs_in_again_once(self):
+        # groep3: back to the cards after 15 idle minutes showed "Setup information unavailable".
+        expired, fresh = type("Host", (), {})(), type("Host", (), {})()
+        expired.call = lambda method, path, body=None: (401, {})
+        fresh.call = lambda method, path, body=None: (200, {"setupUrl": "http://192.168.1.50/setup", "qrDataUrl": "data:",
+                                                            "origin": "https://192.168.1.50",
+                                                            "rootCertificateSha256": "ab" * 32})
+        self.wizard.host = expired
+        with patch.object(self.wizard, "ensure_host", side_effect=lambda: self.wizard.host or fresh):
+            self.assertEqual(self.wizard.setup_info()["setupUrl"], "http://192.168.1.50/setup")
+        # A session that stays refused is reported, not retried forever.
+        self.wizard.host = expired
+        with patch.object(self.wizard, "ensure_host", side_effect=lambda: expired):
+            with self.assertRaisesRegex(RuntimeError, "Setup information unavailable"):
+                self.wizard.setup_info()
 
     def test_revoke_card_calls_the_host_page(self):
         host = type("Host", (), {})()
