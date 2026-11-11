@@ -72,6 +72,14 @@ class MemoryAccountSwitchStore implements AccountSwitchStore {
   }
   public async recordSwitchSession(sessionId: string) { this.switchSessions.add(sessionId); }
   public async isSwitchSession(sessionId: string) { return this.switchSessions.has(sessionId); }
+  public failures = new Map<string, number>();
+  public async recordPinFailure(device: Buffer, entryId: string) {
+    if (!this.rows.some((row) => row.entryId === entryId && row.device === device.toString("hex"))) { return 0; }
+    const count = (this.failures.get(entryId) ?? 0) + 1;
+    this.failures.set(entryId, count);
+    return count;
+  }
+  public async clearPinFailures(_device: Buffer, entryId: string) { this.failures.delete(entryId); }
 }
 
 class MemoryPinStore implements AccountSwitchPinStore {
@@ -340,31 +348,61 @@ describe("account switching (ADR-0224 phase 2)", () => {
     } finally { await h.app.close(); }
   });
 
-  it("never remembers or switches to an administrator", async () => {
+  it("offers an administrator only behind a PIN (owner 11-11), and forgets it after 14 idle days", async () => {
     const h = await harness();
     try {
       const jar: Jar = new Map();
       await signIn(h, jar, "ann@example.test");
       await signIn(h, jar, "root@example.test");
-      const document = await list(h, jar);
-      expect(document.accounts.map((account) => account.label)).toEqual(["Ann"]);
-      expect(h.store.rows).toHaveLength(1);
-      // A grant that appears after remembering: hidden, refused and forgotten.
-      people["bob@example.test"] = { ...people["bob@example.test"]!, administrator: true };
-      try {
-        await signIn(h, jar, "ann@example.test");
-        const bobJar: Jar = new Map([[deviceCookieName, jar.get(deviceCookieName)!]]);
-        people["bob@example.test"] = { ...people["bob@example.test"]!, administrator: false };
-        await signIn(h, bobJar, "bob@example.test");
-        const bob = (await list(h, jar)).accounts.find((account) => account.label === "Bob")!;
-        people["bob@example.test"] = { ...people["bob@example.test"]!, administrator: true };
-        const refused = await switchTo(h, jar, bob.entryId);
-        expect(refused.statusCode).toBe(403);
-        expect(refused.json<{ code: string }>().code).toBe("account_switch_forbidden");
-        expect((await list(h, jar)).accounts.map((account) => account.label)).toEqual(["Ann"]);
-      } finally {
-        people["bob@example.test"] = { ...people["bob@example.test"]!, administrator: false };
+      // Remembered, but without a PIN never offered.
+      expect(h.store.rows).toHaveLength(2);
+      expect((await list(h, jar)).accounts.map((account) => account.label)).toEqual(["Ann"]);
+      await signIn(h, jar, "ann@example.test");
+      await h.pins.set("user_account.root", "1357", Date.now());
+      const root = (await list(h, jar)).accounts.find((account) => account.label === "Root")!;
+      expect(root.pinRequired).toBe(true);
+      const missing = await switchTo(h, jar, root.entryId);
+      expect(missing.json<{ code: string }>().code).toBe("account_switch_pin_required");
+      for (let attempt = 0; attempt < 3; attempt += 1) {
+        expect((await switchTo(h, jar, root.entryId, "0000")).json<{ code: string }>().code)
+          .toBe("account_switch_pin_invalid");
       }
+      expect((await switchTo(h, jar, root.entryId, "1357")).statusCode).toBe(200);
+      expect(await whoAmI(h, jar)).toBe("root@example.test");
+      // A right PIN resets the count.
+      expect(h.store.failures.size).toBe(0);
+      // 14 days unused on this device: no longer offered, and forgotten.
+      for (const row of h.store.rows) {
+        if (row.authUserId === h.store.rows.find((r) => r.entryId === root.entryId)?.authUserId) {
+          row.lastUsedAtMs -= 15 * 24 * 60 * 60 * 1_000;
+        }
+      }
+      await signIn(h, jar, "ann@example.test");
+      expect((await list(h, jar)).accounts.map((account) => account.label)).toEqual(["Ann"]);
+      expect(h.store.rows.some((row) => row.entryId === root.entryId)).toBe(false);
+    } finally { await h.app.close(); }
+  });
+
+  it("forgets an administrator on a device after the fifth wrong PIN", async () => {
+    const h = await harness();
+    try {
+      const jar: Jar = new Map();
+      await signIn(h, jar, "root@example.test");
+      await signIn(h, jar, "ann@example.test");
+      await h.pins.set("user_account.root", "1357", Date.now());
+      const root = (await list(h, jar)).accounts.find((account) => account.label === "Root")!;
+      for (let attempt = 1; attempt < 5; attempt += 1) {
+        expect((await switchTo(h, jar, root.entryId, "0000")).json<{ code: string }>().code)
+          .toBe("account_switch_pin_invalid");
+      }
+      const fifth = await switchTo(h, jar, root.entryId, "0000");
+      expect(fifth.json<{ code: string }>().code).toBe("account_switch_unavailable");
+      expect((await list(h, jar)).accounts.map((account) => account.label)).toEqual(["Ann"]);
+      expect(await whoAmI(h, jar)).toBe("ann@example.test");
+      // Even the right PIN no longer helps here: the administrator signs in with a card again.
+      h.advance(15 * 60 * 1_000);
+      expect((await switchTo(h, jar, root.entryId, "1357")).json<{ code: string }>().code)
+        .toBe("account_switch_unavailable");
     } finally { await h.app.close(); }
   });
 
@@ -469,7 +507,8 @@ describe("account switching (ADR-0224 phase 2)", () => {
 
       const admin: Jar = new Map();
       await signIn(h, admin, "root@example.test");
-      expect((await call("GET", "/v1/account/switch-pin", undefined, "good-proof", admin)).statusCode).toBe(403);
+      // An administrator may set a PIN: it is the only way to be offered on a shared device.
+      expect((await call("GET", "/v1/account/switch-pin", undefined, "good-proof", admin)).statusCode).toBe(200);
       const anonymous = await h.app.inject({ method: "GET", url: "/v1/account/switch-pin" });
       expect(anonymous.statusCode).toBe(401);
     } finally { await h.app.close(); }

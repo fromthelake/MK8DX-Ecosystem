@@ -31,8 +31,9 @@ const CATALOGED_MIGRATIONS = CATALOGED_MIGRATION_VERSIONS.length;
 // (auth tables are never restored from a snapshot). A snapshot taken
 // before these migrations reached production is completed locally. 0084 adds only
 // empty offline-LAN account and invitation tables; no snapshot row maps into them. 0085 adds only the
-// empty account-switching tables (ADR-0224 phase 2); auth rows are never restored from a snapshot.
-const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085"]);
+// empty account-switching tables (ADR-0224 phase 2); auth rows are never restored from a snapshot. 0086
+// adds a defaulted failure count to that still-empty table.
+const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086"]);
 // Nullable columns those migrations add to tables the snapshot carries. A snapshot taken before the migration lacks
 // them; its rows restore into the remaining columns and the new column stays NULL, as it would in production.
 const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([

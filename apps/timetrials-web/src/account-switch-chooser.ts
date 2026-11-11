@@ -174,9 +174,9 @@ export function openAccountSwitchDialog(
   const chooser = accountChooser(port, () => { handle.close(); options.onSwitched(); });
   const intro = el("p", "ds-body", {}, localized(
     "Accounts that signed in on this device. Tap one to continue as that person. "
-      + "Administrator accounts are never listed here; sign in again with a card for those.",
+      + "An administrator account appears here only with a PIN (set it under your account).",
     "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan. "
-      + "Beheerdersaccounts staan hier nooit; meld je daarvoor opnieuw aan met een kaart."));
+      + "Een beheerdersaccount staat hier alleen met een pincode (in te stellen bij je account)."));
   const another = dsButton({
     label: localized("Sign in with another account", "Met een ander account aanmelden"), variant: "secondary",
     onPress: () => { handle.close(); options.onUseAnother(); },

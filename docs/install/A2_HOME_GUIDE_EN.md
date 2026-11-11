@@ -306,7 +306,7 @@ More explanation is in `docs/install/A2_OFFLINE_LAN_EN.md`, part "LiveTrial on a
 - **Website:** after that you switch with one tap from the account menu: choose **Switch account** and then the person.
 - **PIN:** anyone can set a 4-digit PIN on the website under **Settings** → **PIN for switching accounts**. Switching to that account then asks for that PIN first.
 - **Android app:** **Settings** → **Player on this phone** → **Switch Player**, and choose the person with **Switch**. If that person has a PIN, the app asks **PIN required** and **PIN (4 digits)**. A wrong PIN gives "That PIN is not right."
-- **Administrators** are never in that list. They always sign in afresh with a card.
+- **Administrators** are in that list only when they have set a PIN (Settings → PIN for switching accounts). Without a PIN they sign in afresh with a card. It is stricter for an administrator: after the 5th wrong PIN the administrator account disappears from that device, and also after 14 days without use; then a card is needed again. In the Android app administrators are not in the list (yet).
 
 **Signing out**
 

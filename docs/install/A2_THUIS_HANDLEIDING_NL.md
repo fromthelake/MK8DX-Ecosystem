@@ -306,7 +306,7 @@ Meer uitleg staat in `docs/install/A2_EIGEN_NETWERK.md`, deel "LiveTrial op een 
 - **Website:** daarna wissel je met één tik via het accountmenu: kies **Ander account** en dan de persoon.
 - **Pincode:** wie wil, zet op de website bij **Instellingen** → **Pincode voor ander account** een pincode van 4 cijfers. Wisselen naar dat account vraagt dan eerst om die pincode.
 - **Android-app:** **Instellingen** → **Speler op deze telefoon** → **Van speler wisselen**, en kies de persoon met **Wisselen**. Heeft die persoon een pincode, dan vraagt de app **Pincode nodig** en **Pincode (4 cijfers)**. Een verkeerde pincode geeft "Die pincode klopt niet."
-- **Beheerders** staan nooit in die lijst. Zij loggen altijd opnieuw in met een kaart.
+- **Beheerders** staan alleen in die lijst als ze een pincode hebben ingesteld (Instellingen → Pincode voor ander account). Zonder pincode loggen ze opnieuw in met een kaart. Voor een beheerder is het strenger: na de 5e verkeerde pincode verdwijnt het beheerdersaccount van dat apparaat, en na 14 dagen niet gebruiken ook; daarna is weer een kaart nodig. In de Android-app staan beheerders (nog) niet in de lijst.
 
 **Uitloggen**
 

@@ -9,6 +9,8 @@ import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from "bet
 import { setSessionCookie } from "better-auth/cookies";
 
 import {
+  ADMIN_PIN_FAILURE_LIMIT,
+  ADMIN_REMEMBERED_IDLE_MS,
   ACCOUNT_DEVICE_COOKIE,
   ACCOUNT_DEVICE_COOKIE_MAX_AGE_SECONDS,
   NATIVE_ACCOUNT_DEVICE_HEADER,
@@ -135,9 +137,12 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
           const target = await options.directory.resolve(row.authUserId);
           if (target === null) { continue; }
           if (target.administrator) {
-            // A grant that appeared after the account was remembered: never offered, and gone.
-            await options.store.forget(device, row.authUserId);
-            continue;
+            // Owner 11-11: an administrator is offered only behind a PIN and only while recently used here.
+            if (row.lastUsedAtMs < nowMs() - ADMIN_REMEMBERED_IDLE_MS) {
+              await options.store.forget(device, row.authUserId);
+              continue;
+            }
+            if (!await options.pins.enabled(target.userAccountId)) { continue; }
           }
           accounts.push({
             entryId: row.entryId,
@@ -174,10 +179,24 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
         const target = await options.directory.resolve(row.authUserId);
         if (target === null) { return answer({ outcome: "unavailable" }); }
         if (target.administrator) {
-          await options.store.forget(device, row.authUserId);
-          return answer({ outcome: "forbidden" });
-        }
-        if (await options.pins.enabled(target.userAccountId)) {
+          // Never without a PIN; the fifth wrong PIN on this device forgets the entry (a card again).
+          if (row.lastUsedAtMs < now - ADMIN_REMEMBERED_IDLE_MS) {
+            await options.store.forget(device, row.authUserId);
+            return answer({ outcome: "unavailable" });
+          }
+          if (!await options.pins.enabled(target.userAccountId)) { return answer({ outcome: "forbidden" }); }
+          if (pin === undefined) { return answer({ outcome: "pin_required" }); }
+          const check = await options.pins.check(target.userAccountId, device, pin);
+          if (check.outcome === "rate_limited") { return answer(check); }
+          if (check.outcome !== "ok") {
+            if (await options.store.recordPinFailure(device, row.entryId) >= ADMIN_PIN_FAILURE_LIMIT) {
+              await options.store.forget(device, row.authUserId);
+              return answer({ outcome: "unavailable" });
+            }
+            return answer({ outcome: "pin_invalid" });
+          }
+          await options.store.clearPinFailures(device, row.entryId);
+        } else if (await options.pins.enabled(target.userAccountId)) {
           if (pin === undefined) { return answer({ outcome: "pin_required" }); }
           const check = await options.pins.check(target.userAccountId, device, pin);
           if (check.outcome === "rate_limited") { return answer(check); }
@@ -283,14 +302,7 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
             const cookies = ctx as unknown as CookieContext;
             const cookie = deviceCookie(cookies);
             try {
-              const target = await options.directory.resolve(created.user.id);
               const existing = cookies.getCookie(cookie.name);
-              if (target?.administrator === true) {
-                // Administrators always sign in afresh.
-                const known = deviceDigest(options.keys, existing);
-                if (known !== null) { await options.store.forget(known, created.user.id); }
-                return;
-              }
               const value = deviceDigest(options.keys, existing) === null ? newDeviceValue() : existing!;
               const device = deviceDigest(options.keys, value);
               if (device === null) { return; }

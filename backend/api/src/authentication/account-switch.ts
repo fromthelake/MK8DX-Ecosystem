@@ -19,6 +19,12 @@ import {
 export const REMEMBERED_ACCOUNTS_PER_DEVICE = 6;
 /** A remembered account not used for 90 days is no longer offered. */
 export const REMEMBERED_ACCOUNT_IDLE_MS = 90 * 24 * 60 * 60 * 1_000;
+/**
+ * ADR-0224 amendment (owner, 2026-11-11): an administrator is remembered on a device only behind a PIN,
+ * is forgotten there after 14 days without use, and the fifth wrong PIN on that device forgets the entry.
+ */
+export const ADMIN_REMEMBERED_IDLE_MS = 14 * 24 * 60 * 60 * 1_000;
+export const ADMIN_PIN_FAILURE_LIMIT = 5;
 export const ACCOUNT_DEVICE_COOKIE = "account_device";
 export const ACCOUNT_DEVICE_COOKIE_MAX_AGE_SECONDS = 180 * 24 * 60 * 60;
 /** Better Auth's freshAge: a real sign-in this recent may change or remove a forgotten PIN. */
@@ -67,6 +73,9 @@ export interface AccountSwitchStore {
   forgetElsewhere(authUserId: string, keepDeviceDigest: Buffer | null): Promise<void>;
   recordSwitchSession(sessionId: string, nowMs: number): Promise<void>;
   isSwitchSession(sessionId: string): Promise<boolean>;
+  /** One more wrong PIN for this entry on this device; returns the new count (0 if the entry is gone). */
+  recordPinFailure(deviceDigest: Buffer, entryId: string): Promise<number>;
+  clearPinFailures(deviceDigest: Buffer, entryId: string): Promise<void>;
 }
 
 export type StoredSwitchPin = Readonly<{ digest: Buffer; salt: Buffer; pepperVersion: number }>;

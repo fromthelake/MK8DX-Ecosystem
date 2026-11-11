@@ -97,6 +97,26 @@ export class MysqlAccountSwitchStore implements AccountSwitchStore {
     );
   }
 
+  public async recordPinFailure(deviceDigest: Buffer, entryId: string): Promise<number> {
+    await this.pool.execute<ResultSetHeader>(
+      `UPDATE account_switch_remembered_accounts SET pin_failures = LEAST(pin_failures + 1, 255)
+       WHERE entry_id = ? AND device_digest = ?`,
+      [entryId, deviceDigest],
+    );
+    const [rows] = await this.pool.execute<RowDataPacket[]>(
+      "SELECT pin_failures AS failures FROM account_switch_remembered_accounts WHERE entry_id = ? AND device_digest = ?",
+      [entryId, deviceDigest],
+    );
+    return rows.length === 0 ? 0 : Number(rows[0]?.["failures"]);
+  }
+
+  public async clearPinFailures(deviceDigest: Buffer, entryId: string): Promise<void> {
+    await this.pool.execute<ResultSetHeader>(
+      "UPDATE account_switch_remembered_accounts SET pin_failures = 0 WHERE entry_id = ? AND device_digest = ?",
+      [entryId, deviceDigest],
+    );
+  }
+
   public async isSwitchSession(sessionId: string): Promise<boolean> {
     const [rows] = await this.pool.execute<RowDataPacket[]>(
       "SELECT 1 AS present FROM account_switch_sessions WHERE session_id = ? LIMIT 1",

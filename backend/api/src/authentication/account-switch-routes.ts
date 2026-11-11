@@ -439,7 +439,7 @@ export async function registerAccountSwitchRoutes(
   }
 
   type PinContext = Readonly<{
-    actor: Readonly<{ role: "account"; userAccountId: string }>;
+    actor: Readonly<{ role: "account" | "administrator"; userAccountId: string }>;
     enabled: boolean;
     freshSignIn: boolean;
     currentPinRequired: boolean;
@@ -457,9 +457,8 @@ export async function registerAccountSwitchRoutes(
       await reply.code(401).send(failure("session_authentication_required", "Authentication is required."));
       return null;
     }
-    if (actor.role !== "account") {
-      await reply.code(403).send(failure("account_switch_pin_forbidden",
-        "Administrator accounts are never switched to; they sign in afresh."));
+    if (actor.role !== "account" && actor.role !== "administrator") {
+      await reply.code(403).send(failure("account_switch_pin_forbidden", "This account cannot use a PIN."));
       return null;
     }
     try {
@@ -470,7 +469,7 @@ export async function registerAccountSwitchRoutes(
       const freshSignIn = session !== null && Number.isFinite(createdAtMs) &&
         nowMs() - createdAtMs < ACCOUNT_SWITCH_FRESH_SIGN_IN_MS &&
         !await options.store.isSwitchSession(session.session.id);
-      return { actor: { role: "account", userAccountId: actor.userAccountId }, enabled, freshSignIn, currentPinRequired: enabled && !freshSignIn };
+      return { actor: { role: actor.role, userAccountId: actor.userAccountId }, enabled, freshSignIn, currentPinRequired: enabled && !freshSignIn };
     } catch {
       await reply.code(503).send(failure("account_switch_pin_unavailable", "The PIN setting is temporarily unavailable."));
       return null;

@@ -358,6 +358,11 @@ device from the loopback host administration (lost phone, card in the wrong hand
 web and app sessions of that account (each audited as a revoked session), removes it from every
 shared device's list and revokes its open sign-in cards; an administrator signs their own account
 out with "Sign out on all devices" instead.
+Amendment (2026-11-11, owner decision), administrators behind a PIN: an administrator is remembered
+on a browser device like any account but is listed and switched to only when the account has a
+PIN, and more strictly: the fifth wrong PIN on that device forgets the entry (a durable per-entry
+count, migration 0086, reset by a right PIN), and an entry unused there for 14 days is forgotten.
+Without a PIN nothing changes: a card again. The native app still does not remember administrators.
 Amendment (2026-11-11): the Android app switches accounts as well. The server keeps the app's
 list (the app holds only the active bearer token and a random device value, in a separate
 namespace from browser device cookies), so the PIN and administrator rules apply unchanged and

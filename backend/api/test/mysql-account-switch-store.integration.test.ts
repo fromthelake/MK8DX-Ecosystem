@@ -79,6 +79,20 @@ integration("account switching MySQL/MariaDB store (0085)", () => {
     expect(await store.isSwitchSession(randomUUID())).toBe(false);
   });
 
+  it("counts wrong PINs per remembered entry and device (0086)", async () => {
+    const store = new MysqlAccountSwitchStore(pool);
+    const entry = "f".repeat(22);
+    await store.remember(device, authUsers[0]!, entry, now, 6);
+    expect(await store.recordPinFailure(device, entry)).toBe(1);
+    expect(await store.recordPinFailure(device, entry)).toBe(2);
+    // Another device's view of the same entry id counts nothing.
+    expect(await store.recordPinFailure(otherDevice, entry)).toBe(0);
+    await store.clearPinFailures(device, entry);
+    expect(await store.recordPinFailure(device, entry)).toBe(1);
+    await store.forget(device, authUsers[0]!);
+    expect(await store.recordPinFailure(device, entry)).toBe(0);
+  });
+
   it("stores only peppered digests and labels nothing it cannot see", async () => {
     const pins = new MysqlAccountSwitchPinStore(pool);
     const hasher = new AccountSwitchPinHasher(deriveAccountSwitchKeys([

@@ -1,5 +1,10 @@
 # Account switching on shared devices (ADR-0224 phase 2): design review
 
+> Amendment 2026-11-11 (owner decision, ADR-0224): administrators are now remembered on browser
+> devices but listed and switched to only behind a PIN; the fifth wrong PIN on a device forgets the
+> entry (migration 0086) and an entry unused there for 14 days is forgotten. Statements below that
+> administrators are never remembered describe the earlier rule; the native app keeps it.
+
 Status: reviewed 2026-11-10, judged safe with the design below; implemented on
 `feat/a2-setup-experience-20261110`. Owner decisions of 2026-11-10 are binding:
 a shared device remembers the accounts that signed in on it, "Switch account"
