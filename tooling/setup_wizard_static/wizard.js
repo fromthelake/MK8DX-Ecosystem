@@ -463,31 +463,41 @@ const views = {
       const card = el("div", "person"); const name = el("h3", "", person.name);
       const make = el("button", "primary small no-print", T.makeCard); make.type = "button";
       const holder = el("div", "placeholder"); holder.append(make);
-      let current = null; // the card on screen; a new card replaces (revokes) it
+      // The card on screen lives in state.cards, so going back and forward shows it again while it is valid
+      // (and a new card still revokes the one it replaces, instead of leaving an unseen valid card behind).
       const revoke = async () => {
-        if (!current) return;
-        const id = current; current = null;
-        await api("/api/card/revoke", { invitationId: id }).catch(() => undefined);
+        const shown = state.cards[person.accountKey];
+        if (!shown) return;
+        delete state.cards[person.accountKey];
+        await api("/api/card/revoke", { invitationId: shown.invitationId }).catch(() => undefined);
+      };
+      const again = el("button", "secondary small no-print", T.newCard); again.type = "button";
+      const show = (c) => {
+        const img = el("img"); img.src = c.qr; img.alt = person.name;
+        const until = new Date(c.expiresAtMs).toLocaleTimeString(LANG, { hour: "2-digit", minute: "2-digit" });
+        card.replaceChildren(name, img, el("div", "muted", `${T.validUntil} ${until}`));
+        const stop = el("button", "secondary small no-print", T.revokeCard); stop.type = "button";
+        stop.addEventListener("click", async () => {
+          stop.disabled = true; await revoke();
+          card.replaceChildren(name, el("div", "muted", T.cardRevoked), again);
+        });
+        card.append(again, stop);
       };
       const fill = async () => {
-        make.disabled = true;
+        make.disabled = true; again.disabled = true;
         try {
           await revoke();
           const c = await api("/api/card", { accountKey: person.accountKey, role: person.role });
-          current = c.invitationId;
-          const img = el("img"); img.src = c.qr; img.alt = person.name;
-          const until = new Date(c.expiresAtMs).toLocaleTimeString(LANG, { hour: "2-digit", minute: "2-digit" });
-          card.replaceChildren(name, img, el("div", "muted", `${T.validUntil} ${until}`));
-          const again = el("button", "secondary small no-print", T.newCard); again.type = "button"; again.addEventListener("click", fill);
-          const stop = el("button", "secondary small no-print", T.revokeCard); stop.type = "button";
-          stop.addEventListener("click", async () => {
-            stop.disabled = true; await revoke();
-            card.replaceChildren(name, el("div", "muted", T.cardRevoked), again);
-          });
-          card.append(again, stop);
+          state.cards[person.accountKey] = c;
+          show(c);
         } catch (error) { card.append(errorBox(error.message)); make.disabled = false; }
+        again.disabled = false;
       };
+      again.addEventListener("click", fill);
       make.addEventListener("click", fill); card.append(name, holder); cards.append(card);
+      const kept = state.cards[person.accountKey];
+      if (kept && kept.expiresAtMs > Date.now() + 30_000) show(kept);
+      else delete state.cards[person.accountKey];
     }
   },
   async done() {

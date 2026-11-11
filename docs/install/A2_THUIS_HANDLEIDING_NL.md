@@ -208,6 +208,19 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 
 Een **certificaat** is een digitaal identiteitsbewijs. Daarmee weet een telefoon zeker dat hij met jouw MK8DX-computer praat en met niets anders, en is de verbinding versleuteld (https). Omdat MK8DX zonder internet werkt, maakt de installatie zijn eigen certificaat. Elk apparaat moet dat één keer leren vertrouwen. De **vingerafdruk** is een korte code die bij precies dit certificaat hoort; daarmee controleer je dat je het goede certificaat installeert.
 
+**Waarom een certificaat, ook thuis zonder internet?**
+
+- **Zeker weten dat het jouw MK8DX is.** Op een thuis- of clubnetwerk kan iedereen op hetzelfde wifi zich voordoen als jouw MK8DX-computer, bijvoorbeeld een gast met een laptop. Zonder certificaat ziet je telefoon dat verschil niet. Met het certificaat weigert de browser elke andere computer.
+- **Niemand leest mee.** Inlogkaarten, je inlogsessie en alles wat je invult gaan versleuteld over het wifi.
+- **Waarom MK8DX zijn eigen certificaat maakt.** Websites op internet gebruiken certificaten van bekende uitgevers die al in elk apparaat zitten. Die geven geen certificaat voor een thuisadres als `192.168.1.50` en werken niet zonder internet. Daarom maakt MK8DX bij de installatie zijn eigen certificaat, en vertel je elk apparaat één keer dat het dat mag vertrouwen.
+- **Wat je daarmee toestaat.** Het certificaat is alleen bedoeld voor de privé-netwerkadressen van MK8DX, en de geheime sleutel ervan blijft beveiligd op de MK8DX-computer. Installeer alleen het certificaat van je eigen MK8DX (controleer de vingerafdruk) en verwijder het van een apparaat als je die installatie niet meer gebruikt.
+
+**Wat werkt er niet als je het certificaat niet installeert?**
+
+- De browser toont bij elk bezoek een paginagrote waarschuwing, zoals "Je verbinding is niet privé". Je kunt die wegklikken, maar doe dat niet: je ziet dan niet meer of je echt met jouw MK8DX praat.
+- Ook na wegklikken werken **meldingen in de browser** niet: de browser staat die alleen toe bij een vertrouwd certificaat. Ook andere browserfuncties kunnen weigeren.
+- Wat wél zonder geïnstalleerd certificaat werkt: de **Android-app**. Die leert het certificaat zelf kennen via de kaart **Apparaat voorbereiden** (hoofdstuk 7). Een browser op hetzelfde apparaat heeft het certificaat nog wel nodig.
+
 **De MK8DX-computer zelf**
 
 Ook de computer waarop MK8DX draait moet MK8DX één keer vertrouwen, anders waarschuwt de browser daar bij de website.

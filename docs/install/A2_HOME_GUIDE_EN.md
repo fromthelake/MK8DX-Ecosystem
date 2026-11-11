@@ -208,6 +208,19 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 
 A **certificate** is a digital proof of identity. With it a phone knows for sure that it is talking to your MK8DX computer and nothing else, and the connection is encrypted (https). Because MK8DX works without internet, the setup makes its own certificate. Every device has to learn to trust it once. The **fingerprint** is a short code that belongs to exactly this certificate; with it you check that you install the right certificate.
 
+**Why a certificate, even at home without internet?**
+
+- **Knowing for sure it is your MK8DX.** On a home or club network, anyone on the same Wi-Fi can pretend to be your MK8DX computer, for example a guest with a laptop. Without a certificate your phone cannot tell the difference. With the certificate the browser refuses any other computer.
+- **Nobody listens in.** Sign-in cards, your sign-in session and everything you enter travel encrypted over the Wi-Fi.
+- **Why MK8DX makes its own certificate.** Websites on the internet use certificates from well-known issuers that are already in every device. They do not issue certificates for a home address like `192.168.1.50` and do not work without internet. So MK8DX makes its own certificate during installation, and you tell each device once that it may trust it.
+- **What you allow by installing it.** The certificate is meant only for MK8DX's private network addresses, and its secret key stays protected on the MK8DX computer. Install only the certificate of your own MK8DX (check the fingerprint) and remove it from a device when you no longer use that installation.
+
+**What does not work if you do not install the certificate?**
+
+- The browser shows a full-page warning on every visit, such as "Your connection is not private". You can click it away, but do not: you can then no longer see whether you are really talking to your MK8DX.
+- Even after clicking it away, **browser notifications** do not work: the browser allows them only with a trusted certificate. Other browser features may refuse too.
+- What does work without an installed certificate: the **Android app**. It learns the certificate itself from the **Prepare a device** card (chapter 7). A browser on the same device still needs the certificate.
+
 **The MK8DX computer itself**
 
 The computer MK8DX runs on must trust MK8DX once too, otherwise its browser warns about the website.
