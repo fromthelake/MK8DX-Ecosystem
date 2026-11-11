@@ -265,7 +265,9 @@ export function mountPublicPlayerProfile(
             `#${entry.rank} of ${entries.length} · Rating ${entry.score.toFixed(2)}`,
             `#${entry.rank} van ${entries.length} · Rating ${entry.score.toFixed(2)}`,
           );
-          const tier = tournamentTierByRank(entry.rank);
+          // No tier before a first rated race: on a fresh install everyone is rating 0 and list order
+          // alone would call a newcomer "Champion" (same rule as Home).
+          const tier = entry.played === false ? null : tournamentTierByRank(entry.rank);
           if (tier !== null) {
             rating.append(" · ", tierChip(tournamentTierLabel(tier.key) ?? tier.name, tier.color));
           }

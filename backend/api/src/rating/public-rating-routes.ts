@@ -36,6 +36,8 @@ export const leaderboardResponseSchema = {
           username: { type: "string" },
           displayName: { type: "string" },
           score: { type: "number" },
+          // False until the Player's first rated race; clients then show the position without a tier.
+          played: { type: "boolean" },
         },
       },
     },
@@ -207,6 +209,7 @@ export function ratingLeaderboardDocument(
     displayName: string;
     mu: number;
     sigma: number;
+    played?: boolean;
   }>[],
 ): Readonly<{ schemaVersion: string; entries: readonly unknown[] }> {
   return {
@@ -217,6 +220,7 @@ export function ratingLeaderboardDocument(
       username: entry.username,
       displayName: entry.displayName,
       score: entry.mu - RATING_SCORE_MULTIPLIER * entry.sigma,
+      ...(entry.played === undefined ? {} : { played: entry.played }),
     })),
   };
 }

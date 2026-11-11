@@ -24,6 +24,8 @@ export type PublicRatingEntry = Readonly<{
   username: string;
   displayName: string;
   score: number;
+  /** False until the Player's first rated race; older servers omit it. */
+  played?: boolean;
 }>;
 
 export interface RatingClient {
@@ -92,17 +94,17 @@ export function createRatingClient(
           throw new RatingClientError("invalid_response");
         }
         const entry = value as Record<string, unknown>;
-        const { rank, playerId, username, displayName, score } = entry;
+        const { rank, playerId, username, displayName, score, played } = entry;
         if (typeof rank !== "number" || !Number.isSafeInteger(rank) ||
           rank < 1 || typeof playerId !== "string" ||
           !playerIdPattern.test(playerId) || typeof username !== "string" ||
           username.length === 0 || username.length > 64 ||
           typeof displayName !== "string" || displayName.length === 0 ||
           displayName.length > 128 || typeof score !== "number" ||
-          !Number.isFinite(score)) {
+          !Number.isFinite(score) || (played !== undefined && typeof played !== "boolean")) {
           throw new RatingClientError("invalid_response");
         }
-        return { rank, playerId, username, displayName, score };
+        return { rank, playerId, username, displayName, score, ...(played === undefined ? {} : { played }) };
       });
   };
   return {
