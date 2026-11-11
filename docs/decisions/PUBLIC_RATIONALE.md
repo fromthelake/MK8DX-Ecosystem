@@ -314,6 +314,21 @@ LiveTrial on another Windows PC: its saved result must reach the same local
 API after trusted HTTPS setup and browser device approval. That LiveTrial path
 is not yet qualified.
 
+Amendment (2026-11-11), Linux and macOS hosts: the installation's CA root key and
+the stored backup recovery code are protected per platform, always for the
+installing user only and without administrator rights. Windows keeps DPAPI.
+Linux encrypts them with `systemd-creds --user` (bound to that host and user)
+where available, and otherwise keeps them in owner-only files (0600 in a 0700
+folder); the setup says which applies. macOS keeps them in the user's login
+Keychain and the file only names the entry. On every platform an administrator
+of the host, or someone holding its unlocked disk, can use the key, which DPAPI
+does not prevent either; backups that leave the host stay sealed with the
+recovery code. Scheduled backups and certificate renewal run as per-user jobs
+that catch up after a missed run (systemd user timers with `Persistent=true`,
+launchd agents). Steps that need root on Linux (a firewall rule for 80/443 when
+ufw or firewalld is active, Docker Engine at boot) are shown as exact commands
+instead of being run. LiveTrial and Tournament Tools remain Windows programs.
+
 ## ADR-0224
 
 **Devices and switching accounts.** Phase 1: in an offline-invitation installation a signed-in
