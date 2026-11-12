@@ -42,6 +42,30 @@ class Repository implements OfflineInvitationTicketRepository {
     return this.targetState;
   }
 
+  public async preview(digest: Uint8Array, nowMs: number): Promise<string | null> {
+    const record = [...this.records.values()].find((candidate) =>
+      Buffer.from(candidate.tokenDigest).equals(Buffer.from(digest)));
+    if (record === undefined || record.consumedAtMs !== undefined ||
+        record.revokedAtMs !== undefined || nowMs >= record.expiresAtMs ||
+        !this.targetState.active || record.accountKey !== this.targetState.accountKey ||
+        record.role !== this.targetState.role) { return null; }
+    return "Oma (synthetic)";
+  }
+
+  public async ownTarget(userAccountId: string): Promise<OfflineInvitationTarget | null> {
+    return userAccountId === this.targetState.userAccountId ? this.targetState : null;
+  }
+
+  public async createOwn(record: OfflineInvitationRecord): Promise<void> {
+    for (const [id, existing] of this.records) {
+      if (existing.issuedByAccountId === record.issuedByAccountId &&
+          existing.consumedAtMs === undefined && existing.revokedAtMs === undefined) {
+        this.records.set(id, { ...existing, revokedAtMs: record.issuedAtMs });
+      }
+    }
+    this.records.set(record.invitationId, record);
+  }
+
   public async revoke(id: string, nowMs: number, _actorAccountId: string): Promise<boolean> {
     const record = this.records.get(id);
     if (record === undefined || record.consumedAtMs !== undefined ||
@@ -101,5 +125,58 @@ describe("offline invitation ticket boundary", () => {
     ]);
     expect(attempts.filter((attempt) => attempt.status === "fulfilled")).toHaveLength(1);
     expect(attempts.filter((attempt) => attempt.status === "rejected")).toHaveLength(1);
+  });
+
+  it("lets a Player account add a device to itself only (ADR-0224)", async () => {
+    const repository = new Repository();
+    let now = 20_000;
+    const tickets = new OfflineInvitationTicketService(repository, Buffer.alloc(32, 13), () => now);
+    const first = await tickets.issueOwn(ordinary);
+    expect(first.expiresAtMs - now).toBe(OFFLINE_INVITATION_LIFETIME_MS);
+    const stored = repository.records.get(first.invitationId)!;
+    expect(stored).toMatchObject({ accountKey, role: "account",
+      issuedByAccountId: ordinary.userAccountId });
+    // A new card retires the previous one; only the newest signs a device in.
+    now += 1_000;
+    const second = await tickets.issueOwn(ordinary);
+    await expect(tickets.redeem(first.token)).rejects.toMatchObject({ code: "unavailable" });
+    expect(await tickets.redeem(second.token)).toEqual(repository.targetState);
+    await expect(tickets.redeem(second.token)).rejects.toMatchObject({ code: "unavailable" });
+  });
+
+  it("refuses administrators, visitors, other accounts and inactive or administrator targets", async () => {
+    const repository = new Repository();
+    const tickets = new OfflineInvitationTicketService(repository, Buffer.alloc(32, 15), () => 1);
+    await expect(tickets.issueOwn(admin)).rejects.toMatchObject({ code: "forbidden" });
+    await expect(tickets.issueOwn({ role: "anonymous" }))
+      .rejects.toMatchObject({ code: "forbidden" });
+    await expect(tickets.issueOwn({ role: "account",
+      userAccountId: "user_account.44444444-4444-4444-8444-444444444444" }))
+      .rejects.toMatchObject({ code: "unavailable" });
+    repository.targetState = { ...repository.targetState, active: false };
+    await expect(tickets.issueOwn(ordinary)).rejects.toMatchObject({ code: "unavailable" });
+    repository.targetState = { ...repository.targetState, active: true, role: "administrator" };
+    await expect(tickets.issueOwn(ordinary)).rejects.toMatchObject({ code: "unavailable" });
+    expect(repository.records.size).toBe(0);
+  });
+
+  it("names the account a card signs in as without using the card up", async () => {
+    const repository = new Repository();
+    let now = 10_000;
+    const tickets = new OfflineInvitationTicketService(repository, Buffer.alloc(32, 4), () => now);
+    const card = await tickets.issue(admin, accountKey, "account");
+    expect(await tickets.preview(card.token)).toBe("Oma (synthetic)");
+    expect(await tickets.preview(card.token)).toBe("Oma (synthetic)");
+    expect(repository.records.get(card.invitationId)?.consumedAtMs).toBeUndefined();
+    expect(await tickets.redeem(card.token)).toEqual(repository.targetState);
+    // A used, revoked, expired or malformed card names nobody.
+    await expect(tickets.preview(card.token)).rejects.toMatchObject({ code: "unavailable" });
+    const revoked = await tickets.issue(admin, accountKey, "account");
+    await tickets.revoke(admin, revoked.invitationId);
+    await expect(tickets.preview(revoked.token)).rejects.toMatchObject({ code: "unavailable" });
+    const expiring = await tickets.issue(admin, accountKey, "account");
+    now += OFFLINE_INVITATION_LIFETIME_MS;
+    await expect(tickets.preview(expiring.token)).rejects.toMatchObject({ code: "unavailable" });
+    await expect(tickets.preview("not-a-token")).rejects.toMatchObject({ code: "invalid" });
   });
 });

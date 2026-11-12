@@ -38,6 +38,9 @@ import nl.mariokart8.mk8dxtimetrials.auth.AndroidAuthenticationScreen
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidAuthenticationState
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidDeviceAuthorizationClient
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidHttpsConnectionOpener
+import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingFlow
+import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingStore
+import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidKeystoreNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidNativeSessionStore
@@ -133,7 +136,7 @@ class MainActivity : ComponentActivity() {
         AndroidKeystoreNativeSessionStore(applicationContext)
     }
     private val httpsConnectionOpener = AndroidHttpsConnectionOpener { url ->
-        url.openConnection() as HttpsURLConnection
+        AndroidOriginTrust.open(applicationContext, url)
     }
     private val authenticationController: AndroidAuthenticationController by lazy {
         AndroidAuthenticationController(
@@ -259,6 +262,13 @@ class MainActivity : ComponentActivity() {
 private fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
     var address by remember { mutableStateOf(current.orEmpty()) }
     var error by remember { mutableStateOf(false) }
+    var pairing by remember { mutableStateOf(false) }
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
+    if (pairing) {
+        AndroidLanPairingFlow(onPaired = { origin -> pairing = false; onSave(origin) }, onCancel = { pairing = false })
+        return
+    }
     Column(Modifier.padding(24.dp)) {
         Text("Community website / Communitywebsite")
         Text("Enter the exact HTTPS address supplied by your community. Existing accounts and waiting runs stay with their old server.")
@@ -269,6 +279,16 @@ private fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
             val valid = AndroidServerOrigin.validate(address)
             if (valid == null) error = true else onSave(valid)
         }) { Text("Save / Opslaan") }
+        Button(onClick = { pairing = true }) {
+            Text("Home or club installation (scan QR) / Installatie thuis of bij de club (QR scannen)")
+        }
+        paired?.let { origin ->
+            Text("Paired with $origin / Gekoppeld met $origin")
+            androidx.compose.material3.OutlinedButton(onClick = {
+                AndroidLanPairingStore.forget(context)
+                paired = null
+            }) { Text("Forget this installation / Deze installatie vergeten") }
+        }
     }
 }
 

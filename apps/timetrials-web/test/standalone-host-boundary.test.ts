@@ -13,6 +13,8 @@ function read(relativePath: string): string {
 describe("integrated web production host boundary", () => {
   it("contains the target-owned profile, activity, manual, catalog, and page modules", () => {
     expect(readdirSync(`${appRoot}src`).sort()).toEqual([
+      "account-switch-chooser.ts",
+      "account-switch-pin-settings.ts",
       "account-time-trial-settings.ts",
       "activity-feed-contract.ts",
       "activity-feed-model.ts",
@@ -43,6 +45,7 @@ describe("integrated web production host boundary", () => {
       "claim-walk-client.ts",
       "competitive-presentation.ts",
       "country-settings.ts",
+      "device-invitation-card.ts",
       "director-host-request-client.ts",
       "director-host-request-section.ts",
       "ds-activity.ts",

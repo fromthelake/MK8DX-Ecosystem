@@ -1,3 +1,7 @@
+import {
+  registerAccountSwitchRoutes,
+  type AccountSwitchRouteOptions,
+} from "./authentication/account-switch-routes.js";
 import { randomBytes } from "node:crypto";
 
 import Fastify, { type FastifyInstance } from "fastify";
@@ -186,6 +190,10 @@ import type { NativeTimeTrialSessionService } from
 import { registerSessionCapabilityRoutes } from
   "./authentication/session-capability-routes.js";
 import {
+  registerDeviceInvitationRoutes,
+  type DeviceInvitationRouteOptions,
+} from "./authentication/device-invitation-routes.js";
+import {
   registerTournamentSubmissionRoutes,
   type TournamentSubmissionAuthorizer,
   type TournamentWebCsrfVerifier,
@@ -256,6 +264,13 @@ export type AppDependencies = Readonly<{
     baseUrl: string;
     offlineLan?: boolean;
   }>;
+  /**
+   * ADR-0224 "add another device". Present only in an offline-invitation installation; without
+   * it the route is not registered, so an email-link installation answers 404.
+   */
+  deviceInvitations?: Omit<DeviceInvitationRouteOptions, "resolveActor">;
+  /** ADR-0224 phase 2: remembered accounts, one-tap switching and the optional PIN. */
+  accountSwitch?: Omit<AccountSwitchRouteOptions, "resolveActor">;
   nativeEmailApproval?: Readonly<{
     service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
   }>;
@@ -802,6 +817,9 @@ export async function buildApp(
   if (dependencies.nativeEmailApproval !== undefined) {
     await registerNativeEmailApprovalRoutes(app, {
       service: dependencies.nativeEmailApproval.service,
+      ...(dependencies.embeddedAuth === undefined
+        ? {}
+        : { clientAddress: dependencies.embeddedAuth.auth.clientAddress }),
     });
   }
 
@@ -1110,6 +1128,18 @@ export async function buildApp(
     await registerWebCsrfRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       service: dependencies.webCsrf.service,
+    });
+  }
+  if (dependencies.accountSwitch !== undefined) {
+    await registerAccountSwitchRoutes(app, {
+      ...dependencies.accountSwitch,
+      resolveActor: dependencies.resolveActor ?? anonymousActor,
+    });
+  }
+  if (dependencies.deviceInvitations !== undefined) {
+    await registerDeviceInvitationRoutes(app, {
+      ...dependencies.deviceInvitations,
+      resolveActor: dependencies.resolveActor ?? anonymousActor,
     });
   }
   if (dependencies.resolveActor !== undefined) {

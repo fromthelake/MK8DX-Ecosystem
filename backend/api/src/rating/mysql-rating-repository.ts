@@ -19,6 +19,7 @@ interface LeaderboardRow extends RowDataPacket {
   mu: unknown;
   sigma: unknown;
   updatedAtMs: unknown;
+  played: unknown;
 }
 
 export class RatingPersistenceError extends Error {
@@ -155,6 +156,8 @@ export type PublicRatingEntry = Readonly<{
   mu: number;
   sigma: number;
   updatedAtMs: number;
+  /** False until the Player has a rated race (history or finalized): a seed rating alone is not played. */
+  played: boolean;
 }>;
 
 /** How a night moved a Player's SP, split by stage: the score before the first rated race, after the last qualifier race, after the last final race. */
@@ -213,7 +216,10 @@ export class MysqlPublicRatingRepository {
               player.display_name AS displayName,
               rating.mu AS mu,
               rating.sigma AS sigma,
-              rating.updated_at_ms AS updatedAtMs
+              rating.updated_at_ms AS updatedAtMs,
+              EXISTS (SELECT 1 FROM player_rating_events AS event
+                      WHERE event.player_id = rating.player_id
+                        AND event.event_type IN ('history_race', 'race_result')) AS played
        FROM player_ratings AS rating
        INNER JOIN players AS player
          ON player.player_id = rating.player_id
@@ -242,6 +248,7 @@ export class MysqlPublicRatingRepository {
         mu,
         sigma,
         updatedAtMs,
+        played: Number(row.played) === 1,
       };
     });
   }

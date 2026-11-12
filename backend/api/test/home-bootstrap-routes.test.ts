@@ -167,7 +167,7 @@ function dependencies(overrides: Record<string, unknown> = {}) {
         async listRatings() {
           return [{
             playerId: OWN, username: "ben", displayName: "Ben",
-            mu: 30, sigma: 2, updatedAtMs: 1_900_000_000_000,
+            mu: 30, sigma: 2, updatedAtMs: 1_900_000_000_000, played: true,
           }];
         },
       },

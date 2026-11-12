@@ -16,6 +16,14 @@ internal const val ANDROID_AUTH_DEVICE_TOKEN_PATH = "/api/auth/device/token"
 internal const val ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH =
     "/v1/time-trial-submissions/native-bootstrap-v2"
 internal const val ANDROID_AUTH_SIGN_OUT_PATH = "/api/auth/sign-out"
+// ADR-0224 amendment: the server keeps the accounts this app device remembers.
+internal const val ANDROID_NATIVE_REMEMBER_PATH = "/v1/session/native-remember"
+internal const val ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH = "/v1/session/native-remembered-accounts"
+internal const val ANDROID_NATIVE_ACCOUNT_SWITCH_PATH = "/v1/session/native-account-switch"
+internal const val ANDROID_NATIVE_FORGET_PATH = "/v1/session/native-forget"
+internal val androidAccountDevicePattern = Regex("^[A-Za-z0-9_-]{43}$")
+private val entryIdPattern = Regex("^[A-Za-z0-9_-]{22}$")
+private val pinPattern = Regex("^[0-9]{4}$")
 internal const val ANDROID_AUTH_RESPONSE_MAX_BYTES = 16_384
 
 private const val deviceGrantType = "urn:ietf:params:oauth:grant-type:device_code"
@@ -32,6 +40,10 @@ internal data class AndroidAuthenticationRequest(
     val body: String?,
     val bearerToken: String?,
     val responseMaxBytes: Int = ANDROID_AUTH_RESPONSE_MAX_BYTES,
+    /** This app installation's random device value (X-MK8DX-Account-Device). */
+    val accountDevice: String? = null,
+    /** Sign-out only: "Sign in with another account" keeps this account one tap away. */
+    val keepRemembered: Boolean = false,
 )
 
 internal data class AndroidAuthenticationResponse(
@@ -82,6 +94,26 @@ internal fun androidReadableReference(reference: String): String {
 internal fun androidPlayerLabel(displayName: String?, playerId: String): String =
     displayName?.takeIf { it.isNotBlank() } ?: androidReadableReference(playerId)
 
+/** One account the server remembers for this app device. Never carries a token. */
+internal data class AndroidServerRememberedAccount(
+    val entryId: String,
+    val label: String?,
+    val playerId: String?,
+    val pinRequired: Boolean,
+    val current: Boolean,
+)
+
+internal sealed interface AndroidNativeSwitchResult {
+    data class Switched(val bearerToken: String, val expiresInSeconds: Long) : AndroidNativeSwitchResult
+    data object PinRequired : AndroidNativeSwitchResult
+    data object PinInvalid : AndroidNativeSwitchResult
+    data class RateLimited(val retryAfterSeconds: Long) : AndroidNativeSwitchResult
+    /** An administrator: always signs in afresh. */
+    data object Refused : AndroidNativeSwitchResult
+    /** No longer remembered here: sign in instead. */
+    data object Unavailable : AndroidNativeSwitchResult
+}
+
 internal sealed interface AndroidDeviceTokenPollResult {
     data object Pending : AndroidDeviceTokenPollResult
     data class SlowDown(val retryAfterSeconds: Long) : AndroidDeviceTokenPollResult
@@ -100,6 +132,13 @@ internal open class AndroidAuthenticationException(message: String) : RuntimeExc
  * screen can hand the person to the one place that resolves it, instead of a
  * generic failure (the APK never invents a Player silently).
  */
+/**
+ * The server no longer knows this bearer session: signed out on all devices, by an administrator,
+ * or expired early. The app signs out locally instead of showing a stale "signed in".
+ */
+internal class AndroidSessionEndedException :
+    AndroidAuthenticationException("The server ended this Android session.")
+
 internal class AndroidPlayerSetupRequiredException(val playerSetupUri: URI) :
     AndroidAuthenticationException("The signed-in account has no verified Player yet.")
 
@@ -239,14 +278,112 @@ internal class AndroidDeviceAuthorizationClient(
         return AndroidAuthenticatedNativeSession(token, expiresAt, playerId, username, displayName)
     }
 
-    fun revoke(token: String) {
-        if (!token.matches(tokenPattern)) invalidInput()
+    /** Remembers the signed-in account for this app device; false for an administrator. */
+    fun rememberOnServer(token: String, accountDevice: String): Boolean {
+        if (!token.matches(tokenPattern) || !accountDevice.matches(androidAccountDevicePattern)) invalidInput()
+        val response = executor.execute(
+            AndroidAuthenticationRequest("POST", ANDROID_NATIVE_REMEMBER_PATH, "{}", token,
+                accountDevice = accountDevice),
+        )
+        if (response.statusCode == 401) throw AndroidSessionEndedException()
+        val document = response.document(200)
+        if (document.keys != setOf("schemaVersion", "remembered") ||
+            document.string("schemaVersion") != "mk8dx.native-account-remember.v1") invalidResponse()
+        return when ((document["remembered"] as? JsonPrimitive)?.content) {
+            "true" -> true
+            "false" -> false
+            else -> invalidResponse()
+        }
+    }
+
+    fun listRemembered(accountDevice: String, currentToken: String?): List<AndroidServerRememberedAccount> {
+        if (!accountDevice.matches(androidAccountDevicePattern) ||
+            currentToken?.matches(tokenPattern) == false) invalidInput()
+        val response = executor.execute(
+            AndroidAuthenticationRequest("GET", ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH, null, currentToken,
+                accountDevice = accountDevice),
+        )
+        val document = response.document(200)
+        if (document.keys != setOf("schemaVersion", "accounts") ||
+            document.string("schemaVersion") != "mk8dx.native-remembered-accounts.v1") invalidResponse()
+        val accounts = document["accounts"] as? kotlinx.serialization.json.JsonArray ?: invalidResponse()
+        if (accounts.size > 6) invalidResponse()
+        return accounts.map { item ->
+            val row = item as? JsonObject ?: invalidResponse()
+            if (!setOf("entryId", "pinRequired", "current").all { it in row } ||
+                !row.keys.all { it in setOf("entryId", "label", "playerId", "pinRequired", "current") }) {
+                invalidResponse()
+            }
+            val entryId = row.string("entryId").takeIf { it.matches(entryIdPattern) } ?: invalidResponse()
+            val label = (row["label"] as? JsonPrimitive)?.content
+                ?.takeIf { it.isNotEmpty() && it.length <= 128 && it.none { c -> c.code < 0x20 || c.code == 0x7f } }
+            val playerId = (row["playerId"] as? JsonPrimitive)?.content
+                ?.takeIf { it.length <= 135 && it.matches(playerIdPattern) }
+            AndroidServerRememberedAccount(entryId, label, playerId, row.flag("pinRequired"), row.flag("current"))
+        }
+    }
+
+    fun switchOnServer(
+        accountDevice: String,
+        entryId: String,
+        pin: String?,
+        currentToken: String?,
+    ): AndroidNativeSwitchResult {
+        if (!accountDevice.matches(androidAccountDevicePattern) || !entryId.matches(entryIdPattern) ||
+            pin?.matches(pinPattern) == false || currentToken?.matches(tokenPattern) == false) invalidInput()
+        val response = executor.execute(
+            AndroidAuthenticationRequest(
+                "POST",
+                ANDROID_NATIVE_ACCOUNT_SWITCH_PATH,
+                buildJsonObject {
+                    put("entryId", entryId)
+                    if (pin != null) put("pin", pin)
+                }.toString(),
+                currentToken,
+                accountDevice = accountDevice,
+            ),
+        )
+        if (response.statusCode == 200) {
+            val document = response.document(200)
+            if (document.keys != setOf("schemaVersion", "token", "expiresIn") ||
+                document.string("schemaVersion") != "mk8dx.native-account-switch.v1") invalidResponse()
+            val token = document.string("token").takeIf { it.matches(tokenPattern) } ?: invalidResponse()
+            return AndroidNativeSwitchResult.Switched(token, document.positiveLong("expiresIn", 60, 31_536_000))
+        }
+        return when (response.errorCode()) {
+            "account_switch_pin_required" -> AndroidNativeSwitchResult.PinRequired
+            "account_switch_pin_invalid" -> AndroidNativeSwitchResult.PinInvalid
+            "account_switch_rate_limited" -> AndroidNativeSwitchResult.RateLimited(60)
+            "account_switch_forbidden" -> AndroidNativeSwitchResult.Refused
+            "account_switch_unavailable" -> AndroidNativeSwitchResult.Unavailable
+            else -> invalidResponse()
+        }
+    }
+
+    fun forgetOnServer(accountDevice: String, entryId: String): Boolean {
+        if (!accountDevice.matches(androidAccountDevicePattern) || !entryId.matches(entryIdPattern)) invalidInput()
+        val response = executor.execute(
+            AndroidAuthenticationRequest("POST", ANDROID_NATIVE_FORGET_PATH,
+                buildJsonObject { put("entryId", entryId) }.toString(), null, accountDevice = accountDevice),
+        )
+        val document = response.document(200)
+        if (document.keys != setOf("schemaVersion", "forgotten") ||
+            document.string("schemaVersion") != "mk8dx.native-account-forget.v1") invalidResponse()
+        return document.flag("forgotten")
+    }
+
+    fun revoke(token: String, accountDevice: String? = null, keepRemembered: Boolean = false) {
+        if (!token.matches(tokenPattern) || accountDevice?.matches(androidAccountDevicePattern) == false) {
+            invalidInput()
+        }
         val response = executor.execute(
             AndroidAuthenticationRequest(
                 method = "POST",
                 path = ANDROID_AUTH_SIGN_OUT_PATH,
                 body = "{}",
                 bearerToken = token,
+                accountDevice = accountDevice,
+                keepRemembered = keepRemembered,
             ),
         )
         val document = response.document(200)
@@ -281,6 +418,13 @@ private fun AndroidAuthenticationResponse.document(expectedStatus: Int): JsonObj
         invalidResponse()
     }
 }
+
+private fun JsonObject.flag(name: String): Boolean =
+    when ((this[name] as? JsonPrimitive)?.takeIf { !it.isString }?.content) {
+        "true" -> true
+        "false" -> false
+        else -> invalidResponse()
+    }
 
 private fun JsonObject.string(name: String): String =
     (this[name] as? JsonPrimitive)?.takeIf { it.isString }?.content ?: invalidResponse()

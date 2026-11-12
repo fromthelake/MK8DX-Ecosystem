@@ -723,6 +723,27 @@
    ]
   },
   {
+   "key": "A PIN is four digits.",
+   "nl": "Een pincode heeft vier cijfers.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts",
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "A PIN is on for this account.",
+   "nl": "Voor dit account staat een pincode aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "A Player already races under that name.",
    "nl": "Er rijdt al een speler onder die naam.",
    "kinds": [
@@ -1010,6 +1031,16 @@
    ]
   },
   {
+   "key": "Account without a Player",
+   "nl": "Account zonder Player",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Accounts and Players",
    "kinds": [
     "text"
@@ -1025,6 +1056,16 @@
    ],
    "places": [
     "administrator-identity-link-section.ts"
+   ]
+  },
+  {
+   "key": "Accounts that signed in on this device. Tap one to continue as that person. An administrator account appears here only with a PIN (set it under your account).",
+   "nl": "Accounts die op dit apparaat zijn aangemeld. Tik op een account om als die persoon verder te gaan. Een beheerdersaccount staat hier alleen met een pincode (in te stellen bij je account).",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -2553,6 +2594,7 @@
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
    ]
@@ -3141,10 +3183,10 @@
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "administrator-claim-review-section.ts",
-    "dutch-ui-copy.ts",
-    "installation-settings-section.ts",
-    "player-claim-walk.ts"
+    "authentication-product-page.ts",
+    "dutch-ui-copy.ts"
    ]
   },
   {
@@ -3165,6 +3207,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Card ready.",
+   "nl": "Kaart klaar.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -3237,6 +3289,16 @@
    ],
    "places": [
     "tournament-tiers.ts"
+   ]
+  },
+  {
+   "key": "Change PIN",
+   "nl": "Pincode wijzigen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -3391,7 +3453,8 @@
     "localized"
    ],
    "places": [
-    "tournament-operation-view.ts"
+    "tournament-operation-view.ts",
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -4184,6 +4247,16 @@
    ]
   },
   {
+   "key": "Click again to dismiss",
+   "nl": "Klik nogmaals om te negeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "Click ‘Enable notifications’ below.",
    "nl": "Klik hieronder op ‘Meldingen inschakelen’.",
    "kinds": [
@@ -4203,8 +4276,8 @@
    "places": [
     "activity-story-summary.ts",
     "authentication-product-page.ts",
-    "ds-setup-picker.ts",
-    "dutch-ui-copy.ts"
+    "device-invitation-card.ts",
+    "ds-setup-picker.ts"
    ]
   },
   {
@@ -5166,6 +5239,26 @@
    ]
   },
   {
+   "key": "Could not load the accounts on this device. Try again.",
+   "nl": "De accounts op dit apparaat konden niet worden geladen. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
+   "key": "Could not make a card. Try again.",
+   "nl": "Kon geen kaart maken. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Could not open Post a time.",
    "nl": "Kon Tijd plaatsen niet openen.",
    "kinds": [
@@ -5215,6 +5308,16 @@
    ]
   },
   {
+   "key": "Could not save the PIN. Try again.",
+   "nl": "De pincode kon niet worden opgeslagen. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "Could not share.",
    "nl": "Delen is niet gelukt.",
    "kinds": [
@@ -5222,6 +5325,16 @@
    ],
    "places": [
     "ds-tournaments.ts"
+   ]
+  },
+  {
+   "key": "Could not sign out on all devices. Please retry.",
+   "nl": "Afmelden op alle apparaten is niet gelukt. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -5234,6 +5347,16 @@
    "places": [
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Could not switch. Try again.",
+   "nl": "Overstappen is niet gelukt. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -5680,6 +5803,16 @@
    ],
    "places": [
     "tournament-operator-access-section.ts"
+   ]
+  },
+  {
+   "key": "Current PIN",
+   "nl": "Huidige pincode",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -6183,6 +6316,36 @@
    ],
    "places": [
     "web-push-settings.ts"
+   ]
+  },
+  {
+   "key": "Dismiss this live request",
+   "nl": "Deze Live-aanvraag negeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Dismissing removes this live request from the list. It was never public and its races are not scored.",
+   "nl": "Negeren haalt deze Live-aanvraag uit de lijst. Hij was nooit openbaar en de races tellen niet mee.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Dismissing the live request…",
+   "nl": "Live-aanvraag wordt genegeerd…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -6785,6 +6948,16 @@
    ]
   },
   {
+   "key": "Enter the current PIN first.",
+   "nl": "Vul eerst de huidige pincode in.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "Epoch {0} · {1} rated Players · {2} pinned result set{3}.",
    "kinds": [
     "text"
@@ -7027,6 +7200,16 @@
    ],
    "places": [
     "tournament-publication-section.ts"
+   ]
+  },
+  {
+   "key": "Exact match",
+   "nl": "Exacte match",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -9527,6 +9710,16 @@
    ]
   },
   {
+   "key": "Invitation link",
+   "nl": "Uitnodigingslink",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Invite {0}",
    "kinds": [
     "text"
@@ -9974,6 +10167,16 @@
    ],
    "places": [
     "crawl"
+   ]
+  },
+  {
+   "key": "Likely",
+   "nl": "Waarschijnlijk",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -10732,6 +10935,16 @@
    ]
   },
   {
+   "key": "Looking for accounts on this device…",
+   "nl": "Accounts op dit apparaat zoeken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Looking for the latest builds…",
    "nl": "Nieuwste versies zoeken…",
    "kinds": [
@@ -10910,6 +11123,16 @@
    ],
    "places": [
     "player-claim-section.ts"
+   ]
+  },
+  {
+   "key": "Making a card…",
+   "nl": "Kaart maken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -11236,6 +11459,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Matched by hand",
+   "nl": "Handmatig gekoppeld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -11812,6 +12045,16 @@
    ]
   },
   {
+   "key": "Name match",
+   "nl": "Naam-match",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
+   ]
+  },
+  {
    "key": "Names on screen and who was driving",
    "nl": "Namen op het scherm en wie er reed",
    "kinds": [
@@ -11922,6 +12165,16 @@
    ]
   },
   {
+   "key": "New PIN (4 digits)",
+   "nl": "Nieuwe pincode (4 cijfers)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "New Player",
    "nl": "Nieuwe speler",
    "kinds": [
@@ -11970,6 +12223,26 @@
    ],
    "places": [
     "notification-section.ts"
+   ]
+  },
+  {
+   "key": "New card",
+   "nl": "Nieuwe kaart",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "New card ready. The previous card no longer works.",
+   "nl": "Nieuwe kaart klaar. De vorige kaart werkt niet meer.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -12255,6 +12528,16 @@
    ]
   },
   {
+   "key": "No PIN: one tap switches to this account on a shared device.",
+   "nl": "Geen pincode: met één tik stap je op een gedeeld apparaat over naar dit account.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "No Player answers to that name yet.",
    "nl": "Nog geen speler met die naam.",
    "kinds": [
@@ -12497,6 +12780,16 @@
    ]
   },
   {
+   "key": "No connection. Check the network and try again.",
+   "nl": "Geen verbinding. Controleer het netwerk en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "No country",
    "nl": "Geen land",
    "kinds": [
@@ -12726,6 +13019,16 @@
    ],
    "places": [
     "tournament-operator-access-section.ts"
+   ]
+  },
+  {
+   "key": "No other accounts are remembered on this device yet. Each person signs in here once; after that one tap is enough.",
+   "nl": "Op dit apparaat worden nog geen andere accounts onthouden. Iedereen meldt zich hier één keer aan; daarna is één tik genoeg.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -14023,6 +14326,16 @@
    ]
   },
   {
+   "key": "On a shared device, anyone can switch to your account with one tap. A 4-digit PIN stops that: switching to you then asks for it. If you forget it, sign in again with your usual sign-in and change or remove it within 15 minutes.",
+   "nl": "Op een gedeeld apparaat kan iedereen met één tik naar jouw account overstappen. Een pincode van 4 cijfers voorkomt dat: overstappen naar jou vraagt er dan om. Vergeten? Meld je opnieuw aan zoals altijd en wijzig of verwijder hem binnen 15 minuten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "On an Android phone",
    "nl": "Op een Android-telefoon",
    "kinds": [
@@ -14069,6 +14382,16 @@
    ],
    "places": [
     "tournament-signup-section.ts"
+   ]
+  },
+  {
+   "key": "On this device",
+   "nl": "Op dit apparaat",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -14331,6 +14654,16 @@
    ],
    "places": [
     "web-push-settings.ts"
+   ]
+  },
+  {
+   "key": "Only show it to a device of your own: whoever scans it is signed in as you. A new device first scans the 'Prepare a device' card once, so it trusts this installation.",
+   "nl": "Laat hem alleen aan je eigen apparaat zien: wie hem scant, is op jouw account aangemeld. Een nieuw apparaat scant eerst één keer de kaart 'Apparaat voorbereiden', zodat het deze installatie vertrouwt.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -14925,6 +15258,56 @@
    ],
    "places": [
     "ds-home.ts"
+   ]
+  },
+  {
+   "key": "PIN",
+   "nl": "pincode",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
+   "key": "PIN for",
+   "nl": "Pincode voor",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
+   "key": "PIN for switching accounts",
+   "nl": "Pincode voor ander account",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "PIN removed.",
+   "nl": "Pincode verwijderd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "PIN saved.",
+   "nl": "Pincode opgeslagen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -16616,6 +16999,16 @@
    ]
   },
   {
+   "key": "QR code that signs another device in to this account",
+   "nl": "QR-code die een ander apparaat op dit account aanmeldt",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "Qualifier",
    "nl": "Kwalificatie",
    "kinds": [
@@ -17594,6 +17987,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Remove PIN",
+   "nl": "Pincode verwijderen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
    ]
   },
   {
@@ -19075,10 +19478,10 @@
     "text"
    ],
    "places": [
+    "account-switch-pin-settings.ts",
     "account-time-trial-settings.ts",
     "administrator-time-trial-section.ts",
-    "avatar-settings.ts",
-    "country-settings.ts"
+    "avatar-settings.ts"
    ]
   },
   {
@@ -19109,6 +19512,16 @@
    ],
    "places": [
     "ds-scan.ts"
+   ]
+  },
+  {
+   "key": "Scan this card with the camera of your other phone, tablet or PC. There you will be signed in as yourself — the same account as here, with the same Players and records. The card works once and for 15 minutes.",
+   "nl": "Scan deze kaart met de camera van je andere telefoon, tablet of pc. Daar ben je dan ingelogd als jezelf — hetzelfde account als hier, met dezelfde Players en records. De kaart werkt één keer en 15 minuten lang.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -20222,6 +20635,26 @@
    ]
   },
   {
+   "key": "Sign in on another device",
+   "nl": "Inloggen op een ander apparaat",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "Sign in on another device too",
+   "nl": "Ook op een ander apparaat inloggen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Sign in on your device",
    "nl": "Aanmelden op je apparaat",
    "kinds": [
@@ -20336,6 +20769,16 @@
    ]
   },
   {
+   "key": "Sign in with another account",
+   "nl": "Met een ander account aanmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Sign in with your invitation first, then return to approve this device.",
    "nl": "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
    "kinds": [
@@ -20365,6 +20808,36 @@
    "places": [
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Sign out everywhere",
+   "nl": "Overal afmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Sign out on all devices",
+   "nl": "Op alle apparaten afmelden",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Sign out on all devices?",
+   "nl": "Op alle apparaten afmelden?",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -20458,8 +20931,38 @@
    ]
   },
   {
+   "key": "Signed in there as",
+   "nl": "Daar ingelogd als",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "Signed out on all devices.",
+   "nl": "Op alle apparaten afgemeld.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Signed out. Sign in with a different account to continue.",
    "nl": "Afgemeld. Meld je aan met een ander account om verder te gaan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Signing out on all devices…",
+   "nl": "Op alle apparaten afmelden…",
    "kinds": [
     "localized"
    ],
@@ -21417,12 +21920,23 @@
    ]
   },
   {
+   "key": "Switch",
+   "nl": "Overstappen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
+   ]
+  },
+  {
    "key": "Switch account",
    "nl": "Ander account",
    "kinds": [
     "localized"
    ],
    "places": [
+    "account-switch-chooser.ts",
     "authentication-product-page.ts"
    ]
   },
@@ -21487,6 +22001,16 @@
    ]
   },
   {
+   "key": "Switch to an account that signed in on this device, or sign in with another one. Signing out removes your account from this device's list.",
+   "nl": "Stap over naar een account dat op dit apparaat is aangemeld, of meld je aan met een ander account. Afmelden haalt je account van de lijst van dit apparaat.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Switched off under Which blocks the report shows, so not on the page: {0}.",
    "nl": "Uitgezet onder Welke blokken het verslag toont, dus niet op de pagina: {0}.",
    "kinds": [
@@ -21504,6 +22028,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Switching…",
+   "nl": "Bezig met overstappen…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -21727,6 +22261,16 @@
    ]
   },
   {
+   "key": "Tap your account to continue; no new link or invitation is needed.",
+   "nl": "Tik op je account om verder te gaan; je hebt geen nieuwe link of uitnodiging nodig.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Tap ‘Enable notifications’ below.",
    "nl": "Tik hieronder op ‘Meldingen inschakelen’.",
    "kinds": [
@@ -21843,6 +22387,16 @@
    ],
    "places": [
     "appearance-settings.ts"
+   ]
+  },
+  {
+   "key": "That PIN is not right.",
+   "nl": "Die pincode klopt niet.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -22469,6 +23023,16 @@
    ]
   },
   {
+   "key": "The current PIN is not right.",
+   "nl": "De huidige pincode klopt niet.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "The decision could not be recorded.",
    "kinds": [
     "text"
@@ -22664,6 +23228,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "The live request could not be dismissed.",
+   "nl": "De Live-aanvraag kon niet worden genegeerd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -23403,6 +23977,16 @@
    ]
   },
   {
+   "key": "This account cannot add a device here.",
+   "nl": "Dit account kan hier geen apparaat toevoegen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
+   ]
+  },
+  {
    "key": "This account cannot operate tournaments.",
    "nl": "Dit account mag geen toernooi bedienen.",
    "kinds": [
@@ -23410,6 +23994,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "This account is no longer remembered here. Sign in instead.",
+   "nl": "Dit account wordt hier niet meer onthouden. Meld je gewoon aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts"
    ]
   },
   {
@@ -23440,6 +24034,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "This card has expired. Make a new card.",
+   "nl": "Deze kaart is verlopen. Maak een nieuwe kaart.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -23509,6 +24113,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "This ends every session of this account: other browsers, phones and the apps are signed out too, and so is this device. Each one has to sign in again.",
+   "nl": "Dit beëindigt elke sessie van dit account: andere browsers, telefoons en de apps worden ook afgemeld, net als dit apparaat. Elk apparaat moet daarna opnieuw aanmelden.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -24075,6 +24689,27 @@
    ],
    "places": [
     "player-claim-section.ts"
+   ]
+  },
+  {
+   "key": "Too many attempts. Wait a few minutes and try again.",
+   "nl": "Te veel pogingen. Wacht een paar minuten en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-chooser.ts",
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
+   "key": "Too many cards right now, or the server is busy. Wait a moment and try again.",
+   "nl": "Nu te veel kaarten, of de server is bezet. Wacht even en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -25008,6 +25643,16 @@
    ]
   },
   {
+   "key": "Turn on PIN",
+   "nl": "Pincode aanzetten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts"
+   ]
+  },
+  {
    "key": "Type your total time — or scan it.",
    "nl": "Vul je totaaltijd in — of scan hem.",
    "kinds": [
@@ -25455,6 +26100,16 @@
    ],
    "places": [
     "administrator-client-installation-section.ts"
+   ]
+  },
+  {
+   "key": "Very strong",
+   "nl": "Zeer sterk",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {
@@ -26552,6 +27207,16 @@
    ],
    "places": [
     "tournament-report-view.ts"
+   ]
+  },
+  {
+   "key": "Works once, valid until",
+   "nl": "Werkt één keer, geldig tot",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -27888,6 +28553,17 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "Your session has ended. Sign in again.",
+   "nl": "Je sessie is beëindigd. Meld je opnieuw aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "account-switch-pin-settings.ts",
+    "device-invitation-card.ts"
    ]
   },
   {
@@ -31832,6 +32508,16 @@
    ],
    "places": [
     "administrator-observed-identity-section.ts"
+   ]
+  },
+  {
+   "key": "{0}% similar",
+   "nl": "{0}% overeenkomst",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-score-matching.ts"
    ]
   },
   {

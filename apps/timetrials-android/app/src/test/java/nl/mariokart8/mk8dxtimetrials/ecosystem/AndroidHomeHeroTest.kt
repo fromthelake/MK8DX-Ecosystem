@@ -93,4 +93,21 @@ class AndroidHomeHeroTest {
         assertEquals("Mythic", androidMasteryLongLabel("Myth"))
         assertEquals("Titan", androidMasteryLongLabel("Titan"))
     }
+
+    @Test
+    fun noTournamentTierBeforeAFirstRatedRace() {
+        assertNull(homeHeroTournamentTier(AndroidTournamentStanding(rank = 1, of = 2, score = 0.0, played = false)))
+        assertEquals(androidTournamentTierByRank(1), homeHeroTournamentTier(AndroidTournamentStanding(1, 2, 0.0, played = true)))
+        // An older server sends no flag: the tier stays as before.
+        assertEquals(androidTournamentTierByRank(1), homeHeroTournamentTier(AndroidTournamentStanding(1, 2, 0.0)))
+        assertNull(homeHeroTournamentTier(null))
+    }
+
+    @Test
+    fun thePlayedFlagIsReadFromTheComebackDocument() {
+        val json = kotlinx.serialization.json.Json { ignoreUnknownKeys = true; explicitNulls = false }
+        assertEquals(false, json.decodeFromString<AndroidTournamentStanding>(
+            """{"rank":1,"of":2,"score":0,"played":false}""").played)
+        assertNull(json.decodeFromString<AndroidTournamentStanding>("""{"rank":1,"of":2,"score":0}""").played)
+    }
 }

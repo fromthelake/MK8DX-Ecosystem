@@ -45,6 +45,10 @@ export type ShellText = Readonly<{
   notifications: string;
   signIn: string;
   signOut: string;
+  /** ADR-0224: every session of this account ends, this device's included. */
+  signOutEverywhere?: string;
+  /** ADR-0224: offline-invitation installations, Player accounts only. */
+  addDevice?: string;
   switchAccount: string;
   settings: string;
   myStats: string;
@@ -67,6 +71,8 @@ export type AppShellOptions = Readonly<{
   languageToggle: HTMLElement;
   onSignOut: () => void;
   onSwitchAccount: () => void;
+  onSignOutEverywhere?: () => void;
+  onAddDevice?: () => void;
 }>;
 
 export type AppShellHandle = Readonly<{
@@ -78,6 +84,8 @@ export type AppShellHandle = Readonly<{
   setIdentity(identity: ShellIdentity | null): void;
   setUnread(count: number): void;
   setAdministrator(administrator: boolean): void;
+  /** Whether "Add another device" is offered; off until the page knows the installation allows it. */
+  setAddDevice(available: boolean): void;
   setSignInHref(href: string): void;
   setGlobalAction(level: GlobalActionLevel): void;
   /**
@@ -236,6 +244,7 @@ export function mountAppShell(host: HTMLElement, options: AppShellOptions): AppS
   const accountAvatar = el("img", "ds-topbar__avatar", { alt: "" });
   const accountName = el("span", "ds-topbar__account-name", {});
   let administrator = false;
+  let addDevice = false;
   let identity: ShellIdentity | null = null;
   const accountItems = (): readonly MenuItem[] => [
     ...(identity === null ? [] : [{ label: text.profile, href: identity.href }]),
@@ -245,8 +254,13 @@ export function mountAppShell(host: HTMLElement, options: AppShellOptions): AppS
     { label: text.notifications, href: "/?notifications=1" },
     { label: text.settings, href: "/?settings=1" },
     ...(administrator ? [{ label: text.administration, href: "/?admin=1" }] : []),
+    ...(addDevice && text.addDevice !== undefined && options.onAddDevice !== undefined
+      ? [{ label: text.addDevice, onSelect: options.onAddDevice }] : []),
     { label: text.switchAccount, onSelect: options.onSwitchAccount },
     { label: text.signOut, tone: "danger" as const, onSelect: options.onSignOut },
+    ...(text.signOutEverywhere !== undefined && options.onSignOutEverywhere !== undefined
+      ? [{ label: text.signOutEverywhere, tone: "danger" as const, onSelect: options.onSignOutEverywhere }]
+      : []),
   ];
   // The trigger shows the Player's name, so the accessible name has to contain it.
   const accountLabel = (): string =>
@@ -392,6 +406,11 @@ export function mountAppShell(host: HTMLElement, options: AppShellOptions): AppS
     setAdministrator(next): void {
       if (administrator === next) { return; }
       administrator = next;
+      rebuildAccountMenu();
+    },
+    setAddDevice(next): void {
+      if (addDevice === next) { return; }
+      addDevice = next;
       rebuildAccountMenu();
     },
     setSignInHref(href): void { signInLink.setAttribute("href", href); },

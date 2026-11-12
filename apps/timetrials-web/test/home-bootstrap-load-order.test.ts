@@ -318,4 +318,65 @@ describe("Home bootstrap load order", () => {
     expect(calls.filter((url) => url.startsWith("/v1/") || url.startsWith("/api/"))).toHaveLength(0);
     mounted.unmount();
   });
+
+  it("does not request Player-only sections the bootstrap already answered as 'no verified Player'", async () => {
+    const { comeback: _c, focus: _f, ...withoutPlayer } = bootstrapSections;
+    const calls = recordingFetch({
+      "/v1/bootstrap": () => new Response(JSON.stringify(withoutPlayer), {
+        status: 200, headers: { "content-type": "application/json" },
+      }),
+    });
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+      client: sessionClient(vi.fn(async () => ({ authenticated: true }))),
+      pathname: "/",
+      search: "",
+    });
+    await mounted.ready;
+    await settle();
+    await new Promise((resolve) => setTimeout(resolve, 1_300));
+    await settle();
+    // Answered locally from what the bootstrap said: no failing request, no console error.
+    expect(calls.filter((url) => url.startsWith("/v1/home/comeback") || url.startsWith("/v1/home/focus"))).toHaveLength(0);
+    expect(descendants(root).some((node) => node.className.includes("ds-home"))).toBe(true);
+    mounted.unmount();
+  });
+
+  it("clears a previous account's remembered name when the signed-in account has no verified Player", async () => {
+    // A shared family device: the last account remembered its Player for the
+    // header, then someone else signed in whose claims are still empty.
+    const store = new Map<string, string>([["mk8dx.nav-identity.v1",
+      JSON.stringify({ username: "previous-player", displayName: "Previous Person" })]]);
+    const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+    Object.defineProperty(globalThis, "localStorage", { configurable: true, value: {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => { store.set(key, value); },
+      removeItem: (key: string) => { store.delete(key); },
+    } });
+    try {
+      recordingFetch();
+      const document = new FakeDocument();
+      const root = document.createElement("div");
+      const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+        client: sessionClient(vi.fn(async () => ({ authenticated: true }))),
+        pathname: "/",
+        search: "",
+      });
+      await mounted.ready;
+      await settle();
+      const chip = () => descendants(root).find((node) => node.className === "ds-topbar__account-name");
+      // Painted at once from memory (the page's speed promise)...
+      expect(chip()?.textContent).toBe("Previous Person");
+      // ...and corrected once the account's own claims have been read.
+      await new Promise((resolve) => setTimeout(resolve, 1_300));
+      await settle();
+      expect(chip()?.textContent).toBe("");
+      expect(store.has("mk8dx.nav-identity.v1")).toBe(false);
+      mounted.unmount();
+    } finally {
+      if (original === undefined) { delete (globalThis as { localStorage?: unknown }).localStorage; }
+      else { Object.defineProperty(globalThis, "localStorage", original); }
+    }
+  });
 });

@@ -161,7 +161,13 @@ export function projectTournamentLiveGroups(
       );
       for (const placement of entry.result.placements) {
         const reference = placement.participantReference;
-        const key = `${reference.namespace}:${reference.value}`;
+        // An unresolved observation is one sighting (race + position), not a participant
+        // (TournamentRaceResultV1); Live sends a new one every race. Within one group's
+        // stream the observed name is what stays stable until the director resolves it.
+        const observedName = placement.observedPlayerName?.trim();
+        const key = reference.namespace === "unresolved_observation" && observedName
+          ? `observed:${observedName.toLocaleLowerCase("en")}`
+          : `${reference.namespace}:${reference.value}`;
         latest.set(key, {
           observedPlayerName: placement.observedPlayerName?.trim() || reference.value,
           total: placement.scoring.totalAfterRace,
@@ -251,6 +257,19 @@ export interface TournamentConnectedRepository {
     mappings: readonly TournamentLiveMapping[];
     reason: string;
     authorization?: "director" | "roster_match";
+    nowMs: number;
+  }): Promise<TournamentEvidenceRecord>;
+  /**
+   * Retire a live request that never went public: `requested`, or `stopping`
+   * without any approved mappings. Sets `invalidated`, so it leaves the
+   * director's list and can never reach the public live projection.
+   */
+  dismissLiveRequest(input: {
+    recordId: string;
+    expectedRevision: number;
+    tournamentId: string;
+    reviewedByUserAccountId: string;
+    reason: string;
     nowMs: number;
   }): Promise<TournamentEvidenceRecord>;
   markOwnEvidenceStopping(input: {
@@ -684,6 +703,32 @@ export class TournamentConnectedService {
       reviewedByUserAccountId: reviewer,
       mappings,
       reason: input.reason.trim() || "Live feed mapping confirmed by Tournament director",
+      nowMs: this.now(),
+    });
+  }
+
+  public async dismissLiveRequest(actor: ActorContext, input: {
+    tournamentId: string;
+    recordId: string;
+    expectedRevision: number;
+    reason?: string;
+  }): Promise<TournamentEvidenceRecord> {
+    const reviewer = await this.assertReviewer(actor, input.tournamentId);
+    if (!Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 1) {
+      throw new TournamentOperationError("invalid_input", "expectedRevision is invalid.");
+    }
+    if (input.reason !== undefined && typeof input.reason !== "string") {
+      throw new TournamentOperationError("invalid_input", "reason is invalid.");
+    }
+    const reason = input.reason === undefined || input.reason.trim() === ""
+      ? "Stale live request dismissed by Tournament director"
+      : boundedText(input.reason, "reason", 512);
+    return this.repository.dismissLiveRequest({
+      recordId: boundedText(input.recordId, "recordId", 160),
+      expectedRevision: input.expectedRevision,
+      tournamentId: input.tournamentId,
+      reviewedByUserAccountId: reviewer,
+      reason,
       nowMs: this.now(),
     });
   }

@@ -945,6 +945,8 @@ fun Mk8dxTextField(
     singleLine: Boolean = true,
     keyboardType: KeyboardType = KeyboardType.Text,
     invalid: Boolean = false,
+    /** Shown as dots (a PIN on a shared phone); the value itself is unchanged. */
+    secret: Boolean = false,
     /**
      * A test tag for the input itself. Like a button's, it belongs on the node
      * that carries the label and the text, not on the column around it: that is
@@ -993,6 +995,11 @@ fun Mk8dxTextField(
                 singleLine = singleLine,
                 interactionSource = interaction,
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+                visualTransformation = if (secret) {
+                    androidx.compose.ui.text.input.PasswordVisualTransformation()
+                } else {
+                    androidx.compose.ui.text.input.VisualTransformation.None
+                },
                 textStyle = Mk8dxTheme.type.body.copy(color = colors.textPrimary),
                 cursorBrush = SolidColor(colors.actionPrimary),
                 modifier = Modifier

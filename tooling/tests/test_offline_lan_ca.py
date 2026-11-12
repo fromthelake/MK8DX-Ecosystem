@@ -39,7 +39,8 @@ class OfflineLanCaTest(unittest.TestCase):
                                          ec.ECDSA(intermediate.signature_hash_algorithm))
                 root_limits = root.extensions.get_extension_for_class(x509.NameConstraints).value
                 self.assertEqual(root_limits.permitted_subtrees,
-                                 [x509.IPAddress(network) for network in offline_lan_ca.PRIVATE_NETWORKS])
+                                 [x509.IPAddress(network) for network in offline_lan_ca.PRIVATE_NETWORKS]
+                                 + [x509.DNSName("invalid")])
                 limits = intermediate.extensions.get_extension_for_class(x509.NameConstraints).value
                 self.assertEqual(limits.permitted_subtrees,
                                  [x509.IPAddress(ipaddress.ip_network("192.168.12.34/32"))])
@@ -60,7 +61,9 @@ class OfflineLanCaTest(unittest.TestCase):
                 page = (ca / "setup/index.html").read_text(encoding="utf-8")
                 self.assertIn(metadata["root"]["certificateSha256"], page)
                 self.assertIn(metadata["root"]["spkiSha256"], page)
-                self.assertIn("fingerprint below is not that code", page)
+                self.assertIn('name="viewport"', page)
+                self.assertIn("Vertrouwde basiscertificeringsinstanties", page)  # Dutch next to English
+                self.assertIn(metadata["root"]["certificateSha256"][:4].upper(), page)  # short code to compare
                 self.assertIn("Trusted Root Certification Authorities", page)
                 self.assertIn("Linux is not yet tested end to end", page)
                 self.assertNotIn("token", page.lower())

@@ -313,3 +313,57 @@ remains closed until the device and offline gates pass. A2 also includes
 LiveTrial on another Windows PC: its saved result must reach the same local
 API after trusted HTTPS setup and browser device approval. That LiveTrial path
 is not yet qualified.
+
+Amendment (2026-11-11), Linux and macOS hosts: the installation's CA root key and
+the stored backup recovery code are protected per platform, always for the
+installing user only and without administrator rights. Windows keeps DPAPI.
+Linux encrypts them with `systemd-creds --user` (bound to that host and user)
+where available, and otherwise keeps them in owner-only files (0600 in a 0700
+folder); the setup says which applies. macOS keeps them in the user's login
+Keychain and the file only names the entry. On every platform an administrator
+of the host, or someone holding its unlocked disk, can use the key, which DPAPI
+does not prevent either; backups that leave the host stay sealed with the
+recovery code. Scheduled backups and certificate renewal run as per-user jobs
+that catch up after a missed run (systemd user timers with `Persistent=true`,
+launchd agents). Steps that need root on Linux (a firewall rule for 80/443 when
+ufw or firewalld is active, Docker Engine at boot) are shown as exact commands
+instead of being run. LiveTrial and Tournament Tools remain Windows programs.
+
+Amendment (2026-11-11), host names in the root: the root's name constraints
+permitted only the private IPv4 ranges, which by RFC 5280 leaves host names
+unconstrained, so whoever held the root key could have vouched for a website
+name on a device that trusts the root. A root made from now on also permits
+only names under the reserved `.invalid` top-level domain (RFC 6761), which no
+real website has. Checked with OpenSSL and the Windows chain engine: the leaf
+Caddy issues for the LAN IP still validates, and a leaf for `bank.example.com`
+under an unconstrained intermediate signed by the new root is refused
+(`permitted subtree violation`, `HasNotPermittedNameConstraint`), while the old
+root shape accepted it. Existing installations keep their root (replacing it
+would mean preparing every device again) and stay valid.
+
+## ADR-0224
+
+**Devices and switching accounts.** Phase 1: in an offline-invitation installation a signed-in
+Player account can create a one-use, 15-minute invitation for its own account to add another
+device (never another account, never an administrator account, rate-limited; a new card retires
+the previous self-issued one), and every account can sign out on all devices. Phase 2: a shared
+device remembers the Player accounts that signed in on it and switches between them with one tap;
+an account may add a 4-digit PIN that only the server checks, with a rate limit. Administrators are
+never remembered and always sign in afresh, the browser holds labels only (never a session token),
+and signing out removes the account from that device's list. Better Auth's multi-session plugin was
+reviewed and not used, because its remembered cookies are live sessions that would let a PIN be
+bypassed (docs/product/ACCOUNT_SWITCHING_DESIGN.md). Identity rules are unchanged.
+Amendment (2026-11-11): an offline administrator can also sign *another* account out on every
+device from the loopback host administration (lost phone, card in the wrong hands). This ends all
+web and app sessions of that account (each audited as a revoked session), removes it from every
+shared device's list and revokes its open sign-in cards; an administrator signs their own account
+out with "Sign out on all devices" instead.
+Amendment (2026-11-11, owner decision), administrators behind a PIN: an administrator is remembered
+on a browser device like any account but is listed and switched to only when the account has a
+PIN, and more strictly: the fifth wrong PIN on that device forgets the entry (a durable per-entry
+count, migration 0086, reset by a right PIN), and an entry unused there for 14 days is forgotten.
+Without a PIN nothing changes: a card again. The native app still does not remember administrators.
+Amendment (2026-11-11): the Android app switches accounts as well. The server keeps the app's
+list (the app holds only the active bearer token and a random device value, in a separate
+namespace from browser device cookies), so the PIN and administrator rules apply unchanged and
+signing out everywhere also empties the app's list.

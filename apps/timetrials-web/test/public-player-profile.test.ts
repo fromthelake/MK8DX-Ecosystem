@@ -196,4 +196,37 @@ describe("public Player profile", () => {
       .toBe(true);
     trials.unmount();
   });
+
+  it("shows the position but no tier before a Player's first rated race", async () => {
+    // A fresh install: everyone is rating 0, so list order alone would call a newcomer "Champion".
+    const playerId = "player.synthetic_newcomer_01";
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const mounted = mountPublicPlayerProfile(
+      root as unknown as HTMLElement,
+      playerId,
+      "overview",
+      { async load() { return { playerId, username: "Newcomer", displayName: "Newcomer" }; } },
+      { async listForPlayer() {
+        return { schemaVersion: "mk8dx.public-player-aliases.v1", playerId, aliases: [] };
+      } },
+      {
+        async leaderboard() { throw new Error("unused"); },
+        async activity() { throw new Error("unused"); },
+        async listPlayer() { return { schemaVersion: "mk8dx.public-player-time-trials.v1", results: [] }; },
+      },
+      undefined,
+      {
+        async leaderboard() {
+          return [{ rank: 1, playerId, username: "Newcomer", displayName: "Newcomer", score: 0, played: false }];
+        },
+      },
+    );
+    await mounted.ready;
+    for (let step = 0; step < 6; step += 1) { await Promise.resolve(); }
+    const text = descendants(root).map((node) => node.textContent);
+    expect(text.some((value) => value?.includes("#1 of 1 · Rating 0.00"))).toBe(true);
+    expect(descendants(root).some((node) => node.className.includes("ds-tier-chip"))).toBe(false);
+    mounted.unmount();
+  });
 });

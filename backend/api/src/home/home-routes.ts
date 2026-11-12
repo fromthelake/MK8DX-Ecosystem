@@ -58,11 +58,14 @@ export const comebackResponseSchema = {
     tournament: {
       type: "object",
       additionalProperties: false,
-      required: ["rank", "of", "score"],
+      required: ["rank", "of", "score", "played"],
       properties: {
         rank: { type: "integer", minimum: 1 },
         of: { type: "integer", minimum: 0 },
         score: { type: "number" },
+        // False until the Player has a rated race: the rank is shown, but no
+        // tier, because a tier earned by list order alone means nothing yet.
+        played: { type: "boolean" },
       },
     },
     timeTrials: {

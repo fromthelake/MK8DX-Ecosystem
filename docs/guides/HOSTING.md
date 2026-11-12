@@ -1,6 +1,6 @@
 # Host a community server
 
-[All guides](../../README.md#guides) · [Operations](../OPERATIONS.md) · [User guide (complete)](../install/MK8DX_User_Guide_EN.txt)
+[All guides](../../README.md#get-started) · [Operations](../OPERATIONS.md) · [User guide (complete)](../install/MK8DX_User_Guide_EN.txt)
 
 This guide is for the person who runs the MK8DX website for a community: the website, the browser scanner,
 the API and the database. Players, Tournament Directors and LiveTrial users then connect to your address.
@@ -14,7 +14,7 @@ Nintendo Ghost Staff and World Records reference sets.
 | --- | --- | --- | --- |
 | **B1** public website with Docker | Your own HTTPS domain, real email | **Linux** x86-64 server (Ubuntu 24.04 LTS documented) | [below](#linux-server-with-docker-main-route), and the VPS chapter of the user guide |
 | **A1** trial on one computer with Docker | Website on `127.0.0.1`, local test inbox (Mailpit) | **Linux** x86-64 or Windows 11 | [below](#linux-server-with-docker-main-route) (Linux), user guide chapter 1 (Windows) |
-| **A2** your own network | Second Windows PC on a trusted network, local certificate | Windows 11 host | user guide chapter 3 |
+| **A2** home or club network, no internet | Phones and PCs on your own network, guided setup in the browser, sign-in cards | Windows 11 (tested), Linux, macOS; x86-64 or arm64 | [A2 guide](../install/A2_HOME_GUIDE_EN.md) |
 | **A3** one computer without Docker | XAMPP Apache, Node.js and a bundled MariaDB | Windows 11 | user guide chapter 2 |
 | **B2** shared web hosting | Node.js (Passenger) and MariaDB/MySQL, no Docker or root | A hosting plan with SSH | user guide chapter 4 |
 | From source | Build the images yourself from a clone | Linux, Windows (macOS untested) | [Getting started](../GETTING_STARTED.md) |
@@ -30,7 +30,8 @@ and `SHA256SUMS.txt` from the same release (see [Release packages](../RELEASE_PA
 
 | Route | Package |
 | --- | --- |
-| A1, A2, B1 | `mk8dx-host-local-…-amd64.zip` (website, API and database images plus the launchers) |
+| A1, B1 | `mk8dx-host-local-…-amd64.zip` (website, API and database images plus the launchers) |
+| A2 | `mk8dx-a2-<platform>-<arch>-….zip` (everything for that platform, with the guided setup) |
 | A3 | `mk8dx-xampp-node-windows-….zip` |
 | B2 | `mk8dx-mijnhost-node-….zip` |
 
@@ -90,7 +91,8 @@ x86-64 Linux with Docker Engine; the user guide documents Ubuntu 24.04 LTS.
 
 ### Requirements
 
-- Linux on x86-64 (`uname -m` prints `x86_64`). There are no ARM images yet.
+- Linux on x86-64 (`uname -m` prints `x86_64`). The B1 host package has amd64 images only; the A2 package also
+  exists for arm64.
 - Docker Engine with the Compose plugin (`docker compose version` works), Python 3.12 or newer (`python3`) and
   `unzip`. For Ubuntu, the user guide's VPS chapter has the exact commands for Docker's official apt repository.
 - An account that may use Docker (root, or a member of the `docker` group, which is equivalent to root).
@@ -116,15 +118,16 @@ it with mode 0700. Keep it when you install a newer package.
 
 On the first run the launcher loads the images from `images/docker-images-amd64.tar` and starts the wizard:
 
-1. `Choose A1, A2, A3, B1 or B2:` type **B1** for a public website or **A1** for a local trial. (A2 is the
-   Windows home-network route; A3 and B2 belong to the other packages.)
+1. `Where will MK8DX run?` lists A1, A2 and B1 in plain words. Type **B1** for a public website or **A1** for a
+   local trial. (For a home or club network use the `mk8dx-a2-…` package instead; A3 and B2 belong to the
+   package without Docker.)
 2. For B1: your host name without `https://`, the SMTP server, port (Enter for 465), login, the authorized
    sender address and the SMTP password (hidden while you type).
 3. `Your own future MK8DX administrator email:` the address you will sign in with.
-4. The menu: choose **1** for first setup. It starts the database, applies every migration of the catalog,
+4. The first setup then starts by itself. It starts the database, applies every migration of the catalog,
    adds the two reference sets and starts the website and API. The first run takes a few minutes.
 
-Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows the same menu once:
+Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows this menu; it stays open until you choose **0**:
 
 | Choice | Does |
 | --- | --- |
@@ -133,8 +136,10 @@ Each later run of `sh tooling/start-mk8dx.sh <installation directory>` shows the
 | 3 | status (prints the website address and, for A1, the local mail inbox) and the container state |
 | 4 | stop (keeps all data) |
 | 5 | make the saved administrator address the first administrator (after its first sign-in) |
-| 6 | backup to `$HOME/mk8dx-backups/<UTC time>` |
+| 6 | backup to `$HOME/mk8dx-backups/<UTC time>`, checked right away |
 | 7 | update: verified backup first, then pending migrations, then the new images |
+| 8 | show the website address (Windows: also opens it) |
+| 0 | close |
 
 ### Become the administrator
 
@@ -227,8 +232,10 @@ An installation built from source is removed the same way from the repository ro
 
 ## The other routes
 
-- **Windows (A1, A2, A3)**: double-click `Start-MK8DX.cmd`, `Start-MK8DX-LAN.cmd` or `Start-MK8DX-No-Docker.cmd`
-  in the extracted package; the same wizard and menu appear. Follow chapters 1-3 of the user guide.
+- **Windows (A1, A3)**: double-click `Start-MK8DX.cmd` (host package) or `Start-MK8DX-No-Docker.cmd` (package
+  without Docker) and follow chapter 1 or 2 of the user guide.
+- **Home or club network (A2)**: double-click `Start-MK8DX-LAN.cmd` in the `mk8dx-a2-…` package (Linux and macOS:
+  `sh tooling/start-mk8dx.sh`); the setup opens in your browser. Follow the [A2 guide](../install/A2_HOME_GUIDE_EN.md).
 - **Shared hosting (B2)**: chapter 4 of the user guide (upload over SSH, `python3 tooling/install.py wizard`,
   `setup`, `passenger-config`, then start the Node.js app in your hosting panel). Any hosting plan with Node.js
   (Passenger), MariaDB/MySQL and SSH fits; the chapter uses mijn.host Starter as its worked example.
@@ -249,7 +256,8 @@ An installation built from source is removed the same way from the repository ro
 - Tell your players the exact website address. They sign in with an email link; nothing else is needed for the
   website. See [Players](PLAYERS.md).
 - The Android app, LiveTrial and the Tournament tools ask for that address once. Android needs a trusted HTTPS
-  address (B1 or B2); a local A1 address works only for Windows clients on the same computer.
+  address (B1, B2, or A2 after the phone has trusted the installation once); a local A1 address works only for
+  Windows clients on the same computer.
 - The website's **Get the app** page lists app downloads only when the server operator has configured a
   download folder; the installer does not set one up. Point players to the GitHub release instead.
 - Tournament Directors: an administrator approves their **Request to host** or adds them under

@@ -87,6 +87,7 @@ function repository(): TournamentConnectedRepository & { inserted: IncomingTourn
     async listEvidenceRecordsForTournament() { return []; },
     async findEvidenceRecord() { return null; },
     async approveLiveAssociation() { throw new Error("unused live association approval"); },
+    async dismissLiveRequest() { throw new Error("unused live request dismissal"); },
     async markOwnEvidenceStopping() { throw new Error("unused live stopping action"); },
     async listPublicLiveRecords() { return []; },
     // The group these fixtures confirm is seated by exactly these two Players;
@@ -321,6 +322,57 @@ it("registers a mapped live run before its first race and requires director appr
   assert.equal(approved[0]?.reviewedByUserAccountId, administrator.userAccountId);
 });
 
+it("dismisses a stale live request through the reviewer's repository call with a bounded reason", async () => {
+  const repo = repository();
+  const dismissed: Parameters<TournamentConnectedRepository["dismissLiveRequest"]>[0][] = [];
+  repo.dismissLiveRequest = async (input) => {
+    dismissed.push(input);
+    return {
+      recordId: input.recordId, clientRecordId: "run-stale", revision: input.expectedRevision + 1,
+      status: "uploading", sourceKind: "tournament_live_capture",
+      uploadedBy: { userAccountId: captureOperator.userAccountId!, displayName: "Capture" },
+      startedAtMs: 1, stoppedAtMs: null, analysisCompletedAtMs: null,
+      complete: false, suggestedTournamentId: input.tournamentId,
+      suggestedTournamentName: "Live Tournament", linkedTournamentId: null,
+      groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: input.nowMs,
+      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null },
+    };
+  };
+  const service = new TournamentConnectedService(repo, { async submit() { throw new Error("unreachable"); } }, {
+    async attachRaces() { throw new Error("unreachable"); },
+  }, () => 1_800_000_300_000);
+  const record = await service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: "  Aborted run  ",
+  });
+  assert.equal(record.live?.status, "invalidated");
+  assert.deepEqual(dismissed[0], {
+    recordId: "evidence.stale", expectedRevision: 3, tournamentId: "tournament.synthetic_connected",
+    reviewedByUserAccountId: administrator.userAccountId, reason: "Aborted run", nowMs: 1_800_000_300_000,
+  });
+  await service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+  });
+  assert.equal(dismissed[1]?.reason, "Stale live request dismissed by Tournament director");
+
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 0,
+  }), /expectedRevision is invalid/);
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: "x".repeat(513),
+  }), /reason is invalid/);
+  await assert.rejects(service.dismissLiveRequest(administrator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+    reason: 42 as unknown as string,
+  }), /reason is invalid/);
+  repo.canReviewTournament = async () => false;
+  await assert.rejects(service.dismissLiveRequest(captureOperator, {
+    tournamentId: "tournament.synthetic_connected", recordId: "evidence.stale", expectedRevision: 3,
+  }), /cannot review/);
+  assert.equal(dismissed.length, 2);
+});
+
 it("activates only the provisional public view after every feed has a strong exact roster match", async () => {
   const repo = repository();
   let stored: StoredTournamentEvidenceRecord | null = null;
@@ -455,6 +507,36 @@ it("projects live totals through opening balance reset excluded race and a short
   assert.equal(group?.countedRaces, 1);
   assert.deepEqual(group?.standings.map((row) => [row.observedPlayerName, row.total]), [["Alpha", 35], ["local.bravo", 12]]);
   assert.deepEqual(group?.controlPoints, ["1 connection reset", "1 excluded race", "1 race awaiting recognition review"]);
+});
+
+it("keeps one live standing per observed player when every race brings new observation references", () => {
+  const race = (n: number, gianni: number, ivar: number) => ({
+    ...result(`race.live.${n}`), raceNumber: n,
+    verification: { status: "producer_check_passed" as const, method: "tournament_manager_human_confirmation" as const },
+    placements: [
+      { finishPosition: 1, observedPlayerName: "Gianni", participantReference: { namespace: "unresolved_observation" as const, value: `observation.g${n}` },
+        scoring: { racePoints: 15, totalBeforeRace: gianni - 15, totalAfterRace: gianni, rankAfterRace: 1 } },
+      { finishPosition: 2, observedPlayerName: "Ivar", participantReference: { namespace: "unresolved_observation" as const, value: `observation.i${n}` },
+        scoring: { racePoints: 12, totalBeforeRace: ivar - 12, totalAfterRace: ivar, rankAfterRace: 2 } },
+    ],
+  });
+  const record: StoredTournamentEvidenceRecord = {
+    recordId: "record.tn13", clientRecordId: "run.tn13", revision: 3,
+    status: "uploading", sourceKind: "tournament_live_capture",
+    uploadedBy: { userAccountId: "user_account.capture", displayName: "Capture" },
+    startedAtMs: 1, stoppedAtMs: null, analysisCompletedAtMs: null, complete: false,
+    suggestedTournamentId: "tournament.live", suggestedTournamentName: "Live",
+    linkedTournamentId: null, groups: [], resultCount: 3, createdAtMs: 1, updatedAtMs: 99,
+    entries: [1, 2, 3].map((n) => ({ entryKey: `race:${n}`, result: race(n, 15 * n, 12 * n), observedGroupLabel: "Groep 1",
+      suggestedPhase: "qualifier", suggestedGroupId: null, suggestedRaceNumber: n, occurredAtMs: n })),
+    live: {
+      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null,
+      mappings: [{ observedGroupLabel: "Groep 1", groupId: "group.one", phase: "qualifier" }],
+    },
+  };
+  const [group] = projectTournamentLiveGroups(record);
+  assert.equal(group?.countedRaces, 3);
+  assert.deepEqual(group?.standings.map((row) => [row.rank, row.observedPlayerName, row.total]), [[1, "Gianni", 45], [2, "Ivar", 36]]);
 });
 
 it("lets the Tournament director map a complete record before pending evidence is materialized", async () => {

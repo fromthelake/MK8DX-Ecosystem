@@ -1,6 +1,6 @@
 # Players: the website and the Android app
 
-[All guides](../../README.md#guides)
+[All guides](../../README.md#get-started)
 
 You need the address of your community's MK8DX website, for example `https://www.example.org`. Every community
 runs its own installation with its own accounts and results; ask the people who run yours for the address and

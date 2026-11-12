@@ -1,4 +1,5 @@
 @echo off
+title MK8DX - Time Trials LAN
 cd /d "%~dp0"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tooling\start-mk8dx.ps1" -StateDir "%LOCALAPPDATA%\MK8DX\LAN"
 echo.

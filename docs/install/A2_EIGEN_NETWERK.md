@@ -1,84 +1,12 @@
-# A2 — delen op je eigen vertrouwde netwerk
+# A2 met een eigen mailserver (gevorderd)
 
-> **Bestaande A2-route:** de stappen hieronder beschrijven het oudere profiel
-> met een privé-hostnaam en SMTP. De optionele volledig offline A2-route met
-> lokale CA, hostbeheer, uitnodigingen en afzonderlijke gezinsaccounts is nog
-> in ontwikkeling en wordt pas als installatiehandleiding aangeboden nadat
-> de volledige route is getest. Volg deze stappen niet als offline-LAN-instructie.
-
-## Wegwijs in de huidige offline-LAN-proef
-
-Deze uitleg helpt bij een **bestaande, door de beheerder voorbereide QA-installatie**.
-De publieke A2-offline-installer en de volledige telefoonproef zijn nog niet
-gekwalificeerd. De oudere installatieprocedure verderop op deze pagina is een
-ander A2-profiel; gebruik haar niet voor de offline proef.
-
-| Waar open je het? | Adres | Doel |
-| --- | --- | --- |
-| Alleen op de host-pc | `http://127.0.0.1:19090/` | Afgeschermd hostbeheer: setup-QR, CA-vingerafdruk, accounts en uitnodigingen. |
-| Telefoon of tweede pc op hetzelfde vertrouwde netwerk | `http://<LAN-IP>/setup` | Publiek **certificaat** en platforminstructies, nog vóór HTTPS werkt. |
-| Telefoon of tweede pc na certificaatinstallatie | `https://<LAN-IP>/` | Website, scanner en gepubliceerde tijden. |
-| Alleen op de pc met LiveTrial | `http://127.0.0.1:8776/` | Lokaal LiveTrial-dashboard; verzonden tijden verschijnen op de website. |
-
-`127.0.0.1` betekent **dit apparaat zelf**. Het hostbeheer op de pc kan en mag
-dus niet vanaf een telefoon worden geopend. Gebruik het LAN-IP dat het
-hostscherm toont; het LAN-IP verschilt per installatie. Houd host en telefoon op hetzelfde netwerk,
-zonder gasten-wifi of router-portforwarding.
-
-### Telefoon of tweede pc koppelen
-
-1. Ontgrendel **op de host-pc** het hostbeheer met de afzonderlijke, vijf minuten
-   geldige **beheercode** van die installatie. De lange SHA-256-vingerafdruk
-   is geen code en hoort niet in dat invoerveld. Het beschikbaar maken van de
-   beheercode in de publieke installer is nog een open acceptatiepunt.
-2. Open `http://<LAN-IP>/setup` op het andere apparaat. Vergelijk de
-   **Root certificate SHA-256** daar teken voor teken met die op het ontgrendelde
-   pc-hostscherm. De HTTP-pagina bewijst haar eigen identiteit niet; installeer
-   niets als de waarden verschillen.
-3. Download pas dan het publieke `.crt`-bestand voor Android/Windows of het
-   `.mobileconfig`-profiel voor iPhone/iPad. Op Android kies je in de
-   beveiligingsinstellingen **CA-certificaat installeren**; de exacte menunamen
-   verschillen per fabrikant. Op Windows kies je **Huidige gebruiker →
-   Vertrouwde basiscertificeringsinstanties**, niet *Tussenliggende
-   certificeringsinstanties*. Op iOS schakel je na profielinstallatie ook
-   volledig vertrouwen in. Verwijder dit lokale vertrouwen wanneer je de
-   installatie niet meer gebruikt.
-4. Open `https://<LAN-IP>/` in de browser, zonder de certificaatwaarschuwing te
-   omzeilen. Een fout over een onvertrouwd certificaat betekent: controleer
-   installatie, IP-adres en vingerafdruk opnieuw.
-
-### Een lokaal account gebruiken
-
-1. De hostbeheerder maakt op het **pc-hostscherm** voor iedere persoon een
-   afzonderlijk speleraccount. Een account is nog niet automatisch gekoppeld
-   aan een Player of diens tijden.
-2. De beheerder kiest dat account en maakt een **eenmalige uitnodigings-QR**.
-   Dit is niet de setup-QR. De uitnodiging is 15 minuten geldig en werkt één
-   keer. Deel haar alleen met de bedoelde persoon.
-3. Open de uitnodiging op het apparaat dat het CA-certificaat al vertrouwt,
-   bevestig de aanmelding en controleer daarna de accountnaam. Een verlopen of
-   gebruikte uitnodiging moet de beheerder opnieuw uitgeven. De gewone knop
-   **Aanmelden / Sign in** toont in de huidige QA-build nog de online
-   e-mailroute; gebruik voor deze offline proef de uitnodiging.
-4. Koppel een Player alleen via de bestaande expliciete claimstappen. Een
-   uitnodiging of gelijke weergavenaam doet dit nooit vanzelf.
-
-De website start op een nieuw apparaat met **Systeem** als thema. Een telefoon
-die licht is ingesteld toont dus een witte website, ook als de pc donker is.
-Na aanmelden kies je via **Account → Instellingen → Weergave → Donker** het
-donkere thema. De keuze wordt bij het account bewaard; bij *Systeem* blijft elk
-apparaat zijn eigen systeeminstelling volgen.
-
-English orientation for this QA route: [A2 offline LAN (EN)](A2_OFFLINE_LAN_EN.md).
-
-Dit is een **eigen installatieprofiel** op de Windows-host. De A1-proef blijft behouden en wordt niet automatisch gedeeld of omgezet. De A2-website, databasevolume en sleutels zijn afzonderlijk. `127.0.0.1` betekent op elke telefoon of pc *dat apparaat zelf*. A2 gebruikt daarom een vaste **privé-hostnaam** (`mk8dx.home.arpa`) die op beide pc's naar het LAN-IP van de host verwijst. Een kaal HTTPS-IP werkte in de lokale Windows-proef niet betrouwbaar wegens ontbrekende SNI.
-
-```text
-Windows-host met Docker  ── privé-wifi/ethernet ── tweede pc/browser
-192.168.0.50 ↔ mk8dx.home.arpa            https://mk8dx.home.arpa
-```
-
-De ondersteunde eerste clientroute is een **tweede Windows-pc met browser en scanner-upload**. Android-app en LiveTrial verwachten een door het apparaat vertrouwde HTTPS-server; de Android-app vertrouwt niet automatisch een handmatig geïnstalleerde lokale CA. Voor een gewone APK is de publieke B1-route met openbaar vertrouwd certificaat het eenvoudige pad. Er is lokaal alleen een geïsoleerde netwerkclientproef gedaan, geen fysieke tweede-pc-/telefoonacceptatie.
+> **Voor bijna iedereen is dit niet de goede pagina.** Wil je MK8DX thuis of op de club gebruiken,
+> volg dan [MK8DX thuis of op de club](A2_THUIS_HANDLEIDING_NL.md): een begeleide installatie in de
+> browser, zonder internet en zonder mailserver, met inlogkaarten voor iedereen.
+>
+> Deze pagina beschrijft een oudere, gevorderde variant: een vaste privé-hostnaam op je netwerk en
+> aanmelden met een link per e-mail via je eigen mailserver. Daarvoor heb je het pakket
+> `mk8dx-host-local-…-amd64.zip` nodig en kies je in de installatievraag **A2**.
 
 ## 1. Controleer host en netwerk
 

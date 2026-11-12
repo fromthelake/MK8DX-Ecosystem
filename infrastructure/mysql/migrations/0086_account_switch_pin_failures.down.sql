@@ -1,0 +1,1 @@
+ALTER TABLE account_switch_remembered_accounts DROP COLUMN pin_failures;

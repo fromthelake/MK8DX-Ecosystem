@@ -92,20 +92,24 @@ def _present_pnp_container_ids() -> dict[str, str]:
     checked_at, cached = _PNP_CONTAINER_CACHE
     if time.monotonic() - checked_at < 5:
         return cached
+    # One property call for all devices: one call per device took 15-17 s on a busy
+    # laptop with three capture cards (28 devices) and ran into the timeout, which
+    # silently left every card without its container (LAN QA groep3, 2026-11-11).
+    # Batched it takes about 1.3 s; a device without the property is skipped.
     command = (
-        "$ErrorActionPreference='Stop';"
-        "@(Get-PnpDevice -PresentOnly | Where-Object {"
+        "$d=@(Get-PnpDevice -PresentOnly | Where-Object {"
         "$_.Class -in @('Camera','MEDIA','AudioEndpoint')"
-        "} | ForEach-Object {"
-        "$p=Get-PnpDeviceProperty -InstanceId $_.InstanceId "
-        "-KeyName 'DEVPKEY_Device_ContainerId' -ErrorAction Stop;"
-        "[pscustomobject]@{instanceId=$_.InstanceId;containerId=[string]$p.Data}"
-        "}) | ConvertTo-Json -Compress"
+        "});"
+        "if ($d.Count) {"
+        "@(Get-PnpDeviceProperty -InstanceId $d.InstanceId "
+        "-KeyName 'DEVPKEY_Device_ContainerId' -ErrorAction SilentlyContinue | ForEach-Object {"
+        "[pscustomobject]@{instanceId=$_.InstanceId;containerId=[string]$_.Data}"
+        "}) | ConvertTo-Json -Compress }"
     )
     try:
         result = subprocess.run(
             ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", command],
-            capture_output=True, text=True, timeout=15, check=False,
+            capture_output=True, text=True, timeout=30, check=False,
         )
         if result.returncode != 0 or not result.stdout.strip():
             return {}

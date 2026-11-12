@@ -30,6 +30,14 @@ const PATHS: ReadonlyArray<readonly [string, string]> = [
 ];
 
 const pending = new Map<string, unknown>();
+// Paths the bootstrap already answered with "no verified Player yet" (it omits those sections for
+// such an account). They are answered once, locally, with the server's own 409 shape instead of a
+// request that can only fail and would print an error in every console.
+const PLAYER_ONLY_PATHS: ReadonlyArray<readonly [string, string]> = [
+  ["/v1/home/comeback", "comeback"],
+  ["/v1/home/focus", "focus"],
+];
+const knownWithoutPlayer = new Set<string>();
 // The Player set the queued track-bests section answers; any other set goes to the network (R2).
 let trackBestsPlayers: string | null = null;
 let installed = false;
@@ -60,6 +68,12 @@ function install(): void {
   const original = globalThis.fetch.bind(globalThis);
   globalThis.fetch = ((input: unknown, init?: unknown) => {
     const path = pathOf(input);
+    if (knownWithoutPlayer.has(path)) {
+      knownWithoutPlayer.delete(path);
+      return Promise.resolve(new Response(JSON.stringify({
+        code: "no_verified_player", message: "A verified Player claim is required first.",
+      }), { status: 409, headers: { "content-type": "application/json" } }));
+    }
     if (pending.has(path) && !answersDifferentPlayers(path, input)) {
       const document = pending.get(path);
       pending.delete(path);
@@ -163,7 +177,15 @@ export async function primeFromBootstrap(
 
   install();
   pending.clear();
+  knownWithoutPlayer.clear();
   trackBestsPlayers = null;
+  const claims = (body["claims"] as Readonly<{ claims?: ReadonlyArray<Readonly<{ claimStatus?: unknown }>> }> | undefined)?.claims;
+  if (body["authenticated"] === true && Array.isArray(claims) &&
+      !claims.some((claim) => claim.claimStatus === "verified")) {
+    for (const [path, key] of PLAYER_ONLY_PATHS) {
+      if (body[key] === undefined || body[key] === null) { knownWithoutPlayer.add(path); }
+    }
+  }
   // The Mastery baseline travels with every page (owner 2026-09-26): labels on this page and every
   // later one follow the current World Records, without a request of their own.
   const baseline = body["worldRecordTimes"] as Readonly<{ schemaVersion?: unknown; records?: unknown }> | undefined;
@@ -260,4 +282,5 @@ function cacheable(path: string): boolean {
 // guessing which answers it touched.
 export function forgetRemembered(): void {
   remembered.clear();
+  knownWithoutPlayer.clear();
 }

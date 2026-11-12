@@ -245,7 +245,8 @@ class MysqlTournamentOperationTransaction implements TournamentOperationTransact
     const [rows] = await this.connection.execute<RowDataPacket[]>(
       `SELECT account.public_id AS userAccountId,
               account.user_account_id AS internalId,
-              claimedPlayer.display_name AS displayName,
+              COALESCE(claimedPlayer.display_name, NULLIF(TRIM(account.screen_name), ''),
+                       NULLIF(TRIM(offlineAccount.display_label), '')) AS displayName,
               EXISTS (
                 SELECT 1 FROM administrator_grants AS grant_row
                 WHERE grant_row.user_account_id = account.user_account_id
@@ -263,15 +264,17 @@ class MysqlTournamentOperationTransaction implements TournamentOperationTransact
         AND claim.claim_status = 'verified'
        LEFT JOIN players AS claimedPlayer
          ON claimedPlayer.player_id = claim.player_id
+       LEFT JOIN offline_auth_accounts AS offlineAccount
+         ON offlineAccount.user_account_id = account.user_account_id
        WHERE account.account_status = 'active'
        HAVING isAdministrator = 1 OR hasCapability = 1
-       ORDER BY claimedPlayer.display_name ASC, account.public_id ASC`,
+       ORDER BY displayName IS NULL, displayName ASC, account.public_id ASC`,
     );
     return rows.map((row) => ({
       userAccountId: text(row["userAccountId"], "account public id"),
       internalId: integer(row["internalId"], "account id", 1),
-      // An operator without a claimed Player is still selectable; the account
-      // identifier is shown rather than inventing a display name.
+      // An operator without a claimed Player is still selectable under the name
+      // they or the host gave the account; only with none is the identifier shown.
       displayName: nullableText(row["displayName"]) ?? text(row["userAccountId"], "account public id"),
       isAdministrator: flag(row["isAdministrator"]),
       hasCapability: flag(row["hasCapability"]),

@@ -25,8 +25,7 @@ export function registerTournamentRetractionRoutes(app: FastifyInstance, depende
       throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
     }
     const { tournamentId } = request.params as { tournamentId: string };
-    const body = request.body as { reason: string };
-    return dependencies.tournamentRetraction.remove(actor, { tournamentId, reason: body.reason });
+    return dependencies.tournamentRetraction.remove(actor, { tournamentId, reason: reasonOf(request.body) });
   }));
 
   // Owner decision 2026-09-15: a finalized night can be reopened to correct a
@@ -40,9 +39,18 @@ export function registerTournamentRetractionRoutes(app: FastifyInstance, depende
       throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
     }
     const { tournamentId } = request.params as { tournamentId: string };
-    const body = request.body as { reason: string };
-    return dependencies.tournamentRetraction.reopen(actor, { tournamentId, reason: body.reason });
+    return dependencies.tournamentRetraction.reopen(actor, { tournamentId, reason: reasonOf(request.body) });
   }));
+
+  // A request without a reason (or without a body) is a mistake by the caller: answer 400 with the same
+  // message the service gives, not a 500 from reading a missing field (found 2026-11-12).
+  const reasonOf = (body: unknown): string => {
+    const reason = typeof body === "object" && body !== null ? (body as { reason?: unknown }).reason : undefined;
+    if (typeof reason !== "string") {
+      throw new TournamentOperationError("invalid_input", "Provide a reason between 3 and 512 characters.");
+    }
+    return reason;
+  };
 
   // Owner decision 2026-08-28: removal hides a Tournament, so it can be undone.
   // The restore says what the Tournament counts towards again - the results for
@@ -55,14 +63,11 @@ export function registerTournamentRetractionRoutes(app: FastifyInstance, depende
       throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
     }
     const { tournamentId } = request.params as { tournamentId: string };
-    const body = request.body as {
-      reason: string;
-      publicResults?: boolean;
-      affectsRating?: boolean;
-    };
+    const reason = reasonOf(request.body);
+    const body = request.body as { publicResults?: boolean; affectsRating?: boolean };
     return dependencies.tournamentRetraction.restore(actor, {
       tournamentId,
-      reason: body.reason,
+      reason,
       publicResults: body.publicResults === true,
       affectsRating: body.affectsRating === true,
     });

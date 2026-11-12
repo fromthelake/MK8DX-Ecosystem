@@ -209,13 +209,17 @@ implements HomeComebackRepository, RivalPreferenceRepository {
               1 + (SELECT COUNT(*) FROM player_ratings AS other
                    WHERE (other.mu - 3 * other.sigma) >
                          (mine.mu - 3 * mine.sigma)) AS playerRank,
-              (SELECT COUNT(*) FROM player_ratings) AS ratedPlayers
+              (SELECT COUNT(*) FROM player_ratings) AS ratedPlayers,
+              EXISTS (SELECT 1 FROM player_rating_events AS event
+                      WHERE event.player_id = mine.player_id
+                        AND event.event_type IN ('history_race', 'race_result')) AS played
        FROM player_ratings AS mine WHERE mine.player_id = ?`,
       [own.internalId],
     );
     const ratingScore = Number(ratingRows[0]?.score);
     const ratingRank = integer(ratingRows[0]?.playerRank);
     const ratedPlayers = integer(ratingRows[0]?.["ratedPlayers"]);
+    const played = Number(ratingRows[0]?.["played"]) === 1;
 
     const standing = await this.standing(own.internalId);
 
@@ -403,6 +407,7 @@ implements HomeComebackRepository, RivalPreferenceRepository {
               rank: ratingRank,
               of: ratedPlayers ?? 0,
               score: ratingScore,
+              played,
             },
           }
         : {}),

@@ -1,9 +1,9 @@
 # Develop MK8DX Ecosystem
 
-[Nederlandse versie](DEVELOPMENT_NL.md) · [Architecture](architecture/COMPONENTS.md) · [Testing](TESTING.md) · [All guides](../README.md#guides)
+[Nederlandse versie](DEVELOPMENT_NL.md) · [Architecture](architecture/COMPONENTS.md) · [Testing](TESTING.md) · [All guides](../README.md#get-started)
 
 This guide is for developers who read or change the source. To install and use MK8DX, use a prebuilt release
-package and the [guides](../README.md#guides) instead.
+package and the [guides](../README.md#get-started) instead.
 
 ## Requirements
 

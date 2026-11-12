@@ -60,7 +60,7 @@ export type HomeComeback = Readonly<{
     displayName: string;
     avatarId?: string;
   }>;
-  tournament?: Readonly<{ rank: number; of: number; score: number }>;
+  tournament?: Readonly<{ rank: number; of: number; score: number; played: boolean }>;
   timeTrials: Readonly<{
     standing: number;
     of: number;

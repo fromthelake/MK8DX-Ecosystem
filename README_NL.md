@@ -1,130 +1,268 @@
 # MK8DX Ecosystem
 
+**Host je eigen Mario Kart 8 Deluxe-communitywebsite — voor Time Trials *én* toernooiavonden.**
+
 Taal: [English](README.md) · Nederlands
 
-Een Time Trial gereden in Mario Kart 8 Deluxe? Open de scanner van de MK8DX-website van je community op
-een telefoon of tablet, richt de camera op het resultaatscherm op je tv, en de scanner leest de tijden en
-rondes voor je. Op de website volg je je voortgang en vergelijk je met vrienden, rivalen, de Nintendo Ghost
-Staff en wereldrecords. MK8DX Ecosystem ondersteunt ook toernooien: organisatoren richten de avond in,
-leggen de races vast, controleren de uitslagen en publiceren standen en een verslag.
+![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](docs/readme/web-home.jpg)
 
-Het project is zelf te hosten: elke community draait een eigen installatie met eigen accounts en uitslagen.
+MK8DX Ecosystem host je zelf. Het geeft je community één website die twee soorten uitslagen
+bijhoudt — **Time Trial-uitslagen** en **toernooi-uitslagen** — en bij elk zijn eigen soort
+competitie toevoegt.
 
-## Wat het doet
+**⏱️ Time Trials**
 
-- **Time Trials scannen vanaf je tv.** De browserscanner leest totaal- en rondetijden en, als ze zichtbaar
-  zijn, het personage, de kart en de vlag. Je controleert het resultaat voordat je het instuurt. Voor de camera
-  is een vertrouwde HTTPS-verbinding nodig; je kunt ook een foto of schermafbeelding uploaden. De optionele
-  Android-app scant sneller op het toestel zelf.
-- **Tijden vergelijken.** Je beste tijd en rondes per baan naast communityuitslagen, gekozen rivalen, de
-  Nintendo Ghost Staff en wereldrecords. Verbetert iemand een van je gepubliceerde tijden, dan krijg je een
-  melding.
-- **Runs opnemen met LiveTrial.** Een Windows-programma voor een capturekaart of bestaande video's. Het
-  herkent nieuwe runs, bewaart de gegevens en clips, en stuurt uitslagen naar je community nadat je één keer
-  hebt aangemeld.
-- **Toernooien organiseren.** Deelnemers, groepen en consoles; Tournament Processor leest opgenomen races en
-  Tournament Live legt vast tijdens het evenement. Na controle van spelers en plaatsen berekent de website
-  scores, standen en finales en publiceert een verslag, ook als WordPress-export.
+- **Ranglijsten** per baan en klasse (150cc/200cc), voor je community en naast de
+  **wereldrecords**, die één keer per dag worden ververst.
+- **Rivalen**: stel ze één keer in en zie altijd hoe ze er tegenover jou voor staan.
+- **Voer een tijd in zoals jij wilt**: met de hand, door het resultaatscherm te scannen met een
+  camera — op de website of in de Android-app — of laat de Windows-applicatie **LiveTrial** elke
+  rit vanzelf vastleggen via een capture card.
+- **LiveTrial ziet de race zelf**: wanneer je munten pakt, wanneer je je paddenstoelen gebruikt —
+  en het maakt van **elke rit een videoclip** die je zelf mag gebruiken.
 
-Herkenning alleen maakt een uitslag nooit officieel. Waar de regels dat vragen, controleert een bevoegd
-persoon een inzending voordat die openbaar wordt.
+**🏁 Toernooien**
 
-## Handleidingen
+- **LAN-avonden van aanmelding tot finale**: indeling, groepen, scores en standen, voor je geregeld.
+- **Uitslagen van het scherm gelezen** door Tournament Live, en door de organisator gecontroleerd
+  voordat ze tellen.
+- **TrueSkill-rating**: een vaardigheidsrating die met elke toernooiavond meegroeit.
+- **Geen account nodig om mee te doen**: je kunt een toernooi organiseren zonder dat iemand zich
+  hoeft aan te melden. Wil een speler zijn uitslagen op een eigen account, dan koppelt hij ze
+  later — nooit een verplichting.
 
-Begin bij de handleiding voor wat je wilt doen (de korte handleidingen zijn in het Engels):
+**✨ Wat het uniek maakt**
 
-| Ik wil… | Handleiding | Platform |
+Tot nu toe was er geen degelijke manier om de gegevens van Mario Kart 8 Deluxe op een Nintendo
+Switch via een capture card uit te lezen: het was vooral overtypen, of OCR die alleen tekst leest.
+MK8DX leest de tijden, posities en punten *en* herkent de plaatjes: het **character (inclusief de
+juiste kleur)**, de **kart, banden, glider** en **vlag** — overal waar het spel ze laat zien.
+
+En daarvoor heb je niet eens een capture card nodig: richt vanaf de bank je telefoon op de tv,
+scan een Time Trial-**resultaatscherm** of een **Select-a-Ghost-scherm**, en de uitslag gaat
+meteen naar je website. Voor zover wij weten was ook dat nog niet eerder gedaan.
+
+**🏠 Thuis of online — jij kiest**
+
+- **Volledig lokaal**: draai het op je thuis- of clubnetwerk. Na de installatie is **helemaal
+  geen internet nodig**.
+- **Online**: host het op je eigen server of webhosting en deel het met je eigen online
+  community.
+
+Hoe dan ook is het jouw installatie, met je eigen accounts en uitslagen. Geen cloudaccount, geen
+abonnement, geen reclame.
+
+**🔑 Nooit wachtwoorden**
+
+- **Alleen de beheerder heeft een account nodig.** Dat account is ook de eerste speler, zodat er
+  altijd minstens één speler is; alle anderen kunnen zonder account aan toernooien meedoen.
+- **Eén link om in te loggen**: niemand hoeft een wachtwoord te verzinnen of te onthouden. Thuis
+  krijgt iedereen een persoonlijke inlogkaart (een link of QR-code). Online vult een nieuwe
+  gebruiker alleen een **e-mailadres** in en logt in met de link die MK8DX stuurt.
+
+---
+
+## 🏁 LAN-toernooiavonden
+
+Weet je nog, LAN-party's? Twee spelers per scherm, een zaal vol Switches, iedereen schreeuwend op
+Rainbow Road. MK8DX brengt die avond terug en regelt alles rond het racen: wie waar zit, welke
+groep als volgende speelt, de scores, de finales en de standen.
+
+- **Aanmelden** — open de aanmelding voor een avond met een sluitingstijd en een maximum; wie het
+  eerst komt, of een eerlijke loting met een gepubliceerde seed. Spelers melden zich aan met de
+  Switches die ze meenemen.
+- **Een indeling die zichzelf maakt** — aanwezigheid, consoles en plaatsen (twee spelers per
+  Switch), station- en kabelnummers. Kies indelen op rangorde of willekeurig, en plaatsing
+  *Gebalanceerd* of *Minimaal verplaatsen*; MK8DX maakt de voorrondegroepen en daarna de finales.
+- **Tournament Live leest de races** — zet een capture card op elk scherm. Na elke race leest het
+  de eindposities, characters, vlaggen, racepunten, totalen en de baan (ook in split screen met
+  twee spelers), slaat ze lokaal op en stuurt ze naar de avond op de website.
+- **Jij houdt de regie** — de organisator controleert spelers en plaatsen voordat een uitslag
+  telt. Live-standen worden in de tussentijd voorlopig getoond.
+- **Na afloop** — eindstanden, een deelbaar verslag (WhatsApp, PNG, CSV, een artikel klaar voor
+  WordPress) en een optionele TrueSkill-communityrating over alle avonden.
+
+![Tournament Live na een race: het beeld van de capture card, en de eindvolgorde met het character en de punten van elke rijder](docs/readme/tournament-live.jpg)
+
+<p>
+  <img src="docs/readme/tournament-results.jpg" alt="Eindstand van een toernooiavond: voorrondegroepen met het character van elke speler, gekleurd naar de finale waarin ze verder gingen" width="49%">
+  <img src="docs/readme/tournament-skill.jpg" alt="Pagina toernooivaardigheid: TrueSkill-rating, overwinningen, top 3 en gemiddelde eindpositie van een speler" width="49%">
+</p>
+
+## ⏱️ Time Trials met LiveTrial — volledig automatisch
+
+Sluit je Switch via een capture card aan op je Windows-pc en race gewoon. Voor zover wij weten
+bestond zoiets nog niet.
+
+LiveTrial kijkt mee met het HDMI-beeld en herkent zelf:
+
+- de menu's waar je doorheen gaat, de **baan** en de **klasse** (150cc/200cc);
+- tijdens de race: de **raceklok, de rondeteller, munten en items**;
+- op het resultaatscherm: de **totaaltijd, elke rondetijd** (3, of 7 op Baby Park), **character,
+  kart, banden, glider** en **vlag**;
+- het **Select-a-Ghost**-paneel — ghostnamen, tijden, rondes en onderdelen — en of een ghost een
+  van de **staff ghosts van Nintendo** is;
+- automatisch je **Switch-taal** (alle 12 systeemtalen).
+
+Het bewaart een **clip van elke race** en van elke ghost-herhaling die je tot de finish bekijkt,
+een rittengeschiedenis met rondetabellen en grafieken, en laat je achterstand zien op het
+**wereldrecord**, de **staff ghost van Nintendo**, je **eigen record** en je **rivalen**. Stuur
+uitslagen met één klik naar je community (of zet automatisch versturen aan), en upload desgewenst
+een clip naar je eigen YouTube-kanaal.
+
+![LiveTrial tijdens een rit op Baby Park: ronde 4 van 7, munten en paddenstoelen live geteld, elke ronde vergeleken met de ghost](docs/readme/livetrial-live.jpg)
+
+![De ritkaart van LiveTrial achteraf: totaaltijd, verschil met de ghost, munten en paddenstoelen](docs/readme/livetrial-run.jpg)
+
+## 📱 Scannen vanaf de bank
+
+Time Trials bij een vriend? Pak je telefoon of tablet, richt hem op de tv en de scanner leest het
+resultaatscherm: **totaal, rondes, character, kart, banden, glider, vlag en spelersnaam**, of een
+**ghostpaneel** met de baan en tijden. Wat onzeker is, krijg je te zien met alternatieven, zodat
+je het juiste kiest voordat je publiceert.
+
+De browserscanner draait **volledig op je eigen apparaat** — geen account, geen server, en na de
+eerste download ook offline. De Android-app scant ook op het toestel zelf.
+
+<p>
+  <img src="docs/readme/scanner-reading.jpg" alt="De browserscanner leest een telefoonfoto van een Select-a-Ghost-scherm" width="32%">
+  <img src="docs/readme/scanner-filled.jpg" alt="Het formulier ingevuld door de scan: character, kart, banden, glider, vlag en rondetijden, met het ene onzekere onderdeel gemarkeerd" width="32%">
+</p>
+
+## 🏆 Jouw records, jouw rivalen
+
+Elke speler krijgt eigen records per baan, een ranglijst met familie, vrienden of de club, rivalen
+om op te jagen (met porren, uitdagingen en af en toe een dobbelsteenduel), meldingen als iemand je
+tijd verbetert, en **23 masteryniveaus** gemeten aan de huidige wereldrecords.
+
+<p>
+  <img src="docs/readme/timetrials-leaderboard.jpg" alt="Ranglijst van Rainbow Road met het wereldrecord, combo's, paddenstoelen en munten per ronde" width="72%">
+  <img src="docs/readme/phone-leaderboard.jpg" alt="Dezelfde ranglijst op een telefoon, in het donkere thema" width="24%">
+</p>
+
+## 🌍 Spreekt je taal — alle 15
+
+Mario Kart 8 Deluxe wordt overal gespeeld, dus MK8DX is gebouwd voor elke speltaal: de website, de
+Android-app, LiveTrial en de Tournament-tools zijn er in **15 talen**, en de herkenning is gebouwd
+voor **alle 15 taalvarianten van het spel** — van Nederlands en Engels tot Japans, Koreaans,
+Chinees, Russisch en meer. Engels en Nederlands zijn door mensen nagekeken; de andere talen zijn
+machinaal vertaald en de herkenning wordt in een deel ervan nog op echte consoles gecontroleerd.
+Speel je in jouw taal? Jouw hulp bij het controleren is de waardevolste bijdrage die er is.
+
+## 💡 Het verhaal erachter
+
+MK8DX Ecosystem is sinds 2024 in ontwikkeling. Het is gebouwd met AI — "vibe coding" — en
+eerlijk: zonder AI had ik dit niet kunnen bouwen, en de AI had het niet zonder mij kunnen bouwen.
+Ik kan me geen wereld voorstellen waarin dit tot een goed resultaat was gekomen zonder steeds
+bijsturen en de logica telkens opnieuw uitleggen. Het aantal sessies dat maar bleef doorlopen en
+credits verbrandde zonder echt resultaat, houdt me nog steeds 's nachts wakker (haha). Een deel
+van de reden: met alle screenshots en video's wordt de context simpelweg te groot om voor een AI
+vast te houden — inmiddels staat er ongeveer 4 TB door AI gemaakt QA-testmateriaal op me te
+wachten om op te ruimen.
+
+Waarschijnlijk omdat dit nog nooit eerder was gebouwd. De technieken bestonden; de juiste aan
+elkaar knopen, in de juiste volgorde, met een mens die elke visuele stap ertussen controleert en
+opnieuw bijstuurt, nog niet. Hetzelfde geldt voor de spelonderdelen: hier en daar bestaan stukjes,
+maar een compleet pakket waar alles in zit, had ik nog niet gezien.
+
+Het is een geweldige leerschool geweest — en het heeft me in staat gesteld om voortaan sneller en
+efficiënter te bouwen rond beeldherkenning en het uitlezen van beelden.
+
+— [fromthelake](https://github.com/fromthelake)
+
+## 🛠️ Maak het van jezelf
+
+MK8DX is open source, gebouwd door spelers voor spelers. Draai het voor je club, je familie of de
+LAN-scene in je stad; pas het aan aan hoe *jouw* avonden werken; en bouw erop verder:
+
+- **Vertaal of controleer** jouw taal (de website, de apps en de herkenning in het spel).
+- **Test de herkenning** met je eigen console, taal en capture card, en meld wat hij mist.
+- **Voeg toe wat je community nodig heeft** — nieuwe toernooivormen, statistieken, manieren om
+  uitslagen te delen.
+- **Verbeter de documentatie**, zodat de volgende organisator nog sneller op weg is.
+
+Begin bij [Bijdragen](CONTRIBUTING.md) en de [ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md).
+Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
+iedereen.
+
+---
+
+## Aan de slag
+
+| Ik wil… | Begin hier |
+| --- | --- |
+| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap met plaatjes: [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) |
+| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels) |
+| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card |
+| **mijn tijden posten en vergelijken** | [Players](docs/guides/PLAYERS.md) (Engels) — elke browser; Android 8.0+ |
+| **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
+| **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
+
+### Welke computer voor welke route
+
+Elke route geeft je dezelfde website; ze verschillen in waar hij draait en wie hem kan bereiken.
+
+| Route | Voor | Draait op | Status |
+| --- | --- | --- | --- |
+| **A2** thuis- of clubnetwerk | Je eigen netwerk, na de installatie geen internet nodig, inlogkaarten voor iedereen | Windows 11 (x86-64), Linux (x86-64 of arm64), Mac (Apple-chip of Intel) | Volledig getest op Windows 11; Linux in WSL 2; Mac gebouwd, nog niet op een echte Mac getest |
+| **A1** één computer | Uitproberen op de computer waar je achter zit | Windows 11 of Linux, x86-64, met Docker | Getest: installeren, bijwerken, back-up |
+| **A3** één computer zonder Docker | Een Windows-pc waar Docker geen optie is | Windows 11 met XAMPP en Node.js | Getest: installeren, bijwerken, back-up |
+| **B1** openbare website | Je online community, je eigen domein en e-mail | Een Linux x86-64-server (VPS) met Docker; Ubuntu 24.04 beschreven | Beschreven, nog niet volledig getest |
+| **B2** webhosting | Online, zonder eigen server | Een hostingpakket met Node.js (Passenger), MariaDB/MySQL en SSH | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd |
+
+De apps eromheen:
+
+| App | Draait op | Waarom |
 | --- | --- | --- |
-| **de website voor mijn community hosten** (eigen server) | [Host a community server](docs/guides/HOSTING.md) | Linux met Docker (hoofdroute); Windows; webhosting |
-| **toernooiavonden leiden** als Tournament Director | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) | website, plus de Windows-toernooitools |
-| **mijn Time Trials posten en vergelijken** op de website of in de Android-app | [Players](docs/guides/PLAYERS.md) | elke browser; Android 8.0+ |
-| **Time Trials opnemen met een capturekaart of uit video's** | [LiveTrial](docs/guides/LIVETRIAL.md) | Windows |
-| **de code aanpassen**, tests draaien of een pull request sturen | [Ontwikkelen](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Contributing](CONTRIBUTING.md) | Windows, Linux; macOS ongetest |
+| Website en browserscanner | Elke moderne browser; voor scannen Chrome of Edge aanbevolen | De scanner draait volledig op je eigen apparaat en heeft een browser nodig die hem meerdere threads geeft |
+| Android-app | Android 8.0 of nieuwer, arm64 aanbevolen | Scant op de telefoon zelf, ook zonder verbinding |
+| iPhone en iPad | De website in de browser; scannen in Safari wordt nog getest | Er is geen iOS-app: die bouwen en ondertekenen vraagt een Mac en een Apple-ontwikkelaarsaccount |
+| LiveTrial en Tournament Live | Windows op x86-64 (getest op Windows 11), met een USB-HDMI-capture card per scherm | De capture cards en de meegeleverde herkenning zijn gebouwd en getest voor Windows; er is geen macOS- of Linux-versie |
 
-De volledige stap-voor-stap-handleiding voor elke installatieroute, met backup, herstel en updates, is
-[docs/install/MK8DX_Handleiding_NL.txt](docs/install/MK8DX_Handleiding_NL.txt)
-([Word](docs/install/MK8DX_Handleiding_NL.docx)). Vragen: [Getting help](SUPPORT.md).
+**Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
+serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
+beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem
+vanaf de broncode op een Intel-Mac en test hem daar ([hoe](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)).
+A3 bestaat voor wie geen Docker kan of wil draaien. De [hostinghandleiding](docs/guides/HOSTING.md) en de
+[releasepakketten](docs/RELEASE_PACKAGES.md) noemen elk bestand en de precieze eisen.
+
+Een nieuwe installatie begint leeg: er worden geen communityaccounts of uitslagen overgenomen. Ze bevat alleen
+de spelcatalogus en de referentiesets van de Nintendo staff ghosts en de wereldrecords.
 
 ## Status
 
-**Voorlopige versie.** Releasekandidaten van versie 0.1.0 verschijnen op de
-[GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)-pagina van het project; de
-[changelog](CHANGELOG.md) noemt wat er veranderde. Website, API, browserscanner en installer zijn getest op
-Windows 11 met de Linux/amd64-Docker-images en met XAMPP/Node.js. Andere platforms staan onder
-[Platforms](#platforms).
+0.1.0 is de stabiele versie op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
+0.2.0, met A2 erbij, is een release candidate: probeer hem, maar houd 0.1.0 aan voor alles wat je niet
+opnieuw kunt doen. Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
+volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
+[English](docs/install/MK8DX_User_Guide_EN.txt)).
 
-## Downloaden
-
-Releasepakketten hangen aan de [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) van
-het project. Download het pakket voor jouw route uit de nieuwste release, samen met `SHA256SUMS.txt`, en
-controleer de checksum zoals de handleiding uitlegt. [Release packages](docs/RELEASE_PACKAGES.md) legt uit welk bestand bij
-welke route hoort. GitHubs automatische **Source code (zip)** is de volledige broncode, geen installatiepakket.
-
-| Route | Pakket |
-| --- | --- |
-| Website op één computer of thuisnetwerk, met Docker | `mk8dx-host-local-…-amd64.zip` |
-| Website op Windows zonder Docker (XAMPP en Node.js) | `mk8dx-xampp-node-windows-….zip` |
-| Website op webhosting met Node.js en MariaDB | `mk8dx-mijnhost-node-….zip` |
-| Android-app | `mk8dx-android-debug-….apk` met de notices-ZIP |
-| LiveTrial (Windows) | `desktop-client-….zip` |
-| Toernooitools (Windows) | `tournament-tools-….zip` |
-| Volledige broncode met de assetcollectie | `mk8dx-full-local-….zip` |
-
-Volg daarna de handleiding: [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)
-([Word](docs/install/MK8DX_Handleiding_NL.docx)) of [English](docs/install/MK8DX_User_Guide_EN.txt)
-([Word](docs/install/MK8DX_User_Guide_EN.docx)). Die loopt installatie, apps, instellingen, backup en herstel
-stap voor stap door. Technische naslag per route staat in [docs/install](docs/install/A1_EEN_COMPUTER.md).
-
-**Heb je een kloon van deze repository?** Bouw en start hem vanuit de broncode met
-[Getting started](docs/GETTING_STARTED.md); de launchers hierboven hebben de kant-en-klare images van een releasepakket nodig.
-Je kunt de pakketten ook zelf bouwen: het Docker-hostpakket zoals in
-[Host a community server](docs/guides/HOSTING.md#build-the-host-package-from-a-clone), de Android-app, LiveTrial
-en de toernooitools zoals in [Client builds](docs/CLIENT_BUILDS.md).
+Herkenning maakt een uitslag nooit vanzelf officieel: je controleert je eigen Time Trials, en een
+organisator controleert toernooiraces voordat ze tellen.
 
 ## Documentatie
 
 | Ik wil… | Lees |
 | --- | --- |
-| de onderdelen begrijpen en zien hoe een uitslag reist | [Architectuur](docs/architecture/COMPONENTS_NL.md) |
-| code bouwen of aanpassen | [Ontwikkelen](docs/DEVELOPMENT_NL.md) en [Testen](docs/TESTING_NL.md) |
-| de clients bouwen | [Client builds](docs/CLIENT_BUILDS.md) (Engels) |
-| een installatie beheren (backup, upgrade, herstel) | [Beheer](docs/OPERATIONS_NL.md) |
-| bijdragen | [Contributing](CONTRIBUTING.md), [Gedragscode](CODE_OF_CONDUCT.md) (Engels) |
-| een beveiligingsprobleem melden | [Security policy](SECURITY.md) (Engels) |
-
-## Wat draait waar
-
-| Onderdeel | Rol | Draait op |
-| --- | --- | --- |
-| Website, browserscanner en gateway | Openbare pagina's, beheer en scannen | De serverinstallatie |
-| API en MySQL/MariaDB | Aanmelden, inzendingen, controle, publicatie en gegevens | Dezelfde installatie |
-| Android | Mobiel scannen en insturen | Een telefoon; de gebruiker kiest de community |
-| LiveTrial | Herkent en verstuurt opnames of captureresultaten | Windows |
-| Tournament Processor, Live en Connect | Herkennen races en leveren ze na controle aan | Windows |
-
-Een nieuwe installatie begint leeg: er worden geen communityaccounts of uitslagen overgenomen. Alleen de
-spelcatalogus en de referentiesets Nintendo Ghost Staff en World Records zitten erin.
-
-## Platforms
-
-- **Windows 11 x86-64**: volledig getest met Docker en met XAMPP/Node.js, inclusief LiveTrial- en Tournament
-  Processor/Connect-uitslagen die op de website verschijnen.
-- **Linux x86-64**: het Docker-hostpakket heeft een shell-starter (`tooling/start-mk8dx.sh`). Gedemonstreerd op
-  een Linux Docker Engine (in een container, niet op Ubuntu zelf): pakketstarter, eerste installatie,
-  aanmelden, eerste beheerder, backup, update en herstel, en de bronroute. Een publieke B1-installatie met echt
-  domein en echte mailprovider is nog niet getest. LiveTrial en de toernooitools zijn Windows-programma's.
-- **macOS**: een Intel-Mac kan het Docker-hostpakket met Docker Desktop proberen; Apple Silicon heeft
-  amd64-emulatie nodig. Niet volledig geaccepteerd; de Windows-clients draaien niet op macOS.
-- **ARM-servers**: nog geen eigen images.
-- Nog niet geverifieerd: fysieke capture met Tournament Live, een nieuwe installatie bij een echte externe host.
+| begrijpen hoe de herkenning werkt | [Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE.md) (Engels) |
+| de onderdelen begrijpen en hoe een uitslag reist | [Architectuur](docs/architecture/COMPONENTS.md) (Engels) |
+| de code bouwen of aanpassen | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md) en [Testen](docs/TESTING_NL.md) |
+| de native apps bouwen | [Client builds](docs/CLIENT_BUILDS.md) (Engels) |
+| een installatie beheren (back-up, bijwerken, herstel) | [Beheer](docs/OPERATIONS_NL.md) |
+| weten waarom iets is zoals het is | [Besluitenoverzicht](docs/decisions/README.md) (Engels) |
+| bijdragen | [Bijdragen](CONTRIBUTING.md), [Gedragscode](CODE_OF_CONDUCT.md) |
+| hulp krijgen | [Hulp krijgen](SUPPORT.md) |
+| een beveiligingsprobleem melden | [Beveiligingsbeleid](SECURITY.md) |
+| met een coding agent werken | [AGENTS.md](AGENTS.md) |
 
 ## Licentie en Nintendo
 
 Dit is een onafhankelijk, niet-commercieel hobbyproject om te leren programmeren en Mario Kart 8 Deluxe nog
 leuker te maken. Het is **niet verbonden aan of goedgekeurd door Nintendo**. Nintendo is eigenaar van zijn
-merken en spelinhoud; steun Nintendo door consoles en games te kopen.
+merken en spelinhoud; steun Nintendo door zijn consoles en games te kopen.
 
 De eigen code en documentatie van het project vallen onder de [Mozilla Public License 2.0](LICENSE). De
-[licentiereikwijdte](LICENSE_SCOPE.md) legt uit wat dat dekt: **niet** Nintendo-materiaal, spelafbeeldingen,
-herkenningssjablonen, modellen, lettertypen of ander materiaal van derden; dat houdt zijn eigen voorwaarden.
-Zie [Third-party materials](docs/THIRD_PARTY_MATERIALS.md). De software wordt geleverd zoals hij is.
+[licentiereikwijdte](LICENSE_SCOPE.md) legt uit wat die dekt: hij dekt **geen** materiaal van Nintendo,
+spelafbeeldingen, herkenningstemplates, modellen, lettertypen of ander materiaal van derden, dat zijn eigen
+voorwaarden houdt. Zie [Materiaal van derden](docs/THIRD_PARTY_MATERIALS.md). De software wordt geleverd
+zoals hij is.

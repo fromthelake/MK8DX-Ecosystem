@@ -114,6 +114,36 @@ describe("W02 · signed-in Home owner review", () => {
     expect(byClass(root, "ds-home__story-rank-mark")?.textContent).toBe("#1");
     view.unmount();
   });
+  it("shows the tournament position but no tier before a first rated race", async () => {
+    const results: Array<{ value: string | undefined; badge: boolean }> = [];
+    for (const played of [false, true, undefined]) {
+      const host = document.createElement("div");
+      const view = mountHome(host as unknown as HTMLElement, {
+        loadComeback: async () => ({ ...comeback,
+          tournament: { rank: 1, of: 2, score: 0, ...(played === undefined ? {} : { played }) } }),
+        loadFocus: async () => focus,
+        loadBests: async () => new Map([["player.ben", [benBest]]]),
+        loadStandings: async () => [],
+        loadStories: async () => [],
+        notifications: { inbox: async () => ({ unreadCount: 0, notifications: [] }) } as never,
+        tournaments: { listPublic: async () => [] } as never,
+        currentTimeMs: () => NOW,
+      });
+      await view.ready;
+      await settle();
+      results.push({
+        value: byClass(host, "ds-home__standing-value")?.textContent ?? undefined,
+        badge: allByClass(host, "ds-home__standing-badge").some((node) => (node.textContent ?? "").includes("Tier:")),
+      });
+      view.unmount();
+    }
+    expect(results).toEqual([
+      { value: "#1 of 2", badge: false },
+      { value: "#1 of 2", badge: true },
+      { value: "#1 of 2", badge: true },
+    ]);
+  });
+
   it("uses Stadium as introductory art until a Player publishes a time", async () => {
     const view = mountHome(root as unknown as HTMLElement, {
       loadComeback: async () => ({ ...comeback, timeTrials: { standing: 0, of: 8, totalMs: 0 }, rivals: [] }),

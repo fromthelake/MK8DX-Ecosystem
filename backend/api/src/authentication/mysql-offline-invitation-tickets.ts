@@ -10,6 +10,7 @@ type TargetRow = RowDataPacket & {
   accountKey: string; userAccountId: string; authEmail: string;
   accountRole: string; active: number;
 };
+type PreviewRow = RowDataPacket & { displayLabel: unknown };
 type TicketRow = TargetRow & {
   invitationId: string; expiresAtMs: number;
   consumedAtMs: number | null; revokedAtMs: number | null; ticketRole: string;
@@ -42,6 +43,64 @@ export class MysqlOfflineInvitationTicketRepository implements OfflineInvitation
        INNER JOIN user_accounts user ON user.user_account_id=account.user_account_id
        WHERE account.account_key=? LIMIT 1`, [accountKey]);
     return rows.length === 0 ? null : target(rows[0]!);
+  }
+
+  public async ownTarget(userAccountId: string): Promise<OfflineInvitationTarget | null> {
+    const [rows] = await this.pool.execute<TargetRow[]>(
+      `SELECT account.account_key accountKey, user.public_id userAccountId,
+              account.auth_email authEmail, account.account_role accountRole,
+              (account.active=TRUE AND user.account_status='active' AND
+               (account.account_role<>'administrator' OR EXISTS (
+                 SELECT 1 FROM administrator_grants grant_record
+                 WHERE grant_record.user_account_id=user.user_account_id
+                   AND grant_record.grant_status='active'))) active
+       FROM user_accounts user
+       INNER JOIN offline_auth_accounts account ON account.user_account_id=user.user_account_id
+       WHERE user.public_id=? LIMIT 1`, [userAccountId]);
+    return rows.length === 0 ? null : target(rows[0]!);
+  }
+
+  public async createOwn(record: OfflineInvitationRecord): Promise<void> {
+    if (record.role !== "account") { throw new Error("own offline invitation must be an account ticket"); }
+    const connection = await this.pool.getConnection();
+    try {
+      await connection.beginTransaction();
+      // The previous card this account made for itself stops working: one live card at a time.
+      // Tickets an administrator issued from the host page are left alone.
+      await connection.execute<ResultSetHeader>(
+        `UPDATE offline_invitation_tickets ticket
+         INNER JOIN offline_auth_accounts account ON account.account_key=ticket.account_key
+         INNER JOIN user_accounts user ON user.user_account_id=account.user_account_id
+         SET ticket.revoked_at_ms=?
+         WHERE user.public_id=? AND ticket.issued_by_user_account_id=user.user_account_id
+           AND ticket.consumed_at_ms IS NULL AND ticket.revoked_at_ms IS NULL
+           AND ticket.expires_at_ms>?`,
+        [record.issuedAtMs, record.issuedByAccountId, record.issuedAtMs]);
+      const [result] = await connection.execute<ResultSetHeader>(
+        `INSERT INTO offline_invitation_tickets
+          (invitation_id, token_digest, account_key, account_role,
+           issued_by_user_account_id, issued_at_ms, expires_at_ms)
+         SELECT ?, ?, account.account_key, account.account_role,
+                user.user_account_id, ?, ?
+         FROM offline_auth_accounts account
+         INNER JOIN user_accounts user ON user.user_account_id=account.user_account_id
+         WHERE account.account_key=? AND user.public_id=?
+           AND account.account_role='account' AND account.active=TRUE
+           AND user.account_status='active'
+           AND NOT EXISTS (
+             SELECT 1 FROM administrator_grants grant_record
+             WHERE grant_record.user_account_id=user.user_account_id
+               AND grant_record.grant_status='active')`,
+        [record.invitationId, Buffer.from(record.tokenDigest), record.issuedAtMs,
+         record.expiresAtMs, record.accountKey, record.issuedByAccountId]);
+      if (result.affectedRows !== 1) { throw new Error("own offline invitation was not authorized"); }
+      await connection.commit();
+    } catch (error) {
+      await connection.rollback();
+      throw error;
+    } finally {
+      connection.release();
+    }
   }
 
   public async create(record: OfflineInvitationRecord): Promise<void> {
@@ -107,6 +166,25 @@ export class MysqlOfflineInvitationTicketRepository implements OfflineInvitation
     } finally {
       connection.release();
     }
+  }
+
+  public async preview(tokenDigest: Uint8Array, nowMs: number): Promise<string | null> {
+    // Exactly the acceptance conditions of consume, read without a lock and without writing.
+    const [rows] = await this.pool.execute<PreviewRow[]>(
+      `SELECT account.display_label displayLabel
+       FROM offline_invitation_tickets ticket
+       INNER JOIN offline_auth_accounts account ON account.account_key=ticket.account_key
+       INNER JOIN user_accounts user ON user.user_account_id=account.user_account_id
+       WHERE ticket.token_digest=? AND ticket.consumed_at_ms IS NULL AND ticket.revoked_at_ms IS NULL
+         AND ticket.expires_at_ms>? AND account.account_role=ticket.account_role
+         AND account.active=TRUE AND user.account_status='active' AND
+         (account.account_role<>'administrator' OR EXISTS (
+           SELECT 1 FROM administrator_grants target_grant
+           WHERE target_grant.user_account_id=user.user_account_id
+             AND target_grant.grant_status='active'))
+       LIMIT 1`, [Buffer.from(tokenDigest), nowMs]);
+    const label = rows[0]?.displayLabel;
+    return typeof label === "string" && label.length > 0 ? label : null;
   }
 
   public async revoke(invitationId: string, nowMs: number,

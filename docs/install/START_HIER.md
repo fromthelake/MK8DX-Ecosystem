@@ -8,9 +8,9 @@ Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag 
 
 | Route | Voor wie | Status | Naslag |
 | --- | --- | --- | --- |
-| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Ondersteund | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) |
+| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Ondersteund | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) ([English](A1_ONE_COMPUTER_EN.md)) |
 | **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Ondersteund | [Nederlandse handleiding, hoofdstuk 2](MK8DX_Handleiding_NL.txt); [English guide, chapter 2](MK8DX_User_Guide_EN.txt) |
-| **A2** — je eigen vertrouwde netwerk | Andere apparaten thuis of op een toernooilocatie laten meedoen | Gedocumenteerd; nog niet end-to-end getest | [A2_EIGEN_NETWERK.md](A2_EIGEN_NETWERK.md) |
+| **A2** — thuis of op de club, zonder internet | Telefoons en pc's thuis of op een toernooilocatie laten meedoen, met een begeleide installatie in de browser | Getest op Windows 11 (Linux in WSL 2; macOS niet getest) | [A2_THUIS_HANDLEIDING_NL.md](A2_THUIS_HANDLEIDING_NL.md) |
 | **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | Gedocumenteerd; nog niet end-to-end getest | [B1_VPS.md](B1_VPS.md) |
 | **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | Gedocumenteerd; nog niet end-to-end getest | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
 
@@ -28,8 +28,9 @@ de hoofdstukken zijn geen opeenvolgende installatiestappen.
 
 - **A1 en A3:** Windows 11 op x86-64, aanbevolen 8 GB werkgeheugen en ongeveer 15 GB vrije ruimte (A1) of
   enkele GB (A3). Dit zijn ruime marges, geen gemeten ondergrenzen.
-- **A2:** dezelfde Windows-host als A1, plus de apparaten in hetzelfde vertrouwde netwerk. Geen gastnetwerk en
-  geen doorgezette routerpoort.
+- **A2:** een computer met Windows 11, Linux of macOS (x86-64 of arm64), Docker en Python 3.12–3.15, plus de
+  apparaten in hetzelfde vertrouwde netwerk. Geen gastnetwerk en geen doorgezette routerpoort. Alles staat in
+  [hoofdstuk 1 en 2 van de handleiding](A2_THUIS_HANDLEIDING_NL.md).
 - **B1:** Ubuntu 24.04 LTS op x86-64, aanbevolen 2 processorkernen, 8 GB geheugen en 40 GB SSD, een eigen domein
   en een uitgaande mailbox (SMTP met TLS).
 - **B2:** een hostingpakket met Node.js 24 (Passenger), MariaDB 11.4+ of MySQL 8.4+, SSH, een lege database met
@@ -43,7 +44,8 @@ samen met `SHA256SUMS.txt`:
 
 | Route | Pakket |
 | --- | --- |
-| A1, A2, B1 | `mk8dx-host-local-…-amd64.zip` |
+| A1, B1 | `mk8dx-host-local-…-amd64.zip` |
+| A2 | `mk8dx-a2-<platform>-<arch>-….zip`, bijvoorbeeld `mk8dx-a2-windows-amd64-….zip` |
 | A3 | `mk8dx-xampp-node-windows-….zip` |
 | B2 | `mk8dx-mijnhost-node-….zip` |
 | Android | `mk8dx-android-release-….apk` en `mk8dx-android-notices-….zip` |

@@ -42,6 +42,8 @@ export function createHistoryReplay(
       parameters: "measured", decay: true, dryRun: false,
       operator: input.administratorAccountId, reasonCode: input.reasonCode,
       eligiblePlayerIds: await eligiblePlayers(pool),
+      // A new community has no imported history; it starts from nothing.
+      allowEmptyHistory: true,
     });
     let appliedRaces = 0;
     let skippedRaces = report.racesSkipped;

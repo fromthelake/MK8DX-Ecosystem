@@ -1,6 +1,6 @@
 # Tournament Directors: running a night
 
-[All guides](../../README.md#guides) · [Tournament Tools reference](../product/USING_MK8DX_TOURNAMENT_TOOLS.md)
+[All guides](../../README.md#get-started) · [Tournament Tools reference](../product/USING_MK8DX_TOURNAMENT_TOOLS.md)
 
 A Tournament Director runs a tournament night on the community website: participants, consoles, groups,
 scores, finals and the published report. The Windows **Tournament Tools** can read the race results from

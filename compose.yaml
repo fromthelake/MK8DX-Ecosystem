@@ -29,6 +29,11 @@ services:
       MK8DX_HOSTED_MYSQL_PORT: "3306"
       MK8DX_HOSTED_API_HOST: 0.0.0.0
       MK8DX_HOSTED_API_PORT: "8080"
+      # Only the gateway container (Compose service "web", whose Caddy sets
+      # X-Real-IP) may name the client address; any other peer is the client.
+      # Set here, not only in api.env, so existing installations get it too.
+      MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON: '["x-real-ip"]'
+      MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON: '["web"]'
       MK8DX_HOSTED_SCHEMA9_CATALOG_PATH: /app/packages/assets/schema9-asset-catalog-v1.json
     depends_on:
       mysql: {condition: service_healthy}

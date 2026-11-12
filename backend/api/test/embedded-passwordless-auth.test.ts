@@ -127,6 +127,49 @@ describe("embedded passwordless auth", () => {
       await h.app.close();
     }
   });
+  it("keeps one sign-in bucket per client and ignores spoofed headers from untrusted peers", async () => {
+    const h = await harness();
+    const signInFrom = (remoteAddress: string, forwarded?: string) => h.app.inject({
+      method: "POST",
+      url: "/api/auth/sign-in/magic-link",
+      remoteAddress,
+      headers: {
+        origin: baseUrl,
+        "content-type": "application/json",
+        ...(forwarded === undefined ? {} : { "x-real-ip": forwarded, "x-forwarded-for": forwarded }),
+      },
+      payload: { email: "player@example.test", callbackURL: "/" },
+    });
+    try {
+      // The trusted proxy (127.0.0.1 here) forwards two different clients.
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        expect((await signInFrom("127.0.0.1", "203.0.113.10")).statusCode).toBe(200);
+      }
+      expect((await signInFrom("127.0.0.1", "203.0.113.10")).statusCode).toBe(429);
+      expect((await signInFrom("127.0.0.1", "203.0.113.11")).statusCode).toBe(200);
+      // An untrusted peer cannot escape its own bucket by inventing a header.
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        expect((await signInFrom("198.51.100.20", `198.51.100.${100 + attempt}`)).statusCode).toBe(200);
+      }
+      expect((await signInFrom("198.51.100.20", "198.51.100.200")).statusCode).toBe(429);
+      const keys = (h.database.mk8dx_auth_rate_limit as Array<{ key: string }>).map((row) => row.key).sort();
+      expect(keys).toEqual([
+        "198.51.100.20|/sign-in/magic-link",
+        "203.0.113.10|/sign-in/magic-link",
+        "203.0.113.11|/sign-in/magic-link",
+      ]);
+    } finally {
+      await h.app.close();
+    }
+  });
+
+  it("accepts a Compose gateway host name as the trusted proxy", () => {
+    expect(() => createEmbeddedPasswordlessAuth(
+      memoryAdapter({}), config({ trustedProxyAddresses: ["web"] }),
+      { async sendMagicLink() {} }, { async record() {} },
+    )).not.toThrow();
+  });
+
   it("rejects unsafe origin, secret, proxy, and client configuration", () => {
     const database = memoryAdapter({});
     const mail = { async sendMagicLink() {} };

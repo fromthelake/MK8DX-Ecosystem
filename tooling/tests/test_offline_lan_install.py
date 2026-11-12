@@ -5,10 +5,12 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import patch
 
 from tooling import install
+from tooling import offline_lan_ca_lifecycle
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -57,8 +59,24 @@ class OfflineLanInstallTest(unittest.TestCase):
                 install.change_origin(state, "https://192.168.50.21")
             with self.assertRaisesRegex(ValueError, "applies only to A2"):
                 install.change_lan_address(state, "192.168.50.21")
-            with self.assertRaisesRegex(ValueError, "waits for the local invitation runtime"):
-                install.operate(state, "start")
+            # Fail-closed without the explicit QA candidate option (ADR-0223).
+            for action in install.OFFLINE_GATED:
+                with self.assertRaisesRegex(ValueError, "fail-closed"):
+                    install.operate(state, action)
+            with patch.object(install, "run_compose") as run_up, \
+                    patch.object(install, "ensure_offline_firewall", return_value="present") as firewall:
+                install.operate(state, "start", qa_offline_candidate=True)
+                self.assertEqual(run_up.call_args_list[-1].args[1:],
+                                 ("up", "-d", "--wait", "--no-build", "mysql", "api", "web", "host-admin"))
+                firewall.assert_called_once()
+                install.operate(state, "apply", qa_offline_candidate=True)
+                self.assertEqual(run_up.call_args_list[-1].args[1:],
+                                 ("up", "-d", "--no-build", "--force-recreate", "api", "web", "host-admin"))
+                install.operate(state, "admin", qa_offline_candidate=True)
+                self.assertIn("--bootstrap", run_up.call_args.args)
+            addresses = install.offline_addresses(state)
+            self.assertEqual(addresses["phoneSetup"], "http://192.168.50.20/setup")
+            self.assertTrue(addresses["hostPage"].startswith("http://127.0.0.1:"))
             with patch.object(install, "run_compose") as run_host:
                 install.operate(state, "host-unlock")
                 self.assertIn("--bootstrap", run_host.call_args.args)
@@ -67,6 +85,53 @@ class OfflineLanInstallTest(unittest.TestCase):
                 self.assertIn("--user-account-id", run_host.call_args.args)
             with self.assertRaisesRegex(ValueError, "canonical UserAccount"):
                 install.operate(state, "host-unlock", user_account_id="user_account.other")
+            with patch.object(install, "run_compose") as run_gateway:
+                install.operate(state, "maintain-ca")
+                run_gateway.assert_not_called()
+            metadata_path = state / "offline-ca/metadata.json"
+            metadata = json.loads(metadata_path.read_text())
+            metadata["rotationDueAt"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
+            metadata_path.write_text(json.dumps(metadata))
+            signer_path = state / "offline-ca/serving/intermediate.pem"
+            old_signer = signer_path.read_bytes()
+            with patch.object(install, "run_compose") as run_gateway, \
+                    patch.object(install, "leaf_storage") as leaf_storage, \
+                    patch.object(install, "verify_rotated_leaf") as verify_leaf:
+                install.operate(state, "maintain-ca")
+                self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],
+                                 [("stop", "web"),
+                                  ("up", "-d", "--wait", "--no-build", "--force-recreate", "web")])
+                self.assertEqual([call.args[1] for call in leaf_storage.call_args_list],
+                                 [install._LEAF_QUARANTINE, install._LEAF_CLEANUP])
+                verify_leaf.assert_called_once()
+            self.assertNotEqual(signer_path.read_bytes(), old_signer)
+            metadata = json.loads(metadata_path.read_text())
+            metadata["rotationDueAt"] = (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat()
+            metadata_path.write_text(json.dumps(metadata))
+            new_signer = signer_path.read_bytes()
+            with patch.object(offline_lan_ca_lifecycle, "rotate_intermediate", side_effect=ValueError("signer refused")), \
+                    patch.object(install, "run_compose") as run_gateway, \
+                    patch.object(install, "leaf_storage") as leaf_storage:
+                with self.assertRaisesRegex(ValueError, "signer refused"):
+                    install.operate(state, "maintain-ca")
+                self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],
+                                 [("stop", "web"), ("stop", "web"),
+                                  ("up", "-d", "--wait", "--no-build", "--force-recreate", "web")])
+                self.assertEqual([call.args[1] for call in leaf_storage.call_args_list],
+                                 [install._LEAF_RESTORE])
+            self.assertEqual(signer_path.read_bytes(), new_signer)
+            with patch.object(install, "run_compose") as run_gateway, \
+                    patch.object(install, "leaf_storage") as leaf_storage, \
+                    patch.object(install, "verify_rotated_leaf", side_effect=RuntimeError("wrong served chain")):
+                with self.assertRaisesRegex(RuntimeError, "wrong served chain"):
+                    install.operate(state, "maintain-ca", force_ca_rotation=True)
+                self.assertEqual([call.args[1] for call in leaf_storage.call_args_list],
+                                 [install._LEAF_QUARANTINE, install._LEAF_RESTORE])
+                self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],
+                                 [("stop", "web"),
+                                  ("up", "-d", "--wait", "--no-build", "--force-recreate", "web"),
+                                  ("stop", "web"),
+                                  ("up", "-d", "--wait", "--no-build", "--force-recreate", "web")])
             self.assertEqual(profile, json.loads((state / "operator-profile.json").read_text()))
 
     def test_invalid_offline_ip_fails_before_creating_state(self):

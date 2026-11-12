@@ -3,24 +3,125 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.0-rc.7 — 2026-11-12
+
+### Added
+
+- A2 package for Intel Macs (`mk8dx-a2-macos-amd64-…`). Its security library `cryptography` is no longer
+  published for Intel Macs, so the release builds it from source on an Intel Mac runner, with OpenSSL linked in
+  statically, and runs the A2 certificate and backup tests with it. Built and tested in CI; not yet tried on a
+  real Mac.
+
+### Fixed
+
+- On macOS the A2 tools refused every folder behind `/var` (where temporary folders live), because `/var` is
+  a link. Links the operating system owns (root) are now accepted on macOS and Linux; a link a user made is
+  still refused, and Windows is unchanged.
+
+## 0.2.0-rc.6 — 2026-11-12
+
+### Fixed
+
+- Removing or reopening a rated tournament on a new installation (A2, any fresh self-hosted site) answered
+  an error and left TrueSkill counting the night: the rating replay refused because there is no imported
+  history. It now starts from nothing there; an installation that once had history still refuses an empty one.
+- Entering several races at once checks every race first. One refused race (an unknown track) no longer
+  leaves the earlier races half-saved, which made every retry of that group fail.
+- Removing, reopening or restoring a tournament without a reason answers 400 with a message instead of 500.
+
+## 0.2.0-rc.5 — 2026-11-12
+
+The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release, and `v0.2.0-rc.3` stayed a draft because its A1
+menu hid each step's own output: the A2 package build refused a second,
+redundant `cryptography` wheel for Python 3.15 (rc.1), asked for the arm64 image list as a Windows package and
+found no Intel Mac wheel (rc.2). The builder and workflow are fixed and the Intel Mac package is dropped.
+
+
+### A2: MK8DX at home or at the club, without internet
+
+- New per-platform packages `mk8dx-a2-<platform>-<arch>-….zip` (Windows amd64, Linux amd64/arm64,
+  macOS arm64; no Intel Mac package because `cryptography` 50 ships no wheel for it) with the Docker images, pinned Python wheels for Python 3.12–3.15 and a guided
+  setup in the browser: start `Start-MK8DX-LAN.cmd` (Windows) or `tooling/start-mk8dx.sh`, click
+  Next. It sets up a private certificate authority for HTTPS on the local network (new roots only
+  allow names under `.invalid`), an administrator, people and printable sign-in cards, nightly
+  verified backups with a paper recovery code, and certificate renewal.
+- MK8DX beheer (the same page, later) adds people, makes cards ("Copy link", "Sign in on this
+  computer"), prepares the host computer itself, moves the installation to a new network address,
+  and restores a backup on a new computer.
+- Updating: unpack a newer package in a new folder and start it. The update is its own short route:
+  a verified backup first, then the new images, database migrations, and the scheduled tasks and
+  shortcut moved to the new folder; the start window ends with `OK  MK8DX update completed` or
+  `MK8DX update FAILED: <reason>`. Release tags (`v0.2.0-rc.2`, `v0.2.0`) and QA builds are ordered;
+  an older package is refused.
+- Account switching on shared devices (website and Android app); administrators may appear in the
+  switch list behind a mandatory PIN (5th wrong PIN or 14 days unused forgets them on that device).
+  Migration `0086_account_switch_pin_failures`.
+- Other routes: the setup question offers only what the package can install, in plain words. A1/B1 start
+  the first setup by themselves and keep a menu open that reports each step and checks every backup.
+  A3 gets `Manage-MK8DX-No-Docker.cmd` (check, administrator, checked backup) and a launcher that checks
+  Python and Node.js; A3/B2 print one line for the database update and a clear message when stopped.
+- Guides: `docs/install/A2_HOME_GUIDE_EN.md` and `A2_THUIS_HANDLEIDING_NL.md` (also as illustrated
+  HTML in `docs/install/guide/`), including a fixed address for the host (DHCP reservation) and how to
+  avoid an address conflict.
+- Tested end to end on a clean Windows 11 computer and the maintainer's laptop: installation, update,
+  people and cards, phone and PC sign-in, account switching, a full tournament night with rating, and
+  live capture from another computer. Linux was tested in WSL 2 (Ubuntu 24.04); macOS is built and
+  unit-tested only.
 
 ### Security
 
 - Administrator grant and revoke actions share a durable per-account limit of
   20 attempts per hour. Excess requests return 429 with `Retry-After`.
+- Docker installations (A1, A2, A2 offline, B1) rate-limit sign-in per client
+  again instead of in one shared bucket for everybody. Caddy now sends the
+  connecting address as `X-Real-IP` (replacing any client-supplied value),
+  and the API honours that header only when
+  the TCP peer is a trusted proxy. A trusted proxy may now also be a host name:
+  Docker routes trust exactly the Compose gateway service `web`, resolved on the
+  project network (other containers and LAN clients are never trusted).
+  `compose.yaml` sets this for the API container, so existing installations
+  only need the new package and an API/Web recreate (`install.py apply`); new
+  installations also write `["web"]` to `api.env`.
+- Offline invitation redemption no longer depends on the per-address limit
+  alone (on Windows Docker Desktop every LAN device arrives from the gateway's
+  address). Each presented card is limited to 5 attempts per 15 minutes, keyed
+  on a keyed hash of the token (the token is never stored); all redemption
+  attempts together are capped at 120 per minute; the per-address limit is
+  raised from 5 to 60 per minute so a LAN night sharing one address is not
+  blocked. Unknown and malformed tokens count against the same limits. Email
+  sign-in limits are unchanged.
 
-### Offline LAN (in development)
+### Offline LAN
 
+- ADR-0224 phase 1: a signed-in Player account in an offline-invitation
+  installation can add another device from the account menu. It shows a
+  one-use, 15-minute QR card (with the link, its expiry and "New card") for
+  that account only; a new card retires the previous one. The route
+  (`POST /v1/session/device-invitations`) is rate-limited, refused for
+  administrators (they keep the host-computer flow) and absent in email-link
+  installations. Real-device and browser checks are still open.
+- ADR-0224 phase 2 (both installation modes): a shared device remembers the
+  Player accounts that signed in on it, and "Switch account" (account menu,
+  Settings, and the signed-out sign-in panel) continues as one of them with one
+  tap. An account can turn on an optional 4-digit PIN in Settings; the server
+  checks it and limits attempts (5 per account per 15 minutes, 20 per device
+  per hour). Administrators are remembered only with a PIN (see A2 above).
+  The browser holds labels only, under one HttpOnly SameSite=Strict device
+  cookie. "Sign out" removes the account from this device's list; "Sign out on
+  all devices" removes it from every device. Migration
+  `0085_account_switching`. Design: `docs/product/ACCOUNT_SWITCHING_DESIGN.md`.
+  Browser and real-device checks are still open.
+- The account menu offers "Sign out on all devices" after a confirmation. It
+  ends every session of the account, apps included, then signs this browser
+  out as before. "Sign out" itself still affects only this device.
 - Offline A2 client configuration now advertises personal host invitations;
   the website explains that sign-in path and distinguishes it from the setup
-  certificate QR. Online installations keep their email-link form. The offline
-  installer is still gated pending the full installation and device checks.
+  certificate QR. Online installations keep their email-link form.
 - The QA setup page and host screen now distinguish the one-time administrator
   code from the CA fingerprint and give clearer certificate import guidance.
 - NL/EN QA instructions explain which addresses work on the host and on a
   phone, how an invitation activates a local account, and why a phone may show
-  the light theme. The public offline A2 installer remains unqualified.
+  the light theme.
 
 ### Camera
 

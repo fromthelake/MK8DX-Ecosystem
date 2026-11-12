@@ -40,6 +40,14 @@ def _to_int(value: Any) -> int | None:
 
 
 _REFINED_METHOD_MARKER = "variant_family_aligned_color_refine"
+# The shared field reader ("shared_field_<version>", ADR recognition pipeline) reads the colour
+# from the shared colour profile itself; its accepted rows are settled even without the old
+# family refinement. Only the fast per-race read (no method) stays on the neutral root.
+_SHARED_READER_PREFIX = "shared_field_"
+
+
+def _colour_settled(method: str) -> bool:
+    return _REFINED_METHOD_MARKER in method or method.startswith(_SHARED_READER_PREFIX)
 # Characters whose colour is a variant of a shared base; OCR returns the bare root (e.g.
 # "Yoshi") until the family refinement commits the colour. Grouping a player's reads by
 # these roots lets a committed colour beat the provisional early reads. Distinct-character
@@ -279,7 +287,7 @@ def build_race_results(rows: list[dict[str, Any]]) -> list[StandingRow]:
         # Until the colour family is refined, the per-race base match can't tell Yoshi
         # colours apart (shape only) — show the neutral family root instead of an
         # unconfirmed, often-wrong colour.
-        if _REFINED_METHOD_MARKER not in _first(row, "CharacterMatchMethod"):
+        if not _colour_settled(_first(row, "CharacterMatchMethod")):
             root = _family_root(character)
             if root != character and root in _VARIANT_FAMILY_ROOTS:
                 character = root

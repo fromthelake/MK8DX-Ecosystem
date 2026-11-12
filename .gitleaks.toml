@@ -18,6 +18,8 @@ regexes = [
   '''entryKey"\s*:\s*"''',
   '''encryptionKeyVersion\s*:\s*"''',
   '''APPEARANCE_STORAGE_KEY\s*=\s*"''',
+  # The macOS Keychain service name under which A2 stores its secrets (tooling/host_platform.py).
+  '''KEYCHAIN_SERVICE\s*=\s*"''',
 ]
 
 [[rules.allowlists]]

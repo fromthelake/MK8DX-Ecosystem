@@ -61,7 +61,8 @@ export type HomeComeback = Readonly<{
     displayName: string;
     avatarId?: string;
   }>;
-  tournament?: Readonly<{ rank: number; of: number; score: number }>;
+  /** `played` is false until the Player has a rated race; older servers omit it. */
+  tournament?: Readonly<{ rank: number; of: number; score: number; played?: boolean }>;
   timeTrials: Readonly<{
     standing: number;
     of: number;

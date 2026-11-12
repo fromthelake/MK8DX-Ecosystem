@@ -238,7 +238,8 @@ export function mountHome(root: HTMLElement, options: HomeOptions = {}): Mounted
     const appearance = avatarAppearance(comeback.player.avatarId);
     const standing: (Node | string)[] = [];
     if (comeback.tournament !== undefined) {
-      const tier = tournamentTierByRank(comeback.tournament.rank);
+      // No tier before a first rated race: list order alone earns none.
+      const tier = comeback.tournament.played === false ? null : tournamentTierByRank(comeback.tournament.rank);
       const block = el("a", "ds-home__standing", { href: "/?ranking=tournament" },
         el("span", "ds-home__standing-label ds-label", {}, localized("Tournament", "Toernooi")),
         el("span", "ds-home__standing-value", {
