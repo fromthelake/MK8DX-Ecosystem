@@ -3,10 +3,26 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.0 — 2026-11-12
+
+The first stable package with **A2, at home or at the club**: one computer on your own network, no internet
+needed after setup, sign-in cards for everyone. It contains everything from 0.2.0-rc.1 to rc.7 below, plus the
+following.
 
 ### Added
 
+- **Several communities in one Android app** (ADR-0225; app 2.96.0): Settings → Community server lists every
+  community the phone was set up for. One tap switches; each community keeps its own account, its own unsent
+  times and, for A2, its own pinned trust. "Add a community" opens the first-start screen; "Remove from this
+  phone" waits until nothing is left to send.
+- **Carry a time to another community** from the app: a sent result offers "Carry to another community". The app
+  asks that community first and explains a refusal; otherwise the copy waits until you are signed in there. A
+  refused or still-waiting copy can be removed.
+- **The app's first start explains itself**: *Choose your community* says what each choice means, names the
+  **Prepare a device** card the player actually gets, and has a **Language / Taal** field with all 15 languages
+  by their own names. The chosen language stays after the community is set (before, a Dutch first start was
+  followed by an English app). The scan and check screens use the app's design and keep their place when the
+  phone turns or switches between light and dark.
 - **Times from other communities** (ADR-0225, migrations 0087, 0088 and 0089): a new installation setting under
   Administration → Installation settings decides whether a time carried from another community is refused
   (off, the default), waits for an administrator (with approval) or follows the normal publication rules
@@ -25,6 +41,18 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   be brought back) or "Leave them waiting". Nothing happens without that answer, and each run gets its own
   audit entry (`POST /v1/administrator/time-trials/actions/resolve-carried-waiting`, refused with 409 when the
   number waiting changed meanwhile).
+
+### Changed
+
+- Translations: the first-start, pairing and A2 sign-in, card and PIN texts are now translated into all
+  languages (machine translation, not yet reviewed); every catalog is complete.
+- README and README_NL describe what the app asks at first start; the players guide and the A2 guides follow
+  the new screens (a home or club installation works in the app from 2.95.0).
+
+### Fixed
+
+- The LiveTrial live page has Dutch and English only and fell back to Dutch for every other app language, so an
+  English (US) dashboard showed "Opname stoppen"; every language other than Dutch now gets English there.
 
 ## 0.2.0-rc.7 — 2026-11-12
 
