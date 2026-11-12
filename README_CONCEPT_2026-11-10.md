@@ -202,11 +202,11 @@ Every route gives you the same website; they differ in where it runs and who can
 
 | Route | For | Runs on | Status |
 | --- | --- | --- | --- |
-| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac with Apple silicon | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested |
+| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac (Apple silicon or Intel) | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested on a real Mac |
 | **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
 | **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
 | **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
-| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Documented, not yet tested end to end |
+| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Our own site, [mariokart.basai.nl](https://mariokart.basai.nl/), runs this way; the public package has not yet been installed from scratch on a new hosting account |
 
 The apps around it:
 
@@ -218,8 +218,9 @@ The apps around it:
 | LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
 
 **Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
-B1 server images exist for x86-64 only; A2 also has arm64. There is no A2 package for Intel Macs, because a
-security library it needs (`cryptography`) no longer ships for them. A3 exists for people who cannot or do not
+B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
+(`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there
+([how](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 exists for people who cannot or do not
 want to run Docker. The [hosting guide](docs/guides/HOSTING.md) and the [release packages](docs/RELEASE_PACKAGES.md)
 list every file and its exact requirements.
 

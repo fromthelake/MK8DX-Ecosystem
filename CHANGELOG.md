@@ -3,6 +3,15 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## 0.2.0-rc.7 — unreleased
+
+### Added
+
+- A2 package for Intel Macs (`mk8dx-a2-macos-amd64-…`). Its security library `cryptography` is no longer
+  published for Intel Macs, so the release builds it from source on an Intel Mac runner, with OpenSSL linked in
+  statically, and runs the A2 certificate and backup tests with it. Built and tested in CI; not yet tried on a
+  real Mac.
+
 ## 0.2.0-rc.6 — 2026-11-12
 
 ### Fixed

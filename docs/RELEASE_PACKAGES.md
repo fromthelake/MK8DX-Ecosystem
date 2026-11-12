@@ -9,7 +9,7 @@ same packages yourself; see [Building the packages](#building-the-packages).
 | Package | Contents | Use it for |
 | --- | --- | --- |
 | `mk8dx-host-local-…-amd64.zip` | Prebuilt Linux/amd64 images for website and API, MySQL and Mailpit images, Compose files, the installer and launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) | Routes A1 (one computer) and B1 (VPS) |
-| `mk8dx-a2-<platform>-<arch>-….zip` | Everything for A2 on that platform: website and API images, the guided setup, pinned Python wheels, launchers and the A2 guides | Route A2: home or club network without internet (`windows-amd64`, `linux-amd64`, `linux-arm64`, `macos-arm64`; no Intel Mac package, because `cryptography` no longer ships a wheel for it) |
+| `mk8dx-a2-<platform>-<arch>-….zip` | Everything for A2 on that platform: website and API images, the guided setup, pinned Python wheels, launchers and the A2 guides | Route A2: home or club network without internet (`windows-amd64`, `linux-amd64`, `linux-arm64`, `macos-arm64`, `macos-amd64` for Intel Macs) |
 | `mk8dx-xampp-node-windows-….zip` | Built website and API for Node.js, a private MariaDB, Mailpit and the Apache configuration helper | Route A3: Windows without Docker |
 | `mk8dx-mijnhost-node-….zip` | Built website and API for Node.js/Passenger hosting with MariaDB | Route B2: shared hosting |
 | `mk8dx-android-debug-….apk` | CI-built debug-signed Android app for testing; remove before publishing a stable release | Test phones |
@@ -73,6 +73,23 @@ Maintainers and other users can build the same packages from a clean clone with
 the [client recipes](CLIENT_BUILDS.md). The [hosting guide](guides/HOSTING.md#build-the-host-package-from-a-clone)
 has the manual image commands. Use `host_bundle.py --version <release-tag>` to select versioned GHCR image names;
 without it, local clone builds continue to use the current local image tags.
+
+### Intel Mac A2 package
+
+`cryptography` (pinned in `tooling/requirements-offline-lan.txt`) publishes no Intel Mac wheel after 48.0.1, and
+48.0.1 has known security advisories. The release workflow's `macos-intel-cryptography` job therefore builds the
+pinned version from source on GitHub's `macos-15-intel` runner with
+`tooling/release/build_macos_intel_cryptography.sh`: OpenSSL 3.5 (checksum-pinned) is built and linked in
+statically for macOS 10.15 and newer, the script refuses a wheel that links anything outside the system
+libraries, and the job runs the A2 certificate and backup tests with that wheel before the `macos-amd64`
+package takes it. To build it yourself on an Intel Mac with Python 3.12+, the Xcode command line tools and Rust:
+
+```sh
+sh tooling/release/build_macos_intel_cryptography.sh dist/intel-wheel
+```
+
+Pass the folder to `pip download --find-links dist/intel-wheel` when you collect the A2 wheels. When a new
+`cryptography` is pinned, the same job builds that version; no other change is needed.
 
 ## Publishing a release
 

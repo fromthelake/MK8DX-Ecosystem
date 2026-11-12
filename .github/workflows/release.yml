@@ -193,11 +193,37 @@ jobs:
         with:
           name: host-package
           path: ${{ runner.temp }}/out/*.zip
+  macos-intel-cryptography:
+    # cryptography publishes no Intel Mac wheel after 48.0.1 (which has known advisories). Build the pinned
+    # version from source on an Intel Mac, OpenSSL linked in statically, and run the A2 CA tests with it there.
+    needs: verified
+    runs-on: macos-15-intel
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Build the cryptography wheel for Intel Macs
+        run: sh tooling/release/build_macos_intel_cryptography.sh "$RUNNER_TEMP/built-wheels"
+      - name: Test the A2 certificate and backup tools with that wheel
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/check"
+          "$RUNNER_TEMP/check/bin/python" -m pip install --no-index --find-links "$RUNNER_TEMP/built-wheels" cryptography
+          "$RUNNER_TEMP/check/bin/python" -m pip install --only-binary=:all: -r tooling/requirements-offline-lan.txt \
+            --find-links "$RUNNER_TEMP/built-wheels"
+          "$RUNNER_TEMP/check/bin/python" -m unittest -v tooling/tests/test_offline_lan_ca.py \
+            tooling/tests/test_offline_lan_ca_lifecycle.py tooling/tests/test_auto_backup.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: macos-intel-cryptography
+          path: ${{ runner.temp }}/built-wheels/*.whl
   a2-packages:
     # A2 offline (ADR-0223): one package per host system and processor, each with its own image bundle and the
     # pinned CPython 3.12-3.15 wheels for the local CA tools. The containers are always Linux images, built natively
     # on an amd64 or arm64 runner (no emulation).
-    needs: verified
+    needs: [verified, macos-intel-cryptography]
     runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 90
     strategy:
@@ -208,13 +234,18 @@ jobs:
           - { platform: linux, arch: amd64, wheel_tags: "manylinux_2_34_x86_64 manylinux_2_28_x86_64 manylinux_2_17_x86_64 manylinux2014_x86_64" }
           - { platform: linux, arch: arm64, wheel_tags: "manylinux_2_34_aarch64 manylinux_2_28_aarch64 manylinux_2_17_aarch64 manylinux2014_aarch64" }
           - { platform: macos, arch: arm64, wheel_tags: "macosx_11_0_arm64 macosx_10_9_universal2 macosx_10_13_universal2" }
-          # macOS on Intel is not built: cryptography 50 ships no x86_64 macOS wheel.
-          # - { platform: macos, arch: amd64, wheel_tags: "macosx_10_9_x86_64 macosx_10_13_x86_64 macosx_10_9_universal2 macosx_10_13_universal2" }
+          # macOS on Intel: cryptography comes from the macos-intel-cryptography job (built from source).
+          - { platform: macos, arch: amd64, wheel_tags: "macosx_10_15_x86_64 macosx_10_15_universal2" }
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
+      - if: matrix.platform == 'macos' && matrix.arch == 'amd64'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: macos-intel-cryptography
+          path: ${{ runner.temp }}/built-wheels
       - name: Build the images, fetch the wheels and package A2 for ${{ matrix.platform }}/${{ matrix.arch }}
         env:
           WHEEL_TAGS: ${{ matrix.wheel_tags }}
@@ -237,11 +268,11 @@ jobs:
           docker pull --platform "linux/$A2_ARCH" "${images[3]}"
           platforms=()
           for tag in $WHEEL_TAGS; do platforms+=(--platform "$tag"); done
-          mkdir -p "$RUNNER_TEMP/wheels" "$RUNNER_TEMP/out"
+          mkdir -p "$RUNNER_TEMP/wheels" "$RUNNER_TEMP/out" "$RUNNER_TEMP/built-wheels"
           # One wheel per supported CPython (host_bundle.PYTHON_VERSIONS); abi3/none-any wheels arrive once.
           for py in 3.12 3.13 3.14 3.15; do
             python -m pip download --only-binary=:all: --implementation cp --python-version "$py" "${platforms[@]}" \
-              -r tooling/requirements-offline-lan.txt -d "$RUNNER_TEMP/wheels"
+              --find-links "$RUNNER_TEMP/built-wheels" -r tooling/requirements-offline-lan.txt -d "$RUNNER_TEMP/wheels"
           done
           python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
             --offline-candidate --platform "$A2_PLATFORM" --arch "$A2_ARCH" --wheels-dir "$RUNNER_TEMP/wheels" \

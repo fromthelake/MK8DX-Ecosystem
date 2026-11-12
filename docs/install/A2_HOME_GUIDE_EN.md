@@ -69,7 +69,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 
 **Note:** macOS has not been tested on a real Mac yet. The steps below follow what the setup expects on macOS.
 
-1. **Do:** choose Apple menu → **About This Mac** and look at **Chip** or **Processor**. → **You see:** an Apple chip (M1, M2 and later). The MK8DX package for macOS is called `macos-arm64`. → **See something else?** An Intel processor: there is no MK8DX package for it, because a security library it needs (`cryptography`) no longer exists for Intel Macs. Use a Windows or Linux computer instead.
+1. **Do:** choose Apple menu → **About This Mac** and look at **Chip** or **Processor**. → **You see:** an Apple chip (M1, M2 and later): take the package `macos-arm64`. → **See something else?** An Intel processor: take the package `macos-amd64`. It needs macOS 10.15 or newer and a Docker Desktop that still supports your Mac.
 2. **Do:** download **Docker Desktop** for Mac with the matching chip from docker.com, open the downloaded file and drag Docker to **Applications**. → **You see:** Docker in your Applications folder.
 3. **Do:** open Docker. Accept the terms; if macOS asks for your password, enter it. → **You see:** after a while **Engine running** in the Docker Desktop window. → **See something else?** If Docker asks you to sign in: MK8DX does not need a Docker account, skip it if Docker offers that.
 4. **Do:** download the macOS installer of Python 3.15 from python.org and open it. Click through the steps with **Continue** and **Install**. → **You see:** the message that the installation was successful.
