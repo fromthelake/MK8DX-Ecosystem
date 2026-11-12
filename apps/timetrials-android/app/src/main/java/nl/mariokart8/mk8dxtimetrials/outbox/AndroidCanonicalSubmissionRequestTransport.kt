@@ -5,6 +5,8 @@ import java.nio.charset.CodingErrorAction
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.ui.androidText
 
 internal const val ANDROID_CANONICAL_SUBMISSION_PATH = "/v1/time-trial-submissions"
 internal const val ANDROID_CANONICAL_SUBMISSION_RESPONSE_MAX_BYTES = 8 * 1024
@@ -30,6 +32,12 @@ internal const val ANDROID_CANONICAL_TRANSPORT_UNAVAILABLE =
  */
 internal const val ANDROID_CANONICAL_TRANSPORT_TIME_IMPLAUSIBLE =
     "transport.time_implausible"
+/** ADR-0225: the receiving community does not take times carried from another one (403). */
+internal const val ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED =
+    "transport.carried_times_disabled"
+/** ADR-0225: a time carried to the community it came from (400). */
+internal const val ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF =
+    "transport.carried_from_self"
 internal const val ANDROID_CANONICAL_REFUSAL_MAX_BYTES = 1_024
 private const val ANDROID_TIME_IMPLAUSIBLE_CODE = "time_trial_time_implausible"
 
@@ -156,11 +164,17 @@ private fun parseAcknowledgement(
 
 private fun mapStatus(statusCode: Int, body: ByteArray = byteArrayOf()): Nothing = when (statusCode) {
     400 -> fail(
-        if (refusalCode(body) == ANDROID_TIME_IMPLAUSIBLE_CODE) ANDROID_CANONICAL_TRANSPORT_TIME_IMPLAUSIBLE
-        else ANDROID_CANONICAL_TRANSPORT_SUBMISSION_REJECTED,
+        when (refusalCode(body)) {
+            ANDROID_TIME_IMPLAUSIBLE_CODE -> ANDROID_CANONICAL_TRANSPORT_TIME_IMPLAUSIBLE
+            "carried_from_self" -> ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF
+            else -> ANDROID_CANONICAL_TRANSPORT_SUBMISSION_REJECTED
+        },
     )
     401 -> fail(ANDROID_CANONICAL_TRANSPORT_NOT_AUTHENTICATED)
-    403 -> fail(ANDROID_CANONICAL_TRANSPORT_NOT_AUTHORIZED)
+    403 -> fail(
+        if (refusalCode(body) == "carried_times_disabled") ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED
+        else ANDROID_CANONICAL_TRANSPORT_NOT_AUTHORIZED,
+    )
     409 -> fail(ANDROID_CANONICAL_TRANSPORT_REVISION_CONFLICT)
     404, 413, 415 -> fail(ANDROID_CANONICAL_TRANSPORT_SUBMISSION_REJECTED)
     408, 425, 429 -> fail(ANDROID_CANONICAL_TRANSPORT_UNAVAILABLE)
@@ -184,6 +198,16 @@ internal fun androidSubmissionFailureMessage(code: String?, language: String): S
     } else {
         "The proposed time is highly unreasonable, please double check all information."
     }
+    ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED -> androidText(
+        AndroidProductLanguage.fromCode(language) ?: AndroidProductLanguage.ENGLISH,
+        "This community does not accept times from other communities.",
+        "Deze community neemt geen tijden van andere communities aan.",
+    )
+    ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF -> androidText(
+        AndroidProductLanguage.fromCode(language) ?: AndroidProductLanguage.ENGLISH,
+        "This time already comes from this community.",
+        "Deze tijd komt al uit deze community.",
+    )
     else -> null
 }
 

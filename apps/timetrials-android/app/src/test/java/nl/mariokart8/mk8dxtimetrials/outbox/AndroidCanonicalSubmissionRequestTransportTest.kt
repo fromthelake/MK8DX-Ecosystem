@@ -112,6 +112,26 @@ class AndroidCanonicalSubmissionRequestTransportTest {
     }
 
     @Test
+    fun namesTheCarriedTimeRefusalsOfAReceivingCommunity() {
+        fun refused(status: Int, code: String) = assertThrows(AndroidCanonicalDeliveryTransportException::class.java) {
+            createAndroidCanonicalSubmissionRequestTransport {
+                AndroidCanonicalSubmissionResponse(status, null, null, """{"code":"$code"}""".toByteArray())
+            }.submit(submission())
+        }.failureCode
+        assertEquals(ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED, refused(403, "carried_times_disabled"))
+        assertEquals(ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF, refused(400, "carried_from_self"))
+        assertEquals(ANDROID_CANONICAL_TRANSPORT_NOT_AUTHORIZED, refused(403, "time_trial_submission_forbidden"))
+        assertEquals(
+            "This community does not accept times from other communities.",
+            androidSubmissionFailureMessage(ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED, "en"),
+        )
+        assertEquals(
+            "Deze tijd komt al uit deze community.",
+            androidSubmissionFailureMessage(ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF, "nl"),
+        )
+    }
+
+    @Test
     fun mapsBoundedHttpFailuresWithoutReadingOrLeakingTheirBodies() {
         val cases = listOf(
             401 to ANDROID_CANONICAL_TRANSPORT_NOT_AUTHENTICATED,
