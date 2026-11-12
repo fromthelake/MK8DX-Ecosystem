@@ -4,8 +4,8 @@
 
 Language: English · [Nederlands](README_NL.md)
 
-<!-- Screenshots still to add: LiveTrial's live view and the phone scanner on a TV result screen
-     (real captures, player names made unrecognisable). The pictures below use made-up players;
+<!-- Screenshot still to add: the phone scanner on a TV result screen. Website pictures use made-up
+     players; in the LiveTrial and Tournament Live pictures real player names are made unrecognisable;
      the website follows the device's light or dark setting. -->
 
 ![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
@@ -81,6 +81,8 @@ sits where, which group plays next, the scores, the finals and the standings.
   two-player split screen), saves them locally and sends them to the night on the website.
 - **You stay in charge** — the organiser checks players and places before a result counts. Live
   standings are shown provisionally in the meantime.
+
+![Tournament Live after a race: the capture-card feed, and the finishing order with each driver's character and points](docs/readme/tournament-live.jpg)
 - **Afterwards** — final standings, a shareable report (WhatsApp, PNG, CSV, a WordPress-ready
   article) and an optional TrueSkill-style community rating across nights.
 
@@ -108,6 +110,10 @@ It keeps a **clip of every race** and of every ghost replay you watch to the fin
 history with lap tables and charts, and shows your gap to the **world record**, the **Nintendo
 staff ghost**, your **own record** and your **rivals**. Send results to your community with one
 click (or switch on automatic sending), and optionally upload a clip to your own YouTube channel.
+
+![LiveTrial during a run on Baby Park: lap 4 of 7, coins and mushrooms counted live, every lap compared with the ghost](docs/readme/livetrial-live.jpg)
+
+![LiveTrial's run card afterwards: total time, the gap to the ghost, coins and mushrooms](docs/readme/livetrial-run.jpg)
 
 ## 📱 Scan from the couch
 
