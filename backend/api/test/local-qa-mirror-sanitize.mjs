@@ -59,6 +59,9 @@ const EXPECTED_SCHEMA_TABLES = Object.freeze([
   "restricted_rating_seed_identities", "restricted_time_trial_evidence",
   "restricted_time_trial_participant_references", "restricted_tournament_race_data",
   "schema_migrations", "social_group_memberships", "social_groups",
+  // Which carried times were accepted and from where (ADR-0225 amendment, migration 0090). Starts empty in
+  // the mirror like the carried columns it is filled from.
+  "time_trial_carried_originals",
   "time_trial_laps", "time_trial_lifecycle_events", "time_trial_publication_lifecycle",
   "time_trial_player_bests", "time_trial_publications", "time_trial_reactions",
   // Which screen a scan was read from (ADR-0204). A separate table rather than

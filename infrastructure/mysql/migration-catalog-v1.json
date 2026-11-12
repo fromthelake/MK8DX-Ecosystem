@@ -803,6 +803,15 @@
       "downPath": "migrations/0089_carried_times_refusal.down.sql",
       "downSha256": "2b219789406091431301a2276fe6e4dc5fb9b44b60cbd326aa37e3dce7b3bb5d",
       "destructiveDown": true
+    },
+    {
+      "version": "0090",
+      "name": "carried_originals",
+      "upPath": "migrations/0090_carried_originals.up.sql",
+      "upSha256": "866bd21a63551074ad97bd1bf0a368802534a7d2bf653f2bdec2822959b875e8",
+      "downPath": "migrations/0090_carried_originals.down.sql",
+      "downSha256": "ed97ecb3a7880dcecbfc46702c468cdd44b37a2b802ff4403a2a16529aabde72",
+      "destructiveDown": true
     }
   ]
 }
