@@ -3,7 +3,7 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## 0.2.0-rc.6 — unreleased
+## 0.2.0-rc.6 — 2026-11-12
 
 ### Fixed
 
