@@ -53,11 +53,17 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
  * is chosen. Home or club (A2) comes first, because that route needs nothing typed.
  */
 @Composable
-internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
+internal fun AndroidCommunitySetup(
+    current: String?,
+    /** Back to the app without a change; only when a community is already active ("Add a community"). */
+    onCancel: (() -> Unit)? = null,
+    onSave: (String) -> Unit,
+) {
     val context = LocalContext.current
     // Saveable: turning the phone or switching light/dark recreates the activity, and the first version then
     // dropped the person back here halfway through pairing (found on the emulator, 2026-11-12).
-    var address by rememberSaveable { mutableStateOf(current.orEmpty()) }
+    // Adding a community starts from an empty address; the active one is already in the list.
+    var address by rememberSaveable { mutableStateOf(if (onCancel != null) "" else current.orEmpty()) }
     var error by rememberSaveable { mutableStateOf(false) }
     var pairing by rememberSaveable { mutableStateOf(false) }
     var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
@@ -69,6 +75,7 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
         AndroidProductLanguageStore.write(context, language)
         onSave(origin)
     }
+    androidx.activity.compose.BackHandler(enabled = onCancel != null && !pairing) { onCancel?.invoke() }
     val appearance = remember(context) { Mk8dxAppearanceStore(context).read() }
     fun t(english: String, dutch: String) = androidText(language, english, dutch)
     Mk8dxAppearanceHost(appearance) {
@@ -208,11 +215,20 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                 if (current != null) {
                     Text(
                         t(
-                            "Existing accounts and waiting runs stay with the old server.",
-                            "Bestaande accounts en wachtende ritten blijven bij de oude server.",
+                            "Each community keeps its own account and unsent times. You switch between them under Settings.",
+                            "Elke community houdt haar eigen account en niet verzonden tijden. Je wisselt ertussen bij Instellingen.",
                         ),
                         style = type.body,
                         color = colors.textSecondary,
+                    )
+                }
+                onCancel?.let { cancel ->
+                    Mk8dxButton(
+                        t("Back", "Terug"),
+                        cancel,
+                        variant = Mk8dxButtonVariant.Quiet,
+                        tag = "community-setup-cancel",
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
             }

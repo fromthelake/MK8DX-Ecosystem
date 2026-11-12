@@ -12,46 +12,78 @@ import javax.net.ssl.SSLSocketFactory
 /** The one confirmed LAN installation: its exact origin and the root it was paired with. */
 internal data class AndroidLanPairing(val origin: String, val spkiSha256: String, val root: X509Certificate)
 
-/** Kept apart from the hosted profile; removing it never touches accounts or waiting runs. */
+/**
+ * Kept apart from the hosted profile; removing it never touches accounts or waiting runs.
+ *
+ * ADR-0225: one pairing per origin, so a phone that knows two A2 installations keeps each one's own root and
+ * switching between them needs no new pairing. The single pairing of earlier builds (keys origin/spki/root) is
+ * read as the first entry and stays where it is.
+ */
 internal object AndroidLanPairingStore {
     private const val preferencesName = "mk8dx_lan_pairing_v1"
+    private const val pairingPrefix = "pairing:"
+    private const val lastKey = "last_origin"
 
-    @Volatile private var cached: Pair<AndroidLanPairing, SSLSocketFactory>? = null
+    @Volatile private var cached: Map<String, Pair<AndroidLanPairing, SSLSocketFactory>>? = null
 
-    fun load(context: Context): AndroidLanPairing? {
-        cached?.let { return it.first }
+    private fun all(context: Context): Map<String, Pair<AndroidLanPairing, SSLSocketFactory>> {
+        cached?.let { return it }
         val preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
-        val origin = preferences.getString("origin", null) ?: return null
-        val spki = preferences.getString("spki", null) ?: return null
-        val der = preferences.getString("root", null)?.let { Base64.decode(it, Base64.NO_WRAP) } ?: return null
-        val root = runCatching {
-            CertificateFactory.getInstance("X.509").generateCertificate(ByteArrayInputStream(der)) as X509Certificate
-        }.getOrNull() ?: return null
-        if (AndroidLanRoot.spkiSha256(root) != spki) return null
-        val pairing = AndroidLanPairing(origin, spki, root)
-        cached = pairing to AndroidLanRoot.socketFactory(root)
-        return pairing
+        val found = linkedMapOf<String, Pair<AndroidLanPairing, SSLSocketFactory>>()
+        fun read(origin: String?, spki: String?, encoded: String?) {
+            if (origin == null || spki == null || encoded == null || origin in found) return
+            val der = runCatching { Base64.decode(encoded, Base64.NO_WRAP) }.getOrNull() ?: return
+            val root = runCatching {
+                CertificateFactory.getInstance("X.509").generateCertificate(ByteArrayInputStream(der)) as X509Certificate
+            }.getOrNull() ?: return
+            if (AndroidLanRoot.spkiSha256(root) != spki) return
+            found[origin] = AndroidLanPairing(origin, spki, root) to AndroidLanRoot.socketFactory(root)
+        }
+        read(preferences.getString("origin", null), preferences.getString("spki", null), preferences.getString("root", null))
+        preferences.all.keys.filter { it.startsWith(pairingPrefix) }.sorted().forEach { key ->
+            val value = preferences.getString(key, null)?.split('|') ?: return@forEach
+            if (value.size == 2) read(key.removePrefix(pairingPrefix), value[0], value[1])
+        }
+        cached = found
+        return found
     }
 
+    /** The pairing made last, which the first-start screen shows. */
+    fun load(context: Context): AndroidLanPairing? {
+        val pairings = all(context)
+        val last = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).getString(lastKey, null)
+        return (last?.let { pairings[it] } ?: pairings.values.lastOrNull())?.first
+    }
+
+    fun loadFor(context: Context, origin: String): AndroidLanPairing? = all(context)[origin]?.first
+
     fun save(context: Context, origin: String, spkiSha256: String, root: X509Certificate): Boolean {
-        val ok = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit()
-            .putString("origin", origin)
-            .putString("spki", spkiSha256)
-            .putString("root", Base64.encodeToString(root.encoded, Base64.NO_WRAP))
-            .commit()
+        val preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+        val editor = preferences.edit()
+            .putString(pairingPrefix + origin, spkiSha256 + "|" + Base64.encodeToString(root.encoded, Base64.NO_WRAP))
+            .putString(lastKey, origin)
+        // A new root for the origin of the old single pairing replaces that one too.
+        if (preferences.getString("origin", null) == origin) editor.remove("origin").remove("spki").remove("root")
+        val ok = editor.commit()
         cached = null
         return ok
     }
 
+    /** Forgets the pairing the first-start screen shows (the one made last). */
     fun forget(context: Context) {
-        context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).edit().clear().commit()
+        load(context)?.let { forget(context, it.origin) }
+    }
+
+    fun forget(context: Context, origin: String) {
+        val preferences = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
+        val editor = preferences.edit().remove(pairingPrefix + origin)
+        if (preferences.getString("origin", null) == origin) editor.remove("origin").remove("spki").remove("root")
+        if (preferences.getString(lastKey, null) == origin) editor.remove(lastKey)
+        editor.commit()
         cached = null
     }
 
-    fun socketFactoryFor(context: Context, origin: String): SSLSocketFactory? {
-        val pairing = load(context) ?: return null
-        return if (pairing.origin == origin) cached?.second else null
-    }
+    fun socketFactoryFor(context: Context, origin: String): SSLSocketFactory? = all(context)[origin]?.second
 }
 
 /**

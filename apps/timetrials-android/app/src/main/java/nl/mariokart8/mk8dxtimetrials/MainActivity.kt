@@ -39,6 +39,9 @@ import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidSlotBoundSessionCanonicalConnectionFactory
 import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarryHost
+import nl.mariokart8.mk8dxtimetrials.carry.promoteAndroidCarriedTimes
 import nl.mariokart8.mk8dxtimetrials.deeplink.AndroidDeepLink
 import nl.mariokart8.mk8dxtimetrials.deeplink.parseAndroidDeepLink
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidClientSupportStore
@@ -62,7 +65,7 @@ import nl.mariokart8.mk8dxtimetrials.outbox.AndroidAutomaticSyncScheduler
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxAutomaticSyncScheduler
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxClock
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxOwningSlotProvider
-import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxStoredState
+import nl.mariokart8.mk8dxtimetrials.outbox.androidOutboxCountsAsUnsent
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxSubmissionHost
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxSynchronizationClock
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidReviewedEvidenceReferenceAllowlist
@@ -168,21 +171,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             val origin = AndroidServerOrigin.current(applicationContext)
             if (origin == null || showServerSetup) {
-                AndroidCommunitySetup(origin) { chosen ->
-                    val commit = {
-                        if (AndroidServerOrigin.save(applicationContext, chosen)) {
-                            showServerSetup = false
-                            recreate()
-                        }
+                // ADR-0225: adding a community keeps the one before it, with its account and unsent runs, in the
+                // list under Settings; nothing is lost, so there is nothing to confirm.
+                AndroidCommunitySetup(
+                    origin,
+                    onCancel = if (origin != null) ({ showServerSetup = false }) else null,
+                ) { chosen ->
+                    if (AndroidServerOrigin.save(applicationContext, chosen)) {
+                        showServerSetup = false
+                        recreate()
                     }
-                    if (origin != null && origin != chosen) {
-                        android.app.AlertDialog.Builder(this)
-                            .setTitle("Change community / Community wijzigen")
-                            .setMessage("Existing accounts and waiting runs remain with the old server. They will not be sent to the new server.")
-                            .setNegativeButton("Cancel / Annuleren", null)
-                            .setPositiveButton("Change / Wijzigen") { _, _ -> commit() }
-                            .show()
-                    } else commit()
                 }
                 return@setContent
             }
@@ -206,6 +204,9 @@ class MainActivity : ComponentActivity() {
                 deepLink = link,
                 onDeepLinkHandled = { openedLink.value = null },
                 onChangeServer = { showServerSetup = true },
+                onSwitchCommunity = { chosen ->
+                    if (chosen != origin && AndroidServerOrigin.save(applicationContext, chosen)) recreate()
+                },
             )
         }
     }
@@ -268,6 +269,7 @@ internal fun AndroidTimeTrialsProductionRoot(
     deepLink: AndroidDeepLink? = null,
     onDeepLinkHandled: () -> Unit = {},
     onChangeServer: () -> Unit = {},
+    onSwitchCommunity: (String) -> Unit = {},
 ) {
     val activityContext = androidx.compose.ui.platform.LocalContext.current
     val applicationContext = activityContext.applicationContext
@@ -314,17 +316,31 @@ internal fun AndroidTimeTrialsProductionRoot(
     // lets us ask at all.
     AndroidNotificationPermissionRequest(nativeSession?.playerId)
     var unsynchronizedResultCount by remember(localOutbox) { mutableIntStateOf(0) }
+    // ADR-0225: times carried here from another community wait outside the outbox until somebody is signed in.
+    val carriedQueue = remember(apiOrigin) { AndroidCarriedQueue.forOrigin(applicationContext, apiOrigin) }
     LaunchedEffect(localOutbox) {
         while (isActive) {
             unsynchronizedResultCount = withContext(Dispatchers.IO) {
                 runCatching {
                     localOutbox.listIndex().count {
-                        it.storedState != AndroidOutboxStoredState.SYNCED
-                    }
+                        androidOutboxCountsAsUnsent(it.storedState, it.failureCode)
+                    } + carriedQueue.size()
                 }.getOrDefault(unsynchronizedResultCount)
             }
             delay(2_000)
         }
+    }
+    // The carried copies become this signed-in Player's runs here and are sent like any other.
+    LaunchedEffect(nativeSession?.playerId, carriedQueue) {
+        val playerId = nativeSession?.playerId ?: return@LaunchedEffect
+        val moved = withContext(Dispatchers.IO) {
+            runCatching {
+                promoteAndroidCarriedTimes(
+                    carriedQueue, localOutbox, playerId, sessionStore.activeSlotId(), System.currentTimeMillis(),
+                )
+            }.getOrDefault(0)
+        }
+        if (moved > 0) AndroidAutomaticSyncScheduler.enqueue(applicationContext)
     }
     LaunchedEffect(authenticationState) {
         if (authenticationState is AndroidAuthenticationState.SignedIn) {
@@ -599,12 +615,14 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
-            AndroidProductLocalSavedResultsScreen(
-                localOutbox,
-                synchronizationDependencies,
-                onSubmitTimeTrial = submitTimeTrial,
-                accountDisplayNames = accountDisplayNames,
-            )
+            AndroidCarryHost(apiOrigin, localOutbox) {
+                AndroidProductLocalSavedResultsScreen(
+                    localOutbox,
+                    synchronizationDependencies,
+                    onSubmitTimeTrial = submitTimeTrial,
+                    accountDisplayNames = accountDisplayNames,
+                )
+            }
         },
         tournamentContent = { openAccount, request, onRequestHandled, openTrack ->
             // Built whether or not anybody is signed in: the Tournaments
@@ -699,6 +717,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 administration = administrationClient,
                 onAdministration = openAdministration,
                 onChangeServer = onChangeServer,
+                onSwitchCommunity = onSwitchCommunity,
                 appearance = appearanceSettings,
                 onAppearanceChanged = applyAppearance,
             )
@@ -717,6 +736,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                     appearance = appearanceSettings,
                     onAppearanceChanged = applyAppearance,
                     onChangeServer = onChangeServer,
+                    onSwitchCommunity = onSwitchCommunity,
                 )
             }
         },
@@ -768,7 +788,7 @@ private fun AndroidAccountDestination(
         pendingByOwner = withContext(Dispatchers.IO) {
             runCatching {
                 localOutbox.listIndex()
-                    .filter { it.storedState != AndroidOutboxStoredState.SYNCED }
+                    .filter { androidOutboxCountsAsUnsent(it.storedState, it.failureCode) }
                     .mapNotNull { it.owningSlotId }
                     .groupingBy { it }
                     .eachCount()
