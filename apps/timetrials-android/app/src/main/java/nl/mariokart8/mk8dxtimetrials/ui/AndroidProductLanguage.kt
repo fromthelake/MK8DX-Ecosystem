@@ -52,6 +52,24 @@ internal object AndroidProductLanguageStore {
         ) ?: AndroidProductLanguage.ENGLISH
     }
 
+    /**
+     * The first start, before anybody chose a language: speak the phone's language when the app has it
+     * (region first, so en-US and fr-CA are found), otherwise UK English. A chosen language always wins.
+     */
+    fun readForFirstStart(context: Context): AndroidProductLanguage {
+        AndroidProductCatalog.ensureInstalled(context)
+        val stored = context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE).getString(languageKey, null)
+        if (stored != null) return AndroidProductLanguage.fromCode(stored) ?: AndroidProductLanguage.ENGLISH
+        return deviceLanguage(java.util.Locale.getDefault())
+    }
+
+    internal fun deviceLanguage(locale: java.util.Locale): AndroidProductLanguage {
+        val region = if (locale.country.isNullOrEmpty()) null else "${locale.language}-${locale.country}"
+        return listOfNotNull(region, locale.language)
+            .firstNotNullOfOrNull { AndroidProductLanguage.fromCode(it) }
+            ?: AndroidProductLanguage.ENGLISH
+    }
+
     fun write(context: Context, language: AndroidProductLanguage) {
         context.getSharedPreferences(preferencesName, Context.MODE_PRIVATE)
             .edit().putString(languageKey, language.code).apply()

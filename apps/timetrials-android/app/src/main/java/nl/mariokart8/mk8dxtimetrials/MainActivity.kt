@@ -16,13 +16,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
 import nl.mariokart8.mk8dxtimetrials.ui.ProductText as Text
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import java.net.URI
 import javax.net.ssl.HttpsURLConnection
 import kotlinx.coroutines.Dispatchers
@@ -38,8 +33,6 @@ import nl.mariokart8.mk8dxtimetrials.auth.AndroidAuthenticationScreen
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidAuthenticationState
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidDeviceAuthorizationClient
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidHttpsConnectionOpener
-import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingFlow
-import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingStore
 import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidKeystoreNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
@@ -255,40 +248,6 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         AndroidCanonicalNotificationSync.enqueueImmediate(applicationContext)
-    }
-}
-
-@Composable
-private fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
-    var address by remember { mutableStateOf(current.orEmpty()) }
-    var error by remember { mutableStateOf(false) }
-    var pairing by remember { mutableStateOf(false) }
-    val context = androidx.compose.ui.platform.LocalContext.current
-    var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
-    if (pairing) {
-        AndroidLanPairingFlow(onPaired = { origin -> pairing = false; onSave(origin) }, onCancel = { pairing = false })
-        return
-    }
-    Column(Modifier.padding(24.dp)) {
-        Text("Community website / Communitywebsite")
-        Text("Enter the exact HTTPS address supplied by your community. Existing accounts and waiting runs stay with their old server.")
-        OutlinedTextField(value = address, onValueChange = { address = it; error = false },
-            label = { Text("https://www.example.org") }, singleLine = true, isError = error)
-        if (error) Text("Use one HTTPS address without a final slash, path or port.")
-        Button(onClick = {
-            val valid = AndroidServerOrigin.validate(address)
-            if (valid == null) error = true else onSave(valid)
-        }) { Text("Save / Opslaan") }
-        Button(onClick = { pairing = true }) {
-            Text("Home or club installation (scan QR) / Installatie thuis of bij de club (QR scannen)")
-        }
-        paired?.let { origin ->
-            Text("Paired with $origin / Gekoppeld met $origin")
-            androidx.compose.material3.OutlinedButton(onClick = {
-                AndroidLanPairingStore.forget(context)
-                paired = null
-            }) { Text("Forget this installation / Deze installatie vergeten") }
-        }
     }
 }
 

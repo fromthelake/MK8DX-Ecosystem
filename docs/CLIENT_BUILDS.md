@@ -65,6 +65,45 @@ in white. The full artwork remains in the splash and other clients. Run
 `python tooling/assets/derive_android_launcher_mark.py` to check the derived
 bitmap, or add `--write` to regenerate it after changing the owner icon.
 
+### Signing a release APK
+
+Every Android app is signed, and Android only installs an update that carries the same signature as the app
+already on the phone. The official APK on the Releases page is signed with the maintainer's own key; that key is
+kept offline and never enters this repository, CI or a build log. This is the usual open-source arrangement: the
+code is open, the signing key is personal, and anyone can build the same app with a key of their own.
+
+To build a release-signed APK with your own key:
+
+1. Make a key once and keep it safe; losing it means your users can no longer update your app.
+
+   ```sh
+   keytool -genkeypair -v -keystore my-mk8dx-release.jks -alias mk8dx -keyalg RSA -keysize 4096 -validity 10000
+   ```
+
+2. Give the build the four signing properties, all together (the build refuses a partial set). Put them in
+   `~/.gradle/gradle.properties`, or as environment variables `ORG_GRADLE_PROJECT_<name>`, so passwords never
+   appear on a command line:
+
+   ```properties
+   mk8dxReleaseStoreFile=/path/to/my-mk8dx-release.jks
+   mk8dxReleaseStorePassword=...
+   mk8dxReleaseKeyAlias=mk8dx
+   mk8dxReleaseKeyPassword=...
+   ```
+
+3. Raise `versionCode` (and set `versionName`) in `apps/timetrials-android/app/build.gradle.kts` when you
+   publish a new version: Android refuses an update with a lower number. Then build and check:
+
+   ```sh
+   ./gradlew :app:testDebugUnitTest :app:assembleRelease
+   apksigner verify --print-certs app/build/outputs/apk/release/app-release.apk
+   ```
+
+Without the properties the release build still succeeds but is unsigned, so an accidental unsigned release is
+obvious. An APK signed with your key and the official one cannot update each other: switching means uninstalling
+first, which removes results that were not yet sent. For a test copy next to a real app, build the debug variant
+with `-Pmk8dxSideBySideSuffix=test`; it installs under its own application id.
+
 ## LiveTrial Windows
 
 Install 64-bit Python 3.12, Node 24 and FFmpeg (for example `winget install Gyan.FFmpeg`; the package does not

@@ -54,8 +54,8 @@ The app offers a faster scan on the phone itself, your times and notifications. 
 
 - Android 8.0 or newer; an arm64 phone is recommended. The release APK is large (about 484 MB): keep about
   1 GB free while installing.
-- A community address with **trusted HTTPS** (a public website). A computer-local address (`http://127.0.0.1:…`)
-  or a home-network address with a self-made certificate does not work in the app.
+- A community the app can reach: an **online community** with a trusted HTTPS address, or a **home or club
+  installation** (A2) on the same Wi-Fi. A computer-local address (`http://127.0.0.1:…`) does not work in the app.
 
 ### Install
 
@@ -76,13 +76,26 @@ self-built APK with a different key also requires an uninstall.
 
 ### First start
 
-1. **Community website**: enter the full address, for example `https://www.example.org` (no path, no trailing
-   slash), and tap **Save**. If it fails, open the same address in the phone's browser: it must open without a
-   certificate warning.
-2. Sign in with the code the app shows: it opens your community in the browser, where you confirm with your own
-   account.
-3. To change community later: **Settings → Community server → Change server**. Sessions and runs that were not
-   sent stay with the old server; they do not move automatically.
+The app opens on **Choose your community**, in the phone's language when the app has it. To pick another
+language, tap **Language / Taal** (with the globe) at the top; the app keeps that choice. Then it asks one thing:
+how your community plays. Not sure? Ask the
+person who runs your community.
+
+- **At home or at the club** (A2, MK8DX runs on a computer there): tap **Scan the QR code** and scan the
+  **Prepare a device** card your administrator shows on that computer or hands out on paper. The phone must be on
+  the same Wi-Fi. The app then shows the installation's address and key; they are also on the **Prepare this
+  device** page under **Full fingerprints**. Tap **Connect** when they match. No internet needed. Step by step:
+  [the A2 guide, chapter 7](../install/A2_HOME_GUIDE_EN.md#7-the-android-app-and-livetrial).
+- **Online community** (a website on the internet): enter the address you open it with in the browser, for example
+  `https://www.example.org` (no path, no trailing slash), and tap **Save**. If it fails, open the same address in
+  the phone's browser: it must open without a certificate warning.
+
+Then sign in: **Settings → Player on this phone → Sign in**. The app shows a code and opens your community in the
+browser, where you confirm with your own account (on a home or club installation: first sign in there with your
+personal sign-in card).
+
+To change community later: **Settings → Community server → Change server**. Sessions and runs that were not sent
+stay with the old server; they do not move automatically.
 
 Notifications in the app are fetched from your community's inbox; Android's notification permission and the
 app's own switch must both be on.
