@@ -1429,6 +1429,7 @@ async function createMysqlApiRuntime(
         follows: followPreferenceService,
         focus: homeFocusService,
         stories: activityStoryService,
+        rivalBestTimes: new MysqlPublicTimeTrialRepository(pool),
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),

@@ -68,6 +68,25 @@ export const CARRIED_WAITING_CONDITION = `publication.publication_status = 'with
            AND submission.retirement_state = 'active'
            AND revision.carried_from_origin IS NOT NULL`;
 
+// Where an "enriched" event's carried time came from and what it filled (ADR-0225 amendment).
+function carriedFillOf(event: ResultRow): Pick<TimeTrialLifecycleEvent, "carriedFrom" | "filledFields"> {
+  const origin = event["carriedOrigin"];
+  if (typeof origin !== "string" || origin.length === 0) { return {}; }
+  const originalId = event["carriedOriginalId"];
+  let filledFields: string[] = [];
+  try {
+    const parsed = JSON.parse(String(event["filledFieldsJson"] ?? "[]")) as unknown;
+    if (Array.isArray(parsed)) { filledFields = parsed.filter((item): item is string => typeof item === "string"); }
+  } catch { filledFields = []; }
+  return {
+    carriedFrom: {
+      origin,
+      ...(typeof originalId === "string" && originalId.length > 0 ? { originalSubmissionId: originalId } : {}),
+    },
+    ...(filledFields.length === 0 ? {} : { filledFields }),
+  };
+}
+
 // Where the current revision was carried from (ADR-0225); undefined for a time set here.
 function carriedFromOf(row: ResultRow): TimeTrialCarriedFrom | undefined {
   const origin = row["carriedFromOrigin"];
@@ -89,6 +108,7 @@ const revisionSelect = `SELECT revision.time_trial_submission_revision_id AS rev
         revision.total_time_ms AS totalTimeMs,
         revision.source_kind AS sourceKind,
         revision.created_at_ms AS createdAtMs,
+        revision.occurred_at_ms AS occurredAtMs,
         revision.character_id AS characterId,
         revision.character_variant_id AS characterVariantId,
         revision.body_id AS bodyId,
@@ -160,6 +180,7 @@ implements TimeTrialLifecycleRepository {
       filters.push("revision.source_kind = ?"); values.push(query.sourceKind);
     }
     const limit = Math.min(Math.max(1, Math.trunc(query.limit)), 200);
+    const offset = Math.min(Math.max(0, Math.trunc(query.offset ?? 0)), 100_000);
     const [rows] = await this.pool.execute<ResultRow[]>(
       `SELECT submission.public_id AS submissionId
        FROM time_trial_publications AS publication
@@ -173,7 +194,7 @@ implements TimeTrialLifecycleRepository {
          ON player.player_id = revision.player_id
        ${filters.length === 0 ? "" : `WHERE ${filters.join(" AND ")}`}
        ORDER BY revision.created_at_ms DESC, submission.public_id DESC
-       LIMIT ${limit}`,
+       LIMIT ${limit} OFFSET ${offset}`,
       values,
     );
     const results: ManagedTimeTrial[] = [];
@@ -794,6 +815,8 @@ implements TimeTrialLifecycleRepository {
         ...(Object.keys(loadout).length === 0 ? {} : { loadout }),
         sourceKind: text(revisionRow["sourceKind"], "sourceKind"),
         createdAtMs: integer(revisionRow["createdAtMs"], "createdAtMs"),
+        ...(revisionRow["occurredAtMs"] === null || revisionRow["occurredAtMs"] === undefined
+          ? {} : { occurredAtMs: integer(revisionRow["occurredAtMs"], "occurredAtMs") }),
       });
     }
     const currentRevision = integer(row["revisionNumber"], "revision", 1);
@@ -811,11 +834,17 @@ implements TimeTrialLifecycleRepository {
               event.actor_role AS actorRole,
               event.reason_code AS reasonCode,
               event.note AS note,
-              event.occurred_at_ms AS occurredAtMs
+              event.occurred_at_ms AS occurredAtMs,
+              carried.carried_from_origin AS carriedOrigin,
+              carried.original_submission_id AS carriedOriginalId,
+              carried.filled_fields_json AS filledFieldsJson
        FROM time_trial_lifecycle_events AS event
        INNER JOIN time_trial_submission_revisions AS revision
          ON revision.time_trial_submission_revision_id
             = event.time_trial_submission_revision_id
+       LEFT JOIN time_trial_carried_originals AS carried
+         ON event.event_type = 'enriched' AND carried.disposition = 'fill'
+        AND carried.time_trial_submission_revision_id = event.time_trial_submission_revision_id
        WHERE event.time_trial_submission_id = ?
        ORDER BY event.sequence_number ASC`,
       [submissionInternalId],
@@ -834,6 +863,7 @@ implements TimeTrialLifecycleRepository {
         ? { note: event["note"] }
         : {}),
       occurredAtMs: integer(event["occurredAtMs"], "occurredAtMs"),
+      ...carriedFillOf(event),
     }));
     const [videoRows] = await connection.execute<ResultRow[]>(
       `SELECT youtube_video_id AS videoId FROM time_trial_videos WHERE time_trial_submission_id = ? LIMIT 1`,

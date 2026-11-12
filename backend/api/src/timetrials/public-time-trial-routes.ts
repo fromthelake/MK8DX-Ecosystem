@@ -14,7 +14,7 @@ type LeaderboardQuery = { trackId: string; mode: "150" | "200" };
 type StandingQuery = { mode: "150" | "200"; scope?: "base" | "bcp" | "all" };
 
 const asset = { type: "string", minLength: 1, maxLength: 255 } as const;
-const resultSchema = {
+export const publicTimeTrialResultSchema = {
   type: "object",
   additionalProperties: false,
   required: [
@@ -104,7 +104,7 @@ export const publicTrackBestsSchema = {
               additionalProperties: false,
               required: ["trackId", "mode", "totalTimeMs", "rank"],
               properties: {
-                trackId: resultSchema.properties.trackId,
+                trackId: publicTimeTrialResultSchema.properties.trackId,
                 mode: { type: "integer", enum: [150, 200] },
                 totalTimeMs: { type: "integer", minimum: 1 },
                 rank: { type: "integer", minimum: 1 },
@@ -225,7 +225,7 @@ export async function registerPublicTimeTrialRoutes(
             required: ["schemaVersion", "results"],
             properties: {
               schemaVersion: { const: "mk8dx.public-player-time-trials.v1" },
-              results: { type: "array", maxItems: 100, items: resultSchema },
+              results: { type: "array", maxItems: 100, items: publicTimeTrialResultSchema },
             },
           },
           400: errorResponseSchema,
@@ -259,7 +259,7 @@ export async function registerPublicTimeTrialRoutes(
             required: ["schemaVersion", "results"],
             properties: {
               schemaVersion: { const: "mk8dx.public-activity.v1" },
-              results: { type: "array", maxItems: 20, items: resultSchema },
+              results: { type: "array", maxItems: 20, items: publicTimeTrialResultSchema },
             },
           },
           503: errorResponseSchema,
@@ -353,7 +353,7 @@ export async function registerPublicTimeTrialRoutes(
                   additionalProperties: false,
                   required: ["trackId", "mode", "totalTimeMs", "rank"],
                   properties: {
-                    trackId: resultSchema.properties.trackId,
+                    trackId: publicTimeTrialResultSchema.properties.trackId,
                     mode: { type: "integer", enum: [150, 200] },
                     totalTimeMs: { type: "integer", minimum: 1 },
                     rank: { type: "integer", minimum: 1 },
@@ -392,7 +392,7 @@ export async function registerPublicTimeTrialRoutes(
           additionalProperties: false,
           required: ["trackId", "mode"],
           properties: {
-            trackId: resultSchema.properties.trackId,
+            trackId: publicTimeTrialResultSchema.properties.trackId,
             mode: { type: "string", enum: ["150", "200"] },
           },
         },
@@ -403,7 +403,7 @@ export async function registerPublicTimeTrialRoutes(
             required: ["schemaVersion", "results"],
             properties: {
               schemaVersion: { const: "mk8dx.public-time-trial-leaderboard.v1" },
-              results: { type: "array", maxItems: 100, items: resultSchema },
+              results: { type: "array", maxItems: 100, items: publicTimeTrialResultSchema },
             },
           },
           400: errorResponseSchema,

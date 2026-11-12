@@ -1,3 +1,5 @@
+import { publicTimeTrialResultSchema } from "../timetrials/public-time-trial-routes.js";
+import type { PublicTimeTrialResult } from "../timetrials/public-time-trial-service.js";
 import type { FastifyInstance } from "fastify";
 
 import { errorResponseSchema } from "../identity/schemas.js";
@@ -25,7 +27,34 @@ export type HomeRouteOptions = Readonly<{
   focus: Pick<HomeFocusService, "loadMine">;
   stories: Pick<ActivityStoryService, "listStories">;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  /** ADR-0225 amendment: the rivals' public best runs, for the app's offline copy. */
+  rivalBestTimes?: Readonly<{
+    listBestResultsForPlayers(playerIds: readonly string[]): Promise<readonly PublicTimeTrialResult[]>;
+  }>;
 }>;
+
+export const rivalBestTimesResponseSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "rivals"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.rival-best-times.v1" },
+    rivals: {
+      type: "array",
+      maxItems: 10,
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["playerId", "displayName", "bests"],
+        properties: {
+          playerId: { type: "string", pattern: "^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$" },
+          displayName: { type: "string", minLength: 1, maxLength: 128 },
+          bests: { type: "array", maxItems: 400, items: publicTimeTrialResultSchema },
+        },
+      },
+    },
+  },
+} as const;
 
 const playerIdPattern = "^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$";
 const avatarIdPattern = "^character(_variant)?\\.[a-z0-9_.]+$";
@@ -482,6 +511,48 @@ export async function registerHomeRoutes(
       }
     },
   );
+
+  // ADR-0225 amendment: each chosen rival's best published run per track and class (time, laps, kart
+  // setup), so the app can keep an offline copy. Only what the public leaderboards show.
+  if (options.rivalBestTimes !== undefined) {
+    const bestTimes = options.rivalBestTimes;
+    app.get<{ Reply: unknown }>(
+      "/v1/account/rivals/best-times",
+      {
+        schema: {
+          response: {
+            200: rivalBestTimesResponseSchema,
+            401: errorResponseSchema,
+            503: errorResponseSchema,
+          },
+        },
+      },
+      async (request, reply) => {
+        reply.header("Cache-Control", "no-store");
+        try {
+          const actor = await options.resolveActor(request);
+          const rivals = await options.rivals.listMine(actor);
+          let results: readonly PublicTimeTrialResult[];
+          try {
+            results = await bestTimes.listBestResultsForPlayers(rivals.map((rival) => rival.playerId));
+          } catch {
+            throw new RivalPreferenceError("unavailable");
+          }
+          return reply.send({
+            schemaVersion: "mk8dx.rival-best-times.v1",
+            rivals: rivals.map((rival) => ({
+              playerId: rival.playerId,
+              displayName: rival.displayName,
+              bests: results.filter((result) => result.playerId === rival.playerId).slice(0, 400),
+            })),
+          });
+        } catch (error) {
+          const { status, body } = rivalErrorReply(error);
+          return reply.code(status).send(body);
+        }
+      },
+    );
+  }
 
   app.get<{ Reply: unknown }>(
     "/v1/account/rivals",
