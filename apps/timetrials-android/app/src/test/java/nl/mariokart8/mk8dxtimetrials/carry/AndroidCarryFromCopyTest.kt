@@ -7,7 +7,6 @@ import kotlinx.serialization.json.jsonPrimitive
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidManagedLapCounts
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopy
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineRun
-import nl.mariokart8.mk8dxtimetrials.offline.androidCopiedRunGroups
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -101,13 +100,6 @@ class AndroidCarryFromCopyTest {
         assertEquals(2, queue.size())
         val unreachable = carryAndroidCopiedRuns(listOf(run("A000003", 1)), club, null, online, { error("offline") }, queue, { emptyList() }, 1)
         assertEquals(AndroidCopiedCarryOutcome.Unreachable, unreachable)
-    }
-
-    @Test fun `my times list the best first per track and class`() {
-        val groups = androidCopiedRunGroups(copy("player.me", run("A000001", 100_000), run("A000002", 95_000), run("A000003", 120_000, mode = 200)), null)
-        assertEquals(listOf(150, 200), groups.map { it.mode })
-        assertEquals(listOf(95_000L, 100_000L), groups.first().runs.map { it.totalTimeMs })
-        assertEquals(0, androidCopiedRunGroups(copy("player.me", run("A000003", 120_000, mode = 200)), 150).size)
     }
 
     @Test fun `the summary names what goes and what was skipped`() {

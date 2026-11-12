@@ -1,5 +1,12 @@
 package nl.mariokart8.mk8dxtimetrials
 
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxDialog
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxBrandMark
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.foundation.border
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -69,6 +76,7 @@ import nl.mariokart8.mk8dxtimetrials.builds.AndroidLoadoutCatalog
 import nl.mariokart8.mk8dxtimetrials.builds.AndroidLoadoutVariants
 import nl.mariokart8.mk8dxtimetrials.track.ProductAssetImage
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidHomeExperience
+import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidWaitingBanner
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidTimeTrialsEcosystemDataSource
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidAvailableAppUpdate
 import nl.mariokart8.mk8dxtimetrials.ecosystem.availableAfter
@@ -106,7 +114,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 
-private enum class AndroidTimeTrialsProductRoute(val label: String, val iconRes: Int? = null) {
+internal enum class AndroidTimeTrialsProductRoute(val label: String, val iconRes: Int? = null) {
     HOME("Home", R.drawable.ic_nav_home),
     MANUAL_ENTRY("Tracks", R.drawable.ic_nav_submit),
     /** The canonical Post-a-Time task (A02's form half); a task, not a tab. */
@@ -198,10 +206,12 @@ internal fun AndroidTimeTrialsProductComponent(
     ) -> Unit = { _, _, _, _, _, _ -> },
     buildContent: @Composable (requestedPartIds: List<String>) -> Unit = {},
     authenticationContent: @Composable () -> Unit = {},
+    /** You: identity, My times | Records | Rivals, and the way to Settings. */
     profileContent: @Composable (
         openAccount: () -> Unit,
-        openTestScan: (() -> Unit)?,
-    ) -> Unit = { _, _ -> },
+        openSettings: () -> Unit,
+        openSavedResults: () -> Unit,
+    ) -> Unit = { _, _, _ -> },
     myStatsContent: @Composable (
         openAccount: () -> Unit,
         manageResults: () -> Unit,
@@ -213,8 +223,17 @@ internal fun AndroidTimeTrialsProductComponent(
         openTrack: (String, Int) -> Unit,
         openSavedResults: () -> Unit,
     ) -> Unit = { _, _, _ -> },
-    settingsContent: @Composable (openAccount: () -> Unit, openAdministration: () -> Unit, openSavedResults: () -> Unit) -> Unit = { _, _, _ -> },
+    settingsContent: @Composable (
+        openAccount: () -> Unit,
+        openAdministration: () -> Unit,
+        openSavedResults: () -> Unit,
+        openTestScan: () -> Unit,
+    ) -> Unit = { _, _, _, _ -> },
     administrationContent: @Composable (back: () -> Unit) -> Unit = {},
+    /** The active community as the header chip names it (ADR-0225: its name, else its host). */
+    communityLabel: String? = null,
+    /** The community switcher the chip opens; it calls close when it is done. */
+    communitySheet: (@Composable (close: () -> Unit) -> Unit)? = null,
     activePlayerLabel: String? = null,
     /** The canonical Player id, which is what Ranking keys its view state by. */
     activePlayerId: String? = null,
@@ -497,6 +516,9 @@ internal fun AndroidTimeTrialsProductComponent(
         else -> Mk8dxGlobalActionLevel.Hidden
     }
 
+    // The community chip's switcher (ADR-0225 section 1): over whatever route is open.
+    var communitySheetOpen by rememberSaveable { mutableStateOf(false) }
+
     // Phase 17: the product sits under one theme. The legacy backdrop (its
     // gradient, its checker and its blue bloom) and the Race Control palette
     // that nested inside it are retired; every screen draws its own surfaces
@@ -520,23 +542,16 @@ internal fun AndroidTimeTrialsProductComponent(
                 Mk8dxProductHeader(
                     activePlayerLabel,
                     onHome = goHome,
-                    onProfile = {
-                        navigate(
-                            if (activePlayerLabel == null) AndroidTimeTrialsProductRoute.ACCOUNT
-                            else AndroidTimeTrialsProductRoute.PROFILE,
-                        )
-                    },
+                    onProfile = { navigate(androidYouRoute(signedIn = activePlayerLabel != null)) },
                     onNotifications = {
                         navigate(
                             if (activePlayerLabel == null) AndroidTimeTrialsProductRoute.ACCOUNT
                             else AndroidTimeTrialsProductRoute.NOTIFICATIONS,
                         )
                     },
-                    onSettings = { navigate(AndroidTimeTrialsProductRoute.SETTINGS) },
-                    onSavedResults = { navigate(AndroidTimeTrialsProductRoute.SAVED_RESULTS) },
-                    onApps = { openProductWebsite(context, "${AndroidServerOrigin.current(context)}/?apps=1") },
+                    onCommunity = { communitySheetOpen = true },
+                    communityLabel = communityLabel,
                     ecosystemClient = ecosystemClient,
-                    unsynchronizedResultCount = unsynchronizedResultCount,
                 )
             },
             bottomBar = {
@@ -605,6 +620,18 @@ internal fun AndroidTimeTrialsProductComponent(
                 }
             },
         ) { padding ->
+            if (communitySheetOpen && communitySheet != null) {
+                Mk8dxDialog(
+                    title = androidText(language, "Communities", "Communities"),
+                    closeLabel = androidText(language, "Close", "Sluiten"),
+                    onDismiss = { communitySheetOpen = false },
+                    modifier = Modifier.testTag("community-sheet"),
+                ) {
+                    Column(Modifier.verticalScroll(rememberScrollState())) {
+                        communitySheet { communitySheetOpen = false }
+                    }
+                }
+            }
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.TopCenter) {
                 Box(Modifier.widthIn(max = 960.dp).fillMaxSize()) {
                 when (route) {
@@ -620,6 +647,7 @@ internal fun AndroidTimeTrialsProductComponent(
                             pendingScan = null
                             navigate(AndroidTimeTrialsProductRoute.POST_TIME)
                         },
+                        onSavedResults = { navigate(AndroidTimeTrialsProductRoute.SAVED_RESULTS) },
                         onAccount = openAccount,
                         onOpenTrack = { trackId ->
                             requestedTrackId = trackId
@@ -878,10 +906,8 @@ internal fun AndroidTimeTrialsProductComponent(
                     AndroidTimeTrialsProductRoute.PROFILE -> Mk8dxTheme(Mk8dxTheme.appearance) {
                         profileContent(
                             openAccount,
-                            {
-                                requestedTestScan = true
-                                navigate(AndroidTimeTrialsProductRoute.SCAN_RESULT)
-                            },
+                            { navigate(AndroidTimeTrialsProductRoute.SETTINGS) },
+                            { navigate(AndroidTimeTrialsProductRoute.SAVED_RESULTS) },
                         )
                     }
                     AndroidTimeTrialsProductRoute.MY_STATS -> Mk8dxTheme(Mk8dxTheme.appearance) {
@@ -920,6 +946,10 @@ internal fun AndroidTimeTrialsProductComponent(
                             openAccount,
                             { navigate(AndroidTimeTrialsProductRoute.ADMINISTRATION) },
                             { navigate(AndroidTimeTrialsProductRoute.SAVED_RESULTS) },
+                            {
+                                requestedTestScan = true
+                                navigate(AndroidTimeTrialsProductRoute.SCAN_RESULT)
+                            },
                         )
                     }
                     AndroidTimeTrialsProductRoute.ADMINISTRATION -> administrationContent {
@@ -939,11 +969,9 @@ private fun Mk8dxProductHeader(
     onHome: () -> Unit,
     onProfile: () -> Unit,
     onNotifications: () -> Unit,
-    onSettings: () -> Unit,
-    onSavedResults: () -> Unit,
-    onApps: () -> Unit,
+    onCommunity: () -> Unit,
+    communityLabel: String?,
     ecosystemClient: AndroidTimeTrialsEcosystemDataSource?,
-    unsynchronizedResultCount: Int,
 ) {
     val context = LocalContext.current
     var availableUpdate by remember(ecosystemClient, playerLabel) {
@@ -991,50 +1019,46 @@ private fun Mk8dxProductHeader(
         context.applicationInfo.loadIcon(context.packageManager).toBitmap(192, 192).asImageBitmap()
     }
     val colors = Mk8dxTheme.colors
+    val language = LocalAndroidProductLanguage.current
+    // [logo -> Home] [community chip] ... [bell] [avatar/name -> You]. Getting the app moved to Settings,
+    // Settings itself is reached from You, and what waits to be sent is a banner on Home and You.
     Mk8dxTopBar(
         brand = {
-            // The owner's app icon is the mark, unchanged: the wordmark and
-            // the product line around it are the design system's display face.
-            Mk8dxBrandLockup(
-                appIcon,
+            Row(
                 Modifier.weight(1f, fill = false),
-                platform = "ANDROID",
-                onClick = onHome,
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs),
+            ) {
+                Mk8dxBrandMark(
+                    appIcon,
+                    Modifier
+                        .clickable(role = Role.Button, onClick = onHome)
+                        .semantics { contentDescription = androidText(language, "Home", "Home") }
+                        .testTag("product-home-logo"),
+                )
+                if (communityLabel != null) {
+                    AndroidCommunityChip(communityLabel, onCommunity)
+                }
+            }
         },
         actions = {
-            // The web hides its passive sync indicator on a phone: it spends
-            // a scarce slot without offering an action. A local-first client
-            // must not lose the fact, so the APK keeps it exactly when it
-            // says something - there is something still waiting to sync.
-            if (unsynchronizedResultCount > 0) Box {
-                IconButton(onClick = onSavedResults, modifier = Modifier.testTag("product-sync-status")) {
+            Box {
+                val notificationCount = unreadNotifications + if (availableUpdate == null) 0 else 1
+                IconButton(onClick = onNotifications, modifier = Modifier.testTag("product-notifications")) {
                     Icon(
-                        painterResource(R.drawable.ic_sync_status),
-                        contentDescription = "$unsynchronizedResultCount results waiting to sync",
-                        tint = colors.statusWarning,
+                        Icons.Filled.Notifications,
+                        contentDescription = if (notificationCount > 0) "$notificationCount notifications" else "Notifications",
+                        tint = if (notificationCount > 0) colors.actionPrimary else colors.textSecondary,
                     )
                 }
-                CountBadge(
-                    unsynchronizedResultCount,
-                    Modifier.align(Alignment.TopEnd).testTag("product-sync-count"),
-                    colors.statusWarning,
-                    colors.surfaceApp,
-                )
-            }
-            // "Get the app" is an offer rather than a place, so the web keeps
-            // it beside the account actions on every width. The APK opens the
-            // same hosted page; the offer covers the desktop and web clients
-            // too, so it is not redundant inside the Android app.
-            IconButton(onClick = onApps, modifier = Modifier.testTag("product-apps")) {
-                Icon(
-                    painterResource(R.drawable.ic_nav_apps),
-                    contentDescription = androidText(
-                        LocalAndroidProductLanguage.current,
-                        "Get the MK8DX app", "Download de MK8DX-app",
-                    ),
-                    tint = colors.textSecondary,
-                )
+                if (notificationCount > 0) {
+                    CountBadge(
+                        notificationCount,
+                        Modifier.align(Alignment.TopEnd).testTag("product-notification-count"),
+                        colors.statusError,
+                        colors.surfaceApp,
+                    )
+                }
             }
             // The web identity chip is the avatar next to the display name.
             // A generic person glyph over a username was the APK's own
@@ -1088,30 +1112,49 @@ private fun Mk8dxProductHeader(
                     )
                 }
             }
-            Box {
-                val notificationCount = unreadNotifications + if (availableUpdate == null) 0 else 1
-                IconButton(onClick = onNotifications, modifier = Modifier.testTag("product-notifications")) {
-                    Icon(
-                        Icons.Filled.Notifications,
-                        contentDescription = if (notificationCount > 0) "$notificationCount notifications" else "Notifications",
-                        tint = if (notificationCount > 0) colors.actionPrimary else colors.textSecondary,
-                    )
-                }
-                if (notificationCount > 0) {
-                    CountBadge(
-                        notificationCount,
-                        Modifier.align(Alignment.TopEnd).testTag("product-notification-count"),
-                        colors.statusError,
-                        colors.surfaceApp,
-                    )
-                }
-            }
-            IconButton(onClick = onSettings, modifier = Modifier.testTag("product-settings")) {
-                Icon(Icons.Filled.Settings, contentDescription = "Settings", tint = colors.textSecondary)
-            }
         },
     )
 }
+
+/** The active community, one tap from the switcher: its name (or host) with a down arrow. */
+@Composable
+private fun AndroidCommunityChip(label: String, onClick: () -> Unit) {
+    val colors = Mk8dxTheme.colors
+    val language = LocalAndroidProductLanguage.current
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .border(1.dp, colors.borderSubtle, RoundedCornerShape(50))
+            .clickable(role = Role.Button, onClick = onClick)
+            .semantics {
+                contentDescription = androidText(language, "Community: $label. Switch community", "Community: $label. Wissel van community")
+            }
+            .padding(horizontal = Mk8dxSpacing.sm, vertical = Mk8dxSpacing.xs)
+            .testTag("product-community-chip"),
+    ) {
+        Text(
+            label,
+            style = Mk8dxTheme.type.label,
+            color = colors.textPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.widthIn(max = 132.dp),
+        )
+        Icon(
+            Icons.Filled.ArrowDropDown,
+            contentDescription = null,
+            tint = colors.textSecondary,
+            modifier = Modifier.size(20.dp),
+        )
+    }
+}
+
+/**
+ * Where the header's avatar goes: always You. Signed out, You offers Sign in and still leads to Settings,
+ * which is no longer in the header (language and appearance must stay reachable before signing in).
+ */
+@Suppress("UNUSED_PARAMETER")
+internal fun androidYouRoute(signedIn: Boolean): AndroidTimeTrialsProductRoute = AndroidTimeTrialsProductRoute.PROFILE
 
 /** Opens a hosted product page; the app itself keeps working offline. */
 /**
@@ -1180,6 +1223,7 @@ private fun AndroidTimeTrialsProductHome(
     onOpenInbox: () -> Unit = {},
     onActionVisibility: (Boolean) -> Unit = {},
     unsynchronizedResultCount: Int,
+    onSavedResults: () -> Unit = {},
 ) {
     val language = LocalAndroidProductLanguage.current
     Mk8dxTheme(Mk8dxTheme.appearance) {
@@ -1234,6 +1278,11 @@ private fun AndroidTimeTrialsProductHome(
                     )
                 }
             }
+            AndroidWaitingBanner(
+                unsynchronizedResultCount,
+                onSavedResults,
+                Modifier.padding(horizontal = Mk8dxSpacing.md),
+            )
             AndroidHomeExperience(
                 client = ecosystemClient,
                 signedInPlayerId = activePlayerLabel,

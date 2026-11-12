@@ -42,7 +42,6 @@ import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineFallbackDataSource
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineState
-import nl.mariokart8.mk8dxtimetrials.offline.AndroidTimesOnThisPhoneScreen
 import nl.mariokart8.mk8dxtimetrials.offline.LocalAndroidOfflineState
 import nl.mariokart8.mk8dxtimetrials.offline.androidOfflineCopySource
 import nl.mariokart8.mk8dxtimetrials.offline.refreshAndroidOfflineCopy
@@ -378,6 +377,14 @@ internal fun AndroidTimeTrialsProductionRoot(
             AndroidEcosystemConnectionOpener(httpsConnectionOpener::open),
         )
     }
+    // The header chip names the active community (its name, else its host).
+    var communityLabel by remember(apiOrigin) { mutableStateOf(AndroidCommunityList.displayNameOf(apiOrigin)) }
+    LaunchedEffect(apiOrigin) {
+        communityLabel = withContext(Dispatchers.IO) {
+            runCatching { androidCommunityChipLabel(AndroidCommunities.list(applicationContext), apiOrigin) }
+                .getOrDefault(communityLabel)
+        }
+    }
     val ecosystemClient = remember(onlineClient, offlineStore) {
         AndroidOfflineFallbackDataSource(onlineClient, { offlineStore.readFor(nativeSession?.playerId) }, offlineState)
     }
@@ -641,15 +648,14 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
+            // Saved on this phone: what waits to be sent (reached from the orange banner and Settings).
             AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
-                AndroidTimesOnThisPhoneScreen(nativeSession?.playerId, apiOrigin) {
-                    AndroidProductLocalSavedResultsScreen(
-                        localOutbox,
-                        synchronizationDependencies,
-                        onSubmitTimeTrial = submitTimeTrial,
-                        accountDisplayNames = accountDisplayNames,
-                    )
-                }
+                AndroidProductLocalSavedResultsScreen(
+                    localOutbox,
+                    synchronizationDependencies,
+                    onSubmitTimeTrial = submitTimeTrial,
+                    accountDisplayNames = accountDisplayNames,
+                )
             }
         },
         tournamentContent = { openAccount, request, onRequestHandled, openTrack ->
@@ -693,23 +699,23 @@ internal fun AndroidTimeTrialsProductionRoot(
                 notificationTarget?.playerId?.takeIf { it != nativeSession?.playerId },
             )
         },
-        profileContent = { openAccount, openTestScan ->
-            AndroidProfileRecordsScreen(
-                ecosystemClient,
-                nativeSession?.playerId,
-                openAccount,
-                apiOrigin,
-                playerLabel = nativeSession?.let {
-                    androidPlayerLabel(it.displayName, it.playerId)
-                },
-                // Only where the scanner is actually bundled: a build without
-                // it has nothing to test.
-                onRunTestScan = openTestScan
-                    ?.takeIf { BuildConfig.MK8DX_SCAN_RUNTIME_ENABLED },
-                identityLinks = identityLinkClient?.let {
-                    { AndroidIdentityLinkScreen(it) }
-                },
-            )
+        profileContent = { openAccount, openSettings, openSavedResults ->
+            // Carrying from My times uses the same flow as a saved result (ADR-0225 amendment 2).
+            AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
+                AndroidProfileRecordsScreen(
+                    ecosystemClient,
+                    nativeSession?.playerId,
+                    openAccount,
+                    apiOrigin,
+                    playerLabel = nativeSession?.let {
+                        androidPlayerLabel(it.displayName, it.playerId)
+                    },
+                    communityLabel = communityLabel,
+                    unsynchronizedResultCount = unsynchronizedResultCount,
+                    onSavedResults = openSavedResults,
+                    onSettings = openSettings,
+                )
+            }
         },
         myStatsContent = { openAccount, manageResults, openTrack, postTime ->
             AndroidMyStatsScreen(
@@ -728,7 +734,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 onOpenSavedResults = openSavedResults,
             )
         },
-        settingsContent = { openAccount, openAdministration, openSavedResults ->
+        settingsContent = { openAccount, openAdministration, openSavedResults, openTestScan ->
             AndroidSettingsScreen(
                 ecosystemClient,
                 nativeSession?.playerId,
@@ -749,6 +755,9 @@ internal fun AndroidTimeTrialsProductionRoot(
                 onSwitchCommunity = onSwitchCommunity,
                 appearance = appearanceSettings,
                 onAppearanceChanged = applyAppearance,
+                // Only where the scanner is actually bundled: a build without it has nothing to test.
+                onRunTestScan = openTestScan.takeIf { BuildConfig.MK8DX_SCAN_RUNTIME_ENABLED },
+                unsynchronizedResultCount = unsynchronizedResultCount,
             )
         },
         administrationContent = { back ->
@@ -768,6 +777,15 @@ internal fun AndroidTimeTrialsProductionRoot(
                     onSwitchCommunity = onSwitchCommunity,
                 )
             }
+        },
+        communityLabel = communityLabel,
+        communitySheet = { close ->
+            AndroidCommunityServerPanel(
+                apiOrigin = apiOrigin,
+                language = productLanguage,
+                onSwitch = { chosen -> close(); onSwitchCommunity(chosen) },
+                onAdd = { close(); onChangeServer() },
+            )
         },
         activePlayerLabel = nativeSession?.let {
             androidPlayerLabel(it.displayName, it.playerId)

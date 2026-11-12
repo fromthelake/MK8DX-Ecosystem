@@ -1,5 +1,8 @@
 package nl.mariokart8.mk8dxtimetrials.ecosystem
 
+import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.delay
+import androidx.compose.foundation.layout.Box
 import nl.mariokart8.mk8dxtimetrials.offline.androidFailureText
 import nl.mariokart8.mk8dxtimetrials.offline.isConnectionFailure
 import android.content.Context
@@ -120,15 +123,15 @@ internal fun AndroidProfileRecordsScreen(
     onSignIn: () -> Unit,
     apiOrigin: String,
     playerLabel: String? = null,
-    // Developer affordances live here rather than beside Camera and Gallery,
-    // where they were a step in submitting a time that nobody wanted to take.
-    onRunTestScan: (() -> Unit)? = null,
-    // Present only for an administrator with a signed-in native session; the
-    // screen withdraws itself when the server says otherwise.
-    identityLinks: (@Composable () -> Unit)? = null,
+    /** The active community, under the name on the identity card. */
+    communityLabel: String? = null,
+    /** Results kept on this phone until sent: an orange banner while there are any. */
+    unsynchronizedResultCount: Int = 0,
+    onSavedResults: () -> Unit = {},
+    onSettings: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    var showRecords by remember { mutableStateOf(false) }
+    var tab by rememberSaveable { mutableStateOf(AndroidYouTab.MY_TIMES) }
     var results by remember(client, playerId) { mutableStateOf<List<AndroidPublicTimeTrialResult>?>(null) }
     var managedResults by remember(client, playerId) { mutableStateOf<List<AndroidManagedTimeTrial>?>(null) }
     var records by remember(client) { mutableStateOf<AndroidRecordBook?>(null) }
@@ -142,6 +145,10 @@ internal fun AndroidProfileRecordsScreen(
     var managementBusy by remember { mutableStateOf(false) }
     // ADR-0211: the result being fixed in the form of Post a Time.
     var editing by remember { mutableStateOf<AndroidManagedTimeTrial?>(null) }
+    // A run's full card (laps, coins, mushrooms, build), opened from its ⋯ menu.
+    var details by remember { mutableStateOf<AndroidManagedTimeTrial?>(null) }
+    var expanded by rememberSaveable { mutableStateOf(emptyList<String>()) }
+    val carry = nl.mariokart8.mk8dxtimetrials.carry.LocalAndroidCopyCarryActions.current
     val scope = rememberCoroutineScope()
     val language = LocalAndroidProductLanguage.current
     LaunchedEffect(client, playerId, refresh) {
@@ -186,6 +193,41 @@ internal fun AndroidProfileRecordsScreen(
             preloaded = result,
         )
     }
+    details?.let { run ->
+        Mk8dxDialog(
+            title = Schema9AndroidTrackCatalog.find(run.current.trackId)?.displayName ?: run.current.trackId,
+            closeLabel = androidText(language, "Close", "Sluiten"),
+            onDismiss = { details = null },
+        ) {
+            Column(Modifier.verticalScroll(rememberScrollState())) {
+                ResultDetailCard(
+                    run.asPublicResult(),
+                    run,
+                    onManage = {
+                        details = null
+                        managementReason = "wrong_track_or_mode"
+                        pendingManagement = it to true
+                    },
+                    onFix = { details = null; editing = it },
+                )
+            }
+        }
+    }
+    val groups = remember(managedResults, playerId) { androidMyTimesGroups(managedResults.orEmpty(), playerId) }
+    fun runActions(run: AndroidManagedTimeTrial): List<AndroidRunMenuAction> = buildList {
+        add(AndroidRunMenuAction(androidText(language, "Details", "Details"), "my-times-details-${run.submissionId}") { details = run })
+        add(AndroidRunMenuAction(androidText(language, "Edit", "Bewerken"), "my-times-edit-${run.submissionId}") { editing = run })
+        add(AndroidRunMenuAction(androidText(language, "Withdraw", "Intrekken"), "my-times-withdraw-${run.submissionId}") {
+            managementReason = "wrong_track_or_mode"
+            pendingManagement = run to true
+        })
+        if (carry != null) {
+            add(AndroidRunMenuAction(
+                androidText(language, "Carry to another community…", "Meenemen naar een andere community…"),
+                "my-times-carry-${run.submissionId}",
+            ) { carry.carryRun(nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineRun.of(run)) })
+        }
+    }
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -194,44 +236,6 @@ internal fun AndroidProfileRecordsScreen(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(Mk8dxSpacing.lg),
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
     ) {
-        item {
-            // MEDIUM spectacle (§5): an identity strip with the Player's own
-            // character beside the name, and no backdrop - the tabs under it
-            // are data and stay calm.
-            Mk8dxArtHero(
-                title = profile?.displayName ?: playerLabel ?: androidText(language, "Profile & Records", "Profiel & records"),
-                meta = androidText(
-                    language,
-                    "Your published Time Trials and the community record book.",
-                    "Jouw gepubliceerde Time Trials en het recordboek van de community.",
-                ),
-                art = androidProfileAvatarPath(profile)?.let { path ->
-                    {
-                        ProductAssetImage(
-                            path = path,
-                            fallback = (profile?.displayName ?: "?").take(1),
-                            accent = colors.textSecondary,
-                            contentDescription = null,
-                            modifier = Modifier.size(52.dp),
-                        )
-                    }
-                },
-            )
-        }
-        item {
-            // The two halves were two buttons where the one you were reading
-            // did nothing when pressed. They are tabs: the selected one is
-            // announced, and a screen reader hears which view is open.
-            Mk8dxTabs(
-                label = androidText(language, "Profile view", "Profielweergave"),
-                options = listOf(
-                    Mk8dxTabOption(false, "My results", "profile-tab-results"),
-                    Mk8dxTabOption(true, "Records", "profile-tab-records"),
-                ),
-                value = showRecords,
-                onChange = { showRecords = it },
-            )
-        }
         if (playerId == null) {
             item {
                 Mk8dxPanel(title = null) {
@@ -243,111 +247,117 @@ internal fun AndroidProfileRecordsScreen(
                     Mk8dxButton("Sign in", onSignIn, variant = Mk8dxButtonVariant.Primary)
                 }
             }
+            if (unsynchronizedResultCount > 0) item { AndroidWaitingBanner(unsynchronizedResultCount, onSavedResults) }
+            item {
+                Mk8dxPanel(null) {
+                    AndroidSettingsRow(androidText(language, "Settings", "Instellingen"), onClick = onSettings, tag = "you-settings")
+                }
+            }
             return@LazyColumn
         }
-        if (!showRecords) item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
-        if (!showRecords) item {
-            val loaded = results
-            Mk8dxPanel(title = androidText(language, "TIME TRIAL CAREER", "TIME TRIAL-CARRIÈRE")) {
-                if (loaded == null && error == null) {
-                    Text(
-                        "Loading your results…",
-                        style = Mk8dxTheme.type.body,
-                        color = colors.textSecondary,
-                    )
-                } else {
-                    // The same three numbers the sentence carried, as figures.
-                    // Each engine count says which engine it counts with an
-                    // EngineMark, so the class is never only a colour (§7).
-                    val cc150 = loaded.orEmpty().count { it.mode == 150 }
-                    val cc200 = loaded.orEmpty().count { it.mode == 200 }
-                    FlowRow(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xl),
-                        verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
-                    ) {
-                        Mk8dxStatBlock(
-                            androidText(language, "Published results", "Gepubliceerde resultaten"),
-                            Mk8dxNumeric.formatCount(loaded.orEmpty().size.toLong(), numbers),
+        // The identity card: who, in which community, and the way to another Player.
+        item {
+            Mk8dxPanel(null, modifier = Modifier.testTag("you-identity")) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
+                ) {
+                    androidProfileAvatarPath(profile)?.let { path ->
+                        ProductAssetImage(
+                            path = path,
+                            fallback = (profile?.displayName ?: playerLabel ?: "?").take(1),
+                            accent = colors.textSecondary,
+                            contentDescription = null,
+                            modifier = Modifier.size(52.dp),
                         )
-                        androidProfileEngineCount(150, cc150, numbers)
-                        androidProfileEngineCount(200, cc200, numbers)
+                    }
+                    Column(Modifier.weight(1f)) {
+                        Text(
+                            profile?.displayName ?: playerLabel ?: androidReadableReference(playerId),
+                            style = Mk8dxTheme.type.title,
+                            color = colors.textPrimary,
+                        )
+                        communityLabel?.let { Mk8dxMetaLine(it) }
                     }
                 }
                 Mk8dxButton(
-                    "Open full web profile",
-                    // `?profile=` was never a route the Web reads: it landed
-                    // on the signed-out marketing page. `?player=` is the one
-                    // that opens a profile, and it takes a player id as
-                    // readily as a screen name.
-                    onClick = { openWebsite(context, "$apiOrigin/?player=${Uri.encode(playerId)}") },
+                    androidText(language, "Switch Player", "Speler wisselen"),
+                    onSignIn,
                     variant = Mk8dxButtonVariant.Secondary,
+                    tag = "you-switch-player",
                 )
             }
         }
-        if (!showRecords) profile?.let { loadedProfile ->
-            item { PublicProfilePreferenceCard(loadedProfile) }
+        if (unsynchronizedResultCount > 0) item {
+            AndroidWaitingBanner(unsynchronizedResultCount, onSavedResults)
         }
-        if (!showRecords && identityLinks != null) {
+        item {
+            Mk8dxTabs(
+                label = androidText(language, "You", "Jij"),
+                options = listOf(
+                    Mk8dxTabOption(AndroidYouTab.MY_TIMES, androidText(language, "My times", "Mijn tijden"), "you-tab-my-times"),
+                    Mk8dxTabOption(AndroidYouTab.RECORDS, androidText(language, "Records", "Records"), "you-tab-records"),
+                    Mk8dxTabOption(AndroidYouTab.RIVALS, androidText(language, "Rivals", "Rivalen"), "you-tab-rivals"),
+                ),
+                value = tab,
+                onChange = { tab = it },
+            )
+        }
+        if (tab == AndroidYouTab.MY_TIMES) {
+            item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
             item {
-                Mk8dxSectionLabel("Accounts and Players")
-                Mk8dxMetaLine(
-                    "Link the address somebody signs in with to the Player whose history is theirs.",
-                )
-            }
-            item { identityLinks() }
-        }
-        if (!showRecords && onRunTestScan != null) {
-            item {
-                Mk8dxPanel(title = "Debug and test") {
-                    Text(
-                        "Run a test scan",
-                        style = Mk8dxTheme.type.title,
-                        color = colors.textPrimary,
-                    )
-                    Mk8dxMetaLine(
-                        "Tools for checking the app itself. Nothing here counts toward rankings " +
-                            "or records. Puts a bundled result image through the real scanner and " +
-                            "the real sync. The saved result is labelled as a test and expires " +
-                            "after 24 hours.",
-                    )
-                    Mk8dxButton(
-                        "Run a test scan",
-                        onRunTestScan,
-                        variant = Mk8dxButtonVariant.Secondary,
-                        tag = "profile-run-test-scan",
-                    )
-                }
-            }
-        }
-        if (!showRecords) error?.let { message ->
-            item { Mk8dxStatusMessage(message, tone = Mk8dxStatusTone.Error) }
-        }
-        if (!showRecords) results?.take(12)?.let { latest ->
-            item {
-                Mk8dxSectionLabel("Latest Time Trials")
-                Mk8dxMetaLine("Full lap, coin, mushroom and build details when recorded")
-            }
-            if (latest.isEmpty()) {
-                item {
-                    Mk8dxPanel(title = null) {
+                val loaded = results
+                Mk8dxPanel(title = androidText(language, "TIME TRIAL CAREER", "TIME TRIAL-CARRIÈRE")) {
+                    if (loaded == null && error == null) {
                         Text(
-                            "No published Time Trials yet.",
+                            "Loading your results…",
                             style = Mk8dxTheme.type.body,
-                            color = colors.textBody,
+                            color = colors.textSecondary,
                         )
+                    } else {
+                        val cc150 = loaded.orEmpty().count { it.mode == 150 }
+                        val cc200 = loaded.orEmpty().count { it.mode == 200 }
+                        FlowRow(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xl),
+                            verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
+                        ) {
+                            Mk8dxStatBlock(
+                                androidText(language, "Published results", "Gepubliceerde resultaten"),
+                                Mk8dxNumeric.formatCount(loaded.orEmpty().size.toLong(), numbers),
+                            )
+                            androidProfileEngineCount(150, cc150, numbers)
+                            androidProfileEngineCount(200, cc200, numbers)
+                        }
                     }
+                    Mk8dxButton(
+                        "Open full web profile",
+                        onClick = { openWebsite(context, "$apiOrigin/?player=${Uri.encode(playerId)}") },
+                        variant = Mk8dxButtonVariant.Secondary,
+                    )
                 }
             }
-            items(latest, key = { "published-${it.resultId}" }) { result ->
-                ResultDetailCard(
-                    result,
-                    managedResults.orEmpty().firstOrNull { it.submissionId == result.resultId },
-                    onManage = {
-                        managementReason = "wrong_track_or_mode"
-                        pendingManagement = it to true
-                    },
-                    onFix = { editing = it },
+            error?.let { message -> item { Mk8dxStatusMessage(message, tone = Mk8dxStatusTone.Error) } }
+            if (carry != null && groups.isNotEmpty()) item {
+                Mk8dxButton(
+                    androidText(language, "Carry my best times", "Mijn beste tijden meenemen"),
+                    carry.carryBestTimes,
+                    variant = Mk8dxButtonVariant.Secondary,
+                    tag = "you-carry-best",
+                    modifier = Modifier.fillMaxWidth(),
+                )
+            }
+            if (managedResults != null && groups.isEmpty()) item {
+                Mk8dxPanel(title = null) {
+                    Text(androidText(language, "No Time Trials yet.", "Nog geen Time Trials."), style = Mk8dxTheme.type.body, color = colors.textBody)
+                }
+            }
+            items(groups, key = { "group-${it.key}" }) { group ->
+                AndroidMyTimesGroupCard(
+                    group,
+                    expanded = group.key in expanded,
+                    onToggle = { expanded = if (group.key in expanded) expanded - group.key else expanded + group.key },
+                    actions = ::runActions,
                 )
             }
             val retired = managedResults.orEmpty().filter { it.retirementState == "retired" }
@@ -368,8 +378,9 @@ internal fun AndroidProfileRecordsScreen(
                     ManagedResultCard(result) { pendingManagement = result to false }
                 }
             }
+            profile?.let { loadedProfile -> item { PublicProfilePreferenceCard(loadedProfile) } }
         }
-        if (showRecords) records?.let { book ->
+        if (tab == AndroidYouTab.RECORDS) records?.let { book ->
             item {
                 Mk8dxSectionLabel("Community Records")
                 Mk8dxMetaLine("The same community records as the website")
@@ -378,7 +389,7 @@ internal fun AndroidProfileRecordsScreen(
                 RecordCategoryCard(category, numbers, language)
             }
         }
-        if (showRecords && records == null) {
+        if (tab == AndroidYouTab.RECORDS && records == null) {
             item {
                 val failed = recordsError
                 if (failed == null) {
@@ -390,6 +401,16 @@ internal fun AndroidProfileRecordsScreen(
                 } else {
                     Mk8dxStatusMessage(failed, tone = Mk8dxStatusTone.Info, modifier = Modifier.testTag("profile-records-unavailable"))
                 }
+            }
+        }
+        if (tab == AndroidYouTab.RIVALS) item {
+            AndroidRivalsTab(client, playerId, apiOrigin) { rival ->
+                RivalInteractionsToggle(client, rival, playerId, language)
+            }
+        }
+        item {
+            Mk8dxPanel(null) {
+                AndroidSettingsRow(androidText(language, "Settings", "Instellingen"), onClick = onSettings, tag = "you-settings")
             }
         }
     }
@@ -1029,36 +1050,36 @@ internal fun AndroidSettingsScreen(
     apiOrigin: String,
     language: AndroidProductLanguage,
     onLanguageChanged: (AndroidProductLanguage) -> Unit,
-    onChangeServer: () -> Unit = {},
-    /** Saved results on this phone, where a sent time can be carried to another community (ADR-0225). */
+    @Suppress("UNUSED_PARAMETER") onChangeServer: () -> Unit = {},
+    /** Results kept on this phone until they are sent (Settings › Community › Saved on this phone). */
     onSavedResults: () -> Unit = {},
-    /** ADR-0225: make another remembered community the active one. */
-    onSwitchCommunity: (String) -> Unit = {},
+    @Suppress("UNUSED_PARAMETER") onSwitchCommunity: (String) -> Unit = {},
     playerLabel: String? = null,
     administration: AndroidAdministrationClient? = null,
     onAdministration: () -> Unit = {},
     /** Appearance (ADR-0205): the choice syncs, text size and motion stay here. */
     appearance: Mk8dxAppearanceSettings = Mk8dxAppearanceSettings(),
     onAppearanceChanged: (Mk8dxAppearanceSettings) -> Unit = {},
+    /** The owner-private release keeps "Run a test scan" reachable, under About. */
+    onRunTestScan: (() -> Unit)? = null,
+    unsynchronizedResultCount: Int = 0,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     // Pending link requests, when the server treats this account as an
-    // administrator; null keeps the Administration card off the screen.
+    // administrator; null keeps the Administration row off the screen.
     var administrationPending by remember(administration) { mutableStateOf<Int?>(null) }
-    var rivals by remember(client, playerId) { mutableStateOf<List<AndroidRival>?>(null) }
-    var ownBests by remember(client, playerId) { mutableStateOf(emptyList<AndroidTrackBest>()) }
     var preferences by remember(client, playerId) { mutableStateOf<AndroidTimeTrialPreferences?>(null) }
     var profilePreferences by remember(client, playerId) { mutableStateOf<AndroidPlayerProfilePreferences?>(null) }
     var notificationSettings by remember(client, playerId) { mutableStateOf<AndroidNotificationSettings?>(null) }
     var modeStatus by remember { mutableStateOf("") }
+    var classesStatus by remember { mutableStateOf("") }
     var screenNameStatus by remember { mutableStateOf("") }
     var profileStatus by remember { mutableStateOf("") }
+    var choosingLanguage by remember { mutableStateOf(false) }
     LaunchedEffect(client, playerId) {
         if (playerId != null) {
             withContext(Dispatchers.IO) {
-                rivals = runCatching { client.rivals() }.getOrNull()
-                ownBests = runCatching { client.trackBestsFor(playerId) }.getOrDefault(emptyList())
                 preferences = runCatching { client.timeTrialPreferences() }.getOrNull()
                 profilePreferences = runCatching { client.playerProfilePreferences() }.getOrNull()
                 notificationSettings = runCatching { client.notificationSettings() }.getOrNull()
@@ -1074,6 +1095,18 @@ internal fun AndroidSettingsScreen(
             }
         }
     }
+    val saving = androidText(language, "Saving…", "Opslaan…")
+    val saved = androidText(language, "Saved", "Opgeslagen")
+    val failed = androidText(language, "Could not save", "Opslaan mislukt")
+    // Every Time Trial preference saves the moment it changes; one inline word says how it went.
+    fun savePreferences(next: AndroidTimeTrialPreferences, onStatus: (String) -> Unit) {
+        onStatus(saving)
+        coroutineScope.launch {
+            withContext(Dispatchers.IO) { runCatching { client.saveTimeTrialPreferences(next) } }
+                .onSuccess { preferences = it; onStatus(saved) }
+                .onFailure { onStatus(failed) }
+        }
+    }
     val colors = Mk8dxTheme.colors
     val type = Mk8dxTheme.type
     LazyColumn(
@@ -1082,258 +1115,228 @@ internal fun AndroidSettingsScreen(
             .background(colors.surfaceApp)
             .testTag("settings-screen"),
         contentPadding = androidx.compose.foundation.layout.PaddingValues(Mk8dxSpacing.gutterPhone),
-        verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
+        verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.lg),
     ) {
         item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
+        item { Mk8dxDisplayText(androidText(language, "Settings", "Instellingen"), type.display6) }
+        // Player: who plays on this phone and what the community shows about them.
         item {
-            Column(verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs)) {
-                Mk8dxDisplayText(androidText(language, "Settings", "Instellingen"), type.display6)
-                Text(
-                    androidText(language, "Player, rivals and app preferences.", "Speler-, rivalen- en appvoorkeuren."),
-                    color = colors.textSecondary,
-                    style = type.bodyS,
+            AndroidSettingsGroup(androidText(language, "Player", "Speler"), Modifier.testTag("settings-group-player")) {
+                AndroidSettingsRow(
+                    androidText(language, "Player on this phone", "Speler op deze telefoon"),
+                    if (playerId == null) androidText(language, "Not signed in · Sign in", "Niet aangemeld · Aanmelden")
+                    else androidText(language, "Signed in as ${playerLabel ?: androidReadableReference(playerId)} · Switch Player or sign out",
+                        "Aangemeld als ${playerLabel ?: androidReadableReference(playerId)} · Speler wisselen of afmelden"),
+                    onClick = onPlayers,
+                    tag = "settings-player",
                 )
-            }
-        }
-        item {
-            nl.mariokart8.mk8dxtimetrials.AndroidCommunityServerPanel(
-                apiOrigin = apiOrigin,
-                language = language,
-                onSwitch = onSwitchCommunity,
-                onAdd = onChangeServer,
-                onSavedResults = onSavedResults,
-            )
-        }
-        item {
-            // Phase 4 migrated this section on its own, inside a screen that
-            // was still legacy; the whole screen is the design system's now,
-            // so the section no longer carries a theme of its own.
-            Mk8dxAppearanceSection(
-                settings = appearance,
-                onSettingsChanged = onAppearanceChanged,
-                nl = language == AndroidProductLanguage.DUTCH,
-                signedIn = playerId != null,
-                syncPending = !appearance.cache.synced && appearance.cache.choice != null,
-            )
-        }
-        item {
-            Mk8dxPanel("Language / Taal") {
-                Text(
-                    androidText(language, "Choose the product language.", "Kies de taal van het product."),
-                    style = type.body, color = colors.textBody,
-                )
-                Mk8dxSegmentedControl(
-                    "Language / Taal",
-                    AndroidProductLanguage.entries.map { it to it.displayName },
-                    language,
-                    onLanguageChanged,
-                    Modifier.testTag("settings-language"),
-                )
-                Text(
-                    androidText(
-                        language,
-                        "English and Dutch are reviewed; the other languages are machine-translated and not yet reviewed.",
-                        "Engels en Nederlands zijn nagekeken; de andere talen zijn automatisch vertaald en nog niet nagekeken.",
-                    ),
-                    style = type.bodyS,
-                    color = colors.textSecondary,
-                )
-            }
-        }
-        item {
-            Mk8dxPanel(androidLocalizedPresentation("Player on this phone")) {
-                Text(
-                    playerLabel
-                        ?: playerId?.let(::androidReadableReference)
-                        ?: androidText(language, "Not signed in", "Niet aangemeld"),
-                    style = type.title,
-                    color = colors.textPrimary,
-                )
-                Mk8dxButton(
-                    androidLocalizedPresentation(if (playerId == null) "Sign in" else "Switch Player"),
-                    onPlayers,
-                    variant = Mk8dxButtonVariant.Secondary,
-                )
-            }
-        }
-        administrationPending?.let { pending ->
-            item {
-                Mk8dxPanel(
-                    androidText(language, "Administration", "Beheer"),
-                    modifier = Modifier.testTag("settings-administration"),
-                ) {
-                    Text(
-                        when {
-                            pending == 0 -> androidText(language, "No link requests are waiting.", "Er wachten geen koppelverzoeken.")
-                            pending == 1 -> androidText(language, "1 link request is waiting.", "Er wacht 1 koppelverzoek.")
-                            else -> androidText(language, "$pending link requests are waiting.", "Er wachten $pending koppelverzoeken.")
-                        },
-                        style = type.body, color = colors.textBody,
-                    )
-                    Mk8dxButton(
-                        androidText(language, "Open administration", "Beheer openen"),
-                        onAdministration,
-                        variant = Mk8dxButtonVariant.Secondary,
-                        tag = "settings-open-administration",
-                    )
-                }
-            }
-        }
-        item {
-            AndroidNotificationSettingsCard(
-                client = client,
-                playerId = playerId,
-                settings = notificationSettings,
-                language = language,
-                onSettingsChanged = { notificationSettings = it },
-            )
-        }
-        if (playerId != null) {
-            item {
                 val current = preferences
-                if (current != null) {
-                    var selected by remember(current.modePreference) { mutableStateOf(current.modePreference) }
-                    var trackAccess by remember(current.trackAccess) { mutableStateOf(current.trackAccess) }
-                    Mk8dxPanel(androidText(language, "Time Trial preference", "Time Trial-voorkeur")) {
-                        // A preference over engine classes, not an engine
-                        // context: "All" is one of the three answers, so this
-                        // stays a segmented control rather than becoming the
-                        // two-option EngineSelector (logged, class A).
-                        Mk8dxSegmentedControl(
-                            androidText(language, "Time Trial preference", "Time Trial-voorkeur"),
-                            listOf(
-                                "all" to androidText(language, "All", "Alles"),
-                                "150" to "150cc",
-                                "200" to "200cc",
-                            ),
-                            selected,
-                            { selected = it },
-                            Modifier.testTag("settings-mode-preference"),
-                        )
-                        Text(
-                            androidText(language, "Do you have the Booster Course Pass?", "Heb je de Circuit-uitbreidingspas?"),
-                            style = type.body, color = colors.textBody,
-                        )
-                        Mk8dxSegmentedControl(
-                            androidText(language, "Do you have the Booster Course Pass?", "Heb je de Circuit-uitbreidingspas?"),
-                            listOf(
-                                "base_and_bcp" to androidText(language, "Yes · all 96", "Ja · alle 96"),
-                                "base_only" to androidText(language, "No · base 48", "Nee · basis 48"),
-                            ),
-                            trackAccess,
-                            { trackAccess = it },
-                            Modifier.testTag("settings-track-access"),
-                        )
-                        Text(
-                            androidText(language, "This sets progress and Rank defaults; all public tracks stay available.", "Dit bepaalt standaard voortgang en Rank; alle openbare circuits blijven beschikbaar."),
-                            style = type.bodyS,
-                            color = colors.textSecondary,
-                        )
-                        Mk8dxButton(
-                            androidText(language, "Save Time Trial preference", "Time Trial-voorkeur opslaan"),
-                            {
-                                modeStatus = androidText(language, "Saving…", "Opslaan…")
-                                val next = current.copy(modePreference = selected, trackAccess = trackAccess)
-                                coroutineScope.launch {
-                                    withContext(Dispatchers.IO) { runCatching { client.saveTimeTrialPreferences(next) } }
-                                        .onSuccess { preferences = it; modeStatus = androidText(language, "Saved", "Opgeslagen") }
-                                        .onFailure { modeStatus = androidText(language, "Could not save", "Opslaan mislukt") }
-                                }
-                            },
-                            variant = Mk8dxButtonVariant.Secondary,
-                            modifier = Modifier.testTag("settings-save-mode-preference"),
-                        )
-                        Mk8dxStatusMessage(modeStatus, tone = settingsStatusTone(modeStatus, language))
-                    }
-                }
-            }
-            item {
-                val current = preferences
-                if (current != null) {
+                if (playerId != null && current != null) {
+                    AndroidSettingsDivider()
                     var screenName by remember(current.screenName) { mutableStateOf(current.screenName.orEmpty()) }
-                    Mk8dxPanel(androidText(language, "Screen name", "Schermnaam")) {
+                    // Saved by itself shortly after the last keystroke.
+                    LaunchedEffect(screenName) {
+                        val decision = androidSettingsAutoSave(screenName, current.screenName)
+                        if (decision !is AndroidAutoSave.Save) return@LaunchedEffect
+                        delay(ANDROID_SETTINGS_AUTOSAVE_DELAY_MS)
+                        savePreferences(current.copy(screenName = decision.value)) { screenNameStatus = it }
+                    }
+                    AndroidSettingsControlRow(null, status = screenNameStatus) {
                         Mk8dxTextField(
                             androidText(language, "Screen name", "Schermnaam"),
                             screenName,
                             { if (it.length <= 32) screenName = it },
                             Modifier.testTag("settings-screen-name"),
                         )
-                        Mk8dxButton(
-                            androidText(language, "Save screen name", "Schermnaam opslaan"),
-                            {
-                                screenNameStatus = androidText(language, "Saving…", "Opslaan…")
-                                val next = current.copy(screenName = screenName.trim().ifBlank { null })
+                    }
+                    AndroidSettingsDivider()
+                    AndroidSettingsControlRow(
+                        androidText(language, "Booster Course Pass", "Circuit-uitbreidingspas"),
+                        note = androidText(language, "Sets progress and Rank defaults; every public track stays available.",
+                            "Bepaalt standaard voortgang en Rank; alle openbare circuits blijven beschikbaar."),
+                        status = modeStatus,
+                    ) {
+                        Mk8dxSegmentedControl(
+                            androidText(language, "Booster Course Pass", "Circuit-uitbreidingspas"),
+                            listOf(
+                                "base_and_bcp" to androidText(language, "Yes · all 96", "Ja · alle 96"),
+                                "base_only" to androidText(language, "No · base 48", "Nee · basis 48"),
+                            ),
+                            current.trackAccess,
+                            { savePreferences(current.copy(trackAccess = it)) { status -> modeStatus = status } },
+                            Modifier.testTag("settings-track-access"),
+                        )
+                    }
+                    AndroidSettingsDivider()
+                    // A preference over engine classes, not an engine context: "All" is one of the answers.
+                    AndroidSettingsControlRow(androidText(language, "Time Trial classes", "Time Trial-klassen"), status = classesStatus) {
+                        Mk8dxSegmentedControl(
+                            androidText(language, "Time Trial classes", "Time Trial-klassen"),
+                            listOf(
+                                "all" to androidText(language, "All", "Alles"),
+                                "150" to "150cc",
+                                "200" to "200cc",
+                            ),
+                            current.modePreference,
+                            { savePreferences(current.copy(modePreference = it)) { status -> classesStatus = status } },
+                            Modifier.testTag("settings-mode-preference"),
+                        )
+                    }
+                }
+                if (playerId != null) {
+                    AndroidSettingsDivider()
+                    val profile = profilePreferences
+                    AndroidSettingsExpandableRow(
+                        androidText(language, "Public profile", "Openbaar profiel"),
+                        if (profileStatus.isNotBlank()) profileStatus
+                        else androidText(language, "Country and favourites", "Land en favorieten"),
+                        tag = "settings-public-profile",
+                    ) {
+                        if (profile == null) {
+                            Text(androidText(language, "Loading public Player preferences…", "Openbare spelervoorkeuren laden…"),
+                                style = type.bodyS, color = colors.textSecondary)
+                        } else {
+                            PlayerProfilePreferenceEditor(profile, language) { next ->
+                                profileStatus = saving
                                 coroutineScope.launch {
-                                    withContext(Dispatchers.IO) { runCatching { client.saveTimeTrialPreferences(next) } }
-                                        .onSuccess { preferences = it; screenNameStatus = androidText(language, "Saved", "Opgeslagen") }
-                                        .onFailure { screenNameStatus = androidText(language, "Could not save", "Opslaan mislukt") }
+                                    withContext(Dispatchers.IO) { runCatching { client.savePlayerProfilePreferences(next) } }
+                                        .onSuccess { profilePreferences = it; profileStatus = saved }
+                                        .onFailure { profileStatus = failed }
                                 }
-                            },
-                            variant = Mk8dxButtonVariant.Secondary,
-                            modifier = Modifier.testTag("settings-save-screen-name"),
-                        )
-                        Mk8dxStatusMessage(
-                            screenNameStatus,
-                            tone = settingsStatusTone(screenNameStatus, language),
-                        )
-                    }
-                }
-            }
-            item {
-                profilePreferences?.let { current ->
-                    PlayerProfilePreferenceEditor(current, language, profileStatus) { next ->
-                        profileStatus = androidText(language, "Saving…", "Opslaan…")
-                        coroutineScope.launch {
-                            withContext(Dispatchers.IO) { runCatching { client.savePlayerProfilePreferences(next) } }
-                                .onSuccess { profilePreferences = it; profileStatus = androidText(language, "Saved and visible on your public profile.", "Opgeslagen en zichtbaar op je openbare profiel.") }
-                                .onFailure { profileStatus = androidText(language, "Could not save", "Opslaan mislukt") }
+                            }
                         }
-                    }
-                } ?: Text(
-                    androidText(language, "Loading public Player preferences…", "Openbare spelervoorkeuren laden…"),
-                    style = type.body, color = colors.textSecondary,
-                )
-            }
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xxs)) {
-                    Mk8dxSectionLabel(androidLocalizedPresentation("Rivals"))
-                    Mk8dxMetaLine(
-                        androidLocalizedPresentation("Used by Home focus and Among rivals standing"),
-                    )
-                }
-            }
-            if (rivals == null) {
-                item { Text("Loading rivals…", style = type.body, color = colors.textSecondary) }
-            }
-            rivals?.let { loaded ->
-                if (loaded.isEmpty()) {
-                    item {
-                        Mk8dxPanel(null) {
-                            Text("No rivals chosen yet.", style = type.body, color = colors.textBody)
-                        }
-                    }
-                }
-                items(loaded, key = AndroidRival::playerId) { rival ->
-                    Mk8dxPanel(null) {
-                        // The display name is the name; the canonical identifier
-                        // under it was a UUID for every self-service Player.
-                        Text(rival.displayName, style = type.title, color = colors.textPrimary)
-                        RivalInteractionsToggle(client, rival, playerId, language)
                     }
                 }
             }
         }
+        // App: how this phone shows the product.
         item {
-            Mk8dxPanel(androidLocalizedPresentation("Full account settings")) {
-                Text(
-                    androidText(language, "Manage rivals, followed Players and visibility on the configured website.", "Beheer rivalen, gevolgde spelers en zichtbaarheid op de ingestelde website."),
-                    style = type.body, color = colors.textBody,
+            AndroidSettingsGroup(androidText(language, "App", "App"), Modifier.testTag("settings-group-app")) {
+                AndroidSettingsExpandableRow(
+                    androidText(language, "Appearance", "Weergave"),
+                    androidText(language, "Theme, text size and motion", "Thema, tekstgrootte en beweging"),
+                    tag = "settings-appearance-row",
+                ) {
+                    Mk8dxAppearanceSection(
+                        settings = appearance,
+                        onSettingsChanged = onAppearanceChanged,
+                        nl = language == AndroidProductLanguage.DUTCH,
+                        signedIn = playerId != null,
+                        syncPending = !appearance.cache.synced && appearance.cache.choice != null,
+                    )
+                }
+                AndroidSettingsDivider()
+                // The field's own label stays in English and Dutch, so anybody finds it whatever the language.
+                AndroidSettingsControlRow(
+                    null,
+                    note = androidText(language, "English and Dutch are reviewed; other languages are machine-translated.",
+                        "Engels en Nederlands zijn nagekeken; andere talen zijn automatisch vertaald."),
+                ) {
+                    Mk8dxSelectField(
+                        label = "Language / Taal",
+                        value = language.displayName,
+                        onOpen = { choosingLanguage = true },
+                        modifier = Modifier.testTag("settings-language"),
+                    )
+                }
+                AndroidSettingsDivider()
+                AndroidSettingsExpandableRow(
+                    androidText(language, "Notifications", "Meldingen"),
+                    androidText(language, "On this phone and what you are told about", "Op deze telefoon en waarover je hoort"),
+                    tag = "settings-notifications-row",
+                ) {
+                    AndroidNotificationSettingsCard(
+                        client = client,
+                        playerId = playerId,
+                        settings = notificationSettings,
+                        language = language,
+                        onSettingsChanged = { notificationSettings = it },
+                    )
+                }
+            }
+        }
+        // Community: the active community's own pages and what waits for it.
+        item {
+            AndroidSettingsGroup(androidText(language, "Community", "Community"), Modifier.testTag("settings-group-community")) {
+                administrationPending?.let { pending ->
+                    AndroidSettingsRow(
+                        androidText(language, "Administration", "Beheer"),
+                        when (pending) {
+                            0 -> androidText(language, "No link requests are waiting.", "Er wachten geen koppelverzoeken.")
+                            1 -> androidText(language, "1 link request is waiting.", "Er wacht 1 koppelverzoek.")
+                            else -> androidText(language, "$pending link requests are waiting.", "Er wachten $pending koppelverzoeken.")
+                        },
+                        onClick = onAdministration,
+                        tag = "settings-open-administration",
+                    )
+                    AndroidSettingsDivider()
+                }
+                AndroidSettingsRow(
+                    androidText(language, "Account settings on the website", "Accountinstellingen op de website"),
+                    androidText(language, "Followed Players, rivals and visibility", "Gevolgde spelers, rivalen en zichtbaarheid"),
+                    onClick = { openWebsite(context, "$apiOrigin/?settings=1") },
+                    tag = "settings-website",
                 )
-                Mk8dxButton(
-                    androidLocalizedPresentation("Open website settings"),
-                    { openWebsite(context, "$apiOrigin/?settings=1") },
-                    variant = Mk8dxButtonVariant.Secondary,
+                AndroidSettingsDivider()
+                AndroidSettingsRow(
+                    androidText(language, "Get the app", "Download de app"),
+                    androidText(language, "Android, desktop and web downloads", "Downloads voor Android, desktop en web"),
+                    onClick = { nl.mariokart8.mk8dxtimetrials.openProductWebsite(context, "$apiOrigin/?apps=1") },
+                    tag = "settings-get-app",
                 )
+                AndroidSettingsDivider()
+                AndroidSettingsRow(
+                    androidText(language, "Saved on this phone", "Bewaard op deze telefoon"),
+                    when (unsynchronizedResultCount) {
+                        0 -> androidText(language, "Results kept here until they are sent", "Resultaten die hier wachten tot ze zijn verzonden")
+                        1 -> androidText(language, "1 time waiting to be sent", "1 tijd wacht op verzenden")
+                        else -> androidText(language, "$unsynchronizedResultCount times waiting to be sent", "$unsynchronizedResultCount tijden wachten op verzenden")
+                    },
+                    onClick = onSavedResults,
+                    tag = "settings-saved-results",
+                )
+            }
+        }
+        // About: which build this is, and the test tools.
+        item {
+            AndroidSettingsGroup(androidText(language, "About", "Over"), Modifier.testTag("settings-group-about")) {
+                AndroidSettingsRow(
+                    androidText(language, "Version", "Versie"),
+                    "Android ${nl.mariokart8.mk8dxtimetrials.BuildConfig.VERSION_NAME} (${nl.mariokart8.mk8dxtimetrials.BuildConfig.VERSION_CODE})",
+                    tag = "settings-version",
+                )
+                if (onRunTestScan != null) {
+                    AndroidSettingsDivider()
+                    AndroidSettingsRow(
+                        androidText(language, "Run a test scan", "Testscan uitvoeren"),
+                        androidText(language, "Checks the scanner and sync; the result expires after 24 hours.",
+                            "Controleert scanner en synchronisatie; het resultaat vervalt na 24 uur."),
+                        onClick = onRunTestScan,
+                        tag = "settings-test-scan",
+                    )
+                }
+            }
+        }
+    }
+    if (choosingLanguage) {
+        Mk8dxDialog(
+            title = "Language / Taal",
+            closeLabel = androidText(language, "Close", "Sluiten"),
+            onDismiss = { choosingLanguage = false },
+        ) {
+            Column(
+                Modifier.verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs),
+            ) {
+                AndroidProductLanguage.entries.forEach { option ->
+                    Mk8dxButton(
+                        option.displayName,
+                        { onLanguageChanged(option); choosingLanguage = false },
+                        variant = if (option == language) Mk8dxButtonVariant.Primary else Mk8dxButtonVariant.Secondary,
+                        tag = "settings-language-${option.code}",
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                }
             }
         }
     }
@@ -1670,7 +1673,6 @@ private fun AndroidNotificationSettingsCard(
 private fun PlayerProfilePreferenceEditor(
     saved: AndroidPlayerProfilePreferences,
     language: AndroidProductLanguage,
-    status: String,
     onSave: (AndroidPlayerProfilePreferences) -> Unit,
 ) {
     var countryId by remember(saved.countryId) { mutableStateOf(saved.countryId) }
@@ -1681,11 +1683,18 @@ private fun PlayerProfilePreferenceEditor(
     var countryDialog by remember { mutableStateOf(false) }
     var partDialog by remember { mutableStateOf<AndroidBuildPartCategory?>(null) }
     val characters = remember { AndroidLoadoutVariants.characterParts(AndroidLoadoutCatalog.parts(AndroidBuildPartCategory.CHARACTER)) }
-    Mk8dxPanel(androidText(language, "Public Player preferences", "Openbare spelervoorkeuren")) {
+    // Each choice is saved the moment it is made (no separate Save button).
+    fun saveNow() = onSave(
+        AndroidPlayerProfilePreferences(
+            countryId = countryId, favoriteCharacterId = characterId, favoriteBodyId = bodyId,
+            favoriteTireId = tireId, favoriteGliderId = gliderId,
+        ),
+    )
+    Column(verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
         Text(
             androidText(language, "Country and favorites are shown on your public profile.", "Land en favorieten worden op je openbare profiel getoond."),
-            style = Mk8dxTheme.type.body,
-            color = Mk8dxTheme.colors.textBody,
+            style = Mk8dxTheme.type.bodyS,
+            color = Mk8dxTheme.colors.textSecondary,
         )
         SettingsSelectionButton(
             androidText(language, "Country", "Land"),
@@ -1703,22 +1712,8 @@ private fun PlayerProfilePreferenceEditor(
             val part = (if (category == AndroidBuildPartCategory.CHARACTER) characters else AndroidLoadoutCatalog.parts(category)).firstOrNull { it.id == selectedId }
             SettingsSelectionButton(label, part?.let { androidText(language, it.name, AndroidDutchPresentationCatalog.translate(it.name)) } ?: androidText(language, "Not selected", "Niet geselecteerd"), part?.assetPath) { partDialog = category }
         }
-        Mk8dxButton(
-            androidText(language, "Save country and favorites", "Land en favorieten opslaan"),
-            {
-                onSave(
-                    AndroidPlayerProfilePreferences(
-                        countryId = countryId, favoriteCharacterId = characterId, favoriteBodyId = bodyId,
-                        favoriteTireId = tireId, favoriteGliderId = gliderId,
-                    ),
-                )
-            },
-            variant = Mk8dxButtonVariant.Secondary,
-            modifier = Modifier.testTag("settings-save-profile-preferences"),
-        )
-        Mk8dxStatusMessage(status, tone = settingsStatusTone(status, language))
     }
-    if (countryDialog) SettingsCountryDialog(language, countryId, { countryDialog = false }) { countryId = it; countryDialog = false }
+    if (countryDialog) SettingsCountryDialog(language, countryId, { countryDialog = false }) { countryId = it; countryDialog = false; saveNow() }
     partDialog?.let { category ->
         val parts = if (category == AndroidBuildPartCategory.CHARACTER) characters else AndroidLoadoutCatalog.parts(category)
         SettingsPartDialog(parts, language, { partDialog = null }) { selected ->
@@ -1728,6 +1723,7 @@ private fun PlayerProfilePreferenceEditor(
                 AndroidBuildPartCategory.TIRE -> tireId = selected.id
                 AndroidBuildPartCategory.GLIDER -> gliderId = selected.id
             }
+            saveNow()
             partDialog = null
         }
     }
@@ -2279,4 +2275,23 @@ private fun formatDate(milliseconds: Long): String =
  */
 internal fun openWebsite(context: Context, url: String) {
     nl.mariokart8.mk8dxtimetrials.openProductWebsite(context, url)
+}
+
+/** "N times waiting to be sent", orange, only while something waits; opens the list kept on this phone. */
+@Composable
+internal fun AndroidWaitingBanner(count: Int, onOpen: () -> Unit, modifier: Modifier = Modifier) {
+    if (count <= 0) return
+    val language = LocalAndroidProductLanguage.current
+    Box(
+        modifier
+            .fillMaxWidth()
+            .clickable(role = androidx.compose.ui.semantics.Role.Button, onClick = onOpen)
+            .testTag("waiting-banner"),
+    ) {
+        Mk8dxStatusMessage(
+            if (count == 1) androidText(language, "1 time waiting to be sent", "1 tijd wacht op verzenden")
+            else androidText(language, "$count times waiting to be sent", "$count tijden wachten op verzenden"),
+            tone = Mk8dxStatusTone.Warning,
+        )
+    }
 }
