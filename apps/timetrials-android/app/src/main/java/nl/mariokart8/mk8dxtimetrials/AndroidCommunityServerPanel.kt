@@ -68,6 +68,7 @@ internal fun AndroidCommunityServerPanel(
     language: AndroidProductLanguage,
     onSwitch: (String) -> Unit,
     onAdd: () -> Unit,
+    onSavedResults: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -208,6 +209,23 @@ internal fun AndroidCommunityServerPanel(
             }
         }
         message?.let { (text, tone) -> Mk8dxStatusMessage(text, tone = tone) }
+        // Always reachable: with nothing left to send, the sync icon is gone and so was the way to carry a time.
+        if (communities.size > 1) {
+            Text(
+                t(
+                    "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".",
+                    "Een verzonden tijd neem je mee naar een andere community via de tijden op deze telefoon: kies daar \"Meenemen naar een andere community\".",
+                ),
+                style = type.bodyS,
+                color = colors.textSecondary,
+            )
+        }
+        Mk8dxButton(
+            t("Times on this phone", "Tijden op deze telefoon"),
+            onSavedResults,
+            variant = Mk8dxButtonVariant.Secondary,
+            tag = "settings-community-saved-results",
+        )
         Mk8dxButton(
             t("Add a community", "Een community toevoegen"),
             onAdd,

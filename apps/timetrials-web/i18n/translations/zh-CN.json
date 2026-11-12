@@ -5002,6 +5002,8 @@
   "{0} carried times published.": "已发布 {0} 条带来的成绩。",
   "{0} of Private Players keep waiting.": "私密玩家的 {0} 条成绩继续等待。",
   "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "浏览器先要求你登录？说明你在此安装上还没有账户：扫描管理员为你生成的个人登录卡，然后重新打开批准页面。",
-  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "这是家中或俱乐部的安装：你使用个人登录卡登录，而不是电子邮件。这里还没有账户？请向管理员索取卡片，用这部手机的相机扫描，然后回来点按下面的按钮。"
+  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "这是家中或俱乐部的安装：你使用个人登录卡登录，而不是电子邮件。这里还没有账户？请向管理员索取卡片，用这部手机的相机扫描，然后回来点按下面的按钮。",
+  "Times on this phone": "此手机上的成绩",
+  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "要把已发送的成绩带到另一个社区，请打开此手机上的成绩，然后选择“带到另一个社区”。"
  }
 }

@@ -5002,6 +5002,8 @@
   "{0} carried times published.": "已發布 {0} 筆帶來的成績。",
   "{0} of Private Players keep waiting.": "私人玩家的 {0} 筆成績繼續等待。",
   "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "瀏覽器先要求你登入？表示你在此安裝上還沒有帳戶：掃描管理員為你產生的個人登入卡，然後重新開啟核准頁面。",
-  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "這是家中或俱樂部的安裝：你使用個人登入卡登入，而不是電子郵件。這裡還沒有帳戶？請向管理員索取卡片，用這支手機的相機掃描，然後回來點選下方的按鈕。"
+  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "這是家中或俱樂部的安裝：你使用個人登入卡登入，而不是電子郵件。這裡還沒有帳戶？請向管理員索取卡片，用這支手機的相機掃描，然後回來點選下方的按鈕。",
+  "Times on this phone": "此手機上的成績",
+  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "要把已傳送的成績帶到另一個社群，請開啟此手機上的成績，然後選擇「帶到另一個社群」。"
  }
 }

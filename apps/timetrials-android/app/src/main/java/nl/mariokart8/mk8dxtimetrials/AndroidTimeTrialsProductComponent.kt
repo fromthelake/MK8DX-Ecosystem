@@ -213,7 +213,7 @@ internal fun AndroidTimeTrialsProductComponent(
         openTrack: (String, Int) -> Unit,
         openSavedResults: () -> Unit,
     ) -> Unit = { _, _, _ -> },
-    settingsContent: @Composable (openAccount: () -> Unit, openAdministration: () -> Unit) -> Unit = { _, _ -> },
+    settingsContent: @Composable (openAccount: () -> Unit, openAdministration: () -> Unit, openSavedResults: () -> Unit) -> Unit = { _, _, _ -> },
     administrationContent: @Composable (back: () -> Unit) -> Unit = {},
     activePlayerLabel: String? = null,
     /** The canonical Player id, which is what Ranking keys its view state by. */
@@ -919,6 +919,7 @@ internal fun AndroidTimeTrialsProductComponent(
                         settingsContent(
                             openAccount,
                             { navigate(AndroidTimeTrialsProductRoute.ADMINISTRATION) },
+                            { navigate(AndroidTimeTrialsProductRoute.SAVED_RESULTS) },
                         )
                     }
                     AndroidTimeTrialsProductRoute.ADMINISTRATION -> administrationContent {

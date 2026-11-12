@@ -700,7 +700,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 onOpenSavedResults = openSavedResults,
             )
         },
-        settingsContent = { openAccount, openAdministration ->
+        settingsContent = { openAccount, openAdministration, openSavedResults ->
             AndroidSettingsScreen(
                 ecosystemClient,
                 nativeSession?.playerId,
@@ -717,6 +717,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 administration = administrationClient,
                 onAdministration = openAdministration,
                 onChangeServer = onChangeServer,
+                onSavedResults = openSavedResults,
                 onSwitchCommunity = onSwitchCommunity,
                 appearance = appearanceSettings,
                 onAppearanceChanged = applyAppearance,

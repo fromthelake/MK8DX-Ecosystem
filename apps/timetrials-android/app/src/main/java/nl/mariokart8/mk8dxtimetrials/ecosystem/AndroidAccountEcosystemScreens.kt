@@ -1022,6 +1022,8 @@ internal fun AndroidSettingsScreen(
     language: AndroidProductLanguage,
     onLanguageChanged: (AndroidProductLanguage) -> Unit,
     onChangeServer: () -> Unit = {},
+    /** Saved results on this phone, where a sent time can be carried to another community (ADR-0225). */
+    onSavedResults: () -> Unit = {},
     /** ADR-0225: make another remembered community the active one. */
     onSwitchCommunity: (String) -> Unit = {},
     playerLabel: String? = null,
@@ -1090,6 +1092,7 @@ internal fun AndroidSettingsScreen(
                 language = language,
                 onSwitch = onSwitchCommunity,
                 onAdd = onChangeServer,
+                onSavedResults = onSavedResults,
             )
         }
         item {
