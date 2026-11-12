@@ -19,12 +19,17 @@ of competition to each.
 - **Enter a time your way**: type it in by hand, scan the result screen with a camera — in the
   website or in the Android app — or let the Windows application **LiveTrial** record every run
   by itself through a capture card.
+- **LiveTrial sees the race itself**: when you pick up coins, when you use your mushrooms — and it
+  makes a **video clip of every run** that is yours to use.
 
 **🏁 Tournaments**
 
 - **LAN nights from sign-up to finals**: seating, groups, scores and standings, organised for you.
 - **Results read from the screen** by Tournament Live, checked by the organiser before they count.
 - **TrueSkill rating**: a skill rating that grows with every tournament night.
+- **No account needed to play**: you can host a tournament without asking anyone to sign up.
+  A player who wants their results on their own account can link them later — never an
+  obligation.
 
 **✨ What makes it unique**
 
@@ -32,6 +37,10 @@ Until now there was no solid way to get the data out of Mario Kart 8 Deluxe on a
 through a capture card: it was mostly typing it over, or OCR that only reads text. MK8DX reads the
 times, positions and points *and* recognises the pictures: the **character (including the right
 colour)**, **kart body, tyres, glider** and **flag** — wherever the game shows them.
+
+And you do not even need a capture card for that: from the couch, point your phone at the TV and
+scan a Time Trial **result screen** or a **Select-a-Ghost screen**, and the result goes straight
+to your website. As far as we know, that had not been done before either.
 
 Everything runs on **your own computer and your own network**. No cloud account, no
 subscription, no ads.
