@@ -1,17 +1,37 @@
 # MK8DX Ecosystem
 
-**Your own Mario Kart 8 Deluxe home base — for LAN nights, Time Trials and bragging rights.**
+**Host your own Mario Kart 8 Deluxe community website — for Time Trials *and* tournament nights.**
 
 Language: English · [Nederlands](README_NL.md)
 
 <!-- Screenshots to add before publishing: a LAN night seating board, LiveTrial's live view,
      the phone scanner on a TV result screen, a player's records page. Real captures only. -->
 
-Remember LAN parties? Two players per screen, a room full of Switches, everybody yelling at
-Rainbow Road. MK8DX Ecosystem brings that night back — and takes care of everything around the
-racing: who sits where, which group plays next, the scores, the finals and the standings.
-Between nights, it turns your Time Trials into something you can actually compare: automatically
-recorded runs, ghosts, records and rivals.
+MK8DX Ecosystem is something you host yourself. It gives your community one website that keeps
+two kinds of results — **Time Trial results** and **tournament results** — and adds its own kind
+of competition to each.
+
+**⏱️ Time Trials**
+
+- **Leaderboards** per track and class (150cc/200cc), for your community and next to the
+  **world records**, which are refreshed once a day.
+- **Rivals**: pick them once and always see where they stand against you.
+- **Enter a time your way**: type it in by hand, scan the result screen with a camera — in the
+  website or in the Android app — or let the Windows application **LiveTrial** record every run
+  by itself through a capture card.
+
+**🏁 Tournaments**
+
+- **LAN nights from sign-up to finals**: seating, groups, scores and standings, organised for you.
+- **Results read from the screen** by Tournament Live, checked by the organiser before they count.
+- **TrueSkill rating**: a skill rating that grows with every tournament night.
+
+**✨ What makes it unique**
+
+Until now there was no solid way to get the data out of Mario Kart 8 Deluxe on a Nintendo Switch
+through a capture card: it was mostly typing it over, or OCR that only reads text. MK8DX reads the
+times, positions and points *and* recognises the pictures: the **character (including the right
+colour)**, **kart body, tyres, glider** and **flag** — wherever the game shows them.
 
 Everything runs on **your own computer and your own network**. No cloud account, no
 subscription, no ads.
@@ -20,7 +40,9 @@ subscription, no ads.
 
 ## 🏁 LAN tournament nights
 
-The heart of MK8DX: a real, social tournament night.
+Remember LAN parties? Two players per screen, a room full of Switches, everybody yelling at
+Rainbow Road. MK8DX brings that night back and takes care of everything around the racing: who
+sits where, which group plays next, the scores, the finals and the standings.
 
 - **Sign-up** — open sign-up for a night with a closing time and a maximum; first come, or a fair
   draw from a published seed. Players sign up with the Switches they bring.
