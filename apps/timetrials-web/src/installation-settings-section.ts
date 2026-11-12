@@ -21,6 +21,11 @@ import { localized, productLocaleTag } from "./product-language.js";
 
 export type MountedInstallationSettingsSection = Readonly<{ ready: Promise<void>; unmount(): void }>;
 
+/** Administration → Time Trials showing only withheld runs, where carried runs wait for review. */
+export const WAITING_TIME_TRIALS_HREF = "/?admin=time-trials&publication=withheld";
+
+type ConfirmPort = (options: Parameters<typeof confirmDialog>[0]) => void;
+
 function clear(element: HTMLElement): void {
   while (element.firstChild !== null) { element.removeChild(element.firstChild); }
 }
@@ -93,6 +98,8 @@ function failureText(error: unknown, fallback: string): string {
 export function mountInstallationSettingsSection(
   root: HTMLElement,
   client: InstallationSettingsClient = createInstallationSettingsClient(),
+  // The confirmation dialog; tests pass their own.
+  confirm: ConfirmPort = (options) => { confirmDialog(options).open(); },
 ): MountedInstallationSettingsSection {
   const document = root.ownerDocument;
   const controller = new AbortController();
@@ -139,7 +146,7 @@ export function mountInstallationSettingsSection(
   };
 
   const confirmRecompute = (): void => {
-    confirmDialog({
+    confirm({
       title: localized("Recalculate every rating?", "Alle ratings herberekenen?"),
       description: localized(
         "Every rating is rebuilt from the whole history under the current rule of who counts, in a new epoch. Earlier epochs stay stored for audit.",
@@ -148,7 +155,59 @@ export function mountInstallationSettingsSection(
       confirmLabel: localized("Recalculate ratings", "Ratings herberekenen"),
       cancelLabel: localized("Cancel", "Annuleren"),
       onConfirm: recompute,
-    }).open();
+    });
+  };
+
+  // ADR-0225: the carried runs still waiting once approval is no longer asked. Nothing happens
+  // without the administrator's answer; "Leave them waiting" keeps them as they are.
+  const askAboutWaiting = (saved: InstallationSettingsAdministration): void => {
+    const waiting = saved.carriedTimesAwaitingReview;
+    if (waiting < 1 || saved.carriedTimes === "review") { return; }
+    const decision = saved.carriedTimes === "allowed" ? "publish" as const : "refuse" as const;
+    confirm({
+      title: localized(`${waiting} carried times are still waiting.`, `${waiting} meegenomen tijden wachten nog.`),
+      description: decision === "publish"
+        ? localized(
+          "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.",
+          "Meegenomen tijden hebben geen goedkeuring meer nodig. Publiceer de tijden die nog wachten, of laat ze wachten zodat een beheerder ze een voor een goedkeurt.",
+        )
+        : localized(
+          "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.",
+          "Meegenomen tijden worden nu geweigerd. Weiger de tijden die nog wachten (ze worden teruggetrokken en kunnen later worden teruggezet), of laat ze wachten.",
+        ),
+      confirmLabel: decision === "publish"
+        ? localized(`Publish all ${waiting}`, `Alle ${waiting} publiceren`)
+        : localized(`Refuse all ${waiting}`, `Alle ${waiting} weigeren`),
+      cancelLabel: localized("Leave them waiting", "Laat ze wachten"),
+      ...(decision === "refuse" ? { tone: "danger" as const } : {}),
+      onConfirm: () => {
+        status.textContent = decision === "publish"
+          ? localized("Publishing the carried times…", "Meegenomen tijden worden gepubliceerd…")
+          : localized("Refusing the carried times…", "Meegenomen tijden worden geweigerd…");
+        void client.resolveCarriedWaiting(decision, waiting, controller.signal)
+          .then((outcome) => {
+            if (disposed) { return; }
+            const kept = outcome.left === 0 ? "" : ` ${localized(
+              `${outcome.left} of Private Players keep waiting.`,
+              `${outcome.left} van privéspelers blijven wachten.`,
+            )}`;
+            status.textContent = outcome.decision === "publish"
+              ? `${localized(`${outcome.resolved} carried times published.`, `${outcome.resolved} meegenomen tijden gepubliceerd.`)}${kept}`
+              : localized(`${outcome.resolved} carried times refused.`, `${outcome.resolved} meegenomen tijden geweigerd.`);
+            return load(false);
+          })
+          .catch((error: unknown) => {
+            if (disposed) { return; }
+            status.textContent = error instanceof InstallationSettingsClientError && error.code === "conflict"
+              ? localized(
+                "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.",
+                "Het aantal wachtende meegenomen tijden is intussen veranderd. De pagina is opnieuw geladen; kies opnieuw.",
+              )
+              : localized("The carried times could not be changed.", "De meegenomen tijden konden niet worden gewijzigd.");
+            void load(false);
+          });
+      },
+    });
   };
 
   const save = (patch: Readonly<{
@@ -157,6 +216,7 @@ export function mountInstallationSettingsSection(
     carriedTimes?: CarriedTimesPolicy;
   }>, thenRecompute: boolean): void => {
     if (current === null) { return; }
+    const previousCarriedTimes = current.carriedTimes;
     status.textContent = localized("Saving…", "Opslaan…");
     void client.update({ expectedRevision: current.revision, ...patch }, controller.signal)
       .then((saved) => {
@@ -165,6 +225,7 @@ export function mountInstallationSettingsSection(
         render(saved);
         status.textContent = localized("Saved.", "Opgeslagen.");
         if (thenRecompute) { recompute(); }
+        if (patch.carriedTimes !== undefined && previousCarriedTimes === "review") { askAboutWaiting(saved); }
       })
       .catch((error: unknown) => {
         if (disposed) { return; }
@@ -224,7 +285,7 @@ export function mountInstallationSettingsSection(
       ratingEligibilityOptions(),
       settings.ratingEligibility,
       (value, select) => {
-        confirmDialog({
+        confirm({
           title: localized("Change who counts for the rating?", "Wijzigen wie meetelt voor de rating?"),
           description: value === "claimed_only"
             ? localized(
@@ -239,7 +300,7 @@ export function mountInstallationSettingsSection(
           cancelLabel: localized("Cancel", "Annuleren"),
           tone: "danger",
           onConfirm: () => { save({ ratingEligibility: value }, true); },
-        }).open();
+        });
         // Until confirmed, the select keeps showing what is saved.
         select.value = settings.ratingEligibility;
       },
@@ -254,6 +315,25 @@ export function mountInstallationSettingsSection(
       settings.carriedTimes,
       (value) => { save({ carriedTimes: value }, false); },
     ));
+    // ADR-0225: always say how many carried times wait for review, and where to find them.
+    const waiting = document.createElement("p");
+    waiting.className = "ds-body installation-settings__waiting";
+    const waitingText = document.createElement("span");
+    waitingText.textContent = settings.carriedTimesAwaitingReview === 0
+      ? localized("No carried times are waiting for review.", "Er wachten geen meegenomen tijden op goedkeuring.")
+      : localized(
+        `${settings.carriedTimesAwaitingReview} carried time(s) waiting for review.`,
+        `${settings.carriedTimesAwaitingReview} meegenomen tijd(en) wachten op goedkeuring.`,
+      );
+    waiting.append(waitingText);
+    if (settings.carriedTimesAwaitingReview > 0) {
+      const link = document.createElement("a");
+      link.className = "tt-auth__link";
+      link.setAttribute("href", WAITING_TIME_TRIALS_HREF);
+      link.textContent = localized("Show them in Time Trials", "Toon ze bij Tijdritten");
+      waiting.append(" ", link);
+    }
+    content.append(waiting);
     const recomputeStatus = settings.ratingRecompute;
     const last = document.createElement("p");
     last.className = "ds-body";

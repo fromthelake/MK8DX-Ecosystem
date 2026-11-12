@@ -450,3 +450,24 @@ describe("publishing a run that waits for review (ADR-0225)", () => {
     section.unmount();
   });
 });
+
+describe("the waiting runs link (ADR-0225)", () => {
+  it("opens Administration -> Time Trials with the withheld filter chosen", async () => {
+    const queries: unknown[] = [];
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const section = mountAdministratorTimeTrialSection(
+      root as unknown as HTMLElement,
+      client({ async listForAdministrator(query) { queries.push(query); return []; } }),
+      {
+        async read() { throw new Error("unused"); },
+        async setOwn() { throw new Error("unused"); },
+        async setForPlayer() { throw new Error("unused"); },
+      },
+      { publicationStatus: "withheld" },
+    );
+    await section.ready;
+    expect(queries[0]).toMatchObject({ publicationStatus: "withheld" });
+    section.unmount();
+  });
+});

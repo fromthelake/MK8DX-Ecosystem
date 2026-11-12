@@ -28,6 +28,7 @@ const administration = (overrides: Partial<InstallationSettingsAdministration> =
   carriedTimes: "off",
   revision: 0,
   updatedAtMs: null,
+  carriedTimesAwaitingReview: 0,
   ratingRecompute: { needed: false, eligibilityChanged: false, claimChanges: 0, lastRecalculatedAtMs: null },
   ...overrides,
 });
@@ -121,6 +122,7 @@ describe("Administration → Installation settings", () => {
         return current;
       },
       async recomputeRatings() { return { epoch: 1, includedPublications: 0, appliedRaces: 0, skippedRaces: 0, ratedPlayers: 0 }; },
+      async resolveCarriedWaiting() { throw new Error("unused"); },
     };
     const mounted = mountInstallationSettingsSection(root as unknown as HTMLElement, client);
     await mounted.ready;
@@ -184,5 +186,122 @@ describe("\"new Player\" when only self sign-up creates Players", () => {
     const words = texts(closed as never).join("\n");
     expect(words).not.toContain("New Player \"Mal\"");
     expect(words).toContain("On this site Players create themselves when they sign up.");
+  });
+});
+
+describe("carried times still waiting when approval is no longer asked (ADR-0225)", () => {
+  type Asked = Parameters<NonNullable<Parameters<typeof mountInstallationSettingsSection>[2]>>[0];
+
+  function harness(initial: Partial<InstallationSettingsAdministration>, waitingAfterSave = initial.carriedTimesAwaitingReview ?? 0) {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const asked: Asked[] = [];
+    const resolved: [string, number][] = [];
+    let current = administration(initial) as unknown as InstallationSettingsAdministration;
+    const client: InstallationSettingsClient = {
+      async current() { return current; },
+      async administration() { return current; },
+      async update(input) {
+        current = { ...current, ...input, revision: current.revision + 1, carriedTimesAwaitingReview: waitingAfterSave } as InstallationSettingsAdministration;
+        return current;
+      },
+      async recomputeRatings() { throw new Error("unused"); },
+      async resolveCarriedWaiting(decision, expectedCount) {
+        resolved.push([decision, expectedCount]);
+        current = { ...current, carriedTimesAwaitingReview: 0 } as InstallationSettingsAdministration;
+        return { decision, resolved: expectedCount, left: 0 };
+      },
+    };
+    const mounted = mountInstallationSettingsSection(root as unknown as HTMLElement, client, (options) => { asked.push(options); });
+    const choose = async (value: string) => {
+      const select = descendants(root).filter((node) => node.tagName === "select")[2]!;
+      select.value = value;
+      select.dispatch("change");
+      await settle();
+    };
+    return { root, mounted, asked, resolved, choose };
+  }
+
+  it("always says how many carried times wait, with a link to the waiting runs", async () => {
+    const some = harness({ carriedTimes: "review", carriedTimesAwaitingReview: 3 });
+    await some.mounted.ready;
+    expect(texts(some.root)).toContain("3 carried time(s) waiting for review.");
+    const link = descendants(some.root).find((node) => node.tagName === "a" && node.textContent === "Show them in Time Trials");
+    expect(link?.getAttribute("href")).toBe("/?admin=time-trials&publication=withheld");
+    const none = harness({ carriedTimes: "review" });
+    await none.mounted.ready;
+    expect(texts(none.root)).toContain("No carried times are waiting for review.");
+    expect(descendants(none.root).some((node) => node.tagName === "a")).toBe(false);
+  });
+
+  it("asks to publish all of them when approval is switched to allowed", async () => {
+    const { mounted, asked, resolved, choose, root } = harness({ carriedTimes: "review", carriedTimesAwaitingReview: 2 });
+    await mounted.ready;
+    await choose("allowed");
+    expect(asked).toHaveLength(1);
+    expect(asked[0]).toMatchObject({
+      title: "2 carried times are still waiting.", confirmLabel: "Publish all 2", cancelLabel: "Leave them waiting",
+    });
+    asked[0]!.onConfirm();
+    await settle();
+    expect(resolved).toEqual([["publish", 2]]);
+    expect(texts(root)).toContain("No carried times are waiting for review.");
+  });
+
+  it("asks to refuse all of them when carried times are turned off", async () => {
+    const { mounted, asked, resolved, choose } = harness({ carriedTimes: "review", carriedTimesAwaitingReview: 4 });
+    await mounted.ready;
+    await choose("off");
+    expect(asked[0]).toMatchObject({
+      title: "4 carried times are still waiting.", confirmLabel: "Refuse all 4", cancelLabel: "Leave them waiting", tone: "danger",
+    });
+    asked[0]!.onConfirm();
+    await settle();
+    expect(resolved).toEqual([["refuse", 4]]);
+  });
+
+  it("does nothing when they are left waiting, and does not ask when nothing waits or approval was not on", async () => {
+    const left = harness({ carriedTimes: "review", carriedTimesAwaitingReview: 2 });
+    await left.mounted.ready;
+    await left.choose("allowed");
+    expect(left.asked).toHaveLength(1);
+    // "Leave them waiting" is the dialog's cancel: onConfirm is never called.
+    await settle();
+    expect(left.resolved).toEqual([]);
+    expect(texts(left.root)).toContain("2 carried time(s) waiting for review.");
+
+    const empty = harness({ carriedTimes: "review" });
+    await empty.mounted.ready;
+    await empty.choose("off");
+    expect(empty.asked).toHaveLength(0);
+
+    const fromOff = harness({ carriedTimes: "off", carriedTimesAwaitingReview: 2 });
+    await fromOff.mounted.ready;
+    await fromOff.choose("allowed");
+    expect(fromOff.asked).toHaveLength(0);
+  });
+
+  it("parses the count and posts the decision with the count on screen", async () => {
+    const calls: { path: string; init: RequestInit }[] = [];
+    const client = createInstallationSettingsClient(async (path, init) => {
+      calls.push({ path, init });
+      if (path === "/v1/session/csrf") {
+        return json({ schemaVersion: "mk8dx.web-csrf.v1", headerName: "x-mk8dx-csrf", value: "synthetic-proof" });
+      }
+      if (path.endsWith("resolve-carried-waiting")) {
+        return json({ schemaVersion: "mk8dx.carried-waiting-resolution.v1", decision: "refuse", resolved: 2, left: 0 });
+      }
+      return json(administration({ carriedTimesAwaitingReview: 2 }));
+    });
+    expect((await client.administration()).carriedTimesAwaitingReview).toBe(2);
+    expect(await client.resolveCarriedWaiting("refuse", 2)).toEqual({ decision: "refuse", resolved: 2, left: 0 });
+    expect(calls.at(-1)!.path).toBe("/v1/administrator/time-trials/actions/resolve-carried-waiting");
+    expect(JSON.parse(String(calls.at(-1)!.init.body))).toEqual({ decision: "refuse", expectedCount: 2 });
+    const missing = createInstallationSettingsClient(async () => json({ ...administration(), carriedTimesAwaitingReview: undefined }));
+    await expect(missing.administration()).rejects.toMatchObject({ code: "invalid_response" });
+    const conflict = createInstallationSettingsClient(async (path) => path === "/v1/session/csrf"
+      ? json({ schemaVersion: "mk8dx.web-csrf.v1", headerName: "x-mk8dx-csrf", value: "synthetic-proof" })
+      : json({ code: "time_trial_lifecycle_conflict", message: "changed" }, 409));
+    await expect(conflict.resolveCarriedWaiting("publish", 2)).rejects.toMatchObject({ code: "conflict" });
   });
 });

@@ -39,6 +39,8 @@ export type RatingRecomputeStatus = Readonly<{
 export type InstallationSettingsAdministration = InstallationSettings & Readonly<{
   revision: number;
   updatedAtMs: number | null;
+  /** ADR-0225: carried runs withheld for review right now. */
+  carriedTimesAwaitingReview: number;
   ratingRecompute: RatingRecomputeStatus;
 }>;
 
@@ -49,6 +51,15 @@ export type InstallationRatingRecompute = Readonly<{
   skippedRaces: number;
   ratedPlayers: number;
 }>;
+
+/** ADR-0225: what happened to the carried runs that were still waiting. */
+export type CarriedWaitingResolution = Readonly<{
+  decision: "publish" | "refuse";
+  resolved: number;
+  left: number;
+}>;
+
+export const CARRIED_WAITING_RESOLUTION_PATH = "/v1/administrator/time-trials/actions/resolve-carried-waiting";
 
 export type InstallationSettingsErrorCode =
   | "not_authorized" | "conflict" | "invalid_input" | "unavailable" | "invalid_response";
@@ -74,6 +85,12 @@ export interface InstallationSettingsClient {
     carriedTimes?: CarriedTimesPolicy;
   }>, signal?: AbortSignal): Promise<InstallationSettingsAdministration>;
   recomputeRatings(signal?: AbortSignal): Promise<InstallationRatingRecompute>;
+  /** Publishes or refuses every carried run still waiting; expectedCount is the number on screen. */
+  resolveCarriedWaiting(
+    decision: "publish" | "refuse",
+    expectedCount: number,
+    signal?: AbortSignal,
+  ): Promise<CarriedWaitingResolution>;
 }
 
 type FetchPort = (input: string, init: RequestInit) => Promise<Response>;
@@ -143,7 +160,10 @@ function recomputeStatus(value: unknown): RatingRecomputeStatus {
 
 function administrationDocument(value: unknown): InstallationSettingsAdministration {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs", "ratingRecompute"]);
+  exact(row, [
+    "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs",
+    "carriedTimesAwaitingReview", "ratingRecompute",
+  ]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings-administration.v1") { fail(); }
   return {
     playerCreation: playerCreation(row["playerCreation"]),
@@ -151,8 +171,18 @@ function administrationDocument(value: unknown): InstallationSettingsAdministrat
     carriedTimes: carriedTimes(row["carriedTimes"]),
     revision: count(row["revision"]),
     updatedAtMs: row["updatedAtMs"] === null ? null : count(row["updatedAtMs"]),
+    carriedTimesAwaitingReview: count(row["carriedTimesAwaitingReview"]),
     ratingRecompute: recomputeStatus(row["ratingRecompute"]),
   };
+}
+
+function resolutionDocument(value: unknown): CarriedWaitingResolution {
+  const row = object(value);
+  exact(row, ["schemaVersion", "decision", "resolved", "left"]);
+  if (row["schemaVersion"] !== "mk8dx.carried-waiting-resolution.v1") { fail(); }
+  const decision = row["decision"];
+  if (decision !== "publish" && decision !== "refuse") { fail(); }
+  return { decision, resolved: count(row["resolved"]), left: count(row["left"]) };
 }
 
 function recomputeDocument(value: unknown): InstallationRatingRecompute {
@@ -246,6 +276,12 @@ export function createInstallationSettingsClient(
       }, signal));
     },
     async recomputeRatings(signal) { return recomputeDocument(await post(INSTALLATION_RECOMPUTE_PATH, {}, signal)); },
+    async resolveCarriedWaiting(decision, expectedCount, signal) {
+      if ((decision !== "publish" && decision !== "refuse") || !Number.isSafeInteger(expectedCount) || expectedCount < 1) {
+        throw new InstallationSettingsClientError("invalid_input");
+      }
+      return resolutionDocument(await post(CARRIED_WAITING_RESOLUTION_PATH, { decision, expectedCount }, signal));
+    },
   };
 }
 
