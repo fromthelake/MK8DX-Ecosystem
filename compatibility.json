@@ -6,7 +6,7 @@
     "api",
     "web"
   ],
-  "databaseMigration": "0088",
+  "databaseMigration": "0089",
   "nativeClientSupport": "android-livetrial-tournament-build-from-this-repository",
   "productVersion": "0.1.0",
   "schemaVersion": "mk8dx.compatibility.v1"

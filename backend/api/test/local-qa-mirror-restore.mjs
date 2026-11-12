@@ -35,7 +35,8 @@ const CATALOGED_MIGRATIONS = CATALOGED_MIGRATION_VERSIONS.length;
 // adds a defaulted failure count to that still-empty table. 0087 adds the defaulted carried-times setting
 // and four nullable carried columns on Time Trial revisions (ADR-0225); a snapshot row carries none of them.
 // 0088 only widens three checks on the lifecycle audit table; every snapshot row already satisfies them.
-const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088"]);
+// 0089 widens the same table's reason check once more.
+const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088", "0089"]);
 // Nullable columns those migrations add to tables the snapshot carries. A snapshot taken before the migration lacks
 // them; its rows restore into the remaining columns and the new column stays NULL, as it would in production.
 const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
