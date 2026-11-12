@@ -112,6 +112,8 @@ private class AndroidCanonicalSubmissionRequestTransport(
         } catch (_: Exception) {
             fail(ANDROID_CANONICAL_TRANSPORT_UNAVAILABLE)
         }
+        if (response.statusCode == 200) return parseCarriedFill(response, canonical)
+        if (response.statusCode == 409) carriedAlreadyThere(response.body, canonical)?.let { return it }
         if (response.statusCode != 201) mapStatus(response.statusCode, response.body)
         return parseAcknowledgement(response, canonical)
     }
@@ -242,3 +244,71 @@ private fun JsonObject.positiveIntegerValue(name: String): Long? =
         ?.content
         ?.takeIf { it.matches(positiveIntegerPattern) }
         ?.toLongOrNull()
+
+/** ADR-0225 amendment 3: the two 409 answers that mean a carried copy is already there. */
+internal const val ANDROID_CARRIED_DUPLICATE_CODE = "carried_duplicate"
+internal const val ANDROID_CARRIED_NOTHING_TO_FILL_CODE = "carried_nothing_to_fill"
+internal const val ANDROID_CARRIED_FILL_SCHEMA = "mk8dx.carried-fill.v1"
+
+/** The fields an equal run may have had filled in, in the order the site names them. */
+internal val ANDROID_CARRIED_FILLABLE_FIELDS = listOf(
+    "characterId", "bodyId", "tireId", "gliderId", "laps", "lapTimes", "mushrooms", "coins",
+    "mushroomsUsed", "coinsCollected", "loadout", "lapDetails",
+)
+
+/** What became of a carried copy that the receiving community did not store as a new run. */
+internal data class AndroidCarriedOutcome(val alreadyThere: Boolean, val filledFields: List<String>)
+
+internal fun androidCarriedOutcomeOrNull(element: Any?): AndroidCarriedOutcome? {
+    val root = element as? JsonObject ?: return null
+    return when ((root["carriedOutcome"] as? JsonPrimitive)?.takeIf { it.isString }?.content) {
+        "already_there" -> AndroidCarriedOutcome(true, emptyList())
+        "filled" -> AndroidCarriedOutcome(
+            false,
+            (root["filledFields"] as? kotlinx.serialization.json.JsonArray).orEmpty()
+                .mapNotNull { (it as? JsonPrimitive)?.takeIf { p -> p.isString }?.content }
+                .filter { it in ANDROID_CARRIED_FILLABLE_FIELDS },
+        )
+        else -> null
+    }
+}
+
+private fun carriedAcknowledgement(expected: JsonObject, carried: JsonObject): JsonObject = JsonObject(
+    mapOf(
+        "submissionId" to expected.getValue("submissionId"),
+        "revision" to expected.getValue("revision"),
+        "carried" to carried,
+    ),
+)
+
+/** A 409 duplicate or nothing-to-fill for a carried copy is done, not failed. */
+private fun carriedAlreadyThere(body: ByteArray, expected: JsonObject): JsonObject? {
+    if (expected["carriedFrom"] !is JsonObject) return null
+    val code = refusalCode(body)
+    if (code != ANDROID_CARRIED_DUPLICATE_CODE && code != ANDROID_CARRIED_NOTHING_TO_FILL_CODE) return null
+    return carriedAcknowledgement(expected, JsonObject(mapOf(
+        "carriedOutcome" to JsonPrimitive("already_there"), "code" to JsonPrimitive(code),
+    )))
+}
+
+/** 200 `mk8dx.carried-fill.v1`: the carried copy filled the empty fields of an equal run; it counts as sent. */
+private fun parseCarriedFill(response: AndroidCanonicalSubmissionResponse, expected: JsonObject): JsonObject {
+    if (expected["carriedFrom"] !is JsonObject ||
+        response.body.isEmpty() || response.body.size > ANDROID_CANONICAL_SUBMISSION_RESPONSE_MAX_BYTES
+    ) {
+        fail(ANDROID_DELIVERY_FAILURE_RESPONSE_INVALID)
+    }
+    val document = try {
+        requestJson.parseToJsonElement(response.body.toString(Charsets.UTF_8)) as JsonObject
+    } catch (_: Exception) {
+        fail(ANDROID_DELIVERY_FAILURE_RESPONSE_INVALID)
+    }
+    if (document.stringValue("schemaVersion") != ANDROID_CARRIED_FILL_SCHEMA) fail(ANDROID_DELIVERY_FAILURE_RESPONSE_INVALID)
+    val named = (document["filledFields"] ?: document["filled"]) as? kotlinx.serialization.json.JsonArray
+    val fields = named.orEmpty().mapNotNull { (it as? JsonPrimitive)?.takeIf { p -> p.isString }?.content }
+        .filter { it in ANDROID_CARRIED_FILLABLE_FIELDS }.distinct()
+    return carriedAcknowledgement(expected, JsonObject(mapOf(
+        "carriedOutcome" to JsonPrimitive("filled"),
+        "filledFields" to kotlinx.serialization.json.JsonArray(fields.map(::JsonPrimitive)),
+    )))
+}

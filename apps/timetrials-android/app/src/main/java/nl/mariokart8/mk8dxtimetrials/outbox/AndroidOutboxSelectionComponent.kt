@@ -23,6 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.ui.androidLocalizedPresentation
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
+import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxChip
@@ -154,6 +155,12 @@ internal fun AndroidOutboxSelectionComponent(
                                 .testTag("outbox-selection-row-status-$index")
                                 .semantics(mergeDescendants = true) { },
                         )
+                        entry.carriedOutcome?.let { outcome ->
+                            Mk8dxMetaLine(
+                                text = androidCarriedOutcomeText(LocalAndroidProductLanguage.current, outcome),
+                                modifier = Modifier.testTag("outbox-selection-row-carried-$index"),
+                            )
+                        }
                         if (entry.isTestResult) {
                             Mk8dxMetaLine(
                                 text = androidLocalizedPresentation(
@@ -291,3 +298,24 @@ internal fun boundedAndroidOutboxSelectionLabel(label: String): String? =
             ANDROID_OUTBOX_SELECTION_LABEL_MAX_CODE_POINTS &&
             it.none(Char::isISOControl)
     }
+
+/** "Already there" or "Filled in: character, lap times" for a carried copy (ADR-0225 amendment 3). */
+internal fun androidCarriedOutcomeText(language: AndroidProductLanguage, outcome: AndroidCarriedOutcome): String {
+    if (outcome.alreadyThere || outcome.filledFields.isEmpty()) {
+        return androidText(language, "Already there", "Al aanwezig")
+    }
+    val fields = outcome.filledFields.map { field ->
+        when (field) {
+            "characterId" -> androidText(language, "character", "personage")
+            "bodyId" -> androidText(language, "body", "kart")
+            "tireId" -> androidText(language, "tyres", "banden")
+            "gliderId" -> androidText(language, "glider", "zweefvlieger")
+            "laps", "lapTimes" -> androidText(language, "lap times", "rondetijden")
+            "mushrooms", "mushroomsUsed" -> androidText(language, "mushrooms", "paddenstoelen")
+            "coins", "coinsCollected" -> androidText(language, "coins", "munten")
+            "lapDetails" -> androidText(language, "coins and mushrooms", "munten en paddenstoelen")
+            else -> androidText(language, "build", "combinatie")
+        }
+    }.distinct().joinToString(", ")
+    return androidText(language, "Filled in: $fields", "Aangevuld: $fields")
+}

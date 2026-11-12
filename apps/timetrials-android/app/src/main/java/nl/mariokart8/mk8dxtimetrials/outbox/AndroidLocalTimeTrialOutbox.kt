@@ -542,6 +542,9 @@ internal class AndroidLocalTimeTrialOutbox(
                     ?: submissionPlayerReference(record.canonicalSubmission),
                 isTestResult = (record.canonicalSubmission["source"] as? JsonObject)
                     ?.stringValue("kind") == "android_scan_test",
+                carriedOutcome = record.state.feedback
+                    ?.takeIf { record.state.state == "synced" }
+                    ?.let(::androidCarriedOutcomeOrNull),
             )
         }
     }

@@ -20,6 +20,8 @@ internal data class AndroidCanonicalOutboxIndexRecord(
     val owningSlotId: String? = null,
     val playerReference: AndroidLocalOutboxPlayerReferenceV1? = null,
     val isTestResult: Boolean = false,
+    /** ADR-0225 amendment 3: a carried copy the receiving community already had, or that filled an equal run. */
+    val carriedOutcome: AndroidCarriedOutcome? = null,
 )
 
 internal fun interface AndroidCanonicalOutboxIndexPort {
@@ -36,6 +38,8 @@ internal data class AndroidOutboxIndexEntry(
     val owningSlotId: String? = null,
     val playerReference: AndroidLocalOutboxPlayerReferenceV1? = null,
     val isTestResult: Boolean = false,
+    /** ADR-0225 amendment 3: a carried copy the receiving community already had, or that filled an equal run. */
+    val carriedOutcome: AndroidCarriedOutcome? = null,
 )
 
 internal enum class AndroidOutboxIndexFailureCode {
@@ -108,6 +112,7 @@ internal class AndroidOutboxIndexController(
                     ?.takeIf { it.matches(androidOutboxOwningSlotIdPattern) },
                 playerReference = record.playerReference
                     ?.takeIf(::isValidAndroidOutboxPlayerReference),
+                carriedOutcome = record.carriedOutcome,
                 isTestResult = record.isTestResult,
             )
         }.toList()
