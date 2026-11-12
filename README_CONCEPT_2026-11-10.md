@@ -4,8 +4,10 @@
 
 Language: English · [Nederlands](README_NL.md)
 
-<!-- Screenshots to add before publishing: a LAN night seating board, LiveTrial's live view,
-     the phone scanner on a TV result screen, a player's records page. Real captures only. -->
+<!-- Screenshots still to add: LiveTrial's live view and the phone scanner on a TV result screen
+     (real captures, player names made unrecognisable). The pictures below use made-up players. -->
+
+![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 
 MK8DX Ecosystem is something you host yourself. It gives your community one website that keeps
 two kinds of results — **Time Trial results** and **tournament results** — and adds its own kind
@@ -81,6 +83,11 @@ sits where, which group plays next, the scores, the finals and the standings.
 - **Afterwards** — final standings, a shareable report (WhatsApp, PNG, CSV, a WordPress-ready
   article) and an optional TrueSkill-style community rating across nights.
 
+<p>
+  <img src="docs/readme/tournament-results.jpg" alt="Final results of a tournament night: qualifier groups coloured by the final each player went on to" width="49%">
+  <img src="docs/readme/tournament-skill.jpg" alt="Tournament skill page: TrueSkill rating, wins, top 3 and average finish of a player" width="49%">
+</p>
+
 ## ⏱️ Time Trials with LiveTrial — fully automatic
 
 Connect your Switch to your Windows PC through a capture card and just race. As far as we know,
@@ -116,6 +123,11 @@ first download. The Android app scans on-device too.
 Every player gets their own records per track, a ranking with family, friends or the club, rivals
 to chase (with pokes, challenges and the odd dice duel), notifications when someone beats your
 time, and **23 mastery levels** measured against the current world records.
+
+<p>
+  <img src="docs/readme/timetrials-leaderboard.jpg" alt="Rainbow Road leaderboard with the world record, combos, mushrooms and coins per lap" width="72%">
+  <img src="docs/readme/phone-leaderboard.jpg" alt="The same leaderboard on a phone" width="24%">
+</p>
 
 ## 🌍 Speaks your language — all 15 of them
 
