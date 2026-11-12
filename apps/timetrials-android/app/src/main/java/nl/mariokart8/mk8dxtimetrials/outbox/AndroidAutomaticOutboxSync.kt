@@ -126,6 +126,7 @@ class AndroidAutomaticSyncWorker(
                 sessions.load(owningSlotId, nowMs) != null
             },
         ).create().synchronization
+        refreshOfflineCopy(context, server, sessions, opener)
         val batch = dependencies.batchSynchronization ?: return Result.failure()
         return when (AndroidAutomaticOutboxSynchronizer(
             outbox,
@@ -135,5 +136,30 @@ class AndroidAutomaticSyncWorker(
             AndroidAutomaticSyncOutcome.COMPLETE -> Result.success()
             AndroidAutomaticSyncOutcome.RETRY -> Result.retry()
         }
+    }
+}
+
+/**
+ * ADR-0225 amendment 1: the background pass also refreshes the active community's copy for the signed-in
+ * account. A failure leaves the copy as it was and never fails the sync.
+ */
+private fun refreshOfflineCopy(
+    context: Context,
+    server: String,
+    sessions: AndroidKeystoreNativeSessionStore,
+    opener: AndroidHttpsConnectionOpener,
+) {
+    runCatching {
+        val now = System.currentTimeMillis()
+        val session = sessions.activeSlotId()?.let { sessions.load(it, now) } ?: return
+        val client = nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidTimeTrialsEcosystemClient(
+            server, session, nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidEcosystemConnectionOpener(opener::open),
+        )
+        nl.mariokart8.mk8dxtimetrials.offline.refreshAndroidOfflineCopy(
+            nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore.forOrigin(context, server),
+            nl.mariokart8.mk8dxtimetrials.offline.androidOfflineCopySource(client),
+            session.playerId,
+            now,
+        )
     }
 }

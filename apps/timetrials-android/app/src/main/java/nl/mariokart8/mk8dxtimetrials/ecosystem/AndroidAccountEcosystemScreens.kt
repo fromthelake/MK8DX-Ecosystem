@@ -1076,6 +1076,7 @@ internal fun AndroidSettingsScreen(
         contentPadding = androidx.compose.foundation.layout.PaddingValues(Mk8dxSpacing.gutterPhone),
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
     ) {
+        item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
         item {
             Column(verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs)) {
                 Mk8dxDisplayText(androidText(language, "Settings", "Instellingen"), type.display6)

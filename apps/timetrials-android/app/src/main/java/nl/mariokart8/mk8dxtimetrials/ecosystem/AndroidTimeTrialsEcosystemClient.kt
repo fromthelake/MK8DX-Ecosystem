@@ -411,6 +411,8 @@ internal data class AndroidManagedTimeTrial(
     val current: AndroidManagedTimeTrialRevision,
     /** The Player's YouTube video of the run, always https://www.youtube.com/watch?v=<id>. */
     val videoUrl: String? = null,
+    /** ADR-0225: where a carried run comes from. */
+    val carriedFrom: nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedFromV1? = null,
 )
 
 @Serializable
@@ -960,6 +962,11 @@ internal interface AndroidTimeTrialsEcosystemDataSource {
     fun clientSupport(): AndroidClientSupport? = null
     fun playerResults(playerId: String): List<AndroidPublicTimeTrialResult> = emptyList()
     fun managedTimeTrials(): List<AndroidManagedTimeTrial> = emptyList()
+    /** ADR-0225 amendment: every own run the community lists (at most 200), for the offline copy. */
+    fun ownTimeTrialsForCopy(): List<AndroidManagedTimeTrial> = managedTimeTrials()
+    /** Best times of up to ten Players, keyed by Player id (`/v1/public/track-bests`). */
+    fun trackBestsForPlayers(playerIds: List<String>): Map<String, List<AndroidTrackBest>> =
+        playerIds.associateWith { trackBestsFor(it) }
     /** My records & stats: the signed-in Player's record book; null when signed out. */
     fun playerInsights(): AndroidPlayerInsights? = null
     /** My records & stats: the signed-in Player's last 100 runs (retired ones excluded by the server). */
@@ -1138,10 +1145,14 @@ internal class AndroidTimeTrialsEcosystemClient(
         return document.timeTrials.filter { it.modeCC == 150 || it.modeCC == 200 }
     }
 
-    override fun managedTimeTrials(): List<AndroidManagedTimeTrial> {
+    override fun managedTimeTrials(): List<AndroidManagedTimeTrial> = managedTimeTrials(100)
+
+    override fun ownTimeTrialsForCopy(): List<AndroidManagedTimeTrial> = managedTimeTrials(200)
+
+    private fun managedTimeTrials(limit: Int): List<AndroidManagedTimeTrial> {
         if (session == null) return emptyList()
         val document = json.decodeFromString<AndroidManagedTimeTrialsDocument>(
-            request("/v1/account/time-trials?limit=100"),
+            request("/v1/account/time-trials?limit=$limit"),
         )
         if (document.schemaVersion != "mk8dx.managed-time-trial-list.v1" ||
             document.results.any { !validManagedTimeTrial(it) }) malformed()
@@ -1435,6 +1446,15 @@ internal class AndroidTimeTrialsEcosystemClient(
         if (document.schemaVersion != "mk8dx.player-engagement-conversation.v1" ||
             document.playerId != playerId) malformed()
         return document
+    }
+
+    override fun trackBestsForPlayers(playerIds: List<String>): Map<String, List<AndroidTrackBest>> {
+        require(playerIds.size in 1..10 && playerIds.all { it.matches(Regex("^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$")) })
+        val document = json.decodeFromString<AndroidTrackBestsDocument>(request(
+            "/v1/public/track-bests?players=${encodeQuery(playerIds.joinToString(","))}",
+        ))
+        if (document.schemaVersion != "mk8dx.public-track-bests.v1") malformed()
+        return document.players.filter { it.playerId in playerIds }.associate { it.playerId to it.bests }
     }
 
     override fun trackBestsFor(playerId: String): List<AndroidTrackBest> {

@@ -293,6 +293,7 @@ internal fun AndroidMyStatsScreen(
         contentPadding = PaddingValues(Mk8dxSpacing.lg),
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
     ) {
+        item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
         if (playerId == null) {
             item {
                 Mk8dxPanel(androidText(language, "My records & stats", "Mijn records en cijfers")) {

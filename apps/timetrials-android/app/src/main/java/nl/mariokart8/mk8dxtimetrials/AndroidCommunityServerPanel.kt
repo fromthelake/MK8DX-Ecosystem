@@ -184,7 +184,13 @@ internal fun AndroidCommunityServerPanel(
                                         AndroidCommunities.remove(
                                             context, community.origin,
                                             androidCommunityUnsentCount(context, community.origin),
-                                        )
+                                        ).also {
+                                            // ADR-0225 amendment 1: the copy goes with the community.
+                                            if (it == AndroidCommunityRemoval.Removed) {
+                                                nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
+                                                    .forOrigin(context, community.origin).delete()
+                                            }
+                                        }
                                     }
                                     message = when (outcome) {
                                         AndroidCommunityRemoval.Removed -> t(
