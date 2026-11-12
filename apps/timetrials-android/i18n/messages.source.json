@@ -191,6 +191,13 @@
    "nl": "1 resultaat staat nog alleen op deze telefoon"
   },
   {
+   "key": "1 run waiting to be sent",
+   "places": [
+    "AndroidCommunityServerPanel.kt:111"
+   ],
+   "nl": "1 rit wacht op verzenden"
+  },
+  {
    "key": "1 tournament night",
    "places": [
     "AndroidClaimCandidates.kt:95"
@@ -346,7 +353,7 @@
   {
    "key": "AT HOME OR AT THE CLUB",
    "places": [
-    "AndroidCommunitySetupScreen.kt:117"
+    "AndroidCommunitySetupScreen.kt:124"
    ],
    "nl": "THUIS OF BIJ DE CLUB"
   },
@@ -402,18 +409,18 @@
    ]
   },
   {
-   "key": "Accounts and waiting runs are kept separately per server. Switching needs confirmation.",
-   "places": [
-    "AndroidAccountEcosystemScreens.kt:1088"
-   ],
-   "nl": "Accounts en wachtende ritten blijven per server gescheiden. Wisselen vraagt bevestiging."
-  },
-  {
    "key": "Across all 96 tracks",
    "places": [
     "AndroidTimeTrialJourney.kt:464"
    ],
    "nl": "Over alle 96 circuits"
+  },
+  {
+   "key": "Active",
+   "places": [
+    "AndroidCommunityServerPanel.kt:105"
+   ],
+   "nl": "Actief"
   },
   {
    "key": "Active Player settings",
@@ -471,6 +478,13 @@
     "AndroidTournamentGroupDraftStep.kt:864"
    ],
    "nl": "Switch toevoegen"
+  },
+  {
+   "key": "Add a community",
+   "places": [
+    "AndroidCommunityServerPanel.kt:158"
+   ],
+   "nl": "Een community toevoegen"
   },
   {
    "key": "Add account",
@@ -711,6 +725,13 @@
    "nl": "Onder rivalen"
   },
   {
+   "key": "An administrator of {0} approves it first.",
+   "places": [
+    "AndroidCarryHost.kt:145"
+   ],
+   "nl": "Een beheerder van {0} keurt hem eerst goed."
+  },
+  {
    "key": "An answer to your question about {0}",
    "places": [
     "AndroidNotificationPresentation.kt:209"
@@ -854,6 +875,13 @@
    "nl": "Opnieuw vragen"
   },
   {
+   "key": "Asking {0}…",
+   "places": [
+    "AndroidCarryHost.kt:132"
+   ],
+   "nl": "{0} wordt gevraagd…"
+  },
+  {
    "key": "At least two final groups with Players are needed.",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:1603"
@@ -957,6 +985,7 @@
   {
    "key": "Back",
    "places": [
+    "AndroidCommunitySetupScreen.kt:227",
     "AndroidAdministrationScreen.kt:203",
     "AndroidLanPairingScreen.kt:169",
     "AndroidDutchUiCopy.kt:22"
@@ -1284,6 +1313,14 @@
    "nl": "Nieuw toernooi annuleren"
   },
   {
+   "key": "Carry to another community",
+   "places": [
+    "AndroidCarryHost.kt:73",
+    "AndroidOutboxSelectionComponent.kt:188"
+   ],
+   "nl": "Meenemen naar een andere community"
+  },
+  {
    "key": "Certainty",
    "places": [
     "AndroidTournamentStatisticsSection.kt:832"
@@ -1317,13 +1354,6 @@
     "AndroidTournamentSignup.kt:357"
    ],
    "nl": "Consoles wijzigen"
-  },
-  {
-   "key": "Change server",
-   "places": [
-    "AndroidAccountEcosystemScreens.kt:1092"
-   ],
-   "nl": "Server wijzigen"
   },
   {
    "key": "Change statuses (bulk)",
@@ -1628,6 +1658,13 @@
    ]
   },
   {
+   "key": "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.",
+   "places": [
+    "AndroidCarryHost.kt:82"
+   ],
+   "nl": "Kies de community waar deze tijd ook moet meetellen. Die community bepaalt zelf of ze tijden van elders aanneemt."
+  },
+  {
    "key": "Choose the director you are operating for",
    "places": [
     "AndroidTournamentScreen.kt:2379"
@@ -1679,7 +1716,7 @@
   {
    "key": "Choose your community",
    "places": [
-    "AndroidCommunitySetupScreen.kt:108"
+    "AndroidCommunitySetupScreen.kt:115"
    ],
    "nl": "Kies je community"
   },
@@ -1752,10 +1789,10 @@
   {
    "key": "Close",
    "places": [
-    "AndroidCommunitySetupScreen.kt:185",
+    "AndroidCommunitySetupScreen.kt:192",
     "AndroidTimeTrialsProductComponent.kt:569",
-    "AndroidHomeExperience.kt:725",
-    "AndroidHomeExperience.kt:1500"
+    "AndroidCarryHost.kt:74",
+    "AndroidHomeExperience.kt:725"
    ],
    "nl": "Sluiten"
   },
@@ -1892,7 +1929,7 @@
   {
    "key": "Community server",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1086"
+    "AndroidCommunityServerPanel.kt:78"
    ],
    "nl": "Communityserver"
   },
@@ -2692,6 +2729,20 @@
    "nl": "Dubbel resultaat"
   },
   {
+   "key": "Each community keeps its own account and unsent times. Switching takes one tap.",
+   "places": [
+    "AndroidCommunityServerPanel.kt:80"
+   ],
+   "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Wisselen is één tik."
+  },
+  {
+   "key": "Each community keeps its own account and unsent times. You switch between them under Settings.",
+   "places": [
+    "AndroidCommunitySetupScreen.kt:217"
+   ],
+   "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Je wisselt ertussen bij Instellingen."
+  },
+  {
    "key": "Edit",
    "places": [
     "AndroidAccountEcosystemScreens.kt:1912",
@@ -2793,7 +2844,7 @@
   {
    "key": "Enter a time manually or scan a Switch result. It is saved safely on this phone first, then synced to the website.",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:84",
+    "AndroidOutboxSelectionComponent.kt:86",
     "AndroidDutchUiCopy.kt:278"
    ],
    "nl": "Voer handmatig een tijd in of scan een resultaat van je Nintendo Switch. Het resultaat wordt eerst veilig op deze telefoon opgeslagen en daarna met de website gesynchroniseerd."
@@ -2935,13 +2986,6 @@
    "nl": "Voorbeeld · WR 1:30.000"
   },
   {
-   "key": "Existing accounts and waiting runs stay with the old server.",
-   "places": [
-    "AndroidCommunitySetupScreen.kt:210"
-   ],
-   "nl": "Bestaande accounts en wachtende ritten blijven bij de oude server."
-  },
-  {
    "key": "Expired — sign in again to synchronize",
    "places": [
     "AndroidAuthenticationScreen.kt:432",
@@ -3010,7 +3054,7 @@
   {
    "key": "FIRST START",
    "places": [
-    "AndroidCommunitySetupScreen.kt:107"
+    "AndroidCommunitySetupScreen.kt:114"
    ],
    "nl": "EERSTE START"
   },
@@ -3378,7 +3422,7 @@
   {
    "key": "Forget this installation",
    "places": [
-    "AndroidCommunitySetupScreen.kt:138"
+    "AndroidCommunitySetupScreen.kt:145"
    ],
    "nl": "Deze installatie vergeten"
   },
@@ -3881,6 +3925,13 @@
    "nl": "Het is een dubbele"
   },
   {
+   "key": "It is sent when you switch to {0} and are signed in there.",
+   "places": [
+    "AndroidCarryHost.kt:142"
+   ],
+   "nl": "Hij wordt verzonden zodra je naar {0} wisselt en daar bent aangemeld."
+  },
+  {
    "key": "It leaves the standings and your records. You can restore it later from My results.",
    "places": [
     "AndroidPostTimeTask.kt:967"
@@ -3968,8 +4019,8 @@
   {
    "key": "Language / Taal",
    "places": [
-    "AndroidCommunitySetupScreen.kt:100",
-    "AndroidCommunitySetupScreen.kt:183",
+    "AndroidCommunitySetupScreen.kt:107",
+    "AndroidCommunitySetupScreen.kt:190",
     "AndroidAccountEcosystemScreens.kt:1108",
     "AndroidAccountEcosystemScreens.kt:1113"
    ],
@@ -4454,7 +4505,7 @@
   {
    "key": "MK8DX runs on a computer at home or at the club. Scan the Prepare a device card your administrator shows or hands out. No internet needed.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:119"
+    "AndroidCommunitySetupScreen.kt:126"
    ],
    "nl": "MK8DX draait op een computer thuis of bij de club. Scan de kaart Apparaat voorbereiden die je beheerder laat zien of uitdeelt. Geen internet nodig."
   },
@@ -4836,7 +4887,7 @@
   {
    "key": "NO SAVED RESULTS YET",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:79",
+    "AndroidOutboxSelectionComponent.kt:81",
     "AndroidDutchUiCopy.kt:117"
    ],
    "nl": "NOG GEEN OPGESLAGEN RESULTATEN"
@@ -5656,6 +5707,13 @@
    "nl": "Je hoeft niets te doen"
   },
   {
+   "key": "Nothing waiting to be sent",
+   "places": [
+    "AndroidCommunityServerPanel.kt:110"
+   ],
+   "nl": "Niets wacht op verzenden"
+  },
+  {
    "key": "Nothing was imported. {0}.",
    "places": [
     "AndroidTournamentRosterImport.kt:170"
@@ -5723,7 +5781,7 @@
   {
    "key": "ONLINE COMMUNITY",
    "places": [
-    "AndroidCommunitySetupScreen.kt:145"
+    "AndroidCommunitySetupScreen.kt:152"
    ],
    "nl": "ONLINE COMMUNITY"
   },
@@ -6248,7 +6306,7 @@
   {
    "key": "Paired with {0}",
    "places": [
-    "AndroidCommunitySetupScreen.kt:136"
+    "AndroidCommunitySetupScreen.kt:143"
    ],
    "nl": "Gekoppeld met {0}"
   },
@@ -6502,7 +6560,7 @@
   {
    "key": "Player, rivals and app preferences.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1079"
+    "AndroidAccountEcosystemScreens.kt:1081"
    ],
    "nl": "Speler-, rivalen- en appvoorkeuren."
   },
@@ -7400,6 +7458,13 @@
    "nl": "Toch verwijderen"
   },
   {
+   "key": "Remove from this phone",
+   "places": [
+    "AndroidCommunityServerPanel.kt:125"
+   ],
+   "nl": "Van deze telefoon verwijderen"
+  },
+  {
    "key": "Remove selected tournament",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:1646"
@@ -7758,7 +7823,7 @@
   {
    "key": "SERVER",
    "places": [
-    "AndroidCommunitySetupScreen.kt:107"
+    "AndroidCommunitySetupScreen.kt:114"
    ],
    "nl": "SERVER"
   },
@@ -7812,7 +7877,7 @@
   {
    "key": "Save",
    "places": [
-    "AndroidCommunitySetupScreen.kt:171",
+    "AndroidCommunitySetupScreen.kt:178",
     "AndroidTournamentParticipantsStep.kt:1327",
     "AndroidTournamentScreen.kt:2315",
     "AndroidTournamentScreen.kt:2696"
@@ -8049,7 +8114,7 @@
   {
    "key": "Scan the QR code",
    "places": [
-    "AndroidCommunitySetupScreen.kt:127"
+    "AndroidCommunitySetupScreen.kt:134"
    ],
    "nl": "Scan de QR-code"
   },
@@ -8323,7 +8388,7 @@
   {
    "key": "Settings",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1077",
+    "AndroidAccountEcosystemScreens.kt:1079",
     "AndroidDutchUiCopy.kt:170"
    ],
    "nl": "Instellingen"
@@ -8655,7 +8720,7 @@
   {
    "key": "Sign in to synchronize saved results",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:70",
+    "AndroidOutboxSelectionComponent.kt:72",
     "AndroidDutchUiCopy.kt:460"
    ],
    "nl": "Meld je aan om opgeslagen resultaten te synchroniseren"
@@ -9101,6 +9166,7 @@
   {
    "key": "Switch",
    "places": [
+    "AndroidCommunityServerPanel.kt:118",
     "AndroidDutchUiCopy.kt:452"
    ],
    "nl": "Wisselen"
@@ -9484,6 +9550,13 @@
    "nl": "Die wijziging kon niet worden opgeslagen. Vernieuw de toernooigegevens en controleer opnieuw."
   },
   {
+   "key": "That community does not accept times from other communities.",
+   "places": [
+    "AndroidCarryHost.kt:158"
+   ],
+   "nl": "Die community neemt geen tijden van andere communities aan."
+  },
+  {
    "key": "That did not work. Try again later.",
    "places": [
     "AndroidTournamentSignup.kt:298"
@@ -9705,7 +9778,7 @@
   {
    "key": "The exact https address your community gave you.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:159"
+    "AndroidCommunitySetupScreen.kt:166"
    ],
    "nl": "Het precieze https-adres dat je van je community kreeg."
   },
@@ -10112,7 +10185,7 @@
   {
    "key": "This app works with your own community: a club, a group of friends or an online community. Pick the way you play below. Not sure? Ask the person who runs your community.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:110"
+    "AndroidCommunitySetupScreen.kt:117"
    ],
    "nl": "Deze app werkt met je eigen community: een club, een vriendengroep of een online community. Kies hieronder hoe jullie spelen. Weet je het niet? Vraag het aan wie je community beheert."
   },
@@ -10122,6 +10195,13 @@
     "AndroidPostTimeTask.kt:744"
    ],
    "nl": "Deze build kan geen resultaat opslaan."
+  },
+  {
+   "key": "This community does not accept times from other communities.",
+   "places": [
+    "AndroidCanonicalSubmissionRequestTransport.kt:206"
+   ],
+   "nl": "Deze community neemt geen tijden van andere communities aan."
   },
   {
    "key": "This does not look like a CSV file. An Excel workbook (.xlsx) belongs to entering the scores, not to this step.",
@@ -10182,6 +10262,13 @@
    "nl": "Deze opname bevat geen races."
   },
   {
+   "key": "This result cannot be carried.",
+   "places": [
+    "AndroidCarryHost.kt:173"
+   ],
+   "nl": "Deze uitslag kan niet worden meegenomen."
+  },
+  {
    "key": "This result cannot be edited here. Open it from My results.",
    "places": [
     "AndroidRunCard.kt:114"
@@ -10200,6 +10287,20 @@
     "AndroidAccountEcosystemScreens.kt:1216"
    ],
    "nl": "Dit bepaalt standaard voortgang en Rank; alle openbare circuits blijven beschikbaar."
+  },
+  {
+   "key": "This time already comes from this community.",
+   "places": [
+    "AndroidCanonicalSubmissionRequestTransport.kt:211"
+   ],
+   "nl": "Deze tijd komt al uit deze community."
+  },
+  {
+   "key": "This time is already on its way to {0}.",
+   "places": [
+    "AndroidCarryHost.kt:168"
+   ],
+   "nl": "Deze tijd is al onderweg naar {0}."
   },
   {
    "key": "This time is {0} slower than your {1} PB.",
@@ -10895,7 +10996,7 @@
   {
    "key": "Use one https address without a final slash, path or port.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:166"
+    "AndroidCommunitySetupScreen.kt:173"
    ],
    "nl": "Gebruik één https-adres zonder slash aan het eind, pad of poort."
   },
@@ -11123,7 +11224,7 @@
   {
    "key": "Website address",
    "places": [
-    "AndroidCommunitySetupScreen.kt:155"
+    "AndroidCommunitySetupScreen.kt:162"
    ],
    "nl": "Adres van de website"
   },
@@ -11838,7 +11939,7 @@
   {
    "key": "Your community has a website on the internet. Enter the address you open it with in the browser.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:147"
+    "AndroidCommunitySetupScreen.kt:154"
    ],
    "nl": "Je community heeft een website op internet. Vul het adres in waarmee je die in de browser opent."
   },
@@ -12668,6 +12769,13 @@
    "nl": "{0} binnenkort"
   },
   {
+   "key": "{0} could not be reached. Nothing was carried; try again later.",
+   "places": [
+    "AndroidCarryHost.kt:163"
+   ],
+   "nl": "{0} was niet bereikbaar. Er is niets meegenomen; probeer het later opnieuw."
+  },
+  {
    "key": "{0} cups · {1} tracks",
    "places": [
     "AndroidTrackChooser.kt:118"
@@ -13176,6 +13284,13 @@
    "nl": "{0} ritten"
   },
   {
+   "key": "{0} runs waiting to be sent",
+   "places": [
+    "AndroidCommunityServerPanel.kt:112"
+   ],
+   "nl": "{0} ritten wachten op verzenden"
+  },
+  {
    "key": "{0} shared races · {1} ahead · {2} behind",
    "places": [
     "AndroidPlayerPage.kt:223"
@@ -13188,6 +13303,13 @@
     "AndroidAdministrationScreen.kt:234"
    ],
    "nl": "{0} aangemeld · {1} ingestuurd"
+  },
+  {
+   "key": "{0} still has runs that were not sent. Switch to it and send them first.",
+   "places": [
+    "AndroidCommunityServerPanel.kt:139"
+   ],
+   "nl": "{0} heeft nog ritten die niet zijn verzonden. Wissel ernaar en verstuur ze eerst."
   },
   {
    "key": "{0} suggested links",
@@ -13276,6 +13398,13 @@
     "AndroidTournamentScreen.kt:1127"
    ],
    "nl": "{0} is aangemaakt, maar kon niet aan dit toernooi worden toegevoegd."
+  },
+  {
+   "key": "{0} was removed from this phone.",
+   "places": [
+    "AndroidCommunityServerPanel.kt:135"
+   ],
+   "nl": "{0} is van deze telefoon verwijderd."
   },
   {
    "key": "{0} won",

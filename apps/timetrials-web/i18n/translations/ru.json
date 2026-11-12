@@ -4945,6 +4945,27 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Это не QR-код карточки «Prepare a device». Личная карточка входа понадобится позже, в браузере.",
   "Use one https address without a final slash, path or port.": "Укажи один https-адрес без косой черты в конце, пути и порта.",
   "Website address": "Адрес сайта",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "У твоего сообщества есть сайт в интернете. Введи адрес, по которому ты открываешь его в браузере."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "У твоего сообщества есть сайт в интернете. Введи адрес, по которому ты открываешь его в браузере.",
+  "1 run waiting to be sent": "1 заезд ждёт отправки",
+  "Active": "Активно",
+  "Add a community": "Добавить сообщество",
+  "An administrator of {0} approves it first.": "Сначала его одобрит администратор {0}.",
+  "Asking {0}…": "Запрос к {0}…",
+  "Carry to another community": "Перенести в другое сообщество",
+  "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.": "Выберите сообщество, в котором это время тоже должно учитываться. Это сообщество само решает, принимает ли оно время из других мест.",
+  "Each community keeps its own account and unsent times. Switching takes one tap.": "Каждое сообщество хранит свой аккаунт и неотправленное время. Переключение — одно касание.",
+  "Each community keeps its own account and unsent times. You switch between them under Settings.": "Каждое сообщество хранит свой аккаунт и неотправленное время. Переключаться между ними можно в настройках.",
+  "It is sent when you switch to {0} and are signed in there.": "Оно будет отправлено, когда вы переключитесь на {0} и войдёте там.",
+  "Nothing waiting to be sent": "Ничего не ждёт отправки",
+  "Remove from this phone": "Удалить с этого телефона",
+  "That community does not accept times from other communities.": "Это сообщество не принимает время из других сообществ.",
+  "This community does not accept times from other communities.": "Это сообщество не принимает время из других сообществ.",
+  "This result cannot be carried.": "Этот результат нельзя перенести.",
+  "This time already comes from this community.": "Это время уже из этого сообщества.",
+  "This time is already on its way to {0}.": "Это время уже на пути в {0}.",
+  "{0} could not be reached. Nothing was carried; try again later.": "Не удалось связаться с {0}. Ничего не перенесено; попробуйте позже.",
+  "{0} runs waiting to be sent": "Заездов, ждущих отправки: {0}",
+  "{0} still has runs that were not sent. Switch to it and send them first.": "В {0} ещё есть неотправленные заезды. Переключитесь туда и сначала отправьте их.",
+  "{0} was removed from this phone.": "{0} удалено с этого телефона."
  }
 }

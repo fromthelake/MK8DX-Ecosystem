@@ -4945,6 +4945,27 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "これは「Prepare a device」カードの QR コードではありません。個人のサインインカードは後でブラウザーで使います。",
   "Use one https address without a final slash, path or port.": "末尾のスラッシュ、パス、ポートのない https アドレスを 1 つ入力してください。",
   "Website address": "ウェブサイトのアドレス",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "コミュニティにはインターネット上のウェブサイトがあります。ブラウザーで開くときのアドレスを入力してください。"
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "コミュニティにはインターネット上のウェブサイトがあります。ブラウザーで開くときのアドレスを入力してください。",
+  "1 run waiting to be sent": "送信待ちの走行が1件あります",
+  "Active": "使用中",
+  "Add a community": "コミュニティを追加",
+  "An administrator of {0} approves it first.": "まず{0}の管理者が承認します。",
+  "Asking {0}…": "{0}に問い合わせ中…",
+  "Carry to another community": "別のコミュニティへ持っていく",
+  "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.": "このタイムを反映させたいコミュニティを選んでください。他所からのタイムを受け付けるかどうかは、そのコミュニティが決めます。",
+  "Each community keeps its own account and unsent times. Switching takes one tap.": "各コミュニティは独自のアカウントと未送信のタイムを保持します。切り替えはワンタップです。",
+  "Each community keeps its own account and unsent times. You switch between them under Settings.": "各コミュニティは独自のアカウントと未送信のタイムを保持します。切り替えは設定から行えます。",
+  "It is sent when you switch to {0} and are signed in there.": "{0}に切り替えてサインインすると送信されます。",
+  "Nothing waiting to be sent": "送信待ちはありません",
+  "Remove from this phone": "このスマートフォンから削除",
+  "That community does not accept times from other communities.": "そのコミュニティは他のコミュニティからのタイムを受け付けていません。",
+  "This community does not accept times from other communities.": "このコミュニティは他のコミュニティからのタイムを受け付けていません。",
+  "This result cannot be carried.": "この結果は持っていけません。",
+  "This time already comes from this community.": "このタイムはすでにこのコミュニティのものです。",
+  "This time is already on its way to {0}.": "このタイムはすでに{0}へ向かっています。",
+  "{0} could not be reached. Nothing was carried; try again later.": "{0}に接続できませんでした。何も持っていっていません。後でもう一度お試しください。",
+  "{0} runs waiting to be sent": "送信待ちの走行が{0}件あります",
+  "{0} still has runs that were not sent. Switch to it and send them first.": "{0}にはまだ送信されていない走行があります。そちらに切り替えて先に送信してください。",
+  "{0} was removed from this phone.": "{0}をこのスマートフォンから削除しました。"
  }
 }

@@ -4945,6 +4945,27 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "這不是「Prepare a device」卡片的 QR 碼。個人登入卡稍後在瀏覽器中使用。",
   "Use one https address without a final slash, path or port.": "請使用一個不含結尾斜線、路徑或連接埠的 https 位址。",
   "Website address": "網站位址",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "你的社群在網際網路上有網站。請輸入你在瀏覽器中開啟它的位址。"
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "你的社群在網際網路上有網站。請輸入你在瀏覽器中開啟它的位址。",
+  "1 run waiting to be sent": "1 筆成績等待傳送",
+  "Active": "目前",
+  "Add a community": "新增社群",
+  "An administrator of {0} approves it first.": "{0} 的管理員會先審核。",
+  "Asking {0}…": "正在詢問 {0}…",
+  "Carry to another community": "帶到另一個社群",
+  "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.": "選擇這筆成績也要計入的社群。該社群自行決定是否接受來自其他地方的成績。",
+  "Each community keeps its own account and unsent times. Switching takes one tap.": "每個社群都保留自己的帳號與未傳送的成績。切換只需輕觸一下。",
+  "Each community keeps its own account and unsent times. You switch between them under Settings.": "每個社群都保留自己的帳號與未傳送的成績。你可以在設定中切換。",
+  "It is sent when you switch to {0} and are signed in there.": "當你切換到 {0} 並在那裡登入後即會傳送。",
+  "Nothing waiting to be sent": "沒有等待傳送的成績",
+  "Remove from this phone": "從這支手機移除",
+  "That community does not accept times from other communities.": "該社群不接受其他社群的成績。",
+  "This community does not accept times from other communities.": "本社群不接受其他社群的成績。",
+  "This result cannot be carried.": "這筆成績無法帶走。",
+  "This time already comes from this community.": "這筆成績已經來自本社群。",
+  "This time is already on its way to {0}.": "這筆成績已在送往 {0} 的路上。",
+  "{0} could not be reached. Nothing was carried; try again later.": "無法連線到 {0}。沒有帶走任何內容；請稍後再試。",
+  "{0} runs waiting to be sent": "{0} 筆成績等待傳送",
+  "{0} still has runs that were not sent. Switch to it and send them first.": "{0} 仍有未傳送的成績。請先切換過去並傳送。",
+  "{0} was removed from this phone.": "已從這支手機移除 {0}。"
  }
 }

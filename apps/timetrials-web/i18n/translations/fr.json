@@ -4945,6 +4945,27 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Ce n'est pas le code QR d'une carte « Prepare a device ». Une carte de connexion personnelle vient plus tard, dans le navigateur.",
   "Use one https address without a final slash, path or port.": "Utilise une seule adresse https, sans barre oblique finale, chemin ni port.",
   "Website address": "Adresse du site web",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Ta communauté a un site sur internet. Saisis l'adresse avec laquelle tu l'ouvres dans le navigateur."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Ta communauté a un site sur internet. Saisis l'adresse avec laquelle tu l'ouvres dans le navigateur.",
+  "1 run waiting to be sent": "1 course en attente d'envoi",
+  "Active": "Active",
+  "Add a community": "Ajouter une communauté",
+  "An administrator of {0} approves it first.": "Un administrateur de {0} l'approuve d'abord.",
+  "Asking {0}…": "Interrogation de {0}…",
+  "Carry to another community": "Emporter vers une autre communauté",
+  "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.": "Choisis la communauté dans laquelle ce temps doit aussi compter. Cette communauté décide si elle accepte des temps venus d'ailleurs.",
+  "Each community keeps its own account and unsent times. Switching takes one tap.": "Chaque communauté garde son propre compte et ses temps non envoyés. Changer se fait d'un geste.",
+  "Each community keeps its own account and unsent times. You switch between them under Settings.": "Chaque communauté garde son propre compte et ses temps non envoyés. Tu passes de l'une à l'autre dans les Réglages.",
+  "It is sent when you switch to {0} and are signed in there.": "Il est envoyé quand tu passes à {0} et que tu y es connecté.",
+  "Nothing waiting to be sent": "Rien en attente d'envoi",
+  "Remove from this phone": "Retirer de ce téléphone",
+  "That community does not accept times from other communities.": "Cette communauté n'accepte pas les temps d'autres communautés.",
+  "This community does not accept times from other communities.": "Cette communauté n'accepte pas les temps d'autres communautés.",
+  "This result cannot be carried.": "Ce résultat ne peut pas être emporté.",
+  "This time already comes from this community.": "Ce temps vient déjà de cette communauté.",
+  "This time is already on its way to {0}.": "Ce temps est déjà en route vers {0}.",
+  "{0} could not be reached. Nothing was carried; try again later.": "{0} est injoignable. Rien n'a été emporté ; réessaie plus tard.",
+  "{0} runs waiting to be sent": "{0} courses en attente d'envoi",
+  "{0} still has runs that were not sent. Switch to it and send them first.": "{0} a encore des courses non envoyées. Passe à cette communauté et envoie-les d'abord.",
+  "{0} was removed from this phone.": "{0} a été retiré de ce téléphone."
  }
 }
