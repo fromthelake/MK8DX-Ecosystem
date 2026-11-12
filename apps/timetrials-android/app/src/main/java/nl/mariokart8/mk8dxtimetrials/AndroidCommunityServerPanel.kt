@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.testTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxStoredState
 import nl.mariokart8.mk8dxtimetrials.outbox.createAndroidProductTimeTrialOutboxFor
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
@@ -38,13 +39,13 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusTone
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
 
 /**
- * Runs of [origin] that have not reached it yet: its outbox, pending or failed. Read from that community's own
- * namespace without making it active.
+ * Runs of [origin] that have not reached it yet: its outbox (pending or failed) plus copies carried there that
+ * wait for somebody to sign in. Read from that community's own namespace without making it active.
  */
 internal fun androidCommunityUnsentCount(context: Context, origin: String): Int = runCatching {
     createAndroidProductTimeTrialOutboxFor(context, origin).listIndex()
         .count { it.storedState != AndroidOutboxStoredState.SYNCED }
-}.getOrDefault(0)
+}.getOrDefault(0) + runCatching { AndroidCarriedQueue.forOrigin(context, origin).size() }.getOrDefault(0)
 
 /**
  * Settings -> Community server (ADR-0225 section 1): every community this phone knows, the active one marked,

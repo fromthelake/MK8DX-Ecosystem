@@ -11,7 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
+import nl.mariokart8.mk8dxtimetrials.carry.LocalAndroidCarryOffer
 import nl.mariokart8.mk8dxtimetrials.ui.androidLocalizedPresentation
+import nl.mariokart8.mk8dxtimetrials.ui.androidText
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxChip
@@ -180,6 +182,16 @@ internal fun AndroidOutboxSelectionComponent(
                             tag = "outbox-selection-select-$index",
                             modifier = Modifier.fillMaxWidth(),
                         )
+                        val carry = LocalAndroidCarryOffer.current
+                        if (carry != null && entry.storedState == AndroidOutboxStoredState.SYNCED && !entry.isTestResult) {
+                            Mk8dxButton(
+                                androidText("Carry to another community", "Meenemen naar een andere community"),
+                                { carry(entry.entryKeyHash) },
+                                variant = Mk8dxButtonVariant.Quiet,
+                                tag = "outbox-selection-carry-$index",
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
                     }
                 }
             }

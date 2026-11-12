@@ -39,6 +39,9 @@ import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidSlotBoundSessionCanonicalConnectionFactory
 import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarryHost
+import nl.mariokart8.mk8dxtimetrials.carry.promoteAndroidCarriedTimes
 import nl.mariokart8.mk8dxtimetrials.deeplink.AndroidDeepLink
 import nl.mariokart8.mk8dxtimetrials.deeplink.parseAndroidDeepLink
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidClientSupportStore
@@ -313,17 +316,31 @@ internal fun AndroidTimeTrialsProductionRoot(
     // lets us ask at all.
     AndroidNotificationPermissionRequest(nativeSession?.playerId)
     var unsynchronizedResultCount by remember(localOutbox) { mutableIntStateOf(0) }
+    // ADR-0225: times carried here from another community wait outside the outbox until somebody is signed in.
+    val carriedQueue = remember(apiOrigin) { AndroidCarriedQueue.forOrigin(applicationContext, apiOrigin) }
     LaunchedEffect(localOutbox) {
         while (isActive) {
             unsynchronizedResultCount = withContext(Dispatchers.IO) {
                 runCatching {
                     localOutbox.listIndex().count {
                         it.storedState != AndroidOutboxStoredState.SYNCED
-                    }
+                    } + carriedQueue.size()
                 }.getOrDefault(unsynchronizedResultCount)
             }
             delay(2_000)
         }
+    }
+    // The carried copies become this signed-in Player's runs here and are sent like any other.
+    LaunchedEffect(nativeSession?.playerId, carriedQueue) {
+        val playerId = nativeSession?.playerId ?: return@LaunchedEffect
+        val moved = withContext(Dispatchers.IO) {
+            runCatching {
+                promoteAndroidCarriedTimes(
+                    carriedQueue, localOutbox, playerId, sessionStore.activeSlotId(), System.currentTimeMillis(),
+                )
+            }.getOrDefault(0)
+        }
+        if (moved > 0) AndroidAutomaticSyncScheduler.enqueue(applicationContext)
     }
     LaunchedEffect(authenticationState) {
         if (authenticationState is AndroidAuthenticationState.SignedIn) {
@@ -598,12 +615,14 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
-            AndroidProductLocalSavedResultsScreen(
-                localOutbox,
-                synchronizationDependencies,
-                onSubmitTimeTrial = submitTimeTrial,
-                accountDisplayNames = accountDisplayNames,
-            )
+            AndroidCarryHost(apiOrigin, localOutbox) {
+                AndroidProductLocalSavedResultsScreen(
+                    localOutbox,
+                    synchronizationDependencies,
+                    onSubmitTimeTrial = submitTimeTrial,
+                    accountDisplayNames = accountDisplayNames,
+                )
+            }
         },
         tournamentContent = { openAccount, request, onRequestHandled, openTrack ->
             // Built whether or not anybody is signed in: the Tournaments
