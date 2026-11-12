@@ -17,17 +17,24 @@ internal const val ANDROID_PRODUCT_PRIVATE_EVIDENCE_DIRECTORY =
 
 internal fun createAndroidProductTimeTrialOutbox(
     context: Context,
+): AndroidLocalTimeTrialOutbox = createAndroidProductTimeTrialOutbox(
+    context,
+    if (AndroidServerOrigin.usesPackagedDefault(context)) "" else "_" + AndroidServerOrigin.namespace(context),
+)
+
+/** ADR-0225: the outbox of any remembered community, read or filled without making it active. */
+internal fun createAndroidProductTimeTrialOutboxFor(
+    context: Context,
+    origin: String,
+): AndroidLocalTimeTrialOutbox =
+    createAndroidProductTimeTrialOutbox(context, AndroidServerOrigin.storageSuffix(origin))
+
+private fun createAndroidProductTimeTrialOutbox(
+    context: Context,
+    suffix: String,
 ): AndroidLocalTimeTrialOutbox = AndroidLocalTimeTrialOutbox(
-    canonicalRoot = File(
-        context.filesDir,
-        ANDROID_PRODUCT_CANONICAL_OUTBOX_DIRECTORY +
-            (if (AndroidServerOrigin.usesPackagedDefault(context)) "" else "_" + AndroidServerOrigin.namespace(context)),
-    ),
-    privateEvidenceRoot = File(
-        context.noBackupFilesDir,
-        ANDROID_PRODUCT_PRIVATE_EVIDENCE_DIRECTORY +
-            (if (AndroidServerOrigin.usesPackagedDefault(context)) "" else "_" + AndroidServerOrigin.namespace(context)),
-    ),
+    canonicalRoot = File(context.filesDir, ANDROID_PRODUCT_CANONICAL_OUTBOX_DIRECTORY + suffix),
+    privateEvidenceRoot = File(context.noBackupFilesDir, ANDROID_PRODUCT_PRIVATE_EVIDENCE_DIRECTORY + suffix),
     validateSubmission = AndroidProducedSubmissionValidator,
 )
 

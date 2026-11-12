@@ -168,21 +168,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             val origin = AndroidServerOrigin.current(applicationContext)
             if (origin == null || showServerSetup) {
-                AndroidCommunitySetup(origin) { chosen ->
-                    val commit = {
-                        if (AndroidServerOrigin.save(applicationContext, chosen)) {
-                            showServerSetup = false
-                            recreate()
-                        }
+                // ADR-0225: adding a community keeps the one before it, with its account and unsent runs, in the
+                // list under Settings; nothing is lost, so there is nothing to confirm.
+                AndroidCommunitySetup(
+                    origin,
+                    onCancel = if (origin != null) ({ showServerSetup = false }) else null,
+                ) { chosen ->
+                    if (AndroidServerOrigin.save(applicationContext, chosen)) {
+                        showServerSetup = false
+                        recreate()
                     }
-                    if (origin != null && origin != chosen) {
-                        android.app.AlertDialog.Builder(this)
-                            .setTitle("Change community / Community wijzigen")
-                            .setMessage("Existing accounts and waiting runs remain with the old server. They will not be sent to the new server.")
-                            .setNegativeButton("Cancel / Annuleren", null)
-                            .setPositiveButton("Change / Wijzigen") { _, _ -> commit() }
-                            .show()
-                    } else commit()
                 }
                 return@setContent
             }
@@ -206,6 +201,9 @@ class MainActivity : ComponentActivity() {
                 deepLink = link,
                 onDeepLinkHandled = { openedLink.value = null },
                 onChangeServer = { showServerSetup = true },
+                onSwitchCommunity = { chosen ->
+                    if (chosen != origin && AndroidServerOrigin.save(applicationContext, chosen)) recreate()
+                },
             )
         }
     }
@@ -268,6 +266,7 @@ internal fun AndroidTimeTrialsProductionRoot(
     deepLink: AndroidDeepLink? = null,
     onDeepLinkHandled: () -> Unit = {},
     onChangeServer: () -> Unit = {},
+    onSwitchCommunity: (String) -> Unit = {},
 ) {
     val activityContext = androidx.compose.ui.platform.LocalContext.current
     val applicationContext = activityContext.applicationContext
@@ -699,6 +698,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 administration = administrationClient,
                 onAdministration = openAdministration,
                 onChangeServer = onChangeServer,
+                onSwitchCommunity = onSwitchCommunity,
                 appearance = appearanceSettings,
                 onAppearanceChanged = applyAppearance,
             )
@@ -717,6 +717,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                     appearance = appearanceSettings,
                     onAppearanceChanged = applyAppearance,
                     onChangeServer = onChangeServer,
+                    onSwitchCommunity = onSwitchCommunity,
                 )
             }
         },
