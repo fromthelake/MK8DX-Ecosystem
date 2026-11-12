@@ -189,26 +189,45 @@ Every pull request, bug report and translation fix makes the next LAN night bett
 
 | I want to… | Start here |
 | --- | --- |
-| **run MK8DX at home or at my club** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): download the package for one computer (A1) and follow the guide. A guided *setup wizard* for a home/club network without internet (A2) is being tested. |
+| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step with pictures: [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
 | **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
 | **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card |
 | **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |
 | **host a community website** | [Host a community server](docs/guides/HOSTING.md) |
 | **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 
-### What you need
+### Which computer for which route
 
-- **A computer to host it** — Windows with Docker Desktop is the easiest; Linux works too.
-- **For LiveTrial and Tournament Live** — a Windows PC and a USB HDMI capture card per screen.
-- **For scanning** — any phone or tablet with a camera (Chrome or the Android app recommended;
-  iPhone support is being tested).
+Every route gives you the same website; they differ in where it runs and who can reach it.
+
+| Route | For | Runs on | Status |
+| --- | --- | --- | --- |
+| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac with Apple silicon | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested |
+| **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
+| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
+| **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
+| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Documented, not yet tested end to end |
+
+The apps around it:
+
+| App | Runs on | Why |
+| --- | --- | --- |
+| Website and browser scanner | Any modern browser; Chrome or Edge recommended for scanning | The scanner runs entirely on your device and needs a browser that gives it several threads |
+| Android app | Android 8.0 or newer, arm64 recommended | Scans on the phone itself, also without a connection |
+| iPhone and iPad | The website in the browser; scanning in Safari is still being tested | There is no iOS app: building and signing one needs a Mac and an Apple developer account |
+| LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
+
+**Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
+B1 server images exist for x86-64 only; A2 also has arm64. There is no A2 package for Intel Macs, because a
+security library it needs (`cryptography`) no longer ships for them. A3 exists for people who cannot or do not
+want to run Docker. The [hosting guide](docs/guides/HOSTING.md) and the [release packages](docs/RELEASE_PACKAGES.md)
+list every file and its exact requirements.
 
 ## Project status
 
-The 0.1.0 series is published on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
-see the [changelog](CHANGELOG.md). Installation on one computer (A1) and on Windows with
-XAMPP/Node.js (A3) is supported after installation and upgrade tests. Other routes are documented
-and being tested; details in [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
+0.1.0 is the stable release on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
+0.2.0, which adds A2, is a release candidate: try it, but keep 0.1.0 for anything you cannot redo. See the
+[changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
 ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
 Recognition never makes a result official by itself: you review your own Time Trials, and an
