@@ -213,6 +213,13 @@ function failure(error: unknown): Readonly<{
       response: { code: IMPLAUSIBLE_TIME_CODE, message: IMPLAUSIBLE_TIME_MESSAGE },
     };
   }
+  // ADR-0225: the receiving community's answer to a carried time, in its own words.
+  if (error.code === "carried_from_self") {
+    return { statusCode: 400, response: { code: "carried_from_self", message: error.message } };
+  }
+  if (error.code === "carried_times_disabled") {
+    return { statusCode: 403, response: { code: "carried_times_disabled", message: error.message } };
+  }
   if (error.code === "player_not_found") {
     return {
       statusCode: 404,

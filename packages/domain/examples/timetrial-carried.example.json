@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "mk8dx.time-trial-submission.v1",
+  "submissionId": "user_submission.time.01SYNTHETICCARRIED01",
+  "revision": 1,
+  "mode": 150,
+  "trackId": "track.mario_kart_stadium",
+  "totalTimeMs": 94612,
+  "laps": [],
+  "playerReference": {
+    "namespace": "player",
+    "value": "player.synthetic_carried_01"
+  },
+  "source": {
+    "kind": "android_manual",
+    "producerVersion": "synthetic-example"
+  },
+  "timestamps": {
+    "occurredAtMs": 1786900000000,
+    "createdAtMs": 1786990000000
+  },
+  "carriedFrom": {
+    "origin": "https://club.example.org",
+    "communityName": "Synthetic Club",
+    "originalSubmissionId": "user_submission.time.01SYNTHETICORIGIN01",
+    "originalSubmittedAtMs": 1786900060000
+  }
+}

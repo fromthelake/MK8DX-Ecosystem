@@ -810,11 +810,27 @@ async function createMysqlApiRuntime(
     config.tournamentDecryptionKeys,
   );
   const worldRecordTimes = new MysqlWorldRecordTimes(pool);
+  // ADR-0225: a carried time is checked against the administrator's carriedTimes setting (read per
+  // submission) and refused when it names one of this installation's own public origins.
+  const carriedTimesSettings = new InstallationSettingsService({
+    repository: new MysqlInstallationSettingsRepository(pool),
+    clock,
+  });
+  const ownOrigins = [
+    ...(authentication.kind === "embedded"
+      ? [authentication.policy.config.baseUrl, ...authentication.policy.config.trustedOrigins]
+      : []),
+    ...(routePolicies.publicBundle === undefined ? [] : [routePolicies.publicBundle.origin]),
+  ];
   const timeTrialSubmissionService = new TimeTrialSubmissionService(
     new MysqlTimeTrialWriteRepository(pool, clock),
     new TimeTrialSchema9AssetCatalogAdapter(catalog),
     timeTrialProtector,
     worldRecordTimes,
+    {
+      policy: async () => (await carriedTimesSettings.current()).carriedTimes,
+      ownOrigins,
+    },
   );
   const ephemeralScanTestService = new EphemeralAndroidScanTestService(
     pool,

@@ -26,6 +26,10 @@ const mediaTypePattern =
 const sha256Pattern = /^[a-f0-9]{64}$/;
 const keyVersionPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 const maxEpochMs = 253_402_300_799_999;
+// The https origin of another community (ADR-0225): scheme, lower-case host (or a bracketed IPv6
+// address) and an optional port, nothing after it. The JSON schema states the same pattern.
+const carriedOriginPattern =
+  /^https:\/\/(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*|\[[0-9a-f:.]{2,45}\])(?::[0-9]{1,5})?$/;
 
 export type TimeTrialPlayerReference = Readonly<{
   namespace:
@@ -107,6 +111,27 @@ export const timeTrialCorrectedFields = new Set<TimeTrialCorrectedField>([
   "glider", "gliderVariant", "country", "playerName",
 ]);
 
+/**
+ * Where a carried time comes from (ADR-0225): the community it was first submitted to. The run
+ * itself (source, laps, loadout, occurredAtMs) is described unchanged by the rest of the submission.
+ */
+export type TimeTrialCarriedFrom = Readonly<{
+  origin: string;
+  communityName?: string;
+  originalSubmissionId?: string;
+  originalSubmittedAtMs: number;
+}>;
+
+/** The receiving administrator's choice (installation setting carriedTimes, ADR-0225). */
+export type CarriedTimesPolicy = "off" | "review" | "allowed";
+
+export type TimeTrialCarriedTimesGate = Readonly<{
+  /** The current setting; read for every carried submission, never cached. */
+  policy(): Promise<CarriedTimesPolicy>;
+  /** This installation's own public origins; a time carried "from" one of them is refused. */
+  ownOrigins: readonly string[];
+}>;
+
 export type TimeTrialSubmissionV1 = Readonly<{
   schemaVersion: "mk8dx.time-trial-submission.v1";
   submissionId: string;
@@ -141,6 +166,7 @@ export type TimeTrialSubmissionV1 = Readonly<{
   }>;
   evidence?: readonly TimeTrialEvidence[];
   verification?: TimeTrialVerification;
+  carriedFrom?: TimeTrialCarriedFrom;
 }>;
 
 export type TimeTrialAssetReferences = Readonly<{
@@ -230,7 +256,9 @@ export type TimeTrialSubmissionErrorCode =
   | "player_not_found"
   | "revision_conflict"
   | "protection_failed"
-  | "implausible_time";
+  | "implausible_time"
+  | "carried_times_disabled"
+  | "carried_from_self";
 
 export class TimeTrialSubmissionError extends Error {
   public constructor(
@@ -397,6 +425,31 @@ function validateVerification(value: unknown): value is TimeTrialVerification {
     keys.every((key) => optionalConfidence(fields, key));
 }
 
+export function validateCarriedFrom(value: unknown): value is TimeTrialCarriedFrom {
+  if (!isObject(value) || !hasExactKeys(
+    value,
+    ["origin", "originalSubmittedAtMs"],
+    ["communityName", "originalSubmissionId"],
+  )) {
+    return false;
+  }
+  return typeof value.origin === "string" && value.origin.length <= 255 &&
+    carriedOriginPattern.test(value.origin) &&
+    optionalString(value, "communityName", 80) &&
+    optionalString(value, "originalSubmissionId", 128) &&
+    boundedInteger(value.originalSubmittedAtMs, 0, maxEpochMs);
+}
+
+/** The comparable form of an origin: what `new URL(...).origin` says, or null when it is not one. */
+export function normalizedOrigin(value: string): string | null {
+  try {
+    const parsed = new URL(value);
+    return parsed.origin === "null" ? null : parsed.origin;
+  } catch {
+    return null;
+  }
+}
+
 export function validateTimeTrialSubmission(
   input: unknown,
 ): asserts input is TimeTrialSubmissionV1 {
@@ -406,7 +459,7 @@ export function validateTimeTrialSubmission(
       "schemaVersion", "submissionId", "revision", "mode", "trackId",
       "totalTimeMs", "laps", "playerReference", "source", "timestamps",
     ],
-    ["loadout", "countryId", "observedPlayerName", "evidence", "verification"],
+    ["loadout", "countryId", "observedPlayerName", "evidence", "verification", "carriedFrom"],
   )) {
     throw new TimeTrialSubmissionError("invalid_submission", "submission shape is invalid");
   }
@@ -491,6 +544,12 @@ export function validateTimeTrialSubmission(
   if (Object.hasOwn(input, "verification") && !validateVerification(input.verification)) {
     throw new TimeTrialSubmissionError("invalid_submission", "verification is invalid");
   }
+  if (Object.hasOwn(input, "carriedFrom") && !validateCarriedFrom(input.carriedFrom)) {
+    throw new TimeTrialSubmissionError("invalid_submission", "carriedFrom is invalid");
+  }
+  if (Object.hasOwn(input, "carriedFrom") && source.kind === "android_scan_test") {
+    throw new TimeTrialSubmissionError("invalid_submission", "a scan test cannot be carried");
+  }
   const validatedVerification = input.verification as TimeTrialVerification | undefined;
   const validatedSource = input.source as TimeTrialSubmissionV1["source"];
   if (validatedVerification?.correctedFields !== undefined &&
@@ -526,6 +585,8 @@ export class TimeTrialSubmissionService {
     // Optional so every existing composition and test keeps working; the runtime passes the
     // daily World Records (world-record-plausibility.ts).
     private readonly worldRecords?: WorldRecordTimes,
+    // ADR-0225. Without it every carried time is refused, as with the setting off.
+    private readonly carriedTimes?: TimeTrialCarriedTimesGate,
   ) {}
 
   public async submit(
@@ -541,6 +602,9 @@ export class TimeTrialSubmissionService {
         "ephemeral Android scan tests require the dedicated retention service",
       );
     }
+    const carriedPolicy = input.carriedFrom === undefined
+      ? null
+      : await this.carriedPolicy(input.carriedFrom);
     const assetIssues = await this.assetCatalog.validateReferences({
       trackId: input.trackId,
       ...(input.loadout === undefined ? {} : { loadout: input.loadout }),
@@ -635,8 +699,9 @@ export class TimeTrialSubmissionService {
         playerId,
         restrictedParticipant,
         protectedEvidence,
+        // A carried time under "review" waits for an administrator whatever the normal rules say.
         publicationEligibility:
-          context.publicationIntent === "explicit_review_required"
+          context.publicationIntent === "explicit_review_required" || carriedPolicy === "review"
             ? "explicit_review_required"
             : input.verification?.status === "producer_check_failed" ||
                 input.verification?.status === "needs_review"
@@ -645,5 +710,30 @@ export class TimeTrialSubmissionService {
       });
       return { submissionId: input.submissionId, revision: input.revision };
     });
+  }
+
+  /**
+   * The receiving community decides (ADR-0225): a time carried from this installation itself is
+   * refused as a mistake, then the setting answers. Returns the policy that admitted it.
+   */
+  private async carriedPolicy(carriedFrom: TimeTrialCarriedFrom): Promise<"review" | "allowed"> {
+    const from = normalizedOrigin(carriedFrom.origin);
+    const own = new Set((this.carriedTimes?.ownOrigins ?? [])
+      .map(normalizedOrigin)
+      .filter((origin): origin is string => origin !== null));
+    if (from === null || own.has(from)) {
+      throw new TimeTrialSubmissionError(
+        "carried_from_self",
+        "A time cannot be carried from this community to itself.",
+      );
+    }
+    const policy = this.carriedTimes === undefined ? "off" : await this.carriedTimes.policy();
+    if (policy === "off") {
+      throw new TimeTrialSubmissionError(
+        "carried_times_disabled",
+        "This community does not accept times from other communities.",
+      );
+    }
+    return policy;
   }
 }

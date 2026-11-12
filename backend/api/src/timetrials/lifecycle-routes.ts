@@ -90,6 +90,19 @@ const eventSchema = {
   },
 } as const;
 
+// Where a carried run comes from (ADR-0225), as the submission stated it.
+export const carriedFromSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["origin", "originalSubmittedAtMs"],
+  properties: {
+    origin: { type: "string", minLength: 9, maxLength: 255, pattern: "^https://[^/?#\\s]+$" },
+    communityName: { type: "string", minLength: 1, maxLength: 80 },
+    originalSubmissionId: { type: "string", minLength: 1, maxLength: 128 },
+    originalSubmittedAtMs: { type: "integer", minimum: 0 },
+  },
+} as const;
+
 const managedSchema = {
   type: "object",
   additionalProperties: false,
@@ -108,6 +121,7 @@ const managedSchema = {
     revisions: { type: "array", maxItems: 200, items: revisionSchema },
     events: { type: "array", maxItems: 200, items: eventSchema },
     videoUrl: youTubeWatchUrlSchema,
+    carriedFrom: carriedFromSchema,
   },
 } as const;
 

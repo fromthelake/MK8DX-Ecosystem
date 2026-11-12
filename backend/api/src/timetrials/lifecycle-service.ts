@@ -4,7 +4,7 @@ import {
   isImplausiblyFast,
   type WorldRecordTimes,
 } from "./world-record-plausibility.js";
-import type { TimeTrialAssetCatalog } from "./submission-service.js";
+import type { TimeTrialAssetCatalog, TimeTrialCarriedFrom } from "./submission-service.js";
 import { youTubeVideoId } from "./youtube-video.js";
 
 export const YOUTUBE_ONLY_MESSAGE =
@@ -83,6 +83,8 @@ export type ManagedTimeTrial = Readonly<{
   events: readonly TimeTrialLifecycleEvent[];
   /** The Player's own YouTube video of this run (migration 0071), when one is attached. */
   videoUrl?: string;
+  /** Present when the current revision was carried from another community (ADR-0225). */
+  carriedFrom?: TimeTrialCarriedFrom;
 }>;
 
 // Only fields a correction may legitimately restate. Changing the Track or

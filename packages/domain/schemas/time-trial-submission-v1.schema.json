@@ -111,6 +111,9 @@
     },
     "verification": {
       "$ref": "#/$defs/verification"
+    },
+    "carriedFrom": {
+      "$ref": "#/$defs/carriedFrom"
     }
   },
   "allOf": [
@@ -315,6 +318,35 @@
         "capturedAtMs": { "$ref": "#/$defs/epochMilliseconds" },
         "createdAtMs": { "$ref": "#/$defs/epochMilliseconds" },
         "submittedAtMs": { "$ref": "#/$defs/epochMilliseconds" }
+      }
+    },
+    "carriedFrom": {
+      "description": "Present when this time was first submitted to another community and is carried here (ADR-0225). The rest of the submission describes the same run unchanged; the receiving installation decides whether it accepts carried times.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin", "originalSubmittedAtMs"],
+      "properties": {
+        "origin": {
+          "description": "The https origin of the community the time comes from: scheme, lower-case host or bracketed IPv6 address, optional port, no path.",
+          "type": "string",
+          "maxLength": 255,
+          "pattern": "^https://(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)*|\\[[0-9a-f:.]{2,45}\\])(?::[0-9]{1,5})?$"
+        },
+        "communityName": {
+          "description": "The name that community shows; display text only.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80
+        },
+        "originalSubmissionId": {
+          "description": "The submission id in that community, when the producer knows it.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "originalSubmittedAtMs": {
+          "$ref": "#/$defs/epochMilliseconds"
+        }
       }
     },
     "epochMilliseconds": {

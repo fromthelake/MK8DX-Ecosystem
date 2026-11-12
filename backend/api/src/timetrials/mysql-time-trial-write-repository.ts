@@ -179,10 +179,11 @@ export class MysqlTimeTrialWriteTransaction implements TimeTrialWriteTransaction
          verification_confidence, confidence_total_time, confidence_track,
          confidence_character, confidence_character_variant, confidence_body,
          confidence_tire, confidence_glider, confidence_country,
-         confidence_player_name
+         confidence_player_name, carried_from_origin, carried_from_name,
+         carried_original_submission_id, carried_original_submitted_at_ms
        ) VALUES (
          ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+         ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
        )`,
       [
         submissionInternalId,
@@ -225,6 +226,11 @@ export class MysqlTimeTrialWriteTransaction implements TimeTrialWriteTransaction
         confidence?.glider ?? null,
         confidence?.country ?? null,
         confidence?.playerName ?? null,
+        // ADR-0225: where a carried time comes from; NULL for a time set here.
+        input.submission.carriedFrom?.origin ?? null,
+        input.submission.carriedFrom?.communityName ?? null,
+        input.submission.carriedFrom?.originalSubmissionId ?? null,
+        input.submission.carriedFrom?.originalSubmittedAtMs ?? null,
       ],
     );
     if (result.affectedRows !== 1 || result.insertId < 1) {

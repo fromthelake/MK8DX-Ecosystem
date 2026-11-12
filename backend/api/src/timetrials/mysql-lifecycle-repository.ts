@@ -18,6 +18,7 @@ import { refreshTimeTrialPlayerBestsForRevisions } from
 import { enqueueOvertakenNotificationJob } from
   "../notifications/notification-producer-jobs.js";
 import { youTubeWatchUrl } from "./youtube-video.js";
+import type { TimeTrialCarriedFrom } from "./submission-service.js";
 
 // Every lifecycle action is one transaction that writes three things: the
 // canonical fact (a new revision, or the retirement state), the publication
@@ -54,6 +55,20 @@ function mode(value: unknown): 150 | 200 {
     throw new TimeTrialLifecycleError("unavailable", "mode is unsupported");
   }
   return parsed;
+}
+
+// Where the current revision was carried from (ADR-0225); undefined for a time set here.
+function carriedFromOf(row: ResultRow): TimeTrialCarriedFrom | undefined {
+  const origin = row["carriedFromOrigin"];
+  if (origin === null || origin === undefined) { return undefined; }
+  const name = row["carriedFromName"];
+  const originalId = row["carriedOriginalSubmissionId"];
+  return {
+    origin: text(origin, "carried origin"),
+    ...(typeof name === "string" && name.length > 0 ? { communityName: name } : {}),
+    ...(typeof originalId === "string" && originalId.length > 0 ? { originalSubmissionId: originalId } : {}),
+    originalSubmittedAtMs: integer(row["carriedOriginalSubmittedAtMs"], "carried original time"),
+  };
 }
 
 const revisionSelect = `SELECT revision.time_trial_submission_revision_id AS revisionInternalId,
@@ -209,7 +224,9 @@ implements TimeTrialLifecycleRepository {
            verification_lap_sum_matches, verification_confidence,
            confidence_total_time, confidence_track, confidence_character,
            confidence_character_variant, confidence_body, confidence_tire,
-           confidence_glider, confidence_country, confidence_player_name
+           confidence_glider, confidence_country, confidence_player_name,
+           carried_from_origin, carried_from_name,
+           carried_original_submission_id, carried_original_submitted_at_ms
          ) SELECT time_trial_submission_id, ?, schema_version, mode_cc,
              track_id, ?, participant_reference_kind, player_id,
              observed_player_name, character_id, character_variant_id, body_id,
@@ -220,7 +237,9 @@ implements TimeTrialLifecycleRepository {
              verification_lap_sum_matches, verification_confidence,
              confidence_total_time, confidence_track, confidence_character,
              confidence_character_variant, confidence_body, confidence_tire,
-             confidence_glider, confidence_country, confidence_player_name
+             confidence_glider, confidence_country, confidence_player_name,
+             carried_from_origin, carried_from_name,
+             carried_original_submission_id, carried_original_submitted_at_ms
            FROM time_trial_submission_revisions
            WHERE time_trial_submission_id = ? AND revision_number = ?`,
         [
@@ -563,6 +582,10 @@ implements TimeTrialLifecycleRepository {
               publication.publication_status AS publicationStatus,
               publication.reason_code AS publicationReason,
               revision.revision_number AS revisionNumber,
+              revision.carried_from_origin AS carriedFromOrigin,
+              revision.carried_from_name AS carriedFromName,
+              revision.carried_original_submission_id AS carriedOriginalSubmissionId,
+              revision.carried_original_submitted_at_ms AS carriedOriginalSubmittedAtMs,
               player.public_id AS playerId,
               player.display_name AS playerDisplayName,
               username.username_value AS playerUsername
@@ -668,8 +691,10 @@ implements TimeTrialLifecycleRepository {
       [submissionInternalId],
     );
     const videoId = videoRows[0]?.["videoId"];
+    const carriedFrom = carriedFromOf(row);
     return {
       ...(typeof videoId === "string" && videoId.length === 11 ? { videoUrl: youTubeWatchUrl(videoId) } : {}),
+      ...(carriedFrom === undefined ? {} : { carriedFrom }),
       submissionId: text(row["submissionId"], "submissionId"),
       playerId: text(row["playerId"], "playerId"),
       playerUsername: text(row["playerUsername"], "playerUsername"),
