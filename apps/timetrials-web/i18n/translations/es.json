@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} se quitó de este teléfono.",
   "Carried time waiting for sign-in: {0}": "Tiempo llevado a la espera de iniciar sesión: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "No aceptado por {0}: esta comunidad no acepta tiempos de otras comunidades.",
-  "Not accepted by {0}: this time already comes from this community.": "No aceptado por {0}: este tiempo ya viene de esta comunidad."
+  "Not accepted by {0}: this time already comes from this community.": "No aceptado por {0}: este tiempo ya viene de esta comunidad.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Ahora se rechazan los tiempos traídos. Rechaza los que siguen pendientes (se retiran y se pueden recuperar más tarde) o déjalos pendientes.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "Los tiempos traídos ya no necesitan aprobación. Publica los que siguen pendientes o déjalos para que un administrador los apruebe uno a uno.",
+  "Leave them waiting": "Dejarlos pendientes",
+  "No carried times are waiting for review.": "No hay tiempos traídos pendientes de revisión.",
+  "Publish all {0}": "Publicar los {0}",
+  "Publishing the carried times…": "Publicando los tiempos traídos…",
+  "Refuse all {0}": "Rechazar los {0}",
+  "Refusing the carried times…": "Rechazando los tiempos traídos…",
+  "Show them in Time Trials": "Verlos en Contrarreloj",
+  "The carried times could not be changed.": "No se pudieron cambiar los tiempos traídos.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "El número de tiempos traídos pendientes ha cambiado mientras tanto. La página se ha recargado; vuelve a elegir.",
+  "{0} carried time(s) waiting for review.": "{0} tiempo(s) traído(s) pendiente(s) de revisión.",
+  "{0} carried times are still waiting.": "{0} tiempos traídos siguen pendientes.",
+  "{0} carried times refused.": "{0} tiempos traídos rechazados.",
+  "{0} carried times published.": "{0} tiempos traídos publicados.",
+  "{0} of Private Players keep waiting.": "{0} de jugadores privados siguen pendientes."
  }
 }

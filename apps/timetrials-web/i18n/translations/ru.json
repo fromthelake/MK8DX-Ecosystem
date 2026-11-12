@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} удалено с этого телефона.",
   "Carried time waiting for sign-in: {0}": "Перенесённое время ждёт входа: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "Не принято в {0}: это сообщество не принимает время из других сообществ.",
-  "Not accepted by {0}: this time already comes from this community.": "Не принято в {0}: это время уже из этого сообщества."
+  "Not accepted by {0}: this time already comes from this community.": "Не принято в {0}: это время уже из этого сообщества.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Теперь перенесённые времена отклоняются. Отклоните те, что ещё ждут (они будут сняты, и их можно будет вернуть позже), или оставьте их ждать.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "Перенесённым временам больше не нужно одобрение. Опубликуйте те, что ещё ждут, или оставьте их, чтобы администратор одобрил их по одному.",
+  "Leave them waiting": "Оставить ждать",
+  "No carried times are waiting for review.": "Нет перенесённых времён, ожидающих проверки.",
+  "Publish all {0}": "Опубликовать все {0}",
+  "Publishing the carried times…": "Перенесённые времена публикуются…",
+  "Refuse all {0}": "Отклонить все {0}",
+  "Refusing the carried times…": "Перенесённые времена отклоняются…",
+  "Show them in Time Trials": "Показать в разделе «Гонки на время»",
+  "The carried times could not be changed.": "Не удалось изменить перенесённые времена.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "Число ожидающих перенесённых времён тем временем изменилось. Страница перезагружена; выберите снова.",
+  "{0} carried time(s) waiting for review.": "Перенесённых времён, ожидающих проверки: {0}.",
+  "{0} carried times are still waiting.": "Всё ещё ждут перенесённых времён: {0}.",
+  "{0} carried times refused.": "Отклонено перенесённых времён: {0}.",
+  "{0} carried times published.": "Опубликовано перенесённых времён: {0}.",
+  "{0} of Private Players keep waiting.": "Времён частных игроков, которые продолжают ждать: {0}."
  }
 }

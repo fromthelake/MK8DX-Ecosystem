@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0}을(를) 이 휴대폰에서 제거했습니다.",
   "Carried time waiting for sign-in: {0}": "로그인을 기다리는 가져온 기록: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "{0}에서 받지 않음: 이 커뮤니티는 다른 커뮤니티의 기록을 받지 않습니다.",
-  "Not accepted by {0}: this time already comes from this community.": "{0}에서 받지 않음: 이 기록은 이미 이 커뮤니티의 기록입니다."
+  "Not accepted by {0}: this time already comes from this community.": "{0}에서 받지 않음: 이 기록은 이미 이 커뮤니티의 기록입니다.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "이제 가져온 기록은 거부됩니다. 아직 대기 중인 기록을 거부하거나(철회되며 나중에 되돌릴 수 있음) 계속 대기하게 두세요.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "가져온 기록에 더 이상 승인이 필요하지 않습니다. 아직 대기 중인 기록을 공개하거나 관리자가 하나씩 승인하도록 대기하게 두세요.",
+  "Leave them waiting": "대기하게 두기",
+  "No carried times are waiting for review.": "승인을 기다리는 가져온 기록이 없습니다.",
+  "Publish all {0}": "{0}개 모두 공개",
+  "Publishing the carried times…": "가져온 기록을 공개하는 중…",
+  "Refuse all {0}": "{0}개 모두 거부",
+  "Refusing the carried times…": "가져온 기록을 거부하는 중…",
+  "Show them in Time Trials": "타임 어택에서 보기",
+  "The carried times could not be changed.": "가져온 기록을 변경할 수 없습니다.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "그사이 대기 중인 가져온 기록 수가 바뀌었습니다. 페이지를 다시 불러왔으니 다시 선택하세요.",
+  "{0} carried time(s) waiting for review.": "승인을 기다리는 가져온 기록 {0}개.",
+  "{0} carried times are still waiting.": "아직 대기 중인 가져온 기록이 {0}개 있습니다.",
+  "{0} carried times refused.": "가져온 기록 {0}개를 거부했습니다.",
+  "{0} carried times published.": "가져온 기록 {0}개를 공개했습니다.",
+  "{0} of Private Players keep waiting.": "비공개 플레이어의 기록 {0}개는 계속 대기합니다."
  }
 }

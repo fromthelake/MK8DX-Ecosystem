@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} wurde von diesem Telefon entfernt.",
   "Carried time waiting for sign-in: {0}": "Mitgenommene Zeit wartet auf die Anmeldung: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "Nicht angenommen von {0}: Diese Community nimmt keine Zeiten aus anderen Communities an.",
-  "Not accepted by {0}: this time already comes from this community.": "Nicht angenommen von {0}: Diese Zeit stammt bereits aus dieser Community."
+  "Not accepted by {0}: this time already comes from this community.": "Nicht angenommen von {0}: Diese Zeit stammt bereits aus dieser Community.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Mitgenommene Zeiten werden jetzt abgelehnt. Lehne die noch wartenden ab (sie werden zurückgezogen und können später zurückgeholt werden) oder lass sie warten.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "Mitgenommene Zeiten brauchen keine Freigabe mehr. Veröffentliche die noch wartenden oder lass sie warten, damit ein Administrator sie einzeln freigibt.",
+  "Leave them waiting": "Warten lassen",
+  "No carried times are waiting for review.": "Keine mitgenommenen Zeiten warten auf Freigabe.",
+  "Publish all {0}": "Alle {0} veröffentlichen",
+  "Publishing the carried times…": "Mitgenommene Zeiten werden veröffentlicht…",
+  "Refuse all {0}": "Alle {0} ablehnen",
+  "Refusing the carried times…": "Mitgenommene Zeiten werden abgelehnt…",
+  "Show them in Time Trials": "Bei den Zeitfahren anzeigen",
+  "The carried times could not be changed.": "Die mitgenommenen Zeiten konnten nicht geändert werden.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "Die Zahl der wartenden mitgenommenen Zeiten hat sich inzwischen geändert. Die Seite wurde neu geladen; wähle erneut.",
+  "{0} carried time(s) waiting for review.": "{0} mitgenommene Zeit(en) warten auf Freigabe.",
+  "{0} carried times are still waiting.": "{0} mitgenommene Zeiten warten noch.",
+  "{0} carried times refused.": "{0} mitgenommene Zeiten abgelehnt.",
+  "{0} carried times published.": "{0} mitgenommene Zeiten veröffentlicht.",
+  "{0} of Private Players keep waiting.": "{0} von privaten Spielern warten weiter."
  }
 }

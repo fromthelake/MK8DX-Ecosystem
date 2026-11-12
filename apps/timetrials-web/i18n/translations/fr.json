@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} a été retiré de ce téléphone.",
   "Carried time waiting for sign-in: {0}": "Temps emporté en attente de connexion : {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "Non accepté par {0} : cette communauté n'accepte pas les temps d'autres communautés.",
-  "Not accepted by {0}: this time already comes from this community.": "Non accepté par {0} : ce temps vient déjà de cette communauté."
+  "Not accepted by {0}: this time already comes from this community.": "Non accepté par {0} : ce temps vient déjà de cette communauté.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Les temps apportés sont désormais refusés. Refuse ceux qui attendent encore (ils sont retirés et peuvent être rétablis plus tard) ou laisse-les en attente.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "Les temps apportés n'ont plus besoin d'approbation. Publie ceux qui attendent encore ou laisse-les en attente pour qu'un administrateur les approuve un par un.",
+  "Leave them waiting": "Les laisser en attente",
+  "No carried times are waiting for review.": "Aucun temps apporté n'attend de validation.",
+  "Publish all {0}": "Publier les {0}",
+  "Publishing the carried times…": "Publication des temps apportés…",
+  "Refuse all {0}": "Refuser les {0}",
+  "Refusing the carried times…": "Refus des temps apportés…",
+  "Show them in Time Trials": "Les voir dans Contre-la-montre",
+  "The carried times could not be changed.": "Les temps apportés n'ont pas pu être modifiés.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "Le nombre de temps apportés en attente a changé entre-temps. La page a été rechargée ; choisis à nouveau.",
+  "{0} carried time(s) waiting for review.": "{0} temps apporté(s) en attente de validation.",
+  "{0} carried times are still waiting.": "{0} temps apportés attendent encore.",
+  "{0} carried times refused.": "{0} temps apportés refusés.",
+  "{0} carried times published.": "{0} temps apportés publiés.",
+  "{0} of Private Players keep waiting.": "{0} de joueurs privés restent en attente."
  }
 }

@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} foi removida deste telefone.",
   "Carried time waiting for sign-in: {0}": "Tempo levado aguardando login: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "Não aceito por {0}: esta comunidade não aceita tempos de outras comunidades.",
-  "Not accepted by {0}: this time already comes from this community.": "Não aceito por {0}: este tempo já vem desta comunidade."
+  "Not accepted by {0}: this time already comes from this community.": "Não aceito por {0}: este tempo já vem desta comunidade.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Os tempos trazidos são agora recusados. Recusa os que ainda esperam (são retirados e podem ser repostos mais tarde) ou deixa-os à espera.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "Os tempos trazidos já não precisam de aprovação. Publica os que ainda esperam ou deixa-os à espera para um administrador os aprovar um a um.",
+  "Leave them waiting": "Deixá-los à espera",
+  "No carried times are waiting for review.": "Não há tempos trazidos à espera de aprovação.",
+  "Publish all {0}": "Publicar os {0}",
+  "Publishing the carried times…": "A publicar os tempos trazidos…",
+  "Refuse all {0}": "Recusar os {0}",
+  "Refusing the carried times…": "A recusar os tempos trazidos…",
+  "Show them in Time Trials": "Mostrá-los em Contrarrelógio",
+  "The carried times could not be changed.": "Não foi possível alterar os tempos trazidos.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "O número de tempos trazidos à espera mudou entretanto. A página foi recarregada; escolhe novamente.",
+  "{0} carried time(s) waiting for review.": "{0} tempo(s) trazido(s) à espera de aprovação.",
+  "{0} carried times are still waiting.": "{0} tempos trazidos ainda estão à espera.",
+  "{0} carried times refused.": "{0} tempos trazidos recusados.",
+  "{0} carried times published.": "{0} tempos trazidos publicados.",
+  "{0} of Private Players keep waiting.": "{0} de jogadores privados continuam à espera."
  }
 }

@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0}をこのスマートフォンから削除しました。",
   "Carried time waiting for sign-in: {0}": "サインイン待ちの持ち込みタイム: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "{0}で受け付けられませんでした: このコミュニティは他のコミュニティからのタイムを受け付けていません。",
-  "Not accepted by {0}: this time already comes from this community.": "{0}で受け付けられませんでした: このタイムはすでにこのコミュニティのものです。"
+  "Not accepted by {0}: this time already comes from this community.": "{0}で受け付けられませんでした: このタイムはすでにこのコミュニティのものです。",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "持ち込まれたタイムは今後拒否されます。まだ待っているタイムを拒否する（取り下げられ、後で戻せます）か、そのまま待たせてください。",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "持ち込まれたタイムに承認は不要になりました。まだ待っているタイムを公開するか、管理者が一件ずつ承認できるようそのまま待たせてください。",
+  "Leave them waiting": "そのまま待たせる",
+  "No carried times are waiting for review.": "承認待ちの持ち込みタイムはありません。",
+  "Publish all {0}": "{0} 件すべて公開",
+  "Publishing the carried times…": "持ち込まれたタイムを公開しています…",
+  "Refuse all {0}": "{0} 件すべて拒否",
+  "Refusing the carried times…": "持ち込まれたタイムを拒否しています…",
+  "Show them in Time Trials": "タイムアタックで表示",
+  "The carried times could not be changed.": "持ち込まれたタイムを変更できませんでした。",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "待機中の持ち込みタイムの件数がその間に変わりました。ページを再読み込みしました。もう一度選んでください。",
+  "{0} carried time(s) waiting for review.": "承認待ちの持ち込みタイム：{0} 件",
+  "{0} carried times are still waiting.": "まだ待っている持ち込みタイムが {0} 件あります。",
+  "{0} carried times refused.": "持ち込まれたタイムを {0} 件拒否しました。",
+  "{0} carried times published.": "持ち込まれたタイムを {0} 件公開しました。",
+  "{0} of Private Players keep waiting.": "非公開プレイヤーの {0} 件は引き続き待機します。"
  }
 }

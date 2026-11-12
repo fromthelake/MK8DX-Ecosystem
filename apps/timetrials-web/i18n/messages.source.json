@@ -3282,6 +3282,26 @@
    ]
   },
   {
+   "key": "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.",
+   "nl": "Meegenomen tijden worden nu geweigerd. Weiger de tijden die nog wachten (ze worden teruggetrokken en kunnen later worden teruggezet), of laat ze wachten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.",
+   "nl": "Meegenomen tijden hebben geen goedkeuring meer nodig. Publiceer de tijden die nog wachten, of laat ze wachten zodat een beheerder ze een voor een goedkeurt.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Certainty",
    "nl": "Zekerheid",
    "kinds": [
@@ -10142,6 +10162,16 @@
    ]
   },
   {
+   "key": "Leave them waiting",
+   "nl": "Laat ze wachten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Lends a Switch, not playing",
    "nl": "Leent Switch, speelt niet mee",
    "kinds": [
@@ -12733,6 +12763,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "No carried times are waiting for review.",
+   "nl": "Er wachten geen meegenomen tijden op goedkeuring.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -16783,6 +16823,16 @@
    ]
   },
   {
+   "key": "Publish all {0}",
+   "nl": "Alle {0} publiceren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Publish corrected result set",
    "kinds": [
     "text"
@@ -17036,6 +17086,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Publishing the carried times…",
+   "nl": "Meegenomen tijden worden gepubliceerd…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -17948,6 +18008,26 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Refuse all {0}",
+   "nl": "Alle {0} weigeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "Refusing the carried times…",
+   "nl": "Meegenomen tijden worden geweigerd…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -20511,6 +20591,16 @@
    ]
   },
   {
+   "key": "Show them in Time Trials",
+   "nl": "Toon ze bij Tijdritten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Show {0}cc anyway",
    "nl": "Toon {0}cc toch",
    "kinds": [
@@ -22991,6 +23081,16 @@
    ]
   },
   {
+   "key": "The carried times could not be changed.",
+   "nl": "De meegenomen tijden konden niet worden gewijzigd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "The character could not be saved. Retry later.",
    "kinds": [
     "text"
@@ -23368,6 +23468,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.",
+   "nl": "Het aantal wachtende meegenomen tijden is intussen veranderd. De pagina is opnieuw geladen; kies opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -30714,6 +30824,46 @@
    ]
   },
   {
+   "key": "{0} carried time(s) waiting for review.",
+   "nl": "{0} meegenomen tijd(en) wachten op goedkeuring.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "{0} carried times are still waiting.",
+   "nl": "{0} meegenomen tijden wachten nog.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "{0} carried times published.",
+   "nl": "{0} meegenomen tijden gepubliceerd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "{0} carried times refused.",
+   "nl": "{0} meegenomen tijden geweigerd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "{0} challenged you to beat {1}",
    "nl": "{0} daagde jou uit om {1} te verbeteren",
    "kinds": [
@@ -31389,6 +31539,16 @@
    ],
    "places": [
     "time-trial-standing-view.ts"
+   ]
+  },
+  {
+   "key": "{0} of Private Players keep waiting.",
+   "nl": "{0} van privéspelers blijven wachten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {

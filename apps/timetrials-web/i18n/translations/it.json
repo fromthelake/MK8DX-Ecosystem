@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "{0} è stata rimossa da questo telefono.",
   "Carried time waiting for sign-in: {0}": "Tempo portato in attesa dell'accesso: {0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "Non accettato da {0}: questa community non accetta tempi da altre community.",
-  "Not accepted by {0}: this time already comes from this community.": "Non accettato da {0}: questo tempo proviene già da questa community."
+  "Not accepted by {0}: this time already comes from this community.": "Non accettato da {0}: questo tempo proviene già da questa community.",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "Ora i tempi portati vengono rifiutati. Rifiuta quelli ancora in attesa (vengono ritirati e si possono ripristinare in seguito) oppure lasciali in attesa.",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "I tempi portati non richiedono più approvazione. Pubblica quelli ancora in attesa oppure lasciali in attesa perché un amministratore li approvi uno per uno.",
+  "Leave them waiting": "Lasciali in attesa",
+  "No carried times are waiting for review.": "Nessun tempo portato è in attesa di approvazione.",
+  "Publish all {0}": "Pubblica tutti i {0}",
+  "Publishing the carried times…": "Pubblicazione dei tempi portati…",
+  "Refuse all {0}": "Rifiuta tutti i {0}",
+  "Refusing the carried times…": "Rifiuto dei tempi portati…",
+  "Show them in Time Trials": "Mostrali in Prova a tempo",
+  "The carried times could not be changed.": "Non è stato possibile modificare i tempi portati.",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "Nel frattempo il numero di tempi portati in attesa è cambiato. La pagina è stata ricaricata; scegli di nuovo.",
+  "{0} carried time(s) waiting for review.": "{0} tempo/i portato/i in attesa di approvazione.",
+  "{0} carried times are still waiting.": "{0} tempi portati sono ancora in attesa.",
+  "{0} carried times refused.": "{0} tempi portati rifiutati.",
+  "{0} carried times published.": "{0} tempi portati pubblicati.",
+  "{0} of Private Players keep waiting.": "{0} di giocatori privati restano in attesa."
  }
 }

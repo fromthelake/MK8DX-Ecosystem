@@ -4984,6 +4984,22 @@
   "{0} was removed from this phone.": "已从此手机移除 {0}。",
   "Carried time waiting for sign-in: {0}": "等待登录的带入成绩：{0}",
   "Not accepted by {0}: this community does not accept times from other communities.": "{0} 未接受：本社区不接受其他社区的成绩。",
-  "Not accepted by {0}: this time already comes from this community.": "{0} 未接受：此成绩已经来自本社区。"
+  "Not accepted by {0}: this time already comes from this community.": "{0} 未接受：此成绩已经来自本社区。",
+  "Carried times are now refused. Refuse the ones still waiting (they are retired and can be brought back later), or leave them waiting.": "现在会拒绝带来的成绩。拒绝仍在等待的成绩（它们会被撤下，以后可以恢复），或让它们继续等待。",
+  "Carried times no longer need approval. Publish the ones still waiting, or leave them for an administrator to approve one by one.": "带来的成绩不再需要审核。发布仍在等待的成绩，或让它们继续等待，由管理员逐一审核。",
+  "Leave them waiting": "让它们继续等待",
+  "No carried times are waiting for review.": "没有等待审核的带来成绩。",
+  "Publish all {0}": "全部发布 {0} 条",
+  "Publishing the carried times…": "正在发布带来的成绩…",
+  "Refuse all {0}": "全部拒绝 {0} 条",
+  "Refusing the carried times…": "正在拒绝带来的成绩…",
+  "Show them in Time Trials": "在计时赛中查看",
+  "The carried times could not be changed.": "无法更改带来的成绩。",
+  "The number of waiting carried times changed meanwhile. The page is reloaded; choose again.": "等待中的带来成绩数量在此期间发生了变化。页面已重新加载，请重新选择。",
+  "{0} carried time(s) waiting for review.": "{0} 条带来的成绩等待审核。",
+  "{0} carried times are still waiting.": "仍有 {0} 条带来的成绩在等待。",
+  "{0} carried times refused.": "已拒绝 {0} 条带来的成绩。",
+  "{0} carried times published.": "已发布 {0} 条带来的成绩。",
+  "{0} of Private Players keep waiting.": "私密玩家的 {0} 条成绩继续等待。"
  }
 }
