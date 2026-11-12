@@ -99,6 +99,15 @@ def main():
             findings.append("unknown guide image schema")
         allowed_guide = {relative: row for relative, row in guide_images.get("files", {}).items()
                          if relative.startswith("docs/install/guide/img/") and relative.endswith(".png")}
+    # README screenshots (docs/readme) follow the same rule: listed one by one, with exact size and hash, after
+    # a person looked at them (made-up players, or real names made unrecognisable).
+    readme_manifest = ROOT / "docs/readme/images-reviewed-v1.json"
+    if readme_manifest.is_file():
+        readme_images = json.loads(readme_manifest.read_text(encoding="utf-8"))
+        if readme_images.get("schemaVersion") != "mk8dx.readme-images-reviewed.v1":
+            findings.append("unknown README image schema")
+        allowed_guide.update({relative: row for relative, row in readme_images.get("files", {}).items()
+                              if relative.startswith("docs/readme/") and relative.endswith(".jpg")})
     allowed_test_set = {}
     seen_test_set = set()
     test_set_manifest = ROOT / TEST_SET_MANIFEST
