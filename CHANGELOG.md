@@ -7,7 +7,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
-- **Times from other communities** (ADR-0225, migrations 0087 and 0088): a new installation setting under
+- **Times from other communities** (ADR-0225, migrations 0087, 0088 and 0089): a new installation setting under
   Administration → Installation settings decides whether a time carried from another community is refused
   (off, the default), waits for an administrator (with approval) or follows the normal publication rules
   (allowed). Every change is audited. A carried submission names where it came from in the new optional
@@ -19,6 +19,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   confirmation) on a run withheld for review, carried or not. It publishes the run unchanged through the
   ordinary publication path (leaderboards, records, activity, overtaken notifications) and records who
   approved it (`POST /v1/administrator/time-trials/{id}/actions/publish` with the expected revision).
+- **Carried times still waiting when approval is switched off**: the installation settings always show how many
+  carried times wait for review, with a link to them. Changing the setting from *With approval* to *Allowed* asks
+  "Publish all N" or "Leave them waiting"; changing it to *Off* asks "Refuse all N" (each run is retired and can
+  be brought back) or "Leave them waiting". Nothing happens without that answer, and each run gets its own
+  audit entry (`POST /v1/administrator/time-trials/actions/resolve-carried-waiting`, refused with 409 when the
+  number waiting changed meanwhile).
 
 ## 0.2.0-rc.7 — 2026-11-12
 
