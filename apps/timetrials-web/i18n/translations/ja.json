@@ -4952,6 +4952,14 @@
   "Off: times from other communities are refused (default)": "オフ：他のコミュニティからのタイムは拒否されます（既定）",
   "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "これらの設定はサイト全体に適用されます：誰がプレイヤーを作成し、誰がレーティングに反映され、他のコミュニティからのタイムを受け入れるかどうか。変更はすべてあなたの名前で記録されます。",
   "Times from other communities": "他のコミュニティからのタイム",
-  "With approval: an administrator approves each carried time": "承認制：持ち込まれたタイムは管理者が一件ずつ承認します"
+  "With approval: an administrator approves each carried time": "承認制：持ち込まれたタイムは管理者が一件ずつ承認します",
+  "An administrator approved and published this result": "管理者がこの結果を承認して公開しました",
+  "Publish": "公開",
+  "Publish this result as it is?": "この結果をこのまま公開しますか？",
+  "Publishing the result…": "結果を公開しています…",
+  "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "この結果はまだ公開されていません。公開すると、送信されたとおりの内容でランキング、記録、プレイヤーのプロフィールに表示されます。",
+  "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "このタイムは別のコミュニティから持ち込まれました。公開すると、送信されたとおりの内容でランキング、記録、プレイヤーのプロフィールに表示されます。",
+  "Waiting for review": "承認待ち",
+  "Yes, publish": "はい、公開します"
  }
 }

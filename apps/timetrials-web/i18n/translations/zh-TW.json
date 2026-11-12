@@ -4952,6 +4952,14 @@
   "Off: times from other communities are refused (default)": "關閉：拒絕來自其他社群的成績（預設）",
   "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "這些選擇適用於整個站台：誰建立玩家、誰計入評分，以及是否接受來自其他社群的成績。每次變更都會以你的名字記錄。",
   "Times from other communities": "來自其他社群的成績",
-  "With approval: an administrator approves each carried time": "需審核：由管理員逐一審核帶來的成績"
+  "With approval: an administrator approves each carried time": "需審核：由管理員逐一審核帶來的成績",
+  "An administrator approved and published this result": "管理員已核准並發布此成績",
+  "Publish": "發布",
+  "Publish this result as it is?": "依原樣發布此成績？",
+  "Publishing the result…": "正在發布成績…",
+  "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "此成績尚未公開。發布後，它會依提交時的原樣顯示在排行榜、紀錄和玩家檔案中。",
+  "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "此成績是從其他社群帶來的。發布後，它會依提交時的原樣顯示在排行榜、紀錄和玩家檔案中。",
+  "Waiting for review": "等待審核",
+  "Yes, publish": "是，發布"
  }
 }

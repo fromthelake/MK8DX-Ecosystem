@@ -1968,6 +1968,16 @@
    ]
   },
   {
+   "key": "An administrator approved and published this result",
+   "nl": "Een beheerder heeft dit resultaat goedgekeurd en gepubliceerd",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
+   ]
+  },
+  {
    "key": "An answer about {0}.",
    "nl": "Een antwoord over {0}.",
    "kinds": [
@@ -16753,6 +16763,16 @@
    ]
   },
   {
+   "key": "Publish",
+   "nl": "Publiceren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
+   ]
+  },
+  {
    "key": "Publish a time first, then challenge with it.",
    "nl": "Publiceer eerst een tijd en daag daarmee uit.",
    "kinds": [
@@ -16808,6 +16828,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Publish this result as it is?",
+   "nl": "Dit resultaat publiceren zoals het is?",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
    ]
   },
   {
@@ -17006,6 +17036,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Publishing the result…",
+   "nl": "Het resultaat wordt gepubliceerd…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
    ]
   },
   {
@@ -24336,6 +24376,16 @@
    ]
   },
   {
+   "key": "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.",
+   "nl": "Dit resultaat is nog niet openbaar. Publiceren toont het precies zoals het is ingestuurd op ranglijsten, records en het spelersprofiel.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
+   ]
+  },
+  {
    "key": "This run beat your best",
    "nl": "Deze tijd versloeg jouw beste tijd",
    "kinds": [
@@ -24386,6 +24436,16 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.",
+   "nl": "Deze tijd is meegenomen uit een andere community. Publiceren toont hem precies zoals hij is ingestuurd op ranglijsten, records en het spelersprofiel.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
    ]
   },
   {
@@ -26310,6 +26370,16 @@
    ]
   },
   {
+   "key": "Waiting for review",
+   "nl": "Wacht op goedkeuring",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
+   ]
+  },
+  {
    "key": "Waiting for the draw",
    "nl": "Wacht op de loting",
    "kinds": [
@@ -27428,6 +27498,16 @@
    "places": [
     "dutch-ui-copy.ts",
     "welcome-onboarding.ts"
+   ]
+  },
+  {
+   "key": "Yes, publish",
+   "nl": "Ja, publiceren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
    ]
   },
   {

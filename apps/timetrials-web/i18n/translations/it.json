@@ -4952,6 +4952,14 @@
   "Off: times from other communities are refused (default)": "Disattivato: i tempi di altre community vengono rifiutati (predefinito)",
   "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Queste scelte valgono per tutto il sito: chi crea i giocatori, chi conta per il rating e se i tempi di altre community vengono accettati. Ogni modifica viene registrata con il tuo nome.",
   "Times from other communities": "Tempi di altre community",
-  "With approval: an administrator approves each carried time": "Con approvazione: un amministratore approva ogni tempo portato"
+  "With approval: an administrator approves each carried time": "Con approvazione: un amministratore approva ogni tempo portato",
+  "An administrator approved and published this result": "Un amministratore ha approvato e pubblicato questo risultato",
+  "Publish": "Pubblica",
+  "Publish this result as it is?": "Pubblicare questo risultato così com'è?",
+  "Publishing the result…": "Pubblicazione del risultato…",
+  "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "Questo risultato non è ancora pubblico. Pubblicandolo compare in classifiche, record e profilo del giocatore esattamente come è stato inviato.",
+  "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "Questo tempo è stato portato da un'altra community. Pubblicandolo compare in classifiche, record e profilo del giocatore esattamente come è stato inviato.",
+  "Waiting for review": "In attesa di approvazione",
+  "Yes, publish": "Sì, pubblica"
  }
 }

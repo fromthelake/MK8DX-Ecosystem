@@ -4952,6 +4952,14 @@
   "Off: times from other communities are refused (default)": "Выключено: времена из других сообществ отклоняются (по умолчанию)",
   "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Эти настройки действуют для всего сайта: кто создаёт игроков, кто учитывается в рейтинге и принимаются ли времена из других сообществ. Каждое изменение записывается с вашим именем.",
   "Times from other communities": "Времена из других сообществ",
-  "With approval: an administrator approves each carried time": "С одобрением: администратор одобряет каждое перенесённое время"
+  "With approval: an administrator approves each carried time": "С одобрением: администратор одобряет каждое перенесённое время",
+  "An administrator approved and published this result": "Администратор одобрил и опубликовал этот результат",
+  "Publish": "Опубликовать",
+  "Publish this result as it is?": "Опубликовать этот результат как есть?",
+  "Publishing the result…": "Публикация результата…",
+  "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "Этот результат ещё не публичный. После публикации он появится в таблицах лидеров, рекордах и профиле игрока точно в том виде, в каком был отправлен.",
+  "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.": "Это время перенесено из другого сообщества. После публикации оно появится в таблицах лидеров, рекордах и профиле игрока точно в том виде, в каком было отправлено.",
+  "Waiting for review": "Ожидает проверки",
+  "Yes, publish": "Да, опубликовать"
  }
 }
