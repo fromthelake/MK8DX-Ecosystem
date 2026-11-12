@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "{0}에 연결할 수 없습니다. 아무것도 가져가지 않았습니다. 나중에 다시 시도하세요.",
   "{0} runs waiting to be sent": "전송 대기 중인 주행 {0}개",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0}에 아직 전송되지 않은 주행이 있습니다. 그곳으로 전환해 먼저 전송하세요.",
-  "{0} was removed from this phone.": "{0}을(를) 이 휴대폰에서 제거했습니다."
+  "{0} was removed from this phone.": "{0}을(를) 이 휴대폰에서 제거했습니다.",
+  "Carried time waiting for sign-in: {0}": "로그인을 기다리는 가져온 기록: {0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "{0}에서 받지 않음: 이 커뮤니티는 다른 커뮤니티의 기록을 받지 않습니다.",
+  "Not accepted by {0}: this time already comes from this community.": "{0}에서 받지 않음: 이 기록은 이미 이 커뮤니티의 기록입니다."
  }
 }

@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "无法连接 {0}。没有带走任何内容；请稍后再试。",
   "{0} runs waiting to be sent": "{0} 条成绩等待发送",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0} 仍有未发送的成绩。请先切换过去并发送。",
-  "{0} was removed from this phone.": "已从此手机移除 {0}。"
+  "{0} was removed from this phone.": "已从此手机移除 {0}。",
+  "Carried time waiting for sign-in: {0}": "等待登录的带入成绩：{0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "{0} 未接受：本社区不接受其他社区的成绩。",
+  "Not accepted by {0}: this time already comes from this community.": "{0} 未接受：此成绩已经来自本社区。"
  }
 }

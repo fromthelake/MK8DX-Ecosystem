@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "無法連線到 {0}。沒有帶走任何內容；請稍後再試。",
   "{0} runs waiting to be sent": "{0} 筆成績等待傳送",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0} 仍有未傳送的成績。請先切換過去並傳送。",
-  "{0} was removed from this phone.": "已從這支手機移除 {0}。"
+  "{0} was removed from this phone.": "已從這支手機移除 {0}。",
+  "Carried time waiting for sign-in: {0}": "等待登入的帶入成績：{0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "{0} 未接受：本社群不接受其他社群的成績。",
+  "Not accepted by {0}: this time already comes from this community.": "{0} 未接受：這筆成績已經來自本社群。"
  }
 }

@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "No se pudo contactar con {0}. No se llevó nada; inténtalo más tarde.",
   "{0} runs waiting to be sent": "{0} carreras pendientes de enviar",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0} todavía tiene carreras sin enviar. Cambia a ella y envíalas primero.",
-  "{0} was removed from this phone.": "{0} se quitó de este teléfono."
+  "{0} was removed from this phone.": "{0} se quitó de este teléfono.",
+  "Carried time waiting for sign-in: {0}": "Tiempo llevado a la espera de iniciar sesión: {0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "No aceptado por {0}: esta comunidad no acepta tiempos de otras comunidades.",
+  "Not accepted by {0}: this time already comes from this community.": "No aceptado por {0}: este tiempo ya viene de esta comunidad."
  }
 }

@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "{0}に接続できませんでした。何も持っていっていません。後でもう一度お試しください。",
   "{0} runs waiting to be sent": "送信待ちの走行が{0}件あります",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0}にはまだ送信されていない走行があります。そちらに切り替えて先に送信してください。",
-  "{0} was removed from this phone.": "{0}をこのスマートフォンから削除しました。"
+  "{0} was removed from this phone.": "{0}をこのスマートフォンから削除しました。",
+  "Carried time waiting for sign-in: {0}": "サインイン待ちの持ち込みタイム: {0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "{0}で受け付けられませんでした: このコミュニティは他のコミュニティからのタイムを受け付けていません。",
+  "Not accepted by {0}: this time already comes from this community.": "{0}で受け付けられませんでした: このタイムはすでにこのコミュニティのものです。"
  }
 }

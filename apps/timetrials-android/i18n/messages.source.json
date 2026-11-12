@@ -193,7 +193,7 @@
   {
    "key": "1 run waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:111"
+    "AndroidCommunityServerPanel.kt:119"
    ],
    "nl": "1 rit wacht op verzenden"
   },
@@ -418,7 +418,7 @@
   {
    "key": "Active",
    "places": [
-    "AndroidCommunityServerPanel.kt:105"
+    "AndroidCommunityServerPanel.kt:113"
    ],
    "nl": "Actief"
   },
@@ -482,7 +482,7 @@
   {
    "key": "Add a community",
    "places": [
-    "AndroidCommunityServerPanel.kt:158"
+    "AndroidCommunityServerPanel.kt:197"
    ],
    "nl": "Een community toevoegen"
   },
@@ -727,7 +727,7 @@
   {
    "key": "An administrator of {0} approves it first.",
    "places": [
-    "AndroidCarryHost.kt:145"
+    "AndroidCarryHost.kt:175"
    ],
    "nl": "Een beheerder van {0} keurt hem eerst goed."
   },
@@ -877,7 +877,7 @@
   {
    "key": "Asking {0}…",
    "places": [
-    "AndroidCarryHost.kt:132"
+    "AndroidCarryHost.kt:162"
    ],
    "nl": "{0} wordt gevraagd…"
   },
@@ -1313,10 +1313,17 @@
    "nl": "Nieuw toernooi annuleren"
   },
   {
+   "key": "Carried time waiting for sign-in: {0}",
+   "places": [
+    "AndroidCommunityServerPanel.kt:132"
+   ],
+   "nl": "Meegenomen tijd wacht op aanmelden: {0}"
+  },
+  {
    "key": "Carry to another community",
    "places": [
-    "AndroidCarryHost.kt:73",
-    "AndroidOutboxSelectionComponent.kt:188"
+    "AndroidCarryHost.kt:103",
+    "AndroidOutboxSelectionComponent.kt:221"
    ],
    "nl": "Meenemen naar een andere community"
   },
@@ -1660,7 +1667,7 @@
   {
    "key": "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.",
    "places": [
-    "AndroidCarryHost.kt:82"
+    "AndroidCarryHost.kt:112"
    ],
    "nl": "Kies de community waar deze tijd ook moet meetellen. Die community bepaalt zelf of ze tijden van elders aanneemt."
   },
@@ -1791,7 +1798,7 @@
    "places": [
     "AndroidCommunitySetupScreen.kt:192",
     "AndroidTimeTrialsProductComponent.kt:569",
-    "AndroidCarryHost.kt:74",
+    "AndroidCarryHost.kt:104",
     "AndroidHomeExperience.kt:725"
    ],
    "nl": "Sluiten"
@@ -1929,7 +1936,7 @@
   {
    "key": "Community server",
    "places": [
-    "AndroidCommunityServerPanel.kt:78"
+    "AndroidCommunityServerPanel.kt:86"
    ],
    "nl": "Communityserver"
   },
@@ -2731,7 +2738,7 @@
   {
    "key": "Each community keeps its own account and unsent times. Switching takes one tap.",
    "places": [
-    "AndroidCommunityServerPanel.kt:80"
+    "AndroidCommunityServerPanel.kt:88"
    ],
    "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Wisselen is één tik."
   },
@@ -2844,7 +2851,7 @@
   {
    "key": "Enter a time manually or scan a Switch result. It is saved safely on this phone first, then synced to the website.",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:86",
+    "AndroidOutboxSelectionComponent.kt:96",
     "AndroidDutchUiCopy.kt:278"
    ],
    "nl": "Voer handmatig een tijd in of scan een resultaat van je Nintendo Switch. Het resultaat wordt eerst veilig op deze telefoon opgeslagen en daarna met de website gesynchroniseerd."
@@ -3927,7 +3934,7 @@
   {
    "key": "It is sent when you switch to {0} and are signed in there.",
    "places": [
-    "AndroidCarryHost.kt:142"
+    "AndroidCarryHost.kt:172"
    ],
    "nl": "Hij wordt verzonden zodra je naar {0} wisselt en daar bent aangemeld."
   },
@@ -4887,7 +4894,7 @@
   {
    "key": "NO SAVED RESULTS YET",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:81",
+    "AndroidOutboxSelectionComponent.kt:91",
     "AndroidDutchUiCopy.kt:117"
    ],
    "nl": "NOG GEEN OPGESLAGEN RESULTATEN"
@@ -5506,6 +5513,20 @@
    "nl": "Niet de meta"
   },
   {
+   "key": "Not accepted by {0}: this community does not accept times from other communities.",
+   "places": [
+    "AndroidCarryHost.kt:60"
+   ],
+   "nl": "Niet aangenomen door {0}: deze community neemt geen tijden van andere communities aan."
+  },
+  {
+   "key": "Not accepted by {0}: this time already comes from this community.",
+   "places": [
+    "AndroidCarryHost.kt:63"
+   ],
+   "nl": "Niet aangenomen door {0}: deze tijd komt al uit deze community."
+  },
+  {
    "key": "Not approved yet. Approve the request in your browser, then check again.",
    "places": [
     "AndroidDutchUiCopy.kt:450"
@@ -5709,7 +5730,7 @@
   {
    "key": "Nothing waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:110"
+    "AndroidCommunityServerPanel.kt:118"
    ],
    "nl": "Niets wacht op verzenden"
   },
@@ -7439,6 +7460,8 @@
   {
    "key": "Remove",
    "places": [
+    "AndroidCommunityServerPanel.kt:139",
+    "AndroidOutboxSelectionComponent.kt:206",
     "AndroidDutchUiCopy.kt:151"
    ],
    "nl": "Verwijderen"
@@ -7460,7 +7483,7 @@
   {
    "key": "Remove from this phone",
    "places": [
-    "AndroidCommunityServerPanel.kt:125"
+    "AndroidCommunityServerPanel.kt:164"
    ],
    "nl": "Van deze telefoon verwijderen"
   },
@@ -8720,7 +8743,7 @@
   {
    "key": "Sign in to synchronize saved results",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:72",
+    "AndroidOutboxSelectionComponent.kt:82",
     "AndroidDutchUiCopy.kt:460"
    ],
    "nl": "Meld je aan om opgeslagen resultaten te synchroniseren"
@@ -9166,7 +9189,7 @@
   {
    "key": "Switch",
    "places": [
-    "AndroidCommunityServerPanel.kt:118",
+    "AndroidCommunityServerPanel.kt:157",
     "AndroidDutchUiCopy.kt:452"
    ],
    "nl": "Wisselen"
@@ -9552,7 +9575,7 @@
   {
    "key": "That community does not accept times from other communities.",
    "places": [
-    "AndroidCarryHost.kt:158"
+    "AndroidCarryHost.kt:188"
    ],
    "nl": "Die community neemt geen tijden van andere communities aan."
   },
@@ -10199,7 +10222,7 @@
   {
    "key": "This community does not accept times from other communities.",
    "places": [
-    "AndroidCanonicalSubmissionRequestTransport.kt:206"
+    "AndroidCanonicalSubmissionRequestTransport.kt:220"
    ],
    "nl": "Deze community neemt geen tijden van andere communities aan."
   },
@@ -10264,7 +10287,7 @@
   {
    "key": "This result cannot be carried.",
    "places": [
-    "AndroidCarryHost.kt:173"
+    "AndroidCarryHost.kt:203"
    ],
    "nl": "Deze uitslag kan niet worden meegenomen."
   },
@@ -10291,14 +10314,14 @@
   {
    "key": "This time already comes from this community.",
    "places": [
-    "AndroidCanonicalSubmissionRequestTransport.kt:211"
+    "AndroidCanonicalSubmissionRequestTransport.kt:225"
    ],
    "nl": "Deze tijd komt al uit deze community."
   },
   {
    "key": "This time is already on its way to {0}.",
    "places": [
-    "AndroidCarryHost.kt:168"
+    "AndroidCarryHost.kt:198"
    ],
    "nl": "Deze tijd is al onderweg naar {0}."
   },
@@ -12771,7 +12794,7 @@
   {
    "key": "{0} could not be reached. Nothing was carried; try again later.",
    "places": [
-    "AndroidCarryHost.kt:163"
+    "AndroidCarryHost.kt:193"
    ],
    "nl": "{0} was niet bereikbaar. Er is niets meegenomen; probeer het later opnieuw."
   },
@@ -13286,7 +13309,7 @@
   {
    "key": "{0} runs waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:112"
+    "AndroidCommunityServerPanel.kt:120"
    ],
    "nl": "{0} ritten wachten op verzenden"
   },
@@ -13307,7 +13330,7 @@
   {
    "key": "{0} still has runs that were not sent. Switch to it and send them first.",
    "places": [
-    "AndroidCommunityServerPanel.kt:139"
+    "AndroidCommunityServerPanel.kt:178"
    ],
    "nl": "{0} heeft nog ritten die niet zijn verzonden. Wissel ernaar en verstuur ze eerst."
   },
@@ -13402,7 +13425,7 @@
   {
    "key": "{0} was removed from this phone.",
    "places": [
-    "AndroidCommunityServerPanel.kt:135"
+    "AndroidCommunityServerPanel.kt:174"
    ],
    "nl": "{0} is van deze telefoon verwijderd."
   },

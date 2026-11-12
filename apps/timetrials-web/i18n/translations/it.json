@@ -4966,6 +4966,9 @@
   "{0} could not be reached. Nothing was carried; try again later.": "{0} non è raggiungibile. Non è stato portato nulla; riprova più tardi.",
   "{0} runs waiting to be sent": "{0} corse in attesa di invio",
   "{0} still has runs that were not sent. Switch to it and send them first.": "{0} ha ancora corse non inviate. Passa a quella community e inviale prima.",
-  "{0} was removed from this phone.": "{0} è stata rimossa da questo telefono."
+  "{0} was removed from this phone.": "{0} è stata rimossa da questo telefono.",
+  "Carried time waiting for sign-in: {0}": "Tempo portato in attesa dell'accesso: {0}",
+  "Not accepted by {0}: this community does not accept times from other communities.": "Non accettato da {0}: questa community non accetta tempi da altre community.",
+  "Not accepted by {0}: this time already comes from this community.": "Non accettato da {0}: questo tempo proviene già da questa community."
  }
 }
