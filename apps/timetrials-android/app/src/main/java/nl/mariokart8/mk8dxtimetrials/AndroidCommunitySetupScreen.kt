@@ -139,7 +139,9 @@ internal fun AndroidCommunitySetup(
                         tag = "community-setup-scan",
                         modifier = Modifier.fillMaxWidth(),
                     )
-                    paired?.let { origin ->
+                    // Adding a community is about the new one: the active installation's pairing is managed in the
+                    // community list ("Remove from this phone"), not offered for forgetting here (emulator, 12-11).
+                    paired?.takeIf { onCancel == null }?.let { origin ->
                         Mk8dxStatusMessage(t("Paired with $origin", "Gekoppeld met $origin"), tone = Mk8dxStatusTone.Success)
                         Mk8dxButton(
                             t("Forget this installation", "Deze installatie vergeten"),
