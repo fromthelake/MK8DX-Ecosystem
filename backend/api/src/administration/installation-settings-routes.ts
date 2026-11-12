@@ -8,25 +8,27 @@ import {
 } from "./installation-settings-service.js";
 
 /**
- * Installation settings (ADR-0221). Anyone may read who creates Players and
- * who counts for the rating (the Web and the phone explain a missing button
- * with it); only administrators read the audit-facing view, change the
+ * Installation settings (ADR-0221). Anyone may read who creates Players,
+ * who counts for the rating and whether carried times are accepted (ADR-0225;
+ * the Web and the phone explain a missing button or a refusal with it); only administrators read the audit-facing view, change the
  * settings and start the explicit rating recalculation. Browser writes need
  * the CSRF proof.
  */
 
 const playerCreationSchema = { type: "string", enum: ["self_and_directors", "self_only", "directors_only"] } as const;
 const ratingEligibilitySchema = { type: "string", enum: ["all_players", "claimed_only"] } as const;
+const carriedTimesSchema = { type: "string", enum: ["off", "review", "allowed"] } as const;
 const epochSchema = { type: "integer", minimum: 0 } as const;
 
 export const installationSettingsSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["schemaVersion", "playerCreation", "ratingEligibility"],
+  required: ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"],
   properties: {
     schemaVersion: { type: "string", const: "mk8dx.installation-settings.v1" },
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
+    carriedTimes: carriedTimesSchema,
   },
 } as const;
 
@@ -45,11 +47,12 @@ export const ratingRecomputeStatusSchema = {
 export const installationSettingsAdministrationSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["schemaVersion", "playerCreation", "ratingEligibility", "revision", "updatedAtMs", "ratingRecompute"],
+  required: ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs", "ratingRecompute"],
   properties: {
     schemaVersion: { type: "string", const: "mk8dx.installation-settings-administration.v1" },
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
+    carriedTimes: carriedTimesSchema,
     revision: { type: "integer", minimum: 0 },
     updatedAtMs: { anyOf: [epochSchema, { type: "null" }] },
     ratingRecompute: ratingRecomputeStatusSchema,
@@ -78,6 +81,7 @@ const updateBody = {
     expectedRevision: { type: "integer", minimum: 0 },
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
+    carriedTimes: carriedTimesSchema,
   },
 } as const;
 const emptyBody = { type: "object", additionalProperties: false, properties: {} } as const;
@@ -149,7 +153,7 @@ export async function registerInstallationSettingsRoutes(
     },
   );
 
-  app.post<{ Body: { expectedRevision: number; playerCreation?: string; ratingEligibility?: string } }>(
+  app.post<{ Body: { expectedRevision: number; playerCreation?: string; ratingEligibility?: string; carriedTimes?: string } }>(
     "/v1/administrator/installation-settings",
     { schema: { body: updateBody, response: { 200: installationSettingsAdministrationSchema, ...errors } } },
     async (request, reply) => {

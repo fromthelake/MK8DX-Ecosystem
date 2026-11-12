@@ -291,7 +291,7 @@ integration("installation settings and per-night rating options (ADR-0221)", () 
   });
 
   it("reads the defaults, audits each change and closes the Player-creation path each setting names", async () => {
-    expect(await settings.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players" });
+    expect(await settings.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
     let view = await settings.administration(admin);
     expect(view.revision).toBe(0);
 
@@ -333,6 +333,10 @@ integration("installation settings and per-night rating options (ADR-0221)", () 
       [admin.userAccountId],
     )).rejects.toThrow();
     await expect(pool.execute("UPDATE installation_settings SET rating_eligibility = 'everybody'")).rejects.toThrow();
+    // ADR-0225 (migration 0087): the carried-times column defaults to off and refuses an unknown value.
+    const [carried] = await pool.execute<RowDataPacket[]>("SELECT carried_times AS carriedTimes FROM installation_settings");
+    expect(carried[0]!["carriedTimes"]).toBe("off");
+    await expect(pool.execute("UPDATE installation_settings SET carried_times = 'always'")).rejects.toThrow();
   });
 
   it("stores the seeding source next to seed_order and rates a verified-only night for verified Players only", async () => {
