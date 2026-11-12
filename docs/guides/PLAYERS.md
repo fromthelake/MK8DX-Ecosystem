@@ -76,7 +76,9 @@ self-built APK with a different key also requires an uninstall.
 
 ### First start
 
-The app opens on **Choose your community**. It asks one thing: how your community plays. Not sure? Ask the
+The app opens on **Choose your community**, in the phone's language when the app has it. To pick another
+language, tap **Language / Taal** (with the globe) at the top; the app keeps that choice. Then it asks one thing:
+how your community plays. Not sure? Ask the
 person who runs your community.
 
 - **At home or at the club** (A2, MK8DX runs on a computer there): tap **Scan the QR code** and scan the

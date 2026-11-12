@@ -23,6 +23,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.core.graphics.drawable.toBitmap
 import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingFlow
 import nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingStore
+import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguageStore
 import nl.mariokart8.mk8dxtimetrials.ui.ProductText as Text
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
@@ -32,9 +33,11 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxBrandLockup
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonSize
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxDialog
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxDisplayText
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxPanel
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxSectionLabel
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxSelectField
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxSpacing
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusMessage
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusTone
@@ -58,12 +61,19 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
     var error by rememberSaveable { mutableStateOf(false) }
     var pairing by rememberSaveable { mutableStateOf(false) }
     var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
-    val language = remember(context) { AndroidProductLanguageStore.readForFirstStart(context) }
+    // The phone's language until somebody picks one here. Whatever this screen shows is written when the
+    // community is chosen, so the app does not switch to English right after a Dutch (or Japanese) first start.
+    var language by remember(context) { mutableStateOf(AndroidProductLanguageStore.readForFirstStart(context)) }
+    var choosingLanguage by rememberSaveable { mutableStateOf(false) }
+    fun choose(origin: String) {
+        AndroidProductLanguageStore.write(context, language)
+        onSave(origin)
+    }
     val appearance = remember(context) { Mk8dxAppearanceStore(context).read() }
     fun t(english: String, dutch: String) = androidText(language, english, dutch)
     Mk8dxAppearanceHost(appearance) {
         if (pairing) {
-            AndroidLanPairingFlow(onPaired = { origin -> pairing = false; onSave(origin) }, onCancel = { pairing = false })
+            AndroidLanPairingFlow(onPaired = { origin -> pairing = false; choose(origin) }, onCancel = { pairing = false })
             return@Mk8dxAppearanceHost
         }
         Mk8dxTheme(Mk8dxTheme.appearance) {
@@ -85,6 +95,15 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.lg),
             ) {
                 Mk8dxBrandLockup(appIcon, platform = "ANDROID")
+                // Someone who cannot read the phone's language must find this without reading it: the label is
+                // in English and Dutch, the value is the language's own name, and a globe marks it.
+                Mk8dxSelectField(
+                    label = "Language / Taal",
+                    value = language.displayName,
+                    onOpen = { choosingLanguage = true },
+                    modifier = Modifier.testTag("community-setup-language"),
+                    leading = { Text("🌐", style = type.body) },
+                )
                 Mk8dxSectionLabel(if (current == null) t("FIRST START", "EERSTE START") else t("SERVER", "SERVER"))
                 Mk8dxDisplayText(t("Choose your community", "Kies je community"), type.display4)
                 Text(
@@ -152,13 +171,39 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                         t("Save", "Opslaan"),
                         {
                             val valid = AndroidServerOrigin.validate(address)
-                            if (valid == null) error = true else onSave(valid)
+                            if (valid == null) error = true else choose(valid)
                         },
                         variant = Mk8dxButtonVariant.Secondary,
                         size = Mk8dxButtonSize.Lg,
                         tag = "community-setup-save",
                         modifier = Modifier.fillMaxWidth(),
                     )
+                }
+                if (choosingLanguage) {
+                    Mk8dxDialog(
+                        title = "Language / Taal",
+                        closeLabel = t("Close", "Sluiten"),
+                        onDismiss = { choosingLanguage = false },
+                    ) {
+                        Column(
+                            Modifier.verticalScroll(rememberScrollState()),
+                            verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs),
+                        ) {
+                            AndroidProductLanguage.entries.forEach { option ->
+                                Mk8dxButton(
+                                    option.displayName,
+                                    {
+                                        language = option
+                                        AndroidProductLanguageStore.write(context, option)
+                                        choosingLanguage = false
+                                    },
+                                    variant = if (option == language) Mk8dxButtonVariant.Primary else Mk8dxButtonVariant.Secondary,
+                                    tag = "community-setup-language-${option.code}",
+                                    modifier = Modifier.fillMaxWidth(),
+                                )
+                            }
+                        }
+                    }
                 }
                 if (current != null) {
                     Text(
