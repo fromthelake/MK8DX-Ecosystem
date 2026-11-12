@@ -3167,7 +3167,7 @@
   {
    "key": "Filled in: {0}",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:320"
+    "AndroidOutboxSelectionComponent.kt:319"
    ],
    "nl": "Aangevuld: {0}"
   },
@@ -12338,7 +12338,7 @@
   {
    "key": "build",
    "places": [
-    "AndroidOutboxSelectionComponent.kt:317"
+    "AndroidOutboxSelectionComponent.kt:316"
    ],
    "nl": "combinatie"
   },
@@ -12363,13 +12363,6 @@
     "AndroidOutboxSelectionComponent.kt:315"
    ],
    "nl": "munten"
-  },
-  {
-   "key": "coins and mushrooms",
-   "places": [
-    "AndroidOutboxSelectionComponent.kt:316"
-   ],
-   "nl": "munten en paddenstoelen"
   },
   {
    "key": "coins {0} · mushrooms {1}",

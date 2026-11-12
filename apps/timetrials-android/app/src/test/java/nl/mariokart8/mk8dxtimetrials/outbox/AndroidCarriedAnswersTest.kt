@@ -68,12 +68,12 @@ class AndroidCarriedAnswersTest {
     @Test fun `a filled equal run counts as sent and names its fields`() {
         val ack = answering(
             200,
-            """{"schemaVersion":"mk8dx.carried-fill.v1","submissionId":"user_submission.time.EXISTING0001","filledFields":["characterId","laps","nonsense"]}""",
+            """{"schemaVersion":"mk8dx.carried-fill.v1","submissionId":"user_submission.time.EXISTING0001","filledFields":["characterId","characterVariantId","laps","nonsense"]}""",
             "application/json",
         ).submit(json(carried = true))
         val outcome = androidCarriedOutcomeOrNull(ack["carried"])!!
         assertFalse(outcome.alreadyThere)
-        assertEquals(listOf("characterId", "laps"), outcome.filledFields)
+        assertEquals(listOf("characterId", "characterVariantId", "laps"), outcome.filledFields)
         assertEquals("Filled in: character, lap times", androidCarriedOutcomeText(AndroidProductLanguage.ENGLISH, outcome))
         assertEquals("Aangevuld: personage, rondetijden", androidCarriedOutcomeText(AndroidProductLanguage.DUTCH, outcome))
         val invalid = assertThrows(AndroidCanonicalDeliveryTransportException::class.java) {

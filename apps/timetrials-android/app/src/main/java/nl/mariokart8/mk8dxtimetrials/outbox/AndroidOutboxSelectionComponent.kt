@@ -306,14 +306,13 @@ internal fun androidCarriedOutcomeText(language: AndroidProductLanguage, outcome
     }
     val fields = outcome.filledFields.map { field ->
         when (field) {
-            "characterId" -> androidText(language, "character", "personage")
-            "bodyId" -> androidText(language, "body", "kart")
+            "characterId", "characterVariantId" -> androidText(language, "character", "personage")
+            "bodyId", "bodyVariantId" -> androidText(language, "body", "kart")
             "tireId" -> androidText(language, "tyres", "banden")
-            "gliderId" -> androidText(language, "glider", "zweefvlieger")
-            "laps", "lapTimes" -> androidText(language, "lap times", "rondetijden")
-            "mushrooms", "mushroomsUsed" -> androidText(language, "mushrooms", "paddenstoelen")
-            "coins", "coinsCollected" -> androidText(language, "coins", "munten")
-            "lapDetails" -> androidText(language, "coins and mushrooms", "munten en paddenstoelen")
+            "gliderId", "gliderVariantId" -> androidText(language, "glider", "zweefvlieger")
+            "laps" -> androidText(language, "lap times", "rondetijden")
+            "mushrooms" -> androidText(language, "mushrooms", "paddenstoelen")
+            "coins" -> androidText(language, "coins", "munten")
             else -> androidText(language, "build", "combinatie")
         }
     }.distinct().joinToString(", ")

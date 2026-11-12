@@ -252,8 +252,8 @@ internal const val ANDROID_CARRIED_FILL_SCHEMA = "mk8dx.carried-fill.v1"
 
 /** The fields an equal run may have had filled in, in the order the site names them. */
 internal val ANDROID_CARRIED_FILLABLE_FIELDS = listOf(
-    "characterId", "bodyId", "tireId", "gliderId", "laps", "lapTimes", "mushrooms", "coins",
-    "mushroomsUsed", "coinsCollected", "loadout", "lapDetails",
+    "characterId", "characterVariantId", "bodyId", "bodyVariantId", "tireId", "gliderId", "gliderVariantId",
+    "laps", "coins", "mushrooms",
 )
 
 /** What became of a carried copy that the receiving community did not store as a new run. */

@@ -40,7 +40,7 @@ internal data class AndroidOfflineRun(
             lapDetails = result.current.lapDetails,
             loadout = result.current.loadout,
             sourceKind = result.current.sourceKind,
-            createdAtMs = result.current.createdAtMs,
+            createdAtMs = result.current.occurredAtMs ?: result.current.createdAtMs,
             publicationStatus = result.publicationStatus,
             retirementState = result.retirementState,
             carriedFrom = result.carriedFrom,
@@ -71,6 +71,8 @@ internal data class AndroidOfflineCopy(
     val runs: List<AndroidOfflineRun> = emptyList(),
     val rivals: List<AndroidRival> = emptyList(),
     val rivalBests: List<AndroidOfflineRivalBest> = emptyList(),
+    /** The Player's own public best per track and class, with its rank, when the community answered it. */
+    val ownBests: List<AndroidOfflineRivalBest> = emptyList(),
     val lastUpdatedAtMs: Long,
 ) {
     /** The Player's best active time per track and class. */
@@ -79,7 +81,10 @@ internal data class AndroidOfflineCopy(
         .map { (_, group) -> group.minWith(compareBy<AndroidOfflineRun> { it.totalTimeMs }.thenBy { it.createdAtMs }) }
 
     fun bestsOf(playerId: String): List<AndroidTrackBest> = if (playerId == this.playerId) {
-        personalBests().map { AndroidTrackBest(it.trackId, it.mode, it.totalTimeMs, rank = 1) }
+        // The ranked public bests when the copy has them; otherwise the runs themselves, without a rank (0).
+        ownBests.takeIf { it.isNotEmpty() }
+            ?.map { AndroidTrackBest(it.trackId, it.mode, it.totalTimeMs, it.rank) }
+            ?: personalBests().map { AndroidTrackBest(it.trackId, it.mode, it.totalTimeMs, rank = 0) }
     } else {
         rivalBests.filter { it.playerId == playerId }.map { AndroidTrackBest(it.trackId, it.mode, it.totalTimeMs, it.rank) }
     }
@@ -98,10 +103,13 @@ internal interface AndroidOfflineCopySource {
     fun rivals(): List<AndroidRival>
 
     /**
-     * The rivals' best times. Today `GET /v1/public/track-bests?players=...` (at most 10 per request); a
-     * dedicated `GET /v1/account/rivals/best-times` can replace it behind this interface.
+     * Best times of up to ten Players (`GET /v1/public/track-bests?players=...`), with their ranks: used for
+     * the Player's own ranked bests, and for the rivals when [rivalBestTimes] is not served.
      */
     fun rivalBests(playerIds: List<String>): Map<String, List<AndroidTrackBest>>
+
+    /** The rivals' best times in one read (`GET /v1/account/rivals/best-times`), or null on an older server. */
+    fun rivalBestTimes(): Map<String, List<AndroidTrackBest>>? = null
 }
 
 private val copyJson = Json { ignoreUnknownKeys = true; encodeDefaults = true; explicitNulls = false }
@@ -164,18 +172,22 @@ internal fun refreshAndroidOfflineCopy(
     } catch (_: Exception) {
         return AndroidOfflineRefresh.Kept(previous)
     }
+    fun bestsOf(lists: Map<String, List<AndroidTrackBest>>, wanted: Collection<String>) = lists.flatMap { (id, list) ->
+        list.filter { id in wanted && (it.mode == 150 || it.mode == 200) }
+            .map { AndroidOfflineRivalBest(id, it.trackId, it.mode, it.totalTimeMs, it.rank) }
+    }
     val rivalPart = try {
         val rivals = source.rivals()
-        val bests = rivals.map { it.playerId }.chunked(10).flatMap { chunk ->
-            source.rivalBests(chunk).flatMap { (rivalId, list) ->
-                list.filter { rivalId in chunk && (it.mode == 150 || it.mode == 200) }
-                    .map { AndroidOfflineRivalBest(rivalId, it.trackId, it.mode, it.totalTimeMs, it.rank) }
-            }
-        }
+        val ids = rivals.map { it.playerId }
+        val dedicated = if (ids.isEmpty()) emptyMap() else source.rivalBestTimes()
+        val bests = if (dedicated != null) bestsOf(dedicated, ids)
+        else ids.chunked(10).flatMap { chunk -> bestsOf(source.rivalBests(chunk), chunk) }
         rivals to bests
     } catch (_: Exception) {
         (previous?.rivals ?: emptyList()) to (previous?.rivalBests ?: emptyList())
     }
+    val ownBests = runCatching { bestsOf(source.rivalBests(listOf(playerId)), listOf(playerId)) }
+        .getOrElse { previous?.ownBests ?: emptyList() }
     val copy = AndroidOfflineCopy(
         playerId = playerId,
         playerUsername = own.firstOrNull()?.playerUsername ?: previous?.playerUsername,
@@ -183,6 +195,7 @@ internal fun refreshAndroidOfflineCopy(
         runs = own.map(AndroidOfflineRun::of),
         rivals = rivalPart.first,
         rivalBests = rivalPart.second,
+        ownBests = ownBests,
         lastUpdatedAtMs = nowMs,
     )
     return try {
@@ -200,4 +213,5 @@ internal fun androidOfflineCopySource(
     override fun ownRuns() = client.ownTimeTrialsForCopy()
     override fun rivals() = client.rivals()
     override fun rivalBests(playerIds: List<String>) = client.trackBestsForPlayers(playerIds)
+    override fun rivalBestTimes() = client.rivalBestTimes()
 }

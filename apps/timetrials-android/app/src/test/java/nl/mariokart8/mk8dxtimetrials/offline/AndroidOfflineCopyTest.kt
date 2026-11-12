@@ -50,8 +50,14 @@ class AndroidOfflineCopyTest {
     ) : AndroidOfflineCopySource {
         override fun ownRuns(): List<AndroidManagedTimeTrial> = runs()
         override fun rivals(): List<AndroidRival> = rivals.invoke()
+        var dedicated: Map<String, List<AndroidTrackBest>>? = null
+        var ownRank: Int? = null
         override fun rivalBests(playerIds: List<String>): Map<String, List<AndroidTrackBest>> =
-            playerIds.associateWith { listOf(AndroidTrackBest("track.mario_kart_stadium", 150, 99_000, 3)) }
+            playerIds.associateWith { id ->
+                if (id == "player.me") listOfNotNull(ownRank?.let { AndroidTrackBest("track.mario_kart_stadium", 150, 97_000, it) })
+                else listOf(AndroidTrackBest("track.mario_kart_stadium", 150, 99_000, 3))
+            }
+        override fun rivalBestTimes(): Map<String, List<AndroidTrackBest>>? = dedicated
     }
 
     private fun store() = AndroidOfflineCopyStore(File(temporary.root, "copy-${System.nanoTime()}.json"))
@@ -138,5 +144,33 @@ class AndroidOfflineCopyTest {
         // Anybody else's data is not in the copy and fails as before.
         try { source.trackBestsFor("player.stranger"); fail() } catch (_: IllegalStateException) { }
         try { source.home(); fail() } catch (_: IllegalStateException) { }
+    }
+
+    @Test fun `the dedicated rival read is used when served, the public bests otherwise`() {
+        val store = store()
+        val source = FakeSource({ listOf(managedRun("RUN0000001", 100_000)) })
+        source.dedicated = mapOf("player.rival" to listOf(AndroidTrackBest("track.water_park", 200, 88_000, 0)))
+        refreshAndroidOfflineCopy(store, source, "player.me", 5_000)
+        assertEquals(listOf(88_000L), store.read()!!.bestsOf("player.rival").map { it.totalTimeMs })
+        source.dedicated = null
+        refreshAndroidOfflineCopy(store, source, "player.me", 6_000)
+        assertEquals(listOf(99_000L), store.read()!!.bestsOf("player.rival").map { it.totalTimeMs })
+    }
+
+    @Test fun `own bests keep the community's rank and are never a medal without one`() {
+        val store = store()
+        val source = FakeSource({ listOf(managedRun("RUN0000001", 97_000)) })
+        refreshAndroidOfflineCopy(store, source, "player.me", 5_000)
+        assertEquals(0, store.read()!!.bestsOf("player.me").single().rank)
+        source.ownRank = 4
+        refreshAndroidOfflineCopy(store, source, "player.me", 6_000)
+        assertEquals(4, store.read()!!.bestsOf("player.me").single().rank)
+    }
+
+    @Test fun `a run keeps when it was driven`() {
+        val run = managedRun("RUN0000001", 97_000, createdAtMs = 9_000)
+        val driven = run.copy(current = run.current.copy(occurredAtMs = 4_000))
+        assertEquals(4_000, AndroidOfflineRun.of(driven).createdAtMs)
+        assertEquals(9_000, AndroidOfflineRun.of(run).createdAtMs)
     }
 }
