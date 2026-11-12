@@ -14,6 +14,14 @@
       "sizeBytes": 50717,
       "sha256": "8ecc0538c32990491184e3c770e659396b4aeca9affaac51863c10c36e24c8fe"
     },
+    "docs/readme/scanner-filled.jpg": {
+      "sizeBytes": 43760,
+      "sha256": "73edace8ce239d733d7cc201eb86f85491d02f6afef745cc0f37c1e2cce64282"
+    },
+    "docs/readme/scanner-reading.jpg": {
+      "sizeBytes": 48868,
+      "sha256": "75509c53fa160050f68956bee533ae2a26ec18712a846dcbddeb2c2ccbd2faea"
+    },
     "docs/readme/timetrials-leaderboard.jpg": {
       "sizeBytes": 99687,
       "sha256": "0d14a4c476a2f1b3fe8dfe5c569c2cb065b7582624223b45fa81d747fdfc594a"

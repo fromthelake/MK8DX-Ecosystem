@@ -4,7 +4,7 @@
 
 Language: English · [Nederlands](README_NL.md)
 
-<!-- Screenshot still to add: the phone scanner on a TV result screen. Website pictures use made-up
+<!-- Website pictures use made-up
      players; in the LiveTrial and Tournament Live pictures real player names are made unrecognisable;
      the website follows the device's light or dark setting. -->
 
@@ -124,6 +124,11 @@ pick the right one before you post.
 
 The browser scanner runs **entirely on your device** — no account, no server, and offline after the
 first download. The Android app scans on-device too.
+
+<p>
+  <img src="docs/readme/scanner-reading.jpg" alt="The browser scanner reading a phone photo of a Select-a-Ghost screen" width="32%">
+  <img src="docs/readme/scanner-filled.jpg" alt="The form filled from the scan: character, kart, tyres, glider, flag and lap times, with the one uncertain part marked" width="32%">
+</p>
 
 ## 🏆 Your records, your rivals
 
