@@ -3,6 +3,23 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Added
+
+- **Times from other communities** (ADR-0225, migrations 0087 and 0088): a new installation setting under
+  Administration → Installation settings decides whether a time carried from another community is refused
+  (off, the default), waits for an administrator (with approval) or follows the normal publication rules
+  (allowed). Every change is audited. A carried submission names where it came from in the new optional
+  `carriedFrom` of `TimeTrialSubmissionV1`; the server refuses it with `403 carried_times_disabled` while the
+  setting is off and with `400 carried_from_self` when it names this installation itself. The public settings
+  answer includes `carriedTimes`, so apps can explain a refusal before sending.
+- A carried run shows "Carried from … · originally …" on its detail and in Administration → Time Trials.
+- **Publish a run that waits for review**: Administration → Time Trials offers **Publish** (with one short
+  confirmation) on a run withheld for review, carried or not. It publishes the run unchanged through the
+  ordinary publication path (leaderboards, records, activity, overtaken notifications) and records who
+  approved it (`POST /v1/administrator/time-trials/{id}/actions/publish` with the expected revision).
+
 ## 0.2.0-rc.7 — 2026-11-12
 
 ### Added
