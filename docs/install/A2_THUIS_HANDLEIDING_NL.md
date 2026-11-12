@@ -272,13 +272,13 @@ De stappen op de pagina Dit apparaat voorbereiden:
 
 Dit vraagt appversie 2.95.0 of nieuwer. De app heeft het certificaat niet nodig in de instellingen van Android, maar het aanmelden loopt via de browser van de telefoon. Doe daarom eerst hoofdstuk 6 op deze telefoon: Apparaat voorbereiden en inloggen met je kaart in de browser.
 
-1. **Doe:** open de app. Na een nieuwe installatie begint die op **Kies je community**; anders open je **Instellingen** en tik je bij **Communityserver** op **Server wijzigen**. → **Je ziet:** **Kies je community** met de vakken **Thuis of bij de club** en **Online community**. Tik onder **Thuis of bij de club** op **Scan de QR-code**.
+1. **Doe:** open de app. Na een nieuwe installatie begint die op **Kies je community**; anders tik je bovenin de app op de naam van de community en daarna op **Een community toevoegen**. → **Je ziet:** **Kies je community** met de vakken **Thuis of bij de club** en **Online community**. Tik onder **Thuis of bij de club** op **Scan de QR-code**.
 2. **Doe:** tik zo nodig op **Camera gebruiken** en sta de camera toe. Scan de QR-code van de kaart **Apparaat voorbereiden**. → **Je ziet:** **Controleer dat dit jouw installatie is** met een **Adres** en een **Sleutelvingerafdruk (SHA-256)**. → **Zie je iets anders?** "Dit is niet de QR-code van een kaart Apparaat voorbereiden.": je scande een persoonlijke kaart. Scan de kaart Apparaat voorbereiden. Lukt scannen niet, typ dan het adres Nieuw apparaat (bijvoorbeeld `http://192.168.1.50/setup`) bij **Of plak de setup-link** en tik op **Volgende**.
 3. **Doe:** vergelijk het adres met het adres van de website, en de lange sleutel met de pagina Dit apparaat voorbereiden: open daar **Volledige vingerafdrukken** en kijk bij "Root public key SHA-256 (SPKI)". Die pagina kun je op een ander apparaat openen, of op de MK8DX-computer zelf via het adres Nieuw apparaat. → **Je ziet:** beide precies gelijk. Tik op **Verbinden** (stond de app al op een andere server, bevestig dan het wisselen). → **Zie je iets anders?** Verschillen ze, tik dan op **Terug** en verbind niet. "Geen passend certificaat gekregen van": controleer het netwerk en of de MK8DX-computer aan staat, en probeer opnieuw.
 4. **Doe:** tik in **Instellingen** bij **Speler op deze telefoon** op **Aanmelden** en daarna op **Aanmelden om te synchroniseren**. → **Je ziet:** de browser opent de goedkeuringspagina. Controleer dat de site dezelfde code toont als de app en keur het apparaat goed. Ga terug naar de app. → **Zie je iets anders?** Vraagt de browser om in te loggen, log dan eerst in met je kaart (hoofdstuk 6).
 5. **Doe:** plaats een tijd in de app. → **Je ziet:** de tijd op de website van de installatie.
 
-Ontkoppelen: **Instellingen** → **Server wijzigen** → **Deze installatie vergeten**.
+Ontkoppelen: tik bovenin op de naam van de community → **Een community toevoegen** → **Deze installatie vergeten**.
 
 **LiveTrial op een tweede Windows-pc**
 

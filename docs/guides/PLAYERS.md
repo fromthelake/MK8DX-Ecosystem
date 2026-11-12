@@ -90,12 +90,18 @@ person who runs your community.
   `https://www.example.org` (no path, no trailing slash), and tap **Save**. If it fails, open the same address in
   the phone's browser: it must open without a certificate warning.
 
-Then sign in: **Settings → Player on this phone → Sign in**. The app shows a code and opens your community in the
-browser, where you confirm with your own account (on a home or club installation: first sign in there with your
-personal sign-in card).
+Then sign in: tap the person icon at the top right (**You**) and **Sign in**; Settings › **Player on this phone**
+does the same. The app shows a code and opens your community in the browser, where you confirm with your own
+account (on a home or club installation: first sign in there with your personal sign-in card).
 
-To change community later: **Settings → Community server → Change server**. Sessions and runs that were not sent
-stay with the old server; they do not move automatically.
+The community you are using is named at the top of the app. Tap it to switch to another community you added
+(one tap), to remove one, or to **Add a community**, which opens the first-start screen again. Each community
+keeps its own sign-in and its own runs that were not sent yet; nothing moves between them by itself.
+
+Your own times are under **You → My times**, grouped per track and class with your best time first; tap a track
+for older runs and use **⋯** on a run for its details, editing, withdrawing or **Carry to another community…**.
+They stay readable without a connection. Runs still waiting to be sent show as an orange banner on Home and You;
+**Settings › Saved on this phone** lists them too.
 
 Notifications in the app are fetched from your community's inbox; Android's notification permission and the
 app's own switch must both be on.

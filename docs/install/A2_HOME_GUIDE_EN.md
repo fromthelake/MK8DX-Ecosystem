@@ -272,13 +272,13 @@ The steps on the Prepare this device page:
 
 This needs app version 2.95.0 or newer. The app does not need the certificate in Android's settings, but signing in goes through the phone's browser. So first do chapter 6 on this phone: Prepare a device and sign in with your card in the browser.
 
-1. **Do:** open the app. On a new install it starts on **Choose your community**; otherwise open **Settings** and at **Community server** tap **Change server**. → **You see:** **Choose your community** with the panels **At home or at the club** and **Online community**. Under **At home or at the club** tap **Scan the QR code**.
+1. **Do:** open the app. On a new install it starts on **Choose your community**; otherwise tap the community name at the top of the app and then **Add a community**. → **You see:** **Choose your community** with the panels **At home or at the club** and **Online community**. Under **At home or at the club** tap **Scan the QR code**.
 2. **Do:** if needed tap **Use the camera** and allow the camera. Scan the QR code on the **Prepare a device** card. → **You see:** **Check that this is your installation** with an **Address** and a **Key fingerprint (SHA-256)**. → **See something else?** "This is not the QR code of a Prepare a device card.": you scanned a personal card. Scan the Prepare a device card. If scanning fails, type the New device address (for example `http://192.168.1.50/setup`) at **Or paste the setup link** and tap **Next**.
 3. **Do:** compare the address with the website address, and the long key with the Prepare this device page: open **Full fingerprints** there and look at "Root public key SHA-256 (SPKI)". You can open that page on another device, or on the MK8DX computer itself through the New device address. → **You see:** both exactly the same. Tap **Connect** (when the app was already set to another server, confirm the change). → **See something else?** If they differ, tap **Back** and do not connect. "Could not get a matching certificate from": check the network and that the MK8DX computer is on, and try again.
 4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in** and then **Sign in to synchronize**. → **You see:** the browser opens the approval page. Check that the site shows the same code as the app and approve the device. Go back to the app. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
 5. **Do:** post a time in the app. → **You see:** the time on the installation's website.
 
-Unpairing: **Settings** → **Change server** → **Forget this installation**.
+Unpairing: tap the community name at the top → **Add a community** → **Forget this installation**.
 
 **LiveTrial on a second Windows PC**
 
