@@ -146,6 +146,13 @@ export async function readHistoryForReplay(
   return [...races.values()];
 }
 
+async function neverRatedHistory(pool: Pool): Promise<boolean> {
+  const [rows] = await pool.execute<RowDataPacket[]>(
+    "SELECT COUNT(*) AS n FROM player_rating_events WHERE event_type = 'history_race'",
+  );
+  return Number(rows[0]?.["n"] ?? 0) === 0;
+}
+
 async function currentEpoch(pool: Pool): Promise<number> {
   const [rows] = await pool.execute<RowDataPacket[]>(
     "SELECT COALESCE(MAX(rating_epoch), 0) AS epoch FROM player_rating_events",
@@ -170,6 +177,14 @@ export type RecomputeRun = Readonly<{
    * Absent or null: everybody counts, as before.
    */
   eligiblePlayerIds?: ReadonlySet<number> | null;
+  /**
+   * A new community (A2, a fresh self-hosted site) has no imported history at
+   * all. The API's replay then starts from nothing instead of refusing, so
+   * removing or reopening a rated night still recalculates. Only when this
+   * installation never rated a history race: an installation that did and now
+   * reads an empty history is broken, and still refuses. The CLI never sets it.
+   */
+  allowEmptyHistory?: boolean;
 }>;
 
 /** ADR-0221: the history with only the eligible Players in each race. */
@@ -217,7 +232,7 @@ export async function recomputeHistory(pool: Pool, options: RecomputeRun): Promi
     ? MEASURED_RATING_PARAMETERS : LEGACY_RATING_PARAMETERS;
   {
     const fullHistory = await readHistoryForReplay(pool);
-    if (fullHistory.length === 0) {
+    if (fullHistory.length === 0 && !(options.allowEmptyHistory === true && await neverRatedHistory(pool))) {
       throw new Error("the corrected history is empty - build it first");
     }
     const races = eligibleHistory(fullHistory, options.eligiblePlayerIds);

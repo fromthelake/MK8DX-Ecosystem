@@ -3,6 +3,17 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## 0.2.0-rc.6 — unreleased
+
+### Fixed
+
+- Removing or reopening a rated tournament on a new installation (A2, any fresh self-hosted site) answered
+  an error and left TrueSkill counting the night: the rating replay refused because there is no imported
+  history. It now starts from nothing there; an installation that once had history still refuses an empty one.
+- Entering several races at once checks every race first. One refused race (an unknown track) no longer
+  leaves the earlier races half-saved, which made every retry of that group fail.
+- Removing, reopening or restoring a tournament without a reason answers 400 with a message instead of 500.
+
 ## 0.2.0-rc.5 — 2026-11-12
 
 The `v0.2.0-rc.1` and `v0.2.0-rc.2` tags produced no release, and `v0.2.0-rc.3` stayed a draft because its A1

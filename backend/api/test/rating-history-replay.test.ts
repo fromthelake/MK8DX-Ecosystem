@@ -12,7 +12,7 @@ it("replays the history with the measured parameters and decay, then applies eve
       async applyPublication(id) { calls.push(`apply:${id}`); return { appliedRaces: id.endsWith("older") ? 40 : 130, skippedRaces: id.endsWith("older") ? 1 : 0 }; },
     },
     async (_pool, run) => {
-      calls.push(`recompute:${run.parameters}:${run.decay ? "decay" : "no-decay"}:${run.dryRun ? "dry" : "write"}:${run.operator}:${run.reasonCode}`);
+      calls.push(`recompute:${run.parameters}:${run.decay ? "decay" : "no-decay"}:${run.dryRun ? "dry" : "write"}:${run.operator}:${run.reasonCode}:${run.allowEmptyHistory ? "may-be-new" : "needs-history"}`);
       calls.push(`eligible:${run.eligiblePlayerIds === null ? "everyone" : [...run.eligiblePlayerIds!].join(",")}`);
       return { parameters: run.parameters, decay: run.decay, dryRun: run.dryRun, racesRead: 1, racesRated: 1, racesSkipped: 2, decayApplications: 0, playersRated: 61, epoch: 9, biggestScoreMove: 0 };
     },
@@ -21,7 +21,7 @@ it("replays the history with the measured parameters and decay, then applies eve
   const result = await replay({ administratorAccountId: "user_account.synthetic_admin", reasonCode: "tournament_reopened" });
   assert.deepEqual(result, { epoch: 9, includedPublications: 2, appliedRaces: 170, skippedRaces: 3, ratedPlayers: 61 });
   assert.deepEqual(calls, [
-    "recompute:measured:decay:write:user_account.synthetic_admin:tournament_reopened",
+    "recompute:measured:decay:write:user_account.synthetic_admin:tournament_reopened:may-be-new",
     "eligible:everyone",
     "list",
     "apply:tournament_publication.older",

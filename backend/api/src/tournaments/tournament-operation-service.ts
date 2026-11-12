@@ -751,6 +751,30 @@ export interface TournamentOperationRepository {
 
 export interface TournamentOperationRaceResults {
   submit(input: TournamentRaceResultV1): Promise<Readonly<{ raceResultId: string; revision: number }>>;
+  /** Validates a race document (contract and asset references) without recording it. */
+  check?(input: TournamentRaceResultV1): Promise<void>;
+}
+
+/**
+ * Races are recorded one by one. A race the store refuses (an unknown track, for example) must be found
+ * before the first one is written: otherwise the earlier races stay behind unlinked and every retry of
+ * the group fails on them (found 2026-11-12 with a misspelled track id).
+ */
+export async function checkRacesBeforeRecording(
+  raceResults: TournamentOperationRaceResults,
+  documents: readonly TournamentRaceResultV1[],
+): Promise<void> {
+  if (raceResults.check === undefined) { return; }
+  for (const document of documents) {
+    try {
+      await raceResults.check(document);
+    } catch {
+      throw new TournamentOperationError(
+        "invalid_input",
+        `race ${document.raceNumber} is not valid (track, mode or players); nothing was recorded`,
+      );
+    }
+  }
 }
 
 export interface TournamentOperationPublications {
@@ -2777,6 +2801,7 @@ export class TournamentOperationService {
         }
       }
     }
+    await checkRacesBeforeRecording(this.dependencies.raceResults, documents);
     const submitted: Readonly<{ raceResultId: string; revision: number; raceNumber: number }>[] = [];
     for (const document of documents) {
       try {
@@ -2981,6 +3006,7 @@ export class TournamentOperationService {
         race.countsTowardStandings ? undefined : "re-derived after an earlier correction",
       );
     }
+    await checkRacesBeforeRecording(this.dependencies.raceResults, documents);
     const submitted: Readonly<{ raceResultId: string; revision: number; raceNumber: number }>[] = [];
     for (const document of documents) {
       try {

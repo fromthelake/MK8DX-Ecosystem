@@ -164,9 +164,8 @@ export class TournamentRaceResultService {
     private readonly protector: TournamentSensitiveValueProtector,
   ) {}
 
-  public async submit(
-    input: TournamentRaceResultV1,
-  ): Promise<Readonly<{ raceResultId: string; revision: number }>> {
+  /** What `submit` checks before it writes anything; callers recording several races check them all first. */
+  public async check(input: TournamentRaceResultV1): Promise<void> {
     validateTournamentRaceResult(input);
     const assetIssues = await this.assetCatalog.validateReferences(
       tournamentAssetReferences(input),
@@ -177,6 +176,12 @@ export class TournamentRaceResultService {
         "Tournament asset references are invalid",
       );
     }
+  }
+
+  public async submit(
+    input: TournamentRaceResultV1,
+  ): Promise<Readonly<{ raceResultId: string; revision: number }>> {
+    await this.check(input);
 
     const placements: TournamentPlacementPersistenceInput[] = [];
     for (const placement of input.placements) {
