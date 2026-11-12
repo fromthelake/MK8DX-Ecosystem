@@ -776,6 +776,15 @@
       "downPath": "migrations/0086_account_switch_pin_failures.down.sql",
       "downSha256": "05c83e7ed107a387c06f09766be146e93b79411906f17232586e29cc1e9a27b0",
       "destructiveDown": true
+    },
+    {
+      "version": "0087",
+      "name": "carried_times",
+      "upPath": "migrations/0087_carried_times.up.sql",
+      "upSha256": "0579327b9bab317adfd5a41852f2147fd44a2b7809c18ee971dce893f603fe8c",
+      "downPath": "migrations/0087_carried_times.down.sql",
+      "downSha256": "7b708f0385c75aff6e3e971f021b8c25b180cdbd2d393cb2430d040019be9324",
+      "destructiveDown": true
     }
   ]
 }
