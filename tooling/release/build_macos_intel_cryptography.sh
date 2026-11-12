@@ -47,7 +47,10 @@ echo "built $(basename "$wheel")"
 # Only system libraries may be linked: no Homebrew or build-folder paths.
 unzip -q -o "$wheel" -d "$work/check"
 find "$work/check" -name '*.so' | while read -r library; do
-  if otool -L "$library" | tail -n +2 | grep -v -e '/usr/lib/' -e '/System/Library/' | grep -q .; then
+  # otool -L also prints the library's own install name first (@rpath/...); that is not a dependency.
+  own=$(otool -D "$library" | tail -n +2)
+  if otool -L "$library" | tail -n +2 | awk '{print $1}' | grep -v -x -F -e "$own" \
+      | grep -v -e '^/usr/lib/' -e '^/System/Library/' | grep -q .; then
     echo "linked outside the system: $library" >&2; otool -L "$library" >&2; exit 1
   fi
 done
