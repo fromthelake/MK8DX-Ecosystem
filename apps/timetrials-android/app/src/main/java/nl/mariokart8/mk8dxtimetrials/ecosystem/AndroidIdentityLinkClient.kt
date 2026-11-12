@@ -61,6 +61,8 @@ internal class AndroidIdentityLinkClient(
     private val opener: AndroidTournamentConnectionOpener,
 ) {
     private val origin = URI(origin)
+    /** The community's origin, for a person-facing "No connection to {host}". */
+    val originText: String get() = origin.toString()
     private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
 
     fun overview(): AndroidIdentityLinkOverview {

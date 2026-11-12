@@ -23,6 +23,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.offline.androidNoConnectionText
+import nl.mariokart8.mk8dxtimetrials.offline.isConnectionFailure
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
@@ -60,6 +62,7 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
     var forbidden by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(0) }
+    val language = LocalAndroidProductLanguage.current
 
     LaunchedEffect(client, reload) {
         message = null
@@ -69,7 +72,11 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
                 if (failure is AndroidIdentityLinkException && failure.forbidden) {
                     forbidden = true
                 } else {
-                    message = failure.message ?: "Accounts and Players are unavailable."
+                    message = if (failure.isConnectionFailure()) {
+                        androidNoConnectionText(language, client.originText, showingCopy = false)
+                    } else {
+                        failure.message ?: "Accounts and Players are unavailable."
+                    }
                 }
             }
     }
@@ -83,7 +90,10 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
         scope.launch {
             runCatching { withContext(Dispatchers.IO) { work() } }
                 .onSuccess { message = done; reload += 1 }
-                .onFailure { message = it.message ?: "That did not work." }
+                .onFailure {
+                    message = if (it.isConnectionFailure()) androidNoConnectionText(language, client.originText, showingCopy = false)
+                    else it.message ?: "That did not work."
+                }
             busy = false
         }
     }

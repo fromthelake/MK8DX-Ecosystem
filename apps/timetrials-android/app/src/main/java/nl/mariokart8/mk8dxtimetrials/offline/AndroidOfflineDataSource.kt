@@ -10,7 +10,10 @@ import java.text.DateFormat
 import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidActivityLap
+import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidActivityLoadout
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidInsightsTimeTrials
+import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidPublicTimeTrialResult
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidInsightsTournaments
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidManagedTimeTrial
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidManagedTimeTrialRevision
@@ -80,12 +83,47 @@ internal class AndroidOfflineFallbackDataSource(
 
     override fun rivals(): List<AndroidRival> = fallback({ online.rivals() }) { it.rivals }
 
+    /** The Player's own published results; anybody else's stay online only. */
+    override fun playerResults(playerId: String): List<AndroidPublicTimeTrialResult> =
+        fallback({ online.playerResults(playerId) }) { copy ->
+            if (playerId != copy.playerId) throw IllegalStateException()
+            copy.publishedResults()
+        }
+
     override fun trackBestsFor(playerId: String): List<AndroidTrackBest> =
         fallback({ online.trackBestsFor(playerId) }) { copy ->
             if (playerId != copy.playerId && copy.rivals.none { it.playerId == playerId }) throw IllegalStateException()
             copy.bestsOf(playerId)
         }
 }
+
+/** The copied runs the community publishes, newest first, in the shape the profile shows. */
+internal fun AndroidOfflineCopy.publishedResults(): List<AndroidPublicTimeTrialResult> =
+    runs.filter { it.active && it.publicationStatus == "published" }
+        .sortedByDescending { it.createdAtMs }
+        .map { run ->
+            AndroidPublicTimeTrialResult(
+                resultId = run.submissionId,
+                playerId = playerId,
+                playerUsername = playerUsername ?: playerId,
+                playerDisplayName = playerDisplayName ?: playerUsername ?: playerId,
+                trackId = run.trackId,
+                mode = run.mode,
+                totalTimeMs = run.totalTimeMs,
+                laps = run.laps.mapIndexed { index, timeMs ->
+                    val counts = run.lapDetails?.getOrNull(index)
+                    AndroidActivityLap(index + 1, timeMs, counts?.coinsCollected, counts?.mushroomsUsed)
+                },
+                loadout = run.loadout?.let {
+                    AndroidActivityLoadout(
+                        it["characterId"], it["characterVariantId"], it["bodyId"], it["bodyVariantId"],
+                        it["tireId"], it["gliderId"], it["gliderVariantId"],
+                    )
+                },
+                sourceKind = run.sourceKind,
+                resultAtMs = run.createdAtMs,
+            )
+        }
 
 private fun AndroidOfflineCopy.managedRuns(): List<AndroidManagedTimeTrial> = runs.map { run ->
     AndroidManagedTimeTrial(

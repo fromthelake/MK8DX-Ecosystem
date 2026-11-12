@@ -1,5 +1,7 @@
 package nl.mariokart8.mk8dxtimetrials.ecosystem
 
+import nl.mariokart8.mk8dxtimetrials.offline.androidFailureText
+import nl.mariokart8.mk8dxtimetrials.offline.isConnectionFailure
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -132,6 +134,8 @@ internal fun AndroidProfileRecordsScreen(
     var records by remember(client) { mutableStateOf<AndroidRecordBook?>(null) }
     var profile by remember(client, playerId) { mutableStateOf<AndroidProfilePlayer?>(null) }
     var error by remember(client, playerId) { mutableStateOf<String?>(null) }
+    // The record book is everybody's and stays online; it only says so when it cannot be read.
+    var recordsError by remember(client) { mutableStateOf<String?>(null) }
     var refresh by remember(client, playerId) { mutableStateOf(0) }
     var pendingManagement by remember { mutableStateOf<Pair<AndroidManagedTimeTrial, Boolean>?>(null) }
     var managementReason by remember { mutableStateOf("wrong_track_or_mode") }
@@ -143,23 +147,25 @@ internal fun AndroidProfileRecordsScreen(
     LaunchedEffect(client, playerId, refresh) {
         if (playerId == null) return@LaunchedEffect
         withContext(Dispatchers.IO) {
-            runCatching {
-                AndroidProfileScreenData(
-                    results = client.playerResults(playerId),
-                    records = client.recordBook(),
-                    profile = client.playerProfile(playerId),
-                    managedResults = runCatching { client.managedTimeTrials() }
-                        .getOrDefault(emptyList())
-                        .filter { it.playerId == playerId },
-                )
-            }.onSuccess { loaded ->
-                    results = loaded.results
-                    records = loaded.records
-                    profile = loaded.profile
-                    managedResults = loaded.managedResults
-                    error = null
+            // Each part on its own: the Player's own results come from this phone's copy when the community
+            // cannot be reached (ADR-0225 amendment 1), while the record book and the public profile need it.
+            val loadedResults = runCatching { client.playerResults(playerId) }
+            loadedResults.onSuccess { results = it; error = null }.onFailure { failure ->
+                error = androidFailureText(failure, language, apiOrigin, showingCopy = false,
+                    otherwise = androidText(language, "Your profile could not be loaded right now.",
+                        "Je profiel kan nu niet worden geladen."))
+            }
+            runCatching { client.recordBook() }
+                .onSuccess { records = it; recordsError = null }
+                .onFailure { failure ->
+                    recordsError = if (failure.isConnectionFailure()) androidText(language, "Needs a connection", "Heeft verbinding nodig")
+                    else androidText(language, "The community records could not be loaded right now.",
+                        "De communityrecords kunnen nu niet worden geladen.")
                 }
-                .onFailure { error = "Your profile could not be loaded right now." }
+            runCatching { client.playerProfile(playerId) }.onSuccess { profile = it }
+            managedResults = runCatching { client.managedTimeTrials() }
+                .getOrDefault(emptyList())
+                .filter { it.playerId == playerId }
         }
     }
     val colors = Mk8dxTheme.colors
@@ -239,6 +245,7 @@ internal fun AndroidProfileRecordsScreen(
             }
             return@LazyColumn
         }
+        if (!showRecords) item { nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineStatusLine() }
         if (!showRecords) item {
             val loaded = results
             Mk8dxPanel(title = androidText(language, "TIME TRIAL CAREER", "TIME TRIAL-CARRIÈRE")) {
@@ -373,14 +380,15 @@ internal fun AndroidProfileRecordsScreen(
         }
         if (showRecords && records == null) {
             item {
-                if (error == null) {
+                val failed = recordsError
+                if (failed == null) {
                     Text(
                         "Loading community records…",
                         style = Mk8dxTheme.type.body,
                         color = colors.textSecondary,
                     )
                 } else {
-                    Mk8dxStatusMessage(error!!, tone = Mk8dxStatusTone.Error)
+                    Mk8dxStatusMessage(failed, tone = Mk8dxStatusTone.Info, modifier = Modifier.testTag("profile-records-unavailable"))
                 }
             }
         }
