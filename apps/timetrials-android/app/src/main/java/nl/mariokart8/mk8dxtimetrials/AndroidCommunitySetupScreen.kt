@@ -62,7 +62,8 @@ internal fun AndroidCommunitySetup(
     val context = LocalContext.current
     // Saveable: turning the phone or switching light/dark recreates the activity, and the first version then
     // dropped the person back here halfway through pairing (found on the emulator, 2026-11-12).
-    var address by rememberSaveable { mutableStateOf(current.orEmpty()) }
+    // Adding a community starts from an empty address; the active one is already in the list.
+    var address by rememberSaveable { mutableStateOf(if (onCancel != null) "" else current.orEmpty()) }
     var error by rememberSaveable { mutableStateOf(false) }
     var pairing by rememberSaveable { mutableStateOf(false) }
     var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
