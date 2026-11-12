@@ -5000,6 +5000,8 @@
   "{0} carried times are still waiting.": "Всё ещё ждут перенесённых времён: {0}.",
   "{0} carried times refused.": "Отклонено перенесённых времён: {0}.",
   "{0} carried times published.": "Опубликовано перенесённых времён: {0}.",
-  "{0} of Private Players keep waiting.": "Времён частных игроков, которые продолжают ждать: {0}."
+  "{0} of Private Players keep waiting.": "Времён частных игроков, которые продолжают ждать: {0}.",
+  "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "Браузер сначала просит войти? Значит, у тебя ещё нет аккаунта на этой установке: отсканируй личную карточку входа, которую создаст администратор, а затем снова открой страницу подтверждения.",
+  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "Это установка дома или в клубе: вход выполняется по личной карточке, а не по электронной почте. Ещё нет аккаунта? Попроси карточку у администратора, отсканируй её камерой этого телефона, затем вернись и нажми кнопку ниже."
  }
 }

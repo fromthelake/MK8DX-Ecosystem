@@ -5000,6 +5000,8 @@
   "{0} carried times are still waiting.": "{0} tiempos traídos siguen pendientes.",
   "{0} carried times refused.": "{0} tiempos traídos rechazados.",
   "{0} carried times published.": "{0} tiempos traídos publicados.",
-  "{0} of Private Players keep waiting.": "{0} de jugadores privados siguen pendientes."
+  "{0} of Private Players keep waiting.": "{0} de jugadores privados siguen pendientes.",
+  "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "¿El navegador te pide primero que inicies sesión? Entonces aún no tienes cuenta en esta instalación: escanea la tarjeta personal de inicio de sesión que tu administrador crea para ti y vuelve a abrir la página de aprobación.",
+  "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "Esta es una instalación en casa o en el club: inicias sesión con tu tarjeta personal, no por correo electrónico. ¿Aún no tienes cuenta aquí? Pide una tarjeta a tu administrador, escanéala con la cámara de este teléfono y vuelve para tocar el botón de abajo."
  }
 }

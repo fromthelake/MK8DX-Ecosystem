@@ -68,6 +68,12 @@ internal fun AndroidAuthenticationScreen(
     val browser = openBrowser ?: { uri: URI ->
         nl.mariokart8.mk8dxtimetrials.openProductWebsite(context, uri.toString())
     }
+    // A home or club installation (A2) has no email sign-in: a person first needs the personal sign-in card their
+    // administrator makes. Say so before and during the approval (owner, 12-11: "onduidelijk wat nu benodigd was").
+    val homeOrClub = remember(context) {
+        nl.mariokart8.mk8dxtimetrials.AndroidServerOrigin.current(context)
+            ?.let { nl.mariokart8.mk8dxtimetrials.lan.AndroidLanPairingStore.loadFor(context, it) } != null
+    }
     val state by controller.state.collectAsState()
     val accounts by controller.accounts.collectAsState()
     val scope = rememberCoroutineScope()
@@ -222,6 +228,16 @@ internal fun AndroidAuthenticationScreen(
                         style = type.body,
                         color = colors.textBody,
                     )
+                    if (homeOrClub) {
+                        Mk8dxStatusMessage(
+                            nl.mariokart8.mk8dxtimetrials.ui.androidText(
+                                "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.",
+                                "Dit is een installatie thuis of bij de club: je meldt je aan met je persoonlijke inlogkaart, niet met e-mail. Nog geen account hier? Vraag je beheerder om een kaart, scan die met de camera van deze telefoon en kom daarna terug om op de knop hieronder te tikken.",
+                            ),
+                            tone = Mk8dxStatusTone.Info,
+                            modifier = Modifier.testTag("android-authentication-home-or-club"),
+                        )
+                    }
                     Mk8dxButton(
                         androidLocalizedPresentation(
                             when {
@@ -255,6 +271,15 @@ internal fun AndroidAuthenticationScreen(
                         style = type.body,
                         color = colors.textBody,
                     )
+                    if (homeOrClub) {
+                        Mk8dxStatusMessage(
+                            nl.mariokart8.mk8dxtimetrials.ui.androidText(
+                                "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.",
+                                "Vraagt de browser eerst om aan te melden? Dan heb je nog geen account op deze installatie: scan de persoonlijke inlogkaart die je beheerder voor je maakt en open daarna de goedkeuringspagina opnieuw.",
+                            ),
+                            tone = Mk8dxStatusTone.Info,
+                        )
+                    }
                     if (notApprovedYet) {
                         Mk8dxStatusMessage(
                             androidLocalizedPresentation(

@@ -193,7 +193,7 @@
   {
    "key": "1 run waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:119"
+    "AndroidCommunityServerPanel.kt:134"
    ],
    "nl": "1 rit wacht op verzenden"
   },
@@ -418,7 +418,7 @@
   {
    "key": "Active",
    "places": [
-    "AndroidCommunityServerPanel.kt:113"
+    "AndroidCommunityServerPanel.kt:128"
    ],
    "nl": "Actief"
   },
@@ -482,7 +482,7 @@
   {
    "key": "Add a community",
    "places": [
-    "AndroidCommunityServerPanel.kt:197"
+    "AndroidCommunityServerPanel.kt:212"
    ],
    "nl": "Een community toevoegen"
   },
@@ -834,7 +834,7 @@
   {
    "key": "Approve this request in your browser, then check it here.",
    "places": [
-    "AndroidAuthenticationScreen.kt:253",
+    "AndroidAuthenticationScreen.kt:269",
     "AndroidDutchUiCopy.kt:198"
    ],
    "nl": "Keur dit verzoek goed in je browser en controleer het daarna hier."
@@ -985,7 +985,7 @@
   {
    "key": "Back",
    "places": [
-    "AndroidCommunitySetupScreen.kt:227",
+    "AndroidCommunitySetupScreen.kt:229",
     "AndroidAdministrationScreen.kt:203",
     "AndroidLanPairingScreen.kt:169",
     "AndroidDutchUiCopy.kt:22"
@@ -1315,7 +1315,7 @@
   {
    "key": "Carried time waiting for sign-in: {0}",
    "places": [
-    "AndroidCommunityServerPanel.kt:132"
+    "AndroidCommunityServerPanel.kt:147"
    ],
    "nl": "Meegenomen tijd wacht op aanmelden: {0}"
   },
@@ -1796,7 +1796,7 @@
   {
    "key": "Close",
    "places": [
-    "AndroidCommunitySetupScreen.kt:192",
+    "AndroidCommunitySetupScreen.kt:194",
     "AndroidTimeTrialsProductComponent.kt:569",
     "AndroidCarryHost.kt:104",
     "AndroidHomeExperience.kt:725"
@@ -1936,7 +1936,7 @@
   {
    "key": "Community server",
    "places": [
-    "AndroidCommunityServerPanel.kt:86"
+    "AndroidCommunityServerPanel.kt:93"
    ],
    "nl": "Communityserver"
   },
@@ -2678,6 +2678,13 @@
    "nl": "Heb je de Circuit-uitbreidingspas?"
   },
   {
+   "key": "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.",
+   "places": [
+    "AndroidAuthenticationScreen.kt:276"
+   ],
+   "nl": "Vraagt de browser eerst om aan te melden? Dan heb je nog geen account op deze installatie: scan de persoonlijke inlogkaart die je beheerder voor je maakt en open daarna de goedkeuringspagina opnieuw."
+  },
+  {
    "key": "Done",
    "places": [
     "AndroidRankScreen.kt:675"
@@ -2738,14 +2745,14 @@
   {
    "key": "Each community keeps its own account and unsent times. Switching takes one tap.",
    "places": [
-    "AndroidCommunityServerPanel.kt:88"
+    "AndroidCommunityServerPanel.kt:95"
    ],
    "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Wisselen is één tik."
   },
   {
    "key": "Each community keeps its own account and unsent times. You switch between them under Settings.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:217"
+    "AndroidCommunitySetupScreen.kt:219"
    ],
    "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Je wisselt ertussen bij Instellingen."
   },
@@ -2995,7 +3002,7 @@
   {
    "key": "Expired — sign in again to synchronize",
    "places": [
-    "AndroidAuthenticationScreen.kt:432",
+    "AndroidAuthenticationScreen.kt:457",
     "AndroidDutchUiCopy.kt:454"
    ],
    "nl": "Verlopen — meld je opnieuw aan om te synchroniseren"
@@ -3429,7 +3436,7 @@
   {
    "key": "Forget this installation",
    "places": [
-    "AndroidCommunitySetupScreen.kt:145"
+    "AndroidCommunitySetupScreen.kt:147"
    ],
    "nl": "Deze installatie vergeten"
   },
@@ -4027,7 +4034,7 @@
    "key": "Language / Taal",
    "places": [
     "AndroidCommunitySetupScreen.kt:107",
-    "AndroidCommunitySetupScreen.kt:190",
+    "AndroidCommunitySetupScreen.kt:192",
     "AndroidAccountEcosystemScreens.kt:1108",
     "AndroidAccountEcosystemScreens.kt:1113"
    ],
@@ -4575,7 +4582,7 @@
   {
    "key": "Manual entry and scanning still work on this phone without signing in.",
    "places": [
-    "AndroidAuthenticationScreen.kt:220",
+    "AndroidAuthenticationScreen.kt:226",
     "AndroidDutchUiCopy.kt:211"
    ],
    "nl": "Handmatig invoeren en scannen werken op deze telefoon ook zonder aanmelding."
@@ -5154,7 +5161,7 @@
   {
    "key": "No accounts are remembered on this device.",
    "places": [
-    "AndroidAuthenticationScreen.kt:364",
+    "AndroidAuthenticationScreen.kt:389",
     "AndroidDutchUiCopy.kt:453"
    ],
    "nl": "Er zijn geen accounts bekend op dit apparaat."
@@ -5730,7 +5737,7 @@
   {
    "key": "Nothing waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:118"
+    "AndroidCommunityServerPanel.kt:133"
    ],
    "nl": "Niets wacht op verzenden"
   },
@@ -5802,7 +5809,7 @@
   {
    "key": "ONLINE COMMUNITY",
    "places": [
-    "AndroidCommunitySetupScreen.kt:152"
+    "AndroidCommunitySetupScreen.kt:154"
    ],
    "nl": "ONLINE COMMUNITY"
   },
@@ -6283,7 +6290,7 @@
   {
    "key": "PIN required",
    "places": [
-    "AndroidAuthenticationScreen.kt:482",
+    "AndroidAuthenticationScreen.kt:507",
     "AndroidDutchUiCopy.kt:98"
    ],
    "nl": "Pincode nodig"
@@ -6305,7 +6312,7 @@
   {
    "key": "PLAYERS",
    "places": [
-    "AndroidAuthenticationScreen.kt:162",
+    "AndroidAuthenticationScreen.kt:168",
     "AndroidDutchUiCopy.kt:135"
    ],
    "nl": "SPELERS"
@@ -6327,7 +6334,7 @@
   {
    "key": "Paired with {0}",
    "places": [
-    "AndroidCommunitySetupScreen.kt:143"
+    "AndroidCommunitySetupScreen.kt:145"
    ],
    "nl": "Gekoppeld met {0}"
   },
@@ -7460,7 +7467,7 @@
   {
    "key": "Remove",
    "places": [
-    "AndroidCommunityServerPanel.kt:139",
+    "AndroidCommunityServerPanel.kt:154",
     "AndroidOutboxSelectionComponent.kt:206",
     "AndroidDutchUiCopy.kt:151"
    ],
@@ -7483,7 +7490,7 @@
   {
    "key": "Remove from this phone",
    "places": [
-    "AndroidCommunityServerPanel.kt:164"
+    "AndroidCommunityServerPanel.kt:179"
    ],
    "nl": "Van deze telefoon verwijderen"
   },
@@ -7900,7 +7907,7 @@
   {
    "key": "Save",
    "places": [
-    "AndroidCommunitySetupScreen.kt:178",
+    "AndroidCommunitySetupScreen.kt:180",
     "AndroidTournamentParticipantsStep.kt:1327",
     "AndroidTournamentScreen.kt:2315",
     "AndroidTournamentScreen.kt:2696"
@@ -8151,7 +8158,7 @@
   {
    "key": "Scanned evidence stays private on this device.",
    "places": [
-    "AndroidAuthenticationScreen.kt:290",
+    "AndroidAuthenticationScreen.kt:315",
     "AndroidDutchUiCopy.kt:238"
    ],
    "nl": "Gescand bewijs blijft privé op dit apparaat."
@@ -8801,7 +8808,7 @@
   {
    "key": "Signed in and ready to synchronize.",
    "places": [
-    "AndroidAuthenticationScreen.kt:284",
+    "AndroidAuthenticationScreen.kt:309",
     "AndroidDutchUiCopy.kt:442"
    ],
    "nl": "Aangemeld en klaar om te synchroniseren."
@@ -9189,7 +9196,7 @@
   {
    "key": "Switch",
    "places": [
-    "AndroidCommunityServerPanel.kt:157",
+    "AndroidCommunityServerPanel.kt:172",
     "AndroidDutchUiCopy.kt:452"
    ],
    "nl": "Wisselen"
@@ -9204,7 +9211,7 @@
   {
    "key": "Switch Player quickly on a shared phone. Every saved result keeps the Player who created it.",
    "places": [
-    "AndroidAuthenticationScreen.kt:164",
+    "AndroidAuthenticationScreen.kt:170",
     "AndroidDutchUiCopy.kt:455"
    ],
    "nl": "Wissel snel van speler op een gedeelde telefoon. Elk opgeslagen resultaat blijft van de speler die het maakte."
@@ -9801,7 +9808,7 @@
   {
    "key": "The exact https address your community gave you.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:166"
+    "AndroidCommunitySetupScreen.kt:168"
    ],
    "nl": "Het precieze https-adres dat je van je community kreeg."
   },
@@ -10247,6 +10254,13 @@
     "AndroidTournamentScoreImport.kt:284"
    ],
    "nl": "Deze groep heeft nog geen opname."
+  },
+  {
+   "key": "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.",
+   "places": [
+    "AndroidAuthenticationScreen.kt:233"
+   ],
+   "nl": "Dit is een installatie thuis of bij de club: je meldt je aan met je persoonlijke inlogkaart, niet met e-mail. Nog geen account hier? Vraag je beheerder om een kaart, scan die met de camera van deze telefoon en kom daarna terug om op de knop hieronder te tikken."
   },
   {
    "key": "This is not an Excel workbook (.xlsx).",
@@ -11019,7 +11033,7 @@
   {
    "key": "Use one https address without a final slash, path or port.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:173"
+    "AndroidCommunitySetupScreen.kt:175"
    ],
    "nl": "Gebruik één https-adres zonder slash aan het eind, pad of poort."
   },
@@ -11247,7 +11261,7 @@
   {
    "key": "Website address",
    "places": [
-    "AndroidCommunitySetupScreen.kt:162"
+    "AndroidCommunitySetupScreen.kt:164"
    ],
    "nl": "Adres van de website"
   },
@@ -11962,7 +11976,7 @@
   {
    "key": "Your community has a website on the internet. Enter the address you open it with in the browser.",
    "places": [
-    "AndroidCommunitySetupScreen.kt:154"
+    "AndroidCommunitySetupScreen.kt:156"
    ],
    "nl": "Je community heeft een website op internet. Vul het adres in waarmee je die in de browser opent."
   },
@@ -13309,7 +13323,7 @@
   {
    "key": "{0} runs waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:120"
+    "AndroidCommunityServerPanel.kt:135"
    ],
    "nl": "{0} ritten wachten op verzenden"
   },
@@ -13330,7 +13344,7 @@
   {
    "key": "{0} still has runs that were not sent. Switch to it and send them first.",
    "places": [
-    "AndroidCommunityServerPanel.kt:178"
+    "AndroidCommunityServerPanel.kt:193"
    ],
    "nl": "{0} heeft nog ritten die niet zijn verzonden. Wissel ernaar en verstuur ze eerst."
   },
@@ -13425,7 +13439,7 @@
   {
    "key": "{0} was removed from this phone.",
    "places": [
-    "AndroidCommunityServerPanel.kt:174"
+    "AndroidCommunityServerPanel.kt:189"
    ],
    "nl": "{0} is van deze telefoon verwijderd."
   },
