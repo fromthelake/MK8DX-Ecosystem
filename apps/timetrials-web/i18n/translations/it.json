@@ -5004,6 +5004,7 @@
   "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "Il browser ti chiede prima di accedere? Allora non hai ancora un account su questa installazione: scansiona la scheda di accesso personale che il tuo amministratore crea per te, poi riapri la pagina di approvazione.",
   "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "Questa è un'installazione a casa o al club: accedi con la tua scheda di accesso personale, non via email. Non hai ancora un account qui? Chiedi una scheda al tuo amministratore, scansionala con la fotocamera di questo telefono, poi torna qui e tocca il pulsante qui sotto.",
   "Times on this phone": "Tempi su questo telefono",
-  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "Per portare un tempo inviato in un'altra community, apri i tempi su questo telefono e scegli «Porta in un'altra community»."
+  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "Per portare un tempo inviato in un'altra community, apri i tempi su questo telefono e scegli «Porta in un'altra community».",
+  "Empty fields filled from a time carried from {0}": "Campi vuoti completati con un tempo portato da {0}"
  }
 }

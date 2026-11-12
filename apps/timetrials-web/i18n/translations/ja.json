@@ -5004,6 +5004,7 @@
   "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.": "ブラウザーで先にサインインを求められましたか？その場合、このインストールにはまだアカウントがありません。管理者が作成する個人用サインインカードをスキャンしてから、承認ページをもう一度開いてください。",
   "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.": "これは自宅またはクラブのインストールです。メールではなく、個人用サインインカードでサインインします。まだアカウントがない場合は、管理者にカードを依頼し、このスマートフォンのカメラでスキャンしてから、ここに戻って下のボタンをタップしてください。",
   "Times on this phone": "このスマートフォンのタイム",
-  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "送信済みのタイムを別のコミュニティに持っていくには、このスマートフォンのタイムを開き、「別のコミュニティへ持っていく」を選んでください。"
+  "To take a sent time to another community, open the times on this phone and choose \"Carry to another community\".": "送信済みのタイムを別のコミュニティに持っていくには、このスマートフォンのタイムを開き、「別のコミュニティへ持っていく」を選んでください。",
+  "Empty fields filled from a time carried from {0}": "{0} から持ち込まれたタイムで空欄を補いました"
  }
 }

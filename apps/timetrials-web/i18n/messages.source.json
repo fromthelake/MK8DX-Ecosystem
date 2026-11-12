@@ -6827,6 +6827,16 @@
    ]
   },
   {
+   "key": "Empty fields filled from a time carried from {0}",
+   "nl": "Lege velden aangevuld met een tijd meegenomen van {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
+   ]
+  },
+  {
    "key": "Empty seat",
    "nl": "Lege plek",
    "kinds": [
