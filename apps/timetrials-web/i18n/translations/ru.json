@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Это не QR-код карточки «Prepare a device». Личная карточка входа понадобится позже, в браузере.",
   "Use one https address without a final slash, path or port.": "Укажи один https-адрес без косой черты в конце, пути и порта.",
   "Website address": "Адрес сайта",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "У твоего сообщества есть сайт в интернете. Введи адрес, по которому ты открываешь его в браузере."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "У твоего сообщества есть сайт в интернете. Введи адрес, по которому ты открываешь его в браузере.",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "Игрок, который состоит в нескольких сообществах, может перенести сюда время, показанное в другом. Перенесённое время всегда показывает, откуда оно.",
+  "Allowed: carried times follow the normal publication rules": "Разрешено: перенесённые времена подчиняются обычным правилам публикации",
+  "Carried from {0} · originally {1}": "Перенесено из {0} · изначально {1}",
+  "Off: times from other communities are refused (default)": "Выключено: времена из других сообществ отклоняются (по умолчанию)",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Эти настройки действуют для всего сайта: кто создаёт игроков, кто учитывается в рейтинге и принимаются ли времена из других сообществ. Каждое изменение записывается с вашим именем.",
+  "Times from other communities": "Времена из других сообществ",
+  "With approval: an administrator approves each carried time": "С одобрением: администратор одобряет каждое перенесённое время"
  }
 }

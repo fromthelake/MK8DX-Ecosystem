@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Este não é o código QR de um cartão «Prepare a device». O cartão pessoal de início de sessão vem depois, no navegador.",
   "Use one https address without a final slash, path or port.": "Usa um único endereço https sem barra final, caminho ou porta.",
   "Website address": "Endereço do site",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "A tua comunidade tem um site na internet. Escreve o endereço com que o abres no navegador."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "A tua comunidade tem um site na internet. Escreve o endereço com que o abres no navegador.",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "Um jogador que pertence a várias comunidades pode trazer para aqui um tempo feito noutra. Um tempo trazido mostra sempre de onde vem.",
+  "Allowed: carried times follow the normal publication rules": "Permitido: os tempos trazidos seguem as regras normais de publicação",
+  "Carried from {0} · originally {1}": "Trazido de {0} · originalmente {1}",
+  "Off: times from other communities are refused (default)": "Desligado: os tempos de outras comunidades são recusados (predefinido)",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Estas opções valem para todo o site: quem cria jogadores, quem conta para o rating e se são aceites tempos de outras comunidades. Cada alteração fica registada com o teu nome.",
+  "Times from other communities": "Tempos de outras comunidades",
+  "With approval: an administrator approves each carried time": "Com aprovação: um administrador aprova cada tempo trazido"
  }
 }

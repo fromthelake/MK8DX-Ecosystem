@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "これは「Prepare a device」カードの QR コードではありません。個人のサインインカードは後でブラウザーで使います。",
   "Use one https address without a final slash, path or port.": "末尾のスラッシュ、パス、ポートのない https アドレスを 1 つ入力してください。",
   "Website address": "ウェブサイトのアドレス",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "コミュニティにはインターネット上のウェブサイトがあります。ブラウザーで開くときのアドレスを入力してください。"
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "コミュニティにはインターネット上のウェブサイトがあります。ブラウザーで開くときのアドレスを入力してください。",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "複数のコミュニティに所属するプレイヤーは、別の場所で出したタイムをここへ持ち込めます。持ち込まれたタイムには、常にどこから来たかが表示されます。",
+  "Allowed: carried times follow the normal publication rules": "許可：持ち込まれたタイムは通常の公開ルールに従います",
+  "Carried from {0} · originally {1}": "{0} から持ち込み · 元の日付 {1}",
+  "Off: times from other communities are refused (default)": "オフ：他のコミュニティからのタイムは拒否されます（既定）",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "これらの設定はサイト全体に適用されます：誰がプレイヤーを作成し、誰がレーティングに反映され、他のコミュニティからのタイムを受け入れるかどうか。変更はすべてあなたの名前で記録されます。",
+  "Times from other communities": "他のコミュニティからのタイム",
+  "With approval: an administrator approves each carried time": "承認制：持ち込まれたタイムは管理者が一件ずつ承認します"
  }
 }

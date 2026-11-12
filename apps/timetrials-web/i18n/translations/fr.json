@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Ce n'est pas le code QR d'une carte « Prepare a device ». Une carte de connexion personnelle vient plus tard, dans le navigateur.",
   "Use one https address without a final slash, path or port.": "Utilise une seule adresse https, sans barre oblique finale, chemin ni port.",
   "Website address": "Adresse du site web",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Ta communauté a un site sur internet. Saisis l'adresse avec laquelle tu l'ouvres dans le navigateur."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Ta communauté a un site sur internet. Saisis l'adresse avec laquelle tu l'ouvres dans le navigateur.",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "Un joueur qui fait partie de plusieurs communautés peut apporter ici un temps réalisé ailleurs. Un temps apporté indique toujours d'où il vient.",
+  "Allowed: carried times follow the normal publication rules": "Autorisé : les temps apportés suivent les règles de publication habituelles",
+  "Carried from {0} · originally {1}": "Apporté de {0} · à l'origine le {1}",
+  "Off: times from other communities are refused (default)": "Désactivé : les temps d'autres communautés sont refusés (par défaut)",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Ces choix valent pour tout le site : qui crée les joueurs, qui compte pour la cote et si les temps d'autres communautés sont acceptés. Chaque modification est enregistrée avec ton nom.",
+  "Times from other communities": "Temps d'autres communautés",
+  "With approval: an administrator approves each carried time": "Avec approbation : un administrateur approuve chaque temps apporté"
  }
 }

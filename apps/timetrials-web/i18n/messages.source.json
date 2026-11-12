@@ -874,6 +874,16 @@
    ]
   },
   {
+   "key": "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.",
+   "nl": "Een speler die bij meerdere community's hoort, kan een elders gezette tijd naar deze meenemen. Een meegenomen tijd laat altijd zien waar hij vandaan komt.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "A reviewer",
    "nl": "Een beoordelaar",
    "kinds": [
@@ -1854,6 +1864,16 @@
    ],
    "places": [
     "crawl"
+   ]
+  },
+  {
+   "key": "Allowed: carried times follow the normal publication rules",
+   "nl": "Toegestaan: meegenomen tijden volgen de gewone publicatieregels",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -3239,6 +3259,16 @@
    "places": [
     "career-section.ts",
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Carried from {0} · originally {1}",
+   "nl": "Meegenomen van {0} · oorspronkelijk {1}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "time-trial-management.ts"
    ]
   },
   {
@@ -14266,6 +14296,16 @@
    ]
   },
   {
+   "key": "Off: times from other communities are refused (default)",
+   "nl": "Uit: tijden uit andere community's worden geweigerd (standaard)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Official published race results. Tournament scoring stays separate from engine-specific Time Trials.",
    "nl": "Officieel gepubliceerde raceresultaten. Toernooiscores blijven gescheiden van tijdritten per motorklasse.",
    "kinds": [
@@ -23868,8 +23908,8 @@
    ]
   },
   {
-   "key": "These choices hold for the whole site: who creates Players, and who counts for the rating. Each change is recorded with your name.",
-   "nl": "Deze keuzes gelden voor de hele site: wie spelers aanmaakt en wie meetelt voor de rating. Elke wijziging wordt met jouw naam vastgelegd.",
+   "key": "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.",
+   "nl": "Deze keuzes gelden voor de hele site: wie spelers aanmaakt, wie meetelt voor de rating en of tijden uit andere community's worden geaccepteerd. Elke wijziging wordt met jouw naam vastgelegd.",
    "kinds": [
     "localized"
    ],
@@ -24587,6 +24627,16 @@
    ],
    "places": [
     "notification-section.ts"
+   ]
+  },
+  {
+   "key": "Times from other communities",
+   "nl": "Tijden uit andere community's",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -27114,6 +27164,16 @@
    ],
    "places": [
     "tournament-night-report-view.ts"
+   ]
+  },
+  {
+   "key": "With approval: an administrator approves each carried time",
+   "nl": "Met goedkeuring: een beheerder keurt elke meegenomen tijd goed",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {

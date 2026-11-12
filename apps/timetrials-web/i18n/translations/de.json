@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "Das ist nicht der QR-Code einer „Prepare a device“-Karte. Eine persönliche Anmeldekarte kommt später, im Browser.",
   "Use one https address without a final slash, path or port.": "Verwende eine https-Adresse ohne Schrägstrich am Ende, Pfad oder Port.",
   "Website address": "Adresse der Website",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Deine Community hat eine Website im Internet. Gib die Adresse ein, mit der du sie im Browser öffnest."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "Deine Community hat eine Website im Internet. Gib die Adresse ein, mit der du sie im Browser öffnest.",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "Ein Spieler, der zu mehreren Communitys gehört, kann eine anderswo gefahrene Zeit hierher mitnehmen. Eine mitgenommene Zeit zeigt immer, woher sie kommt.",
+  "Allowed: carried times follow the normal publication rules": "Erlaubt: mitgenommene Zeiten folgen den normalen Veröffentlichungsregeln",
+  "Carried from {0} · originally {1}": "Mitgenommen von {0} · ursprünglich {1}",
+  "Off: times from other communities are refused (default)": "Aus: Zeiten aus anderen Communitys werden abgelehnt (Standard)",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "Diese Einstellungen gelten für die ganze Seite: wer Spieler anlegt, wer für das Rating zählt und ob Zeiten aus anderen Communitys angenommen werden. Jede Änderung wird mit deinem Namen festgehalten.",
+  "Times from other communities": "Zeiten aus anderen Communitys",
+  "With approval: an administrator approves each carried time": "Mit Freigabe: ein Administrator gibt jede mitgenommene Zeit frei"
  }
 }

@@ -4945,6 +4945,13 @@
   "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.": "'Prepare a device' 카드의 QR 코드가 아닙니다. 개인 로그인 카드는 나중에 브라우저에서 사용합니다.",
   "Use one https address without a final slash, path or port.": "끝 슬래시, 경로, 포트가 없는 https 주소 하나를 사용하세요.",
   "Website address": "웹사이트 주소",
-  "Your community has a website on the internet. Enter the address you open it with in the browser.": "커뮤니티에 인터넷 웹사이트가 있습니다. 브라우저에서 여는 주소를 입력하세요."
+  "Your community has a website on the internet. Enter the address you open it with in the browser.": "커뮤니티에 인터넷 웹사이트가 있습니다. 브라우저에서 여는 주소를 입력하세요.",
+  "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.": "여러 커뮤니티에 속한 플레이어는 다른 곳에서 세운 기록을 이곳으로 가져올 수 있습니다. 가져온 기록에는 항상 어디에서 왔는지가 표시됩니다.",
+  "Allowed: carried times follow the normal publication rules": "허용: 가져온 기록은 일반 공개 규칙을 따릅니다",
+  "Carried from {0} · originally {1}": "{0}에서 가져옴 · 원래 날짜 {1}",
+  "Off: times from other communities are refused (default)": "끄기: 다른 커뮤니티의 기록은 거부됩니다 (기본값)",
+  "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.": "이 선택은 사이트 전체에 적용됩니다: 누가 플레이어를 만들고, 누가 레이팅에 반영되며, 다른 커뮤니티의 기록을 받을지. 모든 변경은 내 이름으로 기록됩니다.",
+  "Times from other communities": "다른 커뮤니티의 기록",
+  "With approval: an administrator approves each carried time": "승인 필요: 관리자가 가져온 기록을 하나씩 승인합니다"
  }
 }
