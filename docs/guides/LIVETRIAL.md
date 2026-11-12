@@ -1,6 +1,6 @@
 # LiveTrial: record Time Trials on Windows
 
-[All guides](../../README.md#guides) · [LiveTrial component README](../../apps/timetrials-desktop/README.md)
+[All guides](../../README.md#get-started) · [LiveTrial component README](../../apps/timetrials-desktop/README.md)
 
 LiveTrial is a Windows program that watches your Time Trials through a capture card, or reads recorded videos,
 recognizes each run (total and lap times, character and kart setup, ghost) and saves it on your PC with a clip.

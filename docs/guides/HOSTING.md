@@ -1,6 +1,6 @@
 # Host a community server
 
-[All guides](../../README.md#guides) · [Operations](../OPERATIONS.md) · [User guide (complete)](../install/MK8DX_User_Guide_EN.txt)
+[All guides](../../README.md#get-started) · [Operations](../OPERATIONS.md) · [User guide (complete)](../install/MK8DX_User_Guide_EN.txt)
 
 This guide is for the person who runs the MK8DX website for a community: the website, the browser scanner,
 the API and the database. Players, Tournament Directors and LiveTrial users then connect to your address.

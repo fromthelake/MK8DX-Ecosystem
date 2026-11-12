@@ -2,7 +2,7 @@
 
 MK8DX Ecosystem is a hobby project maintained by one person. Help is given on a best-effort basis.
 
-1. **Read the guide for what you are doing.** The [README](README.md#guides) routes you to the guide for
+1. **Read the guide for what you are doing.** The [README](README.md#get-started) routes you to the guide for
    hosting a server, running Tournament nights, using the website and the Android app, LiveTrial, or
    development. [Operations](docs/OPERATIONS.md) covers backups, upgrades and restores, and
    [Development](docs/DEVELOPMENT.md#troubleshooting) lists common setup problems.

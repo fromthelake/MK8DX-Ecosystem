@@ -1,136 +1,252 @@
 # MK8DX Ecosystem
 
+**Host your own Mario Kart 8 Deluxe community website — for Time Trials *and* tournament nights.**
+
 Language: English · [Nederlands](README_NL.md)
 
-Finished a Time Trial in Mario Kart 8 Deluxe? Open the scanner of your community's MK8DX website on a
-phone or tablet, point the camera at the result screen on your TV, and the scanner reads the times and
-laps for you. On the website you follow your progress and compare with friends, rivals, the Nintendo Ghost
-Staff and world records. MK8DX Ecosystem also runs tournaments: organizers set up the night, capture the
-races, review the results and publish standings and a report.
+![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 
-The project is self-hosted: every community runs its own installation, with its own accounts and results.
+MK8DX Ecosystem is something you host yourself. It gives your community one website that keeps
+two kinds of results — **Time Trial results** and **tournament results** — and adds its own kind
+of competition to each.
 
-## What it does
+**⏱️ Time Trials**
 
-- **Scan Time Trials from your TV screen.** The browser scanner reads total and lap times and, when visible,
-  the character, kart setup and flag. You review the result before you submit it. A camera needs a trusted
-  HTTPS connection; you can also upload a photo or screenshot. The optional Android app offers a faster
-  on-device scan.
-- **Compare your times.** Your best time and laps per track next to community results, chosen rivals, the
-  Nintendo Ghost Staff and world records. When someone beats one of your published times, you get a
-  notification.
-- **Record runs with LiveTrial.** A Windows client for a capture card or existing video files. It recognizes
-  new runs, saves their details and clips, and sends results to your community after you sign in once.
-- **Organize tournaments.** Participants, groups and consoles; Tournament Processor reads recorded races and
-  Tournament Live captures during the event. After the organizer has checked players and places, the website
-  computes scores, standings and finals and publishes a report, also as a WordPress export.
+- **Leaderboards** per track and class (150cc/200cc), for your community and next to the
+  **world records**, which are refreshed once a day.
+- **Rivals**: pick them once and always see where they stand against you.
+- **Enter a time your way**: type it in by hand, scan the result screen with a camera — in the
+  website or in the Android app — or let the Windows application **LiveTrial** record every run
+  by itself through a capture card.
+- **LiveTrial sees the race itself**: when you pick up coins, when you use your mushrooms — and it
+  makes a **video clip of every run** that is yours to use.
 
-The [public decision index](docs/decisions/README.md) explains the product rules cited as ADRs in source and docs.
+**🏁 Tournaments**
 
-Recognition alone never makes a result official. Where the rules require it, an authorized person reviews
-a submission before it appears publicly.
+- **LAN nights from sign-up to finals**: seating, groups, scores and standings, organised for you.
+- **Results read from the screen** by Tournament Live, checked by the organiser before they count.
+- **TrueSkill rating**: a skill rating that grows with every tournament night.
+- **No account needed to play**: you can host a tournament without asking anyone to sign up.
+  A player who wants their results on their own account can link them later — never an
+  obligation.
 
-## Guides
+**✨ What makes it unique**
 
-Start with the guide for what you want to do:
+Until now there was no solid way to get the data out of Mario Kart 8 Deluxe on a Nintendo Switch
+through a capture card: it was mostly typing it over, or OCR that only reads text. MK8DX reads the
+times, positions and points *and* recognises the pictures: the **character (including the right
+colour)**, **kart body, tyres, glider** and **flag** — wherever the game shows them.
 
-| I want to… | Guide | Platform |
+And you do not even need a capture card for that: from the couch, point your phone at the TV and
+scan a Time Trial **result screen** or a **Select-a-Ghost screen**, and the result goes straight
+to your website. As far as we know, that had not been done before either.
+
+**🏠 At home or online — you choose**
+
+- **Completely local**: run it on your home or club network. After the setup **no internet is
+  needed** at all.
+- **Online**: host it on your own server or web hosting and share it with your own online
+  community.
+
+Either way it is your installation, with your own accounts and results. No cloud account, no
+subscription, no ads.
+
+**🔑 No passwords, ever**
+
+- **Only the administrator needs an account.** That account is also the first player, so the
+  system always has at least one player; everybody else can join tournaments without one.
+- **One link to sign in**: nobody has to make up or remember a password. At home, everyone gets
+  a personal sign-in card (a link or QR code). Online, a new user only enters an **email
+  address** and signs in with the link MK8DX sends them.
+
+---
+
+## 🏁 LAN tournament nights
+
+Remember LAN parties? Two players per screen, a room full of Switches, everybody yelling at
+Rainbow Road. MK8DX brings that night back and takes care of everything around the racing: who
+sits where, which group plays next, the scores, the finals and the standings.
+
+- **Sign-up** — open sign-up for a night with a closing time and a maximum; first come, or a fair
+  draw from a published seed. Players sign up with the Switches they bring.
+- **Seating that does itself** — attendance, consoles and seats (two players per Switch), station
+  and cable numbers. Choose ranked or random seeding and *Balanced* or *Minimal movement*
+  placement; MK8DX builds the qualifier groups and then the finals for you.
+- **Tournament Live reads the races** — point a capture card at each screen. After every race it
+  reads the finishing positions, characters, flags, race points, totals and the track (also in
+  two-player split screen), saves them locally and sends them to the night on the website.
+- **You stay in charge** — the organiser checks players and places before a result counts. Live
+  standings are shown provisionally in the meantime.
+- **Afterwards** — final standings, a shareable report (WhatsApp, PNG, CSV, a WordPress-ready
+  article) and an optional TrueSkill-style community rating across nights.
+
+![Tournament Live after a race: the capture-card feed, and the finishing order with each driver's character and points](docs/readme/tournament-live.jpg)
+
+<p>
+  <img src="docs/readme/tournament-results.jpg" alt="Final results of a tournament night: qualifier groups with each player's character, coloured by the final they went on to" width="49%">
+  <img src="docs/readme/tournament-skill.jpg" alt="Tournament skill page: TrueSkill rating, wins, top 3 and average finish of a player" width="49%">
+</p>
+
+## ⏱️ Time Trials with LiveTrial — fully automatic
+
+Connect your Switch to your Windows PC through a capture card and just race. As far as we know,
+nothing like this existed before.
+
+LiveTrial watches the HDMI feed and recognises, by itself:
+
+- the menus you go through, the **track** and the **class** (150cc/200cc);
+- during the race: the **race clock, lap counter, coins and items**;
+- on the result screen: **total time, every lap time** (3, or 7 on Baby Park), **character, kart
+  body, tyres, glider** and **flag**;
+- the **Select-a-Ghost** panel — ghost names, times, laps and parts — and whether a ghost is one
+  of **Nintendo's staff ghosts**;
+- your **Switch language** (all 12 system languages) automatically.
+
+It keeps a **clip of every race** and of every ghost replay you watch to the finish, a run
+history with lap tables and charts, and shows your gap to the **world record**, the **Nintendo
+staff ghost**, your **own record** and your **rivals**. Send results to your community with one
+click (or switch on automatic sending), and optionally upload a clip to your own YouTube channel.
+
+![LiveTrial during a run on Baby Park: lap 4 of 7, coins and mushrooms counted live, every lap compared with the ghost](docs/readme/livetrial-live.jpg)
+
+![LiveTrial's run card afterwards: total time, the gap to the ghost, coins and mushrooms](docs/readme/livetrial-run.jpg)
+
+## 📱 Scan from the couch
+
+Time-trialling at a friend's place? Take your phone or tablet, point it at the TV and the scanner
+reads the result screen: **total, laps, character, body, tyres, glider, flag and player name**, or a
+**ghost panel** with its track and times. Anything uncertain is shown with alternatives so you can
+pick the right one before you post.
+
+The browser scanner runs **entirely on your device** — no account, no server, and offline after the
+first download. The Android app scans on-device too.
+
+<p>
+  <img src="docs/readme/scanner-reading.jpg" alt="The browser scanner reading a phone photo of a Select-a-Ghost screen" width="32%">
+  <img src="docs/readme/scanner-filled.jpg" alt="The form filled from the scan: character, kart, tyres, glider, flag and lap times, with the one uncertain part marked" width="32%">
+</p>
+
+## 🏆 Your records, your rivals
+
+Every player gets their own records per track, a ranking with family, friends or the club, rivals
+to chase (with pokes, challenges and the odd dice duel), notifications when someone beats your
+time, and **23 mastery levels** measured against the current world records.
+
+<p>
+  <img src="docs/readme/timetrials-leaderboard.jpg" alt="Rainbow Road leaderboard with the world record, combos, mushrooms and coins per lap" width="72%">
+  <img src="docs/readme/phone-leaderboard.jpg" alt="The same leaderboard on a phone, in the dark theme" width="24%">
+</p>
+
+## 🌍 Speaks your language — all 15 of them
+
+Mario Kart 8 Deluxe is played everywhere, so MK8DX is built for every game language: the website,
+the Android app, LiveTrial and the Tournament tools come in **15 languages**, and recognition is
+built for **all 15 game language variants** — from Dutch and English to Japanese, Korean,
+Chinese, Russian and more. English and Dutch are reviewed by people; the other languages are
+machine-translated and recognition in some of them is still being verified on real consoles.
+Playing in your language? Your help checking it is the most valuable contribution there is.
+
+## 💡 The story behind it
+
+MK8DX Ecosystem has been in development since 2024. It was built with AI — "vibe coding" — and
+honestly: I could not have built this without AI, and the AI could not have built it without me.
+I cannot imagine a world in which this would have reached a good result without constant
+steering and explaining the logic, over and over. The number of sessions that just kept running,
+burning credits without real results, still keeps me awake at night (haha). Part of the reason:
+with all the screenshots and videos involved, the context simply grows too large for an AI to
+hold — by now there are about 4 TB of AI-generated QA test material waiting for me to clean up.
+
+Probably because this had never been built before. The techniques existed; stitching the right
+ones together, in the right order, with a human checking every visual step in between and
+steering again, did not. The same goes for the game assets: bits and pieces exist here and there,
+but a complete package that contains everything, I had not seen before.
+
+It has been a great school — and it has made me able to build faster and more efficiently around
+image recognition and extraction from here on.
+
+— [fromthelake](https://github.com/fromthelake)
+
+## 🛠️ Make it your own
+
+MK8DX is open source, built by players for players. Run it for your club, your family or your
+city's LAN scene; adapt it to how *your* nights work; and build on it:
+
+- **Translate or review** your language (the website, the apps and the in-game recognition).
+- **Test recognition** with your own console, language and capture card, and report what it misses.
+- **Add what your community needs** — new tournament formats, statistics, ways to share results.
+- **Improve the docs** so the next organiser gets started even faster.
+
+Start with [Contributing](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
+Every pull request, bug report and translation fix makes the next LAN night better for everyone.
+
+---
+
+## Get started
+
+| I want to… | Start here |
+| --- | --- |
+| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step with pictures: [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card |
+| **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |
+| **host a community website** | [Host a community server](docs/guides/HOSTING.md) |
+| **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+
+### Which computer for which route
+
+Every route gives you the same website; they differ in where it runs and who can reach it.
+
+| Route | For | Runs on | Status |
+| --- | --- | --- | --- |
+| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac (Apple silicon or Intel) | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested on a real Mac |
+| **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
+| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
+| **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
+| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account |
+
+The apps around it:
+
+| App | Runs on | Why |
 | --- | --- | --- |
-| **host the website for my community** (self-hosted server) | [Host a community server](docs/guides/HOSTING.md) | Linux with Docker (main route); Windows; shared hosting |
-| **run tournament nights** as a Tournament Director | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) | website, plus the Windows Tournament Tools |
-| **post and compare my Time Trials** on a community's website or the Android app | [Players](docs/guides/PLAYERS.md) | any browser; Android 8.0+ |
-| **record Time Trials with a capture card or from videos** | [LiveTrial](docs/guides/LIVETRIAL.md) | Windows |
-| **change the code**, run the tests or send a pull request | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) | Windows, Linux; macOS untested |
+| Website and browser scanner | Any modern browser; Chrome or Edge recommended for scanning | The scanner runs entirely on your device and needs a browser that gives it several threads |
+| Android app | Android 8.0 or newer, arm64 recommended | Scans on the phone itself, also without a connection |
+| iPhone and iPad | The website in the browser; scanning in Safari is still being tested | There is no iOS app: building and signing one needs a Mac and an Apple developer account |
+| LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
 
-For recognition maintenance, use the [pipeline map](docs/architecture/RECOGNITION_PIPELINE.md):
-it distinguishes shared Python/TypeScript/Java decisions from each app's local
-capture and pixel work and shows how the code reaches a release package.
+**Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
+B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
+(`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there
+([how](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 exists for people who cannot or do not
+want to run Docker. The [hosting guide](docs/guides/HOSTING.md) and the [release packages](docs/RELEASE_PACKAGES.md)
+list every file and its exact requirements.
 
-The complete step-by-step user guide for every installation route, with backups, restores and updates, is
-[docs/install/MK8DX_User_Guide_EN.txt](docs/install/MK8DX_User_Guide_EN.txt) ([Word](docs/install/MK8DX_User_Guide_EN.docx);
-Dutch: [MK8DX_Handleiding_NL.txt](docs/install/MK8DX_Handleiding_NL.txt)). Questions: [Getting help](SUPPORT.md).
+A fresh installation starts empty: no community accounts or results are inherited. It brings only the game
+catalog and the Nintendo staff ghost and world record reference sets.
 
 ## Project status
 
-The 0.1.0 series is published through the project's
-[GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) page; the
-[changelog](CHANGELOG.md) lists what changed. **A1 (Docker on one computer) and A3
-(XAMPP/Node.js on Windows) are supported** after installation and upgrade tests.
-**A2 (home or club network, guided setup) is new in 0.2.0** and tested end to end on Windows 11.
-B1 (Docker VPS) and B2 (shared Node.js hosting) are documented
-but have not been tested end to end. Other platforms are described under
-[Platform support](#platform-support).
+0.1.0 is the stable release on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
+0.2.0, which adds A2, is a release candidate: try it, but keep 0.1.0 for anything you cannot redo. See the
+[changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
+([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
-## Get it
-
-Release packages are attached to the project's
-[GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases). Download the package for your route
-from the latest release, together with `SHA256SUMS.txt`, and check the checksum as the guide explains. [Release packages](docs/RELEASE_PACKAGES.md) explains which file belongs to
-which route. GitHub's automatic **Source code (zip)** is the complete source, not an installation package.
-
-| Route | Package | Status |
-| --- | --- | --- |
-| A1: website on one computer with Docker | `mk8dx-host-local-…-amd64.zip` | Supported ([guide](docs/install/A1_ONE_COMPUTER_EN.md)) |
-| A2: website on a home or club network, guided setup | `mk8dx-a2-<platform>-<arch>-….zip` | Tested on Windows 11 ([guide](docs/install/A2_HOME_GUIDE_EN.md)); Linux in WSL 2; macOS untested |
-| A3: website on Windows with XAMPP and Node.js | `mk8dx-xampp-node-windows-….zip` | Supported |
-| B1: website on a Docker VPS | `mk8dx-host-local-…-amd64.zip` | Documented; not tested end to end |
-| B2: website on shared Node.js hosting | `mk8dx-mijnhost-node-….zip` | Documented; not tested end to end |
-| Android app | Locally release-signed `mk8dx-android-release-….apk` with its notices ZIP | Earlier public debug APKs require one uninstall before installing the release-signed app |
-| LiveTrial (Windows) | `desktop-client-….zip` | Windows package |
-| Tournament tools (Windows) | `tournament-tools-….zip` | Windows package |
-| Complete source with the asset collection | `mk8dx-full-local-….zip` | Source package |
-
-Then follow the [guide](#guides) for your group, or the complete user guide:
-[English](docs/install/MK8DX_User_Guide_EN.txt) ([Word](docs/install/MK8DX_User_Guide_EN.docx)) or
-[Nederlands](docs/install/MK8DX_Handleiding_NL.txt) ([Word](docs/install/MK8DX_Handleiding_NL.docx)). It walks
-through installation, the apps, settings, backups and recovery.
-
-**Have a clone of this repository instead?** Build and run it from source with
-[Getting started](docs/GETTING_STARTED.md); the launchers above need the prebuilt images of a release package.
-You can also build the packages yourself: the Docker host package as in
-[Host a community server](docs/guides/HOSTING.md#build-the-host-package-from-a-clone), the Android app,
-LiveTrial and the Tournament tools as in [Client builds](docs/CLIENT_BUILDS.md).
+Recognition never makes a result official by itself: you review your own Time Trials, and an
+organiser checks tournament races before they count.
 
 ## Documentation
 
 | I want to… | Read |
 | --- | --- |
+| understand how recognition works | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
 | understand the parts and how a result travels | [Architecture](docs/architecture/COMPONENTS.md) |
 | build or change the code | [Developer guide](docs/DEVELOPMENT.md) and [Testing](docs/TESTING.md) |
 | build the native clients | [Client builds](docs/CLIENT_BUILDS.md) |
 | run an installation (backup, upgrade, recovery) | [Operations](docs/OPERATIONS.md) |
-| start from source with Docker | [Getting started](docs/GETTING_STARTED.md) |
+| know why something is the way it is | [Decision index](docs/decisions/README.md) |
 | contribute | [Contributing](CONTRIBUTING.md), [Code of conduct](CODE_OF_CONDUCT.md) |
-| find out which script in `tooling/` is for whom | [Tooling](tooling/README.md) |
 | get help | [Getting help](SUPPORT.md) |
 | report a security problem | [Security policy](SECURITY.md) |
 | work with a coding agent | [AGENTS.md](AGENTS.md) |
-
-## What runs where
-
-| Component | Role | Runs on |
-| --- | --- | --- |
-| Website, browser scanner and gateway | Public pages, administration and scanning | The server installation |
-| API and MySQL/MariaDB | Sign-in, submissions, review, publication and data | The same installation |
-| Android | Mobile scanning and submissions | A phone; the user chooses the community |
-| LiveTrial | Recognizes and sends recordings or capture results | Windows |
-| Tournament Processor, Live and Connect | Recognize races and deliver them after review | Windows |
-
-A fresh installation starts empty: no community accounts or results are inherited. It includes only the
-game catalog and the Nintendo Ghost Staff and World Records reference sets.
-
-## Platform support
-
-- **Windows 11 x86-64**: tested end to end with Docker and with XAMPP/Node.js, including LiveTrial and
-  Tournament Processor/Connect results arriving on the website.
-- **Linux x86-64**: the Docker host package includes a shell launcher (`tooling/start-mk8dx.sh`). Demonstrated
-  on a Linux Docker Engine (in a container, not on Ubuntu itself): package launcher, first setup, sign-in,
-  first administrator, backup, update and restore, and the source route. A public B1 installation with a real
-  domain and mail provider is not yet tested. LiveTrial and the Tournament tools are Windows applications.
-- **macOS**: an Intel Mac can try the Docker host package with Docker Desktop; Apple Silicon needs amd64
-  emulation. Not accepted end to end; the Windows clients do not run on macOS.
-- **ARM servers**: no native images yet.
-- Not yet verified: physical capture with Tournament Live, a fresh installation on a real external host.
 
 ## License and Nintendo
 
