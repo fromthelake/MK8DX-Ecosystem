@@ -1394,6 +1394,10 @@
   .ds-manage__when { color: var(--ds-text-tertiary); font-family: var(--ds-font-data); white-space: nowrap; }
   .ds-manage__form { padding-top: var(--ds-space-lg); border-top: 1px solid var(--ds-border-subtle); }
   .ds-manage__form > h3 { color: var(--ds-text-primary); }
+  /* ADR-0225: "Publish" a run waiting for review, behind one short confirmation line. */
+  .ds-manage__confirmation { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-sm); }
+  .ds-manage__confirmation[hidden] { display: none; }
+  .ds-manage__confirm { margin: 0; flex: 1 1 100%; color: var(--ds-text-primary); }
   .ds-manage__laps { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: var(--ds-space-sm); }
   /* Fix this result is the Post a Time form in a dialog: one column (the checks under the form),
      never the page layout's side-by-side columns (owner 2026-09-28). */

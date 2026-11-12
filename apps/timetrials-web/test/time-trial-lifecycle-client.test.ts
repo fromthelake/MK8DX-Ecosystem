@@ -310,3 +310,34 @@ describe("a carried run in the managed document (ADR-0225)", () => {
     }
   });
 });
+
+describe("publishing a run that waits for review (ADR-0225)", () => {
+  it("posts the revision on screen to the administrator action with a fresh proof", async () => {
+    const publishedResult = {
+      ...result, publicationReason: "administrator_review_publication",
+      events: [{ ...lifecycleEvent, sequenceNumber: 2, eventType: "published", retirementStateAfter: "active", actorRole: "administrator", reasonCode: "review_approved" }],
+    };
+    const fetchPort = vi.fn()
+      .mockResolvedValueOnce(proofOnce())
+      .mockResolvedValueOnce(json({ schemaVersion: "mk8dx.managed-time-trial.v1", result: publishedResult }));
+    const client = createTimeTrialLifecycleClient(fetchPort);
+    await expect(client.publishReviewed(submissionId, 1)).resolves.toEqual(publishedResult);
+    expect(fetchPort.mock.calls[1]?.[0]).toBe(`/v1/administrator/time-trials/${submissionId}/actions/publish`);
+    expect(fetchPort.mock.calls[1]?.[1]).toMatchObject({
+      method: "POST",
+      headers: expect.objectContaining({ "x-mk8dx-csrf": "fresh-proof" }),
+      body: JSON.stringify({ expectedRevision: 1 }),
+    });
+  });
+
+  it("names a run that changed or stopped waiting as a conflict, and checks the revision first", async () => {
+    const conflicted = createTimeTrialLifecycleClient(vi.fn()
+      .mockResolvedValueOnce(proofOnce())
+      .mockResolvedValueOnce(json({ code: "time_trial_lifecycle_conflict", message: "not waiting" }, 409)));
+    await expect(conflicted.publishReviewed(submissionId, 1)).rejects.toMatchObject({ code: "conflict" });
+    const fetchPort = vi.fn();
+    await expect(createTimeTrialLifecycleClient(fetchPort).publishReviewed(submissionId, 0))
+      .rejects.toMatchObject({ code: "invalid_input" });
+    expect(fetchPort).not.toHaveBeenCalled();
+  });
+});

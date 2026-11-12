@@ -80,6 +80,7 @@ function client(
     async restore() { return result; },
     async setVideo() { return result; },
     async listForAdministrator() { return [result]; },
+    async publishReviewed() { return { ...result, publicationStatus: "published" }; },
     ...overrides,
   };
 }
@@ -358,6 +359,94 @@ describe("a carried run (ADR-0225)", () => {
     await section.ready;
     await settle();
     expect(allByClass(root, "ds-carried-from")).toHaveLength(1);
+    section.unmount();
+  });
+});
+
+describe("publishing a run that waits for review (ADR-0225)", () => {
+  const waiting: ManagedTimeTrial = {
+    ...result, events: [], publicationStatus: "withheld", publicationReason: "explicit_review_required",
+    carriedFrom: { origin: "https://club.example.org", originalSubmittedAtMs: Date.UTC(2026, 10, 3, 12) },
+  };
+  const buttonNamed = (root: FakeNode, label: string) => descendants(root)
+    .find((candidate) => candidate.tagName === "button" && candidate.textContent === label);
+
+  it("offers Publish to an administrator, asks once, then publishes the revision on screen", async () => {
+    const publishReviewed = vi.fn(async () => ({
+      ...waiting, publicationStatus: "published" as const, publicationReason: "administrator_review_publication",
+      events: [{
+        sequenceNumber: 1, eventType: "published" as const, retirementStateAfter: "active" as const, revision: 1,
+        actorRole: "administrator" as const, reasonCode: "review_approved", occurredAtMs: 1_900_000_200_000,
+      }],
+    }));
+    const onChanged = vi.fn();
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const panel = mountTimeTrialManagementPanel(root as unknown as HTMLElement, submissionId, {
+      client: client({ publishReviewed }), initial: waiting, viewerIsOwner: false, administrator: true, onChanged,
+    });
+    await panel.ready;
+    expect(texts(root).some((value) => value.includes("This time was carried from another community."))).toBe(true);
+    const confirmation = byClass(root, "ds-manage__confirmation")!;
+    expect(confirmation.hidden).toBe(true);
+    buttonNamed(root, "Publish")!.click();
+    expect(confirmation.hidden).toBe(false);
+    expect(texts(confirmation)).toContain("Publish this result as it is?");
+    expect(publishReviewed).not.toHaveBeenCalled();
+    buttonNamed(root, "Yes, publish")!.click();
+    await settle();
+    expect(publishReviewed).toHaveBeenCalledWith(submissionId, 1, expect.any(AbortSignal));
+    expect(onChanged).toHaveBeenCalledOnce();
+    // Published: the offer is gone and the history tells who did it.
+    expect(buttonNamed(root, "Publish")).toBeUndefined();
+    expect(texts(root).some((value) => value.includes("An administrator approved and published this result"))).toBe(true);
+    panel.unmount();
+  });
+
+  it("can be cancelled, and is offered neither to the Player nor for a run that is not waiting", async () => {
+    const publishReviewed = vi.fn(async () => waiting);
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const panel = mountTimeTrialManagementPanel(root as unknown as HTMLElement, submissionId, {
+      client: client({ publishReviewed }), initial: waiting, viewerIsOwner: false, administrator: true,
+    });
+    await panel.ready;
+    buttonNamed(root, "Publish")!.click();
+    buttonNamed(root, "Cancel")!.click();
+    expect(byClass(root, "ds-manage__confirmation")!.hidden).toBe(true);
+    expect(publishReviewed).not.toHaveBeenCalled();
+    panel.unmount();
+
+    for (const options of [
+      { initial: waiting },
+      { initial: { ...waiting, publicationReason: "player_private" }, administrator: true },
+      { initial: { ...waiting, publicationStatus: "published" as const }, administrator: true },
+    ]) {
+      const elsewhere = document.createElement("div");
+      const other = mountTimeTrialManagementPanel(elsewhere as unknown as HTMLElement, submissionId, {
+        client: client(), viewerIsOwner: false, ...options,
+      });
+      await other.ready;
+      expect(allByClass(elsewhere, "ds-manage__review")).toHaveLength(0);
+      other.unmount();
+    }
+  });
+
+  it("offers Publish on a waiting row in Administration -> Time Trials", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const section = mountAdministratorTimeTrialSection(
+      root as unknown as HTMLElement,
+      client({ async listForAdministrator() { return [waiting, result]; } }),
+      {
+        async read() { throw new Error("unused"); },
+        async setOwn() { throw new Error("unused"); },
+        async setForPlayer() { throw new Error("unused"); },
+      },
+    );
+    await section.ready;
+    await settle();
+    expect(allByClass(root, "ds-manage__review")).toHaveLength(1);
     section.unmount();
   });
 });

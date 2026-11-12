@@ -56,7 +56,8 @@ export type ManagedTimeTrialRevision = Readonly<{
 
 export type ManagedTimeTrialEvent = Readonly<{
   sequenceNumber: number;
-  eventType: "corrected" | "retired" | "restored";
+  /** "published": an administrator published a run that waited for review (ADR-0225). */
+  eventType: "corrected" | "retired" | "restored" | "published";
   retirementStateAfter: "active" | "retired";
   revision: number;
   actorRole: "owner" | "administrator";
@@ -156,6 +157,15 @@ export interface TimeTrialLifecycleClient {
     submissionId: string,
     reasonCode: TimeTrialReasonCode,
     note?: string,
+    signal?: AbortSignal,
+  ): Promise<ManagedTimeTrial>;
+  /**
+   * Administrators: publishes a run that waits for review, unchanged (ADR-0225). The revision is
+   * the one on screen; the server refuses with a conflict when the run changed meanwhile.
+   */
+  publishReviewed(
+    submissionId: string,
+    expectedRevision: number,
     signal?: AbortSignal,
   ): Promise<ManagedTimeTrial>;
   /** Attaches a YouTube link to the result, or removes it (null). */
@@ -306,7 +316,7 @@ function event(value: unknown): ManagedTimeTrialEvent {
   const note = "note" in row ? text(row["note"], 256) : undefined;
   return {
     sequenceNumber: integer(row["sequenceNumber"], 1),
-    eventType: literal(row["eventType"], ["corrected", "retired", "restored"] as const),
+    eventType: literal(row["eventType"], ["corrected", "retired", "restored", "published"] as const),
     retirementStateAfter: literal(row["retirementStateAfter"], ["active", "retired"] as const),
     revision: integer(row["revision"], 1),
     actorRole: literal(row["actorRole"], ["owner", "administrator"] as const),
@@ -511,9 +521,10 @@ export function createTimeTrialLifecycleClient(
   };
   const act = async (
     submissionId: string,
-    action: "correct" | "retire" | "restore" | "video",
+    action: "correct" | "retire" | "restore" | "video" | "publish",
     body: unknown,
     signal?: AbortSignal,
+    base = "/v1/time-trials",
   ): Promise<ManagedTimeTrial> => {
     if (!submissionIdPattern.test(submissionId)) {
       throw fail("invalid_input");
@@ -521,7 +532,7 @@ export function createTimeTrialLifecycleClient(
     const proof = await csrf(fetchPort, signal);
     const response = await send(
       fetchPort,
-      `/v1/time-trials/${encodeURIComponent(submissionId)}/actions/${action}`,
+      `${base}/${encodeURIComponent(submissionId)}/actions/${action}`,
       {
         method: "POST",
         headers: {
@@ -554,6 +565,12 @@ export function createTimeTrialLifecycleClient(
     );
   };
   return {
+    async publishReviewed(submissionId, expectedRevision, signal) {
+      if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 1) {
+        throw fail("invalid_input");
+      }
+      return act(submissionId, "publish", { expectedRevision }, signal, "/v1/administrator/time-trials");
+    },
     async read(submissionId, signal) {
       if (!submissionIdPattern.test(submissionId)) {
         throw fail("invalid_input");

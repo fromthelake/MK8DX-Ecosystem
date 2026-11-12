@@ -57,6 +57,7 @@ function client(
     async restore() { return result; },
     async setVideo() { return result; },
     async listForAdministrator() { return [result]; },
+    async publishReviewed() { return { ...result, publicationStatus: "published" }; },
     ...overrides,
   };
 }

@@ -260,6 +260,7 @@ export function mountAdministratorTimeTrialSection(
       client,
       initial: result,
       viewerIsOwner: false,
+      administrator: true,
       onChanged: () => { void load(); },
     }));
     return row;
