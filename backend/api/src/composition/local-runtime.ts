@@ -1099,6 +1099,7 @@ async function createMysqlApiRuntime(
       listForAdministrator: timeTrialLifecycleService.listForAdministrator.bind(timeTrialLifecycleService),
       retire: timeTrialLifecycleService.retire.bind(timeTrialLifecycleService),
       setVideo: timeTrialLifecycleService.setVideo.bind(timeTrialLifecycleService),
+      publishReviewed: timeTrialLifecycleService.publishReviewed.bind(timeTrialLifecycleService),
       correct: async (...args: Parameters<TimeTrialLifecycleService["correct"]>) => {
         return timeTrialLifecycleService.correct(...args);
       },

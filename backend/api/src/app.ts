@@ -366,7 +366,7 @@ export type AppDependencies = Readonly<{
     service: Pick<
       TimeTrialLifecycleService,
       "readOwnedOrAdministered" | "listOwn" | "listForAdministrator"
-      | "correct" | "retire" | "restore" | "setVideo"
+      | "correct" | "retire" | "restore" | "setVideo" | "publishReviewed"
     >;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
   }>;

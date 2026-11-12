@@ -19,7 +19,7 @@ export type TimeTrialLifecycleRouteOptions = Readonly<{
   service: Pick<
     TimeTrialLifecycleService,
     "readOwnedOrAdministered" | "listOwn" | "listForAdministrator" | "correct"
-    | "retire" | "restore" | "setVideo"
+    | "retire" | "restore" | "setVideo" | "publishReviewed"
   >;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
 }>;
@@ -80,7 +80,7 @@ const eventSchema = {
     "actorRole", "reasonCode", "occurredAtMs"],
   properties: {
     sequenceNumber: { type: "integer", minimum: 1 },
-    eventType: { type: "string", enum: ["corrected", "retired", "restored"] },
+    eventType: { type: "string", enum: ["corrected", "retired", "restored", "published"] },
     retirementStateAfter: { type: "string", enum: ["active", "retired"] },
     revision: { type: "integer", minimum: 1 },
     actorRole: { type: "string", enum: ["owner", "administrator"] },
@@ -174,6 +174,17 @@ const videoBodySchema = {
   required: ["videoUrl"],
   properties: {
     videoUrl: { anyOf: [{ type: "string", maxLength: 512 }, { type: "null" }] },
+  },
+} as const;
+
+// ADR-0225: an administrator publishes a run waiting for review, naming the revision they saw.
+const publishBodySchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["expectedRevision"],
+  properties: {
+    expectedRevision: { type: "integer", minimum: 1 },
+    note: { type: "string", maxLength: 256 },
   },
 } as const;
 
@@ -352,6 +363,14 @@ export async function registerTimeTrialLifecycleRoutes(
     retirementBodySchema,
     (actor, submissionId, body) => options.service.restore(
       actor, submissionId, body.reasonCode, body.note,
+    ),
+  );
+
+  action<Readonly<{ expectedRevision: number; note?: string }>>(
+    "/v1/administrator/time-trials/:submissionId/actions/publish",
+    publishBodySchema,
+    (actor, submissionId, body) => options.service.publishReviewed(
+      actor, submissionId, body.expectedRevision, body.note,
     ),
   );
 

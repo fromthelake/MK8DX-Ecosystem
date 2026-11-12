@@ -223,6 +223,7 @@ describe("carried times over HTTP (ADR-0225)", () => {
         async retire() { return managed; },
         async restore() { return managed; },
         async setVideo() { return managed; },
+        async publishReviewed() { return managed; },
       },
     });
     const detail = await app.inject({ method: "GET", url: `/v1/time-trials/${managed.submissionId}` });

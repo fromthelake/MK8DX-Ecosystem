@@ -365,4 +365,47 @@ integration("owner and administrator Time Trial lifecycle", () => {
       administrator, playerId, "public", "review_cleared",
     );
   });
+
+  it("publishes a run waiting for review through the ordinary publication path (ADR-0225)", async () => {
+    // Put the run in the state a carried time under "review" is stored in.
+    await pool.execute(
+      `UPDATE time_trial_publications AS publication
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       SET publication.publication_status = 'withheld', publication.publication_origin = 'internal_withheld',
+           publication.reason_code = 'explicit_review_required', publication.published_at_ms = NULL,
+           publication.rank_at_publication = NULL
+       WHERE submission.public_id = ?`,
+      [submissionId],
+    );
+    expect(await leaderboardTimes()).toEqual([]);
+    const before = await lifecycle.readOwnedOrAdministered(administrator, submissionId);
+    await expect(lifecycle.publishReviewed(owner, submissionId, before.current.revision))
+      .rejects.toMatchObject({ code: "forbidden" });
+    await expect(lifecycle.publishReviewed(administrator, submissionId, before.current.revision + 1))
+      .rejects.toMatchObject({ code: "conflict" });
+    const published = await lifecycle.publishReviewed(administrator, submissionId, before.current.revision, "approved");
+    expect(published).toMatchObject({
+      publicationStatus: "published", publicationReason: "administrator_review_publication",
+      current: { revision: before.current.revision, totalTimeMs: before.current.totalTimeMs },
+    });
+    expect(published.events.at(-1)).toMatchObject({
+      eventType: "published", actorRole: "administrator", reasonCode: "review_approved", note: "approved",
+    });
+    expect(await leaderboardTimes()).toEqual([before.current.totalTimeMs]);
+    const [rows] = await pool.execute<any[]>(
+      `SELECT lifecycle.publication_origin AS origin, lifecycle.rank_at_publication AS rankAtPublication
+       FROM time_trial_publication_lifecycle AS lifecycle
+       INNER JOIN time_trial_publications AS publication
+         ON publication.time_trial_publication_id = lifecycle.time_trial_publication_id
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       WHERE submission.public_id = ?
+       ORDER BY lifecycle.sequence_number DESC LIMIT 1`,
+      [submissionId],
+    );
+    expect(rows[0]).toMatchObject({ origin: "administrator_review", rankAtPublication: 1 });
+    await expect(lifecycle.publishReviewed(administrator, submissionId, before.current.revision))
+      .rejects.toMatchObject({ code: "conflict" });
+  });
 });

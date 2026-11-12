@@ -3,6 +3,7 @@ import type { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from
 
 import {
   TimeTrialLifecycleError,
+  requireAwaitingReview,
   type ManagedTimeTrial,
   type ManagedTimeTrialQuery,
   type TimeTrialCorrection,
@@ -332,6 +333,64 @@ implements TimeTrialLifecycleRepository {
     });
   }
 
+  public async publishReviewed(input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    return this.transaction(async (connection) => {
+      const current = await this.readManaged(connection, input.submissionId, true);
+      if (current === null) { throw new TimeTrialLifecycleError("not_found"); }
+      // Checked again under the row lock: the service's check saw the run before the transaction.
+      requireAwaitingReview(current, input.expectedRevision);
+      const [ids] = await connection.execute<ResultRow[]>(
+        `SELECT submission.time_trial_submission_id AS submissionInternalId,
+                publication.current_revision_id AS revisionInternalId,
+                player.visibility AS playerVisibility
+         FROM time_trial_submissions AS submission
+         INNER JOIN time_trial_publications AS publication
+           ON publication.time_trial_submission_id
+              = submission.time_trial_submission_id
+         INNER JOIN time_trial_submission_revisions AS revision
+           ON revision.time_trial_submission_revision_id
+              = publication.current_revision_id
+         INNER JOIN players AS player ON player.player_id = revision.player_id
+         WHERE submission.public_id = ? LIMIT 1 FOR UPDATE`,
+        [input.submissionId],
+      );
+      const row = ids[0];
+      if (row === undefined) { throw new TimeTrialLifecycleError("not_found"); }
+      // A Private Player stays private: review approval never forces a result public.
+      if (row["playerVisibility"] === "private") {
+        throw new TimeTrialLifecycleError("conflict", "The Player is private; the result stays out of public views.");
+      }
+      const submissionInternalId = integer(row["submissionInternalId"], "submission id", 1);
+      const revisionInternalId = integer(row["revisionInternalId"], "revision id", 1);
+      const occurredAtMs = this.clock.nowMs();
+      // The same publication path as every published run: rank snapshot, publication history,
+      // overtaken notifications and the Player's bests.
+      await this.applyPublication(
+        connection, submissionInternalId, revisionInternalId, "published",
+        "administrator", "administrator_review_publication", occurredAtMs, "administrator_review",
+      );
+      await this.appendEvent(connection, {
+        submissionInternalId,
+        revisionInternalId,
+        eventType: "published",
+        retirementStateAfter: "active",
+        actorRole: "administrator",
+        actorUserAccountId: input.actorUserAccountId,
+        reasonCode: "review_approved",
+        ...(input.note === undefined ? {} : { note: input.note }),
+        occurredAtMs,
+      });
+      const next = await this.readManaged(connection, input.submissionId, true);
+      if (next === null) { throw new TimeTrialLifecycleError("unavailable"); }
+      return next;
+    });
+  }
+
   public async setRetirement(input: Readonly<{
     submissionId: string;
     retire: boolean;
@@ -467,10 +526,11 @@ implements TimeTrialLifecycleRepository {
     actorRole: TimeTrialLifecycleActorRole,
     reasonCode: string,
     occurredAtMs: number,
+    originOverride?: "administrator_review",
   ): Promise<void> {
-    const origin = actorRole === "owner"
+    const origin = originOverride ?? (actorRole === "owner"
       ? "owner_lifecycle"
-      : "administrator_lifecycle";
+      : "administrator_lifecycle");
     const rankAtPublication = status === "published"
       ? (await publicationRankSnapshots(connection, [revisionInternalId]))
         .get(revisionInternalId)
@@ -536,7 +596,7 @@ implements TimeTrialLifecycleRepository {
     input: Readonly<{
       submissionInternalId: number;
       revisionInternalId: number;
-      eventType: "corrected" | "retired" | "restored";
+      eventType: "corrected" | "retired" | "restored" | "published";
       retirementStateAfter: "active" | "retired";
       actorRole: TimeTrialLifecycleActorRole;
       actorUserAccountId: string;
@@ -674,7 +734,7 @@ implements TimeTrialLifecycleRepository {
     const events: TimeTrialLifecycleEvent[] = eventRows.map((event) => ({
       sequenceNumber: integer(event["sequenceNumber"], "sequence", 1),
       eventType: text(event["eventType"], "eventType") as
-        "corrected" | "retired" | "restored",
+        TimeTrialLifecycleEvent["eventType"],
       retirementStateAfter:
         text(event["retirementStateAfter"], "state") as "active" | "retired",
       revision: integer(event["revisionNumber"], "revision", 1),

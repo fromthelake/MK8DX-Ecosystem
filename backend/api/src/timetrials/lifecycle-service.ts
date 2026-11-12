@@ -40,7 +40,8 @@ export type TimeTrialLifecycleActorRole = "owner" | "administrator";
 
 export type TimeTrialLifecycleEvent = Readonly<{
   sequenceNumber: number;
-  eventType: "corrected" | "retired" | "restored";
+  /** "published": an administrator published a run that was waiting for review (ADR-0225). */
+  eventType: "corrected" | "retired" | "restored" | "published";
   retirementStateAfter: "active" | "retired";
   revision: number;
   actorRole: TimeTrialLifecycleActorRole;
@@ -151,6 +152,16 @@ export interface TimeTrialLifecycleRepository {
     reasonCode: TimeTrialRetirementReason;
     note?: string;
     actorRole: TimeTrialLifecycleActorRole;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial>;
+  /**
+   * Publishes the current revision of a run withheld for review, unchanged, through the same
+   * publication path every published run takes; audited as a "published" lifecycle event.
+   */
+  publishReviewed(input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial>;
   /** Attaches (videoId) or removes (null) the result's YouTube video. */
@@ -322,6 +333,36 @@ export class TimeTrialLifecycleService {
     }));
   }
 
+  /**
+   * An administrator publishes a run that waits for review (withheld with reason
+   * explicit_review_required: a carried time under "review", ADR-0225), exactly as it was
+   * submitted. The expected revision guards against publishing something that changed meanwhile.
+   */
+  public async publishReviewed(
+    actor: ActorContext,
+    submissionId: string,
+    expectedRevision: number,
+    note?: string,
+  ): Promise<ManagedTimeTrial> {
+    if (actor.role !== "administrator") {
+      throw new TimeTrialLifecycleError(
+        actor.role === "anonymous" ? "not_authenticated" : "forbidden",
+      );
+    }
+    if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 1) {
+      throw new TimeTrialLifecycleError("invalid_input");
+    }
+    this.requireNote(note);
+    const { account, result } = await this.authorize(actor, submissionId);
+    requireAwaitingReview(result, expectedRevision);
+    return this.guard(() => this.repository.publishReviewed({
+      submissionId,
+      expectedRevision,
+      ...(note === undefined ? {} : { note }),
+      actorUserAccountId: account,
+    }));
+  }
+
   // Ownership is decided by the server from the account's verified claim.
   // A hidden button is not a permission: every action re-resolves it.
   private async authorize(
@@ -437,5 +478,24 @@ export class TimeTrialLifecycleService {
         "unavailable", "The Time Trial could not be updated.", { cause: error },
       );
     }
+  }
+}
+
+/** The publication reason of a run that waits for an administrator (ADR-0225). */
+export const AWAITING_REVIEW_REASON = "explicit_review_required";
+
+/**
+ * Only a current, active run withheld for review may be published by review; anything else is a
+ * conflict with what the caller saw (the repository checks again inside its transaction).
+ */
+export function requireAwaitingReview(result: ManagedTimeTrial, expectedRevision: number): void {
+  if (result.current.revision !== expectedRevision) {
+    throw new TimeTrialLifecycleError("conflict", "This Time Trial changed meanwhile. Reload and try again.");
+  }
+  if (result.retirementState === "retired") {
+    throw new TimeTrialLifecycleError("conflict", "A retired Time Trial must be restored before it is published.");
+  }
+  if (result.publicationStatus !== "withheld" || result.publicationReason !== AWAITING_REVIEW_REASON) {
+    throw new TimeTrialLifecycleError("conflict", "That Time Trial is not waiting for review.");
   }
 }
