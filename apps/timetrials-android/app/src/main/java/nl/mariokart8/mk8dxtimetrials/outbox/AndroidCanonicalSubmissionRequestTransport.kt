@@ -192,19 +192,24 @@ private fun refusalCode(body: ByteArray): String? = try {
 }
 
 /** The Player-facing sentence for a delivery failure that has one (the Web's words). */
-internal fun androidSubmissionFailureMessage(code: String?, language: String): String? = when (code) {
+internal fun androidSubmissionFailureMessage(code: String?, language: String): String? {
+    val product = AndroidProductLanguage.fromCode(language) ?: AndroidProductLanguage.ENGLISH
+    return androidSubmissionFailureMessage(code, language, product)
+}
+
+private fun androidSubmissionFailureMessage(code: String?, language: String, product: AndroidProductLanguage): String? = when (code) {
     ANDROID_CANONICAL_TRANSPORT_TIME_IMPLAUSIBLE -> if (language == "nl") {
         "De voorgestelde tijd is zeer onwaarschijnlijk, controleer alle gegevens nog eens."
     } else {
         "The proposed time is highly unreasonable, please double check all information."
     }
     ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED -> androidText(
-        AndroidProductLanguage.fromCode(language) ?: AndroidProductLanguage.ENGLISH,
+        product,
         "This community does not accept times from other communities.",
         "Deze community neemt geen tijden van andere communities aan.",
     )
     ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF -> androidText(
-        AndroidProductLanguage.fromCode(language) ?: AndroidProductLanguage.ENGLISH,
+        product,
         "This time already comes from this community.",
         "Deze tijd komt al uit deze community.",
     )
