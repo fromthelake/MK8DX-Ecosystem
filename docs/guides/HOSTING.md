@@ -262,5 +262,12 @@ An installation built from source is removed the same way from the repository ro
   download folder; the installer does not set one up. Point players to the GitHub release instead.
 - Tournament Directors: an administrator approves their **Request to host** or adds them under
   Administration → Tournaments → Tournament operators. See [Tournament Directors](TOURNAMENT_DIRECTORS.md).
+- Administration → **Installation settings** holds three site-wide choices, each change recorded with the
+  administrator's name: who creates Players, who counts for the rating, and **times from other communities**.
+  The last one is off by default: a player who belongs to several communities cannot bring a time set
+  elsewhere. *With approval* keeps every carried time out of public views until an administrator publishes it; such
+  times are listed under Administration → Time Trials as withheld, with a **Publish** button. When you switch away from *With approval* while carried times still wait, the page asks
+  whether to publish (or, when switching to off, refuse) all of them or leave them waiting. *Allowed* treats carried times like any
+  other submission. A carried time always shows where it came from (ADR-0225).
 - Security problems: [SECURITY.md](../../SECURITY.md). Keep the installation directory, backups and sign-in links
   out of issues.

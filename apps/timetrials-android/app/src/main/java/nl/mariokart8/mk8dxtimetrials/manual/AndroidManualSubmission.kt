@@ -3,6 +3,7 @@ package nl.mariokart8.mk8dxtimetrials.manual
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedFromV1
 
 private const val MAX_EPOCH_MILLISECONDS = 253_402_300_799_999L
 
@@ -92,6 +93,8 @@ internal data class AndroidManualTimeTrialSubmissionV1(
     val observedPlayerName: String? = null,
     val source: AndroidManualSourceV1,
     val timestamps: ManualTimestampsV1,
+    /** ADR-0225: present only on a time carried from another community. */
+    val carriedFrom: AndroidCarriedFromV1? = null,
 )
 
 private val canonicalJson = Json {

@@ -30,6 +30,8 @@ class Repository implements InstallationSettingsRepository {
   public facts = { lastRecalculatedAtMs: null as number | null, claimsMatter: false, claimChangesSinceLastRecalculation: 0 };
   async read() { return this.stored; }
   async recomputeFacts() { return this.facts; }
+  public waiting = 0;
+  async carriedTimesAwaitingReview() { return this.waiting; }
   async transaction<T>(work: (transaction: InstallationSettingsTransaction) => Promise<T>): Promise<T> {
     return work({
       findActiveAdministratorAccount: async (id) => (id === administrator ? 1 : null),
@@ -37,6 +39,7 @@ class Repository implements InstallationSettingsRepository {
       write: async (input) => {
         this.stored = {
           revision: input.revision, playerCreation: input.playerCreation, ratingEligibility: input.ratingEligibility,
+          carriedTimes: input.carriedTimes,
           ratingEligibilityChangedAtMs: input.ratingEligibilityChangedAtMs, updatedAtMs: input.nowMs,
         };
       },
@@ -59,9 +62,10 @@ function fixture(recompute?: (input: { administratorAccountId: string; reasonCod
 describe("installation settings (ADR-0221)", () => {
   it("reads the defaults while no administrator saved any", async () => {
     const { service } = fixture();
-    expect(await service.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players" });
+    expect(await service.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
     expect(await service.administration(admin)).toEqual({
-      playerCreation: "self_and_directors", ratingEligibility: "all_players", revision: 0, updatedAtMs: null,
+      playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", revision: 0, updatedAtMs: null,
+      carriedTimesAwaitingReview: 0,
       ratingRecompute: { needed: false, eligibilityChanged: false, claimChanges: 0, lastRecalculatedAtMs: null },
     });
   });
@@ -83,6 +87,30 @@ describe("installation settings (ADR-0221)", () => {
     // Saving the same values is not a change and writes no audit row.
     await service.update(admin, { expectedRevision: 1, playerCreation: "directors_only" });
     expect(repository.changes).toHaveLength(1);
+  });
+
+  it("lets an administrator choose carried times (ADR-0225), audited under carried_times", async () => {
+    const { repository, service } = fixture();
+    await expect(service.update(account, { expectedRevision: 0, carriedTimes: "allowed" }))
+      .rejects.toMatchObject({ code: "forbidden" });
+    await expect(service.update(admin, { expectedRevision: 0, carriedTimes: "always" }))
+      .rejects.toMatchObject({ code: "invalid_input" });
+    const review = await service.update(admin, { expectedRevision: 0, carriedTimes: "review" });
+    expect(review).toMatchObject({ carriedTimes: "review", playerCreation: "self_and_directors", revision: 1 });
+    expect(repository.changes).toEqual([
+      { settingKey: "carried_times", previousValue: "off", newValue: "review", changedByInternalId: 1, nowMs: 1_900_000_000_000 },
+    ]);
+    await expect(service.update(admin, { expectedRevision: 0, carriedTimes: "allowed" }))
+      .rejects.toMatchObject({ code: "conflict" });
+    await service.update(admin, { expectedRevision: 1, carriedTimes: "allowed" });
+    expect(repository.changes.at(-1)).toMatchObject({ settingKey: "carried_times", previousValue: "review", newValue: "allowed" });
+    expect((await service.current()).carriedTimes).toBe("allowed");
+    // Another setting saved later keeps the carried-times choice.
+    await service.update(admin, { expectedRevision: 2, playerCreation: "self_only" });
+    expect((await service.current()).carriedTimes).toBe("allowed");
+    // The administration view says how many carried times wait for review (ADR-0225).
+    repository.waiting = 4;
+    expect((await service.administration(admin)).carriedTimesAwaitingReview).toBe(4);
   });
 
   it("says the ratings are out of date after eligibility changed, until they are recalculated", async () => {
@@ -153,10 +181,29 @@ describe("installation settings: the routes (ADR-0221)", () => {
     expect(open.statusCode).toBe(200);
     expect(open.json()).toEqual({
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_and_directors", ratingEligibility: "all_players",
+      carriedTimes: "off",
     });
     expect((await app.inject({ method: "GET", url: "/v1/administrator/installation-settings", headers: { "x-test-actor": "person" } })).statusCode).toBe(403);
     const view = await app.inject({ method: "GET", url: "/v1/administrator/installation-settings", headers: { "x-test-actor": "admin" } });
-    expect(view.json()).toMatchObject({ schemaVersion: "mk8dx.installation-settings-administration.v1", revision: 0, updatedAtMs: null });
+    expect(view.json()).toMatchObject({ schemaVersion: "mk8dx.installation-settings-administration.v1", carriedTimes: "off", revision: 0, updatedAtMs: null });
+  });
+
+  it("saves carried times through the route and refuses an unknown value", async () => {
+    const { service } = fixture();
+    const app = await appFor(service);
+    const headers = { "x-test-actor": "admin", "x-mk8dx-csrf": "synthetic-csrf-proof-0001" };
+    const invalid = await app.inject({
+      method: "POST", url: "/v1/administrator/installation-settings", headers,
+      payload: { expectedRevision: 0, carriedTimes: "everything" },
+    });
+    expect(invalid.statusCode).toBe(400);
+    const saved = await app.inject({
+      method: "POST", url: "/v1/administrator/installation-settings", headers,
+      payload: { expectedRevision: 0, carriedTimes: "allowed" },
+    });
+    expect(saved.statusCode).toBe(200);
+    expect(saved.json()).toMatchObject({ carriedTimes: "allowed", revision: 1 });
+    expect((await app.inject({ method: "GET", url: "/v1/installation-settings" })).json().carriedTimes).toBe("allowed");
   });
 
   it("needs the CSRF proof to change the settings or recalculate", async () => {
@@ -213,24 +260,24 @@ function onboarding(settings: InstallationSettings) {
 
 describe("who creates Players (ADR-0221)", () => {
   it("closes self sign-up when only Directors create Players", async () => {
-    const { service } = onboarding({ playerCreation: "directors_only", ratingEligibility: "all_players" });
+    const { service } = onboarding({ playerCreation: "directors_only", ratingEligibility: "all_players", carriedTimes: "off" });
     await expect(service.createOwnPlayer(account, { username: "mal" })).rejects.toBeInstanceOf(PlayerCreationDisabled);
     await expect(service.createOwnPlayer(account, { username: "mal" })).rejects.toMatchObject({ closedPath: "self" });
     expect(await service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }])).toHaveLength(1);
   });
 
   it("closes the Directors' paths when Players only create themselves", async () => {
-    const { service } = onboarding({ playerCreation: "self_only", ratingEligibility: "all_players" });
+    const { service } = onboarding({ playerCreation: "self_only", ratingEligibility: "all_players", carriedTimes: "off" });
     await expect(service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }])).rejects.toMatchObject({ closedPath: "directors" });
     await expect(service.createPlayerForAdministrator(admin, { username: "mal" })).rejects.toMatchObject({ closedPath: "directors" });
     expect((await service.createOwnPlayer(account, { username: "mal" })).username).toBe("mal");
   });
 
   it("gives a Director-made Player no rating when only claimed Players count", async () => {
-    const { service, createPlayerWithUsername } = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "claimed_only" });
+    const { service, createPlayerWithUsername } = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "claimed_only", carriedTimes: "off" });
     await service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }]);
     expect(createPlayerWithUsername.mock.calls[0]![0]).toMatchObject({ seedRating: false });
-    const everybody = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "all_players" });
+    const everybody = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
     await everybody.service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }]);
     expect(everybody.createPlayerWithUsername.mock.calls[0]![0]).toMatchObject({ seedRating: true });
   });

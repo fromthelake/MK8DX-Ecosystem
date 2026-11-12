@@ -939,7 +939,9 @@ const STR = {
     },
   },
 };
-let LANG = (q => q === "en" || q === "nl" ? q : null)(new URLSearchParams(location.search).get("lang")) || localStorage.getItem("lt-lang") || "nl";
+// This page has Dutch and English text only. The app passes its own language (15 codes, en-US, de, ja ...);
+// every language other than Dutch gets English here, not the Dutch default (found 12-11: "Opname stoppen").
+let LANG = (q => q === "nl" || (q || "").startsWith("nl-") ? "nl" : q ? "en" : null)(new URLSearchParams(location.search).get("lang")) || localStorage.getItem("lt-lang") || "nl";
 let EXPERT = localStorage.getItem("lt-expert") === "1";
 const T = k => STR[LANG][k] ?? STR.en[k] ?? k;
 

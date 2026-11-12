@@ -19,7 +19,7 @@ export type TimeTrialLifecycleRouteOptions = Readonly<{
   service: Pick<
     TimeTrialLifecycleService,
     "readOwnedOrAdministered" | "listOwn" | "listForAdministrator" | "correct"
-    | "retire" | "restore" | "setVideo"
+    | "retire" | "restore" | "setVideo" | "publishReviewed" | "resolveCarriedWaiting"
   >;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
 }>;
@@ -80,13 +80,26 @@ const eventSchema = {
     "actorRole", "reasonCode", "occurredAtMs"],
   properties: {
     sequenceNumber: { type: "integer", minimum: 1 },
-    eventType: { type: "string", enum: ["corrected", "retired", "restored"] },
+    eventType: { type: "string", enum: ["corrected", "retired", "restored", "published"] },
     retirementStateAfter: { type: "string", enum: ["active", "retired"] },
     revision: { type: "integer", minimum: 1 },
     actorRole: { type: "string", enum: ["owner", "administrator"] },
     reasonCode: { type: "string", minLength: 1, maxLength: 64 },
     note: { type: "string", maxLength: 256 },
     occurredAtMs: { type: "integer", minimum: 0 },
+  },
+} as const;
+
+// Where a carried run comes from (ADR-0225), as the submission stated it.
+export const carriedFromSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["origin", "originalSubmittedAtMs"],
+  properties: {
+    origin: { type: "string", minLength: 9, maxLength: 255, pattern: "^https://[^/?#\\s]+$" },
+    communityName: { type: "string", minLength: 1, maxLength: 80 },
+    originalSubmissionId: { type: "string", minLength: 1, maxLength: 128 },
+    originalSubmittedAtMs: { type: "integer", minimum: 0 },
   },
 } as const;
 
@@ -108,6 +121,7 @@ const managedSchema = {
     revisions: { type: "array", maxItems: 200, items: revisionSchema },
     events: { type: "array", maxItems: 200, items: eventSchema },
     videoUrl: youTubeWatchUrlSchema,
+    carriedFrom: carriedFromSchema,
   },
 } as const;
 
@@ -160,6 +174,29 @@ const videoBodySchema = {
   required: ["videoUrl"],
   properties: {
     videoUrl: { anyOf: [{ type: "string", maxLength: 512 }, { type: "null" }] },
+  },
+} as const;
+
+// ADR-0225: an administrator publishes a run waiting for review, naming the revision they saw.
+const publishBodySchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["expectedRevision"],
+  properties: {
+    expectedRevision: { type: "integer", minimum: 1 },
+    note: { type: "string", maxLength: 256 },
+  },
+} as const;
+
+export const carriedWaitingResolutionSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "decision", "resolved", "left"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.carried-waiting-resolution.v1" },
+    decision: { type: "string", enum: ["publish", "refuse"] },
+    resolved: { type: "integer", minimum: 0 },
+    left: { type: "integer", minimum: 0 },
   },
 } as const;
 
@@ -339,6 +376,46 @@ export async function registerTimeTrialLifecycleRoutes(
     (actor, submissionId, body) => options.service.restore(
       actor, submissionId, body.reasonCode, body.note,
     ),
+  );
+
+  action<Readonly<{ expectedRevision: number; note?: string }>>(
+    "/v1/administrator/time-trials/:submissionId/actions/publish",
+    publishBodySchema,
+    (actor, submissionId, body) => options.service.publishReviewed(
+      actor, submissionId, body.expectedRevision, body.note,
+    ),
+  );
+
+  // ADR-0225: every carried run still waiting, published or refused at once by an administrator.
+  app.post<{ Body: Readonly<{ decision: string; expectedCount: number }> }>(
+    "/v1/administrator/time-trials/actions/resolve-carried-waiting",
+    {
+      schema: {
+        body: {
+          type: "object",
+          additionalProperties: false,
+          required: ["decision", "expectedCount"],
+          properties: {
+            decision: { type: "string", enum: ["publish", "refuse"] },
+            expectedCount: { type: "integer", minimum: 1, maximum: 10_000 },
+          },
+        },
+        response: { ...responses, 200: carriedWaitingResolutionSchema },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const actor = await options.resolveActor(request);
+        await requireProof(options, actor, request.headers["x-mk8dx-csrf"]);
+        const outcome = await options.service.resolveCarriedWaiting(
+          actor, request.body.decision, request.body.expectedCount,
+        );
+        return reply.send({ schemaVersion: "mk8dx.carried-waiting-resolution.v1" as const, ...outcome });
+      } catch (error) {
+        const { status, body } = errorReply(error);
+        return reply.code(status as 503).send(body as never);
+      }
+    },
   );
 
   app.get<{ Querystring: Record<string, string | undefined> }>(

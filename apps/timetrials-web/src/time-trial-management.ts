@@ -12,6 +12,7 @@ import {
   TimeTrialLifecycleClientError,
   createTimeTrialLifecycleClient,
   isTimeTrialReasonCode,
+  type ManagedCarriedFrom,
   type ManagedTimeTrial,
   type ManagedTimeTrialEvent,
   type TimeTrialCorrection,
@@ -19,8 +20,10 @@ import {
   type TimeTrialReasonCode,
 } from "./time-trial-lifecycle-client.js";
 import { schema9WebTrackCatalog } from "./schema9-track-catalog.js";
+import { localized, productLocaleTag } from "./product-language.js";
 import {
   button,
+  chip,
   dialog,
   field,
   nextId,
@@ -183,6 +186,10 @@ export function describeLifecycleEvent(
     : viewerIsOwner
       ? "You"
       : ownerDisplayName;
+  if (lifecycleEvent.eventType === "published") {
+    const note = lifecycleEvent.note === undefined ? "" : ` — “${lifecycleEvent.note}”`;
+    return `${localized("An administrator approved and published this result", "Een beheerder heeft dit resultaat goedgekeurd en gepubliceerd")}${note}`;
+  }
   const verb = lifecycleEvent.eventType === "corrected"
     ? "corrected"
     : lifecycleEvent.eventType === "retired"
@@ -202,6 +209,29 @@ export function describePresence(result: ManagedTimeTrial): string {
   return result.publicationStatus === "published"
     ? "Public — visible on leaderboards and your profile."
     : "Not public yet — kept in your account.";
+}
+
+/**
+ * "Carried from <community> · originally <date>" (ADR-0225): the community's name when the producer
+ * gave one, otherwise its address, and the day the time was first submitted there.
+ */
+export function describeCarriedFrom(carried: ManagedCarriedFrom): string {
+  const from = carried.communityName ?? carried.origin.replace(/^https:\/\//, "");
+  const originally = new Date(carried.originalSubmittedAtMs).toLocaleDateString(productLocaleTag(), {
+    day: "numeric", month: "short", year: "numeric",
+  });
+  return localized(
+    `Carried from ${from} · originally ${originally}`,
+    `Meegenomen van ${from} · oorspronkelijk ${originally}`,
+  );
+}
+
+/** The small marker a carried run carries wherever it is shown in detail or in review. */
+export function carriedFromMarker(carried: ManagedCarriedFrom): HTMLElement {
+  const marker = chip(describeCarriedFrom(carried), "info");
+  marker.classList.add("ds-carried-from");
+  marker.setAttribute("title", carried.origin);
+  return marker;
 }
 
 export type CorrectionDraft = Readonly<{
@@ -271,6 +301,62 @@ export function prepareCorrection(draft: CorrectionDraft): CorrectionOutcome {
   };
 }
 
+/** A run an administrator may publish by review: active, withheld, and waiting for review. */
+export function awaitingReview(result: ManagedTimeTrial): boolean {
+  return result.retirementState === "active" && result.publicationStatus === "withheld" &&
+    result.publicationReason === "explicit_review_required";
+}
+
+function reviewSection(document: Document, result: ManagedTimeTrial): Readonly<{
+  root: HTMLElement;
+  controls: readonly HTMLElement[];
+  onConfirm(run: () => void): void;
+}> {
+  const root = document.createElement("div");
+  root.className = "ds-manage__form ds-manage__review ds-stack";
+  root.setAttribute("data-gap", "md");
+  const heading = document.createElement("h3");
+  heading.textContent = localized("Waiting for review", "Wacht op goedkeuring");
+  const hint = document.createElement("p");
+  hint.className = "ds-field__hint";
+  hint.textContent = result.carriedFrom === undefined
+    ? localized(
+      "This result is not public yet. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.",
+      "Dit resultaat is nog niet openbaar. Publiceren toont het precies zoals het is ingestuurd op ranglijsten, records en het spelersprofiel.",
+    )
+    : localized(
+      "This time was carried from another community. Publishing shows it on leaderboards, records and the Player's profile exactly as it was submitted.",
+      "Deze tijd is meegenomen uit een andere community. Publiceren toont hem precies zoals hij is ingestuurd op ranglijsten, records en het spelersprofiel.",
+    );
+  const publish = button({ label: localized("Publish", "Publiceren"), variant: "primary" });
+  (publish.control as HTMLButtonElement).type = "button";
+  const confirmLine = document.createElement("p");
+  confirmLine.className = "ds-body ds-manage__confirm";
+  confirmLine.textContent = localized("Publish this result as it is?", "Dit resultaat publiceren zoals het is?");
+  const confirm = button({ label: localized("Yes, publish", "Ja, publiceren"), variant: "primary" });
+  (confirm.control as HTMLButtonElement).type = "button";
+  const cancel = button({ label: localized("Cancel", "Annuleren"), variant: "secondary" });
+  (cancel.control as HTMLButtonElement).type = "button";
+  const confirmation = document.createElement("div");
+  confirmation.className = "ds-manage__confirmation";
+  confirmation.append(confirmLine, confirm.root, cancel.root);
+  confirmation.hidden = true;
+  root.append(heading, hint, publish.root, confirmation);
+  publish.control.addEventListener("click", () => {
+    publish.root.hidden = true;
+    confirmation.hidden = false;
+  });
+  cancel.control.addEventListener("click", () => {
+    confirmation.hidden = true;
+    publish.root.hidden = false;
+  });
+  return {
+    root,
+    controls: [publish.control, confirm.control],
+    onConfirm(run) { confirm.control.addEventListener("click", run); },
+  };
+}
+
 export function lifecycleFailureMessage(error: unknown): string {
   if (!(error instanceof TimeTrialLifecycleClientError)) {
     return "That change could not be saved. Please retry.";
@@ -306,6 +392,11 @@ export type TimeTrialManagementOptions = Readonly<{
   onChanged?: (result: ManagedTimeTrial) => void;
   /** The label of the button that opens the panel (default "Manage"). */
   buttonLabel?: string;
+  /**
+   * The viewer is an administrator: a run waiting for review offers "Publish" (ADR-0225). The
+   * server decides; this only decides what to offer.
+   */
+  administrator?: boolean;
 }>;
 
 function clear(element: HTMLElement): void {
@@ -379,6 +470,9 @@ export function mountTimeTrialManagementPanel(
       `Manage ${result.playerDisplayName}'s ${trackName(result.current.trackId)} ${result.current.modeCc}cc Time Trial, ${formatTimeMs(result.current.totalTimeMs)}, submission ${submissionId.slice(-8)}`,
     );
     status.textContent = describePresence(result);
+    if (result.carriedFrom !== undefined) {
+      content.append(carriedFromMarker(result.carriedFrom));
+    }
 
     const summary = document.createElement("dl");
     summary.className = "ds-manage__facts";
@@ -503,9 +597,15 @@ export function mountTimeTrialManagementPanel(
       labelled(document, "Note (optional)", retirementNote),
       retirementButton.root,
     );
+    // A run waiting for review (a carried time under "review", ADR-0225): an administrator publishes
+    // it exactly as it was submitted, after one short confirmation.
+    const review = options.administrator === true && awaitingReview(result)
+      ? reviewSection(document, result)
+      : null;
+    if (review !== null) { content.append(review.root); }
     content.append(correctionForm, retirementForm);
 
-    const controls = [retirementButton.control];
+    const controls = [retirementButton.control, ...(review === null ? [] : review.controls)];
     const apply = (action: Promise<ManagedTimeTrial>): void => {
       const current = ++operation;
       busy(controls, true);
@@ -519,6 +619,12 @@ export function mountTimeTrialManagementPanel(
         busy(controls, false);
       });
     };
+
+    review?.onConfirm(() => {
+      if (disposed) { return; }
+      status.textContent = localized("Publishing the result…", "Het resultaat wordt gepubliceerd…");
+      apply(client.publishReviewed(result.submissionId, result.current.revision, controller.signal));
+    });
 
     retirementForm.addEventListener("submit", (submitEvent) => {
       submitEvent.preventDefault();

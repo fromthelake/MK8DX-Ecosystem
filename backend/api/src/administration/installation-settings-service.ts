@@ -1,5 +1,6 @@
 // Installation settings (ADR-0221): who creates Players, and who counts for
-// the one rating this installation keeps.
+// the one rating this installation keeps. ADR-0225 adds a third: whether this
+// community accepts Time Trial times carried from another community.
 //
 // Only administrators change them. Every change is audited (who, when, which
 // setting, from what to what). Changing who counts does not silently rebuild
@@ -13,18 +14,23 @@ import type { ActorContext } from "../identity/types.js";
 
 export type PlayerCreationPolicy = "self_and_directors" | "self_only" | "directors_only";
 export type RatingEligibilityPolicy = "all_players" | "claimed_only";
+/** ADR-0225: off refuses carried times, review holds each for an administrator, allowed applies the normal rules. */
+export type CarriedTimesPolicy = "off" | "review" | "allowed";
 
 export const PLAYER_CREATION_POLICIES: readonly PlayerCreationPolicy[] = ["self_and_directors", "self_only", "directors_only"];
 export const RATING_ELIGIBILITY_POLICIES: readonly RatingEligibilityPolicy[] = ["all_players", "claimed_only"];
+export const CARRIED_TIMES_POLICIES: readonly CarriedTimesPolicy[] = ["off", "review", "allowed"];
 
 export type InstallationSettings = Readonly<{
   playerCreation: PlayerCreationPolicy;
   ratingEligibility: RatingEligibilityPolicy;
+  carriedTimes: CarriedTimesPolicy;
 }>;
 
 export const DEFAULT_INSTALLATION_SETTINGS: InstallationSettings = {
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
+  carriedTimes: "off",
 };
 
 export function selfServicePlayerCreationAllowed(settings: InstallationSettings): boolean {
@@ -54,6 +60,8 @@ export type RatingRecomputeStatus = Readonly<{
 export type InstallationSettingsAdministration = InstallationSettings & Readonly<{
   revision: number;
   updatedAtMs: number | null;
+  /** ADR-0225: carried runs withheld for review right now, whatever the current setting. */
+  carriedTimesAwaitingReview: number;
   ratingRecompute: RatingRecomputeStatus;
 }>;
 
@@ -82,12 +90,13 @@ export interface InstallationSettingsTransaction {
     revision: number;
     playerCreation: PlayerCreationPolicy;
     ratingEligibility: RatingEligibilityPolicy;
+    carriedTimes: CarriedTimesPolicy;
     ratingEligibilityChangedAtMs: number | null;
     updatedByInternalId: number;
     nowMs: number;
   }>): Promise<void>;
   appendChange(input: Readonly<{
-    settingKey: "player_creation" | "rating_eligibility";
+    settingKey: "player_creation" | "rating_eligibility" | "carried_times";
     previousValue: string;
     newValue: string;
     changedByInternalId: number;
@@ -108,6 +117,8 @@ export interface InstallationSettingsRepository {
     claimChangesSinceLastRecalculation: number;
   }>>;
   transaction<T>(work: (transaction: InstallationSettingsTransaction) => Promise<T>): Promise<T>;
+  /** ADR-0225: how many carried runs are withheld for review right now. */
+  carriedTimesAwaitingReview(): Promise<number>;
 }
 
 export type InstallationSettingsReader = Readonly<{ current(): Promise<InstallationSettings> }>;
@@ -128,7 +139,11 @@ export class InstallationSettingsService implements InstallationSettingsReader {
       const stored = await this.dependencies.repository.read();
       return stored === null
         ? DEFAULT_INSTALLATION_SETTINGS
-        : { playerCreation: stored.playerCreation, ratingEligibility: stored.ratingEligibility };
+        : {
+          playerCreation: stored.playerCreation,
+          ratingEligibility: stored.ratingEligibility,
+          carriedTimes: stored.carriedTimes,
+        };
     } catch (error) {
       throw unavailable(error);
     }
@@ -150,6 +165,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
     expectedRevision: number;
     playerCreation?: string;
     ratingEligibility?: string;
+    carriedTimes?: string;
   }>): Promise<InstallationSettingsAdministration> {
     administratorOnly(actor);
     if (!Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 0) {
@@ -157,6 +173,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
     }
     const playerCreation = input.playerCreation === undefined ? undefined : oneOf(input.playerCreation, PLAYER_CREATION_POLICIES, "playerCreation");
     const ratingEligibility = input.ratingEligibility === undefined ? undefined : oneOf(input.ratingEligibility, RATING_ELIGIBILITY_POLICIES, "ratingEligibility");
+    const carriedTimes = input.carriedTimes === undefined ? undefined : oneOf(input.carriedTimes, CARRIED_TIMES_POLICIES, "carriedTimes");
     const nowMs = this.dependencies.clock.nowMs();
     try {
       const stored = await this.dependencies.repository.transaction(async (transaction) => {
@@ -171,14 +188,17 @@ export class InstallationSettingsService implements InstallationSettingsReader {
         const after: InstallationSettings = {
           playerCreation: playerCreation ?? before.playerCreation,
           ratingEligibility: ratingEligibility ?? before.ratingEligibility,
+          carriedTimes: carriedTimes ?? before.carriedTimes,
         };
         const creationChanged = after.playerCreation !== before.playerCreation;
         const eligibilityChanged = after.ratingEligibility !== before.ratingEligibility;
-        if (!creationChanged && !eligibilityChanged) { return current; }
+        const carriedChanged = after.carriedTimes !== before.carriedTimes;
+        if (!creationChanged && !eligibilityChanged && !carriedChanged) { return current; }
         await transaction.write({
           revision: revision + 1,
           playerCreation: after.playerCreation,
           ratingEligibility: after.ratingEligibility,
+          carriedTimes: after.carriedTimes,
           ratingEligibilityChangedAtMs: eligibilityChanged ? nowMs : current?.ratingEligibilityChangedAtMs ?? null,
           updatedByInternalId: administrator,
           nowMs,
@@ -192,6 +212,12 @@ export class InstallationSettingsService implements InstallationSettingsReader {
         if (eligibilityChanged) {
           await transaction.appendChange({
             settingKey: "rating_eligibility", previousValue: before.ratingEligibility, newValue: after.ratingEligibility,
+            changedByInternalId: administrator, nowMs,
+          });
+        }
+        if (carriedChanged) {
+          await transaction.appendChange({
+            settingKey: "carried_times", previousValue: before.carriedTimes, newValue: after.carriedTimes,
             changedByInternalId: administrator, nowMs,
           });
         }
@@ -240,8 +266,10 @@ export class InstallationSettingsService implements InstallationSettingsReader {
     return {
       playerCreation: settings.playerCreation,
       ratingEligibility: settings.ratingEligibility,
+      carriedTimes: settings.carriedTimes,
       revision: stored?.revision ?? 0,
       updatedAtMs: stored?.updatedAtMs ?? null,
+      carriedTimesAwaitingReview: await this.dependencies.repository.carriedTimesAwaitingReview(),
       ratingRecompute: {
         needed: eligibilityChanged || claimChanges > 0,
         eligibilityChanged,

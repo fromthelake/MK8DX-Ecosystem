@@ -776,6 +776,33 @@
       "downPath": "migrations/0086_account_switch_pin_failures.down.sql",
       "downSha256": "05c83e7ed107a387c06f09766be146e93b79411906f17232586e29cc1e9a27b0",
       "destructiveDown": true
+    },
+    {
+      "version": "0087",
+      "name": "carried_times",
+      "upPath": "migrations/0087_carried_times.up.sql",
+      "upSha256": "0579327b9bab317adfd5a41852f2147fd44a2b7809c18ee971dce893f603fe8c",
+      "downPath": "migrations/0087_carried_times.down.sql",
+      "downSha256": "7b708f0385c75aff6e3e971f021b8c25b180cdbd2d393cb2430d040019be9324",
+      "destructiveDown": true
+    },
+    {
+      "version": "0088",
+      "name": "time_trial_review_publication",
+      "upPath": "migrations/0088_time_trial_review_publication.up.sql",
+      "upSha256": "16d39a5916fd4ed03dca162bcec6e9978810d01e4f70d74f74ccb3a7d1665813",
+      "downPath": "migrations/0088_time_trial_review_publication.down.sql",
+      "downSha256": "7cf013c5f647f545df18d840b3b0e0d35f3de78f26834fa11cefd915c71b294e",
+      "destructiveDown": true
+    },
+    {
+      "version": "0089",
+      "name": "carried_times_refusal",
+      "upPath": "migrations/0089_carried_times_refusal.up.sql",
+      "upSha256": "bc9a03febca97b286517b90192f9736f9c8bf57830b7627b6c483f0226055cbb",
+      "downPath": "migrations/0089_carried_times_refusal.down.sql",
+      "downSha256": "2b219789406091431301a2276fe6e4dc5fb9b44b60cbd326aa37e3dce7b3bb5d",
+      "destructiveDown": true
     }
   ]
 }

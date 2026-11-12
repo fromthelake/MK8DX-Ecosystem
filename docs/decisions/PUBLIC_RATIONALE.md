@@ -367,3 +367,16 @@ Amendment (2026-11-11): the Android app switches accounts as well. The server ke
 list (the app holds only the active bearer token and a random device value, in a separate
 namespace from browser device cookies), so the PIN and administrator rules apply unchanged and
 signing out everywhere also empties the app's list.
+
+## ADR-0225
+
+**Several communities in one app, and carrying times between them.** A player can belong to more
+than one community; the Android app remembers each community it was set up for and switches between
+them with one tap, each keeping its own sessions, unsent runs and trust. A time set in one community
+can be carried to another, but the receiving community decides: its administrator chooses the
+installation setting *Times from other communities* (`carriedTimes`: off by default, with approval,
+or allowed), audited like the other installation settings. A carried submission names the community
+it came from in an optional `carriedFrom` object of `TimeTrialSubmissionV1`; a time "carried" from
+the receiving installation itself is refused, and the run keeps showing where it came from and when
+it was first submitted (migration 0087). Carrying in bulk, carrying Tournament results and carrying
+from the Web are not part of this decision.

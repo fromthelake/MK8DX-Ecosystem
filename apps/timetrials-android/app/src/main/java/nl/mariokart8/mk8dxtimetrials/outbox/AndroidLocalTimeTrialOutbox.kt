@@ -491,6 +491,28 @@ internal class AndroidLocalTimeTrialOutbox(
         return evidence
     }
 
+    /**
+     * ADR-0225: removes a carried copy that the receiving community refused for good, and nothing else. Every
+     * other entry - an original, a run that failed for another reason, a pending copy - is left alone.
+     */
+    fun discardRefusedCarried(entryKey: String): Boolean {
+        val record = read(entryKey)
+        if (
+            record.state.state != "failed" ||
+            record.state.failureCode !in ANDROID_CARRIED_REFUSAL_FAILURES ||
+            record.canonicalSubmission["carriedFrom"] !is JsonObject
+        ) {
+            return false
+        }
+        // Moved aside first: a half-deleted directory under its own name would read as a damaged entry.
+        val discarded = File(canonicalRoot, ".entry-discard-$entryKey")
+        if (!File(canonicalRoot, entryKey).renameTo(discarded)) return false
+        discarded.deleteRecursively()
+        File(privateEvidenceRoot, "$entryKey.json").delete()
+        directorySync.sync(canonicalRoot)
+        return true
+    }
+
     fun list(state: String? = null): List<AndroidLocalOutboxRecord> {
         if (state != null && state !in setOf("pending", "failed", "synced")) invalidInput()
         return listedEntryDirectories().mapNotNull { child ->

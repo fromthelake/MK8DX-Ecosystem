@@ -11,7 +11,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.semantics
+import nl.mariokart8.mk8dxtimetrials.carry.LocalAndroidCarryOffer
+import nl.mariokart8.mk8dxtimetrials.carry.LocalAndroidCarriedRefusals
+import nl.mariokart8.mk8dxtimetrials.carry.androidCarriedRefusalText
+import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusMessage
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusTone
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.ui.androidLocalizedPresentation
+import nl.mariokart8.mk8dxtimetrials.ui.androidText
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxChip
@@ -49,6 +60,7 @@ internal fun AndroidOutboxSelectionComponent(
     accountDisplayNames: Map<String, String> = emptyMap(),
 ) {
     val colors = Mk8dxTheme.colors
+    val scope = rememberCoroutineScope()
     Column(
         modifier
             .fillMaxWidth()
@@ -180,6 +192,39 @@ internal fun AndroidOutboxSelectionComponent(
                             tag = "outbox-selection-select-$index",
                             modifier = Modifier.fillMaxWidth(),
                         )
+                        val refusals = LocalAndroidCarriedRefusals.current
+                        val refusal = refusals?.let {
+                            androidCarriedRefusalText(LocalAndroidProductLanguage.current, it.communityName, entry.failureCode)
+                        }
+                        if (refusals != null && refusal != null && entry.storedState == AndroidOutboxStoredState.FAILED) {
+                            Mk8dxStatusMessage(
+                                refusal,
+                                tone = Mk8dxStatusTone.Warning,
+                                modifier = Modifier.testTag("outbox-selection-refused-$index"),
+                            )
+                            Mk8dxButton(
+                                androidText("Remove", "Verwijderen"),
+                                {
+                                    scope.launch {
+                                        withContext(Dispatchers.IO) { refusals.discard(entry.entryKeyHash) }
+                                        onLoadRequested()
+                                    }
+                                },
+                                variant = Mk8dxButtonVariant.Quiet,
+                                tag = "outbox-selection-remove-refused-$index",
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+                        val carry = LocalAndroidCarryOffer.current
+                        if (carry != null && entry.storedState == AndroidOutboxStoredState.SYNCED && !entry.isTestResult) {
+                            Mk8dxButton(
+                                androidText("Carry to another community", "Meenemen naar een andere community"),
+                                { carry(entry.entryKeyHash) },
+                                variant = Mk8dxButtonVariant.Quiet,
+                                tag = "outbox-selection-carry-$index",
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
                     }
                 }
             }

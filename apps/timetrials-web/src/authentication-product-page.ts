@@ -226,6 +226,7 @@ import {
 } from "./social-group-settings.js";
 import {
   mountAdministratorTimeTrialSection,
+  type AdministratorTimeTrialFilters,
   type MountedAdministratorTimeTrialSection,
 } from "./administrator-time-trial-section.js";
 import { mountTournamentOperatorAccess, type MountedTournamentOperatorAccess } from "./tournament-operator-access-section.js";
@@ -297,6 +298,7 @@ export type AuthenticationProductPageOptions = Readonly<{
   ) => Pick<MountedTournamentPublicationSection, "ready" | "unmount">;
   mountAdministratorTimeTrials?: (
     root: HTMLElement,
+    filters?: AdministratorTimeTrialFilters,
   ) => Pick<MountedAdministratorTimeTrialSection, "ready" | "unmount">;
   mountPlayerVisibility?: (
     root: HTMLElement,
@@ -425,7 +427,8 @@ export function mountAuthenticationProductPage(
   const mountTournamentPublication = options.mountTournamentPublication ??
     mountTournamentPublicationSection;
   const mountAdministratorTimeTrials = options.mountAdministratorTimeTrials ??
-    mountAdministratorTimeTrialSection;
+    ((root: HTMLElement, filters?: AdministratorTimeTrialFilters) =>
+      mountAdministratorTimeTrialSection(root, undefined, undefined, filters));
   const mountVisibility = options.mountPlayerVisibility ??
     mountPlayerVisibilitySettings;
   const mountTournament = options.mountPublicTournament ?? mountPublicTournament;
@@ -2709,7 +2712,10 @@ export function mountAuthenticationProductPage(
     // the public sees and what everybody's TrueSkill is.
     tournamentRemoval?.dispose();
     tournamentRemoval = mountAdministratorTournamentRemovalSection(tournamentsRoot);
-    administratorTimeTrials = mountAdministratorTimeTrials(timeTrialsRoot);
+    // ?publication=withheld opens the runs waiting for review (the installation settings link, ADR-0225).
+    administratorTimeTrials = new URLSearchParams(activeSearch).get("publication") === "withheld"
+      ? mountAdministratorTimeTrials(timeTrialsRoot, { publicationStatus: "withheld" })
+      : mountAdministratorTimeTrials(timeTrialsRoot);
     ratingAdministration = mountRatingAdministrationSection(ratingRoot);
     installationSettings?.unmount();
     installationSettings = mountInstallationSettingsSection(installationRoot);

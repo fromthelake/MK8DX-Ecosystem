@@ -73,6 +73,11 @@ internal val TOURNAMENT_SEEDING_SOURCES = listOf("community_rating", "director_n
 internal data class AndroidInstallationSettings(
     val playerCreation: String = "self_and_directors",
     val ratingEligibility: String = "all_players",
+    /**
+     * ADR-0225: whether this community takes times carried from another one ("off", "review", "allowed").
+     * A server from before the setting does not send it, and that means "off".
+     */
+    val carriedTimes: String = "off",
 ) {
     val directorsMayCreatePlayers: Boolean get() = playerCreation != "self_only"
 
@@ -90,6 +95,8 @@ internal data class AndroidInstallationSettings(
                 playerCreation = creation?.takeIf { it in setOf("self_and_directors", "self_only", "directors_only") }
                     ?: "self_and_directors",
                 ratingEligibility = eligibility?.takeIf { it in setOf("all_players", "claimed_only") } ?: "all_players",
+                carriedTimes = document["carriedTimes"]?.let { runCatching { it.jsonPrimitive.content }.getOrNull() }
+                    ?.takeIf { it in setOf("off", "review", "allowed") } ?: "off",
             )
         }
     }

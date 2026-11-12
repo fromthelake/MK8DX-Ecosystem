@@ -1022,6 +1022,8 @@ internal fun AndroidSettingsScreen(
     language: AndroidProductLanguage,
     onLanguageChanged: (AndroidProductLanguage) -> Unit,
     onChangeServer: () -> Unit = {},
+    /** ADR-0225: make another remembered community the active one. */
+    onSwitchCommunity: (String) -> Unit = {},
     playerLabel: String? = null,
     administration: AndroidAdministrationClient? = null,
     onAdministration: () -> Unit = {},
@@ -1083,14 +1085,12 @@ internal fun AndroidSettingsScreen(
             }
         }
         item {
-            Mk8dxPanel(androidText(language, "Community server", "Communityserver")) {
-                Text(apiOrigin, style = type.body, color = colors.textBody)
-                Text(androidText(language,
-                    "Accounts and waiting runs are kept separately per server. Switching needs confirmation.",
-                    "Accounts en wachtende ritten blijven per server gescheiden. Wisselen vraagt bevestiging."),
-                    style = type.bodyS, color = colors.textSecondary)
-                Mk8dxButton(androidText(language, "Change server", "Server wijzigen"), onChangeServer)
-            }
+            nl.mariokart8.mk8dxtimetrials.AndroidCommunityServerPanel(
+                apiOrigin = apiOrigin,
+                language = language,
+                onSwitch = onSwitchCommunity,
+                onAdd = onChangeServer,
+            )
         }
         item {
             // Phase 4 migrated this section on its own, inside a screen that

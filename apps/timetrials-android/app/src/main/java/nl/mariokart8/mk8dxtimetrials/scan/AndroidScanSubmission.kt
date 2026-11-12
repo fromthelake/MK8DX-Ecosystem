@@ -3,6 +3,7 @@ package nl.mariokart8.mk8dxtimetrials.scan
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedFromV1
 
 private const val MAX_EPOCH_MILLISECONDS = 253_402_300_799_999L
 private val submissionIdPattern =
@@ -167,6 +168,8 @@ internal data class AndroidScanTimeTrialSubmissionV1(
     val timestamps: ScanTimestampsV1,
     val evidence: List<ScanEvidenceV1>? = null,
     val verification: ScanVerificationV1,
+    /** ADR-0225: present only on a time carried from another community. */
+    val carriedFrom: AndroidCarriedFromV1? = null,
 )
 
 private val canonicalJson = Json { encodeDefaults = true; explicitNulls = false }

@@ -22,3 +22,4 @@ their current limits; the implemented behavior and tests remain authoritative.
 | [ADR-0216](PUBLIC_RATIONALE.md#adr-0216) | [ADR-0217](PUBLIC_RATIONALE.md#adr-0217) | [ADR-0218](PUBLIC_RATIONALE.md#adr-0218) |
 | [ADR-0219](PUBLIC_RATIONALE.md#adr-0219) | [ADR-0220](PUBLIC_RATIONALE.md#adr-0220) | [ADR-0221](PUBLIC_RATIONALE.md#adr-0221) |
 | [ADR-0222](PUBLIC_RATIONALE.md#adr-0222) | [ADR-0223](PUBLIC_RATIONALE.md#adr-0223) | [ADR-0224](PUBLIC_RATIONALE.md#adr-0224) |
+| [ADR-0225](PUBLIC_RATIONALE.md#adr-0225) | | |

@@ -53,9 +53,10 @@ internal class AndroidCanonicalSubmissionHttpsExecutor(
             }
             val statusCode = connection.responseCode
             if (statusCode != 201) {
-                // A 400 carries the refusal's code (the 12 % World Record guard names itself), so up
-                // to 1 KB of it is kept; every other error body is still ignored.
-                val refusal = if (statusCode == 400) readErrorStream(connection) else {
+                // A 400 or 403 carries the refusal's code (the 12 % World Record guard names itself, and
+                // ADR-0225's carried-time refusals do), so up to 1 KB of it is kept; every other error body is
+                // still ignored.
+                val refusal = if (statusCode == 400 || statusCode == 403) readErrorStream(connection) else {
                     closeErrorStream(connection)
                     byteArrayOf()
                 }

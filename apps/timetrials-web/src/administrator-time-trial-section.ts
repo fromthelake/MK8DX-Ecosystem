@@ -98,10 +98,16 @@ export function resultSummary(result: ManagedTimeTrial): string {
     result.current.revision} · ${describePresence(result)}`;
 }
 
+export type AdministratorTimeTrialFilters = Readonly<{
+  /** Preselects the publication filter, e.g. withheld for the runs waiting for review (ADR-0225). */
+  publicationStatus?: "published" | "withheld";
+}>;
+
 export function mountAdministratorTimeTrialSection(
   root: HTMLElement,
   client: TimeTrialLifecycleClient = createTimeTrialLifecycleClient(),
   visibilityClient: PlayerVisibilityClient = createPlayerVisibilityClient(),
+  initialFilters: AdministratorTimeTrialFilters = {},
 ): MountedAdministratorTimeTrialSection {
   const document = root.ownerDocument;
   const controller = new AbortController();
@@ -153,6 +159,7 @@ export function mountAdministratorTimeTrialSection(
     option(document, "published", "Published"),
     option(document, "withheld", "Withheld"),
   );
+  if (initialFilters.publicationStatus !== undefined) { publicationSelect.value = initialFilters.publicationStatus; }
   const sourceSelect = document.createElement("select");
   sourceSelect.name = "source_kind";
   sourceSelect.append(option(document, "", "Any source"));
@@ -260,6 +267,7 @@ export function mountAdministratorTimeTrialSection(
       client,
       initial: result,
       viewerIsOwner: false,
+      administrator: true,
       onChanged: () => { void load(); },
     }));
     return row;

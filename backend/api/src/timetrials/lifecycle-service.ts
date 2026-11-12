@@ -4,7 +4,7 @@ import {
   isImplausiblyFast,
   type WorldRecordTimes,
 } from "./world-record-plausibility.js";
-import type { TimeTrialAssetCatalog } from "./submission-service.js";
+import type { TimeTrialAssetCatalog, TimeTrialCarriedFrom } from "./submission-service.js";
 import { youTubeVideoId } from "./youtube-video.js";
 
 export const YOUTUBE_ONLY_MESSAGE =
@@ -40,7 +40,8 @@ export type TimeTrialLifecycleActorRole = "owner" | "administrator";
 
 export type TimeTrialLifecycleEvent = Readonly<{
   sequenceNumber: number;
-  eventType: "corrected" | "retired" | "restored";
+  /** "published": an administrator published a run that was waiting for review (ADR-0225). */
+  eventType: "corrected" | "retired" | "restored" | "published";
   retirementStateAfter: "active" | "retired";
   revision: number;
   actorRole: TimeTrialLifecycleActorRole;
@@ -83,6 +84,8 @@ export type ManagedTimeTrial = Readonly<{
   events: readonly TimeTrialLifecycleEvent[];
   /** The Player's own YouTube video of this run (migration 0071), when one is attached. */
   videoUrl?: string;
+  /** Present when the current revision was carried from another community (ADR-0225). */
+  carriedFrom?: TimeTrialCarriedFrom;
 }>;
 
 // Only fields a correction may legitimately restate. Changing the Track or
@@ -151,6 +154,22 @@ export interface TimeTrialLifecycleRepository {
     actorRole: TimeTrialLifecycleActorRole;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial>;
+  /**
+   * Publishes the current revision of a run withheld for review, unchanged, through the same
+   * publication path every published run takes; audited as a "published" lifecycle event.
+   */
+  publishReviewed(input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial>;
+  /** Publishes or refuses every carried run waiting for review, exactly expectedCount of them. */
+  resolveCarriedWaiting(input: Readonly<{
+    decision: CarriedWaitingDecision;
+    expectedCount: number;
+    actorUserAccountId: string;
+  }>): Promise<CarriedWaitingResolution>;
   /** Attaches (videoId) or removes (null) the result's YouTube video. */
   setVideo(input: Readonly<{
     submissionId: string;
@@ -320,6 +339,61 @@ export class TimeTrialLifecycleService {
     }));
   }
 
+  /**
+   * An administrator publishes a run that waits for review (withheld with reason
+   * explicit_review_required: a carried time under "review", ADR-0225), exactly as it was
+   * submitted. The expected revision guards against publishing something that changed meanwhile.
+   */
+  public async publishReviewed(
+    actor: ActorContext,
+    submissionId: string,
+    expectedRevision: number,
+    note?: string,
+  ): Promise<ManagedTimeTrial> {
+    if (actor.role !== "administrator") {
+      throw new TimeTrialLifecycleError(
+        actor.role === "anonymous" ? "not_authenticated" : "forbidden",
+      );
+    }
+    if (!Number.isSafeInteger(expectedRevision) || expectedRevision < 1) {
+      throw new TimeTrialLifecycleError("invalid_input");
+    }
+    this.requireNote(note);
+    const { account, result } = await this.authorize(actor, submissionId);
+    requireAwaitingReview(result, expectedRevision);
+    return this.guard(() => this.repository.publishReviewed({
+      submissionId,
+      expectedRevision,
+      ...(note === undefined ? {} : { note }),
+      actorUserAccountId: account,
+    }));
+  }
+
+  /**
+   * ADR-0225: when carried times stop needing approval, the administrator decides what happens to
+   * the carried runs still waiting: publish them all, or refuse them all (each retired with reason
+   * carried_times_turned_off, restorable like any retirement). The count is the one on screen.
+   */
+  public async resolveCarriedWaiting(
+    actor: ActorContext,
+    decision: string,
+    expectedCount: number,
+  ): Promise<CarriedWaitingResolution & Readonly<{ decision: CarriedWaitingDecision }>> {
+    if (actor.role !== "administrator") {
+      throw new TimeTrialLifecycleError(
+        actor.role === "anonymous" ? "not_authenticated" : "forbidden",
+      );
+    }
+    if ((decision !== "publish" && decision !== "refuse") ||
+        !Number.isSafeInteger(expectedCount) || expectedCount < 1 || expectedCount > 10_000) {
+      throw new TimeTrialLifecycleError("invalid_input");
+    }
+    const outcome = await this.guard(() => this.repository.resolveCarriedWaiting({
+      decision, expectedCount, actorUserAccountId: actor.userAccountId,
+    }));
+    return { decision, ...outcome };
+  }
+
   // Ownership is decided by the server from the account's verified claim.
   // A hidden button is not a permission: every action re-resolves it.
   private async authorize(
@@ -437,3 +511,34 @@ export class TimeTrialLifecycleService {
     }
   }
 }
+
+/** The publication reason of a run that waits for an administrator (ADR-0225). */
+export const AWAITING_REVIEW_REASON = "explicit_review_required";
+
+/**
+ * Only a current, active run withheld for review may be published by review; anything else is a
+ * conflict with what the caller saw (the repository checks again inside its transaction).
+ */
+export function requireAwaitingReview(result: ManagedTimeTrial, expectedRevision: number): void {
+  if (result.current.revision !== expectedRevision) {
+    throw new TimeTrialLifecycleError("conflict", "This Time Trial changed meanwhile. Reload and try again.");
+  }
+  if (result.retirementState === "retired") {
+    throw new TimeTrialLifecycleError("conflict", "A retired Time Trial must be restored before it is published.");
+  }
+  if (result.publicationStatus !== "withheld" || result.publicationReason !== AWAITING_REVIEW_REASON) {
+    throw new TimeTrialLifecycleError("conflict", "That Time Trial is not waiting for review.");
+  }
+}
+
+/** ADR-0225: what happens to the carried runs still waiting when approval is no longer asked. */
+export type CarriedWaitingDecision = "publish" | "refuse";
+export type CarriedWaitingResolution = Readonly<{
+  /** Runs published or refused. */
+  resolved: number;
+  /** Runs left waiting: a Private Player's run is never published by this action. */
+  left: number;
+}>;
+
+/** The lifecycle reason of a carried run refused because carried times were turned off. */
+export const CARRIED_TIMES_TURNED_OFF_REASON = "carried_times_turned_off";

@@ -1,6 +1,7 @@
 /**
- * Installation settings (ADR-0221): who creates Players and who counts for the rating. Anyone reads
- * the public pair (pages explain a missing button with it); administrators read the audit-facing view,
+ * Installation settings (ADR-0221): who creates Players and who counts for the rating, and (ADR-0225)
+ * whether times carried from another community are accepted. Anyone reads the public settings (pages
+ * explain a missing button with them); administrators read the audit-facing view,
  * save changes and start the explicit rating recalculation. Responses are checked key for key, like
  * every client here; tests/contracts binds the keys to the API schemas.
  */
@@ -14,15 +15,18 @@ const maximumResponseBytes = 16_384;
 
 export type PlayerCreationPolicy = "self_and_directors" | "self_only" | "directors_only";
 export type RatingEligibilityPolicy = "all_players" | "claimed_only";
+export type CarriedTimesPolicy = "off" | "review" | "allowed";
 
 export type InstallationSettings = Readonly<{
   playerCreation: PlayerCreationPolicy;
   ratingEligibility: RatingEligibilityPolicy;
+  carriedTimes: CarriedTimesPolicy;
 }>;
 
 export const DEFAULT_INSTALLATION_SETTINGS: InstallationSettings = {
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
+  carriedTimes: "off",
 };
 
 export type RatingRecomputeStatus = Readonly<{
@@ -35,6 +39,8 @@ export type RatingRecomputeStatus = Readonly<{
 export type InstallationSettingsAdministration = InstallationSettings & Readonly<{
   revision: number;
   updatedAtMs: number | null;
+  /** ADR-0225: carried runs withheld for review right now. */
+  carriedTimesAwaitingReview: number;
   ratingRecompute: RatingRecomputeStatus;
 }>;
 
@@ -45,6 +51,15 @@ export type InstallationRatingRecompute = Readonly<{
   skippedRaces: number;
   ratedPlayers: number;
 }>;
+
+/** ADR-0225: what happened to the carried runs that were still waiting. */
+export type CarriedWaitingResolution = Readonly<{
+  decision: "publish" | "refuse";
+  resolved: number;
+  left: number;
+}>;
+
+export const CARRIED_WAITING_RESOLUTION_PATH = "/v1/administrator/time-trials/actions/resolve-carried-waiting";
 
 export type InstallationSettingsErrorCode =
   | "not_authorized" | "conflict" | "invalid_input" | "unavailable" | "invalid_response";
@@ -67,8 +82,15 @@ export interface InstallationSettingsClient {
     expectedRevision: number;
     playerCreation?: PlayerCreationPolicy;
     ratingEligibility?: RatingEligibilityPolicy;
+    carriedTimes?: CarriedTimesPolicy;
   }>, signal?: AbortSignal): Promise<InstallationSettingsAdministration>;
   recomputeRatings(signal?: AbortSignal): Promise<InstallationRatingRecompute>;
+  /** Publishes or refuses every carried run still waiting; expectedCount is the number on screen. */
+  resolveCarriedWaiting(
+    decision: "publish" | "refuse",
+    expectedCount: number,
+    signal?: AbortSignal,
+  ): Promise<CarriedWaitingResolution>;
 }
 
 type FetchPort = (input: string, init: RequestInit) => Promise<Response>;
@@ -109,11 +131,20 @@ function ratingEligibility(value: unknown): RatingEligibilityPolicy {
   return value;
 }
 
+function carriedTimes(value: unknown): CarriedTimesPolicy {
+  if (value !== "off" && value !== "review" && value !== "allowed") { fail(); }
+  return value;
+}
+
 function settingsDocument(value: unknown): InstallationSettings {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility"]);
+  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings.v1") { fail(); }
-  return { playerCreation: playerCreation(row["playerCreation"]), ratingEligibility: ratingEligibility(row["ratingEligibility"]) };
+  return {
+    playerCreation: playerCreation(row["playerCreation"]),
+    ratingEligibility: ratingEligibility(row["ratingEligibility"]),
+    carriedTimes: carriedTimes(row["carriedTimes"]),
+  };
 }
 
 function recomputeStatus(value: unknown): RatingRecomputeStatus {
@@ -129,15 +160,29 @@ function recomputeStatus(value: unknown): RatingRecomputeStatus {
 
 function administrationDocument(value: unknown): InstallationSettingsAdministration {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "revision", "updatedAtMs", "ratingRecompute"]);
+  exact(row, [
+    "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs",
+    "carriedTimesAwaitingReview", "ratingRecompute",
+  ]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings-administration.v1") { fail(); }
   return {
     playerCreation: playerCreation(row["playerCreation"]),
     ratingEligibility: ratingEligibility(row["ratingEligibility"]),
+    carriedTimes: carriedTimes(row["carriedTimes"]),
     revision: count(row["revision"]),
     updatedAtMs: row["updatedAtMs"] === null ? null : count(row["updatedAtMs"]),
+    carriedTimesAwaitingReview: count(row["carriedTimesAwaitingReview"]),
     ratingRecompute: recomputeStatus(row["ratingRecompute"]),
   };
+}
+
+function resolutionDocument(value: unknown): CarriedWaitingResolution {
+  const row = object(value);
+  exact(row, ["schemaVersion", "decision", "resolved", "left"]);
+  if (row["schemaVersion"] !== "mk8dx.carried-waiting-resolution.v1") { fail(); }
+  const decision = row["decision"];
+  if (decision !== "publish" && decision !== "refuse") { fail(); }
+  return { decision, resolved: count(row["resolved"]), left: count(row["left"]) };
 }
 
 function recomputeDocument(value: unknown): InstallationRatingRecompute {
@@ -227,9 +272,16 @@ export function createInstallationSettingsClient(
         expectedRevision: input.expectedRevision,
         ...(input.playerCreation === undefined ? {} : { playerCreation: input.playerCreation }),
         ...(input.ratingEligibility === undefined ? {} : { ratingEligibility: input.ratingEligibility }),
+        ...(input.carriedTimes === undefined ? {} : { carriedTimes: input.carriedTimes }),
       }, signal));
     },
     async recomputeRatings(signal) { return recomputeDocument(await post(INSTALLATION_RECOMPUTE_PATH, {}, signal)); },
+    async resolveCarriedWaiting(decision, expectedCount, signal) {
+      if ((decision !== "publish" && decision !== "refuse") || !Number.isSafeInteger(expectedCount) || expectedCount < 1) {
+        throw new InstallationSettingsClientError("invalid_input");
+      }
+      return resolutionDocument(await post(CARRIED_WAITING_RESOLUTION_PATH, { decision, expectedCount }, signal));
+    },
   };
 }
 

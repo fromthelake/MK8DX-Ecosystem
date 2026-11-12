@@ -1,14 +1,18 @@
 import type { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 import {
+  CARRIED_TIMES_POLICIES,
   PLAYER_CREATION_POLICIES,
   RATING_ELIGIBILITY_POLICIES,
+  type CarriedTimesPolicy,
   type InstallationSettingsRepository,
   type InstallationSettingsTransaction,
   type PlayerCreationPolicy,
   type RatingEligibilityPolicy,
   type StoredInstallationSettings,
 } from "./installation-settings-service.js";
+
+import { CARRIED_WAITING_CONDITION } from "../timetrials/mysql-lifecycle-repository.js";
 
 class InstallationSettingsPersistenceError extends Error {
   public constructor(message: string) {
@@ -31,6 +35,7 @@ function oneOf<T extends string>(value: unknown, allowed: readonly T[], label: s
 }
 
 const projection = `SELECT revision, player_creation AS playerCreation, rating_eligibility AS ratingEligibility,
+       carried_times AS carriedTimes,
        rating_eligibility_changed_at_ms AS ratingEligibilityChangedAtMs, updated_at_ms AS updatedAtMs
 FROM installation_settings WHERE installation_settings_id = 1`;
 
@@ -40,6 +45,7 @@ function stored(row: RowDataPacket | undefined): StoredInstallationSettings | nu
     revision: integer(row["revision"], "settings revision"),
     playerCreation: oneOf<PlayerCreationPolicy>(row["playerCreation"], PLAYER_CREATION_POLICIES, "player creation"),
     ratingEligibility: oneOf<RatingEligibilityPolicy>(row["ratingEligibility"], RATING_ELIGIBILITY_POLICIES, "rating eligibility"),
+    carriedTimes: oneOf<CarriedTimesPolicy>(row["carriedTimes"], CARRIED_TIMES_POLICIES, "carried times"),
     ratingEligibilityChangedAtMs: row["ratingEligibilityChangedAtMs"] === null
       ? null : integer(row["ratingEligibilityChangedAtMs"], "eligibility change time"),
     updatedAtMs: integer(row["updatedAtMs"], "settings update time"),
@@ -69,17 +75,17 @@ class MysqlInstallationSettingsTransaction implements InstallationSettingsTransa
   public async write(input: Parameters<InstallationSettingsTransaction["write"]>[0]): Promise<void> {
     const [result] = await this.connection.execute<ResultSetHeader>(
       `INSERT INTO installation_settings (
-         installation_settings_id, revision, player_creation, rating_eligibility,
+         installation_settings_id, revision, player_creation, rating_eligibility, carried_times,
          rating_eligibility_changed_at_ms, updated_by_user_account_id, updated_at_ms
-       ) VALUES (1, ?, ?, ?, ?, ?, ?)
+       ) VALUES (1, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          revision = VALUES(revision), player_creation = VALUES(player_creation),
-         rating_eligibility = VALUES(rating_eligibility),
+         rating_eligibility = VALUES(rating_eligibility), carried_times = VALUES(carried_times),
          rating_eligibility_changed_at_ms = VALUES(rating_eligibility_changed_at_ms),
          updated_by_user_account_id = VALUES(updated_by_user_account_id),
          updated_at_ms = VALUES(updated_at_ms)`,
       [
-        input.revision, input.playerCreation, input.ratingEligibility, input.ratingEligibilityChangedAtMs,
+        input.revision, input.playerCreation, input.ratingEligibility, input.carriedTimes, input.ratingEligibilityChangedAtMs,
         input.updatedByInternalId, input.nowMs,
       ],
     );
@@ -99,6 +105,19 @@ class MysqlInstallationSettingsTransaction implements InstallationSettingsTransa
 
 export class MysqlInstallationSettingsRepository implements InstallationSettingsRepository {
   public constructor(private readonly pool: Pool) {}
+
+  public async carriedTimesAwaitingReview(): Promise<number> {
+    const [rows] = await this.pool.execute<RowDataPacket[]>(
+      `SELECT COUNT(*) AS waiting
+       FROM time_trial_publications AS publication
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       INNER JOIN time_trial_submission_revisions AS revision
+         ON revision.time_trial_submission_revision_id = publication.current_revision_id
+       WHERE ${CARRIED_WAITING_CONDITION}`,
+    );
+    return integer(rows[0]?.["waiting"] ?? 0, "carried times waiting");
+  }
 
   public async read(): Promise<StoredInstallationSettings | null> {
     const [rows] = await this.pool.execute<RowDataPacket[]>(projection);

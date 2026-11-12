@@ -1375,6 +1375,11 @@
 
   /* Profile Time Trial management (W26): one modal task, not a legacy panel nested in a row. */
   .ds-manage__status { margin: 0; min-height: var(--ds-type-body-s-line); }
+  /* ADR-0225: "Carried from <community> - originally <date>"; a long address wraps instead of widening the panel. */
+  .ds-chip.ds-carried-from {
+    justify-self: start; align-self: flex-start; max-width: 100%; padding-block: 4px;
+    line-height: 1.3; white-space: normal; overflow-wrap: anywhere;
+  }
   .ds-manage__facts {
     display: grid; grid-template-columns: minmax(8rem, auto) minmax(0, 1fr);
     gap: var(--ds-space-xs) var(--ds-space-lg); margin: 0;
@@ -1389,6 +1394,10 @@
   .ds-manage__when { color: var(--ds-text-tertiary); font-family: var(--ds-font-data); white-space: nowrap; }
   .ds-manage__form { padding-top: var(--ds-space-lg); border-top: 1px solid var(--ds-border-subtle); }
   .ds-manage__form > h3 { color: var(--ds-text-primary); }
+  /* ADR-0225: "Publish" a run waiting for review, behind one short confirmation line. */
+  .ds-manage__confirmation { display: flex; flex-wrap: wrap; align-items: center; gap: var(--ds-space-sm); }
+  .ds-manage__confirmation[hidden] { display: none; }
+  .ds-manage__confirm { margin: 0; flex: 1 1 100%; color: var(--ds-text-primary); }
   .ds-manage__laps { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: var(--ds-space-sm); }
   /* Fix this result is the Post a Time form in a dialog: one column (the checks under the form),
      never the page layout's side-by-side columns (owner 2026-09-28). */

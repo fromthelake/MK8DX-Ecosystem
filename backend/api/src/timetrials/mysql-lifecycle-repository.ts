@@ -2,7 +2,9 @@ import type { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from
   "mysql2/promise";
 
 import {
+  CARRIED_TIMES_TURNED_OFF_REASON,
   TimeTrialLifecycleError,
+  requireAwaitingReview,
   type ManagedTimeTrial,
   type ManagedTimeTrialQuery,
   type TimeTrialCorrection,
@@ -18,6 +20,7 @@ import { refreshTimeTrialPlayerBestsForRevisions } from
 import { enqueueOvertakenNotificationJob } from
   "../notifications/notification-producer-jobs.js";
 import { youTubeWatchUrl } from "./youtube-video.js";
+import type { TimeTrialCarriedFrom } from "./submission-service.js";
 
 // Every lifecycle action is one transaction that writes three things: the
 // canonical fact (a new revision, or the retirement state), the publication
@@ -54,6 +57,29 @@ function mode(value: unknown): 150 | 200 {
     throw new TimeTrialLifecycleError("unavailable", "mode is unsupported");
   }
   return parsed;
+}
+
+/**
+ * A carried run waiting for review (ADR-0225), over the publication, its submission and its current
+ * revision aliased publication / submission / revision. The installation settings count uses the same.
+ */
+export const CARRIED_WAITING_CONDITION = `publication.publication_status = 'withheld'
+           AND publication.reason_code = 'explicit_review_required'
+           AND submission.retirement_state = 'active'
+           AND revision.carried_from_origin IS NOT NULL`;
+
+// Where the current revision was carried from (ADR-0225); undefined for a time set here.
+function carriedFromOf(row: ResultRow): TimeTrialCarriedFrom | undefined {
+  const origin = row["carriedFromOrigin"];
+  if (origin === null || origin === undefined) { return undefined; }
+  const name = row["carriedFromName"];
+  const originalId = row["carriedOriginalSubmissionId"];
+  return {
+    origin: text(origin, "carried origin"),
+    ...(typeof name === "string" && name.length > 0 ? { communityName: name } : {}),
+    ...(typeof originalId === "string" && originalId.length > 0 ? { originalSubmissionId: originalId } : {}),
+    originalSubmittedAtMs: integer(row["carriedOriginalSubmittedAtMs"], "carried original time"),
+  };
 }
 
 const revisionSelect = `SELECT revision.time_trial_submission_revision_id AS revisionInternalId,
@@ -209,7 +235,9 @@ implements TimeTrialLifecycleRepository {
            verification_lap_sum_matches, verification_confidence,
            confidence_total_time, confidence_track, confidence_character,
            confidence_character_variant, confidence_body, confidence_tire,
-           confidence_glider, confidence_country, confidence_player_name
+           confidence_glider, confidence_country, confidence_player_name,
+           carried_from_origin, carried_from_name,
+           carried_original_submission_id, carried_original_submitted_at_ms
          ) SELECT time_trial_submission_id, ?, schema_version, mode_cc,
              track_id, ?, participant_reference_kind, player_id,
              observed_player_name, character_id, character_variant_id, body_id,
@@ -220,7 +248,9 @@ implements TimeTrialLifecycleRepository {
              verification_lap_sum_matches, verification_confidence,
              confidence_total_time, confidence_track, confidence_character,
              confidence_character_variant, confidence_body, confidence_tire,
-             confidence_glider, confidence_country, confidence_player_name
+             confidence_glider, confidence_country, confidence_player_name,
+             carried_from_origin, carried_from_name,
+             carried_original_submission_id, carried_original_submitted_at_ms
            FROM time_trial_submission_revisions
            WHERE time_trial_submission_id = ? AND revision_number = ?`,
         [
@@ -313,6 +343,131 @@ implements TimeTrialLifecycleRepository {
     });
   }
 
+  public async publishReviewed(input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    return this.transaction((connection) => this.publishReviewedWith(connection, input));
+  }
+
+  /**
+   * ADR-0225: the carried runs waiting for review at this moment, all published or all refused in one
+   * transaction. Each run goes through the same step as its single action (publishReviewed, or a
+   * retirement with reason carried_times_turned_off) and gets its own audit event. Refused with a
+   * conflict when the number waiting is not the number the administrator saw.
+   */
+  public async resolveCarriedWaiting(input: Readonly<{
+    decision: "publish" | "refuse";
+    expectedCount: number;
+    actorUserAccountId: string;
+  }>): Promise<Readonly<{ resolved: number; left: number }>> {
+    return this.transaction(async (connection) => {
+      const [rows] = await connection.execute<ResultRow[]>(
+        `SELECT submission.public_id AS submissionId,
+                revision.revision_number AS revisionNumber,
+                player.visibility AS playerVisibility
+         FROM time_trial_publications AS publication
+         INNER JOIN time_trial_submissions AS submission
+           ON submission.time_trial_submission_id = publication.time_trial_submission_id
+         INNER JOIN time_trial_submission_revisions AS revision
+           ON revision.time_trial_submission_revision_id = publication.current_revision_id
+         INNER JOIN players AS player ON player.player_id = revision.player_id
+         WHERE ${CARRIED_WAITING_CONDITION}
+         ORDER BY submission.time_trial_submission_id
+         FOR UPDATE`,
+      );
+      if (rows.length !== input.expectedCount) {
+        throw new TimeTrialLifecycleError(
+          "conflict", "The number of carried times waiting changed meanwhile. Reload and try again.",
+        );
+      }
+      let resolved = 0;
+      let left = 0;
+      for (const row of rows) {
+        const submissionId = text(row["submissionId"], "submissionId");
+        if (input.decision === "publish") {
+          // A Private Player stays private: such a run keeps waiting.
+          if (row["playerVisibility"] === "private") { left += 1; continue; }
+          await this.publishReviewedWith(connection, {
+            submissionId,
+            expectedRevision: integer(row["revisionNumber"], "revision", 1),
+            actorUserAccountId: input.actorUserAccountId,
+          });
+        } else {
+          await this.setRetirementWith(connection, {
+            submissionId,
+            retire: true,
+            reasonCode: CARRIED_TIMES_TURNED_OFF_REASON,
+            actorRole: "administrator",
+            actorUserAccountId: input.actorUserAccountId,
+          });
+        }
+        resolved += 1;
+      }
+      return { resolved, left };
+    });
+  }
+
+  private async publishReviewedWith(connection: PoolConnection, input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    {
+      const current = await this.readManaged(connection, input.submissionId, true);
+      if (current === null) { throw new TimeTrialLifecycleError("not_found"); }
+      // Checked again under the row lock: the service's check saw the run before the transaction.
+      requireAwaitingReview(current, input.expectedRevision);
+      const [ids] = await connection.execute<ResultRow[]>(
+        `SELECT submission.time_trial_submission_id AS submissionInternalId,
+                publication.current_revision_id AS revisionInternalId,
+                player.visibility AS playerVisibility
+         FROM time_trial_submissions AS submission
+         INNER JOIN time_trial_publications AS publication
+           ON publication.time_trial_submission_id
+              = submission.time_trial_submission_id
+         INNER JOIN time_trial_submission_revisions AS revision
+           ON revision.time_trial_submission_revision_id
+              = publication.current_revision_id
+         INNER JOIN players AS player ON player.player_id = revision.player_id
+         WHERE submission.public_id = ? LIMIT 1 FOR UPDATE`,
+        [input.submissionId],
+      );
+      const row = ids[0];
+      if (row === undefined) { throw new TimeTrialLifecycleError("not_found"); }
+      // A Private Player stays private: review approval never forces a result public.
+      if (row["playerVisibility"] === "private") {
+        throw new TimeTrialLifecycleError("conflict", "The Player is private; the result stays out of public views.");
+      }
+      const submissionInternalId = integer(row["submissionInternalId"], "submission id", 1);
+      const revisionInternalId = integer(row["revisionInternalId"], "revision id", 1);
+      const occurredAtMs = this.clock.nowMs();
+      // The same publication path as every published run: rank snapshot, publication history,
+      // overtaken notifications and the Player's bests.
+      await this.applyPublication(
+        connection, submissionInternalId, revisionInternalId, "published",
+        "administrator", "administrator_review_publication", occurredAtMs, "administrator_review",
+      );
+      await this.appendEvent(connection, {
+        submissionInternalId,
+        revisionInternalId,
+        eventType: "published",
+        retirementStateAfter: "active",
+        actorRole: "administrator",
+        actorUserAccountId: input.actorUserAccountId,
+        reasonCode: "review_approved",
+        ...(input.note === undefined ? {} : { note: input.note }),
+        occurredAtMs,
+      });
+      const next = await this.readManaged(connection, input.submissionId, true);
+      if (next === null) { throw new TimeTrialLifecycleError("unavailable"); }
+      return next;
+    }
+  }
+
   public async setRetirement(input: Readonly<{
     submissionId: string;
     retire: boolean;
@@ -321,7 +476,19 @@ implements TimeTrialLifecycleRepository {
     actorRole: TimeTrialLifecycleActorRole;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial> {
-    return this.transaction(async (connection) => {
+    return this.transaction((connection) => this.setRetirementWith(connection, input));
+  }
+
+  private async setRetirementWith(connection: PoolConnection, input: Readonly<{
+    submissionId: string;
+    retire: boolean;
+    /** A retirement reason, or carried_times_turned_off for the bulk refusal (ADR-0225). */
+    reasonCode: string;
+    note?: string;
+    actorRole: TimeTrialLifecycleActorRole;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    {
       const current = await this.readManaged(
         connection, input.submissionId, true,
       );
@@ -381,7 +548,7 @@ implements TimeTrialLifecycleRepository {
       const next = await this.readManaged(connection, input.submissionId, true);
       if (next === null) { throw new TimeTrialLifecycleError("unavailable"); }
       return next;
-    });
+    }
   }
 
   public async setVideo(input: Readonly<{
@@ -448,10 +615,11 @@ implements TimeTrialLifecycleRepository {
     actorRole: TimeTrialLifecycleActorRole,
     reasonCode: string,
     occurredAtMs: number,
+    originOverride?: "administrator_review",
   ): Promise<void> {
-    const origin = actorRole === "owner"
+    const origin = originOverride ?? (actorRole === "owner"
       ? "owner_lifecycle"
-      : "administrator_lifecycle";
+      : "administrator_lifecycle");
     const rankAtPublication = status === "published"
       ? (await publicationRankSnapshots(connection, [revisionInternalId]))
         .get(revisionInternalId)
@@ -517,7 +685,7 @@ implements TimeTrialLifecycleRepository {
     input: Readonly<{
       submissionInternalId: number;
       revisionInternalId: number;
-      eventType: "corrected" | "retired" | "restored";
+      eventType: "corrected" | "retired" | "restored" | "published";
       retirementStateAfter: "active" | "retired";
       actorRole: TimeTrialLifecycleActorRole;
       actorUserAccountId: string;
@@ -563,6 +731,10 @@ implements TimeTrialLifecycleRepository {
               publication.publication_status AS publicationStatus,
               publication.reason_code AS publicationReason,
               revision.revision_number AS revisionNumber,
+              revision.carried_from_origin AS carriedFromOrigin,
+              revision.carried_from_name AS carriedFromName,
+              revision.carried_original_submission_id AS carriedOriginalSubmissionId,
+              revision.carried_original_submitted_at_ms AS carriedOriginalSubmittedAtMs,
               player.public_id AS playerId,
               player.display_name AS playerDisplayName,
               username.username_value AS playerUsername
@@ -651,7 +823,7 @@ implements TimeTrialLifecycleRepository {
     const events: TimeTrialLifecycleEvent[] = eventRows.map((event) => ({
       sequenceNumber: integer(event["sequenceNumber"], "sequence", 1),
       eventType: text(event["eventType"], "eventType") as
-        "corrected" | "retired" | "restored",
+        TimeTrialLifecycleEvent["eventType"],
       retirementStateAfter:
         text(event["retirementStateAfter"], "state") as "active" | "retired",
       revision: integer(event["revisionNumber"], "revision", 1),
@@ -668,8 +840,10 @@ implements TimeTrialLifecycleRepository {
       [submissionInternalId],
     );
     const videoId = videoRows[0]?.["videoId"];
+    const carriedFrom = carriedFromOf(row);
     return {
       ...(typeof videoId === "string" && videoId.length === 11 ? { videoUrl: youTubeWatchUrl(videoId) } : {}),
+      ...(carriedFrom === undefined ? {} : { carriedFrom }),
       submissionId: text(row["submissionId"], "submissionId"),
       playerId: text(row["playerId"], "playerId"),
       playerUsername: text(row["playerUsername"], "playerUsername"),
