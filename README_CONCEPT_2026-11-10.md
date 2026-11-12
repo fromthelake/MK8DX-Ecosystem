@@ -42,8 +42,23 @@ And you do not even need a capture card for that: from the couch, point your pho
 scan a Time Trial **result screen** or a **Select-a-Ghost screen**, and the result goes straight
 to your website. As far as we know, that had not been done before either.
 
-Everything runs on **your own computer and your own network**. No cloud account, no
+**🏠 At home or online — you choose**
+
+- **Completely local**: run it on your home or club network. After the setup **no internet is
+  needed** at all.
+- **Online**: host it on your own server or web hosting and share it with your own online
+  community.
+
+Either way it is your installation, with your own accounts and results. No cloud account, no
 subscription, no ads.
+
+**🔑 No passwords, ever**
+
+- **Only the administrator needs an account.** That account is also the first player, so the
+  system always has at least one player; everybody else can join tournaments without one.
+- **One link to sign in**: nobody has to make up or remember a password. At home, everyone gets
+  a personal sign-in card (a link or QR code). Online, a new user only enters an **email
+  address** and signs in with the link MK8DX sends them.
 
 ---
 
@@ -110,10 +125,6 @@ built for **all 15 game language variants** — from Dutch and English to Japane
 Chinese, Russian and more. English and Dutch are reviewed by people; the other languages are
 machine-translated and recognition in some of them is still being verified on real consoles.
 Playing in your language? Your help checking it is the most valuable contribution there is.
-
-## 🏠 Yours
-
-Self-hosted: every community runs its own installation with its own accounts and results.
 
 ## 💡 The story behind it
 
