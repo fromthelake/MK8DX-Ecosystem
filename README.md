@@ -213,6 +213,10 @@ The apps around it:
 | iPhone and iPad | The website in the browser; scanning in Safari is still being tested | There is no iOS app: building and signing one needs a Mac and an Apple developer account |
 | LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
 
+**First start of the Android app:** it asks *Choose your community*. At home or at the club you scan the
+**Prepare a device** card your administrator shows; for an online community you type its website address. Then you
+sign in through the browser. Details: [Players](docs/guides/PLAYERS.md#first-start).
+
 **Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
 B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
 (`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there

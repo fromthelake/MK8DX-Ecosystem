@@ -85,8 +85,8 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
         val parsed = AndroidLanPairingPayload.parse(text)
         if (parsed != null) { message = null; step = PairingStep.Confirm(parsed) }
         else message = t(
-            "This is not the setup QR of an MK8DX installation. Scan the setup QR on the host screen, not a personal invitation.",
-            "Dit is niet de setup-QR van een MK8DX-installatie. Scan de setup-QR op het hostscherm, niet een persoonlijke uitnodiging.",
+            "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.",
+            "Dit is niet de QR-code van een kaart Apparaat voorbereiden. Een persoonlijke inlogkaart komt later, in de browser.",
         )
     }
 
@@ -107,11 +107,11 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
         Mk8dxSectionLabel(t("HOME OR CLUB", "THUIS OF CLUB"))
         when (val current = step) {
             PairingStep.Scanning -> {
-                Mk8dxDisplayText(t("Scan the setup QR code", "Scan de setup-QR-code"), type.display4)
+                Mk8dxDisplayText(t("Scan the Prepare a device card", "Scan de kaart Apparaat voorbereiden"), type.display4)
                 Text(
                     t(
-                        "Open MK8DX beheer on the computer that hosts MK8DX and point the camera at the setup QR code. The phone must be on the same network.",
-                        "Open MK8DX beheer op de computer waar MK8DX op draait en richt de camera op de setup-QR-code. De telefoon moet op hetzelfde netwerk zitten.",
+                        "Point the camera at the QR code on the Prepare a device card. Your administrator shows it on the MK8DX computer or hands it out on paper. The phone must be on the same Wi-Fi as that computer.",
+                        "Richt de camera op de QR-code van de kaart Apparaat voorbereiden. Je beheerder laat die zien op de MK8DX-computer of geeft hem op papier. De telefoon moet op dezelfde wifi zitten als die computer.",
                     ),
                     style = type.body,
                     color = colors.textBody,
@@ -138,7 +138,15 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
             }
             is PairingStep.Confirm, is PairingStep.Connecting -> {
                 val pairing = if (current is PairingStep.Confirm) current.offer else (current as PairingStep.Connecting).offer
-                Mk8dxDisplayText(t("Check this against the host screen", "Vergelijk dit met het hostscherm"), type.display4)
+                Mk8dxDisplayText(t("Check that this is your installation", "Controleer dat dit jouw installatie is"), type.display4)
+                Text(
+                    t(
+                        "The same address and key are on the Prepare this device page, under Full fingerprints.",
+                        "Hetzelfde adres en dezelfde sleutel staan op de pagina Dit apparaat voorbereiden, bij Volledige vingerafdrukken.",
+                    ),
+                    style = type.body,
+                    color = colors.textBody,
+                )
                 Mk8dxPanel(t("ADDRESS", "ADRES")) {
                     Text(pairing.origin, style = type.body, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
                 }

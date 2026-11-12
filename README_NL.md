@@ -219,6 +219,10 @@ De apps eromheen:
 | iPhone en iPad | De website in de browser; scannen in Safari wordt nog getest | Er is geen iOS-app: die bouwen en ondertekenen vraagt een Mac en een Apple-ontwikkelaarsaccount |
 | LiveTrial en Tournament Live | Windows op x86-64 (getest op Windows 11), met een USB-HDMI-capture card per scherm | De capture cards en de meegeleverde herkenning zijn gebouwd en getest voor Windows; er is geen macOS- of Linux-versie |
 
+**Eerste start van de Android-app:** die vraagt *Kies je community*. Thuis of bij de club scan je de kaart
+**Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
+Daarna log je in via de browser. Details: [Spelers](docs/guides/PLAYERS.md#first-start) (Engels).
+
 **Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
 serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
 beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem

@@ -89,8 +89,8 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                 Mk8dxDisplayText(t("Choose your community", "Kies je community"), type.display4)
                 Text(
                     t(
-                        "MK8DX works with the website of your own community. Choose how you reach it.",
-                        "MK8DX werkt met de website van je eigen community. Kies hoe je die bereikt.",
+                        "This app works with your own community: a club, a group of friends or an online community. Pick the way you play below. Not sure? Ask the person who runs your community.",
+                        "Deze app werkt met je eigen community: een club, een vriendengroep of een online community. Kies hieronder hoe jullie spelen. Weet je het niet? Vraag het aan wie je community beheert.",
                     ),
                     style = type.body,
                     color = colors.textBody,
@@ -98,8 +98,8 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                 Mk8dxPanel(t("AT HOME OR AT THE CLUB", "THUIS OF BIJ DE CLUB")) {
                     Text(
                         t(
-                            "Scan the setup QR code that MK8DX beheer shows on the computer that hosts it. No internet needed.",
-                            "Scan de setup-QR-code die MK8DX beheer laat zien op de computer waar het op draait. Geen internet nodig.",
+                            "MK8DX runs on a computer at home or at the club. Scan the Prepare a device card your administrator shows or hands out. No internet needed.",
+                            "MK8DX draait op een computer thuis of bij de club. Scan de kaart Apparaat voorbereiden die je beheerder laat zien of uitdeelt. Geen internet nodig.",
                         ),
                         style = type.body,
                         color = colors.textBody,
@@ -124,6 +124,14 @@ internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
                     }
                 }
                 Mk8dxPanel(t("ONLINE COMMUNITY", "ONLINE COMMUNITY")) {
+                    Text(
+                        t(
+                            "Your community has a website on the internet. Enter the address you open it with in the browser.",
+                            "Je community heeft een website op internet. Vul het adres in waarmee je die in de browser opent.",
+                        ),
+                        style = type.body,
+                        color = colors.textBody,
+                    )
                     Mk8dxTextField(
                         label = t("Website address", "Adres van de website"),
                         value = address,

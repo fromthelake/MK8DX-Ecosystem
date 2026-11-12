@@ -270,15 +270,15 @@ The steps on the Prepare this device page:
 
 **Pairing the Android app**
 
-This pairing was tested with a test build of the app and is not in a released app yet. The app does not need the certificate in Android's settings, but signing in goes through the phone's browser. So first do chapter 6 on this phone: Prepare a device and sign in with your card in the browser.
+This needs app version 2.95.0 or newer. The app does not need the certificate in Android's settings, but signing in goes through the phone's browser. So first do chapter 6 on this phone: Prepare a device and sign in with your card in the browser.
 
-1. **Do:** in the app open **Settings** and at **Community server** tap **Change server**. → **You see:** the "Community website" screen with the button **Home or club installation (scan QR) / Installatie thuis of bij de club (QR scannen)**. Tap it.
-2. **Do:** if needed tap **Use the camera** and allow the camera. Scan the QR code on the **Prepare a device** card. → **You see:** **Check this against the host screen** with an **Address** and a **Root public key SHA-256 (SPKI)**. → **See something else?** "This is not the setup QR of an MK8DX installation.": you scanned a personal card. Scan the Prepare a device card. If scanning fails, type the New device address (for example `http://192.168.1.50/setup`) at **Or paste the setup link** and tap **Next**.
-3. **Do:** compare the address with the website address, and the long key with the Prepare this device page: open **Full fingerprints** there and look at "Root public key SHA-256 (SPKI)". You can open that page on another device, or on the MK8DX computer itself through the New device address. → **You see:** both exactly the same. Tap **Connect** and confirm the server change. → **See something else?** If they differ, tap **Back** and do not connect. "Could not get a matching certificate from": check the network and that the MK8DX computer is on, and try again.
+1. **Do:** open the app. On a new install it starts on **Choose your community**; otherwise open **Settings** and at **Community server** tap **Change server**. → **You see:** **Choose your community** with the panels **At home or at the club** and **Online community**. Under **At home or at the club** tap **Scan the QR code**.
+2. **Do:** if needed tap **Use the camera** and allow the camera. Scan the QR code on the **Prepare a device** card. → **You see:** **Check that this is your installation** with an **Address** and a **Key fingerprint (SHA-256)**. → **See something else?** "This is not the QR code of a Prepare a device card.": you scanned a personal card. Scan the Prepare a device card. If scanning fails, type the New device address (for example `http://192.168.1.50/setup`) at **Or paste the setup link** and tap **Next**.
+3. **Do:** compare the address with the website address, and the long key with the Prepare this device page: open **Full fingerprints** there and look at "Root public key SHA-256 (SPKI)". You can open that page on another device, or on the MK8DX computer itself through the New device address. → **You see:** both exactly the same. Tap **Connect** (when the app was already set to another server, confirm the change). → **See something else?** If they differ, tap **Back** and do not connect. "Could not get a matching certificate from": check the network and that the MK8DX computer is on, and try again.
 4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in** and then **Sign in to synchronize**. → **You see:** the browser opens the approval page. Check that the site shows the same code as the app and approve the device. Go back to the app. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
 5. **Do:** post a time in the app. → **You see:** the time on the installation's website.
 
-Unpairing: **Settings** → **Change server** → **Forget this installation / Deze installatie vergeten**.
+Unpairing: **Settings** → **Change server** → **Forget this installation**.
 
 **LiveTrial on a second Windows PC**
 
@@ -421,7 +421,7 @@ Other installation routes (one computer, your own server, web hosting) are in `d
 - **Windows: "The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443".** The computer is on a company network that MK8DX may not change by itself. Ask the administrator of that network to allow incoming connections on TCP ports 80 and 443.
 - **Windows: "Windows did not allow the change (the permission prompt was declined or failed)".** Click **Try again** and then **Yes** in the Windows window.
 - **Linux: phones cannot get in and the firewall is active.** During Install click **Details** and run the command after "manual:", for example `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`. With firewalld it is `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`.
-- **The Android app says "This is not the setup QR of an MK8DX installation."** Scan the **Prepare a device** card, not a personal card.
+- **The Android app says "This is not the QR code of a Prepare a device card."** Scan the **Prepare a device** card, not a personal card.
 
 ## 12. For IT people (optional)
 
