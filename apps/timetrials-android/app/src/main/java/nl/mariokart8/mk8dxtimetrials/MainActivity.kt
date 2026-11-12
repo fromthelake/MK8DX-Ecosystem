@@ -42,6 +42,7 @@ import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineFallbackDataSource
 import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineState
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidTimesOnThisPhoneScreen
 import nl.mariokart8.mk8dxtimetrials.offline.LocalAndroidOfflineState
 import nl.mariokart8.mk8dxtimetrials.offline.androidOfflineCopySource
 import nl.mariokart8.mk8dxtimetrials.offline.refreshAndroidOfflineCopy
@@ -640,13 +641,15 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
-            AndroidCarryHost(apiOrigin, localOutbox) {
-                AndroidProductLocalSavedResultsScreen(
-                    localOutbox,
-                    synchronizationDependencies,
-                    onSubmitTimeTrial = submitTimeTrial,
-                    accountDisplayNames = accountDisplayNames,
-                )
+            AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
+                AndroidTimesOnThisPhoneScreen(nativeSession?.playerId, apiOrigin) {
+                    AndroidProductLocalSavedResultsScreen(
+                        localOutbox,
+                        synchronizationDependencies,
+                        onSubmitTimeTrial = submitTimeTrial,
+                        accountDisplayNames = accountDisplayNames,
+                    )
+                }
             }
         },
         tournamentContent = { openAccount, request, onRequestHandled, openTrack ->
