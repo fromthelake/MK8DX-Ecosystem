@@ -377,6 +377,8 @@ internal data class AndroidManagedTimeTrialRevision(
     val loadout: Map<String, String>? = null,
     val sourceKind: String,
     val createdAtMs: Long,
+    /** When the run was driven, where the community knows it (ADR-0225 amendment). */
+    val occurredAtMs: Long? = null,
 )
 
 @Serializable
@@ -411,6 +413,8 @@ internal data class AndroidManagedTimeTrial(
     val current: AndroidManagedTimeTrialRevision,
     /** The Player's YouTube video of the run, always https://www.youtube.com/watch?v=<id>. */
     val videoUrl: String? = null,
+    /** ADR-0225: where a carried run comes from. */
+    val carriedFrom: nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedFromV1? = null,
 )
 
 @Serializable
@@ -488,6 +492,29 @@ private data class AndroidOwnActivityDocument(
 private data class AndroidManagedTimeTrialsDocument(
     val schemaVersion: String,
     val results: List<AndroidManagedTimeTrial>,
+    /** Present only when the request named an offset and more pages follow. */
+    val nextOffset: Int? = null,
+)
+
+/** `GET /v1/account/rivals/best-times` (`mk8dx.rival-best-times.v1`); only what the copy keeps is read. */
+@Serializable
+internal data class AndroidRivalBestTimesDocument(
+    val schemaVersion: String,
+    val rivals: List<AndroidRivalBestTimes> = emptyList(),
+)
+
+@Serializable
+internal data class AndroidRivalBestTimes(
+    val playerId: String,
+    val displayName: String? = null,
+    val bests: List<AndroidRivalBestTime> = emptyList(),
+)
+
+@Serializable
+internal data class AndroidRivalBestTime(
+    val trackId: String,
+    val mode: Int,
+    val totalTimeMs: Long,
 )
 
 @Serializable
@@ -960,6 +987,13 @@ internal interface AndroidTimeTrialsEcosystemDataSource {
     fun clientSupport(): AndroidClientSupport? = null
     fun playerResults(playerId: String): List<AndroidPublicTimeTrialResult> = emptyList()
     fun managedTimeTrials(): List<AndroidManagedTimeTrial> = emptyList()
+    /** ADR-0225 amendment: every own run the community lists (at most 200), for the offline copy. */
+    fun ownTimeTrialsForCopy(): List<AndroidManagedTimeTrial> = managedTimeTrials()
+    /** The rivals' best times in one read (`/v1/account/rivals/best-times`); null when the server has none. */
+    fun rivalBestTimes(): Map<String, List<AndroidTrackBest>>? = null
+    /** Best times of up to ten Players, keyed by Player id (`/v1/public/track-bests`). */
+    fun trackBestsForPlayers(playerIds: List<String>): Map<String, List<AndroidTrackBest>> =
+        playerIds.associateWith { trackBestsFor(it) }
     /** My records & stats: the signed-in Player's record book; null when signed out. */
     fun playerInsights(): AndroidPlayerInsights? = null
     /** My records & stats: the signed-in Player's last 100 runs (retired ones excluded by the server). */
@@ -1138,10 +1172,57 @@ internal class AndroidTimeTrialsEcosystemClient(
         return document.timeTrials.filter { it.modeCC == 150 || it.modeCC == 200 }
     }
 
-    override fun managedTimeTrials(): List<AndroidManagedTimeTrial> {
+    override fun managedTimeTrials(): List<AndroidManagedTimeTrial> = managedTimeTrials(100)
+
+    /**
+     * Every own run, 200 per page. A server that pages answers `nextOffset` while more follow; an older one
+     * refuses the `offset` parameter (400) and is read once without it.
+     */
+    override fun ownTimeTrialsForCopy(): List<AndroidManagedTimeTrial> {
+        if (session == null) return emptyList()
+        val all = mutableListOf<AndroidManagedTimeTrial>()
+        var offset = 0
+        repeat(50) {
+            val document = try {
+                json.decodeFromString<AndroidManagedTimeTrialsDocument>(
+                    request("/v1/account/time-trials?limit=200&offset=$offset"),
+                )
+            } catch (error: AndroidEcosystemClientException) {
+                if (error.statusCode == 400 && offset == 0) return managedTimeTrials(200)
+                throw error
+            }
+            if (document.schemaVersion != "mk8dx.managed-time-trial-list.v1" ||
+                document.results.any { !validManagedTimeTrial(it) }) malformed()
+            all += document.results
+            val next = document.nextOffset ?: return all.distinctBy { it.submissionId }
+            if (next <= offset) malformed()
+            offset = next
+        }
+        return all.distinctBy { it.submissionId }
+    }
+
+    override fun rivalBestTimes(): Map<String, List<AndroidTrackBest>>? {
+        if (session == null) return emptyMap()
+        val text = try {
+            request("/v1/account/rivals/best-times")
+        } catch (error: AndroidEcosystemClientException) {
+            // A server from before the read answers 404: the public best times are used instead.
+            if (error.statusCode == 404) return null
+            throw error
+        }
+        val document = json.decodeFromString<AndroidRivalBestTimesDocument>(text)
+        if (document.schemaVersion != "mk8dx.rival-best-times.v1") malformed()
+        // The read names no rank; 0 never counts as a medal.
+        return document.rivals.associate { rival ->
+            rival.playerId to rival.bests.filter { it.mode == 150 || it.mode == 200 }
+                .map { AndroidTrackBest(it.trackId, it.mode, it.totalTimeMs, rank = 0) }
+        }
+    }
+
+    private fun managedTimeTrials(limit: Int): List<AndroidManagedTimeTrial> {
         if (session == null) return emptyList()
         val document = json.decodeFromString<AndroidManagedTimeTrialsDocument>(
-            request("/v1/account/time-trials?limit=100"),
+            request("/v1/account/time-trials?limit=$limit"),
         )
         if (document.schemaVersion != "mk8dx.managed-time-trial-list.v1" ||
             document.results.any { !validManagedTimeTrial(it) }) malformed()
@@ -1435,6 +1516,15 @@ internal class AndroidTimeTrialsEcosystemClient(
         if (document.schemaVersion != "mk8dx.player-engagement-conversation.v1" ||
             document.playerId != playerId) malformed()
         return document
+    }
+
+    override fun trackBestsForPlayers(playerIds: List<String>): Map<String, List<AndroidTrackBest>> {
+        require(playerIds.size in 1..10 && playerIds.all { it.matches(Regex("^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$")) })
+        val document = json.decodeFromString<AndroidTrackBestsDocument>(request(
+            "/v1/public/track-bests?players=${encodeQuery(playerIds.joinToString(","))}",
+        ))
+        if (document.schemaVersion != "mk8dx.public-track-bests.v1") malformed()
+        return document.players.filter { it.playerId in playerIds }.associate { it.playerId to it.bests }
     }
 
     override fun trackBestsFor(playerId: String): List<AndroidTrackBest> {

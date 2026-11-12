@@ -39,6 +39,13 @@ import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidSlotBoundSessionCanonicalConnectionFactory
 import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineFallbackDataSource
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineState
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidTimesOnThisPhoneScreen
+import nl.mariokart8.mk8dxtimetrials.offline.LocalAndroidOfflineState
+import nl.mariokart8.mk8dxtimetrials.offline.androidOfflineCopySource
+import nl.mariokart8.mk8dxtimetrials.offline.refreshAndroidOfflineCopy
 import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
 import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarryHost
 import nl.mariokart8.mk8dxtimetrials.carry.promoteAndroidCarriedTimes
@@ -360,12 +367,28 @@ internal fun AndroidTimeTrialsProductionRoot(
             AndroidCanonicalNotificationSync.enqueueImmediate(applicationContext)
         }
     }
-    val ecosystemClient = remember(nativeSession, apiOrigin, httpsConnectionOpener) {
+    // ADR-0225 amendment: this community's copy of the Player's own times and their rivals' bests, refreshed
+    // whenever the app is opened or comes back while the community answers, and read when it does not.
+    val offlineState = remember { AndroidOfflineState() }
+    val offlineStore = remember(apiOrigin) { AndroidOfflineCopyStore.forOrigin(applicationContext, apiOrigin) }
+    val onlineClient = remember(nativeSession, apiOrigin, httpsConnectionOpener) {
         AndroidTimeTrialsEcosystemClient(
             apiOrigin,
             nativeSession,
             AndroidEcosystemConnectionOpener(httpsConnectionOpener::open),
         )
+    }
+    val ecosystemClient = remember(onlineClient, offlineStore) {
+        AndroidOfflineFallbackDataSource(onlineClient, { offlineStore.readFor(nativeSession?.playerId) }, offlineState)
+    }
+    LaunchedEffect(onlineClient, offlineStore, appIsInFront) {
+        val playerId = nativeSession?.playerId ?: return@LaunchedEffect
+        if (!appIsInFront) return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            runCatching {
+                refreshAndroidOfflineCopy(offlineStore, androidOfflineCopySource(onlineClient), playerId, System.currentTimeMillis())
+            }
+        }
     }
     // ADR-0205 §4 hydration, at the same moment as the rest of the account:
     // the account value is canonical unless this phone holds a newer explicit
@@ -551,7 +574,10 @@ internal fun AndroidTimeTrialsProductionRoot(
         }
         return
     }
-    CompositionLocalProvider(LocalAndroidProductLanguage provides productLanguage) {
+    CompositionLocalProvider(
+        LocalAndroidProductLanguage provides productLanguage,
+        LocalAndroidOfflineState provides offlineState,
+    ) {
     Mk8dxAppearanceHost(appearanceSettings) {
     AndroidTimeTrialsProductComponent(
         scanResultContent = { _, requestedTrackId, requestedMode, openTestChooser, onRecognized ->
@@ -615,13 +641,15 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
-            AndroidCarryHost(apiOrigin, localOutbox) {
-                AndroidProductLocalSavedResultsScreen(
-                    localOutbox,
-                    synchronizationDependencies,
-                    onSubmitTimeTrial = submitTimeTrial,
-                    accountDisplayNames = accountDisplayNames,
-                )
+            AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
+                AndroidTimesOnThisPhoneScreen(nativeSession?.playerId, apiOrigin) {
+                    AndroidProductLocalSavedResultsScreen(
+                        localOutbox,
+                        synchronizationDependencies,
+                        onSubmitTimeTrial = submitTimeTrial,
+                        accountDisplayNames = accountDisplayNames,
+                    )
+                }
             }
         },
         tournamentContent = { openAccount, request, onRequestHandled, openTrack ->

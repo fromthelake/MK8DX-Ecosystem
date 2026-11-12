@@ -24,6 +24,9 @@ import nl.mariokart8.mk8dxtimetrials.AndroidCommunityList
 import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF
 import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED
 import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopy
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineRun
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidLocalTimeTrialOutbox
 import nl.mariokart8.mk8dxtimetrials.outbox.createAndroidProductTimeTrialOutboxFor
 import nl.mariokart8.mk8dxtimetrials.tournament.AndroidTournamentClient
@@ -66,8 +69,19 @@ internal fun androidCarriedRefusalText(language: AndroidProductLanguage, name: S
         else -> null
     }
 
+/** ADR-0225 amendment 2: carrying from the community's copy - one run, or the best time per track and class. */
+internal class AndroidCopyCarryActions(val carryRun: (AndroidOfflineRun) -> Unit, val carryBestTimes: () -> Unit)
+
+internal val LocalAndroidCopyCarryActions = compositionLocalOf<AndroidCopyCarryActions?> { null }
+
+private sealed interface CarryWhat {
+    data class Entry(val entryKey: String) : CarryWhat
+    data class Copied(val run: AndroidOfflineRun) : CarryWhat
+    data object BestTimes : CarryWhat
+}
+
 private sealed interface CarryStep {
-    data class Choose(val entryKey: String) : CarryStep
+    data class Choose(val what: CarryWhat) : CarryStep
     data class Checking(val target: AndroidCommunity) : CarryStep
     data class Done(val text: String, val tone: Mk8dxStatusTone) : CarryStep
 }
@@ -76,6 +90,8 @@ private sealed interface CarryStep {
 internal fun AndroidCarryHost(
     activeOrigin: String,
     localOutbox: AndroidLocalTimeTrialOutbox,
+    /** The signed-in Player of the active community, whose copy "My times" shows. */
+    playerId: String? = null,
     content: @Composable () -> Unit,
 ) {
     val context = LocalContext.current
@@ -87,13 +103,21 @@ internal fun AndroidCarryHost(
     }
     val source = communities.firstOrNull { it.origin == activeOrigin }
     val targets = communities.filter { it.origin != activeOrigin }
-    val offer: ((String) -> Unit)? = if (targets.isEmpty()) null else { key -> step = CarryStep.Choose(key) }
+    val offer: ((String) -> Unit)? = if (targets.isEmpty()) null else { key -> step = CarryStep.Choose(CarryWhat.Entry(key)) }
+    val copyActions = if (targets.isEmpty()) null else AndroidCopyCarryActions(
+        carryRun = { run -> step = CarryStep.Choose(CarryWhat.Copied(run)) },
+        carryBestTimes = { step = CarryStep.Choose(CarryWhat.BestTimes) },
+    )
     val refusals = remember(activeOrigin, localOutbox, source?.name) {
         AndroidCarriedRefusals(source?.name ?: AndroidCommunityList.displayNameOf(activeOrigin)) { key ->
             runCatching { localOutbox.discardRefusedCarried(key) }.getOrDefault(false)
         }
     }
-    CompositionLocalProvider(LocalAndroidCarryOffer provides offer, LocalAndroidCarriedRefusals provides refusals) {
+    CompositionLocalProvider(
+        LocalAndroidCarryOffer provides offer,
+        LocalAndroidCarriedRefusals provides refusals,
+        LocalAndroidCopyCarryActions provides copyActions,
+    ) {
         content()
     }
 
@@ -109,7 +133,10 @@ internal fun AndroidCarryHost(
             when (current) {
                 is CarryStep.Choose -> {
                     Text(
-                        androidText(
+                        if (current.what is CarryWhat.BestTimes) androidText(
+                            "Choose the community your best times should also count in. Tracks where it already has a better time of yours are left out.",
+                            "Kies de community waar je beste tijden ook moeten meetellen. Circuits waar die al een betere tijd van je heeft, worden overgeslagen.",
+                        ) else androidText(
                             "Choose the community this time should also count in. That community decides whether it takes times from elsewhere.",
                             "Kies de community waar deze tijd ook moet meetellen. Die community bepaalt zelf of ze tijden van elders aanneemt.",
                         ),
@@ -122,10 +149,45 @@ internal fun AndroidCarryHost(
                             {
                                 step = CarryStep.Checking(target)
                                 scope.launch {
+                                    val readPolicy = {
+                                        AndroidCarriedTimesPolicy.of(
+                                            AndroidTournamentClient(
+                                                target.origin,
+                                                null,
+                                                AndroidTournamentConnectionOpener { url ->
+                                                    AndroidOriginTrust.open(context, url)
+                                                },
+                                            ).installationSettings().carriedTimes,
+                                        )
+                                    }
+                                    val what = current.what
+                                    if (what !is CarryWhat.Entry) {
+                                        step = withContext(Dispatchers.IO) {
+                                            runCatching {
+                                                copiedCarryStep(
+                                                    what, target, language,
+                                                    sourceCopy = AndroidOfflineCopyStore.forOrigin(context, activeOrigin).readFor(playerId),
+                                                    targetCopy = AndroidOfflineCopyStore.forOrigin(context, target.origin).read(),
+                                                ) { runs ->
+                                                    carryAndroidCopiedRuns(
+                                                        runs, activeOrigin, source?.name?.takeIf { it != source.origin },
+                                                        target.origin, readPolicy,
+                                                        AndroidCarriedQueue.forOrigin(context, target.origin),
+                                                        {
+                                                            createAndroidProductTimeTrialOutboxFor(context, target.origin)
+                                                                .list().map { it.canonicalSubmission }
+                                                        },
+                                                        System.currentTimeMillis(),
+                                                    )
+                                                }
+                                            }.getOrElse { outcomeStep(AndroidCarryOutcome.NotCarriable, target.name, language) }
+                                        }
+                                        return@launch
+                                    }
                                     val outcome = withContext(Dispatchers.IO) {
                                         runCatching {
                                             carryAndroidResult(
-                                                record = localOutbox.read(current.entryKey),
+                                                record = localOutbox.read(what.entryKey),
                                                 sourceOrigin = activeOrigin,
                                                 sourceName = source?.name?.takeIf { it != source.origin },
                                                 targetOrigin = target.origin,
@@ -204,4 +266,69 @@ private fun outcomeStep(
             Mk8dxStatusTone.Error,
         )
     }
+}
+
+/** Carrying from the copy: one run, or the best times after comparing with the target's own copy. */
+private fun copiedCarryStep(
+    what: CarryWhat,
+    target: AndroidCommunity,
+    language: AndroidProductLanguage,
+    sourceCopy: AndroidOfflineCopy?,
+    targetCopy: AndroidOfflineCopy?,
+    carry: (List<AndroidOfflineRun>) -> AndroidCopiedCarryOutcome,
+): CarryStep {
+    val name = target.name
+    val runs: List<AndroidOfflineRun>
+    var skipped = 0
+    when (what) {
+        is CarryWhat.Copied -> runs = listOf(what.run)
+        CarryWhat.BestTimes -> {
+            if (sourceCopy == null) return outcomeStep(AndroidCarryOutcome.NotCarriable, name, language)
+            if (targetCopy == null) {
+                return CarryStep.Done(androidBestTimesNeedTargetText(language, name), Mk8dxStatusTone.Info)
+            }
+            val plan = planAndroidBestTimes(sourceCopy, targetCopy)
+            runs = plan.toCarry
+            skipped = plan.skipped.size
+        }
+        is CarryWhat.Entry -> return outcomeStep(AndroidCarryOutcome.NotCarriable, name, language)
+    }
+    return when (val outcome = carry(runs)) {
+        AndroidCopiedCarryOutcome.Refused -> outcomeStep(AndroidCarryOutcome.Refused, name, language)
+        AndroidCopiedCarryOutcome.Unreachable -> outcomeStep(AndroidCarryOutcome.Unreachable, name, language)
+        is AndroidCopiedCarryOutcome.Queued -> when {
+            what is CarryWhat.Copied && outcome.queued == 1 ->
+                outcomeStep(AndroidCarryOutcome.Queued(outcome.review), name, language)
+            what is CarryWhat.Copied -> outcomeStep(AndroidCarryOutcome.AlreadyCarried, name, language)
+            else -> CarryStep.Done(androidBestTimesSummary(language, name, outcome, skipped), Mk8dxStatusTone.Success)
+        }
+    }
+}
+
+internal fun androidBestTimesNeedTargetText(language: AndroidProductLanguage, name: String): String =
+    androidText(language,
+        "This phone does not know your times in $name yet. Switch to $name once and sign in there, then try again.",
+        "Deze telefoon kent je tijden in $name nog niet. Wissel een keer naar $name en meld je daar aan, en probeer het dan opnieuw.")
+
+/** "N times will be sent to X when you are signed in there; M skipped because X already has a better time." */
+internal fun androidBestTimesSummary(
+    language: AndroidProductLanguage,
+    name: String,
+    outcome: AndroidCopiedCarryOutcome.Queued,
+    skipped: Int,
+): String {
+    val queued = outcome.queued
+    val parts = mutableListOf(
+        androidText(language,
+            "$queued times will be sent to $name when you are signed in there; $skipped skipped because $name already has a better time.",
+            "$queued tijden worden naar $name verzonden zodra je daar bent aangemeld; $skipped overgeslagen omdat $name al een betere tijd heeft."),
+    )
+    if (outcome.alreadyCarried > 0) {
+        val already = outcome.alreadyCarried
+        parts += androidText(language, "$already were already on their way.", "$already waren al onderweg.")
+    }
+    if (outcome.review && queued > 0) {
+        parts += androidText(language, "An administrator of $name approves them first.", "Een beheerder van $name keurt ze eerst goed.")
+    }
+    return parts.joinToString(" ")
 }
