@@ -25,6 +25,7 @@ const administration = (overrides: Partial<InstallationSettingsAdministration> =
   schemaVersion: "mk8dx.installation-settings-administration.v1",
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
+  carriedTimes: "off",
   revision: 0,
   updatedAtMs: null,
   ratingRecompute: { needed: false, eligibilityChanged: false, claimChanges: 0, lastRecalculatedAtMs: null },
@@ -37,18 +38,32 @@ describe("the installation settings client", () => {
   it("reads the public settings key for key and rejects an unknown key or value", async () => {
     const client = createInstallationSettingsClient(async () => json({
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "claimed_only",
+      carriedTimes: "review",
     }));
-    expect(await client.current()).toEqual({ playerCreation: "self_only", ratingEligibility: "claimed_only" });
+    expect(await client.current()).toEqual({ playerCreation: "self_only", ratingEligibility: "claimed_only", carriedTimes: "review" });
     const drifted = createInstallationSettingsClient(async () => json({
-      schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players", extra: 1,
+      schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players",
+      carriedTimes: "off", extra: 1,
     }));
     await expect(drifted.current()).rejects.toMatchObject({ code: "invalid_response" });
+    // ADR-0225: the carried-times answer is required and bounded to its three values.
+    const missing = createInstallationSettingsClient(async () => json({
+      schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players",
+    }));
+    await expect(missing.current()).rejects.toMatchObject({ code: "invalid_response" });
+    const carriedUnknown = createInstallationSettingsClient(async () => json({
+      schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players",
+      carriedTimes: "always",
+    }));
+    await expect(carriedUnknown.current()).rejects.toMatchObject({ code: "invalid_response" });
     const unknown = createInstallationSettingsClient(async () => json({
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "everybody", ratingEligibility: "all_players",
+      carriedTimes: "off",
     }));
     await expect(unknown.current()).rejects.toMatchObject({ code: "invalid_response" });
     // A page that only decides on a button falls back to the defaults; the server still refuses.
     expect(await loadInstallationSettings(unknown)).toEqual(DEFAULT_INSTALLATION_SETTINGS);
+    expect(DEFAULT_INSTALLATION_SETTINGS.carriedTimes).toBe("off");
   });
 
   it("saves with the CSRF proof and starts the recalculation", async () => {
@@ -70,6 +85,9 @@ describe("the installation settings client", () => {
     expect((calls[1]!.init.headers as Record<string, string>)["x-mk8dx-csrf"]).toBe("synthetic-proof");
     expect(await client.recomputeRatings()).toMatchObject({ epoch: 7, ratedPlayers: 31 });
     expect(calls.at(-1)!.path).toBe("/v1/administrator/installation-settings/actions/recompute-ratings");
+    await client.update({ expectedRevision: 1, carriedTimes: "allowed" });
+    expect(calls.at(-1)!.path).toBe("/v1/administrator/installation-settings");
+    expect(JSON.parse(String(calls.at(-1)!.init.body))).toEqual({ expectedRevision: 1, carriedTimes: "allowed" });
   });
 
   it("names the server's refusal", async () => {
@@ -113,12 +131,24 @@ describe("Administration → Installation settings", () => {
     expect(page).toContain("3 claim change(s) of Players with races since the last recalculation");
     expect(descendants(root).some((node) => node.tagName === "button" && node.textContent === "Recalculate ratings now")).toBe(true);
     const selects = descendants(root).filter((node) => node.tagName === "select");
-    expect(selects).toHaveLength(2);
+    expect(selects).toHaveLength(3);
     expect(selects[1]!.children.map((option) => option.value)).toEqual(["all_players", "claimed_only"]);
     selects[0]!.value = "self_only";
     selects[0]!.dispatch("change");
     await settle();
     expect(saved).toEqual([{ expectedRevision: 2, playerCreation: "self_only" }]);
+    // ADR-0225: carried times, one line per choice, saved at once like who creates Players.
+    expect(page).toContain("Times from other communities");
+    expect(selects[2]!.children.map((option) => option.value)).toEqual(["off", "review", "allowed"]);
+    expect(selects[2]!.children.map((option) => option.textContent)).toEqual([
+      "Off: times from other communities are refused (default)",
+      "With approval: an administrator approves each carried time",
+      "Allowed: carried times follow the normal publication rules",
+    ]);
+    selects[2]!.value = "review";
+    selects[2]!.dispatch("change");
+    await settle();
+    expect(saved.at(-1)).toEqual({ expectedRevision: 3, carriedTimes: "review" });
     mounted.unmount();
     expect(root.children).toHaveLength(0);
   });

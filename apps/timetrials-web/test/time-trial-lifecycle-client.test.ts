@@ -276,3 +276,37 @@ describe("Player visibility browser client", () => {
       .rejects.toMatchObject({ code: "invalid_input" });
   });
 });
+
+describe("a carried run in the managed document (ADR-0225)", () => {
+  const carriedFrom = {
+    origin: "https://club.example.org",
+    communityName: "Synthetic Club",
+    originalSubmissionId: "user_submission.time.SYNTHETICORIGIN01",
+    originalSubmittedAtMs: 1_786_900_060_000,
+  };
+
+  it("reads carriedFrom on the detail and in the administrator list", async () => {
+    const carried = { ...result, publicationStatus: "withheld", publicationReason: "explicit_review_required", carriedFrom };
+    const detail = createTimeTrialLifecycleClient(async () => json({ schemaVersion: "mk8dx.managed-time-trial.v1", result: carried }));
+    await expect(detail.read(submissionId)).resolves.toEqual(carried);
+    const list = createTimeTrialLifecycleClient(async () => json({
+      schemaVersion: "mk8dx.managed-time-trial-list.v1", results: [carried, result],
+    }));
+    const results = await list.listForAdministrator({ publicationStatus: "withheld" });
+    expect(results[0]?.carriedFrom).toEqual(carriedFrom);
+    expect(results[1]).not.toHaveProperty("carriedFrom");
+  });
+
+  it("refuses a carriedFrom with an unknown key, a plain-http origin or no original time", async () => {
+    for (const bad of [
+      { ...carriedFrom, extra: 1 },
+      { ...carriedFrom, origin: "http://club.example.org" },
+      { origin: "https://club.example.org" },
+    ]) {
+      const client = createTimeTrialLifecycleClient(async () => json({
+        schemaVersion: "mk8dx.managed-time-trial.v1", result: { ...result, carriedFrom: bad },
+      }));
+      await expect(client.read(submissionId)).rejects.toMatchObject({ code: "invalid_response" });
+    }
+  });
+});

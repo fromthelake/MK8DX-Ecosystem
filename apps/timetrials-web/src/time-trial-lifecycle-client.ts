@@ -65,6 +65,14 @@ export type ManagedTimeTrialEvent = Readonly<{
   occurredAtMs: number;
 }>;
 
+/** Where a carried run comes from (ADR-0225), as the submission stated it. */
+export type ManagedCarriedFrom = Readonly<{
+  origin: string;
+  communityName?: string;
+  originalSubmissionId?: string;
+  originalSubmittedAtMs: number;
+}>;
+
 export type ManagedTimeTrial = Readonly<{
   submissionId: string;
   playerId: string;
@@ -78,6 +86,8 @@ export type ManagedTimeTrial = Readonly<{
   events: readonly ManagedTimeTrialEvent[];
   /** The Player's own YouTube video of this run. */
   videoUrl?: string;
+  /** Present when the run was carried from another community. */
+  carriedFrom?: ManagedCarriedFrom;
 }>;
 
 export type TimeTrialCorrection = Readonly<{
@@ -306,13 +316,26 @@ function event(value: unknown): ManagedTimeTrialEvent {
   };
 }
 
+const carriedOriginPattern = /^https:\/\/[^/?#\s]+$/;
+
+function carriedFrom(value: unknown): ManagedCarriedFrom {
+  const row = object(value);
+  keys(row, ["origin", "originalSubmittedAtMs"], ["communityName", "originalSubmissionId"]);
+  return {
+    origin: text(row["origin"], 255, carriedOriginPattern),
+    ...("communityName" in row ? { communityName: text(row["communityName"], 160) } : {}),
+    ...("originalSubmissionId" in row ? { originalSubmissionId: text(row["originalSubmissionId"], 256) } : {}),
+    originalSubmittedAtMs: integer(row["originalSubmittedAtMs"]),
+  };
+}
+
 function managed(value: unknown): ManagedTimeTrial {
   const row = object(value);
   keys(row, [
     "submissionId", "playerId", "playerUsername", "playerDisplayName",
     "retirementState", "publicationStatus", "publicationReason", "current",
     "revisions", "events",
-  ], ["videoUrl"]);
+  ], ["videoUrl", "carriedFrom"]);
   if (!Array.isArray(row["revisions"]) || row["revisions"].length > 200 ||
       !Array.isArray(row["events"]) || row["events"].length > 200) {
     throw fail("invalid_response");
@@ -329,6 +352,7 @@ function managed(value: unknown): ManagedTimeTrial {
     revisions: row["revisions"].map(revision),
     events: row["events"].map(event),
     ...("videoUrl" in row ? { videoUrl: text(row["videoUrl"], 64, youTubeWatchPattern) } : {}),
+    ...("carriedFrom" in row ? { carriedFrom: carriedFrom(row["carriedFrom"]) } : {}),
   };
 }
 

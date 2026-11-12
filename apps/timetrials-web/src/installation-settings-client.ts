@@ -1,6 +1,7 @@
 /**
- * Installation settings (ADR-0221): who creates Players and who counts for the rating. Anyone reads
- * the public pair (pages explain a missing button with it); administrators read the audit-facing view,
+ * Installation settings (ADR-0221): who creates Players and who counts for the rating, and (ADR-0225)
+ * whether times carried from another community are accepted. Anyone reads the public settings (pages
+ * explain a missing button with them); administrators read the audit-facing view,
  * save changes and start the explicit rating recalculation. Responses are checked key for key, like
  * every client here; tests/contracts binds the keys to the API schemas.
  */
@@ -14,15 +15,18 @@ const maximumResponseBytes = 16_384;
 
 export type PlayerCreationPolicy = "self_and_directors" | "self_only" | "directors_only";
 export type RatingEligibilityPolicy = "all_players" | "claimed_only";
+export type CarriedTimesPolicy = "off" | "review" | "allowed";
 
 export type InstallationSettings = Readonly<{
   playerCreation: PlayerCreationPolicy;
   ratingEligibility: RatingEligibilityPolicy;
+  carriedTimes: CarriedTimesPolicy;
 }>;
 
 export const DEFAULT_INSTALLATION_SETTINGS: InstallationSettings = {
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
+  carriedTimes: "off",
 };
 
 export type RatingRecomputeStatus = Readonly<{
@@ -67,6 +71,7 @@ export interface InstallationSettingsClient {
     expectedRevision: number;
     playerCreation?: PlayerCreationPolicy;
     ratingEligibility?: RatingEligibilityPolicy;
+    carriedTimes?: CarriedTimesPolicy;
   }>, signal?: AbortSignal): Promise<InstallationSettingsAdministration>;
   recomputeRatings(signal?: AbortSignal): Promise<InstallationRatingRecompute>;
 }
@@ -109,11 +114,20 @@ function ratingEligibility(value: unknown): RatingEligibilityPolicy {
   return value;
 }
 
+function carriedTimes(value: unknown): CarriedTimesPolicy {
+  if (value !== "off" && value !== "review" && value !== "allowed") { fail(); }
+  return value;
+}
+
 function settingsDocument(value: unknown): InstallationSettings {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility"]);
+  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings.v1") { fail(); }
-  return { playerCreation: playerCreation(row["playerCreation"]), ratingEligibility: ratingEligibility(row["ratingEligibility"]) };
+  return {
+    playerCreation: playerCreation(row["playerCreation"]),
+    ratingEligibility: ratingEligibility(row["ratingEligibility"]),
+    carriedTimes: carriedTimes(row["carriedTimes"]),
+  };
 }
 
 function recomputeStatus(value: unknown): RatingRecomputeStatus {
@@ -129,11 +143,12 @@ function recomputeStatus(value: unknown): RatingRecomputeStatus {
 
 function administrationDocument(value: unknown): InstallationSettingsAdministration {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "revision", "updatedAtMs", "ratingRecompute"]);
+  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs", "ratingRecompute"]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings-administration.v1") { fail(); }
   return {
     playerCreation: playerCreation(row["playerCreation"]),
     ratingEligibility: ratingEligibility(row["ratingEligibility"]),
+    carriedTimes: carriedTimes(row["carriedTimes"]),
     revision: count(row["revision"]),
     updatedAtMs: row["updatedAtMs"] === null ? null : count(row["updatedAtMs"]),
     ratingRecompute: recomputeStatus(row["ratingRecompute"]),
@@ -227,6 +242,7 @@ export function createInstallationSettingsClient(
         expectedRevision: input.expectedRevision,
         ...(input.playerCreation === undefined ? {} : { playerCreation: input.playerCreation }),
         ...(input.ratingEligibility === undefined ? {} : { ratingEligibility: input.ratingEligibility }),
+        ...(input.carriedTimes === undefined ? {} : { carriedTimes: input.carriedTimes }),
       }, signal));
     },
     async recomputeRatings(signal) { return recomputeDocument(await post(INSTALLATION_RECOMPUTE_PATH, {}, signal)); },

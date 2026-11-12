@@ -4,6 +4,7 @@ import {
   attachOwnerTimeTrialManagement,
   correctionOf,
   editDraftOf,
+  describeCarriedFrom,
   describeLifecycleEvent,
   describePresence,
   formatTimeMs,
@@ -16,6 +17,7 @@ import {
   type ManagedTimeTrial,
   type TimeTrialLifecycleClient,
 } from "../src/time-trial-lifecycle-client.js";
+import { mountAdministratorTimeTrialSection } from "../src/administrator-time-trial-section.js";
 import { allByClass, byClass, descendants, FakeDocument, type FakeNode, texts } from "./dom-double.js";
 
 function node(root: FakeNode, value: string): FakeNode {
@@ -307,5 +309,55 @@ describe("owner management affordance", () => {
     expect(opened?.open).toBe(false);
     expect(document.activeElement).toBe(toggle);
     attached.unmount();
+  });
+});
+
+describe("a carried run (ADR-0225)", () => {
+  const carriedFrom = {
+    origin: "https://club.example.org",
+    communityName: "Synthetic Club",
+    originalSubmittedAtMs: Date.UTC(2026, 10, 3, 12),
+  };
+
+  it("names the community, or its address, and the original day", () => {
+    expect(describeCarriedFrom(carriedFrom)).toMatch(/^Carried from Synthetic Club · originally .*2026$/);
+    expect(describeCarriedFrom({ origin: "https://192.168.1.50:8443", originalSubmittedAtMs: carriedFrom.originalSubmittedAtMs }))
+      .toMatch(/^Carried from 192\.168\.1\.50:8443 · originally /);
+  });
+
+  it("shows the marker on the run's detail and only for a carried run", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const carried = { ...result, carriedFrom };
+    const panel = mountTimeTrialManagementPanel(root as unknown as HTMLElement, submissionId, { client: client({ async read() { return carried; } }) });
+    await panel.ready;
+    const marker = byClass(root, "ds-carried-from");
+    expect(marker?.textContent).toMatch(/^Carried from Synthetic Club · originally /);
+    expect(marker?.getAttribute("title")).toBe("https://club.example.org");
+    panel.unmount();
+
+    const plainRoot = document.createElement("div");
+    const plain = mountTimeTrialManagementPanel(plainRoot as unknown as HTMLElement, submissionId, { client: client() });
+    await plain.ready;
+    expect(allByClass(plainRoot, "ds-carried-from")).toHaveLength(0);
+    plain.unmount();
+  });
+
+  it("shows the marker in the administrator's review list", async () => {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const section = mountAdministratorTimeTrialSection(
+      root as unknown as HTMLElement,
+      client({ async listForAdministrator() { return [{ ...result, publicationStatus: "withheld", carriedFrom }]; } }),
+      {
+        async read() { throw new Error("unused"); },
+        async setOwn() { throw new Error("unused"); },
+        async setForPlayer() { throw new Error("unused"); },
+      },
+    );
+    await section.ready;
+    await settle();
+    expect(allByClass(root, "ds-carried-from")).toHaveLength(1);
+    section.unmount();
   });
 });

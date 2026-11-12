@@ -1,7 +1,8 @@
 // Administration → Installation settings (ADR-0221).
 //
-// Two choices for the whole installation: who creates Players (self sign-up, Directors, or both) and
-// who counts for the one rating (every Player, or only Players with a verified claim). Changing who
+// Three choices for the whole installation: who creates Players (self sign-up, Directors, or both),
+// who counts for the one rating (every Player, or only Players with a verified claim) and whether times
+// carried from another community are accepted (ADR-0225: off, with approval, or allowed). Changing who
 // counts never rebuilds ratings silently: the administrator confirms, and the change is followed by
 // the same audited recalculation as every other one. When claims change while claims matter, the
 // section says the ratings are out of date and offers that recalculation again.
@@ -10,6 +11,7 @@ import { confirmDialog } from "./ds-components.js";
 import {
   createInstallationSettingsClient,
   InstallationSettingsClientError,
+  type CarriedTimesPolicy,
   type InstallationSettingsAdministration,
   type InstallationSettingsClient,
   type PlayerCreationPolicy,
@@ -56,6 +58,23 @@ function ratingEligibilityOptions(): readonly (readonly [RatingEligibilityPolicy
   ];
 }
 
+function carriedTimesOptions(): readonly (readonly [CarriedTimesPolicy, string])[] {
+  return [
+    ["off", localized(
+      "Off: times from other communities are refused (default)",
+      "Uit: tijden uit andere community's worden geweigerd (standaard)",
+    )],
+    ["review", localized(
+      "With approval: an administrator approves each carried time",
+      "Met goedkeuring: een beheerder keurt elke meegenomen tijd goed",
+    )],
+    ["allowed", localized(
+      "Allowed: carried times follow the normal publication rules",
+      "Toegestaan: meegenomen tijden volgen de gewone publicatieregels",
+    )],
+  ];
+}
+
 function failureText(error: unknown, fallback: string): string {
   if (error instanceof InstallationSettingsClientError) {
     if (error.code === "conflict" && error.serverCode === "installation_settings_conflict") {
@@ -88,8 +107,8 @@ export function mountInstallationSettingsSection(
   const intro = document.createElement("p");
   intro.className = "ds-body";
   intro.textContent = localized(
-    "These choices hold for the whole site: who creates Players, and who counts for the rating. Each change is recorded with your name.",
-    "Deze keuzes gelden voor de hele site: wie spelers aanmaakt en wie meetelt voor de rating. Elke wijziging wordt met jouw naam vastgelegd.",
+    "These choices hold for the whole site: who creates Players, who counts for the rating, and whether times from other communities are accepted. Each change is recorded with your name.",
+    "Deze keuzes gelden voor de hele site: wie spelers aanmaakt, wie meetelt voor de rating en of tijden uit andere community's worden geaccepteerd. Elke wijziging wordt met jouw naam vastgelegd.",
   );
   const status = document.createElement("p");
   status.setAttribute("role", "status");
@@ -132,7 +151,11 @@ export function mountInstallationSettingsSection(
     }).open();
   };
 
-  const save = (patch: Readonly<{ playerCreation?: PlayerCreationPolicy; ratingEligibility?: RatingEligibilityPolicy }>, thenRecompute: boolean): void => {
+  const save = (patch: Readonly<{
+    playerCreation?: PlayerCreationPolicy;
+    ratingEligibility?: RatingEligibilityPolicy;
+    carriedTimes?: CarriedTimesPolicy;
+  }>, thenRecompute: boolean): void => {
     if (current === null) { return; }
     status.textContent = localized("Saving…", "Opslaan…");
     void client.update({ expectedRevision: current.revision, ...patch }, controller.signal)
@@ -220,6 +243,16 @@ export function mountInstallationSettingsSection(
         // Until confirmed, the select keeps showing what is saved.
         select.value = settings.ratingEligibility;
       },
+    ));
+    content.append(choice(
+      localized("Times from other communities", "Tijden uit andere community's"),
+      localized(
+        "A player who belongs to several communities can carry a time set elsewhere to this one. A carried time always shows where it came from.",
+        "Een speler die bij meerdere community's hoort, kan een elders gezette tijd naar deze meenemen. Een meegenomen tijd laat altijd zien waar hij vandaan komt.",
+      ),
+      carriedTimesOptions(),
+      settings.carriedTimes,
+      (value) => { save({ carriedTimes: value }, false); },
     ));
     const recomputeStatus = settings.ratingRecompute;
     const last = document.createElement("p");

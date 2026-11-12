@@ -12,6 +12,7 @@ import {
   TimeTrialLifecycleClientError,
   createTimeTrialLifecycleClient,
   isTimeTrialReasonCode,
+  type ManagedCarriedFrom,
   type ManagedTimeTrial,
   type ManagedTimeTrialEvent,
   type TimeTrialCorrection,
@@ -19,8 +20,10 @@ import {
   type TimeTrialReasonCode,
 } from "./time-trial-lifecycle-client.js";
 import { schema9WebTrackCatalog } from "./schema9-track-catalog.js";
+import { localized, productLocaleTag } from "./product-language.js";
 import {
   button,
+  chip,
   dialog,
   field,
   nextId,
@@ -204,6 +207,29 @@ export function describePresence(result: ManagedTimeTrial): string {
     : "Not public yet — kept in your account.";
 }
 
+/**
+ * "Carried from <community> · originally <date>" (ADR-0225): the community's name when the producer
+ * gave one, otherwise its address, and the day the time was first submitted there.
+ */
+export function describeCarriedFrom(carried: ManagedCarriedFrom): string {
+  const from = carried.communityName ?? carried.origin.replace(/^https:\/\//, "");
+  const originally = new Date(carried.originalSubmittedAtMs).toLocaleDateString(productLocaleTag(), {
+    day: "numeric", month: "short", year: "numeric",
+  });
+  return localized(
+    `Carried from ${from} · originally ${originally}`,
+    `Meegenomen van ${from} · oorspronkelijk ${originally}`,
+  );
+}
+
+/** The small marker a carried run carries wherever it is shown in detail or in review. */
+export function carriedFromMarker(carried: ManagedCarriedFrom): HTMLElement {
+  const marker = chip(describeCarriedFrom(carried), "info");
+  marker.classList.add("ds-carried-from");
+  marker.setAttribute("title", carried.origin);
+  return marker;
+}
+
 export type CorrectionDraft = Readonly<{
   totalTime: string;
   laps: readonly string[];
@@ -379,6 +405,9 @@ export function mountTimeTrialManagementPanel(
       `Manage ${result.playerDisplayName}'s ${trackName(result.current.trackId)} ${result.current.modeCc}cc Time Trial, ${formatTimeMs(result.current.totalTimeMs)}, submission ${submissionId.slice(-8)}`,
     );
     status.textContent = describePresence(result);
+    if (result.carriedFrom !== undefined) {
+      content.append(carriedFromMarker(result.carriedFrom));
+    }
 
     const summary = document.createElement("dl");
     summary.className = "ds-manage__facts";
