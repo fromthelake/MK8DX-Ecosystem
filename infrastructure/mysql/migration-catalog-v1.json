@@ -785,6 +785,15 @@
       "downPath": "migrations/0087_carried_times.down.sql",
       "downSha256": "7b708f0385c75aff6e3e971f021b8c25b180cdbd2d393cb2430d040019be9324",
       "destructiveDown": true
+    },
+    {
+      "version": "0088",
+      "name": "time_trial_review_publication",
+      "upPath": "migrations/0088_time_trial_review_publication.up.sql",
+      "upSha256": "16d39a5916fd4ed03dca162bcec6e9978810d01e4f70d74f74ccb3a7d1665813",
+      "downPath": "migrations/0088_time_trial_review_publication.down.sql",
+      "downSha256": "7cf013c5f647f545df18d840b3b0e0d35f3de78f26834fa11cefd915c71b294e",
+      "destructiveDown": true
     }
   ]
 }
