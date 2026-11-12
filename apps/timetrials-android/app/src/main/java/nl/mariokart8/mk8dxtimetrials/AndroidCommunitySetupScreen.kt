@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
@@ -51,9 +52,11 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
 @Composable
 internal fun AndroidCommunitySetup(current: String?, onSave: (String) -> Unit) {
     val context = LocalContext.current
-    var address by remember { mutableStateOf(current.orEmpty()) }
-    var error by remember { mutableStateOf(false) }
-    var pairing by remember { mutableStateOf(false) }
+    // Saveable: turning the phone or switching light/dark recreates the activity, and the first version then
+    // dropped the person back here halfway through pairing (found on the emulator, 2026-11-12).
+    var address by rememberSaveable { mutableStateOf(current.orEmpty()) }
+    var error by rememberSaveable { mutableStateOf(false) }
+    var pairing by rememberSaveable { mutableStateOf(false) }
     var paired by remember { mutableStateOf(AndroidLanPairingStore.load(context)?.origin) }
     val language = remember(context) { AndroidProductLanguageStore.readForFirstStart(context) }
     val appearance = remember(context) { Mk8dxAppearanceStore(context).read() }

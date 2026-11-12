@@ -9,25 +9,41 @@ import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import nl.mariokart8.mk8dxtimetrials.ui.ProductText as Text
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonSize
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxDisplayText
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxPanel
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxSectionLabel
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxSpacing
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusMessage
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusTone
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTextField
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
@@ -58,11 +74,11 @@ private sealed interface PairingStep {
 @Composable
 internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> Unit) {
     val context = LocalContext.current
-    val language = remember { AndroidProductLanguageStore.read(context) }
+    val language = remember { AndroidProductLanguageStore.readForFirstStart(context) }
     fun t(en: String, nl: String) = androidText(language, en, nl)
     var step by remember { mutableStateOf<PairingStep>(PairingStep.Scanning) }
     var message by remember { mutableStateOf<String?>(null) }
-    var pasted by remember { mutableStateOf("") }
+    var pasted by rememberSaveable { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
     fun offer(text: String) {
@@ -74,46 +90,83 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
         )
     }
 
+    Mk8dxTheme(Mk8dxTheme.appearance) {
+    val colors = Mk8dxTheme.colors
+    val type = Mk8dxTheme.type
     Column(
-        Modifier.padding(24.dp).verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        Modifier
+            .fillMaxSize()
+            .background(colors.surfaceApp)
+            // Like the community screen: no shell around it, so it keeps clear of the bars itself.
+            .safeDrawingPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(Mk8dxSpacing.xxl)
+            .testTag("lan-pairing"),
+        verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.lg),
     ) {
+        Mk8dxSectionLabel(t("HOME OR CLUB", "THUIS OF CLUB"))
         when (val current = step) {
             PairingStep.Scanning -> {
-                Text(t("Connect to a home or club installation", "Verbinden met een installatie thuis of bij de club"))
-                Text(t(
-                    "Scan the setup QR on the host screen. The phone must be on the same network.",
-                    "Scan de setup-QR op het hostscherm. De telefoon moet op hetzelfde netwerk zitten.",
-                ))
-                QrCameraPreview(onText = ::offer)
-                message?.let { Text(it) }
-                OutlinedTextField(
-                    value = pasted, onValueChange = { pasted = it }, singleLine = true,
-                    label = { Text(t("Or paste the setup link", "Of plak de setup-link")) },
-                    modifier = Modifier.fillMaxWidth(),
+                Mk8dxDisplayText(t("Scan the setup QR code", "Scan de setup-QR-code"), type.display4)
+                Text(
+                    t(
+                        "Open MK8DX beheer on the computer that hosts MK8DX and point the camera at the setup QR code. The phone must be on the same network.",
+                        "Open MK8DX beheer op de computer waar MK8DX op draait en richt de camera op de setup-QR-code. De telefoon moet op hetzelfde netwerk zitten.",
+                    ),
+                    style = type.body,
+                    color = colors.textBody,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = onCancel) { Text(t("Cancel", "Annuleren")) }
-                    Button(onClick = { offer(pasted) }, enabled = pasted.isNotBlank()) { Text(t("Next", "Volgende")) }
+                QrCameraPreview(onText = ::offer, label = t("Use the camera", "Camera gebruiken"))
+                message?.let { Mk8dxStatusMessage(it, tone = Mk8dxStatusTone.Error) }
+                Mk8dxTextField(
+                    label = t("Or paste the setup link", "Of plak de setup-link"),
+                    value = pasted,
+                    onValueChange = { pasted = it },
+                    tag = "lan-pairing-link",
+                )
+                Row(horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
+                    Mk8dxButton(t("Cancel", "Annuleren"), onCancel, variant = Mk8dxButtonVariant.Quiet, tag = "lan-pairing-cancel")
+                    Mk8dxButton(
+                        t("Next", "Volgende"),
+                        { offer(pasted) },
+                        variant = Mk8dxButtonVariant.Primary,
+                        disabledReason = if (pasted.isBlank()) t("Paste the setup link first", "Plak eerst de setup-link") else null,
+                        disabledReasonShown = false,
+                        tag = "lan-pairing-next",
+                    )
                 }
             }
             is PairingStep.Confirm, is PairingStep.Connecting -> {
                 val pairing = if (current is PairingStep.Confirm) current.offer else (current as PairingStep.Connecting).offer
-                Text(t("Check this against the host screen", "Vergelijk dit met het hostscherm"))
-                Text(t("Address", "Adres"))
-                Text(pairing.origin, fontFamily = FontFamily.Monospace)
-                Text(t("Root public key SHA-256 (SPKI)", "Root publieke sleutel SHA-256 (SPKI)"))
-                Text(AndroidLanRoot.grouped(pairing.spkiSha256), fontFamily = FontFamily.Monospace)
-                Text(t(
-                    "Connect only if both match exactly. The app will then trust this installation, and only for this address.",
-                    "Verbind alleen als beide precies gelijk zijn. De app vertrouwt daarna deze installatie, en alleen voor dit adres.",
-                ))
-                message?.let { Text(it) }
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    OutlinedButton(onClick = { message = null; step = PairingStep.Scanning }, enabled = current is PairingStep.Confirm) {
-                        Text(t("Back", "Terug"))
-                    }
-                    Button(enabled = current is PairingStep.Confirm, onClick = {
+                Mk8dxDisplayText(t("Check this against the host screen", "Vergelijk dit met het hostscherm"), type.display4)
+                Mk8dxPanel(t("ADDRESS", "ADRES")) {
+                    Text(pairing.origin, style = type.body, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
+                }
+                Mk8dxPanel(t("KEY FINGERPRINT (SHA-256)", "SLEUTELVINGERAFDRUK (SHA-256)")) {
+                    Text(AndroidLanRoot.grouped(pairing.spkiSha256), style = type.body, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
+                }
+                Text(
+                    t(
+                        "Connect only if both match exactly. The app will then trust this installation, and only for this address.",
+                        "Verbind alleen als beide precies gelijk zijn. De app vertrouwt daarna deze installatie, en alleen voor dit adres.",
+                    ),
+                    style = type.body,
+                    color = colors.textBody,
+                )
+                message?.let {
+                    Mk8dxStatusMessage(it, tone = if (current is PairingStep.Connecting) Mk8dxStatusTone.Info else Mk8dxStatusTone.Error)
+                }
+                Row(horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
+                    Mk8dxButton(
+                        t("Back", "Terug"),
+                        { message = null; step = PairingStep.Scanning },
+                        variant = Mk8dxButtonVariant.Quiet,
+                        disabledReason = if (current is PairingStep.Confirm) null else t("Connecting…", "Verbinden…"),
+                        tag = "lan-pairing-back",
+                    )
+                    Mk8dxButton(
+                        t("Connect", "Verbinden"),
+                        {
                         step = PairingStep.Connecting(pairing)
                         message = t("Connecting…", "Verbinden…")
                         scope.launch {
@@ -137,15 +190,20 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
                                 onPaired(pairing.origin)
                             }
                         }
-                    }) { Text(t("Connect", "Verbinden")) }
+                        },
+                        variant = Mk8dxButtonVariant.Primary,
+                        disabledReason = if (current is PairingStep.Confirm) null else t("Connecting…", "Verbinden…"),
+                        tag = "lan-pairing-connect",
+                    )
                 }
             }
         }
     }
+    }
 }
 
 @Composable
-private fun QrCameraPreview(onText: (String) -> Unit) {
+private fun QrCameraPreview(onText: (String) -> Unit, label: String) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var granted by remember {
@@ -153,10 +211,15 @@ private fun QrCameraPreview(onText: (String) -> Unit) {
     }
     val permission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted = it }
     if (!granted) {
-        val language = remember { AndroidProductLanguageStore.read(context) }
-        Button(onClick = { permission.launch(Manifest.permission.CAMERA) }) {
-            Text(androidText(language, "Use the camera", "Camera gebruiken"))
-        }
+        Mk8dxButton(
+            label,
+            { permission.launch(Manifest.permission.CAMERA) },
+            variant = Mk8dxButtonVariant.Primary,
+            size = Mk8dxButtonSize.Lg,
+            camera = true,
+            tag = "lan-pairing-camera",
+            modifier = Modifier.fillMaxWidth(),
+        )
         return
     }
     val executor = remember { Executors.newSingleThreadExecutor() }
@@ -168,7 +231,16 @@ private fun QrCameraPreview(onText: (String) -> Unit) {
             executor.shutdown()
         }
     }
-    Box(Modifier.fillMaxWidth().aspectRatio(1f).clipToBounds()) {
+    val frame = RoundedCornerShape(Mk8dxSpacing.md)
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f)
+            .clip(frame)
+            .border(Mk8dxSpacing.xxs, Mk8dxTheme.colors.borderStrong, frame)
+            .background(Mk8dxTheme.colors.surfaceRaised)
+            .clipToBounds(),
+    ) {
         AndroidView(factory = { viewContext ->
             PreviewView(viewContext).apply {
                 // A TextureView stays inside its Compose bounds; the default SurfaceView drew over the field below.
