@@ -5,7 +5,8 @@
 Language: English · [Nederlands](README_NL.md)
 
 <!-- Screenshots still to add: LiveTrial's live view and the phone scanner on a TV result screen
-     (real captures, player names made unrecognisable). The pictures below use made-up players. -->
+     (real captures, player names made unrecognisable). The pictures below use made-up players;
+     the website follows the device's light or dark setting. -->
 
 ![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 
@@ -84,7 +85,7 @@ sits where, which group plays next, the scores, the finals and the standings.
   article) and an optional TrueSkill-style community rating across nights.
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="Final results of a tournament night: qualifier groups coloured by the final each player went on to" width="49%">
+  <img src="docs/readme/tournament-results.jpg" alt="Final results of a tournament night: qualifier groups with each player's character, coloured by the final they went on to" width="49%">
   <img src="docs/readme/tournament-skill.jpg" alt="Tournament skill page: TrueSkill rating, wins, top 3 and average finish of a player" width="49%">
 </p>
 
@@ -126,7 +127,7 @@ time, and **23 mastery levels** measured against the current world records.
 
 <p>
   <img src="docs/readme/timetrials-leaderboard.jpg" alt="Rainbow Road leaderboard with the world record, combos, mushrooms and coins per lap" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="The same leaderboard on a phone" width="24%">
+  <img src="docs/readme/phone-leaderboard.jpg" alt="The same leaderboard on a phone, in the dark theme" width="24%">
 </p>
 
 ## 🌍 Speaks your language — all 15 of them
