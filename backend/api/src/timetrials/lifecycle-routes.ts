@@ -19,7 +19,7 @@ export type TimeTrialLifecycleRouteOptions = Readonly<{
   service: Pick<
     TimeTrialLifecycleService,
     "readOwnedOrAdministered" | "listOwn" | "listForAdministrator" | "correct"
-    | "retire" | "restore" | "setVideo" | "publishReviewed"
+    | "retire" | "restore" | "setVideo" | "publishReviewed" | "resolveCarriedWaiting"
   >;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
 }>;
@@ -185,6 +185,18 @@ const publishBodySchema = {
   properties: {
     expectedRevision: { type: "integer", minimum: 1 },
     note: { type: "string", maxLength: 256 },
+  },
+} as const;
+
+export const carriedWaitingResolutionSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "decision", "resolved", "left"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.carried-waiting-resolution.v1" },
+    decision: { type: "string", enum: ["publish", "refuse"] },
+    resolved: { type: "integer", minimum: 0 },
+    left: { type: "integer", minimum: 0 },
   },
 } as const;
 
@@ -372,6 +384,38 @@ export async function registerTimeTrialLifecycleRoutes(
     (actor, submissionId, body) => options.service.publishReviewed(
       actor, submissionId, body.expectedRevision, body.note,
     ),
+  );
+
+  // ADR-0225: every carried run still waiting, published or refused at once by an administrator.
+  app.post<{ Body: Readonly<{ decision: string; expectedCount: number }> }>(
+    "/v1/administrator/time-trials/actions/resolve-carried-waiting",
+    {
+      schema: {
+        body: {
+          type: "object",
+          additionalProperties: false,
+          required: ["decision", "expectedCount"],
+          properties: {
+            decision: { type: "string", enum: ["publish", "refuse"] },
+            expectedCount: { type: "integer", minimum: 1, maximum: 10_000 },
+          },
+        },
+        response: { ...responses, 200: carriedWaitingResolutionSchema },
+      },
+    },
+    async (request, reply) => {
+      try {
+        const actor = await options.resolveActor(request);
+        await requireProof(options, actor, request.headers["x-mk8dx-csrf"]);
+        const outcome = await options.service.resolveCarriedWaiting(
+          actor, request.body.decision, request.body.expectedCount,
+        );
+        return reply.send({ schemaVersion: "mk8dx.carried-waiting-resolution.v1" as const, ...outcome });
+      } catch (error) {
+        const { status, body } = errorReply(error);
+        return reply.code(status as 503).send(body as never);
+      }
+    },
   );
 
   app.get<{ Querystring: Record<string, string | undefined> }>(

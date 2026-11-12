@@ -164,6 +164,12 @@ export interface TimeTrialLifecycleRepository {
     note?: string;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial>;
+  /** Publishes or refuses every carried run waiting for review, exactly expectedCount of them. */
+  resolveCarriedWaiting(input: Readonly<{
+    decision: CarriedWaitingDecision;
+    expectedCount: number;
+    actorUserAccountId: string;
+  }>): Promise<CarriedWaitingResolution>;
   /** Attaches (videoId) or removes (null) the result's YouTube video. */
   setVideo(input: Readonly<{
     submissionId: string;
@@ -363,6 +369,31 @@ export class TimeTrialLifecycleService {
     }));
   }
 
+  /**
+   * ADR-0225: when carried times stop needing approval, the administrator decides what happens to
+   * the carried runs still waiting: publish them all, or refuse them all (each retired with reason
+   * carried_times_turned_off, restorable like any retirement). The count is the one on screen.
+   */
+  public async resolveCarriedWaiting(
+    actor: ActorContext,
+    decision: string,
+    expectedCount: number,
+  ): Promise<CarriedWaitingResolution & Readonly<{ decision: CarriedWaitingDecision }>> {
+    if (actor.role !== "administrator") {
+      throw new TimeTrialLifecycleError(
+        actor.role === "anonymous" ? "not_authenticated" : "forbidden",
+      );
+    }
+    if ((decision !== "publish" && decision !== "refuse") ||
+        !Number.isSafeInteger(expectedCount) || expectedCount < 1 || expectedCount > 10_000) {
+      throw new TimeTrialLifecycleError("invalid_input");
+    }
+    const outcome = await this.guard(() => this.repository.resolveCarriedWaiting({
+      decision, expectedCount, actorUserAccountId: actor.userAccountId,
+    }));
+    return { decision, ...outcome };
+  }
+
   // Ownership is decided by the server from the account's verified claim.
   // A hidden button is not a permission: every action re-resolves it.
   private async authorize(
@@ -499,3 +530,15 @@ export function requireAwaitingReview(result: ManagedTimeTrial, expectedRevision
     throw new TimeTrialLifecycleError("conflict", "That Time Trial is not waiting for review.");
   }
 }
+
+/** ADR-0225: what happens to the carried runs still waiting when approval is no longer asked. */
+export type CarriedWaitingDecision = "publish" | "refuse";
+export type CarriedWaitingResolution = Readonly<{
+  /** Runs published or refused. */
+  resolved: number;
+  /** Runs left waiting: a Private Player's run is never published by this action. */
+  left: number;
+}>;
+
+/** The lifecycle reason of a carried run refused because carried times were turned off. */
+export const CARRIED_TIMES_TURNED_OFF_REASON = "carried_times_turned_off";

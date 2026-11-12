@@ -9,6 +9,8 @@ import { MysqlTimeTrialWriteRepository } from
   "../src/timetrials/mysql-time-trial-write-repository.js";
 import { MysqlTimeTrialLifecycleRepository } from
   "../src/timetrials/mysql-lifecycle-repository.js";
+import { MysqlInstallationSettingsRepository } from
+  "../src/administration/mysql-installation-settings-repository.js";
 import {
   TimeTrialLifecycleError,
   TimeTrialLifecycleService,
@@ -45,6 +47,8 @@ const accountId = "user_account.synthetic_lifecycle_01";
 const strangerAccountId = "user_account.synthetic_lifecycle_stranger";
 const claimId = "player_claim.synthetic_lifecycle_01";
 const submissionId = "user_submission.time.SYNTHETICLIFECYCLE01";
+// ADR-0225: carried runs of the same Player, set to waiting for review the real way.
+const extraSubmissionIds = [2, 3, 4, 5, 6].map((n) => `user_submission.time.SYNTHETICLIFECYCLE0${n}`);
 const trackId = "track.synthetic_lifecycle_track";
 
 const owner = { role: "account" as const, userAccountId: accountId };
@@ -204,7 +208,9 @@ integration("owner and administrator Time Trial lifecycle", () => {
             = revision.time_trial_submission_id
        WHERE submission.public_id = ?`,
       `DELETE FROM time_trial_submissions WHERE public_id = ?`,
-    ]) { await pool.execute(statement, [submissionId]); }
+    ]) {
+      for (const id of [submissionId, ...extraSubmissionIds]) { await pool.execute(statement, [id]); }
+    }
     await pool.execute(
       `DELETE visibility FROM player_visibility_lifecycle AS visibility
        INNER JOIN players AS player ON player.player_id = visibility.player_id
@@ -366,33 +372,51 @@ integration("owner and administrator Time Trial lifecycle", () => {
     );
   });
 
+  // ADR-0225: carried runs reach "waiting for review" the real way, through the submission service
+  // with the carriedTimes setting on "review".
+  const carriedSubmission = (id: string, totalTimeMs: number): TimeTrialSubmissionV1 => ({
+    ...submission(),
+    submissionId: id,
+    totalTimeMs,
+    laps: [
+      { lapNumber: 1, timeMs: totalTimeMs - 60_000 },
+      { lapNumber: 2, timeMs: 30_000 },
+      { lapNumber: 3, timeMs: 30_000 },
+    ],
+    timestamps: { createdAtMs: 1_900_000_500_000 },
+    carriedFrom: { origin: "https://club.example.org", originalSubmittedAtMs: 1_890_000_000_000 },
+  });
+  const reviewWrites = () => new TimeTrialSubmissionService(
+    new MysqlTimeTrialWriteRepository(pool, { nowMs: () => 1_900_000_600_000 }),
+    new AcceptingCatalog(),
+    new UnusedProtector(),
+    undefined,
+    { policy: async () => "review", ownOrigins: [] },
+  );
+  const waitingCount = () => new MysqlInstallationSettingsRepository(pool).carriedTimesAwaitingReview();
+
   it("publishes a run waiting for review through the ordinary publication path (ADR-0225)", async () => {
-    // Put the run in the state a carried time under "review" is stored in.
-    await pool.execute(
-      `UPDATE time_trial_publications AS publication
-       INNER JOIN time_trial_submissions AS submission
-         ON submission.time_trial_submission_id = publication.time_trial_submission_id
-       SET publication.publication_status = 'withheld', publication.publication_origin = 'internal_withheld',
-           publication.reason_code = 'explicit_review_required', publication.published_at_ms = NULL,
-           publication.rank_at_publication = NULL
-       WHERE submission.public_id = ?`,
-      [submissionId],
-    );
-    expect(await leaderboardTimes()).toEqual([]);
-    const before = await lifecycle.readOwnedOrAdministered(administrator, submissionId);
-    await expect(lifecycle.publishReviewed(owner, submissionId, before.current.revision))
+    const shownBefore = await leaderboardTimes();
+    await reviewWrites().submit(carriedSubmission(extraSubmissionIds[0]!, 85_000), { publicationIntent: "trusted_runtime" });
+    expect(await leaderboardTimes()).toEqual(shownBefore);
+    expect(await waitingCount()).toBe(1);
+    const before = await lifecycle.readOwnedOrAdministered(administrator, extraSubmissionIds[0]!);
+    expect(before).toMatchObject({ publicationStatus: "withheld", publicationReason: "explicit_review_required" });
+    await expect(lifecycle.publishReviewed(owner, extraSubmissionIds[0]!, 1))
       .rejects.toMatchObject({ code: "forbidden" });
-    await expect(lifecycle.publishReviewed(administrator, submissionId, before.current.revision + 1))
+    await expect(lifecycle.publishReviewed(administrator, extraSubmissionIds[0]!, 2))
       .rejects.toMatchObject({ code: "conflict" });
-    const published = await lifecycle.publishReviewed(administrator, submissionId, before.current.revision, "approved");
+    const published = await lifecycle.publishReviewed(administrator, extraSubmissionIds[0]!, 1, "approved");
     expect(published).toMatchObject({
       publicationStatus: "published", publicationReason: "administrator_review_publication",
-      current: { revision: before.current.revision, totalTimeMs: before.current.totalTimeMs },
+      current: { revision: 1, totalTimeMs: 85_000 },
     });
     expect(published.events.at(-1)).toMatchObject({
       eventType: "published", actorRole: "administrator", reasonCode: "review_approved", note: "approved",
     });
-    expect(await leaderboardTimes()).toEqual([before.current.totalTimeMs]);
+    expect(await leaderboardTimes()).toEqual([85_000]);
+    expect((await publicRepository.listPlayerResults(playerId)).some((row) => row.resultId === extraSubmissionIds[0]))
+      .toBe(true);
     const [rows] = await pool.execute<any[]>(
       `SELECT lifecycle.publication_origin AS origin, lifecycle.rank_at_publication AS rankAtPublication
        FROM time_trial_publication_lifecycle AS lifecycle
@@ -402,10 +426,54 @@ integration("owner and administrator Time Trial lifecycle", () => {
          ON submission.time_trial_submission_id = publication.time_trial_submission_id
        WHERE submission.public_id = ?
        ORDER BY lifecycle.sequence_number DESC LIMIT 1`,
-      [submissionId],
+      [extraSubmissionIds[0]!],
     );
     expect(rows[0]).toMatchObject({ origin: "administrator_review", rankAtPublication: 1 });
-    await expect(lifecycle.publishReviewed(administrator, submissionId, before.current.revision))
+    expect(await waitingCount()).toBe(0);
+    await expect(lifecycle.publishReviewed(administrator, extraSubmissionIds[0]!, 1))
       .rejects.toMatchObject({ code: "conflict" });
+  });
+
+  it("refuses or publishes exactly the carried runs waiting, each audited (ADR-0225)", async () => {
+    const writes = reviewWrites();
+    await writes.submit(carriedSubmission(extraSubmissionIds[1]!, 86_000), { publicationIntent: "trusted_runtime" });
+    await writes.submit(carriedSubmission(extraSubmissionIds[2]!, 87_000), { publicationIntent: "trusted_runtime" });
+    // A run waiting for review that was not carried is not part of this decision.
+    const { carriedFrom: _carried, ...local } = carriedSubmission(extraSubmissionIds[3]!, 88_000);
+    await writes.submit(local);
+    expect(await waitingCount()).toBe(2);
+
+    await expect(lifecycle.resolveCarriedWaiting(owner, "refuse", 2)).rejects.toMatchObject({ code: "forbidden" });
+    await expect(lifecycle.resolveCarriedWaiting(administrator, "refuse", 3)).rejects.toMatchObject({ code: "conflict" });
+    expect(await waitingCount()).toBe(2);
+
+    expect(await lifecycle.resolveCarriedWaiting(administrator, "refuse", 2))
+      .toEqual({ decision: "refuse", resolved: 2, left: 0 });
+    for (const id of [extraSubmissionIds[1]!, extraSubmissionIds[2]!]) {
+      const refused = await lifecycle.readOwnedOrAdministered(administrator, id);
+      expect(refused).toMatchObject({ retirementState: "retired", publicationStatus: "withheld" });
+      expect(refused.events.at(-1)).toMatchObject({
+        eventType: "retired", actorRole: "administrator", reasonCode: "carried_times_turned_off",
+      });
+    }
+    const untouched = await lifecycle.readOwnedOrAdministered(administrator, extraSubmissionIds[3]!);
+    expect(untouched).toMatchObject({
+      retirementState: "active", publicationStatus: "withheld", publicationReason: "explicit_review_required", events: [],
+    });
+    expect(await waitingCount()).toBe(0);
+    // Refused like any retirement, so restorable like any retirement.
+    const restored = await lifecycle.restore(administrator, extraSubmissionIds[1]!, "other");
+    expect(restored).toMatchObject({ retirementState: "active", publicationStatus: "published" });
+
+    await writes.submit(carriedSubmission(extraSubmissionIds[4]!, 84_000), { publicationIntent: "trusted_runtime" });
+    expect(await waitingCount()).toBe(1);
+    expect(await lifecycle.resolveCarriedWaiting(administrator, "publish", 1))
+      .toEqual({ decision: "publish", resolved: 1, left: 0 });
+    const published = await lifecycle.readOwnedOrAdministered(administrator, extraSubmissionIds[4]!);
+    expect(published).toMatchObject({ publicationStatus: "published", publicationReason: "administrator_review_publication" });
+    expect(published.events.at(-1)).toMatchObject({ eventType: "published", reasonCode: "review_approved" });
+    expect(await leaderboardTimes()).toEqual([84_000]);
+    expect((await lifecycle.readOwnedOrAdministered(administrator, extraSubmissionIds[3]!)).publicationStatus)
+      .toBe("withheld");
   });
 });

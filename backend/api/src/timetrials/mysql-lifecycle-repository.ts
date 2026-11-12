@@ -2,6 +2,7 @@ import type { Pool, PoolConnection, ResultSetHeader, RowDataPacket } from
   "mysql2/promise";
 
 import {
+  CARRIED_TIMES_TURNED_OFF_REASON,
   TimeTrialLifecycleError,
   requireAwaitingReview,
   type ManagedTimeTrial,
@@ -57,6 +58,15 @@ function mode(value: unknown): 150 | 200 {
   }
   return parsed;
 }
+
+/**
+ * A carried run waiting for review (ADR-0225), over the publication, its submission and its current
+ * revision aliased publication / submission / revision. The installation settings count uses the same.
+ */
+export const CARRIED_WAITING_CONDITION = `publication.publication_status = 'withheld'
+           AND publication.reason_code = 'explicit_review_required'
+           AND submission.retirement_state = 'active'
+           AND revision.carried_from_origin IS NOT NULL`;
 
 // Where the current revision was carried from (ADR-0225); undefined for a time set here.
 function carriedFromOf(row: ResultRow): TimeTrialCarriedFrom | undefined {
@@ -339,7 +349,74 @@ implements TimeTrialLifecycleRepository {
     note?: string;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial> {
+    return this.transaction((connection) => this.publishReviewedWith(connection, input));
+  }
+
+  /**
+   * ADR-0225: the carried runs waiting for review at this moment, all published or all refused in one
+   * transaction. Each run goes through the same step as its single action (publishReviewed, or a
+   * retirement with reason carried_times_turned_off) and gets its own audit event. Refused with a
+   * conflict when the number waiting is not the number the administrator saw.
+   */
+  public async resolveCarriedWaiting(input: Readonly<{
+    decision: "publish" | "refuse";
+    expectedCount: number;
+    actorUserAccountId: string;
+  }>): Promise<Readonly<{ resolved: number; left: number }>> {
     return this.transaction(async (connection) => {
+      const [rows] = await connection.execute<ResultRow[]>(
+        `SELECT submission.public_id AS submissionId,
+                revision.revision_number AS revisionNumber,
+                player.visibility AS playerVisibility
+         FROM time_trial_publications AS publication
+         INNER JOIN time_trial_submissions AS submission
+           ON submission.time_trial_submission_id = publication.time_trial_submission_id
+         INNER JOIN time_trial_submission_revisions AS revision
+           ON revision.time_trial_submission_revision_id = publication.current_revision_id
+         INNER JOIN players AS player ON player.player_id = revision.player_id
+         WHERE ${CARRIED_WAITING_CONDITION}
+         ORDER BY submission.time_trial_submission_id
+         FOR UPDATE`,
+      );
+      if (rows.length !== input.expectedCount) {
+        throw new TimeTrialLifecycleError(
+          "conflict", "The number of carried times waiting changed meanwhile. Reload and try again.",
+        );
+      }
+      let resolved = 0;
+      let left = 0;
+      for (const row of rows) {
+        const submissionId = text(row["submissionId"], "submissionId");
+        if (input.decision === "publish") {
+          // A Private Player stays private: such a run keeps waiting.
+          if (row["playerVisibility"] === "private") { left += 1; continue; }
+          await this.publishReviewedWith(connection, {
+            submissionId,
+            expectedRevision: integer(row["revisionNumber"], "revision", 1),
+            actorUserAccountId: input.actorUserAccountId,
+          });
+        } else {
+          await this.setRetirementWith(connection, {
+            submissionId,
+            retire: true,
+            reasonCode: CARRIED_TIMES_TURNED_OFF_REASON,
+            actorRole: "administrator",
+            actorUserAccountId: input.actorUserAccountId,
+          });
+        }
+        resolved += 1;
+      }
+      return { resolved, left };
+    });
+  }
+
+  private async publishReviewedWith(connection: PoolConnection, input: Readonly<{
+    submissionId: string;
+    expectedRevision: number;
+    note?: string;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    {
       const current = await this.readManaged(connection, input.submissionId, true);
       if (current === null) { throw new TimeTrialLifecycleError("not_found"); }
       // Checked again under the row lock: the service's check saw the run before the transaction.
@@ -388,7 +465,7 @@ implements TimeTrialLifecycleRepository {
       const next = await this.readManaged(connection, input.submissionId, true);
       if (next === null) { throw new TimeTrialLifecycleError("unavailable"); }
       return next;
-    });
+    }
   }
 
   public async setRetirement(input: Readonly<{
@@ -399,7 +476,19 @@ implements TimeTrialLifecycleRepository {
     actorRole: TimeTrialLifecycleActorRole;
     actorUserAccountId: string;
   }>): Promise<ManagedTimeTrial> {
-    return this.transaction(async (connection) => {
+    return this.transaction((connection) => this.setRetirementWith(connection, input));
+  }
+
+  private async setRetirementWith(connection: PoolConnection, input: Readonly<{
+    submissionId: string;
+    retire: boolean;
+    /** A retirement reason, or carried_times_turned_off for the bulk refusal (ADR-0225). */
+    reasonCode: string;
+    note?: string;
+    actorRole: TimeTrialLifecycleActorRole;
+    actorUserAccountId: string;
+  }>): Promise<ManagedTimeTrial> {
+    {
       const current = await this.readManaged(
         connection, input.submissionId, true,
       );
@@ -459,7 +548,7 @@ implements TimeTrialLifecycleRepository {
       const next = await this.readManaged(connection, input.submissionId, true);
       if (next === null) { throw new TimeTrialLifecycleError("unavailable"); }
       return next;
-    });
+    }
   }
 
   public async setVideo(input: Readonly<{

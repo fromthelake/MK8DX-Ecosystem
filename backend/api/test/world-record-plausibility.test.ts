@@ -118,6 +118,7 @@ describe("the 12 % World Record guard", () => {
       async setRetirement() { return managed; },
       async setVideo() { return managed; },
       async publishReviewed() { return managed; },
+      async resolveCarriedWaiting() { return { resolved: 0, left: 0 }; },
     };
     const lifecycle = new TimeTrialLifecycleService(repository, records);
     const owner = { role: "account" as const, userAccountId: "user_account.one" };

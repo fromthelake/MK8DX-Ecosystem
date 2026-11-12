@@ -8,6 +8,7 @@ import Fastify from "fastify";
 import { describe, expect, it } from "vitest";
 
 import {
+  TimeTrialLifecycleError,
   TimeTrialLifecycleService,
   type ManagedTimeTrial,
   type TimeTrialLifecycleRepository,
@@ -39,6 +40,7 @@ function fixture(state: ManagedTimeTrial = waiting) {
     async correct() { return stored; },
     async setRetirement() { return stored; },
     async setVideo() { return stored; },
+    async resolveCarriedWaiting() { return { resolved: 0, left: 0 }; },
     async publishReviewed(input) {
       published.push(input);
       stored = {
@@ -124,5 +126,64 @@ describe("publishing a run that waits for review (ADR-0225)", () => {
     });
     expect(again.statusCode).toBe(409);
     expect(again.json().code).toBe("time_trial_lifecycle_conflict");
+  });
+});
+
+describe("carried runs still waiting when approval is no longer asked (ADR-0225)", () => {
+  function bulk(waitingNow: number) {
+    const calls: Parameters<TimeTrialLifecycleRepository["resolveCarriedWaiting"]>[0][] = [];
+    const repository = {
+      async findClaimedPlayer() { return null; }, async read() { return waiting; }, async list() { return []; },
+      async correct() { return waiting; }, async setRetirement() { return waiting; }, async setVideo() { return waiting; },
+      async publishReviewed() { return waiting; },
+      async resolveCarriedWaiting(input: Parameters<TimeTrialLifecycleRepository["resolveCarriedWaiting"]>[0]) {
+        calls.push(input);
+        // The repository refuses inside its transaction when the number waiting changed.
+        if (input.expectedCount !== waitingNow) { throw new TimeTrialLifecycleError("conflict", "changed"); }
+        return { resolved: waitingNow, left: 0 };
+      },
+    } satisfies TimeTrialLifecycleRepository;
+    return { service: new TimeTrialLifecycleService(repository), calls };
+  }
+
+  it("publishes or refuses all of them as one administrator decision", async () => {
+    const { service, calls } = bulk(3);
+    expect(await service.resolveCarriedWaiting(admin, "publish", 3)).toEqual({ decision: "publish", resolved: 3, left: 0 });
+    expect(await service.resolveCarriedWaiting(admin, "refuse", 3)).toEqual({ decision: "refuse", resolved: 3, left: 0 });
+    expect(calls).toEqual([
+      { decision: "publish", expectedCount: 3, actorUserAccountId: admin.userAccountId },
+      { decision: "refuse", expectedCount: 3, actorUserAccountId: admin.userAccountId },
+    ]);
+  });
+
+  it("refuses a non-administrator, an unknown decision and a count that changed", async () => {
+    const { service, calls } = bulk(2);
+    await expect(service.resolveCarriedWaiting(owner, "publish", 2)).rejects.toMatchObject({ code: "forbidden" });
+    await expect(service.resolveCarriedWaiting({ role: "anonymous" }, "publish", 2)).rejects.toMatchObject({ code: "not_authenticated" });
+    await expect(service.resolveCarriedWaiting(admin, "delete", 2)).rejects.toMatchObject({ code: "invalid_input" });
+    await expect(service.resolveCarriedWaiting(admin, "publish", 0)).rejects.toMatchObject({ code: "invalid_input" });
+    expect(calls).toHaveLength(0);
+    await expect(service.resolveCarriedWaiting(admin, "refuse", 3)).rejects.toMatchObject({ code: "conflict" });
+  });
+
+  it("serves POST /v1/administrator/time-trials/actions/resolve-carried-waiting", async () => {
+    const { service } = bulk(2);
+    const app = Fastify();
+    await registerTimeTrialLifecycleRoutes(app, {
+      resolveActor: async (request) => (request.headers["x-test-actor"] === "owner" ? owner : admin),
+      service,
+      csrfVerifier: { verify: (_actor, proof) => proof === "synthetic-proof" },
+    });
+    const url = "/v1/administrator/time-trials/actions/resolve-carried-waiting";
+    const proof = { "x-mk8dx-csrf": "synthetic-proof" };
+    expect((await app.inject({ method: "POST", url, payload: { decision: "publish", expectedCount: 2 } })).statusCode).toBe(403);
+    expect((await app.inject({ method: "POST", url, headers: { ...proof, "x-test-actor": "owner" }, payload: { decision: "publish", expectedCount: 2 } })).statusCode).toBe(403);
+    expect((await app.inject({ method: "POST", url, headers: proof, payload: { decision: "keep", expectedCount: 2 } })).statusCode).toBe(400);
+    const changed = await app.inject({ method: "POST", url, headers: proof, payload: { decision: "refuse", expectedCount: 5 } });
+    expect(changed.statusCode).toBe(409);
+    expect(changed.json().code).toBe("time_trial_lifecycle_conflict");
+    const done = await app.inject({ method: "POST", url, headers: proof, payload: { decision: "refuse", expectedCount: 2 } });
+    expect(done.statusCode).toBe(200);
+    expect(done.json()).toEqual({ schemaVersion: "mk8dx.carried-waiting-resolution.v1", decision: "refuse", resolved: 2, left: 0 });
   });
 });

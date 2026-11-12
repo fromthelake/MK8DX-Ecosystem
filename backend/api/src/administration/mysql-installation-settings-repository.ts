@@ -12,6 +12,8 @@ import {
   type StoredInstallationSettings,
 } from "./installation-settings-service.js";
 
+import { CARRIED_WAITING_CONDITION } from "../timetrials/mysql-lifecycle-repository.js";
+
 class InstallationSettingsPersistenceError extends Error {
   public constructor(message: string) {
     super(message);
@@ -103,6 +105,19 @@ class MysqlInstallationSettingsTransaction implements InstallationSettingsTransa
 
 export class MysqlInstallationSettingsRepository implements InstallationSettingsRepository {
   public constructor(private readonly pool: Pool) {}
+
+  public async carriedTimesAwaitingReview(): Promise<number> {
+    const [rows] = await this.pool.execute<RowDataPacket[]>(
+      `SELECT COUNT(*) AS waiting
+       FROM time_trial_publications AS publication
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       INNER JOIN time_trial_submission_revisions AS revision
+         ON revision.time_trial_submission_revision_id = publication.current_revision_id
+       WHERE ${CARRIED_WAITING_CONDITION}`,
+    );
+    return integer(rows[0]?.["waiting"] ?? 0, "carried times waiting");
+  }
 
   public async read(): Promise<StoredInstallationSettings | null> {
     const [rows] = await this.pool.execute<RowDataPacket[]>(projection);

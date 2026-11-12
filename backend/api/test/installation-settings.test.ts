@@ -30,6 +30,8 @@ class Repository implements InstallationSettingsRepository {
   public facts = { lastRecalculatedAtMs: null as number | null, claimsMatter: false, claimChangesSinceLastRecalculation: 0 };
   async read() { return this.stored; }
   async recomputeFacts() { return this.facts; }
+  public waiting = 0;
+  async carriedTimesAwaitingReview() { return this.waiting; }
   async transaction<T>(work: (transaction: InstallationSettingsTransaction) => Promise<T>): Promise<T> {
     return work({
       findActiveAdministratorAccount: async (id) => (id === administrator ? 1 : null),
@@ -63,6 +65,7 @@ describe("installation settings (ADR-0221)", () => {
     expect(await service.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
     expect(await service.administration(admin)).toEqual({
       playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", revision: 0, updatedAtMs: null,
+      carriedTimesAwaitingReview: 0,
       ratingRecompute: { needed: false, eligibilityChanged: false, claimChanges: 0, lastRecalculatedAtMs: null },
     });
   });
@@ -105,6 +108,9 @@ describe("installation settings (ADR-0221)", () => {
     // Another setting saved later keeps the carried-times choice.
     await service.update(admin, { expectedRevision: 2, playerCreation: "self_only" });
     expect((await service.current()).carriedTimes).toBe("allowed");
+    // The administration view says how many carried times wait for review (ADR-0225).
+    repository.waiting = 4;
+    expect((await service.administration(admin)).carriedTimesAwaitingReview).toBe(4);
   });
 
   it("says the ratings are out of date after eligibility changed, until they are recalculated", async () => {

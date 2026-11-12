@@ -47,7 +47,10 @@ export const ratingRecomputeStatusSchema = {
 export const installationSettingsAdministrationSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs", "ratingRecompute"],
+  required: [
+    "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs",
+    "carriedTimesAwaitingReview", "ratingRecompute",
+  ],
   properties: {
     schemaVersion: { type: "string", const: "mk8dx.installation-settings-administration.v1" },
     playerCreation: playerCreationSchema,
@@ -55,6 +58,7 @@ export const installationSettingsAdministrationSchema = {
     carriedTimes: carriedTimesSchema,
     revision: { type: "integer", minimum: 0 },
     updatedAtMs: { anyOf: [epochSchema, { type: "null" }] },
+    carriedTimesAwaitingReview: { type: "integer", minimum: 0 },
     ratingRecompute: ratingRecomputeStatusSchema,
   },
 } as const;

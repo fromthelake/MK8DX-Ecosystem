@@ -60,6 +60,8 @@ export type RatingRecomputeStatus = Readonly<{
 export type InstallationSettingsAdministration = InstallationSettings & Readonly<{
   revision: number;
   updatedAtMs: number | null;
+  /** ADR-0225: carried runs withheld for review right now, whatever the current setting. */
+  carriedTimesAwaitingReview: number;
   ratingRecompute: RatingRecomputeStatus;
 }>;
 
@@ -115,6 +117,8 @@ export interface InstallationSettingsRepository {
     claimChangesSinceLastRecalculation: number;
   }>>;
   transaction<T>(work: (transaction: InstallationSettingsTransaction) => Promise<T>): Promise<T>;
+  /** ADR-0225: how many carried runs are withheld for review right now. */
+  carriedTimesAwaitingReview(): Promise<number>;
 }
 
 export type InstallationSettingsReader = Readonly<{ current(): Promise<InstallationSettings> }>;
@@ -265,6 +269,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
       carriedTimes: settings.carriedTimes,
       revision: stored?.revision ?? 0,
       updatedAtMs: stored?.updatedAtMs ?? null,
+      carriedTimesAwaitingReview: await this.dependencies.repository.carriedTimesAwaitingReview(),
       ratingRecompute: {
         needed: eligibilityChanged || claimChanges > 0,
         eligibilityChanged,

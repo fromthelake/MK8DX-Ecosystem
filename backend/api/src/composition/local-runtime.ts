@@ -1100,6 +1100,7 @@ async function createMysqlApiRuntime(
       retire: timeTrialLifecycleService.retire.bind(timeTrialLifecycleService),
       setVideo: timeTrialLifecycleService.setVideo.bind(timeTrialLifecycleService),
       publishReviewed: timeTrialLifecycleService.publishReviewed.bind(timeTrialLifecycleService),
+      resolveCarriedWaiting: timeTrialLifecycleService.resolveCarriedWaiting.bind(timeTrialLifecycleService),
       correct: async (...args: Parameters<TimeTrialLifecycleService["correct"]>) => {
         return timeTrialLifecycleService.correct(...args);
       },
