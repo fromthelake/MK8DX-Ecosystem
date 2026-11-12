@@ -25,13 +25,19 @@ SECRET = "secrets.json"
 PUBLIC = "public-client.json"
 
 
+def system_link(part: Path) -> bool:
+    """A link the operating system owns, such as macOS's /var -> /private/var: only root can change it, so it
+    cannot redirect private data to a place an ordinary user chose. Windows has no such exception."""
+    return os.name != "nt" and part.is_symlink() and part.lstat().st_uid == 0
+
+
 def safe_state_dir(value, *, existing):
     """Do not follow junctions or links into a different installation/source tree."""
     path = Path(os.path.abspath(value))
     for part in (*reversed(path.parents), path):
         if part.exists() and (part.is_symlink() or
                               getattr(part.lstat(), "st_file_attributes", 0) &
-                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
+                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)) and not system_link(part):
             raise ValueError("Installation path contains a link or junction")
     if path.is_relative_to(ROOT):
         raise ValueError("Private installation must be outside the software package")

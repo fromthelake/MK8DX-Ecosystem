@@ -43,12 +43,19 @@ ROOT_NAME_SUBTREES = (x509.DNSName("invalid"),)
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
+def system_link(part: Path) -> bool:
+    """A link the operating system itself owns, such as macOS's /var -> /private/var (found 2026-11-12 on an
+    Intel Mac runner: every temporary folder lives behind it). Only root can create or change it, so it cannot
+    redirect the private CA to a place an ordinary user chose. Windows has no such exception."""
+    return os.name != "nt" and part.is_symlink() and part.lstat().st_uid == 0
+
+
 def safe_private_path(value: Path) -> Path:
     path = Path(os.path.abspath(value))
     for part in (*reversed(path.parents), path):
         if part.exists() and (part.is_symlink() or
                               getattr(part.lstat(), "st_file_attributes", 0) &
-                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
+                              getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)) and not system_link(part):
             raise ValueError("Private CA path contains a link or junction")
     if path.is_relative_to(REPO_ROOT):
         raise ValueError("Private CA state must remain outside Git")

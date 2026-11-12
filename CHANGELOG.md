@@ -12,6 +12,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   statically, and runs the A2 certificate and backup tests with it. Built and tested in CI; not yet tried on a
   real Mac.
 
+### Fixed
+
+- On macOS the A2 tools refused every folder behind `/var` (where temporary folders live), because `/var` is
+  a link. Links the operating system owns (root) are now accepted on macOS and Linux; a link a user made is
+  still refused, and Windows is unchanged.
+
 ## 0.2.0-rc.6 — 2026-11-12
 
 ### Fixed
