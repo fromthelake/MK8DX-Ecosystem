@@ -471,3 +471,13 @@ describe("the waiting runs link (ADR-0225)", () => {
     section.unmount();
   });
 });
+
+describe("a run filled from an equal carried time (ADR-0225 amendment)", () => {
+  it("tells the history in plain words with the community's address", () => {
+    expect(describeLifecycleEvent({
+      sequenceNumber: 2, eventType: "enriched", retirementStateAfter: "active", revision: 2, actorRole: "owner",
+      reasonCode: "carried_fill", occurredAtMs: 1_900_000_200_000,
+      carriedFrom: { origin: "https://club.example.org" }, filledFields: ["laps"],
+    }, true, "Synthetic Racer")).toBe("Empty fields filled from a time carried from club.example.org");
+  });
+});

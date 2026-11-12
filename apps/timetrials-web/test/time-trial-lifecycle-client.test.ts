@@ -341,3 +341,27 @@ describe("publishing a run that waits for review (ADR-0225)", () => {
     expect(fetchPort).not.toHaveBeenCalled();
   });
 });
+
+describe("a run filled from an equal carried time (ADR-0225 amendment)", () => {
+  const enriched = {
+    sequenceNumber: 2, eventType: "enriched", retirementStateAfter: "active", revision: 2, actorRole: "owner",
+    reasonCode: "carried_fill", occurredAtMs: 1_900_000_200_000,
+    carriedFrom: { origin: "https://club.example.org", originalSubmissionId: "user_submission.time.SYNTHETICORIGIN01" },
+    filledFields: ["characterId", "laps"],
+  };
+
+  it("reads the enriched event and the revision's occurredAtMs", async () => {
+    const filled = { ...result, current: { ...revision, occurredAtMs: 1_899_000_000_000 }, events: [lifecycleEvent, enriched] };
+    const client = createTimeTrialLifecycleClient(async () => json({ schemaVersion: "mk8dx.managed-time-trial.v1", result: filled }));
+    await expect(client.read(submissionId)).resolves.toEqual(filled);
+  });
+
+  it("refuses an enriched event with an unknown key or a malformed field list", async () => {
+    for (const bad of [{ ...enriched, extra: 1 }, { ...enriched, filledFields: "laps" }, { ...enriched, carriedFrom: { origin: "http://club.example.org" } }]) {
+      const client = createTimeTrialLifecycleClient(async () => json({
+        schemaVersion: "mk8dx.managed-time-trial.v1", result: { ...result, events: [bad] },
+      }));
+      await expect(client.read(submissionId)).rejects.toMatchObject({ code: "invalid_response" });
+    }
+  });
+});
