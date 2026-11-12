@@ -380,3 +380,12 @@ it came from in an optional `carriedFrom` object of `TimeTrialSubmissionV1`; a t
 the receiving installation itself is refused, and the run keeps showing where it came from and when
 it was first submitted (migration 0087). Carrying in bulk, carrying Tournament results and carrying
 from the Web are not part of this decision.
+Amendment (2026-11-12, owner decision): the app keeps an offline copy per community of the
+signed-in player's own times and their chosen rivals' times, and can carry a player's best time per
+track and class from that copy. The receiving server refuses a carried time whose origin and original
+id it already accepted (`409 carried_duplicate`, guarded by a unique key, migration 0090). A carried
+time equal in track, class and total time to an active run of the same Player does not become a
+second run: it fills only that run's empty fields (kart parts, lap times, coins, mushrooms) in a new,
+audited revision whose history names the carried origin, never replacing a present value, and the
+run's publication and every ranking stay the same; with nothing to fill it answers
+`409 carried_nothing_to_fill`. The setting `off` still refuses all of this.

@@ -3,6 +3,22 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Added
+
+- **The same carried time twice** (ADR-0225 amendment, migration 0090): a carried time whose community and
+  original id were already accepted here is refused with `409 carried_duplicate`. A carried time with the same
+  track, class and time as an active run of the same Player no longer creates a second run: it fills only that
+  run's empty fields (kart parts, lap times, coins, mushrooms) in a new audited revision, never replacing a value,
+  and answers `200 mk8dx.carried-fill.v1` with the filled fields (`409 carried_nothing_to_fill` when there is
+  nothing to add). Publication and rankings stay the same; the run's history says "Empty fields filled from a
+  time carried from …". With carried times off it is refused like any carried time.
+- **Reads for the app's offline copy**: `GET /v1/account/time-trials` gives each revision's `occurredAtMs` and
+  pages through a long list with `?limit=…&offset=…` (answering `nextOffset` while more remain); the new
+  `GET /v1/account/rivals/best-times` gives each chosen rival's best published run per track and class with laps
+  and kart setup. Private Players never appear.
+
 ## 0.2.0 — 2026-11-12
 
 The first stable package with **A2, at home or at the club**: one computer on your own network, no internet
