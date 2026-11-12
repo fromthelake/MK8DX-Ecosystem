@@ -5027,6 +5027,11 @@
   "mushrooms": "蘑菇",
   "tyres": "輪胎",
   "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.": "{0} 筆成績將在你登入 {1} 後傳送；{2} 筆已略過，因為 {3} 已有更好的成績。",
-  "{0} were already on their way.": "{0} 筆已在傳送途中。"
+  "{0} were already on their way.": "{0} 筆已在傳送途中。",
+  "Needs a connection": "需要網路連線",
+  "No connection to {0}.": "無法連線到 {0}。",
+  "No connection to {0}. Showing what this phone saved.": "無法連線到 {0}。正在顯示這支手機保存的內容。",
+  "The community records could not be loaded right now.": "目前無法載入社群紀錄。",
+  "Your profile could not be loaded right now.": "目前無法載入你的個人資料。"
  }
 }

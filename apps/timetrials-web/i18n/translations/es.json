@@ -5027,6 +5027,11 @@
   "mushrooms": "champiñones",
   "tyres": "neumáticos",
   "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.": "{0} tiempos se enviarán a {1} cuando hayas iniciado sesión allí; {2} omitidos porque {3} ya tiene un tiempo mejor.",
-  "{0} were already on their way.": "{0} ya estaban de camino."
+  "{0} were already on their way.": "{0} ya estaban de camino.",
+  "Needs a connection": "Necesita conexión",
+  "No connection to {0}.": "Sin conexión con {0}.",
+  "No connection to {0}. Showing what this phone saved.": "Sin conexión con {0}. Ves lo que guardó este teléfono.",
+  "The community records could not be loaded right now.": "Los récords de la comunidad no se pueden cargar ahora.",
+  "Your profile could not be loaded right now.": "Tu perfil no se puede cargar ahora."
  }
 }

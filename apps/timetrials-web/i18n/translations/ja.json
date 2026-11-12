@@ -5027,6 +5027,11 @@
   "mushrooms": "キノコ",
   "tyres": "タイヤ",
   "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.": "{0}件のタイムは{1}でサインインすると送信されます。{3}にすでにより速いタイムがあるため{2}件をスキップしました。",
-  "{0} were already on their way.": "{0}件はすでに送信待ちでした。"
+  "{0} were already on their way.": "{0}件はすでに送信待ちでした。",
+  "Needs a connection": "接続が必要です",
+  "No connection to {0}.": "{0}に接続できません。",
+  "No connection to {0}. Showing what this phone saved.": "{0}に接続できません。このスマートフォンに保存された内容を表示しています。",
+  "The community records could not be loaded right now.": "コミュニティの記録を今は読み込めません。",
+  "Your profile could not be loaded right now.": "プロフィールを今は読み込めません。"
  }
 }

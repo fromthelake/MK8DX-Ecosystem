@@ -5027,6 +5027,11 @@
   "mushrooms": "蘑菇",
   "tyres": "轮胎",
   "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.": "{0} 条成绩将在你登录 {1} 后发送；{2} 条已跳过，因为 {3} 已有更好的成绩。",
-  "{0} were already on their way.": "{0} 条已在发送途中。"
+  "{0} were already on their way.": "{0} 条已在发送途中。",
+  "Needs a connection": "需要网络连接",
+  "No connection to {0}.": "无法连接 {0}。",
+  "No connection to {0}. Showing what this phone saved.": "无法连接 {0}。正在显示此手机保存的内容。",
+  "The community records could not be loaded right now.": "目前无法加载社区纪录。",
+  "Your profile could not be loaded right now.": "目前无法加载你的个人资料。"
  }
 }

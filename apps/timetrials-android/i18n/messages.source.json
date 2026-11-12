@@ -5,7 +5,7 @@
   {
    "key": " ({0} games open)",
    "places": [
-    "AndroidPlayerInteractions.kt:199"
+    "AndroidPlayerInteractions.kt:201"
    ],
    "nl": " ({0} spellen open)"
   },
@@ -101,7 +101,7 @@
   {
    "key": " · next one at {0}",
    "places": [
-    "AndroidPlayerInteractions.kt:194"
+    "AndroidPlayerInteractions.kt:196"
    ],
    "nl": " · volgende om {0}"
   },
@@ -165,7 +165,7 @@
   {
    "key": "1 link request is waiting.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1160"
+    "AndroidAccountEcosystemScreens.kt:1168"
    ],
    "nl": "Er wacht 1 koppelverzoek."
   },
@@ -186,7 +186,7 @@
   {
    "key": "1 result is still only on this phone",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:591"
+    "AndroidAccountEcosystemScreens.kt:599"
    ],
    "nl": "1 resultaat staat nog alleen op deze telefoon"
   },
@@ -318,7 +318,7 @@
   {
    "key": "ACCOUNTS AND PLAYERS",
    "places": [
-    "AndroidIdentityLinkScreen.kt:98"
+    "AndroidIdentityLinkScreen.kt:108"
    ],
    "nl": "ACCOUNTS EN SPELERS"
   },
@@ -405,7 +405,7 @@
   {
    "key": "Accounts and Players",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:286"
+    "AndroidAccountEcosystemScreens.kt:293"
    ]
   },
   {
@@ -453,7 +453,7 @@
   {
    "key": "Activity",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1632"
+    "AndroidAccountEcosystemScreens.kt:1640"
    ],
    "nl": "Activiteit"
   },
@@ -553,7 +553,7 @@
   {
    "key": "Administration",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1154",
+    "AndroidAccountEcosystemScreens.kt:1162",
     "AndroidAdministrationScreen.kt:118"
    ],
    "nl": "Beheer"
@@ -606,7 +606,7 @@
   {
    "key": "All",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1197",
+    "AndroidAccountEcosystemScreens.kt:1205",
     "AndroidTimesOnThisPhoneScreen.kt:141"
    ],
    "nl": "Alles"
@@ -700,7 +700,7 @@
   {
    "key": "Already linked to an account",
    "places": [
-    "AndroidIdentityLinkScreen.kt:343"
+    "AndroidIdentityLinkScreen.kt:353"
    ],
    "nl": "Al aan een account gekoppeld"
   },
@@ -770,21 +770,21 @@
   {
    "key": "Android does not hold this app back",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1419"
+    "AndroidAccountEcosystemScreens.kt:1427"
    ],
    "nl": "Android houdt deze app niet tegen"
   },
   {
    "key": "Android may delay them much longer to save battery. If they keep arriving only when you open the app, allow this one through.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1429"
+    "AndroidAccountEcosystemScreens.kt:1437"
    ],
    "nl": "Android mag ze veel langer uitstellen om batterij te sparen. Komen ze pas binnen als je de app opent, laat deze er dan door."
   },
   {
    "key": "Android update required",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:745"
+    "AndroidAccountEcosystemScreens.kt:753"
    ],
    "nl": "Android-update vereist"
   },
@@ -813,7 +813,7 @@
   {
    "key": "Anyone",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1617"
+    "AndroidAccountEcosystemScreens.kt:1625"
    ],
    "nl": "Iedereen"
   },
@@ -857,7 +857,7 @@
   {
    "key": "Are this person's Time Trial times already on this website?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:305"
+    "AndroidIdentityLinkScreen.kt:315"
    ],
    "nl": "Staan de Time Trial-tijden van deze persoon al op deze website?"
   },
@@ -1062,7 +1062,7 @@
   {
    "key": "Background sync checks about every 15 minutes; this is not real-time push.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1650"
+    "AndroidAccountEcosystemScreens.kt:1658"
    ],
    "nl": "Achtergrondsynchronisatie controleert ongeveer elke 15 minuten; dit is geen realtime push."
   },
@@ -1097,8 +1097,8 @@
   {
    "key": "Beat my time",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1000",
-    "AndroidPlayerInteractions.kt:391"
+    "AndroidAccountEcosystemScreens.kt:1008",
+    "AndroidPlayerInteractions.kt:399"
    ],
    "nl": "Versla mijn tijd"
   },
@@ -1313,9 +1313,9 @@
   {
    "key": "Cancel",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:395",
-    "AndroidIdentityLinkScreen.kt:203",
-    "AndroidIdentityLinkScreen.kt:300",
+    "AndroidAccountEcosystemScreens.kt:403",
+    "AndroidIdentityLinkScreen.kt:213",
+    "AndroidIdentityLinkScreen.kt:310",
     "AndroidLanPairingScreen.kt:128"
    ],
    "nl": "Annuleren"
@@ -1360,7 +1360,7 @@
   {
    "key": "Challenge sent with your published best.",
    "places": [
-    "AndroidPlayerInteractions.kt:436"
+    "AndroidPlayerInteractions.kt:444"
    ],
    "nl": "Uitdaging verstuurd met jouw gepubliceerde beste tijd."
   },
@@ -1527,14 +1527,14 @@
   {
    "key": "Choose a Player",
    "places": [
-    "AndroidIdentityLinkScreen.kt:299"
+    "AndroidIdentityLinkScreen.kt:309"
    ],
    "nl": "Kies een speler"
   },
   {
    "key": "Choose a Player…",
    "places": [
-    "AndroidIdentityLinkScreen.kt:244"
+    "AndroidIdentityLinkScreen.kt:254"
    ],
    "nl": "Kies een speler…"
   },
@@ -1577,7 +1577,7 @@
   {
    "key": "Choose a time…",
    "places": [
-    "AndroidPlayerInteractions.kt:395"
+    "AndroidPlayerInteractions.kt:403"
    ],
    "nl": "Kies een tijd…"
   },
@@ -1718,7 +1718,7 @@
   {
    "key": "Choose the product language.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1114"
+    "AndroidAccountEcosystemScreens.kt:1122"
    ],
    "nl": "Kies de taal van het product."
   },
@@ -1760,7 +1760,7 @@
   {
    "key": "Choose your published time",
    "places": [
-    "AndroidPlayerInteractions.kt:426"
+    "AndroidPlayerInteractions.kt:434"
    ],
    "nl": "Kies jouw gepubliceerde tijd"
   },
@@ -1922,7 +1922,7 @@
   {
    "key": "Combined · 150cc + 200cc",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2017"
+    "AndroidAccountEcosystemScreens.kt:2025"
    ],
    "nl": "Gecombineerd · 150cc + 200cc"
   },
@@ -1944,7 +1944,7 @@
   {
    "key": "Community Records",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:367",
+    "AndroidAccountEcosystemScreens.kt:374",
     "AndroidDutchUiCopy.kt:319"
    ],
    "nl": "Communityrecords"
@@ -2016,7 +2016,7 @@
   {
    "key": "Competitive",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1595"
+    "AndroidAccountEcosystemScreens.kt:1603"
    ],
    "nl": "Competitief"
   },
@@ -2260,7 +2260,7 @@
   {
    "key": "Could not answer this game.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:958"
+    "AndroidAccountEcosystemScreens.kt:966"
    ],
    "nl": "Kon dit spel niet beantwoorden."
   },
@@ -2297,17 +2297,17 @@
   {
    "key": "Could not roll back. Try again.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:994"
+    "AndroidAccountEcosystemScreens.kt:1002"
    ],
    "nl": "Teruggooien lukte niet. Probeer het opnieuw."
   },
   {
    "key": "Could not save",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1232",
-    "AndroidAccountEcosystemScreens.kt:1261",
-    "AndroidAccountEcosystemScreens.kt:1281",
-    "AndroidAccountEcosystemScreens.kt:1341"
+    "AndroidAccountEcosystemScreens.kt:1240",
+    "AndroidAccountEcosystemScreens.kt:1269",
+    "AndroidAccountEcosystemScreens.kt:1289",
+    "AndroidAccountEcosystemScreens.kt:1349"
    ],
    "nl": "Opslaan mislukt"
   },
@@ -2350,7 +2350,7 @@
   {
    "key": "Country",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1683",
+    "AndroidAccountEcosystemScreens.kt:1691",
     "AndroidDutchUiCopy.kt:53"
    ],
    "nl": "Land"
@@ -2358,7 +2358,7 @@
   {
    "key": "Country and favorites are shown on your public profile.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1678"
+    "AndroidAccountEcosystemScreens.kt:1686"
    ],
    "nl": "Land en favorieten worden op je openbare profiel getoond."
   },
@@ -2516,7 +2516,7 @@
   {
    "key": "Debug and test",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:295"
+    "AndroidAccountEcosystemScreens.kt:302"
    ]
   },
   {
@@ -2651,15 +2651,15 @@
   {
    "key": "Dice duel",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:969",
-    "AndroidPlayerInteractions.kt:366"
+    "AndroidAccountEcosystemScreens.kt:977",
+    "AndroidPlayerInteractions.kt:374"
    ],
    "nl": "Dobbelsteenduel"
   },
   {
    "key": "Dice duels {0}–{1}",
    "places": [
-    "AndroidPlayerInteractions.kt:296"
+    "AndroidPlayerInteractions.kt:304"
    ],
    "nl": "Dobbelduels {0}–{1}"
   },
@@ -2688,7 +2688,7 @@
   {
    "key": "Disable on this phone",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1536"
+    "AndroidAccountEcosystemScreens.kt:1544"
    ],
    "nl": "Uitschakelen op deze telefoon"
   },
@@ -2702,15 +2702,15 @@
   {
    "key": "Do not delay notifications",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1440"
+    "AndroidAccountEcosystemScreens.kt:1448"
    ],
    "nl": "Meldingen niet uitstellen"
   },
   {
    "key": "Do you have the Booster Course Pass?",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1206",
-    "AndroidAccountEcosystemScreens.kt:1210"
+    "AndroidAccountEcosystemScreens.kt:1214",
+    "AndroidAccountEcosystemScreens.kt:1218"
    ],
    "nl": "Heb je de Circuit-uitbreidingspas?"
   },
@@ -2745,8 +2745,8 @@
   {
    "key": "Draw",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:925",
-    "AndroidPlayerInteractions.kt:123"
+    "AndroidAccountEcosystemScreens.kt:933",
+    "AndroidPlayerInteractions.kt:125"
    ],
    "nl": "Gelijkspel"
   },
@@ -2774,7 +2774,7 @@
   {
    "key": "Duplicate",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:419",
+    "AndroidAccountEcosystemScreens.kt:427",
     "AndroidPostTimeEdit.kt:160"
    ],
    "nl": "Dubbel resultaat"
@@ -2796,7 +2796,7 @@
   {
    "key": "Edit",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1916",
+    "AndroidAccountEcosystemScreens.kt:1924",
     "AndroidHomeExperience.kt:1718",
     "AndroidTrackContext.kt:1041",
     "AndroidTournamentOverview.kt:572"
@@ -2841,8 +2841,8 @@
   {
    "key": "Enable notifications",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1545",
-    "AndroidAccountEcosystemScreens.kt:1579"
+    "AndroidAccountEcosystemScreens.kt:1553",
+    "AndroidAccountEcosystemScreens.kt:1587"
    ],
    "nl": "Meldingen inschakelen"
   },
@@ -2881,7 +2881,7 @@
   {
    "key": "English and Dutch are reviewed; the other languages are machine-translated and not yet reviewed.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1125"
+    "AndroidAccountEcosystemScreens.kt:1133"
    ],
    "nl": "Engels en Nederlands zijn nagekeken; de andere talen zijn automatisch vertaald en nog niet nagekeken."
   },
@@ -3125,28 +3125,28 @@
   {
    "key": "Favorite body",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1690"
+    "AndroidAccountEcosystemScreens.kt:1698"
    ],
    "nl": "Favoriet voertuig"
   },
   {
    "key": "Favorite character",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1689"
+    "AndroidAccountEcosystemScreens.kt:1697"
    ],
    "nl": "Favoriete coureur"
   },
   {
    "key": "Favorite glider",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1692"
+    "AndroidAccountEcosystemScreens.kt:1700"
    ],
    "nl": "Favoriet zweefvliegtuig"
   },
   {
    "key": "Favorite tires",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1691"
+    "AndroidAccountEcosystemScreens.kt:1699"
    ],
    "nl": "Favoriete banden"
   },
@@ -3508,7 +3508,7 @@
   {
    "key": "Full lap, coin, mushroom and build details when recorded",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:322",
+    "AndroidAccountEcosystemScreens.kt:329",
     "AndroidDutchUiCopy.kt:279"
    ],
    "nl": "Volledige ronde-, munt-, paddenstoel- en voertuigdetails indien vastgelegd"
@@ -3552,7 +3552,7 @@
   {
    "key": "Get notified when someone passes you or reacts to your result.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1518"
+    "AndroidAccountEcosystemScreens.kt:1526"
    ],
    "nl": "Ontvang een melding wanneer iemand je inhaalt of op je resultaat reageert."
   },
@@ -3671,7 +3671,7 @@
   {
    "key": "HISTORY",
    "places": [
-    "AndroidPlayerInteractions.kt:401"
+    "AndroidPlayerInteractions.kt:409"
    ],
    "nl": "GESCHIEDENIS"
   },
@@ -3720,14 +3720,14 @@
   {
    "key": "Has this person taken part in a tournament listed on this site?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:313"
+    "AndroidIdentityLinkScreen.kt:323"
    ],
    "nl": "Heeft deze persoon meegedaan aan een toernooi dat op deze site staat?"
   },
   {
    "key": "Hide",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2059"
+    "AndroidAccountEcosystemScreens.kt:2067"
    ],
    "nl": "Verberg"
   },
@@ -3755,7 +3755,7 @@
   {
    "key": "Hide interactions",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1359"
+    "AndroidAccountEcosystemScreens.kt:1367"
    ],
    "nl": "Interacties verbergen"
   },
@@ -3949,7 +3949,7 @@
   {
    "key": "Incorrect time",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:418",
+    "AndroidAccountEcosystemScreens.kt:426",
     "AndroidPostTimeEdit.kt:159"
    ],
    "nl": "Onjuiste tijd"
@@ -3964,7 +3964,7 @@
   {
    "key": "Interactions could not be loaded.",
    "places": [
-    "AndroidPlayerInteractions.kt:288"
+    "AndroidPlayerInteractions.kt:296"
    ],
    "nl": "Interacties konden niet worden geladen."
   },
@@ -4049,7 +4049,7 @@
   {
    "key": "Kept in your audit history and restorable",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:353"
+    "AndroidAccountEcosystemScreens.kt:360"
    ],
    "nl": "Bewaard in je geschiedenis en herstelbaar"
   },
@@ -4079,8 +4079,8 @@
    "places": [
     "AndroidCommunitySetupScreen.kt:107",
     "AndroidCommunitySetupScreen.kt:192",
-    "AndroidAccountEcosystemScreens.kt:1112",
-    "AndroidAccountEcosystemScreens.kt:1117"
+    "AndroidAccountEcosystemScreens.kt:1120",
+    "AndroidAccountEcosystemScreens.kt:1125"
    ],
    "nl": "Taal / Language"
   },
@@ -4189,7 +4189,7 @@
   {
    "key": "Latest Time Trials",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:321",
+    "AndroidAccountEcosystemScreens.kt:328",
     "AndroidDutchUiCopy.kt:283"
    ],
    "nl": "Nieuwste Time Trials"
@@ -4264,8 +4264,8 @@
   {
    "key": "Let me be poked by",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1613",
-    "AndroidAccountEcosystemScreens.kt:1615"
+    "AndroidAccountEcosystemScreens.kt:1621",
+    "AndroidAccountEcosystemScreens.kt:1623"
    ],
    "nl": "Laat mij porren door"
   },
@@ -4308,7 +4308,7 @@
   {
    "key": "Link the address somebody signs in with to the Player whose history is theirs.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:287"
+    "AndroidAccountEcosystemScreens.kt:294"
    ]
   },
   {
@@ -4321,7 +4321,7 @@
   {
    "key": "Linked",
    "places": [
-    "AndroidIdentityLinkScreen.kt:181"
+    "AndroidIdentityLinkScreen.kt:191"
    ],
    "nl": "Gekoppeld"
   },
@@ -4416,20 +4416,20 @@
   {
    "key": "Loading accounts…",
    "places": [
-    "AndroidIdentityLinkScreen.kt:110"
+    "AndroidIdentityLinkScreen.kt:120"
    ],
    "nl": "Accounts laden…"
   },
   {
    "key": "Loading community records…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:377"
+    "AndroidAccountEcosystemScreens.kt:385"
    ]
   },
   {
    "key": "Loading notifications…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:899",
+    "AndroidAccountEcosystemScreens.kt:907",
     "AndroidDutchUiCopy.kt:204"
    ],
    "nl": "Meldingen laden…"
@@ -4437,14 +4437,14 @@
   {
    "key": "Loading public Player preferences…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1285"
+    "AndroidAccountEcosystemScreens.kt:1293"
    ],
    "nl": "Openbare spelervoorkeuren laden…"
   },
   {
    "key": "Loading rivals…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1298",
+    "AndroidAccountEcosystemScreens.kt:1306",
     "AndroidDutchUiCopy.kt:205"
    ],
    "nl": "Rivalen laden…"
@@ -4487,7 +4487,7 @@
   {
    "key": "Loading your results…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:246",
+    "AndroidAccountEcosystemScreens.kt:253",
     "AndroidDutchUiCopy.kt:208"
    ],
    "nl": "Jouw resultaten laden…"
@@ -4509,8 +4509,8 @@
   {
    "key": "Loading…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2072",
-    "AndroidPlayerInteractions.kt:289",
+    "AndroidAccountEcosystemScreens.kt:2080",
+    "AndroidPlayerInteractions.kt:297",
     "AndroidPlayerPage.kt:147",
     "AndroidTournamentNightScreen.kt:194"
    ],
@@ -4533,7 +4533,7 @@
   {
    "key": "MATCHES THE ANSWERS",
    "places": [
-    "AndroidIdentityLinkScreen.kt:333"
+    "AndroidIdentityLinkScreen.kt:343"
    ],
    "nl": "PAST BIJ DE ANTWOORDEN"
   },
@@ -4605,7 +4605,7 @@
   {
    "key": "Manage rivals, followed Players and visibility on the configured website.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1321"
+    "AndroidAccountEcosystemScreens.kt:1329"
    ],
    "nl": "Beheer rivalen, gevolgde spelers en zichtbaarheid op de ingestelde website."
   },
@@ -4663,14 +4663,14 @@
   {
    "key": "Mark all read",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:726"
+    "AndroidAccountEcosystemScreens.kt:734"
    ],
    "nl": "Alles gelezen"
   },
   {
    "key": "Mark as read",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:842"
+    "AndroidAccountEcosystemScreens.kt:850"
    ],
    "nl": "Markeer als gelezen"
   },
@@ -5019,6 +5019,13 @@
    "nl": "Naam-match"
   },
   {
+   "key": "Needs a connection",
+   "places": [
+    "AndroidAccountEcosystemScreens.kt:161"
+   ],
+   "nl": "Heeft verbinding nodig"
+  },
+  {
    "key": "New",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:154",
@@ -5102,7 +5109,7 @@
   {
    "key": "Next one at {0}.",
    "places": [
-    "AndroidPlayerInteractions.kt:229"
+    "AndroidPlayerInteractions.kt:231"
    ],
    "nl": "Volgende om {0}."
   },
@@ -5152,7 +5159,7 @@
   {
    "key": "No",
    "places": [
-    "AndroidIdentityLinkScreen.kt:400",
+    "AndroidIdentityLinkScreen.kt:410",
     "AndroidTournamentSignup.kt:345",
     "AndroidTournamentSignup.kt:352"
    ],
@@ -5176,8 +5183,8 @@
   {
    "key": "No Player matches that.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:356",
-    "AndroidIdentityLinkScreen.kt:373"
+    "AndroidIdentityLinkScreen.kt:366",
+    "AndroidIdentityLinkScreen.kt:383"
    ],
    "nl": "Geen speler komt daarmee overeen."
   },
@@ -5212,7 +5219,7 @@
   {
    "key": "No account yet",
    "places": [
-    "AndroidIdentityLinkScreen.kt:231"
+    "AndroidIdentityLinkScreen.kt:241"
    ],
    "nl": "Nog geen account"
   },
@@ -5246,6 +5253,20 @@
    "nl": "Er is nog geen voltooide opname beschikbaar."
   },
   {
+   "key": "No connection to {0}.",
+   "places": [
+    "AndroidConnectionText.kt:29"
+   ],
+   "nl": "Geen verbinding met {0}."
+  },
+  {
+   "key": "No connection to {0}. Showing what this phone saved.",
+   "places": [
+    "AndroidConnectionText.kt:26"
+   ],
+   "nl": "Geen verbinding met {0}. Je ziet wat deze telefoon heeft bewaard."
+  },
+  {
    "key": "No detailed run data was recorded.",
    "places": [
     "AndroidHomeExperience.kt:1559"
@@ -5269,7 +5290,7 @@
   {
    "key": "No finished games yet.",
    "places": [
-    "AndroidPlayerInteractions.kt:298"
+    "AndroidPlayerInteractions.kt:306"
    ],
    "nl": "Nog geen afgeronde spelletjes."
   },
@@ -5304,7 +5325,7 @@
   {
    "key": "No link requests are waiting.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1159"
+    "AndroidAccountEcosystemScreens.kt:1167"
    ],
    "nl": "Er wachten geen koppelverzoeken."
   },
@@ -5318,7 +5339,7 @@
   {
    "key": "No notifications yet.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:769",
+    "AndroidAccountEcosystemScreens.kt:777",
     "AndroidDutchUiCopy.kt:286"
    ],
    "nl": "Nog geen meldingen."
@@ -5326,7 +5347,7 @@
   {
    "key": "No one",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1619"
+    "AndroidAccountEcosystemScreens.kt:1627"
    ],
    "nl": "Niemand"
   },
@@ -5354,7 +5375,7 @@
   {
    "key": "No published Time Trials yet.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:327"
+    "AndroidAccountEcosystemScreens.kt:334"
    ]
   },
   {
@@ -5382,7 +5403,7 @@
   {
    "key": "No record holder yet.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1999",
+    "AndroidAccountEcosystemScreens.kt:2007",
     "AndroidDutchUiCopy.kt:217"
    ],
    "nl": "Nog geen recordhouder."
@@ -5404,7 +5425,7 @@
   {
    "key": "No rivals chosen yet.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1304",
+    "AndroidAccountEcosystemScreens.kt:1312",
     "AndroidDutchUiCopy.kt:222"
    ],
    "nl": "Nog geen rivalen gekozen."
@@ -5512,7 +5533,7 @@
   {
    "key": "No · base 48",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1213"
+    "AndroidAccountEcosystemScreens.kt:1221"
    ],
    "nl": "Nee · basis 48"
   },
@@ -5615,7 +5636,7 @@
   {
    "key": "Not available now",
    "places": [
-    "AndroidPlayerInteractions.kt:359"
+    "AndroidPlayerInteractions.kt:367"
    ],
    "nl": "Nu niet beschikbaar"
   },
@@ -5643,7 +5664,7 @@
   {
    "key": "Not linked",
    "places": [
-    "AndroidIdentityLinkScreen.kt:242"
+    "AndroidIdentityLinkScreen.kt:252"
    ],
    "nl": "Niet gekoppeld"
   },
@@ -5730,16 +5751,16 @@
   {
    "key": "Not selected",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1685",
-    "AndroidAccountEcosystemScreens.kt:1696",
-    "AndroidAccountEcosystemScreens.kt:1752"
+    "AndroidAccountEcosystemScreens.kt:1693",
+    "AndroidAccountEcosystemScreens.kt:1704",
+    "AndroidAccountEcosystemScreens.kt:1760"
    ],
    "nl": "Niet geselecteerd"
   },
   {
    "key": "Not signed in",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1140"
+    "AndroidAccountEcosystemScreens.kt:1148"
    ],
    "nl": "Niet aangemeld"
   },
@@ -5767,7 +5788,7 @@
   {
    "key": "Nothing between you and {0} yet.",
    "places": [
-    "AndroidPlayerInteractions.kt:299"
+    "AndroidPlayerInteractions.kt:307"
    ],
    "nl": "Nog niets tussen jou en {0}."
   },
@@ -5816,8 +5837,8 @@
   {
    "key": "Notifications",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:674",
-    "AndroidAccountEcosystemScreens.kt:1509",
+    "AndroidAccountEcosystemScreens.kt:682",
+    "AndroidAccountEcosystemScreens.kt:1517",
     "AndroidDutchUiCopy.kt:129"
    ],
    "nl": "Meldingen"
@@ -5825,28 +5846,28 @@
   {
    "key": "Notifications are disabled in Android settings.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1498"
+    "AndroidAccountEcosystemScreens.kt:1506"
    ],
    "nl": "Meldingen zijn uitgeschakeld in Android."
   },
   {
    "key": "Notifications are enabled",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1531"
+    "AndroidAccountEcosystemScreens.kt:1539"
    ],
    "nl": "Meldingen zijn ingeschakeld"
   },
   {
    "key": "Notifications are enabled.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1495"
+    "AndroidAccountEcosystemScreens.kt:1503"
    ],
    "nl": "Meldingen zijn ingeschakeld."
   },
   {
    "key": "Notifications are switched off for this app in Android.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1560"
+    "AndroidAccountEcosystemScreens.kt:1568"
    ],
    "nl": "Meldingen staan in Android uit voor deze app."
   },
@@ -5888,7 +5909,7 @@
   {
    "key": "OTHER PLAYERS WITH THIS NAME",
    "places": [
-    "AndroidIdentityLinkScreen.kt:334"
+    "AndroidIdentityLinkScreen.kt:344"
    ],
    "nl": "ANDERE SPELERS MET DEZE NAAM"
   },
@@ -5902,14 +5923,14 @@
   {
    "key": "Off",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1508"
+    "AndroidAccountEcosystemScreens.kt:1516"
    ],
    "nl": "Uit"
   },
   {
    "key": "Offline — last updated {0}",
    "places": [
-    "AndroidOfflineDataSource.kt:122"
+    "AndroidOfflineDataSource.kt:160"
    ],
    "nl": "Offline — laatst bijgewerkt {0}"
   },
@@ -5923,14 +5944,14 @@
   {
    "key": "Old roll",
    "places": [
-    "AndroidPlayerInteractions.kt:153"
+    "AndroidPlayerInteractions.kt:155"
    ],
    "nl": "Oude worp"
   },
   {
    "key": "On",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1507"
+    "AndroidAccountEcosystemScreens.kt:1515"
    ],
    "nl": "Aan"
   },
@@ -5959,7 +5980,7 @@
   {
    "key": "Once an hour per Player.",
    "places": [
-    "AndroidPlayerInteractions.kt:230"
+    "AndroidPlayerInteractions.kt:232"
    ],
    "nl": "Eén keer per uur per speler."
   },
@@ -6017,7 +6038,7 @@
   {
    "key": "Open Android settings",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1568"
+    "AndroidAccountEcosystemScreens.kt:1576"
    ],
    "nl": "Android-instellingen openen"
   },
@@ -6067,7 +6088,7 @@
   {
    "key": "Open administration",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1166"
+    "AndroidAccountEcosystemScreens.kt:1174"
    ],
    "nl": "Beheer openen"
   },
@@ -6088,14 +6109,14 @@
   {
    "key": "Open download",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:759"
+    "AndroidAccountEcosystemScreens.kt:767"
    ],
    "nl": "Download openen"
   },
   {
    "key": "Open full web profile",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:270",
+    "AndroidAccountEcosystemScreens.kt:277",
     "AndroidDutchUiCopy.kt:225"
    ],
    "nl": "Volledig webprofiel openen"
@@ -6166,8 +6187,8 @@
   {
    "key": "Open track",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:826",
-    "AndroidAccountEcosystemScreens.kt:1007"
+    "AndroidAccountEcosystemScreens.kt:834",
+    "AndroidAccountEcosystemScreens.kt:1015"
    ],
    "nl": "Open circuit"
   },
@@ -6258,7 +6279,7 @@
   {
    "key": "Other reason",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:420",
+    "AndroidAccountEcosystemScreens.kt:428",
     "AndroidPostTimeEdit.kt:161"
    ],
    "nl": "Andere reden"
@@ -6377,7 +6398,7 @@
   {
    "key": "PLAYER GAMES AND CHALLENGES",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:876"
+    "AndroidAccountEcosystemScreens.kt:884"
    ],
    "nl": "SPELLETJES EN UITDAGINGEN"
   },
@@ -6591,7 +6612,7 @@
   {
    "key": "Pick your hand; {0} answers without seeing it.",
    "places": [
-    "AndroidPlayerInteractions.kt:377"
+    "AndroidPlayerInteractions.kt:385"
    ],
    "nl": "Kies je zet; {0} antwoordt zonder hem te zien."
   },
@@ -6636,7 +6657,7 @@
   {
    "key": "Player",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2033",
+    "AndroidAccountEcosystemScreens.kt:2041",
     "AndroidTournamentStandingSection.kt:947",
     "AndroidTournamentNightScreen.kt:846",
     "AndroidTournamentNightScreen.kt:876"
@@ -6667,7 +6688,7 @@
   {
    "key": "Player, rivals and app preferences.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1084"
+    "AndroidAccountEcosystemScreens.kt:1092"
    ],
    "nl": "Speler-, rivalen- en appvoorkeuren."
   },
@@ -6725,15 +6746,15 @@
   {
    "key": "Poke",
    "places": [
-    "AndroidPlayerInteractions.kt:360",
-    "AndroidPlayerInteractions.kt:361"
+    "AndroidPlayerInteractions.kt:368",
+    "AndroidPlayerInteractions.kt:369"
    ],
    "nl": "Por"
   },
   {
    "key": "Poke sent.",
    "places": [
-    "AndroidPlayerInteractions.kt:362"
+    "AndroidPlayerInteractions.kt:370"
    ],
    "nl": "Por verstuurd."
   },
@@ -6896,7 +6917,7 @@
   {
    "key": "Profile & Records",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:196",
+    "AndroidAccountEcosystemScreens.kt:202",
     "AndroidDutchUiCopy.kt:140"
    ],
    "nl": "Profiel & records"
@@ -6904,7 +6925,7 @@
   {
    "key": "Profile view",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:220"
+    "AndroidAccountEcosystemScreens.kt:226"
    ],
    "nl": "Profielweergave"
   },
@@ -6932,8 +6953,8 @@
   {
    "key": "Public Player preferences",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:515",
-    "AndroidAccountEcosystemScreens.kt:1676"
+    "AndroidAccountEcosystemScreens.kt:523",
+    "AndroidAccountEcosystemScreens.kt:1684"
    ],
    "nl": "Openbare spelervoorkeuren"
   },
@@ -6948,7 +6969,7 @@
   {
    "key": "Publish a time first, then challenge with it.",
    "places": [
-    "AndroidPlayerInteractions.kt:392"
+    "AndroidPlayerInteractions.kt:400"
    ],
    "nl": "Publiceer eerst een tijd en daag daarmee uit."
   },
@@ -6965,7 +6986,7 @@
   {
    "key": "Published results",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:263"
+    "AndroidAccountEcosystemScreens.kt:270"
    ],
    "nl": "Gepubliceerde resultaten"
   },
@@ -7299,7 +7320,7 @@
   {
    "key": "Reactions to my results",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1634"
+    "AndroidAccountEcosystemScreens.kt:1642"
    ],
    "nl": "Reacties op mijn resultaten"
   },
@@ -7355,7 +7376,7 @@
   {
    "key": "Received",
    "places": [
-    "AndroidPlayerInteractions.kt:117"
+    "AndroidPlayerInteractions.kt:119"
    ],
    "nl": "Ontvangen"
   },
@@ -7668,7 +7689,7 @@
   {
    "key": "Restore result",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1974"
+    "AndroidAccountEcosystemScreens.kt:1982"
    ],
    "nl": "Resultaat herstellen"
   },
@@ -7815,7 +7836,7 @@
   {
    "key": "Rivals",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1618",
+    "AndroidAccountEcosystemScreens.kt:1626",
     "AndroidHomeExperience.kt:294",
     "AndroidDutchUiCopy.kt:155"
    ],
@@ -7824,29 +7845,29 @@
   {
    "key": "Rock, paper, scissors",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:921",
-    "AndroidPlayerInteractions.kt:376"
+    "AndroidAccountEcosystemScreens.kt:929",
+    "AndroidPlayerInteractions.kt:384"
    ],
    "nl": "Steen, papier, schaar"
   },
   {
    "key": "Rock-paper-scissors {0}–{1}",
    "places": [
-    "AndroidPlayerInteractions.kt:295"
+    "AndroidPlayerInteractions.kt:303"
    ],
    "nl": "Steen-papier-schaar {0}–{1}"
   },
   {
    "key": "Rock-paper-scissors: {0} wins · {1} losses · {2} draws",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:879"
+    "AndroidAccountEcosystemScreens.kt:887"
    ],
    "nl": "Steen-papier-schaar: {0} winst · {1} verlies · {2} gelijk"
   },
   {
    "key": "Roll the dice",
    "places": [
-    "AndroidPlayerInteractions.kt:368"
+    "AndroidPlayerInteractions.kt:376"
    ],
    "nl": "Gooi de dobbelsteen"
   },
@@ -7875,8 +7896,8 @@
   {
    "key": "Run a test scan",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:296",
-    "AndroidAccountEcosystemScreens.kt:307"
+    "AndroidAccountEcosystemScreens.kt:303",
+    "AndroidAccountEcosystemScreens.kt:314"
    ]
   },
   {
@@ -7996,7 +8017,7 @@
   {
    "key": "Save Time Trial preference",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1225"
+    "AndroidAccountEcosystemScreens.kt:1233"
    ],
    "nl": "Time Trial-voorkeur opslaan"
   },
@@ -8017,7 +8038,7 @@
   {
    "key": "Save country and favorites",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1699"
+    "AndroidAccountEcosystemScreens.kt:1707"
    ],
    "nl": "Land en favorieten opslaan"
   },
@@ -8053,7 +8074,7 @@
   {
    "key": "Save screen name",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1254"
+    "AndroidAccountEcosystemScreens.kt:1262"
    ],
    "nl": "Schermnaam opslaan"
   },
@@ -8073,15 +8094,15 @@
   {
    "key": "Saved",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1231",
-    "AndroidAccountEcosystemScreens.kt:1260"
+    "AndroidAccountEcosystemScreens.kt:1239",
+    "AndroidAccountEcosystemScreens.kt:1268"
    ],
    "nl": "Opgeslagen"
   },
   {
    "key": "Saved and visible on your public profile.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1280"
+    "AndroidAccountEcosystemScreens.kt:1288"
    ],
    "nl": "Opgeslagen en zichtbaar op je openbare profiel."
   },
@@ -8165,17 +8186,17 @@
   {
    "key": "Saving…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1227",
-    "AndroidAccountEcosystemScreens.kt:1256",
-    "AndroidAccountEcosystemScreens.kt:1277",
-    "AndroidAccountEcosystemScreens.kt:1342"
+    "AndroidAccountEcosystemScreens.kt:1235",
+    "AndroidAccountEcosystemScreens.kt:1264",
+    "AndroidAccountEcosystemScreens.kt:1285",
+    "AndroidAccountEcosystemScreens.kt:1350"
    ],
    "nl": "Opslaan…"
   },
   {
    "key": "Say hi. Once an hour.",
    "places": [
-    "AndroidPlayerInteractions.kt:360"
+    "AndroidPlayerInteractions.kt:368"
    ],
    "nl": "Zeg hallo. Eén keer per uur."
   },
@@ -8304,8 +8325,8 @@
   {
    "key": "Screen name",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1246",
-    "AndroidAccountEcosystemScreens.kt:1248",
+    "AndroidAccountEcosystemScreens.kt:1254",
+    "AndroidAccountEcosystemScreens.kt:1256",
     "AndroidDutchUiCopy.kt:160"
    ],
    "nl": "Schermnaam"
@@ -8327,7 +8348,7 @@
   {
    "key": "Search Players",
    "places": [
-    "AndroidIdentityLinkScreen.kt:321"
+    "AndroidIdentityLinkScreen.kt:331"
    ],
    "nl": "Spelers zoeken"
   },
@@ -8355,14 +8376,14 @@
   {
    "key": "Search country",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1751"
+    "AndroidAccountEcosystemScreens.kt:1759"
    ],
    "nl": "Land zoeken"
   },
   {
    "key": "Search favorite",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1782"
+    "AndroidAccountEcosystemScreens.kt:1790"
    ],
    "nl": "Favoriet zoeken"
   },
@@ -8468,14 +8489,14 @@
   {
    "key": "Send one of your published times to beat. Once an hour.",
    "places": [
-    "AndroidPlayerInteractions.kt:393"
+    "AndroidPlayerInteractions.kt:401"
    ],
    "nl": "Stuur een van je gepubliceerde tijden om te verbeteren. Eén keer per uur."
   },
   {
    "key": "Sending…",
    "places": [
-    "AndroidPlayerInteractions.kt:273",
+    "AndroidPlayerInteractions.kt:276",
     "AndroidDirectorHostRequest.kt:182"
    ],
    "nl": "Versturen…"
@@ -8483,7 +8504,7 @@
   {
    "key": "Sent",
    "places": [
-    "AndroidPlayerInteractions.kt:116"
+    "AndroidPlayerInteractions.kt:118"
    ],
    "nl": "Verstuurd"
   },
@@ -8504,7 +8525,7 @@
   {
    "key": "Settings",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1082",
+    "AndroidAccountEcosystemScreens.kt:1090",
     "AndroidDutchUiCopy.kt:170"
    ],
    "nl": "Instellingen"
@@ -8628,7 +8649,7 @@
   {
    "key": "Show all {0}",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2060"
+    "AndroidAccountEcosystemScreens.kt:2068"
    ],
    "nl": "Toon alle {0}"
   },
@@ -8671,7 +8692,7 @@
   {
    "key": "Showing the most recent {0} of {1}.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2113"
+    "AndroidAccountEcosystemScreens.kt:2121"
    ],
    "nl": "De {0} meest recente van {1} worden getoond."
   },
@@ -8729,7 +8750,7 @@
    "key": "Sign in",
    "places": [
     "AndroidTimeTrialsProductComponent.kt:1275",
-    "AndroidAccountEcosystemScreens.kt:237",
+    "AndroidAccountEcosystemScreens.kt:243",
     "AndroidMyStatsScreen.kt:302",
     "AndroidTournamentOverview.kt:307"
    ],
@@ -8791,7 +8812,7 @@
   {
    "key": "Sign in to enable personal notifications.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1512"
+    "AndroidAccountEcosystemScreens.kt:1520"
    ],
    "nl": "Meld je aan om persoonlijke meldingen in te schakelen."
   },
@@ -8805,7 +8826,7 @@
   {
    "key": "Sign in to read your notifications.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:685",
+    "AndroidAccountEcosystemScreens.kt:693",
     "AndroidDutchUiCopy.kt:458"
    ],
    "nl": "Meld je aan om je meldingen te lezen."
@@ -8813,7 +8834,7 @@
   {
    "key": "Sign in to see your Player profile.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:232",
+    "AndroidAccountEcosystemScreens.kt:238",
     "AndroidDutchUiCopy.kt:457"
    ],
    "nl": "Meld je aan om je spelersprofiel te zien."
@@ -8959,7 +8980,7 @@
   {
    "key": "Someone passes me",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1597"
+    "AndroidAccountEcosystemScreens.kt:1605"
    ],
    "nl": "Iemand passeert mij"
   },
@@ -9424,7 +9445,7 @@
   {
    "key": "TIME TRIAL CAREER",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:244"
+    "AndroidAccountEcosystemScreens.kt:251"
    ],
    "nl": "TIME TRIAL-CARRIÈRE"
   },
@@ -9851,7 +9872,7 @@
   {
    "key": "The account keeps signing in, but stops seeing this Player's history until it is linked again. No result is deleted.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:207"
+    "AndroidIdentityLinkScreen.kt:217"
    ],
    "nl": "Het account kan zich blijven aanmelden, maar ziet de geschiedenis van deze speler niet meer tot het opnieuw gekoppeld is. Er wordt niets verwijderd."
   },
@@ -9869,6 +9890,13 @@
     "AndroidTournamentScreen.kt:610"
    ],
    "nl": "Het gekozen toernooi kon niet worden geladen."
+  },
+  {
+   "key": "The community records could not be loaded right now.",
+   "places": [
+    "AndroidAccountEcosystemScreens.kt:162"
+   ],
+   "nl": "De communityrecords kunnen nu niet worden geladen."
   },
   {
    "key": "The device code expired.",
@@ -10021,7 +10049,7 @@
   {
    "key": "The proposed time is highly unreasonable, please double check all information.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1928"
+    "AndroidAccountEcosystemScreens.kt:1936"
    ],
    "nl": "De voorgestelde tijd is zeer onwaarschijnlijk, controleer alle gegevens nog eens."
   },
@@ -10056,7 +10084,7 @@
   {
    "key": "The result could not be updated.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:450"
+    "AndroidAccountEcosystemScreens.kt:458"
    ],
    "nl": "Het resultaat kon niet worden bijgewerkt."
   },
@@ -10084,7 +10112,7 @@
   {
    "key": "The same community records as the website",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:368",
+    "AndroidAccountEcosystemScreens.kt:375",
     "AndroidDutchUiCopy.kt:320"
    ],
    "nl": "Dezelfde communityrecords als op de website"
@@ -10217,7 +10245,7 @@
   {
    "key": "These could not be loaded.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2070"
+    "AndroidAccountEcosystemScreens.kt:2078"
    ],
    "nl": "Deze konden niet worden geladen."
   },
@@ -10245,14 +10273,14 @@
   {
    "key": "They are saved and will sync by themselves once you are online and signed in. Tap to see them.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:599"
+    "AndroidAccountEcosystemScreens.kt:607"
    ],
    "nl": "Ze zijn opgeslagen en synchroniseren vanzelf zodra je online en aangemeld bent. Tik om ze te bekijken."
   },
   {
    "key": "They arrive while the app is closed too - about every 15 minutes, not the second something happens.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1407"
+    "AndroidAccountEcosystemScreens.kt:1415"
    ],
    "nl": "Ze komen ook binnen als de app dicht is - ongeveer elk kwartier, niet op de seconde dat er iets gebeurt."
   },
@@ -10337,7 +10365,7 @@
   {
    "key": "This entry was counted before the individual events were kept.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2076"
+    "AndroidAccountEcosystemScreens.kt:2084"
    ],
    "nl": "Deze melding is geteld voordat de afzonderlijke gebeurtenissen werden bewaard."
   },
@@ -10421,7 +10449,7 @@
   {
    "key": "This sets progress and Rank defaults; all public tracks stay available.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1220"
+    "AndroidAccountEcosystemScreens.kt:1228"
    ],
    "nl": "Dit bepaalt standaard voortgang en Rank; alle openbare circuits blijven beschikbaar."
   },
@@ -10519,8 +10547,8 @@
   {
    "key": "Time Trial preference",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1189",
-    "AndroidAccountEcosystemScreens.kt:1195",
+    "AndroidAccountEcosystemScreens.kt:1197",
+    "AndroidAccountEcosystemScreens.kt:1203",
     "AndroidDutchUiCopy.kt:183"
    ],
    "nl": "Time Trial-voorkeur"
@@ -10535,7 +10563,7 @@
   {
    "key": "Time Trials",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:518",
+    "AndroidAccountEcosystemScreens.kt:526",
     "AndroidHomeHero.kt:134"
    ],
    "nl": "Time trials"
@@ -10557,7 +10585,7 @@
   {
    "key": "Times beaten, reactions, results and required app updates.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:676"
+    "AndroidAccountEcosystemScreens.kt:684"
    ],
    "nl": "Verslagen tijden, reacties, resultaten en vereiste app-updates."
   },
@@ -10650,7 +10678,7 @@
   {
    "key": "Tools for checking the app itself. Nothing here counts toward rankings or records. Puts a bundled result image through the real scanner and the real sync. The saved result is labelled as a test and expires after 24 hours.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:301"
+    "AndroidAccountEcosystemScreens.kt:308"
    ]
   },
   {
@@ -10714,7 +10742,7 @@
   {
    "key": "Total",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2033",
+    "AndroidAccountEcosystemScreens.kt:2041",
     "AndroidHomeHero.kt:144",
     "AndroidDutchUiCopy.kt:185"
    ],
@@ -11026,7 +11054,7 @@
   {
    "key": "Try again later.",
    "places": [
-    "AndroidPlayerInteractions.kt:276"
+    "AndroidPlayerInteractions.kt:283"
    ],
    "nl": "Probeer het later opnieuw."
   },
@@ -11076,22 +11104,22 @@
   {
    "key": "Unlink",
    "places": [
-    "AndroidIdentityLinkScreen.kt:192",
-    "AndroidIdentityLinkScreen.kt:217"
+    "AndroidIdentityLinkScreen.kt:202",
+    "AndroidIdentityLinkScreen.kt:227"
    ],
    "nl": "Ontkoppelen"
   },
   {
    "key": "Unlink this account?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:202"
+    "AndroidIdentityLinkScreen.kt:212"
    ],
    "nl": "Dit account ontkoppelen?"
   },
   {
    "key": "Unread",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:784"
+    "AndroidAccountEcosystemScreens.kt:792"
    ],
    "nl": "Ongelezen"
   },
@@ -11176,7 +11204,7 @@
   {
    "key": "Version {0} is available. This reminder stays until you install that version.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:750"
+    "AndroidAccountEcosystemScreens.kt:758"
    ],
    "nl": "Versie {0} is beschikbaar. Deze herinnering blijft staan totdat je die versie installeert."
   },
@@ -11267,7 +11295,7 @@
   {
    "key": "Waiting",
    "places": [
-    "AndroidPlayerInteractions.kt:118",
+    "AndroidPlayerInteractions.kt:120",
     "AndroidDutchUiCopy.kt:389"
    ],
    "nl": "Wacht"
@@ -11295,21 +11323,21 @@
   {
    "key": "Waiting for {0} to roll back.",
    "places": [
-    "AndroidPlayerInteractions.kt:231"
+    "AndroidPlayerInteractions.kt:233"
    ],
    "nl": "Wacht tot {0} terug gooit."
   },
   {
    "key": "Waiting for {0}'s hand.",
    "places": [
-    "AndroidPlayerInteractions.kt:232"
+    "AndroidPlayerInteractions.kt:234"
    ],
    "nl": "Wacht op de zet van {0}."
   },
   {
    "key": "Waiting for {0}.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:962"
+    "AndroidAccountEcosystemScreens.kt:970"
    ],
    "nl": "Wachten op {0}."
   },
@@ -11355,7 +11383,7 @@
   {
    "key": "Watch this run on YouTube",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1907"
+    "AndroidAccountEcosystemScreens.kt:1915"
    ],
    "nl": "Bekijk deze rit op YouTube"
   },
@@ -11434,7 +11462,7 @@
   {
    "key": "Who can sign in, and whose history they see.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:100"
+    "AndroidIdentityLinkScreen.kt:110"
    ],
    "nl": "Wie zich kan aanmelden, en wiens geschiedenis diegene ziet."
   },
@@ -11490,7 +11518,7 @@
   {
    "key": "Winner: {0}",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:931"
+    "AndroidAccountEcosystemScreens.kt:939"
    ],
    "nl": "Winnaar: {0}"
   },
@@ -11542,14 +11570,14 @@
   {
    "key": "Withdrawn results",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:350"
+    "AndroidAccountEcosystemScreens.kt:357"
    ],
    "nl": "Ingetrokken resultaten"
   },
   {
    "key": "Withdrawn · not in standings",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1957"
+    "AndroidAccountEcosystemScreens.kt:1965"
    ],
    "nl": "Ingetrokken · niet in klassementen"
   },
@@ -11570,10 +11598,10 @@
   {
    "key": "Working…",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:461",
-    "AndroidAccountEcosystemScreens.kt:731",
-    "AndroidAccountEcosystemScreens.kt:851",
-    "AndroidIdentityLinkScreen.kt:195"
+    "AndroidAccountEcosystemScreens.kt:469",
+    "AndroidAccountEcosystemScreens.kt:739",
+    "AndroidAccountEcosystemScreens.kt:859",
+    "AndroidIdentityLinkScreen.kt:205"
    ],
    "nl": "Bezig…"
   },
@@ -11601,7 +11629,7 @@
   {
    "key": "Wrong track or cc",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:417",
+    "AndroidAccountEcosystemScreens.kt:425",
     "AndroidPostTimeEdit.kt:158"
    ],
    "nl": "Verkeerd circuit of cc"
@@ -11616,7 +11644,7 @@
   {
    "key": "YOU AND {0}",
    "places": [
-    "AndroidPlayerInteractions.kt:283"
+    "AndroidPlayerInteractions.kt:291"
    ],
    "nl": "JIJ EN {0}"
   },
@@ -11659,7 +11687,7 @@
   {
    "key": "YOUR TURN",
    "places": [
-    "AndroidPlayerInteractions.kt:306"
+    "AndroidPlayerInteractions.kt:314"
    ],
    "nl": "JOUW BEURT"
   },
@@ -11673,7 +11701,7 @@
   {
    "key": "Yes",
    "places": [
-    "AndroidIdentityLinkScreen.kt:393",
+    "AndroidIdentityLinkScreen.kt:403",
     "AndroidTournamentSignup.kt:344",
     "AndroidTournamentSignup.kt:351"
    ],
@@ -11682,7 +11710,7 @@
   {
    "key": "Yes · all 96",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1212"
+    "AndroidAccountEcosystemScreens.kt:1220"
    ],
    "nl": "Ja · alle 96"
   },
@@ -11733,7 +11761,7 @@
   {
    "key": "You and {0}",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1360"
+    "AndroidAccountEcosystemScreens.kt:1368"
    ],
    "nl": "Jij en {0}"
   },
@@ -11803,7 +11831,7 @@
   {
    "key": "You challenged {0} to beat {1}",
    "places": [
-    "AndroidPlayerInteractions.kt:171"
+    "AndroidPlayerInteractions.kt:173"
    ],
    "nl": "Jij daagde {0} uit om {1} te verbeteren"
   },
@@ -11852,63 +11880,63 @@
   {
    "key": "You poked {0}",
    "places": [
-    "AndroidPlayerInteractions.kt:131"
+    "AndroidPlayerInteractions.kt:133"
    ],
    "nl": "Jij gaf {0} een por"
   },
   {
    "key": "You poked {0} {1}{2}.",
    "places": [
-    "AndroidPlayerInteractions.kt:211"
+    "AndroidPlayerInteractions.kt:213"
    ],
    "nl": "Jij gaf {0} {1} een por{2}."
   },
   {
    "key": "You roll now, {0} rolls back. Highest wins.",
    "places": [
-    "AndroidPlayerInteractions.kt:367"
+    "AndroidPlayerInteractions.kt:375"
    ],
    "nl": "Jij gooit nu, {0} gooit terug. Hoogste wint."
   },
   {
    "key": "You rolled {0} {1} — waiting for {2} to roll back{3}.",
    "places": [
-    "AndroidPlayerInteractions.kt:200"
+    "AndroidPlayerInteractions.kt:202"
    ],
    "nl": "Jij gooide {0} {1} — wacht tot {2} terug gooit{3}."
   },
   {
    "key": "You rolled {0} · one-way roll from before duels",
    "places": [
-    "AndroidPlayerInteractions.kt:151"
+    "AndroidPlayerInteractions.kt:153"
    ],
    "nl": "Jij gooide {0} · losse worp van vóór de duels"
   },
   {
    "key": "You rolled {0} · {1} rolled {2}",
    "places": [
-    "AndroidPlayerInteractions.kt:140"
+    "AndroidPlayerInteractions.kt:142"
    ],
    "nl": "Jij gooide {0} · {1} gooide {2}"
   },
   {
    "key": "You rolled {0} · {1} still has to roll back",
    "places": [
-    "AndroidPlayerInteractions.kt:144"
+    "AndroidPlayerInteractions.kt:146"
    ],
    "nl": "Jij gooide {0} · {1} moet nog terug gooien"
   },
   {
    "key": "You rolled {0}.",
    "places": [
-    "AndroidPlayerInteractions.kt:371"
+    "AndroidPlayerInteractions.kt:379"
    ],
    "nl": "Je gooide {0}."
   },
   {
    "key": "You sent {0} {1}{2}.",
    "places": [
-    "AndroidPlayerInteractions.kt:209"
+    "AndroidPlayerInteractions.kt:211"
    ],
    "nl": "Jij stuurde {0} {1}{2}."
   },
@@ -11922,35 +11950,35 @@
   {
    "key": "You threw {0} {1} — waiting for {2}'s hand{3}.",
    "places": [
-    "AndroidPlayerInteractions.kt:203"
+    "AndroidPlayerInteractions.kt:205"
    ],
    "nl": "Jij koos {0} {1} — wacht op de zet van {2}{3}."
   },
   {
    "key": "You threw {0} · {1} still has to answer",
    "places": [
-    "AndroidPlayerInteractions.kt:164"
+    "AndroidPlayerInteractions.kt:166"
    ],
    "nl": "Jij koos {0} · {1} moet nog antwoorden"
   },
   {
    "key": "You threw {0} · {1} threw {2}",
    "places": [
-    "AndroidPlayerInteractions.kt:160"
+    "AndroidPlayerInteractions.kt:162"
    ],
    "nl": "Jij koos {0} · {1} koos {2}"
   },
   {
    "key": "You threw {0}.",
    "places": [
-    "AndroidPlayerInteractions.kt:384"
+    "AndroidPlayerInteractions.kt:392"
    ],
    "nl": "Je koos {0}."
   },
   {
    "key": "You vs {0}: ",
    "places": [
-    "AndroidPlayerInteractions.kt:300"
+    "AndroidPlayerInteractions.kt:308"
    ],
    "nl": "Jij vs {0}: "
   },
@@ -11971,14 +11999,14 @@
   {
    "key": "You won",
    "places": [
-    "AndroidPlayerInteractions.kt:125"
+    "AndroidPlayerInteractions.kt:127"
    ],
    "nl": "Jij won"
   },
   {
    "key": "You're all caught up",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:720"
+    "AndroidAccountEcosystemScreens.kt:728"
    ],
    "nl": "Je bent helemaal bijgewerkt"
   },
@@ -12112,7 +12140,7 @@
   {
    "key": "Your interactions will appear here.",
    "places": [
-    "AndroidPlayerInteractions.kt:403"
+    "AndroidPlayerInteractions.kt:411"
    ],
    "nl": "Je interacties verschijnen hier."
   },
@@ -12152,9 +12180,16 @@
    "nl": "Je telefoon vraagt om hoog contrast, dus het product gebruikt de hoogcontrastweergave."
   },
   {
+   "key": "Your profile could not be loaded right now.",
+   "places": [
+    "AndroidAccountEcosystemScreens.kt:155"
+   ],
+   "nl": "Je profiel kan nu niet worden geladen."
+  },
+  {
    "key": "Your published Time Trials and the community record book.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:197",
+    "AndroidAccountEcosystemScreens.kt:203",
     "AndroidDutchUiCopy.kt:317"
    ],
    "nl": "Jouw gepubliceerde Time Trials en het recordboek van de community."
@@ -12225,7 +12260,7 @@
   {
    "key": "Your turn",
    "places": [
-    "AndroidPlayerInteractions.kt:119"
+    "AndroidPlayerInteractions.kt:121"
    ],
    "nl": "Jouw beurt"
   },
@@ -12453,7 +12488,7 @@
   {
    "key": "has signed in but has no account here yet",
    "places": [
-    "AndroidIdentityLinkScreen.kt:233"
+    "AndroidIdentityLinkScreen.kt:243"
    ],
    "nl": "heeft zich aangemeld maar heeft hier nog geen account"
   },
@@ -12715,7 +12750,7 @@
   {
    "key": "the other Player",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:973"
+    "AndroidAccountEcosystemScreens.kt:981"
    ],
    "nl": "de andere speler"
   },
@@ -12779,7 +12814,7 @@
   {
    "key": "track·engine combinations · up to 192",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:2012"
+    "AndroidAccountEcosystemScreens.kt:2020"
    ],
    "nl": "circuit·klasse-combinaties · maximaal 192"
   },
@@ -12897,7 +12932,7 @@
   {
    "key": "{0} account(s), {1} not yet linked.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:118"
+    "AndroidIdentityLinkScreen.kt:128"
    ],
    "nl": "{0} account(s), {1} nog niet gekoppeld."
   },
@@ -12940,7 +12975,7 @@
   {
    "key": "{0} challenged you to beat {1}",
    "places": [
-    "AndroidPlayerInteractions.kt:174"
+    "AndroidPlayerInteractions.kt:176"
    ],
    "nl": "{0} daagde jou uit om {1} te verbeteren"
   },
@@ -12981,14 +13016,14 @@
   {
    "key": "{0} does not accept interactions from you right now.",
    "places": [
-    "AndroidPlayerInteractions.kt:338"
+    "AndroidPlayerInteractions.kt:346"
    ],
    "nl": "{0} ontvangt nu geen interacties van jou."
   },
   {
    "key": "{0} does not accept this from you.",
    "places": [
-    "AndroidPlayerInteractions.kt:237"
+    "AndroidPlayerInteractions.kt:239"
    ],
    "nl": "{0} ontvangt dit niet van jou."
   },
@@ -13009,28 +13044,28 @@
   {
    "key": "{0} gets a notification.",
    "places": [
-    "AndroidPlayerInteractions.kt:269"
+    "AndroidPlayerInteractions.kt:272"
    ],
    "nl": "{0} krijgt een melding."
   },
   {
    "key": "{0} has had the most interactions allowed today.",
    "places": [
-    "AndroidPlayerInteractions.kt:235"
+    "AndroidPlayerInteractions.kt:237"
    ],
    "nl": "{0} heeft vandaag het maximum aantal interacties gehad."
   },
   {
    "key": "{0} has no account yet, so there is nobody to notify. Interactions open once they sign in.",
    "places": [
-    "AndroidPlayerInteractions.kt:335"
+    "AndroidPlayerInteractions.kt:343"
    ],
    "nl": "{0} heeft nog geen account, dus niemand krijgt een melding. Interacties kunnen zodra {1} zich aanmeldt."
   },
   {
    "key": "{0} has no account yet, so they would not be notified.",
    "places": [
-    "AndroidPlayerInteractions.kt:233"
+    "AndroidPlayerInteractions.kt:235"
    ],
    "nl": "{0} heeft nog geen account en zou geen melding krijgen."
   },
@@ -13101,7 +13136,7 @@
   {
    "key": "{0} is waiting for your hand.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:934"
+    "AndroidAccountEcosystemScreens.kt:942"
    ],
    "nl": "{0} wacht op jouw zet."
   },
@@ -13138,7 +13173,7 @@
   {
    "key": "{0} link requests are waiting.",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1161"
+    "AndroidAccountEcosystemScreens.kt:1169"
    ],
    "nl": "Er wachten {0} koppelverzoeken."
   },
@@ -13335,7 +13370,7 @@
   {
    "key": "{0} poked you",
    "places": [
-    "AndroidPlayerInteractions.kt:132",
+    "AndroidPlayerInteractions.kt:134",
     "AndroidNotificationPresentation.kt:275"
    ],
    "nl": "{0} gaf jou een por"
@@ -13420,7 +13455,7 @@
   {
    "key": "{0} results are still only on this phone",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:593"
+    "AndroidAccountEcosystemScreens.kt:601"
    ],
    "nl": "{0} resultaten staan nog alleen op deze telefoon"
   },
@@ -13441,14 +13476,14 @@
   {
    "key": "{0} rolled {1} · one-way roll from before duels",
    "places": [
-    "AndroidPlayerInteractions.kt:152"
+    "AndroidPlayerInteractions.kt:154"
    ],
    "nl": "{0} gooide {1} · losse worp van vóór de duels"
   },
   {
    "key": "{0} rolled {1} · roll back to beat it",
    "places": [
-    "AndroidPlayerInteractions.kt:147"
+    "AndroidPlayerInteractions.kt:149"
    ],
    "nl": "{0} gooide {1} · gooi terug om te winnen"
   },
@@ -13511,7 +13546,7 @@
   {
    "key": "{0} threw a hidden hand · pick yours",
    "places": [
-    "AndroidPlayerInteractions.kt:167"
+    "AndroidPlayerInteractions.kt:169"
    ],
    "nl": "{0} koos een verborgen zet · kies de jouwe"
   },
@@ -13564,7 +13599,7 @@
   {
    "key": "{0} unread",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:721"
+    "AndroidAccountEcosystemScreens.kt:729"
    ],
    "nl": "{0} ongelezen"
   },
@@ -13613,7 +13648,7 @@
   {
    "key": "{0} won",
    "places": [
-    "AndroidPlayerInteractions.kt:127",
+    "AndroidPlayerInteractions.kt:129",
     "AndroidNotificationPresentation.kt:86"
    ],
    "nl": "{0} won"
@@ -13682,7 +13717,7 @@
   {
    "key": "{0} · {1}cc · {2}",
    "places": [
-    "AndroidPlayerInteractions.kt:432"
+    "AndroidPlayerInteractions.kt:440"
    ]
   },
   {
@@ -13756,7 +13791,7 @@
   {
    "key": "{0}: {1} · {2}cc · {3}",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:1003"
+    "AndroidAccountEcosystemScreens.kt:1011"
    ]
   },
   {
@@ -13918,8 +13953,8 @@
   {
    "key": "🎲 Roll back",
    "places": [
-    "AndroidAccountEcosystemScreens.kt:980",
-    "AndroidPlayerInteractions.kt:312"
+    "AndroidAccountEcosystemScreens.kt:988",
+    "AndroidPlayerInteractions.kt:320"
    ],
    "nl": "🎲 Gooi terug"
   },

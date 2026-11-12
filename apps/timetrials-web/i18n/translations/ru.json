@@ -5027,6 +5027,11 @@
   "mushrooms": "грибы",
   "tyres": "шины",
   "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.": "Результатов будет отправлено в {1}, когда вы войдёте там: {0}; пропущено {2}, потому что в {3} уже есть результат лучше.",
-  "{0} were already on their way.": "Уже были в пути: {0}."
+  "{0} were already on their way.": "Уже были в пути: {0}.",
+  "Needs a connection": "Нужно подключение",
+  "No connection to {0}.": "Нет подключения к {0}.",
+  "No connection to {0}. Showing what this phone saved.": "Нет подключения к {0}. Показано то, что сохранено на этом телефоне.",
+  "The community records could not be loaded right now.": "Рекорды сообщества сейчас не удаётся загрузить.",
+  "Your profile could not be loaded right now.": "Ваш профиль сейчас не удаётся загрузить."
  }
 }
