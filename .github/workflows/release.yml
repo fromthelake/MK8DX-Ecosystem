@@ -210,9 +210,9 @@ jobs:
         run: |
           set -euo pipefail
           python -m venv "$RUNNER_TEMP/check"
-          "$RUNNER_TEMP/check/bin/python" -m pip install --no-index --find-links "$RUNNER_TEMP/built-wheels" cryptography
           "$RUNNER_TEMP/check/bin/python" -m pip install --only-binary=:all: -r tooling/requirements-offline-lan.txt \
             --find-links "$RUNNER_TEMP/built-wheels"
+          "$RUNNER_TEMP/check/bin/python" -c "import cryptography, sys; print('cryptography', cryptography.__version__); sys.exit(cryptography.__version__ != '$(sed -n 's/^cryptography==//p' tooling/requirements-offline-lan.txt)')"
           "$RUNNER_TEMP/check/bin/python" -m unittest -v tooling/tests/test_offline_lan_ca.py \
             tooling/tests/test_offline_lan_ca_lifecycle.py tooling/tests/test_auto_backup.py
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
