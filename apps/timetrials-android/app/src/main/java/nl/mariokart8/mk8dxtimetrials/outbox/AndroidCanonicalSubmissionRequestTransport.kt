@@ -38,6 +38,20 @@ internal const val ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED =
 /** ADR-0225: a time carried to the community it came from (400). */
 internal const val ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF =
     "transport.carried_from_self"
+/**
+ * The two answers with which a receiving community refuses a carried copy for good. Such a copy is not waiting
+ * to be sent: it is shown as not accepted, can be removed, and never blocks forgetting that community.
+ */
+internal val ANDROID_CARRIED_REFUSAL_FAILURES = setOf(
+    ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED,
+    ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF,
+)
+
+/** Whether a saved result still waits to reach its community (ADR-0225: refused carried copies do not). */
+internal fun androidOutboxCountsAsUnsent(state: AndroidOutboxStoredState, failureCode: String?): Boolean =
+    state != AndroidOutboxStoredState.SYNCED &&
+        !(state == AndroidOutboxStoredState.FAILED && failureCode in ANDROID_CARRIED_REFUSAL_FAILURES)
+
 internal const val ANDROID_CANONICAL_REFUSAL_MAX_BYTES = 1_024
 private const val ANDROID_TIME_IMPLAUSIBLE_CODE = "time_trial_time_implausible"
 

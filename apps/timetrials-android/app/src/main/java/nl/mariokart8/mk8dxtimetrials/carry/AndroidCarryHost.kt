@@ -20,6 +20,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.AndroidCommunities
 import nl.mariokart8.mk8dxtimetrials.AndroidCommunity
+import nl.mariokart8.mk8dxtimetrials.AndroidCommunityList
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED
 import nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidLocalTimeTrialOutbox
 import nl.mariokart8.mk8dxtimetrials.outbox.createAndroidProductTimeTrialOutboxFor
@@ -43,6 +46,26 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
  */
 internal val LocalAndroidCarryOffer = compositionLocalOf<((entryKey: String) -> Unit)?> { null }
 
+/**
+ * ADR-0225: what the saved results need to show a carried copy the active community refused, and to remove it.
+ * Present whenever the active community is known, also with a single community on the phone.
+ */
+internal class AndroidCarriedRefusals(val communityName: String, val discard: (entryKey: String) -> Boolean)
+
+internal val LocalAndroidCarriedRefusals = compositionLocalOf<AndroidCarriedRefusals?> { null }
+
+/** "Not accepted by <community>: why." for the two refusal codes, null for anything else. */
+internal fun androidCarriedRefusalText(language: AndroidProductLanguage, name: String, failureCode: String?): String? =
+    when (failureCode) {
+        ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED -> androidText(language,
+            "Not accepted by $name: this community does not accept times from other communities.",
+            "Niet aangenomen door $name: deze community neemt geen tijden van andere communities aan.")
+        ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF -> androidText(language,
+            "Not accepted by $name: this time already comes from this community.",
+            "Niet aangenomen door $name: deze tijd komt al uit deze community.")
+        else -> null
+    }
+
 private sealed interface CarryStep {
     data class Choose(val entryKey: String) : CarryStep
     data class Checking(val target: AndroidCommunity) : CarryStep
@@ -65,7 +88,14 @@ internal fun AndroidCarryHost(
     val source = communities.firstOrNull { it.origin == activeOrigin }
     val targets = communities.filter { it.origin != activeOrigin }
     val offer: ((String) -> Unit)? = if (targets.isEmpty()) null else { key -> step = CarryStep.Choose(key) }
-    CompositionLocalProvider(LocalAndroidCarryOffer provides offer) { content() }
+    val refusals = remember(activeOrigin, localOutbox, source?.name) {
+        AndroidCarriedRefusals(source?.name ?: AndroidCommunityList.displayNameOf(activeOrigin)) { key ->
+            runCatching { localOutbox.discardRefusedCarried(key) }.getOrDefault(false)
+        }
+    }
+    CompositionLocalProvider(LocalAndroidCarryOffer provides offer, LocalAndroidCarriedRefusals provides refusals) {
+        content()
+    }
 
     val language = LocalAndroidProductLanguage.current
     val current = step ?: return

@@ -14,7 +14,12 @@ import nl.mariokart8.mk8dxtimetrials.manual.encodeAndroidManualSubmission
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidLocalTimeTrialOutbox
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxClock
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxSubmissionHost
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_NOT_AUTHORIZED
+import nl.mariokart8.mk8dxtimetrials.outbox.ANDROID_CANONICAL_TRANSPORT_UNAVAILABLE
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidProducedSubmissionValidator
+import nl.mariokart8.mk8dxtimetrials.outbox.androidOutboxCountsAsUnsent
 import nl.mariokart8.mk8dxtimetrials.scan.AcceptedPlayerScanObservation
 import nl.mariokart8.mk8dxtimetrials.scan.AndroidScanSubmissionContext
 import nl.mariokart8.mk8dxtimetrials.scan.ScanLegacyAssetResolver
@@ -24,6 +29,7 @@ import nl.mariokart8.mk8dxtimetrials.tournament.AndroidInstallationSettings
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -212,5 +218,64 @@ class AndroidCarriedTimesTest {
         assertTrue(text.startsWith("It is sent when you switch to online.example and are signed in there."))
         assertTrue(text.endsWith("An administrator of online.example approves it first."))
         assertFalse(androidCarryQueuedText(AndroidProductLanguage.DUTCH, "x", review = false).contains("beheerder"))
+    }
+
+    private fun refusedCopy(targetOutbox: AndroidLocalTimeTrialOutbox, code: String): String {
+        val queue = AndroidCarriedQueue(File(temporary.root, "queue-${System.nanoTime()}.json"))
+        carry({ AndroidCarriedTimesPolicy.ALLOWED }, queue, targetOutbox)
+        promoteAndroidCarriedTimes(queue, targetOutbox, "player.receiver", slot, 6_000)
+        val key = targetOutbox.list().single { it.canonicalSubmission.containsKey("carriedFrom") }.entry.entryKey
+        targetOutbox.markFailed(key, 1, 7_000, code)
+        return key
+    }
+
+    private fun unsent(outbox: AndroidLocalTimeTrialOutbox) =
+        outbox.listIndex().count { androidOutboxCountsAsUnsent(it.storedState, it.failureCode) }
+
+    @Test fun `a refused carried copy is not unsent and can be removed`() {
+        for (code in listOf(ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED, ANDROID_CANONICAL_TRANSPORT_CARRIED_FROM_SELF)) {
+            val targetOutbox = outbox("refused-$code")
+            val key = refusedCopy(targetOutbox, code)
+            assertEquals(0, unsent(targetOutbox))
+            assertTrue(targetOutbox.discardRefusedCarried(key))
+            assertTrue(targetOutbox.list().isEmpty())
+            assertNotNull(androidCarriedRefusalText(AndroidProductLanguage.ENGLISH, "online.example", code))
+        }
+        assertEquals(
+            "Not accepted by online.example: this community does not accept times from other communities.",
+            androidCarriedRefusalText(AndroidProductLanguage.ENGLISH, "online.example", ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED),
+        )
+    }
+
+    @Test fun `a non-carried failed run keeps counting and is never removed this way`() {
+        val sourceOutbox = outbox("plain")
+        val key = AndroidOutboxSubmissionHost(sourceOutbox, AndroidOutboxClock { 1_000 }).storeManual(manual()).entry.entryKey
+        // Even with the carried refusal code, an original without carriedFrom stays.
+        sourceOutbox.markFailed(key, 1, 2_000, ANDROID_CANONICAL_TRANSPORT_NOT_AUTHORIZED)
+        assertEquals(1, unsent(sourceOutbox))
+        assertFalse(sourceOutbox.discardRefusedCarried(key))
+        assertEquals(1, sourceOutbox.list().size)
+
+        val other = outbox("plain-refusal-code")
+        val otherKey = AndroidOutboxSubmissionHost(other, AndroidOutboxClock { 1_000 }).storeManual(manual()).entry.entryKey
+        other.markFailed(otherKey, 1, 2_000, ANDROID_CANONICAL_TRANSPORT_CARRIED_TIMES_DISABLED)
+        assertFalse(other.discardRefusedCarried(otherKey))
+        assertEquals(1, other.list().size)
+    }
+
+    @Test fun `a carried copy that failed for another reason or still waits stays`() {
+        val targetOutbox = outbox("carried-unavailable")
+        val key = refusedCopy(targetOutbox, ANDROID_CANONICAL_TRANSPORT_UNAVAILABLE)
+        assertEquals(1, unsent(targetOutbox))
+        assertFalse(targetOutbox.discardRefusedCarried(key))
+        assertEquals(1, targetOutbox.list().size)
+    }
+
+    @Test fun `a waiting carried copy can be called back`() {
+        val queue = AndroidCarriedQueue(File(temporary.root, "waiting.json"))
+        carry({ AndroidCarriedTimesPolicy.REVIEW }, queue, outbox("waiting-target"))
+        val id = queue.list().single()["submissionId"]!!.jsonPrimitive.content
+        queue.remove(id)
+        assertEquals(0, queue.size())
     }
 }

@@ -65,7 +65,7 @@ import nl.mariokart8.mk8dxtimetrials.outbox.AndroidAutomaticSyncScheduler
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxAutomaticSyncScheduler
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxClock
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxOwningSlotProvider
-import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxStoredState
+import nl.mariokart8.mk8dxtimetrials.outbox.androidOutboxCountsAsUnsent
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxSubmissionHost
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxSynchronizationClock
 import nl.mariokart8.mk8dxtimetrials.outbox.AndroidReviewedEvidenceReferenceAllowlist
@@ -323,7 +323,7 @@ internal fun AndroidTimeTrialsProductionRoot(
             unsynchronizedResultCount = withContext(Dispatchers.IO) {
                 runCatching {
                     localOutbox.listIndex().count {
-                        it.storedState != AndroidOutboxStoredState.SYNCED
+                        androidOutboxCountsAsUnsent(it.storedState, it.failureCode)
                     } + carriedQueue.size()
                 }.getOrDefault(unsynchronizedResultCount)
             }
@@ -788,7 +788,7 @@ private fun AndroidAccountDestination(
         pendingByOwner = withContext(Dispatchers.IO) {
             runCatching {
                 localOutbox.listIndex()
-                    .filter { it.storedState != AndroidOutboxStoredState.SYNCED }
+                    .filter { androidOutboxCountsAsUnsent(it.storedState, it.failureCode) }
                     .mapNotNull { it.owningSlotId }
                     .groupingBy { it }
                     .eachCount()

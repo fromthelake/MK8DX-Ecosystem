@@ -20,8 +20,12 @@ import androidx.compose.ui.platform.testTag
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
-import nl.mariokart8.mk8dxtimetrials.outbox.AndroidOutboxStoredState
+import nl.mariokart8.mk8dxtimetrials.track.Schema9AndroidTrackCatalog
+import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxNumeric
+import nl.mariokart8.mk8dxtimetrials.outbox.androidOutboxCountsAsUnsent
 import nl.mariokart8.mk8dxtimetrials.outbox.createAndroidProductTimeTrialOutboxFor
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.ProductText as Text
@@ -44,7 +48,7 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
  */
 internal fun androidCommunityUnsentCount(context: Context, origin: String): Int = runCatching {
     createAndroidProductTimeTrialOutboxFor(context, origin).listIndex()
-        .count { it.storedState != AndroidOutboxStoredState.SYNCED }
+        .count { androidOutboxCountsAsUnsent(it.storedState, it.failureCode) }
 }.getOrDefault(0) + runCatching { AndroidCarriedQueue.forOrigin(context, origin).size() }.getOrDefault(0)
 
 /**
@@ -63,6 +67,7 @@ internal fun AndroidCommunityServerPanel(
     fun t(english: String, dutch: String) = androidText(language, english, dutch)
     var communities by remember { mutableStateOf<List<AndroidCommunity>>(emptyList()) }
     var unsent by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
+    var waitingCarried by remember { mutableStateOf<Map<String, List<JsonObject>>>(emptyMap()) }
     var message by remember { mutableStateOf<Pair<String, Mk8dxStatusTone>?>(null) }
     var reload by remember { mutableIntStateOf(0) }
     LaunchedEffect(apiOrigin, reload) {
@@ -72,6 +77,9 @@ internal fun AndroidCommunityServerPanel(
         }
         communities = list
         unsent = counts
+        waitingCarried = withContext(Dispatchers.IO) {
+            list.associate { it.origin to runCatching { AndroidCarriedQueue.forOrigin(context, it.origin).list() }.getOrDefault(emptyList()) }
+        }
     }
     val colors = Mk8dxTheme.colors
     val type = Mk8dxTheme.type
@@ -112,6 +120,37 @@ internal fun AndroidCommunityServerPanel(
                         else -> t("$waiting runs waiting to be sent", "$waiting ritten wachten op verzenden")
                     },
                 )
+                // Copies carried here that wait for somebody to sign in: each can be called back.
+                waitingCarried[community.origin].orEmpty().forEachIndexed { carriedIndex, staged ->
+                    val submissionId = (staged["submissionId"] as? JsonPrimitive)?.content
+                    Row(
+                        Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            t("Carried time waiting for sign-in: ${androidCarriedLabel(staged)}",
+                                "Meegenomen tijd wacht op aanmelden: ${androidCarriedLabel(staged)}"),
+                            style = type.bodyS,
+                            color = colors.textSecondary,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Mk8dxButton(
+                            t("Remove", "Verwijderen"),
+                            {
+                                if (submissionId != null) scope.launch {
+                                    withContext(Dispatchers.IO) {
+                                        runCatching { AndroidCarriedQueue.forOrigin(context, community.origin).remove(submissionId) }
+                                    }
+                                    reload++
+                                }
+                            },
+                            variant = Mk8dxButtonVariant.Quiet,
+                            size = Mk8dxButtonSize.Sm,
+                            tag = "settings-community-$index-carried-remove-$carriedIndex",
+                        )
+                    }
+                }
                 if (!active) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
                         Mk8dxButton(
@@ -162,4 +201,13 @@ internal fun AndroidCommunityServerPanel(
             modifier = Modifier.fillMaxWidth(),
         )
     }
+}
+
+/** Track and time of a waiting carried copy, as the person knows the run. */
+internal fun androidCarriedLabel(staged: JsonObject): String {
+    val trackId = (staged["trackId"] as? JsonPrimitive)?.content
+    val track = trackId?.let { Schema9AndroidTrackCatalog.find(it)?.displayName ?: it } ?: "?"
+    val time = (staged["totalTimeMs"] as? JsonPrimitive)?.content?.toLongOrNull()?.let(Mk8dxNumeric::formatTime) ?: "?"
+    val mode = (staged["mode"] as? JsonPrimitive)?.content
+    return "$track · ${mode}cc · $time"
 }
