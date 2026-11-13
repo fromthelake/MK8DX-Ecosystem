@@ -3,6 +3,16 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Changed
+
+- The Windows launcher (`Start-MK8DX.cmd`, `Start-MK8DX-LAN.cmd`) looks like the start of a race: a chequered
+  header, five start lights, the four checks as laps, a moving spinner while it waits for Docker or loads the
+  images, and a finish line. Only the presentation changed; the steps, the menu and the messages the guides quote
+  are the same. Output that is redirected to a file gets plain text without animation, as does `-Plain`,
+  `MK8DX_PLAIN=1` or `NO_COLOR`. `tooling/mk8dx-ui.ps1 -Demo` shows every element without touching an installation.
+
 ## 0.2.1 — 2026-11-13
 
 The Android app gets a new layout around a community chip and a **You** screen, keeps an offline copy of your
