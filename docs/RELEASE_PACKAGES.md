@@ -95,6 +95,10 @@ Pass the folder to `pip download --find-links dist/intel-wheel` when you collect
 
 ## Publishing a release
 
+Before tagging, set `productVersion` in `compatibility.json` and `ecosystemVersion` in
+`component-registry.json` to the new version (without the `v`) in the release pull request; the release
+manifest copies `compatibility.json`.
+
 1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the server ZIPs (host-local, the A2 packages, A3 and B2),
    verify their `sourceCommit` equals the tag commit, and check their internal manifests and bytes.
 2. Attach the locally release-signed APK, remove the debug APK for a stable release, and keep the Android notices ZIP.
