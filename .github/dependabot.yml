@@ -1,12 +1,15 @@
-# Weekly dependency update pull requests. Security updates are opened as soon as an advisory appears
-# (enable "Dependabot security updates" in the repository settings).
+# Routine version updates arrive together on Monday morning: npm and pip weekly, the slower ecosystems
+# (Gradle, Docker, GitHub Actions) monthly. A 3-day cooldown skips releases that are replaced within days.
+# Security updates are not affected by the schedule or the cooldown: they are opened as soon as an advisory
+# appears ("Dependabot security updates" is enabled in the repository settings).
 # Exact pins stay exact: review each pull request like any other change (docs/TESTING.md).
 # Group routine version updates per ecosystem; review majors separately.
 version: 2
 updates:
   - package-ecosystem: npm
     directories: [/backend/api, /apps/timetrials-web, /apps/timetrials-scanner-web]
-    schedule: {interval: weekly}
+    schedule: {interval: weekly, day: monday, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
     open-pull-requests-limit: 5
     groups:
       minor-patch:
@@ -15,7 +18,8 @@ updates:
         update-types: [minor, patch]
   - package-ecosystem: gradle
     directory: /apps/timetrials-android
-    schedule: {interval: weekly}
+    schedule: {interval: monthly, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
     open-pull-requests-limit: 5
     groups:
       minor-patch:
@@ -24,7 +28,8 @@ updates:
         update-types: [minor, patch]
   - package-ecosystem: pip
     directories: [/, /apps/timetrials-desktop/vision-runtime, /packages/tournament-extraction/python, /tooling/tournament]
-    schedule: {interval: weekly}
+    schedule: {interval: weekly, day: monday, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
     open-pull-requests-limit: 3
     # SymPy 1.14.0 requires mpmath<1.4. Reassess when a new SymPy release permits 1.4+.
     ignore:
@@ -37,7 +42,8 @@ updates:
         update-types: [minor, patch]
   - package-ecosystem: docker
     directories: [/backend/api, /apps/timetrials-web]
-    schedule: {interval: weekly}
+    schedule: {interval: monthly, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
     open-pull-requests-limit: 3
     groups:
       minor-patch:
@@ -46,7 +52,8 @@ updates:
         update-types: [minor, patch]
   - package-ecosystem: github-actions
     directory: /
-    schedule: {interval: weekly}
+    schedule: {interval: monthly, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
     groups:
       actions:
         applies-to: version-updates
