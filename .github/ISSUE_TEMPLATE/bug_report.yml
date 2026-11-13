@@ -1,0 +1,55 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Please use **synthetic information only**: no real player names, account
+        addresses, tokens, `.env` files, database backups, raw logs, auth links or private recordings.
+        A maintainer will ask for a narrowly redacted diagnostic if needed.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Which part?
+      options:
+        - Website / server
+        - Android app
+        - Phone scanner (web)
+        - LiveTrial (Time Trials)
+        - Tournament Live
+        - Tournament Tools / Tournament Analysis
+        - LAN host (offline A2 setup)
+        - Installer / launcher
+        - Documentation
+        - Something else
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The release or package version, for example 0.2.1 or Tournament Tools 2.2.44.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open …
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, browser or phone model, Docker/Node/Python versions, local or hosted profile.
