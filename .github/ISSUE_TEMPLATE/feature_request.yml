@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest an improvement for players, organisers or operators
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: who
+    attributes:
+      label: Who is this for?
+      options:
+        - Player
+        - Tournament organiser
+        - Community operator
+        - Developer
+    validations:
+      required: true
+  - type: textarea
+    id: situation
+    attributes:
+      label: The situation
+      description: What are they trying to do? What happens today?
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: The idea
+      description: Describe the change you have in mind. Screenshots or sketches with synthetic data are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives
+      description: Other ways you considered, or how you work around it now.
+  - type: markdown
+    attributes:
+      value: Please keep names, accounts and recordings of real players out of the request.

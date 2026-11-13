@@ -1,0 +1,77 @@
+name: Wrong recognition result
+description: A time, track, character, name or score was read wrongly
+labels: [bug, recognition]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Recognition is what reads the game screen. A clear description of **what the screen showed** and
+        **what was read** helps most. Only attach a screenshot if it contains no other players' names, or
+        blur them first.
+  - type: dropdown
+    id: product
+    attributes:
+      label: Where was it read?
+      options:
+        - Phone scanner (web)
+        - Android app
+        - LiveTrial
+        - Tournament Live
+        - Tournament Tools / Tournament Analysis
+    validations:
+      required: true
+  - type: dropdown
+    id: language
+    attributes:
+      label: Game language of the console
+      options:
+        - English (Europe)
+        - English (Americas)
+        - Nederlands
+        - Deutsch
+        - Français (Europe)
+        - Français (Canada)
+        - Español (España)
+        - Español (Latinoamérica)
+        - Italiano
+        - Português
+        - Русский
+        - 日本語
+        - 한국어
+        - 简体中文
+        - 繁體中文
+    validations:
+      required: true
+  - type: dropdown
+    id: field
+    attributes:
+      label: What was wrong?
+      multiple: true
+      options:
+        - Time
+        - Track
+        - Character / kart parts
+        - Player name
+        - Points / position
+        - Race not found or found twice
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: shown
+    attributes:
+      label: What the screen showed, and what was read
+      placeholder: "Screen: 1:52.384 on Baby Park. Read: 1:52.334."
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: Capture setup
+      description: Phone model and distance, or capture card and resolution; Switch 1 or Switch 2.
