@@ -527,6 +527,7 @@ def verify_rotated_leaf(state, ip):
     signer = x509.load_pem_x509_certificate(
         (state / "offline-ca/serving/intermediate.pem").read_bytes())
     context = ssl.create_default_context(cafile=str(root_path))
+    context.minimum_version = ssl.TLSVersion.TLSv1_2
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}),
                                          urllib.request.HTTPSHandler(context=context))
     response = opener.open(f"https://{ip}/health/ready", timeout=15)
