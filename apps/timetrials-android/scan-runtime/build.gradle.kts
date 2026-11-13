@@ -71,7 +71,7 @@ tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
 
 dependencies {
     implementation("com.microsoft.onnxruntime:onnxruntime-android:1.31.1")
-    implementation("org.opencv:opencv:5.0.0.1")
+    implementation("org.opencv:opencv:5.1.0")
     implementation("com.google.mlkit:text-recognition:16.0.1")
     implementation("com.google.mlkit:text-recognition-japanese:16.0.1")
     implementation("com.google.mlkit:text-recognition-chinese:16.0.1")
