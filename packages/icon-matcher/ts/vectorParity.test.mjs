@@ -26,6 +26,7 @@ const SCRIPTS = {
   'time-decision-v1.json': 'sharedTimeDecision.test.mjs',
   'context-v1.json': 'contextVectors.test.mjs',
   'icon-score-v1.json': 'iconScoreVectors.test.mjs',
+  'refinement-v1.json': 'refinementVectors.test.mjs',
 };
 
 test('every committed vector file has a TypeScript replay', () => {

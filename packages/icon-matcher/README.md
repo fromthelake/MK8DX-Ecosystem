@@ -111,6 +111,14 @@ carry `"boundary": true` and are reported rather than failed. Known rule differe
 the replay tests themselves. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
 reference bank equals the pack's tensors.
 
+`tools/generate_rule_vectors.py` (same options) writes the remaining rule vectors, also without private inputs:
+
+| Vector | What it pins | Replayed by |
+| --- | --- | --- |
+| `vectors/refinement-v1.json` | shape rank, distinctive flag rank, NL/LU band ratio, NL/LU/PY tricolour, flag exposure, character family colour and neutral chroma on box-sized queries built from the pack's references; each case carries the upstream inputs (visual read, shape rank, shortlist) Python computed, so one refinement is replayed at a time | `python/tests/test_rule_vectors.py`, `ts/refinementVectors.test.mjs`, Android `RefinementParityTest` |
+
+refinement needs the pack's tensor pack (`MK8DX_RECOGNITION_PACK`) and skips without it.
+
 ## Changing the reader
 
 1. Change the Python reference first and add or update its tests.
