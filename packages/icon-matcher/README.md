@@ -10,7 +10,7 @@ the lap rows and the Select-a-Ghost panel are. It exists three times, kept equal
 | TypeScript | `ts/` | the browser scanner (`apps/timetrials-scanner-web`) |
 | Java | `java/`, `java-result/` | the Android scan runtime |
 
-The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, source candidate `0.4.2`). The Python,
+The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, source candidate `0.4.3`). The Python,
 TypeScript and Java declarations must be equal; `python/tests/test_version.py` checks this.
 
 Ghost Select picker version 2 can use an independently accepted top icon to
@@ -48,6 +48,30 @@ for the same-source qualification.
 Icon matching compares a normalized crop with the reference images of the game catalog (masked colour
 shortlist, then shape and colour refinement within a character family). When no catalog character fits
 well, the open-set step suggests a Mii instead of the closest look-alike.
+
+### Glider colour follows the character
+
+Every glider family with more than one colour gives each character one catalog colour. The context rule
+(`context.combine_part`, `sharedPartContext.ts`, `ContextRules.java`) uses that link so that a stored result never
+pairs a character with a glider colour that character cannot have (field semantics 0.4.3, issue #99):
+
+- **Character accepted** and the catalog links it to this family: the catalog colour is the glider. A close
+  colour in the visual top three is replaced silently (`character_part_top3_variant`). When the icon clearly
+  showed another colour, the field becomes `conflict` with the catalog colour as `suggestedId` and
+  `character_colour_conflict_review`: a clear clash usually means the character is wrong.
+- **Character not accepted** (unknown, suggested or conflict): a readable glider family is still settled (it
+  carries the stats), but never its colour on its own. The decision is `family_only`
+  (`glider_colour_needs_character`) and `suggestedId` is the suggested character's catalog colour
+  (`character_colour_suggestion`), or empty so that the visual best match is proposed.
+- **No catalog link** (a single-colour glider, or no link for an accepted character): the icon decides.
+
+`suggestedId` is only a review proposal: the result proposal shows it first with a `?` and never accepts it.
+
+### Numeric clue IDs
+
+A tyre row number is a numeric clue ID only when it consists of ASCII `0`-`9`. OCR text is normalized before
+the context rules run (`name_match.normalize`, `normalizeName`, `NameMatch.normalize`); that step turns
+full-width digits (U+FF10-FF19) into ASCII. Other digit scripts are no numeric IDs.
 
 ## Inputs it needs
 
@@ -94,7 +118,7 @@ export MK8DX_FRAME_DEFINITIONS="$PWD/.cache/recognition-pack/frame-definitions-v
 
 | Vector | What it pins | Replayed by |
 | --- | --- | --- |
-| `vectors/context-v1.json` | `combine_character` / `combine_part` over a synthetic catalog and synthetic text clues, one case per branch and on every threshold edge | `python/tests/test_generated_vectors.py`, `ts/contextVectors.test.mjs` |
+| `vectors/context-v1.json` | `combine_character` / `combine_part` over a synthetic catalog and synthetic text clues, one case per branch and on every threshold edge, plus the OCR digit normalization | `python/tests/test_generated_vectors.py`, `ts/contextVectors.test.mjs`, Android `ContextParityTest` |
 | `vectors/icon-score-v1.json` | masked RGB rank (`center_shortlist`, `center_then_shortlist`) on box-sized uint8 queries built from the public recognition pack's own references | `python/tests/test_generated_vectors.py`, `ts/iconScoreVectors.test.mjs`, Android `IconScoreParityTest` |
 
 ```sh
@@ -107,8 +131,8 @@ MK8DX_RECOGNITION_PACK="$PWD/.pack" ...                                         
 The output is deterministic (no random numbers, sorted keys, LF). `--check` is byte-exact under the pinned
 `requirements-dev.txt` (numpy 2.5.4, OpenCV 5.0); another numpy can change float32 sums in the last bit, which the
 replays tolerate (scores within 1e-6, decisions identical). Cases within 1e-5 of the 0.80 score or 0.02 margin gate
-carry `"boundary": true` and are reported rather than failed. Known rule differences between the runtimes are listed in
-the replay tests themselves. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
+carry `"boundary": true` and are reported rather than failed. The context replays have no known exceptions: Python,
+TypeScript and Java must give identical decisions for every `context-v1` case. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
 reference bank equals the pack's tensors.
 
 ## Changing the reader

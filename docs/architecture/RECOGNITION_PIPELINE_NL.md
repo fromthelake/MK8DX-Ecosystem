@@ -17,7 +17,7 @@ Opname → ROI zoeken → matchen → frame-/sequentiebesluit → resultaat → 
 **Dezelfde regel** betekent een Python-referentie, een TypeScript- en een
 Java-implementatie met dezelfde geversioneerde pariteitsvectoren. Java voert
 geen Python uit. Ook is de pixelbewerking nog niet overal gelijk. De huidige
-`main` heeft veldsemantiekversie **0.4.2** in alle drie talen; de gepubliceerde
+`main` heeft veldsemantiekversie **0.4.3** in alle drie talen; de gepubliceerde
 `v0.1.0` bevat **0.4.1**. Nieuwe broncode is nog geen nieuwe release.
 
 ## Wat is centraal en wat blijft lokaal?
