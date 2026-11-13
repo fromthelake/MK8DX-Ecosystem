@@ -35,7 +35,7 @@ function oneOf<T extends string>(value: unknown, allowed: readonly T[], label: s
 }
 
 const projection = `SELECT revision, player_creation AS playerCreation, rating_eligibility AS ratingEligibility,
-       carried_times AS carriedTimes,
+       carried_times AS carriedTimes, community_name AS communityName,
        rating_eligibility_changed_at_ms AS ratingEligibilityChangedAtMs, updated_at_ms AS updatedAtMs
 FROM installation_settings WHERE installation_settings_id = 1`;
 
@@ -46,6 +46,8 @@ function stored(row: RowDataPacket | undefined): StoredInstallationSettings | nu
     playerCreation: oneOf<PlayerCreationPolicy>(row["playerCreation"], PLAYER_CREATION_POLICIES, "player creation"),
     ratingEligibility: oneOf<RatingEligibilityPolicy>(row["ratingEligibility"], RATING_ELIGIBILITY_POLICIES, "rating eligibility"),
     carriedTimes: oneOf<CarriedTimesPolicy>(row["carriedTimes"], CARRIED_TIMES_POLICIES, "carried times"),
+    communityName: typeof row["communityName"] === "string" && row["communityName"].length > 0
+      ? row["communityName"] : null,
     ratingEligibilityChangedAtMs: row["ratingEligibilityChangedAtMs"] === null
       ? null : integer(row["ratingEligibilityChangedAtMs"], "eligibility change time"),
     updatedAtMs: integer(row["updatedAtMs"], "settings update time"),
@@ -76,16 +78,18 @@ class MysqlInstallationSettingsTransaction implements InstallationSettingsTransa
     const [result] = await this.connection.execute<ResultSetHeader>(
       `INSERT INTO installation_settings (
          installation_settings_id, revision, player_creation, rating_eligibility, carried_times,
-         rating_eligibility_changed_at_ms, updated_by_user_account_id, updated_at_ms
-       ) VALUES (1, ?, ?, ?, ?, ?, ?, ?)
+         community_name, rating_eligibility_changed_at_ms, updated_by_user_account_id, updated_at_ms
+       ) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?)
        ON DUPLICATE KEY UPDATE
          revision = VALUES(revision), player_creation = VALUES(player_creation),
          rating_eligibility = VALUES(rating_eligibility), carried_times = VALUES(carried_times),
+         community_name = VALUES(community_name),
          rating_eligibility_changed_at_ms = VALUES(rating_eligibility_changed_at_ms),
          updated_by_user_account_id = VALUES(updated_by_user_account_id),
          updated_at_ms = VALUES(updated_at_ms)`,
       [
-        input.revision, input.playerCreation, input.ratingEligibility, input.carriedTimes, input.ratingEligibilityChangedAtMs,
+        input.revision, input.playerCreation, input.ratingEligibility, input.carriedTimes, input.communityName,
+        input.ratingEligibilityChangedAtMs,
         input.updatedByInternalId, input.nowMs,
       ],
     );

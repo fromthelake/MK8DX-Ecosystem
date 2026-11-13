@@ -40,6 +40,7 @@ class Repository implements InstallationSettingsRepository {
         this.stored = {
           revision: input.revision, playerCreation: input.playerCreation, ratingEligibility: input.ratingEligibility,
           carriedTimes: input.carriedTimes,
+          communityName: input.communityName,
           ratingEligibilityChangedAtMs: input.ratingEligibilityChangedAtMs, updatedAtMs: input.nowMs,
         };
       },
@@ -62,9 +63,10 @@ function fixture(recompute?: (input: { administratorAccountId: string; reasonCod
 describe("installation settings (ADR-0221)", () => {
   it("reads the defaults while no administrator saved any", async () => {
     const { service } = fixture();
-    expect(await service.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
+    expect(await service.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", communityName: null });
     expect(await service.administration(admin)).toEqual({
-      playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", revision: 0, updatedAtMs: null,
+      playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", communityName: null,
+      revision: 0, updatedAtMs: null,
       carriedTimesAwaitingReview: 0,
       ratingRecompute: { needed: false, eligibilityChanged: false, claimChanges: 0, lastRecalculatedAtMs: null },
     });
@@ -173,6 +175,47 @@ async function appFor(service: InstallationSettingsService): Promise<FastifyInst
   return app;
 }
 
+describe("the community name (installation setting communityName)", () => {
+  it("is unset by default, trimmed when saved, audited under community_name and cleared with null or blank", async () => {
+    const { repository, service } = fixture();
+    expect((await service.current()).communityName).toBeNull();
+    await expect(service.update(account, { expectedRevision: 0, communityName: "Club Noord" }))
+      .rejects.toMatchObject({ code: "forbidden" });
+    const named = await service.update(admin, { expectedRevision: 0, communityName: "  Club Noord  " });
+    expect(named).toMatchObject({ communityName: "Club Noord", revision: 1 });
+    expect((await service.current()).communityName).toBe("Club Noord");
+    expect(repository.changes).toEqual([
+      { settingKey: "community_name", previousValue: "", newValue: "Club Noord", changedByInternalId: 1, nowMs: 1_900_000_000_000 },
+    ]);
+    // The same name again is not a change; another setting keeps the name.
+    await service.update(admin, { expectedRevision: 1, communityName: "Club Noord" });
+    expect(repository.changes).toHaveLength(1);
+    await service.update(admin, { expectedRevision: 1, carriedTimes: "allowed" });
+    expect((await service.current()).communityName).toBe("Club Noord");
+    await expect(service.update(admin, { expectedRevision: 1, communityName: "Club Zuid" }))
+      .rejects.toMatchObject({ code: "conflict" });
+    await service.update(admin, { expectedRevision: 2, communityName: "   " });
+    expect((await service.current()).communityName).toBeNull();
+    expect(repository.changes.at(-1)).toMatchObject({ settingKey: "community_name", previousValue: "Club Noord", newValue: "" });
+    await service.update(admin, { expectedRevision: 3, communityName: "Clube Ñandú ⭐" });
+    await service.update(admin, { expectedRevision: 4, communityName: null });
+    expect((await service.current()).communityName).toBeNull();
+  });
+
+  it("refuses a name that is too long or holds control characters", async () => {
+    const { service } = fixture();
+    await expect(service.update(admin, { expectedRevision: 0, communityName: "x".repeat(61) }))
+      .rejects.toMatchObject({ code: "invalid_input" });
+    await expect(service.update(admin, { expectedRevision: 0, communityName: "Club\nNoord" }))
+      .rejects.toMatchObject({ code: "invalid_input" });
+    await expect(service.update(admin, { expectedRevision: 0, communityName: "Club\u0007" }))
+      .rejects.toMatchObject({ code: "invalid_input" });
+    // Sixty characters, counted as characters rather than bytes, are fine.
+    expect((await service.update(admin, { expectedRevision: 0, communityName: "é".repeat(60) })).communityName)
+      .toBe("é".repeat(60));
+  });
+});
+
 describe("installation settings: the routes (ADR-0221)", () => {
   it("serves the public settings to anyone and the administration view only to administrators", async () => {
     const { service } = fixture();
@@ -182,10 +225,38 @@ describe("installation settings: the routes (ADR-0221)", () => {
     expect(open.json()).toEqual({
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_and_directors", ratingEligibility: "all_players",
       carriedTimes: "off",
+      communityName: null,
     });
     expect((await app.inject({ method: "GET", url: "/v1/administrator/installation-settings", headers: { "x-test-actor": "person" } })).statusCode).toBe(403);
     const view = await app.inject({ method: "GET", url: "/v1/administrator/installation-settings", headers: { "x-test-actor": "admin" } });
     expect(view.json()).toMatchObject({ schemaVersion: "mk8dx.installation-settings-administration.v1", carriedTimes: "off", revision: 0, updatedAtMs: null });
+  });
+
+  it("saves and serves the community name, and refuses a wrong one with 400", async () => {
+    const { service } = fixture();
+    const app = await appFor(service);
+    const headers = { "x-test-actor": "admin", "x-mk8dx-csrf": "synthetic-csrf-proof-0001" };
+    const tooLong = await app.inject({
+      method: "POST", url: "/v1/administrator/installation-settings", headers,
+      payload: { expectedRevision: 0, communityName: "x".repeat(61) },
+    });
+    expect(tooLong.statusCode).toBe(400);
+    expect(tooLong.json().code).toBe("installation_settings_invalid_input");
+    const saved = await app.inject({
+      method: "POST", url: "/v1/administrator/installation-settings", headers,
+      payload: { expectedRevision: 0, communityName: "Club Noord" },
+    });
+    expect(saved.statusCode).toBe(200);
+    expect(saved.json()).toMatchObject({ communityName: "Club Noord", revision: 1 });
+    expect((await app.inject({ method: "GET", url: "/v1/installation-settings" })).json()).toEqual({
+      schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_and_directors",
+      ratingEligibility: "all_players", carriedTimes: "off", communityName: "Club Noord",
+    });
+    const cleared = await app.inject({
+      method: "POST", url: "/v1/administrator/installation-settings", headers,
+      payload: { expectedRevision: 1, communityName: null },
+    });
+    expect(cleared.json().communityName).toBeNull();
   });
 
   it("saves carried times through the route and refuses an unknown value", async () => {
@@ -260,24 +331,24 @@ function onboarding(settings: InstallationSettings) {
 
 describe("who creates Players (ADR-0221)", () => {
   it("closes self sign-up when only Directors create Players", async () => {
-    const { service } = onboarding({ playerCreation: "directors_only", ratingEligibility: "all_players", carriedTimes: "off" });
+    const { service } = onboarding({ playerCreation: "directors_only", ratingEligibility: "all_players", carriedTimes: "off", communityName: null });
     await expect(service.createOwnPlayer(account, { username: "mal" })).rejects.toBeInstanceOf(PlayerCreationDisabled);
     await expect(service.createOwnPlayer(account, { username: "mal" })).rejects.toMatchObject({ closedPath: "self" });
     expect(await service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }])).toHaveLength(1);
   });
 
   it("closes the Directors' paths when Players only create themselves", async () => {
-    const { service } = onboarding({ playerCreation: "self_only", ratingEligibility: "all_players", carriedTimes: "off" });
+    const { service } = onboarding({ playerCreation: "self_only", ratingEligibility: "all_players", carriedTimes: "off", communityName: null });
     await expect(service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }])).rejects.toMatchObject({ closedPath: "directors" });
     await expect(service.createPlayerForAdministrator(admin, { username: "mal" })).rejects.toMatchObject({ closedPath: "directors" });
     expect((await service.createOwnPlayer(account, { username: "mal" })).username).toBe("mal");
   });
 
   it("gives a Director-made Player no rating when only claimed Players count", async () => {
-    const { service, createPlayerWithUsername } = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "claimed_only", carriedTimes: "off" });
+    const { service, createPlayerWithUsername } = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "claimed_only", carriedTimes: "off", communityName: null });
     await service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }]);
     expect(createPlayerWithUsername.mock.calls[0]![0]).toMatchObject({ seedRating: false });
-    const everybody = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
+    const everybody = onboarding({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", communityName: null });
     await everybody.service.createRosterPlayers(admin, [{ row: 2, displayName: "Mal" }]);
     expect(everybody.createPlayerWithUsername.mock.calls[0]![0]).toMatchObject({ seedRating: true });
   });

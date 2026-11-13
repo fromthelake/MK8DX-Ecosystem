@@ -18,17 +18,20 @@ import {
 const playerCreationSchema = { type: "string", enum: ["self_and_directors", "self_only", "directors_only"] } as const;
 const ratingEligibilitySchema = { type: "string", enum: ["all_players", "claimed_only"] } as const;
 const carriedTimesSchema = { type: "string", enum: ["off", "review", "allowed"] } as const;
+// The community name the apps show instead of the address; null = not set.
+const communityNameSchema = { anyOf: [{ type: "string", minLength: 1, maxLength: 60 }, { type: "null" }] } as const;
 const epochSchema = { type: "integer", minimum: 0 } as const;
 
 export const installationSettingsSchema = {
   type: "object",
   additionalProperties: false,
-  required: ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"],
+  required: ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "communityName"],
   properties: {
     schemaVersion: { type: "string", const: "mk8dx.installation-settings.v1" },
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
     carriedTimes: carriedTimesSchema,
+    communityName: communityNameSchema,
   },
 } as const;
 
@@ -48,14 +51,15 @@ export const installationSettingsAdministrationSchema = {
   type: "object",
   additionalProperties: false,
   required: [
-    "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs",
-    "carriedTimesAwaitingReview", "ratingRecompute",
+    "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "communityName", "revision",
+    "updatedAtMs", "carriedTimesAwaitingReview", "ratingRecompute",
   ],
   properties: {
     schemaVersion: { type: "string", const: "mk8dx.installation-settings-administration.v1" },
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
     carriedTimes: carriedTimesSchema,
+    communityName: communityNameSchema,
     revision: { type: "integer", minimum: 0 },
     updatedAtMs: { anyOf: [epochSchema, { type: "null" }] },
     carriedTimesAwaitingReview: { type: "integer", minimum: 0 },
@@ -86,6 +90,8 @@ const updateBody = {
     playerCreation: playerCreationSchema,
     ratingEligibility: ratingEligibilitySchema,
     carriedTimes: carriedTimesSchema,
+    // Checked (trimmed, at most 60 characters, no control characters) by the service.
+    communityName: { anyOf: [{ type: "string", maxLength: 240 }, { type: "null" }] },
   },
 } as const;
 const emptyBody = { type: "object", additionalProperties: false, properties: {} } as const;
@@ -157,7 +163,7 @@ export async function registerInstallationSettingsRoutes(
     },
   );
 
-  app.post<{ Body: { expectedRevision: number; playerCreation?: string; ratingEligibility?: string; carriedTimes?: string } }>(
+  app.post<{ Body: { expectedRevision: number; playerCreation?: string; ratingEligibility?: string; carriedTimes?: string; communityName?: string | null } }>(
     "/v1/administrator/installation-settings",
     { schema: { body: updateBody, response: { 200: installationSettingsAdministrationSchema, ...errors } } },
     async (request, reply) => {
