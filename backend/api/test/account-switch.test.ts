@@ -15,6 +15,7 @@ import {
 } from "../src/authentication/account-switch.js";
 import { KEEP_REMEMBERED_HEADER } from "../src/authentication/account-switch-auth-plugin.js";
 import {
+  ACCOUNT_SWITCH_PIN_CHANGES_PER_HOUR,
   registerAccountSwitchRoutes,
   type AccountSwitchAuthApi,
 } from "../src/authentication/account-switch-routes.js";
@@ -511,6 +512,29 @@ describe("account switching (ADR-0224 phase 2)", () => {
       expect((await call("GET", "/v1/account/switch-pin", undefined, "good-proof", admin)).statusCode).toBe(200);
       const anonymous = await h.app.inject({ method: "GET", url: "/v1/account/switch-pin" });
       expect(anonymous.statusCode).toBe(401);
+    } finally { await h.app.close(); }
+  });
+
+  it("limits PIN changes and removals per account per hour, before any PIN is checked or written", async () => {
+    const h = await harness();
+    try {
+      const jar: Jar = new Map();
+      await signIn(h, jar, "ann@example.test");
+      const call = (url: string, payload: Record<string, unknown>) => h.app.inject({
+        method: url.endsWith("/clear") ? "POST" : "PUT", url,
+        headers: { ...browser, cookie: header(jar), "x-mk8dx-csrf": "good-proof" }, payload,
+      });
+      for (let index = 0; index < ACCOUNT_SWITCH_PIN_CHANGES_PER_HOUR; index += 1) {
+        const url = index % 2 === 0 ? "/v1/account/switch-pin" : "/v1/account/switch-pin/clear";
+        expect((await call(url, index % 2 === 0 ? { pin: "1234" } : {})).statusCode).toBe(200);
+      }
+      // Changing and removing share one budget; the next call is refused before anything is stored.
+      const limited = await call("/v1/account/switch-pin", { pin: "4321" });
+      expect(limited.statusCode).toBe(429);
+      expect(limited.headers["retry-after"]).toBe("3600");
+      expect(limited.json<{ code: string }>().code).toBe("account_switch_pin_rate_limited");
+      expect((await call("/v1/account/switch-pin/clear", {})).statusCode).toBe(429);
+      expect(await h.pinStore.get("user_account.ann")).toBeNull();
     } finally { await h.app.close(); }
   });
 
