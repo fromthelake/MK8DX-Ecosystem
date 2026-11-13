@@ -163,21 +163,71 @@ Playing in your language? Your help checking it is the most valuable contributio
 
 ## 💡 The story behind it
 
-MK8DX Ecosystem has been in development since 2024. It was built with AI — "vibe coding" — and
-honestly: I could not have built this without AI, and the AI could not have built it without me.
-I cannot imagine a world in which this would have reached a good result without constant
-steering and explaining the logic, over and over. The number of sessions that just kept running,
-burning credits without real results, still keeps me awake at night (haha). Part of the reason:
-with all the screenshots and videos involved, the context simply grows too large for an AI to
-hold — by now there are about 4 TB of AI-generated QA test material waiting for me to clean up.
+**It all started with a local Mario Kart tournament, a few enthusiastic people, and an invitation in December 2023.**
 
-Probably because this had never been built before. The techniques existed; stitching the right
-ones together, in the right order, with a human checking every visual step in between and
-steering again, did not. The same goes for the game assets: bits and pieces exist here and there,
-but a complete package that contains everything, I had not seen before.
+Believe it or not, despite having played Mario Kart on the Nintendo 64, I had barely touched Mario Kart 8 Deluxe. I didn't even know drifting was a thing. Needless to say, I had some catching up to do.
 
-It has been a great school — and it has made me able to build faster and more efficiently around
-image recognition and extraction from here on.
+What I discovered was a wonderful group of people who genuinely loved bringing others together to race.
+
+And that group kept growing.
+
+What started with just 16 players eventually grew into a community of more than 68 participants, with up to **36 players competing in a single evening**. Together, they've completed **over 1,000 registered races**, covering all 96 tracks and countless hours of friendly competition.
+
+The setup evolved just as quickly. What started with **Wi-Fi, a GoPro, a lot of manual review and plenty of connection issues** gradually evolved into capture cards, a fully wired Ethernet network, automated race tracking and 36 players competing in a warehouse surrounded by consoles, screens, cables, friends and, of course, pizza.
+
+And every tournament brought new ideas.
+
+We started analysing scores, tracking performances, optimising seating arrangements and figuring out how to automate the increasingly complicated task of moving players between Nintendo Switches, including switching Ethernet cables around. Anyone who has organised something like this knows that sometimes the racing is the easy part.
+
+**Then came the Time Trials.**
+
+What began as a little competition quickly turned into a friendly rivalry to shave just a few more milliseconds off our times. Baby Park and Big Blue on 150cc became particular favourites. There was always someone setting a faster lap and always someone determined to beat it.
+
+Naturally, we wanted to track those results properly too. The same enthusiasm for improving our tournaments found its way into automated Time Trial recording, image recognition, statistics, rankings and more.
+
+One thing led to another, and before I knew it, I was spending almost as much time building tools around Mario Kart as actually playing it.
+
+### From passion to an open-source ecosystem
+
+MK8DX Ecosystem has been in development since 2024, with a lot of help from AI — or what we now call *vibe coding*.
+
+And I want to be clear about something: **I could not have built this without AI, and AI could not have built it without me.**
+
+Getting everything to work has required an incredible amount of experimentation, patience, explaining game logic, reviewing screenshots, correcting mistakes and steering AI back in the right direction. Sometimes over and over again.
+
+There have been plenty of sessions that happily burned through credits while achieving absolutely nothing. Those still keep me awake at night (haha).
+
+And apparently, visual testing produces quite a bit of data. I'm now sitting on roughly 4 TB of AI-generated QA screenshots and recordings that I really should clean up someday.
+
+The individual techniques already existed, but bringing them together into a working ecosystem that understands what is happening on screen, extracts game information and makes it useful for players and organisers has been quite a journey. The same goes for gathering and organising the game assets needed to support it all.
+
+It has been an incredible learning experience, especially around image recognition, automation and software development.
+
+Now, in 2026, I'm finally able to share the results as an **open-source ecosystem**, so others can use it, improve it and hopefully have just as much fun with it as we have.
+
+### ❤️ For Volkert
+
+I also want to dedicate a part of this project to our dear friend and rival, **Volkert**, who passed away far too soon.
+
+Volkert was one of those people who kept inspiring us to push a little harder, find that faster racing line and try just one more Time Trial. The friendly rivalry, especially around Baby Park and Big Blue, made the competition something special.
+
+But more than the lap times or rankings, it's the moments together that matter. Sitting in a warehouse with friends, laughing, competing, sharing pizza and enjoying something as simple as a game.
+
+Those are the moments worth remembering.
+
+Volkert, thank you for the competition, the inspiration and the memories. You'll always be part of this story.
+
+### Keep racing, keep sharing
+
+We don't claim to be the best players, the best developers or to have built the perfect solution. But there's certainly no shortage of enthusiasm, curiosity or determination to keep improving.
+
+If this project helps you organise a LAN tournament, start a friendly rivalry, beat a personal record or simply have a great evening with friends, then it has achieved something worthwhile.
+
+**Please keep sharing your best moments, your ideas and your improvements.** That's what keeps a community like this alive.
+
+And finally, a big thank you to **Nintendo** for creating such fantastic consoles and games. If you enjoy Mario Kart, support the people who make it possible: buy the original consoles and games, invite your friends, family or colleagues, and enjoy playing together.
+
+After all, that's how this whole adventure started.
 
 — [fromthelake](https://github.com/fromthelake)
 
