@@ -95,7 +95,16 @@ https://{$MK8DX_LAN_IP} {
     try_files {path} /index.html
     file_server
   }
-  @scanner_csp path /scanner/*
+  # Scanner CSP in three non-overlapping parts (#34). Only the Vite worker entries under
+  # assets/worker/ get 'unsafe-eval': OpenCV.js (Emscripten/embind) builds functions with
+  # new Function. A worker loaded from a URL runs under its own response's policy, so the
+  # page never allows eval. ONNX Runtime threads and the Tesseract worker only compile WASM.
+  @scanner_worker_csp path /scanner/assets/worker/*
+  @scanner_wasm_csp path /scanner/ort/* /scanner/tess/*
+  @scanner_csp {
+    path /scanner/*
+    not path /scanner/assets/worker/* /scanner/ort/* /scanner/tess/*
+  }
   @offline_invite path /offline-invite /offline-invite/*
   @not_offline_invite not path /offline-invite /offline-invite/*
   header @offline_invite Cache-Control "no-store"
@@ -108,7 +117,9 @@ https://{$MK8DX_LAN_IP} {
   header @offline_invite Referrer-Policy "no-referrer"
   header @offline_invite Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
   @web_csp not path /scanner/*
-  header @scanner_csp Content-Security-Policy-Report-Only "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval'; style-src 'self'; worker-src 'self' blob:; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+  header @scanner_csp Content-Security-Policy "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self' blob: data:; script-src 'self'; style-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
+  header @scanner_wasm_csp Content-Security-Policy "default-src 'none'; connect-src 'self'; img-src 'self' blob: data:; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
+  header @scanner_worker_csp Content-Security-Policy "default-src 'none'; connect-src 'self'; img-src 'self' blob: data:; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
   header @web_csp Content-Security-Policy "default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; base-uri 'none'; form-action 'self'; object-src 'none'; frame-ancestors 'none'"
   header X-Content-Type-Options nosniff
   header @not_offline_invite Referrer-Policy same-origin

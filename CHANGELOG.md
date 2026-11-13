@@ -27,6 +27,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   is the policy the Web page and the Node static route already enforced, so pages behave the same; the header adds
   `frame-ancestors 'none'`. Checked in Chromium on a running A2 installation: 23 routes in English and Dutch at
   320, 768 and 1440 CSS pixels, no violations. The scanner's policy stays Report-Only until its own browser pass.
+- The Docker gateways now also **enforce** the scanner's Content Security Policy (#34). The scanner page itself may
+  not evaluate strings, compile WASM, use inline styles or start `blob:` workers. Only the scanner's worker scripts
+  under `/scanner/assets/worker/` get `'unsafe-eval'` (OpenCV.js builds functions at run time), and the ONNX Runtime
+  and Tesseract workers get `'wasm-unsafe-eval'`. The scanner's result screen now sets its colours and widths
+  without `style` attributes and looks the same; the audit and parity pages load their styles from files and their
+  two probe workers from files instead of `blob:` URLs.
 
 ### Changed
 
