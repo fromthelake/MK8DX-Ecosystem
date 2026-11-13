@@ -78,6 +78,11 @@ internal data class AndroidInstallationSettings(
      * A server from before the setting does not send it, and that means "off".
      */
     val carriedTimes: String = "off",
+    /**
+     * The community's own name, when its administrator set one (at most 60 characters). Null when it is not
+     * set, blank or the server is older; the app then shows the host.
+     */
+    val communityName: String? = null,
 ) {
     val directorsMayCreatePlayers: Boolean get() = playerCreation != "self_only"
 
@@ -97,10 +102,16 @@ internal data class AndroidInstallationSettings(
                 ratingEligibility = eligibility?.takeIf { it in setOf("all_players", "claimed_only") } ?: "all_players",
                 carriedTimes = document["carriedTimes"]?.let { runCatching { it.jsonPrimitive.content }.getOrNull() }
                     ?.takeIf { it in setOf("off", "review", "allowed") } ?: "off",
+                communityName = androidCommunityNameOrNull(document["communityName"]),
             )
         }
     }
 }
+
+/** A usable community name from the settings document: a non-blank string, trimmed to 60 characters. */
+internal fun androidCommunityNameOrNull(element: kotlinx.serialization.json.JsonElement?): String? =
+    (element as? kotlinx.serialization.json.JsonPrimitive)?.takeIf { it.isString }?.content
+        ?.trim()?.take(60)?.takeIf { it.isNotEmpty() }
 
 /** ADR-0221: the server refused roster Player creation because only self sign-up creates Players. */
 internal const val PLAYER_CREATION_DIRECTORS_DISABLED = "player_creation_directors_disabled"

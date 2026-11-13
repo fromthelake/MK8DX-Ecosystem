@@ -79,6 +79,17 @@ internal class AndroidCommunityList(
         write(stored.map { if (it.origin == origin) it.copy(name = trimmed) else it })
     }
 
+    /**
+     * What the community itself calls itself, read from its public settings: [name] when it has one, the host
+     * when it has none (null, blank, older server). A later read with another name replaces it.
+     */
+    fun applyServerName(origin: String, name: String?) {
+        val shown = name?.trim()?.take(60)?.takeIf { it.isNotEmpty() } ?: displayNameOf(origin)
+        val stored = decode()
+        if (stored.none { it.origin == origin && it.name != shown }) return
+        write(stored.map { if (it.origin == origin) it.copy(name = shown) else it })
+    }
+
     fun remove(origin: String, active: String?, unsent: Int): AndroidCommunityRemoval {
         val stored = decode()
         return when {
@@ -130,6 +141,26 @@ internal object AndroidCommunities {
     fun markUsed(context: Context, origin: String) {
         store(context).markUsed(origin, System.currentTimeMillis())
     }
+
+    /** Stores the name a community's public settings give (or its host when they give none). */
+    fun applyServerName(context: Context, origin: String, name: String?) {
+        runCatching { store(context).applyServerName(origin, name) }
+    }
+
+    /**
+     * Reads [origin]'s public settings with that community's own trust and stores its name. Network work: call
+     * it off the main thread. Returns the settings, or null when the community could not be read.
+     */
+    fun refreshName(context: Context, origin: String): nl.mariokart8.mk8dxtimetrials.tournament.AndroidInstallationSettings? =
+        runCatching {
+            nl.mariokart8.mk8dxtimetrials.tournament.AndroidTournamentClient(
+                origin,
+                null,
+                nl.mariokart8.mk8dxtimetrials.tournament.AndroidTournamentConnectionOpener { url ->
+                    nl.mariokart8.mk8dxtimetrials.lan.AndroidOriginTrust.open(context, url)
+                },
+            ).installationSettings()
+        }.getOrNull()?.also { applyServerName(context, origin, it.communityName) }
 
     fun remove(context: Context, origin: String, unsent: Int): AndroidCommunityRemoval =
         store(context).remove(origin, AndroidServerOrigin.current(context), unsent)
