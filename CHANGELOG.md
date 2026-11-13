@@ -14,7 +14,8 @@ Tournament Analysis window, an enforced scanner security policy and the README i
 
 - **Recorded tournament analysis works again** (#169). In 0.2.0 and 0.2.1, `TournamentProcessor.cmd` and the analysis
   window stopped with `TypeError: Invalid value ... for dtype 'str'` as soon as a race had a character with colour
-  variants, so no results were written. pandas 3 makes a column filled with empty text strictly text-only; the
+  variants, so no results were written. Tournament Live did not stop, but silently skipped its end-of-event
+  colour-variant and Mii correction. pandas 3 makes a column filled with empty text strictly text-only; the
   colour-variant refinement now creates its columns as mixed columns, as before. A 45-minute recording gave 144 of
   144 rows identical to the historical result.
 - A complete player name read from the score screen is no longer shortened to a lobby reading that lost its last
