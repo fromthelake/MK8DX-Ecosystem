@@ -73,7 +73,17 @@ def test_refinement_vectors_replay():
 
 @needs_tensors
 def test_refinement_vectors_are_the_generators_output():
-    assert gen.dump(gen.build_refinement(TENSORS)) == _path("refinement-v1.json").read_bytes()
+    # The generator synthesises its queries with OpenCV and numpy, whose last bits differ between
+    # platforms (CI runs Linux, the vectors were written on Windows). `--check` stays byte-exact on
+    # the machine that wrote them; here numbers must agree within the replay tolerance, and only
+    # near-threshold cases may differ beyond that, as in the replay test.
+    built = json.loads(gen.dump(gen.build_refinement(TENSORS)))
+    stored = _load("refinement-v1.json")
+    assert built.keys() == stored.keys()
+    assert all(close(built[k], stored[k]) for k in stored if k != "cases")
+    assert [c["id"] for c in built["cases"]] == [c["id"] for c in stored["cases"]]
+    failures = [w["id"] for g, w in zip(built["cases"], stored["cases"]) if not close(g, w) and not w["boundary"]]
+    assert failures == [], "refinement-v1 cases differ from the generator: " + ", ".join(failures)
 
 
 @needs_defs
