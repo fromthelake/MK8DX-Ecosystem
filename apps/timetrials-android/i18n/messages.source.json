@@ -165,7 +165,7 @@
   {
    "key": "1 carried time waits until you sign in here.",
    "places": [
-    "AndroidCommunityServerPanel.kt:150"
+    "AndroidCommunityServerPanel.kt:168"
    ],
    "nl": "1 meegenomen tijd wacht tot je je hier aanmeldt."
   },
@@ -200,7 +200,7 @@
   {
    "key": "1 run waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:139"
+    "AndroidCommunityServerPanel.kt:157"
    ],
    "nl": "1 rit wacht op verzenden"
   },
@@ -441,7 +441,7 @@
   {
    "key": "Active",
    "places": [
-    "AndroidCommunityServerPanel.kt:133"
+    "AndroidCommunityServerPanel.kt:148"
    ],
    "nl": "Actief"
   },
@@ -505,7 +505,7 @@
   {
    "key": "Add a community",
    "places": [
-    "AndroidCommunityServerPanel.kt:264"
+    "AndroidCommunityServerPanel.kt:282"
    ],
    "nl": "Een community toevoegen"
   },
@@ -757,14 +757,14 @@
   {
    "key": "An administrator of {0} approves it first.",
    "places": [
-    "AndroidCarryHost.kt:237"
+    "AndroidCarryHost.kt:241"
    ],
    "nl": "Een beheerder van {0} keurt hem eerst goed."
   },
   {
    "key": "An administrator of {0} approves them first.",
    "places": [
-    "AndroidCarryHost.kt:331"
+    "AndroidCarryHost.kt:335"
    ],
    "nl": "Een beheerder van {0} keurt ze eerst goed."
   },
@@ -928,7 +928,7 @@
   {
    "key": "Asking {0}…",
    "places": [
-    "AndroidCarryHost.kt:224"
+    "AndroidCarryHost.kt:228"
    ],
    "nl": "{0} wordt gevraagd…"
   },
@@ -2827,7 +2827,7 @@
   {
    "key": "Each community keeps its own account and unsent times. Switching takes one tap.",
    "places": [
-    "AndroidCommunityServerPanel.kt:100"
+    "AndroidCommunityServerPanel.kt:115"
    ],
    "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Wisselen is één tik."
   },
@@ -3778,7 +3778,7 @@
   {
    "key": "Hide",
    "places": [
-    "AndroidCommunityServerPanel.kt:162",
+    "AndroidCommunityServerPanel.kt:180",
     "AndroidAccountEcosystemScreens.kt:2063"
    ],
    "nl": "Verbergen"
@@ -4031,7 +4031,7 @@
   {
    "key": "It is sent when you switch to {0} and are signed in there.",
    "places": [
-    "AndroidCarryHost.kt:234"
+    "AndroidCarryHost.kt:238"
    ],
    "nl": "Hij wordt verzonden zodra je naar {0} wisselt en daar bent aangemeld."
   },
@@ -5857,7 +5857,7 @@
   {
    "key": "Nothing waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:138"
+    "AndroidCommunityServerPanel.kt:153"
    ],
    "nl": "Niets wacht op verzenden"
   },
@@ -7588,7 +7588,7 @@
   {
    "key": "Remove",
    "places": [
-    "AndroidCommunityServerPanel.kt:199",
+    "AndroidCommunityServerPanel.kt:217",
     "AndroidOutboxSelectionComponent.kt:213",
     "AndroidDutchUiCopy.kt:151"
    ],
@@ -7604,7 +7604,7 @@
   {
    "key": "Remove all",
    "places": [
-    "AndroidCommunityServerPanel.kt:169"
+    "AndroidCommunityServerPanel.kt:187"
    ],
    "nl": "Alles verwijderen"
   },
@@ -7618,7 +7618,7 @@
   {
    "key": "Remove from this phone",
    "places": [
-    "AndroidCommunityServerPanel.kt:225"
+    "AndroidCommunityServerPanel.kt:243"
    ],
    "nl": "Van deze telefoon verwijderen"
   },
@@ -8650,7 +8650,7 @@
   {
    "key": "Show",
    "places": [
-    "AndroidCommunityServerPanel.kt:162",
+    "AndroidCommunityServerPanel.kt:180",
     "AndroidTournamentParticipantsStep.kt:592"
    ],
    "nl": "Bekijken"
@@ -9326,7 +9326,7 @@
   {
    "key": "Switch",
    "places": [
-    "AndroidCommunityServerPanel.kt:218",
+    "AndroidCommunityServerPanel.kt:236",
     "AndroidDutchUiCopy.kt:452"
    ],
    "nl": "Wisselen"
@@ -9713,7 +9713,7 @@
   {
    "key": "That community does not accept times from other communities.",
    "places": [
-    "AndroidCarryHost.kt:250"
+    "AndroidCarryHost.kt:254"
    ],
    "nl": "Die community neemt geen tijden van andere communities aan."
   },
@@ -10431,7 +10431,7 @@
   {
    "key": "This phone does not know your times in {0} yet. Switch to {1} once and sign in there, then try again.",
    "places": [
-    "AndroidCarryHost.kt:309"
+    "AndroidCarryHost.kt:313"
    ],
    "nl": "Deze telefoon kent je tijden in {0} nog niet. Wissel een keer naar {1} en meld je daar aan, en probeer het dan opnieuw."
   },
@@ -10453,7 +10453,7 @@
   {
    "key": "This result cannot be carried.",
    "places": [
-    "AndroidCarryHost.kt:265"
+    "AndroidCarryHost.kt:269"
    ],
    "nl": "Deze uitslag kan niet worden meegenomen."
   },
@@ -10480,7 +10480,7 @@
   {
    "key": "This time is already on its way to {0}.",
    "places": [
-    "AndroidCarryHost.kt:260"
+    "AndroidCarryHost.kt:264"
    ],
    "nl": "Deze tijd is al onderweg naar {0}."
   },
@@ -12992,7 +12992,7 @@
   {
    "key": "{0} carried times wait until you sign in here.",
    "places": [
-    "AndroidCommunityServerPanel.kt:153"
+    "AndroidCommunityServerPanel.kt:171"
    ],
    "nl": "{0} meegenomen tijden wachten tot je je hier aanmeldt."
   },
@@ -13020,7 +13020,7 @@
   {
    "key": "{0} could not be reached. Nothing was carried; try again later.",
    "places": [
-    "AndroidCarryHost.kt:255"
+    "AndroidCarryHost.kt:259"
    ],
    "nl": "{0} was niet bereikbaar. Er is niets meegenomen; probeer het later opnieuw."
   },
@@ -13535,7 +13535,7 @@
   {
    "key": "{0} runs waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:140"
+    "AndroidCommunityServerPanel.kt:158"
    ],
    "nl": "{0} ritten wachten op verzenden"
   },
@@ -13556,7 +13556,7 @@
   {
    "key": "{0} still has runs that were not sent. Switch to it and send them first.",
    "places": [
-    "AndroidCommunityServerPanel.kt:245"
+    "AndroidCommunityServerPanel.kt:263"
    ],
    "nl": "{0} heeft nog ritten die niet zijn verzonden. Wissel ernaar en verstuur ze eerst."
   },
@@ -13599,7 +13599,7 @@
   {
    "key": "{0} times will be sent to {1} when you are signed in there; {2} skipped because {3} already has a better time.",
    "places": [
-    "AndroidCarryHost.kt:322"
+    "AndroidCarryHost.kt:326"
    ],
    "nl": "{0} tijden worden naar {1} verzonden zodra je daar bent aangemeld; {2} overgeslagen omdat {3} al een betere tijd heeft."
   },
@@ -13666,14 +13666,14 @@
   {
    "key": "{0} was removed from this phone.",
    "places": [
-    "AndroidCommunityServerPanel.kt:241"
+    "AndroidCommunityServerPanel.kt:259"
    ],
    "nl": "{0} is van deze telefoon verwijderd."
   },
   {
    "key": "{0} were already on their way.",
    "places": [
-    "AndroidCarryHost.kt:328"
+    "AndroidCarryHost.kt:332"
    ],
    "nl": "{0} waren al onderweg."
   },
