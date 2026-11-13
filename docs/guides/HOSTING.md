@@ -251,6 +251,36 @@ An installation built from source is removed the same way from the repository ro
   Apple Silicon needs amd64 emulation. This is untested; see the user guide's macOS chapter.
 - **From source**: [Getting started](../GETTING_STARTED.md) builds the images from a clone (Windows and Linux).
 
+## The launcher window: look and options
+
+Every launcher opens like the start of a race: a colour MK8DX logo, a 3-2-1-GO countdown with beeps, the checks as
+laps with a race clock, and a finish line with the lap times. That covers `Start-MK8DX.cmd`, `Start-MK8DX-LAN.cmd`
+(also behind the **MK8DX beheer** desktop icon), `Start-MK8DX-No-Docker.cmd` and `Manage-MK8DX-No-Docker.cmd` on
+Windows, and `tooling/start-mk8dx.sh` on Linux and macOS. Only the presentation differs: the steps, the menu and the
+messages are the same in every look, so these guides apply whatever you see.
+
+| Look | When |
+| --- | --- |
+| **Rich** (default) | A terminal with modern colours: Windows Terminal, the Windows 10/11 console, VS Code, or a Linux/macOS terminal with UTF-8 and 256 colours (true colour when `COLORTERM=truecolor`; macOS Terminal gets the nearest 256 colours). |
+| **Classic** | A colour terminal without those, or `MK8DX_RICH=0`: the block-letter banner, start lights and lap bars in basic colours. |
+| **Plain** | The output goes to a file or another program, `TERM=dumb`, or you ask for it: text only, no colours or animation. Use it for logs and support questions. |
+
+| What you want | Windows | Linux and macOS |
+| --- | --- | --- |
+| Leave out the countdown (it is on by default) | `Start-MK8DX.cmd -SkipCountdown` (each of the four `.cmd` files takes it), or `MK8DX_SKIP_COUNTDOWN=1` | `sh tooling/start-mk8dx.sh --skip-countdown [installation directory]`, or `MK8DX_SKIP_COUNTDOWN=1` |
+| Plain text | `-Plain`, `MK8DX_PLAIN=1` or `NO_COLOR=1` | `--plain`, `MK8DX_PLAIN=1` or `NO_COLOR=1` |
+| No sound (it is on by default) | `MK8DX_SOUND=0` | `MK8DX_SOUND=0` |
+| Force the rich or the classic look | `MK8DX_RICH=1` / `MK8DX_RICH=0` | `MK8DX_RICH=1` / `MK8DX_RICH=0` |
+| ASCII instead of round symbols | `MK8DX_ASCII=1` | (not needed) |
+| See it without starting anything | `powershell -NoProfile -File tooling\mk8dx-ui.ps1 -Demo` | `sh tooling/mk8dx-ui.sh --demo` |
+
+On Windows the beeps are a tone through the speakers. On Linux and macOS the countdown rings the terminal bell,
+which the terminal plays as a sound, shows as a flash or ignores, depending on its own settings.
+
+To keep a choice, set the variable once: on Windows `setx MK8DX_SKIP_COUNTDOWN 1` (it applies to windows opened
+afterwards), on Linux and macOS `export MK8DX_SKIP_COUNTDOWN=1` in `~/.profile`. For the **MK8DX beheer** icon you
+can also open its properties and add ` -SkipCountdown` at the end of the target.
+
 ## After installation
 
 - Tell your players the exact website address. They sign in with an email link; nothing else is needed for the

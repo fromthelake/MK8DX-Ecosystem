@@ -3,6 +3,11 @@ setlocal
 title MK8DX - community server without Docker
 cd /d "%~dp0"
 set "MK8DX_A3_STATE=%LOCALAPPDATA%\MK8DX\NoDocker"
+rem Options: -SkipCountdown (no countdown), -Plain (plain text).
+for %%a in (%*) do (
+    if /i "%%~a"=="-SkipCountdown" set "MK8DX_SKIP_COUNTDOWN=1"
+    if /i "%%~a"=="-Plain" set "MK8DX_PLAIN=1"
+)
 rem Presentation only: tooling\mk8dx-ui.ps1 draws the header, laps and finish; every check below is unchanged.
 set "UI=<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tooling\mk8dx-ui.ps1""
 if not exist "%~dp0tooling\mk8dx-ui.ps1" set "UI=rem"

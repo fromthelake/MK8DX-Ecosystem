@@ -25,6 +25,7 @@ FILES = (
     "Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "compose.yaml", "compose.local.yaml", "compose.lan.yaml",
     "compose.production.yaml", "compose.images.yaml", "tooling/install.py", "tooling/lifecycle.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",
+    "tooling/mk8dx-ui.sh",
     "LICENSE", "LICENSE_SCOPE.md", "SOURCE_FOR_BINARIES.txt",
     "infrastructure/docker/Caddyfile.local", "infrastructure/docker/Caddyfile.lan",
     "infrastructure/docker/Caddyfile.production", "docs/OPERATIONS_NL.md",

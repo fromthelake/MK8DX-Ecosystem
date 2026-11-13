@@ -87,7 +87,7 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 **Starten op Windows**
 
-1. **Doe:** dubbelklik in de uitgepakte map op **Start-MK8DX-LAN.cmd**. → **Je ziet:** een zwart venster met regels als "MK8DX package:" en "Private installation:". De eerste keer staan er ook "Preparing the included Python packages (once, without internet)." en "Loading the included Docker images. This can take several minutes." Dat duurt enkele minuten. Daarna staat er "MK8DX setup is open in your browser:" en opent de installatie in je browser. → **Zie je iets anders?** Zie de meldingen hieronder.
+1. **Doe:** dubbelklik in de uitgepakte map op **Start-MK8DX-LAN.cmd**. → **Je ziet:** een venster met het MK8DX-logo en aftellen 3-2-1-GO met piepjes ([overslaan kan](BEHEER.md#het-startvenster-weergave-en-opties)), daarna regels als "MK8DX package:" en "Private installation:". De eerste keer staan er ook "Preparing the included Python packages (once, without internet)." en "Loading the included Docker images. This can take several minutes." Dat duurt enkele minuten. Daarna staat er "MK8DX setup is open in your browser:" en opent de installatie in je browser. → **Zie je iets anders?** Zie de meldingen hieronder.
 2. **Doe:** laat het zwarte venster open tot je in de installatie op **Voltooien** hebt geklikt. Het venster zegt dat ook: "Keep this window open until you click Finish."
 
 Meldingen in het zwarte venster op Windows:
@@ -103,7 +103,7 @@ Meldingen in het zwarte venster op Windows:
 **Starten op Linux en macOS**
 
 1. **Doe:** open een terminal in de uitgepakte map. Linux: klik in de map met rechts en kies "Openen in terminal" als je bestandsbeheer dat aanbiedt. macOS en Linux kan ook zo: open Terminal, typ `cd ` (met een spatie erachter), sleep de map in het venster en druk op Enter. → **Je ziet:** de terminal staat in de map van het pakket.
-2. **Doe:** typ `sh tooling/start-mk8dx.sh` en druk op Enter. → **Je ziet:** "MK8DX package:", het Python-nummer, "Docker Compose version". De eerste keer ook "Loading the included Docker images. This can take several minutes." en "Preparing the included Python packages (once, without internet)." Daarna "Private installation:" en "MK8DX setup is open in your browser:", en de installatie opent in je browser. → **Zie je iets anders?** Opent er geen browser, kopieer dan het adres dat met `http://127.0.0.1:` begint uit de terminal naar je browser.
+2. **Doe:** typ `sh tooling/start-mk8dx.sh` en druk op Enter. → **Je ziet:** het MK8DX-logo en aftellen 3-2-1-GO, daarna "MK8DX package:", het Python-nummer, "Docker Compose version". De eerste keer ook "Loading the included Docker images. This can take several minutes." en "Preparing the included Python packages (once, without internet)." Daarna "Private installation:" en "MK8DX setup is open in your browser:", en de installatie opent in je browser. → **Zie je iets anders?** Opent er geen browser, kopieer dan het adres dat met `http://127.0.0.1:` begint uit de terminal naar je browser.
 3. **Doe:** laat de terminal open tot je op **Voltooien** hebt geklikt.
 
 Meldingen in de terminal op Linux en macOS:
@@ -170,7 +170,7 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 
 **MK8DX beheer openen**
 
-1. **Doe (Windows):** dubbelklik op het bureaublad op **MK8DX beheer**. Die snelkoppeling start hetzelfde als Start-MK8DX-LAN.cmd. → **Je ziet:** het zwarte venster en daarna in de browser de pagina met bovenaan "beheer" en de titel **MK8DX beheer**. → **Zie je iets anders?** Geen snelkoppeling: dubbelklik in de MK8DX-map op Start-MK8DX-LAN.cmd.
+1. **Doe (Windows):** dubbelklik op het bureaublad op **MK8DX beheer**. Die snelkoppeling start hetzelfde als Start-MK8DX-LAN.cmd. → **Je ziet:** het startvenster met zijn korte race-intro en daarna in de browser de pagina met bovenaan "beheer" en de titel **MK8DX beheer**. → **Zie je iets anders?** Geen snelkoppeling: dubbelklik in de MK8DX-map op Start-MK8DX-LAN.cmd.
 2. **Doe (Linux):** start **MK8DX beheer** van het bureaublad of uit het appmenu. Op sommige Linux-bureaubladen moet je zo'n pictogram eerst toestaan (met rechts klikken en de optie kiezen om starten toe te staan). Het werkt ook met `sh tooling/start-mk8dx.sh` in de MK8DX-map, zoals in hoofdstuk 3. → **Je ziet:** een terminal en daarna de pagina **MK8DX beheer**.
 3. **Doe (macOS, niet getest):** dubbelklik op het bureaublad op **MK8DX beheer.command**, of start `sh tooling/start-mk8dx.sh` zoals in hoofdstuk 3. → **Je ziet:** Terminal en daarna de pagina **MK8DX beheer**.
 

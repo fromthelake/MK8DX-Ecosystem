@@ -1,4 +1,4 @@
-param([string]$StateDir = (Join-Path $env:LOCALAPPDATA 'MK8DX\Server'), [switch]$Plain)
+param([string]$StateDir = (Join-Path $env:LOCALAPPDATA 'MK8DX\Server'), [switch]$Plain, [switch]$SkipCountdown)
 $ErrorActionPreference = 'Stop'
 # Windows PowerShell 5.1 turns any stderr line of a redirected native command into a terminating error
 # under 'Stop' (groep3 cold run: "No such image" from the image check). Quiet probes use only the exit code.
@@ -11,7 +11,7 @@ function Invoke-NativeQuiet([scriptblock]$Command) {
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location -LiteralPath $root
 # Presentation only (header, start lights, laps, spinner); plain text when the output is redirected or -Plain.
-. (Join-Path $PSScriptRoot 'mk8dx-ui.ps1') -Plain:$Plain
+. (Join-Path $PSScriptRoot 'mk8dx-ui.ps1') -Plain:$Plain -SkipCountdown:$SkipCountdown
 function Show-Banner {
   $revision = ''
   $lan = $false

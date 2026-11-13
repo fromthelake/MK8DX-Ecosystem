@@ -1,5 +1,5 @@
 param([switch]$Demo, [switch]$Plain, [string]$Show = '', [string]$ShowNumber = '', [string]$ShowText = '',
-  [string]$ShowSubtitle = '', [string]$ShowItems = '', [string]$ShowColour = 'Gray')
+  [string]$ShowSubtitle = '', [string]$ShowItems = '', [string]$ShowColour = 'Gray', [switch]$SkipCountdown)
 # Presentation helpers for tooling/start-mk8dx.ps1: a racing-style intro, laps for the steps and a spinner for
 # quiet waits. Presentation only: no function here decides anything, every one writes text and returns.
 # ASCII source on purpose (Windows PowerShell 5.1 reads a BOM-less file as ANSI); the few round glyphs are made
@@ -9,6 +9,8 @@ param([switch]$Demo, [switch]$Plain, [string]$Show = '', [string]$ShowNumber = '
 # redirected, and by hand with -Plain, MK8DX_PLAIN=1 or NO_COLOR. MK8DX_ASCII=1 replaces the round glyphs.
 # Demo: powershell -NoProfile -File tooling\mk8dx-ui.ps1 -Demo   (add -Plain to see the plain variant)
 # Rich mode (truecolor logo, car on the track) switches on by itself in Windows Terminal; MK8DX_RICH=0 turns it off.
+# -SkipCountdown or MK8DX_SKIP_COUNTDOWN=1 leaves out the countdown / start lights (off by default); the race
+# clock still starts. MK8DX_SOUND=0 keeps the countdown quiet.
 
 function Test-MK8DXUiPlain {
   if ($script:MK8DXUiForcePlain) { return $true }
@@ -16,6 +18,7 @@ function Test-MK8DXUiPlain {
   try { return [Console]::IsOutputRedirected } catch { return $true }
 }
 $script:MK8DXUiForcePlain = [bool]$Plain
+$script:MK8DXUiSkipCountdown = [bool]$SkipCountdown -or $env:MK8DX_SKIP_COUNTDOWN -eq '1'
 $script:MK8DXUiDot = if ($env:MK8DX_ASCII -eq '1') { 'O' } else { [string][char]0x25CF }
 $script:MK8DXUiTick = if ($env:MK8DX_ASCII -eq '1') { '+' } else { [string][char]0x2713 }
 
@@ -347,6 +350,7 @@ function Write-Header([string]$Subtitle = '', [string]$Revision = '') {
 function Show-StartLights {
   # Five lights come on one by one, then all turn green. About 1.6 s; nothing at all in plain mode.
   if (Test-MK8DXUiPlain) { return }
+  if ($script:MK8DXUiSkipCountdown) { Start-MK8DXRace; return }
   if (Test-MK8DXUiRich) {
     # Rich mode: a 3, 2, 1, GO! countdown instead of the lights; the race clock starts on GO.
     Show-MK8DXCountdown

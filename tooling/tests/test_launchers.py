@@ -49,8 +49,26 @@ class LauncherTest(unittest.TestCase):
         shell = shutil.which("sh")
         if shell is None:
             self.skipTest("no sh on this host")
-        result = subprocess.run([shell, "-n", str(ROOT / "tooling" / "start-mk8dx.sh")], capture_output=True, text=True)
+        for name in ("start-mk8dx.sh", "mk8dx-ui.sh"):
+            script = ROOT / "tooling" / name
+            script.read_bytes().decode("ascii")
+            result = subprocess.run([shell, "-n", str(script)], capture_output=True, text=True)
+            with self.subTest(name):
+                self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_shell_ui_is_plain_when_redirected(self):
+        # The Linux/macOS counterpart of the PowerShell demo test: same words, no escape codes, no carriage returns.
+        shell = shutil.which("sh")
+        if shell is None:
+            self.skipTest("no sh on this host")
+        result = subprocess.run([shell, str(ROOT / "tooling" / "mk8dx-ui.sh"), "--demo"],
+                                capture_output=True, text=True, timeout=120)
         self.assertEqual(result.returncode, 0, result.stderr)
+        for words in ("T I M E   T R I A L S", "[LAP 1/4] Checking Python", "OK  Done.",
+                      "!!  That step did not finish.", "FINISH"):
+            self.assertIn(words, result.stdout)
+        self.assertNotIn("\x1b", result.stdout)
+        self.assertNotIn("\r", result.stdout)
 
 
 if __name__ == "__main__":
