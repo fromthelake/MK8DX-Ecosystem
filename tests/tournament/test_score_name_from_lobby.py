@@ -3,7 +3,13 @@
 All names here are invented."""
 from types import SimpleNamespace
 
+import pytest
+from conftest import SKIP_REASON, recorded_assets
+
 from mk8dx_tournament_extraction.shared_characters import SharedExportCharacters
+
+# Reads the engine's name-character data from the recorded runtime assets.
+pytestmark = pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
 
 link = SharedExportCharacters._link_to_lobby_name
 
