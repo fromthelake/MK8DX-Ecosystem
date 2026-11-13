@@ -37,7 +37,8 @@ const CATALOGED_MIGRATIONS = CATALOGED_MIGRATION_VERSIONS.length;
 // 0088 only widens three checks on the lifecycle audit table; every snapshot row already satisfies them.
 // 0089 widens the same table's reason check once more. 0090 adds the empty carried-originals record
 // (filled from carried revisions, which a snapshot does not have) and widens the lifecycle checks.
-const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088", "0089", "0090"]);
+// 0091 adds the nullable community name to the (never restored) installation settings and widens its audit.
+const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088", "0089", "0090", "0091"]);
 // Nullable columns those migrations add to tables the snapshot carries. A snapshot taken before the migration lacks
 // them; its rows restore into the remaining columns and the new column stays NULL, as it would in production.
 const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
@@ -55,6 +56,8 @@ const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
     ["time_trial_submission_revisions", "carried_original_submission_id"],
     ["time_trial_submission_revisions", "carried_original_submitted_at_ms"],
   ]],
+  // community_name NULL = not set, what every installation had before the setting existed.
+  ["0091", [["installation_settings", "community_name"]]],
 ]);
 
 function locallyAddedColumns(snapshotMigrationCount, table) {

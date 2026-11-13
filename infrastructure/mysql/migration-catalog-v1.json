@@ -812,6 +812,15 @@
       "downPath": "migrations/0090_carried_originals.down.sql",
       "downSha256": "ed97ecb3a7880dcecbfc46702c468cdd44b37a2b802ff4403a2a16529aabde72",
       "destructiveDown": true
+    },
+    {
+      "version": "0091",
+      "name": "community_name",
+      "upPath": "migrations/0091_community_name.up.sql",
+      "upSha256": "4ff923e5c69c7826730dda773adbba5cf40121ef80ab44c2bae633bf7dff0a3b",
+      "downPath": "migrations/0091_community_name.down.sql",
+      "downSha256": "63fd065bd239d75af10476c5e2f232694824ac28a3addcdf204cf8d3d275ad48",
+      "destructiveDown": true
     }
   ]
 }
