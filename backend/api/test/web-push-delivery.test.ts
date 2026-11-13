@@ -1,13 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+// The same named-export shape as the real web-push 4 module (test/web-push-package.test.ts uses the real one).
 vi.mock("web-push", () => ({
-  default: {
-    setVapidDetails: vi.fn(),
-    sendNotification: vi.fn(),
-  },
+  setVapidDetails: vi.fn(),
+  sendNotification: vi.fn(),
 }));
 
-import webPush from "web-push";
+import * as webPush from "web-push";
 import { WebPushDeliveryWorker } from
   "../src/notifications/web-push-delivery.js";
 
