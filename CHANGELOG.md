@@ -7,6 +7,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **A community name**: an administrator can name the installation ("Club Noord") at the top of Administration →
+  Installation settings; the apps show it instead of the web address. `GET /v1/installation-settings` answers
+  `communityName` (text, or `null` when not set); trimmed, at most 60 characters, audited like the other
+  settings (migration 0091).
+
 - **The same carried time twice** (ADR-0225 amendment, migration 0090): a carried time whose community and
   original id were already accepted here is refused with `409 carried_duplicate`. A carried time with the same
   track, class and time as an active run of the same Player no longer creates a second run: it fills only that

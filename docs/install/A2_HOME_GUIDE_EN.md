@@ -322,6 +322,8 @@ Good to know: without a Player, LiveTrial's sign-in ends with a message to set u
 
 (Image: website-switch-account)
 
+**A name for your community:** an administrator can give the installation a name, such as "Club Noord", on the website under **Administration** → **Installation settings** → **Community name**, and click **Save name**. The apps then show that name instead of the web address. Leave the field empty and save to remove the name again.
+
 ## 9. A tournament night
 
 This chapter is only an overview. The real steps are in the manuals named below. You run a tournament night on your installation's website; the **Director** is the person who leads the night.

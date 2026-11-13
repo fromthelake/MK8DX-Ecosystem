@@ -322,6 +322,8 @@ Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding
 
 (Afbeelding: website-ander-account)
 
+**Een naam voor je community:** een beheerder kan de installatie een naam geven, bijvoorbeeld "Club Noord", op de website onder **Beheer** → **Installatie-instellingen** → **Communitynaam**, en klikt op **Naam opslaan**. De apps tonen dan die naam in plaats van het webadres. Maak het veld leeg en sla op om de naam weer weg te halen.
+
 ## 9. Een toernooiavond
 
 Dit hoofdstuk is alleen een overzicht. De echte stappen staan in de handleidingen die hieronder genoemd worden. Een toernooiavond regel je op de website van je installatie; de **Director** is degene die de avond leidt.

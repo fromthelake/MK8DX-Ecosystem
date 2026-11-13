@@ -282,6 +282,10 @@ role; a request to host does not grant Director authority by itself.
 whether rating needs a verified claim. Defaults preserve the established
 workflow; revisions and audit events record each settings change.
 
+Addition (2026-11-13): the same mechanism holds the installation's community name ("Club Noord"), shown by the
+apps instead of the web address; it is optional, public, at most 60 characters and audited like the other
+settings (migration 0091).
+
 ## ADR-0222
 
 **Open sign-up.** The Director's existing roster remains the default. A night
