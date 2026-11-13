@@ -157,6 +157,15 @@ Authentication, SQL, the installer, backup and restore need tests against a real
 including failure cases. Physical devices, capture hardware and a real hosting account are separate checks:
 say in your pull request when you could not run them.
 
+Dependency updates (Dependabot or by hand):
+
+- A dependency pull request that is several days behind `main` was tested against old code. Comment
+  `@dependabot recreate` (or rebase your own branch) and review the fresh CI run, not the old one.
+- Unit tests may mock a package, so green tests do not prove its new version still exports what the code imports.
+  The API's `npm run check:links` (run by Verify after the build) links every compiled module against the
+  installed packages without running them; a removed or renamed export fails there. For a major version, also read
+  the release notes and test the behaviour the package provides against the real module.
+
 ## What CI runs
 
 The Python dependency audit inventories every tracked `requirements*.txt` and `pyproject.toml` with
@@ -168,7 +177,7 @@ Verify. Ranged dependencies must have an exact companion pin in another manifest
 audit does not replace an audit of the installed transitive runtime.
 
 The [Verify workflow](../.github/workflows/verify.yml) runs on every pull request and push to `main`: the privacy,
-boundary and documentation checks; the API and Web checks; the central reader's TypeScript and Python tests; the
+boundary and documentation checks; the API and Web checks (including the API module link check); the central reader's TypeScript and Python tests; the
 CSS check, the intake rehearsal and the tooling tests; gitleaks over the history; `npm audit --omit=dev
 --audit-level=high` for the API, Web and scanner; the asset collection, the browser scanner build and the public
 test set; the Android unit tests and debug APK; the LiveTrial desktop tests (Windows) and a compile check of the

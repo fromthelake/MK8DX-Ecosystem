@@ -36,6 +36,7 @@ jobs:
           npm run typecheck --prefix backend/api
           npm test --prefix backend/api
           npm run build --prefix backend/api
+          npm run check:links --prefix backend/api
       - name: Web dependencies and supported component checks
         run: |
           npm ci --prefix apps/timetrials-web

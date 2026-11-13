@@ -27,7 +27,8 @@
     "start:local:anonymous": "node dist/composition/anonymous-local-main.js",
     "test": "vitest run --config vitest.config.ts",
     "test:web-product": "node test/live-web-product.browser.mjs",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:links": "node --experimental-vm-modules --no-warnings=ExperimentalWarning scripts/check-module-links.mjs"
   },
   "dependencies": {
     "@fastify/rate-limit": "11.2.2",
