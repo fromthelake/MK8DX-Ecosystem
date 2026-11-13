@@ -5,6 +5,22 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Security
+
+- **The gateway's Caddy no longer runs as root** (#34). The Web image's new entrypoint gives Caddy's storage
+  (`caddy_data`, `caddy_config`) to the user `caddy` (uid 10002) and then starts Caddy as that user. Existing
+  installations move over at their next start: the LAN certificate authority, the certificates and their 0600
+  modes stay as they are. On Linux, where the A2 certificate signer and setup page are the operator's own 0600
+  files, Caddy runs as the operator's uid instead. Caddy keeps running as root, with a log line, only when nothing
+  but root could read a mounted file. The Compose files are unchanged, so older and newer images keep working
+  with either. The installer now makes `public-client.json` (public content) readable inside the private
+  installation folder, like `operator.json`. The LAN gateway no longer tries to install its root certificate in
+  the container (`skip_install_trust`).
+- **MySQL, Mailpit and the CI MariaDB images are pinned by digest** (#34) as `name:tag@sha256:...`, and Dependabot
+  updates the Compose pins. Release builds fetch these images by digest, and `host_bundle.py` refuses a local copy
+  with another digest. The packaged Compose files still name the tag, because images loaded from the package's tar
+  keep only their tag.
+
 ## 0.2.2 — 2026-11-13
 
 Fixes recorded-video analysis in the Tournament Tools, which stopped with an error in 0.2.0 and 0.2.1, and adds the
