@@ -24,6 +24,8 @@ const SCRIPTS = {
   'sequence-decision-v1.json': 'sequence_decision_parity.mjs',
   'open-set-v1.json': 'sharedOpenSet.test.mjs',
   'time-decision-v1.json': 'sharedTimeDecision.test.mjs',
+  'context-v1.json': 'contextVectors.test.mjs',
+  'icon-score-v1.json': 'iconScoreVectors.test.mjs',
 };
 
 test('every committed vector file has a TypeScript replay', () => {

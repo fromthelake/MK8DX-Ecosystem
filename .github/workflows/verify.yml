@@ -47,14 +47,15 @@ jobs:
           npm run build --prefix apps/timetrials-web
       - name: Central reader (TypeScript and Python, every committed parity vector)
         run: |
-          # vectorParity.test.mjs replays every packages/icon-matcher/vectors file against the TS modules.
-          node --experimental-strip-types --no-warnings --experimental-loader ./packages/icon-matcher/ts/ts_resolve_hook.mjs --test "packages/icon-matcher/ts/*.test.mjs"
-          python -m pip install --disable-pip-version-check -r requirements-dev.txt
           # The public recognition pack, so tests that only need pack inputs run instead of skipping;
           # tests that also need private corpora keep skipping.
           node tooling/assets/materialize_collection.mjs recognition-pack "$RUNNER_TEMP/recognition-pack"
+          export MK8DX_RECOGNITION_PACK="$RUNNER_TEMP/recognition-pack"
           export MK8DX_FRAME_DEFINITIONS="$RUNNER_TEMP/recognition-pack/frame-definitions-v1.json"
-          test -s "$MK8DX_FRAME_DEFINITIONS"
+          test -s "$MK8DX_FRAME_DEFINITIONS" && test -d "$MK8DX_RECOGNITION_PACK/tensor-pack"
+          # vectorParity.test.mjs replays every packages/icon-matcher/vectors file against the TS modules.
+          node --experimental-strip-types --no-warnings --experimental-loader ./packages/icon-matcher/ts/ts_resolve_hook.mjs --test "packages/icon-matcher/ts/*.test.mjs"
+          python -m pip install --disable-pip-version-check -r requirements-dev.txt
           PYTHONPATH=packages/icon-matcher/python python -m pytest -q -p no:cacheprovider -rs packages/icon-matcher/python/tests
       - name: CSS, intake rehearsal and tooling tests
         run: |
@@ -165,6 +166,9 @@ jobs:
         working-directory: apps/timetrials-android
         run: |
           export JAVA_HOME="$JAVA_HOME_21_X64"
+          # The public recognition pack for the icon-score parity replay (IconScoreParityTest).
+          node ../../tooling/assets/materialize_collection.mjs recognition-pack "$RUNNER_TEMP/recognition-pack"
+          export MK8DX_RECOGNITION_PACK="$RUNNER_TEMP/recognition-pack"
           bash ./gradlew --no-daemon :app:testDebugUnitTest :scan-runtime:testDebugUnitTest :app:assembleDebug
       - name: Design tokens
         run: node packages/design-tokens/generate.mjs --check
