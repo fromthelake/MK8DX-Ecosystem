@@ -5,6 +5,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **Tournament Analysis**, a window for analysing recorded tournament videos afterwards when Tournament Live was not
+  used on the night: add videos or a folder per tournament, check the session id and results folder, and **Start
+  analysis** runs the existing recorded-video processing (`vision_cli all`) with a progress log, **Stop** and
+  **Open results folder**. English and Dutch. The Windows Tournament Tools package writes a new
+  `TournamentAnalysis.cmd`; `TournamentProcessor.cmd` drag-and-drop is unchanged. Developers run
+  `python -m tournament_processor.gui`. See
+  [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards).
+
 ### Changed
 
 - Every launcher looks like the start of a race: a colour MK8DX logo, a 3-2-1-GO countdown with beeps, the checks

@@ -10,7 +10,7 @@ local extraction needs no account.
 
 1. Extract the complete Tournament Tools archive to a writable folder.
 2. Run `Install-MK8DX-TournamentTools.cmd`. It obtains Python 3.12 and public
-   packages if needed, then writes four launchers. The reviewed EasyOCR weights
+   packages if needed, then writes five launchers. The reviewed EasyOCR weights
    are already in `runtime-assets/ocr-models`; review `install.log` if setup fails.
    PyTorch 2.15 uses CUDA 13.2. If `nvidia-smi` reports an older CUDA version,
    automatic setup selects CPU. Forcing CUDA then stops with a driver message;
@@ -18,6 +18,12 @@ local extraction needs no account.
 3. For a recorded video, drop an `.mp4` or `.mkv` onto
    `TournamentProcessor.cmd`. Results appear beside the recording in
    `<name>_TournamentSession/Output_Results/` as Excel, CSV and canonical JSON.
+   For several recordings, or a folder per tournament, double-click
+   `TournamentAnalysis.cmd` instead: add the videos or folders, check the session
+   id and results folder, then **Start analysis**. It runs the same processing,
+   shows its progress, can be stopped, and opens the results folder when done.
+   This is for analysis afterwards, when Tournament Live was not used on the night;
+   see [Analyse recordings afterwards](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards).
 4. For live capture, connect the capture card and run `TournamentLive.cmd`.
    Confirm races in the operator UI before exporting them. `TournamentLiveCli.cmd`
    exposes device discovery, replay and result commands.

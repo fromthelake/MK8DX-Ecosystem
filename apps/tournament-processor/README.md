@@ -23,6 +23,31 @@ recorded video onto it and the results land next to the video in
 `*_TournamentRaceResultsV1.json`). Private recognition assets stay outside the
 package and are referenced through `TournamentTools.config.cmd`. The user guide
 is `docs/product/USING_MK8DX_TOURNAMENT_TOOLS.md`.
+
+## Analysis window (afterwards, without Tournament Live)
+
+`TournamentAnalysis.cmd` (or `python -m tournament_processor.gui`, console script
+`mk8dx-tournament-analysis`) opens **MK8DX Tournament Analysis**, a Tkinter window
+for nights that ran without Tournament Live:
+
+1. **Add videos...** (`.mp4 .mkv .mov .avi .ts`) or **Add folder...** (one folder =
+   one tournament's recordings).
+2. Check the **Session id** (default: the first name plus today's date unless the
+   name has a date; 1-128 characters, required for publication) and the
+   **Results folder** (default `<first name>_TournamentSession` beside it).
+3. **Start analysis** links (or, across drives, copies) the recordings into
+   `<results folder>\Input_Videos\` - a folder's videos into a sub-folder of its
+   own name - and runs `python -m tournament_processor.vision_cli all
+   --runtime-root <results folder> --session-id <id> --videos <names>` in a child
+   process. Its output streams into the log; **Stop** ends the process tree.
+4. **Open results folder** opens `Output_Results\` (Excel, CSV,
+   `*_TournamentRaceResultsV1.json`).
+
+The window does no recognition of its own; results are those of the command line.
+Texts are English or Dutch (`MK8DX_TOURNAMENT_LANGUAGE`, otherwise the Windows
+language). Planning and staging are covered by
+`tests/windows_clients/test_processor_analysis_gui.py` without opening a window.
+
 ## Optional Tournament Manager connection
 
 Processor remains fully local-first and batch-capable. After

@@ -89,6 +89,20 @@ groep als volgende speelt, de scores, de finales en de standen.
   <img src="docs/readme/tournament-skill.jpg" alt="Pagina toernooivaardigheid: TrueSkill-rating, overwinningen, top 3 en gemiddelde eindpositie van een speler" width="49%">
 </p>
 
+### Geen Tournament Live op de avond? Analyseer de opnames achteraf
+
+Heb je de avond opgenomen in plaats van live vastgelegd? Het venster **Tournament Analysis** leest
+de opnames achteraf: voeg één video toe, meerdere, of een map per toernooi, kies **Analyse
+starten**, en het vindt elke race met de posities, characters en punten. Het resultaat is een
+Excel-werkmap, een CSV en een importbestand voor de website, dat de organisator controleert en
+importeert — dezelfde controle als bij Tournament Live. Dubbelklik in het Windows-pakket
+Tournament Tools op `TournamentAnalysis.cmd` (een video naar `TournamentProcessor.cmd` slepen
+werkt nog steeds); ontwikkelaars starten `python -m tournament_processor.gui`.
+[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) (Engels)
+beschrijft de stappen.
+
+![Venster Tournament Analysis: twee voorronde-opnames en een map met finales, een sessie-id, de uitslagenmap en de knop om de analyse te starten](docs/readme/tournament-analysis.jpg)
+
 ## ⏱️ Time Trials met LiveTrial — volledig automatisch
 
 Sluit je Switch via een capture card aan op je Windows-pc en race gewoon. Voor zover wij weten
