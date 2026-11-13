@@ -51,6 +51,16 @@ configuration, private recognition test sets, recordings and the Android release
 them in a pull request. Recognition changes are measured on the maintainer's private sets before a release; the
 parity vectors of the central reader (`packages/icon-matcher`) are the recognition checks everyone can run.
 
+## Branches and pull requests
+
+- `main` is protected: changes arrive through a pull request whose Verify and CodeQL checks pass. No review
+  approval is required, force pushes and deleting `main` are blocked.
+- Work on a short-lived branch from `main` named `feat/`, `fix/`, `docs/` or `chore/` plus a short description,
+  open a pull request, and **squash-merge** it once the checks pass. GitHub deletes the branch after the merge.
+- A `release/*` branch exists only for an actual maintenance or release need (for example `release/0.2`) and is
+  merged into `main` through a pull request; it is not a second development line.
+- Do not force-push shared branches, rewrite published history or delete release tags.
+
 ## Releases
 
 A maintainer tags `v<version>`; the Release workflow builds the client packages and the source archive, writes
