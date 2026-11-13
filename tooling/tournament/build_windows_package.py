@@ -380,7 +380,7 @@ PACKAGE_VERSION = "@@VERSION@@"
 DISTRIBUTIONS = (
     "mk8dx-tournament-connected==@@CONNECTED_VERSION@@",
     "mk8dx-tournament-extraction[vision]==@@EXTRACTION_VERSION@@",
-    "mk8dx-tournament-processor==@@PROCESSOR_VERSION@@",
+    "mk8dx-tournament-processor[gui]==@@PROCESSOR_VERSION@@",
     "mk8dx-tournament-live[gui]==@@LIVE_VERSION@@",
     "mk8dx-icon-matcher==@@ICON_MATCHER_VERSION@@",
 )
@@ -407,6 +407,8 @@ rem Tournament Live keeps its sessions here (Live_Output\\exports, diagnostics, 
 set "MK8DX_TOURNAMENT_LIVE_ROOT=%~dp0TournamentLive"
 rem Interface language: auto follows Windows. Set to en or nl to override.
 set "MK8DX_TOURNAMENT_LANGUAGE=auto"
+rem Optional: your own image for the Tournament Analysis window banner (nothing is shipped).
+rem set "MK8DX_ANALYSIS_BACKGROUND=C:\\path\\to\\banner.jpg"
 rem Optional: set to "cpu" to force CPU OCR even when a CUDA build of torch is present.
 rem set "MK8_EASYOCR_GPU_MODE=cpu"
 """
@@ -709,6 +711,7 @@ def install(package_root: Path, python_kind: str, log_path: Path, torch_mode: st
         ("processorVideoHelp", [python, "-m", "tournament_processor.vision_cli", "--help"]),
         ("processorCsvHelp", [python, "-m", "tournament_processor.cli", "--help"]),
         ("processorAnalysisHelp", [python, "-m", "tournament_processor.gui", "--help"]),
+        ("processorAnalysisQt", [python, "-c", "import tournament_processor.qt.main_window; print('qt ok')"]),
         ("liveCliDryRun", [python, "-m", "live_processor.cli", "dry-run"]),
         ("liveResultsHelp", [python, "-m", "tournament_live.cli", "--help"]),
         ("connectedHelp", [python, "-m", "mk8dx_tournament_connected.cli", "--help"]),

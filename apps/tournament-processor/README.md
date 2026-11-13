@@ -27,26 +27,36 @@ is `docs/product/USING_MK8DX_TOURNAMENT_TOOLS.md`.
 ## Analysis window (afterwards, without Tournament Live)
 
 `TournamentAnalysis.cmd` (or `python -m tournament_processor.gui`, console script
-`mk8dx-tournament-analysis`) opens **MK8DX Tournament Analysis**, a Tkinter window
-for nights that ran without Tournament Live:
+`mk8dx-tournament-analysis`) opens **MK8DX Tournament Analysis** for nights that
+ran without Tournament Live. The Qt window (`tournament_processor/qt/`, needs the
+`gui` extra: PySide6 6.12.0) is a port of the MK8DX Video Result Extractor GUI:
+banner, numbered steps, live ANSI-coloured log, Rainbow Road progress bar and
+start-light status. Without PySide6, or with `--classic-gui`, the Tkinter window
+in `gui_classic.py` opens instead (as Tournament Live's `run_gui` does).
 
-1. **Add videos...** (`.mp4 .mkv .mov .avi .ts`) or **Add folder...** (one folder =
-   one tournament's recordings).
-2. Check the **Session id** (default: the first name plus today's date unless the
-   name has a date; 1-128 characters, required for publication) and the
-   **Results folder** (default `<first name>_TournamentSession` beside it).
-3. **Start analysis** links (or, across drives, copies) the recordings into
-   `<results folder>\Input_Videos\` - a folder's videos into a sub-folder of its
-   own name - and runs `python -m tournament_processor.vision_cli all
-   --runtime-root <results folder> --session-id <id> --videos <names>` in a child
-   process. Its output streams into the log; **Stop** ends the process tree.
-4. **Open results folder** opens `Output_Results\` (Excel, CSV,
-   `*_TournamentRaceResultsV1.json`).
+1. **① Choose recordings**: **Add videos...** (`.mp4 .mkv .mov .avi .ts`) or
+   **Add folder...** (one folder = one tournament's recordings).
+2. **② Choose videos**: tick the entries to analyse.
+3. **③ Run the analysis**: check the **Session id** (default: the first name plus
+   today's date unless the name has a date; 1-128 characters, required for
+   publication) and the **Results folder** (default `<first name>_TournamentSession`
+   beside it). **START ANALYSIS** links (or, across drives, copies) the recordings
+   into `<results folder>\Input_Videos\` - a folder's videos into a sub-folder of
+   its own name - and runs `python -m tournament_processor.vision_cli all
+   --runtime-root <results folder> --session-id <id> --videos <names>` as a child
+   process with `MK8_FORCE_COLOR=1`. Its output streams into the log; a `Comp NN%`
+   status shows in the status line; **Cancel** ends the process tree.
+4. **🏁 Results**: **Open Latest Excel**, **Open Results Folder** (`Output_Results\`:
+   Excel, CSV, `*_TournamentRaceResultsV1.json`) and **Open Frames**.
 
 The window does no recognition of its own; results are those of the command line.
 Texts are English or Dutch (`MK8DX_TOURNAMENT_LANGUAGE`, otherwise the Windows
-language). Planning and staging are covered by
-`tests/windows_clients/test_processor_analysis_gui.py` without opening a window.
+language). The banner is drawn in code; `MK8DX_ANALYSIS_BACKGROUND` may name a local
+image that is then painted behind the title as the original paints its artwork. No
+image is shipped. Planning, staging, log/progress parsing and front-end choice are
+covered by `tests/windows_clients/test_processor_analysis_gui.py` and
+`test_processor_analysis_qt.py` (the Qt part runs headless and is skipped without
+PySide6).
 
 ## Optional Tournament Manager connection
 

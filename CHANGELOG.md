@@ -8,11 +8,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 ### Added
 
 - **Tournament Analysis**, a window for analysing recorded tournament videos afterwards when Tournament Live was not
-  used on the night: add videos or a folder per tournament, check the session id and results folder, and **Start
-  analysis** runs the existing recorded-video processing (`vision_cli all`) with a progress log, **Stop** and
-  **Open results folder**. English and Dutch. The Windows Tournament Tools package writes a new
-  `TournamentAnalysis.cmd`; `TournamentProcessor.cmd` drag-and-drop is unchanged. Developers run
-  `python -m tournament_processor.gui`. See
+  used on the night. The Qt (PySide6) window follows the layout of the MK8DX Video Result Extractor: a banner,
+  numbered steps (choose recordings, tick videos, run, results), a live coloured activity log, a Rainbow Road
+  progress bar, a start-light status and a working **Cancel**. **START ANALYSIS** runs the existing
+  recorded-video processing (`vision_cli all`); **Open Latest Excel**, **Open Results Folder** and **Open Frames**
+  follow. English and Dutch. The banner is drawn in code; `MK8DX_ANALYSIS_BACKGROUND` in
+  `TournamentTools.config.cmd` can point it at an image of your own (nothing is shipped). Without PySide6, or with
+  `--classic-gui`, a simpler Tkinter window opens. The Windows Tournament Tools package writes a new
+  `TournamentAnalysis.cmd` and installs the processor's new `gui` extra; `TournamentProcessor.cmd` drag-and-drop is
+  unchanged. Developers run `python -m tournament_processor.gui`. See
   [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards).
 
 ### Changed

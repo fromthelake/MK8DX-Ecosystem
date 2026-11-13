@@ -19,9 +19,12 @@ local extraction needs no account.
    `TournamentProcessor.cmd`. Results appear beside the recording in
    `<name>_TournamentSession/Output_Results/` as Excel, CSV and canonical JSON.
    For several recordings, or a folder per tournament, double-click
-   `TournamentAnalysis.cmd` instead: add the videos or folders, check the session
-   id and results folder, then **Start analysis**. It runs the same processing,
-   shows its progress, can be stopped, and opens the results folder when done.
+   `TournamentAnalysis.cmd` instead: add the videos or folders, tick the ones to
+   analyse, check the session id and results folder, then **START ANALYSIS**. It
+   runs the same processing with a live coloured log and progress bar, can be
+   cancelled, and opens the workbook or results folder when done. Its banner is
+   drawn in code; `MK8DX_ANALYSIS_BACKGROUND` in `TournamentTools.config.cmd` can
+   name an image of your own for it (nothing is shipped).
    This is for analysis afterwards, when Tournament Live was not used on the night;
    see [Analyse recordings afterwards](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards).
 4. For live capture, connect the capture card and run `TournamentLive.cmd`.

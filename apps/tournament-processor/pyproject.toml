@@ -17,5 +17,8 @@ mk8dx-tournament-processor = "tournament_processor.cli:main"
 mk8dx-tournament-video = "tournament_processor.vision_cli:main"
 mk8dx-tournament-analysis = "tournament_processor.gui:main"
 
+[project.optional-dependencies]
+gui = ["PySide6==6.12.0"]
+
 [tool.setuptools.packages.find]
 where = ["src"]

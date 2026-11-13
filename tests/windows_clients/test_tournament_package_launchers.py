@@ -70,3 +70,9 @@ def test_installer_and_readme_name_the_analysis_launcher(tmp_path):
     assert any(line.startswith('call :say " TournamentAnalysis.cmd') and "achteraf" in line for line in say_lines)
     assert "TournamentAnalysis.cmd" in builder.README_FIRST
     builder.INSTALLER_CMD.encode("ascii")
+
+
+def test_package_installs_the_qt_window_and_offers_the_background_setting(tmp_path):
+    _, helper = _setup_helper(tmp_path)
+    assert any(item.startswith("mk8dx-tournament-processor[gui]==") for item in helper.DISTRIBUTIONS)
+    assert 'rem set "MK8DX_ANALYSIS_BACKGROUND=' in helper.CONFIG_CMD
