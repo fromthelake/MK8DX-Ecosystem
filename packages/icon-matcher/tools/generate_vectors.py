@@ -5,7 +5,9 @@
 Outputs in packages/icon-matcher/vectors/:
 
 * ``context-v1.json``: ``combine_character`` and ``combine_part`` (context.py) over a small synthetic catalog
-  and synthetic text clues, one case per branch and on the edges of every threshold band. No pack needed.
+  and synthetic text clues, one case per branch and on the edges of every threshold band, plus the OCR
+  text normalization that runs before them (``name_match.normalize``: full-width digits to ASCII). No pack
+  needed.
 * ``icon-score-v1.json``: the masked RGB icon rank (matcher.py) on synthetic query tensors made from the
   public recognition pack's own references (exact, shifted/noisy, blended and gate-boundary queries). Queries
   are box-sized uint8 RGB, base64, so every runtime reads them as bytes / 255 exactly. Needs the pack:
@@ -35,6 +37,7 @@ PACKAGE = HERE.parent
 sys.path.insert(0, str(PACKAGE / "python"))
 
 from mk8dx_icon_matcher.context import Decision, TextClue, combine_character, combine_part  # noqa: E402
+from mk8dx_icon_matcher.name_match import normalize  # noqa: E402
 from mk8dx_icon_matcher.matcher import (  # noqa: E402
     Candidate, FamilyCandidate, IconMatcher, MatchResult, ReferenceBank, _Group)
 
@@ -65,9 +68,9 @@ CATALOG = {
         "glider.wing_b": ["glider.wing_b"],
     },
     "tires": {"tire.round": ["tire.round"], "tire.slick": ["tire.slick"],
-              "tire.knobby": ["tire.knobby"], "tire.wide": ["tire.wide"]},
+              "tire.knobby": ["tire.knobby"], "tire.wide": ["tire.wide"], "tire.offroad": ["tire.offroad"]},
 }
-TIRE_BY_INDEX = [[0, "tire.round"], [1, "tire.slick"], [2, "tire.knobby"], [3, "tire.wide"]]
+TIRE_BY_INDEX = [[0, "tire.round"], [1, "tire.slick"], [2, "tire.knobby"], [3, "tire.wide"], [12, "tire.offroad"]]
 PART_FOR_CHARACTER = [
     ["bodies", "body.kart_a", "character.beta", "body.kart_a"],
     ["bodies", "body.kart_a", "character_variant.alpha.001_red", "body_variant.kart_a.001_red"],
@@ -108,7 +111,8 @@ def clue_of(clue: dict | None) -> TextClue | None:
 
 def decision_json(decision: Decision) -> dict:
     return {"id": decision.id, "familyId": decision.family_id, "status": decision.status,
-            "evidence": list(decision.evidence), "visualTop1": decision.visual_top1}
+            "evidence": list(decision.evidence), "visualTop1": decision.visual_top1,
+            "suggestedId": decision.suggested_id}
 
 
 def run_context_case(case: dict, bank: ReferenceBank) -> dict:
@@ -147,7 +151,7 @@ B, G, G_GREEN = "character.beta", "character.gamma", "character_variant.gamma.00
 KA, KA_RED, KA_BLUE, KB = "body.kart_a", "body_variant.kart_a.001_red", "body_variant.kart_a.002_blue", "body.kart_b"
 KC, KC_RED = "body.kart_c", "body_variant.kart_c.001_red"
 WA, WA_RED, WA_BLUE, WB = "glider.wing_a", "glider_variant.wing_a.001_red", "glider_variant.wing_a.002_blue", "glider.wing_b"
-ROUND, SLICK, KNOBBY, WIDE = "tire.round", "tire.slick", "tire.knobby", "tire.wide"
+ROUND, SLICK, KNOBBY, WIDE, OFFROAD = "tire.round", "tire.slick", "tire.knobby", "tire.wide", "tire.offroad"
 
 
 def character_cases() -> list[tuple]:
@@ -193,6 +197,11 @@ def part_cases() -> list[tuple]:
     char_none = _character(None, "unknown", None)
     char_unacc_blue = _character(None, "unknown", A_BLUE)
     char_sugg_blue = _character(None, "suggested", A_BLUE)
+    char_sugg_beta = _character(None, "suggested", B)
+    char_conflict_blue = _character(None, "conflict", A_BLUE)
+    char_red_not_accepted = _character(A_RED, "unknown", A_RED)
+    glider_acc_blue = _visual("gliders", "accepted", [(WA_BLUE, 0.92), (WA, 0.88), (WA_RED, 0.86)], 0.04, 0.6)
+    glider_single = _visual("gliders", "accepted", [(WB, 0.90), (WA, 0.84), (WA_RED, 0.83)], 0.06, 0.84)
     body_acc = _visual("bodies", "accepted", [(KA, 0.90), (KA_RED, 0.86), (KB, 0.70)], 0.04, 0.70)
     body_unk = _visual("bodies", "unknown", [(KA_BLUE, 0.83), (KA_RED, 0.82), (KA, 0.81)], 0.01, 0.70)
     glider_acc = _visual("gliders", "accepted", [(WA, 0.92), (WA_RED, 0.88), (WA_BLUE, 0.86)], 0.04, 0.60)
@@ -223,7 +232,11 @@ def part_cases() -> list[tuple]:
         ("part.tire_medium_text_visual_score_0.7999", "tires",
          _visual("tires", "unknown", [(ROUND, 0.7999), (SLICK, 0.70), (KNOBBY, 0.60)], 0.0999, 0.70),
          char_none, _clue("0", 0.75, 0.40), False, True),
+        # numeric clue IDs are ASCII 0-9 only; full-width digits are folded at the OCR boundary
         ("part.tire_unicode_digit", "tires", tire_unk, char_none, _clue("٣", 0.90, 0.20), False, False),
+        ("part.tire_arabic_indic_index_12", "tires", tire_unk, char_none, _clue("١٢", 0.90, 0.20), False, False),
+        ("part.tire_fullwidth_index_12", "tires", tire_unk, char_none, _clue("１２", 0.90, 0.20), False, False),
+        ("part.tire_ascii_index_12", "tires", tire_unk, char_none, _clue("12", 0.90, 0.20), False, False),
         # strong text family
         ("part.body_text_family_same", "bodies", body_acc, char_none, _clue(KA, 0.95, 0.20), False, False),
         ("part.body_text_other_family_relation", "bodies", body_acc, char_gamma, _clue(KC, 0.95, 0.20), False, False),
@@ -259,6 +272,25 @@ def part_cases() -> list[tuple]:
         ("part.body_family_only_variant_clue", "bodies",
          _visual("bodies", "unknown", [(KA_BLUE, 0.7499), (KA_RED, 0.70), (KA, 0.69)], 0.0499, 0.6),
          char_none, _clue(KA_RED, 0.95, 0.2), False, False),
+        # glider colour follows the character (#99 phase 2)
+        ("part.glider_accepted_character_visual_clash", "gliders", glider_acc_no_red, char_red, None, False, False),
+        ("part.glider_accepted_character_top3_no_clue", "gliders", glider_acc, char_red, None, False, False),
+        ("part.glider_accepted_character_same_colour", "gliders",
+         _visual("gliders", "accepted", [(WA_RED, 0.92), (WA, 0.88), (WA_BLUE, 0.86)], 0.04, 0.6),
+         char_red, None, False, False),
+        ("part.glider_accepted_character_no_link", "gliders", glider_acc_blue, char_gamma, None, False, False),
+        ("part.glider_single_colour_unaccepted_character", "gliders", glider_single, char_sugg_blue, None,
+         False, False),
+        ("part.glider_single_colour_accepted_character", "gliders", glider_single, char_red, None, False, False),
+        ("part.glider_suggested_character_no_clue", "gliders", glider_acc, char_sugg_blue, None, False, False),
+        ("part.glider_suggested_character_base_colour", "gliders", glider_acc_blue, char_sugg_beta, None,
+         False, False),
+        ("part.glider_conflict_character", "gliders", glider_acc, char_conflict_blue, None, False, False),
+        ("part.glider_character_id_not_accepted", "gliders", glider_acc_blue, char_red_not_accepted, None,
+         False, False),
+        ("part.glider_no_character", "gliders", glider_acc, char_none, None, False, False),
+        ("part.glider_unaccepted_character_unknown_visual", "gliders", glider_unk_wide, char_sugg_blue, None,
+         False, False),
         # unaccepted character colour against a generic glider name
         ("part.glider_unaccepted_character_conflict", "gliders", glider_acc, char_unacc_blue, _clue(WA, 0.95, 0.2),
          False, False),
@@ -271,6 +303,11 @@ def part_cases() -> list[tuple]:
         ("part.no_clue_accepted", "bodies", body_acc, char_none, None, False, False),
         ("part.no_clue_unknown_tire", "tires", tire_unk, char_none, None, False, False),
     ]
+
+
+# OCR text before the context rules (name_match.normalize): full-width digits become ASCII, other
+# digit scripts stay what they are (and are then no numeric clue ID).
+OCR_NORMALIZATION = ["１２", "Ｒｏｗ　１２", "١٢", "٣", "12", "Ｂ-Dash ０"]
 
 
 def build_context() -> dict:
@@ -294,13 +331,14 @@ def build_context() -> dict:
                 "clue": clue, "tireTextTop3Guard": guard, "boundary": boundary}
         case["expected"] = run_context_case(case, bank)
         cases.append(case)
+    normalization = [{"text": text, "normalized": normalize(text)} for text in OCR_NORMALIZATION]
     ids = [case["id"] for case in cases]
     if len(set(ids)) != len(ids):
         raise ValueError("duplicate context case id")
     return {"schema": "mk8dx.context-vectors.v1",
             "source": "packages/icon-matcher/python/mk8dx_icon_matcher/context.py",
             "generator": "packages/icon-matcher/tools/generate_vectors.py",
-            "catalog": catalog, "cases": cases}
+            "catalog": catalog, "cases": cases, "ocrNormalization": normalization}
 
 
 # ------------------------------------------------------------------------------------------ icon-score-v1

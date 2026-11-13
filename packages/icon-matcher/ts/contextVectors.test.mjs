@@ -1,20 +1,15 @@
 // Replays vectors/context-v1.json (Python context.py, tools/generate_vectors.py) against
-// sharedCharacterContext.ts and sharedPartContext.ts. Decisions must be identical.
+// sharedCharacterContext.ts and sharedPartContext.ts, and its OCR normalization cases against
+// sharedNameMatch.normalizeName. Decisions must be identical; there are no known exceptions since
+// issue #99 phase 2 (divergences 6 and 8 are one rule in every runtime).
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { combineCharacter } from './sharedCharacterContext.ts';
 import { combinePart, partRelationKey } from './sharedPartContext.ts';
+import { normalizeName } from './sharedNameMatch.ts';
 
 const doc = JSON.parse(readFileSync(new URL('../vectors/context-v1.json', import.meta.url), 'utf8'));
-
-// Genuine Python/TypeScript rule differences, kept visible until the owner decides (issue #99).
-const KNOWN_DIVERGENCES = new Map([
-  // #99 divergence 6: Python's glider conflict rule also accepts a "suggested" character; TS only "unknown".
-  ['part.glider_suggested_character_conflict', 'issue #99 divergence 6 (suggested character status)'],
-  // #99 divergence 8: Python str.isdecimal() accepts Unicode digits as a tyre row number; TS /^\d+$/ is ASCII.
-  ['part.tire_unicode_digit', 'issue #99 divergence 8 (Unicode digit tyre index)'],
-]);
 
 const catalog = doc.catalog;
 const familyById = new Map(Object.entries(catalog.familyById));
@@ -36,8 +31,9 @@ function visualRead(visual) {
     offset: [0, 0], top: visual.top };
 }
 
-const KEYS = ['id', 'familyId', 'status', 'evidence', 'visualTop1'];
-const canonical = (decision) => JSON.stringify(KEYS.map((key) => decision[key]));
+const KEYS = ['id', 'familyId', 'status', 'evidence', 'visualTop1', 'suggestedId'];
+// Character decisions carry no suggestion field in TypeScript; Python writes null.
+const canonical = (decision) => JSON.stringify(KEYS.map((key) => decision[key] ?? null));
 
 function run(item) {
   const visual = visualRead(item.visual);
@@ -49,16 +45,18 @@ test('context-v1 is decision-identical to the Python reference', () => {
   assert.equal(doc.schema, 'mk8dx.context-vectors.v1');
   assert.ok(doc.cases.length >= 50);
   const unexpected = [];
-  const known = [];
   for (const item of doc.cases) {
     const got = run(item);
-    const same = canonical(got) === canonical(item.expected);
-    if (KNOWN_DIVERGENCES.has(item.id)) {
-      known.push(`${item.id}: ${same ? 'now EQUAL' : 'differs'} (${KNOWN_DIVERGENCES.get(item.id)})`);
-    } else if (!same) {
+    if (canonical(got) !== canonical(item.expected)) {
       unexpected.push(`${item.id}${item.boundary ? ' [boundary]' : ''}: python=${JSON.stringify(item.expected)} ts=${JSON.stringify(got)}`);
     }
   }
-  if (known.length) console.log(`context-v1 known divergences:\n  ${known.join('\n  ')}`);
   assert.deepEqual(unexpected, []);
+});
+
+test('context-v1 OCR normalization folds full-width digits like Python', () => {
+  assert.ok(doc.ocrNormalization.length >= 4);
+  for (const item of doc.ocrNormalization) {
+    assert.equal(normalizeName(item.text), item.normalized, JSON.stringify(item.text));
+  }
 });

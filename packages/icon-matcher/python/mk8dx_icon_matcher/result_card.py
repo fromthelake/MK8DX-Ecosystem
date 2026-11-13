@@ -24,7 +24,8 @@ KIND = {"character": "characters", "kart": "bodies", "wheel": "tires", "glider":
 
 def _decision_record(decision: Decision) -> dict:
     return {"id": decision.id, "familyId": decision.family_id, "status": decision.status,
-            "evidence": list(decision.evidence), "visualTop1": decision.visual_top1}
+            "evidence": list(decision.evidence), "visualTop1": decision.visual_top1,
+            "suggestedId": decision.suggested_id}
 
 
 def read_result_card(crops: dict, matcher: IconMatcher, *, name_clue: TextClue | None = None,

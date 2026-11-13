@@ -437,21 +437,43 @@ def test_accepted_glider_colour_uses_named_family_and_character_top_three():
     assert refined.id == "glider.toad"
     assert refined.visual_top1 == "glider.blue"
     assert "character_part_top3_variant" in refined.evidence
-    assert combine_part("gliders", visual, character, None, refs).id == "glider.blue"
+    # The catalog colour decides without a printed name too (issue #99 rule 2).
+    assert combine_part("gliders", visual, character, None, refs).id == "glider.toad"
+    # A character that is not accepted settles the family only; its catalog colour is the proposal.
     uncertain_character = Decision("character.toad", "character.toad", "unknown", (), "character.toad")
-    assert combine_part("gliders", visual, uncertain_character, clue, refs).id == "glider.blue"
     unaccepted_character = Decision(None, None, "suggested", (), "character.toad")
-    reviewed = combine_part("gliders", visual, unaccepted_character, clue, refs)
-    assert reviewed.id is None and reviewed.status == "conflict"
-    assert reviewed.visual_top1 == "glider.blue"
-    assert "unaccepted_character_colour_conflict_review" in reviewed.evidence
+    for unsettled in (uncertain_character, unaccepted_character):
+        for text in (clue, None):
+            proposed = combine_part("gliders", visual, unsettled, text, refs)
+            assert proposed.id is None and proposed.status == "family_only"
+            assert proposed.family_id == "glider.super" and proposed.suggested_id == "glider.toad"
+            assert proposed.visual_top1 == "glider.blue"
+            assert "glider_colour_needs_character" in proposed.evidence
     weak_visual = MatchResult(None, None, "unknown", .858, .019,
                               candidates, "rgb", "result", (0, 0))
     assert combine_part("gliders", weak_visual, unaccepted_character, clue, refs).id is None
-    assert combine_part("gliders", visual, unaccepted_character, None, refs).id == "glider.blue"
-    assert combine_part("gliders", visual, Decision(None, None, "unknown", (), None), clue, refs).id == "glider.blue"
+    nobody = combine_part("gliders", visual, Decision(None, None, "unknown", (), None), clue, refs)
+    assert nobody.id is None and nobody.status == "family_only" and nobody.suggested_id is None
+    # A clearly seen colour outside the top three that the character cannot have: keep the catalog
+    # colour as the proposal and ask for review.
     refs.part_for_character[("gliders", "glider.super", "character.toad")] = "glider.fourth"
+    clash = combine_part("gliders", visual, character, clue, refs)
+    assert clash.id is None and clash.status == "conflict" and clash.suggested_id == "glider.fourth"
+    assert "character_colour_conflict_review" in clash.evidence
+    # A single-colour glider, or no catalog link for the character: the icon decides.
+    del refs.part_for_character[("gliders", "glider.super", "character.toad")]
     assert combine_part("gliders", visual, character, clue, refs).id == "glider.blue"
+
+
+def test_numeric_clue_ids_are_ascii_and_ocr_folds_full_width_digits():
+    from mk8dx_icon_matcher.context import ascii_index
+    from mk8dx_icon_matcher.name_match import match_name, normalize
+
+    assert ascii_index("12") and not ascii_index("") and not ascii_index("１２")
+    assert not ascii_index("١٢") and not ascii_index("٣") and not ascii_index("1a")
+    assert normalize("Ｒｏｗ　１２") == "ｒｏｗ12" and normalize("١٢") == "١٢"
+    # A full-width OCR read matches an ASCII-digit name exactly.
+    assert match_name("B-Dash ２", [("7#en-GB", "B-Dash 2"), ("8#en-GB", "B-Dash 3")]).fuzzy == 1.0
 
 
 def test_opaque_flag_references_keep_the_same_match_contract(tmp_path):

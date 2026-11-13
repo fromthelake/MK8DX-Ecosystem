@@ -8,6 +8,7 @@ import pytest
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mk8dx_icon_matcher.matcher import Candidate, FamilyCandidate, IconMatcher, MatchResult, _Group
 from mk8dx_icon_matcher.refinement import refine_family_variants, rank_family_colour_space
+from mk8dx_icon_matcher.context import Decision
 from mk8dx_icon_matcher.field_reader import FieldContext, read_field
 import mk8dx_icon_matcher.field_reader as field_reader
 from tooling.review.family_colour_space_probe import rank as diagnostic_colour_rank
@@ -38,7 +39,11 @@ def test_colour_pass_can_disagree_without_changing_primary_acceptance(monkeypatc
     monkeypatch.setattr(matcher, "match", lambda *args, **kwargs: primary)
     monkeypatch.setattr(field_reader, "QUALIFIED_COLOUR_REVIEW_FAMILIES",
                         frozenset({("gliders", "glider.test")}))
-    context = FieldContext("direct_game", "result_card", "player")
+    # An accepted character without a catalog colour for this glider: the icon decides (#99 rule 3).
+    bank.part_for_character = {}
+    bank.family = dict.fromkeys(ids, "glider.test")
+    character = Decision("character.test", "character.test", "accepted", ("visual",), "character.test")
+    context = FieldContext("direct_game", "result_card", "player", character=character)
     default = read_field(blue_bgr, "gliders", "result", context, matcher)
     reviewed = read_field(blue_bgr, "gliders", "result", context, matcher,
                           variant_colour_review=True)

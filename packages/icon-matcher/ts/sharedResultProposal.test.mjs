@@ -375,3 +375,26 @@ test('a Select-a-Ghost character read is valid only for the character', () => {
   assert.equal(proposal.fields.character.acceptedId, 'character.mario');
   assert.equal(proposal.fields.kart.status, 'unavailable');
 });
+
+test('a glider colour that follows the character is proposed, not accepted', () => {
+  // combinePart: an unaccepted character settles the family; its catalog colour is the proposal (#99).
+  const glider = read('gliders', [top('glider.super', 'glider.super', .92),
+    top('glider_variant.super.001_blue', 'glider.super', .88)], 'glider.super');
+  const chosen = { id: null, familyId: 'glider.super', status: 'family_only',
+    evidence: ['visual_family', 'glider_colour_needs_character', 'character_colour_suggestion'],
+    visualTop1: 'glider.super', suggestedId: 'glider_variant.super.002_red' };
+  const field = composeResultProposal({ glider: { shared_icon_qa: glider,
+    part_text_qa: { chosen } } }).fields.glider;
+  assert.equal(field.selectedId, 'glider_variant.super.002_red');
+  assert.equal(field.acceptedId, null);
+  assert.equal(field.reviewRequired, true);
+  assert.equal(field.proposedFamilyId, 'glider.super');
+  assert.deepEqual(field.top.map((candidate) => candidate.id),
+    ['glider_variant.super.002_red', 'glider.super', 'glider_variant.super.001_blue']);
+  assert.equal(field.top[0].basis, 'context');
+  assert.equal(field.top[0].matchScore, null);
+  const plain = composeResultProposal({ glider: { shared_icon_qa: glider,
+    part_text_qa: { chosen: { ...chosen, suggestedId: null } } } }).fields.glider;
+  assert.equal(plain.selectedId, 'glider.super');
+  assert.equal(plain.acceptedId, null);
+});
