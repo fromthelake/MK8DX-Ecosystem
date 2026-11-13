@@ -41,7 +41,7 @@ describe("the installation settings client", () => {
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "claimed_only",
       carriedTimes: "review",
     }));
-    expect(await client.current()).toEqual({ playerCreation: "self_only", ratingEligibility: "claimed_only", carriedTimes: "review" });
+    expect(await client.current()).toEqual({ playerCreation: "self_only", ratingEligibility: "claimed_only", carriedTimes: "review", communityName: null });
     const drifted = createInstallationSettingsClient(async () => json({
       schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players",
       carriedTimes: "off", extra: 1,
@@ -303,5 +303,91 @@ describe("carried times still waiting when approval is no longer asked (ADR-0225
       ? json({ schemaVersion: "mk8dx.web-csrf.v1", headerName: "x-mk8dx-csrf", value: "synthetic-proof" })
       : json({ code: "time_trial_lifecycle_conflict", message: "changed" }, 409));
     await expect(conflict.resolveCarriedWaiting("publish", 2)).rejects.toMatchObject({ code: "conflict" });
+  });
+});
+
+describe("the community name (installation setting communityName)", () => {
+  it("reads the name, treats a missing or null one as no name and refuses a wrong one", async () => {
+    const base = { schemaVersion: "mk8dx.installation-settings.v1", playerCreation: "self_only", ratingEligibility: "all_players", carriedTimes: "off" };
+    expect((await createInstallationSettingsClient(async () => json({ ...base, communityName: "Club Noord" })).current()).communityName)
+      .toBe("Club Noord");
+    expect((await createInstallationSettingsClient(async () => json({ ...base, communityName: null })).current()).communityName)
+      .toBeNull();
+    // An older server without the field still parses.
+    expect((await createInstallationSettingsClient(async () => json(base)).current()).communityName).toBeNull();
+    for (const wrong of ["", "x".repeat(61), 7]) {
+      await expect(createInstallationSettingsClient(async () => json({ ...base, communityName: wrong })).current())
+        .rejects.toMatchObject({ code: "invalid_response" });
+    }
+    expect((await createInstallationSettingsClient(async () => json(administration({ communityName: "Club Noord" }))).administration()).communityName)
+      .toBe("Club Noord");
+    expect((await createInstallationSettingsClient(async () => json(administration())).administration()).communityName).toBeNull();
+  });
+
+  it("sends the name, or null to clear it", async () => {
+    const bodies: unknown[] = [];
+    const client = createInstallationSettingsClient(async (path, init) => {
+      if (path === "/v1/session/csrf") {
+        return json({ schemaVersion: "mk8dx.web-csrf.v1", headerName: "x-mk8dx-csrf", value: "synthetic-proof" });
+      }
+      bodies.push(JSON.parse(String(init.body)));
+      return json(administration({ communityName: "Club Noord", revision: 1 }));
+    });
+    await client.update({ expectedRevision: 0, communityName: "Club Noord" });
+    await client.update({ expectedRevision: 1, communityName: null });
+    expect(bodies).toEqual([{ expectedRevision: 0, communityName: "Club Noord" }, { expectedRevision: 1, communityName: null }]);
+  });
+
+  function section(initial: Partial<InstallationSettingsAdministration>) {
+    const document = new FakeDocument();
+    const root = document.createElement("div");
+    const saved: unknown[] = [];
+    let current = administration(initial) as unknown as InstallationSettingsAdministration;
+    const client: InstallationSettingsClient = {
+      async current() { return current; },
+      async administration() { return current; },
+      async update(input) {
+        saved.push(input);
+        current = { ...current, ...input, revision: current.revision + 1 } as InstallationSettingsAdministration;
+        return current;
+      },
+      async recomputeRatings() { throw new Error("unused"); },
+      async resolveCarriedWaiting() { throw new Error("unused"); },
+    };
+    const mounted = mountInstallationSettingsSection(root as unknown as HTMLElement, client, () => undefined);
+    const input = () => descendants(root).find((node) => node.tagName === "input" && node.name === "community_name")!;
+    const submit = async (value: string) => {
+      input().value = value;
+      descendants(root).find((node) => node.tagName === "form" && node.classList.contains("installation-settings__name"))!
+        .dispatch("submit");
+      await settle();
+    };
+    return { root, mounted, saved, input, submit };
+  }
+
+  it("shows the name field first with its hint, and saves the trimmed name", async () => {
+    const { root, mounted, saved, input, submit } = section({ communityName: "Club Noord", revision: 4 });
+    await mounted.ready;
+    expect(input().value).toBe("Club Noord");
+    expect(texts(root)).toContain("Shown in the apps instead of the web address.");
+    const fields = descendants(root).filter((node) => node.tagName === "input" || node.tagName === "select");
+    expect(fields[0]!.name).toBe("community_name");
+    await submit("  Club Zuid  ");
+    expect(saved).toEqual([{ expectedRevision: 4, communityName: "Club Zuid" }]);
+    expect(input().value).toBe("Club Zuid");
+    await submit("   ");
+    expect(saved.at(-1)).toEqual({ expectedRevision: 5, communityName: null });
+  });
+
+  it("explains a name it cannot save and sends nothing", async () => {
+    const { root, mounted, saved, submit } = section({ communityName: "Club Noord" });
+    await mounted.ready;
+    await submit("x".repeat(61));
+    expect(texts(root)).toContain("A community name has at most 60 characters.");
+    await submit("Club	Noord");
+    expect(texts(root)).toContain("A community name cannot contain line breaks or other control characters.");
+    await submit("Club Noord");
+    expect(texts(root)).toContain("The community name is unchanged.");
+    expect(saved).toEqual([]);
   });
 });
