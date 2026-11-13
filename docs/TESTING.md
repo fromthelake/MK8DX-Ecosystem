@@ -19,7 +19,10 @@ git diff --check
 
 For Docker gateway changes, validate all four `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
 image (supply a test `MK8DX_DOMAIN` for LAN/production, and for `Caddyfile.offline-lan` a `MK8DX_LAN_IP` plus a
-throwaway CA under `/run/mk8dx/ca`). Inspect the response headers on `/` and `/scanner/`
+throwaway CA under `/run/mk8dx/ca`). After a change to the gateway image or its entrypoint, start a disposable
+Compose project (own project name, ports and volumes) on the previous image, recreate it on the new one and check
+with `docker top` that Caddy does not run as root, that `/data` and `/config` hold no file of another owner, that
+keys are still 0600 and that HTTPS serves the same root and leaf. Inspect the response headers on `/` and `/scanner/`
 through a running container. Both the Web and the scanner policies are enforced. The scanner's policy has three
 non-overlapping parts: the page and everything else under `/scanner/` (`script-src 'self'`, no eval, no WASM
 compilation, no inline styles), `/scanner/ort/*` and `/scanner/tess/*` (worker scripts that only compile WASM:

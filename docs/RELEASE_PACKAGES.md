@@ -65,10 +65,27 @@ The Docker gateways enforce the Web CSP (the same policy the Web shell's meta ta
 already enforce, plus `font-src` and `frame-ancestors`). They also enforce the scanner's policy under
 `/scanner/`; only the scanner's worker entries (`/scanner/assets/worker/*`) may evaluate strings, which OpenCV.js
 needs. See [Testing](TESTING.md) for its three parts and the browser check after a change.
-The Node/Caddy base images use digest pins; review upstream security updates and refresh the pins together with
-their tags in a tested PR. Caddy still runs as root in the released image. A disposable UID-10001 test served
-local HTTP and LAN internal TLS, but switching an existing A2/B1 installation also needs a tested ownership
-transition for its persistent `caddy_data` and `caddy_config` volumes.
+Every base image is pinned by tag and digest: Node and Caddy in the Dockerfiles, MySQL and Mailpit in
+`compose.yaml` and `compose.local.yaml` (Dependabot's `docker` and `docker-compose` entries move tag and digest
+together; review upstream security updates in a tested PR). The release workflow fetches MySQL and Mailpit with
+`host_bundle.py --pull-base-images`, by digest, and the packager refuses a local copy with another digest. A
+package loads its images from a tar, where `docker load` keeps only the tag, so its Compose files name those two
+images by tag; the manifest records the digests under `baseImageDigests`.
+
+The gateway's Caddy runs without root. The image starts as root only for its entrypoint
+(`infrastructure/docker/gateway-entrypoint.sh`), which picks the user, gives `/data` and `/config` (the
+`caddy_data` and `caddy_config` volumes) to it and then hands Caddy to that user with `su-exec`. The user is
+`caddy` (uid/gid 10002). On a Linux host where the operator's own 0600 files are mounted (the A2 CA signer key and
+setup page), Caddy runs as that operator's uid instead, so those files keep their modes. When only root could
+read a mounted file (state created by root, or modes changed by hand), Caddy keeps running as root and logs
+`mk8dx-gateway: ... Caddy runs as root`. The ownership change keeps every file mode (keys stay 0600) and does not
+follow links. Compose files name no user, so a newer package's Compose files also start an older (root) image,
+and the other way round. Docker lets processes in a container's own network namespace bind ports below 1024, so
+80/443 need no extra capability. Upgrade check (2026-11-13, disposable Compose projects on Docker Desktop): the
+LAN route (`tls internal`) and the A2 offline route (real `offline_lan_ca.py` material, once with Windows bind
+mounts and once with uid-1000 0600 files as on Linux) were started on the previous root image, then recreated on
+the new one: same root CA and the same leaf served, no file left with another owner, keys still 0600, Caddy as
+uid 10002 (or 1000), and a rollback to the root image served the same chain.
 
 Maintainers and other users can build the same packages from a clean clone with
 `tooling/release/full_archive.py`, `tooling/release/host_bundle.py`, `tooling/release/non_docker_bundle.py` and

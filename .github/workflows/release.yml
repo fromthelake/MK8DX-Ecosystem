@@ -161,8 +161,8 @@ jobs:
           docker build --platform linux/amd64 --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
             --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
             -f apps/timetrials-web/Dockerfile -t "${images[1]}" .
-          docker pull --platform linux/amd64 "${images[2]}"
-          docker pull --platform linux/amd64 "${images[3]}"
+          # MySQL and Mailpit by their pinned digest (compose files); packaging checks it again.
+          python tooling/release/host_bundle.py --pull-base-images --arch amd64
           mkdir -p "$RUNNER_TEMP/out"
           python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
             --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
@@ -265,8 +265,7 @@ jobs:
               --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
               -f "$2" -t "${images[$1]}" .
           done
-          docker pull --platform "linux/$A2_ARCH" "${images[2]}"
-          docker pull --platform "linux/$A2_ARCH" "${images[3]}"
+          python tooling/release/host_bundle.py --pull-base-images --arch "$A2_ARCH"
           platforms=()
           for tag in $WHEEL_TAGS; do platforms+=(--platform "$tag"); done
           mkdir -p "$RUNNER_TEMP/wheels" "$RUNNER_TEMP/out" "$RUNNER_TEMP/built-wheels"
