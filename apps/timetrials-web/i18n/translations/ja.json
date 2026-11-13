@@ -5063,6 +5063,13 @@
   "{0} · {1} runs": "{0} · {1}回",
   "1 carried time waits until you sign in here.": "持っていったタイム 1 件が、ここでサインインするのを待っています。",
   "Remove all": "すべて削除",
-  "{0} carried times wait until you sign in here.": "持っていったタイム {0} 件が、ここでサインインするのを待っています。"
+  "{0} carried times wait until you sign in here.": "持っていったタイム {0} 件が、ここでサインインするのを待っています。",
+  "A community name cannot contain line breaks or other control characters.": "コミュニティ名に改行やその他の制御文字は使えません。",
+  "A community name has at most 60 characters.": "コミュニティ名は 60 文字までです。",
+  "Community name": "コミュニティ名",
+  "For example Club Noord": "例：Club Noord",
+  "Save name": "名前を保存",
+  "Shown in the apps instead of the web address.": "アプリでウェブアドレスの代わりに表示されます。",
+  "The community name is unchanged.": "コミュニティ名は変更されていません。"
  }
 }

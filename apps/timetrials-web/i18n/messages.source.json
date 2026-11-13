@@ -794,6 +794,26 @@
    ]
   },
   {
+   "key": "A community name cannot contain line breaks or other control characters.",
+   "nl": "Een communitynaam mag geen regeleinden of andere stuurtekens bevatten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "A community name has at most 60 characters.",
+   "nl": "Een communitynaam heeft hoogstens 60 tekens.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "A different track or engine class is a new result: retire this one and post again.",
    "nl": "Een ander circuit of een andere klasse is een nieuw resultaat: trek dit in en plaats het opnieuw.",
    "kinds": [
@@ -4591,6 +4611,16 @@
    ]
   },
   {
+   "key": "Community name",
+   "nl": "Communitynaam",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Community:",
    "nl": "Community:",
    "kinds": [
@@ -8323,6 +8353,16 @@
    ],
    "places": [
     "account-time-trial-settings.ts"
+   ]
+  },
+  {
+   "key": "For example Club Noord",
+   "nl": "Bijvoorbeeld Club Noord",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -19359,6 +19399,16 @@
    ]
   },
   {
+   "key": "Save name",
+   "nl": "Naam opslaan",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
+   ]
+  },
+  {
    "key": "Save order",
    "nl": "Volgorde opslaan",
    "kinds": [
@@ -20690,6 +20740,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Shown in the apps instead of the web address.",
+   "nl": "Wordt in de apps getoond in plaats van het webadres.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {
@@ -23137,6 +23197,16 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "The community name is unchanged.",
+   "nl": "De communitynaam is niet gewijzigd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "installation-settings-section.ts"
    ]
   },
   {

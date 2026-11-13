@@ -5063,6 +5063,13 @@
   "{0} · {1} runs": "{0} · {1} corridas",
   "1 carried time waits until you sign in here.": "1 tempo levado aguarda que inicies sessão aqui.",
   "Remove all": "Remover tudo",
-  "{0} carried times wait until you sign in here.": "{0} tempos levados aguardam que inicies sessão aqui."
+  "{0} carried times wait until you sign in here.": "{0} tempos levados aguardam que inicies sessão aqui.",
+  "A community name cannot contain line breaks or other control characters.": "Um nome de comunidade não pode conter quebras de linha nem outros caracteres de controlo.",
+  "A community name has at most 60 characters.": "Um nome de comunidade tem no máximo 60 caracteres.",
+  "Community name": "Nome da comunidade",
+  "For example Club Noord": "Por exemplo Club Noord",
+  "Save name": "Guardar nome",
+  "Shown in the apps instead of the web address.": "Mostrado nas apps em vez do endereço web.",
+  "The community name is unchanged.": "O nome da comunidade não mudou."
  }
 }

@@ -5063,6 +5063,13 @@
   "{0} · {1} runs": "{0} · {1} 次",
   "1 carried time waits until you sign in here.": "1 条带来的成绩正在等待你在此登录。",
   "Remove all": "全部移除",
-  "{0} carried times wait until you sign in here.": "{0} 条带来的成绩正在等待你在此登录。"
+  "{0} carried times wait until you sign in here.": "{0} 条带来的成绩正在等待你在此登录。",
+  "A community name cannot contain line breaks or other control characters.": "社区名称不能包含换行或其他控制字符。",
+  "A community name has at most 60 characters.": "社区名称最多 60 个字符。",
+  "Community name": "社区名称",
+  "For example Club Noord": "例如 Club Noord",
+  "Save name": "保存名称",
+  "Shown in the apps instead of the web address.": "在应用中代替网址显示。",
+  "The community name is unchanged.": "社区名称未更改。"
  }
 }

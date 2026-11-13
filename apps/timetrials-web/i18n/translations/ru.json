@@ -5063,6 +5063,13 @@
   "{0} · {1} runs": "{0} · заездов: {1}",
   "1 carried time waits until you sign in here.": "1 перенесённое время ждёт, пока ты войдёшь здесь.",
   "Remove all": "Удалить все",
-  "{0} carried times wait until you sign in here.": "{0} перенесённых времён ждут, пока ты войдёшь здесь."
+  "{0} carried times wait until you sign in here.": "{0} перенесённых времён ждут, пока ты войдёшь здесь.",
+  "A community name cannot contain line breaks or other control characters.": "Название сообщества не может содержать переносы строк или другие управляющие символы.",
+  "A community name has at most 60 characters.": "Название сообщества содержит не более 60 символов.",
+  "Community name": "Название сообщества",
+  "For example Club Noord": "Например, Club Noord",
+  "Save name": "Сохранить название",
+  "Shown in the apps instead of the web address.": "Показывается в приложениях вместо веб-адреса.",
+  "The community name is unchanged.": "Название сообщества не изменилось."
  }
 }
