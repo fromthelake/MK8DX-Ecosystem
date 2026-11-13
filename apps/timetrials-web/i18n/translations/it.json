@@ -5060,6 +5060,9 @@
   "Time Trial classes": "Classi Time Trial",
   "Used by Home focus and the Among rivals standing.": "Usato dal focus della Home e dalla classifica tra rivali.",
   "{0} times waiting to be sent": "{0} tempi in attesa di invio",
-  "{0} · {1} runs": "{0} · {1} corse"
+  "{0} · {1} runs": "{0} · {1} corse",
+  "1 carried time waits until you sign in here.": "1 tempo portato attende che tu acceda qui.",
+  "Remove all": "Rimuovi tutto",
+  "{0} carried times wait until you sign in here.": "{0} tempi portati attendono che tu acceda qui."
  }
 }

@@ -5060,6 +5060,9 @@
   "Time Trial classes": "Time Trial 級別",
   "Used by Home focus and the Among rivals standing.": "用於首頁焦點與對手排名。",
   "{0} times waiting to be sent": "{0} 筆成績等待傳送",
-  "{0} · {1} runs": "{0} · {1} 次"
+  "{0} · {1} runs": "{0} · {1} 次",
+  "1 carried time waits until you sign in here.": "1 筆帶來的成績正在等待你在此登入。",
+  "Remove all": "全部移除",
+  "{0} carried times wait until you sign in here.": "{0} 筆帶來的成績正在等待你在此登入。"
  }
 }

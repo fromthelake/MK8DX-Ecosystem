@@ -163,6 +163,13 @@
    "nl": "0–3 gebruikt"
   },
   {
+   "key": "1 carried time waits until you sign in here.",
+   "places": [
+    "AndroidCommunityServerPanel.kt:150"
+   ],
+   "nl": "1 meegenomen tijd wacht tot je je hier aanmeldt."
+  },
+  {
    "key": "1 link request is waiting.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:1266"
@@ -193,7 +200,7 @@
   {
    "key": "1 run waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:138"
+    "AndroidCommunityServerPanel.kt:139"
    ],
    "nl": "1 rit wacht op verzenden"
   },
@@ -434,7 +441,7 @@
   {
    "key": "Active",
    "places": [
-    "AndroidCommunityServerPanel.kt:132"
+    "AndroidCommunityServerPanel.kt:133"
    ],
    "nl": "Actief"
   },
@@ -498,7 +505,7 @@
   {
    "key": "Add a community",
    "places": [
-    "AndroidCommunityServerPanel.kt:222"
+    "AndroidCommunityServerPanel.kt:264"
    ],
    "nl": "Een community toevoegen"
   },
@@ -1364,13 +1371,6 @@
     "AndroidDutchUiCopy.kt:56"
    ],
    "nl": "Nieuw toernooi annuleren"
-  },
-  {
-   "key": "Carried time waiting for sign-in: {0}",
-   "places": [
-    "AndroidCommunityServerPanel.kt:151"
-   ],
-   "nl": "Meegenomen tijd wacht op aanmelden: {0}"
   },
   {
    "key": "Carry my best times",
@@ -2827,7 +2827,7 @@
   {
    "key": "Each community keeps its own account and unsent times. Switching takes one tap.",
    "places": [
-    "AndroidCommunityServerPanel.kt:99"
+    "AndroidCommunityServerPanel.kt:100"
    ],
    "nl": "Elke community houdt haar eigen account en niet verzonden tijden. Wisselen is één tik."
   },
@@ -3778,9 +3778,10 @@
   {
    "key": "Hide",
    "places": [
+    "AndroidCommunityServerPanel.kt:162",
     "AndroidAccountEcosystemScreens.kt:2063"
    ],
-   "nl": "Verberg"
+   "nl": "Verbergen"
   },
   {
    "key": "Hide inactive absent Players",
@@ -5856,7 +5857,7 @@
   {
    "key": "Nothing waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:137"
+    "AndroidCommunityServerPanel.kt:138"
    ],
    "nl": "Niets wacht op verzenden"
   },
@@ -7587,7 +7588,7 @@
   {
    "key": "Remove",
    "places": [
-    "AndroidCommunityServerPanel.kt:158",
+    "AndroidCommunityServerPanel.kt:199",
     "AndroidOutboxSelectionComponent.kt:213",
     "AndroidDutchUiCopy.kt:151"
    ],
@@ -7601,6 +7602,13 @@
    "nl": "Speler verwijderen"
   },
   {
+   "key": "Remove all",
+   "places": [
+    "AndroidCommunityServerPanel.kt:169"
+   ],
+   "nl": "Alles verwijderen"
+  },
+  {
    "key": "Remove anyway",
    "places": [
     "AndroidDutchUiCopy.kt:232"
@@ -7610,7 +7618,7 @@
   {
    "key": "Remove from this phone",
    "places": [
-    "AndroidCommunityServerPanel.kt:183"
+    "AndroidCommunityServerPanel.kt:225"
    ],
    "nl": "Van deze telefoon verwijderen"
   },
@@ -8642,9 +8650,10 @@
   {
    "key": "Show",
    "places": [
+    "AndroidCommunityServerPanel.kt:162",
     "AndroidTournamentParticipantsStep.kt:592"
    ],
-   "nl": "Toon"
+   "nl": "Bekijken"
   },
   {
    "key": "Show all tracks",
@@ -9317,7 +9326,7 @@
   {
    "key": "Switch",
    "places": [
-    "AndroidCommunityServerPanel.kt:176",
+    "AndroidCommunityServerPanel.kt:218",
     "AndroidDutchUiCopy.kt:452"
    ],
    "nl": "Wisselen"
@@ -12981,6 +12990,13 @@
    "nl": "{0} in aanmaak"
   },
   {
+   "key": "{0} carried times wait until you sign in here.",
+   "places": [
+    "AndroidCommunityServerPanel.kt:153"
+   ],
+   "nl": "{0} meegenomen tijden wachten tot je je hier aanmeldt."
+  },
+  {
    "key": "{0} challenged you to beat {1}",
    "places": [
     "AndroidPlayerInteractions.kt:176"
@@ -13519,7 +13535,7 @@
   {
    "key": "{0} runs waiting to be sent",
    "places": [
-    "AndroidCommunityServerPanel.kt:139"
+    "AndroidCommunityServerPanel.kt:140"
    ],
    "nl": "{0} ritten wachten op verzenden"
   },
@@ -13540,7 +13556,7 @@
   {
    "key": "{0} still has runs that were not sent. Switch to it and send them first.",
    "places": [
-    "AndroidCommunityServerPanel.kt:203"
+    "AndroidCommunityServerPanel.kt:245"
    ],
    "nl": "{0} heeft nog ritten die niet zijn verzonden. Wissel ernaar en verstuur ze eerst."
   },
@@ -13650,7 +13666,7 @@
   {
    "key": "{0} was removed from this phone.",
    "places": [
-    "AndroidCommunityServerPanel.kt:199"
+    "AndroidCommunityServerPanel.kt:241"
    ],
    "nl": "{0} is van deze telefoon verwijderd."
   },

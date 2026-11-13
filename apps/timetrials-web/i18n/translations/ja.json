@@ -5060,6 +5060,9 @@
   "Time Trial classes": "Time Trialのクラス",
   "Used by Home focus and the Among rivals standing.": "ホームのフォーカスとライバル間の順位で使われます。",
   "{0} times waiting to be sent": "送信待ちのタイムが{0}件あります",
-  "{0} · {1} runs": "{0} · {1}回"
+  "{0} · {1} runs": "{0} · {1}回",
+  "1 carried time waits until you sign in here.": "持っていったタイム 1 件が、ここでサインインするのを待っています。",
+  "Remove all": "すべて削除",
+  "{0} carried times wait until you sign in here.": "持っていったタイム {0} 件が、ここでサインインするのを待っています。"
  }
 }

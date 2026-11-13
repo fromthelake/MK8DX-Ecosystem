@@ -77,6 +77,7 @@ internal fun AndroidCommunityServerPanel(
     var waitingCarried by remember { mutableStateOf<Map<String, List<JsonObject>>>(emptyMap()) }
     var message by remember { mutableStateOf<Pair<String, Mk8dxStatusTone>?>(null) }
     var reload by remember { mutableIntStateOf(0) }
+    var expandedCarried by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(apiOrigin, reload) {
         val (list, counts) = withContext(Dispatchers.IO) {
             val list = AndroidCommunities.list(context)
@@ -140,34 +141,75 @@ internal fun AndroidCommunityServerPanel(
                     },
                 )
                 // Copies carried here that wait for somebody to sign in: each can be called back.
-                waitingCarried[community.origin].orEmpty().forEachIndexed { carriedIndex, staged ->
-                    val submissionId = (staged["submissionId"] as? JsonPrimitive)?.content
-                    Row(
-                        Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            t("Carried time waiting for sign-in: ${androidCarriedLabel(staged)}",
-                                "Meegenomen tijd wacht op aanmelden: ${androidCarriedLabel(staged)}"),
-                            style = type.bodyS,
-                            color = colors.textSecondary,
-                            modifier = Modifier.weight(1f),
+                // Carried copies waiting for sign-in: one summary line, the list only on request (owner, 13-11:
+                // "Mijn beste tijden meenemen" queued 111 copies and the sheet became one endless list).
+                val carried = waitingCarried[community.origin].orEmpty()
+                if (carried.isNotEmpty()) {
+                    val open = expandedCarried == community.origin
+                    Text(
+                        if (carried.size == 1) t(
+                            "1 carried time waits until you sign in here.",
+                            "1 meegenomen tijd wacht tot je je hier aanmeldt.",
+                        ) else t(
+                            "${carried.size} carried times wait until you sign in here.",
+                            "${carried.size} meegenomen tijden wachten tot je je hier aanmeldt.",
+                        ),
+                        style = type.bodyS,
+                        color = colors.textSecondary,
+                    )
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
+                        Mk8dxButton(
+                            if (open) t("Hide", "Verbergen") else t("Show", "Bekijken"),
+                            { expandedCarried = if (open) null else community.origin },
+                            variant = Mk8dxButtonVariant.Quiet,
+                            size = Mk8dxButtonSize.Sm,
+                            tag = "settings-community-$index-carried-toggle",
                         )
                         Mk8dxButton(
-                            t("Remove", "Verwijderen"),
+                            t("Remove all", "Alles verwijderen"),
                             {
-                                if (submissionId != null) scope.launch {
+                                scope.launch {
                                     withContext(Dispatchers.IO) {
-                                        runCatching { AndroidCarriedQueue.forOrigin(context, community.origin).remove(submissionId) }
+                                        val queue = AndroidCarriedQueue.forOrigin(context, community.origin)
+                                        carried.mapNotNull { (it["submissionId"] as? JsonPrimitive)?.content }
+                                            .forEach { id -> runCatching { queue.remove(id) } }
                                     }
                                     reload++
                                 }
                             },
                             variant = Mk8dxButtonVariant.Quiet,
                             size = Mk8dxButtonSize.Sm,
-                            tag = "settings-community-$index-carried-remove-$carriedIndex",
+                            tag = "settings-community-$index-carried-remove-all",
                         )
+                    }
+                    if (open) carried.forEachIndexed { carriedIndex, staged ->
+                        val submissionId = (staged["submissionId"] as? JsonPrimitive)?.content
+                        Row(
+                            Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                androidCarriedLabel(staged),
+                                style = type.bodyS,
+                                color = colors.textSecondary,
+                                modifier = Modifier.weight(1f),
+                            )
+                            Mk8dxButton(
+                                t("Remove", "Verwijderen"),
+                                {
+                                    if (submissionId != null) scope.launch {
+                                        withContext(Dispatchers.IO) {
+                                            runCatching { AndroidCarriedQueue.forOrigin(context, community.origin).remove(submissionId) }
+                                        }
+                                        reload++
+                                    }
+                                },
+                                variant = Mk8dxButtonVariant.Quiet,
+                                size = Mk8dxButtonSize.Sm,
+                                tag = "settings-community-$index-carried-remove-$carriedIndex",
+                            )
+                        }
                     }
                 }
                 if (!active) {

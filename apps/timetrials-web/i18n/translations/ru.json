@@ -5060,6 +5060,9 @@
   "Time Trial classes": "Классы Time Trial",
   "Used by Home focus and the Among rivals standing.": "Используется фокусом на главной и таблицей среди соперников.",
   "{0} times waiting to be sent": "Ждут отправки: {0}",
-  "{0} · {1} runs": "{0} · заездов: {1}"
+  "{0} · {1} runs": "{0} · заездов: {1}",
+  "1 carried time waits until you sign in here.": "1 перенесённое время ждёт, пока ты войдёшь здесь.",
+  "Remove all": "Удалить все",
+  "{0} carried times wait until you sign in here.": "{0} перенесённых времён ждут, пока ты войдёшь здесь."
  }
 }
