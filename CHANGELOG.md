@@ -5,6 +5,22 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.2 — 2026-11-13
+
+Fixes recorded-video analysis in the Tournament Tools, which stopped with an error in 0.2.0 and 0.2.1, and adds the
+Tournament Analysis window, an enforced scanner security policy and the README in all twelve game languages.
+
+### Fixed
+
+- **Recorded tournament analysis works again** (#169). In 0.2.0 and 0.2.1, `TournamentProcessor.cmd` and the analysis
+  window stopped with `TypeError: Invalid value ... for dtype 'str'` as soon as a race had a character with colour
+  variants, so no results were written. Tournament Live did not stop, but silently skipped its end-of-event
+  colour-variant and Mii correction. pandas 3 makes a column filled with empty text strictly text-only; the
+  colour-variant refinement now creates its columns as mixed columns, as before. A 45-minute recording gave 144 of
+  144 rows identical to the historical result.
+- A complete player name read from the score screen is no longer shortened to a lobby reading that lost its last
+  character (#137).
+
 ### Added
 
 - **Tournament Analysis**, a window for analysing recorded tournament videos afterwards when Tournament Live was not
@@ -36,6 +52,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
+- The README is available in all twelve written languages of the game. English and Dutch are reviewed by people;
+  the others are machine translations and ask for corrections. New issue forms for bugs, wrong recognition results
+  and translation corrections.
+- CI replays every committed recognition parity vector in Python, TypeScript and Java, including new context and
+  icon-score vectors, with the public recognition pack (#99).
 - Every launcher looks like the start of a race: a colour MK8DX logo, a 3-2-1-GO countdown with beeps, the checks
   as laps with a car on the track and a race clock, a spinner while it waits for Docker, and a finish line with the
   lap times. This covers `Start-MK8DX.cmd`, `Start-MK8DX-LAN.cmd` (and the **MK8DX beheer** icon),
