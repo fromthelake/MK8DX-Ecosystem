@@ -125,6 +125,7 @@ def main():
         copy_file(ROOT / "Start-MK8DX-No-Docker.cmd", windows / "Start-MK8DX-No-Docker.cmd")
         copy_file(ROOT / "Manage-MK8DX-No-Docker.cmd", windows / "Manage-MK8DX-No-Docker.cmd")
         copy_file(ROOT / "tooling/configure_xampp.ps1", windows / "tooling/configure_xampp.ps1")
+        copy_file(ROOT / "tooling/mk8dx-ui.ps1", windows / "tooling/mk8dx-ui.ps1")
         subprocess.run(["npm.cmd", "ci", "--omit=dev", "--ignore-scripts", "--no-audit", "--no-fund"],
                        cwd=windows / "api", check=True)
         windows_result = write_zip(windows, output / f"mk8dx-xampp-node-windows-{args.revision}.zip", "A3", args.revision)
