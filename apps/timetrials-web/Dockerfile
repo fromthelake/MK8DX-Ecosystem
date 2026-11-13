@@ -23,7 +23,7 @@ RUN mkdir -p public && node /build/tooling/assets/materialize_collection.mjs sca
 RUN npm run sync-assets
 RUN MK8_BASE_PATH=/scanner/ npm run build
 
-FROM caddy:2.11.7-alpine@sha256:e70b164da81ef698b3ad19af799ea6086ce6d9e48ed4079eb9fe26f6fbf14ee5
+FROM caddy:2.11.8-alpine@sha256:f6228111e5fafa1a5238258d0858e103f10599b8d1659a146e7726681a002bb9
 COPY apps/timetrials-web/index.html apps/timetrials-web/manifest.webmanifest apps/timetrials-web/sw.js apps/timetrials-web/assetlinks.json /srv/
 COPY apps/timetrials-web/assetlinks.json /srv/.well-known/assetlinks.json
 COPY apps/timetrials-web/styles /srv/styles

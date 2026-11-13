@@ -1,4 +1,6 @@
-import webPush, { type PushSubscription } from "web-push";
+// web-push 4 is an ES module with named exports only; a default import fails when the module is linked.
+import * as webPush from "web-push";
+import type { PushSubscription } from "web-push";
 import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 import { TRACK_SOCIAL } from "../runtime/track-social-manifest.js";
