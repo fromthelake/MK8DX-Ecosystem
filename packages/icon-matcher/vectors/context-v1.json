@@ -1209,11 +1209,12 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -1273,11 +1274,12 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -1337,11 +1339,12 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -2301,11 +2304,12 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "text_family"
+     "text_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -2741,12 +2745,13 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "character_colour_suggestion"
     ],
     "familyId": null,
     "id": null,
     "status": "unknown",
-    "suggestedId": null,
+    "suggestedId": "body_variant.kart_a.001_red",
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_relation_score_below",
@@ -2801,15 +2806,16 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "character_part_top3_variant"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
+    "id": "body_variant.kart_a.001_red",
     "status": "accepted",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
-   "id": "part.body_relation_accepted_visual_kept",
+   "id": "part.body_accepted_character_top3_variant",
    "kind": "bodies",
    "rule": "part",
    "tireTextTop3Guard": false,
@@ -3372,11 +3378,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "text_supported_visual_variant"
+     "text_supported_visual_variant",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body_variant.kart_a.002_blue",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
@@ -3925,13 +3932,12 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_suggested_character_no_clue",
@@ -3987,13 +3993,12 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider.wing_a",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_suggested_character_base_colour",
@@ -4049,13 +4054,12 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_conflict_character",
@@ -4111,13 +4115,12 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.001_red",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_character_id_not_accepted",
@@ -4233,13 +4236,12 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family",
-     "character_colour_suggestion"
+     "visual_family"
     ],
     "familyId": null,
     "id": null,
     "status": "unknown",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_unaccepted_character_unknown_visual",
@@ -4286,6 +4288,683 @@
     "evidence": [
      "visual"
     ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_colour_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "body_variant.kart_a.001_red",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_visual_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "character_colour_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "body_variant.kart_a.001_red",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_visual_clash_text",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body_variant.kart_a.001_red",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body_variant.kart_a.001_red"
+   },
+   "id": "part.body_accepted_character_same_colour",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.gamma",
+    "id": "character.gamma",
+    "status": "accepted",
+    "visualTop1": "character.gamma"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_no_link",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_suggested_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_unknown_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_conflict_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_character_id_not_accepted",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_suggested_character_text",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_b",
+    "id": "body.kart_b",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body.kart_b"
+   },
+   "id": "part.body_single_colour_unaccepted_character",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "score": 0.84
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.06,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.83
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "suggestedId": null,
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_unaccepted_character_unknown_visual",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.01,
+    "score": 0.83,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.83
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.82
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.81
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
     "familyId": null,
     "id": null,
     "status": "unknown",
@@ -4300,13 +4979,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_unaccepted_character_conflict",
@@ -4367,13 +5045,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_suggested_character_conflict",
@@ -4434,13 +5111,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character",
-     "character_colour_suggestion"
+     "glider_colour_needs_character"
     ],
     "familyId": "glider.wing_a",
     "id": null,
     "status": "family_only",
-    "suggestedId": "glider_variant.wing_a.002_blue",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_unaccepted_character_same_colour",
@@ -4495,11 +5171,12 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -4638,6 +5315,12 @@
     "body.kart_a",
     "character_variant.alpha.001_red",
     "body_variant.kart_a.001_red"
+   ],
+   [
+    "bodies",
+    "body.kart_a",
+    "character_variant.alpha.002_blue",
+    "body_variant.kart_a.002_blue"
    ],
    [
     "bodies",

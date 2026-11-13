@@ -130,8 +130,8 @@ def _compose_field(field: str, entry: dict | None) -> dict:
 
     context_accepted = (chosen["id"] if visual and chosen and chosen.get("status") == "accepted"
                         and chosen.get("id") else None)
-    # A colour the context proposes for review (the glider colour that follows
-    # the character); it leads the proposal but is never accepted by itself.
+    # A colour the context proposes for review (the body or glider catalog colour of
+    # an accepted character); it leads the proposal but is never accepted by itself.
     suggested = chosen.get("suggestedId") if visual and chosen and not context_accepted else None
     context_suggested = suggested if isinstance(suggested, str) and suggested else None
     colour_rank = _colour_rank(visual, raw_top) if field == "character" and visual else None

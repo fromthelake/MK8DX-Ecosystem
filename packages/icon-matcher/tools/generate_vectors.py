@@ -74,6 +74,7 @@ TIRE_BY_INDEX = [[0, "tire.round"], [1, "tire.slick"], [2, "tire.knobby"], [3, "
 PART_FOR_CHARACTER = [
     ["bodies", "body.kart_a", "character.beta", "body.kart_a"],
     ["bodies", "body.kart_a", "character_variant.alpha.001_red", "body_variant.kart_a.001_red"],
+    ["bodies", "body.kart_a", "character_variant.alpha.002_blue", "body_variant.kart_a.002_blue"],
     ["bodies", "body.kart_c", "character.gamma", "body_variant.kart_c.001_red"],
     ["gliders", "glider.wing_a", "character.beta", "glider.wing_a"],
     ["gliders", "glider.wing_a", "character_variant.alpha.001_red", "glider_variant.wing_a.001_red"],
@@ -203,6 +204,8 @@ def part_cases() -> list[tuple]:
     glider_acc_blue = _visual("gliders", "accepted", [(WA_BLUE, 0.92), (WA, 0.88), (WA_RED, 0.86)], 0.04, 0.6)
     glider_single = _visual("gliders", "accepted", [(WB, 0.90), (WA, 0.84), (WA_RED, 0.83)], 0.06, 0.84)
     body_acc = _visual("bodies", "accepted", [(KA, 0.90), (KA_RED, 0.86), (KB, 0.70)], 0.04, 0.70)
+    body_acc_no_red = _visual("bodies", "accepted", [(KA, 0.92), (KA_BLUE, 0.88), (KB, 0.80)], 0.04, 0.80)
+    body_single = _visual("bodies", "accepted", [(KB, 0.90), (KA, 0.84), (KA_RED, 0.83)], 0.06, 0.84)
     body_unk = _visual("bodies", "unknown", [(KA_BLUE, 0.83), (KA_RED, 0.82), (KA, 0.81)], 0.01, 0.70)
     glider_acc = _visual("gliders", "accepted", [(WA, 0.92), (WA_RED, 0.88), (WA_BLUE, 0.86)], 0.04, 0.60)
     glider_acc_no_red = _visual("gliders", "accepted", [(WA, 0.92), (WA_BLUE, 0.88), (WB, 0.80)], 0.04, 0.80)
@@ -249,7 +252,7 @@ def part_cases() -> list[tuple]:
         ("part.body_relation_score_below", "bodies",
          _visual("bodies", "unknown", [(KA_BLUE, 0.7999), (KA_RED, 0.79), (KA, 0.78)], 0.0099, 0.70),
          char_red, None, False, True),
-        ("part.body_relation_accepted_visual_kept", "bodies", body_acc, char_red, None, False, False),
+        ("part.body_accepted_character_top3_variant", "bodies", body_acc, char_red, None, False, False),
         ("part.glider_relation_weak_family_review", "gliders", glider_unk, char_red, None, False, False),
         ("part.glider_relation_family_margin_0.02_edge", "gliders",
          _visual("gliders", "unknown", [(WA_BLUE, 0.84), (WA, 0.83), (WB, 0.82)], 0.01, 0.82),
@@ -291,6 +294,23 @@ def part_cases() -> list[tuple]:
         ("part.glider_no_character", "gliders", glider_acc, char_none, None, False, False),
         ("part.glider_unaccepted_character_unknown_visual", "gliders", glider_unk_wide, char_sugg_blue, None,
          False, False),
+        # body colour follows the character too (#99 owner amendment)
+        ("part.body_accepted_character_visual_clash", "bodies", body_acc_no_red, char_red, None, False, False),
+        ("part.body_accepted_character_visual_clash_text", "bodies", body_acc_no_red, char_red,
+         _clue(KA, 0.95, 0.2), False, False),
+        ("part.body_accepted_character_same_colour", "bodies",
+         _visual("bodies", "accepted", [(KA_RED, 0.92), (KA, 0.88), (KA_BLUE, 0.86)], 0.04, 0.6),
+         char_red, None, False, False),
+        ("part.body_accepted_character_no_link", "bodies", body_acc, char_gamma, None, False, False),
+        ("part.body_suggested_character_clash", "bodies", body_acc, char_sugg_blue, None, False, False),
+        ("part.body_unknown_character_clash", "bodies", body_acc_no_red, char_unacc_blue, None, False, False),
+        ("part.body_conflict_character_clash", "bodies", body_acc, char_conflict_blue, None, False, False),
+        ("part.body_character_id_not_accepted", "bodies", body_acc, char_red_not_accepted, None, False, False),
+        ("part.body_suggested_character_text", "bodies", body_acc, char_sugg_blue, _clue(KA, 0.95, 0.2),
+         False, False),
+        ("part.body_single_colour_unaccepted_character", "bodies", body_single, char_sugg_blue, None,
+         False, False),
+        ("part.body_unaccepted_character_unknown_visual", "bodies", body_unk, char_sugg_blue, None, False, False),
         # unaccepted character colour against a generic glider name
         ("part.glider_unaccepted_character_conflict", "gliders", glider_acc, char_unacc_blue, _clue(WA, 0.95, 0.2),
          False, False),

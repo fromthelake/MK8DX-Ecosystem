@@ -408,6 +408,7 @@ def test_character_relation_needs_readable_name_or_distinct_family():
                         FamilyCandidate("glider.parachute", 0.750, (other,))))
     assert combine_part("gliders", wide, character, None, refs).id == "glider.parasol"
     refs.part_for_character[("bodies", "body.kart", "character.baby")] = "body.kart"
+    refs.family.update({"body.kart": "body.kart", "body.bike": "body.bike"})
     body = MatchResult(None, None, "unknown", 0.805, 0.005,
                        (Candidate("body.kart", "body.kart", 0.805),
                         Candidate("body.bike", "body.bike", 0.800)),
@@ -439,16 +440,18 @@ def test_accepted_glider_colour_uses_named_family_and_character_top_three():
     assert "character_part_top3_variant" in refined.evidence
     # The catalog colour decides without a printed name too (issue #99 rule 2).
     assert combine_part("gliders", visual, character, None, refs).id == "glider.toad"
-    # A character that is not accepted settles the family only; its catalog colour is the proposal.
+    # A character that is not accepted settles the family only; the icon's colour is the proposal,
+    # never the suggested character's catalog colour (owner amendment on #99).
     uncertain_character = Decision("character.toad", "character.toad", "unknown", (), "character.toad")
     unaccepted_character = Decision(None, None, "suggested", (), "character.toad")
     for unsettled in (uncertain_character, unaccepted_character):
         for text in (clue, None):
             proposed = combine_part("gliders", visual, unsettled, text, refs)
             assert proposed.id is None and proposed.status == "family_only"
-            assert proposed.family_id == "glider.super" and proposed.suggested_id == "glider.toad"
+            assert proposed.family_id == "glider.super" and proposed.suggested_id is None
             assert proposed.visual_top1 == "glider.blue"
             assert "glider_colour_needs_character" in proposed.evidence
+            assert "character_colour_suggestion" not in proposed.evidence
     weak_visual = MatchResult(None, None, "unknown", .858, .019,
                               candidates, "rgb", "result", (0, 0))
     assert combine_part("gliders", weak_visual, unaccepted_character, clue, refs).id is None
@@ -463,6 +466,47 @@ def test_accepted_glider_colour_uses_named_family_and_character_top_three():
     # A single-colour glider, or no catalog link for the character: the icon decides.
     del refs.part_for_character[("gliders", "glider.super", "character.toad")]
     assert combine_part("gliders", visual, character, clue, refs).id == "glider.blue"
+
+
+def test_body_colour_follows_an_accepted_character():
+    refs = ReferenceBank.__new__(ReferenceBank)
+    refs.family = {"body.std": "body.std", "body.std_red": "body.std", "body.std_blue": "body.std",
+                   "body.std_green": "body.std", "body.mono": "body.mono"}
+    refs.part_for_character = {("bodies", "body.std", "character.toad"): "body.std_blue"}
+    refs.tire_by_index = {}
+    refs.groups = {("bodies", "result"): type("Group", (), {
+        "ids": tuple(refs.family), "families": tuple(refs.family.values())})()}
+    candidates = (Candidate("body.std_red", "body.std", .900),
+                  Candidate("body.std_blue", "body.std", .880),
+                  Candidate("body.std", "body.std", .860),
+                  Candidate("body.std_green", "body.std", .850))
+    visual = MatchResult("body.std_red", "body.std", "accepted", .900, .020,
+                         candidates, "rgb", "result", (0, 0))
+    toad = Decision("character.toad", "character.toad", "accepted", (), "character.toad")
+    # Accepted character, catalog colour in the visual top three: the catalog decides.
+    close = combine_part("bodies", visual, toad, None, refs)
+    assert close.id == "body.std_blue" and "character_part_top3_variant" in close.evidence
+    # Character not accepted: family only, the icon's colour stays the proposal.
+    for unsettled in (Decision(None, None, "suggested", (), "character.toad"),
+                      Decision(None, None, "conflict", (), "character.toad"),
+                      Decision(None, None, "unknown", (), None)):
+        family_only = combine_part("bodies", visual, unsettled, None, refs)
+        assert family_only.id is None and family_only.status == "family_only"
+        assert family_only.family_id == "body.std" and family_only.suggested_id is None
+        assert "body_colour_needs_character" in family_only.evidence
+    # A clear clash outside the visual top three: conflict, catalog colour proposed.
+    refs.part_for_character[("bodies", "body.std", "character.toad")] = "body.std_green"
+    clash = combine_part("bodies", visual, toad, None, refs)
+    assert clash.id is None and clash.status == "conflict" and clash.suggested_id == "body.std_green"
+    assert "character_colour_conflict_review" in clash.evidence
+    # No catalog relation for this character and body: the icon decides.
+    del refs.part_for_character[("bodies", "body.std", "character.toad")]
+    assert combine_part("bodies", visual, toad, None, refs).id == "body.std_red"
+    # A single-colour body is accepted even without an accepted character.
+    mono = MatchResult("body.mono", "body.mono", "accepted", .900, .050,
+                       (Candidate("body.mono", "body.mono", .900),), "rgb", "result", (0, 0))
+    assert combine_part("bodies", mono, Decision(None, None, "unknown", (), None),
+                        None, refs).id == "body.mono"
 
 
 def test_numeric_clue_ids_are_ascii_and_ocr_folds_full_width_digits():

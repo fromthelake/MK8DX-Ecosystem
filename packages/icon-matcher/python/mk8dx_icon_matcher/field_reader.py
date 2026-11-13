@@ -266,7 +266,7 @@ def read_field(crop_bgr: np.ndarray | None, kind: Kind, profile: Profile,
         # gate independent of this review proposal, including clipped cells.
         catalog_first = bool(decision.suggested_id) and decision.suggested_id != proposal_ranked[0]["id"]
         if catalog_first:
-            # The glider colour that follows the character (combine_part) leads
+            # The catalog colour of an accepted character (combine_part) leads
             # the proposal; the visual order stays as the alternatives.
             sid = decision.suggested_id
             score = next((candidate.score for candidate in visual.top if candidate.id == sid), None)

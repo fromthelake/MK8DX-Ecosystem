@@ -25,8 +25,9 @@ class Decision:
     status: str
     evidence: tuple[str, ...]
     visual_top1: str | None
-    # A colour to propose for review when ``id`` is None (the glider colour that
-    # follows the character, issue #99); never an accepted value on its own.
+    # A colour to propose for review when ``id`` is None (the body or glider
+    # catalog colour of an accepted character, issue #99); never an accepted
+    # value on its own.
     suggested_id: str | None = None
 
 
@@ -45,9 +46,9 @@ def _colour_family(refs: ReferenceBank, kind: str, family: str) -> bool:
     return sum(1 for base in group.families if base == family) > 1
 
 
-def _glider_relation(refs: ReferenceBank, family: str, character_id: str | None) -> str | None:
-    """The catalog colour of this glider family for this character, if the catalog links them."""
-    relation = refs.part_for_character.get(("gliders", family, character_id)) if character_id else None
+def _catalog_colour(refs: ReferenceBank, kind: str, family: str, character_id: str | None) -> str | None:
+    """The catalog colour of this body or glider family for this character, if the catalog links them."""
+    relation = refs.part_for_character.get((kind, family, character_id)) if character_id else None
     return relation if relation and refs.family.get(relation) == family else None
 
 
@@ -122,14 +123,14 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
     else:
         chosen = None
     strong_visual_variant = visual.status == "accepted" and family == top.family_id
+    coloured_part = kind in ("bodies", "gliders")
     character_accepted = bool(character.id) and character.status == "accepted"
-    # Glider colour follows the character (issue #99): the catalog colour of an
-    # accepted character, or of the suggested character for a review proposal.
-    colour = (_glider_relation(refs, family, character.id if character_accepted
-                               else character.visual_top1)
-              if kind == "gliders" else None)
-    if (kind == "gliders" and character_accepted and colour and strong_visual_variant
-            and colour != chosen):
+    # Body and glider colour follow the character (issue #99): only an accepted
+    # character supplies a catalog colour. An unknown, suggested or conflicting
+    # character never does, not even as a review proposal.
+    colour = (_catalog_colour(refs, kind, family, character.id)
+              if coloured_part and character_accepted else None)
+    if colour and strong_visual_variant and colour != chosen:
         if any(candidate.id == colour for candidate in visual.top[:3]):
             # A close colour in the visual top three: the catalog decides.
             chosen = colour
@@ -140,10 +141,9 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
             # character is wrong, so the field needs review.
             return Decision(None, family, "conflict",
                             (*evidence, "character_colour_conflict_review"), top.id, colour)
-    if kind in ("bodies", "gliders") and character.id and not strong_visual_variant and (
+    if coloured_part and character.id and not strong_visual_variant and (
             visual.score >= 0.80 or (clue and clue.strong)):
-        relation = (colour if character_accepted else None) if kind == "gliders" else (
-            refs.part_for_character.get((kind, family, character.id)))
+        relation = colour
         if relation:
             family_margin = (visual.family_top[0].score - visual.family_top[1].score
                              if len(visual.family_top) > 1 else None)
@@ -165,16 +165,15 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
         elif family == top.family_id and visual.score >= 0.75 and visual.margin >= 0.01:
             chosen = top.id
             evidence.append("text_supported_visual_variant")
-    suggestion = colour if kind == "gliders" and chosen is None else None
-    if (kind == "gliders" and chosen is not None and not character_accepted
+    suggestion = colour if chosen is None else None
+    if (coloured_part and chosen is not None and not character_accepted
             and _colour_family(refs, kind, family)):
         # The family is readable and carries the stats, but an unaccepted
-        # character cannot settle its colour: accept the family only and
-        # propose the suggested character's catalog colour, else the icon's.
+        # character cannot settle its colour: accept the family only. The
+        # colour proposal is the icon's own (no suggestedId).
         return Decision(None, family, "family_only",
-                        (*evidence, "glider_colour_needs_character",
-                         *(("character_colour_suggestion",) if colour else ())),
-                        top.id, colour)
+                        (*evidence, f"{'glider' if kind == 'gliders' else 'body'}_colour_needs_character"),
+                        top.id)
     if suggestion:
         evidence.append("character_colour_suggestion")
     if chosen is None and clue and clue.strong and clue.id == family:

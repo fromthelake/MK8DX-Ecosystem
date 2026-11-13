@@ -121,11 +121,11 @@ def test_a_card_without_a_clear_winner_offers_mii_beside_the_best_match():
 
 
 def test_a_glider_colour_that_follows_the_character_is_proposed_not_accepted():
-    # combine_part: an unaccepted character settles the family; its catalog colour is the proposal (#99).
+    # combine_part: an accepted character whose catalog colour clashes with the icon (#99).
     glider = read("gliders", [("glider.super", "glider.super", .92),
                               ("glider_variant.super.001_blue", "glider.super", .88)], "glider.super")
-    chosen = {"id": None, "familyId": "glider.super", "status": "family_only",
-              "evidence": ["visual_family", "glider_colour_needs_character", "character_colour_suggestion"],
+    chosen = {"id": None, "familyId": "glider.super", "status": "conflict",
+              "evidence": ["visual_family", "character_colour_conflict_review"],
               "visualTop1": "glider.super", "suggestedId": "glider_variant.super.002_red"}
     field = compose_result_proposal({"glider": {"shared_icon_qa": glider,
                                                 "part_text_qa": {"chosen": chosen}}})["fields"]["glider"]
