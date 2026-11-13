@@ -16,8 +16,9 @@ export interface PartDecision {
   status: 'accepted' | 'unknown' | 'family_only' | 'conflict';
   evidence: string[];
   visualTop1: string;
-  /** A colour to propose for review when id is null (the glider colour that
-   * follows the character, issue #99); never an accepted value on its own. */
+  /** A colour to propose for review when id is null (the body or glider
+   * catalog colour of an accepted character, issue #99); never an accepted
+   * value on its own. */
   suggestedId: string | null;
 }
 export interface PartContextReferences {
@@ -41,11 +42,11 @@ function colourFamily(refs: PartContextReferences, kind: PartKind, family: strin
   return refs.resultMembers.get(kind)!.filter((item) => item.familyId === family).length > 1;
 }
 
-/** The catalog colour of this glider family for this character, if the catalog links them. */
-function gliderRelation(refs: PartContextReferences, family: string,
+/** The catalog colour of this body or glider family for this character, if the catalog links them. */
+function catalogColour(refs: PartContextReferences, kind: PartKind, family: string,
   characterId: string | null | undefined): string | null {
   const relation = characterId
-    ? refs.partForCharacter.get(partRelationKey('gliders', family, characterId)) : undefined;
+    ? refs.partForCharacter.get(partRelationKey(kind, family, characterId)) : undefined;
   return relation && refs.familyById.get(relation) === family ? relation : null;
 }
 
@@ -95,12 +96,13 @@ export function combinePart(kind: PartKind, visual: VisualFieldRead,
   }
   let chosen: string | null = family === top.familyId ? visual.acceptedId : null;
   const strongVisualVariant = visual.status === 'accepted' && family === top.familyId;
+  const colouredPart = kind === 'bodies' || kind === 'gliders';
   const characterAccepted = Boolean(character.id) && character.status === 'accepted';
-  // Glider colour follows the character (issue #99): the catalog colour of an
-  // accepted character, or of the suggested character for a review proposal.
-  const colour = kind === 'gliders'
-    ? gliderRelation(refs, family, characterAccepted ? character.id : character.visualTop1) : null;
-  if (kind === 'gliders' && characterAccepted && colour && strongVisualVariant && colour !== chosen) {
+  // Body and glider colour follow the character (issue #99): only an accepted
+  // character supplies a catalog colour. An unknown, suggested or conflicting
+  // character never does, not even as a review proposal.
+  const colour = colouredPart && characterAccepted ? catalogColour(refs, kind, family, character.id) : null;
+  if (colour && strongVisualVariant && colour !== chosen) {
     if (visual.top.slice(0, 3).some((candidate) => candidate.id === colour)) {
       // A close colour in the visual top three: the catalog decides.
       chosen = colour;
@@ -114,10 +116,9 @@ export function combinePart(kind: PartKind, visual: VisualFieldRead,
         suggestedId: colour };
     }
   }
-  if ((kind === 'bodies' || kind === 'gliders') && character.id && !strongVisualVariant
+  if (colouredPart && character.id && !strongVisualVariant
       && (visual.score >= 0.80 || strong)) {
-    const relation = kind === 'gliders' ? (characterAccepted ? colour : null)
-      : refs.partForCharacter.get(partRelationKey(kind, family, character.id));
+    const relation = colour;
     if (relation) {
       if (kind === 'gliders' && !strong
           && visual.familyMargin !== undefined && visual.familyMargin !== null
@@ -139,15 +140,14 @@ export function combinePart(kind: PartKind, visual: VisualFieldRead,
       evidence.push('text_supported_visual_variant');
     }
   }
-  const suggestion = kind === 'gliders' && chosen === null ? colour : null;
-  if (kind === 'gliders' && chosen !== null && !characterAccepted && colourFamily(refs, kind, family)) {
+  const suggestion = chosen === null ? colour : null;
+  if (colouredPart && chosen !== null && !characterAccepted && colourFamily(refs, kind, family)) {
     // The family is readable and carries the stats, but an unaccepted
-    // character cannot settle its colour: accept the family only and propose
-    // the suggested character's catalog colour, else the icon's.
+    // character cannot settle its colour: accept the family only. The colour
+    // proposal is the icon's own (no suggestedId).
     return { id: null, familyId: family, status: 'family_only',
-      evidence: [...evidence, 'glider_colour_needs_character',
-        ...(colour ? ['character_colour_suggestion'] : [])],
-      visualTop1: top.id, suggestedId: colour };
+      evidence: [...evidence, `${kind === 'gliders' ? 'glider' : 'body'}_colour_needs_character`],
+      visualTop1: top.id, suggestedId: null };
   }
   if (suggestion) evidence.push('character_colour_suggestion');
   if (chosen === null && strong && clue?.id === family) {

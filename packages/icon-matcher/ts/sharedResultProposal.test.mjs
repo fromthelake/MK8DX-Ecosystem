@@ -377,11 +377,11 @@ test('a Select-a-Ghost character read is valid only for the character', () => {
 });
 
 test('a glider colour that follows the character is proposed, not accepted', () => {
-  // combinePart: an unaccepted character settles the family; its catalog colour is the proposal (#99).
+  // combinePart: an accepted character whose catalog colour clashes with the icon (#99).
   const glider = read('gliders', [top('glider.super', 'glider.super', .92),
     top('glider_variant.super.001_blue', 'glider.super', .88)], 'glider.super');
-  const chosen = { id: null, familyId: 'glider.super', status: 'family_only',
-    evidence: ['visual_family', 'glider_colour_needs_character', 'character_colour_suggestion'],
+  const chosen = { id: null, familyId: 'glider.super', status: 'conflict',
+    evidence: ['visual_family', 'character_colour_conflict_review'],
     visualTop1: 'glider.super', suggestedId: 'glider_variant.super.002_red' };
   const field = composeResultProposal({ glider: { shared_icon_qa: glider,
     part_text_qa: { chosen } } }).fields.glider;

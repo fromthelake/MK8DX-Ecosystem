@@ -177,8 +177,8 @@ function composeField(field: ResultField, entry: Entry | undefined): ResultField
     : rawTop.map((item) => ({ ...item, distinctiveDistance: null }));
   let contextAccepted = visual && chosen?.status === 'accepted' && chosen.id
     ? chosen.id : null;
-  // A colour the context proposes for review (the glider colour that follows
-  // the character); it leads the proposal but is never accepted by itself.
+  // A colour the context proposes for review (the body or glider catalog colour of
+  // an accepted character); it leads the proposal but is never accepted by itself.
   const contextSuggested = visual && !contextAccepted && typeof chosen?.suggestedId === 'string'
     && chosen.suggestedId ? chosen.suggestedId : null;
   const colour = field === 'character' ? visual?.family_colour_qa : null;
