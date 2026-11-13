@@ -5,6 +5,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Security
+
+- The Docker gateways (A1, A2, B1) now **enforce** the Web Content Security Policy instead of only reporting it. It
+  is the policy the Web page and the Node static route already enforced, so pages behave the same; the header adds
+  `frame-ancestors 'none'`. Checked in Chromium on a running A2 installation: 23 routes in English and Dutch at
+  320, 768 and 1440 CSS pixels, no violations. The scanner's policy stays Report-Only until its own browser pass.
+
 ### Changed
 
 - Every launcher looks like the start of a race: a colour MK8DX logo, a 3-2-1-GO countdown with beeps, the checks

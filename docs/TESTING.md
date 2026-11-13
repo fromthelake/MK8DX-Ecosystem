@@ -19,7 +19,8 @@ git diff --check
 
 For Docker gateway changes, validate all three `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
 image (supply a test `MK8DX_DOMAIN` for LAN/production). Inspect the response headers on `/` and `/scanner/`
-through a running container. Before enforcing a Report-Only CSP, exercise the scanner's image upload and WASM
+through a running container. The Web policy is enforced; the scanner's is still Report-Only. Before enforcing a
+Report-Only CSP, exercise the scanner's image upload and WASM
 workers and the classic Tournament report export in a real browser at 320, 768 and 1440 CSS pixels in English and
 Dutch; inspect console CSP violations. The scanner needs `worker-src 'self' blob:` and
 `script-src 'self' 'wasm-unsafe-eval'`. Do not treat static Caddy validation as browser acceptance.
