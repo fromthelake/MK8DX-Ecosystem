@@ -200,6 +200,10 @@ internal object AndroidDutchUiCopy {
         "Choose rivals in Settings on the configured website; your global and Mastery views remain available." to "Kies rivalen bij Instellingen op de ingestelde website; je wereldwijde stand en Mastery-overzicht blijven beschikbaar.",
         "Community, your best and official references" to "Community, jouw beste tijd en officiële referenties",
         "Fill the frame with the MK8DX result screen" to "Vul het kader met het MK8DX-resultaatscherm",
+        "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually." to
+            "Geen resultaatscherm gevonden. Zowel het eindscherm als het ghost-paneel is geprobeerd: controleer of de tijden zichtbaar zijn en de kaart het kader vult, of vul het met de hand in.",
+        "The scanner runs locally. Nothing is saved until you review the result." to
+            "De scanner werkt op je telefoon. Er wordt niets bewaard tot je het resultaat hebt nagekeken.",
         "Finalization pins the current results. Public visibility and rating inclusion are independent choices." to "Bij afronden worden de huidige resultaten vastgezet. Openbare zichtbaarheid en meetellen voor de rating zijn afzonderlijke keuzes.",
         "Loading notifications…" to "Meldingen laden…",
         "Loading rivals…" to "Rivalen laden…",
