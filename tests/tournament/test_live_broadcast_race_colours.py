@@ -1,5 +1,11 @@
 """The overlay's Race Result shows a colour only once it is settled (TN13 on A2, 2026-11-10)."""
+import pytest
+from conftest import SKIP_REASON, recorded_assets
+
 from live_processor.broadcast_state import build_race_results
+
+# Reads the game catalog from the recorded runtime assets.
+pytestmark = pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
 
 
 def _row(position, player, character, method=None):
