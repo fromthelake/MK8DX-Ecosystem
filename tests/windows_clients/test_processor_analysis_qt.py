@@ -225,6 +225,9 @@ def test_qt_cancel_ends_the_child(qt_app, tmp_path, monkeypatch):
     monkeypatch.setattr(gui.RunPlan, "command", lambda self, python=None: [sys.executable, "-u", "-c", script])
     window._run()
     assert _wait(qt_app, lambda: "working" in window._log.toPlainText())
+    # Once the recordings are staged and the analysis runs, the status line names the run again.
+    assert window._status_text.text() == window._run_label
+    assert not window._status_text.text().startswith("Preparing")
     window._runner.cancel()
     assert _wait(qt_app, lambda: not window._runner.is_running())
     assert window._status_text.text() == "Cancelled"

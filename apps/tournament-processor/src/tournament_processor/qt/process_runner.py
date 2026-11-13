@@ -91,6 +91,8 @@ class PipelineRunner(QObject):
             self.finished.emit("cancelled", 0)
             return
         command = self._plan.command()
+        # Staging wrote "Preparing recordings ..." into the status line; the analysis itself runs now.
+        self.status.emit(self._label)
         self.line.emit(self._t("log_command", command=" ".join(_quote(part) for part in command)))
         self._launch(command[0], command[1:], str(self._plan.runtime_root))
 

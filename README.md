@@ -94,13 +94,13 @@ recordings afterwards: add one video, several, or a folder per tournament, press
 ANALYSIS**, and it finds every race with its positions, characters and points while a live,
 coloured log and a Rainbow Road progress bar show how far it is. The result is an
 Excel workbook, a CSV and a website import file for the organiser to check and import — the same
-review as for Tournament Live. In the Windows Tournament Tools package, double-click
+review as for Tournament Live. A 22-minute recording with four races took about 70 seconds on a laptop. In the Windows Tournament Tools package, double-click
 `TournamentAnalysis.cmd` (dragging a video onto `TournamentProcessor.cmd` still works);
 developers run `python -m tournament_processor.gui`.
 [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) has the
 steps.
 
-![Tournament Analysis window: numbered steps on the left with two qualifier recordings and a folder of finals ticked, the session id, the results folder and the green Start analysis button; the activity log on the right](docs/readme/tournament-analysis.jpg)
+![Tournament Analysis window during a run: a folder with one cup recording ticked on the left, the analysis running; on the right the coloured activity log with races found, and below it the Rainbow Road progress bar at 56% and the clock](docs/readme/tournament-analysis.jpg)
 
 ## ⏱️ Time Trials with LiveTrial — fully automatic
 

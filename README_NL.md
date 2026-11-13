@@ -96,13 +96,13 @@ de opnames achteraf: voeg één video toe, meerdere, of een map per toernooi, ki
 STARTEN**, en het vindt elke race met de posities, characters en punten, terwijl een live log in
 kleur en een Rainbow Road-voortgangsbalk laten zien hoe ver het is. Het resultaat is een
 Excel-werkmap, een CSV en een importbestand voor de website, dat de organisator controleert en
-importeert — dezelfde controle als bij Tournament Live. Dubbelklik in het Windows-pakket
+importeert — dezelfde controle als bij Tournament Live. Een opname van 22 minuten met vier races duurde op een laptop ongeveer 70 seconden. Dubbelklik in het Windows-pakket
 Tournament Tools op `TournamentAnalysis.cmd` (een video naar `TournamentProcessor.cmd` slepen
 werkt nog steeds); ontwikkelaars starten `python -m tournament_processor.gui`.
 [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) (Engels)
 beschrijft de stappen.
 
-![Venster Tournament Analysis: genummerde stappen links met twee voorronde-opnames en een map met finales aangevinkt, de sessie-id, de uitslagenmap en de groene startknop; rechts het activiteitenlog](docs/readme/tournament-analysis.jpg)
+![Venster Tournament Analysis tijdens een analyse: links een map met één cup-opname aangevinkt, de analyse loopt; rechts het gekleurde activiteitenlog met gevonden races, en onderaan de Rainbow Road-voortgangsbalk op 56% en de klok](docs/readme/tournament-analysis.jpg)
 
 ## ⏱️ Time Trials met LiveTrial — volledig automatisch
 
