@@ -62,9 +62,9 @@ attests the exact release-asset bytes, writes `SHA256SUMS.txt` and `manifest.jso
 The signing key stays only on the maintainer's computer; CI's debug APK is not the stable phone package.
 `workflow_dispatch` builds the same package types as a dry run, with no tag, image push or release.
 The Docker gateways enforce the Web CSP (the same policy the Web shell's meta tag and the Node static route
-already enforce, plus `font-src` and `frame-ancestors`). The scanner's policy under `/scanner/` is still
-**Report-Only**; before enforcing it, verify the scanner's WASM/workers in a real browser as described in
-[Testing](TESTING.md).
+already enforce, plus `font-src` and `frame-ancestors`). They also enforce the scanner's policy under
+`/scanner/`; only the scanner's worker entries (`/scanner/assets/worker/*`) may evaluate strings, which OpenCV.js
+needs. See [Testing](TESTING.md) for its three parts and the browser check after a change.
 The Node/Caddy base images use digest pins; review upstream security updates and refresh the pins together with
 their tags in a tested PR. Caddy still runs as root in the released image. A disposable UID-10001 test served
 local HTTP and LAN internal TLS, but switching an existing A2/B1 installation also needs a tested ownership

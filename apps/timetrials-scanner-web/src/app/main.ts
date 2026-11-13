@@ -440,7 +440,7 @@ class App {
     const auditLink = document.createElement('a');
     auditLink.href = `${import.meta.env.BASE_URL}audit/`;
     auditLink.textContent = '🔎 audit-checklist openen';
-    auditLink.style.cssText = 'display:block;margin-top:8px;color:#8ec5ff;font-size:13px';
+    Object.assign(auditLink.style, { display: 'block', marginTop: '8px', color: '#8ec5ff', fontSize: '13px' });
     box.append(auditLink);
     const diag = document.createElement('div');
     diag.className = 'diag';

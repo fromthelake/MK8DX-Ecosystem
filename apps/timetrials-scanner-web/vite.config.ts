@@ -139,7 +139,9 @@ export default defineConfig({
   // nieuwe onmessage, "engine niet geïnitialiseerd" na een geslaagde init (field report 04-09-2026).
   // versie van de webversie (package.json), zichtbaar in instellingen, debug-tekst en auditrapport
   define: { __MK8_WEB_VERSION__: JSON.stringify(webVersion) },
-  worker: { format: 'es', rollupOptions: { output: { inlineDynamicImports: true } } },
+  // Worker-entries in een eigen map: de gateway geeft alleen assets/worker/* de worker-CSP met
+  // 'unsafe-eval' (OpenCV.js/embind gebruikt new Function); de pagina zelf krijgt die nooit (#34).
+  worker: { format: 'es', rollupOptions: { output: { inlineDynamicImports: true, entryFileNames: 'assets/worker/[name]-[hash].js' } } },
   // opencv.js is een CommonJS/UMD-bundel: esbuild zet hem om naar ESM (anders
   // faalt `this.cv = ...` in een module-worker); ORT Web is al ESM.
   optimizeDeps: { exclude: ['onnxruntime-web'], include: ['tesseract.js'] },

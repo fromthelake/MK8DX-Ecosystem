@@ -17,13 +17,21 @@ python tooling/check_docs.py
 git diff --check
 ```
 
-For Docker gateway changes, validate all three `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
-image (supply a test `MK8DX_DOMAIN` for LAN/production). Inspect the response headers on `/` and `/scanner/`
-through a running container. The Web policy is enforced; the scanner's is still Report-Only. Before enforcing a
-Report-Only CSP, exercise the scanner's image upload and WASM
-workers and the classic Tournament report export in a real browser at 320, 768 and 1440 CSS pixels in English and
-Dutch; inspect console CSP violations. The scanner needs `worker-src 'self' blob:` and
-`script-src 'self' 'wasm-unsafe-eval'`. Do not treat static Caddy validation as browser acceptance.
+For Docker gateway changes, validate all four `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
+image (supply a test `MK8DX_DOMAIN` for LAN/production, and for `Caddyfile.offline-lan` a `MK8DX_LAN_IP` plus a
+throwaway CA under `/run/mk8dx/ca`). Inspect the response headers on `/` and `/scanner/`
+through a running container. Both the Web and the scanner policies are enforced. The scanner's policy has three
+non-overlapping parts: the page and everything else under `/scanner/` (`script-src 'self'`, no eval, no WASM
+compilation, no inline styles), `/scanner/ort/*` and `/scanner/tess/*` (worker scripts that only compile WASM:
+`'wasm-unsafe-eval'`), and `/scanner/assets/worker/*` (the Vite worker entries, which load OpenCV.js; its
+Emscripten/embind code needs `'unsafe-eval'`). A worker loaded from a URL runs under its own response's policy,
+so the page never allows eval; the scanner therefore creates no `blob:` workers. After a scanner or gateway CSP
+change, run a real gallery scan through the gateway (or a server sending the same headers per path) and check
+that the page reports no `securitypolicyviolation` and that `new Function` is refused on the page. The scanner UI
+sets styles only through CSSOM (`element.style.x = ...`), never a `style` attribute;
+`tooling/tests/test_installation_routes.py` guards the policies and that rule. Before changing the Web policy,
+exercise the classic Tournament report export in a real browser at 320, 768 and 1440 CSS pixels in English and
+Dutch; inspect console CSP violations. Do not treat static Caddy validation as browser acceptance.
 The classic export's `about:blank` preview inherits the Web page's existing meta CSP. In the 2026-11-04
 Chromium qualification, the report generated successfully but 70 inline-style assignments were blocked by that
 meta policy; the new gateway Report-Only policy added no violations. Record these separately and resolve or

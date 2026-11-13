@@ -113,7 +113,12 @@ export class ResultView {
     if (this.statsMine && this.statsTheirs && this.statsMine.length >= 12 && this.statsTheirs.length >= 12) {
       const entry = document.createElement('div');
       entry.className = 'specs-entry';
-      entry.innerHTML = `<span style="color:var(--green)">📊</span><div class="t"><b>${t('detail_specs')}</b><span>${t('detail_sub')}</span></div><span style="color:var(--text-dim);font-weight:700">›</span>`;
+      // Styles through CSSOM, never a style attribute: the scanner CSP has no 'unsafe-inline' (#34).
+      entry.innerHTML = `<span>📊</span><div class="t"><b>${t('detail_specs')}</b><span>${t('detail_sub')}</span></div><span>›</span>`;
+      const [icon, chevron] = [entry.firstElementChild as HTMLElement, entry.lastElementChild as HTMLElement];
+      icon.style.color = 'var(--green)';
+      chevron.style.color = 'var(--text-dim)';
+      chevron.style.fontWeight = '700';
       entry.addEventListener('click', () => this.showSpecs());
       colStats.append(entry);
     }
@@ -213,7 +218,9 @@ export class ResultView {
     tile.className = 'setup-tile';
     const ok = !!entry?.ok;
     const name = entry ? `${entry.name || '?'}${ok ? '' : ' ?'}` : '—';
-    tile.innerHTML = `<div class="kind ${kindClass}">${escapeHtml(kindLabel)}</div><div class="box" style="border-color:${accent}">${entry?.asset_ref ? `<img src="${this.cb.assetUrl(entry.asset_ref)}" alt="">` : ''}</div><div class="name ${entry && !ok ? 'unsure' : ''}" style="${entry && !ok ? '' : `color:${nameColor}`}">${escapeHtml(name)}</div>`;
+    tile.innerHTML = `<div class="kind ${kindClass}">${escapeHtml(kindLabel)}</div><div class="box">${entry?.asset_ref ? `<img src="${this.cb.assetUrl(entry.asset_ref)}" alt="">` : ''}</div><div class="name ${entry && !ok ? 'unsure' : ''}">${escapeHtml(name)}</div>`;
+    (tile.querySelector('.box') as HTMLElement).style.borderColor = accent;
+    if (!(entry && !ok)) (tile.querySelector('.name') as HTMLElement).style.color = nameColor;
     // An uncertain shared choice names its next candidates, so the reviewer
     // sees what else the icon could be before correcting it on the entry form.
     if (entry && !ok && entry.alternatives?.length) {
@@ -254,7 +261,8 @@ export class ResultView {
     if (!mine && !theirs) return null;
     const block = document.createElement('div');
     block.className = 'stats';
-    block.innerHTML = `<div class="caps" style="font-size:8px">${t('build_stats')}</div>`;
+    block.innerHTML = `<div class="caps">${t('build_stats')}</div>`;
+    (block.firstElementChild as HTMLElement).style.fontSize = '8px';
     STATS_ALL_LABELS.forEach((label, s) => {
       const idx = STATS_ALL_IDX[s];
       const haveBoth = !!(mine && theirs && mine.length > idx && theirs.length > idx);
@@ -272,7 +280,9 @@ export class ResultView {
       }
       const row = document.createElement('div');
       row.className = 'row';
-      row.innerHTML = `<span class="n">${label}</span><span class="v mine" style="font-weight:${!theirsHigher ? 700 : 400}">${mine && mine.length > idx ? mine[idx].toFixed(2) : '—'}</span><span class="v theirs" style="font-weight:${theirsHigher || (!mineHigher && haveBoth) ? 700 : 400}">${theirs && theirs.length > idx ? theirs[idx].toFixed(2) : '—'}</span><span class="d ${deltaClass}">${deltaText}</span>`;
+      row.innerHTML = `<span class="n">${label}</span><span class="v mine">${mine && mine.length > idx ? mine[idx].toFixed(2) : '—'}</span><span class="v theirs">${theirs && theirs.length > idx ? theirs[idx].toFixed(2) : '—'}</span><span class="d ${deltaClass}">${deltaText}</span>`;
+      (row.querySelector('.v.mine') as HTMLElement).style.fontWeight = !theirsHigher ? '700' : '400';
+      (row.querySelector('.v.theirs') as HTMLElement).style.fontWeight = theirsHigher || (!mineHigher && haveBoth) ? '700' : '400';
       block.append(row);
     });
     return block;
@@ -306,7 +316,8 @@ export class ResultView {
         stat.className = 'stat';
         const mineTotal = this.statsMine.length > idx ? this.statsMine[idx] : -1;
         const ghostTotal = this.statsTheirs.length > idx ? this.statsTheirs[idx] : -1;
-        stat.innerHTML = `<div class="n">${label}</div>${this.specsBarRow(this.partsMine, idx, mineTotal, false)}${this.specsBarRow(this.partsTheirs, idx, ghostTotal, true)}`;
+        stat.innerHTML = `<div class="n">${label}</div>`;
+        stat.append(this.specsBarRow(this.partsMine, idx, mineTotal, false), this.specsBarRow(this.partsTheirs, idx, ghostTotal, true));
         if (mineTotal >= 0 && ghostTotal >= 0) {
           const diff = mineTotal - ghostTotal;
           const chip = document.createElement('div');
@@ -322,22 +333,30 @@ export class ResultView {
     inner.append(groups);
     const legend = document.createElement('div');
     legend.className = 'legend';
-    legend.innerHTML = ['Character', 'Body', 'Tire', 'Glider'].map((n, i) => `<i style="background:${PART_COLORS[i]}"></i>${n}`).join('') + `<span class="note">${t('legend_note')}</span>`;
+    legend.innerHTML = ['Character', 'Body', 'Tire', 'Glider'].map((n) => `<i></i>${n}`).join('') + `<span class="note">${t('legend_note')}</span>`;
+    legend.querySelectorAll<HTMLElement>('i').forEach((swatch, i) => { swatch.style.background = PART_COLORS[i]; });
     inner.append(legend);
     this.root.innerHTML = '';
     this.root.append(inner);
   }
 
-  private specsBarRow(parts: number[][] | null, idx: number, total: number, dim: boolean): string {
-    let segs = '';
+  private specsBarRow(parts: number[][] | null, idx: number, total: number, dim: boolean): HTMLElement {
+    const row = document.createElement('div');
+    row.className = `brow ${dim ? 'dim' : ''}`;
+    row.innerHTML = `<div class="bar"></div><span class="v">${total < 0 ? '—' : total.toFixed(2)}</span>`;
+    const bar = row.firstElementChild as HTMLElement;
     if (parts) {
       const sum = 6;
       parts.forEach((p, i) => {
         const v = p && p.length > idx ? Math.max(0, p[idx]) : 0;
-        if (v > 0) segs += `<i style="width:${(v / sum) * 100}%;background:${PART_COLORS[i]}"></i>`;
+        if (v <= 0) return;
+        const seg = document.createElement('i');
+        seg.style.width = `${(v / sum) * 100}%`;
+        seg.style.background = PART_COLORS[i];
+        bar.append(seg);
       });
     }
-    return `<div class="brow ${dim ? 'dim' : ''}"><div class="bar">${segs}</div><span class="v">${total < 0 ? '—' : total.toFixed(2)}</span></div>`;
+    return row;
   }
 
   private showVerify(): void {
@@ -391,7 +410,8 @@ export class ResultView {
           if (!headerDone) {
             const caps = document.createElement('div');
             caps.className = 'caps';
-            caps.style.cssText = 'font-size:9px;padding:6px 0 2px';
+            caps.style.fontSize = '9px';
+            caps.style.padding = '6px 0 2px';
             caps.textContent = `${owner === 'player' ? t('you') : t('ghost')} · ${t('lap').toLowerCase()}s`;
             right.append(caps);
             headerDone = true;

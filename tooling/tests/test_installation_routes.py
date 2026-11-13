@@ -142,5 +142,56 @@ class ClientAddressForwardingTest(unittest.TestCase):
                 self.assertNotIn("trusted_proxies", text, "client-supplied forwarding headers stay untrusted")
 
 
+class ScannerContentSecurityPolicyTest(unittest.TestCase):
+    """The scanner policy is enforced; only its worker entries may evaluate strings (#34)."""
+
+    @staticmethod
+    def policies(text):
+        found = {}
+        for line in text.splitlines():
+            parts = line.strip().split(" ", 3)
+            if len(parts) == 4 and parts[0] == "header" and parts[1].startswith("@scanner"):
+                found[parts[1]] = (parts[2], parts[3].strip('"'))
+        return found
+
+    def test_every_gateway_enforces_the_same_split_scanner_policy(self):
+        seen = set()
+        for path in sorted((ROOT / "infrastructure/docker").glob("Caddyfile.*")):
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(path.name):
+                self.assertNotIn("Report-Only", text)
+                found = self.policies(text)
+                self.assertEqual(set(found), {"@scanner_csp", "@scanner_wasm_csp", "@scanner_worker_csp"})
+                self.assertTrue(all(field == "Content-Security-Policy" for field, _ in found.values()))
+                page, wasm, worker = (found[name][1] for name in ("@scanner_csp", "@scanner_wasm_csp", "@scanner_worker_csp"))
+                for policy in (page, wasm, worker):
+                    self.assertNotIn("unsafe-inline", policy)
+                    self.assertNotIn("blob:", policy.split("worker-src", 1)[1].split(";", 1)[0])
+                    self.assertIn("frame-ancestors 'none'", policy)
+                self.assertNotIn("unsafe-eval", page, "the scanner page never evaluates strings or compiles WASM")
+                self.assertNotIn("unsafe-eval", wasm.replace("'wasm-unsafe-eval'", ""))
+                self.assertIn("script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval';", worker)
+                # The three matchers must not overlap, or one response would carry two policies.
+                self.assertIn("@scanner_worker_csp path /scanner/assets/worker/*\n", text)
+                self.assertIn("@scanner_wasm_csp path /scanner/ort/* /scanner/tess/*\n", text)
+                self.assertIn("    path /scanner/*\n    not path /scanner/assets/worker/* /scanner/ort/* /scanner/tess/*\n", text)
+                seen.add((page, wasm, worker))
+        self.assertEqual(len(seen), 1, "every gateway sends the same scanner policies")
+
+    def test_the_scanner_build_puts_its_workers_where_the_gateway_expects_them(self):
+        config = (ROOT / "apps/timetrials-scanner-web/vite.config.ts").read_text(encoding="utf-8")
+        self.assertIn("entryFileNames: 'assets/worker/[name]-[hash].js'", config)
+
+    def test_the_scanner_sets_no_style_attributes_and_creates_no_blob_workers(self):
+        scanner = ROOT / "apps/timetrials-scanner-web"
+        sources = [*sorted((scanner / "src").rglob("*.ts")), *sorted(scanner.glob("*.html")), *sorted((scanner / "audit").glob("*.html"))]
+        self.assertTrue(sources)
+        for path in sources:
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(path.name):
+                self.assertNotRegex(text, r"""style=|setAttribute\(\s*['"]style|<style|\.cssText\b""")
+                self.assertNotIn("new Worker(URL.createObjectURL", text)
+
+
 if __name__ == "__main__":
     unittest.main()

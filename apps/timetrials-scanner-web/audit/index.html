@@ -5,26 +5,7 @@
   <title>MK8DX TT Scanner — audit</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#0a0d12" />
-  <style>
-    body { font: 14px system-ui, -apple-system, sans-serif; background: #0a0d12; color: #e2e8f0; margin: 0; padding: 14px; }
-    h1 { font-size: 18px; margin: 0 0 4px; }
-    .sub { color: #94a3b8; font-size: 12px; margin-bottom: 12px; }
-    .step { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: start; padding: 8px 10px; border: 1px solid #253041; border-radius: 10px; margin-bottom: 6px; background: #111722; }
-    .step .ic { font-size: 18px; line-height: 20px; }
-    .step .name { font-weight: 700; }
-    .step .detail { color: #94a3b8; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
-    .step .ms { color: #94a3b8; font: 12px ui-monospace, Menlo, Consolas, monospace; white-space: nowrap; }
-    .step.ok { border-color: #2a6b45; }
-    .step.fail { border-color: #8f2a2a; }
-    .step.hang { border-color: #a36b00; }
-    .step.run .ic { animation: spin 1s linear infinite; display: inline-block; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .bar { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
-    button { padding: 10px 14px; border-radius: 10px; border: 1px solid #3b4658; background: #1b2330; color: #e2e8f0; font: 700 14px system-ui; }
-    button.primary { background: #ffdc3c; color: #14181e; border-color: #fff; }
-    #summary { margin-top: 10px; padding: 10px; border-radius: 10px; background: #111722; border: 1px solid #253041; font-size: 12px; white-space: pre-wrap; word-break: break-word; }
-    textarea { width: 100%; height: 160px; background: #0b1017; color: #cbd5e1; border: 1px solid #253041; border-radius: 8px; font: 11px ui-monospace, Menlo, Consolas, monospace; }
-  </style>
+  <link rel="stylesheet" href="./audit.css" />
 </head>
 <body>
   <h1>Scanner-audit</h1>
