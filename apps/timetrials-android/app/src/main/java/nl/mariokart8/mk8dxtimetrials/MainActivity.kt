@@ -388,6 +388,16 @@ internal fun AndroidTimeTrialsProductionRoot(
     val ecosystemClient = remember(onlineClient, offlineStore) {
         AndroidOfflineFallbackDataSource(onlineClient, { offlineStore.readFor(nativeSession?.playerId) }, offlineState)
     }
+    // The community's own name (public settings), read whenever the app opens or comes back; the chip, tiles
+    // and the You card show it, and the host when there is none.
+    LaunchedEffect(apiOrigin, appIsInFront) {
+        if (!appIsInFront) return@LaunchedEffect
+        withContext(Dispatchers.IO) { AndroidCommunities.refreshName(applicationContext, apiOrigin) }
+        communityLabel = withContext(Dispatchers.IO) {
+            runCatching { androidCommunityChipLabel(AndroidCommunities.list(applicationContext), apiOrigin) }
+                .getOrDefault(communityLabel)
+        }
+    }
     LaunchedEffect(onlineClient, offlineStore, appIsInFront) {
         val playerId = nativeSession?.playerId ?: return@LaunchedEffect
         if (!appIsInFront) return@LaunchedEffect

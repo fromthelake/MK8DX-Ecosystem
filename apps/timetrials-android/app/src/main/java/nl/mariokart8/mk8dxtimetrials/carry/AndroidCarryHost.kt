@@ -157,7 +157,9 @@ internal fun AndroidCarryHost(
                                                 AndroidTournamentConnectionOpener { url ->
                                                     AndroidOriginTrust.open(context, url)
                                                 },
-                                            ).installationSettings().carriedTimes,
+                                            ).installationSettings()
+                                                .also { AndroidCommunities.applyServerName(context, target.origin, it.communityName) }
+                                                .carriedTimes,
                                         )
                                     }
                                     val what = current.what
@@ -199,7 +201,9 @@ internal fun AndroidCarryHost(
                                                             AndroidTournamentConnectionOpener { url ->
                                                                 AndroidOriginTrust.open(context, url)
                                                             },
-                                                        ).installationSettings().carriedTimes,
+                                                        ).installationSettings()
+                                                .also { AndroidCommunities.applyServerName(context, target.origin, it.communityName) }
+                                                .carriedTimes,
                                                     )
                                                 },
                                                 queue = AndroidCarriedQueue.forOrigin(context, target.origin),

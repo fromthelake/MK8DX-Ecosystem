@@ -53,10 +53,25 @@ import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme
  * Runs of [origin] that have not reached it yet: its outbox (pending or failed) plus copies carried there that
  * wait for somebody to sign in. Read from that community's own namespace without making it active.
  */
-internal fun androidCommunityUnsentCount(context: Context, origin: String): Int = runCatching {
+internal fun androidCommunityUnsentCount(context: Context, origin: String): Int =
+    androidCommunityOutboxUnsentCount(context, origin) +
+        runCatching { AndroidCarriedQueue.forOrigin(context, origin).size() }.getOrDefault(0)
+
+/** Runs in [origin]'s outbox that have not reached it yet, without the carried copies waiting for sign-in. */
+internal fun androidCommunityOutboxUnsentCount(context: Context, origin: String): Int = runCatching {
     createAndroidProductTimeTrialOutboxFor(context, origin).listIndex()
         .count { androidOutboxCountsAsUnsent(it.storedState, it.failureCode) }
-}.getOrDefault(0) + runCatching { AndroidCarriedQueue.forOrigin(context, origin).size() }.getOrDefault(0)
+}.getOrDefault(0)
+
+/**
+ * What a community tile says about waiting runs: the outbox runs on one line, the carried copies waiting for
+ * sign-in on their own line, and "Nothing waiting to be sent" only when both are zero.
+ */
+internal data class AndroidCommunityWaiting(val outboxRuns: Int, val carriedCopies: Int) {
+    val nothing: Boolean get() = outboxRuns == 0 && carriedCopies == 0
+    /** The generic line's count; null when that line is not shown. */
+    val runsLine: Int? get() = outboxRuns.takeIf { it > 0 }
+}
 
 /**
  * Settings -> Community server (ADR-0225 section 1): every community this phone knows, the active one marked,
@@ -81,7 +96,7 @@ internal fun AndroidCommunityServerPanel(
     LaunchedEffect(apiOrigin, reload) {
         val (list, counts) = withContext(Dispatchers.IO) {
             val list = AndroidCommunities.list(context)
-            list to list.associate { it.origin to androidCommunityUnsentCount(context, it.origin) }
+            list to list.associate { it.origin to androidCommunityOutboxUnsentCount(context, it.origin) }
         }
         communities = list
         unsent = counts
@@ -133,13 +148,16 @@ internal fun AndroidCommunityServerPanel(
                     if (active) Mk8dxChip(t("Active", "Actief"), tone = Mk8dxChipTone.Success)
                 }
                 if (community.name != community.origin) Mk8dxMetaLine(community.origin)
-                Mk8dxMetaLine(
-                    when (waiting) {
-                        0 -> t("Nothing waiting to be sent", "Niets wacht op verzenden")
-                        1 -> t("1 run waiting to be sent", "1 rit wacht op verzenden")
-                        else -> t("$waiting runs waiting to be sent", "$waiting ritten wachten op verzenden")
-                    },
-                )
+                val summary = AndroidCommunityWaiting(waiting, waitingCarried[community.origin].orEmpty().size)
+                if (summary.nothing) {
+                    Mk8dxMetaLine(t("Nothing waiting to be sent", "Niets wacht op verzenden"))
+                }
+                summary.runsLine?.let { runs ->
+                    Mk8dxMetaLine(
+                        if (runs == 1) t("1 run waiting to be sent", "1 rit wacht op verzenden")
+                        else t("$runs runs waiting to be sent", "$runs ritten wachten op verzenden"),
+                    )
+                }
                 // Copies carried here that wait for somebody to sign in: each can be called back.
                 // Carried copies waiting for sign-in: one summary line, the list only on request (owner, 13-11:
                 // "Mijn beste tijden meenemen" queued 111 copies and the sheet became one endless list).
