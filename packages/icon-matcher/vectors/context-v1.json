@@ -1,0 +1,3757 @@
+{
+ "cases": [
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.89,
+    "id": "character_variant.alpha.002_blue",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_name_variant_conflict"
+    ],
+    "familyId": "character.alpha",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.variant_conflict",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 1.0,
+    "id": "character_variant.alpha.002_blue",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "exact_name"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.002_blue",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.variant_exact_fuzzy1",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.92,
+    "id": "character_variant.alpha.001_red",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "exact_name"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.same_id_exact_name",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.88,
+    "id": "character_variant.alpha.002_blue",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "exact_name"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.002_blue",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.unknown_variant_exact_name",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.014,
+    "score": 0.79,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.776
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "name_base_close_visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character.alpha",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.base_close_visual",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.014,
+    "score": 0.79,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.776
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual",
+     "name_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.base_gap_0.015_edge",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.795
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.6
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.015,
+    "score": 0.795,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.795
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.78
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual",
+     "name_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.base_gap_0.0151",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.7951
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.6
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.0151,
+    "score": 0.7951,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.7951
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.78
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual",
+     "name_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.base_score_0.80_edge",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.8
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.6
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.8
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual",
+     "name_family"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.base_not_in_top",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.86
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.6
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.86,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.8
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "character.alpha",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "exact_name"
+    ],
+    "familyId": "character.alpha",
+    "id": "character.alpha",
+    "status": "accepted",
+    "visualTop1": "character.alpha"
+   },
+   "id": "char.base_name_on_base_top",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.9
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.6
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.1,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.9
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.8
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.93,
+    "id": "character_variant.gamma.001_green",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "exact_name_cross_family",
+     "visual_disagreement"
+    ],
+    "familyId": "character.gamma",
+    "id": "character_variant.gamma.001_green",
+    "status": "accepted",
+    "visualTop1": "character.beta"
+   },
+   "id": "char.cross_family_low_score",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.beta",
+      "score": 0.84
+     },
+     {
+      "familyId": "character.gamma",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.14,
+    "score": 0.84,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.84
+     },
+     {
+      "familyId": "character.gamma",
+      "id": "character.gamma",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "character.gamma",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "exact_name_cross_family",
+     "visual_disagreement"
+    ],
+    "familyId": "character.gamma",
+    "id": "character.gamma",
+    "status": "accepted",
+    "visualTop1": "character.beta"
+   },
+   "id": "char.cross_family_low_margin",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.beta",
+      "score": 0.9
+     },
+     {
+      "familyId": "character.gamma",
+      "score": 0.851
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.049,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.9
+     },
+     {
+      "familyId": "character.gamma",
+      "id": "character.gamma",
+      "score": 0.851
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.8999,
+    "id": "character.gamma",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_name_conflict"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character.beta"
+   },
+   "id": "char.cross_family_fuzzy_0.8999",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     },
+     {
+      "familyId": "character.gamma",
+      "score": 0.69
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.01,
+    "score": 0.7,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     },
+     {
+      "familyId": "character.gamma",
+      "id": "character.gamma",
+      "score": 0.69
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.97,
+    "id": "character.gamma",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual_name_conflict"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character.beta"
+   },
+   "id": "char.cross_family_visual_strong",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.beta",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.gamma",
+      "score": 0.8
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.05,
+    "score": 0.85,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.gamma",
+      "id": "character.gamma",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.85,
+    "id": "character_variant.alpha.002_blue",
+    "margin": 0.08
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "exact_name"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.002_blue",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.strong_edge_0.85_0.08",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.014,
+    "score": 0.79,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.776
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.8499,
+    "id": "character_variant.alpha.002_blue",
+    "margin": 0.5
+   },
+   "expected": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.weak_fuzzy_0.8499",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.014,
+    "score": 0.79,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.776
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "clue": {
+    "fuzzy": 0.99,
+    "id": "character.beta",
+    "margin": 0.0799
+   },
+   "expected": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.weak_margin_0.0799",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": {
+    "fuzzy": 0.99,
+    "id": "character.not_in_catalog",
+    "margin": 1.0
+   },
+   "expected": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.unknown_clue_id",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.no_clue_accepted",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.91
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.06,
+    "score": 0.91,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.91
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.002_blue",
+      "score": 0.85
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.84
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "id": "char.no_clue_unknown",
+   "kind": "characters",
+   "rule": "character",
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "character.alpha",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.beta",
+      "score": 0.7
+     }
+    ],
+    "kind": "characters",
+    "margin": 0.014,
+    "score": 0.79,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "character.alpha",
+      "id": "character_variant.alpha.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "character.alpha",
+      "id": "character.alpha",
+      "score": 0.776
+     },
+     {
+      "familyId": "character.beta",
+      "id": "character.beta",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.7,
+    "id": "body.kart_b",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_text_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_conflict",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.65,
+    "id": "body.kart_b",
+    "margin": 0.15
+   },
+   "expected": {
+    "evidence": [
+     "visual_text_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_conflict_edge_0.65_0.15",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.6499,
+    "id": "body.kart_b",
+    "margin": 0.5
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_below_0.6499",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.8,
+    "id": "body.kart_b",
+    "margin": 0.1499
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_margin_0.1499",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.7,
+    "id": "body_variant.kart_a.001_red",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_same_family",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.75,
+    "id": "2",
+    "margin": 0.4
+   },
+   "expected": {
+    "evidence": [
+     "visual_text_conflict_review"
+    ],
+    "familyId": "tire.round",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_numeric_text_conflict",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.88
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.84
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.04,
+    "score": 0.88,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.88
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.84
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "3",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "tire_text"
+    ],
+    "familyId": "tire.wide",
+    "id": "tire.wide",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_text_strong",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "3",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "tire_text_outside_visual_top3"
+    ],
+    "familyId": "tire.round",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_text_guard_outside_top3",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": true,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "2",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "tire_text"
+    ],
+    "familyId": "tire.knobby",
+    "id": "tire.knobby",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_text_guard_inside_top3",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": true,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "9",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "tire.round",
+    "id": "tire.round",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_text_unknown_index",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.88
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.84
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.04,
+    "score": 0.88,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.88
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.84
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.75,
+    "id": "0",
+    "margin": 0.4
+   },
+   "expected": {
+    "evidence": [
+     "visual_medium_tire_text"
+    ],
+    "familyId": "tire.round",
+    "id": "tire.round",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_medium_text",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.7,
+    "id": "0",
+    "margin": 0.3
+   },
+   "expected": {
+    "evidence": [
+     "visual_medium_tire_text"
+    ],
+    "familyId": "tire.round",
+    "id": "tire.round",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_medium_text_edges",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.6999,
+    "id": "0",
+    "margin": 0.4
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_medium_text_fuzzy_0.6999",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.75,
+    "id": "0",
+    "margin": 0.4
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_medium_text_visual_margin_0.0099",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.7901
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.0099,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.7901
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.75,
+    "id": "0",
+    "margin": 0.4
+   },
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_medium_text_visual_score_0.7999",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.7999
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.7
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.0999,
+    "score": 0.7999,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.7999
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.7
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "\u0663",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "tire_text"
+    ],
+    "familyId": "tire.wide",
+    "id": "tire.wide",
+    "status": "accepted",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_unicode_digit",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_family_same",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.gamma",
+    "id": "character.gamma",
+    "status": "accepted",
+    "visualTop1": "character.gamma"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_c",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "exact_text_family",
+     "character_part_relation"
+    ],
+    "familyId": "body.kart_c",
+    "id": "body_variant.kart_c.001_red",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_other_family_relation",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_b",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "exact_text_family",
+     "unique_text_family"
+    ],
+    "familyId": "body.kart_b",
+    "id": "body.kart_b",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_other_family_unique",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_c",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "exact_text_family"
+    ],
+    "familyId": "body.kart_c",
+    "id": null,
+    "status": "family_only",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_other_family_only",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body_variant.kart_c.001_red",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "exact_text_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_text_other_variant_unknown",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_relation"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body_variant.kart_a.001_red",
+    "status": "accepted",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_relation_unknown_visual",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.01,
+    "score": 0.83,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.83
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.82
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.81
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.beta",
+    "id": "character.beta",
+    "status": "accepted",
+    "visualTop1": "character.beta"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_relation"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_relation_base",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.01,
+    "score": 0.83,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.83
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.82
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.81
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_relation_score_below",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.7999
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.0099,
+    "score": 0.7999,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.7999
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.79
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.78
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_relation_accepted_visual_kept",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "weak_family_relation_review"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_relation_weak_family_review",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.825
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.825
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_relation"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_relation_family_margin_0.02_edge",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.82
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.82
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_relation"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_relation_wide_family",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "character_part_relation"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_relation_strong_text",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.825
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.825
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_relation"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_relation_single_family",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.82
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "character_part_top3_variant"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_top3_variant",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider.wing_a",
+    "status": "accepted",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_top3_variant_missing",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider_variant.wing_a.001_red",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider.wing_a",
+    "status": "accepted",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_top3_variant_variant_clue",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "text_supported_visual_variant"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body_variant.kart_a.002_blue",
+    "status": "accepted",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_text_supported_variant",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.76
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.01,
+    "score": 0.76,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.76
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.75
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": true,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_text_supported_variant_0.7499",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.7499
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.0499,
+    "score": 0.7499,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.7499
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.7
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.69
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body_variant.kart_a.001_red",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_family_only_variant_clue",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.7499
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.0499,
+    "score": 0.7499,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.7499
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.7
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.69
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "unaccepted_character_colour_conflict_review"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_unaccepted_character_conflict",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "unaccepted_character_colour_conflict_review"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_suggested_character_conflict",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "glider.wing_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.002_blue",
+    "status": "accepted",
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_unaccepted_character_same_colour",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.no_clue_accepted",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "tire.round"
+   },
+   "id": "part.no_clue_unknown_tire",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  }
+ ],
+ "catalog": {
+  "familyById": {
+   "body.kart_a": "body.kart_a",
+   "body.kart_b": "body.kart_b",
+   "body.kart_c": "body.kart_c",
+   "body_variant.kart_a.001_red": "body.kart_a",
+   "body_variant.kart_a.002_blue": "body.kart_a",
+   "body_variant.kart_c.001_red": "body.kart_c",
+   "character.alpha": "character.alpha",
+   "character.beta": "character.beta",
+   "character.gamma": "character.gamma",
+   "character_variant.alpha.001_red": "character.alpha",
+   "character_variant.alpha.002_blue": "character.alpha",
+   "character_variant.gamma.001_green": "character.gamma",
+   "glider.wing_a": "glider.wing_a",
+   "glider.wing_b": "glider.wing_b",
+   "glider_variant.wing_a.001_red": "glider.wing_a",
+   "glider_variant.wing_a.002_blue": "glider.wing_a",
+   "tire.knobby": "tire.knobby",
+   "tire.round": "tire.round",
+   "tire.slick": "tire.slick",
+   "tire.wide": "tire.wide"
+  },
+  "partForCharacter": [
+   [
+    "bodies",
+    "body.kart_a",
+    "character.beta",
+    "body.kart_a"
+   ],
+   [
+    "bodies",
+    "body.kart_a",
+    "character_variant.alpha.001_red",
+    "body_variant.kart_a.001_red"
+   ],
+   [
+    "bodies",
+    "body.kart_c",
+    "character.gamma",
+    "body_variant.kart_c.001_red"
+   ],
+   [
+    "gliders",
+    "glider.wing_a",
+    "character.beta",
+    "glider.wing_a"
+   ],
+   [
+    "gliders",
+    "glider.wing_a",
+    "character_variant.alpha.001_red",
+    "glider_variant.wing_a.001_red"
+   ],
+   [
+    "gliders",
+    "glider.wing_a",
+    "character_variant.alpha.002_blue",
+    "glider_variant.wing_a.002_blue"
+   ]
+  ],
+  "resultMembers": {
+   "bodies": [
+    {
+     "familyId": "body.kart_a",
+     "id": "body.kart_a"
+    },
+    {
+     "familyId": "body.kart_a",
+     "id": "body_variant.kart_a.001_red"
+    },
+    {
+     "familyId": "body.kart_a",
+     "id": "body_variant.kart_a.002_blue"
+    },
+    {
+     "familyId": "body.kart_b",
+     "id": "body.kart_b"
+    },
+    {
+     "familyId": "body.kart_c",
+     "id": "body.kart_c"
+    },
+    {
+     "familyId": "body.kart_c",
+     "id": "body_variant.kart_c.001_red"
+    }
+   ],
+   "gliders": [
+    {
+     "familyId": "glider.wing_a",
+     "id": "glider.wing_a"
+    },
+    {
+     "familyId": "glider.wing_a",
+     "id": "glider_variant.wing_a.001_red"
+    },
+    {
+     "familyId": "glider.wing_a",
+     "id": "glider_variant.wing_a.002_blue"
+    },
+    {
+     "familyId": "glider.wing_b",
+     "id": "glider.wing_b"
+    }
+   ],
+   "tires": [
+    {
+     "familyId": "tire.round",
+     "id": "tire.round"
+    },
+    {
+     "familyId": "tire.slick",
+     "id": "tire.slick"
+    },
+    {
+     "familyId": "tire.knobby",
+     "id": "tire.knobby"
+    },
+    {
+     "familyId": "tire.wide",
+     "id": "tire.wide"
+    }
+   ]
+  },
+  "tireByIndex": [
+   [
+    0,
+    "tire.round"
+   ],
+   [
+    1,
+    "tire.slick"
+   ],
+   [
+    2,
+    "tire.knobby"
+   ],
+   [
+    3,
+    "tire.wide"
+   ]
+  ]
+ },
+ "generator": "packages/icon-matcher/tools/generate_vectors.py",
+ "schema": "mk8dx.context-vectors.v1",
+ "source": "packages/icon-matcher/python/mk8dx_icon_matcher/context.py"
+}
