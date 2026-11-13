@@ -87,7 +87,7 @@ A **firewall** is a protection that decides which connections a computer lets in
 
 **Starting on Windows**
 
-1. **Do:** in the unpacked folder, double-click **Start-MK8DX-LAN.cmd**. → **You see:** a black window with lines such as "MK8DX package:" and "Private installation:". The first time it also shows "Preparing the included Python packages (once, without internet)." and "Loading the included Docker images. This can take several minutes." That takes a few minutes. Then it shows "MK8DX setup is open in your browser:" and the setup opens in your browser. → **See something else?** See the messages below.
+1. **Do:** in the unpacked folder, double-click **Start-MK8DX-LAN.cmd**. → **You see:** a window with the MK8DX logo and a 3-2-1-GO countdown with beeps ([to leave it out](../guides/HOSTING.md#the-launcher-window-look-and-options)), then lines such as "MK8DX package:" and "Private installation:". The first time it also shows "Preparing the included Python packages (once, without internet)." and "Loading the included Docker images. This can take several minutes." That takes a few minutes. Then it shows "MK8DX setup is open in your browser:" and the setup opens in your browser. → **See something else?** See the messages below.
 2. **Do:** keep the black window open until you have clicked **Finish** in the setup. The window says so too: "Keep this window open until you click Finish."
 
 Messages in the black window on Windows:
@@ -103,7 +103,7 @@ Messages in the black window on Windows:
 **Starting on Linux and macOS**
 
 1. **Do:** open a terminal in the unpacked folder. Linux: right-click in the folder and choose "Open in Terminal" if your file manager offers it. On macOS and Linux this also works: open Terminal, type `cd ` (with a space after it), drag the folder into the window and press Enter. → **You see:** the terminal is in the package folder.
-2. **Do:** type `sh tooling/start-mk8dx.sh` and press Enter. → **You see:** "MK8DX package:", the Python number, "Docker Compose version". The first time also "Loading the included Docker images. This can take several minutes." and "Preparing the included Python packages (once, without internet)." Then "Private installation:" and "MK8DX setup is open in your browser:", and the setup opens in your browser. → **See something else?** If no browser opens, copy the address that starts with `http://127.0.0.1:` from the terminal into your browser.
+2. **Do:** type `sh tooling/start-mk8dx.sh` and press Enter. → **You see:** the MK8DX logo and a 3-2-1-GO countdown, then "MK8DX package:", the Python number, "Docker Compose version". The first time also "Loading the included Docker images. This can take several minutes." and "Preparing the included Python packages (once, without internet)." Then "Private installation:" and "MK8DX setup is open in your browser:", and the setup opens in your browser. → **See something else?** If no browser opens, copy the address that starts with `http://127.0.0.1:` from the terminal into your browser.
 3. **Do:** keep the terminal open until you have clicked **Finish**.
 
 Messages in the terminal on Linux and macOS:
@@ -170,7 +170,7 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 
 **Opening MK8DX beheer**
 
-1. **Do (Windows):** double-click **MK8DX beheer** on the desktop. That shortcut starts the same thing as Start-MK8DX-LAN.cmd. → **You see:** the black window and then, in the browser, the page with "administration" at the top and the title **MK8DX administration**. → **See something else?** No shortcut: double-click Start-MK8DX-LAN.cmd in the MK8DX folder.
+1. **Do (Windows):** double-click **MK8DX beheer** on the desktop. That shortcut starts the same thing as Start-MK8DX-LAN.cmd. → **You see:** the launcher window with its short race intro and then, in the browser, the page with "administration" at the top and the title **MK8DX administration**. → **See something else?** No shortcut: double-click Start-MK8DX-LAN.cmd in the MK8DX folder.
 2. **Do (Linux):** start **MK8DX beheer** from the desktop or from the app menu. On some Linux desktops you first have to allow such an icon (right-click it and choose the option to allow launching). It also works with `sh tooling/start-mk8dx.sh` in the MK8DX folder, as in chapter 3. → **You see:** a terminal and then the **MK8DX administration** page.
 3. **Do (macOS, not tested):** double-click **MK8DX beheer.command** on the desktop, or start `sh tooling/start-mk8dx.sh` as in chapter 3. → **You see:** Terminal and then the **MK8DX administration** page.
 

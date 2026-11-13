@@ -8,6 +8,29 @@ Gebruik telkens **dezelfde private gegevensmap**. Op Windows A1 is dat standaard
 
 **Ubuntu VPS:** verbind zoals in [B1](B1_VPS.md), voer `cd /opt/mk8dx/host` uit en `sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance`; kies hetzelfde menu. **Je ziet:** het bestaande project. Als de server herstart, starten containers met `restart: unless-stopped` na Docker; controleer nog steeds website, mail en opslag. Een laptop in slaapstand of een uitgeschakelde VPS is tijdelijk niet bereikbaar.
 
+## Het startvenster: weergave en opties
+
+Elk startvenster opent als de start van een race: een gekleurd MK8DX-logo, aftellen 3-2-1-GO met piepjes, de
+controles als ronden met een raceklok en een finish met de rondetijden. Dat geldt voor `Start-MK8DX.cmd`,
+`Start-MK8DX-LAN.cmd` (ook achter het bureaubladpictogram **MK8DX beheer**), `Start-MK8DX-No-Docker.cmd`,
+`Manage-MK8DX-No-Docker.cmd` en `tooling/start-mk8dx.sh`. Alleen de weergave verschilt; stappen, menu en meldingen
+zijn hetzelfde. In een terminal met moderne kleuren (Windows Terminal, de Windows 10/11-console, een Linux/macOS-
+terminal met UTF-8 en 256 kleuren) is de rijke weergave standaard aan, met geluid. Gaat de uitvoer naar een bestand,
+dan krijg je gewone tekst.
+
+| Wat je wilt | Windows | Linux en macOS |
+| --- | --- | --- |
+| Aftellen overslaan (standaard staat het aan) | `Start-MK8DX.cmd -SkipCountdown` (alle vier de `.cmd`-bestanden), of `MK8DX_SKIP_COUNTDOWN=1` | `sh tooling/start-mk8dx.sh --skip-countdown [installatiemap]`, of `MK8DX_SKIP_COUNTDOWN=1` |
+| Gewone tekst | `-Plain`, `MK8DX_PLAIN=1` of `NO_COLOR=1` | `--plain`, `MK8DX_PLAIN=1` of `NO_COLOR=1` |
+| Zonder geluid (standaard aan) | `MK8DX_SOUND=0` | `MK8DX_SOUND=0` |
+| Rijke of klassieke weergave afdwingen | `MK8DX_RICH=1` / `MK8DX_RICH=0` | `MK8DX_RICH=1` / `MK8DX_RICH=0` |
+| Bekijken zonder iets te starten | `powershell -NoProfile -File tooling\mk8dx-ui.ps1 -Demo` | `sh tooling/mk8dx-ui.sh --demo` |
+
+Een keuze bewaren: Windows `setx MK8DX_SKIP_COUNTDOWN 1` (geldt voor vensters die je daarna opent), Linux/macOS
+`export MK8DX_SKIP_COUNTDOWN=1` in `~/.profile`. Bij het pictogram **MK8DX beheer** kun je ook in de eigenschappen
+` -SkipCountdown` achter het doel zetten. Op Linux en macOS is het geluid de terminalbel; de terminal bepaalt of je
+die hoort.
+
 ## Private backup: maak, controleer, kopieer weg
 
 **Waar:** in hetzelfde menu, kies **6**. De helper gebruikt het opgeslagen profiel en maakt een nieuw backupmapje met een MySQL-dump, runtimeconfig, secrets en een manifest met SHA-256. Windows schrijft onder `Documenten\MK8DX-backups\<tijdstip>`, Ubuntu onder `~/mk8dx-backups/<tijdstip>`. **Je ziet:** `Backup complete`. Controleer een backup op Windows in PowerShell:

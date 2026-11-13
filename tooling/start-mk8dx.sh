@@ -3,38 +3,59 @@
 # An A2 offline package opens the setup wizard / "MK8DX beheer" in the browser; other routes keep the menu.
 set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)
+# Options anywhere on the line; the first other argument is the installation directory.
+#   --skip-countdown  no 3-2-1-GO countdown (also MK8DX_SKIP_COUNTDOWN=1)
+#   --plain           plain text, no colours or animation (also MK8DX_PLAIN=1 or NO_COLOR)
+state_arg=
+for arg do
+  case $arg in
+    --skip-countdown) MK8DX_SKIP_COUNTDOWN=1 ;;
+    --plain) MK8DX_PLAIN=1 ;;
+    *) [ -n "$state_arg" ] || state_arg=$arg ;;
+  esac
+done
 case "$(uname -s)" in
   Darwin) data_home="$HOME/Library/Application Support/MK8DX" ;;
   *) data_home="${XDG_DATA_HOME:-$HOME/.local/share}/mk8dx" ;;
 esac
 cd "$root"
-if [ -t 1 ]; then
-  w=$(printf '\033[1;37m'); e=$(printf '\033[1;35m'); y=$(printf '\033[1;33m'); g=$(printf '\033[2m'); n=$(printf '\033[0m')
+# Presentation only (header, countdown, laps, spinner, finish); plain text when the output is not a terminal.
+if [ -f tooling/mk8dx-ui.sh ]; then
+  ui_sourced=1
+  . ./tooling/mk8dx-ui.sh
 else
-  w=; e=; y=; g=; n=
+  ui_header() { printf '\n   T I M E   T R I A L S   %s\n\n' "$1"; }
+  ui_start() { :; }
+  ui_lap() { printf '[LAP %s] %s\n' "$1" "$2"; }
+  ui_step() { printf '\n[..] %s\n' "$1"; }
+  ui_info() { printf '%s\n' "$1"; }
+  ui_ok() { printf 'OK  %s\n' "${1:-Done.}"; }
+  ui_fail() { printf '!!  %s\n' "$1"; }
+  ui_menu_title() { printf '\n%s\n' "$1"; }
+  ui_menu_item() { printf '  %s  %s\n' "$1" "$2"; }
+  ui_finish() { printf '   FINISH  %s\n' "$1"; }
+  ui_spin_quiet() { shift; "$@" >/dev/null 2>&1; }
 fi
-printf '\n'
-printf '   %s __  __  _  __%s  ___  %s ____  __  __%s\n' "$w" "$e" "$w" "$n"
-printf '   %s|  \\/  || |/ /%s ( _ ) %s|  _ \\ \\ \\/ /%s\n' "$w" "$e" "$w" "$n"
-printf '   %s| |\\/| || '"'"' / %s / _ \\ %s| | | | \\  / %s\n' "$w" "$e" "$w" "$n"
-printf '   %s| |  | || . \\ %s| (_) |%s| |_| | /  \\ %s\n' "$w" "$e" "$w" "$n"
-printf '   %s|_|  |_||_|\\_\\%s \\___/ %s|____/ /_/\\_\\%s\n\n' "$w" "$e" "$w" "$n"
 tagline='community server'
 if [ -f images/images.json ] && grep -q '"qaOfflineCandidate": true' images/images.json; then tagline='home & club LAN'; fi
-printf '   %sT I M E   T R I A L S%s   %s%s%s\n\n' "$y" "$n" "$g" "$tagline" "$n"
-printf 'MK8DX package: %s\n' "$root"
+ui_header "$tagline"
+ui_start
+ui_lap 1/4 'Checking Python'
+ui_info "MK8DX package: $root"
 # The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
 python3 -c 'import sys; assert (3, 12) <= sys.version_info[:2] <= (3, 15)' 2>/dev/null || {
-  echo 'Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.' >&2
+  ui_fail 'Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.' >&2
   exit 1
 }
 python3 --version
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
-docker info >/dev/null 2>&1 || {
-  echo 'Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop).' >&2
+ui_lap 2/4 'Checking Docker'
+ui_spin_quiet 'Waiting for the Docker engine' docker info || {
+  ui_fail 'Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop).' >&2
   exit 1
 }
 docker compose version
+ui_lap 3/4 'Preparing the MK8DX programs'
 # The package names its own images (images/images.json); an A2 offline package says so there.
 api_tag='mk8dx/api:local-v010-node26-amd64'
 web_tag='mk8dx/web:local-v010-node26-amd64'
@@ -54,14 +75,14 @@ bundle="images/docker-images-$arch.tar"
 load=no
 [ -f "$bundle" ] && [ ! -f images/loaded.txt ] && load=yes
 if ! docker image inspect "$api_tag" >/dev/null 2>&1 || ! docker image inspect "$web_tag" >/dev/null 2>&1; then
-  [ -f "$bundle" ] || { echo 'Complete prebuilt image bundle is missing.' >&2; exit 1; }
+  [ -f "$bundle" ] || { ui_fail 'Complete prebuilt image bundle is missing.' >&2; exit 1; }
   load=yes
 fi
 if [ "$load" = yes ]; then
-  echo 'Loading the included Docker images. This can take several minutes.'
+  ui_info 'Loading the included Docker images. This can take several minutes.'
   docker load --input "$bundle"
   { date -u "+Images of this package loaded %Y-%m-%dT%H:%M:%SZ" > images/loaded.txt; } 2>/dev/null ||
-    echo 'Note: the package folder is read-only, so the next start loads the images again.'
+    ui_info 'Note: the package folder is read-only, so the next start loads the images again.'
 fi
 python=python3
 if [ -d wheels ]; then
@@ -69,64 +90,71 @@ if [ -d wheels ]; then
   hash=$(python3 -c 'import hashlib; print(hashlib.sha256(open("tooling/requirements-offline-lan.txt","rb").read()).hexdigest()[:12].upper())')
   venv="$data_home/python-offline-$hash"
   if [ ! -x "$venv/bin/python" ]; then
-    echo 'Preparing the included Python packages (once, without internet).'
+    ui_info 'Preparing the included Python packages (once, without internet).'
     mkdir -p "$data_home"
-    python3 -m venv "$venv" || { echo 'Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv).' >&2; exit 1; }
+    python3 -m venv "$venv" || { ui_fail 'Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv).' >&2; exit 1; }
     "$venv/bin/python" -m pip install --no-index --find-links wheels --require-hashes -r wheels/requirements.hashes.txt ||
-      { rm -rf "$venv"; echo 'Installing the included Python packages failed.' >&2; exit 1; }
+      { rm -rf "$venv"; ui_fail 'Installing the included Python packages failed.' >&2; exit 1; }
   fi
   python="$venv/bin/python"
 fi
 if [ "$candidate" = yes ]; then
-  state=${1:-"$data_home/LAN"}
+  state=${state_arg:-"$data_home/LAN"}
 else
-  state=${1:-"$HOME/mk8dx-data"}
+  state=${state_arg:-"$HOME/mk8dx-data"}
 fi
-printf 'Private installation: %s\n' "$state"
+ui_info "Private installation: $state"
 offline_install=no
 if [ -f "$state/operator-profile.json" ]; then
   offline_install=$("$python" -c 'import json,sys; print("yes" if json.load(open(sys.argv[1])).get("route") == "A2_OFFLINE" else "no")' "$state/operator-profile.json")
 fi
 if [ "$candidate" = yes ] && { [ "$offline_install" = yes ] || [ ! -e "$state" ]; }; then
   # The guided setup / "MK8DX beheer" in the browser (docs/install/A2_HOME_GUIDE_EN.md).
+  ui_lap 4/4 'Opening MK8DX beheer in your browser'
+  ui_finish 'Ready. MK8DX beheer opens in your browser; keep this window open.'
   exec "$python" tooling/setup_wizard.py --state-dir "$state"
 fi
 fresh=no
 if [ -e "$state" ]; then
-  [ ! -L "$state" ] && [ -f "$state/operator-profile.json" ] || { echo 'Existing path has no safe operator profile.' >&2; exit 1; }
+  [ ! -L "$state" ] && [ -f "$state/operator-profile.json" ] || { ui_fail 'Existing path has no safe operator profile.' >&2; exit 1; }
 else
   fresh=yes
-  "$python" tooling/install.py wizard --state-dir "$state" || { echo 'The guided setup did not finish.' >&2; exit 1; }
+  "$python" tooling/install.py wizard --state-dir "$state" || { ui_fail 'The guided setup did not finish.' >&2; exit 1; }
 fi
 route=$("$python" -c 'import json,sys; print(json.load(open(sys.argv[1])).get("route", ""))' "$state/operator-profile.json")
 origin=$("$python" -c 'import json,sys; print(json.load(open(sys.argv[1])).get("origin", ""))' "$state/operator-profile.json")
 flag=
 admin_label='Make me administrator (after you signed in once)'
 if [ "$route" = A2_OFFLINE ]; then
-  [ "$candidate" = yes ] || { echo 'This installation is an A2 home or club installation; start it from the mk8dx-a2 package.' >&2; exit 1; }
+  [ "$candidate" = yes ] || { ui_fail 'This installation is an A2 home or club installation; start it from the mk8dx-a2 package.' >&2; exit 1; }
   flag=--qa-offline-candidate
   admin_label='Unlock the host page (first administrator, invitations)'
 fi
 step() {
   label=$1; shift
-  printf '\n[..] %s\n' "$label"
-  if "$@"; then printf 'OK  Done.\n'; else printf '!!  That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.\n'; fi
+  ui_step "$label"
+  if "$@"; then ui_ok 'Done.'; else ui_fail 'That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.'; fi
 }
 backup() {
   "$python" tooling/lifecycle.py backup --state-dir "$state" --output "$1" &&
     "$python" tooling/lifecycle.py verify --backup "$1" &&
-    printf 'Private backup (keep it safe, never share it): %s\n' "$1"
+    ui_info "Private backup (keep it safe, never share it): $1"
 }
 if [ "$fresh" = yes ]; then
   step 'First setup: database, keys and reference times (the first time takes a few minutes)' \
     "$python" tooling/install.py setup --state-dir "$state" $flag
 fi
 while :; do
-  printf '\nWhat do you want to do?\n'
-  printf '  1  First setup, or finish an interrupted one\n  2  Start MK8DX\n  3  Check that everything works\n  4  Stop MK8DX\n'
-  printf '  5  %s\n' "$admin_label"
-  printf '  6  Make a backup (it is checked right away)\n  7  Update to this package (makes a checked backup first)\n'
-  printf '  8  Show the website address\n  0  Close\n'
+  ui_menu_title 'What do you want to do?'
+  ui_menu_item 1 'First setup, or finish an interrupted one'
+  ui_menu_item 2 'Start MK8DX'
+  ui_menu_item 3 'Check that everything works'
+  ui_menu_item 4 'Stop MK8DX'
+  ui_menu_item 5 "$admin_label"
+  ui_menu_item 6 'Make a backup (it is checked right away)'
+  ui_menu_item 7 'Update to this package (makes a checked backup first)'
+  ui_menu_item 8 'Show the website address'
+  ui_menu_item 0 'Close'
   printf 'Type a number and press Enter: '
   read -r choice || exit 0
   stamp=$(date -u +%Y%m%d-%H%M%S)
@@ -138,7 +166,7 @@ while :; do
     5) step "$admin_label" "$python" tooling/install.py admin --state-dir "$state" $flag ;;
     6) step 'Making and checking a backup' backup "$HOME/mk8dx-backups/$stamp" ;;
     7) step 'Checked backup, then the update' "$python" tooling/install.py upgrade --state-dir "$state" --backup-output "$HOME/mk8dx-backups/$stamp" $flag ;;
-    8) printf 'Website: %s\n' "$origin" ;;
+    8) ui_info "Website: $origin" ;;
     0) exit 0 ;;
     *) printf "'%s' is not one of the numbers above.\n" "$choice" ;;
   esac

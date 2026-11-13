@@ -39,8 +39,8 @@ open the folder where `Start-MK8DX.cmd` really is.
 
 ## 5. Let MK8DX set itself up
 
-**Where:** in the extracted folder. **Do:** double-click `Start-MK8DX.cmd`. A black window opens, shows the MK8DX
-banner and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
+**Where:** in the extracted folder. **Do:** double-click `Start-MK8DX.cmd`. A window opens with a short race intro
+(the MK8DX logo and a 3-2-1-GO countdown with beeps; [options](../guides/HOSTING.md#the-launcher-window-look-and-options)) and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
 takes a few minutes; a clock keeps counting. Then it asks **Where will MK8DX run?**: type `A1` and press Enter.
 Next it asks the email address that **you** will sign in with and become administrator with. **You see:** the first
 setup starts by itself and ends with `OK  Done.`, the **Web origin** (for example `http://127.0.0.1:18080`) and the

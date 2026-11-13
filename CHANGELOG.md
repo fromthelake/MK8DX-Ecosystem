@@ -3,6 +3,21 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Changed
+
+- Every launcher looks like the start of a race: a colour MK8DX logo, a 3-2-1-GO countdown with beeps, the checks
+  as laps with a car on the track and a race clock, a spinner while it waits for Docker, and a finish line with the
+  lap times. This covers `Start-MK8DX.cmd`, `Start-MK8DX-LAN.cmd` (and the **MK8DX beheer** icon),
+  `Start-MK8DX-No-Docker.cmd`, `Manage-MK8DX-No-Docker.cmd` and, new, `tooling/start-mk8dx.sh` on Linux and macOS.
+  Only the presentation changed; the steps, the menu and the messages the guides quote are the same. The rich look
+  and the sound are on by default in a modern terminal; `-SkipCountdown` / `--skip-countdown` or
+  `MK8DX_SKIP_COUNTDOWN=1` leaves out the countdown, `MK8DX_SOUND=0` the beeps, and redirected output, `-Plain` /
+  `--plain`, `MK8DX_PLAIN=1` or `NO_COLOR` give plain text. `tooling/mk8dx-ui.ps1 -Demo` and
+  `sh tooling/mk8dx-ui.sh --demo` preview it. [Hosting](docs/guides/HOSTING.md#the-launcher-window-look-and-options)
+  lists every option.
+
 ## 0.2.1 — 2026-11-13
 
 The Android app gets a new layout around a community chip and a **You** screen, keeps an offline copy of your

@@ -9,18 +9,19 @@ if not exist "%MK8DX_A3_STATE%\operator-profile.json" (
     pause
     exit /b 1
 )
-echo.
-echo    MK8DX - manage the installation without Docker
-echo    Keep the MK8DX window from Start-MK8DX-No-Docker.cmd open while you use this.
+rem Options: -SkipCountdown (no countdown), -Plain (plain text).
+for %%a in (%*) do (
+    if /i "%%~a"=="-SkipCountdown" set "MK8DX_SKIP_COUNTDOWN=1"
+    if /i "%%~a"=="-Plain" set "MK8DX_PLAIN=1"
+)
+rem Presentation only: tooling\mk8dx-ui.ps1 draws the header, menu and results; the menu logic is unchanged.
+set "UI=<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tooling\mk8dx-ui.ps1""
+if not exist "%~dp0tooling\mk8dx-ui.ps1" set "UI=rem"
+%UI% -Show Header -ShowSubtitle "manage the installation without Docker"
+%UI% -Show Info -ShowText "Keep the MK8DX window from Start-MK8DX-No-Docker.cmd open while you use this."
 :menu
 if !empty! geq 3 exit /b 0
-echo.
-echo What do you want to do?
-echo   1  Check that everything works
-echo   2  Make me administrator - after you signed in once
-echo   3  Make a backup - it is checked right away
-echo   4  Show the addresses
-echo   0  Close
+%UI% -Show Menu -ShowText "What do you want to do?" -ShowItems "1=Check that everything works;2=Make me administrator - after you signed in once;3=Make a backup - it is checked right away;4=Show the addresses;0=Close"
 set "choice="
 set /p "choice=Type a number and press Enter: "
 if not defined choice (set /a empty+=1 & goto menu)
@@ -44,8 +45,7 @@ if "%choice%"=="3" (
     goto menu
 )
 if "%choice%"=="4" (
-    echo Website:                     http://127.0.0.1:18090
-    echo Sign-in mail - a test inbox: http://127.0.0.1:18227
+    %UI% -Show Info -ShowColour Cyan -ShowText "Website:                     http://127.0.0.1:18090|Sign-in mail - a test inbox: http://127.0.0.1:18227"
     goto menu
 )
 if "%choice%"=="0" exit /b 0
@@ -53,8 +53,8 @@ echo '%choice%' is not one of the numbers above.
 goto menu
 :result
 if errorlevel 1 (
-    echo ERROR  That step did not finish. Is the MK8DX window still open? Read the message above.
+    %UI% -Show Fail -ShowText "That step did not finish. Is the MK8DX window still open? Read the message above."
 ) else (
-    echo OK  Done.
+    %UI% -Show Ok
 )
 exit /b 0

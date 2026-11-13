@@ -36,6 +36,8 @@ script needs beyond a clone; a contributor never needs those.
 | --- | --- | --- | --- |
 | `start-mk8dx.sh` | operator | Linux/macOS launcher of the Docker host package: wizard plus menu (setup, start, status, stop, administrator, backup, update). | the host package's image bundle |
 | `start-mk8dx.ps1` | operator | The same for Windows; started by `Start-MK8DX.cmd` and `Start-MK8DX-LAN.cmd`. | the host package's image bundle |
+| `mk8dx-ui.ps1` | operator | Presentation of the Windows launchers (race intro, laps, spinner, finish), also for `Start-MK8DX-No-Docker.cmd` and `Manage-MK8DX-No-Docker.cmd` through `-Show`; `-Demo` previews it. Options: [launcher look and options](../docs/guides/HOSTING.md#the-launcher-window-look-and-options). | none |
+| `mk8dx-ui.sh` | operator | The same for `start-mk8dx.sh` on Linux and macOS (POSIX sh); `sh tooling/mk8dx-ui.sh --demo` previews it. | none |
 | `install.py` | operator | The installer behind both launchers and the non-Docker routes: `init`, `wizard`, `setup`, `start`, `check`, `admin`, `upgrade`, `change-origin`, `change-smtp`, `backup`, `restore-new` and more (`--help`). | your installation directory |
 | `native_install.py` | operator | Non-Docker backend of `install.py` (A3 XAMPP/Node, B2 shared hosting). | your installation directory |
 | `lifecycle.py` | operator | Backup, `verify` and `restore-new` of a Docker installation into a new isolated project; an A2 offline backup is sealed with the recovery code (`mk8dx.install-backup.v3`) and `restore-new --lan-ip` moves it to another address. | your installation directory and backups |

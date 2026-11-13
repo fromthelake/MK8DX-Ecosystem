@@ -1,4 +1,4 @@
-param([string]$StateDir = (Join-Path $env:LOCALAPPDATA 'MK8DX\Server'))
+param([string]$StateDir = (Join-Path $env:LOCALAPPDATA 'MK8DX\Server'), [switch]$Plain, [switch]$SkipCountdown)
 $ErrorActionPreference = 'Stop'
 # Windows PowerShell 5.1 turns any stderr line of a redirected native command into a terminating error
 # under 'Stop' (groep3 cold run: "No such image" from the image check). Quiet probes use only the exit code.
@@ -10,42 +10,23 @@ function Invoke-NativeQuiet([scriptblock]$Command) {
 }
 $root = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 Set-Location -LiteralPath $root
+# Presentation only (header, start lights, laps, spinner); plain text when the output is redirected or -Plain.
+. (Join-Path $PSScriptRoot 'mk8dx-ui.ps1') -Plain:$Plain -SkipCountdown:$SkipCountdown
 function Show-Banner {
-  # MK8DX in block letters; the 8 in the logo's ribbon colours. ASCII only on purpose.
-  $rows = @(
-    @(' __  __ ', ' _  __', '  ___  ', ' ____  ', '__  __'),
-    @('|  \/  |', '| |/ /', ' ( _ ) ', '|  _ \ ', '\ \/ /'),
-    @('| |\/| |', "| ' / ", ' / _ \ ', '| | | |', ' \  / '),
-    @('| |  | |', '| . \ ', '| (_) |', '| |_| |', ' /  \ '),
-    @('|_|  |_|', '|_|\_\', ' \___/ ', '|____/ ', '/_/\_\'))
-  $eight = @('Cyan', 'Cyan', 'Magenta', 'Magenta', 'Red')
-  Write-Host ''
-  for ($i = 0; $i -lt $rows.Count; $i++) {
-    Write-Host '   ' -NoNewline
-    Write-Host ($rows[$i][0] + $rows[$i][1]) -NoNewline -ForegroundColor White
-    Write-Host $rows[$i][2] -NoNewline -ForegroundColor $eight[$i]
-    Write-Host ($rows[$i][3] + $rows[$i][4]) -ForegroundColor White
-  }
   $revision = ''
   $lan = $false
   $named = Join-Path $root 'images\images.json'
   if (Test-Path -LiteralPath $named) {
     try { $info = Get-Content -LiteralPath $named -Raw | ConvertFrom-Json; $revision = $info.revision; $lan = $info.qaOfflineCandidate -eq $true } catch { $revision = '' }
   }
-  Write-Host ''
-  Write-Host '   T I M E   T R I A L S' -NoNewline -ForegroundColor Yellow
-  Write-Host ('   ' + $(if ($lan) { 'home & club LAN' } else { 'community server' }) + $(if ($revision) { "   package $revision" } else { '' })) -ForegroundColor DarkGray
-  Write-Host ('   ' + ('-' * 44)) -ForegroundColor DarkGray
-  Write-Host ''
+  Write-Header $(if ($lan) { 'home & club LAN' } else { 'community server' }) $revision
+  Show-StartLights
 }
-function Write-Step([string]$Number, [string]$Text) {
-  Write-Host ('[' + $Number + '] ') -NoNewline -ForegroundColor Cyan
-  Write-Host $Text
-}
+function Write-Step([string]$Number, [string]$Text) { Write-Lap $Number $Text }
 Show-Banner
 Write-Step '1/4' 'Checking Python'
-Write-Host "MK8DX package: $root"
-Write-Host "Private installation: $StateDir"
+Write-Info "MK8DX package: $root"
+Write-Info "Private installation: $StateDir"
 try {
   $python = (Get-Command python -ErrorAction Stop).Source
   # The package carries offline wheels for exactly Python 3.12 to 3.15 (tooling/release/host_bundle.py).
@@ -58,7 +39,7 @@ try {
 Write-Step '2/4' 'Checking Docker'
 # `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
 $dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)
-$dockerRunning = $dockerFound -and ((Invoke-NativeQuiet { docker info }) -eq 0)
+$dockerRunning = $dockerFound -and ((Invoke-WithSpinner 'Waiting for the Docker engine' { Invoke-NativeQuiet { docker info } }) -eq 0)
 if (-not $dockerRunning) {
   throw 'Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry.'
 }
@@ -86,7 +67,7 @@ if (Test-Path -LiteralPath $wheels) {
   $hash = (Get-FileHash -LiteralPath $requirements -Algorithm SHA256).Hash.Substring(0, 12)
   $venv = Join-Path $env:LOCALAPPDATA "MK8DX\python-offline-$hash"
   if (-not (Test-Path -LiteralPath (Join-Path $venv 'Scripts\python.exe'))) {
-    Write-Host 'Preparing the included Python packages (once, without internet).'
+    Write-Info 'Preparing the included Python packages (once, without internet).'
     & $python -m venv $venv
     if ($LASTEXITCODE -ne 0) { throw 'Could not create the private Python environment.' }
     & (Join-Path $venv 'Scripts\python.exe') -m pip install --no-index --find-links $wheels --require-hashes -r (Join-Path $wheels 'requirements.hashes.txt') | Out-Host
@@ -102,30 +83,36 @@ foreach ($tag in $tags) {
 }
 if ($load) {
   $sizeGb = [math]::Round((Get-Item -LiteralPath $bundle).Length / 1GB, 1)
-  Write-Host "Loading the included Docker images ($sizeGb GB). This can take several minutes; the time below keeps counting."
-  # docker load shows no progress without a terminal, so print a line every 10 seconds while it runs.
+  Write-Info "Loading the included Docker images ($sizeGb GB). This can take several minutes; the time below keeps counting."
+  # docker load shows no progress without a terminal: a spinner with the time, or in plain mode a line every 10 s.
   $out = Join-Path $env:TEMP "mk8dx-docker-load-$PID.txt"
   $err = Join-Path $env:TEMP "mk8dx-docker-load-$PID.err.txt"
   $loader = Start-Process -FilePath docker -ArgumentList @('load', '--input', "`"$bundle`"") -NoNewWindow -PassThru `
     -RedirectStandardOutput $out -RedirectStandardError $err
   $null = $loader.Handle  # keeps ExitCode readable after the process ends
   $began = Get-Date
-  while (-not $loader.WaitForExit(10000)) {
-    Write-Host ("  still loading... {0:mm\:ss}" -f ((Get-Date) - $began))
+  if (Test-MK8DXUiPlain) {
+    while (-not $loader.WaitForExit(10000)) {
+      Write-Info ("  still loading... {0:mm\:ss}" -f ((Get-Date) - $began))
+    }
+  } else {
+    # The spinner line shows the same counting time.
+    Invoke-WithSpinner 'Loading the included Docker images' { $loader.WaitForExit() }
   }
   $loader.WaitForExit()
   Get-Content -LiteralPath $out, $err -ErrorAction SilentlyContinue | Out-Host
   Remove-Item -LiteralPath $out, $err -ErrorAction SilentlyContinue
   if ($loader.ExitCode -ne 0) { throw 'Image loading failed.' }
-  Write-Host ("Images loaded in {0:mm\:ss}." -f ((Get-Date) - $began))
+  Write-Ok ("Images loaded in {0:mm\:ss}." -f ((Get-Date) - $began))
   try { Set-Content -LiteralPath $loaded -Value "Images of this package loaded $(Get-Date -Format o)" -ErrorAction Stop }
-  catch { Write-Host 'Note: the package folder is read-only, so the next start loads the images again.' }
+  catch { Write-Info 'Note: the package folder is read-only, so the next start loads the images again.' 'Yellow' }
 }
 $profilePath = Join-Path $StateDir 'operator-profile.json'
 $offlineInstall = (Test-Path -LiteralPath $profilePath) -and
   ((Get-Content -LiteralPath $profilePath -Raw | ConvertFrom-Json).route -eq 'A2_OFFLINE')
 if ($candidate -and ($offlineInstall -or -not (Test-Path -LiteralPath $StateDir))) {
   Write-Step '4/4' 'Opening MK8DX beheer in your browser'
+  Write-Finish 'Ready. MK8DX beheer opens in your browser; keep this window open.'
   # The guided setup / "MK8DX beheer" in the browser (docs/install/A2_HOME_GUIDE_EN.md).
   & $python tooling/setup_wizard.py --state-dir $StateDir
   exit $LASTEXITCODE
@@ -156,10 +143,10 @@ function Invoke-MK8DXStep([string]$Label, [scriptblock]$Body) {
   # Out-Host: a native command's output inside a function would otherwise become its return value.
   & $Body | Out-Host
   if ($LASTEXITCODE -ne 0) {
-    Write-Host '!!  That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.' -ForegroundColor Red
+    Write-Fail 'That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.'
     return $false
   }
-  Write-Host 'OK  Done.' -ForegroundColor Green
+  Write-Ok 'Done.'
   return $true
 }
 function Invoke-MK8DXBackup([string]$Output, [switch]$Update) {
@@ -169,17 +156,17 @@ function Invoke-MK8DXBackup([string]$Output, [switch]$Update) {
     & $python tooling/lifecycle.py backup --state-dir $StateDir --output $Output
     if ($LASTEXITCODE -eq 0) { & $python tooling/lifecycle.py verify --backup $Output }
   }
-  if ($LASTEXITCODE -eq 0) { Write-Host "Private backup (keep it safe, never share it): $Output" }
+  if ($LASTEXITCODE -eq 0) { Write-Info "Private backup (keep it safe, never share it): $Output" 'Yellow' }
 }
 
 function Show-MK8DXAddress([switch]$Next) {
   $mail = Get-Content -LiteralPath (Join-Path $StateDir 'compose.env') -ErrorAction SilentlyContinue |
     Where-Object { $_ -match '^MK8DX_MAILPIT_PORT=' } | ForEach-Object { ($_ -split '=', 2)[1].Trim("'") }
   Write-Host ''
-  Write-Host "   Website: $($profileData.origin)" -ForegroundColor Cyan
+  Write-Info "   Website: $($profileData.origin)" 'Cyan'
   if ($profileData.route -eq 'A1' -and $mail) {
-    Write-Host "   Sign-in mail arrives in the local test inbox: http://127.0.0.1:$mail" -ForegroundColor Cyan
-    if ($Next) { Write-Host '   Next: type 8 to open the website, sign in with your address, then type 5 to become administrator.' }
+    Write-Info "   Sign-in mail arrives in the local test inbox: http://127.0.0.1:$mail" 'Cyan'
+    if ($Next) { Write-Info '   Next: type 8 to open the website, sign in with your address, then type 5 to become administrator.' }
   }
 }
 
@@ -189,18 +176,15 @@ if ($fresh) {
     & $python tooling/install.py setup --state-dir $StateDir @qaFlag })
   Show-MK8DXAddress -Next
 }
+$menu = @(
+  @('1', 'First setup, or finish an interrupted one'), @('2', 'Start MK8DX'), @('3', 'Check that everything works'),
+  @('4', 'Stop MK8DX'), @('5', $adminLabel), @('6', 'Make a backup (it is checked right away)'),
+  @('7', 'Update to this package (makes a checked backup first)'), @('8', 'Open the website in your browser'),
+  @('0', 'Close this window'))
 while ($true) {
   Write-Host ''
-  Write-Host 'What do you want to do?' -ForegroundColor Cyan
-  Write-Host '  1  First setup, or finish an interrupted one'
-  Write-Host '  2  Start MK8DX'
-  Write-Host '  3  Check that everything works'
-  Write-Host '  4  Stop MK8DX'
-  Write-Host "  5  $adminLabel"
-  Write-Host '  6  Make a backup (it is checked right away)'
-  Write-Host '  7  Update to this package (makes a checked backup first)'
-  Write-Host '  8  Open the website in your browser'
-  Write-Host '  0  Close this window'
+  Write-Lap 'PIT' 'What do you want to do?'
+  foreach ($entry in $menu) { Write-MenuItem $entry[0] $entry[1] }
   $choice = (Read-Host 'Type a number and press Enter').Trim()
   $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
   $output = Join-Path $env:USERPROFILE "Documents\MK8DX-backups\$stamp"
@@ -213,13 +197,13 @@ while ($true) {
     '6' { [void](Invoke-MK8DXStep 'Making and checking a backup' { Invoke-MK8DXBackup $output }) }
     '7' { [void](Invoke-MK8DXStep 'Checked backup, then the update' { Invoke-MK8DXBackup $output -Update }) }
     '8' {
-      Write-Host "Website: $($profileData.origin)"
+      Write-Info "Website: $($profileData.origin)" 'Cyan'
       $mail = Get-Content -LiteralPath (Join-Path $StateDir 'compose.env') -ErrorAction SilentlyContinue |
         Where-Object { $_ -match '^MK8DX_MAILPIT_PORT=' } | ForEach-Object { ($_ -split '=', 2)[1].Trim("'") }
-      if ($profileData.route -eq 'A1' -and $mail) { Write-Host "Sign-in mail for this trial arrives in the local inbox: http://127.0.0.1:$mail" }
+      if ($profileData.route -eq 'A1' -and $mail) { Write-Info "Sign-in mail for this trial arrives in the local inbox: http://127.0.0.1:$mail" }
       Start-Process $profileData.origin
     }
     '0' { exit 0 }
-    default { Write-Host "'$choice' is not one of the numbers above." -ForegroundColor Yellow }
+    default { Write-Info "'$choice' is not one of the numbers above." 'Yellow' }
   }
 }
