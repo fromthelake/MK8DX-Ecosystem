@@ -46,7 +46,9 @@ Publication and the community rating are separate decisions in the final step.
 ### Requirements
 
 - Windows on x86-64 (tested on Windows 11) and several GB of free space. The ZIP is about 160 MB and about 1 GB extracted; the
-  installer may download Python 3.12, public packages and OCR models on first use, more with GPU/CUDA.
+  installer may download Python 3.12, public packages and OCR models on first use, more with GPU/CUDA. An NVIDIA
+  card speeds up the OCR step only; the first scan of a recording always runs on the CPU (see
+  [which steps use the graphics card](../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - For live capture: a capture card with a working Windows (DirectShow) driver. For recordings: nothing extra.
 - Optional, for sending results: the website address and Tournament operator access (step 1).
 

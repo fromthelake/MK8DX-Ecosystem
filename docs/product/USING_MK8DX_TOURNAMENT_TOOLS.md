@@ -35,6 +35,25 @@ local extraction needs no account.
    `TournamentConnect.cmd` uses browser sign-in to a server chosen by the
    operator and retains local output if delivery is unavailable.
 
+## Which steps use the graphics card
+
+Analysing a recording has two steps. Only the second one uses an NVIDIA graphics card.
+
+1. **The first scan always runs on the processor (CPU).** It reads every frame of the recording with OpenCV to
+   find the track, race and score screens. The package installs the public `opencv-python` build from PyPI (pinned
+   in `requirements.lock.txt`), and that build has no CUDA support. An OpenCV with CUDA has to be compiled for a
+   specific CUDA version and card, which a download-and-run package cannot do, so the package does not ship one.
+   The log shows `Extract backend: cpu`. The scan is not the slow part: on a laptop it reads about 1,500 frames
+   per second, so a 22-minute recording takes about 30 seconds.
+2. **Reading the names, points and times (OCR) uses the graphics card when CUDA is available.** Only the screens
+   the scan selected are read. EasyOCR runs on PyTorch, and the installer picks the CUDA build of PyTorch when
+   `nvidia-smi` reports a recent enough driver (see step 2 above); the log then shows `OCR backend: cuda`. Without
+   a suitable NVIDIA card or driver, OCR runs on the processor (`OCR backend: cpu`) and takes longer.
+   `MK8_EASYOCR_GPU_MODE=cpu` in `TournamentTools.config.cmd` forces the processor.
+
+Measured on a laptop with an RTX 5080: three recordings of 18 to 22 minutes (12 races) took about 110 seconds in
+the Tournament Analysis window. The graphics card was busy only while the text was being read.
+
 `TournamentTools.config.cmd` holds local paths and language preferences. Keep
 that file and the `TournamentLive/` session folder during updates. The live
 launcher uses `runtime-assets/live`; the recorded launcher uses
