@@ -19,7 +19,8 @@ git diff --check
 
 For Docker gateway changes, validate all three `infrastructure/docker/Caddyfile.*` files with the pinned Caddy
 image (supply a test `MK8DX_DOMAIN` for LAN/production). Inspect the response headers on `/` and `/scanner/`
-through a running container. Before enforcing a Report-Only CSP, exercise the scanner's image upload and WASM
+through a running container. The Web policy is enforced; the scanner's is still Report-Only. Before enforcing a
+Report-Only CSP, exercise the scanner's image upload and WASM
 workers and the classic Tournament report export in a real browser at 320, 768 and 1440 CSS pixels in English and
 Dutch; inspect console CSP violations. The scanner needs `worker-src 'self' blob:` and
 `script-src 'self' 'wasm-unsafe-eval'`. Do not treat static Caddy validation as browser acceptance.
@@ -157,6 +158,15 @@ Authentication, SQL, the installer, backup and restore need tests against a real
 including failure cases. Physical devices, capture hardware and a real hosting account are separate checks:
 say in your pull request when you could not run them.
 
+Dependency updates (Dependabot or by hand):
+
+- A dependency pull request that is several days behind `main` was tested against old code. Comment
+  `@dependabot recreate` (or rebase your own branch) and review the fresh CI run, not the old one.
+- Unit tests may mock a package, so green tests do not prove its new version still exports what the code imports.
+  The API's `npm run check:links` (run by Verify after the build) links every compiled module against the
+  installed packages without running them; a removed or renamed export fails there. For a major version, also read
+  the release notes and test the behaviour the package provides against the real module.
+
 ## What CI runs
 
 The Python dependency audit inventories every tracked `requirements*.txt` and `pyproject.toml` with
@@ -168,7 +178,7 @@ Verify. Ranged dependencies must have an exact companion pin in another manifest
 audit does not replace an audit of the installed transitive runtime.
 
 The [Verify workflow](../.github/workflows/verify.yml) runs on every pull request and push to `main`: the privacy,
-boundary and documentation checks; the API and Web checks; the central reader's TypeScript and Python tests; the
+boundary and documentation checks; the API and Web checks (including the API module link check); the central reader's TypeScript and Python tests; the
 CSS check, the intake rehearsal and the tooling tests; gitleaks over the history; `npm audit --omit=dev
 --audit-level=high` for the API, Web and scanner; the asset collection, the browser scanner build and the public
 test set; the Android unit tests and debug APK; the LiveTrial desktop tests (Windows) and a compile check of the

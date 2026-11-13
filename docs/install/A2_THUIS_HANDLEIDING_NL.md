@@ -2,7 +2,7 @@
 
 Deze handleiding neemt je stap voor stap mee: van een lege computer tot een gespeelde avond. Je hebt geen IT-kennis nodig. Lees de hoofdstukken op volgorde; elk hoofdstuk bouwt voort op het vorige.
 
-**Eerlijk vooraf:** de installatie voor thuis en de club is nog een testversie. Het pakket noemt zichzelf in README-FIRST.txt een "A2 OFFLINE QA CANDIDATE": bedoeld voor een testcomputer, nog geen volledig goedgekeurde route. Windows 11 is het verst getest. Linux is nog niet volledig getest. macOS is nog niet op een echte Mac getest. Waar iets nog niet getest of nog niet gebouwd is, staat dat bij die stap.
+**Eerlijk vooraf:** de installatie voor thuis en de club is uitgebracht sinds versie 0.2.0. Windows 11 is volledig getest, ook met een Android-telefoon op het netwerk. Linux is alleen in WSL 2 getest, nog niet op een losse Linux-pc of een Raspberry Pi. De macOS-pakketten zijn gebouwd maar nog niet op een echte Mac getest, en een iPhone is nog niet getest. Waar iets nog niet getest of nog niet gebouwd is, staat dat bij de stap.
 
 **Zo lees je een stap:** na **Doe** staat wat je doet, na **Je ziet** wat er dan hoort te gebeuren, en na **Zie je iets anders?** wat je dan doet. Vetgedrukte woorden zijn knoppen of teksten die je precies zo op het scherm ziet.
 

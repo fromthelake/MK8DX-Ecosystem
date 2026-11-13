@@ -151,14 +151,14 @@
   {
    "key": "0–10 balance",
    "places": [
-    "AndroidDutchUiCopy.kt:266"
+    "AndroidDutchUiCopy.kt:270"
    ],
    "nl": "0–10 balans"
   },
   {
    "key": "0–3 used",
    "places": [
-    "AndroidDutchUiCopy.kt:265"
+    "AndroidDutchUiCopy.kt:269"
    ],
    "nl": "0–3 gebruikt"
   },
@@ -399,7 +399,7 @@
   {
    "key": "Acceleration",
    "places": [
-    "AndroidDutchUiCopy.kt:269"
+    "AndroidDutchUiCopy.kt:273"
    ],
    "nl": "Acceleratie"
   },
@@ -427,7 +427,7 @@
   {
    "key": "Account unknown",
    "places": [
-    "AndroidDutchUiCopy.kt:462"
+    "AndroidDutchUiCopy.kt:466"
    ],
    "nl": "Account onbekend"
   },
@@ -490,7 +490,7 @@
   {
    "key": "Add Players from latest 3 TNs",
    "places": [
-    "AndroidDutchUiCopy.kt:410"
+    "AndroidDutchUiCopy.kt:414"
    ],
    "nl": "Spelers uit de laatste 3 toernooien toevoegen"
   },
@@ -622,7 +622,7 @@
   {
    "key": "Air",
    "places": [
-    "AndroidDutchUiCopy.kt:268"
+    "AndroidDutchUiCopy.kt:272"
    ],
    "nl": "Lucht"
   },
@@ -673,7 +673,7 @@
   {
    "key": "All known Players",
    "places": [
-    "AndroidDutchUiCopy.kt:409"
+    "AndroidDutchUiCopy.kt:413"
    ],
    "nl": "Alle bekende spelers"
   },
@@ -687,7 +687,7 @@
   {
    "key": "All rivals are in scope. Select up to 3 columns for direct comparison.",
    "places": [
-    "AndroidDutchUiCopy.kt:267"
+    "AndroidDutchUiCopy.kt:271"
    ],
    "nl": "Alle rivalen vallen binnen het filter. Selecteer maximaal 3 kolommen voor een directe vergelijking."
   },
@@ -835,7 +835,7 @@
   {
    "key": "Anti-Gravity",
    "places": [
-    "AndroidDutchUiCopy.kt:270"
+    "AndroidDutchUiCopy.kt:274"
    ],
    "nl": "Anti-zwaartekracht"
   },
@@ -942,7 +942,7 @@
   {
    "key": "Authentication could not be completed.",
    "places": [
-    "AndroidDutchUiCopy.kt:446"
+    "AndroidDutchUiCopy.kt:450"
    ],
    "nl": "Het aanmelden kon niet worden voltooid."
   },
@@ -956,14 +956,14 @@
   {
    "key": "Available",
    "places": [
-    "AndroidDutchUiCopy.kt:413"
+    "AndroidDutchUiCopy.kt:417"
    ],
    "nl": "Beschikbaar"
   },
   {
    "key": "Available recordings could not be loaded.",
    "places": [
-    "AndroidDutchUiCopy.kt:434"
+    "AndroidDutchUiCopy.kt:438"
    ],
    "nl": "Beschikbare opnamen konden niet worden geladen."
   },
@@ -1006,7 +1006,7 @@
   {
    "key": "BIGGEST GAP",
    "places": [
-    "AndroidDutchUiCopy.kt:275"
+    "AndroidDutchUiCopy.kt:279"
    ],
    "nl": "GROOTSTE ACHTERSTAND"
   },
@@ -1198,7 +1198,7 @@
   {
    "key": "Black",
    "places": [
-    "AndroidDutchUiCopy.kt:528"
+    "AndroidDutchUiCopy.kt:532"
    ],
    "nl": "Zwart"
   },
@@ -1211,7 +1211,7 @@
   {
    "key": "Blue",
    "places": [
-    "AndroidDutchUiCopy.kt:529"
+    "AndroidDutchUiCopy.kt:533"
    ],
    "nl": "Blauw"
   },
@@ -1307,7 +1307,7 @@
   {
    "key": "CLOSEST BATTLE",
    "places": [
-    "AndroidDutchUiCopy.kt:274"
+    "AndroidDutchUiCopy.kt:278"
    ],
    "nl": "KLEINSTE DUEL"
   },
@@ -1571,7 +1571,7 @@
    "key": "Choose a Cup",
    "places": [
     "AndroidTrackChooser.kt:106",
-    "AndroidDutchUiCopy.kt:271"
+    "AndroidDutchUiCopy.kt:275"
    ],
    "nl": "Kies een beker"
   },
@@ -1650,7 +1650,7 @@
   {
    "key": "Choose camera or a saved Switch screenshot",
    "places": [
-    "AndroidDutchUiCopy.kt:337"
+    "AndroidDutchUiCopy.kt:341"
    ],
    "nl": "Kies de camera of een opgeslagen Switch-schermafbeelding"
   },
@@ -1672,7 +1672,7 @@
    "key": "Choose every part and compare the real in-game stat contributions.",
    "places": [
     "AndroidBuildScreen.kt:205",
-    "AndroidDutchUiCopy.kt:272"
+    "AndroidDutchUiCopy.kt:276"
    ],
    "nl": "Kies elk onderdeel en vergelijk de echte bijdrage aan de spelstatistieken."
   },
@@ -1693,7 +1693,7 @@
   {
    "key": "Choose matching group",
    "places": [
-    "AndroidDutchUiCopy.kt:465"
+    "AndroidDutchUiCopy.kt:469"
    ],
    "nl": "Kies de bijbehorende groep"
   },
@@ -1819,7 +1819,7 @@
    "key": "Choose your track",
    "places": [
     "AndroidTrackChooser.kt:117",
-    "AndroidDutchUiCopy.kt:273"
+    "AndroidDutchUiCopy.kt:277"
    ],
    "nl": "Kies je circuit"
   },
@@ -1997,7 +1997,7 @@
    "key": "Community Records",
    "places": [
     "AndroidAccountEcosystemScreens.kt:385",
-    "AndroidDutchUiCopy.kt:319"
+    "AndroidDutchUiCopy.kt:323"
    ],
    "nl": "Communityrecords"
   },
@@ -2032,7 +2032,7 @@
   {
    "key": "Community updates are unavailable. Check your connection and retry; local Time Trial tools still work.",
    "places": [
-    "AndroidDutchUiCopy.kt:318"
+    "AndroidDutchUiCopy.kt:322"
    ],
    "nl": "Community-updates zijn niet beschikbaar. Controleer je verbinding en probeer het opnieuw; de lokale Time Trial-functies blijven werken."
   },
@@ -2083,7 +2083,7 @@
    "key": "Complete the current guided step first.",
    "places": [
     "AndroidTournamentScreen.kt:3781",
-    "AndroidDutchUiCopy.kt:430"
+    "AndroidDutchUiCopy.kt:434"
    ],
    "nl": "Voltooi eerst de huidige begeleide stap."
   },
@@ -2105,7 +2105,7 @@
    "key": "Confirm all scores",
    "places": [
     "AndroidTournamentScreen.kt:3101",
-    "AndroidDutchUiCopy.kt:379"
+    "AndroidDutchUiCopy.kt:383"
    ],
    "nl": "Alle scores bevestigen"
   },
@@ -2128,7 +2128,7 @@
    "key": "Confirm final layout",
    "places": [
     "AndroidTournamentScreen.kt:3106",
-    "AndroidDutchUiCopy.kt:382"
+    "AndroidDutchUiCopy.kt:386"
    ],
    "nl": "Finale-indeling bevestigen"
   },
@@ -2161,7 +2161,7 @@
   {
    "key": "Confirm previous step · later data is cleared",
    "places": [
-    "AndroidDutchUiCopy.kt:387"
+    "AndroidDutchUiCopy.kt:391"
    ],
    "nl": "Vorige stap bevestigen · latere gegevens worden gewist"
   },
@@ -2169,7 +2169,7 @@
    "key": "Confirm qualifier layout",
    "places": [
     "AndroidTournamentScreen.kt:3096",
-    "AndroidDutchUiCopy.kt:376"
+    "AndroidDutchUiCopy.kt:380"
    ],
    "nl": "Kwalificatie-indeling bevestigen"
   },
@@ -2207,7 +2207,7 @@
    "key": "Connection errors",
    "places": [
     "AndroidTournamentScreen.kt:3716",
-    "AndroidDutchUiCopy.kt:425"
+    "AndroidDutchUiCopy.kt:429"
    ],
    "nl": "Verbindingsfouten"
   },
@@ -2235,7 +2235,7 @@
   {
    "key": "Contacting the authentication service…",
    "places": [
-    "AndroidDutchUiCopy.kt:443"
+    "AndroidDutchUiCopy.kt:447"
    ],
    "nl": "Verbinding maken met aanmelden…"
   },
@@ -2291,7 +2291,7 @@
   {
    "key": "Correct any recognized part, or mark it as not recorded.",
    "places": [
-    "AndroidDutchUiCopy.kt:329"
+    "AndroidDutchUiCopy.kt:333"
    ],
    "nl": "Corrigeer verkeerd herkende onderdelen of markeer ze als niet vastgelegd."
   },
@@ -2335,7 +2335,7 @@
    "places": [
     "AndroidTournamentScreen.kt:2100",
     "AndroidTournamentScreen.kt:2179",
-    "AndroidDutchUiCopy.kt:347"
+    "AndroidDutchUiCopy.kt:351"
    ],
    "nl": "Dat toernooi kon niet worden geladen."
   },
@@ -2453,7 +2453,7 @@
    "key": "Create final groups",
    "places": [
     "AndroidTournamentScreen.kt:3104",
-    "AndroidDutchUiCopy.kt:381"
+    "AndroidDutchUiCopy.kt:385"
    ],
    "nl": "Finalegroepen maken"
   },
@@ -2476,7 +2476,7 @@
    "places": [
     "AndroidTournamentParticipantsStep.kt:1106",
     "AndroidTournamentScreen.kt:3094",
-    "AndroidDutchUiCopy.kt:375"
+    "AndroidDutchUiCopy.kt:379"
    ],
    "nl": "Maak kwalificatiegroepen"
   },
@@ -2490,7 +2490,7 @@
   {
    "key": "Create the Tournament here, then add Players, generate groups, run races and finalize the result without leaving Android.",
    "places": [
-    "AndroidDutchUiCopy.kt:276"
+    "AndroidDutchUiCopy.kt:280"
    ],
    "nl": "Maak hier het toernooi, voeg spelers toe, genereer groepen, rijd races en rond het resultaat af zonder Android te verlaten."
   },
@@ -2553,7 +2553,7 @@
   {
    "key": "Cyan",
    "places": [
-    "AndroidDutchUiCopy.kt:530"
+    "AndroidDutchUiCopy.kt:534"
    ],
    "nl": "Cyaan"
   },
@@ -2633,14 +2633,14 @@
    "key": "Delete this draft permanently? This is only allowed before races are recorded.",
    "places": [
     "AndroidTournamentScreen.kt:3180",
-    "AndroidDutchUiCopy.kt:399"
+    "AndroidDutchUiCopy.kt:403"
    ],
    "nl": "Dit concept definitief verwijderen? Dit kan alleen voordat races zijn vastgelegd."
   },
   {
    "key": "Delta\nper track",
    "places": [
-    "AndroidDutchUiCopy.kt:277"
+    "AndroidDutchUiCopy.kt:281"
    ],
    "nl": "Verschil\nper circuit"
   },
@@ -2941,7 +2941,7 @@
    "key": "Enter a time manually or scan a Switch result. It is saved safely on this phone first, then synced to the website.",
    "places": [
     "AndroidOutboxSelectionComponent.kt:97",
-    "AndroidDutchUiCopy.kt:278"
+    "AndroidDutchUiCopy.kt:282"
    ],
    "nl": "Voer handmatig een tijd in of scan een resultaat van je Nintendo Switch. Het resultaat wordt eerst veilig op deze telefoon opgeslagen en daarna met de website gesynchroniseerd."
   },
@@ -2999,7 +2999,7 @@
    "key": "Enter the total per Player, or let Tournament Live / Tournament Processor deliver race results. Excel workbooks can be imported in the web app.",
    "places": [
     "AndroidTournamentScreen.kt:3679",
-    "AndroidDutchUiCopy.kt:427"
+    "AndroidDutchUiCopy.kt:431"
    ],
    "nl": "Voer per speler het totaal in, of laat Tournament Live / Tournament Processor de raceresultaten aanleveren. Excel-werkmappen kun je in de webapp importeren."
   },
@@ -3041,7 +3041,7 @@
   {
    "key": "Everyone present has a group.",
    "places": [
-    "AndroidDutchUiCopy.kt:414"
+    "AndroidDutchUiCopy.kt:418"
    ],
    "nl": "Iedere aanwezige speler heeft een groep."
   },
@@ -3085,7 +3085,7 @@
    "key": "Expired — sign in again to synchronize",
    "places": [
     "AndroidAuthenticationScreen.kt:457",
-    "AndroidDutchUiCopy.kt:454"
+    "AndroidDutchUiCopy.kt:458"
    ],
    "nl": "Verlopen — meld je opnieuw aan om te synchroniseren"
   },
@@ -3099,7 +3099,7 @@
   {
    "key": "Export",
    "places": [
-    "AndroidDutchUiCopy.kt:373"
+    "AndroidDutchUiCopy.kt:377"
    ],
    "nl": "Delen"
   },
@@ -3219,7 +3219,7 @@
   {
    "key": "Filter or search Player",
    "places": [
-    "AndroidDutchUiCopy.kt:411"
+    "AndroidDutchUiCopy.kt:415"
    ],
    "nl": "Speler filteren of zoeken"
   },
@@ -3233,7 +3233,7 @@
   {
    "key": "Filter the Player roster",
    "places": [
-    "AndroidDutchUiCopy.kt:404"
+    "AndroidDutchUiCopy.kt:408"
    ],
    "nl": "Spelerslijst filteren"
   },
@@ -3254,7 +3254,7 @@
   {
    "key": "Final export",
    "places": [
-    "AndroidDutchUiCopy.kt:367"
+    "AndroidDutchUiCopy.kt:371"
    ],
    "nl": "Finale delen"
   },
@@ -3308,7 +3308,7 @@
    "key": "Final layout",
    "places": [
     "AndroidPublicTournaments.kt:577",
-    "AndroidDutchUiCopy.kt:366"
+    "AndroidDutchUiCopy.kt:370"
    ],
    "nl": "Finale-indeling"
   },
@@ -3322,7 +3322,7 @@
   {
    "key": "Final result",
    "places": [
-    "AndroidDutchUiCopy.kt:369"
+    "AndroidDutchUiCopy.kt:373"
    ],
    "nl": "Einduitslag"
   },
@@ -3346,7 +3346,7 @@
    "places": [
     "AndroidPublicTournaments.kt:579",
     "AndroidTournamentScoreEntryStep.kt:97",
-    "AndroidDutchUiCopy.kt:368"
+    "AndroidDutchUiCopy.kt:372"
    ],
    "nl": "Finalescores"
   },
@@ -3354,7 +3354,7 @@
    "key": "Finalization pins the current results. Public visibility and rating inclusion are independent choices.",
    "places": [
     "AndroidTournamentScreen.kt:3776",
-    "AndroidDutchUiCopy.kt:203"
+    "AndroidDutchUiCopy.kt:207"
    ],
    "nl": "Bij afronden worden de huidige resultaten vastgezet. Openbare zichtbaarheid en meetellen voor de rating zijn afzonderlijke keuzes."
   },
@@ -3391,7 +3391,7 @@
   {
    "key": "Finish Player setup on the website",
    "places": [
-    "AndroidDutchUiCopy.kt:449"
+    "AndroidDutchUiCopy.kt:453"
    ],
    "nl": "Spelersetup op de website afronden"
   },
@@ -3427,7 +3427,7 @@
   {
    "key": "First choose the track shown in your result. Recognition reads the time, laps, Player and kart setup.",
    "places": [
-    "AndroidDutchUiCopy.kt:323"
+    "AndroidDutchUiCopy.kt:327"
    ],
    "nl": "Kies eerst het circuit dat in je uitslag staat. De scanner leest de tijd, ronden, speler en voertuigconfiguratie."
   },
@@ -3560,7 +3560,7 @@
   {
    "key": "Full lap, coin, mushroom and build details when recorded",
    "places": [
-    "AndroidDutchUiCopy.kt:279"
+    "AndroidDutchUiCopy.kt:283"
    ],
    "nl": "Volledige ronde-, munt-, paddenstoel- en voertuigdetails indien vastgelegd"
   },
@@ -3663,7 +3663,7 @@
   {
    "key": "Green",
    "places": [
-    "AndroidDutchUiCopy.kt:529"
+    "AndroidDutchUiCopy.kt:533"
    ],
    "nl": "Groen"
   },
@@ -3677,7 +3677,7 @@
   {
    "key": "Ground",
    "places": [
-    "AndroidDutchUiCopy.kt:280"
+    "AndroidDutchUiCopy.kt:284"
    ],
    "nl": "Grond"
   },
@@ -3708,7 +3708,7 @@
   {
    "key": "Groups, seating & stations",
    "places": [
-    "AndroidDutchUiCopy.kt:412"
+    "AndroidDutchUiCopy.kt:416"
    ],
    "nl": "Groepen, indeling en stations"
   },
@@ -3750,7 +3750,7 @@
   {
    "key": "Handling",
    "places": [
-    "AndroidDutchUiCopy.kt:281"
+    "AndroidDutchUiCopy.kt:285"
    ],
    "nl": "Besturing"
   },
@@ -3786,7 +3786,7 @@
   {
    "key": "Hide inactive absent Players",
    "places": [
-    "AndroidDutchUiCopy.kt:400"
+    "AndroidDutchUiCopy.kt:404"
    ],
    "nl": "Inactieve afwezige spelers verbergen"
   },
@@ -3814,7 +3814,7 @@
   {
    "key": "Hide roster tools",
    "places": [
-    "AndroidDutchUiCopy.kt:406"
+    "AndroidDutchUiCopy.kt:410"
    ],
    "nl": "Lijsthulpmiddelen verbergen"
   },
@@ -3973,14 +3973,14 @@
    "places": [
     "AndroidTournamentGroupDraftStep.kt:1395",
     "AndroidTournamentParticipantsStep.kt:1507",
-    "AndroidDutchUiCopy.kt:403"
+    "AndroidDutchUiCopy.kt:407"
    ],
    "nl": "Inactief"
   },
   {
    "key": "Incoming",
    "places": [
-    "AndroidDutchUiCopy.kt:358"
+    "AndroidDutchUiCopy.kt:362"
    ],
    "nl": "Binnenkomend"
   },
@@ -3988,7 +3988,7 @@
    "key": "Incoming results could not be refreshed.",
    "places": [
     "AndroidTournamentScreen.kt:1158",
-    "AndroidDutchUiCopy.kt:350"
+    "AndroidDutchUiCopy.kt:354"
    ],
    "nl": "Binnenkomende uitslagen konden niet worden vernieuwd."
   },
@@ -4017,7 +4017,7 @@
   {
    "key": "Invincibility",
    "places": [
-    "AndroidDutchUiCopy.kt:282"
+    "AndroidDutchUiCopy.kt:286"
    ],
    "nl": "Onkwetsbaarheid"
   },
@@ -4074,14 +4074,14 @@
   {
    "key": "Keep Tournament Manager on Step 5. On the capture PC choose Connect to Tournament Manager, select this Tournament and match each feed to the correct qualifier group.",
    "places": [
-    "AndroidDutchUiCopy.kt:421"
+    "AndroidDutchUiCopy.kt:425"
    ],
    "nl": "Laat Tournament Manager op Stap 5 staan. Kies op de capture-pc Verbinden met Tournament Manager, selecteer dit toernooi en koppel iedere feed aan de juiste kwalificatiegroep."
   },
   {
    "key": "Keep Tournament Manager on Step 9. On the capture PC choose Connect to Tournament Manager, select this Tournament and match each feed to the correct final group.",
    "places": [
-    "AndroidDutchUiCopy.kt:422"
+    "AndroidDutchUiCopy.kt:426"
    ],
    "nl": "Laat Tournament Manager op Stap 9 staan. Kies op de capture-pc Verbinden met Tournament Manager, selecteer dit toernooi en koppel iedere feed aan de juiste finalegroep."
   },
@@ -4116,7 +4116,7 @@
   {
    "key": "LOWEST MASTERY",
    "places": [
-    "AndroidDutchUiCopy.kt:284"
+    "AndroidDutchUiCopy.kt:288"
    ],
    "nl": "LAAGSTE MASTERY"
   },
@@ -4228,14 +4228,14 @@
   {
    "key": "Latest Time Trials",
    "places": [
-    "AndroidDutchUiCopy.kt:283"
+    "AndroidDutchUiCopy.kt:287"
    ],
    "nl": "Nieuwste Time Trials"
   },
   {
    "key": "Layout",
    "places": [
-    "AndroidDutchUiCopy.kt:370"
+    "AndroidDutchUiCopy.kt:374"
    ],
    "nl": "Indeling"
   },
@@ -4250,7 +4250,7 @@
    "key": "Layout checked · enter final scores",
    "places": [
     "AndroidTournamentScreen.kt:3109",
-    "AndroidDutchUiCopy.kt:384"
+    "AndroidDutchUiCopy.kt:388"
    ],
    "nl": "Indeling gecontroleerd · voer finalescores in"
   },
@@ -4258,7 +4258,7 @@
    "key": "Layout checked · enter scores",
    "places": [
     "AndroidTournamentScreen.kt:3099",
-    "AndroidDutchUiCopy.kt:378"
+    "AndroidDutchUiCopy.kt:382"
    ],
    "nl": "Indeling gecontroleerd · voer scores in"
   },
@@ -4266,7 +4266,7 @@
    "key": "Layout export",
    "places": [
     "AndroidPublicTournaments.kt:574",
-    "AndroidDutchUiCopy.kt:363"
+    "AndroidDutchUiCopy.kt:367"
    ],
    "nl": "Indeling exporteren"
   },
@@ -4317,7 +4317,7 @@
   {
    "key": "Light Blue",
    "places": [
-    "AndroidDutchUiCopy.kt:528"
+    "AndroidDutchUiCopy.kt:532"
    ],
    "nl": "Lichtblauw"
   },
@@ -4338,7 +4338,7 @@
   {
    "key": "Link reviewed recording",
    "places": [
-    "AndroidDutchUiCopy.kt:467"
+    "AndroidDutchUiCopy.kt:471"
    ],
    "nl": "Gecontroleerde opname koppelen"
   },
@@ -4367,14 +4367,14 @@
    "key": "Linked · races remain available. Update these group links after changing the layout.",
    "places": [
     "AndroidTournamentScreen.kt:3530",
-    "AndroidDutchUiCopy.kt:466"
+    "AndroidDutchUiCopy.kt:470"
    ],
    "nl": "Gekoppeld · races blijven beschikbaar. Werk deze groepskoppelingen bij nadat je de indeling wijzigt."
   },
   {
    "key": "Linking creates pending evidence only. Scores count after Player, Track, order and group are reviewed and accepted. Excel and manual entry remain available.",
    "places": [
-    "AndroidDutchUiCopy.kt:424"
+    "AndroidDutchUiCopy.kt:428"
    ],
    "nl": "Koppelen maakt alleen bewijs in afwachting. Scores tellen mee nadat speler, circuit, volgorde en groep zijn gecontroleerd en geaccepteerd. Excel en handmatige invoer blijven beschikbaar."
   },
@@ -4404,7 +4404,7 @@
    "places": [
     "AndroidTournamentNightScreen.kt:758",
     "AndroidTournamentScreen.kt:3739",
-    "AndroidDutchUiCopy.kt:428"
+    "AndroidDutchUiCopy.kt:432"
    ],
    "nl": "Live-tussenstanden"
   },
@@ -4432,7 +4432,7 @@
   {
    "key": "Loading Tournament history…",
    "places": [
-    "AndroidDutchUiCopy.kt:401"
+    "AndroidDutchUiCopy.kt:405"
    ],
    "nl": "Toernooihistorie laden…"
   },
@@ -4440,7 +4440,7 @@
    "key": "Loading Tournament…",
    "places": [
     "AndroidTournamentScreen.kt:2517",
-    "AndroidDutchUiCopy.kt:206"
+    "AndroidDutchUiCopy.kt:210"
    ],
    "nl": "Toernooi laden…"
   },
@@ -4461,7 +4461,7 @@
    "key": "Loading notifications…",
    "places": [
     "AndroidAccountEcosystemScreens.kt:928",
-    "AndroidDutchUiCopy.kt:204"
+    "AndroidDutchUiCopy.kt:208"
    ],
    "nl": "Meldingen laden…"
   },
@@ -4476,7 +4476,7 @@
    "key": "Loading rivals…",
    "places": [
     "AndroidMyTimes.kt:238",
-    "AndroidDutchUiCopy.kt:205"
+    "AndroidDutchUiCopy.kt:209"
    ],
    "nl": "Rivalen laden…"
   },
@@ -4505,7 +4505,7 @@
    "key": "Loading track times…",
    "places": [
     "AndroidTrackContext.kt:203",
-    "AndroidDutchUiCopy.kt:207"
+    "AndroidDutchUiCopy.kt:211"
    ],
    "nl": "Circuittijden laden…"
   },
@@ -4519,7 +4519,7 @@
    "key": "Loading your results…",
    "places": [
     "AndroidAccountEcosystemScreens.kt:312",
-    "AndroidDutchUiCopy.kt:208"
+    "AndroidDutchUiCopy.kt:212"
    ],
    "nl": "Jouw resultaten laden…"
   },
@@ -4533,7 +4533,7 @@
   {
    "key": "Loading your standings…",
    "places": [
-    "AndroidDutchUiCopy.kt:209"
+    "AndroidDutchUiCopy.kt:213"
    ],
    "nl": "Jouw stand laden…"
   },
@@ -4577,7 +4577,7 @@
   {
    "key": "MK8DX Kart Builder",
    "places": [
-    "AndroidDutchUiCopy.kt:212"
+    "AndroidDutchUiCopy.kt:216"
    ],
    "nl": "MK8DX-voertuigbouwer"
   },
@@ -4629,7 +4629,7 @@
   {
    "key": "Manage profile character, country, rivals, follows and visibility on the configured website.",
    "places": [
-    "AndroidDutchUiCopy.kt:210"
+    "AndroidDutchUiCopy.kt:214"
    ],
    "nl": "Beheer profielcoureur, land, rivalen, gevolgde spelers en zichtbaarheid op de ingestelde website."
   },
@@ -4643,7 +4643,7 @@
   {
    "key": "Manual Time Trial",
    "places": [
-    "AndroidDutchUiCopy.kt:321"
+    "AndroidDutchUiCopy.kt:325"
    ],
    "nl": "Handmatige Time Trial"
   },
@@ -4658,7 +4658,7 @@
    "key": "Manual entry and scanning still work on this phone without signing in.",
    "places": [
     "AndroidAuthenticationScreen.kt:226",
-    "AndroidDutchUiCopy.kt:211"
+    "AndroidDutchUiCopy.kt:215"
    ],
    "nl": "Handmatig invoeren en scannen werken op deze telefoon ook zonder aanmelding."
   },
@@ -4673,7 +4673,7 @@
    "key": "Manual totals follow the original score sheet. Only confirmed desktop race results can affect TrueSkill.",
    "places": [
     "AndroidTournamentScreen.kt:3755",
-    "AndroidDutchUiCopy.kt:429"
+    "AndroidDutchUiCopy.kt:433"
    ],
    "nl": "Handmatige totalen volgen het originele scoreblad. Alleen bevestigde raceresultaten uit de desktopapps kunnen TrueSkill beinvloeden."
   },
@@ -4764,7 +4764,7 @@
   {
    "key": "Maximum participants (optional)",
    "places": [
-    "AndroidDutchUiCopy.kt:355"
+    "AndroidDutchUiCopy.kt:359"
    ],
    "nl": "Maximumaantal deelnemers (optioneel)"
   },
@@ -4786,7 +4786,7 @@
    "key": "Meta target: combine any character, body, tires and glider that reach exactly 3.25 Ground Speed and 4.75 Mini-Turbo. Optimum alternatives follow the Magic 8 rule: both stats total 8.00 and Ground Speed is not higher than Mini-Turbo.",
    "places": [
     "AndroidBuildScreen.kt:357",
-    "AndroidDutchUiCopy.kt:285"
+    "AndroidDutchUiCopy.kt:289"
    ],
    "nl": "Meta-doel: combineer een coureur, chassis, banden en paraglider die samen exact 3.25 grondsnelheid en 4.75 Mini-Turbo bereiken. Optimale alternatieven volgen de Magic 8-regel: beide waarden zijn samen 8.00 en grondsnelheid is niet hoger dan Mini-Turbo."
   },
@@ -4806,7 +4806,7 @@
   {
    "key": "Missing Player or legacy roster?",
    "places": [
-    "AndroidDutchUiCopy.kt:405"
+    "AndroidDutchUiCopy.kt:409"
    ],
    "nl": "Ontbreekt er een speler of is dit een oude lijst?"
   },
@@ -4840,14 +4840,14 @@
   {
    "key": "Most leaderboard #1s",
    "places": [
-    "AndroidDutchUiCopy.kt:218"
+    "AndroidDutchUiCopy.kt:222"
    ],
    "nl": "Meeste eerste plaatsen"
   },
   {
    "key": "Most published times",
    "places": [
-    "AndroidDutchUiCopy.kt:219"
+    "AndroidDutchUiCopy.kt:223"
    ],
    "nl": "Meeste gepubliceerde tijden"
   },
@@ -5183,7 +5183,7 @@
   {
    "key": "Nintendo Switch stations & cable plan",
    "places": [
-    "AndroidDutchUiCopy.kt:393"
+    "AndroidDutchUiCopy.kt:397"
    ],
    "nl": "Nintendo Switch-stations en kabelplan"
   },
@@ -5200,14 +5200,14 @@
    "key": "No Nintendo Switch assigned yet",
    "places": [
     "AndroidTournamentScreen.kt:3264",
-    "AndroidDutchUiCopy.kt:215"
+    "AndroidDutchUiCopy.kt:219"
    ],
    "nl": "Nog geen Nintendo Switch-systeem toegewezen"
   },
   {
    "key": "No Nintendo Switch stations assigned",
    "places": [
-    "AndroidDutchUiCopy.kt:394"
+    "AndroidDutchUiCopy.kt:398"
    ],
    "nl": "Nog geen Nintendo Switch-stations toegewezen"
   },
@@ -5250,7 +5250,7 @@
   {
    "key": "No accepted private Groups yet. Manage invitations in Settings.",
    "places": [
-    "AndroidDutchUiCopy.kt:213"
+    "AndroidDutchUiCopy.kt:217"
    ],
    "nl": "Nog geen geaccepteerde privégroepen. Beheer uitnodigingen bij Instellingen."
   },
@@ -5265,14 +5265,14 @@
    "key": "No accounts are remembered on this device.",
    "places": [
     "AndroidAuthenticationScreen.kt:389",
-    "AndroidDutchUiCopy.kt:453"
+    "AndroidDutchUiCopy.kt:457"
    ],
    "nl": "Er zijn geen accounts bekend op dit apparaat."
   },
   {
    "key": "No active Tournament",
    "places": [
-    "AndroidDutchUiCopy.kt:214"
+    "AndroidDutchUiCopy.kt:218"
    ],
    "nl": "Geen actief toernooi"
   },
@@ -5293,7 +5293,7 @@
   {
    "key": "No completed recording is available yet.",
    "places": [
-    "AndroidDutchUiCopy.kt:433"
+    "AndroidDutchUiCopy.kt:437"
    ],
    "nl": "Er is nog geen voltooide opname beschikbaar."
   },
@@ -5342,14 +5342,14 @@
   {
    "key": "No historical Players are loaded yet.",
    "places": [
-    "AndroidDutchUiCopy.kt:402"
+    "AndroidDutchUiCopy.kt:406"
    ],
    "nl": "Er zijn nog geen historische spelers geladen."
   },
   {
    "key": "No incoming results are waiting",
    "places": [
-    "AndroidDutchUiCopy.kt:419"
+    "AndroidDutchUiCopy.kt:423"
    ],
    "nl": "Er wachten geen binnenkomende uitslagen"
   },
@@ -5385,7 +5385,7 @@
    "key": "No notifications yet.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:798",
-    "AndroidDutchUiCopy.kt:286"
+    "AndroidDutchUiCopy.kt:290"
    ],
    "nl": "Nog geen meldingen."
   },
@@ -5435,7 +5435,7 @@
    "key": "No recent community activity yet — be the first.",
    "places": [
     "AndroidHomeExperience.kt:577",
-    "AndroidDutchUiCopy.kt:216"
+    "AndroidDutchUiCopy.kt:220"
    ],
    "nl": "Nog geen recente communityactiviteit — wees de eerste."
   },
@@ -5443,7 +5443,7 @@
    "key": "No record holder yet.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:2003",
-    "AndroidDutchUiCopy.kt:217"
+    "AndroidDutchUiCopy.kt:221"
    ],
    "nl": "Nog geen recordhouder."
   },
@@ -5457,15 +5457,22 @@
   {
    "key": "No result details were recorded for this session.",
    "places": [
-    "AndroidDutchUiCopy.kt:221"
+    "AndroidDutchUiCopy.kt:225"
    ],
    "nl": "Voor deze sessie zijn geen resultaatdetails vastgelegd."
+  },
+  {
+   "key": "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.",
+   "places": [
+    "AndroidDutchUiCopy.kt:203"
+   ],
+   "nl": "Geen resultaatscherm gevonden. Zowel het eindscherm als het ghost-paneel is geprobeerd: controleer of de tijden zichtbaar zijn en de kaart het kader vult, of vul het met de hand in."
   },
   {
    "key": "No rivals chosen yet.",
    "places": [
     "AndroidMyTimes.kt:240",
-    "AndroidDutchUiCopy.kt:222"
+    "AndroidDutchUiCopy.kt:226"
    ],
    "nl": "Nog geen rivalen gekozen."
   },
@@ -5479,7 +5486,7 @@
   {
    "key": "No saved results",
    "places": [
-    "AndroidDutchUiCopy.kt:287"
+    "AndroidDutchUiCopy.kt:291"
    ],
    "nl": "Geen opgeslagen resultaten"
   },
@@ -5493,7 +5500,7 @@
   {
    "key": "No standings yet — enter or accept a race",
    "places": [
-    "AndroidDutchUiCopy.kt:417"
+    "AndroidDutchUiCopy.kt:421"
    ],
    "nl": "Nog geen stand — voer een race in of accepteer er een"
   },
@@ -5551,7 +5558,7 @@
    "key": "No verified community times yet. Your saved result can be the first.",
    "places": [
     "AndroidTrackContext.kt:431",
-    "AndroidDutchUiCopy.kt:223"
+    "AndroidDutchUiCopy.kt:227"
    ],
    "nl": "Nog geen geverifieerde communitytijden. Jouw opgeslagen resultaat kan de eerste zijn."
   },
@@ -5633,7 +5640,7 @@
   {
    "key": "Not The Meta",
    "places": [
-    "AndroidDutchUiCopy.kt:288"
+    "AndroidDutchUiCopy.kt:292"
    ],
    "nl": "Niet de meta"
   },
@@ -5654,7 +5661,7 @@
   {
    "key": "Not approved yet. Approve the request in your browser, then check again.",
    "places": [
-    "AndroidDutchUiCopy.kt:450"
+    "AndroidDutchUiCopy.kt:454"
    ],
    "nl": "Nog niet goedgekeurd. Keur het verzoek goed in je browser en controleer daarna opnieuw."
   },
@@ -5747,7 +5754,7 @@
   {
    "key": "Not read",
    "places": [
-    "AndroidDutchUiCopy.kt:327"
+    "AndroidDutchUiCopy.kt:331"
    ],
    "nl": "Niet herkend"
   },
@@ -5778,7 +5785,7 @@
   {
    "key": "Not saved yet",
    "places": [
-    "AndroidDutchUiCopy.kt:333"
+    "AndroidDutchUiCopy.kt:337"
    ],
    "nl": "Nog niet opgeslagen"
   },
@@ -5850,7 +5857,7 @@
   {
    "key": "Nothing needs your attention",
    "places": [
-    "AndroidDutchUiCopy.kt:431"
+    "AndroidDutchUiCopy.kt:435"
    ],
    "nl": "Je hoeft niets te doen"
   },
@@ -6029,7 +6036,7 @@
   {
    "key": "One compact group phase",
    "places": [
-    "AndroidDutchUiCopy.kt:354"
+    "AndroidDutchUiCopy.kt:358"
    ],
    "nl": "Eén compacte groepsfase"
   },
@@ -6051,7 +6058,7 @@
    "key": "Only a draft without recorded races can be deleted.",
    "places": [
     "AndroidTournamentScreen.kt:2125",
-    "AndroidDutchUiCopy.kt:346"
+    "AndroidDutchUiCopy.kt:350"
    ],
    "nl": "Alleen een concept zonder vastgelegde races kan worden verwijderd."
   },
@@ -6130,14 +6137,14 @@
   {
    "key": "Open another Tournament, resume a draft or start a new event.",
    "places": [
-    "AndroidDutchUiCopy.kt:398"
+    "AndroidDutchUiCopy.kt:402"
    ],
    "nl": "Open een ander toernooi, hervat een concept of start een nieuw evenement."
   },
   {
    "key": "Open approval page",
    "places": [
-    "AndroidDutchUiCopy.kt:224"
+    "AndroidDutchUiCopy.kt:228"
    ],
    "nl": "Goedkeuringspagina openen"
   },
@@ -6152,7 +6159,7 @@
    "key": "Open full web profile",
    "places": [
     "AndroidAccountEcosystemScreens.kt:333",
-    "AndroidDutchUiCopy.kt:225"
+    "AndroidDutchUiCopy.kt:229"
    ],
    "nl": "Volledig webprofiel openen"
   },
@@ -6180,7 +6187,7 @@
   {
    "key": "Open synchronization",
    "places": [
-    "AndroidDutchUiCopy.kt:461"
+    "AndroidDutchUiCopy.kt:465"
    ],
    "nl": "Synchronisatie openen"
   },
@@ -6237,7 +6244,7 @@
   {
    "key": "Open website settings",
    "places": [
-    "AndroidDutchUiCopy.kt:226"
+    "AndroidDutchUiCopy.kt:230"
    ],
    "nl": "Website-instellingen openen"
   },
@@ -6251,14 +6258,14 @@
   {
    "key": "Optimum Build",
    "places": [
-    "AndroidDutchUiCopy.kt:289"
+    "AndroidDutchUiCopy.kt:293"
    ],
    "nl": "Optimale combinatie"
   },
   {
    "key": "Optimum Build: Speed + Mini-Turbo is 8.00 and Speed does not exceed Mini-Turbo.",
    "places": [
-    "AndroidDutchUiCopy.kt:290"
+    "AndroidDutchUiCopy.kt:294"
    ],
    "nl": "Optimale combinatie: snelheid + Mini-Turbo is 8.00 en snelheid is niet hoger dan Mini-Turbo."
   },
@@ -6293,7 +6300,7 @@
   {
    "key": "Orange",
    "places": [
-    "AndroidDutchUiCopy.kt:530"
+    "AndroidDutchUiCopy.kt:534"
    ],
    "nl": "Oranje"
   },
@@ -6307,7 +6314,7 @@
   {
    "key": "Other",
    "places": [
-    "AndroidDutchUiCopy.kt:291"
+    "AndroidDutchUiCopy.kt:295"
    ],
    "nl": "Overig"
   },
@@ -6374,7 +6381,7 @@
   {
    "key": "Overview",
    "places": [
-    "AndroidDutchUiCopy.kt:356"
+    "AndroidDutchUiCopy.kt:360"
    ],
    "nl": "Overzicht"
   },
@@ -6514,7 +6521,7 @@
   {
    "key": "Participants & attendance",
    "places": [
-    "AndroidDutchUiCopy.kt:396"
+    "AndroidDutchUiCopy.kt:400"
    ],
    "nl": "Deelnemers en aanwezigheid"
   },
@@ -6612,7 +6619,7 @@
   {
    "key": "People",
    "places": [
-    "AndroidDutchUiCopy.kt:357"
+    "AndroidDutchUiCopy.kt:361"
    ],
    "nl": "Deelnemers"
   },
@@ -6647,7 +6654,7 @@
   {
    "key": "Pink",
    "places": [
-    "AndroidDutchUiCopy.kt:530"
+    "AndroidDutchUiCopy.kt:534"
    ],
    "nl": "Roze"
   },
@@ -6719,14 +6726,14 @@
    "places": [
     "AndroidAdministrationScreen.kt:165",
     "AndroidTournamentStatisticsSection.kt:249",
-    "AndroidDutchUiCopy.kt:361"
+    "AndroidDutchUiCopy.kt:365"
    ],
    "nl": "Spelers"
   },
   {
    "key": "Players from previous Tournaments start Absent. Tap A, W or X, then mark NS1/NS2 for consoles brought to the event.",
    "places": [
-    "AndroidDutchUiCopy.kt:397"
+    "AndroidDutchUiCopy.kt:401"
    ],
    "nl": "Spelers uit eerdere toernooien beginnen als Afwezig. Tik op A, W of X en markeer daarna NS1/NS2 voor meegebrachte consoles."
   },
@@ -6812,7 +6819,7 @@
    "key": "Possible duplicate — compare before accepting",
    "places": [
     "AndroidTournamentScreen.kt:3645",
-    "AndroidDutchUiCopy.kt:227"
+    "AndroidDutchUiCopy.kt:231"
    ],
    "nl": "Mogelijk duplicaat — vergelijk vóór accepteren"
   },
@@ -6827,7 +6834,7 @@
    "key": "Post a Time Trial",
    "places": [
     "AndroidTimeTrialsProductComponent.kt:1260",
-    "AndroidDutchUiCopy.kt:242"
+    "AndroidDutchUiCopy.kt:246"
    ],
    "nl": "Time Trial plaatsen"
   },
@@ -6925,7 +6932,7 @@
   {
    "key": "Previous step",
    "places": [
-    "AndroidDutchUiCopy.kt:386"
+    "AndroidDutchUiCopy.kt:390"
    ],
    "nl": "Vorige stap"
   },
@@ -6946,7 +6953,7 @@
   {
    "key": "Progress",
    "places": [
-    "AndroidDutchUiCopy.kt:395"
+    "AndroidDutchUiCopy.kt:399"
    ],
    "nl": "Voortgang"
   },
@@ -6960,7 +6967,7 @@
   {
    "key": "Public 96-track standings and direct comparisons with community Players, Nintendo Ghost and World Record.",
    "places": [
-    "AndroidDutchUiCopy.kt:292"
+    "AndroidDutchUiCopy.kt:296"
    ],
    "nl": "Openbare stand over 96 circuits en directe vergelijkingen met communityspelers, Nintendo-ghost en wereldrecord."
   },
@@ -7013,7 +7020,7 @@
   {
    "key": "Purple",
    "places": [
-    "AndroidDutchUiCopy.kt:530"
+    "AndroidDutchUiCopy.kt:534"
    ],
    "nl": "Paars"
   },
@@ -7046,7 +7053,7 @@
     "AndroidPublicTournaments.kt:573",
     "AndroidTournamentExportCheckpoint.kt:52",
     "AndroidTournamentLayoutExportStep.kt:142",
-    "AndroidDutchUiCopy.kt:362"
+    "AndroidDutchUiCopy.kt:366"
    ],
    "nl": "Kwalificatie-indeling"
   },
@@ -7084,14 +7091,14 @@
    "places": [
     "AndroidPublicTournaments.kt:575",
     "AndroidTournamentScoreEntryStep.kt:95",
-    "AndroidDutchUiCopy.kt:364"
+    "AndroidDutchUiCopy.kt:368"
    ],
    "nl": "Kwalificatiescores"
   },
   {
    "key": "Qualifiers + finals",
    "places": [
-    "AndroidDutchUiCopy.kt:353"
+    "AndroidDutchUiCopy.kt:357"
    ],
    "nl": "Kwalificatie + finales"
   },
@@ -7127,7 +7134,7 @@
   {
    "key": "RECOGNIZED · LAP SUM VERIFIED",
    "places": [
-    "AndroidDutchUiCopy.kt:230"
+    "AndroidDutchUiCopy.kt:234"
    ],
    "nl": "HERKEND · SOM VAN RONDEN GECONTROLEERD"
   },
@@ -7156,7 +7163,7 @@
    "key": "RESULT SCANNER",
    "places": [
     "AndroidScanProductScreen.kt:176",
-    "AndroidDutchUiCopy.kt:264"
+    "AndroidDutchUiCopy.kt:268"
    ],
    "nl": "RESULTAATSCANNER"
   },
@@ -7171,7 +7178,7 @@
    "key": "RIVAL FILTERS",
    "places": [
     "AndroidRankScreen.kt:884",
-    "AndroidDutchUiCopy.kt:295"
+    "AndroidDutchUiCopy.kt:299"
    ],
    "nl": "RIVALENFILTERS"
   },
@@ -7192,7 +7199,7 @@
   {
    "key": "Race balance stays 0–10",
    "places": [
-    "AndroidDutchUiCopy.kt:228"
+    "AndroidDutchUiCopy.kt:232"
    ],
    "nl": "Racebalans blijft 0–10"
   },
@@ -7206,8 +7213,8 @@
   {
    "key": "Race-day control in your pocket",
    "places": [
-    "AndroidDutchUiCopy.kt:229",
-    "AndroidDutchUiCopy.kt:351"
+    "AndroidDutchUiCopy.kt:233",
+    "AndroidDutchUiCopy.kt:355"
    ],
    "nl": "Wedstrijddagbediening in je broekzak"
   },
@@ -7295,7 +7302,7 @@
   {
    "key": "Ranking is temporarily unavailable.",
    "places": [
-    "AndroidDutchUiCopy.kt:263"
+    "AndroidDutchUiCopy.kt:267"
    ],
    "nl": "De ranglijst is tijdelijk niet beschikbaar."
   },
@@ -7431,21 +7438,21 @@
   {
    "key": "Recognition checks passed",
    "places": [
-    "AndroidDutchUiCopy.kt:328"
+    "AndroidDutchUiCopy.kt:332"
    ],
    "nl": "Herkenningscontroles geslaagd"
   },
   {
    "key": "Recognition is never saved automatically. Check the highlighted result, then correct or accept it.",
    "places": [
-    "AndroidDutchUiCopy.kt:324"
+    "AndroidDutchUiCopy.kt:328"
    ],
    "nl": "Een herkende uitslag wordt nooit automatisch opgeslagen. Controleer de gemarkeerde gegevens en corrigeer of accepteer ze daarna."
   },
   {
    "key": "Recommended on race day: Tournament Live",
    "places": [
-    "AndroidDutchUiCopy.kt:420"
+    "AndroidDutchUiCopy.kt:424"
    ],
    "nl": "Aanbevolen op de toernooiavond: Tournament Live"
   },
@@ -7460,7 +7467,7 @@
    "key": "Record incident",
    "places": [
     "AndroidTournamentScreen.kt:3797",
-    "AndroidDutchUiCopy.kt:231"
+    "AndroidDutchUiCopy.kt:235"
    ],
    "nl": "Incident vastleggen"
   },
@@ -7495,7 +7502,7 @@
   {
    "key": "Red",
    "places": [
-    "AndroidDutchUiCopy.kt:528"
+    "AndroidDutchUiCopy.kt:532"
    ],
    "nl": "Rood"
   },
@@ -7540,7 +7547,7 @@
   {
    "key": "Refresh saved results",
    "places": [
-    "AndroidDutchUiCopy.kt:293"
+    "AndroidDutchUiCopy.kt:297"
    ],
    "nl": "Opgeslagen resultaten vernieuwen"
   },
@@ -7597,7 +7604,7 @@
   {
    "key": "Remove Player",
    "places": [
-    "AndroidDutchUiCopy.kt:233"
+    "AndroidDutchUiCopy.kt:237"
    ],
    "nl": "Speler verwijderen"
   },
@@ -7611,7 +7618,7 @@
   {
    "key": "Remove anyway",
    "places": [
-    "AndroidDutchUiCopy.kt:232"
+    "AndroidDutchUiCopy.kt:236"
    ],
    "nl": "Toch verwijderen"
   },
@@ -7724,14 +7731,14 @@
   {
    "key": "Result",
    "places": [
-    "AndroidDutchUiCopy.kt:372"
+    "AndroidDutchUiCopy.kt:376"
    ],
    "nl": "Uitslag"
   },
   {
    "key": "Result details",
    "places": [
-    "AndroidDutchUiCopy.kt:294"
+    "AndroidDutchUiCopy.kt:298"
    ],
    "nl": "Resultaatdetails"
   },
@@ -7739,14 +7746,14 @@
    "key": "Result export",
    "places": [
     "AndroidPublicTournaments.kt:576",
-    "AndroidDutchUiCopy.kt:365"
+    "AndroidDutchUiCopy.kt:369"
    ],
    "nl": "Uitslag exporteren"
   },
   {
    "key": "Results appear below under Incoming results and count only after the complete group feed is reviewed and accepted. Excel and manual entry remain available.",
    "places": [
-    "AndroidDutchUiCopy.kt:423"
+    "AndroidDutchUiCopy.kt:427"
    ],
    "nl": "Uitslagen verschijnen hieronder bij Binnenkomende uitslagen en tellen pas mee nadat de volledige groepsfeed is gecontroleerd en geaccepteerd. Excel en handmatige invoer blijven beschikbaar."
   },
@@ -7777,7 +7784,7 @@
   {
    "key": "Retry save",
    "places": [
-    "AndroidDutchUiCopy.kt:330"
+    "AndroidDutchUiCopy.kt:334"
    ],
    "nl": "Opnieuw opslaan"
   },
@@ -7850,14 +7857,14 @@
    "key": "Review finalization",
    "places": [
     "AndroidTournamentScreen.kt:3774",
-    "AndroidDutchUiCopy.kt:234"
+    "AndroidDutchUiCopy.kt:238"
    ],
    "nl": "Afronding controleren"
   },
   {
    "key": "Review order and save race",
    "places": [
-    "AndroidDutchUiCopy.kt:235"
+    "AndroidDutchUiCopy.kt:239"
    ],
    "nl": "Volgorde controleren en race opslaan"
   },
@@ -7910,7 +7917,7 @@
   {
    "key": "Roster tools",
    "places": [
-    "AndroidDutchUiCopy.kt:407"
+    "AndroidDutchUiCopy.kt:411"
    ],
    "nl": "Lijsthulpmiddelen"
   },
@@ -7947,7 +7954,7 @@
    "key": "Running Tournament nights is for Directors; you can ask to host on the Tournaments tab. Time Trials remain fully usable.",
    "places": [
     "AndroidTournamentScreen.kt:563",
-    "AndroidDutchUiCopy.kt:342"
+    "AndroidDutchUiCopy.kt:346"
    ],
    "nl": "Toernooiavonden draaien is voor Directeuren; op het tabblad Toernooien kun je vragen om te hosten. Time Trials blijven volledig bruikbaar."
   },
@@ -7968,14 +7975,14 @@
   {
    "key": "SAVED RESULTS",
    "places": [
-    "AndroidDutchUiCopy.kt:296"
+    "AndroidDutchUiCopy.kt:300"
    ],
    "nl": "OPGESLAGEN RESULTATEN"
   },
   {
    "key": "SCAN A TIME TRIAL",
    "places": [
-    "AndroidDutchUiCopy.kt:322"
+    "AndroidDutchUiCopy.kt:326"
    ],
    "nl": "EEN TIME TRIAL SCANNEN"
   },
@@ -8010,7 +8017,7 @@
    "key": "STEP 0 · DIRECTOR",
    "places": [
     "AndroidTournamentScreen.kt:2502",
-    "AndroidDutchUiCopy.kt:438"
+    "AndroidDutchUiCopy.kt:442"
    ],
    "nl": "STAP 0 · DIRECTEUR"
   },
@@ -8067,7 +8074,7 @@
   {
    "key": "Save failed. The reviewed result is still here.",
    "places": [
-    "AndroidDutchUiCopy.kt:336"
+    "AndroidDutchUiCopy.kt:340"
    ],
    "nl": "Opslaan is mislukt. De gecontroleerde uitslag staat nog op dit scherm."
   },
@@ -8075,7 +8082,7 @@
    "key": "Save incident",
    "places": [
     "AndroidTournamentScreen.kt:3808",
-    "AndroidDutchUiCopy.kt:236"
+    "AndroidDutchUiCopy.kt:240"
    ],
    "nl": "Incident opslaan"
   },
@@ -8089,14 +8096,14 @@
   {
    "key": "Save result",
    "places": [
-    "AndroidDutchUiCopy.kt:332"
+    "AndroidDutchUiCopy.kt:336"
    ],
    "nl": "Uitslag opslaan"
   },
   {
    "key": "Save test",
    "places": [
-    "AndroidDutchUiCopy.kt:331"
+    "AndroidDutchUiCopy.kt:335"
    ],
    "nl": "Test opslaan"
   },
@@ -8165,7 +8172,7 @@
   {
    "key": "Saved safely. Automatic sync is queued.",
    "places": [
-    "AndroidDutchUiCopy.kt:335"
+    "AndroidDutchUiCopy.kt:339"
    ],
    "nl": "Veilig opgeslagen. Automatische synchronisatie staat klaar."
   },
@@ -8179,7 +8186,7 @@
   {
    "key": "Saving safely on this phone…",
    "places": [
-    "AndroidDutchUiCopy.kt:334"
+    "AndroidDutchUiCopy.kt:338"
    ],
    "nl": "Veilig opslaan op deze telefoon…"
   },
@@ -8237,7 +8244,7 @@
   {
    "key": "Scan another image",
    "places": [
-    "AndroidDutchUiCopy.kt:237"
+    "AndroidDutchUiCopy.kt:241"
    ],
    "nl": "Nog een afbeelding scannen"
   },
@@ -8273,14 +8280,14 @@
    "key": "Scanned evidence stays private on this device.",
    "places": [
     "AndroidAuthenticationScreen.kt:315",
-    "AndroidDutchUiCopy.kt:238"
+    "AndroidDutchUiCopy.kt:242"
    ],
    "nl": "Gescand bewijs blijft privé op dit apparaat."
   },
   {
    "key": "Scanned result evidence",
    "places": [
-    "AndroidDutchUiCopy.kt:326"
+    "AndroidDutchUiCopy.kt:330"
    ],
    "nl": "Afbeelding van de gescande uitslag"
   },
@@ -8288,7 +8295,7 @@
    "key": "Scanner unavailable",
    "places": [
     "AndroidScanProductScreen.kt:233",
-    "AndroidDutchUiCopy.kt:340"
+    "AndroidDutchUiCopy.kt:344"
    ],
    "nl": "Scanner niet beschikbaar"
   },
@@ -8309,7 +8316,7 @@
   {
    "key": "Scanning stays local. Sign in so the reviewed result belongs to the right Player.",
    "places": [
-    "AndroidDutchUiCopy.kt:338"
+    "AndroidDutchUiCopy.kt:342"
    ],
    "nl": "Scannen gebeurt lokaal. Meld je aan zodat de gecontroleerde uitslag bij de juiste speler hoort."
   },
@@ -8317,15 +8324,15 @@
    "key": "Score entry",
    "places": [
     "AndroidTournamentScreen.kt:3678",
-    "AndroidDutchUiCopy.kt:426"
+    "AndroidDutchUiCopy.kt:430"
    ],
    "nl": "Score-invoer"
   },
   {
    "key": "Scores",
    "places": [
-    "AndroidDutchUiCopy.kt:359",
-    "AndroidDutchUiCopy.kt:371"
+    "AndroidDutchUiCopy.kt:363",
+    "AndroidDutchUiCopy.kt:375"
    ],
    "nl": "Scores"
   },
@@ -8347,7 +8354,7 @@
   {
    "key": "Search Player",
    "places": [
-    "AndroidDutchUiCopy.kt:239"
+    "AndroidDutchUiCopy.kt:243"
    ],
    "nl": "Speler zoeken"
   },
@@ -8439,7 +8446,7 @@
    "key": "Search tracks",
    "places": [
     "AndroidTrackChooser.kt:136",
-    "AndroidDutchUiCopy.kt:297"
+    "AndroidDutchUiCopy.kt:301"
    ],
    "nl": "Zoek circuits"
   },
@@ -8467,28 +8474,28 @@
   {
    "key": "Select body",
    "places": [
-    "AndroidDutchUiCopy.kt:298"
+    "AndroidDutchUiCopy.kt:302"
    ],
    "nl": "Chassis selecteren"
   },
   {
    "key": "Select character",
    "places": [
-    "AndroidDutchUiCopy.kt:299"
+    "AndroidDutchUiCopy.kt:303"
    ],
    "nl": "Coureur selecteren"
   },
   {
    "key": "Select glider",
    "places": [
-    "AndroidDutchUiCopy.kt:300"
+    "AndroidDutchUiCopy.kt:304"
    ],
    "nl": "Paraglider selecteren"
   },
   {
    "key": "Select tire",
    "places": [
-    "AndroidDutchUiCopy.kt:301"
+    "AndroidDutchUiCopy.kt:305"
    ],
    "nl": "Banden selecteren"
   },
@@ -8565,7 +8572,7 @@
   {
    "key": "Share build",
    "places": [
-    "AndroidDutchUiCopy.kt:240"
+    "AndroidDutchUiCopy.kt:244"
    ],
    "nl": "Voertuig delen"
   },
@@ -8573,7 +8580,7 @@
    "key": "Share final layout",
    "places": [
     "AndroidTournamentScreen.kt:3108",
-    "AndroidDutchUiCopy.kt:383"
+    "AndroidDutchUiCopy.kt:387"
    ],
    "nl": "Finale-indeling delen"
   },
@@ -8581,7 +8588,7 @@
    "key": "Share final result",
    "places": [
     "AndroidTournamentScreen.kt:3112",
-    "AndroidDutchUiCopy.kt:385"
+    "AndroidDutchUiCopy.kt:389"
    ],
    "nl": "Einduitslag delen"
   },
@@ -8604,7 +8611,7 @@
    "key": "Share qualifier layout",
    "places": [
     "AndroidTournamentScreen.kt:3098",
-    "AndroidDutchUiCopy.kt:377"
+    "AndroidDutchUiCopy.kt:381"
    ],
    "nl": "Kwalificatie-indeling delen"
   },
@@ -8614,7 +8621,7 @@
     "AndroidTournamentScreen.kt:1363",
     "AndroidTournamentScreen.kt:1421",
     "AndroidTournamentScreen.kt:3103",
-    "AndroidDutchUiCopy.kt:380"
+    "AndroidDutchUiCopy.kt:384"
    ],
    "nl": "Deel uitslag"
   },
@@ -8775,7 +8782,7 @@
   {
    "key": "Sign in again",
    "places": [
-    "AndroidDutchUiCopy.kt:441"
+    "AndroidDutchUiCopy.kt:445"
    ],
    "nl": "Opnieuw aanmelden"
   },
@@ -8783,7 +8790,7 @@
    "key": "Sign in as a Director to view attendance, seating, stations, groups, standings and incoming results.",
    "places": [
     "AndroidTournamentScreen.kt:2504",
-    "AndroidDutchUiCopy.kt:352"
+    "AndroidDutchUiCopy.kt:356"
    ],
    "nl": "Meld je aan als Directeur om aanwezigheid, indeling, stations, groepen, standen en binnenkomende uitslagen te bekijken."
   },
@@ -8791,7 +8798,7 @@
    "key": "Sign in as the Tournament director",
    "places": [
     "AndroidTournamentScreen.kt:2503",
-    "AndroidDutchUiCopy.kt:439"
+    "AndroidDutchUiCopy.kt:443"
    ],
    "nl": "Log in als toernooidirecteur"
   },
@@ -8799,14 +8806,14 @@
    "key": "Sign in before saving",
    "places": [
     "AndroidScanProductScreen.kt:225",
-    "AndroidDutchUiCopy.kt:339"
+    "AndroidDutchUiCopy.kt:343"
    ],
    "nl": "Meld je aan voordat je opslaat"
   },
   {
    "key": "Sign in for rivals & Groups",
    "places": [
-    "AndroidDutchUiCopy.kt:241"
+    "AndroidDutchUiCopy.kt:245"
    ],
    "nl": "Meld je aan voor rivalen en groepen"
   },
@@ -8821,7 +8828,7 @@
    "key": "Sign in to compare these times with your PB.",
    "places": [
     "AndroidTrackContext.kt:234",
-    "AndroidDutchUiCopy.kt:459"
+    "AndroidDutchUiCopy.kt:463"
    ],
    "nl": "Meld je aan om deze tijden met je PR te vergelijken."
   },
@@ -8836,7 +8843,7 @@
    "key": "Sign in to read your notifications.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:714",
-    "AndroidDutchUiCopy.kt:458"
+    "AndroidDutchUiCopy.kt:462"
    ],
    "nl": "Meld je aan om je meldingen te lezen."
   },
@@ -8844,7 +8851,7 @@
    "key": "Sign in to see your Player profile.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:242",
-    "AndroidDutchUiCopy.kt:457"
+    "AndroidDutchUiCopy.kt:461"
    ],
    "nl": "Meld je aan om je spelersprofiel te zien."
   },
@@ -8859,14 +8866,14 @@
    "key": "Sign in to sync results to your Player profile. You can explore the app first.",
    "places": [
     "AndroidTimeTrialsProductComponent.kt:1315",
-    "AndroidDutchUiCopy.kt:304"
+    "AndroidDutchUiCopy.kt:308"
    ],
    "nl": "Meld je aan om resultaten met je spelersprofiel te synchroniseren. Je kunt de app eerst verkennen."
   },
   {
    "key": "Sign in to synchronize",
    "places": [
-    "AndroidDutchUiCopy.kt:440"
+    "AndroidDutchUiCopy.kt:444"
    ],
    "nl": "Aanmelden om te synchroniseren"
   },
@@ -8874,7 +8881,7 @@
    "key": "Sign in to synchronize saved results",
    "places": [
     "AndroidOutboxSelectionComponent.kt:83",
-    "AndroidDutchUiCopy.kt:460"
+    "AndroidDutchUiCopy.kt:464"
    ],
    "nl": "Meld je aan om opgeslagen resultaten te synchroniseren"
   },
@@ -8932,7 +8939,7 @@
    "key": "Signed in and ready to synchronize.",
    "places": [
     "AndroidAuthenticationScreen.kt:309",
-    "AndroidDutchUiCopy.kt:442"
+    "AndroidDutchUiCopy.kt:446"
    ],
    "nl": "Aangemeld en klaar om te synchroniseren."
   },
@@ -9017,7 +9024,7 @@
   {
    "key": "Speed",
    "places": [
-    "AndroidDutchUiCopy.kt:302"
+    "AndroidDutchUiCopy.kt:306"
    ],
    "nl": "Snelheid"
   },
@@ -9052,14 +9059,14 @@
   {
    "key": "Start",
    "places": [
-    "AndroidDutchUiCopy.kt:360"
+    "AndroidDutchUiCopy.kt:364"
    ],
    "nl": "Start"
   },
   {
    "key": "Start a new result with manual input or use the camera scanner.",
    "places": [
-    "AndroidDutchUiCopy.kt:303"
+    "AndroidDutchUiCopy.kt:307"
    ],
    "nl": "Start een nieuw resultaat met handmatige invoer of gebruik de camerascanner."
   },
@@ -9086,7 +9093,7 @@
   {
    "key": "Stations",
    "places": [
-    "AndroidDutchUiCopy.kt:391"
+    "AndroidDutchUiCopy.kt:395"
    ],
    "nl": "Stations"
   },
@@ -9319,7 +9326,7 @@
   {
    "key": "Swipe for later steps →",
    "places": [
-    "AndroidDutchUiCopy.kt:374"
+    "AndroidDutchUiCopy.kt:378"
    ],
    "nl": "Veeg voor latere stappen →"
   },
@@ -9327,7 +9334,7 @@
    "key": "Switch",
    "places": [
     "AndroidCommunityServerPanel.kt:236",
-    "AndroidDutchUiCopy.kt:452"
+    "AndroidDutchUiCopy.kt:456"
    ],
    "nl": "Wisselen"
   },
@@ -9335,7 +9342,7 @@
    "key": "Switch Player",
    "places": [
     "AndroidAccountEcosystemScreens.kt:284",
-    "AndroidDutchUiCopy.kt:305"
+    "AndroidDutchUiCopy.kt:309"
    ],
    "nl": "Speler wisselen"
   },
@@ -9343,7 +9350,7 @@
    "key": "Switch Player quickly on a shared phone. Every saved result keeps the Player who created it.",
    "places": [
     "AndroidAuthenticationScreen.kt:170",
-    "AndroidDutchUiCopy.kt:455"
+    "AndroidDutchUiCopy.kt:459"
    ],
    "nl": "Wissel snel van speler op een gedeelde telefoon. Elk opgeslagen resultaat blijft van de speler die het maakte."
   },
@@ -9392,14 +9399,14 @@
   {
    "key": "Sync all",
    "places": [
-    "AndroidDutchUiCopy.kt:306"
+    "AndroidDutchUiCopy.kt:310"
    ],
    "nl": "Alles synchroniseren"
   },
   {
    "key": "Sync now",
    "places": [
-    "AndroidDutchUiCopy.kt:243"
+    "AndroidDutchUiCopy.kt:247"
    ],
    "nl": "Nu synchroniseren"
   },
@@ -9413,7 +9420,7 @@
   {
    "key": "Synchronize Tournament history",
    "places": [
-    "AndroidDutchUiCopy.kt:408"
+    "AndroidDutchUiCopy.kt:412"
    ],
    "nl": "Toernooihistorie synchroniseren"
   },
@@ -9427,7 +9434,7 @@
   {
    "key": "TEST RESULT · EXPIRES IN 24 HOURS",
    "places": [
-    "AndroidDutchUiCopy.kt:246"
+    "AndroidDutchUiCopy.kt:250"
    ],
    "nl": "TESTRESULTAAT · VERLOOPT OVER 24 UUR"
   },
@@ -9497,7 +9504,7 @@
    "key": "TOURNAMENT",
    "places": [
     "AndroidPlayerPage.kt:165",
-    "AndroidDutchUiCopy.kt:249"
+    "AndroidDutchUiCopy.kt:253"
    ],
    "nl": "TOERNOOI"
   },
@@ -9534,7 +9541,7 @@
    "key": "TT SCAN",
    "places": [
     "ResultImageAcquisitionComponent.kt:427",
-    "AndroidDutchUiCopy.kt:255"
+    "AndroidDutchUiCopy.kt:259"
    ],
    "nl": "TT-SCAN"
   },
@@ -9631,14 +9638,14 @@
   {
    "key": "Tap Players in finish order",
    "places": [
-    "AndroidDutchUiCopy.kt:245"
+    "AndroidDutchUiCopy.kt:249"
    ],
    "nl": "Tik spelers aan in finishvolgorde"
   },
   {
    "key": "Tap a Player column to sort by that Player's delta.",
    "places": [
-    "AndroidDutchUiCopy.kt:308"
+    "AndroidDutchUiCopy.kt:312"
    ],
    "nl": "Tik op een spelerskolom om te sorteren op het verschil van die speler."
   },
@@ -9646,7 +9653,7 @@
    "key": "Tap a Player to move or park them",
    "places": [
     "AndroidTournamentScreen.kt:3327",
-    "AndroidDutchUiCopy.kt:244"
+    "AndroidDutchUiCopy.kt:248"
    ],
    "nl": "Tik op een speler om die te verplaatsen of te parkeren"
   },
@@ -9698,7 +9705,7 @@
    "key": "That change could not be saved.",
    "places": [
     "AndroidTournamentScreen.kt:2149",
-    "AndroidDutchUiCopy.kt:349"
+    "AndroidDutchUiCopy.kt:353"
    ],
    "nl": "Die wijziging kon niet worden opgeslagen."
   },
@@ -9864,7 +9871,7 @@
    "key": "The Tournament changed elsewhere. Refresh and try again.",
    "places": [
     "AndroidTournamentScreen.kt:2144",
-    "AndroidDutchUiCopy.kt:348"
+    "AndroidDutchUiCopy.kt:352"
    ],
    "nl": "Het toernooi is elders gewijzigd. Vernieuw en probeer het opnieuw."
   },
@@ -9872,7 +9879,7 @@
    "key": "The Tournament could not be created.",
    "places": [
     "AndroidTournamentScreen.kt:671",
-    "AndroidDutchUiCopy.kt:344"
+    "AndroidDutchUiCopy.kt:348"
    ],
    "nl": "Het toernooi kon niet worden gemaakt."
   },
@@ -9897,7 +9904,7 @@
    "key": "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
    "places": [
     "AndroidTournamentScreen.kt:3457",
-    "AndroidDutchUiCopy.kt:432"
+    "AndroidDutchUiCopy.kt:436"
    ],
    "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole."
   },
@@ -9918,14 +9925,14 @@
   {
    "key": "The device code expired.",
    "places": [
-    "AndroidDutchUiCopy.kt:445"
+    "AndroidDutchUiCopy.kt:449"
    ],
    "nl": "De apparaatcode is verlopen."
   },
   {
    "key": "The device request was denied.",
    "places": [
-    "AndroidDutchUiCopy.kt:444"
+    "AndroidDutchUiCopy.kt:448"
    ],
    "nl": "Het apparaatverzoek is geweigerd."
   },
@@ -9974,7 +9981,7 @@
   {
    "key": "The global standing uses your total across all 96 tracks.",
    "places": [
-    "AndroidDutchUiCopy.kt:247"
+    "AndroidDutchUiCopy.kt:251"
    ],
    "nl": "De wereldwijde stand gebruikt je totaaltijd over alle 96 circuits."
   },
@@ -10080,7 +10087,7 @@
   {
    "key": "The recording could not be linked.",
    "places": [
-    "AndroidDutchUiCopy.kt:469"
+    "AndroidDutchUiCopy.kt:473"
    ],
    "nl": "De opname kon niet worden gekoppeld."
   },
@@ -10130,7 +10137,7 @@
    "key": "The same community records as the website",
    "places": [
     "AndroidAccountEcosystemScreens.kt:386",
-    "AndroidDutchUiCopy.kt:320"
+    "AndroidDutchUiCopy.kt:324"
    ],
    "nl": "Dezelfde communityrecords als op de website"
   },
@@ -10144,8 +10151,10 @@
   {
    "key": "The scanner runs locally. Nothing is saved until you review the result.",
    "places": [
-    "ResultImageAcquisitionComponent.kt:508"
-   ]
+    "ResultImageAcquisitionComponent.kt:508",
+    "AndroidDutchUiCopy.kt:205"
+   ],
+   "nl": "De scanner werkt op je telefoon. Er wordt niets bewaard tot je het resultaat hebt nagekeken."
   },
   {
    "key": "The server blocked this change because of a Tournament rule: {0}. Refresh the data and check the current state.",
@@ -10283,7 +10292,7 @@
   {
    "key": "These present Players are safely kept outside the group layout.",
    "places": [
-    "AndroidDutchUiCopy.kt:415"
+    "AndroidDutchUiCopy.kt:419"
    ],
    "nl": "Deze aanwezige spelers blijven veilig buiten de groepsindeling."
   },
@@ -10439,7 +10448,7 @@
    "key": "This public build does not contain the owner-private offline recognition package.",
    "places": [
     "AndroidScanProductScreen.kt:234",
-    "AndroidDutchUiCopy.kt:341"
+    "AndroidDutchUiCopy.kt:345"
    ],
    "nl": "Deze publieke build bevat het privé offline herkenningspakket niet."
   },
@@ -10515,7 +10524,7 @@
   {
    "key": "This uses the real Player, offline save and website sync, but never counts toward rankings or records.",
    "places": [
-    "AndroidDutchUiCopy.kt:325"
+    "AndroidDutchUiCopy.kt:329"
    ],
    "nl": "Dit gebruikt de echte speler, lokale opslag en synchronisatie met de website, maar telt nooit mee voor ranglijsten of records."
   },
@@ -10579,7 +10588,7 @@
   {
    "key": "Time Trial standing & Mastery",
    "places": [
-    "AndroidDutchUiCopy.kt:307"
+    "AndroidDutchUiCopy.kt:311"
    ],
    "nl": "Time Trial-stand en Mastery"
   },
@@ -10637,7 +10646,7 @@
    "key": "Tires",
    "places": [
     "AndroidMyStatsScreen.kt:580",
-    "AndroidDutchUiCopy.kt:309"
+    "AndroidDutchUiCopy.kt:313"
    ],
    "nl": "Banden"
   },
@@ -10730,7 +10739,7 @@
   {
    "key": "Top of the recovered 23-level Mastery ladder.",
    "places": [
-    "AndroidDutchUiCopy.kt:248"
+    "AndroidDutchUiCopy.kt:252"
    ],
    "nl": "Bovenaan de herstelde Mastery-ladder met 23 niveaus."
   },
@@ -10797,7 +10806,7 @@
   {
    "key": "Tournament Live / Processor incoming results",
    "places": [
-    "AndroidDutchUiCopy.kt:418"
+    "AndroidDutchUiCopy.kt:422"
    ],
    "nl": "Binnenkomende uitslagen van Tournament Live / Processor"
   },
@@ -10832,7 +10841,7 @@
    "key": "Tournament finalized",
    "places": [
     "AndroidTournamentScreen.kt:3780",
-    "AndroidDutchUiCopy.kt:250"
+    "AndroidDutchUiCopy.kt:254"
    ],
    "nl": "Toernooi afgerond"
   },
@@ -10840,7 +10849,7 @@
    "key": "Tournament is unavailable right now. Your Time Trials are unaffected.",
    "places": [
     "AndroidTournamentScreen.kt:569",
-    "AndroidDutchUiCopy.kt:343"
+    "AndroidDutchUiCopy.kt:347"
    ],
    "nl": "Het toernooi is nu niet beschikbaar. Dit heeft geen invloed op je Time Trials."
   },
@@ -10863,7 +10872,7 @@
    "key": "Tournament name",
    "places": [
     "AndroidTournamentScreen.kt:2769",
-    "AndroidDutchUiCopy.kt:251"
+    "AndroidDutchUiCopy.kt:255"
    ],
    "nl": "ToernooiNaam"
   },
@@ -10912,7 +10921,7 @@
   {
    "key": "Tournament standings",
    "places": [
-    "AndroidDutchUiCopy.kt:416"
+    "AndroidDutchUiCopy.kt:420"
    ],
    "nl": "Toernooistand"
   },
@@ -10920,7 +10929,7 @@
    "key": "Tournament unavailable",
    "places": [
     "AndroidTournamentScreen.kt:2524",
-    "AndroidDutchUiCopy.kt:252"
+    "AndroidDutchUiCopy.kt:256"
    ],
    "nl": "Toernooi niet beschikbaar"
   },
@@ -10928,7 +10937,7 @@
    "key": "Tournament workflow",
    "places": [
     "AndroidTournamentScreen.kt:3770",
-    "AndroidDutchUiCopy.kt:253"
+    "AndroidDutchUiCopy.kt:257"
    ],
    "nl": "Toernooiworkflow"
   },
@@ -10982,14 +10991,14 @@
   {
    "key": "Track ↑",
    "places": [
-    "AndroidDutchUiCopy.kt:311"
+    "AndroidDutchUiCopy.kt:315"
    ],
    "nl": "Circuit ↑"
   },
   {
    "key": "Track ↕",
    "places": [
-    "AndroidDutchUiCopy.kt:312"
+    "AndroidDutchUiCopy.kt:316"
    ],
    "nl": "Circuit ↕"
   },
@@ -11014,7 +11023,7 @@
   {
    "key": "Traction",
    "places": [
-    "AndroidDutchUiCopy.kt:310"
+    "AndroidDutchUiCopy.kt:314"
    ],
    "nl": "Grip"
   },
@@ -11042,7 +11051,7 @@
   {
    "key": "Try a test scan",
    "places": [
-    "AndroidDutchUiCopy.kt:254"
+    "AndroidDutchUiCopy.kt:258"
    ],
    "nl": "Probeer een testscan"
   },
@@ -11099,7 +11108,7 @@
    "key": "Unknown source",
    "places": [
     "AndroidHomeExperience.kt:1732",
-    "AndroidDutchUiCopy.kt:256"
+    "AndroidDutchUiCopy.kt:260"
    ],
    "nl": "Onbekende bron"
   },
@@ -11135,7 +11144,7 @@
   {
    "key": "Update reviewed group links",
    "places": [
-    "AndroidDutchUiCopy.kt:468"
+    "AndroidDutchUiCopy.kt:472"
    ],
    "nl": "Gecontroleerde groepskoppelingen bijwerken"
   },
@@ -11150,21 +11159,21 @@
    "key": "Updating…",
    "places": [
     "AndroidTournamentScreen.kt:2996",
-    "AndroidDutchUiCopy.kt:257"
+    "AndroidDutchUiCopy.kt:261"
    ],
    "nl": "Bijwerken…"
   },
   {
    "key": "Uploader did not suggest a Tournament.",
    "places": [
-    "AndroidDutchUiCopy.kt:464"
+    "AndroidDutchUiCopy.kt:468"
    ],
    "nl": "De uploader heeft geen toernooi voorgesteld."
   },
   {
    "key": "Uploader suggested this Tournament; you decide.",
    "places": [
-    "AndroidDutchUiCopy.kt:463"
+    "AndroidDutchUiCopy.kt:467"
    ],
    "nl": "De uploader stelde dit toernooi voor; jij beslist."
   },
@@ -11192,7 +11201,7 @@
   {
    "key": "Used",
    "places": [
-    "AndroidDutchUiCopy.kt:258"
+    "AndroidDutchUiCopy.kt:262"
    ],
    "nl": "Gebruikt"
   },
@@ -11262,7 +11271,7 @@
   {
    "key": "View track",
    "places": [
-    "AndroidDutchUiCopy.kt:259"
+    "AndroidDutchUiCopy.kt:263"
    ],
    "nl": "Circuit bekijken"
   },
@@ -11312,7 +11321,7 @@
    "key": "Waiting",
    "places": [
     "AndroidPlayerInteractions.kt:120",
-    "AndroidDutchUiCopy.kt:389"
+    "AndroidDutchUiCopy.kt:393"
    ],
    "nl": "Wacht"
   },
@@ -11413,7 +11422,7 @@
   {
    "key": "Water",
    "places": [
-    "AndroidDutchUiCopy.kt:313"
+    "AndroidDutchUiCopy.kt:317"
    ],
    "nl": "Water"
   },
@@ -11427,7 +11436,7 @@
   {
    "key": "Weight",
    "places": [
-    "AndroidDutchUiCopy.kt:314"
+    "AndroidDutchUiCopy.kt:318"
    ],
    "nl": "Gewicht"
   },
@@ -11442,7 +11451,7 @@
    "key": "What happened?",
    "places": [
     "AndroidTournamentScreen.kt:3803",
-    "AndroidDutchUiCopy.kt:260"
+    "AndroidDutchUiCopy.kt:264"
    ],
    "nl": "Wat is er gebeurd?"
   },
@@ -11471,7 +11480,7 @@
   {
    "key": "White",
    "places": [
-    "AndroidDutchUiCopy.kt:529"
+    "AndroidDutchUiCopy.kt:533"
    ],
    "nl": "Wit"
   },
@@ -11506,7 +11515,7 @@
   {
    "key": "Who is racing?",
    "places": [
-    "AndroidDutchUiCopy.kt:261"
+    "AndroidDutchUiCopy.kt:265"
    ],
    "nl": "Wie rijdt er?"
   },
@@ -11520,7 +11529,7 @@
   {
    "key": "Widest track coverage",
    "places": [
-    "AndroidDutchUiCopy.kt:220"
+    "AndroidDutchUiCopy.kt:224"
    ],
    "nl": "Grootste circuitdekking"
   },
@@ -11711,7 +11720,7 @@
   {
    "key": "Yellow",
    "places": [
-    "AndroidDutchUiCopy.kt:529"
+    "AndroidDutchUiCopy.kt:533"
    ],
    "nl": "Geel"
   },
@@ -11842,7 +11851,7 @@
   {
    "key": "You can prepare a run offline",
    "places": [
-    "AndroidDutchUiCopy.kt:262"
+    "AndroidDutchUiCopy.kt:266"
    ],
    "nl": "Je kunt offline een rit voorbereiden"
   },
@@ -12067,7 +12076,7 @@
   {
    "key": "You're signed in, but this account has no Player yet. Finish the one-step Player setup on the website, then sign in here again.",
    "places": [
-    "AndroidDutchUiCopy.kt:447"
+    "AndroidDutchUiCopy.kt:451"
    ],
    "nl": "Je bent aangemeld, maar dit account heeft nog geen speler. Rond de korte spelersetup op de website af en meld je hier daarna opnieuw aan."
   },
@@ -12207,7 +12216,7 @@
   {
    "key": "Your published Time Trials and the community record book.",
    "places": [
-    "AndroidDutchUiCopy.kt:317"
+    "AndroidDutchUiCopy.kt:321"
    ],
    "nl": "Jouw gepubliceerde Time Trials en het recordboek van de community."
   },
@@ -13947,7 +13956,7 @@
   {
    "key": "☆ Not The Meta",
    "places": [
-    "AndroidDutchUiCopy.kt:316"
+    "AndroidDutchUiCopy.kt:320"
    ],
    "nl": "☆ Niet de meta"
   },
@@ -13968,7 +13977,7 @@
   {
    "key": "✓ Optimum Build",
    "places": [
-    "AndroidDutchUiCopy.kt:315"
+    "AndroidDutchUiCopy.kt:319"
    ],
    "nl": "✓ Optimale combinatie"
   },

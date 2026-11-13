@@ -5070,6 +5070,7 @@
   "For example Club Noord": "예: Club Noord",
   "Save name": "이름 저장",
   "Shown in the apps instead of the web address.": "앱에서 웹 주소 대신 표시됩니다.",
-  "The community name is unchanged.": "커뮤니티 이름이 바뀌지 않았습니다."
+  "The community name is unchanged.": "커뮤니티 이름이 바뀌지 않았습니다.",
+  "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.": "결과 화면을 찾지 못했습니다. 종료 화면과 고스트 패널을 모두 시도했습니다. 기록이 보이고 카드가 틀을 채우는지 확인하거나 직접 입력하세요."
  }
 }

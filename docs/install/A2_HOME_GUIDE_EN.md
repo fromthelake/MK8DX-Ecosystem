@@ -2,7 +2,7 @@
 
 This manual takes you step by step from an empty computer to a played evening. You do not need any IT knowledge. Read the chapters in order; each chapter builds on the previous one.
 
-**Honest note first:** the home and club installation is still a test version. The package calls itself an "A2 OFFLINE QA CANDIDATE" in README-FIRST.txt: meant for a test computer, not yet a fully approved route. Windows 11 is the most tested. Linux has not been tested end to end yet. macOS has not been tested on a real Mac yet. Wherever something is not tested or not built yet, the step says so.
+**Honest note first:** the home and club installation is released since version 0.2.0. Windows 11 is tested end to end, including an Android phone on the network. Linux has been tested in WSL 2 only, not yet on a separate Linux PC or a Raspberry Pi. The macOS packages are built but not yet tested on a real Mac, and an iPhone has not been tested yet. Wherever something is not tested or not built yet, the step says so.
 
 **How to read a step:** after **Do** comes what you do, after **You see** what should happen then, and after **See something else?** what to do in that case. Words in bold are buttons or texts you see exactly like that on the screen.
 
