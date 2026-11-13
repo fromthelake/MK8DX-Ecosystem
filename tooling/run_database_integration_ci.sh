@@ -3,11 +3,18 @@
 set -euo pipefail
 
 mk8dx_engine="${1:-}"
+# Images by tag and digest (#34). MySQL is the one compose.yaml pins (Dependabot keeps that current);
+# the MariaDB pin is refreshed by hand together with its tag.
 case "$mk8dx_engine" in
-  mysql) mk8dx_image='mysql:8.4.11'; mk8dx_client='mysql' ;;
-  mariadb) mk8dx_image='mariadb:11.4.12'; mk8dx_client='mariadb' ;;
+  mysql)
+    mk8dx_image="$(grep -E '^    image: mysql:[^@ ]+@sha256:[0-9a-f]{64}$' "$(dirname "$0")/../compose.yaml" | sed 's/^    image: //')"
+    mk8dx_client='mysql' ;;
+  mariadb) mk8dx_image='mariadb:11.4.12@sha256:4f1d8d202fcf7bcb3902f63af09f9c1a050c2922a89652f22abaec0d4f015e83'; mk8dx_client='mariadb' ;;
   *) echo 'usage: run_database_integration_ci.sh mysql|mariadb' >&2; exit 2 ;;
 esac
+if [[ "$mk8dx_image" != *@sha256:* ]]; then
+  echo 'compose.yaml names no digest-pinned mysql image' >&2; exit 2
+fi
 
 mk8dx_container="mk8dx-v010-ci-${mk8dx_engine}-${RANDOM}-${RANDOM}"
 mk8dx_password="ci-only-${RANDOM}-${RANDOM}"

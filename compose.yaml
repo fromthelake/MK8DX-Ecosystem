@@ -1,7 +1,9 @@
 name: ${MK8DX_PROJECT_NAME:?Run the installer first}
 services:
   mysql:
-    image: mysql:8.4.11
+    # Tag and digest pinned (Dependabot updates both). Host packages carry this image in their
+    # tar and start it by tag: tooling/release/host_bundle.py checks the digest and drops it there.
+    image: mysql:8.4.11@sha256:0f51e63e537a1f176423fa03ef559aabe6fa4372a53160a44bc7e75da7d15364
     environment:
       MYSQL_DATABASE: ${MK8DX_DATABASE:?}
       MYSQL_USER: ${MK8DX_DATABASE_USER:?}

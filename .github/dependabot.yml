@@ -1,5 +1,5 @@
 # Routine version updates arrive together on Monday morning: npm and pip weekly, the slower ecosystems
-# (Gradle, Docker, GitHub Actions) monthly. A 3-day cooldown skips releases that are replaced within days.
+# (Gradle, Docker, Docker Compose, GitHub Actions) monthly. A 3-day cooldown skips releases that are replaced within days.
 # Security updates are not affected by the schedule or the cooldown: they are opened as soon as an advisory
 # appears ("Dependabot security updates" is enabled in the repository settings).
 # Exact pins stay exact: review each pull request like any other change (docs/TESTING.md).
@@ -45,6 +45,20 @@ updates:
     schedule: {interval: monthly, time: "06:00", timezone: Europe/Amsterdam}
     cooldown: {default-days: 3}
     open-pull-requests-limit: 3
+    groups:
+      minor-patch:
+        applies-to: version-updates
+        patterns: ["*"]
+        update-types: [minor, patch]
+  # The MySQL and Mailpit images in compose.yaml and compose.local.yaml, pinned as name:tag@sha256:...;
+  # Dependabot moves tag and digest together. The MK8DX images there are built from this repository.
+  - package-ecosystem: docker-compose
+    directory: /
+    schedule: {interval: monthly, time: "06:00", timezone: Europe/Amsterdam}
+    cooldown: {default-days: 3}
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "mk8dx/*"
     groups:
       minor-patch:
         applies-to: version-updates
