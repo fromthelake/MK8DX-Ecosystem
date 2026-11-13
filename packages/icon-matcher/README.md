@@ -119,6 +119,7 @@ reference bank equals the pack's tensors.
 | `vectors/frame-geometry-v1.json` | panel, registration window, deploy box, slot, search window and text strip for every race key and owner, static and anchored, registered or not | `python/tests/test_rule_vectors.py`, `ts/frame_geometry_parity.mjs`, Android `FrameGeometryParityTest` |
 | `vectors/lap-grid-v1.json` | `build_dynamic_grid` on synthetic lap-index and owner-box detections (resolved, refined, nominal, clipped and every blocked status) | `python/tests/test_rule_vectors.py`, `ts/lap_grid_parity.mjs`, Android `LapGridParityTest` |
 | `vectors/segment-digits-v1.json` | the 7-segment matcher on rendered slots (every digit, shifts, noise, dropped points, scale clamps, required digit) with synthetic colour-coded templates | `python/tests/test_rule_vectors.py`, `ts/segment_digits_parity.mjs`, Android `SegmentDigitsParityTest` |
+| `vectors/name-match-v1.json` | name match, locale vote, same-name locales and title match on an invented multi-script vocabulary with synthetic OCR damage | `python/tests/test_rule_vectors.py`, `ts/name_match_parity.mjs`, Android `NameMatchParityTest` |
 
 frame-geometry and lap-grid need the pack's `frame-definitions-v1.json` (`MK8DX_RECOGNITION_PACK` or
 `MK8DX_FRAME_DEFINITIONS`); refinement needs its tensor pack. Without them those replays skip. The Java tests

@@ -29,6 +29,7 @@ const SCRIPTS = {
   'icon-score-v1.json': 'iconScoreVectors.test.mjs',
   'refinement-v1.json': 'refinementVectors.test.mjs',
   'segment-digits-v1.json': 'segment_digits_parity.mjs',
+  'name-match-v1.json': 'name_match_parity.mjs',
   'frame-geometry-v1.json': 'frame_geometry_parity.mjs',
   'lap-grid-v1.json': 'lap_grid_parity.mjs',
 };

@@ -97,3 +97,10 @@ def test_segment_digit_vectors_replay():
     doc = _load("segment-digits-v1.json")
     assert doc["schema"] == "mk8dx.segment-digit-vectors.v1" and len(doc["cases"]) >= 60
     assert gen.dump(gen.build_segment_digits()) == _path("segment-digits-v1.json").read_bytes()
+
+
+def test_name_match_vectors_replay():
+    doc = _load("name-match-v1.json")
+    assert doc["schema"] == "mk8dx.name-match-vectors.v1" and len(doc["cases"]) >= 150
+    assert {t["rule"] for t in doc["titles"]} == {"tokens", "prefix", "fuzzy", "fuzzy_cjk", "ambiguous", None}
+    assert gen.dump(gen.build_name_match()) == _path("name-match-v1.json").read_bytes()

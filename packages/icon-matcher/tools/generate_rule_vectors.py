@@ -17,10 +17,12 @@ Outputs in packages/icon-matcher/vectors/:
 * ``segment-digits-v1.json``: segment_digits.py on rendered synthetic slots (every digit, shifts,
   noise, scale, required digit) with synthetic colour-coded templates (the product templates are
   not in the repository).
+* ``name-match-v1.json``: name_match.py on a synthetic multi-locale vocabulary (invented part and track
+  names in Latin, Cyrillic and CJK scripts) and synthetic OCR damage.
 
 frame-geometry and lap-grid need ``frame-definitions-v1.json`` and refinement needs the tensor pack:
 ``node tooling/assets/materialize_collection.mjs recognition-pack <dir>`` then ``--pack <dir>`` (or
-MK8DX_RECOGNITION_PACK). segment-digits is self-contained. Deterministic (no RNG, sorted
+MK8DX_RECOGNITION_PACK). segment-digits and name-match are self-contained. Deterministic (no RNG, sorted
 keys, LF); ``--check`` fails when a committed file differs. Cases within 1e-5 of a threshold carry
 ``"boundary": true``; runtimes report rather than fail on those until the arithmetic is unified.
 """
@@ -48,6 +50,7 @@ _spec.loader.exec_module(gv)
 
 from mk8dx_icon_matcher import frame_geometry as fg  # noqa: E402
 from mk8dx_icon_matcher import lap_grid as lg  # noqa: E402
+from mk8dx_icon_matcher import name_match as nm  # noqa: E402
 from mk8dx_icon_matcher import segment_digits as sd  # noqa: E402
 from mk8dx_icon_matcher.family_colour import rank_character_family_colour  # noqa: E402
 from mk8dx_icon_matcher.flag_exposure import flag_exposure_proposal  # noqa: E402
@@ -596,6 +599,165 @@ def build_segment_digits() -> dict:
 
 
 BUILDERS["segment-digits"] = (build_segment_digits, None)
+
+
+# ------------------------------------------------------------------------------------------ name-match-v1
+
+# Invented names only (no game text, no people). Locales and scripts follow the products' key grammar.
+NAME_LOCALES = ("de-DE", "en-GB", "en-US", "ja-JP", "nl-NL", "ru-RU", "zh-CN")
+PART_NAMES = {
+    "bodies": {
+        "body.comet": {"en-GB": "Comet Racer", "en-US": "Comet Racer", "nl-NL": "Komeetracer", "de-DE": "Kometflitzer",
+                       "ja-JP": "コメットレーサー", "ru-RU": "Кометный гонщик", "zh-CN": "彗星赛车"},
+        "body.zx": {"en-GB": "ZX", "en-US": "ZX", "nl-NL": "ZX", "de-DE": "ZX", "ja-JP": "ZX", "ru-RU": "ZX",
+                    "zh-CN": "ZX"},
+        "body.pebble": {"en-GB": "Pebble Kart", "en-US": "Pebble Cart", "nl-NL": "Kiezelkart", "de-DE": "Kieselkart",
+                        "ja-JP": "ペブルカート", "ru-RU": "Галечный карт", "zh-CN": "卵石车"},
+        "body.pebble_pro": {"en-GB": "Pebble Kart Pro", "en-US": "Pebble Cart Pro", "nl-NL": "Kiezelkart Pro",
+                            "de-DE": "Kieselkart Pro", "ja-JP": "ペブルカートプロ", "ru-RU": "Галечный карт Про",
+                            "zh-CN": "卵石车专业版"},
+        "body.lantern": {"en-GB": "Lantern", "en-US": "Lantern", "nl-NL": "Lantaarn", "de-DE": "Laterne",
+                         "ja-JP": "ランタン", "ru-RU": "Фонарь", "zh-CN": "灯笼"},
+    },
+    "tires": {
+        "tire.drum": {"en-GB": "Drum Wheels", "en-US": "Drum Tires", "nl-NL": "Trommelbanden", "de-DE": "Trommelreifen",
+                      "ja-JP": "ドラムタイヤ", "ru-RU": "Барабанные шины", "zh-CN": "鼓轮胎"},
+        "tire.thin": {"en-GB": "Thin", "en-US": "Thin", "nl-NL": "Dun", "de-DE": "Dünn", "ja-JP": "スリム",
+                      "ru-RU": "Тонкие", "zh-CN": "细轮"},
+        "tire.thin_glow": {"en-GB": "Thin Glow", "en-US": "Thin Glow", "nl-NL": "Dun Gloei", "de-DE": "Dünn Glüh",
+                           "ja-JP": "スリムグロー", "ru-RU": "Тонкие светящиеся", "zh-CN": "细光轮"},
+    },
+    "gliders": {
+        "glider.kite": {"en-GB": "Paper Kite", "en-US": "Paper Kite", "nl-NL": "Papieren vlieger",
+                        "de-DE": "Papierdrachen", "ja-JP": "ペーパーカイト", "ru-RU": "Бумажный змей",
+                        "zh-CN": "纸风筝"},
+        "glider.leaf": {"en-GB": "Leaf Sail", "en-US": "Leaf Sail", "nl-NL": "Bladzeil", "de-DE": "Blattsegel",
+                        "ja-JP": "リーフセイル", "ru-RU": "Лиственный парус", "zh-CN": "叶帆"},
+    },
+}
+TRACK_NAMES = {
+    "track.sunny_dunes": {"en-GB": "Sunny Dunes", "en-US": "Sunny Dunes", "nl-NL": "Zonnige Duinen",
+                          "de-DE": "Sonnige Dünen", "ja-JP": "サニーデューン", "ru-RU": "Солнечные дюны",
+                          "zh-CN": "阳光沙丘"},
+    "track.gx_sunny_dunes": {"en-GB": "GX Sunny Dunes", "en-US": "GX Sunny Dunes", "nl-NL": "GX Zonnige Duinen",
+                             "de-DE": "GX Sonnige Dünen", "ja-JP": "GX サニーデューン", "ru-RU": "GX Солнечные дюны",
+                             "zh-CN": "GX 阳光沙丘"},
+    "track.crystal_cave": {"en-GB": "Crystal Cave", "en-US": "Crystal Cavern", "nl-NL": "Kristalgrot",
+                           "de-DE": "Kristallhöhle", "ja-JP": "クリスタルケイブ", "ru-RU": "Хрустальная пещера",
+                           "zh-CN": "水晶洞"},
+    "track.crystal_castle": {"en-GB": "Crystal Castle", "en-US": "Crystal Castle", "nl-NL": "Kristalkasteel",
+                             "de-DE": "Kristallburg", "ja-JP": "クリスタルキャッスル", "ru-RU": "Хрустальный замок",
+                             "zh-CN": "水晶城堡"},
+    "track.harbour_loop": {"en-GB": "Harbour Loop", "en-US": "Harbor Loop", "nl-NL": "Havenlus",
+                           "de-DE": "Hafenschleife", "ja-JP": "ハーバーループ", "ru-RU": "Портовая петля",
+                           "zh-CN": "港湾环道"},
+    "track.harbour_loop_night": {"en-GB": "Harbour Loop Night", "en-US": "Harbor Loop Night",
+                                 "nl-NL": "Havenlus Nacht", "de-DE": "Hafenschleife Nacht",
+                                 "ja-JP": "ハーバーループナイト", "ru-RU": "Портовая петля ночью",
+                                 "zh-CN": "港湾环道夜"},
+    # the same words as Harbour Loop in English: an exact word match is ambiguous there
+    "track.loop_harbour": {"en-GB": "Loop Harbour", "nl-NL": "Lus van de haven", "ja-JP": "ループハーバー"},
+}
+
+
+def _vocab(names: dict) -> list[list[str]]:
+    return [[f"{item}#{locale}", locales[locale]] for item, locales in names.items() for locale in NAME_LOCALES
+            if locale in locales]
+
+
+def _damage(text: str, rule: int) -> str:
+    """Deterministic OCR-like damage: dropped, swapped, doubled and confused characters, case and spacing."""
+    confusions = {"o": "0", "l": "1", "i": "l", "e": "c", "a": "o", "n": "m", "s": "5", "т": "г", "ー": "一"}
+    if rule == 0:
+        return text
+    if rule == 1:
+        return text.upper()
+    if rule == 2:
+        return text[:-1]
+    if rule == 3:
+        return "".join(confusions.get(ch, ch) for ch in text)
+    if rule == 4:
+        return text[1:] + "."
+    if rule == 5:
+        return " ".join(text) if len(text) < 8 else text.replace(" ", "")
+    if rule == 6:
+        middle = len(text) // 2
+        return text[:middle] + text[middle] + text[middle:]
+    if rule == 7:
+        return f"| {text} ~"
+    raise ValueError(rule)
+
+
+def build_name_match() -> dict:
+    vocabs = {kind: _vocab(names) for kind, names in PART_NAMES.items()}
+    vocabs["tracks"] = _vocab(TRACK_NAMES)
+    pairs = {kind: [tuple(p) for p in rows] for kind, rows in vocabs.items()}
+    cases = []
+    for kind in ("bodies", "tires", "gliders"):
+        for item, locales in PART_NAMES[kind].items():
+            for n, locale in enumerate(NAME_LOCALES):
+                for rule in sorted({0, (n + len(item)) % 8, (n * 3 + 1) % 8}):
+                    query = _damage(locales[locale], rule)
+                    found = nm.match_name(query, pairs[kind])
+                    cases.append({"kind": kind, "query": query, "key": found.key, "name": found.name,
+                                  "fuzzy": found.fuzzy, "margin": found.margin, "strong": found.strong()})
+    for query in ("", "ab", "  ", "12345", "Zx", "Pebble", "Pebble Kart P", "Thin G", "コメット", "ZXZX", "Lant3rn",
+                  "Кометный", "Komeet racer", "0" * 12):
+        for kind in ("bodies", "tires"):
+            found = nm.match_name(query, pairs[kind])
+            cases.append({"kind": kind, "query": query, "key": found.key, "name": found.name, "fuzzy": found.fuzzy,
+                          "margin": found.margin, "strong": found.strong()})
+    for case in cases:
+        case["boundary"] = any(abs(case["fuzzy"] - gate) < BOUNDARY for gate in (0.85, 0.78)) or any(
+            abs(case["margin"] - gate) < BOUNDARY for gate in (0.08, 0.25))
+    votes = []
+    vote_rows = [
+        [["bodies", "Komeetracer"], ["tires", "Trommelbanden"], ["gliders", "Bladzeil"]],
+        [["bodies", "ZX"], ["tires", "Thin"], ["gliders", "Leaf Sail"]],
+        [["bodies", "ZX"], ["tires", "Thin"]],
+        [["bodies", "ZX"]],
+        [["bodies", "Pebble Cart"], ["tires", "Drum Tires"], ["gliders", "Paper Kite"]],
+        [["bodies", "ペブルカート"], ["tires", "ドラムタイヤ"], ["gliders", ""]],
+        [["bodies", "Галечный карт"], ["tires", "Тонкие"], ["gliders", "Бумажный змей"]],
+        [["bodies", "Kieselkart Pr0"], ["tires", "Dünn Glüh"], ["gliders", "Papierdrachen"]],
+        [["bodies", ""], ["tires", ""]],
+    ]
+    for rows in vote_rows:
+        for preferred in ([], ["nl-NL"], ["ja-JP", "en-GB"], ["xx-XX"]):
+            got = nm.locale_vote([tuple(r) for r in rows], pairs, list(NAME_LOCALES), preferred)
+            votes.append({"rows": rows, "preferred": preferred, "locale": got["locale"], "score": got["score"],
+                          "tied": got["tied"], "firstKey": got["firstMatch"].key if got["firstMatch"] else None})
+    same_names = []
+    for key in ("body.zx#en-GB", "body.zx#ja-JP", "body.comet#en-GB", "body.pebble#en-US", "body.lantern#en-US",
+                "body.unknown#en-GB", "body.comet"):
+        locales = nm.same_name_locales(pairs["bodies"], key)
+        same_names.append({"key": key, "locales": locales,
+                           "scripts": sorted({nm.script_for_locale(loc) for loc in locales})})
+    subsets = {"all": pairs["tracks"],
+               "en-nl": [p for p in pairs["tracks"] if p[0].endswith(("#en-GB", "#en-US", "#nl-NL"))]}
+    titles = []
+    title_queries = ["Sunny Dunes", "Dunes Sunny", "GX Sunny", "Sunny", "GX Sunny Dunes", "Dunes Sunny GX",
+                     "Crystal", "Crystal Ca", "Crystal Cave", "Crysta1 Cavem", "Crystal Castie", "Harbour Loop",
+                     "Harbor Loop Nite", "Harbour Lo0p Night", "Havenlus", "Havenlus Nacht", "Kristalgrot",
+                     "Kristal kasteel", "Zonnige Duinen", "150cc", "Time Trials", "OK", "", "xx", "サニーデューン",
+                     "サニーデュー", "水晶洞", "水晶城", "港湾环道夜", "Портовая петля", "Хрустальный замок",
+                     "GX 阳光沙丘", "Loop Harbour", "Night Loop Harbour", "Harbour Loop!", "ハバールーフナイ",
+                     "クリスタキャッス", "ハーパールーフナイ卜", "水昌城", "港弯环道", "サニーデュ一ン",
+                     "ハバルーフナイ", "パーバールプナ", "クリスキャッ", "港湾道夜x", "サニーデ"]
+    for query in title_queries:
+        for subset, vocab in subsets.items():
+            found = nm.match_title(query, vocab)
+            titles.append({"query": query, "subset": subset, "key": found.key, "name": found.name, "rule": found.rule,
+                           "fuzzy": found.fuzzy, "margin": found.margin})
+    return {"schema": "mk8dx.name-match-vectors.v1",
+            "source": "packages/icon-matcher/python/mk8dx_icon_matcher/name_match.py",
+            "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",
+            "note": "invented names in the product key grammar (<item>#<locale>); no game text, no people",
+            "locales": list(NAME_LOCALES), "vocabs": vocabs, "cases": _jsonable(cases), "votes": _jsonable(votes),
+            "sameNames": same_names, "titles": _jsonable(titles)}
+
+
+BUILDERS["name-match"] = (build_name_match, None)
 
 
 # --------------------------------------------------------------------------------------------------- CLI

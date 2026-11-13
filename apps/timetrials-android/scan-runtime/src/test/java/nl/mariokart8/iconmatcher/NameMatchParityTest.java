@@ -16,12 +16,17 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Test;
 
-/** The Java name matcher against Python's records (tooling/recognition/name_match_vectors.py); MK8DX_NAME_MATCH_VECTORS. */
+/**
+ * The Java name matcher against Python's records: the public synthetic vectors
+ * (packages/icon-matcher/vectors/name-match-v1.json, tools/generate_rule_vectors.py; issue #99), or
+ * private vectors outside Git (MK8DX_NAME_MATCH_VECTORS).
+ */
 public class NameMatchParityTest {
     @Test
     public void javaMatcherEqualsPython() throws Exception {
         String path = System.getenv("MK8DX_NAME_MATCH_VECTORS");
-        assumeTrue("private name vectors not configured", path != null);
+        if (path == null) path = "../../../packages/icon-matcher/vectors/name-match-v1.json";
+        assumeTrue("name vectors not found", Files.isRegularFile(Paths.get(path)));
         JSONObject doc = new JSONObject(new String(Files.readAllBytes(Paths.get(path)), "UTF-8"));
         Map<String, List<Map.Entry<String, String>>> vocabs = new HashMap<>();
         JSONObject raw = doc.getJSONObject("vocabs");
