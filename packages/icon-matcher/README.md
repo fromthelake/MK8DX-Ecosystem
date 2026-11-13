@@ -74,8 +74,18 @@ PYTHONPATH=packages/icon-matcher/python python -m pytest -q packages/icon-matche
 ```
 
 Each `ts/*_parity.mjs` script compares one TypeScript stage with the Python records in `vectors/`, for
-example `node --experimental-strip-types ts/scan_result_parity.mjs` from this directory. The Java
-implementation is checked against the same vectors by the Android unit tests.
+example `node --experimental-strip-types ts/scan_result_parity.mjs` from this directory;
+`ts/vectorParity.test.mjs` runs them all as part of the command above and fails when a vector file has no
+TypeScript replay. Python replays the same files in `python/tests` and the Java implementation in the
+Android unit tests, so CI checks every committed vector in all three runtimes.
+
+Frame-geometry and lap-grid tests also need `frame-definitions-v1.json` from the public recognition pack.
+CI materializes it; locally:
+
+```sh
+node tooling/assets/materialize_collection.mjs recognition-pack "$PWD/.cache/recognition-pack"
+export MK8DX_FRAME_DEFINITIONS="$PWD/.cache/recognition-pack/frame-definitions-v1.json"
+```
 
 ## Changing the reader
 
