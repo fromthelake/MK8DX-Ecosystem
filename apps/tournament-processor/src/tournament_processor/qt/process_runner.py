@@ -1,6 +1,8 @@
 """Runs the recorded-video processing as a child process and streams its output.
 
-Ported from the MK8DX Video Result Extractor GUI (gui/process_runner.py). The heavy work is the existing
+Ported from the MK8DX Live Video Processor post-analysis GUI (live_processor/baseline_extractor/gui/
+process_runner.py). Where the original re-invoked its own engine's ``main.py``, this runner only ever starts the
+central route: the existing
 ``python -m tournament_processor.vision_cli all ...`` command, built by ``tournament_processor.gui.RunPlan``; this
 runner never recognises anything itself. A :class:`QProcess` delivers the child's output to the GUI thread through
 signals, so the window never freezes and cancelling stays isolated from the GUI process.
@@ -165,7 +167,12 @@ def _quote(part: str) -> str:
 
 
 def _kill_process_tree(process: QProcess) -> None:
-    """Best-effort termination of the child process and its helpers (``taskkill /T`` on Windows)."""
+    """Best-effort kill of the child *and* any grandchildren it spawned (``taskkill /T`` on Windows).
+
+    Elsewhere only the direct child is terminated: QProcess does not start the child in its own process group, so
+    a process-group kill (the Live Video Processor version) could hit the GUI's own group. The Video Result
+    Extractor version of this runner already made that correction; it is kept here.
+    """
     pid = int(process.processId())
     if pid <= 0:
         process.kill()

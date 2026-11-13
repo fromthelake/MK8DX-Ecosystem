@@ -2,7 +2,7 @@
 
 The recognition engine prints coloured console output (ANSI/SGR codes, requested through MK8_FORCE_COLOR) and a
 ``Comp  NN%`` progress field while it extracts frames. The Qt log view turns the colour runs into text formats;
-the parsing lives here so it is tested without a display. Ported from the MK8DX Video Result Extractor GUI
+the parsing lives here so it is tested without a display. Ported from the MK8DX Live Video Processor post-analysis GUI
 (gui/ansi_log.py and gui/process_runner.py).
 """
 

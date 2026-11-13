@@ -1,4 +1,7 @@
-"""QApplication bootstrap for the Qt analysis window (after the MK8DX Video Result Extractor's gui/app.py)."""
+"""QApplication bootstrap for the Qt analysis window.
+
+After the MK8DX Live Video Processor post-analysis GUI (live_processor/baseline_extractor/gui/app.py).
+"""
 
 from __future__ import annotations
 
@@ -7,11 +10,11 @@ from pathlib import Path
 from typing import Sequence
 
 from PySide6.QtCore import Qt
-from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 
 from ..gui import Texts, analysis_background
 from . import theme
+from .icon import set_window_icon
 from .main_window import MainWindow
 
 
@@ -20,9 +23,7 @@ def create_window(texts: Texts, entries: Sequence[Path] = (), runtime_root: Path
     """The themed main window (the QApplication must exist). Used by run() and by headless tests."""
     background = analysis_background()
     window = MainWindow(texts, entries, runtime_root, session_id, background)
-    if background is not None:
-        # The original uses its banner artwork as the window icon too.
-        window.setWindowIcon(QIcon(str(background)))
+    set_window_icon(window, background)
     return window
 
 
@@ -33,7 +34,8 @@ def application() -> QApplication:
         QApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app = QApplication.instance() or QApplication(sys.argv[:1])
     app.setApplicationName("MK8DX Tournament Analysis")
-    # An explicit point-based base font tracks the OS text-size setting.
+    # An explicit point-based base font tracks the OS text-size setting and keeps the UI legible regardless of
+    # the display's pixel density.
     base_font = app.font()
     base_font.setPointSizeF(9.0)
     app.setFont(base_font)
@@ -42,11 +44,8 @@ def application() -> QApplication:
 
 
 def run(texts: Texts, entries: Sequence[Path] = (), runtime_root: Path | None = None,
-        session_id: str | None = None, *, maximized: bool = True) -> int:
+        session_id: str | None = None) -> int:
     app = application()
     window = create_window(texts, entries, runtime_root, session_id)
-    if maximized:
-        window.showMaximized()
-    else:
-        window.show()
+    window.show()
     return app.exec()

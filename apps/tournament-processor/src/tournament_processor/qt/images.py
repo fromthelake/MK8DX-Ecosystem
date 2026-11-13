@@ -1,7 +1,7 @@
-"""Image loading for the optional banner background (MK8DX_ANALYSIS_BACKGROUND).
+"""Image loading for the banner background.
 
-Qt reads JPEG/PNG itself; Pillow, when present, covers formats whose Qt image plugin is missing. Ported from the
-MK8DX Video Result Extractor GUI (gui/images.py). No image is shipped with the package.
+Ported from the MK8DX Live Video Processor post-analysis GUI (gui/images.py), which loads through Pillow. Here Qt
+reads the image first (JPEG/PNG need no extra plugin) and Pillow, when present, covers other formats.
 """
 
 from __future__ import annotations

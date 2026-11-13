@@ -8,7 +8,7 @@ recognise anything itself, so its results are exactly those of the command line 
 
 This module is the entry point and the shared, display-free part: the plan (which files go where, which command
 runs), staging, texts and the front-end choice. ``main`` opens the Qt window (``tournament_processor.qt``, a port
-of the MK8DX Video Result Extractor GUI) and falls back to the classic Tkinter window (``gui_classic``) with
+of the MK8DX Live Video Processor post-analysis GUI) and falls back to the classic Tkinter window (``gui_classic``) with
 ``--classic-gui`` or when PySide6 is missing, as Tournament Live's run_gui does.
 
 Texts are English and Dutch, like the Tournament Tools launchers: ``MK8DX_TOURNAMENT_LANGUAGE`` (en, nl or auto)
@@ -142,7 +142,7 @@ TEXTS: dict[str, tuple[str, str]] = {
     "confirm_close_title": ("Analysis running", "Analyse loopt"),
     "confirm_close": ("An analysis is still running. Stop it and close the window?",
                       "Er loopt nog een analyse. Stoppen en het venster sluiten?"),
-    # Qt window (tournament_processor.qt), the layout of the MK8DX Video Result Extractor window.
+    # Qt window (tournament_processor.qt), the layout of the MK8DX Live Video Processor post-analysis window.
     "fallback_classic": ("{reason}; opening the classic window. Install the Qt window with: pip install PySide6",
                          "{reason}; het klassieke venster wordt geopend. Installeer het Qt-venster met: "
                          "pip install PySide6"),
@@ -171,13 +171,11 @@ TEXTS: dict[str, tuple[str, str]] = {
                         "De uitvoer van de lopende analyse verschijnt hier, in kleur."),
     "status_on_line": ("On the line — ready", "Aan de start — klaar"),
     "run_label": ("Analysing {count} recording(s)", "{count} opname(s) analyseren"),
-    "run_percent": ("{label} — {percent}%", "{label} — {percent}%"),
     "finished": ("Finished", "Klaar"),
     "cancelled": ("Cancelled", "Geannuleerd"),
     "failed": ("Failed (exit {code})", "Mislukt (code {code})"),
     "badge_finished": ("🏁 Finished", "🏁 Klaar"),
-    "badge_cancelled": ("■ Cancelled", "■ Geannuleerd"),
-    "badge_failed": ("✖ Failed (exit {code})", "✖ Mislukt (code {code})"),
+    "badge_failed": ("Failed", "Mislukt"),
     "log_started": ("=== ▶ {label} ===", "=== ▶ {label} ==="),
     "log_completed": ("=== 🏁 Completed successfully ===", "=== 🏁 Geslaagd ==="),
     "log_cancelled": ("=== ■ Cancelled ===", "=== ■ Geannuleerd ==="),
@@ -556,22 +554,25 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("--language", choices=("en", "nl"), help="Override MK8DX_TOURNAMENT_LANGUAGE")
     parser.add_argument("--classic-gui", action="store_true",
                         help="Use the classic Tkinter window instead of the Qt (PySide6) window")
-    parser.add_argument("--windowed", action="store_true",
-                        help="Open the Qt window at its normal size instead of maximised")
     return parser.parse_args(argv)
 
 
-def analysis_background(environ: Mapping[str, str] | None = None) -> Path | None:
-    """The operator's own banner image (MK8DX_ANALYSIS_BACKGROUND) when it names an existing file.
+PACKAGED_BACKGROUND = Path(__file__).resolve().parent / "qt" / "assets" / "bg.jpg"
 
-    Nothing is shipped: without it the window draws its banner in code.
+
+def analysis_background(environ: Mapping[str, str] | None = None,
+                        packaged: Path | None = PACKAGED_BACKGROUND) -> Path | None:
+    """The banner image: MK8DX_ANALYSIS_BACKGROUND when it names an existing file, else the packaged artwork.
+
+    None (the banner is then drawn in code) when neither exists.
     """
     environ = os.environ if environ is None else environ
     value = str(environ.get("MK8DX_ANALYSIS_BACKGROUND", "") or "").strip().strip('"')
-    if not value:
-        return None
-    path = Path(value).expanduser()
-    return path if path.is_file() else None
+    if value:
+        path = Path(value).expanduser()
+        if path.is_file():
+            return path
+    return packaged if packaged is not None and packaged.is_file() else None
 
 
 def choose_frontend(classic_requested: bool, qt_loader: Callable[[], object]) -> tuple[str, object | None, str]:
@@ -598,7 +599,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     texts = Texts(args.language or detect_language())
     frontend, qt_app, reason = choose_frontend(args.classic_gui, _load_qt)
     if frontend == "qt":
-        return qt_app.run(texts, args.paths, args.results_folder, args.session_id, maximized=not args.windowed)
+        return qt_app.run(texts, args.paths, args.results_folder, args.session_id)
     if reason != "requested":
         print(texts("fallback_classic", reason=reason), file=sys.stderr, flush=True)
     from .gui_classic import run as classic_run

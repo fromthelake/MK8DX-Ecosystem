@@ -1,10 +1,9 @@
-"""The header banner, after the MK8DX Video Result Extractor GUI (gui/banner.py).
+"""Mario Kart 8 themed header banner, ported from the MK8DX Live Video Processor post-analysis GUI (gui/banner.py).
 
-The original paints game artwork cover-scaled behind the title. Nothing like that is shipped here: the banner is
-drawn in code (a dark track with faint rainbow racing lines), and an operator who sets
-``MK8DX_ANALYSIS_BACKGROUND`` to an image file of their own gets that image painted exactly the way the original
-paints its artwork. Either way a dark gradient overlay keeps the title readable and a Rainbow Road colour strip
-runs along the bottom edge (painted once per resize, no per-frame cost).
+Paints the banner artwork (the packaged ``qt/assets/bg.jpg``, or ``MK8DX_ANALYSIS_BACKGROUND``) cover-scaled
+behind the title, with a dark gradient overlay so text stays readable, and a Rainbow Road colour strip along the
+bottom edge (painted once on resize, no per-frame cost). When no image is available the background is drawn in
+code (dark asphalt with faint rainbow racing lines) instead of the original's flat fill.
 """
 
 from __future__ import annotations

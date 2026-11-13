@@ -29,7 +29,7 @@ is `docs/product/USING_MK8DX_TOURNAMENT_TOOLS.md`.
 `TournamentAnalysis.cmd` (or `python -m tournament_processor.gui`, console script
 `mk8dx-tournament-analysis`) opens **MK8DX Tournament Analysis** for nights that
 ran without Tournament Live. The Qt window (`tournament_processor/qt/`, needs the
-`gui` extra: PySide6 6.12.0) is a port of the MK8DX Video Result Extractor GUI:
+`gui` extra: PySide6 6.12.0) is a port of the MK8DX Live Video Processor post-analysis GUI:
 banner, numbered steps, live ANSI-coloured log, Rainbow Road progress bar and
 start-light status. Without PySide6, or with `--classic-gui`, the Tkinter window
 in `gui_classic.py` opens instead (as Tournament Live's `run_gui` does).
@@ -51,9 +51,13 @@ in `gui_classic.py` opens instead (as Tournament Live's `run_gui` does).
 
 The window does no recognition of its own; results are those of the command line.
 Texts are English or Dutch (`MK8DX_TOURNAMENT_LANGUAGE`, otherwise the Windows
-language). The banner is drawn in code; `MK8DX_ANALYSIS_BACKGROUND` may name a local
-image that is then painted behind the title as the original paints its artwork. No
-image is shipped. Planning, staging, log/progress parsing and front-end choice are
+language). The banner paints the original window's artwork (`qt/assets/bg.jpg`, listed
+in `docs/THIRD_PARTY_MATERIALS.md` and `packages/assets/native-binaries-v1.json`);
+`MK8DX_ANALYSIS_BACKGROUND` may name another image, and without any image the banner
+is drawn in code. Only the original's `gui/` presentation modules were ported; its
+engine bridge (`core_bridge.py`, its `main.py` flags) was replaced by the central
+`vision_cli all` route, and `test_processor_analysis_qt.py` fails if a window module
+imports the original projects or recognition code. Planning, staging, log/progress parsing and front-end choice are
 covered by `tests/windows_clients/test_processor_analysis_gui.py` and
 `test_processor_analysis_qt.py` (the Qt part runs headless and is skipped without
 PySide6).

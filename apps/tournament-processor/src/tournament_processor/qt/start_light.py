@@ -8,7 +8,8 @@ start signal:
   * cancelled → all dim
   * error     → red lit
 
-Ported unchanged from the MK8DX Video Result Extractor GUI (gui/start_light.py, same owner).
+Ported unchanged from the MK8DX Live Video Processor post-analysis GUI
+(live_processor/baseline_extractor/gui/start_light.py, same owner).
 """
 
 from __future__ import annotations

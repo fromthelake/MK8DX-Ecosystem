@@ -407,7 +407,7 @@ rem Tournament Live keeps its sessions here (Live_Output\\exports, diagnostics, 
 set "MK8DX_TOURNAMENT_LIVE_ROOT=%~dp0TournamentLive"
 rem Interface language: auto follows Windows. Set to en or nl to override.
 set "MK8DX_TOURNAMENT_LANGUAGE=auto"
-rem Optional: your own image for the Tournament Analysis window banner (nothing is shipped).
+rem Optional: another image for the Tournament Analysis window banner instead of the packaged one.
 rem set "MK8DX_ANALYSIS_BACKGROUND=C:\\path\\to\\banner.jpg"
 rem Optional: set to "cpu" to force CPU OCR even when a CUDA build of torch is present.
 rem set "MK8_EASYOCR_GPU_MODE=cpu"

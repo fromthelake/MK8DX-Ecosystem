@@ -94,9 +94,8 @@ recordings, analyse them afterwards with the **Tournament Analysis** window:
    on the website as described above.
 
 The texts follow the Windows language (English or Dutch); `MK8DX_TOURNAMENT_LANGUAGE` in
-`TournamentTools.config.cmd` overrides it. The banner is drawn by the program; to use an image of your own
-instead, set `MK8DX_ANALYSIS_BACKGROUND` in `TournamentTools.config.cmd` to that file (it stays on your computer;
-the package ships no artwork). From a clone, `python -m tournament_processor.gui` opens the same window when the
+`TournamentTools.config.cmd` overrides it. To show another image in the banner, set `MK8DX_ANALYSIS_BACKGROUND`
+in `TournamentTools.config.cmd` to that file. From a clone, `python -m tournament_processor.gui` opens the same window when the
 Tournament Processor and its recognition assets are installed; it needs PySide6 (the processor's `gui` extra) and
 otherwise, or with `--classic-gui`, opens a simpler Tkinter window.
 

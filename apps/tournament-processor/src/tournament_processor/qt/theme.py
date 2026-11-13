@@ -1,8 +1,9 @@
 """Centralised theme for the Qt analysis window.
 
-Ported unchanged from the MK8DX Video Result Extractor GUI (gui/theme.py, same owner), so the analysis window
-looks like that window. Everything visual (colours, fonts, spacing, the QSS stylesheet) lives here so the look
-can be changed in one place. One polished dark theme, consistent across Windows, Linux and macOS.
+Ported from the MK8DX Live Video Processor post-analysis GUI (live_processor/baseline_extractor/gui/theme.py,
+same owner), so the analysis window looks like that window. The only additions are rules for the text fields and
+intro labels this window has. Everything visual (colours, fonts, spacing, the QSS stylesheet) lives here so the
+look can be changed in one place. One polished dark theme, consistent across Windows, Linux and macOS.
 """
 
 from __future__ import annotations
@@ -277,14 +278,6 @@ QProgressBar::chunk {{
     background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
         stop:0 #ff3b3b, stop:0.17 #ff9e2c, stop:0.34 #ffe23b,
         stop:0.51 #4cd964, stop:0.68 #34a8ff, stop:0.85 #7a5cff, stop:1 #ff4ce0);
-}}
-QLabel#progressBadge {{
-    background: rgba(0, 0, 0, 0.74);
-    color: #ffffff;
-    border-radius: 8px;
-    padding: 1px 12px;
-    font-size: 8.5pt;
-    font-weight: 600;
 }}
 
 QScrollBar:vertical {{

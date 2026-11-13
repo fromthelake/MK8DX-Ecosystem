@@ -1,4 +1,5 @@
-"""Main window of the Qt analysis GUI, ported from the MK8DX Video Result Extractor (gui/main_window.py).
+"""Main window of the Qt analysis GUI, ported from the MK8DX Live Video Processor post-analysis GUI
+(live_processor/baseline_extractor/gui/main_window.py).
 
 The layout guides the operator through the race order, top to bottom:
 
@@ -10,7 +11,9 @@ The layout guides the operator through the race order, top to bottom:
 All long-running work goes to :class:`PipelineRunner`, which runs the existing ``vision_cli all`` command as a
 child process, so the window stays responsive and shows a live, coloured log, a progress bar and a working
 Cancel button. The plan (which recordings, which session folder, which command) comes from
-``tournament_processor.gui`` and is the same one the classic Tkinter window uses.
+``tournament_processor.gui`` and is the same one the classic Tkinter window uses. The original's bridge to its own
+engine (core_bridge.py and the flags of its main.py: extract-only, OCR-only, subfolders, CPU/GPU modes, clean-up)
+is not ported: this window only starts the central ``vision_cli all`` route.
 """
 
 from __future__ import annotations
@@ -141,10 +144,8 @@ class MainWindow(QWidget):
         splitter = QSplitter(Qt.Horizontal)
         splitter.addWidget(self._build_left_column())
         splitter.addWidget(self._build_log_panel())
-        # Left controls open at their minimum visible width; the activity log takes the remaining space.
-        splitter.setStretchFactor(0, 0)
-        splitter.setStretchFactor(1, 1)
-        splitter.setSizes([self._left_min_width, max(1, 1060 - self._left_min_width)])
+        splitter.setStretchFactor(0, 3)
+        splitter.setStretchFactor(1, 4)
         splitter.setChildrenCollapsible(False)
         outer.addWidget(splitter, stretch=1)
 
@@ -171,9 +172,6 @@ class MainWindow(QWidget):
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         scroll.setFrameShape(QScrollArea.NoFrame)
-        # Never let the splitter clip the controls; +22 leaves room for the vertical scrollbar.
-        self._left_min_width = max(container.minimumSizeHint().width() + 22, 400)
-        scroll.setMinimumWidth(self._left_min_width)
         return scroll
 
     def _build_recordings_card(self) -> QFrame:
@@ -257,14 +255,18 @@ class MainWindow(QWidget):
 
     def _build_results_card(self) -> QFrame:
         frame, layout = _numbered_card("🏁", self.t("card_results"), self.t("card_results_hint"))
+        row = QHBoxLayout()
         open_excel = QPushButton(self.t("open_excel"))
         open_excel.clicked.connect(self._open_excel)
-        open_results = QPushButton(self.t("open_results_folder"))
-        open_results.clicked.connect(self._open_results_folder)
         open_frames = QPushButton(self.t("open_frames"))
         open_frames.clicked.connect(self._open_frames)
-        for button in (open_excel, open_results, open_frames):
-            layout.addWidget(button)
+        row.addWidget(open_excel)
+        row.addWidget(open_frames)
+        layout.addLayout(row)
+        # The original opened a fixed Output_Results; here every session has its own, so it gets a button.
+        open_results = QPushButton(self.t("open_results_folder"))
+        open_results.clicked.connect(self._open_results_folder)
+        layout.addWidget(open_results)
         return frame
 
     def _build_log_panel(self) -> QWidget:
@@ -295,21 +297,12 @@ class MainWindow(QWidget):
         footer = QVBoxLayout()
         footer.setSpacing(8)
 
-        # The progress bar and an end-of-run badge share one cell so the badge sits centred on the
-        # Rainbow Road fill with its own dark backing.
-        progress_holder = QWidget()
-        progress_grid = QGridLayout(progress_holder)
-        progress_grid.setContentsMargins(0, 0, 0, 0)
         self._progress = QProgressBar()
         self._progress.setRange(0, 100)
         self._progress.setValue(0)
-        self._progress.setTextVisible(False)
-        progress_grid.addWidget(self._progress, 0, 0)
-        self._progress_badge = QLabel("")
-        self._progress_badge.setObjectName("progressBadge")
-        self._progress_badge.setVisible(False)
-        progress_grid.addWidget(self._progress_badge, 0, 0, Qt.AlignCenter)
-        footer.addWidget(progress_holder)
+        self._progress.setTextVisible(True)
+        self._progress.setFormat("")
+        footer.addWidget(self._progress)
 
         status_row = QHBoxLayout()
         self._start_light = StartLight()
@@ -458,16 +451,17 @@ class MainWindow(QWidget):
         self._log.append_ansi(text)
 
     def _on_progress(self, percent: int) -> None:
-        if self._runner.is_running():
-            self._status_text.setText(self.t("run_percent", label=self._run_label, percent=percent))
+        if self._progress.maximum() == 0:
+            self._progress.setRange(0, 100)
+        self._progress.setValue(percent)
+        self._progress.setFormat(f"{percent}%")
 
     def _on_started(self, label: str) -> None:
         self._run_label = label
         self._set_busy(True)
         self._set_status("running", label)
-        # The Rainbow Road bar sweeps for the whole run; percentages appear in the status line.
-        self._progress.setRange(0, 0)
-        self._progress_badge.setVisible(False)
+        self._progress.setRange(0, 0)  # indeterminate until a percentage arrives
+        self._progress.setFormat("")
         self._run_start_time = time.monotonic()
         self._elapsed_timer.start()
         self._tick_elapsed()
@@ -485,25 +479,20 @@ class MainWindow(QWidget):
         self._log.reset_styles()
         if kind == "done":
             self._progress.setValue(100)
-            self._show_progress_badge(self.t("badge_finished"))
+            self._progress.setFormat(self.t("badge_finished"))
             self._set_status("done", self.t("finished"))
             self._log.append_ansi(self.t("log_completed") + "\n")
             self._log.append_ansi(self.t("log_results", path=self._output_dir()))
         elif kind == "cancelled":
             self._progress.setValue(0)
-            self._show_progress_badge(self.t("badge_cancelled"))
+            self._progress.setFormat("")
             self._set_status("cancelled", self.t("cancelled"))
             self._log.append_ansi(self.t("log_cancelled") + "\n")
         else:
             self._progress.setValue(0)
-            self._show_progress_badge(self.t("badge_failed", code=exit_code))
+            self._progress.setFormat(self.t("badge_failed"))
             self._set_status("error", self.t("failed", code=exit_code))
             self._log.append_ansi(self.t("log_failed", code=exit_code) + "\n")
-
-    def _show_progress_badge(self, text: str) -> None:
-        """An end-of-run badge centred on the bar with its own dark backing."""
-        self._progress_badge.setText(text)
-        self._progress_badge.setVisible(True)
 
     def _set_busy(self, busy: bool) -> None:
         for widget in self._busy_widgets:

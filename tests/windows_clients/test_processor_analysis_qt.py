@@ -65,18 +65,76 @@ def test_frontend_choice_prefers_qt_and_falls_back():
     assert "PySide6" in reason
 
 
-def test_classic_flag_and_windowed_flag_parse():
-    args = gui._arguments(["--classic-gui", "--windowed", "a.mkv"])
-    assert args.classic_gui and args.windowed and args.paths == [Path("a.mkv")]
+def test_classic_flag_parses():
+    args = gui._arguments(["--classic-gui", "a.mkv"])
+    assert args.classic_gui and args.paths == [Path("a.mkv")]
 
 
-def test_background_override_only_for_an_existing_file(tmp_path):
+def test_background_override_then_packaged_image_then_drawn(tmp_path):
     image = tmp_path / "banner.jpg"
     image.write_bytes(b"x")
-    assert gui.analysis_background({}) is None
-    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": str(tmp_path / "absent.jpg")}) is None
-    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": str(tmp_path)}) is None
-    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": f'"{image}"'}) == image
+    packaged = tmp_path / "bg.jpg"
+    packaged.write_bytes(b"y")
+    absent = tmp_path / "absent.jpg"
+    assert gui.analysis_background({}, packaged) == packaged
+    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": str(absent)}, packaged) == packaged
+    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": str(tmp_path)}, packaged) == packaged
+    assert gui.analysis_background({"MK8DX_ANALYSIS_BACKGROUND": f'"{image}"'}, packaged) == image
+    assert gui.analysis_background({}, absent) is None
+    assert gui.analysis_background({}, None) is None
+
+
+def test_the_packaged_banner_image_ships_with_the_source():
+    assert gui.PACKAGED_BACKGROUND.is_file()
+    assert gui.analysis_background({}) == gui.PACKAGED_BACKGROUND
+
+
+# --------------------------------------------------------------------------- #
+# Boundary: the window is presentation only                                    #
+# --------------------------------------------------------------------------- #
+
+PROCESSOR_SOURCE = Path(gui.__file__).resolve().parent
+WINDOW_MODULES = sorted([*(PROCESSOR_SOURCE / "qt").glob("*.py"), PROCESSOR_SOURCE / "gui.py",
+                         PROCESSOR_SOURCE / "gui_classic.py", PROCESSOR_SOURCE / "log_format.py"])
+FORBIDDEN_ROOTS = ("live_processor", "baseline_extractor", "mk8_local_play", "mk8dx_video_result_extractor",
+                   "mk8dx_tournament_extraction")
+
+
+def _imported_modules(path: Path) -> set[str]:
+    import ast
+
+    names: set[str] = set()
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if isinstance(node, ast.Import):
+            names.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            if node.level:
+                names.add("." * node.level + (node.module or ""))
+            else:
+                names.add(node.module or "")
+    return names
+
+
+@pytest.mark.parametrize("path", WINDOW_MODULES, ids=lambda path: path.name)
+def test_window_modules_import_no_engine_and_no_original_project(path):
+    """Recognition stays in packages/tournament-extraction, reached only through the vision_cli child process."""
+    for name in _imported_modules(path):
+        assert name.split(".")[0] not in FORBIDDEN_ROOTS, f"{path.name} imports {name}"
+        # Inside this package the window may only use its own presentation modules and the shared gui helpers.
+        if name.startswith("..") or (name.startswith(".") and path.parent.name != "qt"):
+            assert name.lstrip(".") in {"gui", "log_format", "gui_classic", "qt", "", "qt.app"}, \
+                f"{path.name} imports {name}"
+
+
+def test_window_runs_only_the_central_vision_cli_route(tmp_path):
+    video = tmp_path / "Group 1.mkv"
+    video.write_bytes(b"x")
+    command = gui.build_plan([video], "night", tmp_path / "Session").command("python")
+    assert command[1:5] == ["-u", "-m", "tournament_processor.vision_cli", "all"]
+    # The Qt runner starts exactly the plan's command; it builds no command line of its own.
+    runner = (PROCESSOR_SOURCE / "qt" / "process_runner.py").read_text(encoding="utf-8")
+    assert "self._plan.command()" in runner
+    assert '"-m"' not in runner and "main.py\"" not in runner
 
 
 def test_qt_texts_exist_in_both_languages():
@@ -151,7 +209,7 @@ def test_qt_run_streams_coloured_output_and_finishes(qt_app, tmp_path, monkeypat
     log = window._log.toPlainText()
     assert "Race 1 read" in log and "\x1b" not in log
     assert window._status_text.text() == "Finished"
-    assert window._progress_badge.text() == "🏁 Finished"
+    assert window._progress.format() == "🏁 Finished"
     assert (tmp_path / "Session" / "Input_Videos" / "Group 1.mkv").is_file()
     assert window._start_btn.isEnabled()
     window.close()

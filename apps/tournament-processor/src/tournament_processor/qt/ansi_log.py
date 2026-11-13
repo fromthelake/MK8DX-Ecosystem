@@ -1,6 +1,6 @@
 """A read-only log view that renders ANSI/SGR colour codes.
 
-Ported from the MK8DX Video Result Extractor GUI (gui/ansi_log.py). The recognition engine prints coloured
+Ported from the MK8DX Live Video Processor post-analysis GUI (gui/ansi_log.py). The recognition engine prints coloured
 console output; through a pipe it does so when MK8_FORCE_COLOR is set, and this widget turns those codes into Qt
 text formats so the activity log looks like the console, while keeping the exact spacing of aligned tables
 (plain text with per-run colours rather than HTML, which would collapse whitespace). The parsing itself is in

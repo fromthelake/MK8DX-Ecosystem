@@ -1,6 +1,6 @@
 {
   "schemaVersion": "mk8dx.readme-images-reviewed.v1",
-  "note": "Each README screenshot was looked at before it was listed: made-up players on the website pictures; in the LiveTrial and Tournament Live pictures real player names are made unrecognisable; the Tournament Analysis window shows only made-up recording names on a temporary drive and its code-drawn banner (no game artwork).",
+  "note": "Each README screenshot was looked at before it was listed: made-up players on the website pictures; in the LiveTrial and Tournament Live pictures real player names are made unrecognisable; the Tournament Analysis window shows only made-up recording names on a temporary drive and the window's banner artwork (listed in docs/THIRD_PARTY_MATERIALS.md).",
   "files": {
     "docs/readme/livetrial-live.jpg": {
       "sizeBytes": 98302,
@@ -27,8 +27,8 @@
       "sha256": "0d14a4c476a2f1b3fe8dfe5c569c2cb065b7582624223b45fa81d747fdfc594a"
     },
     "docs/readme/tournament-analysis.jpg": {
-      "sizeBytes": 124971,
-      "sha256": "9bb7dd5822b40f11c16c44bac2c3a358f2f30d06d9d1b7089d57c672fca7bca5"
+      "sizeBytes": 116921,
+      "sha256": "28cf184a8ab7f75b4e88c235fcc46c332b0a3615b5a95a659dbb706b37343b1d"
     },
     "docs/readme/tournament-live.jpg": {
       "sizeBytes": 161786,
