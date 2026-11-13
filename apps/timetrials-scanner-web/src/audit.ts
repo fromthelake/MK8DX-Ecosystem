@@ -104,8 +104,7 @@ function ortDirect(threads: number, log: (s: string) => void): Promise<string> {
 // wasm-geheugenprobe in een weggooi-worker: één heap in stappen van 64 MB laten groeien (en aanraken) tot 1 GB of tot een fout
 function memProbe(log: (s: string) => void, stepMb = 64, maxMb = 1024): Promise<{ mb: number; err: string }> {
   return new Promise((resolve, reject) => {
-    const src = `self.onmessage = () => { const step = ${stepMb * 16}; const max = ${maxMb * 16}; let mem, pages = 0; try { mem = new WebAssembly.Memory({ initial: step, maximum: max }); pages = step; } catch (e) { postMessage({ ok: false, mb: 0, err: String(e) }); return; } let err = ''; while (pages < max) { try { mem.grow(step); pages += step; new Uint8Array(mem.buffer).fill(1, (pages - step) * 65536, pages * 65536); postMessage({ progress: pages / 16 }); } catch (e) { err = String(e); break; } } postMessage({ ok: true, mb: pages / 16, err }); };`;
-    const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })));
+    const w = new Worker(new URL('./memprobe.worker.ts', import.meta.url), { type: 'module' });
     w.onmessage = (e) => {
       const m = e.data;
       if (m.progress !== undefined) { log(`${m.progress} MB`); return; }
@@ -114,7 +113,7 @@ function memProbe(log: (s: string) => void, stepMb = 64, maxMb = 1024): Promise<
       else resolve({ mb: m.mb, err: m.err });
     };
     w.onerror = (e) => { w.terminate(); reject(new Error(`worker: ${e.message}`)); };
-    w.postMessage(1);
+    w.postMessage({ stepMb, maxMb });
   });
 }
 
@@ -148,8 +147,7 @@ const steps: Step[] = [
     return lines.join('\n');
   } },
   { key: 'worker', name: 'Worker-API’s (OffscreenCanvas, ImageBitmap in een module-worker)', timeoutMs: 10000, run: () => new Promise((resolve, reject) => {
-    const src = `self.onmessage = async () => { const r = { offscreen: typeof OffscreenCanvas !== 'undefined', bitmap: typeof createImageBitmap === 'function', sab: typeof SharedArrayBuffer !== 'undefined', isolated: self.crossOriginIsolated, nested: typeof Worker !== 'undefined' }; try { const c = new OffscreenCanvas(4, 4); r.ctx2d = !!c.getContext('2d'); r.toBlob = typeof c.convertToBlob === 'function'; } catch (e) { r.ctx2d = 'ERR ' + e.message; } postMessage(r); };`;
-    const w = new Worker(URL.createObjectURL(new Blob([src], { type: 'text/javascript' })), { type: 'module' });
+    const w = new Worker(new URL('./apiprobe.worker.ts', import.meta.url), { type: 'module' });
     w.onmessage = (e) => { w.terminate(); const r = e.data; const s = JSON.stringify(r); if (r.offscreen && r.bitmap && r.ctx2d === true) resolve(s); else reject(new Error('ontbrekende worker-API: ' + s)); };
     w.onerror = (e) => reject(new Error(e.message));
     w.postMessage(1);
