@@ -87,6 +87,30 @@ node tooling/assets/materialize_collection.mjs recognition-pack "$PWD/.cache/rec
 export MK8DX_FRAME_DEFINITIONS="$PWD/.cache/recognition-pack/frame-definitions-v1.json"
 ```
 
+## Generated public vectors
+
+`tools/generate_vectors.py` writes two vectors from the Python reference, without private inputs
+(issue #99):
+
+| Vector | What it pins | Replayed by |
+| --- | --- | --- |
+| `vectors/context-v1.json` | `combine_character` / `combine_part` over a synthetic catalog and synthetic text clues, one case per branch and on every threshold edge | `python/tests/test_generated_vectors.py`, `ts/contextVectors.test.mjs` |
+| `vectors/icon-score-v1.json` | masked RGB rank (`center_shortlist`, `center_then_shortlist`) on box-sized uint8 queries built from the public recognition pack's own references | `python/tests/test_generated_vectors.py`, `ts/iconScoreVectors.test.mjs`, Android `IconScoreParityTest` |
+
+```sh
+node tooling/assets/materialize_collection.mjs recognition-pack "$PWD/.pack"     # absolute path
+PYTHONPATH=packages/icon-matcher/python python packages/icon-matcher/tools/generate_vectors.py --pack .pack
+python packages/icon-matcher/tools/generate_vectors.py --pack .pack --check          # committed bytes still current
+MK8DX_RECOGNITION_PACK="$PWD/.pack" ...                                               # lets the icon-score replays run
+```
+
+The output is deterministic (no random numbers, sorted keys, LF). `--check` is byte-exact under the pinned
+`requirements-dev.txt` (numpy 2.5.4, OpenCV 5.0); another numpy can change float32 sums in the last bit, which the
+replays tolerate (scores within 1e-6, decisions identical). Cases within 1e-5 of the 0.80 score or 0.02 margin gate
+carry `"boundary": true` and are reported rather than failed. Known rule differences between the runtimes are listed in
+the replay tests themselves. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
+reference bank equals the pack's tensors.
+
 ## Changing the reader
 
 1. Change the Python reference first and add or update its tests.
