@@ -1,12 +1,12 @@
 MK8DX installeren en gebruiken
 
-Handleiding voor MK8DX 0.2.0 · 11 november 2026 (releasekandidaten hebben -rc.N in de bestandsnaam, bijvoorbeeld v0.2.0-rc.2)
+Handleiding voor MK8DX 0.2.1 · 13 november 2026 (releasekandidaten hebben -rc.N in de bestandsnaam, bijvoorbeeld v0.2.1-rc.2)
 
 Welkom
 
 MK8DX is een website voor Mario Kart 8 Deluxe Time Trials en toernooien. Je kunt er circuits en referentietijden bekijken, je aanmelden met een e-maillink en eigen resultaten insturen. Een beheerder kan inzendingen beoordelen. De scanner, Android-app en Windows-programma's zijn afzonderlijke hulpmiddelen.
 
-Releasepakketten hangen aan de GitHub Releases van het project. Open de releasepagina, https://github.com/fromthelake/MK8DX-Ecosystem/releases, en kies de nieuwste release. Kies daar onder Assets het pakket voor jouw route en download SHA256SUMS.txt erbij. De knop Source code (zip) op GitHub is niet het installatiepakket. Werk je met een kloon van de broncode, dan kun je de pakketten ook zelf bouwen; zie ‘Als het niet lukt en zelf bouwen’. De v0.2.0 in de pakketnaam duidt deze release aan; de Docker-images in het hostpakket dragen overeenkomstige versietags. Gebruik alle bestanden van dezelfde release.
+Releasepakketten hangen aan de GitHub Releases van het project. Open de releasepagina, https://github.com/fromthelake/MK8DX-Ecosystem/releases, en kies de nieuwste release. Kies daar onder Assets het pakket voor jouw route en download SHA256SUMS.txt erbij. De knop Source code (zip) op GitHub is niet het installatiepakket. Werk je met een kloon van de broncode, dan kun je de pakketten ook zelf bouwen; zie ‘Als het niet lukt en zelf bouwen’. De v0.2.1 in de pakketnaam duidt deze release aan; de Docker-images in het hostpakket dragen overeenkomstige versietags. Gebruik alle bestanden van dezelfde release.
 
 Kies één manier om de website te gebruiken. Op één Windows-computer kan dat met Docker of met XAMPP, Node.js en de meegeleverde actuele MariaDB. Een tweede Windows-pc in je eigen netwerk kan de uitgewerkte Docker-netwerkroute gebruiken. Voor een openbaar domein kies je gedeelde webhosting met Node.js (het hoofdstuk gebruikt mijn.host Starter als voorbeeld) of een eigen VPS met Docker. Je hoeft de hoofdstukken niet na elkaar uit te voeren. De telefoon- en Windowsprogramma's komen na de websiteroutes.
 
@@ -48,9 +48,9 @@ python --version
 
 Zie je geen versie 3.12 of hoger, herstel Python via dezelfde installer. Controleer ook of Windows een Microsoft Store-alias opent in plaats van de geïnstalleerde Python. Je gebruikt Python hier alleen voor de installatiehulp; je hoeft geen software te bouwen.
 
-3. Leg mk8dx-host-local-v0.2.0-amd64.zip en SHA256SUMS.txt in dezelfde downloadmap. Open PowerShell in die map en controleer het hostpakket:
+3. Leg mk8dx-host-local-v0.2.1-amd64.zip en SHA256SUMS.txt in dezelfde downloadmap. Open PowerShell in die map en controleer het hostpakket:
 
-Get-FileHash '.\mk8dx-host-local-v0.2.0-amd64.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-host-local-v0.2.1-amd64.zip' -Algorithm SHA256
 
 Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\host. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
 
@@ -87,11 +87,11 @@ python --version
 
 Je hoort Node 24 en Python 3.12 of nieuwer te zien. Deze programma's voeren de reeds gebouwde MK8DX-bestanden uit. Je bouwt de website niet zelf. Als een opdracht onbekend is, sluit PowerShell en open het opnieuw; herstel daarna zo nodig die installatie.
 
-3. Leg mk8dx-xampp-node-windows-v0.2.0.zip en SHA256SUMS.txt in dezelfde downloadmap. Controleer in PowerShell de volledige SHA-256-reeks met de regel voor deze ZIP:
+3. Leg mk8dx-xampp-node-windows-v0.2.1.zip en SHA256SUMS.txt in dezelfde downloadmap. Controleer in PowerShell de volledige SHA-256-reeks met de regel voor deze ZIP:
 
-Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.0.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.1.zip' -Algorithm SHA256
 
-Klik bij een gelijke reeks met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\nodocker-v0.2.0. Open de uitgepakte map met Start-MK8DX-No-Docker.cmd. De bestanden bin\mailpit.exe en bin\mariadb-11.4.13-winx64.zip zitten er al in. Je hoeft geen applicatiebron te compileren of een oude XAMPP-database te vervangen. Zet deze pakketmap niet in htdocs.
+Klik bij een gelijke reeks met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\nodocker-v0.2.1. Open de uitgepakte map met Start-MK8DX-No-Docker.cmd. De bestanden bin\mailpit.exe en bin\mariadb-11.4.13-winx64.zip zitten er al in. Je hoeft geen applicatiebron te compileren of een oude XAMPP-database te vervangen. Zet deze pakketmap niet in htdocs.
 
 4. Maak Apache geschikt voor alleen deze lokale site. Open PowerShell in de uitgepakte MK8DX-map. Vul achter -XamppRoot de plek in waar jij XAMPP hebt geïnstalleerd en voer de hulp uit:
 
@@ -150,7 +150,7 @@ Verwacht ‘Backup verified’ en daarna een geslaagde controle van alle migrati
 
 Op je eigen netwerk gebruiken
 
-Voor thuis of op de club gebruik je het A2-pakket. Download mk8dx-a2-windows-amd64-v0.2.0.zip (Linux: mk8dx-a2-linux-amd64 of mk8dx-a2-linux-arm64; macOS met Apple silicon: mk8dx-a2-macos-arm64; voor Macs met een Intel-processor is er geen pakket) en SHA256SUMS.txt, controleer de checksum zoals bij ‘Proberen op één computer’, pak het pakket uit en dubbelklik op Start-MK8DX-LAN.cmd (Linux en macOS: sh tooling/start-mk8dx.sh). In je browser opent een installatie die je met Volgende door alles leidt: het netwerkadres, je beheerdersaccount, een herstelcode op papier voor de nachtelijke back-ups, en de mensen met elk een inlogkaart voor hun telefoon of pc. Je hebt geen internet, geen mailserver en geen hosts-bestand nodig.
+Voor thuis of op de club gebruik je het A2-pakket. Download mk8dx-a2-windows-amd64-v0.2.1.zip (Linux: mk8dx-a2-linux-amd64 of mk8dx-a2-linux-arm64; macOS met Apple silicon: mk8dx-a2-macos-arm64; voor Macs met een Intel-processor is er geen pakket) en SHA256SUMS.txt, controleer de checksum zoals bij ‘Proberen op één computer’, pak het pakket uit en dubbelklik op Start-MK8DX-LAN.cmd (Linux en macOS: sh tooling/start-mk8dx.sh). In je browser opent een installatie die je met Volgende door alles leidt: het netwerkadres, je beheerdersaccount, een herstelcode op papier voor de nachtelijke back-ups, en de mensen met elk een inlogkaart voor hun telefoon of pc. Je hebt geen internet, geen mailserver en geen hosts-bestand nodig.
 
 De volledige stap-voor-stap-handleiding, met afbeeldingen, is docs/install/A2_THUIS_HANDLEIDING_NL.md; in het pakket staat hij ook als docs/install/guide/nl.html, en de installatie opent hem met de link Handleiding. Daarin staan ook het voorbereiden van Windows, Linux of macOS, telefoons en pc's, de Android-app, LiveTrial, toernooiavonden, back-ups, verhuizen naar een nieuwe computer, een vast adres, een nieuw netwerkadres en updates.
 
@@ -217,9 +217,9 @@ Publiek op gedeelde Node.js-hosting zonder Docker
 
 Deze route gebruikt Node.js met Passenger en MariaDB, zoals webhosting als mijn.host Starter die aanbiedt. Zij vraagt geen VPS, Docker, root-toegang of eigen Caddy-server. Het pakket is getest op een lokale Linux- en MariaDB-opstelling; jouw eigen DirectAdmin-account en echte mailbezorging controleer je bij je installatie. Neem een apart (sub)domein en een lege database. Raak een bestaande website of database niet aan. Starter noemt momenteel 2 GB RAM en 5 GB opslag; controleer in jouw paneel de vrije ruimte voor de upload, npm-dependencies, gegevens en backups.
 
-1. Download mk8dx-mijnhost-node-v0.2.0.zip en SHA256SUMS.txt van de releasepagina die bij Welkom staat. Dit is het uploadpakket; de Docker-host-ZIP en het volledige bronpakket zijn hiervoor niet geschikt. Leg beide bestanden op je Windows-pc in dezelfde map. Open PowerShell in die map en vergelijk de volledige SHA-256-reeks met de regel in SHA256SUMS.txt:
+1. Download mk8dx-mijnhost-node-v0.2.1.zip en SHA256SUMS.txt van de releasepagina die bij Welkom staat. Dit is het uploadpakket; de Docker-host-ZIP en het volledige bronpakket zijn hiervoor niet geschikt. Leg beide bestanden op je Windows-pc in dezelfde map. Open PowerShell in die map en vergelijk de volledige SHA-256-reeks met de regel in SHA256SUMS.txt:
 
-Get-FileHash '.\mk8dx-mijnhost-node-v0.2.0.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.1.zip' -Algorithm SHA256
 
 Stop bij een verschil.
 
@@ -242,7 +242,7 @@ ssh -p 26 <jouw-gebruikersnaam>@<jouw-servernaam>
 
 Een SSH-sessie geeft een Linux-prompt. Bewaar het accountwachtwoord in je wachtwoordbeheerder. Je gebruikt hier geen VPS-root. Dezelfde SSH-verbinding draagt de gecontroleerde ZIP over; open een tweede PowerShell op je pc, in de downloadmap:
 
-scp -P 26 '.\mk8dx-mijnhost-node-v0.2.0.zip' <jouw-gebruikersnaam>@<jouw-servernaam>:
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.1.zip' <jouw-gebruikersnaam>@<jouw-servernaam>:
 
 De ZIP verschijnt in je eigen thuismap op de hostingserver. Een andere SFTP-functie in het paneel kan andere gegevens hebben; deze route gebruikt uitsluitend de officieel beschreven SSH/SCP-toegang.
 
@@ -257,7 +257,7 @@ command -v mariadb-dump || command -v mysqldump
 Is één van deze opdrachten afwezig, leg dan de concrete ontbrekende voorziening naast je hostingpaneel of de hulp van mijn.host. Maak voor dit pakket geen onbeveiligde publieke setup-URL. Pak de ZIP in je eigen appmap uit, niet in public_html:
 
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.0.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.1.zip" -d "$HOME/apps/mk8dx"
 cd "$HOME/apps/mk8dx"
 
 Je ziet nu api, web, scanner, assets, mysql en tooling. De appmap is privé. De installer bewaart profiel, secrets en backups straks eveneens buiten public_html.
@@ -309,7 +309,7 @@ De hulp meldt Backup verified. Maak daarna zelf een beschermde kopie buiten dit 
 cd "$HOME"
 mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-voor-update"
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.0.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.1.zip" -d "$HOME/apps/mk8dx"
 
 Plak de Node 24-activatieregel uit het DirectAdmin-scherm opnieuw. Installeer de vergrendelde Linux-afhankelijkheden in de nieuwe api-map en keer terug naar de appmap:
 
@@ -355,7 +355,7 @@ Kies een sterke wachtzin wanneer daarom wordt gevraagd. Het bestand zonder .pub 
 WinSCP: https://winscp.net/eng/download.php
 WinSCP sleutelformaten: https://winscp.net/eng/docs/ui_login_authentication
 
-Vraag de SSH-hostkeyvingerafdruk op via de onafhankelijke VPS-console of ondersteuning van jouw aanbieder. Vergelijk die met de melding bij de eerste WinSCP-verbinding. Accepteer alleen bij een exacte overeenkomst. Sleep daarna het gecontroleerde mk8dx-host-local-v0.2.0-amd64.zip van links op je pc naar /root/ rechts op de server. Upload geen backup of secrets naar public_html.
+Vraag de SSH-hostkeyvingerafdruk op via de onafhankelijke VPS-console of ondersteuning van jouw aanbieder. Vergelijk die met de melding bij de eerste WinSCP-verbinding. Accepteer alleen bij een exacte overeenkomst. Sleep daarna het gecontroleerde mk8dx-host-local-v0.2.1-amd64.zip van links op je pc naar /root/ rechts op de server. Upload geen backup of secrets naar public_html.
 
 3. Open op je pc PowerShell voor de serverterminal. Vul jouw echte IP, poort en sleutelpad in. De sleutel is dezelfde OpenSSH-sleutel uit stap 1, niet het omgezette .ppk-bestand:
 
@@ -428,9 +428,9 @@ Het antwoord hoort jouw VPS-IP te tonen. Controleer een bestaand AAAA-record voo
 7. In de Ubuntu-terminal staat de ZIP uit WinSCP onder /root/. Controleer en pak hem uit:
 
 pwd
-ls -lh /root/mk8dx-host-local-v0.2.0-amd64.zip
+ls -lh /root/mk8dx-host-local-v0.2.1-amd64.zip
 mkdir -p /opt/mk8dx/host /var/lib/mk8dx
-unzip -q /root/mk8dx-host-local-v0.2.0-amd64.zip -d /opt/mk8dx/host
+unzip -q /root/mk8dx-host-local-v0.2.1-amd64.zip -d /opt/mk8dx/host
 cd /opt/mk8dx/host
 ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
 
@@ -458,13 +458,13 @@ Deze hulpmiddelen gebruiken het adres van een bestaande community. De website-in
 
 Neem steeds het volledige websiteadres uit ‘origin’ of ‘Web origin’ van jouw eigen installatie, inclusief de poort als die wordt getoond. Vul nooit het adres ‘localMailInbox’ in LiveTrial in: dat opent alleen de lokale testbrievenbus. Op een tweede apparaat gebruik je het HTTPS-netwerkadres of je openbare domein, niet 127.0.0.1 van de server.
 
-Voor Android heb je een toestel met Android 8.0 of nieuwer nodig; arm64 is aanbevolen. De lokaal met de releasesleutel ondertekende APK is ongeveer 484 MB. Houd minstens 1 GB vrij als installatiemarge. Controleer mk8dx-android-release-v0.2.0.apk met de regel in SHA256SUMS.txt op je pc, kopieer hem naar je telefoon en open hem vanuit Bestanden of Downloads. Als Android toestemming vraagt voor installeren uit deze bestandsapp, geef die alleen voor het gecontroleerde pakket. Je kunt die toestemming na installatie weer uitzetten.
+Voor Android heb je een toestel met Android 8.0 of nieuwer nodig; arm64 is aanbevolen. De lokaal met de releasesleutel ondertekende APK is ongeveer 484 MB. Houd minstens 1 GB vrij als installatiemarge. Controleer mk8dx-android-release-v0.2.1.apk met de regel in SHA256SUMS.txt op je pc, kopieer hem naar je telefoon en open hem vanuit Bestanden of Downloads. Als Android toestemming vraagt voor installeren uit deze bestandsapp, geef die alleen voor het gecontroleerde pakket. Je kunt die toestemming na installatie weer uitzetten.
 
-Bij de eerste start vraagt ‘Community website’ of ‘Communitywebsite’ om het volledige vertrouwde HTTPS-communityadres, bijvoorbeeld https://www.mijneigenwebsite.nl, zonder pad of afsluitende schuine streep. Tik ‘Save’ of ‘Opslaan’. Later verander je dit onder Settings / Instellingen → Community server → Change server. De app vraagt bevestiging; sessies en wachtende ritten van de vorige server verhuizen niet automatisch. Controleer bij een fout hetzelfde adres in de telefoonbrowser. Meld je daarna via de browsercode met je eigen account aan. Eerdere publieke APK's waren met een debugsleutel ondertekend. Bewaar nog niet verzonden resultaten, verwijder die debug-app één keer en installeer daarna deze met de releasesleutel ondertekende APK. Latere APK's met dezelfde releasesleutel kunnen haar ter plekke bijwerken; dit is geen Play Store-release.
+Bij de eerste start vraagt ‘Kies je community’ hoe je community speelt. Voor een online community vul je bij ‘Adres van de website’ het volledige vertrouwde HTTPS-communityadres in, bijvoorbeeld https://www.mijneigenwebsite.nl, zonder pad of afsluitende schuine streep, en tik je ‘Opslaan’. Voor een installatie thuis of bij de club (A2) tik je ‘Scan de QR-code’ en scan je de kaart Apparaat voorbereiden; de A2-handleiding legt die stap precies uit. Later tik je bovenin de app op de naam van de community om te wisselen of om er met ‘Een community toevoegen’ een toe te voegen. Elke community houdt haar eigen account en wachtende ritten; er verhuist niets automatisch. Je eigen tijden staan onder je naam → Mijn tijden, ook offline. Controleer bij een fout hetzelfde adres in de telefoonbrowser. Meld je daarna via de browsercode met je eigen account aan. Eerdere publieke APK's waren met een debugsleutel ondertekend. Bewaar nog niet verzonden resultaten, verwijder die debug-app één keer en installeer daarna deze met de releasesleutel ondertekende APK. Latere APK's met dezelfde releasesleutel kunnen haar ter plekke bijwerken; dit is geen Play Store-release.
 
 Een APK wordt ondertekend door de maker van de app, niet afzonderlijk voor elk domein. Voor automatische Android App Links is wél een publieke koppeling tussen de echte app-identiteit, het gebruikte ondertekeningscertificaat en jouw domein nodig. Het standaardbestand /.well-known/assetlinks.json bevat daarom [] als JSON. Handmatig server kiezen en aanmelden werkt zonder die automatische koppeling. Een eigen, afzonderlijk ondertekende bouw hoort bij de ontwikkelaarsroute.
 
-Voor LiveTrial op Windows x86-64 controleer je desktop-client-v0.2.0.zip met SHA256SUMS.txt en pak je de volledige ZIP uit, bijvoorbeeld onder Documenten. Houd ongeveer 2 GB ruimte vrij voor uitpakken en eigen opnamen; dit is een marge, geen gemeten minimum. Open LiveTrial.exe. Live opnemen van een capturekaart heeft ook FFmpeg nodig, dat vanwege de licentie niet is meegeleverd: voer eenmalig winget install Gyan.FFmpeg uit in PowerShell en start LiveTrial opnieuw (video's analyseren werkt zonder). Ga naar Instellingen → Adres van je communitywebsite, vul het exacte adres van jouw installatie in en kies Server opslaan. Bevestig de wissel.
+Voor LiveTrial op Windows x86-64 controleer je desktop-client-v0.2.1.zip met SHA256SUMS.txt en pak je de volledige ZIP uit, bijvoorbeeld onder Documenten. Houd ongeveer 2 GB ruimte vrij voor uitpakken en eigen opnamen; dit is een marge, geen gemeten minimum. Open LiveTrial.exe. Live opnemen van een capturekaart heeft ook FFmpeg nodig, dat vanwege de licentie niet is meegeleverd: voer eenmalig winget install Gyan.FFmpeg uit in PowerShell en start LiveTrial opnieuw (video's analyseren werkt zonder). Ga naar Instellingen → Adres van je communitywebsite, vul het exacte adres van jouw installatie in en kies Server opslaan. Bevestig de wissel.
 
 LiveTrial slaat het adres op en start daarna zelf opnieuw. Laat het venster open terwijl dit gebeurt. Kijk na de herstart bij Instellingen of precies jouw adres zichtbaar is. Meld je pas dan aan; de aanmelding hoort jouw community te openen. Open je daarna Ritgeschiedenis, dan wacht dit onderdeel zo nodig even tot de lokale geschiedenis is gestart en verschijnt de inhoud vanzelf. Vernieuwen met F5 hoort niet nodig te zijn. Als LiveTrial meldt dat automatisch opnieuw starten niet lukte, kies dan in de app LiveTrial afsluiten, wacht tot het programma is gesloten en open LiveTrial.exe opnieuw. Alleen het browservenster sluiten is niet genoeg: LiveTrial kan dan op de achtergrond blijven draaien.
 
@@ -472,7 +472,7 @@ Staat er nog een leeg veld met https://www.example.org of opent de verkeerde web
 
 De browserscanner zit al in de website. Open op jouw vertrouwde HTTPS-adres /scanner/ en begin met ‘afbeelding uploaden’. Kies een eigen resultaatfoto, bekijk de herkende gegevens en bevestig ze pas daarna. Live cameragebruik vraagt browsertoestemming en een vertrouwde HTTPS-verbinding buiten localhost. Herkenning hangt ook van de opname af. De beschreven tweede Windows-browserroute van A2 is gedocumenteerd maar nog niet end-to-end getest.
 
-Voor Tournament op Windows x86-64 controleer je tournament-tools-v0.2.0.zip en pak je de hele ZIP uit. Open Install-MK8DX-TournamentTools.cmd. Houd meerdere GB vrije ruimte beschikbaar: de ZIP van ongeveer 160 MB en ongeveer 1 GB voor uitpakken zijn niet het hele ruimtegebruik. De installer kan Python 3.12, publieke pakketten en bij OCR-gebruik een model ophalen. Een exact minimum voor alle afhankelijkheden en eigen media is niet gemeten. Begin met de normale CPU-route; extra GPU- of CUDA-instellingen zijn voor later. Wacht op SUCCESS en houd runtime-assets intact. Bij een fout kijk je in install.log in de pakketmap.
+Voor Tournament op Windows x86-64 controleer je tournament-tools-v0.2.1.zip en pak je de hele ZIP uit. Open Install-MK8DX-TournamentTools.cmd. Houd meerdere GB vrije ruimte beschikbaar: de ZIP van ongeveer 160 MB en ongeveer 1 GB voor uitpakken zijn niet het hele ruimtegebruik. De installer kan Python 3.12, publieke pakketten en bij OCR-gebruik een model ophalen. Een exact minimum voor alle afhankelijkheden en eigen media is niet gemeten. Begin met de normale CPU-route; extra GPU- of CUDA-instellingen zijn voor later. Wacht op SUCCESS en houd runtime-assets intact. Bij een fout kijk je in install.log in de pakketmap.
 
 Sleep een .mp4- of .mkv-opname op TournamentProcessor.cmd. Het programma maakt naast de video een sessiemap met Excel, CSV en een bestand dat op _TournamentRaceResultsV1.json eindigt. Voor TournamentLive.cmd met live capture heb je passende hardware en driver nodig.
 
@@ -514,6 +514,8 @@ python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
 
 Op B1 gebruik je python3, /var/lib/mk8dx/instance en jouw nieuwe volledige https://-adres. Controleer de status, /client-config.json en een nieuwe aanmeldlink. Stel elk apparaat daarna ook op het nieuwe adres in. Een verkeerd adminadres vóór de eerste beheertoekenning kun je via de installatiehulp wijzigen; een al gebruikte eerste toekenning wordt daarmee niet opnieuw geopend. Een bestaande beheerder laat een andere geverifieerde beheerder alleen via de begrensde herstelprocedure en een expliciet eigenaarsbesluit toevoegen.
+
+Op de website staan onder Beheer → Installatie-instellingen de keuzes voor de hele site. De Communitynaam (bijvoorbeeld ‘Club Noord’) tonen de apps in plaats van het webadres; laat het veld leeg voor geen naam. Tijden uit andere community's bepaalt of een tijd die een speler uit een andere community meeneemt wordt geweigerd (Uit, de standaard), wacht tot een beheerder ernaast op Publiceren klikt onder Beheer → Tijdritten (Met goedkeuring), of de gewone publicatieregels volgt (Toegestaan). Zet je Met goedkeuring uit terwijl er nog meegenomen tijden wachten, dan vraagt de pagina wat ermee moet gebeuren. Elke wijziging wordt met de naam van de beheerder vastgelegd.
 
 Backup, herstel en updates
 
@@ -589,14 +591,14 @@ Linux gebruiken
 
 Wat je nu lokaal kunt proberen
 
-Je hebt alleen je eigen Linux-computer nodig, geen Windows-computer. Heb je Ubuntu 24.04 op x86-64, dan is het meegeleverde Docker-hostpakket de lokale serverroute. Controleer eerst met uname -m dat de uitkomst x86_64 is. Installeer Docker Engine met de Compose-plugin, Python 3.12 of nieuwer en unzip. De Ubuntu-Docker-installatie staat stap voor stap in ‘Een openbare website op een VPS maken’; voor deze lokale proef sla je daar DNS, firewall-openstelling en echte SMTP over. Download mk8dx-host-local-v0.2.0-amd64.zip en de bijbehorende SHA256SUMS.txt uit dezelfde release. Open Terminal in de downloadmap en controleer de ZIP. Vergelijk de uitkomst met de regel in SHA256SUMS.txt. Stop bij een verschil:
+Je hebt alleen je eigen Linux-computer nodig, geen Windows-computer. Heb je Ubuntu 24.04 op x86-64, dan is het meegeleverde Docker-hostpakket de lokale serverroute. Controleer eerst met uname -m dat de uitkomst x86_64 is. Installeer Docker Engine met de Compose-plugin, Python 3.12 of nieuwer en unzip. De Ubuntu-Docker-installatie staat stap voor stap in ‘Een openbare website op een VPS maken’; voor deze lokale proef sla je daar DNS, firewall-openstelling en echte SMTP over. Download mk8dx-host-local-v0.2.1-amd64.zip en de bijbehorende SHA256SUMS.txt uit dezelfde release. Open Terminal in de downloadmap en controleer de ZIP. Vergelijk de uitkomst met de regel in SHA256SUMS.txt. Stop bij een verschil:
 
-sha256sum mk8dx-host-local-v0.2.0-amd64.zip
+sha256sum mk8dx-host-local-v0.2.1-amd64.zip
 
 Pak het pakket daarna uit en ga naar de pakketmap:
 
 mkdir -p "$HOME/MK8DX/host"
-unzip -q mk8dx-host-local-v0.2.0-amd64.zip -d "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.1-amd64.zip -d "$HOME/MK8DX/host"
 cd "$HOME/MK8DX/host"
 
 De bestaande Linux-starter is:
@@ -615,7 +617,7 @@ Wat je nu lokaal kunt proberen
 
 Je hebt alleen je eigen Mac, zonder Windows-computer of andere server. Op een Intel Mac kan een ontwikkelaar proberen de meegeleverde Linux/amd64-Docker-images lokaal te draaien. Als website, API en database daadwerkelijk starten, open je het getoonde A1-websiteadres en Mailpit op diezelfde Mac in de browser. De browserscanner hoort bij de website. Er is nog geen Mac-proef met een nieuw account, inzending, database en zichtbare websiteuitslag; beloof jezelf dus geen complete installatie op basis van alleen een draaiende homepage.
 
-Installeer op een Intel Mac Docker Desktop voor Mac en Python 3.12 of nieuwer. Download dezelfde host-ZIP en SHA256SUMS.txt. Open Terminal in de downloadmap, voer shasum -a 256 mk8dx-host-local-v0.2.0-amd64.zip uit en vergelijk de uitkomst met SHA256SUMS.txt. Stop bij een verschil. Gebruik daarna de mkdir-, unzip- en cd-opdrachten uit het Linux-hoofdstuk. Start dezelfde shellstarter en kies A1. Dit is een ontwikkelaarsproef, geen geteste Mac-gebruikersroute. Op een Mac met Apple Silicon vraagt hetzelfde pakket emulatie van de amd64-images; er is geen native arm64-pakket. Ook met emulatie is werking en snelheid hier niet bewezen. Voor een betrouwbaar lokaal Apple Silicon-pakket zijn arm64-images en een eigen Mac-acceptatieproef nodig.
+Installeer op een Intel Mac Docker Desktop voor Mac en Python 3.12 of nieuwer. Download dezelfde host-ZIP en SHA256SUMS.txt. Open Terminal in de downloadmap, voer shasum -a 256 mk8dx-host-local-v0.2.1-amd64.zip uit en vergelijk de uitkomst met SHA256SUMS.txt. Stop bij een verschil. Gebruik daarna de mkdir-, unzip- en cd-opdrachten uit het Linux-hoofdstuk. Start dezelfde shellstarter en kies A1. Dit is een ontwikkelaarsproef, geen geteste Mac-gebruikersroute. Op een Mac met Apple Silicon vraagt hetzelfde pakket emulatie van de amd64-images; er is geen native arm64-pakket. Ook met emulatie is werking en snelheid hier niet bewezen. Voor een betrouwbaar lokaal Apple Silicon-pakket zijn arm64-images en een eigen Mac-acceptatieproef nodig.
 
 Docker Desktop voor Mac: https://docs.docker.com/desktop/setup/install/mac-install/
 

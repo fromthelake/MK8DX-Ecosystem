@@ -217,6 +217,11 @@ The apps around it:
 **Prepare a device** card your administrator shows; for an online community you type its website address. Then you
 sign in through the browser. Details: [Players](docs/guides/PLAYERS.md#first-start).
 
+**One app, several communities:** the community chip at the top switches between your club, your home
+installation and an online community in one tap; each keeps its own account and unsent times. Under **You** →
+**My times** you see your best time per track, also without internet, and with more than one community you can
+carry your best times to another one — if that community accepts them.
+
 **Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
 B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
 (`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there
@@ -229,8 +234,8 @@ catalog and the Nintendo staff ghost and world record reference sets.
 
 ## Project status
 
-0.1.0 is the stable release on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
-0.2.0, which adds A2, is a release candidate: try it, but keep 0.1.0 for anything you cannot redo. See the
+Stable releases are on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 added A2,
+at home or at the club; 0.2.1 gives the Android app an offline copy of your times and a calmer layout. See the
 [changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
 ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 

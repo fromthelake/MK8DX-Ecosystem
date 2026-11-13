@@ -3,6 +3,66 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## 0.2.1 — 2026-11-13
+
+The Android app gets a new layout around a community chip and a **You** screen, keeps an offline copy of your
+times per community and can carry your best times to another community in one step; administrators can name
+their community. Android app 2.99.0 (169) carries all app changes below.
+
+### Added
+
+- **A community name**: an administrator can name the installation ("Club Noord") at the top of Administration →
+  Installation settings; the apps show it instead of the web address. `GET /v1/installation-settings` answers
+  `communityName` (text, or `null` when not set); trimmed, at most 60 characters, audited like the other
+  settings (migration 0091).
+- **The same carried time twice** (ADR-0225 amendment, migration 0090): a carried time whose community and
+  original id were already accepted here is refused with `409 carried_duplicate`. A carried time with the same
+  track, class and time as an active run of the same Player no longer creates a second run: it fills only that
+  run's empty fields (kart parts, lap times, coins, mushrooms) in a new audited revision, never replacing a value,
+  and answers `200 mk8dx.carried-fill.v1` with the filled fields (`409 carried_nothing_to_fill` when there is
+  nothing to add). Publication and rankings stay the same; the run's history says "Empty fields filled from a
+  time carried from …". With carried times off it is refused like any carried time.
+- **Reads for the app's offline copy**: `GET /v1/account/time-trials` gives each revision's `occurredAtMs` and
+  pages through a long list with `?limit=…&offset=…` (answering `nextOffset` while more remain); the new
+  `GET /v1/account/rivals/best-times` gives each chosen rival's best published run per track and class with laps
+  and kart setup. Private Players never appear.
+- **Android: an offline copy per community**: the app keeps your own runs and your rivals' best
+  times for each community and shows them without a connection, with "Offline — last updated …". A failed
+  refresh keeps the old copy; removing a community removes its copy.
+- **Android: Carry my best times**: with more than one community, My times offers one button that
+  carries your personal best per track and class to another community, skipping tracks where it already has a
+  better time of yours. A copy that is already there, or that filled an equal run, counts as done.
+- **Android: the community's own name**: the community chip, the community tiles, the carry choices
+  and the You card show the name an administrator set, and the web address when there is none.
+- **Android: a sign-in hint at home or at the club**: the sign-in screen explains that a home or
+  club installation signs in with the personal sign-in card, not with email.
+
+### Changed
+
+- **Android navigation**: the header is the logo (Home), the community chip, the bell and your name;
+  the download arrow and the gear are gone. The chip opens **Communities** as tiles (the active one green) with
+  **Switch**, **Remove from this phone** and **Add a community**. Your name opens **You**: Switch Player, an
+  orange banner while times wait to be sent, and the tabs **My times**, **Records** and **Rivals**, with a
+  Settings row. My times is one list: career numbers, the personal best per track and class, older runs on tap
+  and a **⋯** menu with Details, Edit, Withdraw and Carry to another community. The separate Times on this phone
+  screen is gone.
+- **Android Settings** are grouped into Player, App, Community and About and save each change by
+  themselves; the language is a select field; Get the app and Saved on this phone are under Community; the test
+  scan is under About.
+- **Android: carried times waiting for sign-in** are one line per community with **Show** and
+  **Remove all**, and no longer count as runs waiting to be sent.
+- Translations: the offline copy, navigation, Settings and community name texts are in all app and web
+  languages (machine translation, not yet reviewed).
+- The players guide, the A2 guides, the client and administration guides and the complete user guides follow
+  the new app screens and describe the installation settings.
+
+### Fixed
+
+- Android: a connection failure on the profile, in Accounts and Players and in player interactions says "No
+  connection to …" instead of the platform's error text, and the profile's own results no longer disappear when
+  the public profile or the record book cannot be loaded.
+- Android: the class, best time and date of a My times row stay readable at large text sizes.
+
 ## 0.2.0 — 2026-11-12
 
 The first stable package with **A2, at home or at the club**: one computer on your own network, no internet

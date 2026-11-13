@@ -66,6 +66,7 @@ const revisionSchema = {
     },
     sourceKind: { type: "string", minLength: 1, maxLength: 64 },
     createdAtMs: { type: "integer", minimum: 0 },
+    occurredAtMs: { type: "integer", minimum: 0 },
   },
 } as const;
 
@@ -80,13 +81,24 @@ const eventSchema = {
     "actorRole", "reasonCode", "occurredAtMs"],
   properties: {
     sequenceNumber: { type: "integer", minimum: 1 },
-    eventType: { type: "string", enum: ["corrected", "retired", "restored", "published"] },
+    eventType: { type: "string", enum: ["corrected", "retired", "restored", "published", "enriched"] },
     retirementStateAfter: { type: "string", enum: ["active", "retired"] },
     revision: { type: "integer", minimum: 1 },
     actorRole: { type: "string", enum: ["owner", "administrator"] },
     reasonCode: { type: "string", minLength: 1, maxLength: 64 },
     note: { type: "string", maxLength: 256 },
     occurredAtMs: { type: "integer", minimum: 0 },
+    // ADR-0225 amendment: an "enriched" event names the carried time that filled empty fields.
+    carriedFrom: {
+      type: "object",
+      additionalProperties: false,
+      required: ["origin"],
+      properties: {
+        origin: { type: "string", minLength: 9, maxLength: 255, pattern: "^https://[^/?#\\s]+$" },
+        originalSubmissionId: { type: "string", minLength: 1, maxLength: 128 },
+      },
+    },
+    filledFields: { type: "array", maxItems: 10, items: { type: "string", minLength: 1, maxLength: 32 } },
   },
 } as const;
 
@@ -144,6 +156,8 @@ const listSchema = {
       type: "string", const: "mk8dx.managed-time-trial-list.v1",
     },
     results: { type: "array", maxItems: 200, items: managedSchema },
+    // Only when the request named an offset: where the next page starts, absent on the last page.
+    nextOffset: { type: "integer", minimum: 1 },
   },
 } as const;
 
@@ -424,7 +438,10 @@ export async function registerTimeTrialLifecycleRoutes(
       schema: {
         querystring: {
           type: "object", additionalProperties: false,
-          properties: { limit: { type: "string", pattern: "^[0-9]{1,3}$" } },
+          properties: {
+            limit: { type: "string", pattern: "^[0-9]{1,3}$" },
+            offset: { type: "string", pattern: "^[0-9]{1,6}$" },
+          },
         },
         response: {
           200: listSchema,
@@ -438,11 +455,17 @@ export async function registerTimeTrialLifecycleRoutes(
       try {
         const actor = await options.resolveActor(request);
         const limit = request.query["limit"];
+        const offset = request.query["offset"];
+        const pageSize = limit === undefined ? 100 : Number(limit);
         const results = await options.service.listOwn(
-          actor, limit === undefined ? 100 : Number(limit),
+          actor, pageSize, offset === undefined ? 0 : Number(offset),
         );
+        // Paging is opt-in: a client that names an offset learns where the next page starts.
+        const nextOffset = offset !== undefined && results.length === pageSize
+          ? Number(offset) + results.length : undefined;
         return reply.send({
           schemaVersion: "mk8dx.managed-time-trial-list.v1" as const, results,
+          ...(nextOffset === undefined ? {} : { nextOffset }),
         });
       } catch (error) {
         const { status, body } = errorReply(error);

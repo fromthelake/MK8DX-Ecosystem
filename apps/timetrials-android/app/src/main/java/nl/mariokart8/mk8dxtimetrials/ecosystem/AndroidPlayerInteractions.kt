@@ -1,5 +1,7 @@
 package nl.mariokart8.mk8dxtimetrials.ecosystem
 
+import nl.mariokart8.mk8dxtimetrials.offline.androidNoConnectionText
+import nl.mariokart8.mk8dxtimetrials.offline.isConnectionFailure
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -248,6 +250,7 @@ internal fun AndroidPlayerInteractionsPanel(
     modifier: Modifier = Modifier,
 ) {
     val language = LocalAndroidProductLanguage.current
+    val context = androidx.compose.ui.platform.LocalContext.current
     val colors = Mk8dxTheme.colors
     val type = Mk8dxTheme.type
     val scope = rememberCoroutineScope()
@@ -273,7 +276,12 @@ internal fun AndroidPlayerInteractionsPanel(
         status = androidText(language, "Sending…", "Versturen…")
         scope.launch {
             status = runCatching { withContext(Dispatchers.IO) { work() } }.getOrElse { error ->
-                error.message?.takeIf { it.isNotBlank() } ?: androidText(language, "Try again later.", "Probeer het later opnieuw.")
+                // A connection failure carries the platform's wording; a person reads which community is out of reach.
+                if (error.isConnectionFailure()) {
+                    androidNoConnectionText(language, nl.mariokart8.mk8dxtimetrials.AndroidServerOrigin.current(context) ?: "", showingCopy = false)
+                } else {
+                    error.message?.takeIf { it.isNotBlank() } ?: androidText(language, "Try again later.", "Probeer het later opnieuw.")
+                }
             }
             busy = false
             refresh += 1

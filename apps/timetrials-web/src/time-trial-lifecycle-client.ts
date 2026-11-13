@@ -52,18 +52,26 @@ export type ManagedTimeTrialRevision = Readonly<{
   loadout?: Readonly<Record<string, string>>;
   sourceKind: string;
   createdAtMs: number;
+  /** When the run was driven, when the producer said so. */
+  occurredAtMs?: number;
 }>;
 
 export type ManagedTimeTrialEvent = Readonly<{
   sequenceNumber: number;
-  /** "published": an administrator published a run that waited for review (ADR-0225). */
-  eventType: "corrected" | "retired" | "restored" | "published";
+  /**
+   * "published": an administrator published a run that waited for review (ADR-0225).
+   * "enriched": a carried equal time filled empty fields of the run (ADR-0225 amendment).
+   */
+  eventType: "corrected" | "retired" | "restored" | "published" | "enriched";
   retirementStateAfter: "active" | "retired";
   revision: number;
   actorRole: "owner" | "administrator";
   reasonCode: string;
   note?: string;
   occurredAtMs: number;
+  /** For "enriched": the community the carried time came from and what it filled. */
+  carriedFrom?: Readonly<{ origin: string; originalSubmissionId?: string }>;
+  filledFields?: readonly string[];
 }>;
 
 /** Where a carried run comes from (ADR-0225), as the submission stated it. */
@@ -277,7 +285,7 @@ function revision(value: unknown): ManagedTimeTrialRevision {
   keys(row, [
     "revision", "modeCc", "trackId", "totalTimeMs", "laps", "sourceKind",
     "createdAtMs",
-  ], ["lapDetails", "loadout"]);
+  ], ["lapDetails", "loadout", "occurredAtMs"]);
   const modeCc = integer(row["modeCc"], 150, 200);
   if (modeCc !== 150 && modeCc !== 200) { throw fail("invalid_response"); }
   if (!Array.isArray(row["laps"]) || row["laps"].length > 7) {
@@ -304,6 +312,18 @@ function revision(value: unknown): ManagedTimeTrialRevision {
     ...(loadout === undefined ? {} : { loadout }),
     sourceKind: text(row["sourceKind"], 64, sourceKindPattern),
     createdAtMs: integer(row["createdAtMs"]),
+    ...("occurredAtMs" in row ? { occurredAtMs: integer(row["occurredAtMs"]) } : {}),
+  };
+}
+
+const filledFieldPattern = /^[A-Za-z]{1,32}$/;
+
+function eventCarriedFrom(value: unknown): NonNullable<ManagedTimeTrialEvent["carriedFrom"]> {
+  const row = object(value);
+  keys(row, ["origin"], ["originalSubmissionId"]);
+  return {
+    origin: text(row["origin"], 255, /^https:\/\/[^/?#\s]+$/),
+    ...("originalSubmissionId" in row ? { originalSubmissionId: text(row["originalSubmissionId"], 256) } : {}),
   };
 }
 
@@ -312,17 +332,24 @@ function event(value: unknown): ManagedTimeTrialEvent {
   keys(row, [
     "sequenceNumber", "eventType", "retirementStateAfter", "revision",
     "actorRole", "reasonCode", "occurredAtMs",
-  ], ["note"]);
+  ], ["note", "carriedFrom", "filledFields"]);
   const note = "note" in row ? text(row["note"], 256) : undefined;
+  if ("filledFields" in row && (!Array.isArray(row["filledFields"]) || row["filledFields"].length > 10)) {
+    throw fail("invalid_response");
+  }
   return {
     sequenceNumber: integer(row["sequenceNumber"], 1),
-    eventType: literal(row["eventType"], ["corrected", "retired", "restored", "published"] as const),
+    eventType: literal(row["eventType"], ["corrected", "retired", "restored", "published", "enriched"] as const),
     retirementStateAfter: literal(row["retirementStateAfter"], ["active", "retired"] as const),
     revision: integer(row["revision"], 1),
     actorRole: literal(row["actorRole"], ["owner", "administrator"] as const),
     reasonCode: text(row["reasonCode"], 64, reasonPattern),
     ...(note === undefined ? {} : { note }),
     occurredAtMs: integer(row["occurredAtMs"]),
+    ...("carriedFrom" in row ? { carriedFrom: eventCarriedFrom(row["carriedFrom"]) } : {}),
+    ...("filledFields" in row
+      ? { filledFields: (row["filledFields"] as unknown[]).map((field) => text(field, 32, filledFieldPattern)) }
+      : {}),
   };
 }
 

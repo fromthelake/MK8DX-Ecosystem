@@ -11,6 +11,7 @@ import { confirmDialog } from "./ds-components.js";
 import {
   createInstallationSettingsClient,
   InstallationSettingsClientError,
+  COMMUNITY_NAME_MAXIMUM,
   type CarriedTimesPolicy,
   type InstallationSettingsAdministration,
   type InstallationSettingsClient,
@@ -78,6 +79,28 @@ function carriedTimesOptions(): readonly (readonly [CarriedTimesPolicy, string])
       "Toegestaan: meegenomen tijden volgen de gewone publicatieregels",
     )],
   ];
+}
+
+/**
+ * The community name as it will be saved: trimmed, empty = no name. Returns the reason in the
+ * page's words when it cannot be saved; the server checks the same.
+ */
+export function checkCommunityName(raw: string): Readonly<{ ok: true; value: string | null }> | Readonly<{ ok: false; message: string }> {
+  const value = raw.trim();
+  if (value === "") { return { ok: true, value: null }; }
+  if (Array.from(value).length > COMMUNITY_NAME_MAXIMUM) {
+    return { ok: false, message: localized(
+      "A community name has at most 60 characters.",
+      "Een communitynaam heeft hoogstens 60 tekens.",
+    ) };
+  }
+  if (/\p{Cc}/u.test(value)) {
+    return { ok: false, message: localized(
+      "A community name cannot contain line breaks or other control characters.",
+      "Een communitynaam mag geen regeleinden of andere stuurtekens bevatten.",
+    ) };
+  }
+  return { ok: true, value };
 }
 
 function failureText(error: unknown, fallback: string): string {
@@ -214,6 +237,7 @@ export function mountInstallationSettingsSection(
     playerCreation?: PlayerCreationPolicy;
     ratingEligibility?: RatingEligibilityPolicy;
     carriedTimes?: CarriedTimesPolicy;
+    communityName?: string | null;
   }>, thenRecompute: boolean): void => {
     if (current === null) { return; }
     const previousCarriedTimes = current.carriedTimes;
@@ -264,8 +288,51 @@ export function mountInstallationSettingsSection(
     return wrapper;
   };
 
+  // The community name the apps show instead of the web address; first, because it names the site.
+  const nameField = (settings: InstallationSettingsAdministration): HTMLElement => {
+    const form = document.createElement("form");
+    form.className = "ds-field installation-settings__name";
+    const label = document.createElement("label");
+    label.className = "ds-label";
+    label.setAttribute("for", "installation-settings-community-name");
+    label.textContent = localized("Community name", "Communitynaam");
+    const input = document.createElement("input");
+    input.id = "installation-settings-community-name";
+    input.name = "community_name";
+    input.className = "ds-input";
+    input.type = "text";
+    input.maxLength = COMMUNITY_NAME_MAXIMUM;
+    input.autocomplete = "off";
+    input.value = settings.communityName ?? "";
+    input.placeholder = localized("For example Club Noord", "Bijvoorbeeld Club Noord");
+    const hint = document.createElement("span");
+    hint.className = "ds-body";
+    hint.textContent = localized(
+      "Shown in the apps instead of the web address.",
+      "Wordt in de apps getoond in plaats van het webadres.",
+    );
+    const button = document.createElement("button");
+    button.type = "submit";
+    button.className = "ds-button";
+    button.setAttribute("data-variant", "secondary");
+    button.textContent = localized("Save name", "Naam opslaan");
+    form.append(label, input, hint, button);
+    form.addEventListener("submit", (submitEvent) => {
+      submitEvent.preventDefault();
+      const checked = checkCommunityName(input.value);
+      if (!checked.ok) { status.textContent = checked.message; return; }
+      if (checked.value === settings.communityName) {
+        status.textContent = localized("The community name is unchanged.", "De communitynaam is niet gewijzigd.");
+        return;
+      }
+      save({ communityName: checked.value }, false);
+    });
+    return form;
+  };
+
   const render = (settings: InstallationSettingsAdministration): void => {
     clear(content);
+    content.append(nameField(settings));
     content.append(choice(
       localized("Who creates Players", "Wie maakt spelers aan"),
       localized(

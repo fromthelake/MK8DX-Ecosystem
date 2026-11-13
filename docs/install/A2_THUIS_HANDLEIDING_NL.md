@@ -272,13 +272,15 @@ De stappen op de pagina Dit apparaat voorbereiden:
 
 Dit vraagt appversie 2.95.0 of nieuwer. De app heeft het certificaat niet nodig in de instellingen van Android, maar het aanmelden loopt via de browser van de telefoon. Doe daarom eerst hoofdstuk 6 op deze telefoon: Apparaat voorbereiden en inloggen met je kaart in de browser.
 
-1. **Doe:** open de app. Na een nieuwe installatie begint die op **Kies je community**; anders open je **Instellingen** en tik je bij **Communityserver** op **Server wijzigen**. → **Je ziet:** **Kies je community** met de vakken **Thuis of bij de club** en **Online community**. Tik onder **Thuis of bij de club** op **Scan de QR-code**.
+1. **Doe:** open de app. Na een nieuwe installatie begint die op **Kies je community**; anders tik je bovenin de app op de naam van de community en daarna op **Een community toevoegen**. → **Je ziet:** **Kies je community** met de vakken **Thuis of bij de club** en **Online community**. Tik onder **Thuis of bij de club** op **Scan de QR-code**.
 2. **Doe:** tik zo nodig op **Camera gebruiken** en sta de camera toe. Scan de QR-code van de kaart **Apparaat voorbereiden**. → **Je ziet:** **Controleer dat dit jouw installatie is** met een **Adres** en een **Sleutelvingerafdruk (SHA-256)**. → **Zie je iets anders?** "Dit is niet de QR-code van een kaart Apparaat voorbereiden.": je scande een persoonlijke kaart. Scan de kaart Apparaat voorbereiden. Lukt scannen niet, typ dan het adres Nieuw apparaat (bijvoorbeeld `http://192.168.1.50/setup`) bij **Of plak de setup-link** en tik op **Volgende**.
 3. **Doe:** vergelijk het adres met het adres van de website, en de lange sleutel met de pagina Dit apparaat voorbereiden: open daar **Volledige vingerafdrukken** en kijk bij "Root public key SHA-256 (SPKI)". Die pagina kun je op een ander apparaat openen, of op de MK8DX-computer zelf via het adres Nieuw apparaat. → **Je ziet:** beide precies gelijk. Tik op **Verbinden** (stond de app al op een andere server, bevestig dan het wisselen). → **Zie je iets anders?** Verschillen ze, tik dan op **Terug** en verbind niet. "Geen passend certificaat gekregen van": controleer het netwerk en of de MK8DX-computer aan staat, en probeer opnieuw.
-4. **Doe:** tik in **Instellingen** bij **Speler op deze telefoon** op **Aanmelden** en daarna op **Aanmelden om te synchroniseren**. → **Je ziet:** de browser opent de goedkeuringspagina. Controleer dat de site dezelfde code toont als de app en keur het apparaat goed. Ga terug naar de app. → **Zie je iets anders?** Vraagt de browser om in te loggen, log dan eerst in met je kaart (hoofdstuk 6).
+4. **Doe:** tik in **Instellingen** bij **Speler op deze telefoon** op **Aanmelden**. De app herinnert je eraan dat je je thuis of bij de club aanmeldt met je persoonlijke inlogkaart, niet met e-mail. Tik op **Aanmelden om te synchroniseren**. → **Je ziet:** de browser opent de goedkeuringspagina. Controleer dat de site dezelfde code toont als de app en keur het apparaat goed. Ga terug naar de app. → **Zie je iets anders?** Vraagt de browser om in te loggen, log dan eerst in met je kaart (hoofdstuk 6).
 5. **Doe:** plaats een tijd in de app. → **Je ziet:** de tijd op de website van de installatie.
 
-Ontkoppelen: **Instellingen** → **Server wijzigen** → **Deze installatie vergeten**.
+Ontkoppelen: tik bovenin op de naam van de community → **Een community toevoegen** → **Deze installatie vergeten**.
+
+Club en thuis in één app: de app kan meerdere community's bevatten. Tik bovenin op de naam van de community en daarna op **Wisselen**; elke community houdt een eigen account en eigen niet verzonden tijden. Je eigen tijden staan onder je naam → **Mijn tijden**, ook als de telefoon de MK8DX-computer niet kan bereiken.
 
 **LiveTrial op een tweede Windows-pc**
 
@@ -305,7 +307,7 @@ Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding
 - Iedereen logt één keer in met zijn eigen kaart op dat apparaat.
 - **Website:** daarna wissel je met één tik via het accountmenu: kies **Ander account** en dan de persoon.
 - **Pincode:** wie wil, zet op de website bij **Instellingen** → **Pincode voor ander account** een pincode van 4 cijfers. Wisselen naar dat account vraagt dan eerst om die pincode.
-- **Android-app:** **Instellingen** → **Speler op deze telefoon** → **Van speler wisselen**, en kies de persoon met **Wisselen**. Heeft die persoon een pincode, dan vraagt de app **Pincode nodig** en **Pincode (4 cijfers)**. Een verkeerde pincode geeft "Die pincode klopt niet."
+- **Android-app:** tik bovenin op je naam → **Speler wisselen** (of **Instellingen** → **Speler op deze telefoon**), en kies de persoon met **Wisselen**. Heeft die persoon een pincode, dan vraagt de app **Pincode nodig** en **Pincode (4 cijfers)**. Een verkeerde pincode geeft "Die pincode klopt niet."
 - **Beheerders** staan alleen in die lijst als ze een pincode hebben ingesteld (Instellingen → Pincode voor ander account). Zonder pincode loggen ze opnieuw in met een kaart. Voor een beheerder is het strenger: na de 5e verkeerde pincode verdwijnt het beheerdersaccount van dat apparaat, en na 14 dagen niet gebruiken ook; daarna is weer een kaart nodig. In de Android-app staan beheerders (nog) niet in de lijst.
 
 **Uitloggen**
@@ -321,6 +323,10 @@ Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding
 **Licht of donker:** de website volgt op een nieuw apparaat de instelling **Systeem** van dat apparaat. Na het inloggen kies je via **Account** → **Instellingen** → **Weergave** → **Donker** het donkere thema; die keuze wordt bij je account bewaard.
 
 (Afbeelding: website-ander-account)
+
+**Een naam voor je community:** een beheerder kan de installatie een naam geven, bijvoorbeeld "Club Noord", op de website onder **Beheer** → **Installatie-instellingen** → **Communitynaam**, en klikt op **Naam opslaan**. De apps tonen dan die naam in plaats van het webadres. Maak het veld leeg en sla op om de naam weer weg te halen.
+
+**Tijden uit andere community's:** wie ook in een andere community speelt (een andere club, of een site op internet), kan zijn tijden vanuit de Android-app hierheen meenemen. Een beheerder kiest op de website onder **Beheer** → **Installatie-instellingen** → **Tijden uit andere community's**: **Uit** (standaard: zulke tijden worden geweigerd), **Met goedkeuring** (elke meegenomen tijd blijft onzichtbaar tot een beheerder ernaast op **Publiceren** klikt onder **Beheer** → **Tijdritten**) of **Toegestaan**. Een meegenomen tijd laat altijd zien waar hij vandaan komt.
 
 ## 9. Een toernooiavond
 

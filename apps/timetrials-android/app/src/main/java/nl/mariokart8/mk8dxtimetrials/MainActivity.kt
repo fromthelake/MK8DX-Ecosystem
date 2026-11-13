@@ -39,6 +39,12 @@ import nl.mariokart8.mk8dxtimetrials.auth.androidPlayerLabel
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidNativeSessionStore
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidSlotBoundSessionCanonicalConnectionFactory
 import nl.mariokart8.mk8dxtimetrials.builds.AndroidBuildScreen
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineCopyStore
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineFallbackDataSource
+import nl.mariokart8.mk8dxtimetrials.offline.AndroidOfflineState
+import nl.mariokart8.mk8dxtimetrials.offline.LocalAndroidOfflineState
+import nl.mariokart8.mk8dxtimetrials.offline.androidOfflineCopySource
+import nl.mariokart8.mk8dxtimetrials.offline.refreshAndroidOfflineCopy
 import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarriedQueue
 import nl.mariokart8.mk8dxtimetrials.carry.AndroidCarryHost
 import nl.mariokart8.mk8dxtimetrials.carry.promoteAndroidCarriedTimes
@@ -360,12 +366,46 @@ internal fun AndroidTimeTrialsProductionRoot(
             AndroidCanonicalNotificationSync.enqueueImmediate(applicationContext)
         }
     }
-    val ecosystemClient = remember(nativeSession, apiOrigin, httpsConnectionOpener) {
+    // ADR-0225 amendment: this community's copy of the Player's own times and their rivals' bests, refreshed
+    // whenever the app is opened or comes back while the community answers, and read when it does not.
+    val offlineState = remember { AndroidOfflineState() }
+    val offlineStore = remember(apiOrigin) { AndroidOfflineCopyStore.forOrigin(applicationContext, apiOrigin) }
+    val onlineClient = remember(nativeSession, apiOrigin, httpsConnectionOpener) {
         AndroidTimeTrialsEcosystemClient(
             apiOrigin,
             nativeSession,
             AndroidEcosystemConnectionOpener(httpsConnectionOpener::open),
         )
+    }
+    // The header chip names the active community (its name, else its host).
+    var communityLabel by remember(apiOrigin) { mutableStateOf(AndroidCommunityList.displayNameOf(apiOrigin)) }
+    LaunchedEffect(apiOrigin) {
+        communityLabel = withContext(Dispatchers.IO) {
+            runCatching { androidCommunityChipLabel(AndroidCommunities.list(applicationContext), apiOrigin) }
+                .getOrDefault(communityLabel)
+        }
+    }
+    val ecosystemClient = remember(onlineClient, offlineStore) {
+        AndroidOfflineFallbackDataSource(onlineClient, { offlineStore.readFor(nativeSession?.playerId) }, offlineState)
+    }
+    // The community's own name (public settings), read whenever the app opens or comes back; the chip, tiles
+    // and the You card show it, and the host when there is none.
+    LaunchedEffect(apiOrigin, appIsInFront) {
+        if (!appIsInFront) return@LaunchedEffect
+        withContext(Dispatchers.IO) { AndroidCommunities.refreshName(applicationContext, apiOrigin) }
+        communityLabel = withContext(Dispatchers.IO) {
+            runCatching { androidCommunityChipLabel(AndroidCommunities.list(applicationContext), apiOrigin) }
+                .getOrDefault(communityLabel)
+        }
+    }
+    LaunchedEffect(onlineClient, offlineStore, appIsInFront) {
+        val playerId = nativeSession?.playerId ?: return@LaunchedEffect
+        if (!appIsInFront) return@LaunchedEffect
+        withContext(Dispatchers.IO) {
+            runCatching {
+                refreshAndroidOfflineCopy(offlineStore, androidOfflineCopySource(onlineClient), playerId, System.currentTimeMillis())
+            }
+        }
     }
     // ADR-0205 §4 hydration, at the same moment as the rest of the account:
     // the account value is canonical unless this phone holds a newer explicit
@@ -551,7 +591,10 @@ internal fun AndroidTimeTrialsProductionRoot(
         }
         return
     }
-    CompositionLocalProvider(LocalAndroidProductLanguage provides productLanguage) {
+    CompositionLocalProvider(
+        LocalAndroidProductLanguage provides productLanguage,
+        LocalAndroidOfflineState provides offlineState,
+    ) {
     Mk8dxAppearanceHost(appearanceSettings) {
     AndroidTimeTrialsProductComponent(
         scanResultContent = { _, requestedTrackId, requestedMode, openTestChooser, onRecognized ->
@@ -615,7 +658,8 @@ internal fun AndroidTimeTrialsProductionRoot(
                         .toMap()
                 }.getOrDefault(emptyMap())
             }
-            AndroidCarryHost(apiOrigin, localOutbox) {
+            // Saved on this phone: what waits to be sent (reached from the orange banner and Settings).
+            AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
                 AndroidProductLocalSavedResultsScreen(
                     localOutbox,
                     synchronizationDependencies,
@@ -665,23 +709,23 @@ internal fun AndroidTimeTrialsProductionRoot(
                 notificationTarget?.playerId?.takeIf { it != nativeSession?.playerId },
             )
         },
-        profileContent = { openAccount, openTestScan ->
-            AndroidProfileRecordsScreen(
-                ecosystemClient,
-                nativeSession?.playerId,
-                openAccount,
-                apiOrigin,
-                playerLabel = nativeSession?.let {
-                    androidPlayerLabel(it.displayName, it.playerId)
-                },
-                // Only where the scanner is actually bundled: a build without
-                // it has nothing to test.
-                onRunTestScan = openTestScan
-                    ?.takeIf { BuildConfig.MK8DX_SCAN_RUNTIME_ENABLED },
-                identityLinks = identityLinkClient?.let {
-                    { AndroidIdentityLinkScreen(it) }
-                },
-            )
+        profileContent = { openAccount, openSettings, openSavedResults ->
+            // Carrying from My times uses the same flow as a saved result (ADR-0225 amendment 2).
+            AndroidCarryHost(apiOrigin, localOutbox, nativeSession?.playerId) {
+                AndroidProfileRecordsScreen(
+                    ecosystemClient,
+                    nativeSession?.playerId,
+                    openAccount,
+                    apiOrigin,
+                    playerLabel = nativeSession?.let {
+                        androidPlayerLabel(it.displayName, it.playerId)
+                    },
+                    communityLabel = communityLabel,
+                    unsynchronizedResultCount = unsynchronizedResultCount,
+                    onSavedResults = openSavedResults,
+                    onSettings = openSettings,
+                )
+            }
         },
         myStatsContent = { openAccount, manageResults, openTrack, postTime ->
             AndroidMyStatsScreen(
@@ -700,7 +744,7 @@ internal fun AndroidTimeTrialsProductionRoot(
                 onOpenSavedResults = openSavedResults,
             )
         },
-        settingsContent = { openAccount, openAdministration ->
+        settingsContent = { openAccount, openAdministration, openSavedResults, openTestScan ->
             AndroidSettingsScreen(
                 ecosystemClient,
                 nativeSession?.playerId,
@@ -717,9 +761,13 @@ internal fun AndroidTimeTrialsProductionRoot(
                 administration = administrationClient,
                 onAdministration = openAdministration,
                 onChangeServer = onChangeServer,
+                onSavedResults = openSavedResults,
                 onSwitchCommunity = onSwitchCommunity,
                 appearance = appearanceSettings,
                 onAppearanceChanged = applyAppearance,
+                // Only where the scanner is actually bundled: a build without it has nothing to test.
+                onRunTestScan = openTestScan.takeIf { BuildConfig.MK8DX_SCAN_RUNTIME_ENABLED },
+                unsynchronizedResultCount = unsynchronizedResultCount,
             )
         },
         administrationContent = { back ->
@@ -739,6 +787,15 @@ internal fun AndroidTimeTrialsProductionRoot(
                     onSwitchCommunity = onSwitchCommunity,
                 )
             }
+        },
+        communityLabel = communityLabel,
+        communitySheet = { close ->
+            AndroidCommunityServerPanel(
+                apiOrigin = apiOrigin,
+                language = productLanguage,
+                onSwitch = { chosen -> close(); onSwitchCommunity(chosen) },
+                onAdd = { close(); onChangeServer() },
+            )
         },
         activePlayerLabel = nativeSession?.let {
             androidPlayerLabel(it.displayName, it.playerId)

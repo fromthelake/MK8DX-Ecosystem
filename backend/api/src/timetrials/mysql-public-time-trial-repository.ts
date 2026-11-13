@@ -436,6 +436,37 @@ export class MysqlPublicTimeTrialRepository implements PublicTimeTrialRepository
     return this.attachLaps(rows);
   }
 
+  /**
+   * ADR-0225 amendment: each named Player's best published run per track and class, with laps and
+   * kart setup, for a signed-in Player's offline copy of their rivals. The same public bests the
+   * leaderboards rank (public_eligible), so a private Player's or a withheld run never appears.
+   */
+  public async listBestResultsForPlayers(
+    playerIds: readonly string[],
+  ): Promise<readonly PublicTimeTrialResult[]> {
+    if (playerIds.length === 0) { return []; }
+    const placeholders = playerIds.map(() => "?").join(", ");
+    const [rows] = await this.executor.execute<ResultRow[]>(
+      `${projection}, NULL AS rankValue
+       FROM players AS player
+       STRAIGHT_JOIN time_trial_player_bests AS best ON best.player_id = player.player_id
+       STRAIGHT_JOIN time_trial_publications AS publication
+         ON publication.time_trial_publication_id = best.time_trial_publication_id
+       STRAIGHT_JOIN time_trial_submission_revisions AS revision
+         ON revision.time_trial_submission_revision_id = best.time_trial_submission_revision_id
+       STRAIGHT_JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       STRAIGHT_JOIN player_username_history AS username
+         ON username.player_id = player.player_id AND username.released_at_ms IS NULL
+       WHERE player.public_id IN (${placeholders}) AND player.record_status = 'active'
+         AND best.public_eligible = 1 AND publication.publication_status = 'published'
+       ORDER BY player.public_id ASC, best.track_id ASC, best.mode_cc ASC
+       LIMIT 2000`,
+      [...playerIds],
+    );
+    return this.attachLaps(rows);
+  }
+
   private async attachLaps(rows: ResultRow[]): Promise<readonly PublicTimeTrialResult[]> {
     const partials = rows.map(result);
     if (partials.length === 0) { return []; }

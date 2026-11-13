@@ -291,7 +291,9 @@ integration("installation settings and per-night rating options (ADR-0221)", () 
   });
 
   it("reads the defaults, audits each change and closes the Player-creation path each setting names", async () => {
-    expect(await settings.current()).toEqual({ playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off" });
+    expect(await settings.current()).toEqual({
+      playerCreation: "self_and_directors", ratingEligibility: "all_players", carriedTimes: "off", communityName: null,
+    });
     let view = await settings.administration(admin);
     expect(view.revision).toBe(0);
 
@@ -337,6 +339,20 @@ integration("installation settings and per-night rating options (ADR-0221)", () 
     const [carried] = await pool.execute<RowDataPacket[]>("SELECT carried_times AS carriedTimes FROM installation_settings");
     expect(carried[0]!["carriedTimes"]).toBe("off");
     await expect(pool.execute("UPDATE installation_settings SET carried_times = 'always'")).rejects.toThrow();
+    // Migration 0091: the community name, stored as given (utf8mb4), audited with its old and new value.
+    const named = await settings.administration(admin);
+    await settings.update(admin, { expectedRevision: named.revision, communityName: "  Clube Ñandú ⭐  " });
+    expect((await settings.current()).communityName).toBe("Clube Ñandú ⭐");
+    await settings.update(admin, { expectedRevision: named.revision + 1, communityName: null });
+    expect((await settings.current()).communityName).toBeNull();
+    const [nameChanges] = await pool.execute<RowDataPacket[]>(
+      `SELECT previous_value AS previousValue, new_value AS newValue FROM installation_setting_changes
+       WHERE setting_key = 'community_name' ORDER BY installation_setting_change_id`,
+    );
+    expect(nameChanges.map((row) => [row["previousValue"], row["newValue"]])).toEqual([
+      ["", "Clube Ñandú ⭐"], ["Clube Ñandú ⭐", ""],
+    ]);
+    await expect(pool.execute("UPDATE installation_settings SET community_name = ''")).rejects.toThrow();
   });
 
   it("stores the seeding source next to seed_order and rates a verified-only night for verified Players only", async () => {

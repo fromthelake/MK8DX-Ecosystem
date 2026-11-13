@@ -135,6 +135,33 @@ const submissionResultSchema = {
   },
 } as const;
 
+// ADR-0225 amendment: a carried time that filled the empty fields of an equal run of the Player.
+export const carriedFillResultSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "submissionId", "filledFields"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.carried-fill.v1" },
+    submissionId: {
+      type: "string",
+      pattern: "^user_submission\\.time\\.[A-Za-z0-9][A-Za-z0-9_-]{5,127}$",
+    },
+    filledFields: {
+      type: "array",
+      minItems: 1,
+      maxItems: 10,
+      uniqueItems: true,
+      items: {
+        type: "string",
+        enum: [
+          "characterId", "characterVariantId", "bodyId", "bodyVariantId", "tireId",
+          "gliderId", "gliderVariantId", "laps", "coins", "mushrooms",
+        ],
+      },
+    },
+  },
+} as const;
+
 const submissionQuerySchema = {
   type: "object",
   additionalProperties: false,
@@ -217,6 +244,12 @@ function failure(error: unknown): Readonly<{
   if (error.code === "carried_from_self") {
     return { statusCode: 400, response: { code: "carried_from_self", message: error.message } };
   }
+  if (error.code === "carried_duplicate") {
+    return { statusCode: 409, response: { code: "carried_duplicate", message: error.message } };
+  }
+  if (error.code === "carried_nothing_to_fill") {
+    return { statusCode: 409, response: { code: "carried_nothing_to_fill", message: error.message } };
+  }
   if (error.code === "carried_times_disabled") {
     return { statusCode: 403, response: { code: "carried_times_disabled", message: error.message } };
   }
@@ -257,6 +290,7 @@ export async function registerTimeTrialSubmissionRoutes(
     Reply:
       | TimeTrialSubmissionResult
       | (TimeTrialSubmissionResult & { feedback: SubmissionFeedback })
+      | Readonly<{ schemaVersion: "mk8dx.carried-fill.v1"; submissionId: string; filledFields: string[] }>
       | ErrorResponse;
   }>(
     "/v1/time-trial-submissions",
@@ -266,6 +300,7 @@ export async function registerTimeTrialSubmissionRoutes(
         body: requestObjectSchema,
         querystring: submissionQuerySchema,
         response: {
+          200: carriedFillResultSchema,
           201: submissionResultSchema,
           ...errorResponses,
         },
@@ -340,7 +375,17 @@ export async function registerTimeTrialSubmissionRoutes(
         } else {
           result = await options.service.submit(request.body, {
             publicationIntent: "trusted_runtime",
+            ...(actor.role === "account" || actor.role === "administrator"
+              ? { actorUserAccountId: actor.userAccountId } : {}),
           });
+          // ADR-0225 amendment: an equal run was filled instead of a new one being created.
+          if (result.carriedFill !== undefined) {
+            return reply.code(200).send({
+              schemaVersion: "mk8dx.carried-fill.v1",
+              submissionId: result.submissionId,
+              filledFields: [...result.carriedFill.filledFields],
+            });
+          }
           const requestedVersion = request.query.feedback;
           if ((requestedVersion === SUBMISSION_FEEDBACK_VERSION ||
                requestedVersion === SUBMISSION_FEEDBACK_VERSION_V2) &&

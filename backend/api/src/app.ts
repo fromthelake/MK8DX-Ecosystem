@@ -424,6 +424,9 @@ export type AppDependencies = Readonly<{
     focus: Pick<HomeFocusService, "loadMine">;
     stories: Pick<ActivityStoryService, "listStories">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    rivalBestTimes?: Readonly<{
+      listBestResultsForPlayers(playerIds: readonly string[]): Promise<readonly import("./timetrials/public-time-trial-service.js").PublicTimeTrialResult[]>;
+    }>;
   }>;
   webManualSession?: Readonly<{
     service: Pick<WebManualSessionService, "bootstrap">;
@@ -1063,6 +1066,9 @@ export async function buildApp(
       follows: dependencies.home.follows,
       focus: dependencies.home.focus,
       stories: dependencies.home.stories,
+      ...(dependencies.home.rivalBestTimes === undefined
+        ? {}
+        : { rivalBestTimes: dependencies.home.rivalBestTimes }),
       ...(dependencies.home.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.home.csrfVerifier }),

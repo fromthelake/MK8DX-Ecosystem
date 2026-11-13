@@ -39,18 +39,9 @@ fun Mk8dxAppearanceSection(
     Column(
         modifier
             .fillMaxWidth()
-            .background(colors.surfaceRaised)
-            .border(1.dp, colors.borderSubtle)
-            .padding(Mk8dxSpacing.lg)
             .testTag("settings-appearance"),
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
     ) {
-        Text(
-            t("Appearance", "Weergave"),
-            style = Mk8dxTheme.type.title,
-            color = colors.textPrimary,
-            modifier = Modifier.semantics { heading() },
-        )
         Mk8dxSegmentedControl(
             t("Appearance", "Weergave"),
             listOf(
@@ -130,23 +121,5 @@ fun Mk8dxAppearanceSection(
             style = Mk8dxTheme.type.bodyS,
             color = colors.textSecondary,
         )
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm),
-            modifier = Modifier.testTag("appearance-preview"),
-        ) {
-            Mk8dxChip(
-                when (appearance) {
-                    Mk8dxAppearance.Dark -> t("Dark", "Donker")
-                    Mk8dxAppearance.Light -> t("Light", "Licht")
-                    Mk8dxAppearance.HighContrast -> t("High contrast", "Hoog contrast")
-                },
-                tone = Mk8dxChipTone.Info,
-            )
-            Text(
-                "1:45.912",
-                style = Mk8dxTheme.type.dataM,
-                color = colors.textPrimary,
-            )
-        }
     }
 }

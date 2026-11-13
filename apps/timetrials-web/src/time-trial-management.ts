@@ -186,6 +186,14 @@ export function describeLifecycleEvent(
     : viewerIsOwner
       ? "You"
       : ownerDisplayName;
+  if (lifecycleEvent.eventType === "enriched") {
+    // ADR-0225 amendment: an equal carried time filled fields that were empty; nothing was replaced.
+    const from = (lifecycleEvent.carriedFrom?.origin ?? "").replace(/^https:\/\//, "");
+    return localized(
+      `Empty fields filled from a time carried from ${from}`,
+      `Lege velden aangevuld met een tijd meegenomen van ${from}`,
+    );
+  }
   if (lifecycleEvent.eventType === "published") {
     const note = lifecycleEvent.note === undefined ? "" : ` — “${lifecycleEvent.note}”`;
     return `${localized("An administrator approved and published this result", "Een beheerder heeft dit resultaat goedgekeurd en gepubliceerd")}${note}`;

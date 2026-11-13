@@ -3,14 +3,21 @@ import type { Pool, PoolConnection } from "mysql2/promise";
 
 import {
   TimeTrialSubmissionError,
+  type TimeTrialCarriedFillPlan,
+  type TimeTrialCarriedOriginal,
+  type TimeTrialEqualRun,
+  type TimeTrialLap,
+  type TimeTrialLoadout,
   type TimeTrialRevisionPersistenceInput,
   type TimeTrialSubmissionState,
   type TimeTrialWriteRepository,
   type TimeTrialWriteTransaction,
 } from "./submission-service.js";
 import { publicationRankSnapshots } from "./publication-rank-snapshot.js";
-import { refreshTimeTrialPlayerBestsForPlayers } from
-  "./time-trial-player-bests.js";
+import {
+  refreshTimeTrialPlayerBestsForPlayers,
+  refreshTimeTrialPlayerBestsForRevisions,
+} from "./time-trial-player-bests.js";
 import { enqueueOvertakenNotificationJob } from
   "../notifications/notification-producer-jobs.js";
 
@@ -439,6 +446,286 @@ export class MysqlTimeTrialWriteTransaction implements TimeTrialWriteTransaction
         this.connection,
         [playerInternalId],
       );
+    }
+  }
+
+  // ---------------------------------------------------------------- ADR-0225 amendment
+
+  public async findCarriedOriginal(original: TimeTrialCarriedOriginal): Promise<string | null> {
+    if (original.originalSubmissionId === null) { return null; }
+    const [rows] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT submission.public_id AS submissionId
+       FROM time_trial_carried_originals AS carried
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = carried.time_trial_submission_id
+       WHERE carried.carried_from_origin = ? AND carried.original_submission_id = ?
+       LIMIT 1 FOR UPDATE`,
+      [original.origin, original.originalSubmissionId],
+    );
+    const value = rows[0]?.["submissionId"];
+    return typeof value === "string" ? value : null;
+  }
+
+  public async recordCarriedRun(
+    original: TimeTrialCarriedOriginal,
+    submissionId: string,
+    nowMs: number,
+  ): Promise<void> {
+    const submissionInternalId = await this.findInternalSubmissionId(submissionId);
+    // A later revision of the same carried submission keeps the record of its first one.
+    const [existing] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT 1 AS present FROM time_trial_carried_originals
+       WHERE time_trial_submission_id = ? AND disposition = 'run' LIMIT 1`,
+      [submissionInternalId],
+    );
+    if (existing.length > 0) { return; }
+    const [revisions] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT MAX(time_trial_submission_revision_id) AS revisionInternalId
+       FROM time_trial_submission_revisions WHERE time_trial_submission_id = ?`,
+      [submissionInternalId],
+    );
+    await this.insertCarriedOriginal(
+      original, submissionInternalId,
+      safeInteger(revisions[0]?.["revisionInternalId"], "carried revision id", 1),
+      null, nowMs,
+    );
+  }
+
+  public async findEqualActiveRunForUpdate(input: Readonly<{
+    playerId: string; trackId: string; mode: 150 | 200; totalTimeMs: number; excludingSubmissionId: string;
+  }>): Promise<TimeTrialEqualRun | null> {
+    const [rows] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT submission.public_id AS submissionId,
+              revision.time_trial_submission_revision_id AS revisionInternalId,
+              revision.revision_number AS revisionNumber,
+              revision.character_id AS characterId, revision.character_variant_id AS characterVariantId,
+              revision.body_id AS bodyId, revision.body_variant_id AS bodyVariantId,
+              revision.tire_id AS tireId, revision.glider_id AS gliderId,
+              revision.glider_variant_id AS gliderVariantId
+       FROM time_trial_publications AS publication
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = publication.time_trial_submission_id
+       INNER JOIN time_trial_submission_revisions AS revision
+         ON revision.time_trial_submission_revision_id = publication.current_revision_id
+       INNER JOIN players AS player ON player.player_id = revision.player_id
+       WHERE player.public_id = ? AND revision.track_id = ? AND revision.mode_cc = ?
+         AND revision.total_time_ms = ? AND submission.retirement_state = 'active'
+         AND submission.public_id <> ?
+       ORDER BY submission.time_trial_submission_id ASC
+       LIMIT 1 FOR UPDATE`,
+      [input.playerId, input.trackId, input.mode, input.totalTimeMs, input.excludingSubmissionId],
+    );
+    const row = rows[0];
+    if (row === undefined) { return null; }
+    const loadout: Record<string, string> = {};
+    for (const key of ["characterId", "characterVariantId", "bodyId", "bodyVariantId", "tireId", "gliderId", "gliderVariantId"]) {
+      const value = row[key];
+      if (typeof value === "string" && value.length > 0) { loadout[key] = value; }
+    }
+    const [lapRows] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT lap_number AS lapNumber, time_ms AS timeMs, coins_collected AS coinsCollected,
+              mushrooms_used AS mushroomsUsed, confidence
+       FROM time_trial_laps WHERE time_trial_submission_revision_id = ? ORDER BY lap_number ASC`,
+      [safeInteger(row["revisionInternalId"], "revision id", 1)],
+    );
+    const laps: TimeTrialLap[] = lapRows.map((lap) => ({
+      lapNumber: safeInteger(lap["lapNumber"], "lap number", 1),
+      timeMs: safeInteger(lap["timeMs"], "lap time", 1),
+      ...(lap["coinsCollected"] === null ? {} : { coinsCollected: safeInteger(lap["coinsCollected"], "coins", 0) }),
+      ...(lap["mushroomsUsed"] === null ? {} : { mushroomsUsed: safeInteger(lap["mushroomsUsed"], "mushrooms", 0) }),
+      ...(lap["confidence"] === null || lap["confidence"] === undefined ? {} : { confidence: Number(lap["confidence"]) }),
+    }));
+    return {
+      submissionId: String(row["submissionId"]),
+      revision: safeInteger(row["revisionNumber"], "revision", 1),
+      loadout: loadout as TimeTrialLoadout,
+      laps,
+    };
+  }
+
+  /**
+   * The filled revision (N -> N+1) of the equal run: the current revision copied with its empty
+   * fields filled, the publication moved to it with its status, origin, reason and rank unchanged
+   * (the time is the same), the Player's bests refreshed, an "enriched" lifecycle event under the
+   * sending account and the carried original recorded against the new revision.
+   */
+  public async fillEqualRun(input: Readonly<{
+    run: TimeTrialEqualRun;
+    plan: TimeTrialCarriedFillPlan;
+    original: TimeTrialCarriedOriginal;
+    actorUserAccountId: string;
+  }>): Promise<number> {
+    const nowMs = this.clock.nowMs();
+    const [current] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT submission.time_trial_submission_id AS submissionInternalId,
+              publication.time_trial_publication_id AS publicationInternalId,
+              publication.current_revision_id AS revisionInternalId,
+              publication.publication_status AS publicationStatus,
+              publication.publication_origin AS publicationOrigin,
+              publication.reason_code AS reasonCode,
+              publication.rank_at_publication AS rankAtPublication,
+              revision.revision_number AS revisionNumber,
+              (SELECT MAX(latest.revision_number) FROM time_trial_submission_revisions AS latest
+                WHERE latest.time_trial_submission_id = submission.time_trial_submission_id) AS latestRevision
+       FROM time_trial_submissions AS submission
+       INNER JOIN time_trial_publications AS publication
+         ON publication.time_trial_submission_id = submission.time_trial_submission_id
+       INNER JOIN time_trial_submission_revisions AS revision
+         ON revision.time_trial_submission_revision_id = publication.current_revision_id
+       WHERE submission.public_id = ? AND submission.retirement_state = 'active'
+       LIMIT 1 FOR UPDATE`,
+      [input.run.submissionId],
+    );
+    const row = current[0];
+    if (row === undefined || safeInteger(row["revisionNumber"], "revision", 1) !== input.run.revision) {
+      throw new TimeTrialSubmissionError("revision_conflict", "the equal run changed meanwhile");
+    }
+    const submissionInternalId = safeInteger(row["submissionInternalId"], "submission id", 1);
+    const previousRevisionId = safeInteger(row["revisionInternalId"], "revision id", 1);
+    const nextRevision = safeInteger(row["latestRevision"], "latest revision", 1) + 1;
+    const loadout = input.plan.loadout;
+    const [inserted] = await this.connection.execute<ResultSetHeader>(
+      `INSERT INTO time_trial_submission_revisions (
+         time_trial_submission_id, revision_number, schema_version, mode_cc,
+         track_id, total_time_ms, participant_reference_kind, player_id,
+         observed_player_name, character_id, character_variant_id, body_id,
+         body_variant_id, tire_id, glider_id, glider_variant_id, country_id,
+         source_kind, producer_version, local_record_id, occurred_at_ms,
+         captured_at_ms, created_at_ms, submitted_at_ms, verification_status,
+         verification_method, corrected_fields_json,
+         verification_lap_sum_matches, verification_confidence,
+         confidence_total_time, confidence_track, confidence_character,
+         confidence_character_variant, confidence_body, confidence_tire,
+         confidence_glider, confidence_country, confidence_player_name,
+         carried_from_origin, carried_from_name,
+         carried_original_submission_id, carried_original_submitted_at_ms
+       ) SELECT time_trial_submission_id, ?, schema_version, mode_cc,
+           track_id, total_time_ms, participant_reference_kind, player_id,
+           observed_player_name, ?, ?, ?, ?, ?, ?, ?, country_id,
+           source_kind, producer_version, local_record_id, occurred_at_ms,
+           captured_at_ms, ?, submitted_at_ms, verification_status,
+           verification_method, corrected_fields_json,
+           verification_lap_sum_matches, verification_confidence,
+           confidence_total_time, confidence_track, confidence_character,
+           confidence_character_variant, confidence_body, confidence_tire,
+           confidence_glider, confidence_country, confidence_player_name,
+           carried_from_origin, carried_from_name,
+           carried_original_submission_id, carried_original_submitted_at_ms
+         FROM time_trial_submission_revisions
+         WHERE time_trial_submission_revision_id = ?`,
+      [
+        nextRevision,
+        loadout.characterId ?? null, loadout.characterVariantId ?? null, loadout.bodyId ?? null,
+        loadout.bodyVariantId ?? null, loadout.tireId ?? null, loadout.gliderId ?? null,
+        loadout.gliderVariantId ?? null,
+        nowMs, previousRevisionId,
+      ],
+    );
+    this.requireSingleInsert(inserted, "filled Time Trial revision");
+    const revisionInternalId = inserted.insertId;
+    await this.connection.execute(
+      `INSERT INTO time_trial_submission_capture_layouts (time_trial_submission_revision_id, capture_layout)
+       SELECT ?, capture_layout FROM time_trial_submission_capture_layouts
+       WHERE time_trial_submission_revision_id = ?`,
+      [revisionInternalId, previousRevisionId],
+    );
+    for (const lap of input.plan.laps) {
+      const [lapResult] = await this.connection.execute<ResultSetHeader>(
+        `INSERT INTO time_trial_laps (
+           time_trial_submission_revision_id, lap_number, time_ms,
+           coins_collected, mushrooms_used, confidence
+         ) VALUES (?, ?, ?, ?, ?, ?)`,
+        [
+          revisionInternalId, lap.lapNumber, lap.timeMs,
+          lap.coinsCollected ?? null, lap.mushroomsUsed ?? null, lap.confidence ?? null,
+        ],
+      );
+      this.requireSingleInsert(lapResult, "filled Time Trial lap");
+    }
+    // The publication follows the new revision; its status, origin, reason and rank stay: the time
+    // and every ranking are the same.
+    const publicationInternalId = safeInteger(row["publicationInternalId"], "publication id", 1);
+    await this.connection.execute(
+      `UPDATE time_trial_publications
+       SET current_revision_id = ?, publication_revision = publication_revision + 1, updated_at_ms = ?
+       WHERE time_trial_publication_id = ?`,
+      [revisionInternalId, nowMs, publicationInternalId],
+    );
+    const [publication] = await this.connection.execute<PublicationRevisionRow[]>(
+      `SELECT publication_revision AS publicationRevision FROM time_trial_publications
+       WHERE time_trial_publication_id = ? LIMIT 1 FOR UPDATE`,
+      [publicationInternalId],
+    );
+    const published = row["publicationStatus"] === "published";
+    await this.connection.execute(
+      `INSERT INTO time_trial_publication_lifecycle (
+         time_trial_publication_id, sequence_number, time_trial_submission_revision_id, event_type,
+         publication_status_after, publication_origin, reason_code, rank_at_publication, occurred_at_ms
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        publicationInternalId,
+        safeInteger(publication[0]?.publicationRevision, "publication revision", 1),
+        revisionInternalId,
+        published ? "revision_published" : "revision_withheld",
+        published ? "published" : "withheld",
+        row["publicationOrigin"], row["reasonCode"],
+        published ? row["rankAtPublication"] ?? null : null,
+        nowMs,
+      ],
+    );
+    await refreshTimeTrialPlayerBestsForRevisions(this.connection, [revisionInternalId]);
+    const [accounts] = await this.connection.execute<InternalIdRow[]>(
+      "SELECT user_account_id AS internalId FROM user_accounts WHERE public_id = ? LIMIT 1",
+      [input.actorUserAccountId],
+    );
+    const account = singleRow(accounts, "carrying account");
+    if (account === null) {
+      throw new TimeTrialSubmissionError("invalid_submission", "the carrying account was not found");
+    }
+    await this.connection.execute(
+      `INSERT INTO time_trial_lifecycle_events (
+         time_trial_submission_id, sequence_number, event_type,
+         retirement_state_after, time_trial_submission_revision_id,
+         actor_role, actor_user_account_id, reason_code, note, occurred_at_ms
+       ) SELECT ?, COALESCE(MAX(sequence_number), 0) + 1, 'enriched', 'active', ?, 'owner', ?,
+                'carried_fill', NULL, ?
+         FROM time_trial_lifecycle_events WHERE time_trial_submission_id = ?`,
+      [
+        submissionInternalId, revisionInternalId,
+        safeInteger(account.internalId, "account id", 1), nowMs, submissionInternalId,
+      ],
+    );
+    await this.insertCarriedOriginal(
+      input.original, submissionInternalId, revisionInternalId,
+      JSON.stringify(input.plan.filledFields), nowMs,
+    );
+    return nextRevision;
+  }
+
+  private async insertCarriedOriginal(
+    original: TimeTrialCarriedOriginal,
+    submissionInternalId: number,
+    revisionInternalId: number,
+    filledFieldsJson: string | null,
+    nowMs: number,
+  ): Promise<void> {
+    try {
+      await this.connection.execute(
+        `INSERT INTO time_trial_carried_originals (
+           carried_from_origin, original_submission_id, time_trial_submission_id,
+           time_trial_submission_revision_id, disposition, filled_fields_json, created_at_ms
+         ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          original.origin, original.originalSubmissionId, submissionInternalId, revisionInternalId,
+          filledFieldsJson === null ? "run" : "fill", filledFieldsJson, nowMs,
+        ],
+      );
+    } catch (error) {
+      // The unique key on (origin, original id): another request carried the same original meanwhile.
+      if (isDuplicateKeyError(error)) {
+        throw new TimeTrialSubmissionError("carried_duplicate", "This time was already carried here.");
+      }
+      throw error;
     }
   }
 

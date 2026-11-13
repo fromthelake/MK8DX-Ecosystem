@@ -153,7 +153,9 @@ internal class AndroidExplicitCanonicalOutboxDeliveryCoordinator(
                 entryKey,
                 stateRevision,
                 attemptedAtMs,
-                response["feedback"] as? JsonObject,
+                // ADR-0225 amendment 3: a carried copy that was already there, or that filled empty fields of
+                // an equal run, is done; what happened is kept beside the state instead of the site's feedback.
+                (response["feedback"] ?: response["carried"]) as? JsonObject,
             )
         }
     }
@@ -169,7 +171,9 @@ internal class AndroidExplicitCanonicalOutboxDeliveryCoordinator(
     }
 
     private fun acknowledges(response: JsonObject, submission: JsonObject): Boolean =
-        response.keys - setOf("feedback") == setOf("submissionId", "revision") &&
+        response.keys - setOf("feedback", "carried") == setOf("submissionId", "revision") &&
+            !(response.containsKey("feedback") && response.containsKey("carried")) &&
+            (response["carried"] == null || androidCarriedOutcomeOrNull(response["carried"]) != null) &&
             (response["feedback"] == null || androidSubmissionFeedbackOrNull(response["feedback"]) != null) &&
             response.stringValue("submissionId") == submission.stringValue("submissionId") &&
             response.integerValue("revision") == submission.integerValue("revision")

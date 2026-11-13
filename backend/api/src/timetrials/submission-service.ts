@@ -223,6 +223,35 @@ export type TimeTrialRevisionPersistenceInput = Readonly<{
 
 export type TimeTrialSubmissionContext = Readonly<{
   publicationIntent: "trusted_runtime" | "explicit_review_required";
+  /** The signed-in account sending it; a carried fill is audited under it (ADR-0225 amendment). */
+  actorUserAccountId?: string;
+}>;
+
+/** An active run of the same Player with the same track, class and time as a carried one. */
+export type TimeTrialEqualRun = Readonly<{
+  submissionId: string;
+  revision: number;
+  loadout: TimeTrialLoadout;
+  laps: readonly TimeTrialLap[];
+}>;
+
+/** What filling the empty fields of an equal run changes (ADR-0225 amendment). */
+export type TimeTrialCarriedFillPlan = Readonly<{
+  filledFields: readonly TimeTrialFilledField[];
+  /** The whole kart setup after filling (present parts kept, empty parts filled). */
+  loadout: TimeTrialLoadout;
+  /** The whole lap list after filling. */
+  laps: readonly TimeTrialLap[];
+}>;
+
+export type TimeTrialFilledField =
+  | "characterId" | "characterVariantId" | "bodyId" | "bodyVariantId" | "tireId"
+  | "gliderId" | "gliderVariantId" | "laps" | "coins" | "mushrooms";
+
+/** Where a carried time came from, as this installation records it (origin normalised). */
+export type TimeTrialCarriedOriginal = Readonly<{
+  origin: string;
+  originalSubmissionId: string | null;
 }>;
 
 export type TimeTrialSubmissionState = Readonly<{
@@ -237,6 +266,23 @@ export interface TimeTrialWriteTransaction {
   findActiveHumanPlayerForUpdate(playerId: string): Promise<boolean>;
   insertSubmission(submissionId: string, firstCreatedAtMs: number): Promise<void>;
   insertRevision(input: TimeTrialRevisionPersistenceInput): Promise<void>;
+  // ADR-0225 amendment. Optional so stores without carried originals (tests, the scan-test path)
+  // keep working; the MySQL store implements all three.
+  /** The submission an original was already accepted as (run or fill), or null. */
+  findCarriedOriginal?(original: TimeTrialCarriedOriginal): Promise<string | null>;
+  /** Records the original as the run just inserted; carried_duplicate when it was taken meanwhile. */
+  recordCarriedRun?(original: TimeTrialCarriedOriginal, submissionId: string, nowMs: number): Promise<void>;
+  /** The oldest active run of the Player with the same track, class and time, locked. */
+  findEqualActiveRunForUpdate?(input: Readonly<{
+    playerId: string; trackId: string; mode: 150 | 200; totalTimeMs: number; excludingSubmissionId: string;
+  }>): Promise<TimeTrialEqualRun | null>;
+  /** Writes the filled revision of the equal run, keeps its publication, audits and records the original. */
+  fillEqualRun?(input: Readonly<{
+    run: TimeTrialEqualRun;
+    plan: TimeTrialCarriedFillPlan;
+    original: TimeTrialCarriedOriginal;
+    actorUserAccountId: string;
+  }>): Promise<number>;
 }
 
 export interface TimeTrialWriteRepository {
@@ -248,6 +294,8 @@ export interface TimeTrialWriteRepository {
 export type TimeTrialSubmissionResult = Readonly<{
   submissionId: string;
   revision: number;
+  /** Present when a carried time filled the empty fields of an equal existing run instead. */
+  carriedFill?: Readonly<{ filledFields: readonly TimeTrialFilledField[] }>;
 }>;
 
 export type TimeTrialSubmissionErrorCode =
@@ -258,7 +306,9 @@ export type TimeTrialSubmissionErrorCode =
   | "protection_failed"
   | "implausible_time"
   | "carried_times_disabled"
-  | "carried_from_self";
+  | "carried_from_self"
+  | "carried_duplicate"
+  | "carried_nothing_to_fill";
 
 export class TimeTrialSubmissionError extends Error {
   public constructor(
@@ -690,6 +740,41 @@ export class TimeTrialSubmissionService {
         !(await transaction.findActiveHumanPlayerForUpdate(playerId))) {
         throw new TimeTrialSubmissionError("player_not_found", "active Player was not found");
       }
+      const original: TimeTrialCarriedOriginal | null = input.carriedFrom === undefined ? null : {
+        origin: normalizedOrigin(input.carriedFrom.origin) ?? input.carriedFrom.origin,
+        originalSubmissionId: input.carriedFrom.originalSubmissionId ?? null,
+      };
+      // ADR-0225 amendment: the same original twice is refused, wherever it went the first time.
+      if (original?.originalSubmissionId !== null && original !== null &&
+          transaction.findCarriedOriginal !== undefined) {
+        const taken = await transaction.findCarriedOriginal(original);
+        if (taken !== null && taken !== input.submissionId) {
+          throw new TimeTrialSubmissionError("carried_duplicate", "This time was already carried here.");
+        }
+      }
+      // An equal run of the same Player is not repeated: only its empty fields are filled.
+      if (original !== null && current === null && playerId !== null &&
+          transaction.findEqualActiveRunForUpdate !== undefined && transaction.fillEqualRun !== undefined) {
+        const equal = await transaction.findEqualActiveRunForUpdate({
+          playerId, trackId: input.trackId, mode: input.mode, totalTimeMs: input.totalTimeMs,
+          excludingSubmissionId: input.submissionId,
+        });
+        if (equal !== null) {
+          const plan = planCarriedFill(equal, input);
+          if (plan.filledFields.length === 0) {
+            throw new TimeTrialSubmissionError(
+              "carried_nothing_to_fill", "This time is already here with everything it records.",
+            );
+          }
+          if (context.actorUserAccountId === undefined) {
+            throw new TimeTrialSubmissionError("invalid_submission", "a carried fill needs a signed-in account");
+          }
+          const revision = await transaction.fillEqualRun({
+            run: equal, plan, original, actorUserAccountId: context.actorUserAccountId,
+          });
+          return { submissionId: equal.submissionId, revision, carriedFill: { filledFields: plan.filledFields } };
+        }
+      }
       if (current === null) {
         await transaction.insertSubmission(input.submissionId, input.timestamps.createdAtMs);
       }
@@ -708,6 +793,9 @@ export class TimeTrialSubmissionService {
               ? "producer_verification_withheld"
               : "runtime_eligible",
       });
+      if (original !== null && transaction.recordCarriedRun !== undefined) {
+        await transaction.recordCarriedRun(original, input.submissionId, input.timestamps.createdAtMs);
+      }
       return { submissionId: input.submissionId, revision: input.revision };
     });
   }
@@ -736,4 +824,61 @@ export class TimeTrialSubmissionService {
     }
     return policy;
   }
+}
+
+const fillableParts: readonly (readonly [keyof TimeTrialLoadout, (keyof TimeTrialLoadout) | null])[] = [
+  ["characterId", "characterVariantId"],
+  ["bodyId", "bodyVariantId"],
+  ["tireId", null],
+  ["gliderId", "gliderVariantId"],
+];
+
+/**
+ * ADR-0225 amendment: which empty fields of an equal run a carried time fills. A present value is
+ * never replaced. A part is filled when it is empty; a colour variant only when its base part is the
+ * carried one (filled now or already equal). Laps: the whole list when the run has none; otherwise,
+ * when both lists have the same lap times, each lap's missing coins and mushrooms (mushrooms only
+ * while the race stays within three).
+ */
+export function planCarriedFill(existing: TimeTrialEqualRun, carried: TimeTrialSubmissionV1): TimeTrialCarriedFillPlan {
+  const filled: TimeTrialFilledField[] = [];
+  const loadout: Record<string, string> = { ...existing.loadout };
+  const incoming = carried.loadout ?? {};
+  for (const [base, variant] of fillableParts) {
+    const carriedBase = incoming[base];
+    if (loadout[base] === undefined && carriedBase !== undefined) {
+      loadout[base] = carriedBase;
+      filled.push(base as TimeTrialFilledField);
+    }
+    if (variant !== null && carriedBase !== undefined && loadout[variant] === undefined &&
+        incoming[variant] !== undefined && loadout[base] === carriedBase) {
+      loadout[variant] = incoming[variant]!;
+      filled.push(variant as TimeTrialFilledField);
+    }
+  }
+  let laps: TimeTrialLap[] = existing.laps.map((lap) => ({ ...lap }));
+  if (existing.laps.length === 0 && carried.laps.length > 0) {
+    laps = carried.laps.map(({ confidence: _confidence, ...lap }) => ({ ...lap }));
+    filled.push("laps");
+  } else if (existing.laps.length > 0 && existing.laps.length === carried.laps.length &&
+      existing.laps.every((lap, index) => lap.timeMs === carried.laps[index]!.timeMs)) {
+    const coins = laps.map((lap, index) => lap.coinsCollected === undefined &&
+      carried.laps[index]!.coinsCollected !== undefined);
+    if (coins.some(Boolean)) {
+      laps = laps.map((lap, index) => coins[index]
+        ? { ...lap, coinsCollected: carried.laps[index]!.coinsCollected! } : lap);
+      filled.push("coins");
+    }
+    const mushrooms = laps.map((lap, index) => lap.mushroomsUsed === undefined &&
+      carried.laps[index]!.mushroomsUsed !== undefined);
+    if (mushrooms.some(Boolean)) {
+      const after = laps.map((lap, index) => mushrooms[index]
+        ? { ...lap, mushroomsUsed: carried.laps[index]!.mushroomsUsed! } : lap);
+      if (after.reduce((sum, lap) => sum + (lap.mushroomsUsed ?? 0), 0) <= 3) {
+        laps = after;
+        filled.push("mushrooms");
+      }
+    }
+  }
+  return { filledFields: filled, loadout: loadout as TimeTrialLoadout, laps };
 }

@@ -21,12 +21,17 @@ export type InstallationSettings = Readonly<{
   playerCreation: PlayerCreationPolicy;
   ratingEligibility: RatingEligibilityPolicy;
   carriedTimes: CarriedTimesPolicy;
+  /** The name the apps show instead of the web address; null = not set. */
+  communityName: string | null;
 }>;
+
+export const COMMUNITY_NAME_MAXIMUM = 60;
 
 export const DEFAULT_INSTALLATION_SETTINGS: InstallationSettings = {
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
   carriedTimes: "off",
+  communityName: null,
 };
 
 export type RatingRecomputeStatus = Readonly<{
@@ -83,6 +88,8 @@ export interface InstallationSettingsClient {
     playerCreation?: PlayerCreationPolicy;
     ratingEligibility?: RatingEligibilityPolicy;
     carriedTimes?: CarriedTimesPolicy;
+    /** A name, or null to clear it. */
+    communityName?: string | null;
   }>, signal?: AbortSignal): Promise<InstallationSettingsAdministration>;
   recomputeRatings(signal?: AbortSignal): Promise<InstallationRatingRecompute>;
   /** Publishes or refuses every carried run still waiting; expectedCount is the number on screen. */
@@ -102,8 +109,17 @@ function object(value: unknown): Record<string, unknown> {
   return value as Record<string, unknown>;
 }
 
-function exact(value: Record<string, unknown>, keys: readonly string[]): void {
-  if (Object.keys(value).length !== keys.length || keys.some((key) => !(key in value))) { fail(); }
+function exact(value: Record<string, unknown>, keys: readonly string[], optional: readonly string[] = []): void {
+  const present = Object.keys(value);
+  if (keys.some((key) => !(key in value)) ||
+      present.some((key) => !keys.includes(key) && !optional.includes(key))) { fail(); }
+}
+
+// Missing (an older server) or null both mean "no name".
+function communityName(value: unknown): string | null {
+  if (value === undefined || value === null) { return null; }
+  if (typeof value !== "string" || value.length === 0 || Array.from(value).length > COMMUNITY_NAME_MAXIMUM) { fail(); }
+  return value;
 }
 
 function count(value: unknown): number {
@@ -138,12 +154,13 @@ function carriedTimes(value: unknown): CarriedTimesPolicy {
 
 function settingsDocument(value: unknown): InstallationSettings {
   const row = object(value);
-  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"]);
+  exact(row, ["schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes"], ["communityName"]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings.v1") { fail(); }
   return {
     playerCreation: playerCreation(row["playerCreation"]),
     ratingEligibility: ratingEligibility(row["ratingEligibility"]),
     carriedTimes: carriedTimes(row["carriedTimes"]),
+    communityName: communityName(row["communityName"]),
   };
 }
 
@@ -163,12 +180,13 @@ function administrationDocument(value: unknown): InstallationSettingsAdministrat
   exact(row, [
     "schemaVersion", "playerCreation", "ratingEligibility", "carriedTimes", "revision", "updatedAtMs",
     "carriedTimesAwaitingReview", "ratingRecompute",
-  ]);
+  ], ["communityName"]);
   if (row["schemaVersion"] !== "mk8dx.installation-settings-administration.v1") { fail(); }
   return {
     playerCreation: playerCreation(row["playerCreation"]),
     ratingEligibility: ratingEligibility(row["ratingEligibility"]),
     carriedTimes: carriedTimes(row["carriedTimes"]),
+    communityName: communityName(row["communityName"]),
     revision: count(row["revision"]),
     updatedAtMs: row["updatedAtMs"] === null ? null : count(row["updatedAtMs"]),
     carriedTimesAwaitingReview: count(row["carriedTimesAwaitingReview"]),
@@ -273,6 +291,7 @@ export function createInstallationSettingsClient(
         ...(input.playerCreation === undefined ? {} : { playerCreation: input.playerCreation }),
         ...(input.ratingEligibility === undefined ? {} : { ratingEligibility: input.ratingEligibility }),
         ...(input.carriedTimes === undefined ? {} : { carriedTimes: input.carriedTimes }),
+        ...(input.communityName === undefined ? {} : { communityName: input.communityName }),
       }, signal));
     },
     async recomputeRatings(signal) { return recomputeDocument(await post(INSTALLATION_RECOMPUTE_PATH, {}, signal)); },

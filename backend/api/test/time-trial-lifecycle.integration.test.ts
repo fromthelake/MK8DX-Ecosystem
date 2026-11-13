@@ -48,7 +48,7 @@ const strangerAccountId = "user_account.synthetic_lifecycle_stranger";
 const claimId = "player_claim.synthetic_lifecycle_01";
 const submissionId = "user_submission.time.SYNTHETICLIFECYCLE01";
 // ADR-0225: carried runs of the same Player, set to waiting for review the real way.
-const extraSubmissionIds = [2, 3, 4, 5, 6].map((n) => `user_submission.time.SYNTHETICLIFECYCLE0${n}`);
+const extraSubmissionIds = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((n) => `user_submission.time.SYNTHETICLIFECYCLE0${n}`);
 const trackId = "track.synthetic_lifecycle_track";
 
 const owner = { role: "account" as const, userAccountId: accountId };
@@ -475,5 +475,102 @@ integration("owner and administrator Time Trial lifecycle", () => {
     expect(await leaderboardTimes()).toEqual([84_000]);
     expect((await lifecycle.readOwnedOrAdministered(administrator, extraSubmissionIds[3]!)).publicationStatus)
       .toBe("withheld");
+  });
+
+  // ADR-0225 amendment: the same carried time twice.
+  it("fills only the empty fields of an equal run and refuses the same original twice", async () => {
+    const local = new TimeTrialSubmissionService(
+      new MysqlTimeTrialWriteRepository(pool, { nowMs: () => 1_900_000_700_000 }),
+      new AcceptingCatalog(),
+      new UnusedProtector(),
+    );
+    // A run typed without laps or a kart setup.
+    await local.submit({
+      ...submission(), submissionId: extraSubmissionIds[5]!, totalTimeMs: 83_000, laps: [],
+      timestamps: { createdAtMs: 1_900_000_700_000 },
+    }, { publicationIntent: "trusted_runtime" });
+    const before = await lifecycle.readOwnedOrAdministered(owner, extraSubmissionIds[5]!);
+    expect(before.publicationStatus).toBe("published");
+    const shown = await leaderboardTimes();
+    const withOriginal = (id: string, originalSubmissionId: string, totalTimeMs = 83_000): TimeTrialSubmissionV1 => ({
+      ...carriedSubmission(id, totalTimeMs),
+      loadout: { characterId: "character.yoshi", bodyId: "body.mr_scooty" },
+      carriedFrom: { origin: "https://club.example.org", originalSubmissionId, originalSubmittedAtMs: 1_890_000_000_000 },
+    });
+    const filled = await reviewWrites().submit(
+      withOriginal(extraSubmissionIds[6]!, "user_submission.time.SYNTHETICORIGINFILL1"),
+      { publicationIntent: "trusted_runtime", actorUserAccountId: accountId },
+    );
+    expect(filled).toEqual({
+      submissionId: extraSubmissionIds[5], revision: 2,
+      carriedFill: { filledFields: ["characterId", "bodyId", "laps"] },
+    });
+    const after = await lifecycle.readOwnedOrAdministered(owner, extraSubmissionIds[5]!);
+    expect(after).toMatchObject({
+      publicationStatus: before.publicationStatus, publicationReason: before.publicationReason,
+      current: {
+        revision: 2, totalTimeMs: 83_000, laps: [23_000, 30_000, 30_000],
+        loadout: { characterId: "character.yoshi", bodyId: "body.mr_scooty" },
+      },
+    });
+    expect(after.carriedFrom).toBeUndefined();
+    expect(after.events.at(-1)).toMatchObject({
+      eventType: "enriched", actorRole: "owner", reasonCode: "carried_fill", revision: 2,
+      carriedFrom: { origin: "https://club.example.org", originalSubmissionId: "user_submission.time.SYNTHETICORIGINFILL1" },
+      filledFields: ["characterId", "bodyId", "laps"],
+    });
+    // No second run and the same rankings.
+    await expect(lifecycle.readOwnedOrAdministered(owner, extraSubmissionIds[6]!)).rejects.toMatchObject({ code: "not_found" });
+    expect(await leaderboardTimes()).toEqual(shown);
+
+    // The same original again, and another original with nothing left to fill.
+    await expect(reviewWrites().submit(
+      withOriginal(extraSubmissionIds[7]!, "user_submission.time.SYNTHETICORIGINFILL1"),
+      { publicationIntent: "trusted_runtime", actorUserAccountId: accountId },
+    )).rejects.toMatchObject({ code: "carried_duplicate" });
+    await expect(reviewWrites().submit(
+      withOriginal(extraSubmissionIds[7]!, "user_submission.time.SYNTHETICORIGINFILL2"),
+      { publicationIntent: "trusted_runtime", actorUserAccountId: accountId },
+    )).rejects.toMatchObject({ code: "carried_nothing_to_fill" });
+
+    // A carried time with no equal run becomes a run; its original is then taken too.
+    await reviewWrites().submit(
+      withOriginal(extraSubmissionIds[8]!, "user_submission.time.SYNTHETICORIGINRUN1", 82_500),
+      { publicationIntent: "trusted_runtime", actorUserAccountId: accountId },
+    );
+    await expect(reviewWrites().submit(
+      withOriginal(extraSubmissionIds[9]!, "user_submission.time.SYNTHETICORIGINRUN1", 82_600),
+      { publicationIntent: "trusted_runtime", actorUserAccountId: accountId },
+    )).rejects.toMatchObject({ code: "carried_duplicate" });
+    const [records] = await pool.execute<any[]>(
+      `SELECT carried.disposition AS disposition, carried.original_submission_id AS originalId
+       FROM time_trial_carried_originals AS carried
+       INNER JOIN time_trial_submissions AS submission
+         ON submission.time_trial_submission_id = carried.time_trial_submission_id
+       WHERE submission.public_id IN (?, ?) ORDER BY carried.time_trial_carried_original_id`,
+      [extraSubmissionIds[5]!, extraSubmissionIds[8]!],
+    );
+    expect(records).toEqual([
+      { disposition: "fill", originalId: "user_submission.time.SYNTHETICORIGINFILL1" },
+      { disposition: "run", originalId: "user_submission.time.SYNTHETICORIGINRUN1" },
+    ]);
+  });
+
+  it("serves the offline copy: own runs in pages and rivals' public bests (ADR-0225 amendment)", async () => {
+    const all = await lifecycle.listOwn(owner, 200, 0);
+    expect(all.length).toBeGreaterThan(3);
+    const page = await lifecycle.listOwn(owner, 2, 1);
+    expect(page.map((item) => item.submissionId)).toEqual(all.slice(1, 3).map((item) => item.submissionId));
+    expect(all.some((item) => item.current.occurredAtMs !== undefined || item.current.createdAtMs > 0)).toBe(true);
+
+    const bests = await publicRepository.listBestResultsForPlayers([playerId]);
+    expect(bests).toHaveLength(1);
+    expect(bests[0]).toMatchObject({ playerId, trackId, mode: 150 });
+    expect(bests[0]!.totalTimeMs).toBe(Math.min(...(await leaderboardTimes())));
+    // A Private Player's times never leave the server this way.
+    await visibility.setOwn(owner, "private");
+    expect(await publicRepository.listBestResultsForPlayers([playerId])).toEqual([]);
+    await visibility.setOwn(owner, "public");
+    expect(await publicRepository.listBestResultsForPlayers([playerId])).toHaveLength(1);
   });
 });

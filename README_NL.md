@@ -223,6 +223,11 @@ De apps eromheen:
 **Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
 Daarna log je in via de browser. Details: [Spelers](docs/guides/PLAYERS.md#first-start) (Engels).
 
+**Eén app, meerdere community's:** met de communitychip bovenin wissel je met één tik tussen je club, je
+installatie thuis en een online community; elk houdt een eigen account en eigen niet verzonden tijden. Onder
+**Jij** → **Mijn tijden** zie je je beste tijd per circuit, ook zonder internet, en met meer dan één community
+neem je je beste tijden mee naar een andere — als die community ze aanneemt.
+
 **Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
 serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
 beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem
@@ -235,9 +240,9 @@ de spelcatalogus en de referentiesets van de Nintendo staff ghosts en de wereldr
 
 ## Status
 
-0.1.0 is de stabiele versie op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
-0.2.0, met A2 erbij, is een release candidate: probeer hem, maar houd 0.1.0 aan voor alles wat je niet
-opnieuw kunt doen. Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
+Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
+A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
+Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
 volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
 [English](docs/install/MK8DX_User_Guide_EN.txt)).
 

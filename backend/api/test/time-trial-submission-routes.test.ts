@@ -208,7 +208,10 @@ describe("Time Trial submission HTTP boundary", () => {
       revision: 1,
     });
     expect(service.calls).toEqual([input]);
-    expect(service.contexts).toEqual([{ publicationIntent: "trusted_runtime" }]);
+    // The sending account travels along: a carried fill is audited under it (ADR-0225 amendment).
+    expect(service.contexts).toEqual([{
+      publicationIntent: "trusted_runtime", actorUserAccountId: "user_account.synthetic_http_submitter_01",
+    }]);
     expect(authorizer.calls).toEqual([{
       actor: {
         role: "account",

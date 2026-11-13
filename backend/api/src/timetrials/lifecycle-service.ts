@@ -40,14 +40,20 @@ export type TimeTrialLifecycleActorRole = "owner" | "administrator";
 
 export type TimeTrialLifecycleEvent = Readonly<{
   sequenceNumber: number;
-  /** "published": an administrator published a run that was waiting for review (ADR-0225). */
-  eventType: "corrected" | "retired" | "restored" | "published";
+  /**
+   * "published": an administrator published a run that was waiting for review (ADR-0225).
+   * "enriched": a carried equal time filled empty fields of this run (ADR-0225 amendment).
+   */
+  eventType: "corrected" | "retired" | "restored" | "published" | "enriched";
   retirementStateAfter: "active" | "retired";
   revision: number;
   actorRole: TimeTrialLifecycleActorRole;
   reasonCode: string;
   note?: string;
   occurredAtMs: number;
+  /** For "enriched": where the carried time came from and which empty fields it filled. */
+  carriedFrom?: Readonly<{ origin: string; originalSubmissionId?: string }>;
+  filledFields?: readonly string[];
 }>;
 
 /** What a lap recorded besides its time: the coin balance at its end and the mushrooms used. */
@@ -69,6 +75,8 @@ export type TimeTrialRevisionSummary = Readonly<{
   loadout?: Readonly<Record<string, string>>;
   sourceKind: string;
   createdAtMs: number;
+  /** When the run was driven, as the producer stated it (absent when it did not). */
+  occurredAtMs?: number;
 }>;
 
 export type ManagedTimeTrial = Readonly<{
@@ -114,6 +122,8 @@ export type ManagedTimeTrialQuery = Readonly<{
   publicationStatus?: "published" | "withheld";
   sourceKind?: string;
   limit: number;
+  /** Rows to skip in the newest-first order, for reading a long list in pages. */
+  offset?: number;
 }>;
 
 export class TimeTrialLifecycleError extends Error {
@@ -228,6 +238,7 @@ export class TimeTrialLifecycleService {
   public async listOwn(
     actor: ActorContext,
     limit = 100,
+    offset = 0,
   ): Promise<readonly ManagedTimeTrial[]> {
     if (actor.role !== "account" && actor.role !== "administrator") {
       throw new TimeTrialLifecycleError("not_authenticated");
@@ -238,7 +249,11 @@ export class TimeTrialLifecycleService {
     if (claimed === null) {
       throw new TimeTrialLifecycleError("not_found");
     }
-    return this.guard(() => this.repository.list({ playerId: claimed, limit }));
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 200 ||
+        !Number.isSafeInteger(offset) || offset < 0 || offset > 100_000) {
+      throw new TimeTrialLifecycleError("invalid_input");
+    }
+    return this.guard(() => this.repository.list({ playerId: claimed, limit, offset }));
   }
 
   public async listForAdministrator(

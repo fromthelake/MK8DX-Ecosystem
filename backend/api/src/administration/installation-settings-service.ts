@@ -25,12 +25,37 @@ export type InstallationSettings = Readonly<{
   playerCreation: PlayerCreationPolicy;
   ratingEligibility: RatingEligibilityPolicy;
   carriedTimes: CarriedTimesPolicy;
+  /** The name the apps show instead of the web address ("Club Noord"); null = not set. */
+  communityName: string | null;
 }>;
+
+export const COMMUNITY_NAME_MAXIMUM = 60;
+
+/**
+ * A community name as stored: trimmed, 1..60 characters, no control characters. An empty (or
+ * whitespace-only) name clears it, like null.
+ */
+export function normalizeCommunityName(value: unknown): string | null {
+  if (value === null) { return null; }
+  if (typeof value !== "string") {
+    throw new InstallationSettingsError("invalid_input", "communityName must be text or null.");
+  }
+  const trimmed = value.trim();
+  if (trimmed === "") { return null; }
+  if (Array.from(trimmed).length > COMMUNITY_NAME_MAXIMUM) {
+    throw new InstallationSettingsError("invalid_input", `communityName must be at most ${COMMUNITY_NAME_MAXIMUM} characters.`);
+  }
+  if (/\p{Cc}/u.test(trimmed)) {
+    throw new InstallationSettingsError("invalid_input", "communityName must not contain control characters.");
+  }
+  return trimmed;
+}
 
 export const DEFAULT_INSTALLATION_SETTINGS: InstallationSettings = {
   playerCreation: "self_and_directors",
   ratingEligibility: "all_players",
   carriedTimes: "off",
+  communityName: null,
 };
 
 export function selfServicePlayerCreationAllowed(settings: InstallationSettings): boolean {
@@ -91,12 +116,13 @@ export interface InstallationSettingsTransaction {
     playerCreation: PlayerCreationPolicy;
     ratingEligibility: RatingEligibilityPolicy;
     carriedTimes: CarriedTimesPolicy;
+    communityName: string | null;
     ratingEligibilityChangedAtMs: number | null;
     updatedByInternalId: number;
     nowMs: number;
   }>): Promise<void>;
   appendChange(input: Readonly<{
-    settingKey: "player_creation" | "rating_eligibility" | "carried_times";
+    settingKey: "player_creation" | "rating_eligibility" | "carried_times" | "community_name";
     previousValue: string;
     newValue: string;
     changedByInternalId: number;
@@ -143,6 +169,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
           playerCreation: stored.playerCreation,
           ratingEligibility: stored.ratingEligibility,
           carriedTimes: stored.carriedTimes,
+          communityName: stored.communityName,
         };
     } catch (error) {
       throw unavailable(error);
@@ -166,6 +193,8 @@ export class InstallationSettingsService implements InstallationSettingsReader {
     playerCreation?: string;
     ratingEligibility?: string;
     carriedTimes?: string;
+    /** A name, or null (or an empty name) to clear it; absent leaves it as it is. */
+    communityName?: string | null;
   }>): Promise<InstallationSettingsAdministration> {
     administratorOnly(actor);
     if (!Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 0) {
@@ -174,6 +203,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
     const playerCreation = input.playerCreation === undefined ? undefined : oneOf(input.playerCreation, PLAYER_CREATION_POLICIES, "playerCreation");
     const ratingEligibility = input.ratingEligibility === undefined ? undefined : oneOf(input.ratingEligibility, RATING_ELIGIBILITY_POLICIES, "ratingEligibility");
     const carriedTimes = input.carriedTimes === undefined ? undefined : oneOf(input.carriedTimes, CARRIED_TIMES_POLICIES, "carriedTimes");
+    const communityName = input.communityName === undefined ? undefined : normalizeCommunityName(input.communityName);
     const nowMs = this.dependencies.clock.nowMs();
     try {
       const stored = await this.dependencies.repository.transaction(async (transaction) => {
@@ -189,16 +219,19 @@ export class InstallationSettingsService implements InstallationSettingsReader {
           playerCreation: playerCreation ?? before.playerCreation,
           ratingEligibility: ratingEligibility ?? before.ratingEligibility,
           carriedTimes: carriedTimes ?? before.carriedTimes,
+          communityName: communityName === undefined ? before.communityName : communityName,
         };
         const creationChanged = after.playerCreation !== before.playerCreation;
         const eligibilityChanged = after.ratingEligibility !== before.ratingEligibility;
         const carriedChanged = after.carriedTimes !== before.carriedTimes;
-        if (!creationChanged && !eligibilityChanged && !carriedChanged) { return current; }
+        const nameChanged = after.communityName !== before.communityName;
+        if (!creationChanged && !eligibilityChanged && !carriedChanged && !nameChanged) { return current; }
         await transaction.write({
           revision: revision + 1,
           playerCreation: after.playerCreation,
           ratingEligibility: after.ratingEligibility,
           carriedTimes: after.carriedTimes,
+          communityName: after.communityName,
           ratingEligibilityChangedAtMs: eligibilityChanged ? nowMs : current?.ratingEligibilityChangedAtMs ?? null,
           updatedByInternalId: administrator,
           nowMs,
@@ -218,6 +251,13 @@ export class InstallationSettingsService implements InstallationSettingsReader {
         if (carriedChanged) {
           await transaction.appendChange({
             settingKey: "carried_times", previousValue: before.carriedTimes, newValue: after.carriedTimes,
+            changedByInternalId: administrator, nowMs,
+          });
+        }
+        if (nameChanged) {
+          // The audit records an unset name as "".
+          await transaction.appendChange({
+            settingKey: "community_name", previousValue: before.communityName ?? "", newValue: after.communityName ?? "",
             changedByInternalId: administrator, nowMs,
           });
         }
@@ -267,6 +307,7 @@ export class InstallationSettingsService implements InstallationSettingsReader {
       playerCreation: settings.playerCreation,
       ratingEligibility: settings.ratingEligibility,
       carriedTimes: settings.carriedTimes,
+      communityName: settings.communityName,
       revision: stored?.revision ?? 0,
       updatedAtMs: stored?.updatedAtMs ?? null,
       carriedTimesAwaitingReview: await this.dependencies.repository.carriedTimesAwaitingReview(),
