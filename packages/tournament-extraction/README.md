@@ -36,12 +36,79 @@ python packages/tournament-extraction/python/src/mk8dx_tournament_extraction/set
 python -m pip install -e 'packages/tournament-extraction/python[vision]'
 ```
 
-This installs torch 2.10.0 / torchvision 0.25.0 from the source's `cu128` index
-on NVIDIA hardware, or the CPU index otherwise. `--mode cpu` explicitly selects
-CPU; omit `--install` to inspect the selection without installing. Run this
-inside the intended virtual environment, before EasyOCR's dependency resolver
-can choose a different torch build. The Windows Tools installer calls the same
-selector before its locked dependency closure and checks the installed backend.
+This installs torch 2.15.0 / torchvision 0.29.2 from PyTorch's `cu132` index
+on NVIDIA hardware whose driver supports CUDA 13.2, or the CPU index otherwise.
+`--mode cpu` explicitly selects CPU; omit `--install` to inspect the selection
+without installing. Run this inside the intended virtual environment, before
+EasyOCR's dependency resolver can choose a different torch build. The Windows
+Tools installer calls the same selector before its locked dependency closure and
+checks the installed backend.
+
+### CUDA and other graphics cards
+
+Only OCR (EasyOCR on PyTorch) can use a graphics card. The first scan of a
+recording reads every frame with OpenCV, and the `opencv-python` wheels from PyPI
+have no CUDA, so it runs on the CPU on every platform (log: `Extract backend:
+cpu`). The engine would use an OpenCV built with CUDA (`cv2.cuda`), but the
+project neither builds nor tests one.
+
+The selector (`setup_torch.py`, modes `auto`, `cuda`, `cpu`, `rocm-experimental`,
+`mps-experimental`) decides per platform. No CUDA Toolkit is needed: the CUDA
+PyTorch wheels bring their own CUDA libraries and only need the NVIDIA driver.
+
+- **Windows with an NVIDIA card:** install a current NVIDIA driver; `nvidia-smi`
+  must show `CUDA Version: 13.2` or higher. `auto` then installs the `cu132` build.
+  With an older driver `auto` installs CPU, and `--mode cuda` stops with a driver
+  message. AMD and Intel cards stay on CPU.
+- **Linux with an NVIDIA card:** install NVIDIA's proprietary driver (Ubuntu:
+  `sudo ubuntu-drivers install`, then reboot) so that `nvidia-smi` works and shows
+  CUDA 13.2 or higher; the same `cu132` rule applies. Under WSL 2 the Windows
+  driver provides the GPU: do not install a Linux driver inside WSL, just check
+  `nvidia-smi` there. With an AMD card, `--mode rocm-experimental` installs
+  PyTorch for ROCm (Linux only, experimental; validate the output yourself).
+- **macOS:** CUDA does not exist on a Mac, so `auto` installs CPU PyTorch.
+  `--mode mps-experimental` installs the standard macOS wheel; OCR then uses the
+  Apple GPU through PyTorch MPS only when `MK8_EASYOCR_GPU_MODE=gpu` is set at run
+  time. This is experimental and not validated for EasyOCR here: compare the
+  output with a CPU run before relying on it.
+
+Check the result in the same environment:
+
+```sh
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+```
+
+`2.15.0+cu132 True` means OCR will run on the NVIDIA card; the analysis log then
+shows `OCR backend: cuda`. `MK8_EASYOCR_GPU_MODE=cpu` forces CPU OCR with a CUDA
+build installed. Recorded-video analysis from source is verified on Windows; the
+selector supports Linux and macOS, but no end-to-end run there has been recorded.
+
+#### CUDA is not detected
+
+1. `python packages/tournament-extraction/python/src/mk8dx_tournament_extraction/setup_torch.py`
+   (without `--install`) prints the cards it found, whether `nvidia-smi` works, the
+   mode it would select and the reason.
+2. `nvidia-smi` must run and show `CUDA Version: 13.2` or higher; otherwise
+   install or update the driver first.
+3. `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"`:
+   `+cpu` means the CPU wheel is installed (often because EasyOCR's resolver ran
+   before the selector): run `setup_torch.py --install` again in the same
+   environment. `+cu132 False` means the wheel cannot reach the card: restart
+   after a driver change and check step 2.
+4. `MK8_EASYOCR_GPU_MODE=cpu` in the environment forces CPU OCR; unset it.
+
+Per platform:
+
+- **Windows:** check Device Manager that the card is enabled; restart after
+  installing the driver.
+- **Linux:** if `nvidia-smi` fails, the kernel module is not loaded
+  (`lsmod | grep nvidia` prints nothing). With Secure Boot on, the driver's key
+  must be enrolled (the MOK prompt at the next boot) or the module will not load.
+  Under WSL 2, update the Windows driver and run `wsl --update`; never install a
+  Linux NVIDIA driver inside WSL.
+- **macOS:** there is no CUDA. For the experimental MPS path, check
+  `python -c "import torch; print(torch.backends.mps.is_available())"` and set
+  `MK8_EASYOCR_GPU_MODE=gpu`.
 
 Fresh runtime roots read the packaged, unchanged source example configuration:
 JPG frames, two initial-scan workers, four score-analysis workers, two overlap

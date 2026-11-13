@@ -54,6 +54,50 @@ Analysing a recording has two steps. Only the second one uses an NVIDIA graphics
 Measured on a laptop with an RTX 5080: three recordings of 18 to 22 minutes (12 races) took about 110 seconds in
 the Tournament Analysis window. The graphics card was busy only while the text was being read.
 
+### Using an NVIDIA graphics card
+
+You do not install CUDA yourself. The CUDA build of PyTorch that the installer downloads carries its own CUDA
+libraries; it only needs a recent NVIDIA driver.
+
+1. Install or update the NVIDIA driver (from nvidia.com or the NVIDIA app). Open PowerShell and run `nvidia-smi`:
+   the top right must show `CUDA Version: 13.2` or higher.
+2. Run `Install-MK8DX-TournamentTools.cmd`. It detects the card and installs the CUDA build; `install.log`
+   then says `PyTorch backend: cuda`. With an older driver it installs the CPU build and says why.
+3. Updated the driver later? Run the installer again: it checks the card again and switches to the CUDA build.
+
+To choose yourself, set `MK8DX_TORCH_MODE` before running the installer (`auto`, `cuda` or `cpu`; the
+installer remembers the last choice). AMD and Intel graphics cards are used as CPU on Windows.
+[Tournament extraction](../../packages/tournament-extraction/README.md#cuda-and-other-graphics-cards) has the
+details for developers, including Linux and macOS.
+
+### The NVIDIA card is not used: what to check
+
+The analysis log says `OCR backend: cpu` although the computer has an NVIDIA card? Check these in order, in
+PowerShell in the Tournament Tools folder:
+
+1. **Does Windows see the driver?** Run `nvidia-smi`. "Not recognized" means the NVIDIA driver is missing:
+   install it and restart the computer. Also check in Device Manager that the card is not disabled.
+2. **Is the driver new enough?** The top right of `nvidia-smi` must say `CUDA Version: 13.2` or higher. Update
+   the driver if it is lower.
+3. **What did the installer choose, and why?** Open `install.log` and look for `PyTorch backend:` and the line
+   after it. The last line, `install complete; runtime {...}`, names the installed build: `"torch": "...+cu132"`
+   with `"effectiveBackend": "cuda"` is right; `+cpu` means the CPU build was installed.
+4. **What would it choose now?** Run `runtime\Scripts\python.exe tools\select_torch.py`. It installs nothing
+   and shows the cards it found, whether `nvidia-smi` works, the mode it would select and the reason.
+5. **Can PyTorch use the card?** Run
+   `runtime\Scripts\python.exe -c "import torch; print(torch.__version__, torch.cuda.is_available())"`.
+   - `...+cpu False`: the CPU build is installed. After fixing 1 and 2, run the installer again. If it keeps
+     choosing CPU because an earlier run was told to, run `set MK8DX_TORCH_MODE=auto` in a Command Prompt and
+     start `Install-MK8DX-TournamentTools.cmd` from that same window.
+   - `...+cu132 False`: the CUDA build is there but cannot reach the card. Restart after a driver installation
+     or update, and check 1 and 2 again.
+   - `...+cu132 True`: PyTorch uses the card.
+6. **Is CPU forced in the settings?** In `TournamentTools.config.cmd`, the line
+   `set "MK8_EASYOCR_GPU_MODE=cpu"` must stay commented out (`rem`).
+
+Still on CPU? Keep `install.log` and the output of steps 4 and 5 when you ask for help. The results are
+correct either way; the CPU is only slower.
+
 `TournamentTools.config.cmd` holds local paths and language preferences. Keep
 that file and the `TournamentLive/` session folder during updates. The live
 launcher uses `runtime-assets/live`; the recorded launcher uses

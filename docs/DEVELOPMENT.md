@@ -17,6 +17,9 @@ package and the [guides](../README.md#get-started) instead.
 
 The clone is large (about 280 MB of Git objects, mostly the asset collection, including a 121 MB scanner model).
 
+A graphics card is optional. It only speeds up the Tournament OCR step; how to set up CUDA (Windows, Linux) and
+what happens on macOS is in [Tournament extraction](../packages/tournament-extraction/README.md#cuda-and-other-graphics-cards).
+
 ### Windows 11
 
 Install Git for Windows, Node.js 24, Python 3.12 (tick **Add python.exe to PATH**) and Docker Desktop
