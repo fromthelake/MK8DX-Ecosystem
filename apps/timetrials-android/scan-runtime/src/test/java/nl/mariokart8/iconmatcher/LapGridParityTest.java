@@ -13,10 +13,14 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 /**
- * The Java lap grid against Python's records (tooling/recognition/lap_grid_vectors.py);
- * MK8DX_FRAME_DEFINITIONS (frame-definitions-v1.json) and MK8DX_LAP_GRID_VECTORS.
+ * The Java lap grid against Python's records: the public vectors
+ * (packages/icon-matcher/vectors/lap-grid-v1.json, tools/generate_rule_vectors.py; issue #99), or
+ * MK8DX_LAP_GRID_VECTORS. Needs the pack's frame-definitions-v1.json (MK8DX_FRAME_DEFINITIONS or
+ * MK8DX_RECOGNITION_PACK); skips without it.
  */
 public class LapGridParityTest {
+    static final String PUBLIC_VECTORS = "../../../packages/icon-matcher/vectors/lap-grid-v1.json";
+
     private static List<LapGrid.Detection> detections(JSONArray raw) throws Exception {
         List<LapGrid.Detection> out = new ArrayList<>();
         for (int i = 0; i < raw.length(); i++) {
@@ -72,9 +76,10 @@ public class LapGridParityTest {
 
     @Test
     public void javaLapGridEqualsPython() throws Exception {
-        String defsPath = System.getenv("MK8DX_FRAME_DEFINITIONS");
+        String defsPath = FrameGeometryParityTest.frameDefinitions();
         String vectorsPath = System.getenv("MK8DX_LAP_GRID_VECTORS");
-        assumeTrue("private lap grid vectors not configured", defsPath != null && vectorsPath != null);
+        if (vectorsPath == null) vectorsPath = PUBLIC_VECTORS;
+        assumeTrue("frame definitions not available (set MK8DX_RECOGNITION_PACK)", defsPath != null);
         JSONObject grids = new JSONObject(new String(Files.readAllBytes(Paths.get(defsPath)), "UTF-8")).getJSONObject("timeGrids");
         JSONArray cases = new JSONObject(new String(Files.readAllBytes(Paths.get(vectorsPath)), "UTF-8")).getJSONArray("cases");
         int differences = 0;

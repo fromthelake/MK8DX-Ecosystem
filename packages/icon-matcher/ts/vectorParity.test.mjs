@@ -4,7 +4,8 @@
 // it runs in its own process with the same flags as this test run.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readdirSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
@@ -27,7 +28,14 @@ const SCRIPTS = {
   'context-v1.json': 'contextVectors.test.mjs',
   'icon-score-v1.json': 'iconScoreVectors.test.mjs',
   'refinement-v1.json': 'refinementVectors.test.mjs',
+  'frame-geometry-v1.json': 'frame_geometry_parity.mjs',
+  'lap-grid-v1.json': 'lap_grid_parity.mjs',
 };
+// Scripts whose first argument is the pack's frame-definitions-v1.json (skipped without a pack).
+const NEEDS_FRAME_DEFINITIONS = new Set(['frame_geometry_parity.mjs', 'lap_grid_parity.mjs']);
+const frameDefinitions = process.env.MK8DX_FRAME_DEFINITIONS
+  || (process.env.MK8DX_RECOGNITION_PACK ? join(process.env.MK8DX_RECOGNITION_PACK, 'frame-definitions-v1.json') : null);
+const haveFrameDefinitions = Boolean(frameDefinitions && existsSync(frameDefinitions));
 
 test('every committed vector file has a TypeScript replay', () => {
   const files = readdirSync(vectorsDir).filter((name) => name.endsWith('.json')).sort();
@@ -37,8 +45,11 @@ test('every committed vector file has a TypeScript replay', () => {
 
 for (const [vector, script] of Object.entries(SCRIPTS)) {
   if (script.endsWith('.test.mjs')) continue; // picked up by the same node --test glob
-  test(`${vector} replays identically (${script})`, () => {
-    const run = spawnSync(process.execPath, [...flags, script, `${vectorsDir}${vector}`],
+  const needsDefs = NEEDS_FRAME_DEFINITIONS.has(script);
+  test(`${vector} replays identically (${script})`, { skip: needsDefs && !haveFrameDefinitions
+    && 'frame definitions not available (set MK8DX_RECOGNITION_PACK)' }, () => {
+    const args = needsDefs ? [frameDefinitions, `${vectorsDir}${vector}`] : [`${vectorsDir}${vector}`];
+    const run = spawnSync(process.execPath, [...flags, script, ...args],
       { cwd: here, encoding: 'utf8', timeout: 120_000 });
     const output = `${run.stdout}${run.stderr}`;
     assert.equal(run.status, 0, `${script} exited ${run.status}\n${output}`);

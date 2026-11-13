@@ -10,8 +10,12 @@ Outputs in packages/icon-matcher/vectors/:
   tricolour (flag_rank.py), flag exposure (flag_exposure.py), character family colour (family_colour.py)
   and neutral chroma (neutral_chroma.py). Each case carries the upstream inputs Python computed (the
   visual read, the shape rank, the shortlisted IDs), so a runtime replays one refinement at a time.
+* ``frame-geometry-v1.json``: frame_geometry.py over the pack's frame definitions for every race key,
+  owner, static and anchored panel and registered/unregistered card.
+* ``lap-grid-v1.json``: lap_grid.build_dynamic_grid on synthetic lap-index and owner-box detections
+  placed on the pack's time grids (resolved, refined, nominal and every blocked status).
 
-refinement needs the tensor pack:
+frame-geometry and lap-grid need ``frame-definitions-v1.json`` and refinement needs the tensor pack:
 ``node tooling/assets/materialize_collection.mjs recognition-pack <dir>`` then ``--pack <dir>`` (or
 MK8DX_RECOGNITION_PACK). Deterministic (no RNG, sorted
 keys, LF); ``--check`` fails when a committed file differs. Cases within 1e-5 of a threshold carry
@@ -22,6 +26,7 @@ from __future__ import annotations
 
 import argparse
 import base64
+from hashlib import sha256
 import importlib.util
 import json
 import os
@@ -38,6 +43,8 @@ _spec = importlib.util.spec_from_file_location("generate_vectors", HERE / "gener
 gv = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(gv)
 
+from mk8dx_icon_matcher import frame_geometry as fg  # noqa: E402
+from mk8dx_icon_matcher import lap_grid as lg  # noqa: E402
 from mk8dx_icon_matcher.family_colour import rank_character_family_colour  # noqa: E402
 from mk8dx_icon_matcher.flag_exposure import flag_exposure_proposal  # noqa: E402
 from mk8dx_icon_matcher.flag_rank import (  # noqa: E402
@@ -335,6 +342,156 @@ def build_refinement(directory: Path) -> dict:
 
 
 BUILDERS["refinement"] = (build_refinement, "tensors")
+
+
+# ------------------------------------------------------------------------------------- frame-geometry-v1
+
+KINDS = ("character_icon", "kart_icon", "wheel_icon", "glider_icon", "flag_icon")
+RACE_KEYS = ("race3", "race7", "ghost_detail", "ghost_detail7")
+
+
+def frame_geometry_case(defs: dict, race_key: str, owner: str, anchor, registration, image) -> dict:
+    panel = fg.panel_box(defs, race_key, owner, anchor)
+    case = {"raceKey": race_key, "owner": owner, "anchor": anchor, "registration": registration,
+            "image": image, "panel": panel}
+    if panel is None:
+        return case
+    _race, laps, ghost_detail = fg.race_and_laps(race_key)
+    right = fg.text_right(defs, panel, ghost_detail)
+    case.update(registerWindow=fg.register_window(defs, panel, image[0], image[1]), textRight=right,
+                ghostNameRight=fg.ghost_name_right(defs, panel), fields={})
+    for kind in KINDS:
+        slot = fg.slot_box(defs, owner, kind, laps, panel, registration)
+        entry = {"deployBox": fg.deploy_box(defs, kind, laps, panel["w"], panel["h"]), "slot": slot}
+        if slot is not None:
+            entry["searchWindow"] = fg.search_window(defs, kind, slot, image[0], image[1])
+            entry["textStrip"] = fg.text_strip(defs, slot, right)
+        case["fields"][kind] = entry
+    return case
+
+
+def build_frame_geometry(defs_path: Path) -> dict:
+    raw = defs_path.read_bytes()
+    defs = json.loads(raw)
+    cases = []
+    anchors = (None, [1033.5, 231.5], [1034.25, 500.0], [580.4, 250.37], [1040.0, 540.0], [3.0, 2.0],
+               [1279.0, 719.0])
+    registrations = (None, [0.0, 0.0, 1.0, 1.0], [2.5, -1.5, 0.98, 1.02], [-7.0, 4.0, 1.03, 0.94])
+    images = ([1280, 720], [900, 500])
+    for race_key in RACE_KEYS:
+        for owner in ("ghost", "player"):
+            for a, anchor in enumerate(anchors):
+                for r, registration in enumerate(registrations):
+                    if a > 1 and r not in (0, 2):
+                        continue
+                    for image in images if (a, r) in ((0, 0), (0, 2), (6, 2)) else images[:1]:
+                        cases.append(frame_geometry_case(defs, race_key, owner, anchor, registration, image))
+    cases.append(frame_geometry_case(defs, "race_unknown", "player", None, None, [1280, 720]))
+    cases.append(frame_geometry_case(defs, "race3", "spectator", None, None, [1280, 720]))
+    return {"schema": "mk8dx.frame-geometry-vectors.v1",
+            "source": "packages/icon-matcher/python/mk8dx_icon_matcher/frame_geometry.py",
+            "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",
+            "frameDefinitionsSha256": sha256(raw).hexdigest(), "cases": _jsonable(cases)}
+
+
+BUILDERS["frame-geometry"] = (build_frame_geometry, "frame-definitions")
+
+
+# ------------------------------------------------------------------------------------------- lap-grid-v1
+
+def _det(label: str, score: float, box, width: int, height: int) -> dict:
+    left, top, right, bottom = box
+    return {"label": label, "score": score, "left": left / width, "top": top / height,
+            "right": right / width, "bottom": bottom / height}
+
+
+def _lap_rows(owner_grid: dict, count: int, width: int, height: int, dx: float, dy: float, stretch: float,
+              wobble: int, base_score: float) -> list[dict]:
+    rows = lg.canonical_lap_index_boxes(owner_grid)[:count]
+    if not rows:
+        return []
+    first = rows[0].center_y()
+    out = []
+    for i, row in enumerate(rows):
+        jitter = ((i * 7 + wobble) % 5 - 2) * 0.6 if wobble else 0.0
+        cy_shift = (row.center_y() - first) * (stretch - 1.0)
+        box = (row.left + dx + jitter, row.top + dy + cy_shift, row.right + dx + jitter, row.bottom + dy + cy_shift)
+        out.append(_det("lap_index", round(base_score - 0.01 * i, 4), box, width, height))
+    return out
+
+
+def _owner_box(owner: str, upper: bool, width: int, height: int) -> dict:
+    box = (560, 70, 1220, 350) if upper else (560, 370, 1220, 650)
+    return _det(f"{owner}_timetrail_box", 0.9, box, width, height)
+
+
+def build_lap_grid(defs_path: Path) -> dict:
+    raw = defs_path.read_bytes()
+    grids = json.loads(raw)["timeGrids"]
+    width, height = 1280, 720
+    cases = []
+
+    def add(name, time_grid, race_key, ghost_detail, detections, lap_rows, nominal=False, w=width, h=height):
+        case = {"id": name, "timeGrid": time_grid, "raceKey": race_key, "ghostDetail": ghost_detail, "width": w,
+                "height": h, "detections": detections, "lapRows": lap_rows, "nominal": nominal}
+        case["result"] = _jsonable(lg.build_dynamic_grid(grids[time_grid], race_key, ghost_detail, w, h,
+                                                        detections, lap_rows, nominal))
+        cases.append(case)
+
+    for race_key, laps in (("race3", 3), ("race7", 7)):
+        owners = grids["endScreen"][race_key]["owners"]
+        ghost = lambda **k: _lap_rows(owners["ghost"], laps, width, height, **k)  # noqa: E731
+        player = lambda **k: _lap_rows(owners["player"], laps, width, height, **k)  # noqa: E731
+        boxes = [_owner_box("ghost", True, width, height), _owner_box("player", False, width, height)]
+        exact = dict(dx=0.0, dy=0.0, stretch=1.0, wobble=0, base_score=0.95)
+        moved = dict(dx=3.5, dy=-2.25, stretch=1.04, wobble=3, base_score=0.9)
+        add(f"{race_key}/both_exact", "endScreen", race_key, False, boxes, ghost(**exact) + player(**exact))
+        add(f"{race_key}/both_moved", "endScreen", race_key, False, boxes, ghost(**moved) + player(**moved))
+        add(f"{race_key}/both_moved_nominal", "endScreen", race_key, False, boxes,
+            ghost(**moved) + player(**moved), nominal=True)
+        add(f"{race_key}/player_only_box", "endScreen", race_key, False, boxes[1:], player(**moved))
+        add(f"{race_key}/no_owner_boxes", "endScreen", race_key, False, [], ghost(**exact) + player(**exact))
+        add(f"{race_key}/no_boxes_player_rows", "endScreen", race_key, False, [], player(**moved))
+        partial = player(**moved)
+        add(f"{race_key}/player_missing_rows", "endScreen", race_key, False, boxes[1:],
+            [row for i, row in enumerate(partial) if i % 2 == 0] if laps == 7 else partial[:2])
+        duplicated = player(**moved)
+        twin = dict(duplicated[0])
+        twin["score"] = 0.5
+        twin["left"] += 1.0 / width
+        twin["right"] += 1.0 / width
+        add(f"{race_key}/duplicate_badge", "endScreen", race_key, False, boxes[1:], duplicated + [twin])
+        add(f"{race_key}/far_rows", "endScreen", race_key, False, boxes[1:],
+            player(dx=60.0, dy=0.0, stretch=1.0, wobble=0, base_score=0.9))
+        cw, ch = 1100, 640  # a smaller frame: the digit slots right of x=1100 are clipped
+        add(f"{race_key}/edge_clip", "endScreen", race_key, False,
+            [_owner_box("ghost", True, cw, ch), _owner_box("player", False, cw, ch)],
+            _lap_rows(owners["ghost"], laps, cw, ch, **moved) + _lap_rows(owners["player"], laps, cw, ch, **moved),
+            w=cw, h=ch)
+    # the owners disagree on the lap count
+    owners3, owners7 = grids["endScreen"]["race3"]["owners"], grids["endScreen"]["race7"]["owners"]
+    boxes = [_owner_box("ghost", True, width, height), _owner_box("player", False, width, height)]
+    # two ghost rows infer 3 laps, five player rows infer 7
+    mixed = (_lap_rows(owners7["ghost"], 2, width, height, dx=0.0, dy=0.0, stretch=1.0, wobble=0, base_score=0.95)
+             + _lap_rows(owners7["player"], 5, width, height, dx=0.0, dy=0.0, stretch=1.0, wobble=0,
+                         base_score=0.95))
+    add("race7/ambiguous_lap_count", "endScreen", "race7", False, boxes, mixed)
+    add("race3/one_lap_row", "endScreen", "race3", False, boxes,
+        _lap_rows(owners3["player"], 1, width, height, dx=0.0, dy=0.0, stretch=1.0, wobble=0, base_score=0.9))
+    add("race9/missing_relative_grid", "endScreen", "race9", False, boxes,
+        _lap_rows(owners3["player"], 3, width, height, dx=0.0, dy=0.0, stretch=1.0, wobble=0, base_score=0.9))
+    for race_key, laps in (("race3", 3), ("race7", 7)):
+        owner = grids["ghostDetail"][race_key]["owners"]["ghost"]
+        rows = _lap_rows(owner, laps, width, height, dx=-2.0, dy=1.5, stretch=0.97, wobble=2, base_score=0.92)
+        add(f"ghost_detail/{race_key}", "ghostDetail", race_key, True, [], rows)
+        add(f"ghost_detail/{race_key}/nominal", "ghostDetail", race_key, True, [], rows, nominal=True)
+    return {"schema": "mk8dx.lap-grid-vectors.v1",
+            "source": "packages/icon-matcher/python/mk8dx_icon_matcher/lap_grid.py",
+            "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",
+            "frameDefinitionsSha256": sha256(raw).hexdigest(), "cases": cases}
+
+
+BUILDERS["lap-grid"] = (build_lap_grid, "frame-definitions")
 
 
 # --------------------------------------------------------------------------------------------------- CLI

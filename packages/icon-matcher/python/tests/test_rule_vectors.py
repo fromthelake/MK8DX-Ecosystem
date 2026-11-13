@@ -74,3 +74,20 @@ def test_refinement_vectors_replay():
 @needs_tensors
 def test_refinement_vectors_are_the_generators_output():
     assert gen.dump(gen.build_refinement(TENSORS)) == _path("refinement-v1.json").read_bytes()
+
+
+@needs_defs
+def test_frame_geometry_and_lap_grid_vectors_are_the_generators_output():
+    for name, build in (("frame-geometry-v1.json", gen.build_frame_geometry),
+                        ("lap-grid-v1.json", gen.build_lap_grid)):
+        doc = build(DEFS)
+        assert doc["frameDefinitionsSha256"] == _load(name)["frameDefinitionsSha256"], \
+            f"{name} was generated from other frame definitions"
+        assert gen.dump(doc) == _path(name).read_bytes(), name
+
+
+@needs_defs
+def test_lap_grid_vectors_cover_resolved_and_blocked_grids():
+    statuses = {case["result"]["status"] for case in _load("lap-grid-v1.json")["cases"]}
+    assert {"implemented", "blocked_missing_relative_grid", "blocked_insufficient_lap_index_support",
+            "blocked_insufficient_owner_lap_index_support", "blocked_ambiguous_active_lap_count"} <= statuses
