@@ -355,7 +355,9 @@ def refine_character_variant_families(df: pd.DataFrame, frames_folder: str | Pat
         "CharacterFamilyMargin",
     ):
         if column_name not in df.columns:
-            df[column_name] = ""
+            # Mixed text/number column (indices and scores are written below). pandas 3 would
+            # otherwise infer a strict string dtype from "" and refuse the numbers.
+            df[column_name] = pd.Series("", index=df.index, dtype=object)
     templates = load_character_templates()
     if not templates:
         return df
