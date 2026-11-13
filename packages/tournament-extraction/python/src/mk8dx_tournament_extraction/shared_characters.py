@@ -244,7 +244,14 @@ class SharedExportCharacters:
         if player is None:
             return False
         lobby_name = re.sub(r"\s+[^\w]+$", "", str(player.name)).strip()
-        if lobby_name and normalize(lobby_name) != normalize(name):
+        score_key = normalize(name)
+        lobby_key = normalize(lobby_name)
+        # A fuzzy lobby match may have lost a real final character (for example
+        # "Nova Jet €" against a score reading of "Nova Jet K"). Never shorten
+        # a complete score name merely because the lobby OCR is incomplete.
+        if lobby_key and score_key.startswith(lobby_key) and len(score_key) > len(lobby_key):
+            return True
+        if lobby_name and lobby_key != score_key:
             row["PlayerNameOcr"] = name
             row["PlayerName"] = lobby_name
         return True
