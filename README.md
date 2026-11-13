@@ -2,7 +2,7 @@
 
 **Host your own Mario Kart 8 Deluxe community website — for Time Trials *and* tournament nights.**
 
-Language: English · [Nederlands](README_NL.md)
+Language: English · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 ![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 

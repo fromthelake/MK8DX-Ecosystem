@@ -2,7 +2,7 @@
 
 **Host je eigen Mario Kart 8 Deluxe-communitywebsite — voor Time Trials *én* toernooiavonden.**
 
-Taal: [English](README.md) · Nederlands
+Taal: [English](README.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 ![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](docs/readme/web-home.jpg)
 
@@ -166,22 +166,71 @@ Speel je in jouw taal? Jouw hulp bij het controleren is de waardevolste bijdrage
 
 ## 💡 Het verhaal erachter
 
-MK8DX Ecosystem is sinds 2024 in ontwikkeling. Het is gebouwd met AI — "vibe coding" — en
-eerlijk: zonder AI had ik dit niet kunnen bouwen, en de AI had het niet zonder mij kunnen bouwen.
-Ik kan me geen wereld voorstellen waarin dit tot een goed resultaat was gekomen zonder steeds
-bijsturen en de logica telkens opnieuw uitleggen. Het aantal sessies dat maar bleef doorlopen en
-credits verbrandde zonder echt resultaat, houdt me nog steeds 's nachts wakker (haha). Een deel
-van de reden: met alle screenshots en video's wordt de context simpelweg te groot om voor een AI
-vast te houden — inmiddels staat er ongeveer 4 TB door AI gemaakt QA-testmateriaal op me te
-wachten om op te ruimen.
+**Het begon allemaal met een lokaal Mario Kart-toernooi, een paar enthousiastelingen en een uitnodiging in december 2023.**
 
-Waarschijnlijk omdat dit nog nooit eerder was gebouwd. De technieken bestonden; de juiste aan
-elkaar knopen, in de juiste volgorde, met een mens die elke visuele stap ertussen controleert en
-opnieuw bijstuurt, nog niet. Hetzelfde geldt voor de spelonderdelen: hier en daar bestaan stukjes,
-maar een compleet pakket waar alles in zit, had ik nog niet gezien.
+Geloof het of niet: ik had Mario Kart nog op de Nintendo 64 gespeeld, maar Mario Kart 8 Deluxe had ik nauwelijks aangeraakt. Ik wist niet eens dat driften bestond. Ik had dus nogal wat in te halen.
 
-Het is een geweldige leerschool geweest — en het heeft me in staat gesteld om voortaan sneller en
-efficiënter te bouwen rond beeldherkenning en het uitlezen van beelden.
+Wat ik ontdekte, was een geweldige groep mensen die het oprecht heerlijk vond om anderen samen te brengen om te racen.
+
+En die groep bleef groeien.
+
+Wat begon met slechts 16 spelers, groeide uit tot een community van meer dan 68 deelnemers, met tot wel **36 spelers op één avond**. Samen hebben ze **meer dan 1.000 geregistreerde races** gereden, verspreid over alle 96 banen en talloze uren vriendschappelijke strijd.
+
+De opstelling groeide net zo hard mee. Wat begon met **wifi, een GoPro, een hoop handmatig nakijkwerk en verbindingsproblemen genoeg**, werd stap voor stap capture cards, een volledig bekabeld ethernetnetwerk, automatische raceregistratie en 36 spelers die het tegen elkaar opnemen in een loods vol consoles, schermen, kabels, vrienden en natuurlijk pizza.
+
+En elk toernooi bracht weer nieuwe ideeën.
+
+We begonnen scores te analyseren, prestaties bij te houden, de zitindeling te optimaliseren en uit te zoeken hoe we de steeds ingewikkeldere klus konden automatiseren om spelers tussen Nintendo Switches te laten doorschuiven, inclusief het omwisselen van ethernetkabels. Iedereen die ooit zoiets heeft georganiseerd, weet dat het racen soms nog het makkelijkste deel is.
+
+**Toen kwamen de Time Trials.**
+
+Wat begon als een kleine competitie, werd al snel een vriendschappelijke strijd om nog net een paar milliseconden van onze tijden af te schaven. Vooral Baby Park en Big Blue op 150cc werden echte favorieten. Er was altijd wel iemand die een snellere ronde neerzette, en altijd wel iemand die vastbesloten was die weer te verbeteren.
+
+Natuurlijk wilden we ook die resultaten goed bijhouden. Hetzelfde enthousiasme waarmee we onze toernooien verbeterden, vond zijn weg naar het automatisch vastleggen van Time Trials, beeldherkenning, statistieken, ranglijsten en meer.
+
+Het ene leidde tot het andere, en voor ik het wist, besteedde ik bijna net zoveel tijd aan het bouwen van tools rond Mario Kart als aan het spelen ervan.
+
+### Van passie naar een open-source ecosysteem
+
+MK8DX Ecosystem is sinds 2024 in ontwikkeling, met heel veel hulp van AI — of wat we tegenwoordig *vibe coding* noemen.
+
+En laat ik daar duidelijk over zijn: **zonder AI had ik dit niet kunnen bouwen, en zonder mij had AI het ook niet gekund.**
+
+Alles werkend krijgen vroeg ongelooflijk veel experimenteren en geduld: spellogica uitleggen, screenshots nakijken, fouten corrigeren en de AI weer de goede kant op sturen. Soms keer op keer op keer.
+
+Er zijn genoeg sessies geweest die vrolijk credits verbrandden zonder ook maar iets op te leveren. Daar lig ik nog steeds wakker van (haha).
+
+En visueel testen levert blijkbaar nogal wat data op. Inmiddels zit ik op ongeveer 4 TB aan door AI gemaakte QA-screenshots en -opnames die ik echt een keer moet opruimen.
+
+De afzonderlijke technieken bestonden al, maar ze samenbrengen tot een werkend ecosysteem dat begrijpt wat er op het scherm gebeurt, spelinformatie uitleest en die bruikbaar maakt voor spelers en organisatoren, was een flinke reis. Hetzelfde geldt voor het verzamelen en ordenen van alle spelonderdelen die daarvoor nodig zijn.
+
+Het is een ongelooflijke leerschool geweest, vooral op het gebied van beeldherkenning, automatisering en softwareontwikkeling.
+
+Nu, in 2026, kan ik het resultaat eindelijk delen als **open-source ecosysteem**, zodat anderen het kunnen gebruiken, verbeteren en er hopelijk net zoveel plezier aan beleven als wij.
+
+### ❤️ Voor Volkert
+
+Ik wil een deel van dit project ook opdragen aan onze dierbare vriend en rivaal **Volkert**, die veel te vroeg is overleden.
+
+Volkert was zo iemand die ons steeds weer inspireerde om nét iets harder te pushen, die snellere racelijn te vinden en nog één Time Trial te proberen. De vriendschappelijke rivaliteit, vooral rond Baby Park en Big Blue, maakte de competitie iets bijzonders.
+
+Maar meer nog dan de rondetijden of de ranglijsten gaat het om de momenten samen. Met vrienden in een loods zitten, lachen, strijden, pizza delen en genieten van iets simpels als een spelletje.
+
+Dat zijn de momenten die het waard zijn om te onthouden.
+
+Volkert, bedankt voor de strijd, de inspiratie en de herinneringen. Je blijft altijd een deel van dit verhaal.
+
+### Blijf racen, blijf delen
+
+We beweren niet dat we de beste spelers of de beste ontwikkelaars zijn, of dat we de perfecte oplossing hebben gebouwd. Maar aan enthousiasme, nieuwsgierigheid en de vastberadenheid om steeds beter te worden is zeker geen gebrek.
+
+Als dit project je helpt om een LAN-toernooi te organiseren, een vriendschappelijke rivaliteit te beginnen, een persoonlijk record te verbreken of gewoon een topavond met vrienden te hebben, dan heeft het iets waardevols bereikt.
+
+**Blijf alsjeblieft je mooiste momenten, je ideeën en je verbeteringen delen.** Dat is wat een community als deze levend houdt.
+
+En tot slot een dikke dankjewel aan **Nintendo** voor het maken van zulke fantastische consoles en games. Geniet je van Mario Kart, steun dan de mensen die het mogelijk maken: koop de originele consoles en games, nodig je vrienden, familie of collega's uit en geniet ervan om samen te spelen.
+
+Zo is dit hele avontuur tenslotte ook begonnen.
 
 — [fromthelake](https://github.com/fromthelake)
 
