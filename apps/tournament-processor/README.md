@@ -16,7 +16,9 @@ builds a small portable package (the four product/shared wheels, a locked third-
 requirements file and a double-clickable `Install-MK8DX-TournamentTools.cmd`).
 The installer prepares a package-local Python 3.12 runtime (system Python 3.12
 via venv, otherwise the SHA-256-verified python.org embeddable runtime), installs
-hardware-selected CPU/CUDA wheels from PyTorch followed by the locked closure
+hardware-selected CPU/CUDA wheels from PyTorch (used by OCR; the first OpenCV scan is CPU-only, see
+[which steps use the graphics card](../../docs/product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card))
+followed by the locked closure
 from PyPI, and writes `TournamentProcessor.cmd`: drag a
 recorded video onto it and the results land next to the video in
 `<name>_TournamentSession\Output_Results\` (Excel, CSV and
