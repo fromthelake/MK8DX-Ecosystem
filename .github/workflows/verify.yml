@@ -45,11 +45,17 @@ jobs:
           npm run typecheck --prefix apps/timetrials-web
           npm test --prefix apps/timetrials-web
           npm run build --prefix apps/timetrials-web
-      - name: Central reader (TypeScript and Python)
+      - name: Central reader (TypeScript and Python, every committed parity vector)
         run: |
+          # vectorParity.test.mjs replays every packages/icon-matcher/vectors file against the TS modules.
           node --experimental-strip-types --no-warnings --experimental-loader ./packages/icon-matcher/ts/ts_resolve_hook.mjs --test "packages/icon-matcher/ts/*.test.mjs"
           python -m pip install --disable-pip-version-check -r requirements-dev.txt
-          PYTHONPATH=packages/icon-matcher/python python -m pytest -q -p no:cacheprovider packages/icon-matcher/python/tests
+          # The public recognition pack, so tests that only need pack inputs run instead of skipping;
+          # tests that also need private corpora keep skipping.
+          node tooling/assets/materialize_collection.mjs recognition-pack "$RUNNER_TEMP/recognition-pack"
+          export MK8DX_FRAME_DEFINITIONS="$RUNNER_TEMP/recognition-pack/frame-definitions-v1.json"
+          test -s "$MK8DX_FRAME_DEFINITIONS"
+          PYTHONPATH=packages/icon-matcher/python python -m pytest -q -p no:cacheprovider -rs packages/icon-matcher/python/tests
       - name: CSS, intake rehearsal and tooling tests
         run: |
           node tooling/design-system/css-metrics.mjs --check
