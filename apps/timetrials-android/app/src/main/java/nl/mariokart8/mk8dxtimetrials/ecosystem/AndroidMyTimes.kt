@@ -145,12 +145,12 @@ internal fun AndroidMyTimesGroupCard(
                     if (group.runs.size > 1) androidText("$track · ${group.runs.size} runs", "$track · ${group.runs.size} ritten") else track,
                     style = type.body, color = colors.textPrimary, maxLines = 2, overflow = TextOverflow.Ellipsis,
                 )
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs)) {
+                // Class and the personal best, then the date on its own line: nothing is cut at large text.
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
                     Mk8dxEngineMark(group.mode)
-                    Text(runDate(best), style = type.bodyS, color = colors.textSecondary, maxLines = 1,
-                        overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                     Text(Mk8dxNumeric.formatTime(best.current.totalTimeMs), style = type.dataM, color = colors.textPrimary, maxLines = 1)
                 }
+                Mk8dxMetaLine(runDate(best))
                 if (best.publicationStatus != "published") {
                     Mk8dxChip(androidText("Not published", "Niet gepubliceerd"), tone = Mk8dxChipTone.Warning)
                 }
