@@ -202,10 +202,10 @@ public final class ContextRules {
         return count > 1;
     }
 
-    /** The catalog colour of this glider family for this character, if the catalog links them. */
-    private static String gliderRelation(References refs, String family, String characterId) {
+    /** The catalog colour of this body or glider family for this character, if the catalog links them. */
+    private static String catalogColour(References refs, String kind, String family, String characterId) {
         if (characterId == null || characterId.isEmpty()) return null;
-        String relation = refs.partForCharacter.get(relationKey("gliders", family, characterId));
+        String relation = refs.partForCharacter.get(relationKey(kind, family, characterId));
         return relation != null && family.equals(refs.familyById.get(relation)) ? relation : null;
     }
 
@@ -250,14 +250,15 @@ public final class ContextRules {
         }
         String chosen = family.equals(top.familyId) ? visual.acceptedId : null;
         boolean strongVisualVariant = "accepted".equals(visual.status) && family.equals(top.familyId);
+        boolean colouredPart = "bodies".equals(kind) || "gliders".equals(kind);
         boolean characterAccepted = character.id != null && !character.id.isEmpty()
                 && "accepted".equals(character.status);
-        // Glider colour follows the character (issue #99): the catalog colour of an
-        // accepted character, or of the suggested character for a review proposal.
-        String colour = "gliders".equals(kind)
-                ? gliderRelation(refs, family, characterAccepted ? character.id : character.visualTop1) : null;
-        if ("gliders".equals(kind) && characterAccepted && colour != null && strongVisualVariant
-                && !colour.equals(chosen)) {
+        // Body and glider colour follow the character (issue #99): only an accepted
+        // character supplies a catalog colour. An unknown, suggested or conflicting
+        // character never does, not even as a review proposal.
+        String colour = colouredPart && characterAccepted
+                ? catalogColour(refs, kind, family, character.id) : null;
+        if (colour != null && strongVisualVariant && !colour.equals(chosen)) {
             if (inTop3(visual, colour)) {
                 // A close colour in the visual top three: the catalog decides.
                 chosen = colour;
@@ -270,10 +271,9 @@ public final class ContextRules {
                 return new Decision(null, family, "conflict", evidence, top.id, colour);
             }
         }
-        if (("bodies".equals(kind) || "gliders".equals(kind)) && character.id != null && !character.id.isEmpty()
+        if (colouredPart && character.id != null && !character.id.isEmpty()
                 && !strongVisualVariant && (visual.score >= 0.80 || strong)) {
-            String relation = "gliders".equals(kind) ? (characterAccepted ? colour : null)
-                    : refs.partForCharacter.get(relationKey(kind, family, character.id));
+            String relation = colour;
             if (relation != null) {
                 if ("gliders".equals(kind) && !strong && visual.familyMargin != null
                         && visual.familyMargin < 0.02) {
@@ -297,14 +297,13 @@ public final class ContextRules {
                 evidence.add("text_supported_visual_variant");
             }
         }
-        String suggestion = "gliders".equals(kind) && chosen == null ? colour : null;
-        if ("gliders".equals(kind) && chosen != null && !characterAccepted && colourFamily(refs, kind, family)) {
+        String suggestion = chosen == null ? colour : null;
+        if (colouredPart && chosen != null && !characterAccepted && colourFamily(refs, kind, family)) {
             // The family is readable and carries the stats, but an unaccepted character
-            // cannot settle its colour: accept the family only and propose the suggested
-            // character's catalog colour, else the icon's.
-            evidence.add("glider_colour_needs_character");
-            if (colour != null) evidence.add("character_colour_suggestion");
-            return new Decision(null, family, "family_only", evidence, top.id, colour);
+            // cannot settle its colour: accept the family only. The colour proposal is
+            // the icon's own (no suggestedId).
+            evidence.add("gliders".equals(kind) ? "glider_colour_needs_character" : "body_colour_needs_character");
+            return new Decision(null, family, "family_only", evidence, top.id, null);
         }
         if (suggestion != null) evidence.add("character_colour_suggestion");
         if (chosen == null && strong && family.equals(clue.id)) {

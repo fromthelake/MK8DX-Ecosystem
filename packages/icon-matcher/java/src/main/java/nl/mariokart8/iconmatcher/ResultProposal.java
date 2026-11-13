@@ -149,8 +149,8 @@ public final class ResultProposal {
 
         String contextAccepted = vis != null && chosen != null && "accepted".equals(str(chosen, "status"))
                 && str(chosen, "id") != null && !str(chosen, "id").isEmpty() ? str(chosen, "id") : null;
-        // A colour the context proposes for review (the glider colour that follows
-        // the character); it leads the proposal but is never accepted by itself.
+        // A colour the context proposes for review (the body or glider catalog colour of
+        // an accepted character); it leads the proposal but is never accepted by itself.
         String contextSuggested = vis != null && chosen != null && contextAccepted == null
                 && str(chosen, "suggestedId") != null && !str(chosen, "suggestedId").isEmpty()
                 ? str(chosen, "suggestedId") : null;
