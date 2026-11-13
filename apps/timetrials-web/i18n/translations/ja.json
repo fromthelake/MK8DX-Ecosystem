@@ -5070,6 +5070,7 @@
   "For example Club Noord": "例：Club Noord",
   "Save name": "名前を保存",
   "Shown in the apps instead of the web address.": "アプリでウェブアドレスの代わりに表示されます。",
-  "The community name is unchanged.": "コミュニティ名は変更されていません。"
+  "The community name is unchanged.": "コミュニティ名は変更されていません。",
+  "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.": "結果画面が見つかりません。終了画面とゴーストパネルの両方を試しました。タイムが見えていて、カードが枠いっぱいに収まっているか確認するか、手動で入力してください。"
  }
 }

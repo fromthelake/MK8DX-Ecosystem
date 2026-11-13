@@ -5070,6 +5070,7 @@
   "For example Club Noord": "Per esempio Club Noord",
   "Save name": "Salva nome",
   "Shown in the apps instead of the web address.": "Mostrato nelle app al posto dell'indirizzo web.",
-  "The community name is unchanged.": "Il nome della community non è cambiato."
+  "The community name is unchanged.": "Il nome della community non è cambiato.",
+  "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.": "Nessuna schermata dei risultati trovata. Sono stati provati sia la schermata finale sia il pannello del fantasma: controlla che i tempi siano visibili e che la scheda riempia la cornice, oppure inseriscilo a mano."
  }
 }
