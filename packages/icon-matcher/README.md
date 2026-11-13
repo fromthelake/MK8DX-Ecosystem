@@ -49,21 +49,25 @@ Icon matching compares a normalized crop with the reference images of the game c
 shortlist, then shape and colour refinement within a character family). When no catalog character fits
 well, the open-set step suggests a Mii instead of the closest look-alike.
 
-### Glider colour follows the character
+### Kart and glider colour follow the character
 
-Every glider family with more than one colour gives each character one catalog colour. The context rule
+Body (kart) and glider families with more than one colour give each character one catalog colour (the
+catalog holds 1,148 body and 164 glider colour relations; tyres have none). The context rule
 (`context.combine_part`, `sharedPartContext.ts`, `ContextRules.java`) uses that link so that a stored result never
-pairs a character with a glider colour that character cannot have (field semantics 0.4.3, issue #99):
+pairs a character with a kart or glider colour that character cannot have (field semantics 0.4.3, issue #99):
 
-- **Character accepted** and the catalog links it to this family: the catalog colour is the glider. A close
+- **Character accepted** and the catalog links it to this family: the catalog colour is the part. A close
   colour in the visual top three is replaced silently (`character_part_top3_variant`). When the icon clearly
   showed another colour, the field becomes `conflict` with the catalog colour as `suggestedId` and
   `character_colour_conflict_review`: a clear clash usually means the character is wrong.
-- **Character not accepted** (unknown, suggested or conflict): a readable glider family is still settled (it
+- **Character not accepted** (unknown, suggested or conflict): a readable part family is still settled (it
   carries the stats), but never its colour on its own. The decision is `family_only`
-  (`glider_colour_needs_character`) and `suggestedId` is the suggested character's catalog colour
-  (`character_colour_suggestion`), or empty so that the visual best match is proposed.
-- **No catalog link** (a single-colour glider, or no link for an accepted character): the icon decides.
+  (`body_colour_needs_character` / `glider_colour_needs_character`) without `suggestedId`: the colour proposal
+  is the colour the icon shows. An unconfirmed or suggested character never supplies the colour proposal.
+- **No catalog link** (a single-colour part, or no link for an accepted character): the icon decides.
+- Existing gates stay: a weak visual read needs score 0.80 or a readable name before a relation applies, and a
+  near-tied glider family without a readable name stays in review (`weak_family_relation_review`). When a gate
+  blocks, the field is `unknown` with the catalog colour as `suggestedId` (`character_colour_suggestion`).
 
 `suggestedId` is only a review proposal: the result proposal shows it first with a `?` and never accepts it.
 

@@ -7,13 +7,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
-- **Glider colour follows the character** (field semantics 0.4.3, #99). Python, TypeScript and Java now share one
-  rule, so a scanned result never pairs a character with a glider colour that character cannot have. With an
-  accepted character the catalog colour is the glider; when the icon clearly shows another colour, the catalog
-  colour is proposed with a `?` and the field needs review (`character_colour_conflict_review`). Without an accepted
-  character the glider family is still read, but its colour is only proposed: the suggested character's catalog
-  colour, otherwise the best visual match. Single-colour gliders, and characters without a catalog link, are decided
-  by the icon as before. Android's context rules now run on the shared Java code (`ContextRules`) instead of an
+- **Kart and glider colour follow the character** (field semantics 0.4.3, #99). Python, TypeScript and Java now
+  share one rule for bodies and gliders, so a scanned result never pairs a character with a kart or glider colour
+  that character cannot have. With an accepted character the catalog colour is the part; when the icon clearly
+  shows another colour (outside the visual top three), the catalog colour is proposed with a `?` and the field
+  needs review (`character_colour_conflict_review`). Without an accepted character the part family is still read,
+  but its colour is only proposed, and that proposal is the colour the icon shows: an unconfirmed or suggested
+  character never supplies it. Single-colour parts, and characters without a catalog link for that part, are
+  decided by the icon as before; tyres are unchanged. Android's context rules now run on the shared Java code (`ContextRules`) instead of an
   app-local copy, and pass their evidence to the result proposal as Web and Python do.
 - A tyre row number counts only as ASCII digits `0`-`9` in every runtime; full-width digits are turned into ASCII
   where OCR text is normalized, before the context rules (#99). Other digit scripts are no row number.
