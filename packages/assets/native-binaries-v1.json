@@ -53,6 +53,10 @@
       "sha256": "621008afc4f5d59357fcf06ffa644dd5aade5e091bdc363742710445f73cdaf8",
       "sizeBytes": 49154
     },
+    "apps/tournament-processor/src/tournament_processor/qt/assets/bg.jpg": {
+      "sha256": "3b36ece6a4fbf9d2da022d480747d86d4d1a65d11737ce5552359618671c2dab",
+      "sizeBytes": 966362
+    },
     "tooling/mk8dx.ico": {
       "sha256": "2e728a217eb7f2a5da90c69a0833b0511705ed2b3e6e1a81841634f56faedcda",
       "sizeBytes": 121181

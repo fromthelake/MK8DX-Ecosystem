@@ -87,6 +87,21 @@ sits where, which group plays next, the scores, the finals and the standings.
   <img src="docs/readme/tournament-skill.jpg" alt="Tournament skill page: TrueSkill rating, wins, top 3 and average finish of a player" width="49%">
 </p>
 
+### No Tournament Live on the night? Analyse the recordings afterwards
+
+Recorded the night instead of capturing it live? The **Tournament Analysis** window reads the
+recordings afterwards: add one video, several, or a folder per tournament, press **START
+ANALYSIS**, and it finds every race with its positions, characters and points while a live,
+coloured log and a Rainbow Road progress bar show how far it is. The result is an
+Excel workbook, a CSV and a website import file for the organiser to check and import — the same
+review as for Tournament Live. In the Windows Tournament Tools package, double-click
+`TournamentAnalysis.cmd` (dragging a video onto `TournamentProcessor.cmd` still works);
+developers run `python -m tournament_processor.gui`.
+[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) has the
+steps.
+
+![Tournament Analysis window: numbered steps on the left with two qualifier recordings and a folder of finals ticked, the session id, the results folder and the green Start analysis button; the activity log on the right](docs/readme/tournament-analysis.jpg)
+
 ## ⏱️ Time Trials with LiveTrial — fully automatic
 
 Connect your Switch to your Windows PC through a capture card and just race. As far as we know,

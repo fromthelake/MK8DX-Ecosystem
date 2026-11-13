@@ -66,12 +66,38 @@ The installer writes these launchers:
 | Launcher | Use |
 | --- | --- |
 | `TournamentProcessor.cmd` | Drag an `.mp4` or `.mkv` recording onto it. It writes a session folder next to the video (`<name>_TournamentSession\Output_Results\`) with Excel, CSV and `<name>_TournamentRaceResultsV1.json`. |
+| `TournamentAnalysis.cmd` | A window for the same recorded-video analysis with several videos or a folder per tournament ([below](#analyse-recordings-afterwards)). |
 | `TournamentLive.cmd` | Live capture during the night, or replay a video: **Add video file** (or add a capture device), **Start all**, check **Confirmed standings**, then **Open exports**. |
 | `TournamentConnect.cmd` | Optional connection to the website (below). |
 | `TournamentLiveCli.cmd` | Diagnostics: device discovery, replay and result commands. Not a replacement for the live window. |
 
 `TournamentTools.config.cmd` holds local paths and language preferences. Keep it, the `TournamentLive\` session
 folder and your output folders when you install a newer package.
+
+### Analyse recordings afterwards
+
+Use Tournament Live when you capture the night as it happens. When the night ran without it and you only have
+recordings, analyse them afterwards with the **Tournament Analysis** window:
+
+1. Double-click `TournamentAnalysis.cmd` in the package folder.
+2. **① Choose recordings**: **Add videos...** picks one or more recordings (`.mp4`, `.mkv`, `.mov`, `.avi`,
+   `.ts`); **Add folder...** adds a folder that holds one tournament's recordings.
+3. **② Choose videos**: everything you added is ticked; untick what should not be analysed (**All**, **None**,
+   **Clear**).
+4. **③ Run the analysis**: check the **Session id** (filled in from the first name and the date; it is stored
+   with every race) and the **Results folder** (by default `<first name>_TournamentSession` next to the first
+   recording), then choose **START ANALYSIS**. The window runs the same processing as `TournamentProcessor.cmd`;
+   the activity log shows its coloured output, the start light turns amber and **Cancel** ends it. Recordings
+   are linked into the results folder's `Input_Videos\`, or copied when they are on another drive.
+5. **🏁 Results**: when it says **Finished**, **Open Latest Excel** or **Open Results Folder**: `Output_Results\`
+   holds the Excel workbook, the CSV and `*_TournamentRaceResultsV1.json`. Check the races, then import the JSON
+   on the website as described above.
+
+The texts follow the Windows language (English or Dutch); `MK8DX_TOURNAMENT_LANGUAGE` in
+`TournamentTools.config.cmd` overrides it. To show another image in the banner, set `MK8DX_ANALYSIS_BACKGROUND`
+in `TournamentTools.config.cmd` to that file. From a clone, `python -m tournament_processor.gui` opens the same window when the
+Tournament Processor and its recognition assets are installed; it needs PySide6 (the processor's `gui` extra) and
+otherwise, or with `--classic-gui`, opens a simpler Tkinter window.
 
 ### Connect to the website (optional)
 

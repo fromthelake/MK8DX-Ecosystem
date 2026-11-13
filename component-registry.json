@@ -462,7 +462,8 @@
       ],
       "generatedArtifacts": [
         "Python wheel",
-        "TournamentProcessor.cmd"
+        "TournamentProcessor.cmd",
+        "TournamentAnalysis.cmd"
       ],
       "canonicalInputOwners": [
         "assets",

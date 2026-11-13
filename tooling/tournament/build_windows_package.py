@@ -90,7 +90,7 @@ rem
 rem  Double-click this file. It prepares a Python 3.12 runtime INSIDE this
 rem  folder (runtime\), installs the Tournament Processor / Tournament Live
 rem  tools plus their dependencies into it, and writes the launcher files
-rem  TournamentProcessor.cmd, TournamentLive.cmd and TournamentLiveCli.cmd.
+rem  TournamentProcessor.cmd, TournamentAnalysis.cmd, TournamentLive.cmd and TournamentLiveCli.cmd.
 rem  Nothing is installed system-wide. Re-run it later to update.
 rem
 rem  Internet is required once: PyTorch, EasyOCR, OpenCV and Qt are downloaded
@@ -225,6 +225,7 @@ echo ============================================================
 call :say " SUCCESS - MK8DX Tournament Tools are installed in this folder." " GELUKT - MK8DX Tournament Tools zijn in deze map geinstalleerd."
 echo ============================================================
 call :say " TournamentProcessor.cmd  - process a recorded video (drag it onto the file)" " TournamentProcessor.cmd  - verwerk een opname (sleep de video naar het bestand)"
+call :say " TournamentAnalysis.cmd   - window to analyse recordings afterwards" " TournamentAnalysis.cmd   - venster om opnames achteraf te analyseren"
 call :say " TournamentLive.cmd       - live capture-card tournament app" " TournamentLive.cmd       - live toernooi-app voor een capturekaart"
 call :say " TournamentLiveCli.cmd    - advanced command line" " TournamentLiveCli.cmd    - geavanceerde opdrachtregel"
 call :say " TournamentTools.config.cmd - local settings and bundled assets" " TournamentTools.config.cmd - lokale instellingen en meegeleverde assets"
@@ -379,7 +380,7 @@ PACKAGE_VERSION = "@@VERSION@@"
 DISTRIBUTIONS = (
     "mk8dx-tournament-connected==@@CONNECTED_VERSION@@",
     "mk8dx-tournament-extraction[vision]==@@EXTRACTION_VERSION@@",
-    "mk8dx-tournament-processor==@@PROCESSOR_VERSION@@",
+    "mk8dx-tournament-processor[gui]==@@PROCESSOR_VERSION@@",
     "mk8dx-tournament-live[gui]==@@LIVE_VERSION@@",
     "mk8dx-icon-matcher==@@ICON_MATCHER_VERSION@@",
 )
@@ -406,6 +407,8 @@ rem Tournament Live keeps its sessions here (Live_Output\\exports, diagnostics, 
 set "MK8DX_TOURNAMENT_LIVE_ROOT=%~dp0TournamentLive"
 rem Interface language: auto follows Windows. Set to en or nl to override.
 set "MK8DX_TOURNAMENT_LANGUAGE=auto"
+rem Optional: another image for the Tournament Analysis window banner instead of the packaged one.
+rem set "MK8DX_ANALYSIS_BACKGROUND=C:\\path\\to\\banner.jpg"
 rem Optional: set to "cpu" to force CPU OCR even when a CUDA build of torch is present.
 rem set "MK8_EASYOCR_GPU_MODE=cpu"
 """
@@ -439,6 +442,25 @@ exit /b %RESULT%
 echo.
 pause
 exit /b 0
+""" + LAUNCHER_FOOTER
+
+# The analysis window runs the same recorded-video processing as TournamentProcessor.cmd, so it selects the
+# same recorded recognition variant (process_video below sets these for the drag-and-drop launcher).
+ANALYSIS_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Analysis
+set "MK8DX_TOURNAMENT_ASSETS_ROOT=%PKG_ROOT%runtime-assets\\recorded\\assets"
+set "MK8DX_TOURNAMENT_REFERENCE_ROOT=%PKG_ROOT%runtime-assets\\recorded"
+set "MK8DX_TOURNAMENT_ENGINE_DATA_ROOT=%PKG_ROOT%runtime-assets\\recorded"
+set "MK8_CLEAN_ASSETS_ROOT=%PKG_ROOT%runtime-assets\\clean-assets"
+set "EASYOCR_MODULE_PATH=%PKG_ROOT%runtime-assets\\ocr-models"
+echo Starting the Tournament Analysis window ... (this window shows startup errors)
+"%PYTHON%" -m tournament_processor.gui %*
+set "RESULT=%ERRORLEVEL%"
+if not "%RESULT%"=="0" (
+    echo.
+    echo Tournament Analysis exited with code %RESULT%.
+    pause
+)
+exit /b %RESULT%
 """ + LAUNCHER_FOOTER
 
 LIVE_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Live
@@ -599,6 +621,25 @@ def _torch_decision(package_root: Path, mode: str | None):
     return _load_torch_selector(package_root).select_torch_package(mode or "auto")
 
 
+LAUNCHERS = {
+    "TournamentProcessor.cmd": PROCESSOR_CMD,
+    "TournamentAnalysis.cmd": ANALYSIS_CMD,
+    "TournamentLive.cmd": LIVE_CMD,
+    "TournamentLiveCli.cmd": LIVE_CLI_CMD,
+    "TournamentConnect.cmd": CONNECT_CMD,
+}
+
+
+def write_launchers(package_root: Path) -> bool:
+    """Write the launchers and, once, the settings file; True when the settings file was created.
+
+    cmd.exe is only fully reliable with CRLF batch files.
+    """
+    for name, content in LAUNCHERS.items():
+        (package_root / name).write_text(content, encoding="utf-8", newline="\r\n")
+    return _write_if_missing(package_root / "TournamentTools.config.cmd", CONFIG_CMD)
+
+
 def install(package_root: Path, python_kind: str, log_path: Path, torch_mode: str | None = None) -> int:
     wheels = package_root / "wheels"
     lock = package_root / "requirements.lock.txt"
@@ -642,13 +683,7 @@ def install(package_root: Path, python_kind: str, log_path: Path, torch_mode: st
         _log(log_path, f"pip install of the package wheels failed with exit code {code}")
         return code
 
-    # Launchers, settings and folders. The settings file is never overwritten.
-    # cmd.exe is only fully reliable with CRLF batch files.
-    (package_root / "TournamentProcessor.cmd").write_text(PROCESSOR_CMD, encoding="utf-8", newline="\r\n")
-    (package_root / "TournamentLive.cmd").write_text(LIVE_CMD, encoding="utf-8", newline="\r\n")
-    (package_root / "TournamentLiveCli.cmd").write_text(LIVE_CLI_CMD, encoding="utf-8", newline="\r\n")
-    (package_root / "TournamentConnect.cmd").write_text(CONNECT_CMD, encoding="utf-8", newline="\r\n")
-    created_config = _write_if_missing(package_root / "TournamentTools.config.cmd", CONFIG_CMD)
+    created_config = write_launchers(package_root)
     if not (package_root / "runtime-assets/live/assets/templates").is_dir() or not (
         package_root / "runtime-assets/recorded/assets/templates").is_dir():
         _log(log_path, "bundled recognition assets are missing")
@@ -675,6 +710,8 @@ def install(package_root: Path, python_kind: str, log_path: Path, torch_mode: st
         ("dependencyClosure", [python, "-m", "pip", "check"]),
         ("processorVideoHelp", [python, "-m", "tournament_processor.vision_cli", "--help"]),
         ("processorCsvHelp", [python, "-m", "tournament_processor.cli", "--help"]),
+        ("processorAnalysisHelp", [python, "-m", "tournament_processor.gui", "--help"]),
+        ("processorAnalysisQt", [python, "-c", "import tournament_processor.qt.main_window; print('qt ok')"]),
         ("liveCliDryRun", [python, "-m", "live_processor.cli", "dry-run"]),
         ("liveResultsHelp", [python, "-m", "tournament_live.cli", "--help"]),
         ("connectedHelp", [python, "-m", "mk8dx_tournament_connected.cli", "--help"]),
@@ -917,8 +954,9 @@ Install (once; internet needed)
      the recognition stack from PyTorch/PyPI into runtime\\ (several GB for CUDA).
      Download and installation time depend on the connection and computer.
    - Nothing is installed outside this folder. No administrator rights needed.
-3. When it prints SUCCESS, three launchers appear in this folder:
+3. When it prints SUCCESS, the launchers appear in this folder:
      TournamentProcessor.cmd   recorded-video extraction (drag a video onto it)
+     TournamentAnalysis.cmd    window to analyse recordings afterwards (videos or folders)
      TournamentLive.cmd        live capture-card tournament GUI
      TournamentLiveCli.cmd     live tools command line
 4. The package already contains the live and recorded recognition assets.
@@ -929,6 +967,8 @@ Use
   Recorded video : drag the .mp4/.mkv onto TournamentProcessor.cmd. Results are
                    written next to the video in <name>_TournamentSession\\Output_Results\\
                    (Excel + CSV + *_TournamentRaceResultsV1.json).
+  Afterwards     : no Tournament Live on the night? Double-click TournamentAnalysis.cmd,
+                   add the videos or a folder per tournament, then Start analysis.
   Live tournament: connect the capture card, double-click TournamentLive.cmd.
   Website import : Administration -> Tournaments -> Import canonical race results,
                    or inside a tournament group "Import races from a Processor / Live file",
