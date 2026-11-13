@@ -90,18 +90,43 @@ person who runs your community.
   `https://www.example.org` (no path, no trailing slash), and tap **Save**. If it fails, open the same address in
   the phone's browser: it must open without a certificate warning.
 
-Then sign in: tap the person icon at the top right (**You**) and **Sign in**; Settings › **Player on this phone**
-does the same. The app shows a code and opens your community in the browser, where you confirm with your own
-account (on a home or club installation: first sign in there with your personal sign-in card).
+Then sign in: tap the person icon at the top right and **Sign in**; Settings › **Player on this phone** does the
+same. The app shows a code and opens your community in the browser, where you confirm with your own account (on a
+home or club installation the app reminds you: first sign in there with your personal sign-in card).
 
-The community you are using is named at the top of the app. Tap it to switch to another community you added
-(one tap), to remove one, or to **Add a community**, which opens the first-start screen again. Each community
-keeps its own sign-in and its own runs that were not sent yet; nothing moves between them by itself.
+### Finding your way
 
-Your own times are under **You → My times**, grouped per track and class with your best time first; tap a track
-for older runs and use **⋯** on a run for its details, editing, withdrawing or **Carry to another community…**.
-They stay readable without a connection. Runs still waiting to be sent show as an orange banner on Home and You;
-**Settings › Saved on this phone** lists them too.
+The top of the app shows the logo (back to Home), the **community chip** with the name of the community you are
+using, the bell and your name. Your name opens **You**: your Player with **Switch Player**, and the tabs
+**My times**, **Records** and **Rivals**, with a **Settings** row below them.
+
+- **Several communities**: tap the community chip to open **Communities**. The active one is green; **Switch**
+  changes to another in one tap, **Remove from this phone** forgets one (only once nothing waits to be sent), and
+  **Add a community** opens the first-start screen again. Each community keeps its own sign-in, its own unsent
+  runs and, at home or at the club, its own trust; nothing moves between them by itself. When the administrator
+  has named the community, the app shows that name instead of the address.
+- **My times** is one list: your career numbers, then one row per track and class with your personal best; tap a
+  row for older runs and use **⋯** on a run for **Details**, **Edit**, **Withdraw** or
+  **Carry to another community…**.
+- **Without internet**: the app keeps a copy of your own times and your rivals' best times per community and
+  shows it with "Offline — last updated …".
+- **Waiting to be sent**: runs that are still only on the phone show as an orange banner on Home and You; tap it,
+  or use Settings › **Saved on this phone**, to see them.
+- **Settings** is grouped into **Player**, **App**, **Community** and **About**, and saves each change by itself.
+  The language is under App; **Get the app** and **Saved on this phone** are under Community; **Run a test scan**
+  is under About.
+
+### Carrying times to another community
+
+If you belong to more than one community, a time can count in another one too: **Carry to another community…**
+on a run, or **Carry my best times** below your career numbers in My times (tracks where the other community
+already has a better time of yours are skipped). The copy waits until you are signed in there. The **receiving**
+community decides: by default it does not take times from elsewhere, it may let an administrator approve each one
+first, or it may take them like any other time. A carried time always shows where it came from ("Carried from … ·
+originally …"). The same original is taken only once; an equal time only fills in what the existing run was
+missing.
+
+### Notifications
 
 Notifications in the app are fetched from your community's inbox; Android's notification permission and the
 app's own switch must both be on.

@@ -275,10 +275,12 @@ This needs app version 2.95.0 or newer. The app does not need the certificate in
 1. **Do:** open the app. On a new install it starts on **Choose your community**; otherwise tap the community name at the top of the app and then **Add a community**. → **You see:** **Choose your community** with the panels **At home or at the club** and **Online community**. Under **At home or at the club** tap **Scan the QR code**.
 2. **Do:** if needed tap **Use the camera** and allow the camera. Scan the QR code on the **Prepare a device** card. → **You see:** **Check that this is your installation** with an **Address** and a **Key fingerprint (SHA-256)**. → **See something else?** "This is not the QR code of a Prepare a device card.": you scanned a personal card. Scan the Prepare a device card. If scanning fails, type the New device address (for example `http://192.168.1.50/setup`) at **Or paste the setup link** and tap **Next**.
 3. **Do:** compare the address with the website address, and the long key with the Prepare this device page: open **Full fingerprints** there and look at "Root public key SHA-256 (SPKI)". You can open that page on another device, or on the MK8DX computer itself through the New device address. → **You see:** both exactly the same. Tap **Connect** (when the app was already set to another server, confirm the change). → **See something else?** If they differ, tap **Back** and do not connect. "Could not get a matching certificate from": check the network and that the MK8DX computer is on, and try again.
-4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in** and then **Sign in to synchronize**. → **You see:** the browser opens the approval page. Check that the site shows the same code as the app and approve the device. Go back to the app. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
+4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in**. The app reminds you that at home or at the club you sign in with your personal sign-in card, not with email. Tap **Sign in to synchronize**. → **You see:** the browser opens the approval page. Check that the site shows the same code as the app and approve the device. Go back to the app. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
 5. **Do:** post a time in the app. → **You see:** the time on the installation's website.
 
 Unpairing: tap the community name at the top → **Add a community** → **Forget this installation**.
+
+Club and home in one app: the app can hold several communities. Tap the community name at the top and then **Switch**; each community keeps its own account and unsent times. Your own times are under your name → **My times**, also when the phone cannot reach the MK8DX computer.
 
 **LiveTrial on a second Windows PC**
 
@@ -305,7 +307,7 @@ Good to know: without a Player, LiveTrial's sign-in ends with a message to set u
 - Everyone signs in once with their own card on that device.
 - **Website:** after that you switch with one tap from the account menu: choose **Switch account** and then the person.
 - **PIN:** anyone can set a 4-digit PIN on the website under **Settings** → **PIN for switching accounts**. Switching to that account then asks for that PIN first.
-- **Android app:** **Settings** → **Player on this phone** → **Switch Player**, and choose the person with **Switch**. If that person has a PIN, the app asks **PIN required** and **PIN (4 digits)**. A wrong PIN gives "That PIN is not right."
+- **Android app:** tap your name at the top → **Switch Player** (or **Settings** → **Player on this phone**), and choose the person with **Switch**. If that person has a PIN, the app asks **PIN required** and **PIN (4 digits)**. A wrong PIN gives "That PIN is not right."
 - **Administrators** are in that list only when they have set a PIN (Settings → PIN for switching accounts). Without a PIN they sign in afresh with a card. It is stricter for an administrator: after the 5th wrong PIN the administrator account disappears from that device, and also after 14 days without use; then a card is needed again. In the Android app administrators are not in the list (yet).
 
 **Signing out**
@@ -323,6 +325,8 @@ Good to know: without a Player, LiveTrial's sign-in ends with a message to set u
 (Image: website-switch-account)
 
 **A name for your community:** an administrator can give the installation a name, such as "Club Noord", on the website under **Administration** → **Installation settings** → **Community name**, and click **Save name**. The apps then show that name instead of the web address. Leave the field empty and save to remove the name again.
+
+**Times from other communities:** someone who also plays in another community (another club, or a site on the internet) can carry their times here from the Android app. An administrator chooses on the website under **Administration** → **Installation settings** → **Times from other communities**: **Off** (the default: such times are refused), **With approval** (each carried time stays out of sight until an administrator clicks **Publish** next to it under **Administration** → **Time Trials**) or **Allowed**. A carried time always shows where it came from.
 
 ## 9. A tournament night
 
