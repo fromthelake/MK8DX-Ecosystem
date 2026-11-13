@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Log;
 
+import nl.mariokart8.iconmatcher.ContextRules;
+import nl.mariokart8.iconmatcher.ContextRules.Decision;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
@@ -100,20 +102,6 @@ public final class SharedFieldReader {
         final List<Double> topScores = new ArrayList<>();
     }
 
-    static final class Decision {
-        final String id;
-        final String familyId;
-        final String status;
-        final String visualTop1;
-
-        Decision(String id, String familyId, String status, String visualTop1) {
-            this.id = id;
-            this.familyId = familyId;
-            this.status = status;
-            this.visualTop1 = visualTop1;
-        }
-    }
-
     private final Map<String, Group> groups = new HashMap<>();
     /** The same tensors as the shared package's groups (packages/icon-matcher/java). */
     private final Map<String, nl.mariokart8.iconmatcher.IconGroup> profileGroups = new HashMap<>();
@@ -123,6 +111,8 @@ public final class SharedFieldReader {
     private final Map<String, Integer> tireIndexById = new HashMap<>();
     private final Map<String, Integer> flagIndexById = new HashMap<>();
     private final Map<String, List<String[]>> resultMembers = new HashMap<>();
+    private final ContextRules.References contextReferences =
+            new ContextRules.References(familyById, resultMembers, partForCharacter, tireByIndex);
     /** The central Select-a-Ghost picker's references (CENTRAL_RECOGNITION section 8); null = per-field only. */
     private final nl.mariokart8.iconmatcher.GhostPanel.References ghostPicker;
     private final JSONObject names;
@@ -551,131 +541,31 @@ public final class SharedFieldReader {
         return family != null ? family : id;
     }
 
-    private Decision combineCharacter(Visual visual, JSONObject nameText) {
-        String topId = visual.top.get(0)[0];
-        String topFamily = visual.top.get(0)[1];
-        String clueId = nameText == null ? null : printedFamily(nameText.optString("id", null));
-        double fuzzy = nameText == null ? Double.NaN : nameText.optDouble("fuzzy", Double.NaN);
-        String clueFamily = clueId == null ? null : familyById.get(clueId);
-        boolean strong = clueId != null && !Double.isNaN(fuzzy) && fuzzy >= 0.85;
-        String observedFamily = visual.acceptedId != null ? topFamily : null;
-        if (strong && topFamily.equals(clueFamily)) {
-            if ("accepted".equals(visual.status) && !clueId.equals(topId)
-                    && !clueId.equals(topFamily) && fuzzy < 1) {
-                return new Decision(null, topFamily, "conflict", topId);
-            }
-            if (clueId.equals(topFamily) && !topId.equals(topFamily)) {
-                for (int i = 0; i < visual.top.size(); i++) {
-                    if (visual.top.get(i)[0].equals(clueId)) {
-                        if (visual.score < 0.80 && visual.topScores.get(0) - visual.topScores.get(i) <= 0.015) {
-                            return new Decision(clueId, topFamily, "accepted", topId);
-                        }
-                        break;
-                    }
-                }
-                return new Decision(visual.acceptedId, observedFamily, visual.status, topId);
-            }
-            return new Decision(clueId, topFamily, "accepted", topId);
+    private static ContextRules.Visual contextVisual(Visual visual, String kind) {
+        List<ContextRules.Candidate> top = new ArrayList<>();
+        for (int i = 0; i < visual.top.size(); i++) {
+            top.add(new ContextRules.Candidate(visual.top.get(i)[0], visual.top.get(i)[1], visual.topScores.get(i)));
         }
-        if (strong && clueFamily != null) {
-            if (fuzzy >= 0.90 && (visual.score < 0.85 || visual.margin < 0.05)) {
-                return new Decision(clueId, clueFamily, "accepted", topId);
-            }
-            return new Decision(null, null, "conflict", topId);
-        }
-        return new Decision(visual.acceptedId, observedFamily, visual.status, topId);
+        return new ContextRules.Visual(kind, visual.status, visual.acceptedId, visual.score, visual.margin,
+                visual.familyMargin, top);
     }
 
+    /** The shared rule (packages/icon-matcher ContextRules); the printed name has no rival margin here (1). */
+    private Decision combineCharacter(Visual visual, JSONObject nameText) {
+        String clueId = nameText == null ? null : printedFamily(nameText.optString("id", null));
+        double fuzzy = nameText == null ? Double.NaN : nameText.optDouble("fuzzy", Double.NaN);
+        ContextRules.Clue clue = clueId == null ? null : new ContextRules.Clue(clueId, fuzzy, 1.0);
+        return ContextRules.combineCharacter(contextVisual(visual, "characters"), clue, familyById);
+    }
+
+    /** The shared rule (packages/icon-matcher ContextRules), with the tyre top-three guard. */
     private Decision combinePart(String kind, Visual visual, Decision character, JSONObject text) {
-        String topId = visual.top.get(0)[0];
-        String topFamily = visual.top.get(0)[1];
-        String family = topFamily;
         String rawClue = text == null ? null : text.optString("id", null);
-        String clueId = rawClue != null && rawClue.matches("\\d+") ? rawClue : printedFamily(rawClue);
+        String clueId = rawClue != null && ContextRules.asciiIndex(rawClue) ? rawClue : printedFamily(rawClue);
         double fuzzy = text == null ? Double.NaN : text.optDouble("fuzzy", Double.NaN);
         double margin = text == null ? Double.NaN : text.optDouble("margin", Double.NaN);
-        boolean finite = clueId != null && !Double.isNaN(fuzzy) && !Double.isNaN(margin);
-        boolean strong = finite && fuzzy >= 0.85 && margin >= 0.08;
-        boolean numeric = clueId != null && clueId.matches("\\d+");
-        String textId = "tires".equals(kind) && numeric ? tireByIndex.get(Integer.parseInt(clueId)) : clueId;
-        String textFamily = textId == null ? null : familyById.get(textId);
-        if (finite && !strong && fuzzy >= 0.65 && margin >= 0.15 && textFamily != null
-                && !textFamily.equals(topFamily)) {
-            return new Decision(null, topFamily, "conflict", topId);
-        }
-        if ("tires".equals(kind) && strong && numeric) {
-            String tire = tireByIndex.get(Integer.parseInt(clueId));
-            if (tire != null) {
-                boolean inTop3 = false;
-                for (String[] candidate : visual.top) {
-                    inTop3 |= candidate[0].equals(tire);
-                }
-                if (!inTop3) {
-                    return new Decision(null, family, "conflict", topId);
-                }
-                return new Decision(tire, tire, "accepted", topId);
-            }
-        }
-        if ("tires".equals(kind) && finite && numeric) {
-            String tire = tireByIndex.get(Integer.parseInt(clueId));
-            if (topId.equals(tire) && fuzzy >= 0.70 && margin >= 0.30
-                    && visual.score >= 0.80 && visual.margin >= 0.01) {
-                return new Decision(tire, tire, "accepted", topId);
-            }
-        }
-        if (strong && textFamily != null) {
-            family = textFamily;
-        }
-        String chosen = family.equals(topFamily) ? visual.acceptedId : null;
-        boolean strongVisualVariant = "accepted".equals(visual.status) && family.equals(topFamily);
-        if ("gliders".equals(kind) && strongVisualVariant && topId.equals(chosen)
-                && character.id != null && "accepted".equals(character.status) && strong
-                && family.equals(clueId)) {
-            String relation = partForCharacter.get(relationKey(kind, family, character.id));
-            if (relation != null && !relation.equals(chosen) && family.equals(familyById.get(relation))) {
-                for (String[] candidate : visual.top) {
-                    if (candidate[0].equals(relation)) {
-                        chosen = relation;
-                        break;
-                    }
-                }
-            }
-        }
-        if (("bodies".equals(kind) || "gliders".equals(kind)) && character.id != null && !strongVisualVariant
-                && (visual.score >= 0.80 || strong)) {
-            String relation = partForCharacter.get(relationKey(kind, family, character.id));
-            if (relation != null) {
-                boolean weakFamily = "gliders".equals(kind) && !strong && visual.familyMargin != null
-                        && visual.familyMargin < 0.02;
-                if (!weakFamily) {
-                    chosen = relation;
-                }
-            }
-        }
-        if (chosen == null && strong) {
-            List<String[]> members = new ArrayList<>();
-            for (String[] member : resultMembers.get(kind)) {
-                if (member[1].equals(family)) {
-                    members.add(member);
-                }
-            }
-            if (members.size() == 1) {
-                chosen = members.get(0)[0];
-            } else if (family.equals(topFamily) && visual.score >= 0.75 && visual.margin >= 0.01) {
-                chosen = topId;
-            }
-        }
-        if (chosen == null && strong && family.equals(clueId)) {
-            return new Decision(null, family, "family_only", topId);
-        }
-        if ("gliders".equals(kind) && topId.equals(chosen) && strong && family.equals(clueId)
-                && character.id == null && "unknown".equals(character.status) && character.visualTop1 != null) {
-            String relation = partForCharacter.get(relationKey(kind, family, character.visualTop1));
-            if (relation != null && !relation.equals(chosen) && family.equals(familyById.get(relation))) {
-                return new Decision(null, family, "conflict", topId);
-            }
-        }
-        return new Decision(chosen, chosen != null ? family : null, chosen != null ? "accepted" : "unknown", topId);
+        ContextRules.Clue clue = clueId == null ? null : new ContextRules.Clue(clueId, fuzzy, margin);
+        return ContextRules.combinePart(kind, contextVisual(visual, kind), character, clue, contextReferences, true);
     }
 
     // ------------------------------------------------------------------
@@ -752,7 +642,8 @@ public final class SharedFieldReader {
             // The shared result-card decision (packages/icon-matcher ResultProposal)
             // on the shared evidence plus this scanner's printed-name context.
             JSONObject characterEntry = owner.optJSONObject("character");
-            Decision character = visuals[0] == null ? new Decision(null, null, "unknown", null)
+            Decision character = visuals[0] == null
+                    ? new Decision(null, null, "unknown", Arrays.asList("character_unavailable"), null, null)
                     : combineCharacter(visuals[0], characterEntry == null ? null : characterEntry.optJSONObject("name_text"));
             JSONObject evidenceOwner = new JSONObject();
             Decision[] contexts = new Decision[FIELDS.length];
@@ -1087,7 +978,8 @@ public final class SharedFieldReader {
                 .put("familyId", decision.familyId == null ? JSONObject.NULL : decision.familyId)
                 .put("status", decision.status)
                 .put("visualTop1", decision.visualTop1 == null ? JSONObject.NULL : decision.visualTop1)
-                .put("evidence", new JSONArray());
+                .put("suggestedId", decision.suggestedId == null ? JSONObject.NULL : decision.suggestedId)
+                .put("evidence", new JSONArray(decision.evidence));
     }
 
     private static JSONArray topTrace(Visual visual) throws Exception {
