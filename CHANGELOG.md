@@ -5,6 +5,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- CI runs the Tournament tests on the Tools package's locked runtime, with a smoke of the recorded analysis
+  after the text reading on synthetic rows, so a dependency update that breaks that path (as pandas 3 did, #169)
+  fails before a release.
+
 ## 0.2.2 — 2026-11-13
 
 Fixes recorded-video analysis in the Tournament Tools, which stopped with an error in 0.2.0 and 0.2.1, and adds the
