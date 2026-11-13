@@ -16,7 +16,7 @@ vision = [
   "numpy==2.5.4",
   "opencv-python==5.0.0.93",
   "openpyxl==3.1.5",
-  "pandas==3.1.0",
+  "pandas==3.1.1",
   "pillow==13.0.0",
   "psutil==7.2.2",
   "textdistance==4.6.3",
