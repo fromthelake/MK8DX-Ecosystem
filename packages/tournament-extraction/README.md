@@ -85,28 +85,50 @@ selector supports Linux and macOS, but no end-to-end run there has been recorded
 
 #### CUDA is not detected
 
-1. `python packages/tournament-extraction/python/src/mk8dx_tournament_extraction/setup_torch.py`
-   (without `--install`) prints the cards it found, whether `nvidia-smi` works, the
-   mode it would select and the reason.
-2. `nvidia-smi` must run and show `CUDA Version: 13.2` or higher; otherwise
-   install or update the driver first.
-3. `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"`:
-   `+cpu` means the CPU wheel is installed (often because EasyOCR's resolver ran
-   before the selector): run `setup_torch.py --install` again in the same
-   environment. `+cu132 False` means the wheel cannot reach the card: restart
-   after a driver change and check step 2.
-4. `MK8_EASYOCR_GPU_MODE=cpu` in the environment forces CPU OCR; unset it.
+Run each step in the virtual environment you use for the engine. Stop at the
+first step that shows the problem.
 
-Per platform:
+1. **Is the driver there?** Run `nvidia-smi`.
+   - A table with your card: go to step 2.
+   - Command not found: install NVIDIA's driver and reboot (see your platform
+     below), then repeat this step.
+2. **Is the driver new enough?** Look at `CUDA Version:` in the top right of
+   that table.
+   - `13.2` or higher: go to step 3.
+   - Lower: update the driver, reboot, and repeat step 1.
+3. **What would the selector choose?** Run
+   `python packages/tournament-extraction/python/src/mk8dx_tournament_extraction/setup_torch.py`
+   (without `--install`; it only prints).
+   - `Selected torch mode: cuda`: go to step 4.
+   - `cpu`: the `Reason:` line says why. Fix that, then repeat this step.
+4. **Which torch is installed?** Run
+   `python -c "import torch; print(torch.__version__, torch.cuda.is_available())"`.
+   - `+cu132 True`: torch uses the card. Go to step 5.
+   - `+cpu False`: the CPU wheel is installed (often because EasyOCR's resolver
+     ran before the selector). Run `setup_torch.py --install`, then repeat
+     this step.
+   - `+cu132 False`: the wheel cannot reach the card. Reboot after a driver
+     change and start again at step 1.
+5. **Is CPU forced?** Run `echo $MK8_EASYOCR_GPU_MODE` (PowerShell:
+   `$env:MK8_EASYOCR_GPU_MODE`).
+   - Empty or `gpu`: fine. The analysis log should now show `OCR backend: cuda`.
+   - `cpu`: unset it and run the analysis again.
 
-- **Windows:** check Device Manager that the card is enabled; restart after
-  installing the driver.
-- **Linux:** if `nvidia-smi` fails, the kernel module is not loaded
-  (`lsmod | grep nvidia` prints nothing). With Secure Boot on, the driver's key
-  must be enrolled (the MOK prompt at the next boot) or the module will not load.
-  Under WSL 2, update the Windows driver and run `wsl --update`; never install a
-  Linux NVIDIA driver inside WSL.
-- **macOS:** there is no CUDA. For the experimental MPS path, check
+Per platform, when step 1 fails:
+
+- **Windows:** in Device Manager, check under **Display adapters** that the card
+  is enabled. Reboot after installing the driver.
+- **Linux:**
+  1. Run `lsmod | grep nvidia`. Empty means the driver's kernel module is not
+     loaded.
+  2. Run `mokutil --sb-state`. With `SecureBoot enabled`, the driver's key must
+     be enrolled: reinstall the driver, reboot, and choose **Enroll MOK** in the
+     blue screen that appears at boot.
+  3. Under WSL 2, do not install a Linux NVIDIA driver inside WSL. Update the
+     Windows driver instead, run `wsl --update` in Windows, and repeat step 1
+     inside WSL.
+- **macOS:** there is no CUDA, so this list does not apply. For the
+  experimental MPS path, check
   `python -c "import torch; print(torch.backends.mps.is_available())"` and set
   `MK8_EASYOCR_GPU_MODE=gpu`.
 

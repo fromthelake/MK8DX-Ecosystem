@@ -72,31 +72,99 @@ details for developers, including Linux and macOS.
 
 ### The NVIDIA card is not used: what to check
 
-The analysis log says `OCR backend: cpu` although the computer has an NVIDIA card? Check these in order, in
-PowerShell in the Tournament Tools folder:
+Your analysis log says `OCR backend: cpu`, but the computer has an NVIDIA card. Go through these steps one at a
+time. Each step says what you should see. Stop as soon as a step tells you the problem is fixed.
 
-1. **Does Windows see the driver?** Run `nvidia-smi`. "Not recognized" means the NVIDIA driver is missing:
-   install it and restart the computer. Also check in Device Manager that the card is not disabled.
-2. **Is the driver new enough?** The top right of `nvidia-smi` must say `CUDA Version: 13.2` or higher. Update
-   the driver if it is lower.
-3. **What did the installer choose, and why?** Open `install.log` and look for `PyTorch backend:` and the line
-   after it. The last line, `install complete; runtime {...}`, names the installed build: `"torch": "...+cu132"`
-   with `"effectiveBackend": "cuda"` is right; `+cpu` means the CPU build was installed.
-4. **What would it choose now?** Run `runtime\Scripts\python.exe tools\select_torch.py`. It installs nothing
-   and shows the cards it found, whether `nvidia-smi` works, the mode it would select and the reason.
-5. **Can PyTorch use the card?** Run
-   `runtime\Scripts\python.exe -c "import torch; print(torch.__version__, torch.cuda.is_available())"`.
-   - `...+cpu False`: the CPU build is installed. After fixing 1 and 2, run the installer again. If it keeps
-     choosing CPU because an earlier run was told to, run `set MK8DX_TORCH_MODE=auto` in a Command Prompt and
-     start `Install-MK8DX-TournamentTools.cmd` from that same window.
-   - `...+cu132 False`: the CUDA build is there but cannot reach the card. Restart after a driver installation
-     or update, and check 1 and 2 again.
-   - `...+cu132 True`: PyTorch uses the card.
-6. **Is CPU forced in the settings?** In `TournamentTools.config.cmd`, the line
-   `set "MK8_EASYOCR_GPU_MODE=cpu"` must stay commented out (`rem`).
+The results are correct either way. Without the graphics card the analysis is only slower.
 
-Still on CPU? Keep `install.log` and the output of steps 4 and 5 when you ask for help. The results are
-correct either way; the CPU is only slower.
+**Step 1. Open a Command Prompt in the Tournament Tools folder.**
+
+1. Open the Tournament Tools folder in File Explorer (the folder with `Install-MK8DX-TournamentTools.cmd`).
+2. Click the address bar at the top, where the folder path is shown.
+3. Type `cmd` and press Enter.
+
+A black window opens. Its last line ends with the path of the Tournament Tools folder. Use this window for all
+the next steps.
+
+**Step 2. Check that Windows has the NVIDIA driver.**
+
+1. Type `nvidia-smi` and press Enter.
+
+- You see a table with the name of your card: good, go to step 3.
+- You see `'nvidia-smi' is not recognized`: the NVIDIA driver is missing.
+  1. Install the driver from nvidia.com or the NVIDIA app.
+  2. Restart the computer.
+  3. Start again at step 1.
+- You see `No devices were found`: Windows has disabled the card.
+  1. Right-click the Start button and choose **Device Manager**.
+  2. Open **Display adapters**.
+  3. If the NVIDIA card has a small arrow on its icon, right-click it and choose **Enable device**.
+  4. Start again at step 1.
+
+**Step 3. Check that the driver is new enough.**
+
+1. Look at the top right of the `nvidia-smi` table, at `CUDA Version:`.
+
+- `13.2` or higher: good, go to step 4.
+- Lower than `13.2`: the driver is too old.
+  1. Update the driver from nvidia.com or the NVIDIA app.
+  2. Restart the computer.
+  3. Open a new Command Prompt (step 1), check again, then go to step 6 to reinstall.
+
+**Step 4. Ask the installer what it would choose now.**
+
+1. Type `runtime\Scripts\python.exe tools\select_torch.py` and press Enter. This only looks; it installs
+   nothing.
+2. Find the line `Selected torch mode:`.
+
+- `cuda`: good, the installer would use the card. Go to step 5.
+- `cpu`: read the `Reason:` line below it.
+  - It says the driver reports an older CUDA version: go back to step 3.
+  - It says no NVIDIA GPU was detected: go back to step 2.
+
+**Step 5. Ask PyTorch whether it can use the card.**
+
+1. Type this line and press Enter:
+
+   ```
+   runtime\Scripts\python.exe -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+   ```
+
+2. Look at the end of the answer.
+
+- It ends in `+cu132 True`: PyTorch uses the card. Go to step 7.
+- It ends in `+cpu False`: the CPU version of PyTorch is installed. Go to step 6.
+- It ends in `+cu132 False`: the right version is installed, but it cannot reach the card. Restart the
+  computer and start again at step 1.
+
+**Step 6. Reinstall with automatic selection.**
+
+1. In the same Command Prompt, type `set MK8DX_TORCH_MODE=auto` and press Enter. Nothing is printed; that is
+   normal.
+2. Type `Install-MK8DX-TournamentTools.cmd` and press Enter.
+3. Wait until the installer is finished. It downloads the CUDA version of PyTorch, which takes a while.
+4. Do step 5 again. It should now end in `+cu132 True`.
+
+**Step 7. Check that CPU is not forced in the settings.**
+
+1. Open `TournamentTools.config.cmd` in Notepad (right-click it, **Open with**, **Notepad**).
+2. Press Ctrl+F and search for `MK8_EASYOCR_GPU_MODE`.
+
+- The line starts with `rem`, or the file has no such line: good.
+- The line is `set "MK8_EASYOCR_GPU_MODE=cpu"` without `rem` in front: CPU is forced.
+  1. Type `rem ` at the start of that line.
+  2. Save the file.
+
+**Step 8. Analyse a recording again.**
+
+1. Start the analysis again.
+2. Look at the log. It should now say `OCR backend: cuda`.
+
+Still `cpu`? Ask for help and send along:
+
+- the file `install.log` from the Tournament Tools folder;
+- what step 4 printed;
+- what step 5 printed.
 
 `TournamentTools.config.cmd` holds local paths and language preferences. Keep
 that file and the `TournamentLive/` session folder during updates. The live
