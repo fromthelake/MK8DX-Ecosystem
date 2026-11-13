@@ -92,6 +92,19 @@ In a POSIX shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps/t
 dashboard test runs with `node apps/timetrials-desktop/tests/history-startup.test.js` (also in CI). `engine-overlay/livetrial/tests/test_names.py` needs the full
 LiveTrial engine snapshot and its Clean Assets database, which are not in this repository.
 
+Tournament tests (`tests/tournament`) run on the Tools package's locked runtime
+([requirements.lock.txt](../tooling/tournament/requirements.lock.txt)). They include a smoke of the recorded
+analysis after the text reading: synthetic OCR rows and score frames, through name linking and the colour-variant
+refinement, to the results CSV and the canonical JSON. No recording or private data is needed; node materializes
+the public recorded assets (`tests/tournament/conftest.py`), or point `MK8DX_RECORDED_ASSETS` at a folder with
+the `tournament` and `tournament-text` collection groups. Verify's `tournament-tests` job installs the lock the
+way the package installer does (CPU PyTorch, without the Qt GUI), so a dependency bump that breaks this path
+fails there:
+
+```powershell
+python -m pytest -q -p no:cacheprovider -rs tests/tournament
+```
+
 ## Database integration tests
 
 The API's database tests (`backend/api/test/*.integration.test.ts`) are opt-in and skip without the
@@ -193,6 +206,7 @@ boundary and documentation checks; the API and Web checks (including the API mod
 CSS check, the intake rehearsal and the tooling tests; gitleaks over the history; `npm audit --omit=dev
 --audit-level=high` for the API, Web and scanner; the asset collection, the browser scanner build and the public
 test set; the Android unit tests and debug APK; the LiveTrial desktop tests (Windows) and a compile check of the
-LiveTrial and Tournament sources; the Tournament package build (Windows); and the Docker image builds.
+LiveTrial and Tournament sources; the Tournament package build and the Tournament tests on its locked runtime
+(Windows); and the Docker image builds.
 [CodeQL](../.github/workflows/codeql.yml) analyses JavaScript/TypeScript, Python and Java. The database
 integration tests do not run in CI yet.

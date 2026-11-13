@@ -5,6 +5,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- CI runs the Tournament tests on the Tools package's locked runtime, with a smoke of the recorded analysis
+  after the text reading on synthetic rows, so a dependency update that breaks that path (as pandas 3 did, #169)
+  fails before a release.
+
 ### Security
 
 - **The gateway's Caddy no longer runs as root** (#34). The Web image's new entrypoint gives Caddy's storage

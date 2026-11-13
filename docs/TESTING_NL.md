@@ -57,6 +57,19 @@ In een POSIX-shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps
 De dashboardtest draait met `node apps/timetrials-desktop/tests/history-startup.test.js` (ook in CI). `engine-overlay/livetrial/tests/test_names.py` vraagt de volledige LiveTrial-engine
 en zijn Clean Assets-database, die niet in deze repository staan.
 
+Toernooitests (`tests/tournament`) draaien op de vergrendelde runtime van het Tools-pakket
+([requirements.lock.txt](../tooling/tournament/requirements.lock.txt)). Ze bevatten een rooktest van de analyse
+van een opname na het tekstlezen: synthetische OCR-rijen en scoreschermen, via naamkoppeling en de
+kleurvariantverfijning, tot de uitslagen-CSV en de canonieke JSON. Er is geen opname of privédata nodig; node
+zet de openbare opname-assets klaar (`tests/tournament/conftest.py`), of laat `MK8DX_RECORDED_ASSETS` wijzen naar
+een map met de collectiegroepen `tournament` en `tournament-text`. De Verify-job `tournament-tests` installeert
+de lock zoals het pakketinstallatieprogramma dat doet (CPU-PyTorch, zonder de Qt-GUI), dus een
+afhankelijkheidsupdate die dit pad breekt, faalt daar:
+
+```powershell
+python -m pytest -q -p no:cacheprovider -rs tests/tournament
+```
+
 ## Database-integratietests
 
 De MySQL-tests van de API (`backend/api/test/*.integration.test.ts`, 35 bestanden) draai je bewust; zonder de
@@ -142,6 +155,7 @@ grens- en documentatiecontroles; de API- en Webcontroles; de TypeScript- en Pyth
 de CSS-controle, de intakeproef en de toolingtests; gitleaks over de geschiedenis; `npm audit --omit=dev
 --audit-level=high` voor API, Web en scanner; de assetcollectie, de scannerbuild en de openbare testset; de
 Android-unittests en debug-APK; de LiveTrial-desktoptests (Windows) en een compileercontrole van de LiveTrial- en
-toernooibronnen; de bouw van het toernooipakket (Windows); en de Docker-images.
+toernooibronnen; de bouw van het toernooipakket en de toernooitests op zijn vergrendelde runtime (Windows); en de
+Docker-images.
 [CodeQL](../.github/workflows/codeql.yml) analyseert JavaScript/TypeScript, Python en Java. De
 database-integratietests draaien nog niet in CI.
