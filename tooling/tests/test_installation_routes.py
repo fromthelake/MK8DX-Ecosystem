@@ -49,10 +49,16 @@ class OperatorProfileTest(unittest.TestCase):
             os.chmod(state / "operator.json", 0o600)
             install.compose_command(state)
             self.assertEqual(mode("operator.json"), 0o644)
+            # The gateway's non-root Caddy (uid 10002, #34) serves the public client config.
+            self.assertEqual(mode("public-client.json"), 0o644)
+            for name in ("api.env", "compose.env", "secrets.json", "operator-profile.json"):
+                self.assertEqual(mode(name), 0o600, name)
             os.chmod(state, 0o755)
             os.chmod(state / "operator.json", 0o600)
+            os.chmod(state / "public-client.json", 0o600)
             install.compose_command(state)
             self.assertEqual(mode("operator.json"), 0o600, "never widened outside a private directory")
+            self.assertEqual(mode("public-client.json"), 0o600, "never widened outside a private directory")
 
     def test_one_origin_special_secret_repeat_and_rejection(self):
         with tempfile.TemporaryDirectory(prefix="mk8dx install path with spaces ") as temp:
@@ -104,6 +110,44 @@ class OperatorProfileTest(unittest.TestCase):
                 tournament_server.save_origin("https://two.example.org")
                 self.assertNotEqual(first, tournament_server.server_data_dir())
                 self.assertEqual(tournament_server.selected_origin(), "https://two.example.org")
+
+
+class NonRootGatewayTest(unittest.TestCase):
+    """#34: Caddy drops root in the image itself, so older and newer images run with the same Compose files."""
+
+    def test_the_image_starts_caddy_through_the_dropping_entrypoint(self):
+        dockerfile = (ROOT / "apps/timetrials-web/Dockerfile").read_text(encoding="utf-8")
+        final = dockerfile[dockerfile.rindex("\nFROM caddy:"):]
+        self.assertIn("apk add --no-cache su-exec", final)
+        self.assertIn("adduser -S -D -H -u 10002 -G caddy", final)
+        self.assertIn('ENTRYPOINT ["/usr/local/bin/mk8dx-gateway-entrypoint"]', final)
+        self.assertIn('CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]', final)
+        # Root stays the image user only so the entrypoint can migrate old volumes and the installer's
+        # `run --entrypoint sh web` maintenance keeps working; the entrypoint ends in su-exec.
+        self.assertNotIn("\nUSER ", final)
+
+    def test_the_entrypoint_keeps_modes_and_never_follows_links(self):
+        script = (ROOT / "infrastructure/docker/gateway-entrypoint.sh").read_bytes()
+        self.assertNotIn(b"\r", script)
+        text = script.decode("utf-8")
+        self.assertTrue(text.startswith("#!/bin/sh\n"))
+        self.assertNotIn("chmod", text, "file modes (0600 keys) are never changed")
+        self.assertIn('-exec chown -h "$uid:$gid" {} +', text)
+        self.assertNotIn("chown -R", text)
+        self.assertIn('exec su-exec "$run_as" "$@"', text)
+        self.assertIn("/run/mk8dx", text, "the A2 CA signer and setup page are checked for readability")
+
+    def test_compose_files_do_not_pin_a_gateway_user(self):
+        # A `user:` would break a rollback to a root image with the newer Compose files, and the
+        # entrypoint could no longer hand an existing root-owned volume to Caddy.
+        for path in sorted(ROOT.glob("compose*.yaml")):
+            with self.subTest(path.name):
+                self.assertNotIn("\n    user:", path.read_text(encoding="utf-8"))
+
+    def test_the_lan_gateway_never_installs_its_root_in_the_container(self):
+        text = (ROOT / "infrastructure/docker/Caddyfile.lan").read_text(encoding="utf-8")
+        self.assertTrue(text.startswith("{\n"))
+        self.assertIn("\n  skip_install_trust\n}\n", text[:text.index("https://")])
 
 
 class ClientAddressForwardingTest(unittest.TestCase):

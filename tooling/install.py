@@ -74,12 +74,17 @@ def free_port(start):
 
 
 def container_readable(state):
-    """Allow the API's uid 10001 to read operator.json inside a private state directory."""
+    """Allow the containers' own users to read their bind-mounted files inside a private state directory:
+    operator.json for the API's uid 10001, and public-client.json (public content, served to every browser) for
+    the gateway's Caddy, which runs as uid 10002 (#34). Every other file there stays 0600."""
     if os.name != "posix":
         return
     state = Path(state)
-    if stat.S_IMODE(state.stat().st_mode) & 0o077 == 0 and (state / "operator.json").is_file():
-        os.chmod(state / "operator.json", 0o644)
+    if stat.S_IMODE(state.stat().st_mode) & 0o077 != 0:
+        return
+    for name in ("operator.json", PUBLIC):
+        if (state / name).is_file():
+            os.chmod(state / name, 0o644)
 
 
 def write_new(path, content):
