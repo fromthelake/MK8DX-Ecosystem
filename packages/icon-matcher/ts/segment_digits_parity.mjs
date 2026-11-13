@@ -1,6 +1,6 @@
 // 7-segment matcher parity: the TS module against Python's records.
 //   node --experimental-strip-types segment_digits_parity.mjs <vectors.json>
-// Vectors come from tooling/recognition/segment_digit_vectors.py.
+// Public vectors: vectors/segment-digits-v1.json (tools/generate_rule_vectors.py).
 import { readFileSync } from 'node:fs';
 import { bestSegmentCandidate, segmentScores, segmentTemplateFromRgba, SEGMENT_KEYS } from './sharedSegmentDigits.ts';
 

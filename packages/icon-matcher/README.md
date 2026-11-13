@@ -111,6 +111,20 @@ carry `"boundary": true` and are reported rather than failed. Known rule differe
 the replay tests themselves. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
 reference bank equals the pack's tensors.
 
+`tools/generate_rule_vectors.py` (same options) writes the remaining rule vectors, also without private inputs:
+
+| Vector | What it pins | Replayed by |
+| --- | --- | --- |
+| `vectors/refinement-v1.json` | shape rank, distinctive flag rank, NL/LU band ratio, NL/LU/PY tricolour, flag exposure, character family colour and neutral chroma on box-sized queries built from the pack's references; each case carries the upstream inputs (visual read, shape rank, shortlist) Python computed, so one refinement is replayed at a time | `python/tests/test_rule_vectors.py`, `ts/refinementVectors.test.mjs`, Android `RefinementParityTest` |
+| `vectors/frame-geometry-v1.json` | panel, registration window, deploy box, slot, search window and text strip for every race key and owner, static and anchored, registered or not | `python/tests/test_rule_vectors.py`, `ts/frame_geometry_parity.mjs`, Android `FrameGeometryParityTest` |
+| `vectors/lap-grid-v1.json` | `build_dynamic_grid` on synthetic lap-index and owner-box detections (resolved, refined, nominal, clipped and every blocked status) | `python/tests/test_rule_vectors.py`, `ts/lap_grid_parity.mjs`, Android `LapGridParityTest` |
+| `vectors/segment-digits-v1.json` | the 7-segment matcher on rendered slots (every digit, shifts, noise, dropped points, scale clamps, required digit) with synthetic colour-coded templates | `python/tests/test_rule_vectors.py`, `ts/segment_digits_parity.mjs`, Android `SegmentDigitsParityTest` |
+| `vectors/name-match-v1.json` | name match, locale vote, same-name locales and title match on an invented multi-script vocabulary with synthetic OCR damage | `python/tests/test_rule_vectors.py`, `ts/name_match_parity.mjs`, Android `NameMatchParityTest` |
+
+frame-geometry and lap-grid need the pack's `frame-definitions-v1.json` (`MK8DX_RECOGNITION_PACK` or
+`MK8DX_FRAME_DEFINITIONS`); refinement needs its tensor pack. Without them those replays skip. The Java tests
+still accept private vectors through their former `MK8DX_*_VECTORS` variables.
+
 ## Changing the reader
 
 1. Change the Python reference first and add or update its tests.

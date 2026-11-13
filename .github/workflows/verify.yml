@@ -166,7 +166,7 @@ jobs:
         working-directory: apps/timetrials-android
         run: |
           export JAVA_HOME="$JAVA_HOME_21_X64"
-          # The public recognition pack for the icon-score parity replay (IconScoreParityTest).
+          # The public recognition pack for the Java parity replays (IconScore, Refinement, FrameGeometry, LapGrid).
           node ../../tooling/assets/materialize_collection.mjs recognition-pack "$RUNNER_TEMP/recognition-pack"
           export MK8DX_RECOGNITION_PACK="$RUNNER_TEMP/recognition-pack"
           bash ./gradlew --no-daemon :app:testDebugUnitTest :scan-runtime:testDebugUnitTest :app:assembleDebug
