@@ -28,6 +28,7 @@ const SCRIPTS = {
   'context-v1.json': 'contextVectors.test.mjs',
   'icon-score-v1.json': 'iconScoreVectors.test.mjs',
   'refinement-v1.json': 'refinementVectors.test.mjs',
+  'segment-digits-v1.json': 'segment_digits_parity.mjs',
   'frame-geometry-v1.json': 'frame_geometry_parity.mjs',
   'lap-grid-v1.json': 'lap_grid_parity.mjs',
 };
@@ -54,6 +55,6 @@ for (const [vector, script] of Object.entries(SCRIPTS)) {
     const output = `${run.stdout}${run.stderr}`;
     assert.equal(run.status, 0, `${script} exited ${run.status}\n${output}`);
     assert.match(output, /differences=0\b/, output);
-    assert.doesNotMatch(output, /\b(?:cases|quads|raw|end|scans)=0\b/, `no cases replayed\n${output}`);
+    assert.doesNotMatch(output, /\b(?:cases|quads|raw|end|scans|vectors|queries)=0\b/, `no cases replayed\n${output}`);
   });
 }

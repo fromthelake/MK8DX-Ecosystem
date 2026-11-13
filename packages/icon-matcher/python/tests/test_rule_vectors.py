@@ -91,3 +91,9 @@ def test_lap_grid_vectors_cover_resolved_and_blocked_grids():
     statuses = {case["result"]["status"] for case in _load("lap-grid-v1.json")["cases"]}
     assert {"implemented", "blocked_missing_relative_grid", "blocked_insufficient_lap_index_support",
             "blocked_insufficient_owner_lap_index_support", "blocked_ambiguous_active_lap_count"} <= statuses
+
+
+def test_segment_digit_vectors_replay():
+    doc = _load("segment-digits-v1.json")
+    assert doc["schema"] == "mk8dx.segment-digit-vectors.v1" and len(doc["cases"]) >= 60
+    assert gen.dump(gen.build_segment_digits()) == _path("segment-digits-v1.json").read_bytes()

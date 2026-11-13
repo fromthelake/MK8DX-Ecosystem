@@ -14,10 +14,13 @@ Outputs in packages/icon-matcher/vectors/:
   owner, static and anchored panel and registered/unregistered card.
 * ``lap-grid-v1.json``: lap_grid.build_dynamic_grid on synthetic lap-index and owner-box detections
   placed on the pack's time grids (resolved, refined, nominal and every blocked status).
+* ``segment-digits-v1.json``: segment_digits.py on rendered synthetic slots (every digit, shifts,
+  noise, scale, required digit) with synthetic colour-coded templates (the product templates are
+  not in the repository).
 
 frame-geometry and lap-grid need ``frame-definitions-v1.json`` and refinement needs the tensor pack:
 ``node tooling/assets/materialize_collection.mjs recognition-pack <dir>`` then ``--pack <dir>`` (or
-MK8DX_RECOGNITION_PACK). Deterministic (no RNG, sorted
+MK8DX_RECOGNITION_PACK). segment-digits is self-contained. Deterministic (no RNG, sorted
 keys, LF); ``--check`` fails when a committed file differs. Cases within 1e-5 of a threshold carry
 ``"boundary": true``; runtimes report rather than fail on those until the arithmetic is unified.
 """
@@ -45,6 +48,7 @@ _spec.loader.exec_module(gv)
 
 from mk8dx_icon_matcher import frame_geometry as fg  # noqa: E402
 from mk8dx_icon_matcher import lap_grid as lg  # noqa: E402
+from mk8dx_icon_matcher import segment_digits as sd  # noqa: E402
 from mk8dx_icon_matcher.family_colour import rank_character_family_colour  # noqa: E402
 from mk8dx_icon_matcher.flag_exposure import flag_exposure_proposal  # noqa: E402
 from mk8dx_icon_matcher.flag_rank import (  # noqa: E402
@@ -492,6 +496,106 @@ def build_lap_grid(defs_path: Path) -> dict:
 
 
 BUILDERS["lap-grid"] = (build_lap_grid, "frame-definitions")
+
+
+# -------------------------------------------------------------------------------------- segment-digits-v1
+
+_COLOURS = {"a": (255, 0, 0), "b": (0, 255, 0), "c": (0, 0, 255), "d": (255, 255, 0),
+            "e": (255, 0, 255), "f": (0, 255, 255), "g": (255, 128, 0)}
+DIGIT_PATTERN = {digit: pattern for pattern, digit in sd.PATTERNS.items()}
+
+
+def synthetic_template_rgb(width: int, height: int, stroke: int) -> np.ndarray:
+    """A colour-coded seven-segment template (segments a..g in the product colours) on black."""
+    rgb = np.zeros((height, width, 3), np.uint8)
+    x0, x1 = 2, width - 3
+    y0, ym, y1 = 1, height // 2, height - 2
+    bars = {"a": (x0 + 1, y0, x1 - 1, y0 + stroke - 1), "d": (x0 + 1, y1 - stroke + 1, x1 - 1, y1),
+            "g": (x0 + 1, ym - stroke // 2, x1 - 1, ym - stroke // 2 + stroke - 1),
+            "f": (x0, y0 + 1, x0 + stroke - 1, ym - 1), "b": (x1 - stroke + 1, y0 + 1, x1, ym - 1),
+            "e": (x0, ym + 1, x0 + stroke - 1, y1 - 1), "c": (x1 - stroke + 1, ym + 1, x1, y1 - 1)}
+    for key, (bx0, by0, bx1, by1) in bars.items():
+        rgb[by0:by1 + 1, bx0:bx1 + 1] = _COLOURS[key]
+    return rgb
+
+
+def render_digit(template: sd.SegmentTemplate, digit: str | None, width: int, height: int, ox: int, oy: int,
+                 noise_seed: int = 0, drop: int = 0) -> bytes:
+    patch = np.zeros(width * height, np.uint8)
+    pattern = DIGIT_PATTERN.get(digit, "0000000") if digit else "0000000"
+    for key, on in zip(sd.SEGMENT_KEYS, pattern):
+        if on != "1":
+            continue
+        for n, (x, y) in enumerate(template.points[key]):
+            if drop and n % drop == 0:
+                continue
+            if 0 <= ox + x < width and 0 <= oy + y < height:
+                patch[(oy + y) * width + ox + x] = 255
+    if noise_seed:
+        flips = gv._lcg_noise((width * height,), noise_seed, 40)
+        patch[flips >= 39] ^= 255
+    return patch.tobytes()
+
+
+def _candidate_json(candidate) -> dict | None:
+    if candidate is None:
+        return None
+    return {"pattern": candidate.pattern, "decoded": candidate.decoded, "valid": candidate.valid,
+            "onCount": candidate.on_count, "confidence": candidate.confidence, "margin": candidate.margin,
+            "x": candidate.x, "y": candidate.y, "w": candidate.w, "h": candidate.h, "scaleX": candidate.scale_x,
+            "scaleY": candidate.scale_y, "values": [candidate.values[k] for k in sd.SEGMENT_KEYS]}
+
+
+def build_segment_digits() -> dict:
+    rgb = {"lap": synthetic_template_rgb(17, 25, 2), "total": synthetic_template_rgb(18, 29, 3)}
+    templates = {kind: sd.template_from_rgb(image.reshape(-1), image.shape[1], image.shape[0])
+                 for kind, image in rgb.items()}
+    cases = []
+
+    def add(kind, slot, binary, width, height, required=None):
+        template = templates[kind]
+        best = sd.best_segment_candidate(binary, width, height, template, kind, slot)
+        best_required = (sd.best_segment_candidate(binary, width, height, template, kind, slot, required)
+                         if required else None)
+        scores = sd.segment_scores(binary, width, height)
+        case = {"id": len(cases), "kind": kind, "slot": slot, "width": width, "height": height,
+                "binary": base64.b64encode(binary).decode("ascii"), "required": required,
+                "best": _candidate_json(best), "bestRequired": _candidate_json(best_required),
+                "segmentScores": [scores[k] for k in sd.SEGMENT_KEYS]}
+        margins = [c["margin"] for c in (case["best"], case["bestRequired"]) if c]
+        case["boundary"] = any(abs(v - sd.SEGMENT_ON) < BOUNDARY for c in (case["best"], case["bestRequired"])
+                               if c for v in c["values"]) or any(abs(m) < BOUNDARY for m in margins)
+        cases.append(case)
+
+    for kind, slot, size in (("lap", 1, (19, 27)), ("lap", 4, (19, 27)), ("total", 3, (22, 33))):
+        template = templates[kind]
+        width, height = size
+        for digit in sorted(DIGIT_PATTERN):
+            add(kind, slot, render_digit(template, digit, width, height, 1, 1), width, height)
+        for n, digit in enumerate("0123456789"):
+            ox, oy = n % 3, (n // 3) % 3
+            add(kind, slot, render_digit(template, digit, width, height, ox, oy, noise_seed=101 + n), width, height,
+                required=None if n % 2 else str((int(digit) + 1) % 10))
+        for digit in "1478":
+            add(kind, slot, render_digit(template, digit, width, height, 1, 2, drop=3), width, height, required="8")
+    lap = templates["lap"]
+    # scale clamps: narrow, tall, too small and empty patches; punctuation slots and blank slots
+    add("lap", 1, render_digit(lap.scaled(0.9, 0.9), "5", 17, 25, 0, 0), 17, 25)
+    add("lap", 1, render_digit(lap.scaled(1.0, 1.15), "2", 19, 32, 1, 1), 19, 32)
+    add("lap", 1, render_digit(lap, "9", 14, 20, 0, 0), 14, 20)
+    add("lap", 1, bytes(19 * 27), 19, 27)
+    add("lap", 2, render_digit(lap, "1", 19, 27, 1, 1), 19, 27)
+    add("total", 5, render_digit(templates["total"], "7", 22, 33, 2, 1), 22, 33, required="1")
+    return {"schema": "mk8dx.segment-digit-vectors.v1",
+            "source": "packages/icon-matcher/python/mk8dx_icon_matcher/segment_digits.py",
+            "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",
+            "note": "synthetic colour-coded templates and rendered slots; the product templates are not in Git",
+            "templates": {kind: {"width": int(image.shape[1]), "height": int(image.shape[0]),
+                                 "rgb": _b64(image)} for kind, image in rgb.items()},
+            "cases": _jsonable(cases)}
+
+
+BUILDERS["segment-digits"] = (build_segment_digits, None)
 
 
 # --------------------------------------------------------------------------------------------------- CLI

@@ -118,6 +118,7 @@ reference bank equals the pack's tensors.
 | `vectors/refinement-v1.json` | shape rank, distinctive flag rank, NL/LU band ratio, NL/LU/PY tricolour, flag exposure, character family colour and neutral chroma on box-sized queries built from the pack's references; each case carries the upstream inputs (visual read, shape rank, shortlist) Python computed, so one refinement is replayed at a time | `python/tests/test_rule_vectors.py`, `ts/refinementVectors.test.mjs`, Android `RefinementParityTest` |
 | `vectors/frame-geometry-v1.json` | panel, registration window, deploy box, slot, search window and text strip for every race key and owner, static and anchored, registered or not | `python/tests/test_rule_vectors.py`, `ts/frame_geometry_parity.mjs`, Android `FrameGeometryParityTest` |
 | `vectors/lap-grid-v1.json` | `build_dynamic_grid` on synthetic lap-index and owner-box detections (resolved, refined, nominal, clipped and every blocked status) | `python/tests/test_rule_vectors.py`, `ts/lap_grid_parity.mjs`, Android `LapGridParityTest` |
+| `vectors/segment-digits-v1.json` | the 7-segment matcher on rendered slots (every digit, shifts, noise, dropped points, scale clamps, required digit) with synthetic colour-coded templates | `python/tests/test_rule_vectors.py`, `ts/segment_digits_parity.mjs`, Android `SegmentDigitsParityTest` |
 
 frame-geometry and lap-grid need the pack's `frame-definitions-v1.json` (`MK8DX_RECOGNITION_PACK` or
 `MK8DX_FRAME_DEFINITIONS`); refinement needs its tensor pack. Without them those replays skip. The Java tests
