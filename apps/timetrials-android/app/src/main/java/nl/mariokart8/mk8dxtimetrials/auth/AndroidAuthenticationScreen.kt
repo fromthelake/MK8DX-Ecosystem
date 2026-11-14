@@ -486,7 +486,7 @@ private fun AndroidRememberedAccountRow(
                 tag = "android-account-pin-$index",
             )
             Mk8dxButton(
-                androidLocalizedPresentation("Switch"),
+                androidLocalizedPresentation("Change Player"),
                 { onPin(pin) },
                 variant = Mk8dxButtonVariant.Primary,
                 disabledReason = if (pin.length == 4) null else androidLocalizedPresentation("PIN (4 digits)"),
@@ -512,7 +512,7 @@ private fun AndroidRememberedAccountRow(
             )
         }
         Mk8dxButton(
-            androidLocalizedPresentation("Switch"),
+            androidLocalizedPresentation("Change Player"),
             onSwitch,
             variant = Mk8dxButtonVariant.Secondary,
             disabledReason = when {

@@ -233,7 +233,7 @@ internal fun AndroidCommunityServerPanel(
                 if (!active) {
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
                         Mk8dxButton(
-                            t("Switch", "Wisselen"),
+                            t("Change community", "Community wisselen"),
                             { onSwitch(community.origin) },
                             variant = Mk8dxButtonVariant.Primary,
                             size = Mk8dxButtonSize.Sm,

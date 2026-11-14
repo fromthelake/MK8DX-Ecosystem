@@ -5071,6 +5071,8 @@
   "Save name": "Сохранить название",
   "Shown in the apps instead of the web address.": "Показывается в приложениях вместо веб-адреса.",
   "The community name is unchanged.": "Название сообщества не изменилось.",
-  "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.": "Экран результатов не найден. Проверены и финальный экран, и панель призрака: убедись, что время видно и карточка заполняет рамку, или введи результат вручную."
+  "No result screen found. Both the end screen and the ghost panel were tried, so check that the times are visible and the card fills the frame — or enter it manually.": "Экран результатов не найден. Проверены и финальный экран, и панель призрака: убедись, что время видно и карточка заполняет рамку, или введи результат вручную.",
+  "Change Player": "Сменить игрока",
+  "Change community": "Сменить сообщество"
  }
 }
