@@ -44,7 +44,8 @@ class FakeElement {
   }
   set textContent(value) { this._text = String(value); this._html = escapeText(value); }
   get textContent() { return this._text; }
-  set innerHTML(value) { this._html = String(value); this._text = String(value).replace(/<[^>]*>/g, ""); }
+  // Markup is kept as given; no test reads the text of an element filled with markup.
+  set innerHTML(value) { this._html = String(value); this._text = ""; }
   get innerHTML() { return this._html; }
   setAttribute(name, value) { this.attributes[name] = String(value); }
   getAttribute(name) { return this.attributes[name] ?? null; }
