@@ -216,7 +216,7 @@ MK8DX はオープンソースで、プレイヤーがプレイヤーのため�
 
 ## プロジェクトの状況
 
-安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。0.2.2 では録画の解析が再び動くようになり、Tournament Analysis ウィンドウが加わりました。0.2.3 では Web ゲートウェイが root なしで動作し、リポジトリを使い始めやすくなりました。[変更履歴](CHANGELOG.md)、[Release packages](docs/RELEASE_PACKAGES.md)、そして完全版ガイド（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）をご覧ください。
+安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。0.2.2 では録画の解析が再び動くようになり、Tournament Analysis ウィンドウが加わりました。0.2.3 では Web ゲートウェイが root なしで動作し、リポジトリを使い始めやすくなりました。また、コミュニティサーバーのデータベースが MySQL 9.7 LTS になり、すべてのスキャナーでカートとグライダーの色がキャラクターに従うようになりました。[変更履歴](CHANGELOG.md)、[Release packages](docs/RELEASE_PACKAGES.md)、そして完全版ガイド（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）をご覧ください。
 
 認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
 

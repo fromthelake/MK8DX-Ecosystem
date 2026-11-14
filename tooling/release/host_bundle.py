@@ -229,12 +229,13 @@ def main():
     parser.add_argument("--arch", choices=("amd64", "arm64"), default="amd64",
                         help="host processor: amd64 (Intel/AMD) or arm64 (Apple Silicon, ARM boards)")
     args = parser.parse_args()
+    if args.pull_base_images:
+        # Container images are linux/<arch> for every host platform; --platform does not apply.
+        pull_base_images(args.arch)
+        return
     if args.platform == "windows" and args.arch != "amd64":
         parser.error("Windows packages are amd64")
     images = image_tags(args.version, args.arch)
-    if args.pull_base_images:
-        pull_base_images(args.arch)
-        return
     if (args.api_image or args.web_image or args.wheels_dir) and not args.offline_candidate:
         parser.error("--api-image, --web-image and --wheels-dir apply only with --offline-candidate")
     if bool(args.api_image) != bool(args.web_image):

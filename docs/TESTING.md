@@ -142,11 +142,12 @@ Rules that the suites enforce or rely on:
 - `reference-seed.integration.test.ts` also needs `MK8DX_REFERENCE_TEST_CONFIG` (a disposable synthetic
   configuration for a `_contract` schema) and skips without it.
 
-The procedure below ran the then-current suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02. It uses
+The procedure below ran the then-current suites (all except `reference-seed`) green on MySQL 8.4.11 on 2026-11-02; CI now runs them on
+9.7 (shown below), 8.4 and MariaDB 11.4. It uses
 a POSIX shell (Git Bash works on Windows); the password is a throw-away value for the disposable container.
 
 ```sh
-docker run -d --name mk8dx-test-mysql -e MYSQL_ROOT_PASSWORD=throwaway-test-pw -p 127.0.0.1:33406:3306 mysql:8.4.11
+docker run -d --name mk8dx-test-mysql -e MYSQL_ROOT_PASSWORD=throwaway-test-pw -p 127.0.0.1:33406:3306 mysql:9.7.4
 until docker exec mk8dx-test-mysql mysqladmin ping -uroot -pthrowaway-test-pw --silent; do sleep 2; done
 npm ci --prefix backend/api && npm run build --prefix backend/api
 cd backend/api

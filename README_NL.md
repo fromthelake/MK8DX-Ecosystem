@@ -303,7 +303,7 @@ iedereen.
 
 Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
 A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
-0.2.2 laat het analyseren van opnames weer werken en voegt het venster Tournament Analysis toe. 0.2.3 laat de webgateway zonder root draaien en maakt de repository makkelijker om mee te beginnen.
+0.2.2 laat het analyseren van opnames weer werken en voegt het venster Tournament Analysis toe. 0.2.3 laat de webgateway zonder root draaien en maakt de repository makkelijker om mee te beginnen. Ook gaat de database van de communityserver naar MySQL 9.7 LTS, en in elke scanner volgen de kleur van kart en zweefvlieger nu het personage.
 Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
 volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
 [English](docs/install/MK8DX_User_Guide_EN.txt)).
