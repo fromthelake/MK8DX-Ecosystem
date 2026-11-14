@@ -59,7 +59,8 @@ class HostBundleBaseImagePinsTest(unittest.TestCase):
         pins = host_bundle.base_image_pins()
         good = {tag: [f"{host_bundle.repository(tag)}@{digest}"] for tag, digest in pins.items()}
         host_bundle.check_base_image_digests(good.get)
-        stale = dict(good, **{"mysql:8.4.11": ["mysql@sha256:" + "0" * 64]})
+        mysql = next(tag for tag in pins if host_bundle.repository(tag) == "mysql")
+        stale = dict(good, **{mysql: ["mysql@sha256:" + "0" * 64]})
         with self.assertRaises(SystemExit):
             host_bundle.check_base_image_digests(stale.get)
         with self.assertRaises(SystemExit):
