@@ -453,7 +453,7 @@ internal object AndroidDutchUiCopy {
         "Finish Player setup on the website" to "Spelersetup op de website afronden",
         "Not approved yet. Approve the request in your browser, then check again." to
             "Nog niet goedgekeurd. Keur het verzoek goed in je browser en controleer daarna opnieuw.",
-        "Switch" to "Wisselen",
+        "Change Player" to "Speler wisselen",
         "No accounts are remembered on this device." to "Er zijn geen accounts bekend op dit apparaat.",
         "Expired — sign in again to synchronize" to "Verlopen — meld je opnieuw aan om te synchroniseren",
         "Switch Player quickly on a shared phone. Every saved result keeps the Player who created it." to

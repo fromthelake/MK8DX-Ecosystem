@@ -21,7 +21,7 @@ internal sealed interface AndroidAuthenticationState {
     ) : AndroidAuthenticationState
 }
 
-/** What a tap on "Switch" led to; the screen asks for a PIN or explains a refusal. */
+/** What a tap on "Change Player" led to; the screen asks for a PIN or explains a refusal. */
 internal sealed interface AndroidSwitchOutcome {
     data object Switched : AndroidSwitchOutcome
     data object PinRequired : AndroidSwitchOutcome
