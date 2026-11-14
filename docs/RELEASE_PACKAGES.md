@@ -20,9 +20,15 @@ same packages yourself; see [Building the packages](#building-the-packages).
 | `mk8dx-full-local-….zip` | The complete source with the hydrated asset collection and build recipes, without Git history | Building everything yourself |
 | `SBOM.spdx.json` | SPDX inventory of the twelve primary CI-built packages (the debug APK and eleven ZIPs) and full-source manifest sidecar, with SHA-256 and Syft's discovered package records | Package audit; ancillary notices/guides and nested dependencies are checked separately by checksums and Verify's dependency audits |
 
-The user guides are attached to each release as well: `MK8DX_User_Guide_EN.txt`/`.docx` and
-`MK8DX_Handleiding_NL.txt`/`.docx`. The same files are in [docs/install](install/) and inside the installation
-packages.
+The user guides are attached to each release as well, in all 15 languages of the game:
+`MK8DX_User_Guide_EN.txt`/`.docx` (English, authoritative), `MK8DX_Handleiding_NL.txt`/`.docx` (Nederlands) and
+`MK8DX_User_Guide_<locale>.txt`/`.docx` for `en-US`, `de`, `es`, `es-419`, `fr`, `fr-CA`, `it`, `ja`, `ko`, `pt`,
+`ru`, `zh-CN` and `zh-TW` (machine translations of the English guide, marked as such; corrections are welcome
+through the Translation correction issue form). The English and Dutch files are in [docs/install](install/), each
+translation in `docs/install/translations/<locale>/` (there the TXT is `MK8DX_User_Guide.txt`, next to the
+translated A2 guide `A2_HOME_GUIDE.md`), and all of them are inside the installation packages. The A2 packages also
+carry the illustrated A2 guide as `docs/install/guide/<locale>.html` for every language; the setup wizard's Manual
+link opens it in the browser's language.
 
 A1 and A3 are supported after fresh-install and upgrade tests with data. A2 is tested end to end on Windows 11
 (Linux in WSL 2; macOS built but not tested). B1 is documented but has not been tested end to end. B2: our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The Android release APK is signed locally with the maintainer's retained key;
@@ -117,9 +123,11 @@ Before tagging, set `productVersion` in `compatibility.json` and `ecosystemVersi
 `component-registry.json` to the new version (without the `v`) in the release pull request; the release
 manifest copies `compatibility.json`.
 In the same pull request, update the version and the package file names in `docs/install/MK8DX_User_Guide_EN.txt`
-and `docs/install/MK8DX_Handleiding_NL.txt` (they are attached to the release and name its files), regenerate the
-DOCX copies with `python tooling/release/build_reading_guides.py` (needs python-docx), and add the release to the
-Project status paragraph of every README.
+and `docs/install/MK8DX_Handleiding_NL.txt` and in every `docs/install/translations/<locale>/MK8DX_User_Guide.txt`
+(they are attached to the release and name its files), regenerate the DOCX copies with
+`python tooling/release/build_reading_guides.py` (needs python-docx; it finds every locale folder and writes
+`MK8DX_User_Guide_<locale>.docx` there), rebuild the illustrated guides with `python tooling/build_guide_html.py`,
+and add the release to the Project status paragraph of every README.
 
 1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the server ZIPs (host-local, the A2 packages, A3 and B2),
    verify their `sourceCommit` equals the tag commit, and check their internal manifests and bytes.

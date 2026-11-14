@@ -1,5 +1,7 @@
 # Instellingenwijzer — één invoer per betekenis
 
+English: [SETTINGS_EN.md](SETTINGS_EN.md)
+
 De **gezaghebbende installatie-invoer** staat per installatie in `operator-profile.json` en `secrets.json` binnen één **private gegevensmap**. De wizard vult ze. `api.env`, `operator.json`, `compose.env` en `public-client.json` zijn afgeleide bestanden voor bestaande consumers; bewerk die niet los. De publieke `https://<website>/client-config.json` bevat uitsluitend `schemaVersion` en `websiteOrigin`, geen serversecret of adminadres.
 
 | Gegeven en echte veldnaam | Wie/waar | Voorbeeldvorm | Waar het terechtkomt en hoe je controleert |

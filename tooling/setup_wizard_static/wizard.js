@@ -211,7 +211,8 @@ async function api(path, body) {
   return data;
 }
 document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = T[n.dataset.t]; });
-$("help").href = `/help?lang=${LANG}`;
+// The guide exists in all 15 languages of the game; the server picks the browser's language.
+$("help").href = "/help";
 
 const FLOW = ["welcome", "check", "kind", "network", "install", "admin", "people", "cards", "done"];
 // A new computer: the backup already holds the administrator and the people.

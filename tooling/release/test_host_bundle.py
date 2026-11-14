@@ -5,7 +5,45 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
-from tooling.release import host_bundle
+from tooling.release import host_bundle, non_docker_bundle
+
+
+class PackagedGuidesTest(unittest.TestCase):
+    """Every package that ships the EN/NL guides ships every translated one as well."""
+
+    def locales(self):
+        folder = host_bundle.ROOT / "docs/install/translations"
+        return sorted(p.name for p in folder.iterdir() if (p / "MK8DX_User_Guide.txt").is_file()) \
+            if folder.is_dir() else []
+
+    def test_host_packages_carry_every_language(self):
+        paths = set(host_bundle.guide_paths())
+        for name in ("docs/install/A2_HOME_GUIDE_EN.md", "docs/install/MK8DX_User_Guide_EN.docx",
+                     "docs/install/MK8DX_Handleiding_NL.txt", "docs/install/guide/en.html",
+                     "docs/install/guide/nl.html", "docs/install/guide/guide.js"):
+            self.assertIn(name, paths)
+        for page in (host_bundle.ROOT / "docs/install/guide").glob("*.html"):
+            self.assertIn(f"docs/install/guide/{page.name}", paths)
+        for locale in self.locales():
+            with self.subTest(locale=locale):
+                for name in ("A2_HOME_GUIDE.md", "MK8DX_User_Guide.txt", f"MK8DX_User_Guide_{locale}.docx"):
+                    self.assertIn(f"docs/install/translations/{locale}/{name}", paths)
+                self.assertIn(f"docs/install/guide/{locale}.html", paths)
+        self.assertFalse([name for name in paths if name.endswith(".json")])
+
+    def test_non_docker_packages_carry_every_user_guide(self):
+        for name in non_docker_bundle.DOCS:
+            self.assertTrue((non_docker_bundle.ROOT / name).is_file(), name)
+        for locale in self.locales():
+            with self.subTest(locale=locale):
+                self.assertIn(f"docs/install/translations/{locale}/MK8DX_User_Guide_{locale}.docx",
+                              non_docker_bundle.DOCS)
+                self.assertIn(f"docs/install/translations/{locale}/MK8DX_User_Guide.txt", non_docker_bundle.DOCS)
+
+    def test_release_attaches_every_user_guide_under_its_own_name(self):
+        workflow = (host_bundle.ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+        self.assertIn('cp "$folder/MK8DX_User_Guide.txt" "MK8DX_User_Guide_${locale}.txt"', workflow)
+        self.assertIn('cp "$folder/MK8DX_User_Guide_${locale}.docx" .', workflow)
 
 
 class HostBundleImageReferencesTest(unittest.TestCase):

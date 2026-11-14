@@ -1,0 +1,9 @@
+{"locale": "de", "language": "Deutsch",
+ "steps": {"where": "Wo:", "do": "Aktion:", "see": "Du siehst:", "else": "Siehst du etwas anderes?"},
+ "slot": "Bild",
+ "html": {"title": "MK8DX zu Hause oder in deinem Verein — Handbuch", "computer": "Mein Computer", "device": "Mein Gerät", "all": "Alle", "search": "Anleitung durchsuchen",
+          "contents": "Inhalt", "print": "Drucken", "open": "Alle öffnen", "close": "Alle schließen", "none": "Nichts gefunden.",
+          "do": "Aktion", "see": "Du siehst", "else": "Siehst du etwas anderes?", "filtered": "Es werden nur die Schritte für deine Auswahl angezeigt."},
+ "userGuide": {"chapters": ["Willkommen", "Auf einem Computer ausprobieren", "Auf einem Computer ohne Docker: XAMPP und Node.js", "Im Heimnetzwerk nutzen", "Öffentliches Shared Hosting mit Node.js, ohne Docker", "Eine öffentliche Website auf einem VPS einrichten", "Android, LiveTrial, den Scanner und Tournament nutzen", "Einstellungen ändern und die Website verwalten", "Sichern, wiederherstellen und aktualisieren", "Fehlerbehebung und selbst bauen", "Linux nutzen", "macOS nutzen"],
+               "subheadings": ["Inhalt dieser Anleitung", "Ein Backup wiederherstellen", "Was du jetzt lokal ausprobieren kannst", "Was noch entwickelt werden muss"]},
+ "machineTranslationNote": "Dies ist eine maschinelle Übersetzung der englischen Anleitung; maßgeblich ist die englische Fassung. Korrekturen sind willkommen über das Issue-Formular „Translation correction“."}

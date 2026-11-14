@@ -2,7 +2,7 @@
 
 **Betreibe deine eigene Mario Kart 8 Deluxe Community-Website — für das Zeitfahren *und* für Turnierabende.**
 
-Sprache: [English](README.md) · [Nederlands](README_NL.md) · Deutsch · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Sprache: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · Deutsch · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *Diese Übersetzung wurde maschinell aus dem englischen README erstellt; Korrekturen sind willkommen.*
 
@@ -134,10 +134,10 @@ flowchart TB
 
 | Ich möchte… | Hier anfangen |
 | --- | --- |
-| **MK8DX zu Hause oder in meinem Verein betreiben** | Das A2-Paket für deinen Computer aus den [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): entpacken, starten, auf Weiter klicken. Schritt für Schritt (das A2-Paket enthält auch eine bebilderte Fassung): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **MK8DX zu Hause oder in meinem Verein betreiben** | Das A2-Paket für deinen Computer aus den [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): entpacken, starten, auf Weiter klicken. Schritt für Schritt (das A2-Paket enthält auch eine bebilderte Fassung): [Deutsch](docs/install/translations/de/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX installieren und nutzen](docs/install/translations/de/MK8DX_User_Guide_de.docx) ([TXT](docs/install/translations/de/MK8DX_User_Guide.txt)) |
 | **LAN-Turnierabende organisieren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); die Tournament Tools funktionieren auch ohne Community-Website |
 | **mein Zeitfahren automatisch aufzeichnen** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + eine Capture-Karte; funktioniert auch ohne Community-Website |
-| **meine Zeiten eintragen und vergleichen** | [Spieler](docs/guides/PLAYERS.md) — jeder Browser; Android 8.0+ |
+| **meine Zeiten eintragen und vergleichen** | [Spieler](docs/guides/translations/de/PLAYERS.md) — jeder Browser; Android 8.0+ |
 | **eine Community-Website betreiben** | [Einen Community-Server betreiben](docs/guides/HOSTING.md) |
 | **den Code ändern** | [Entwicklerhandbuch](docs/DEVELOPMENT.md), [Testen](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 

@@ -2,7 +2,7 @@
 
 **自己搭建属于你的马力欧卡丁车8 豪华版社区网站——计时赛*和*锦标赛之夜，一站搞定。**
 
-语言：[English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · 简体中文 · [繁體中文](README_ZH_TW.md)
+语言：[English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · 简体中文 · [繁體中文](README_ZH_TW.md)
 
 *本译文由机器根据英文版 README 翻译而成，欢迎指正。*
 
@@ -98,10 +98,10 @@ flowchart TB
 
 | 我想要… | 从这里开始 |
 | --- | --- |
-| **在家里或俱乐部运行 MK8DX** | 从 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下载适合你电脑的 A2 软件包：解压、启动、点击“下一步”。分步说明（A2 软件包里还有带插图的版本）：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **在家里或俱乐部运行 MK8DX** | 从 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下载适合你电脑的 A2 软件包：解压、启动、点击“下一步”。分步说明（A2 软件包里还有带插图的版本）：[简体中文](docs/install/translations/zh-CN/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [安装和使用 MK8DX](docs/install/translations/zh-CN/MK8DX_User_Guide_zh-CN.docx) ([TXT](docs/install/translations/zh-CN/MK8DX_User_Guide.txt)) |
 | **组织 LAN 锦标赛之夜** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)；Tournament Tools 没有社区网站也能使用 |
 | **自动记录我的计时赛** | [LiveTrial](docs/guides/LIVETRIAL.md)——Windows + 一张采集卡；没有社区网站也能使用 |
-| **提交并比较我的成绩** | [Players](docs/guides/PLAYERS.md)——任意浏览器；Android 8.0+ |
+| **提交并比较我的成绩** | [Players](docs/guides/translations/zh-CN/PLAYERS.md)——任意浏览器；Android 8.0+ |
 | **搭建社区网站** | [搭建社区服务器](docs/guides/HOSTING.md) |
 | **修改代码** | [开发者指南](docs/DEVELOPMENT.md)、[测试](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
 

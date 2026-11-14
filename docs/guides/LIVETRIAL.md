@@ -1,5 +1,7 @@
 # LiveTrial: record Time Trials on Windows
 
+Nederlands: [translations/nl/LIVETRIAL.md](translations/nl/LIVETRIAL.md)
+
 [All guides](../../README.md#get-started) · [LiveTrial component README](../../apps/timetrials-desktop/README.md)
 
 LiveTrial is a Windows program that watches your Time Trials through a capture card, or reads recorded videos,
@@ -49,6 +51,24 @@ Runs recorded without an account stay only on this PC until you send them with *
 
 Accounts and waiting runs are kept separately per server: switching servers never sends old runs to the new
 community. Never enter the local mail inbox address or a server's internal address in LiveTrial.
+
+## Connect later
+
+You can record first and join a community later. What happens to the runs already on this PC:
+
+- **Choose the community before you record.** Runs are kept per server. Runs recorded before you saved a
+  community address, or while another community was set, stay with that server and are never offered to the new
+  one. To bring such a recording over, run **Analyse a video** on its video file again after you have connected.
+- **Runs recorded without an account** are not sent when you sign in later. Choose **Send as <account>** on one
+  run (in **Run history** or on the line after the race), or on the **No account** line of the waiting list (the
+  counter at the top), to give all of them to the signed-in account. They land on that account's Player; nothing
+  is assigned without this choice.
+- **Runs recorded while signed in** always go out with that same account. **Send now** sends every waiting run,
+  each with its own account; a run whose account is signed out waits until that account signs in again.
+- **Each run is stored once.** Every run carries its own submission ID, and the website does not accept a second
+  copy of the same run.
+- **Clips and videos stay on this PC.** Only the result (times, track, setup) goes to the website; a YouTube
+  upload is a separate, optional step.
 
 ## Use it
 

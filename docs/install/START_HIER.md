@@ -1,5 +1,7 @@
 # Start hier: een MK8DX-installatie kiezen
 
+English: [START_HERE_EN.md](START_HERE_EN.md)
+
 De volledige, gewone handleiding is [MK8DX_Handleiding_NL.txt](MK8DX_Handleiding_NL.txt) (ook als
 [Word-bestand](MK8DX_Handleiding_NL.docx)); in het Engels [MK8DX_User_Guide_EN.txt](MK8DX_User_Guide_EN.txt).
 Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag per route.

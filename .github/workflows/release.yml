@@ -354,6 +354,14 @@ jobs:
           cp "$GITHUB_WORKSPACE/LICENSE" "$GITHUB_WORKSPACE/LICENSE_SCOPE.md" "$GITHUB_WORKSPACE/SOURCE_FOR_BINARIES.txt" .
           cp "$GITHUB_WORKSPACE/docs/THIRD_PARTY_MATERIALS.md" .
           cp "$GITHUB_WORKSPACE"/docs/install/MK8DX_User_Guide_EN.* "$GITHUB_WORKSPACE"/docs/install/MK8DX_Handleiding_NL.* .
+          # The translated user guides: MK8DX_User_Guide_<locale>.txt/.docx (the locale keeps the names apart).
+          for folder in "$GITHUB_WORKSPACE"/docs/install/translations/*/; do
+            locale="$(basename "$folder")"
+            if [ -f "$folder/MK8DX_User_Guide.txt" ]; then
+              cp "$folder/MK8DX_User_Guide.txt" "MK8DX_User_Guide_${locale}.txt"
+              cp "$folder/MK8DX_User_Guide_${locale}.docx" .
+            fi
+          done
           # The APK cannot carry loose files: its notices travel beside it.
           (cd "$GITHUB_WORKSPACE" && zip -q -X "$RUNNER_TEMP/dist/mk8dx-android-notices-${PACKAGE_VERSION}.zip" \
             LICENSE LICENSE_SCOPE.md SOURCE_FOR_BINARIES.txt docs/THIRD_PARTY_MATERIALS.md)

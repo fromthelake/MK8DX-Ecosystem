@@ -1,0 +1,630 @@
+MK8DX のインストールと使い方
+
+これは英語版ガイド MK8DX_User_Guide_EN.txt の機械翻訳です。内容は英語版が正となります。翻訳の誤りは「Translation correction」の Issue フォームからお知らせください。
+
+MK8DX 0.2.3 用ガイド · 2026 年 11 月 14 日
+
+ようこそ
+
+MK8DX は、『マリオカート8 デラックス』のタイムアタックと大会のためのウェブサイトです。コースや参考タイムを閲覧し、メールのリンクでサインインし、自分の結果を投稿できます。管理者は投稿を確認できます。スキャナー、Android アプリ、Windows 用プログラムは別のツールです。
+
+リリースパッケージは、プロジェクトの GitHub Releases に添付されています。リリースページ https://github.com/fromthelake/MK8DX-Ecosystem/releases を開き、最新のリリースを選んでください。Assets の下から、自分のインストール方法用のパッケージと SHA256SUMS.txt をダウンロードします。GitHub の Source code (zip) ボタンはインストール用パッケージではありません。代わりにソースのクローンから作業する場合は、パッケージを自分でビルドできます。「トラブルシューティングと自分でのビルド」を参照してください。パッケージのファイル名にある v0.2.3 がこのリリースを示します。ホストパッケージ内の Docker イメージにも、対応するバージョン付きのタグが付いています。同じリリースのファイルはすべて保管しておいてください。
+
+ウェブサイトの使い方を 1 つ選んでください。1 台の Windows コンピューターでは、Docker を使うか、XAMPP、Node.js、同梱の最新の MariaDB を使うかのどちらかです。説明されている Docker のネットワーク経路では、信頼できるネットワーク上の 2 台目の Windows PC からも使えます。公開ドメインでは、Node.js 対応の共用ウェブホスティング（この章では mijn.host Starter を例にしています）か、自分の Docker VPS のどちらかを選びます。これらの章は選択肢であり、順番にすべてこなす講座ではありません。スマートフォンと Windows のクライアントは、ウェブサイトの各方法の後に説明します。
+
+A1（1 台のコンピューターで Docker）と A3（Windows で XAMPP/Node.js）は、新規インストールと、データを保持したままのアップグレードのテストを経てサポートされています。A2（家庭またはクラブのネットワーク、0.2.0 の新機能）には、ブラウザーで案内されるセットアップ付きの専用パッケージがあり、Windows 11 で最初から最後までテストしました。B1（Docker VPS）は説明がありますが、最初から最後まではテストしていません。B2（共用 Node.js ホスティング）：私たち自身のコミュニティサイトはこの方法で動いていますが、公開パッケージを新しいホスティングアカウントに一からインストールしたことはまだありません。ローカルの A1 と A3 のインストールは Windows 11 x86-64 でテストしました。アカウントと、データベースおよびウェブサイトに入る LiveTrial と Tournament Processor/Connect の結果も含みます。実機のキャプチャーカードによる Tournament Live の取り込みは、0.2.2 のパッケージで 1× の受け入れテストを最後まで通過しました。Linux や macOS しかなく、Windows コンピューターや他のサーバーがない場合は、選択肢が限られます。最後の 2 つの章で、そのコンピューター上でローカルに試せることと、そのオペレーティングシステム向けにまだ存在しない製品を説明します。
+
+このガイドの内容
+
+1. 1 台のコンピューターで試す
+2. Docker を使わずに 1 台のコンピューターで：XAMPP と Node.js
+3. 家庭内ネットワークで使う
+4. Docker を使わない、Node.js 対応の共用ホスティングで公開する
+5. VPS で公開ウェブサイトを作る
+6. Android、LiveTrial、スキャナー、Tournament を使う
+7. 設定の変更とサイトの管理
+8. バックアップ、復元、アップデート
+9. トラブルシューティングと自分でのビルド
+10. Linux を使う
+11. macOS を使う
+
+1 台のコンピューターで試す
+
+これは、x86-64 プロセッサーを搭載した 1 台の Windows 11 コンピューターでの試用です。推奨の余裕として、メモリ 8 GB と約 15 GB の作業用空き容量を確保してください。これらは測定した厳密な最低値ではありません。Windows では、プロセッサーとメモリは 設定 → システム → バージョン情報 にあります。空き容量は エクスプローラー → PC にあります。ドメインや有料のメールサービスは必要ありません。
+
+1. 公式の Windows 用ページから Docker Desktop をインストールします。WSL2 と Linux コンテナーを選びます。インストーラーに求められたら Windows を再起動します。Docker Desktop を開き、「Engine running」（エンジン稼働中）になるまで待ちます。
+
+Docker Desktop for Windows: https://docs.docker.com/desktop/setup/install/windows-install/
+
+スタートメニューから PowerShell を開きます。次のコマンドでバージョンが表示されるはずです：
+
+docker compose version
+
+Docker が起動しない場合は、まず WSL や仮想化についてのメッセージに従ってください。Docker Desktop が閉じている間、MK8DX は起動できません。
+
+2. 公式ページから Windows x86-64 用の Python 3.12〜3.15 をインストールします。インストーラーで「Add python.exe to PATH」にチェックを入れ、「Install Now」を選びます。PowerShell を閉じて開き直します。バージョンを確認します：
+
+Python for Windows: https://www.python.org/downloads/windows/
+
+python --version
+
+3.12〜3.15 のバージョンが表示されない場合は、同じインストーラーで Python を修復します。また、インストールした Python ではなく Microsoft Store のエイリアスが開いていないかも確認してください。ここでの Python はセットアップ用の補助ツールを動かすだけで、ソフトウェアをビルドする必要はありません。
+
+3. mk8dx-host-local-v0.2.3-amd64.zip と SHA256SUMS.txt を同じダウンロードフォルダーに置きます。そのフォルダーで PowerShell を開き、ホストパッケージを確認します：
+
+Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
+
+値全体を、SHA256SUMS.txt にあるそのファイルの行と比べます。違っていたら作業を止め、正しいコピーを入手してください。ZIP を右クリックして「すべて展開」を選びます。展開先は Documents\MK8DX\host などが適しています。Start-MK8DX.cmd と compose.yaml の入った展開済みフォルダーを開きます。
+
+4. Start-MK8DX.cmd をダブルクリックします。ウィンドウが開き、短いレースの演出が表示されます：MK8DX のロゴと、ビープ音付きの 3-2-1-GO のカウントダウンです（Start-MK8DX.cmd -SkipCountdown でカウントダウンを省略できます。すべてのオプションはホスティングガイドにあります）。続いて「Where will MK8DX run?」（MK8DX をどこで動かしますか？）と聞かれ、A1、A2、B1 が表示されます。A1 と入力して Enter キーを押します。後でサインインして管理者になるときに使うメールアドレスを入力します。すると最初のセットアップが自動的に始まります。MK8DX は同梱のプログラムを読み込み、自前の鍵、データベース、標準の参考データを作ります。初回の起動には時間がかかることがあります。
+
+「Web origin」（ウェブのオリジン）として表示されるアドレスと、「Local mail inbox」（ローカルのメール受信箱）として表示されるアドレスを書き留めます。ウェブサイトのアドレスは http://127.0.0.1:18080、テスト用受信箱は http://127.0.0.1:18025 のようになります（末尾の数字は環境によって異なります）。必ず実際に表示されたアドレスを使ってください。
+
+後でアドレスがわからなくなったら？Start-MK8DX.cmd をもう一度開き、状態表示の 3 を選びます。「origin」は、ブラウザーと LiveTrial で使うウェブサイトの完全なアドレスです。「localMailInbox」は Mailpit のアドレスです。この 2 つ目のアドレスは、ローカルのサインインメールを読むためにブラウザーでだけ開いてください。コロンの後の数字はポート番号です。「127.0.0.1」はこのコンピューターを意味するので、これらの A1 のアドレスは別の PC やスマートフォンでは使えません。
+
+インストール固有のデータは、展開したパッケージの外の %LOCALAPPDATA%\MK8DX\Server に保管されます。新しいソフトウェアパッケージを受け取ったときも、このフォルダーと Docker のデータベースボリュームは残しておいてください。
+
+5. 同じコンピューターのブラウザーで、表示されたウェブサイトのアドレスを開きます。「サインイン」（英語では「Sign in」、オランダ語では「Aanmelden」）をクリックし、手順 4 のアドレスをそのまま入力します。ブラウザーの別のタブで「Local mail inbox」を開きます。これは Mailpit という、コンピューター上のテスト用受信箱です。そこで最新のサインインメールを開き、リンクをたどります。この試用メールを普段の受信箱で探さないでください。
+
+これでサインインできましたが、まだ管理者権限はありません。Start-MK8DX.cmd をもう一度開き、5 を選びます。初回の付与では「created」（作成）、繰り返した場合は「unchanged」（変更なし）と表示されます。ウェブサイトを再読み込みするか、もう一度サインインします。管理画面が表示されるはずです。最初に登録しただけの人に、管理者権限が自動的に与えられることはありません。
+
+6. 「コース」を開いてコースを選び、Nintendoスタッフと世界記録を見ます。「タイムを投稿」から自分の試しの記録を投稿してもかまいません。送信する前に内容を確認してください。投稿したことと、公開が承認されたことは同じではありません。
+
+Mailpit にはサインインのリンクが入っています。このテスト用受信箱を他の人と共有しないでください。公開サイトには、実際にメールを送信できる共用ホスティングまたは VPS の方法を選んでください。
+
+Docker を使わずに 1 台のコンピューターで：XAMPP と Node.js
+
+これは、1 台の Windows 11 コンピューターでの別の試用です。Docker は必要ありません。XAMPP は Apache と、ローカルのウェブサイトを起動するコントロールウィンドウを提供します。MK8DX 本体は Node.js で動きます。現在の XAMPP のダウンロードには MariaDB 10.4.32 が含まれていますが、この方法ではそのバージョンは使いません。MK8DX パッケージには、127.0.0.1:18306 にのみ割り当てられた、保守されている別の MariaDB 11.4.13 が含まれています。既存の XAMPP のデータベースや他のウェブサイトは変更されません。パッケージ、データベース、スキャナー、バックアップのために、RAM 8 GB と数 GB の空き容量を確保してください。
+
+1. 公式ウェブサイトから Windows 用の XAMPP をダウンロードし、C:\xampp のようなわかりやすい場所にインストールします。XAMPP Control Panel では Apache だけを使います。MK8DX のために MySQL、FileZilla、Mercury、Tomcat を起動しないでください。すでに他のプロジェクトで XAMPP を使っている場合は、それらのデータベースと設定はそのままにしておきます。
+
+XAMPP for Windows: https://www.apachefriends.org/download.html
+
+2. 公式の Node.js ウェブサイトから Windows 用の Node.js 24 をインストールします。公式の Windows 用ダウンロードページから Python 3.12 以降をインストールし、「Add python.exe to PATH」を選びます。PowerShell を閉じて開き直します。確認します：
+
+Node.js: https://nodejs.org/en/download
+Python: https://www.python.org/downloads/windows/
+node --version
+python --version
+
+Node 24 と Python 3.12 以降が表示されるはずです。これらはビルド済みの MK8DX のファイルを動かすもので、アプリケーションをビルドする必要はありません。コマンドが見つからない場合は、PowerShell を開き直し、必要であればそのインストールを修復します。
+
+3. mk8dx-xampp-node-windows-v0.2.3.zip と SHA256SUMS.txt を同じダウンロードフォルダーに置きます。PowerShell で、SHA-256 の値全体をこの ZIP の行と比べます：
+
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.3.zip' -Algorithm SHA256
+
+一致したら、ZIP を右クリックして「すべて展開」を選びます。展開先は Documents\MK8DX\nodocker-v0.2.3 などが適しています。Start-MK8DX-No-Docker.cmd の入った展開済みフォルダーを開きます。中にはすでに bin\mailpit.exe と bin\mariadb-11.4.13-winx64.zip が入っています。ソースコードをコンパイルしたり、古い XAMPP のデータベースを置き換えたりする必要はありません。このパッケージを htdocs に置かないでください。
+
+4. このローカルサイト専用に Apache を準備します。展開した MK8DX フォルダーで PowerShell を開きます。-XamppRoot には実際の XAMPP の場所を指定します：
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp'
+
+この補助ツールは、まず apache\conf\httpd.conf を %LOCALAPPDATA%\MK8DX\ApacheBackup に保存します。追加するのは「Include conf/extra/mk8dx-local.conf」と別のポート 18090 だけで、その後 Apache の構文を確認します。「Apache syntax OK」と表示されるはずです。ポート 18090 がすでに使われていたり設定が異なっていたりする場合は、作業を止めてエラーを読んでください。他の XAMPP サイトを削除しないでください。XAMPP の場所が異なる場合（スペースを含む場所も含めて）は、このコマンドの C:\xampp だけを置き換えます。
+
+5. Start-MK8DX-No-Docker.cmd をダブルクリックします。方法 A3 を選び、後で管理者として使うメールアドレスを入力します。ウィンドウが %LOCALAPPDATA%\MK8DX\NoDocker に専用のインストールを 1 つ作ります。初回の起動時には、MariaDB 11.4.13 をそのフォルダーにだけ展開し、専用のデータベースと権限を限定したユーザーを作り、マイグレーションと Nintendoスタッフ・世界記録のデータを適用して、Node.js と Mailpit を起動します。これには数分かかることがあります。この MK8DX のウィンドウは開いたままにしておきます。再起動しても、鍵、アカウント、結果、データベースは保持されます。
+
+起動するたびに、このウィンドウには「Website:」（ウェブサイト）と「Sign-in mail - a test inbox:」（サインインメール - テスト用受信箱）も表示されます。「Website」は、ブラウザーと LiveTrial で使う完全なアドレスです：http://127.0.0.1:18090。「Sign-in mail - a test inbox」はローカルのテスト用受信箱です：http://127.0.0.1:18227。Mailpit はブラウザーでだけ開いてください。コロンの後の数字はポート番号です。「127.0.0.1」はこのコンピューターを意味するので、これらのアドレスは他の機器では使えません。忘れてしまった場合は、次に起動したときに同じ MK8DX のウィンドウの上のほうを見てください。
+
+6. XAMPP Control Panel を開きます。Apache がすでに緑色になっている場合は、Apache の Stop だけをクリックし、その行が緑色でなくなるまで待ってから、もう一度 Start をクリックします。これで手順 4 の新しいサイト設定が読み込まれます。Apache が止まっていた場合は、すぐに Start をクリックします。ブラウザーで http://127.0.0.1:18090 を開きます。ローカルのテスト用受信箱は http://127.0.0.1:18227 です。サイトが開けない場合は、まず MK8DX のウィンドウを確認し、次に Apache が緑色になっているかを確認します。パッケージフォルダーで 2 つ目の PowerShell ウィンドウを開き、データベースと API を確認します：
+
+python tooling/install.py check-database --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+「MariaDB 11.4.13」と「ready」（準備完了）が表示されるはずです。ウェブサイト、スキャナー、データベース、テスト用受信箱は、このコンピューターにだけ割り当てられています。ルーターでポートを転送したり、phpMyAdmin やテスト用受信箱を他の人に公開したりしないでください。
+
+7. サイトで「サインイン」をクリックし、手順 5 の管理者のアドレスをそのまま使います。Mailpit で最新のメッセージを開き、サインインのリンクをたどります。この時点ではまだ一般のユーザーです。ここで、パッケージフォルダーの Manage-MK8DX-No-Docker.cmd をダブルクリックし（MK8DX のウィンドウは開いたままにします）、2 と入力して Enter キーを押します。裏では次が実行されます：python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"。
+
+これは、すでにメールアドレスを確認済みのアカウントにしか使えません。「created」（作成）、繰り返した場合は「unchanged」（変更なし）と表示されるはずです。サイトを再読み込みします。最初に登録した別の人が、自動的に管理者になることはありません。
+
+8. コースを開き、合計も含めて Nintendoスタッフと世界記録を確認します。試しにタイムアタックのタイムを 1 件投稿し、同じコンピューターで /scanner/ を開きます。画像を選んで、アップロードの流れを試します。スキャナーの結果には確認が必要な場合があります。アップロードしただけで自動的に公開されることはありません。
+
+9. 普段使うときは、まず MK8DX のウィンドウを起動し、次に XAMPP Control Panel で Apache を起動します。サイトを使っている間は MK8DX のウィンドウを開いたままにします。Windows を再起動した後は、この 2 つの起動をもう一度行います。止めるときは、パネルの Stop で Apache を止め、MK8DX のウィンドウで Ctrl+C を押します。止まるのは、このインストールの Node、Mailpit、MariaDB のプロセスだけです。すべての node.exe プロセスを強制終了したり、既存の XAMPP のサービスを変更したりしないでください。
+
+10. バックアップを取るときは、MK8DX のウィンドウとそのデータベースを動かしたままにします。最後のコピーの間にウェブからの新しい投稿を防ぐため、Apache を一時的に止めてもかまいません。Manage-MK8DX-No-Docker.cmd をダブルクリックし、3 と入力して Enter キーを押します。バックアップは Documents\MK8DX-backups\a3-<日付と時刻> に書き込まれ、すぐに検証されます。
+
+「Backup verified」（バックアップを検証しました）は、データベースのコピー、プロファイル、鍵が確認できたことを示します。フォルダー全体を、このコンピューターの外の保護された保管場所にも保管してください。このバックアップをもう一度確認するには、次を実行します：
+
+python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+
+11. ソフトウェアをアップデートするときは、古い MK8DX のウィンドウがまだ動いている間に Apache を止め、バックアップを作って検証します。その後、そのウィンドウで Ctrl+C を押します。新しい A3 の ZIP を確認し、古いパッケージの隣に展開します。データフォルダーは引き続き同じ %LOCALAPPDATA%\MK8DX\NoDocker を使います。新しいパッケージ内の PowerShell で、一時的にそのパッケージのデータベースだけを起動します：
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+そのウィンドウは開いたままにします。新しいパッケージで 2 つ目の PowerShell ウィンドウを開き、別の新しいバックアップフォルダーを指定してアップデートします：
+
+python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
+
+両方の参考データについて「unchanged」（変更なし）と、「Backup verified」（バックアップを検証しました）が表示されるまで待ちます。メンテナンス用のウィンドウで Ctrl+C を押します。新しいパッケージの Start-MK8DX-No-Docker.cmd と Apache をもう一度起動します。補助ツールは、アカウント、鍵、データをリセットせずに、パッケージから導かれるパスを更新します。同じサインイン、参考データ、試しの結果を確認します。データベースエンジンの変更を、通常の MK8DX のアップデートとして扱わないでください。
+
+12. 別の Windows コンピューターで復元を試すには、手順 1 と 2 のとおり、そこに XAMPP の Apache、Node 24、Python をインストールします。同じ A3 パッケージを展開し、手順 4 のとおり configure_xampp.ps1 で Apache を設定します。検証済みのバックアップフォルダー全体を、他の人に見られない方法で Documents\MK8DX-backups にコピーします。そのコンピューターにある既存のデータフォルダーは使わないでください。新しいパッケージで PowerShell を開き、新しいプロファイルだけを作ります：
+
+python tooling/install.py wizard --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+A3 を選び、ひとまず自分の管理者アドレスを入力します。復元によって元のアカウントのプロファイルが戻ります。同じパッケージで 2 つ目の PowerShell を開きます。1 つ目のウィンドウで、新しい空の MariaDB だけを起動します：
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+このウィンドウは開いたままにします。2 つ目のウィンドウでは、山かっこを付けずに実際のバックアップフォルダー名を使います：
+
+python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+「Backup verified」（バックアップを検証しました）に続いて、すべてのマイグレーションのチェックが通ることを確認します。メンテナンス用のウィンドウで Ctrl+C を押します。Start-MK8DX-No-Docker.cmd を開き、XAMPP Control Panel で Apache を起動します。バックアップにある既存のアカウントでサインインし、管理者のアクセスと既知の結果を確認します。最初の管理者が改めて付与されることはありません。復元先のコンピューターにすでに MK8DX のインストールがある場合や、ポート 18306 を別のプロセスが使っている場合は、そのコンピューターを復元先にしないでください。補助ツールが既存のデータベースを消すことはありません。元のバックアップはそのまま保管しておいてください。
+
+家庭内ネットワークで使う
+
+家庭やクラブのネットワークには、A2 パッケージを使います。mk8dx-a2-windows-amd64-v0.2.3.zip（Linux：mk8dx-a2-linux-amd64 または mk8dx-a2-linux-arm64、Apple シリコンの macOS：mk8dx-a2-macos-arm64、Intel プロセッサーの macOS：mk8dx-a2-macos-amd64）と SHA256SUMS.txt をダウンロードし、「1 台のコンピューターで試す」のとおりチェックサムを確認してから、パッケージを展開して Start-MK8DX-LAN.cmd をダブルクリックします（Linux と macOS：sh tooling/start-mk8dx.sh）。ブラウザーでセットアップが開き、Next（次へ）ですべてを案内してくれます：ネットワークアドレス、管理者アカウント、毎晩のバックアップ用の紙の復元コード、そしてスマートフォンや PC 用にそれぞれサインインカードを持つ人たちです。インターネット、メールサーバー、hosts ファイルは必要ありません。
+
+写真付きの詳しい手順のガイドは docs/install/A2_HOME_GUIDE_EN.md です。パッケージ内では docs/install/guide/en.html にもあり、セットアップの Manual（マニュアル）リンクからも開けます。Windows、Linux、macOS の準備、スマートフォンと PC、Android アプリ、LiveTrial、大会の夜、バックアップ、新しいコンピューターへの移行、固定アドレス、新しいネットワークアドレス、アップデートを扱っています。
+
+上級：独自のメールサーバーを使う
+
+この章の残りでは、プライベートなホスト名と、独自のメールサーバーを通したメールのサインインリンクを使う、以前からある上級者向けの方法を説明します。ほとんどの人には必要ありません。mk8dx-host-local パッケージを使い、そのセットアップの質問で A2 を選びます。
+
+この方法では、Windows ホスト上に 2 つ目の、別個の MK8DX インストールを作ります。1 台のコンピューターでの試用はそのまま残ります。説明されている最初のクライアントの経路は、Chrome または Edge を使う 2 台目の Windows PC で、スキャナーの画像アップロードも含みます。実機の 2 台目の PC やスマートフォンでの実際のユーザー受け入れテストはまだ行っていません。汎用の Android アプリは、ローカルの証明書を自動的には信頼しません。Android アプリには、共用ホスティングや VPS 上の公開 HTTPS のコミュニティアドレスを使ってください。
+
+ネットワーク用のウェブサイトは、ホストのポート 443 を使います。同じコンピューターで XAMPP の Apache が動いている場合、そのポートがすでに使われていることがあります。その場合、A2 とその Apache のサイトは、このホストで同時には起動できません。A2 には別の Windows ホストを使うか、計画した時間帯に XAMPP Control Panel で Apache を止めてください。止めている間は、他の XAMPP のウェブサイトは使えません。
+
+まず、「1 台のコンピューターで試す」の最初の 3 つの手順のとおり、ホスト上で Docker Desktop、Python、確認・展開済みのホストパッケージを準備します。A1 のインストールを作る必要はありません。2 台の PC は、同じ信頼できるプライベートネットワークにつながっている必要があります。ゲスト用 Wi-Fi を使ったり、ルーターのポートをインターネットに転送したりしないでください。ホストはスリープさせないでください。
+
+1. ホストで、設定 → ネットワークとインターネット → イーサネット または Wi-Fi → プロパティ から IPv4 アドレスを調べます。このガイドの 192.168.0.50 はあくまで例です。実際のアドレスを書き留めてください。Windows のネットワークプロファイルをプライベートにするのは、本当に信頼できるネットワークである場合だけにしてください。後でアドレスが変わった場合は、両方の PC を更新します。ルーターの DHCP 予約で変更を防げます。
+
+2. 両方の Windows PC で同じプライベートな名前を使います。メモ帳を「管理者として実行」で起動します。ファイル → 開く を選び、次のフォルダーに移動して、フィルターを「すべてのファイル」に変えます：
+
+C:\Windows\System32\drivers\etc\
+
+hosts を開きます。実際のホストの IP とプライベートな名前を書いた行を 1 行追加します。たとえば：
+
+192.168.0.50 mk8dx.home.arpa
+
+.txt を付けずに hosts として保存します。ホストと 2 台目の PC の両方で同じことを行います。両方で PowerShell で確認します：
+
+ping -n 1 mk8dx.home.arpa
+
+ping の結果の前に、ホストの IP が表示されるはずです。ping 自体はファイアウォールでブロックされることがあります。このプライベートな名前には公開 DNS のレコードがないので、各機器にそれぞれ hosts のエントリーが必要です。
+
+3. 他のユーザー向けのサインインリンクには、実際のメールサービスが必要です。メールプロバイダーから、送信用 SMTP サーバーの名前、暗黙の TLS を使うポート 465、ログイン名、パスワード、許可された送信者アドレスを入手します。ポート 587 の STARTTLS しか提供していないサービスは、現在のウィザードには合いません。今後の MK8DX の管理者アドレスは、それとは別の値です。Mailpit を共有のログイン用受信箱として使わないでください。
+
+4. ホストで Start-MK8DX-LAN.cmd をダブルクリックします。A2 を選び、mk8dx.home.arpa を確定するか、hosts ファイルに書いた名前をそのまま入力します。ホストの実際の IPv4 アドレスは別に入力します。続いてウィザードが、メールの値と、今後の自分の管理者アドレスを聞いてきます。メールのパスワードは入力中に表示されません。最初のセットアップが自動的に始まります。専用のデータフォルダーは %LOCALAPPDATA%\MK8DX\LAN です。表示されるウェブサイトのアドレスは https://mk8dx.home.arpa になるはずです。
+
+ホストと 2 台目の PC の LiveTrial でも、この HTTPS アドレスを使います。名前の後に標準のポート 443 を書く必要はありません。調べた IPv4 アドレスは hosts のエントリーとネットワーク設定に使い、LiveTrial のコミュニティアドレスには使わないでください。このネットワークの方法では実際のメールプロバイダーを使うので、サインインメールは入力したアドレスの普段の受信箱に届きます。ここでは、ユーザーにローカルの Mailpit のアドレスはありません。
+
+5. ホストで、Windows セキュリティ → ファイアウォールとネットワーク保護 → 詳細設定 → 受信の規則 → 新しい規則 を開きます。ポート、TCP、特定のローカルポート 443、「接続を許可する」、そしてプライベートプロファイルのみを選びます。規則に名前を付けます。たとえば「MK8DX LAN HTTPS」。スコープでは、サブネットがわかる場合はリモートアドレスを自分のネットワークに限定します。データベースや Mailpit をパブリックネットワークに公開しないでください。
+
+6. 2 台目の Windows PC は、このインストール固有のローカル証明書を信頼する必要があります。これは自分で管理しているコンピューターでだけ行ってください。ホストで、展開したパッケージフォルダーで PowerShell を開き、次の 3 行を 1 行ずつ実行します：
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose cp web:/data/caddy/pki/authorities/local/root.crt (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt')
+
+ホストで証明書のフィンガープリントを確認します：
+
+Get-FileHash (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt') -Algorithm SHA256
+
+信頼できる方法で、mk8dx-lan-root.crt だけを 2 台目の PC に移します。フィンガープリントは別に記録しておきます。root.key、Caddy フォルダー全体、MK8DX の秘密情報は決してコピーしないでください。2 台目の PC で、ダウンロードフォルダーにあるファイルを確認します：
+
+Get-FileHash '.\mk8dx-lan-root.crt' -Algorithm SHA256
+
+値が完全に一致したら、証明書をダブルクリックします。証明書のインストール → 現在のユーザー → 証明書をすべて次のストアに配置する → 参照 → 信頼されたルート証明機関 → 完了 を選びます。ブラウザーを再起動します。フィンガープリントが異なる証明書はインストールしないでください。ブラウザーの警告を無視して先へ進まないでください。
+
+7. 2 台目の PC で https://mk8dx.home.arpa を開きます。証明書の警告は出ないはずです。自分のテスト画像で https://mk8dx.home.arpa/scanner/ も試します。自分のアドレスでサインインし、実際の受信箱に届いたリンクをたどります。そのサインインの後で、ホストで Start-MK8DX-LAN.cmd をもう一度開き、メニュー 5 を選ぶと、保存されたアドレスに一度だけ管理者権限を付与できます。A1 のユーザーと管理者が A2 に自動的に引き継がれることはありません。
+
+後でホストの IP が変わった場合は、まず両方の PC の hosts を更新します。ホストでパッケージフォルダーの PowerShell を開き、下の例の IP を新しい実際のアドレスに置き換えます：
+
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN') --lan-bind-address '192.168.0.51'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+アドレス、ウェブサイト、サインインメールをもう一度確認します。同じ A2 インストールである限り、2 台目の PC は引き続き証明書を信頼します。新しいプロジェクトに復元すると、新しいローカル認証局が作られます。「バックアップを復元する」を参照してください。
+
+Docker を使わない、Node.js 対応の共用ホスティングで公開する
+
+この方法では、mijn.host Starter のような共用ホスティングが提供している、Passenger 付きの Node.js と MariaDB を使います。VPS、Docker、root アクセス、自分の Caddy サーバーは必要ありません。パッケージは、ローカルの Linux と MariaDB の環境でテストしています。手順は、自分の DirectAdmin アカウントと実際のメール配信で改めて確認することになります。別の（サブ）ドメインと空のデータベースを使ってください。既存のウェブサイトやデータベースは変更しないでください。Starter は現在 RAM 2 GB とストレージ 5 GB とされています。アップロード、npm の依存パッケージ、データ、バックアップのための容量が十分あるか、自分のパネルで確認してください。
+
+1. 「ようこそ」に書いたリリースページから、mk8dx-mijnhost-node-v0.2.3.zip と SHA256SUMS.txt をダウンロードします。この ZIP がアップロード用のパッケージです。Docker のホスト用 ZIP やソース全体の ZIP とは別のファイルです。2 つのファイルを Windows PC の 1 つのフォルダーに置きます。そこで PowerShell を開き、SHA-256 の値全体を SHA256SUMS.txt の行と比べます：
+
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.3.zip' -Algorithm SHA256
+
+値が異なる場合は作業を止めてください。
+
+2. PC で mijn.host の顧客パネルにサインインします。ホスティングプランを開き、次に DirectAdmin を開きます。右上で、この新しい MK8DX サイト用のドメインまたはサブドメインを選びます。www.mijneigenwebsite.nl はあくまで例です。実際のホスト名を使ってください。Account Manager → SSL Certificates で、「Get automatic certificate from ACME Provider」にまさにその名前が含まれていることを確認します。後でブラウザーに証明書の警告が出てはいけません。DNS を他の場所で管理している場合は、まずそのホスト名をこのホスティングプランに向けてください。ウェブサイトのためだけに既存のメールのレコードを変更しないでください。
+
+DirectAdmin Node.js guide: https://mijn.host/kb/web-apps/node-js-applicatie-draaien-op-je-hostingpakket
+Let's Encrypt in DirectAdmin: https://mijn.host/kb/webhosting/lets-encrypt-ssl-certificaat-aanvragen
+
+3. DirectAdmin の Account Manager → MySQL Management または Databases で、新しい空のデータベースと、そのデータベースだけに権限を限定したユーザーを作ります。パネルに表示される完全な名前（アカウントの接頭辞を含む。たとえば account_mk8dx と account_mk8dxuser）を書き留めます。生成されたパスワードは他人に知らせないでください。root アカウントは使わないでください。データベースのホストは、パネルかアカウントの詳細で調べます。localhost のこともありますが、実際に表示された値だけを入力してください。ポート 3306 は一般的な例です。MK8DX はマイグレーションの前に、実際のエンジンとバージョンを確認します。このリリースには MariaDB 11.4 以降または MySQL 8.4 以降が必要です。パネルに「MySQL」と書いてあっても、バージョンの証明にはなりません。
+
+4. DirectAdmin → E-mail Manager → E-mail Accounts を開きます。このサイトに使ってよいメールボックスを作るか選びます。その完全なアドレス、パスワード、送信サーバーの名前を控えます。よくある形は、ポート 465 と SSL/TLS を使う mail.mijneigenwebsite.nl です。実際のサーバー名はアカウントから確認してください。SMTP のログイン名、表示される送信者、今後の MK8DX の管理者アドレスは、それぞれ目的が異なります。アカウントで送信が許可されていれば、付属のメールボックスで十分です。
+
+Mail settings at mijn.host: https://mijn.host/kb/email/e-mail-account-instellen-in-gmail
+
+5. DirectAdmin で Extra Features → Setup Node.js App → Create Application を開きます。パネルにあれば Node.js 24 を選びます。本番サイトには Production、Application root には public_html の外の apps/mk8dx、Application URL には選んだドメインのルート、Application startup file には api/dist/composition/passenger-hosted-main.js を選びます。パネルは最初に既定の app.js を表示することがあります。MK8DX を再起動する前に、起動ファイルの設定を指定したファイルに変更してください。パネルの上部に表示される Node 環境の有効化の行を、そのままコピーします。Node 24 や起動ファイルの設定が使えない場合は、古い Node のバージョンで推測して進めないでください。それはアカウント固有の確認事項です。
+
+6. mijn.host のパネルで、自分のサーバー名と SSH のユーザー名を調べます。Windows PC で PowerShell を開き、説明されている SSH ポート 26 で接続します。受け入れる前に、SSH のホスト鍵のフィンガープリントを、mijn.host から別途提供された値と比べます。B2 は SSH を使えるどの共用 Node.js ホストでも動きます。mijn.host はテスト済みの例で、ポート 26 はそのプロバイダーの SSH ポートです。他の場所では、自分のホストのポート（多くは 22）を使ってください。パッケージは mk8dx-mijnhost-node という名前のままです。山かっこの例を、山かっこを外して自分の値に置き換えます：
+
+ssh -p 26 <your-username>@<your-server-name>
+
+Linux のプロンプトが表示されるはずです。アカウントのパスワードはパスワードマネージャーに保管してください。これは VPS の root アクセスではありません。確認済みの ZIP も同じ SSH の経路で転送します。PC のダウンロードフォルダーで 2 つ目の PowerShell ウィンドウを開きます：
+
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.3.zip' <your-username>@<your-server-name>:
+
+ZIP は、ホスティングの自分のホームディレクトリに置かれます。別の SFTP のオプションは設定が異なる場合があります。この方法では、説明されている SSH/SCP のアクセスだけを使います。
+
+SSH at mijn.host: https://mijn.host/kb/webhosting/verbinden-met-ssh
+
+7. SSH のウィンドウに戻ります。Python 3.9 以降、unzip、MariaDB のダンプ用クライアントがあるか確認します。アプリケーションはビルド済みで、Python は既存のインストール用補助ツールを動かすだけです：
+
+python3 --version
+command -v unzip
+command -v mariadb-dump || command -v mysqldump
+
+コマンドが見つからない場合は、その見つからないツールについて、ホスティングのパネルや mijn.host のヘルプで確認してください。保護されていない公開のセットアップ用 URL は作らないでください。ZIP は public_html ではなく、自分専用のアプリケーションフォルダーに展開します：
+
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+cd "$HOME/apps/mk8dx"
+
+api、web、scanner、assets、mysql、tooling が表示されるはずです。アプリケーションフォルダーは非公開です。インストーラーは、プロファイル、秘密情報、バックアップも public_html の外に保管します。
+
+8. その SSH のウィンドウに、Setup Node.js App のパネルに表示された Node の有効化の行をそのまま貼り付けます。たいていは source で始まり、Application root への cd で終わります。続いて次を実行します：
+
+node --version
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+Node 24 と、バージョン固定された本番用依存パッケージのインストール完了が表示されるはずです。これは TypeScript をコンパイルするものではありません。api/node_modules は Linux ホスト用のものです。Windows の node_modules をアップロードしないでください。ストレージがいっぱいになった場合は、アカウントの他のデータを削除するのではなく、作業を止めて空き容量を確認してください。
+
+9. アプリケーションフォルダーから、案内付きの入力を始めます：
+
+python3 tooling/install.py wizard --state-dir "$HOME/mk8dx-private"
+
+B2 を選びます。https:// を付けずに正確な HTTPS のウェブサイトのホスト名を入力し、続いて手順 3 のデータベースのホスト、ポート、完全なデータベース名とユーザー名、表示されないデータベースのパスワードを入力します。手順 4 の SMTP ホスト、ポート 465、完全なメールボックスのログイン名、表示されないメールボックスのパスワード、許可された送信者を入力します。管理者アドレスには、サインインのリンクを受け取る個人のメールアドレスを入力します。SMTP のログイン名と違っていてもかまいません。補助ツールは、権限を限定して $HOME/mk8dx-private の下に operator-profile.json、secrets.json、operator.json を書き込みます。同じ値を別の .env ファイルに繰り返し書かないでください。
+
+10. データベースのバージョンを確認し、その後すべてのマイグレーションと両方の参考データを、自分の新しい空のデータベースにだけ適用します：
+
+python3 tooling/install.py check-database --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py setup --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py check --state-dir "$HOME/mk8dx-private"
+
+1 行目では、測定された MariaDB または MySQL のバージョンと tableCount 0 が表示されるはずです。エンジンが古すぎる場合や、データベースに予期しないテーブルがある場合は、作業を止めてください。setup の後は、すべてのマイグレーションが適用され、Nintendoスタッフと世界記録が適用済みになり、続いて ready（準備完了）になるはずです。インストーラーが、中身の入った不明なスキーマをリセットすることは決してありません。
+
+11. Passenger の設定を生成し、パネルから起動します：
+
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+これで、public_html の外の非公開の Application root に mk8dx-hosted.env.json が作られます。そのフォルダーや $HOME/mk8dx-private を、公開のファイルディレクトリに移動しないでください。DirectAdmin → Extra Features → Setup Node.js App で自分の MK8DX アプリを選び、Restart をクリックします。プロセスと HTTPS はプロバイダーが管理します。nohup や PM2 で追加のサーバーを動かさないでください。自分の実際のホスト名で、/health/ready、ホームページ、/scanner/、/client-config.json、/.well-known/assetlinks.json を確認します。不明な JSON や API の URL が HTML のホームページを返してはいけません。/secrets.json、/.env、バックアップへのリクエストで、中身が表示されてはいけません。
+
+12. サイトで、手順 9 の管理者アドレスを使って「サインイン」をクリックします。実際の受信箱に届いたリンクを開いてサインインします。その後で初めて SSH に戻り、必要ならパネルの Node 環境をもう一度有効化して、アプリケーションフォルダーに移動し、次を実行します：
+
+cd "$HOME/apps/mk8dx"
+python3 tooling/install.py admin --state-dir "$HOME/mk8dx-private"
+
+created（作成）、繰り返した場合は unchanged（変更なし）と表示されるはずです。ウェブサイトを再読み込みします。最初に登録しただけで管理者権限が与えられることはありません。コース、Nintendoスタッフと世界記録の合計、自分のタイムアタックのタイム、スキャナーのアップロードを確認します。実際のサインインメールが届かない場合は、メールボックスのログイン、送信者、TLS を確認してください。ready は外部の受信箱への配信を証明するものではありません。
+
+13. バックアップを取るときは、DirectAdmin でこの Node アプリの Stop ボタンを使って、訪問者のアクセスを一時的に止めます。MariaDB のデータベースは使える状態のままです。SSH で、アプリケーションフォルダーから、新しい非公開のフォルダー名を選びます：
+
+python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
+
+補助ツールは Backup verified（バックアップを検証しました）と報告します。このホスティングアカウントの外にも、保護されたコピーを保管してください。DirectAdmin で Node アプリを再起動し、ready を確認します。バックアップにはアカウント、管理者の権限、鍵が含まれます。public_html や公開のリンクには決してアップロードしないでください。
+
+14. アップデートするときは、PC で新しい B2 の ZIP を確認します。DirectAdmin で Node アプリを止め、古いアプリケーションで検証済みのバックアップを作ります。新しい ZIP を同じ SSH/SCP の経路でアップロードします。SSH で古いアプリケーションフォルダーの名前を変え、新しい空のフォルダーを作ります。次のコマンドは、新しい ZIP がホームフォルダーにあり、まだ mk8dx-before-update フォルダーがない場合にだけ使ってください：
+
+cd "$HOME"
+mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-before-update"
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+
+DirectAdmin の Node 24 の有効化の行をもう一度貼り付けます。新しい api フォルダーに、バージョン固定された Linux 用の依存パッケージをインストールし、アプリケーションのルートに戻ります：
+
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+同じ非公開のデータフォルダーをそのまま使います。別の新しいバックアップフォルダーを使います：
+
+python3 tooling/install.py upgrade --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-update-2026-10-01"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+その後、DirectAdmin でこのアプリだけを再起動します。ウェブサイト、サインイン、管理、既知の結果を確認します。スキーマのマイグレーションの後で、古いウェブのファイルだけを安易に元に戻さないでください。MariaDB のバージョン変更は、通常の MK8DX のアップデートではありません。
+
+15. 復旧には、同じテスト済みのデータベースエンジンとバージョン系列で、新しい空のデータベースと別のテスト用サブドメインを使います。確認済みの B2 パッケージと完全な非公開のバックアップを、その別のインストールに置きます。DirectAdmin で、復元の試用のために、Application root を apps/mk8dx-restore、Application URL をテスト用サブドメインにした別の Node アプリを作ります。B2 の ZIP を、その新しい非公開のフォルダーに展開します。この新しいアプリの画面にある行で Node 24 を有効化し、apps/mk8dx-restore/api の中で npm ci --omit=dev --ignore-scripts --no-audit --no-fund を実行してから、apps/mk8dx-restore に移動します。案内付きの復元は、パスワードを表示せずに新しいデータベースの詳細を尋ね、古いアカウントと鍵を再利用します：
+
+python3 tooling/install.py restore-wizard --backup-input "$HOME/mk8dx-backups/b2-2026-10-01" --state-dir "$HOME/mk8dx-private-restore"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private-restore"
+
+DirectAdmin で、この別の Passenger アプリをテスト用サブドメインと非公開の Application root に結び付けます。起動して、ready、既存のサインイン、管理、結果を確認します。最初の管理者を新たに作らないでください。実際のドメインの切り替えと、プロバイダーのバックアップは、自分で行う別の手順です。
+
+VPS で公開ウェブサイトを作る
+
+VPS とは、インターネット上にある自分専用のコンピューターです。この方法では、x86-64 上の Ubuntu 24.04 LTS を使います。推奨の性能は、CPU 2 コア、RAM 8 GB、SSD 40 GB に加えて、今後のデータとバックアップのための余裕です。Mijn.host のアンマネージド VPS M は、VPS のページでこの性能と root/SSH を掲載していますが、MK8DX はそのプランそのものではテストしていません。Ubuntu、Docker、メール、セキュリティアップデート、バックアップの責任は引き続き自分にあります。
+
+Mijn.host VPS overview: https://mijn.host/vps
+
+Mijn.host Starter は、上の別の Node/Passenger の方法を使います。この VPS の章は Docker を使うもので、通常の Starter プランには当てはまりません。
+
+Mijn.host shared hosting overview: https://mijn.host/webhosting
+
+最初のセットアップの前に、自分のドメイン、IPv4 と Ubuntu の付いた適切な VPS アカウント、DNS の管理へのアクセス、暗黙の TLS を使う SMTP 465 のメールサービスが必要です。例の www.mijneigenwebsite.nl は、すべて自分のホスト名に置き換えてください。例の IP 203.0.113.10 は実在のサーバーではありません。プロバイダーのログイン、SSH キー、MK8DX の管理者アドレス、SMTP のログインは、それぞれ目的が異なります。パスワードと鍵は他人に知らせないでください。
+
+1. VPS が SSH キーを使う場合は、Windows PC でアクセス用の鍵を作ります。PowerShell を開いて実行します：
+
+New-Item -ItemType Directory -Force (Join-Path $env:USERPROFILE '.ssh')
+ssh-keygen -t ed25519 -f (Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519')
+
+聞かれたら強力なパスフレーズを選びます。.pub の付いていないファイルが秘密鍵です。.pub ファイルをメモ帳で開き、VPS の管理ポータルの SSH キーの機能から、その公開鍵だけを追加します。ボタンの正確な場所はプロバイダーによって異なります。見つからない場合はプロバイダーに聞いてください。秘密鍵を決してウェブフォルダーやサーバーに置かないでください。
+
+2. 公式ウェブサイトから WinSCP をインストールします。WinSCP → New Site（新しいサイト）を開きます。SFTP を選びます。Host name（ホスト名）に実際の VPS の IP、Port number（ポート番号）に実際の SSH ポート、User name（ユーザー名）に VPS のアカウントを入力します。説明している root の方法では、プロバイダーが提供している場合にだけ root を使ってください。鍵でログインする場合は、Advanced → SSH → Authentication → Private key file（詳細設定 → SSH → 認証 → 秘密鍵）を開き、手順 1 の秘密鍵を選びます。WinSCP は OpenSSH の鍵を .ppk ファイルに変換するよう提案します。秘密鍵の隣に保存して、WinSCP ではそれを使ってください。パスフレーズは引き続き必要です。
+
+WinSCP: https://winscp.net/eng/download.php
+WinSCP key formats: https://winscp.net/eng/docs/ui_login_authentication
+
+SSH のホスト鍵のフィンガープリントは、プロバイダーの独立した VPS コンソールかサポートを通して入手します。WinSCP の初回接続時のメッセージと比べます。完全に一致した場合にだけ受け入れてください。確認済みの mk8dx-host-local-v0.2.3-amd64.zip を、左側（自分の PC）から右側（サーバー）の /root/ にドラッグします。バックアップや秘密情報を public_html にアップロードしないでください。
+
+3. サーバーのターミナルとして、PC で PowerShell を開きます。実際の IP、ポート、鍵のパスを使ってください。これは手順 1 と同じ OpenSSH の鍵で、変換した .ppk ファイルではありません：
+
+$serverIp = '203.0.113.10'
+$sshPort = 22
+$key = Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519'
+ssh -i $key -p $sshPort "root@$serverIp"
+
+ここでも、ホスト鍵のフィンガープリントを独立して入手した値と比べます。その後で初めて、鍵のパスフレーズを入力します。プロバイダーが別の VPS ユーザーや SSH ポートを指定している場合は、root や 22 を置き換えてください。共用ホスティングのポートは VPS の設定ではありません。
+
+Ubuntu のターミナルで、マシンを確認します：
+
+cat /etc/os-release
+uname -m
+free -h
+df -h /
+python3 --version
+
+Ubuntu 24.04、x86_64、Python 3.12〜3.15 が表示されるはずです。新しい Ubuntu 24.04 サーバーで Python がない場合は、次を実行します：
+
+apt update
+apt install python3
+python3 --version
+
+マシンが Linux x86-64 でない場合は先に進まないでください。付属のイメージパッケージは amd64 用です。
+
+4. Docker がすでに動くか確認します：
+
+command -v docker
+docker compose version
+
+ない場合は、このサーバーで Docker 公式の Ubuntu 用 apt の方法を使います。各グループを同じサーバーのターミナルで実行し、コマンドが失敗したら作業を止めてください：
+
+Docker for Ubuntu: https://docs.docker.com/engine/install/ubuntu/
+
+apt update
+apt install ca-certificates curl unzip
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+公式のパッケージソースを追加します。最後の EOF も含めて、これらの行をまとめてコピーします：
+
+cat > /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+確認します：
+
+systemctl is-active docker
+docker compose version
+
+最初の答えは active のはずです。エラーが出た場合は、2 つ目の Docker を手当たり次第にインストールせず、エラーと公式ページを読んでください。
+
+5. ドメインを管理している事業者の DNS パネルで、ドメインのレコードを開きます。www.mijneigenwebsite.nl のような名前なら、名前が www で、値が実際の VPS の IPv4 アドレスの A レコードを作ります。既存のメールのレコードはそのままにします。既定の TTL か 300 秒を使います。変更が反映されたら、PC で確認します：
+
+Resolve-DnsName www.mijneigenwebsite.nl -Type A
+
+答えは VPS の IP のはずです。同じ名前に既存の AAAA レコードがあれば確認します。動作している IPv6 のサイトを指している場合にだけ残してください。VPS プロバイダーのパネルで、TCP 80 と 443 の着信を許可します。SSH のポートはつながるままにし、MySQL のポート 3306 は公開しないでください。サーバーへのアクセスを取り戻す方法がわかっていない限り、ファイアウォールを大きく変更しないでください。
+
+6. メールプロバイダーから、送信用 SMTP ホスト、暗黙の TLS を使うポート 465、ログイン名、パスワード、許可された送信者アドレスを入手します。VPS からの送信が許可されているか確認してください。これは MK8DX の管理者アドレスとは別のものです。このガイドでは、実際のプロバイダーを通した配信はテストしていません。インストールが成功したといえるのは、自分のサインインリンクが実際の受信箱に届いたときだけです。
+
+7. Ubuntu のターミナルでは、WinSCP で転送した ZIP が /root/ の下にあります。確認して展開します：
+
+pwd
+ls -lh /root/mk8dx-host-local-v0.2.3-amd64.zip
+mkdir -p /opt/mk8dx/host /var/lib/mk8dx
+unzip -q /root/mk8dx-host-local-v0.2.3-amd64.zip -d /opt/mk8dx/host
+cd /opt/mk8dx/host
+ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
+
+名前が見つからない場合は、正しい完全な ZIP を展開したか確認してください。既存のセットアップ補助ツールを起動します：
+
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+B1 を選びます。https:// を付けずに正確なホスト名を入力します。5 つのメールの値と、今後の自分の MK8DX の管理者アドレスを入力します。SMTP のパスワードは表示されません。メニュー 1 を選びます。補助ツールが、内部のデータベース、鍵、接続を作ります。繰り返すときは同じ /var/lib/mk8dx/instance フォルダーを使ってください。DNS やメールの問題を回避するために別のプロファイルを作らないでください。
+
+8. PC で、例の代わりに自分のホスト名を使って、準備状態のアドレスを開き、続いてウェブサイトを開きます：
+
+https://www.mijneigenwebsite.nl/health/ready
+https://www.mijneigenwebsite.nl
+
+ブラウザーに証明書の警告が出てはいけません。「サインイン」をクリックし、保存した管理者アドレスを使って、実際の受信箱に届いたリンクを開きます。その確認済みのサインインの後で初めて、サーバーのターミナルでパッケージフォルダーに戻り、メニュー 5 を選びます：
+
+cd /opt/mk8dx/host
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+答えは created（作成）、繰り返した場合は unchanged（変更なし）です。サイトを再読み込みします。コースと、自分のタイムアタックの投稿も確認します。コンテナーが動いているだけでは、DNS、証明書、メール配信の証明にはなりません。
+
+Android、LiveTrial、スキャナー、Tournament を使う
+
+結果を送るために、これらのツールは既存のコミュニティのアドレスを使います。LiveTrial と Tournament Tools はウェブサイトなしでも単独で動きますが、Android アプリとブラウザーのスキャナーにはウェブサイトが必要です。同じ Windows コンピューター上では、LiveTrial と Tournament は http://127.0.0.1:18080（A1）または http://127.0.0.1:18090（A3）を使えます。公開ウェブサイトでは、その信頼された HTTPS アドレスを使います。Android には信頼された HTTPS が必要です。ローカルの Windows での確認は、Android の接続の証明にはなりません。汎用の Android アプリと Windows のクライアントでは、コミュニティのアドレスを選べます。ドメインが違ってもソースコードを変更する必要はありません。公開のクライアント設定に、サーバーのパスワードが含まれることは決してありません。内部の mysql の名前、API コンテナーのアドレス、SSH の IP を、決してクライアントに入力しないでください。
+
+必ず、自分のインストールで「Website」（または「origin」や「Web origin」）として表示された完全なウェブサイトのアドレスを、ポートが表示されている場合はポートも含めてコピーしてください。テスト用受信箱のアドレス（「Sign-in mail」や「localMailInbox」）を LiveTrial に入力しないでください。それはローカルのテスト用受信箱を開くだけです。2 台目の機器では、サーバーの 127.0.0.1 のアドレスではなく、HTTPS のネットワーク名か公開ドメインを使ってください。
+
+Android には Android 8.0 以降が必要です。arm64 を推奨します。ローカルでリリース署名した APK は約 530 MB です。インストールの余裕として、少なくとも 1 GB の空きを確保してください。PC で mk8dx-android-release-v0.2.3.apk を SHA256SUMS.txt と照合し、スマートフォンにコピーして、ファイルまたはダウンロードから開きます。Android がこのファイルアプリからのインストールを許可するよう求めたら、確認済みのパッケージに対してだけ許可してください。その許可は後でオフにしてかまいません。
+
+初回の起動時に、「コミュニティを選択」で、コミュニティがどのように遊んでいるかを聞かれます。オンラインコミュニティの場合は、「ウェブサイトのアドレス」に、信頼された HTTPS の完全なコミュニティアドレス（たとえば https://www.mijneigenwebsite.nl）を、パスや末尾のスラッシュを付けずに入力し、「保存」をタップします。家庭やクラブのインストール（A2）の場合は、「QR コードをスキャン」をタップして Prepare a device（機器の準備）カードを読み取ります。この手順は A2 ガイドで一歩ずつ説明しています。後でアプリ上部のコミュニティ名をタップすると、コミュニティを切り替えたり、「コミュニティを追加」で追加したりできます。各コミュニティは、それぞれのアカウントと送信待ちの記録を保持し、コミュニティどうしで自動的に何かが移ることはありません。自分のタイムは、オフラインでも自分の名前 → 自分のタイム にあります。うまくいかない場合は、スマートフォンのブラウザーで同じアドレスを開いてください。その後、ブラウザーのコードを使って自分のアカウントでサインインします。以前に公開された APK はデバッグ署名でした。まだ送信していない結果を保存し、そのデバッグ版アプリを一度アンインストールしてから、このリリース署名の APK をインストールしてください。同じリリースキーで署名された今後の APK は、そのまま上書きアップデートできます。これは Play ストアのリリースではありません。
+
+APK は、ドメインごとではなく、作成者が署名するものです。自動の Android App Links には、実際のアプリの識別情報、実際の署名証明書、自分のドメインの間の公開された関連付けが必要です。そのため既定の /.well-known/assetlinks.json には、JSON として [] が入っています。手動でのサーバー選択とサインインは、その自動の関連付けなしで動きます。別途署名したカスタムビルドは、開発者向けの方法になります。
+
+Windows x86-64 の LiveTrial の場合は、desktop-client-v0.2.3.zip を SHA256SUMS.txt と照合し、ZIP 全体を、たとえばドキュメントの中に展開します。展開と自分の録画のために約 2 GB を確保してください。これは余裕であり、測定した最低値ではありません。LiveTrial.exe を開きます。キャプチャーカードからのライブ取り込みには FFmpeg も必要ですが、ライセンスの関係で同梱していません。PowerShell で一度 winget install Gyan.FFmpeg を実行し、LiveTrial を再起動してください（動画の解析は FFmpeg なしで動きます）。設定 → コミュニティWebサイトのアドレス に移動し、自分のインストールの正確なアドレスを入力して、「サーバーを保存」を選びます。切り替えを確定します。
+
+LiveTrial はアドレスを保存し、自動的に再起動します。その間、ウィンドウは開いたままにしてください。再起動後、設定に自分の正確なアドレスが表示されていることを確認します。その後で初めてサインインします。サインインすると、自分のコミュニティが開くはずです。「記録履歴」を開くと、その部分は必要ならローカルのサーバーを少し待ってから、自動的に読み込まれます。F5 を押す必要はないはずです。自動の再起動に失敗したと LiveTrial が表示した場合は、アプリ内で「LiveTrialを終了」を選び、閉じるまで待ってから、もう一度 LiveTrial.exe を開きます。ブラウザーのウィンドウを閉じるだけでは不十分です。LiveTrial がバックグラウンドで動き続けていることがあります。
+
+欄が https://www.example.org の例のまま空になっている場合や、サインインで違うサイトが開く場合は、作業を止めてください。既存の LiveTrial を「LiveTrialを終了」で終了します。同じ PC の別の Windows アカウントが起動している可能性もあります。もう一度開いて、アドレスを確認します。server.json を手で編集したり、違うウェブサイトに記録を送ったりしないでください。動画ファイルにはキャプチャーカードは必要ありません。ライブ取り込みには、対応するカードとドライバーが必要です。ローカルの結果と送信待ちの列は、サーバーごとに別々に保たれます。
+
+ブラウザーのスキャナーは、すでにウェブサイトの一部です。信頼された HTTPS アドレスで /scanner/ を開き、「画像をアップロード」（英語では「image upload」、オランダ語では「afbeelding uploaden」）から始めます。自分の結果画面の画像を選び、認識された内容を確認して、確かめた後でだけ確定します。カメラのライブ使用には、ブラウザーの許可と、localhost 以外では信頼された HTTPS が必要です。認識の精度は録画にも左右されます。A2 で説明している 2 台目の Windows ブラウザーの経路は、説明はありますが、最初から最後まではテストしていません。
+
+Windows x86-64 の Tournament の場合は、tournament-tools-v0.2.3.zip を確認し、ZIP 全体を展開します。Install-MK8DX-TournamentTools.cmd を開きます。数 GB の空き容量を確保してください。約 160 MB の ZIP と約 1 GB の展開分だけでは、すべての依存パッケージと自分のメディアには足りません。インストーラーは、Python 3.12 と公開パッケージをダウンロードするために一度だけインターネットを必要とします。OCR のモデルは同梱されているので、その後の処理はオフラインで動きます。すべての依存パッケージとメディアに必要な正確な最低値は測定していません。GPU の設定は不要です。最近の NVIDIA ドライバーがあれば、インストーラーが自動的に CUDA のバージョンを選び、グラフィックカードが名前、得点、タイムの読み取り（OCR）を高速化します。録画の最初のスキャンは、パッケージの OpenCV ビルドが CUDA に対応していないため、常にプロセッサーで実行されます。パッケージ内の USING_MK8DX_TOURNAMENT_TOOLS.md で両方のステップを説明しています。SUCCESS と表示されるまで待ち、runtime-assets はそのままにしておきます。失敗した場合は、パッケージフォルダーの install.log を読んでください。
+
+.mp4 または .mkv の録画を TournamentProcessor.cmd にドラッグします。プログラムは動画の隣にセッションフォルダーを作り、Excel、CSV、そして名前が _TournamentRaceResultsV1.json で終わるファイルを入れます。TournamentLive.cmd でライブ入力を使うには、適切なキャプチャー機器とドライバーが必要です。
+
+キャプチャーカードがなくても、既存の動画で Tournament Live を試せます。TournamentLive.cmd を開き、「動画ファイルを追加」を選んで .mp4 または .mkv ファイルを選び、「すべて開始」を選びます。動画と解析が終わるまで待ちます。「確定した順位」を確認し、「エクスポートを開く」で結果ファイルを開きます。この通常の動画の経路では、得点のアニメーションと最終順位が落ち着くのを待つ得点の選び方を使います。名前、順位、得点は自分で確認してください。OCR は間違うことがあります。動画の再生では、実機のキャプチャーカードのテストにはなりません。別の TournamentLiveCli.cmd の再生コマンドは診断用で、この経路の代わりにはなりません。
+
+任意のウェブサイト接続を使う場合は、パッケージフォルダーで PowerShell を開き、次を実行します：
+
+.\TournamentConnect.cmd sign-in
+
+初回は自分のインストールの正確なアドレスを入力し、ブラウザーでサインインを完了します。次のコマンドでアドレスを表示または変更できます。変更するときは確認を求められます：
+
+.\TournamentConnect.cmd server
+.\TournamentConnect.cmd server https://www.example.org
+
+example.org は実際のコミュニティに置き換えてください。古いサーバー向けの送信待ちのアップロードは、古いサーバー側に残ります。TournamentConnect.cmd send でファイルを送るには、まず管理者が 管理 → 大会 → ディレクター を開き、サインインしたプレイヤーを検索して名前を選びます。これで付与されるのは大会のアクセス権で、一般の管理権限ではありません。もう一度送信します。レースは確認されるまで「受信した結果」に残ります。ウェブサイトでは、管理者が 管理 → 大会 → 正式なレース結果をインポート から、またはグループ内の「オフライン時の代替手段：保存したLive／Processorの結果ファイルをインポート」から、確認済みの結果を取り込みます。アップロードしただけで自動的に公開されることはありません。
+
+新しい大会では、管理者が 管理 → 大会 を開き、そこで大会を作ります。プレイヤーを追加し、出席している人に印を付け、使える Switch を割り当てて、グループの構成を確定します。続いて、そのグループの「受信した結果」を開きます。認識された名前を正しいプレイヤーと結び付け、コースとゴール順位を確認して、確認したレースについて「確定」を選びます。暫定のライブ表はまだ公式の結果ではありません。グループの最後のステップをウェブサイトで済ませます。「確定内容を確認」の前に、上部の「開催回を設定」を選び、この回の番号（たとえば 1）を入力します。最終の表を確認し、「確定内容を確認」→「大会を確定」を選びます。公開された結果を見るには、新しいブラウザーウィンドウで公開の大会ページを開きます。
+
+設定の変更とサイトの管理
+
+セットアップ補助ツールは、論理的な値を 1 つにつき一度だけ尋ねます。プロファイルは operator-profile.json に、パスワードと鍵は別に secrets.json に、非公開のデータフォルダー内で保管します。ウェブ、API、Docker、公開クライアントの設定は、補助ツールが自分で導き出します。api.env、compose.env、operator.json、public-client.json を個別に編集しないでください。公開の /client-config.json には、ウェブサイトのアドレスしか含まれません。起動を繰り返しても、新しいアカウント、管理者、鍵、データベースが作られることはありません。
+
+Windows では、既定で A1 は %LOCALAPPDATA%\MK8DX\Server を、A2 は %LOCALAPPDATA%\MK8DX\LAN を使います。VPS では、B1 は /var/lib/mk8dx/instance を使います。これらはデータフォルダーであり、ソフトウェアのアップデート時に置き換えるフォルダーではありません。プロバイダーのログインと VPS の SSH キーは、MK8DX の外にあります。Android や Windows の各機器は、それぞれ自分のコミュニティの選択とセッションを保存します。
+
+Windows での起動、状態表示、停止、管理者、バックアップには、該当する Start-MK8DX.cmd または Start-MK8DX-LAN.cmd をもう一度開きます（カウントダウンを省略するには -SkipCountdown を付けるか、ビープ音をなくすには MK8DX_SOUND=0 を設定します。Ubuntu では --skip-countdown）。Ubuntu では /opt/mk8dx/host に移動し、sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance を実行します。メニューは、2 が起動、3 が状態表示、4 が停止、5 が確認済みの最初の管理者、6 がバックアップ、7 が検証済みのバックアップを先に作ってからのアップデートです。1 は中断された最初のセットアップを再開できます。残しておきたいインストールで docker compose down -v を決して使わないでください。-v はデータベースのボリュームを削除します。試用のインストールを完全に削除するには（データベース、アカウント、鍵が削除されます。元に戻したくなるかもしれない場合は、先に 6 でバックアップを作ってください）：4 で停止し、パッケージフォルダーで PowerShell を開いて docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v を実行し、フォルダー %LOCALAPPDATA%\MK8DX\Server を削除します（家庭内ネットワークの方法では compose.lan.yaml を使います）。Ubuntu では、--env-file /var/lib/mk8dx/instance/compose.env で同じコマンドを実行し（VPS では compose.production.yaml）、その後 /var/lib/mk8dx/instance を削除します。
+
+A2 や B1 でメールサービスやパスワードを変更するには、まずメニュー 6 でバックアップを作ります。A2 では、展開したホストフォルダーで PowerShell を開き、次を実行します：
+
+python tooling/install.py change-smtp --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+Ubuntu では、/opt/mk8dx/host で python3 と --state-dir /var/lib/mk8dx/instance を使って同じ操作を行います。入力の案内には smtp.host、smtp.port、smtp.username、smtp.fromAddress という名前が出て、表示されないパスワードも尋ねられます。Enter を押すと既存の値がそのまま残ります。その後、実際の受信箱で新しいサインインメッセージを確認してください。check だけではメール配信の証明にはなりません。管理者アドレス、送信者アドレス、SMTP のログインは同じでなくてもかまいません。
+
+公開ウェブサイトのアドレスを変更するのは、新しい DNS のアドレスと HTTPS の準備ができてからにしてください。先にバックアップを作ります。この A1 の例は、正確な変更の操作を示しています。例のポートを、使いたい空きポートに置き換えてください：
+
+python tooling/install.py change-origin --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server') --origin 'http://127.0.0.1:18090'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+
+B1 では、python3、/var/lib/mk8dx/instance、新しい完全な https:// のアドレスを使います。状態、/client-config.json、新しいサインインリンクを確認します。各機器も新しいアドレスに向けてください。最初の付与の前であれば、間違った管理者アドレスをセットアップ補助ツールで直せます。ただし、すでに使われた最初の付与がやり直せるようになるわけではありません。既存の管理者が、確認済みの別の管理者を追加できるのは、範囲を限った復旧の手順と、所有者の明示的な判断を通してだけです。
+
+ウェブサイトでは、管理 → インストール設定 にサイト全体の選択があります。コミュニティ名（たとえば「Club Noord」）は、アプリでウェブアドレスの代わりに表示されます。付けない場合は空にしておきます。他のコミュニティからのタイム では、プレイヤーが別のコミュニティから持ち込んだタイムを、拒否するか（オフ、既定）、管理者が 管理 → タイムアタック でその横の「公開」をクリックするまで待たせるか（承認制）、通常の公開ルールに従わせるか（許可）を決めます。持ち込まれたタイムがまだ待っている間に承認制から切り替えると、それらをどうするかをページが尋ねます。すべての変更は、管理者の名前とともに記録されます。
+
+バックアップ、復元、アップデート
+
+該当するホストでメニュー 6 を選びます。Windows では、バックアップは Documents\MK8DX-backups\<タイムスタンプ> の下に作られます。Ubuntu で root として作業している場合は、/root/mk8dx-backups/<タイムスタンプ> の下に作られます。中身は、データベース、アカウント、管理者の権限、設定、鍵です。フォルダー全体を非公開にし、ホストの外の保護された保管場所にもコピーしてください。故障したのと同じ VPS 上のコピーだけでは不十分です。
+
+実際に作られたフォルダーを検証します。下の <ACTUAL_FOLDER> を、補助ツールが表示したフォルダー名に置き換えてください。Windows では、ホストパッケージの PowerShell で：
+
+python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>"
+
+Ubuntu では、ホストパッケージのフォルダーで：
+
+python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>'
+
+期待される答えは「Backup verified」（バックアップを検証しました）です。バックアップを Issue、メール、公開のクラウドリンクで決して共有しないでください。
+
+バックアップを復元する
+
+復元の試用では、新しいデータフォルダーと新しい Docker プロジェクトを使います。既存のインストールには手を付けません。復元の操作では、最初は新しいデータベースだけを起動します。復元したウェブサイトは、その後で自分の方法に従って起動します。試用の後も、元のバックアップは保管しておいてください。
+
+A1 では、ホストパッケージで PowerShell を開きます。まだ存在しない復元先のフォルダーを選び、次を実行します：
+
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+
+復元した A1 サイトには、それ専用の空いているローカルポートが割り当てられます。status から新しい Web origin を開きます。既知のアカウント、管理画面、結果を確認します。元のサイトは動かしたままでかまいません。復元の試用に、新しい最初の管理者を付与しないでください。
+
+公開の B1 を置き換える場合は、確認済みのホストパッケージ、Docker、Python、開いたポート 80/443 のある新しい Ubuntu 24.04 VPS を使います。古い VPS はひとまず残しておきます。短いメンテナンスの時間帯を設けます。古い VPS では、最後のバックアップの後に新しい結果が届かないよう、まずウェブと API だけを止めます。古いホストパッケージのフォルダーで、次を実行します：
+
+docker compose --env-file /var/lib/mk8dx/instance/compose.env -f compose.yaml -f compose.production.yaml -f compose.images.yaml stop web api
+
+これでウェブサイトは一時的に使えなくなります。古い VPS で、MySQL がまだ動いている間に、メニュー 6 で新しいバックアップを作ります。上の verify コマンドで、まさにこの新しいバックアップを検証します。失敗した場合は、メニュー 2 で古いサイトを再開して原因を調べます。検証済みのバックアップフォルダー全体を、確認済みの WinSCP 接続を通して、新しい VPS の非公開のフォルダーに転送します。決してウェブフォルダーには置かないでください。たとえば /root/mk8dx-backups/ の下に置きます。新しいサーバーの /opt/mk8dx/host で、実際のバックアップフォルダー名を使って次を実行します：
+
+docker load --input images/docker-images-amd64.tar
+python3 tooling/lifecycle.py restore-new --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>' --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py status --state-dir /var/lib/mk8dx/herstelproef
+
+これで、新しいデータベースがそれ専用のプロジェクトで準備できました。復元したデータを、手元の既存の非公開バックアップと status と照らし合わせて確認します。短い切り替えを計画します。DNS パネルで、MK8DX のホスト名の A レコードだけを新しい VPS の IPv4 アドレスに変更します。メールのレコードはそのままにします。PC の Resolve-DnsName で新しい IP が表示されるまで待ちます。その後、新しい VPS で復元したサービスを起動します：
+
+python3 tooling/install.py start --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py check --state-dir /var/lib/mk8dx/herstelproef
+
+PC で https://<your-real-host-name>/health/ready とウェブサイトを開きます。有効な証明書、実際の受信箱に届く自分のサインインメール、既知のアカウント、管理画面、結果を確認します。新しい Docker のインストールは、自分用の公開証明書を要求します。ポート 80/443 と新しい DNS の宛先につながる必要があります。古い VPS は訪問者の経路から外し、調査や切り戻しのために残しておきます。確認に失敗した場合は、バックアップには手を付けずに、DNS、ポート、証明書、SMTP を調べ、A レコードを古い IP に戻す変更を計画的に行ってください。手っ取り早い解決策としてボリュームを削除しないでください。外部のサービスを使った実際の切り替えは、このローカルの候補ではまだ行っていません。
+
+A2 では、同じ信頼できるネットワーク上の別の Windows ホストに復元します。Docker、Python、ホストパッケージを準備します。短いメンテナンスの時間帯に、古いホストでウェブと API だけを止めます。最後のバックアップのために、データベースは動かしたままにします。古いパッケージのフォルダーで PowerShell を開きます：
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose stop web api
+
+続いて、古いホストでメニュー 6 を選び、新しいバックアップを検証します。失敗した場合は、メニュー 2 で古いインストールを再開します。検証済みのバックアップフォルダーを、他の人に見られない方法で新しいホストに転送します。同じフォルダー名で Documents\MK8DX-backups\ の下に置くか、次のコマンドのバックアップのパスを調整します。そこで、まだ存在しない LAN の復旧用フォルダーに restore-new を実行します。起動する前に、保存されている割り当てアドレスを、新しいホストの実際の IPv4 に変更します：
+
+docker load --input images/docker-images-amd64.tar
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel') --lan-bind-address '192.168.0.51'
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+
+例の IP を置き換え、新しいホストで TCP 443 をプライベートプロファイルに対してだけ許可します。ホストと 2 台目の PC で、mk8dx.home.arpa の hosts のエントリーを新しい IP に変更します。この新しい Docker プロジェクトには、新しいローカル認証局があります。家庭内ネットワークの章の証明書のコマンドを使って、この復旧用プロジェクトから新しい root.crt を取り出します。ただし $state には LAN-Herstel を使ってください。もう一度 SHA-256 を比べ、2 台目の PC に新しい証明書をインストールします。古い証明書は、古いフィンガープリントで見分けながら、certmgr.msc の 信頼されたルート証明機関 → 証明書 から削除します。その後で初めて、警告なしにサイトを開き、サインインと既存の結果を確認します。実機での A2 の切り替えはまだテストしていません。元のホストとバックアップは残しておいてください。
+
+ソフトウェアをアップデートするときは、まず新しいホストパッケージの SHA-256 を確認します。古いソフトウェアのフォルダーの隣に展開します。同じ非公開のデータフォルダーを使い、新しいパッケージでメニュー 7 を選びます。補助ツールは、まずバックアップを作って検証し、足りないマイグレーションを実行して、付属のサーバープログラムだけを置き換えます。その後、同じプロジェクトの識別情報、ウェブサイト、サインイン、データを確認します。失敗した場合は、バックアップを残しておき、データベースのスキーマ変更の後で古いイメージを安易に動かさないでください。
+
+0.2.3 へのアップデートでは、Docker のデータベースが MySQL 8.4 から MySQL 9.7 LTS に移行されます。MySQL は、新しいバージョンでの最初の起動時に一度だけデータファイルをアップグレードします。それを元に戻せるのは、バックアップの復元だけです。そのため、新しいパッケージのフォルダーでは 2 より先に 7 を選んでください。先に 2 を選ぶと、バックアップもデータベースの更新もないまま新しいバージョンが起動してしまいます。メニュー 3（確認）は無害です。A2 パッケージでは、ブラウザーの Update（アップデート）が自動的に先にバックアップを作ります。最初のアップデートは少し時間がかかるだけで、バックアップは Documents\MK8DX-backups にあります。A3 と B2 は独自の MariaDB または MySQL を使うので、影響を受けません。
+
+トラブルシューティングと自分でのビルド
+
+ウェブサイトが空の場合は、まずメニュー 3 を使い、Docker が動いているか確認します。A1 ではサインインメールは Mailpit に届きます。A2 と B1 では実際の受信箱に届くはずです。常に、同じインストール、アドレス、メールアドレスを使っているか確認してください。公開の方法でサインインメールが届かない場合は、実際の SMTP の値とプロバイダーにつながるかを確認する必要があります。/health/ready は API とデータベースの準備状態を報告するもので、受信箱への配信を報告するものではありません。
+
+A2 では、まず両方の PC の hosts のエントリー、プライベートネットワーク、ファイアウォールのポート、証明書のフィンガープリントを確認します。B1 では、DNS の A レコード、プロバイダーのポート 80/443、有効な HTTPS、そしてメールを確認します。証明書の警告を無視しないでください。助けを求めるときに、secrets.json、バックアップ、サインインのリンク、SSH キー、パスワードを含むログの行を決して共有しないでください。
+
+自分のコード、ブランディング、署名済みの最終的な APK をビルドするには、同じリリースページから mk8dx-full-local パッケージをダウンロードします。ソース、内部のアセットコレクション、ビルドの手順が含まれています。開発者向けの説明は docs/DEVELOPMENT.md と docs/CLIENT_BUILDS.md にあります。リポジトリのクローン（git clone https://github.com/fromthelake/MK8DX-Ecosystem.git）またはそのパッケージから、docs/guides/HOSTING.md（「Build the host package from a clone」）で Docker のホストパッケージと共用ホスティング用・XAMPP 用のパッケージを、docs/CLIENT_BUILDS.md で Android、LiveTrial、Tournament のパッケージをビルドできます。通常のインストールとサーバーの選択には、Android Studio、ソースの編集、自分でビルドした Docker イメージは必要ありません。パッケージ内のゲームの素材には、それぞれの利用条件があります。docs/THIRD_PARTY_MATERIALS.md を参照してください。
+
+Linux を使う
+
+今ローカルで試せること
+
+必要なのは自分の Linux コンピューターだけで、Windows コンピューターは要りません。x86-64 上の Ubuntu 24.04 で動いている場合は、同梱の Docker ホストパッケージがローカルのサーバーの方法になります。まず uname -m を実行し、x86_64 と表示されることを確認します。Compose プラグイン付きの Docker Engine、Python 3.12〜3.15、unzip をインストールします。Ubuntu への Docker のインストールは「VPS で公開ウェブサイトを作る」で一歩ずつ説明しています。このローカルの試用では、DNS、インターネット向けのファイアウォールのポートを開くこと、実際の SMTP は飛ばしてください。同じリリースから mk8dx-host-local-v0.2.3-amd64.zip とその SHA256SUMS.txt をダウンロードします。ダウンロードフォルダーでターミナルを開き、ZIP を確認します。結果を SHA256SUMS.txt のその行と比べます。違っていたら作業を止めてください：
+
+sha256sum mk8dx-host-local-v0.2.3-amd64.zip
+
+パッケージを展開し、そのフォルダーに移動します：
+
+mkdir -p "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.3-amd64.zip -d "$HOME/MK8DX/host"
+cd "$HOME/MK8DX/host"
+
+既存の Linux 用の起動スクリプトは次のとおりです：
+
+sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
+
+A1 と入力すると、最初のセットアップが自動的に始まります。起動スクリプトは、完全なウェブサイトのアドレスを「Web origin」として、Mailpit を「Local mail inbox」として表示します。どちらの 127.0.0.1 のアドレスも、この Linux コンピューターで使えます。ブラウザーでウェブサイトを開き、サインインのリンクのために 2 つ目のタブで Mailpit を開きます。サイトが起動すれば、そこでウェブサイトとブラウザーのスキャナーをローカルで使えます。サインイン、投稿、そのウェブサイトでの表示が実際に動くかは、自分で確認してください。このリリースでは、そのローカルの一連の流れを Linux で最後まで実行していません。コンテナーが動いているだけでは、その証明にはなりません。
+
+まだ開発が必要なこと
+
+同梱の LiveTrial と Tournament のプログラムは Windows のプログラムです。Linux のアプリケーションとして直接は起動しません。XAMPP の ZIP とその Windows 用 Apache 補助ツールも、Linux のインストーラーではありません。ビルド済みのネイティブな Linux クライアントや、Linux での取り込みの受け入れテストはありません。Windows なしでエコシステム全体を使うには、Linux に詳しい開発者が、デスクトップクライアント、その OCR の依存パッケージ、取り込みのインターフェースを移植してパッケージ化し、サインインと、データベースを通したウェブサイトへの配信をテストする必要があります。Android の APK は Android にインストールするもので、Linux にはインストールできません。A1/B1 のホストパッケージは amd64 専用です。Linux ARM（arm64）では、A2 パッケージ mk8dx-a2-linux-arm64 を使ってください。
+
+macOS を使う
+
+今ローカルで試せること
+
+必要なのは自分の Mac だけで、Windows コンピューターや他のサーバーは要りません。Intel の Mac では、開発者が同梱の Linux/amd64 の Docker イメージをローカルで動かしてみることができます。ウェブサイト、API、データベースが実際に起動したら、同じ Mac のブラウザーで、表示された A1 のウェブサイトと Mailpit のアドレスを開きます。スキャナーはウェブサイトの一部です。新しいアカウント、投稿、データベースの記録、ウェブサイトでの表示結果をすべて示した Mac での試用は、まだありません。ホームページが動くだけでは、インストールが完全である証明にはなりません。
+
+Intel の Mac では、Docker Desktop for Mac と Python 3.12〜3.15 をインストールします。同じホストの ZIP と SHA256SUMS.txt をダウンロードします。ダウンロードフォルダーでターミナルを開き、shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip を実行して、結果を SHA256SUMS.txt と比べます。違っていたら作業を止めてください。その後、Linux の章の mkdir、unzip、cd のコマンドを使います。同じシェルの起動スクリプトを起動し、A1 を選びます。これは開発者向けの試用であり、受け入れ済みの Mac ユーザー向けの方法ではありません。Apple シリコンでは、この A1 ホストパッケージは amd64 のイメージのためにエミュレーションが必要です。ネイティブな arm64 の A1 パッケージはなく、エミュレーション下での機能と速度は証明されていません。Apple シリコンの Mac では、代わりに A2 パッケージ mk8dx-a2-macos-arm64 を使ってください（「家庭内ネットワークで使う」を参照）。
+
+Docker Desktop for Mac: https://docs.docker.com/desktop/setup/install/mac-install/
+
+まだ開発が必要なこと
+
+XAMPP/Node の ZIP とビルド済みの LiveTrial・Tournament のクライアントは Windows のパッケージで、Mac のアプリケーションは提供していません。macOS に詳しい開発者が、OCR の依存パッケージやキャプチャーカードとの連携も含めてこれらのクライアントを移植・ビルドし、配信の流れ全体をテストする必要があります。Windows の仮想マシンや互換レイヤーは、代わりのクライアントの方法としては受け入れていません。Android の APK は、引き続き Android 機器向けです。

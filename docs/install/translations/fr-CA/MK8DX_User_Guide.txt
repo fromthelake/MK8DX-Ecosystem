@@ -1,0 +1,630 @@
+Installer et utiliser MK8DX
+
+Guide pour MK8DX 0.2.3 · 14 novembre 2026
+
+Ceci est une traduction automatique du guide anglais MK8DX_User_Guide_EN.txt; la version anglaise fait foi. Les corrections sont les bienvenues via le formulaire de billet « Translation correction ».
+
+Bienvenue
+
+MK8DX est un site web pour les contre-la-montre et les tournois de Mario Kart 8 Deluxe. Tu peux parcourir les circuits et les temps de référence, te connecter grâce à un lien envoyé par courriel et soumettre tes propres résultats. Un administrateur peut examiner les soumissions. Le scanner, l'application Android et les programmes Windows sont des outils séparés.
+
+Les paquets de release sont joints aux GitHub Releases du projet. Ouvre la page des releases, https://github.com/fromthelake/MK8DX-Ecosystem/releases, et choisis la release la plus récente. Sous Assets, télécharge le paquet de ta voie et SHA256SUMS.txt. Le bouton Source code (zip) de GitHub n'est pas le paquet d'installation. Si tu travailles plutôt depuis un clone des sources, tu peux compiler les paquets toi-même; voir « Résolution des problèmes et compilation par toi-même ». Le v0.2.3 dans le nom de fichier d'un paquet identifie cette release; les images Docker contenues dans le paquet hôte portent les étiquettes de version correspondantes. Garde tous les fichiers de la même release.
+
+Choisis une seule façon d'utiliser le site. Sur un seul ordinateur Windows, utilise soit Docker, soit XAMPP, Node.js et le MariaDB actuel inclus. La voie réseau Docker documentée atteint un second PC Windows sur ton réseau de confiance. Pour un domaine public, choisis soit un hébergement web mutualisé avec Node.js (le chapitre prend mijn.host Starter comme exemple), soit ton propre VPS Docker. Ces chapitres sont des alternatives, pas un parcours à suivre dans l'ordre. Les clients pour téléphone et Windows viennent après les voies du site.
+
+A1 (Docker sur un seul ordinateur) et A3 (XAMPP/Node.js sous Windows) sont pris en charge après des tests d'installation neuve et de mise à niveau avec conservation des données. A2 (réseau domestique ou de club, nouveau dans la 0.2.0) a son propre paquet avec une installation guidée dans le navigateur et a été testé de bout en bout sous Windows 11. B1 (VPS Docker) est documenté mais n'a pas été testé de bout en bout. B2 (hébergement Node.js mutualisé) : notre propre site communautaire tourne de cette façon; le paquet public n'a pas encore été installé de zéro sur un nouveau compte d'hébergement. Les installations locales A1 et A3 ont été testées sous Windows 11 x86-64, y compris les comptes et les résultats de LiveTrial et de Tournament Processor/Connect dans la base de données et sur le site. La capture physique de Tournament Live a réussi un essai de validation complet à vitesse 1× avec le paquet 0.2.2. Si tu n'as que Linux ou macOS, sans ordinateur Windows ni autre serveur, les choix sont plus restreints. Les deux chapitres de la fin expliquent ce que tu peux essayer en local sur ce même ordinateur et quels produits n'existent pas encore pour ton système d'exploitation.
+
+Ce que contient ce guide
+
+1. L'essayer sur un seul ordinateur
+2. Sur un seul ordinateur sans Docker : XAMPP et Node.js
+3. L'utiliser sur ton réseau domestique
+4. Hébergement mutualisé public avec Node.js, sans Docker
+5. Créer un site web public sur un VPS
+6. Utiliser Android, LiveTrial, le scanner et Tournament
+7. Modifier les paramètres et gérer le site
+8. Sauvegarder, restaurer et mettre à jour
+9. Résolution des problèmes et compilation par toi-même
+10. Utiliser Linux
+11. Utiliser macOS
+
+L'essayer sur un seul ordinateur
+
+Il s'agit d'un essai sur un seul ordinateur Windows 11 avec un processeur x86-64. Prévois 8 Go de mémoire et environ 15 Go d'espace de travail libre comme marges recommandées. Ce ne sont pas des minimums stricts mesurés. Dans Windows, tu trouves le processeur et la mémoire sous Paramètres → Système → Informations système. L'espace libre se trouve sous Explorateur de fichiers → Ce PC. Tu n'as besoin ni d'un domaine ni d'un service de messagerie payant.
+
+1. Installe Docker Desktop depuis la page officielle pour Windows. Choisis WSL2 et les conteneurs Linux. Redémarre Windows si le programme d'installation le demande. Ouvre Docker Desktop et attends « Engine running » (moteur en marche).
+
+Docker Desktop pour Windows : https://docs.docker.com/desktop/setup/install/windows-install/
+
+Ouvre PowerShell depuis le menu Démarrer. Cette commande doit afficher une version :
+
+docker compose version
+
+Si Docker ne démarre pas, suis d'abord son message concernant WSL ou la virtualisation. MK8DX ne peut pas démarrer tant que Docker Desktop est fermé.
+
+2. Installe Python 3.12 à 3.15 pour Windows x86-64 depuis la page officielle. Dans le programme d'installation, coche « Add python.exe to PATH » (ajouter python.exe au PATH) et choisis « Install Now » (installer maintenant). Ferme et rouvre PowerShell. Vérifie la version :
+
+Python pour Windows : https://www.python.org/downloads/windows/
+
+python --version
+
+Si tu ne vois pas une version de 3.12 à 3.15, répare Python avec le même programme d'installation. Vérifie aussi si Windows n'a pas ouvert un alias du Microsoft Store au lieu du Python installé. Ici, Python ne fait que lancer l'assistant d'installation; tu n'as pas à compiler de logiciel.
+
+3. Mets mk8dx-host-local-v0.2.3-amd64.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Ouvre PowerShell dans ce dossier et vérifie le paquet hôte :
+
+Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
+
+Compare la valeur entière avec la ligne de ce fichier dans SHA256SUMS.txt. Arrête-toi et demande une copie correcte si elles diffèrent. Fais un clic droit sur le ZIP et choisis « Extraire tout ». Une destination appropriée est Documents\MK8DX\host. Ouvre le dossier extrait qui contient Start-MK8DX.cmd et compose.yaml.
+
+4. Double-clique sur Start-MK8DX.cmd. La fenêtre s'ouvre avec une courte intro de course : le logo MK8DX et un compte à rebours 3-2-1-GO avec des bips (Start-MK8DX.cmd -SkipCountdown supprime le compte à rebours; le guide d'hébergement liste toutes les options). Elle demande ensuite « Where will MK8DX run? » (où MK8DX va-t-il tourner?) et liste A1, A2 et B1. Tape A1 et appuie sur Entrée. Saisis l'adresse courriel que tu utiliseras plus tard pour te connecter et devenir administrateur. La première installation démarre alors toute seule. MK8DX charge les programmes fournis et crée ses propres clés, une base de données et les données de référence standard. Le premier démarrage peut prendre un moment.
+
+Note l'adresse affichée comme « Web origin » (origine web) et celle affichée comme « Local mail inbox » (boîte de réception locale). L'adresse du site peut ressembler à http://127.0.0.1:18080 et la boîte de test à http://127.0.0.1:18025. Tes derniers chiffres peuvent être différents. Utilise toujours les adresses réellement affichées.
+
+Tu as perdu les adresses plus tard? Rouvre Start-MK8DX.cmd et choisis 3 pour l'état. « origin » est l'adresse complète du site pour ton navigateur et LiveTrial. « localMailInbox » est l'adresse de Mailpit. N'ouvre cette seconde adresse que dans ton navigateur, pour lire les courriels de connexion locaux. Les chiffres après les deux-points sont le port. « 127.0.0.1 » désigne cet ordinateur, donc ces adresses A1 ne fonctionnent pas sur un autre PC ni sur un téléphone.
+
+Les données personnelles de l'installation sont conservées en dehors du paquet extrait, dans %LOCALAPPDATA%\MK8DX\Server. Conserve ce dossier et le volume de base de données Docker quand tu reçois un paquet logiciel plus récent.
+
+5. Ouvre l'adresse du site affichée dans un navigateur sur le même ordinateur. Clique sur « Se connecter » (« Sign in » si le site est en anglais) et saisis exactement l'adresse de l'étape 4. Dans un autre onglet du navigateur, ouvre « Local mail inbox ». C'est Mailpit, une boîte de réception de test sur ton ordinateur. Ouvre-y ton dernier courriel de connexion et suis son lien. Ne cherche pas ce courriel d'essai dans ta boîte de réception habituelle.
+
+Tu es connecté, mais tu n'as pas encore les droits d'administrateur. Rouvre Start-MK8DX.cmd et choisis 5. La première attribution indique « created » (créé); une répétition indique « unchanged » (inchangé). Actualise le site ou reconnecte-toi. La vue d'administration doit apparaître. Un premier inscrit quelconque ne reçoit jamais automatiquement les droits d'administrateur.
+
+6. Ouvre Circuits, choisis un circuit et regarde Staff Nintendo et Records du monde. Tu peux soumettre ton propre essai via « Soumettre un contre-la-montre ». Vérifie les détails avant de les envoyer. Une soumission n'équivaut pas à une approbation publique.
+
+Mailpit contient des liens de connexion. Ne partage pas cette boîte de test avec d'autres personnes. Pour un site public, choisis la voie de l'hébergement mutualisé ou du VPS avec un vrai envoi de courriels.
+
+Sur un seul ordinateur sans Docker : XAMPP et Node.js
+
+Il s'agit d'un essai séparé sur un seul ordinateur Windows 11. Docker n'est pas nécessaire. XAMPP fournit Apache et la fenêtre de contrôle qui démarre ton site local. MK8DX lui-même tourne sur Node.js. Le téléchargement actuel de XAMPP contient MariaDB 10.4.32; cette voie n'utilise pas cette version. Le paquet MK8DX inclut une instance MariaDB 11.4.13 séparée et maintenue, liée uniquement à 127.0.0.1:18306. Les bases de données XAMPP existantes et les autres sites ne sont pas modifiés. Prévois 8 Go de RAM et plusieurs Go d'espace libre pour le paquet, la base de données, le scanner et les sauvegardes.
+
+1. Télécharge XAMPP pour Windows depuis son site officiel et installe-le à un endroit que tu retrouves facilement, comme C:\xampp. N'utilise qu'Apache dans le XAMPP Control Panel. Ne démarre pas MySQL, FileZilla, Mercury ni Tomcat pour MK8DX. Si tu utilises déjà XAMPP pour d'autres projets, conserve leurs bases de données et leurs paramètres.
+
+XAMPP pour Windows : https://www.apachefriends.org/download.html
+
+2. Installe Node.js 24 pour Windows depuis le site officiel de Node.js. Installe Python 3.12 ou plus récent depuis la page de téléchargement officielle pour Windows et sélectionne « Add python.exe to PATH » (ajouter python.exe au PATH). Ferme et rouvre PowerShell. Vérifie :
+
+Node.js: https://nodejs.org/en/download
+Python: https://www.python.org/downloads/windows/
+node --version
+python --version
+
+Tu dois voir Node 24 et Python 3.12 ou plus récent. Ils font tourner des fichiers MK8DX précompilés; tu ne compiles pas l'application. Si une commande est inconnue, rouvre PowerShell, puis répare cette installation si nécessaire.
+
+3. Mets mk8dx-xampp-node-windows-v0.2.3.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Dans PowerShell, compare la valeur SHA-256 entière avec la ligne de ce ZIP :
+
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.3.zip' -Algorithm SHA256
+
+Si elles correspondent, fais un clic droit sur le ZIP et choisis « Extraire tout ». Un dossier approprié est Documents\MK8DX\nodocker-v0.2.3. Ouvre le dossier extrait qui contient Start-MK8DX-No-Docker.cmd. Il contient déjà bin\mailpit.exe et bin\mariadb-11.4.13-winx64.zip. Tu ne compiles pas de code source et tu ne remplaces pas une ancienne base de données XAMPP. Ne mets pas ce paquet dans htdocs.
+
+4. Prépare Apache pour ce seul site local. Ouvre PowerShell dans le dossier MK8DX extrait. Règle -XamppRoot sur l'emplacement réel de ton XAMPP :
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp'
+
+L'assistant enregistre d'abord apache\conf\httpd.conf dans %LOCALAPPDATA%\MK8DX\ApacheBackup. Il n'ajoute que « Include conf/extra/mk8dx-local.conf » et un port séparé 18090, puis vérifie la syntaxe d'Apache. Attends-toi à « Apache syntax OK » (syntaxe Apache correcte). Si le port 18090 est déjà occupé ou si les paramètres diffèrent, arrête-toi et lis l'erreur; ne supprime pas un autre site XAMPP. Pour un autre emplacement de XAMPP, y compris un chemin avec des espaces, remplace uniquement C:\xampp dans cette commande.
+
+5. Double-clique sur Start-MK8DX-No-Docker.cmd. Choisis la voie A3 et saisis l'adresse courriel que tu utiliseras plus tard comme administrateur. La fenêtre crée une installation privée dans %LOCALAPPDATA%\MK8DX\NoDocker. Au premier démarrage, elle extrait MariaDB 11.4.13 uniquement dans ce dossier, crée une base de données dédiée et un utilisateur limité, applique les migrations ainsi que Staff Nintendo et Records du monde, et démarre Node.js et Mailpit. Cela peut prendre plusieurs minutes. Laisse cette fenêtre MK8DX ouverte. Un redémarrage conserve les clés, les comptes, les résultats et la base de données.
+
+À chaque démarrage, cette fenêtre affiche aussi « Website: » (site web) et « Sign-in mail - a test inbox: » (courriels de connexion, une boîte de test). « Website » est l'adresse complète pour ton navigateur et LiveTrial : http://127.0.0.1:18090. « Sign-in mail - a test inbox » est la boîte de réception de test locale : http://127.0.0.1:18227. N'ouvre Mailpit que dans ton navigateur. Les chiffres après les deux-points sont les ports. « 127.0.0.1 » désigne cet ordinateur, donc ces adresses ne fonctionnent pas sur un autre appareil. Si tu les oublies, regarde en haut de la même fenêtre MK8DX au prochain démarrage.
+
+6. Ouvre le XAMPP Control Panel. Si Apache est déjà vert, clique sur Stop uniquement pour Apache, attends que sa ligne ne soit plus verte, puis clique à nouveau sur Start. Cela charge le nouveau réglage de site de l'étape 4. Si Apache était arrêté, clique tout de suite sur Start. Ouvre http://127.0.0.1:18090 dans ton navigateur. La boîte de test locale est http://127.0.0.1:18227. Si le site n'est pas disponible, examine d'abord la fenêtre MK8DX, puis vérifie qu'Apache est vert. Dans une seconde fenêtre PowerShell ouverte dans le dossier du paquet, vérifie la base de données et l'API :
+
+python tooling/install.py check-database --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Attends-toi à « MariaDB 11.4.13 » et « ready » (prêt). Le site, le scanner, la base de données et la boîte de test sont liés à cet ordinateur. Ne redirige pas de port du routeur et n'expose pas phpMyAdmin ni la boîte de test à d'autres personnes.
+
+7. Sur le site, clique sur Se connecter et utilise exactement l'adresse d'administrateur de l'étape 5. Ouvre le message le plus récent dans Mailpit et suis son lien de connexion. Tu es toujours un utilisateur ordinaire. Double-clique maintenant sur Manage-MK8DX-No-Docker.cmd dans le dossier du paquet (laisse la fenêtre MK8DX ouverte), tape 2 et appuie sur Entrée. En arrière-plan, cela exécute : python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
+
+Cela ne fonctionne que pour un compte qui a déjà vérifié son adresse courriel. Attends-toi à « created » (créé), ou « unchanged » (inchangé) en cas de répétition. Actualise le site. Un autre premier inscrit ne devient pas automatiquement administrateur.
+
+8. Ouvre un circuit et vérifie Staff Nintendo et Records du monde, y compris Total. Soumets un contre-la-montre d'essai et ouvre /scanner/ sur le même ordinateur. Sélectionne une image pour essayer le chemin d'envoi. Un résultat du scanner peut nécessiter une vérification; l'envoi ne le rend pas public automatiquement.
+
+9. Pour l'usage quotidien, démarre d'abord la fenêtre MK8DX, puis démarre Apache dans le XAMPP Control Panel. Garde la fenêtre MK8DX ouverte pendant que tu utilises le site. Après un redémarrage de Windows, refais ces deux démarrages. Arrête Apache avec Stop dans le panneau, puis appuie sur Ctrl+C dans ta fenêtre MK8DX. Seuls les processus Node, Mailpit et MariaDB de cette installation s'arrêtent. Ne tue pas tous les processus node.exe et ne modifie pas un service XAMPP existant.
+
+10. Pour une sauvegarde, garde la fenêtre MK8DX et sa base de données en marche. Tu peux arrêter brièvement Apache pour empêcher de nouvelles soumissions web pendant la copie finale. Double-clique sur Manage-MK8DX-No-Docker.cmd, tape 3 et appuie sur Entrée. La sauvegarde est écrite dans Documents\MK8DX-backups\a3-<date et heure> et vérifiée immédiatement.
+
+« Backup verified » (sauvegarde vérifiée) confirme la copie de la base de données, le profil et les clés. Conserve aussi le dossier entier sur un stockage protégé en dehors de cet ordinateur. Pour vérifier à nouveau cette sauvegarde précise, exécute :
+
+python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+
+11. Pour une mise à jour du logiciel, arrête Apache et fais puis vérifie une sauvegarde pendant que l'ancienne fenêtre MK8DX tourne encore. Appuie ensuite sur Ctrl+C dans cette fenêtre. Vérifie et extrais le nouveau ZIP A3 à côté de l'ancien paquet. Continue d'utiliser le même dossier de données %LOCALAPPDATA%\MK8DX\NoDocker. Dans PowerShell, à l'intérieur du nouveau paquet, démarre temporairement uniquement sa propre base de données :
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Laisse cette fenêtre ouverte. Ouvre une seconde fenêtre PowerShell dans le nouveau paquet et lance la mise à jour avec un autre nouveau dossier de sauvegarde :
+
+python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
+
+Attends « unchanged » (inchangé) pour les deux jeux de référence et « Backup verified » (sauvegarde vérifiée). Appuie sur Ctrl+C dans la fenêtre de maintenance. Lance Start-MK8DX-No-Docker.cmd depuis le nouveau paquet, puis Apache à nouveau. L'assistant actualise les chemins dérivés du paquet sans réinitialiser les comptes, les clés ni les données. Vérifie la même connexion, les références et le résultat d'essai. Ne traite pas un changement de moteur de base de données comme une mise à jour ordinaire de MK8DX.
+
+12. Pour essayer une restauration sur un autre ordinateur Windows, installe-y XAMPP Apache, Node 24 et Python comme aux étapes 1 et 2. Extrais le même paquet A3 et configure Apache avec configure_xampp.ps1 comme à l'étape 4. Copie de façon privée le dossier de sauvegarde vérifié complet dans Documents\MK8DX-backups. N'utilise pas un dossier de données existant sur cet ordinateur. Ouvre PowerShell dans le nouveau paquet et crée uniquement le nouveau profil :
+
+python tooling/install.py wizard --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Choisis A3 et saisis pour l'instant ta propre adresse d'administrateur; la restauration remettra en place le profil de compte d'origine. Ouvre un second PowerShell dans le même paquet. Dans la première fenêtre, démarre uniquement le nouveau MariaDB vide :
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Garde cette fenêtre ouverte. Dans la seconde fenêtre, utilise le nom réel de ton dossier de sauvegarde, sans chevrons :
+
+python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Attends-toi à « Backup verified » (sauvegarde vérifiée) puis à une vérification réussie de toutes les migrations. Appuie sur Ctrl+C dans la fenêtre de maintenance. Ouvre Start-MK8DX-No-Docker.cmd et démarre Apache dans le XAMPP Control Panel. Connecte-toi avec un compte existant de la sauvegarde et vérifie l'accès administrateur et un résultat connu. Le premier administrateur n'est pas attribué une seconde fois. Si l'ordinateur cible a déjà une installation MK8DX ou un autre processus sur le port 18306, ne l'utilise pas comme cible de cette restauration; l'assistant n'efface pas une base de données existante. Garde la sauvegarde d'origine intacte.
+
+L'utiliser sur ton réseau domestique
+
+Pour un réseau domestique ou de club, utilise le paquet A2. Télécharge mk8dx-a2-windows-amd64-v0.2.3.zip (Linux : mk8dx-a2-linux-amd64 ou mk8dx-a2-linux-arm64; macOS avec puce Apple : mk8dx-a2-macos-arm64; macOS avec processeur Intel : mk8dx-a2-macos-amd64) et SHA256SUMS.txt, vérifie la somme de contrôle comme dans « L'essayer sur un seul ordinateur », décompresse le paquet et double-clique sur Start-MK8DX-LAN.cmd (Linux et macOS : sh tooling/start-mk8dx.sh). Une installation s'ouvre dans ton navigateur et te guide à travers tout avec Next (Suivant) : l'adresse réseau, ton compte administrateur, un code de récupération sur papier pour les sauvegardes de nuit, et les personnes, chacune avec une carte de connexion pour son téléphone ou son PC. Pas besoin d'internet, de serveur de messagerie ni de fichier hosts.
+
+Le guide complet pas à pas, avec images, est docs/install/A2_HOME_GUIDE_EN.md; dans le paquet, c'est aussi docs/install/guide/en.html, et l'installation l'ouvre depuis son lien Manual (Manuel). Il couvre la préparation de Windows, Linux ou macOS, les téléphones et les PC, l'application Android, LiveTrial, les soirées tournoi, les sauvegardes, le passage à un nouvel ordinateur, une adresse fixe, une nouvelle adresse réseau et les mises à jour.
+
+Avancé : avec ton propre serveur de messagerie
+
+Le reste de ce chapitre décrit une variante plus ancienne et avancée, avec un nom d'hôte privé et des liens de connexion envoyés par courriel via ton propre serveur de messagerie. La plupart des gens n'en ont pas besoin. Elle utilise le paquet mk8dx-host-local et le choix A2 dans sa question d'installation.
+
+Cette voie crée une seconde installation MK8DX séparée sur un hôte Windows. Ton essai sur un seul ordinateur reste intact. La première voie client documentée est un second PC Windows avec Chrome ou Edge, y compris l'envoi d'images au scanner. Un second PC physique ou un téléphone n'a pas encore fait l'objet d'un vrai test d'acceptation par un utilisateur. L'application Android générique ne fait pas automatiquement confiance au certificat local; utilise pour elle une adresse communautaire HTTPS publique sur un hébergement mutualisé ou un VPS.
+
+Le site réseau utilise le port 443 de son hôte. Si XAMPP Apache tourne sur le même ordinateur, il occupe peut-être déjà ce port. A2 et ce site Apache ne peuvent alors pas démarrer ensemble sur cet hôte. Utilise un autre hôte Windows pour A2, ou arrête Apache pendant une période prévue dans le XAMPP Control Panel. Les autres sites XAMPP sont indisponibles pendant qu'il est arrêté.
+
+Prépare d'abord sur l'hôte Docker Desktop, Python et le paquet hôte vérifié et extrait, comme dans les trois premières étapes de « L'essayer sur un seul ordinateur ». Tu n'as pas besoin de créer une installation A1. Les deux PC doivent être sur le même réseau privé de confiance. N'utilise pas de Wi-Fi invité et ne redirige pas de port du routeur vers internet. Garde l'hôte éveillé.
+
+1. Sur l'hôte, trouve son adresse IPv4 sous Paramètres → Réseau et Internet → Ethernet ou Wi-Fi → Propriétés. Dans ce guide, 192.168.0.50 n'est qu'un exemple. Note ton adresse réelle. Règle le profil réseau Windows sur Privé uniquement s'il s'agit vraiment de ton réseau de confiance. Si l'adresse change plus tard, mets à jour les deux PC; une réservation DHCP dans ton routeur peut éviter les changements.
+
+2. Utilise le même nom privé sur les deux PC Windows. Lance le Bloc-notes avec « Exécuter en tant qu'administrateur ». Choisis Fichier → Ouvrir, va dans ce dossier et change le filtre en « Tous les fichiers » :
+
+C:\Windows\System32\drivers\etc\
+
+Ouvre hosts. Ajoute une ligne avec la vraie IP de ton hôte et le nom privé, par exemple :
+
+192.168.0.50 mk8dx.home.arpa
+
+Enregistre-le sous le nom hosts, sans .txt. Fais de même sur l'hôte et sur le second PC. Vérifie sur les deux dans PowerShell :
+
+ping -n 1 mk8dx.home.arpa
+
+L'IP de ton hôte doit apparaître avant les résultats du ping. Le pare-feu peut bloquer le ping lui-même. Chaque appareil a besoin de sa propre entrée hosts, car ce nom privé n'a pas d'enregistrement DNS public.
+
+3. Les liens de connexion pour les autres utilisateurs nécessitent un vrai service de messagerie. Obtiens auprès de ton fournisseur de messagerie le nom du serveur SMTP sortant, le port 465 avec TLS implicite, l'identifiant, le mot de passe et l'adresse d'expéditeur autorisée. Un service qui ne propose que STARTTLS sur le port 587 ne convient pas à l'assistant actuel. Ta future adresse d'administrateur MK8DX est une valeur séparée. N'utilise pas Mailpit comme boîte de connexion partagée.
+
+4. Sur l'hôte, double-clique sur Start-MK8DX-LAN.cmd. Choisis A2 et confirme mk8dx.home.arpa, ou saisis exactement le nom de tes fichiers hosts. Saisis séparément l'adresse IPv4 réelle de l'hôte. L'assistant demande ensuite les valeurs de messagerie et ta propre future adresse d'administrateur. Le mot de passe de messagerie est masqué pendant la saisie. La première installation démarre toute seule. Le dossier de données séparé est %LOCALAPPDATA%\MK8DX\LAN. L'adresse du site affichée doit être https://mk8dx.home.arpa.
+
+Utilise aussi cette adresse HTTPS dans LiveTrial sur l'hôte et sur le second PC. Tu n'as pas besoin d'écrire son port standard 443 après le nom. Utilise l'adresse IPv4 que tu as trouvée pour l'entrée hosts et les paramètres réseau, et non comme adresse communautaire dans LiveTrial. Cette voie réseau utilise ton vrai fournisseur de messagerie : les courriels de connexion arrivent dans la boîte de réception habituelle de l'adresse que tu as saisie. Les utilisateurs n'ont pas d'adresse Mailpit locale ici.
+
+5. Sur l'hôte, ouvre Sécurité Windows → Pare-feu et protection du réseau → Paramètres avancés → Règles de trafic entrant → Nouvelle règle. Choisis Port, TCP, port local spécifique 443, « Autoriser la connexion », et le profil Privé uniquement. Donne un nom à la règle, par exemple « MK8DX LAN HTTPS ». Sous Étendue, limite les adresses distantes à ton propre réseau si tu connais son sous-réseau. N'ouvre pas la base de données ni Mailpit au réseau public.
+
+6. Le second PC Windows doit faire confiance au certificat local de cette installation précise. Ne le fais que sur un ordinateur que tu gères. Ouvre PowerShell sur l'hôte dans le dossier du paquet extrait et exécute ces trois lignes une par une :
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose cp web:/data/caddy/pki/authorities/local/root.crt (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt')
+
+Vérifie l'empreinte du certificat sur l'hôte :
+
+Get-FileHash (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt') -Algorithm SHA256
+
+Transfère uniquement mk8dx-lan-root.crt vers le second PC par une méthode de confiance. Note l'empreinte séparément. Ne copie jamais root.key, le dossier Caddy entier ni les secrets de MK8DX. Sur le second PC, vérifie le fichier dans son dossier de téléchargement :
+
+Get-FileHash '.\mk8dx-lan-root.crt' -Algorithm SHA256
+
+Quand les valeurs correspondent exactement, double-clique sur le certificat. Choisis Installer le certificat → Utilisateur actuel → Placer tous les certificats dans le magasin suivant → Parcourir → Autorités de certification racines de confiance → Terminer. Redémarre le navigateur. N'installe pas un certificat dont l'empreinte diffère. Ne contourne pas un avertissement du navigateur.
+
+7. Sur le second PC, ouvre https://mk8dx.home.arpa. Il ne doit y avoir aucun avertissement de certificat. Essaie aussi https://mk8dx.home.arpa/scanner/ avec ta propre image de test. Connecte-toi avec ton adresse et suis le lien dans ta vraie boîte de réception. Après cette connexion, tu peux rouvrir Start-MK8DX-LAN.cmd sur l'hôte et choisir le menu 5 pour attribuer une fois les droits d'administrateur à l'adresse enregistrée. Les utilisateurs et administrateurs A1 ne sont pas repris automatiquement dans A2.
+
+Si l'IP de l'hôte change plus tard, mets d'abord à jour hosts sur les deux PC. Sur l'hôte, ouvre PowerShell dans le dossier du paquet et remplace l'IP d'exemple ci-dessous par la nouvelle adresse réelle :
+
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN') --lan-bind-address '192.168.0.51'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+Vérifie à nouveau l'adresse, le site et les courriels de connexion. Le second PC continue de faire confiance au certificat tant qu'il s'agit de la même installation A2. Une restauration dans un nouveau projet crée une nouvelle autorité de certification locale; voir « Restaurer une sauvegarde ».
+
+Hébergement mutualisé public avec Node.js, sans Docker
+
+Cette voie utilise Node.js avec Passenger et MariaDB, tels que proposés par un hébergement mutualisé comme mijn.host Starter. Elle ne nécessite ni VPS, ni Docker, ni accès root, ni ton propre serveur Caddy. Le paquet est testé sur une configuration Linux et MariaDB locale. Tu dois encore vérifier les étapes dans ton propre compte DirectAdmin et l'envoi réel des courriels. Utilise un (sous-)domaine séparé et une base de données vide. Ne modifie pas un site ou une base de données existants. Starter annonce actuellement 2 Go de RAM et 5 Go de stockage; vérifie dans ton propre panneau qu'il y a assez de place pour l'envoi, les dépendances npm, les données et les sauvegardes.
+
+1. Télécharge mk8dx-mijnhost-node-v0.2.3.zip et SHA256SUMS.txt depuis la page des releases indiquée dans Bienvenue. Ce ZIP est le paquet à envoyer. Le ZIP de l'hôte Docker et le ZIP complet des sources sont des fichiers différents. Mets les deux fichiers dans un même dossier sur ton PC Windows. Ouvre PowerShell à cet endroit et compare la valeur SHA-256 complète avec la ligne de SHA256SUMS.txt :
+
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.3.zip' -Algorithm SHA256
+
+Arrête-toi si les valeurs diffèrent.
+
+2. Sur ton PC, connecte-toi au panneau client de mijn.host. Ouvre ton offre d'hébergement, puis DirectAdmin. Sélectionne en haut à droite le domaine ou sous-domaine de ce nouveau site MK8DX. www.mijneigenwebsite.nl n'est qu'un exemple; utilise ton vrai nom d'hôte. Sous Account Manager → SSL Certificates, vérifie que « Get automatic certificate from ACME Provider » (obtenir un certificat automatique auprès du fournisseur ACME) inclut exactement ce nom. Ton navigateur ne doit plus tard afficher aucun avertissement de certificat. Si tu gères le DNS ailleurs, fais d'abord pointer ce nom d'hôte vers cette offre d'hébergement. Ne modifie pas les enregistrements de messagerie existants juste pour le site.
+
+Guide Node.js de DirectAdmin : https://mijn.host/kb/web-apps/node-js-applicatie-draaien-op-je-hostingpakket
+Let's Encrypt dans DirectAdmin : https://mijn.host/kb/webhosting/lets-encrypt-ssl-certificaat-aanvragen
+
+3. Dans DirectAdmin, sous Account Manager → MySQL Management ou Databases, crée une nouvelle base de données vide et un utilisateur limité à cette base. Note les noms complets affichés par le panneau, y compris un éventuel préfixe de compte, comme account_mk8dx et account_mk8dxuser. Garde son mot de passe généré privé. N'utilise pas de compte root. Trouve l'hôte de la base de données dans ton panneau ou dans les détails de ton compte. Ce peut être localhost, mais ne saisis que la valeur réellement affichée. Le port 3306 est l'exemple habituel. MK8DX vérifie le moteur et la version réels avant la migration. Cette release nécessite MariaDB 11.4 ou plus récent, ou MySQL 8.4 ou plus récent; une étiquette « MySQL » dans le panneau ne prouve pas la version.
+
+4. Ouvre DirectAdmin → E-mail Manager → E-mail Accounts. Crée ou choisis une boîte de courriel que tu peux utiliser pour ce site. Note son adresse complète, son mot de passe et le nom du serveur sortant. Une forme courante est mail.mijneigenwebsite.nl sur le port 465 avec SSL/TLS; obtiens le nom réel du serveur depuis ton compte. L'identifiant SMTP, l'expéditeur visible et la future adresse d'administrateur MK8DX ont des rôles distincts. La boîte de courriel incluse suffit quand ton compte l'autorise à envoyer.
+
+Paramètres de messagerie chez mijn.host : https://mijn.host/kb/email/e-mail-account-instellen-in-gmail
+
+5. Dans DirectAdmin, ouvre Extra Features → Setup Node.js App → Create Application. Sélectionne Node.js 24 si ton panneau le propose. Choisis Production pour le site final, Application root apps/mk8dx en dehors de public_html, Application URL à la racine du domaine choisi, et Application startup file api/dist/composition/passenger-hosted-main.js. Le panneau peut d'abord afficher un app.js par défaut; remplace le réglage de démarrage par le fichier indiqué avant de redémarrer MK8DX. Copie la ligne exacte d'activation de l'environnement Node affichée en haut de ton panneau. Si Node 24 ou le réglage de démarrage n'est pas disponible, ne tente pas ta chance avec une version plus ancienne de Node; c'est une vérification propre au compte.
+
+6. Trouve ton propre nom de serveur et ton nom d'utilisateur SSH dans le panneau mijn.host. Sur ton PC Windows, ouvre PowerShell et connecte-toi sur le port SSH documenté 26. Compare l'empreinte de la clé d'hôte SSH avec une valeur fournie indépendamment par mijn.host avant de l'accepter. B2 fonctionne sur n'importe quel hébergeur Node.js mutualisé qui te donne SSH; mijn.host est l'exemple testé, et le port 26 est le port SSH de ce fournisseur, donc utilise ailleurs le port de ton propre hébergeur (souvent 22). Le paquet garde son nom mk8dx-mijnhost-node. Remplace les exemples entre chevrons par tes propres valeurs, sans les chevrons :
+
+ssh -p 26 <your-username>@<your-server-name>
+
+Tu dois arriver à une invite Linux. Garde le mot de passe du compte dans ton gestionnaire de mots de passe. Ce n'est pas un accès root à un VPS. La même voie SSH sert à transférer le ZIP vérifié. Ouvre une seconde fenêtre PowerShell sur ton PC dans le dossier de téléchargement :
+
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.3.zip' <your-username>@<your-server-name>:
+
+Le ZIP apparaît dans le répertoire personnel de ton hébergement. Une option SFTP séparée peut avoir d'autres paramètres; cette voie n'utilise que l'accès SSH/SCP documenté.
+
+SSH chez mijn.host : https://mijn.host/kb/webhosting/verbinden-met-ssh
+
+7. Reviens à la fenêtre SSH. Vérifie la présence de Python 3.9 ou plus récent, d'unzip et d'un client de dump MariaDB. L'application est déjà compilée; Python ne fait que lancer l'assistant d'installation existant :
+
+python3 --version
+command -v unzip
+command -v mariadb-dump || command -v mysqldump
+
+S'il manque une commande, compare exactement l'outil manquant avec ton panneau d'hébergement ou l'aide de mijn.host. Ne crée pas d'URL d'installation publique non sécurisée. Extrais le ZIP dans ton dossier d'application privé, pas dans public_html :
+
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+cd "$HOME/apps/mk8dx"
+
+Tu dois voir api, web, scanner, assets, mysql et tooling. Le dossier de l'application est privé. Le programme d'installation garde aussi le profil, les secrets et les sauvegardes en dehors de public_html.
+
+8. Dans cette fenêtre SSH, colle la ligne exacte d'activation de Node affichée par ton panneau Setup Node.js App. Elle commence généralement par source et se termine par cd vers ton Application root. Exécute ensuite :
+
+node --version
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+Attends-toi à Node 24 et à une installation terminée des dépendances de production verrouillées. Cela ne compile pas de TypeScript. api/node_modules appartient à ton hôte Linux; n'envoie pas de node_modules Windows. Si l'espace de stockage est épuisé, arrête-toi et vérifie l'espace libre au lieu de supprimer d'autres données du compte.
+
+9. Lance la saisie guidée depuis le dossier de l'application :
+
+python3 tooling/install.py wizard --state-dir "$HOME/mk8dx-private"
+
+Choisis B2. Saisis le nom d'hôte HTTPS exact de ton site sans https://, puis l'hôte de la base de données, le port, le nom complet de la base et de l'utilisateur, et le mot de passe masqué de la base de l'étape 3. Saisis l'hôte SMTP, le port 465, l'identifiant complet de la boîte de courriel, le mot de passe masqué de la boîte et l'expéditeur autorisé de l'étape 4. Pour l'adresse d'administrateur, saisis l'adresse courriel personnelle où tu recevras le lien de connexion. Elle peut différer de l'identifiant SMTP. L'assistant écrit operator-profile.json, secrets.json et operator.json dans $HOME/mk8dx-private avec des permissions limitées. Ne répète pas les mêmes valeurs dans un autre fichier .env.
+
+10. Vérifie la version de la base de données, puis applique toutes les migrations et les deux jeux de référence uniquement à ta propre nouvelle base de données vide :
+
+python3 tooling/install.py check-database --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py setup --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py check --state-dir "$HOME/mk8dx-private"
+
+La première ligne doit afficher la version mesurée de MariaDB ou MySQL et tableCount 0. Arrête-toi si le moteur est trop ancien ou si la base de données contient des tables inattendues. Après setup, attends-toi à ce que chaque migration soit appliquée, Staff Nintendo et Records du monde marqués comme appliqués, puis ready (prêt). Le programme d'installation ne réinitialise jamais un schéma rempli inconnu.
+
+11. Génère les paramètres Passenger et démarre via le panneau :
+
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+Cela crée mk8dx-hosted.env.json dans l'Application root privé, en dehors de public_html. Ne déplace jamais ce dossier ni $HOME/mk8dx-private dans un répertoire de fichiers public. Dans DirectAdmin → Extra Features → Setup Node.js App, sélectionne ton application MK8DX et clique sur Restart. Le fournisseur gère son processus et le HTTPS; ne lance pas de serveur nohup ou PM2 supplémentaire. Avec ton propre vrai nom d'hôte, vérifie /health/ready, la page d'accueil, /scanner/, /client-config.json et /.well-known/assetlinks.json. Une URL JSON ou API inconnue ne doit pas renvoyer la page d'accueil HTML. Les requêtes pour /secrets.json, /.env ou une sauvegarde ne doivent révéler aucun contenu.
+
+12. Sur le site, clique sur Se connecter avec l'adresse d'administrateur de l'étape 9. Ouvre le lien dans ta vraie boîte de réception et connecte-toi. Reviens seulement ensuite à SSH, réactive si nécessaire l'environnement Node du panneau, va dans le dossier de l'application et exécute :
+
+cd "$HOME/apps/mk8dx"
+python3 tooling/install.py admin --state-dir "$HOME/mk8dx-private"
+
+Attends-toi à created (créé), ou unchanged (inchangé) en cas de répétition. Actualise le site. Une première inscription seule n'accorde jamais l'administration. Vérifie un circuit, Staff Nintendo et le Total des Records du monde, ton propre contre-la-montre et un envoi au scanner. Si les vrais courriels de connexion n'arrivent pas, vérifie l'identifiant de la boîte, l'expéditeur et TLS; ready ne prouve pas la remise dans une boîte de réception externe.
+
+13. Pour une sauvegarde, arrête brièvement le trafic des visiteurs avec le bouton Stop de cette application Node dans DirectAdmin. La base de données MariaDB reste disponible. Dans SSH, depuis le dossier de l'application, choisis un nouveau nom de dossier privé :
+
+python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
+
+L'assistant indique Backup verified (sauvegarde vérifiée). Garde aussi une copie protégée en dehors de ce compte d'hébergement. Redémarre l'application Node dans DirectAdmin et vérifie ready. La sauvegarde contient les comptes, les droits d'administrateur et les clés; ne l'envoie jamais dans public_html ni vers un lien public.
+
+14. Pour une mise à jour, vérifie le nouveau ZIP B2 sur ton PC. Arrête l'application Node dans DirectAdmin et fais une sauvegarde vérifiée avec l'ancienne application. Envoie le nouveau ZIP par la même voie SSH/SCP. Dans SSH, renomme l'ancien dossier de l'application, puis crée-en un nouveau vide. N'utilise ces commandes que lorsque le nouveau ZIP est dans ton dossier personnel et qu'aucun dossier mk8dx-before-update n'existe encore :
+
+cd "$HOME"
+mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-before-update"
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+
+Colle à nouveau la ligne d'activation de Node 24 depuis DirectAdmin. Installe les dépendances Linux verrouillées dans le nouveau dossier api et reviens à la racine de l'application :
+
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+Garde le même dossier de données privé. Utilise un autre nouveau dossier de sauvegarde :
+
+python3 tooling/install.py upgrade --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-update-2026-10-01"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+Redémarre ensuite uniquement cette application dans DirectAdmin. Vérifie le site, la connexion, l'administration et des résultats connus. Ne reviens pas aveuglément aux anciens fichiers web seuls après une migration de schéma. Un changement de version de MariaDB n'est pas une mise à jour ordinaire de MK8DX.
+
+15. Pour une récupération, utilise une nouvelle base de données vide et un sous-domaine de test séparé sur le même moteur de base de données testé et la même série de versions. Place le paquet B2 vérifié et la sauvegarde privée complète dans cette installation séparée. Dans DirectAdmin, crée une application Node séparée pour l'essai de restauration, avec Application root apps/mk8dx-restore et Application URL sur le sous-domaine de test. Extrais le ZIP B2 dans ce nouveau dossier privé. Active Node 24 avec la ligne de ce nouvel écran d'application, exécute npm ci --omit=dev --ignore-scripts --no-audit --no-fund dans apps/mk8dx-restore/api, puis va dans apps/mk8dx-restore. La restauration guidée demande les détails de la nouvelle base de données sans afficher le mot de passe et réutilise les anciens comptes et clés :
+
+python3 tooling/install.py restore-wizard --backup-input "$HOME/mk8dx-backups/b2-2026-10-01" --state-dir "$HOME/mk8dx-private-restore"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private-restore"
+
+Dans DirectAdmin, relie cette application Passenger séparée au sous-domaine de test et à l'Application root privé. Démarre-la et vérifie ready, une connexion existante, l'administration et les résultats. Ne crée pas un autre premier administrateur. Un vrai changement de domaine et une sauvegarde chez le fournisseur sont des étapes séparées que tu fais toi-même.
+
+Créer un site web public sur un VPS
+
+Un VPS est ton propre ordinateur sur internet. Cette voie utilise Ubuntu 24.04 LTS sur x86-64. La capacité recommandée est de 2 cœurs de CPU, 8 Go de RAM et 40 Go de SSD, plus de la place pour les données et sauvegardes futures. Le VPS M non géré de mijn.host annonce cette capacité et un accès root/SSH sur sa page VPS, mais MK8DX n'a pas été testé sur cette offre précise. Tu restes responsable d'Ubuntu, de Docker, de la messagerie, des mises à jour de sécurité et des sauvegardes.
+
+Aperçu des VPS de mijn.host : https://mijn.host/vps
+
+Mijn.host Starter utilise la voie Node/Passenger séparée ci-dessus. Ce chapitre VPS utilise Docker et ne s'applique pas à une offre Starter ordinaire.
+
+Aperçu de l'hébergement mutualisé de mijn.host : https://mijn.host/webhosting
+
+Avant la première installation, il te faut ton propre domaine, un compte VPS approprié avec IPv4 et Ubuntu, un accès à la gestion DNS et un service de messagerie utilisant SMTP 465 avec TLS implicite. Remplace partout l'exemple www.mijneigenwebsite.nl par ton propre nom d'hôte. L'IP d'exemple 203.0.113.10 n'est pas un vrai serveur. Ton identifiant chez le fournisseur, ta clé SSH, ton adresse d'administrateur MK8DX et ton identifiant SMTP ont des rôles différents. Garde les mots de passe et les clés privés.
+
+1. Sur ton PC Windows, crée une clé d'accès si ton VPS utilise des clés SSH. Ouvre PowerShell et exécute :
+
+New-Item -ItemType Directory -Force (Join-Path $env:USERPROFILE '.ssh')
+ssh-keygen -t ed25519 -f (Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519')
+
+Choisis une phrase de passe solide quand elle est demandée. Le fichier sans .pub est privé. Ouvre le fichier .pub dans le Bloc-notes et ajoute uniquement cette clé publique via la fonction de clés SSH du portail de gestion de ton VPS. Le bouton exact varie selon le fournisseur; demande-lui où il se trouve si tu ne le trouves pas. Ne mets jamais la clé privée dans un dossier web ni sur le serveur.
+
+2. Installe WinSCP depuis son site officiel. Ouvre WinSCP → New Site (nouveau site). Choisis SFTP. Saisis la vraie IP du VPS sous Host name (nom d'hôte), le port SSH réel sous Port number (numéro de port) et le compte VPS sous User name (nom d'utilisateur). N'utilise root pour la voie root décrite que si ton fournisseur le fournit. Pour une connexion par clé, ouvre Advanced → SSH → Authentication → Private key file (fichier de clé privée) et sélectionne la clé privée de l'étape 1. WinSCP propose de convertir la clé OpenSSH en fichier .ppk; enregistre-le à côté de ta clé privée et utilise-le dans WinSCP. Ta phrase de passe reste nécessaire.
+
+WinSCP: https://winscp.net/eng/download.php
+Formats de clé WinSCP : https://winscp.net/eng/docs/ui_login_authentication
+
+Obtiens l'empreinte de la clé d'hôte SSH via la console VPS indépendante de ton fournisseur ou son support. Compare-la avec le message de première connexion dans WinSCP. N'accepte qu'une correspondance exacte. Fais glisser le mk8dx-host-local-v0.2.3-amd64.zip vérifié du côté gauche, ton PC, vers /root/ à droite, le serveur. N'envoie pas de sauvegardes ni de secrets dans public_html.
+
+3. Ouvre PowerShell sur ton PC pour le terminal du serveur. Utilise ta vraie IP, ton vrai port et le vrai chemin de ta clé. C'est la même clé OpenSSH qu'à l'étape 1, pas le fichier .ppk converti :
+
+$serverIp = '203.0.113.10'
+$sshPort = 22
+$key = Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519'
+ssh -i $key -p $sshPort "root@$serverIp"
+
+Compare ici aussi l'empreinte de la clé d'hôte avec la valeur obtenue indépendamment. Saisis seulement ensuite la phrase de passe de la clé. Si ton fournisseur indique un autre utilisateur VPS ou un autre port SSH, remplace root ou 22. Les ports de l'hébergement mutualisé ne sont pas des paramètres de VPS.
+
+Dans le terminal Ubuntu, vérifie la machine :
+
+cat /etc/os-release
+uname -m
+free -h
+df -h /
+python3 --version
+
+Tu dois obtenir Ubuntu 24.04, x86_64 et Python 3.12 à 3.15. Si Python manque sur un serveur Ubuntu 24.04 neuf, exécute :
+
+apt update
+apt install python3
+python3 --version
+
+Ne continue pas si la machine n'est pas un Linux x86-64; le paquet d'images fourni est en amd64.
+
+4. Vérifie si Docker fonctionne déjà :
+
+command -v docker
+docker compose version
+
+S'il manque, utilise la méthode apt officielle de Docker pour Ubuntu sur ce serveur. Exécute chaque groupe dans le même terminal du serveur et arrête-toi si une commande échoue :
+
+Docker pour Ubuntu : https://docs.docker.com/engine/install/ubuntu/
+
+apt update
+apt install ca-certificates curl unzip
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+Ajoute la source de paquets officielle. Copie ces lignes ensemble, y compris le EOF final :
+
+cat > /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+Vérifie :
+
+systemctl is-active docker
+docker compose version
+
+La première réponse doit être active. En cas d'erreur, n'installe pas au hasard une seconde variante de Docker; lis l'erreur et la page officielle.
+
+5. Dans le panneau DNS de la partie qui gère ton domaine, ouvre les enregistrements du domaine. Pour un nom comme www.mijneigenwebsite.nl, crée un enregistrement A avec le nom www et comme valeur la vraie adresse IPv4 de ton VPS. Conserve les enregistrements de messagerie existants. Utilise le TTL par défaut ou 300 secondes. Une fois le changement propagé, vérifie sur ton PC :
+
+Resolve-DnsName www.mijneigenwebsite.nl -Type A
+
+La réponse doit être l'IP de ton VPS. Vérifie tout enregistrement AAAA existant pour le même nom : ne le garde que s'il pointe vers un site IPv6 fonctionnel. Dans le panneau du fournisseur VPS, autorise le trafic entrant TCP 80 et 443. Garde ton port SSH joignable et ne publie pas le port MySQL 3306. Ne fais pas de modifications larges du pare-feu à moins de savoir comment tu retrouveras l'accès au serveur.
+
+6. Obtiens auprès de ton fournisseur de messagerie l'hôte SMTP sortant, le port 465 avec TLS implicite, l'identifiant, le mot de passe et l'adresse d'expéditeur autorisée. Vérifie que l'envoi depuis ton VPS est autorisé. Cela diffère de ton adresse d'administrateur MK8DX. Ce guide n'a pas testé la remise via un vrai fournisseur; l'installation ne réussit que lorsque ton propre lien de connexion arrive dans ta vraie boîte de réception.
+
+7. Dans le terminal Ubuntu, le ZIP transféré par WinSCP se trouve sous /root/. Vérifie-le et extrais-le :
+
+pwd
+ls -lh /root/mk8dx-host-local-v0.2.3-amd64.zip
+mkdir -p /opt/mk8dx/host /var/lib/mk8dx
+unzip -q /root/mk8dx-host-local-v0.2.3-amd64.zip -d /opt/mk8dx/host
+cd /opt/mk8dx/host
+ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
+
+S'il manque un nom, vérifie que tu as extrait le bon ZIP complet. Lance l'assistant d'installation existant :
+
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+Choisis B1. Saisis ton nom d'hôte exact sans https://. Saisis les cinq valeurs de messagerie et ta propre future adresse d'administrateur MK8DX. Le mot de passe SMTP est masqué. Choisis le menu 1. L'assistant crée la base de données interne, les clés et les connexions. En cas de répétition, utilise le même dossier /var/lib/mk8dx/instance; ne crée pas un autre profil pour contourner un problème de DNS ou de messagerie.
+
+8. Sur ton PC, ouvre l'adresse de disponibilité puis le site, avec ton propre nom d'hôte au lieu de l'exemple :
+
+https://www.mijneigenwebsite.nl/health/ready
+https://www.mijneigenwebsite.nl
+
+Le navigateur ne doit afficher aucun avertissement de certificat. Clique sur Se connecter, utilise ton adresse d'administrateur enregistrée et ouvre le lien dans ta vraie boîte de réception. Seulement après cette connexion vérifiée, reviens au dossier du paquet dans le terminal du serveur et choisis le menu 5 :
+
+cd /opt/mk8dx/host
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+La réponse est created (créé) ou, en cas de répétition, unchanged (inchangé). Actualise le site. Vérifie aussi un circuit et ta propre soumission de contre-la-montre. Des conteneurs en marche ne prouvent à eux seuls ni le DNS, ni les certificats, ni la remise des courriels.
+
+Utiliser Android, LiveTrial, le scanner et Tournament
+
+Pour envoyer des résultats, ces outils utilisent l'adresse d'une communauté existante. LiveTrial et les Tournament Tools fonctionnent aussi seuls, sans site; l'application Android et le scanner du navigateur en ont besoin d'un. Sur le même ordinateur Windows, LiveTrial et Tournament peuvent utiliser http://127.0.0.1:18080 (A1) ou http://127.0.0.1:18090 (A3). Pour un site public, utilise son adresse HTTPS de confiance. Android a besoin d'un HTTPS de confiance; une vérification locale sous Windows ne prouve pas une connexion Android. L'application Android générique et les clients Windows te laissent choisir l'adresse de la communauté; un autre domaine ne nécessite aucune modification du code source. Les paramètres publics des clients ne contiennent jamais de mots de passe de serveur. Ne saisis jamais dans un client le nom interne mysql, l'adresse d'un conteneur API ni une IP SSH.
+
+Copie toujours l'adresse complète du site affichée comme « Website » (site web; ou « origin » ou « Web origin ») pour ta propre installation, y compris le port quand il est affiché. Ne saisis jamais l'adresse de la boîte de test (« Sign-in mail » ou « localMailInbox ») dans LiveTrial : elle n'ouvre que la boîte de test locale. Sur un second appareil, utilise le nom réseau HTTPS ou ton domaine public, et non l'adresse 127.0.0.1 du serveur.
+
+Pour Android, il te faut Android 8.0 ou plus récent; arm64 est recommandé. L'APK signé localement pour la release fait environ 530 Mo. Garde au moins 1 Go libre comme marge d'installation. Vérifie mk8dx-android-release-v0.2.3.apk avec SHA256SUMS.txt sur ton PC, copie-le sur ton téléphone et ouvre-le depuis Fichiers ou Téléchargements. Si Android demande d'autoriser les installations depuis cette application de fichiers, ne l'autorise que pour le paquet vérifié. Tu peux désactiver cette autorisation ensuite.
+
+Au premier démarrage, « Choisis ta communauté » demande comment ta communauté joue. Pour une communauté en ligne, saisis l'adresse communautaire HTTPS de confiance complète sous « Adresse du site web », par exemple https://www.mijneigenwebsite.nl, sans chemin ni barre oblique finale, et touche « Enregistrer ». Pour une installation à la maison ou au club (A2), touche « Scanner le code QR » et scanne la carte Prepare a device (préparer un appareil); le guide A2 explique cette étape pas à pas. Plus tard, touche le nom de la communauté en haut de l'application pour changer de communauté ou en ajouter une avec « Ajouter une communauté ». Chaque communauté garde son propre compte et ses runs en attente; rien ne passe automatiquement de l'une à l'autre. Tes propres temps se trouvent sous ton nom → Mes temps, même hors ligne. En cas d'échec, ouvre la même adresse dans le navigateur de ton téléphone. Connecte-toi ensuite via le code du navigateur avec ton propre compte. Les APK publics précédents étaient signés en mode debug. Enregistre les résultats pas encore envoyés, désinstalle une fois cette application debug, puis installe cet APK signé pour la release. Les APK ultérieurs signés avec la même clé de release peuvent le mettre à jour sur place; ce n'est pas une version du Play Store.
+
+Un APK est signé par son auteur, et non séparément pour chaque domaine. Les Android App Links automatiques nécessitent en revanche une association publique entre l'identité réelle de l'application, son vrai certificat de signature et ton domaine. Le fichier /.well-known/assetlinks.json par défaut contient donc [] en JSON. La sélection manuelle du serveur et la connexion fonctionnent sans cette association automatique. Une version personnalisée signée séparément relève de la voie développeur.
+
+Pour LiveTrial sous Windows x86-64, vérifie desktop-client-v0.2.3.zip avec SHA256SUMS.txt et extrais tout le ZIP, par exemple dans Documents. Prévois environ 2 Go pour l'extraction et tes propres enregistrements; c'est une marge, pas un minimum mesuré. Ouvre LiveTrial.exe. La capture en direct depuis une carte d'acquisition nécessite aussi FFmpeg, qui n'est pas inclus à cause de sa licence : exécute une fois winget install Gyan.FFmpeg dans PowerShell et redémarre LiveTrial (l'analyse de vidéos fonctionne sans). Va dans Paramètres → Adresse du site de la communauté, saisis l'adresse exacte de ton installation et choisis Enregistrer le serveur. Confirme le changement.
+
+LiveTrial enregistre l'adresse et redémarre tout seul. Laisse la fenêtre ouverte pendant ce temps. Après le redémarrage, vérifie que Paramètres affiche ton adresse exacte. Connecte-toi seulement ensuite; la connexion doit ouvrir ta communauté. Quand tu ouvres Historique des runs, cette section attend brièvement son serveur local si nécessaire, puis se charge toute seule. Tu ne devrais pas avoir besoin de F5. Si LiveTrial indique que le redémarrage automatique a échoué, choisis Quitter LiveTrial dans l'application, attends qu'il soit fermé et rouvre LiveTrial.exe. Fermer seulement la fenêtre du navigateur ne suffit pas : LiveTrial peut continuer de tourner en arrière-plan.
+
+Si le champ est toujours vide avec l'exemple https://www.example.org, ou si la connexion ouvre le mauvais site, arrête-toi. Quitte l'instance LiveTrial existante via Quitter LiveTrial. Un autre compte Windows sur le même PC l'a peut-être lancée. Rouvre-la et vérifie l'adresse. Ne modifie pas server.json à la main et n'envoie pas de run vers le mauvais site. Tu n'as pas besoin de carte d'acquisition pour un fichier vidéo. La capture en direct nécessite une carte et un pilote compatibles. Les résultats locaux et les files d'attente restent séparés pour chaque serveur.
+
+Le scanner du navigateur fait déjà partie du site. Ouvre /scanner/ sur ton adresse HTTPS de confiance et commence par « image upload » (envoi d'image). Sélectionne ta propre image de résultats, examine les détails reconnus et ne confirme qu'après les avoir vérifiés. L'utilisation de la caméra en direct nécessite l'autorisation du navigateur et un HTTPS de confiance en dehors de localhost. La reconnaissance dépend aussi de l'enregistrement. La voie décrite pour A2 avec un second navigateur Windows est documentée mais n'a pas été testée de bout en bout.
+
+Pour Tournament sous Windows x86-64, vérifie tournament-tools-v0.2.3.zip et extrais le ZIP complet. Ouvre Install-MK8DX-TournamentTools.cmd. Prévois plusieurs Go d'espace libre : le ZIP d'environ 160 Mo et environ 1 Go pour l'extraction ne couvrent pas toutes les dépendances ni tes propres médias. Le programme d'installation a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics; les modèles OCR sont inclus, et ensuite le traitement fonctionne hors ligne. Aucun minimum exact pour l'ensemble des dépendances et des médias n'a été mesuré. Aucun réglage GPU n'est nécessaire : avec un pilote NVIDIA récent, le programme d'installation choisit tout seul la version CUDA, et la carte graphique accélère alors la lecture des noms, des points et des temps (OCR). Le premier scan d'un enregistrement tourne toujours sur le processeur, car la version d'OpenCV du paquet n'a pas de prise en charge CUDA; USING_MK8DX_TOURNAMENT_TOOLS.md dans le paquet explique les deux étapes. Attends SUCCESS et garde runtime-assets intact. En cas d'échec, lis install.log dans le dossier du paquet.
+
+Fais glisser un enregistrement .mp4 ou .mkv sur TournamentProcessor.cmd. Le programme crée à côté de la vidéo un dossier de session avec un fichier Excel, un CSV et un fichier se terminant par _TournamentRaceResultsV1.json. TournamentLive.cmd nécessite un matériel de capture approprié et un pilote pour l'entrée en direct.
+
+Tu peux aussi essayer Tournament Live avec une vidéo existante et sans carte d'acquisition. Ouvre TournamentLive.cmd, choisis Add video file (ajouter un fichier vidéo), sélectionne un fichier .mp4 ou .mkv, puis choisis Start all (tout démarrer). Attends que la vidéo et l'analyse soient terminées. Vérifie Confirmed standings (classement confirmé) et choisis Open exports (ouvrir les exports) pour le fichier de résultats. Cette voie vidéo normale utilise la sélection des scores qui attend que l'animation des points et le classement final se stabilisent. Vérifie toi-même les noms, les places et les points; l'OCR peut se tromper. Une relecture vidéo ne teste pas une carte d'acquisition physique. La commande de relecture séparée TournamentLiveCli.cmd sert au diagnostic et ne remplace pas cette voie.
+
+Pour la connexion facultative au site, ouvre PowerShell dans le dossier du paquet et exécute :
+
+.\TournamentConnect.cmd sign-in
+
+Saisis la première fois l'adresse exacte de ton installation et termine la connexion dans le navigateur. Ces commandes affichent ou modifient l'adresse; la modifier demande une confirmation :
+
+.\TournamentConnect.cmd server
+.\TournamentConnect.cmd server https://www.example.org
+
+Remplace example.org par ta vraie communauté. Les envois en attente pour l'ancien serveur restent avec l'ancien serveur. Pour envoyer un fichier avec TournamentConnect.cmd send, l'administrateur ouvre d'abord Administration → Tournois → Directeurs, cherche le Joueur connecté et sélectionne son nom. Cela accorde l'accès aux tournois, pas l'administration générale. Envoie à nouveau; la course reste dans Résultats entrants jusqu'à sa vérification. Sur le site, un administrateur importe un résultat vérifié via Administration → Tournois → Importer les résultats de course canoniques, ou, dans un groupe, via Solution hors ligne : importer un fichier de résultats Live / Processor enregistré. L'envoi n'est pas une publication automatique.
+
+Pour un nouveau tournoi, l'administrateur ouvre Administration → Tournois et y crée le tournoi. Ajoute les joueurs, indique qui est présent, attribue les Switch disponibles et confirme la composition des groupes. Ouvre ensuite Résultats entrants pour ce groupe. Associe les noms reconnus aux bons joueurs, vérifie le circuit et les places d'arrivée, et choisis Confirmer pour la course vérifiée. Un tableau provisoire en direct n'est pas encore un résultat officiel. Termine les dernières étapes du groupe sur le site. Avant Vérifier la finalisation, choisis Définir le numéro d'édition en haut et saisis le numéro de cette édition, par exemple 1. Vérifie le tableau final, puis choisis Vérifier la finalisation → Finaliser le tournoi. Ouvre la page publique du tournoi dans une nouvelle fenêtre du navigateur pour voir le résultat publié.
+
+Modifier les paramètres et gérer le site
+
+L'assistant d'installation demande chaque valeur logique une seule fois. Il garde le profil dans operator-profile.json et, séparément, les mots de passe et les clés dans secrets.json, à l'intérieur de ton dossier de données privé. Il dérive lui-même les paramètres du Web, de l'API, de Docker et des clients publics. Ne modifie pas séparément api.env, compose.env, operator.json ni public-client.json. Le fichier public /client-config.json ne contient que l'adresse du site. Répéter un démarrage ne crée pas de nouveaux comptes, ni d'administrateur, ni de clés, ni de base de données.
+
+Sous Windows, A1 utilise par défaut %LOCALAPPDATA%\MK8DX\Server et A2 %LOCALAPPDATA%\MK8DX\LAN. Sur le VPS, B1 utilise /var/lib/mk8dx/instance. Ce sont des dossiers de données, pas des dossiers à remplacer lors d'une mise à jour du logiciel. Ton identifiant chez le fournisseur et la clé SSH du VPS restent en dehors de MK8DX. Chaque appareil Android ou Windows enregistre son propre choix de communauté et sa propre session.
+
+Pour démarrer, voir l'état, arrêter, l'administration et la sauvegarde sous Windows, rouvre le Start-MK8DX.cmd ou le Start-MK8DX-LAN.cmd approprié (ajoute -SkipCountdown pour supprimer le compte à rebours, ou règle MK8DX_SOUND=0 pour ne pas avoir de bips; sous Ubuntu --skip-countdown). Sous Ubuntu, va dans /opt/mk8dx/host et exécute sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance. Le menu utilise 2 pour démarrer, 3 pour l'état, 4 pour arrêter, 5 pour le premier administrateur vérifié, 6 pour la sauvegarde et 7 pour une mise à jour précédée d'une sauvegarde vérifiée. L'option 1 peut reprendre une première installation interrompue. N'utilise jamais docker compose down -v sur une installation que tu veux garder : -v supprime le volume de la base de données. Pour supprimer complètement une installation d'essai (cela efface sa base de données, ses comptes et ses clés; choisis d'abord 6 pour une sauvegarde si tu risques d'en avoir besoin) : choisis 4 pour arrêter, puis ouvre PowerShell dans le dossier du paquet et exécute docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v et supprime le dossier %LOCALAPPDATA%\MK8DX\Server (utilise compose.lan.yaml pour la voie du réseau domestique). Sous Ubuntu, exécute la même commande avec --env-file /var/lib/mk8dx/instance/compose.env (compose.production.yaml pour un VPS), puis supprime /var/lib/mk8dx/instance.
+
+Pour changer le service de messagerie ou le mot de passe sur A2 ou B1, fais d'abord une sauvegarde avec le menu 6. Sur A2, ouvre PowerShell dans le dossier hôte extrait et exécute :
+
+python tooling/install.py change-smtp --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+Sous Ubuntu, exécute les mêmes actions dans /opt/mk8dx/host avec python3 et --state-dir /var/lib/mk8dx/instance. Les invites nomment smtp.host, smtp.port, smtp.username et smtp.fromAddress, et demandent le mot de passe masqué. Entrée conserve une valeur existante. Vérifie ensuite un nouveau courriel de connexion dans ta vraie boîte de réception; check seul ne prouve pas la remise des courriels. L'adresse d'administrateur, l'adresse d'expéditeur et l'identifiant SMTP n'ont pas besoin d'être identiques.
+
+Ne change l'adresse d'un site public que lorsque sa nouvelle adresse DNS et son HTTPS sont prêts. Fais d'abord une sauvegarde. Cet exemple A1 montre l'action de changement exacte; remplace le port d'exemple par le port libre que tu veux :
+
+python tooling/install.py change-origin --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server') --origin 'http://127.0.0.1:18090'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+
+Pour B1, utilise python3, /var/lib/mk8dx/instance et ta nouvelle adresse https:// complète. Vérifie l'état, /client-config.json et un nouveau lien de connexion. Fais aussi pointer chaque appareil vers la nouvelle adresse. Tu peux corriger une adresse d'administrateur erronée dans l'assistant d'installation avant la première attribution; cela ne rouvre pas une première attribution déjà utilisée. Un administrateur existant ne peut ajouter un autre administrateur vérifié que via la procédure de récupération encadrée et une décision explicite du propriétaire.
+
+Sur le site, Administration → Paramètres de l'installation regroupe les choix valables pour tout le site. Le Nom de la communauté (par exemple « Club Noord ») s'affiche dans les applications au lieu de l'adresse web; laisse-le vide pour ne pas en avoir. Temps d'autres communautés décide si un temps qu'un joueur apporte d'une autre communauté est refusé (Désactivé, la valeur par défaut), attend qu'un administrateur clique sur Publier à côté sous Administration → Contre-la-montre (Avec approbation), ou suit les règles de publication habituelles (Autorisé). Quand tu quittes Avec approbation alors que des temps apportés attendent encore, la page demande ce qu'il faut en faire. Chaque modification est enregistrée avec le nom de l'administrateur.
+
+Sauvegarder, restaurer et mettre à jour
+
+Choisis le menu 6 sur l'hôte approprié. Sous Windows, la sauvegarde va dans Documents\MK8DX-backups\<horodatage>. Sous Ubuntu, elle va dans /root/mk8dx-backups/<horodatage> si tu travailles en tant que root. Elle contient la base de données, les comptes, les droits d'administrateur, les paramètres et les clés. Garde le dossier entier privé et copie-le aussi sur un stockage protégé en dehors de l'hôte. Une copie sur le même VPS en panne ne suffit pas.
+
+Vérifie le dossier réellement créé. Remplace <ACTUAL_FOLDER> ci-dessous par le nom de dossier affiché par l'assistant. Sous Windows, dans PowerShell depuis le paquet hôte :
+
+python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>"
+
+Sous Ubuntu, dans le dossier du paquet hôte :
+
+python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>'
+
+« Backup verified » (sauvegarde vérifiée) est la réponse attendue. Ne partage jamais la sauvegarde dans un billet, un courriel ou un lien infonuagique public.
+
+Restaurer une sauvegarde
+
+Un essai de restauration utilise un nouveau dossier de données et un nouveau projet Docker. Il laisse l'installation existante intacte. L'opération de restauration ne démarre d'abord qu'une nouvelle base de données. Démarre ensuite le site récupéré selon ta voie. Garde la sauvegarde d'origine après l'essai.
+
+Pour A1, ouvre PowerShell dans le paquet hôte. Choisis un dossier cible qui n'existe pas encore et exécute :
+
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+
+Le site A1 récupéré obtient ses propres ports locaux libres. Ouvre sa nouvelle Web origin depuis status. Vérifie un compte connu, la vue d'administration et tes résultats. Le site d'origine peut continuer de tourner. N'attribue pas un nouveau premier administrateur à l'essai de restauration.
+
+Pour remplacer un B1 public, utilise un nouveau VPS Ubuntu 24.04 avec le paquet hôte vérifié, Docker, Python et les ports 80/443 ouverts. Garde l'ancien VPS pour le moment. Prévois une courte fenêtre de maintenance. Sur l'ancien VPS, arrête d'abord uniquement Web et API pour qu'aucun nouveau résultat ne puisse arriver après la sauvegarde finale. Dans l'ancien dossier du paquet hôte, exécute :
+
+docker compose --env-file /var/lib/mk8dx/instance/compose.env -f compose.yaml -f compose.production.yaml -f compose.images.yaml stop web api
+
+Le site est maintenant temporairement indisponible. Sur l'ancien VPS, choisis le menu 6 pour une nouvelle sauvegarde pendant que MySQL tourne encore. Vérifie cette nouvelle sauvegarde précise avec la commande verify ci-dessus. En cas d'échec, relance l'ancien site avec le menu 2 et cherche la cause. Transfère le dossier de sauvegarde vérifié complet via la connexion WinSCP vérifiée dans un dossier privé du nouveau VPS, jamais dans un dossier web. Mets-le par exemple sous /root/mk8dx-backups/. Sur le nouveau serveur, dans /opt/mk8dx/host, exécute avec le vrai nom de ton dossier de sauvegarde :
+
+docker load --input images/docker-images-amd64.tar
+python3 tooling/lifecycle.py restore-new --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>' --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py status --state-dir /var/lib/mk8dx/herstelproef
+
+La nouvelle base de données est maintenant prête dans son propre projet. Compare les données restaurées avec ta sauvegarde privée existante et avec status. Prévois une courte bascule. Dans le panneau DNS, change uniquement l'enregistrement A de ton nom d'hôte MK8DX vers l'adresse IPv4 du nouveau VPS. Conserve les enregistrements de messagerie. Attends que Resolve-DnsName sur ton PC affiche la nouvelle IP. Démarre ensuite les services récupérés sur le nouveau VPS :
+
+python3 tooling/install.py start --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py check --state-dir /var/lib/mk8dx/herstelproef
+
+Sur ton PC, ouvre https://<your-real-host-name>/health/ready et le site. Vérifie le certificat valide, ton propre courriel de connexion dans ta vraie boîte de réception, un compte connu, la vue d'administration et les résultats. La nouvelle installation Docker demande son propre certificat public; les ports 80/443 et la nouvelle destination DNS doivent être joignables. Garde l'ancien VPS en dehors du parcours des visiteurs et conserve-le pour une enquête ou un retour en arrière. Si une vérification échoue, laisse la sauvegarde intacte, examine le DNS, les ports, le certificat et SMTP, et planifie un retour délibéré de l'enregistrement A vers l'ancienne IP. Ne supprime pas un volume comme solution rapide. Une vraie bascule avec des services externes n'a pas été effectuée pour ce candidat local.
+
+Pour A2, restaure sur un autre hôte Windows du même réseau de confiance. Prépare Docker, Python et le paquet hôte. Pendant une courte fenêtre de maintenance, arrête uniquement Web et API sur l'ancien hôte. La base de données continue de tourner pour la sauvegarde finale. Ouvre PowerShell dans l'ancien dossier du paquet :
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose stop web api
+
+Choisis ensuite le menu 6 sur l'ancien hôte et vérifie la nouvelle sauvegarde. En cas d'échec, relance l'ancienne installation avec le menu 2. Transfère de façon privée le dossier de sauvegarde vérifié vers le nouvel hôte. Mets-le sous Documents\MK8DX-backups\ avec le même nom de dossier, ou adapte le chemin de la sauvegarde dans la commande suivante. Là, exécute restore-new vers un dossier de récupération LAN qui n'existe pas encore. Avant de démarrer, change l'adresse de liaison enregistrée pour l'IPv4 réelle du nouvel hôte :
+
+docker load --input images/docker-images-amd64.tar
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel') --lan-bind-address '192.168.0.51'
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+
+Remplace l'IP d'exemple et autorise TCP 443 sur le nouvel hôte uniquement pour le profil Privé. Sur l'hôte et le second PC, change l'entrée hosts de mk8dx.home.arpa pour la nouvelle IP. Ce nouveau projet Docker a une nouvelle autorité de certification locale. Récupère le nouveau root.crt de ce projet de récupération avec les commandes de certificat du chapitre sur le réseau domestique, mais utilise LAN-Herstel comme $state. Compare à nouveau le SHA-256 et installe le nouveau certificat sur le second PC. Supprime l'ancien certificat via certmgr.msc sous Autorités de certification racines de confiance → Certificats, en utilisant l'ancienne empreinte pour l'identifier. Seulement ensuite, ouvre le site sans avertissement et vérifie la connexion et les résultats existants. Une bascule A2 physique n'a pas encore été testée; garde l'hôte d'origine et la sauvegarde.
+
+Pour une mise à jour du logiciel, vérifie d'abord le SHA-256 du nouveau paquet hôte. Extrais-le à côté de l'ancien dossier du logiciel. Utilise le même dossier de données privé et choisis le menu 7 dans le nouveau paquet. L'assistant crée et vérifie d'abord une sauvegarde, exécute les migrations manquantes et remplace uniquement les programmes serveur fournis. Vérifie ensuite la même identité de projet, le site, la connexion et les données. En cas d'échec, garde la sauvegarde et ne lance pas aveuglément une image plus ancienne après un changement de schéma de la base de données.
+
+La mise à jour vers la 0.2.3 fait passer la base de données Docker de MySQL 8.4 à MySQL 9.7 LTS. MySQL met à niveau les fichiers de données une fois, au premier démarrage sur la nouvelle version; seule la restauration d'une sauvegarde peut annuler cela. Dans le dossier du nouveau paquet, choisis donc 7 avant 2 : choisir 2 en premier démarre la nouvelle version sans la sauvegarde et sans les mises à jour de la base de données. Le menu 3 (vérification) est sans danger. Dans le paquet A2, Update (mettre à jour) dans le navigateur fait d'abord la sauvegarde tout seul; la première mise à jour prend juste un peu plus de temps, et la sauvegarde se trouve dans Documents\MK8DX-backups. A3 et B2 utilisent leur propre MariaDB ou MySQL et ne sont pas concernés.
+
+Résolution des problèmes et compilation par toi-même
+
+Pour un site vide, commence par le menu 3 et vérifie que Docker tourne. Sur A1, les courriels de connexion vont dans Mailpit; sur A2 et B1, ils doivent arriver dans une vraie boîte de réception. Vérifie toujours que tu utilises la même installation, la même adresse et le même courriel. L'absence de courriels de connexion sur une voie publique impose de vérifier les vraies valeurs SMTP et la joignabilité du fournisseur. /health/ready indique la disponibilité de l'API et de la base de données, pas la remise dans la boîte de réception.
+
+Sur A2, vérifie d'abord l'entrée hosts sur les deux PC, le réseau privé, le port du pare-feu et l'empreinte du certificat. Sur B1, vérifie l'enregistrement DNS A, les ports 80/443 chez le fournisseur, un HTTPS valide, puis la messagerie. N'ignore pas un avertissement de certificat. Ne partage jamais secrets.json, une sauvegarde, des liens de connexion, des clés SSH ni des lignes de journal contenant des mots de passe quand tu demandes de l'aide.
+
+Pour compiler ton propre code, ta propre identité visuelle ou un APK final signé, télécharge le paquet mk8dx-full-local depuis la même page des releases. Il contient les sources, la collection interne de ressources et les recettes de compilation. Les instructions pour les développeurs se trouvent dans docs/DEVELOPMENT.md et docs/CLIENT_BUILDS.md. Depuis un clone du dépôt (git clone https://github.com/fromthelake/MK8DX-Ecosystem.git) ou depuis ce paquet, docs/guides/HOSTING.md (« Build the host package from a clone ») compile le paquet hôte Docker ainsi que les paquets d'hébergement mutualisé et XAMPP, et docs/CLIENT_BUILDS.md compile les paquets Android, LiveTrial et Tournament. Une installation ordinaire et le choix du serveur ne nécessitent ni Android Studio, ni modification des sources, ni image Docker compilée soi-même. Le matériel du jeu contenu dans les paquets reste soumis à ses propres conditions; voir docs/THIRD_PARTY_MATERIALS.md.
+
+Utiliser Linux
+
+Ce que tu peux essayer en local dès maintenant
+
+Il te faut seulement ton propre ordinateur Linux, sans ordinateur Windows. S'il tourne sous Ubuntu 24.04 sur x86-64, le paquet hôte Docker inclus est la voie serveur locale. Exécute d'abord uname -m et vérifie qu'il indique x86_64. Installe Docker Engine avec le plugin Compose, Python 3.12 à 3.15 et unzip. L'installation de Docker sous Ubuntu est expliquée pas à pas dans « Créer un site web public sur un VPS »; pour cet essai local, saute le DNS, l'ouverture des ports du pare-feu vers internet et le vrai SMTP. Télécharge mk8dx-host-local-v0.2.3-amd64.zip et son SHA256SUMS.txt depuis la même release. Ouvre Terminal dans le dossier de téléchargement et vérifie le ZIP. Compare le résultat avec sa ligne dans SHA256SUMS.txt. Arrête-toi s'ils diffèrent :
+
+sha256sum mk8dx-host-local-v0.2.3-amd64.zip
+
+Extrais le paquet et entre dans son dossier :
+
+mkdir -p "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.3-amd64.zip -d "$HOME/MK8DX/host"
+cd "$HOME/MK8DX/host"
+
+Le lanceur Linux existant est :
+
+sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
+
+Tape A1; la première installation démarre toute seule. Le lanceur affiche l'adresse complète du site comme « Web origin » (origine web) et Mailpit comme « Local mail inbox » (boîte de réception locale). Les deux adresses 127.0.0.1 fonctionnent sur cet ordinateur Linux. Ouvre le site dans ton navigateur et Mailpit dans un second onglet pour le lien de connexion. Si le site démarre, tu peux y utiliser le site et le scanner du navigateur en local. Vérifie toi-même que la connexion, une soumission et son affichage sur le site fonctionnent réellement. Cette chaîne locale complète n'a pas été exécutée sous Linux pour cette release; des conteneurs en marche ne la prouvent pas à eux seuls.
+
+Ce qui doit encore être développé
+
+Les programmes LiveTrial et Tournament inclus sont des programmes Windows. Ils ne se lancent pas directement comme applications Linux. Le ZIP XAMPP et son assistant Apache pour Windows ne sont pas non plus un programme d'installation Linux. Il n'existe pas de client Linux natif précompilé ni de validation de la capture sous Linux. Pour utiliser tout l'écosystème sans Windows, un développeur qui connaît Linux doit porter et empaqueter les clients de bureau, leurs dépendances OCR et toute interface de capture, puis tester la connexion et la remise via la base de données jusqu'au site. L'APK Android s'installe sur Android, pas sur Linux. Le paquet hôte A1/B1 n'existe qu'en amd64; sur Linux ARM (arm64), utilise le paquet A2 mk8dx-a2-linux-arm64.
+
+Utiliser macOS
+
+Ce que tu peux essayer en local dès maintenant
+
+Il te faut seulement ton propre Mac, sans ordinateur Windows ni autre serveur. Sur un Mac Intel, un développeur peut essayer de faire tourner en local les images Docker Linux/amd64 incluses. Si le site, l'API et la base de données démarrent réellement, ouvre les adresses A1 affichées du site et de Mailpit dans le navigateur de ce même Mac. Le scanner fait partie du site. Aucun essai sur Mac n'a encore montré un nouveau compte, une soumission, un enregistrement en base de données et un résultat visible sur le site. Une page d'accueil qui fonctionne ne prouve pas à elle seule une installation complète.
+
+Sur un Mac Intel, installe Docker Desktop pour Mac et Python 3.12 à 3.15. Télécharge le même ZIP hôte et SHA256SUMS.txt. Ouvre Terminal dans le dossier de téléchargement, exécute shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip et compare le résultat avec SHA256SUMS.txt. Arrête-toi s'ils diffèrent. Utilise ensuite les commandes mkdir, unzip et cd du chapitre Linux. Lance le même lanceur shell et choisis A1. C'est un essai pour développeurs, pas une voie validée pour les utilisateurs de Mac. Sur Apple Silicon, ce paquet hôte A1 nécessite une émulation pour ses images amd64; il n'existe pas de paquet A1 arm64 natif, et le fonctionnement et la vitesse sous émulation n'ont pas été démontrés. Sur un Mac avec Apple Silicon, utilise plutôt le paquet A2 mk8dx-a2-macos-arm64 (voir « L'utiliser sur ton réseau domestique »).
+
+Docker Desktop pour Mac : https://docs.docker.com/desktop/setup/install/mac-install/
+
+Ce qui doit encore être développé
+
+Le ZIP XAMPP/Node et les clients LiveTrial et Tournament précompilés sont des paquets Windows; ils ne fournissent pas d'applications Mac. Un développeur qui connaît macOS doit porter et compiler ces clients, y compris leurs dépendances OCR et toute intégration de carte d'acquisition, puis tester toute la chaîne de remise. Une machine virtuelle Windows ou une couche de compatibilité n'a pas été acceptée comme voie client de remplacement. L'APK Android reste destiné à un appareil Android.
