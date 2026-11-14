@@ -18,6 +18,61 @@ if ((params.get("density") || "").toLowerCase() === "tv") {
   document.body.classList.add("density-tv");
 }
 
+// Viewer settings: the scoreboard mode and the language of the track/cup names.
+// A URL parameter (?scoreboard=overall, ?trackLang=ja) sets them for an
+// unattended OBS source; otherwise the viewer's last choice is kept in this
+// browser. Display only: neither setting changes scoring or which language the
+// recognition reads the console in.
+const SETTINGS_KEY = "mk8dx.broadcast.viewSettings.v1";
+// The 15 game locales of the Clean Assets track/cup names (track-names-v1.json).
+const TRACK_LOCALES = [
+  "en-GB", "en-US", "nl-NL", "fr-FR", "fr-CA", "de-DE", "es-ES", "es-419",
+  "it-IT", "pt-PT", "ru-RU", "ja-JP", "ko-KR", "zh-CN", "zh-TW",
+];
+// Short language codes accepted in ?trackLang= besides the full locales.
+const TRACK_LANG_SHORT = {
+  en: "en-GB", nl: "nl-NL", fr: "fr-FR", de: "de-DE", es: "es-ES", it: "it-IT",
+  pt: "pt-PT", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR", zh: "zh-CN",
+};
+
+function normalizeScoreboardMode(value) {
+  return String(value || "").trim().toLowerCase() === "overall" ? "overall" : "auto";
+}
+
+// "" = the default English + Dutch presentation.
+function normalizeTrackLang(value) {
+  const text = String(value || "").trim().toLowerCase();
+  if (!text) return "";
+  const exact = TRACK_LOCALES.find((locale) => locale.toLowerCase() === text);
+  return exact || TRACK_LANG_SHORT[text] || "";
+}
+
+function readStoredSettings() {
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(SETTINGS_KEY) || "{}");
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function storeSettings(value) {
+  try {
+    window.localStorage.setItem(SETTINGS_KEY, JSON.stringify(value));
+  } catch (_) { /* private window or blocked storage: the choice lasts this page only */ }
+}
+
+const viewSettings = (() => {
+  const stored = readStoredSettings();
+  return {
+    scoreboard: normalizeScoreboardMode(params.has("scoreboard") ? params.get("scoreboard") : stored.scoreboard),
+    trackLang: normalizeTrackLang(params.has("trackLang") ? params.get("trackLang") : stored.trackLang),
+  };
+})();
+function overallOnly() {
+  return viewSettings.scoreboard === "overall";
+}
+
 // Inline flag SVGs (Windows/Chrome won't render flag emoji as flags). EU next to
 // the UK/English track name, NL next to the Dutch name. Sized in `em` so they
 // scale with whatever text they sit beside.
@@ -170,6 +225,12 @@ function ingest(payload) {
 // Which list to show for a feed: during "review" we rotate between the race
 // result and the totals; every other phase shows the server's default view.
 function pickView(payload) {
+  if (payload.phase === "review" && overallOnly()) {
+    // Overall only: always the cumulative standings. They hold confirmed races
+    // only, so a just-finished race shows up here once it is confirmed; the
+    // caption says which race they include until then.
+    return { kind: "total", rows: payload.total_rows || [] };
+  }
   if (payload.phase === "review") {
     // Only rotate to the totals once they include the just-finished race
     // (confirmed); until then keep showing the race result rather than a stale
@@ -197,6 +258,11 @@ function describeView(payload, kind) {
   // lockstep with the server's ``_describe_view``: exactly two nouns —
   // "Race result" (one race) and "Overall standings" (cumulative).
   if (payload.phase === "standby") return { eyebrow: "Standby", caption: "Waiting for the first race" };
+  if (overallOnly() && kind === "total" && (payload.phase !== "racing" || completed)) {
+    // Overall only spells out which confirmed race the standings include.
+    const eyebrow = payload.phase === "racing" ? `Race ${n} in progress` : "Overall standings";
+    return { eyebrow, caption: `Overall standings · ${overallProgressText(payload)}` };
+  }
   if (payload.phase === "racing") {
     return {
       eyebrow: `Race ${n} in progress`,
@@ -212,8 +278,32 @@ function describeView(payload, kind) {
 // Sub-line under the "Overall standings" banner/card — the only place race
 // count is spelled out so the banner title stays the canonical noun.
 function totalsSubText(payload) {
+  if (overallOnly()) return overallProgressText(payload);
   const completed = payload.races_completed || 0;
   return completed ? `after ${completed} race${completed === 1 ? "" : "s"}` : "overall points";
+}
+
+// The race a finished-but-unconfirmed result belongs to: its points are not in
+// the overall standings yet. null when the standings are up to date.
+function pendingConfirmationRace(payload) {
+  if (payload.phase !== "review" || payload.totals_ready) return null;
+  return payload.display_race != null ? payload.display_race : (payload.races_completed || 0) + 1;
+}
+
+// Overall only, before the first race is confirmed: an honest empty table.
+function overallWaitingText(payload) {
+  const pending = pendingConfirmationRace(payload);
+  return `Overall standings appear once race ${pending != null ? pending : 1} is confirmed`;
+}
+
+// "after race 7 of 12" (+ "· race 8 awaiting confirmation") — which confirmed
+// race the overall standings include. Never claims an unconfirmed race.
+function overallProgressText(payload) {
+  const completed = payload.races_completed || 0;
+  const total = Number(payload.races_total || 0);
+  const pending = pendingConfirmationRace(payload);
+  const base = completed ? `after race ${completed}${total ? ` of ${total}` : ""}` : "no race confirmed yet";
+  return pending != null ? `${base} · race ${pending} awaiting confirmation` : base;
 }
 
 // "of Y" suffix for the Race counter when the operator has set a group size.
@@ -227,6 +317,60 @@ function raceCounterSuffix(payload) {
 function raceCounterLabel(payload) {
   if (payload.display_race == null) return "–";
   return `${payload.display_race}${raceCounterSuffix(payload)}`;
+}
+
+// Track/cup names in the viewer's chosen language, looked up by the canonical
+// track/cup IDs in the payload (never by translating the recognized text).
+// Loaded from the server once, only when a language is chosen.
+let displayNames = null;            // { tracks: {id: {locale: name}}, cups: {...} }
+let displayNamesLoading = false;
+let displayNamesRetryAt = 0;
+
+function ensureDisplayNames() {
+  if (!viewSettings.trackLang || displayNames || displayNamesLoading) return;
+  if (performance.now() < displayNamesRetryAt) return;
+  displayNamesLoading = true;
+  fetch("/api/display-names", { cache: "no-store" })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      if (data && data.tracks) {
+        displayNames = data;
+        render();
+      } else {
+        displayNamesRetryAt = performance.now() + 10000;
+      }
+    })
+    .catch(() => { displayNamesRetryAt = performance.now() + 10000; })
+    .finally(() => { displayNamesLoading = false; });
+}
+
+// null = the default English + Dutch presentation. Otherwise the name in the
+// chosen locale, falling back to English when a name (or the catalog) is missing;
+// `*Lang` is the locale the shown text is actually in (for the lang attribute).
+function localizedTrack(track) {
+  const locale = viewSettings.trackLang;
+  if (!locale) return null;
+  const pick = (table, id, fallback) => {
+    const names = displayNames && id ? (displayNames[table] || {})[id] : null;
+    if (names && names[locale]) return { text: names[locale], lang: locale };
+    if (names && names["en-GB"]) return { text: names["en-GB"], lang: "en-GB" };
+    return { text: fallback || "", lang: "en-GB" };
+  };
+  const name = pick("tracks", track.id, track.name_uk);
+  const cup = pick("cups", track.cup_id, track.cup_uk);
+  return { name: name.text, nameLang: name.lang, cup: cup.text, cupLang: cup.lang };
+}
+
+// The grid shows the cup name under its icon without the redundant "Cup" word —
+// only in English, where that word is a separate trailing word.
+function shortCupName(name, lang) {
+  const text = String(name || "");
+  return /^en(-|$)/.test(lang || "en") ? text.replace(/\s*cup\s*$/i, "").trim() : text.trim();
+}
+
+function setLang(node, lang) {
+  if (lang) node.setAttribute("lang", lang);
+  else node.removeAttribute("lang");
 }
 
 function deltaMarkup(delta) {
@@ -249,6 +393,11 @@ function escapeHtml(text) {
   const div = document.createElement("div");
   div.textContent = String(text);
   return div.innerHTML;
+}
+
+// For a double-quoted attribute value (escapeHtml leaves quotes as they are).
+function escapeAttr(text) {
+  return escapeHtml(text).replace(/"/g, "&quot;");
 }
 
 function rowKey(item) {
@@ -318,6 +467,7 @@ function updateRotationRing() {
 }
 
 function render() {
+  ensureDisplayNames();
   if (fixedGridView) {
     renderGrid();
     return;
@@ -374,6 +524,11 @@ function render() {
     el.board.classList.toggle("view-total", !isRaceView);
     renderTrackOrTotals(payload, view.kind);
     reconcileRows(view.rows);
+    // Overall only before the first confirmed race: say why the table is empty.
+    if (overallOnly() && payload.phase === "review" && !view.rows.length) {
+      el.empty.textContent = overallWaitingText(payload);
+      el.empty.hidden = false;
+    }
   }
 
   el.footStatus.textContent = statusText(payload);
@@ -418,7 +573,9 @@ function buildGridCard(payload) {
   const isEmpty = rows.length === 0;
   const badge = payload.badge || {};
   const track = payload.track || {};
-  const waitingText = track.name_uk || track.track_icon ? "Waiting for first race…" : "Detecting track…";
+  const waitingText = overallOnly() && payload.phase === "review"
+    ? overallWaitingText(payload)
+    : track.name_uk || track.track_icon ? "Waiting for first race…" : "Detecting track…";
   const caption = desc.caption;
   const raceLabel = raceCounterLabel(payload);
   // Finished = the group has completed all its configured races (races per group).
@@ -435,7 +592,8 @@ function buildGridCard(payload) {
   const leaderTotal = totalRows.length ? Math.max(...totalRows.map((r) => Number(r.total) || 0)) : 0;
   // A race that's being reviewed rotates race-result <-> overall; show the
   // bottom-left ring counting down to that swap so it never feels abrupt.
-  const showRing = payload.phase === "review" && payload.totals_ready;
+  // Overall only never swaps, so it has no countdown ring.
+  const showRing = payload.phase === "review" && payload.totals_ready && !overallOnly();
   const nextLabel = view.kind === "race" ? "Overall standings" : "Race result";
   // Fade the list only when the shown view actually flips, not on every refresh.
   const prevKind = lastGridKind.get(payload.feed);
@@ -467,7 +625,18 @@ function buildGridCard(payload) {
   const trophySvg =
     `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v2h3v3a4 4 0 0 1-4 4h-.3A6 6 0 0 1 13 15.9V18h3v2H8v-2h3v-2.1A6 6 0 0 1 7.3 12H7a4 4 0 0 1-4-4V5h3V3zm0 4H5v1a2 2 0 0 0 1 1.7V7zm12 0v2.7A2 2 0 0 0 19 8V7h-1z"/></svg>`;
   // Cup name sits under its icon; drop the redundant "Cup" word (the icon says it).
-  const cupShort = (track.cup_uk || "").replace(/\s*cup\s*$/i, "").trim();
+  const named = localizedTrack(track);
+  const cupShort = named ? shortCupName(named.cup, named.cupLang) : shortCupName(track.cup_uk, "en-GB");
+  const cupLangAttr = named ? ` lang="${escapeAttr(named.cupLang)}"` : "";
+  const cupFull = named ? named.cup : track.cup_uk || "";
+  // Default: the English (EU flag) and Dutch (NL flag) names; a chosen language
+  // shows that one name.
+  const trackNameHtml = named
+    ? (named.name
+      ? `<b lang="${escapeAttr(named.nameLang)}" title="${escapeAttr(named.name)}">${escapeHtml(named.name)}</b><span>&nbsp;</span>`
+      : `<b>Track pending</b><span>Detecting track…</span>`)
+    : `<b>${track.name_uk ? FLAG_EU + escapeHtml(track.name_uk) : "Track pending"}</b>
+          <span>${track.name_nl ? FLAG_NL + escapeHtml(track.name_nl) : (track.name_uk ? "" : "Detecting track…")}</span>`;
   // Connection-error / temporary-player-drop banner. Suspected = a drop just
   // happened and totals may be corrected once the next race confirms the field.
   const ce = payload.connection_error;
@@ -489,12 +658,11 @@ function buildGridCard(payload) {
     : `<div class="gridcard__track${isRacing ? " gridcard__track--live" : ""}">
         <div class="gridcard__cupwrap">
           ${track.cup_icon ? `<img class="gridcard__cup" src="${track.cup_icon}" alt="" />` : `<span class="gridcard__cup gridcard__cup--ph"></span>`}
-          ${cupShort ? `<span class="gridcard__cuplabel">${escapeHtml(cupShort)}</span>` : ""}
+          ${cupShort ? `<span class="gridcard__cuplabel"${cupLangAttr} title="${escapeAttr(cupFull)}">${escapeHtml(cupShort)}</span>` : ""}
         </div>
         ${track.track_icon ? `<img class="gridcard__trackimg" src="${track.track_icon}" alt="" />` : `<span class="gridcard__trackplaceholder"></span>`}
         <div class="gridcard__tracktext">
-          <b>${track.name_uk ? FLAG_EU + escapeHtml(track.name_uk) : "Track pending"}</b>
-          <span>${track.name_nl ? FLAG_NL + escapeHtml(track.name_nl) : (track.name_uk ? "" : "Detecting track…")}</span>
+          ${trackNameHtml}
         </div>
         ${liveboxHtml}
       </div>`;
@@ -705,7 +873,7 @@ function updateReviewRings() {
 // Each feed flips its review sub-view on its own clock; re-render when any does
 // so the shown list (and ring label) follows, independent of the other groups.
 function checkReviewFlips() {
-  if (!fixedGridView) return;
+  if (!fixedGridView || overallOnly()) return;
   let flipped = false;
   for (const [feed, payload] of feeds) {
     if (payload.phase !== "review") {
@@ -780,9 +948,18 @@ function fitToViewport() {
 // The countdown text itself is kept in sync by renderStatus (ticks every 250ms).
 function renderRacingHero(payload) {
   const track = payload.track || {};
-  el.heroTrackName.textContent = track.name_uk || "Track pending";
-  el.heroTrackSub.textContent =
-    [track.cup_uk, track.name_nl].filter(Boolean).join(" · ") || "waiting for track detection";
+  const named = localizedTrack(track);
+  if (named) {
+    el.heroTrackName.textContent = named.name || "Track pending";
+    el.heroTrackSub.textContent = named.cup || "waiting for track detection";
+  } else {
+    el.heroTrackName.textContent = track.name_uk || "Track pending";
+    el.heroTrackSub.textContent =
+      [track.cup_uk, track.name_nl].filter(Boolean).join(" · ") || "waiting for track detection";
+  }
+  setLang(el.heroTrackName, named && named.name ? named.nameLang : "");
+  setLang(el.heroTrackSub, named && named.cup ? named.cupLang : "");
+  el.heroTrackName.title = el.heroTrackName.textContent;
   toggleImg(el.heroTrackArt, track.track_icon);
   toggleImg(el.heroCupArt, track.cup_icon);
 }
@@ -804,8 +981,13 @@ function renderTrackOrTotals(payload, kind) {
   const hasTrack = track.name_uk || track.track_icon;
   el.trackbar.hidden = !hasTrack;
   if (!hasTrack) return;
-  el.trackName.textContent = track.name_uk || "Unknown track";
-  el.trackSub.textContent = [track.cup_uk, track.name_nl].filter(Boolean).join(" · ");
+  const named = localizedTrack(track);
+  el.trackName.textContent = (named ? named.name : track.name_uk) || "Unknown track";
+  el.trackSub.textContent = named ? named.cup : [track.cup_uk, track.name_nl].filter(Boolean).join(" · ");
+  setLang(el.trackName, named && named.name ? named.nameLang : "");
+  setLang(el.trackSub, named && named.cup ? named.cupLang : "");
+  el.trackName.title = el.trackName.textContent;
+  el.trackSub.title = el.trackSub.textContent;
   toggleImg(el.trackArt, track.track_icon);
   toggleImg(el.cupArt, track.cup_icon);
   const status = payload.race_status;
@@ -981,6 +1163,87 @@ function rotateFeeds() {
   render();
 }
 
+// Apply a changed viewer setting: keep it for this browser and redraw.
+function applyViewSettings(next) {
+  if (next.scoreboard !== undefined) viewSettings.scoreboard = normalizeScoreboardMode(next.scoreboard);
+  if (next.trackLang !== undefined) viewSettings.trackLang = normalizeTrackLang(next.trackLang);
+  storeSettings({ scoreboard: viewSettings.scoreboard, trackLang: viewSettings.trackLang });
+  lastGridKind.clear();
+  render();
+}
+
+// Language name in its own language ("日本語 (日本)"), from the browser.
+function localeLabel(locale) {
+  try {
+    const label = new Intl.DisplayNames([locale], { type: "language" }).of(locale);
+    if (label) return label.charAt(0).toLocaleUpperCase(locale) + label.slice(1);
+  } catch (_) { /* older engine: show the code */ }
+  return locale;
+}
+
+// A small gear (bottom right) for interactive viewers; it fades out when the
+// pointer rests. Not shown in an OBS browser source (window.obsstudio) or with
+// ?controls=0 — unattended sources use the URL parameters instead.
+function mountViewControls() {
+  if (window.obsstudio || params.get("controls") === "0") return;
+  const wrap = document.createElement("div");
+  wrap.className = "viewctl";
+  wrap.innerHTML =
+    `<button type="button" class="viewctl__gear" aria-expanded="false" aria-controls="viewctl-panel" title="Display settings">` +
+      `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>` +
+      `<span class="viewctl__sr">Display settings</span>` +
+    `</button>` +
+    `<div class="viewctl__panel" id="viewctl-panel" hidden>` +
+      `<label class="viewctl__field"><span>Scoreboard</span><select data-setting="scoreboard">` +
+        `<option value="auto">Automatic (race result ↔ overall)</option>` +
+        `<option value="overall">Overall only</option>` +
+      `</select></label>` +
+      `<label class="viewctl__field"><span>Track names</span><select data-setting="trackLang">` +
+        `<option value="">English + Dutch (default)</option>` +
+        TRACK_LOCALES.map((locale) => `<option value="${locale}" lang="${locale}">${escapeHtml(localeLabel(locale))}</option>`).join("") +
+      `</select></label>` +
+    `</div>`;
+  document.body.appendChild(wrap);
+  const gear = wrap.querySelector(".viewctl__gear");
+  const panel = wrap.querySelector(".viewctl__panel");
+  const selects = wrap.querySelectorAll("select");
+  const sync = () => {
+    for (const select of selects) select.value = viewSettings[select.dataset.setting] || "";
+  };
+  sync();
+  for (const select of selects) {
+    select.addEventListener("change", () => applyViewSettings({ [select.dataset.setting]: select.value }));
+  }
+  let idleTimer = 0;
+  const wake = () => {
+    document.body.classList.add("viewctl-awake");
+    clearTimeout(idleTimer);
+    idleTimer = setTimeout(() => {
+      if (panel.hidden && !wrap.contains(document.activeElement)) document.body.classList.remove("viewctl-awake");
+    }, 3000);
+  };
+  for (const type of ["pointermove", "pointerdown", "keydown"]) window.addEventListener(type, wake, { passive: true });
+  gear.addEventListener("click", () => {
+    panel.hidden = !panel.hidden;
+    gear.setAttribute("aria-expanded", String(!panel.hidden));
+    if (!panel.hidden) sync();
+    wake();
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !panel.hidden) {
+      panel.hidden = true;
+      gear.setAttribute("aria-expanded", "false");
+      gear.focus();
+    }
+  });
+  document.addEventListener("pointerdown", (event) => {
+    if (!panel.hidden && !wrap.contains(event.target)) {
+      panel.hidden = true;
+      gear.setAttribute("aria-expanded", "false");
+    }
+  });
+}
+
 // nolive=1 is a fully static snapshot (handshake once, no SSE, no polling or
 // rotation) — used for previews/screenshots that must settle to a steady frame.
 const staticMode = params.get("nolive") === "1";
@@ -993,6 +1256,7 @@ if (!staticMode) {
   setInterval(refreshSnapshot, 1000); // safety net: recover if an SSE update was missed
 }
 
+mountViewControls();
 render();
 fitToViewport();
 if (staticMode) {
