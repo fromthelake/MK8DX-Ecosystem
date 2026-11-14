@@ -24,8 +24,9 @@ Veldsemantiek 0.4.3 voegt één contextregel toe voor de kleur van kart (body)
 en zweefvlieger: een geaccepteerd personage legt de kleur vast uit de catalogus;
 bij een duidelijke visuele botsing (cataloguskleur buiten de visuele top 3)
 blijft de cataloguskleur het voorstel met `?` en moet het veld worden nagekeken.
-Zonder geaccepteerd personage wordt alleen de familie geaccepteerd en is de kleur
-van het icoon het voorstel; zonder catalogusrelatie beslist het icoon. Banden
+Zonder geaccepteerd personage wordt de kleur van het icoon geaccepteerd als de
+gelezen naam dezelfde familie geeft; anders wordt alleen de familie geaccepteerd
+en is de kleur van het icoon het voorstel. Zonder catalogusrelatie beslist het icoon. Banden
 blijven ongewijzigd. Details:
 [`packages/icon-matcher/README.md`](../../packages/icon-matcher/README.md).
 

@@ -60,10 +60,12 @@ pairs a character with a kart or glider colour that character cannot have (field
   colour in the visual top three is replaced silently (`character_part_top3_variant`). When the icon clearly
   showed another colour, the field becomes `conflict` with the catalog colour as `suggestedId` and
   `character_colour_conflict_review`: a clear clash usually means the character is wrong.
-- **Character not accepted** (unknown, suggested or conflict): a readable part family is still settled (it
-  carries the stats), but never its colour on its own. The decision is `family_only`
-  (`body_colour_needs_character` / `glider_colour_needs_character`) without `suggestedId`: the colour proposal
-  is the colour the icon shows. An unconfirmed or suggested character never supplies the colour proposal.
+- **Character not accepted** (unknown, suggested or conflict): the colour can only come from the icon. When the
+  icon's own top colour stands and the printed name reads the same family, it is accepted
+  (`name_supported_icon_colour`, owner option 2 in #173). Otherwise a readable part family is still settled (it
+  carries the stats) but not its colour: the decision is `family_only` (`body_colour_needs_character` /
+  `glider_colour_needs_character`) without `suggestedId`, and the colour proposal is the colour the icon shows.
+  An unconfirmed or suggested character never supplies or vetoes a colour.
 - **No catalog link** (a single-colour part, or no link for an accepted character): the icon decides.
 - Existing gates stay: a weak visual read needs score 0.80 or a readable name before a relation applies, and a
   near-tied glider family without a readable name stays in review (`weak_family_relation_review`). When a gate

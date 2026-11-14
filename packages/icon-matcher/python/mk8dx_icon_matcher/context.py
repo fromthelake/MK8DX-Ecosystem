@@ -52,6 +52,15 @@ def _catalog_colour(refs: ReferenceBank, kind: str, family: str, character_id: s
     return relation if relation and refs.family.get(relation) == family else None
 
 
+def _name_supported_icon_colour(refs: ReferenceBank, family: str, chosen: str,
+                                top_id: str, clue: TextClue | None) -> bool:
+    """The icon's own colour with its family read in the printed name (issue #99, option 2).
+
+    An unaccepted character plays no part: it neither supplies nor vetoes a colour.
+    """
+    return chosen == top_id and bool(clue and clue.strong) and refs.family.get(clue.id) == family
+
+
 def combine_character(visual: MatchResult, clue: TextClue | None, refs: ReferenceBank) -> Decision:
     if visual.status == "absent":
         return Decision(None, None, "absent", ("presence",), None)
@@ -167,6 +176,13 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
             evidence.append("text_supported_visual_variant")
     suggestion = colour if chosen is None else None
     if (coloured_part and chosen is not None and not character_accepted
+            and _colour_family(refs, kind, family)
+            and _name_supported_icon_colour(refs, family, chosen, top.id, clue)):
+        # Owner option 2 (#173): without an accepted character, a colour the
+        # icon itself shows is kept when the printed name reads this family.
+        # The character still supplies nothing.
+        evidence.append("name_supported_icon_colour")
+    elif (coloured_part and chosen is not None and not character_accepted
             and _colour_family(refs, kind, family)):
         # The family is readable and carries the stats, but an unaccepted
         # character cannot settle its colour: accept the family only. The

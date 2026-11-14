@@ -2305,11 +2305,11 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "body_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "body.kart_a",
-    "id": null,
-    "status": "family_only",
+    "id": "body.kart_a",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -3379,11 +3379,11 @@
      "visual_family",
      "text_family",
      "text_supported_visual_variant",
-     "body_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "body.kart_a",
-    "id": null,
-    "status": "family_only",
+    "id": "body_variant.kart_a.002_blue",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
@@ -4793,11 +4793,11 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "body_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "body.kart_a",
-    "id": null,
-    "status": "family_only",
+    "id": "body.kart_a",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
@@ -4979,11 +4979,11 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
-    "id": null,
-    "status": "family_only",
+    "id": "glider.wing_a",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
@@ -5045,11 +5045,11 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
-    "id": null,
-    "status": "family_only",
+    "id": "glider.wing_a",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
@@ -5111,11 +5111,11 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "glider_colour_needs_character"
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
-    "id": null,
-    "status": "family_only",
+    "id": "glider_variant.wing_a.002_blue",
+    "status": "accepted",
     "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },

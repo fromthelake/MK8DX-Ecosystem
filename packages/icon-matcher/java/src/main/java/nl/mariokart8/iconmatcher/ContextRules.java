@@ -298,7 +298,13 @@ public final class ContextRules {
             }
         }
         String suggestion = chosen == null ? colour : null;
-        if (colouredPart && chosen != null && !characterAccepted && colourFamily(refs, kind, family)) {
+        boolean colourOpen = colouredPart && chosen != null && !characterAccepted && colourFamily(refs, kind, family);
+        if (colourOpen && chosen.equals(top.id) && strong && family.equals(textFamily)) {
+            // Owner option 2 (#173): without an accepted character, the icon's own colour
+            // is kept when the printed name reads this family. An unaccepted character
+            // plays no part: it neither supplies nor vetoes a colour.
+            evidence.add("name_supported_icon_colour");
+        } else if (colourOpen) {
             // The family is readable and carries the stats, but an unaccepted character
             // cannot settle its colour: accept the family only. The colour proposal is
             // the icon's own (no suggestedId).

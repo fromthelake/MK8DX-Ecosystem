@@ -311,7 +311,8 @@ def part_cases() -> list[tuple]:
         ("part.body_single_colour_unaccepted_character", "bodies", body_single, char_sugg_blue, None,
          False, False),
         ("part.body_unaccepted_character_unknown_visual", "bodies", body_unk, char_sugg_blue, None, False, False),
-        # unaccepted character colour against a generic glider name
+        # unaccepted character + printed family name: the icon's own colour stands (owner option 2, #173);
+        # the unaccepted character neither supplies nor vetoes a colour
         ("part.glider_unaccepted_character_conflict", "gliders", glider_acc, char_unacc_blue, _clue(WA, 0.95, 0.2),
          False, False),
         ("part.glider_suggested_character_conflict", "gliders", glider_acc, char_sugg_blue, _clue(WA, 0.95, 0.2),

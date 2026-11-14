@@ -141,7 +141,14 @@ export function combinePart(kind: PartKind, visual: VisualFieldRead,
     }
   }
   const suggestion = chosen === null ? colour : null;
-  if (colouredPart && chosen !== null && !characterAccepted && colourFamily(refs, kind, family)) {
+  // Owner option 2 (#173): without an accepted character, the icon's own colour
+  // is kept when the printed name reads this family. An unaccepted character
+  // plays no part: it neither supplies nor vetoes a colour.
+  const nameSupportedIconColour = chosen === top.id && strong && textFamily === family;
+  if (colouredPart && chosen !== null && !characterAccepted && colourFamily(refs, kind, family)
+      && nameSupportedIconColour) {
+    evidence.push('name_supported_icon_colour');
+  } else if (colouredPart && chosen !== null && !characterAccepted && colourFamily(refs, kind, family)) {
     // The family is readable and carries the stats, but an unaccepted
     // character cannot settle its colour: accept the family only. The colour
     // proposal is the icon's own (no suggestedId).
