@@ -88,7 +88,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   and Android call it. The vector `canonical-warp-v1.json` (11 synthetic cards, 12 real cards from the public test
   set, numbers only) replays identically in all three and equals the Web scanner double for double. Behaviour does
   not change: the Web scanner's 64 recorded warp calls on the 12 frames are identical before and after, and
-  12/12 frames match their labels.
+  12/12 frames match their labels. The Android engine on an emulator gives the same result, kart configuration,
+  stage 17/18 geometry and stage images (by hash) on 12/12 frames.
 
 ## 0.2.3 — 2026-11-14
 
