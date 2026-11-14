@@ -33,6 +33,7 @@ const SCRIPTS = {
   'frame-geometry-v1.json': 'frame_geometry_parity.mjs',
   'lap-grid-v1.json': 'lap_grid_parity.mjs',
   'crop-search-v1.json': 'crop_search_parity.mjs',
+  'canonical-warp-v1.json': 'canonical_warp_parity.mjs',
 };
 // Scripts whose first argument is the pack's frame-definitions-v1.json (skipped without a pack).
 const NEEDS_FRAME_DEFINITIONS = new Set(['frame_geometry_parity.mjs', 'lap_grid_parity.mjs']);

@@ -4,6 +4,8 @@
 import { PANEL_RANSAC_THRESHOLD, registerPanel as registerCentralPanel } from '../../../../packages/icon-matcher/ts/sharedPanelRegistration';
 import { HOUGH_MIN_LINE_LENGTH_PX, QuadLine as Line, clusterLines, filterAngles, ghostDetailDeskewSeed as centralDeskewSeed,
   selectQuad as centralSelectQuad, shortLineGuard as applyShortLineGuard } from '../../../../packages/icon-matcher/ts/sharedCardQuad';
+import { antialiasPlan, boundingRect as centralBoundingRect, canonicalAlign as centralCanonicalAlign, contentExtent,
+  quadBox, quadFromRect as centralQuadFromRect, targetBox as centralTargetBox } from '../../../../packages/icon-matcher/ts/sharedCanonicalWarp';
 import { buildDynamicGrid as buildCentralLapGrid, canonicalLapIndexBoxes as centralLapIndexBoxes } from '../../../../packages/icon-matcher/ts/sharedLapGrid';
 import type { LapCircleTemplates } from './lapCircles';
 import { bgrMatToPngDataUrl } from './imageio';
@@ -24,10 +26,6 @@ import { SEGMENT_KEYS, SegmentTemplate, bestSegmentCandidate, canonicalSegmentSl
 import { lapSumClosure, lapSumComplete, preferClosedSeed, repairGuard } from '../../../../packages/icon-matcher/ts/sharedTimeDecision';
 import type { Detection, DetectionResult, FieldDetail, Frame, FrameDiagnostics, FrameResult, IdentityEntry, KartConfigResult, LayoutProfile, OwnerIdentity } from './types';
 
-const CANONICAL_PLAYER_BOX_RACE7 = [548.0, 362.0, 1231.0, 661.0];
-const CANONICAL_GHOST_BOX_RACE7 = [548.0, 42.0, 1231.0, 349.0];
-const CANONICAL_GHOST_DETAIL_BOX_RACE3 = [540.0, 170.0, 782.0, 331.0];
-const CANONICAL_GHOST_DETAIL_BOX_RACE7 = [540.0, 120.0, 767.0, 379.0];
 const TIME_RE = /^\d:\d\d\.\d\d\d$/;
 const SEGMENT_DIGIT_POSITIONS = [0, 2, 3, 5, 6, 7];
 
@@ -153,10 +151,6 @@ interface RectI {
   height: number;
 }
 
-/** Below this warp scale, area-average first until the warp keeps the target scale. */
-const ANTIALIAS_BELOW_SCALE = 0.5;
-const ANTIALIAS_TARGET_SCALE = 0.8;
-
 const GHOST_DETAIL_DESKEW_SEED = 'ghost_detail_deskew_seed';
 
 /**
@@ -169,13 +163,13 @@ function ghostDetailDeskewSeed(selection: Selection, roiBox: Box, cropW: number,
   return seed ? { quad: new Quad(seed.quad[0], seed.quad[1], seed.quad[2], seed.quad[3]), degrees: seed.degrees } : null;
 }
 
+// The canonical card geometry (stages 17 and 18) is the central sharedCanonicalWarp (issue #99 phase 5):
+// the same arithmetic as Android and Python, pinned by vectors/canonical-warp-v1.json.
+const pts = (quad: Quad): [number, number][] => quad.points().map((p) => [p.x, p.y]);
+
 function quadFromRect(rect: RectI): Quad {
-  return new Quad(
-    { x: rect.x, y: rect.y },
-    { x: rect.x + rect.width - 1, y: rect.y },
-    { x: rect.x + rect.width - 1, y: rect.y + rect.height - 1 },
-    { x: rect.x, y: rect.y + rect.height - 1 },
-  );
+  const [tl, tr, br, bl] = centralQuadFromRect([rect.x, rect.y, rect.width, rect.height]);
+  return new Quad({ x: tl[0], y: tl[1] }, { x: tr[0], y: tr[1] }, { x: br[0], y: br[1] }, { x: bl[0], y: bl[1] });
 }
 
 class BoxD {
@@ -303,34 +297,12 @@ function selectQuad(maskRows: number, maskCols: number, clusters: Line[]): Quad 
 }
 
 function boundingRect(quad: Quad, width: number, height: number): RectI {
-  let minX = Number.MAX_VALUE;
-  let minY = Number.MAX_VALUE;
-  let maxX = -Number.MAX_VALUE;
-  let maxY = -Number.MAX_VALUE;
-  for (const p of quad.points()) {
-    minX = Math.min(minX, p.x);
-    minY = Math.min(minY, p.y);
-    maxX = Math.max(maxX, p.x);
-    maxY = Math.max(maxY, p.y);
-  }
-  const x = Math.max(0, Math.min(width - 1, Math.floor(minX)));
-  const y = Math.max(0, Math.min(height - 1, Math.floor(minY)));
-  const right = Math.max(x + 1, Math.min(width, Math.ceil(maxX)));
-  const bottom = Math.max(y + 1, Math.min(height, Math.ceil(maxY)));
-  return { x, y, width: right - x, height: bottom - y };
+  const [x, y, w, h] = centralBoundingRect(pts(quad), width, height);
+  return { x, y, width: w, height: h };
 }
 
 function boxFromQuad(quad: Quad): BoxD {
-  let left = Number.MAX_VALUE;
-  let top = Number.MAX_VALUE;
-  let right = -Number.MAX_VALUE;
-  let bottom = -Number.MAX_VALUE;
-  for (const p of quad.points()) {
-    left = Math.min(left, p.x);
-    top = Math.min(top, p.y);
-    right = Math.max(right, p.x);
-    bottom = Math.max(bottom, p.y);
-  }
+  const [left, top, right, bottom] = quadBox(pts(quad));
   return new BoxD(left, top, right, bottom);
 }
 
@@ -546,48 +518,24 @@ class Pipeline {
     return owners ? owners[owner] ?? null : null;
   }
 
+  /** Where the card lies on the canonical frame (central targetBox; race 3 from the grid's content extents). */
   canonicalTargetBox(owner: string, raceKey: string): { box: number[]; source: string } {
-    const race7 = owner === 'ghost' ? CANONICAL_GHOST_BOX_RACE7 : CANONICAL_PLAYER_BOX_RACE7;
-    if (raceKey !== 'race3') return { box: race7, source: 'fixed_race7_canonical_target' };
-    const race3Content = this.ownerContentExtent('race3', owner);
-    const race7Content = this.ownerContentExtent('race7', owner);
-    if (!race3Content || !race7Content) return { box: race7, source: 'fallback_fixed_race7_missing_relative_grid_content_extent' };
-    const leftMargin = race7Content.left - race7[0];
-    const topMargin = race7Content.top - race7[1];
-    const rightMargin = race7[2] - race7Content.right;
-    const bottomMargin = race7[3] - race7Content.bottom;
-    return {
-      box: [race3Content.left - leftMargin, race3Content.top - topMargin, race3Content.right + rightMargin, race3Content.bottom + bottomMargin],
-      source: 'derived_from_race3_relative_grid_using_race7_card_content_margins',
-    };
-  }
-
-  ownerContentExtent(raceKey: string, owner: string): BoxD | null {
-    const ownerGrid = this.ownerGridForRace(raceKey, owner);
-    if (!ownerGrid) return null;
-    const boxes: BoxD[] = [];
-    for (const key of ['lap_index_boxes_rel', 'total_strip_rel', 'lap_strips_rel']) {
-      const value = ownerGrid[key];
-      if (Array.isArray(value)) appendRelativeBoxArray(ownerGrid, value, boxes);
-    }
-    if (boxes.length === 0) return null;
-    return union(boxes);
+    const race3 = raceKey === 'race3' && !this.isGhostDetail();
+    return centralTargetBox(owner, raceKey, this.isGhostDetail(),
+      race3 ? contentExtent(this.ownerGridForRace('race3', owner)) : null,
+      race3 ? contentExtent(this.ownerGridForRace('race7', owner)) : null);
   }
 
   canonicalAlign(warp: any, currentQuad: Quad, selection: Selection | null, gameAnchorLapProfile = false): CanonicalAlign {
     const yellow = this.isGhostDetail() ? { position: null, topScore: 0, bottomScore: 0 } : detectYellowPlayerSlot(warp);
     const owner = this.isGhostDetail() ? 'ghost' : (yellow.position === 'top' ? 'ghost' : 'player');
     const raceKey = (gameAnchorLapProfile ? inferGameAnchorLapProfile(selection) : null) ?? inferStep01RaceKey(selection);
-    const targetProfile = this.isGhostDetail()
-      ? { box: raceKey === 'race7' ? CANONICAL_GHOST_DETAIL_BOX_RACE7 : CANONICAL_GHOST_DETAIL_BOX_RACE3, source: `fixed_ghost_detail_canonical_target_${raceKey === 'race7' ? 'race7' : 'race3'}` }
-      : this.canonicalTargetBox(owner, raceKey);
+    const targetProfile = this.canonicalTargetBox(owner, raceKey);
     const target = targetProfile.box;
     const currentBox = boxFromQuad(currentQuad);
     const targetBox = new BoxD(target[0], target[1], target[2], target[3]);
-    const sx = targetBox.width() / Math.max(1.0, currentBox.width());
-    const sy = targetBox.height() / Math.max(1.0, currentBox.height());
-    const tx = targetBox.left - currentBox.left * sx;
-    const ty = targetBox.top - currentBox.top * sy;
+    const [sx, sy, tx, ty] = centralCanonicalAlign([currentBox.left, currentBox.top, currentBox.right, currentBox.bottom],
+      [target[0], target[1], target[2], target[3]]);
     return { currentBox, targetBox, scaleX: sx, scaleY: sy, translateX: tx, translateY: ty, yellowPosition: yellow.position, raceKey, targetBoxSource: targetProfile.source };
   }
 
@@ -681,36 +629,6 @@ class Pipeline {
       matchedLapIndexCount: central.matchedLapIndexCount,
     };
   }
-}
-
-function appendRelativeBoxArray(ownerGrid: any, arr: any[], boxes: BoxD[]): void {
-  if (arr.length === 4 && !Array.isArray(arr[0])) {
-    boxes.push(ownerAbsBox(ownerGrid, arr));
-    return;
-  }
-  for (const child of arr) if (Array.isArray(child)) appendRelativeBoxArray(ownerGrid, child, boxes);
-}
-
-function ownerAbsBox(ownerGrid: any, rel: number[]): BoxD {
-  const anchor = ownerGrid.anchor;
-  const ax = anchor ? anchor.x ?? 0.0 : 0.0;
-  const ay = anchor ? anchor.y ?? 0.0 : 0.0;
-  return new BoxD(ax + (rel[0] ?? 0.0), ay + (rel[1] ?? 0.0), ax + (rel[2] ?? 0.0), ay + (rel[3] ?? 0.0));
-}
-
-function union(boxes: BoxD[]): BoxD {
-  if (boxes.length === 0) return new BoxD(0, 0, 1, 1);
-  let left = Number.MAX_VALUE;
-  let top = Number.MAX_VALUE;
-  let right = -Number.MAX_VALUE;
-  let bottom = -Number.MAX_VALUE;
-  for (const b of boxes) {
-    left = Math.min(left, b.left);
-    top = Math.min(top, b.top);
-    right = Math.max(right, b.right);
-    bottom = Math.max(bottom, b.bottom);
-  }
-  return new BoxD(left, top, right, bottom);
 }
 
 // ------------------------------------------------------------------ 7-seg (24/26)
@@ -1835,17 +1753,15 @@ export async function runFrame(frame: Frame, deps: PipelineDeps, options: RunOpt
       // segments). Area-average it down first until the warp keeps
       // ANTIALIAS_TARGET_SCALE; the homography is rescaled, so the geometry is
       // the same. Inputs in the validated range stay byte-identical (APK
-      // overlay ADR-0203).
+      // overlay ADR-0203). The plan is the central antialiasPlan.
       let warpSource = bgr;
       let reduced: any = null;
-      const shrink = Math.min(align.scaleX, align.scaleY);
-      if (shrink > 0 && shrink < ANTIALIAS_BELOW_SCALE) {
-        const factor = shrink / ANTIALIAS_TARGET_SCALE;
-        const reducedW = Math.max(1, Math.round(bgr.cols * factor));
-        const reducedH = Math.max(1, Math.round(bgr.rows * factor));
+      const plan = antialiasPlan([align.scaleX, align.scaleY, align.translateX, align.translateY], bgr.cols, bgr.rows);
+      if (plan) {
+        const { factor, reducedW, reducedH } = plan;
         reduced = new c.Mat();
         c.resize(bgr, reduced, new c.Size(reducedW, reducedH), 0, 0, c.INTER_AREA);
-        const unscale = c.matFromArray(3, 3, c.CV_64F, [bgr.cols / reducedW, 0, 0, 0, bgr.rows / reducedH, 0, 0, 0, 1]);
+        const unscale = c.matFromArray(3, 3, c.CV_64F, plan.unscale);
         const rescaled = new c.Mat();
         c.gemm(composed, unscale, 1.0, noSrc3, 0.0, rescaled, 0);
         composed.delete();
