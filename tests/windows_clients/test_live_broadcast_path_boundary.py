@@ -75,3 +75,20 @@ def test_static_route_rejects_a_link_outside_its_root(tmp_path, monkeypatch):
         assert unknown.value.code == 404
     finally:
         server.stop()
+
+
+def test_display_names_route_serves_the_catalog_slice_by_canonical_id():
+    import json
+
+    server = BroadcastServer(port=0)
+    try:
+        server.start()
+        url = f"http://127.0.0.1:{server._httpd.server_port}/api/display-names"
+        with urllib.request.urlopen(url, timeout=5) as response:
+            data = json.loads(response.read().decode("utf-8"))
+        assert len(data["locales"]) == 15
+        assert data["tracks"]["track.mario_kart_stadium"]["ja-JP"] == "マリオカートスタジアム"
+        assert data["cups"]["cup.mushroom_cup"]["ru-RU"] == "Кубок гриба"
+        assert len(data["tracks"]) == 96 and len(data["cups"]) == 24
+    finally:
+        server.stop()

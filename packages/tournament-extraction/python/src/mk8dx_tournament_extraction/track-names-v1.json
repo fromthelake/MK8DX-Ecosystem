@@ -1,7 +1,7 @@
 {
  "schemaVersion": "mk8dx.tournament-track-names.v1",
- "source": "Clean Assets database.json collections.tracks[].names",
- "sourceSha256": "4b006224e8cea910f0e3bfdc6442791906c6dea92ea82b6b53d68ef573a11f9e",
+ "source": "Clean Assets database.json collections.tracks[].names and collections.cups[].names",
+ "sourceSha256": "2375050f7a332c5bbe89a9109356e07759cc7432f5f804ba004d298c479950c0",
  "locales": [
   "en-GB",
   "en-US",
@@ -23,6 +23,8 @@
   {
    "index": 0,
    "slug": "mario_kart_stadium",
+   "id": "track.mario_kart_stadium",
+   "cupId": "cup.mushroom_cup",
    "names": {
     "en-GB": "Mario Kart Stadium",
     "en-US": "Mario Kart Stadium",
@@ -44,6 +46,8 @@
   {
    "index": 1,
    "slug": "water_park",
+   "id": "track.water_park",
+   "cupId": "cup.mushroom_cup",
    "names": {
     "en-GB": "Water Park",
     "en-US": "Water Park",
@@ -65,6 +69,8 @@
   {
    "index": 2,
    "slug": "sweet_sweet_canyon",
+   "id": "track.sweet_sweet_canyon",
+   "cupId": "cup.mushroom_cup",
    "names": {
     "en-GB": "Sweet Sweet Canyon",
     "en-US": "Sweet Sweet Canyon",
@@ -86,6 +92,8 @@
   {
    "index": 3,
    "slug": "thwomp_ruins",
+   "id": "track.thwomp_ruins",
+   "cupId": "cup.mushroom_cup",
    "names": {
     "en-GB": "Thwomp Ruins",
     "en-US": "Thwomp Ruins",
@@ -107,6 +115,8 @@
   {
    "index": 4,
    "slug": "mario_circuit",
+   "id": "track.mario_circuit",
+   "cupId": "cup.flower_cup",
    "names": {
     "en-GB": "Mario Circuit",
     "en-US": "Mario Circuit",
@@ -128,6 +138,8 @@
   {
    "index": 5,
    "slug": "toad_harbour",
+   "id": "track.toad_harbour",
+   "cupId": "cup.flower_cup",
    "names": {
     "en-GB": "Toad Harbour",
     "en-US": "Toad Harbor",
@@ -149,6 +161,8 @@
   {
    "index": 6,
    "slug": "twisted_mansion",
+   "id": "track.twisted_mansion",
+   "cupId": "cup.flower_cup",
    "names": {
     "en-GB": "Twisted Mansion",
     "en-US": "Twisted Mansion",
@@ -170,6 +184,8 @@
   {
    "index": 7,
    "slug": "shy_guy_falls",
+   "id": "track.shy_guy_falls",
+   "cupId": "cup.flower_cup",
    "names": {
     "en-GB": "Shy Guy Falls",
     "en-US": "Shy Guy Falls",
@@ -191,6 +207,8 @@
   {
    "index": 8,
    "slug": "sunshine_airport",
+   "id": "track.sunshine_airport",
+   "cupId": "cup.star_cup",
    "names": {
     "en-GB": "Sunshine Airport",
     "en-US": "Sunshine Airport",
@@ -212,6 +230,8 @@
   {
    "index": 9,
    "slug": "dolphin_shoals",
+   "id": "track.dolphin_shoals",
+   "cupId": "cup.star_cup",
    "names": {
     "en-GB": "Dolphin Shoals",
     "en-US": "Dolphin Shoals",
@@ -233,6 +253,8 @@
   {
    "index": 10,
    "slug": "electrodrome",
+   "id": "track.electrodrome",
+   "cupId": "cup.star_cup",
    "names": {
     "en-GB": "Electrodrome",
     "en-US": "Electrodrome",
@@ -254,6 +276,8 @@
   {
    "index": 11,
    "slug": "mount_wario",
+   "id": "track.mount_wario",
+   "cupId": "cup.star_cup",
    "names": {
     "en-GB": "Mount Wario",
     "en-US": "Mount Wario",
@@ -275,6 +299,8 @@
   {
    "index": 12,
    "slug": "cloudtop_cruise",
+   "id": "track.cloudtop_cruise",
+   "cupId": "cup.special_cup",
    "names": {
     "en-GB": "Cloudtop Cruise",
     "en-US": "Cloudtop Cruise",
@@ -296,6 +322,8 @@
   {
    "index": 13,
    "slug": "bone_dry_dunes",
+   "id": "track.bone_dry_dunes",
+   "cupId": "cup.special_cup",
    "names": {
     "en-GB": "Bone Dry Dunes",
     "en-US": "Bone-Dry Dunes",
@@ -317,6 +345,8 @@
   {
    "index": 14,
    "slug": "bowsers_castle",
+   "id": "track.bowsers_castle",
+   "cupId": "cup.special_cup",
    "names": {
     "en-GB": "Bowser's Castle",
     "en-US": "Bowser's Castle",
@@ -338,6 +368,8 @@
   {
    "index": 15,
    "slug": "rainbow_road",
+   "id": "track.rainbow_road",
+   "cupId": "cup.special_cup",
    "names": {
     "en-GB": "Rainbow Road",
     "en-US": "Rainbow Road",
@@ -359,6 +391,8 @@
   {
    "index": 16,
    "slug": "wii_moo_moo_meadows",
+   "id": "track.wii_moo_moo_meadows",
+   "cupId": "cup.shell_cup",
    "names": {
     "en-GB": "Wii Moo Moo Meadows",
     "en-US": "Wii Moo Moo Meadows",
@@ -380,6 +414,8 @@
   {
    "index": 17,
    "slug": "gba_mario_circuit",
+   "id": "track.gba_mario_circuit",
+   "cupId": "cup.shell_cup",
    "names": {
     "en-GB": "GBA Mario Circuit",
     "en-US": "GBA Mario Circuit",
@@ -401,6 +437,8 @@
   {
    "index": 18,
    "slug": "ds_cheep_cheep_beach",
+   "id": "track.ds_cheep_cheep_beach",
+   "cupId": "cup.shell_cup",
    "names": {
     "en-GB": "DS Cheep Cheep Beach",
     "en-US": "DS Cheep Cheep Beach",
@@ -422,6 +460,8 @@
   {
    "index": 19,
    "slug": "n64_toads_turnpike",
+   "id": "track.n64_toads_turnpike",
+   "cupId": "cup.shell_cup",
    "names": {
     "en-GB": "N64 Toad's Turnpike",
     "en-US": "N64 Toad's Turnpike",
@@ -443,6 +483,8 @@
   {
    "index": 20,
    "slug": "gcn_dry_dry_desert",
+   "id": "track.gcn_dry_dry_desert",
+   "cupId": "cup.banana_cup",
    "names": {
     "en-GB": "GCN Dry Dry Desert",
     "en-US": "GCN Dry Dry Desert",
@@ -464,6 +506,8 @@
   {
    "index": 21,
    "slug": "snes_donut_plains_3",
+   "id": "track.snes_donut_plains_3",
+   "cupId": "cup.banana_cup",
    "names": {
     "en-GB": "SNES Donut Plains 3",
     "en-US": "SNES Donut Plains 3",
@@ -485,6 +529,8 @@
   {
    "index": 22,
    "slug": "n64_royal_raceway",
+   "id": "track.n64_royal_raceway",
+   "cupId": "cup.banana_cup",
    "names": {
     "en-GB": "N64 Royal Raceway",
     "en-US": "N64 Royal Raceway",
@@ -506,6 +552,8 @@
   {
    "index": 23,
    "slug": "3ds_dk_jungle",
+   "id": "track.3ds_dk_jungle",
+   "cupId": "cup.banana_cup",
    "names": {
     "en-GB": "3DS DK Jungle",
     "en-US": "3DS DK Jungle",
@@ -527,6 +575,8 @@
   {
    "index": 24,
    "slug": "ds_wario_stadium",
+   "id": "track.ds_wario_stadium",
+   "cupId": "cup.leaf_cup",
    "names": {
     "en-GB": "DS Wario Stadium",
     "en-US": "DS Wario Stadium",
@@ -548,6 +598,8 @@
   {
    "index": 25,
    "slug": "gcn_sherbet_land",
+   "id": "track.gcn_sherbet_land",
+   "cupId": "cup.leaf_cup",
    "names": {
     "en-GB": "GCN Sherbet Land",
     "en-US": "GCN Sherbet Land",
@@ -569,6 +621,8 @@
   {
    "index": 26,
    "slug": "3ds_melody_motorway",
+   "id": "track.3ds_melody_motorway",
+   "cupId": "cup.leaf_cup",
    "names": {
     "en-GB": "3DS Melody Motorway",
     "en-US": "3DS Music Park",
@@ -590,6 +644,8 @@
   {
    "index": 27,
    "slug": "n64_yoshi_valley",
+   "id": "track.n64_yoshi_valley",
+   "cupId": "cup.leaf_cup",
    "names": {
     "en-GB": "N64 Yoshi Valley",
     "en-US": "N64 Yoshi Valley",
@@ -611,6 +667,8 @@
   {
    "index": 28,
    "slug": "ds_tick_tock_clock",
+   "id": "track.ds_tick_tock_clock",
+   "cupId": "cup.lightning_cup",
    "names": {
     "en-GB": "DS Tick-Tock Clock",
     "en-US": "DS Tick-Tock Clock",
@@ -632,6 +690,8 @@
   {
    "index": 29,
    "slug": "3ds_piranha_plant_pipeway",
+   "id": "track.3ds_piranha_plant_pipeway",
+   "cupId": "cup.lightning_cup",
    "names": {
     "en-GB": "3DS Piranha Plant Pipeway",
     "en-US": "3DS Piranha Plant Slide",
@@ -653,6 +713,8 @@
   {
    "index": 30,
    "slug": "wii_grumble_volcano",
+   "id": "track.wii_grumble_volcano",
+   "cupId": "cup.lightning_cup",
    "names": {
     "en-GB": "Wii Grumble Volcano",
     "en-US": "Wii Grumble Volcano",
@@ -674,6 +736,8 @@
   {
    "index": 31,
    "slug": "n64_rainbow_road",
+   "id": "track.n64_rainbow_road",
+   "cupId": "cup.lightning_cup",
    "names": {
     "en-GB": "N64 Rainbow Road",
     "en-US": "N64 Rainbow Road",
@@ -695,6 +759,8 @@
   {
    "index": 32,
    "slug": "gcn_yoshi_circuit",
+   "id": "track.gcn_yoshi_circuit",
+   "cupId": "cup.egg_cup",
    "names": {
     "en-GB": "GCN Yoshi Circuit",
     "en-US": "GCN Yoshi Circuit",
@@ -716,6 +782,8 @@
   {
    "index": 33,
    "slug": "excitebike_arena",
+   "id": "track.excitebike_arena",
+   "cupId": "cup.egg_cup",
    "names": {
     "en-GB": "Excitebike Arena",
     "en-US": "Excitebike Arena",
@@ -737,6 +805,8 @@
   {
    "index": 34,
    "slug": "dragon_driftway",
+   "id": "track.dragon_driftway",
+   "cupId": "cup.egg_cup",
    "names": {
     "en-GB": "Dragon Driftway",
     "en-US": "Dragon Driftway",
@@ -758,6 +828,8 @@
   {
    "index": 35,
    "slug": "mute_city",
+   "id": "track.mute_city",
+   "cupId": "cup.egg_cup",
    "names": {
     "en-GB": "Mute City",
     "en-US": "Mute City",
@@ -779,6 +851,8 @@
   {
    "index": 36,
    "slug": "wii_warios_gold_mine",
+   "id": "track.wii_warios_gold_mine",
+   "cupId": "cup.triforce_cup",
    "names": {
     "en-GB": "Wii Wario's Gold Mine",
     "en-US": "Wii Wario's Gold Mine",
@@ -800,6 +874,8 @@
   {
    "index": 37,
    "slug": "snes_rainbow_road",
+   "id": "track.snes_rainbow_road",
+   "cupId": "cup.triforce_cup",
    "names": {
     "en-GB": "SNES Rainbow Road",
     "en-US": "SNES Rainbow Road",
@@ -821,6 +897,8 @@
   {
    "index": 38,
    "slug": "ice_ice_outpost",
+   "id": "track.ice_ice_outpost",
+   "cupId": "cup.triforce_cup",
    "names": {
     "en-GB": "Ice Ice Outpost",
     "en-US": "Ice Ice Outpost",
@@ -842,6 +920,8 @@
   {
    "index": 39,
    "slug": "hyrule_circuit",
+   "id": "track.hyrule_circuit",
+   "cupId": "cup.triforce_cup",
    "names": {
     "en-GB": "Hyrule Circuit",
     "en-US": "Hyrule Circuit",
@@ -863,6 +943,8 @@
   {
    "index": 40,
    "slug": "gcn_baby_park",
+   "id": "track.gcn_baby_park",
+   "cupId": "cup.crossing_cup",
    "names": {
     "en-GB": "GCN Baby Park",
     "en-US": "GCN Baby Park",
@@ -884,6 +966,8 @@
   {
    "index": 41,
    "slug": "gba_cheese_land",
+   "id": "track.gba_cheese_land",
+   "cupId": "cup.crossing_cup",
    "names": {
     "en-GB": "GBA Cheese Land",
     "en-US": "GBA Cheese Land",
@@ -905,6 +989,8 @@
   {
    "index": 42,
    "slug": "wild_woods",
+   "id": "track.wild_woods",
+   "cupId": "cup.crossing_cup",
    "names": {
     "en-GB": "Wild Woods",
     "en-US": "Wild Woods",
@@ -926,6 +1012,8 @@
   {
    "index": 43,
    "slug": "animal_crossing",
+   "id": "track.animal_crossing",
+   "cupId": "cup.crossing_cup",
    "names": {
     "en-GB": "Animal Crossing",
     "en-US": "Animal Crossing",
@@ -947,6 +1035,8 @@
   {
    "index": 44,
    "slug": "3ds_koopa_city",
+   "id": "track.3ds_koopa_city",
+   "cupId": "cup.bell_cup",
    "names": {
     "en-GB": "3DS Koopa City",
     "en-US": "3DS Neo Bowser City",
@@ -968,6 +1058,8 @@
   {
    "index": 45,
    "slug": "gba_ribbon_road",
+   "id": "track.gba_ribbon_road",
+   "cupId": "cup.bell_cup",
    "names": {
     "en-GB": "GBA Ribbon Road",
     "en-US": "GBA Ribbon Road",
@@ -989,6 +1081,8 @@
   {
    "index": 46,
    "slug": "super_bell_subway",
+   "id": "track.super_bell_subway",
+   "cupId": "cup.bell_cup",
    "names": {
     "en-GB": "Super Bell Subway",
     "en-US": "Super Bell Subway",
@@ -1010,6 +1104,8 @@
   {
    "index": 47,
    "slug": "big_blue",
+   "id": "track.big_blue",
+   "cupId": "cup.bell_cup",
    "names": {
     "en-GB": "Big Blue",
     "en-US": "Big Blue",
@@ -1031,6 +1127,8 @@
   {
    "index": 48,
    "slug": "tour_paris_promenade",
+   "id": "track.tour_paris_promenade",
+   "cupId": "cup.golden_dash_cup",
    "names": {
     "en-GB": "Tour Paris Promenade",
     "en-US": "Tour Paris Promenade",
@@ -1052,6 +1150,8 @@
   {
    "index": 49,
    "slug": "3ds_toad_circuit",
+   "id": "track.3ds_toad_circuit",
+   "cupId": "cup.golden_dash_cup",
    "names": {
     "en-GB": "3DS Toad Circuit",
     "en-US": "3DS Toad Circuit",
@@ -1073,6 +1173,8 @@
   {
    "index": 50,
    "slug": "n64_choco_mountain",
+   "id": "track.n64_choco_mountain",
+   "cupId": "cup.golden_dash_cup",
    "names": {
     "en-GB": "N64 Choco Mountain",
     "en-US": "N64 Choco Mountain",
@@ -1094,6 +1196,8 @@
   {
    "index": 51,
    "slug": "wii_coconut_mall",
+   "id": "track.wii_coconut_mall",
+   "cupId": "cup.golden_dash_cup",
    "names": {
     "en-GB": "Wii Coconut Mall",
     "en-US": "Wii Coconut Mall",
@@ -1115,6 +1219,8 @@
   {
    "index": 52,
    "slug": "tour_tokyo_blur",
+   "id": "track.tour_tokyo_blur",
+   "cupId": "cup.lucky_cat_cup",
    "names": {
     "en-GB": "Tour Tokyo Blur",
     "en-US": "Tour Tokyo Blur",
@@ -1136,6 +1242,8 @@
   {
    "index": 53,
    "slug": "ds_shroom_ridge",
+   "id": "track.ds_shroom_ridge",
+   "cupId": "cup.lucky_cat_cup",
    "names": {
     "en-GB": "DS Shroom Ridge",
     "en-US": "DS Shroom Ridge",
@@ -1157,6 +1265,8 @@
   {
    "index": 54,
    "slug": "gba_sky_garden",
+   "id": "track.gba_sky_garden",
+   "cupId": "cup.lucky_cat_cup",
    "names": {
     "en-GB": "GBA Sky Garden",
     "en-US": "GBA Sky Garden",
@@ -1178,6 +1288,8 @@
   {
    "index": 55,
    "slug": "ninja_hideaway",
+   "id": "track.ninja_hideaway",
+   "cupId": "cup.lucky_cat_cup",
    "names": {
     "en-GB": "Ninja Hideaway",
     "en-US": "Ninja Hideaway",
@@ -1199,6 +1311,8 @@
   {
    "index": 56,
    "slug": "tour_new_york_minute",
+   "id": "track.tour_new_york_minute",
+   "cupId": "cup.turnip_cup",
    "names": {
     "en-GB": "Tour New York Minute",
     "en-US": "Tour New York Minute",
@@ -1220,6 +1334,8 @@
   {
    "index": 57,
    "slug": "snes_mario_circuit_3",
+   "id": "track.snes_mario_circuit_3",
+   "cupId": "cup.turnip_cup",
    "names": {
     "en-GB": "SNES Mario Circuit 3",
     "en-US": "SNES Mario Circuit 3",
@@ -1241,6 +1357,8 @@
   {
    "index": 58,
    "slug": "n64_kalimari_desert",
+   "id": "track.n64_kalimari_desert",
+   "cupId": "cup.turnip_cup",
    "names": {
     "en-GB": "N64 Kalimari Desert",
     "en-US": "N64 Kalimari Desert",
@@ -1262,6 +1380,8 @@
   {
    "index": 59,
    "slug": "ds_waluigi_pinball",
+   "id": "track.ds_waluigi_pinball",
+   "cupId": "cup.turnip_cup",
    "names": {
     "en-GB": "DS Waluigi Pinball",
     "en-US": "DS Waluigi Pinball",
@@ -1283,6 +1403,8 @@
   {
    "index": 60,
    "slug": "tour_sydney_sprint",
+   "id": "track.tour_sydney_sprint",
+   "cupId": "cup.propeller_cup",
    "names": {
     "en-GB": "Tour Sydney Sprint",
     "en-US": "Tour Sydney Sprint",
@@ -1304,6 +1426,8 @@
   {
    "index": 61,
    "slug": "gba_snow_land",
+   "id": "track.gba_snow_land",
+   "cupId": "cup.propeller_cup",
    "names": {
     "en-GB": "GBA Snow Land",
     "en-US": "GBA Snow Land",
@@ -1325,6 +1449,8 @@
   {
    "index": 62,
    "slug": "wii_mushroom_gorge",
+   "id": "track.wii_mushroom_gorge",
+   "cupId": "cup.propeller_cup",
    "names": {
     "en-GB": "Wii Mushroom Gorge",
     "en-US": "Wii Mushroom Gorge",
@@ -1346,6 +1472,8 @@
   {
    "index": 63,
    "slug": "sky_high_sundae",
+   "id": "track.sky_high_sundae",
+   "cupId": "cup.propeller_cup",
    "names": {
     "en-GB": "Sky-High Sundae",
     "en-US": "Sky-High Sundae",
@@ -1367,6 +1495,8 @@
   {
    "index": 64,
    "slug": "tour_london_loop",
+   "id": "track.tour_london_loop",
+   "cupId": "cup.rock_cup",
    "names": {
     "en-GB": "Tour London Loop",
     "en-US": "Tour London Loop",
@@ -1388,6 +1518,8 @@
   {
    "index": 65,
    "slug": "gba_boo_lake",
+   "id": "track.gba_boo_lake",
+   "cupId": "cup.rock_cup",
    "names": {
     "en-GB": "GBA Boo Lake",
     "en-US": "GBA Boo Lake",
@@ -1409,6 +1541,8 @@
   {
    "index": 66,
    "slug": "3ds_alpine_pass",
+   "id": "track.3ds_alpine_pass",
+   "cupId": "cup.rock_cup",
    "names": {
     "en-GB": "3DS Alpine Pass",
     "en-US": "3DS Rock Rock Mountain",
@@ -1430,6 +1564,8 @@
   {
    "index": 67,
    "slug": "wii_maple_treeway",
+   "id": "track.wii_maple_treeway",
+   "cupId": "cup.rock_cup",
    "names": {
     "en-GB": "Wii Maple Treeway",
     "en-US": "Wii Maple Treeway",
@@ -1451,6 +1587,8 @@
   {
    "index": 68,
    "slug": "tour_berlin_byways",
+   "id": "track.tour_berlin_byways",
+   "cupId": "cup.moon_cup",
    "names": {
     "en-GB": "Tour Berlin Byways",
     "en-US": "Tour Berlin Byways",
@@ -1472,6 +1610,8 @@
   {
    "index": 69,
    "slug": "ds_peach_gardens",
+   "id": "track.ds_peach_gardens",
+   "cupId": "cup.moon_cup",
    "names": {
     "en-GB": "DS Peach Gardens",
     "en-US": "DS Peach Gardens",
@@ -1493,6 +1633,8 @@
   {
    "index": 70,
    "slug": "merry_mountain",
+   "id": "track.merry_mountain",
+   "cupId": "cup.moon_cup",
    "names": {
     "en-GB": "Merry Mountain",
     "en-US": "Merry Mountain",
@@ -1514,6 +1656,8 @@
   {
    "index": 71,
    "slug": "3ds_rainbow_road",
+   "id": "track.3ds_rainbow_road",
+   "cupId": "cup.moon_cup",
    "names": {
     "en-GB": "3DS Rainbow Road",
     "en-US": "3DS Rainbow Road",
@@ -1535,6 +1679,8 @@
   {
    "index": 72,
    "slug": "tour_amsterdam_drift",
+   "id": "track.tour_amsterdam_drift",
+   "cupId": "cup.fruit_cup",
    "names": {
     "en-GB": "Tour Amsterdam Drift",
     "en-US": "Tour Amsterdam Drift",
@@ -1556,6 +1702,8 @@
   {
    "index": 73,
    "slug": "gba_riverside_park",
+   "id": "track.gba_riverside_park",
+   "cupId": "cup.fruit_cup",
    "names": {
     "en-GB": "GBA Riverside Park",
     "en-US": "GBA Riverside Park",
@@ -1577,6 +1725,8 @@
   {
    "index": 74,
    "slug": "wii_dk_summit",
+   "id": "track.wii_dk_summit",
+   "cupId": "cup.fruit_cup",
    "names": {
     "en-GB": "Wii DK's Snowboard Cross",
     "en-US": "Wii DK Summit",
@@ -1598,6 +1748,8 @@
   {
    "index": 75,
    "slug": "yoshis_island",
+   "id": "track.yoshis_island",
+   "cupId": "cup.fruit_cup",
    "names": {
     "en-GB": "Yoshi's Island",
     "en-US": "Yoshi's Island",
@@ -1619,6 +1771,8 @@
   {
    "index": 76,
    "slug": "tour_bangkok_rush",
+   "id": "track.tour_bangkok_rush",
+   "cupId": "cup.boomerang_cup",
    "names": {
     "en-GB": "Tour Bangkok Rush",
     "en-US": "Tour Bangkok Rush",
@@ -1640,6 +1794,8 @@
   {
    "index": 77,
    "slug": "ds_mario_circuit",
+   "id": "track.ds_mario_circuit",
+   "cupId": "cup.boomerang_cup",
    "names": {
     "en-GB": "DS Mario Circuit",
     "en-US": "DS Mario Circuit",
@@ -1661,6 +1817,8 @@
   {
    "index": 78,
    "slug": "gcn_waluigi_stadium",
+   "id": "track.gcn_waluigi_stadium",
+   "cupId": "cup.boomerang_cup",
    "names": {
     "en-GB": "GCN Waluigi Stadium",
     "en-US": "GCN Waluigi Stadium",
@@ -1682,6 +1840,8 @@
   {
    "index": 79,
    "slug": "tour_singapore_speedway",
+   "id": "track.tour_singapore_speedway",
+   "cupId": "cup.boomerang_cup",
    "names": {
     "en-GB": "Tour Singapore Speedway",
     "en-US": "Tour Singapore Speedway",
@@ -1703,6 +1863,8 @@
   {
    "index": 80,
    "slug": "tour_athens_dash",
+   "id": "track.tour_athens_dash",
+   "cupId": "cup.feather_cup",
    "names": {
     "en-GB": "Tour Athens Dash",
     "en-US": "Tour Athens Dash",
@@ -1724,6 +1886,8 @@
   {
    "index": 81,
    "slug": "gcn_daisy_cruiser",
+   "id": "track.gcn_daisy_cruiser",
+   "cupId": "cup.feather_cup",
    "names": {
     "en-GB": "GCN Daisy Cruiser",
     "en-US": "GCN Daisy Cruiser",
@@ -1745,6 +1909,8 @@
   {
    "index": 82,
    "slug": "wii_moonview_highway",
+   "id": "track.wii_moonview_highway",
+   "cupId": "cup.feather_cup",
    "names": {
     "en-GB": "Wii Moonview Highway",
     "en-US": "Wii Moonview Highway",
@@ -1766,6 +1932,8 @@
   {
    "index": 83,
    "slug": "squeaky_clean_sprint",
+   "id": "track.squeaky_clean_sprint",
+   "cupId": "cup.feather_cup",
    "names": {
     "en-GB": "Squeaky Clean Sprint",
     "en-US": "Squeaky Clean Sprint",
@@ -1787,6 +1955,8 @@
   {
    "index": 84,
    "slug": "tour_los_angeles_laps",
+   "id": "track.tour_los_angeles_laps",
+   "cupId": "cup.cherry_cup",
    "names": {
     "en-GB": "Tour Los Angeles Laps",
     "en-US": "Tour Los Angeles Laps",
@@ -1808,6 +1978,8 @@
   {
    "index": 85,
    "slug": "gba_sunset_wilds",
+   "id": "track.gba_sunset_wilds",
+   "cupId": "cup.cherry_cup",
    "names": {
     "en-GB": "GBA Sunset Wilds",
     "en-US": "GBA Sunset Wilds",
@@ -1829,6 +2001,8 @@
   {
    "index": 86,
    "slug": "wii_koopa_cape",
+   "id": "track.wii_koopa_cape",
+   "cupId": "cup.cherry_cup",
    "names": {
     "en-GB": "Wii Koopa Cape",
     "en-US": "Wii Koopa Cape",
@@ -1850,6 +2024,8 @@
   {
    "index": 87,
    "slug": "tour_vancouver_velocity",
+   "id": "track.tour_vancouver_velocity",
+   "cupId": "cup.cherry_cup",
    "names": {
     "en-GB": "Tour Vancouver Velocity",
     "en-US": "Tour Vancouver Velocity",
@@ -1871,6 +2047,8 @@
   {
    "index": 88,
    "slug": "tour_rome_avanti",
+   "id": "track.tour_rome_avanti",
+   "cupId": "cup.acorn_cup",
    "names": {
     "en-GB": "Tour Rome Avanti",
     "en-US": "Tour Rome Avanti",
@@ -1892,6 +2070,8 @@
   {
    "index": 89,
    "slug": "gcn_dk_mountain",
+   "id": "track.gcn_dk_mountain",
+   "cupId": "cup.acorn_cup",
    "names": {
     "en-GB": "GCN DK Mountain",
     "en-US": "GCN DK Mountain",
@@ -1913,6 +2093,8 @@
   {
    "index": 90,
    "slug": "wii_daisy_circuit",
+   "id": "track.wii_daisy_circuit",
+   "cupId": "cup.acorn_cup",
    "names": {
     "en-GB": "Wii Daisy Circuit",
     "en-US": "Wii Daisy Circuit",
@@ -1934,6 +2116,8 @@
   {
    "index": 91,
    "slug": "piranha_plant_cove",
+   "id": "track.piranha_plant_cove",
+   "cupId": "cup.acorn_cup",
    "names": {
     "en-GB": "Piranha Plant Cove",
     "en-US": "Piranha Plant Cove",
@@ -1955,6 +2139,8 @@
   {
    "index": 92,
    "slug": "tour_madrid_drive",
+   "id": "track.tour_madrid_drive",
+   "cupId": "cup.spiny_cup",
    "names": {
     "en-GB": "Tour Madrid Drive",
     "en-US": "Tour Madrid Drive",
@@ -1976,6 +2162,8 @@
   {
    "index": 93,
    "slug": "3ds_rosalinas_ice_world",
+   "id": "track.3ds_rosalinas_ice_world",
+   "cupId": "cup.spiny_cup",
    "names": {
     "en-GB": "3DS Rosalina's Ice World",
     "en-US": "3DS Rosalina's Ice World",
@@ -1997,6 +2185,8 @@
   {
    "index": 94,
    "slug": "snes_bowser_castle_3",
+   "id": "track.snes_bowser_castle_3",
+   "cupId": "cup.spiny_cup",
    "names": {
     "en-GB": "SNES Bowser Castle 3",
     "en-US": "SNES Bowser Castle 3",
@@ -2018,6 +2208,8 @@
   {
    "index": 95,
    "slug": "wii_rainbow_road",
+   "id": "track.wii_rainbow_road",
+   "cupId": "cup.spiny_cup",
    "names": {
     "en-GB": "Wii Rainbow Road",
     "en-US": "Wii Rainbow Road",
@@ -2034,6 +2226,536 @@
     "ko-KR": "Wii 무지개 로드",
     "zh-CN": "Wii 彩虹之路",
     "zh-TW": "Wii 彩虹之路"
+   }
+  }
+ ],
+ "cups": [
+  {
+   "index": 0,
+   "slug": "mushroom_cup",
+   "id": "cup.mushroom_cup",
+   "names": {
+    "en-GB": "Mushroom Cup",
+    "en-US": "Mushroom Cup",
+    "nl-NL": "Paddenstoelbeker",
+    "fr-FR": "Coupe Champignon",
+    "fr-CA": "Coupe Champignon",
+    "de-DE": "Pilz-Cup",
+    "es-ES": "Copa Champiñón",
+    "es-419": "Copa Champiñón",
+    "it-IT": "Trofeo Fungo",
+    "pt-PT": "Taça Cogumelo",
+    "ru-RU": "Кубок гриба",
+    "ja-JP": "キノコカップ",
+    "ko-KR": "버섯 컵",
+    "zh-CN": "蘑菇杯",
+    "zh-TW": "蘑菇盃"
+   }
+  },
+  {
+   "index": 1,
+   "slug": "flower_cup",
+   "id": "cup.flower_cup",
+   "names": {
+    "en-GB": "Flower Cup",
+    "en-US": "Flower Cup",
+    "nl-NL": "Bloemenbeker",
+    "fr-FR": "Coupe Fleur",
+    "fr-CA": "Coupe Fleur",
+    "de-DE": "Blumen-Cup",
+    "es-ES": "Copa Flor",
+    "es-419": "Copa Flor",
+    "it-IT": "Trofeo Fiore",
+    "pt-PT": "Taça Flor",
+    "ru-RU": "Кубок цветка",
+    "ja-JP": "フラワーカップ",
+    "ko-KR": "플라워 컵",
+    "zh-CN": "鲜花杯",
+    "zh-TW": "鮮花盃"
+   }
+  },
+  {
+   "index": 2,
+   "slug": "star_cup",
+   "id": "cup.star_cup",
+   "names": {
+    "en-GB": "Star Cup",
+    "en-US": "Star Cup",
+    "nl-NL": "Sterrenbeker",
+    "fr-FR": "Coupe Étoile",
+    "fr-CA": "Coupe Étoile",
+    "de-DE": "Stern-Cup",
+    "es-ES": "Copa Estrella",
+    "es-419": "Copa Estrella",
+    "it-IT": "Trofeo Stella",
+    "pt-PT": "Taça Estrela",
+    "ru-RU": "Кубок звезды",
+    "ja-JP": "スターカップ",
+    "ko-KR": "스타 컵",
+    "zh-CN": "星星杯",
+    "zh-TW": "星星盃"
+   }
+  },
+  {
+   "index": 3,
+   "slug": "special_cup",
+   "id": "cup.special_cup",
+   "names": {
+    "en-GB": "Special Cup",
+    "en-US": "Special Cup",
+    "nl-NL": "Speciale beker",
+    "fr-FR": "Coupe Spéciale",
+    "fr-CA": "Coupe Spéciale",
+    "de-DE": "Spezial-Cup",
+    "es-ES": "Copa Especial",
+    "es-419": "Copa Especial",
+    "it-IT": "Trofeo Speciale",
+    "pt-PT": "Taça Especial",
+    "ru-RU": "Особый кубок",
+    "ja-JP": "スペシャルカップ",
+    "ko-KR": "스페셜 컵",
+    "zh-CN": "特别杯",
+    "zh-TW": "特別盃"
+   }
+  },
+  {
+   "index": 4,
+   "slug": "shell_cup",
+   "id": "cup.shell_cup",
+   "names": {
+    "en-GB": "Shell Cup",
+    "en-US": "Shell Cup",
+    "nl-NL": "Schildbeker",
+    "fr-FR": "Coupe Carapace",
+    "fr-CA": "Coupe Carapace",
+    "de-DE": "Panzer-Cup",
+    "es-ES": "Copa Caparazón",
+    "es-419": "Copa Caparazón",
+    "it-IT": "Trofeo Guscio",
+    "pt-PT": "Taça Carapaça",
+    "ru-RU": "Кубок панциря",
+    "ja-JP": "こうらカップ",
+    "ko-KR": "등껍질 컵",
+    "zh-CN": "龟壳杯",
+    "zh-TW": "龜殼盃"
+   }
+  },
+  {
+   "index": 5,
+   "slug": "banana_cup",
+   "id": "cup.banana_cup",
+   "names": {
+    "en-GB": "Banana Cup",
+    "en-US": "Banana Cup",
+    "nl-NL": "Bananenbeker",
+    "fr-FR": "Coupe Banane",
+    "fr-CA": "Coupe Banane",
+    "de-DE": "Bananen-Cup",
+    "es-ES": "Copa Plátano",
+    "es-419": "Copa Plátano",
+    "it-IT": "Trofeo Banana",
+    "pt-PT": "Taça Banana",
+    "ru-RU": "Кубок банана",
+    "ja-JP": "バナナカップ",
+    "ko-KR": "바나나 컵",
+    "zh-CN": "香蕉杯",
+    "zh-TW": "香蕉盃"
+   }
+  },
+  {
+   "index": 6,
+   "slug": "leaf_cup",
+   "id": "cup.leaf_cup",
+   "names": {
+    "en-GB": "Leaf Cup",
+    "en-US": "Leaf Cup",
+    "nl-NL": "Blaadjesbeker",
+    "fr-FR": "Coupe Feuille",
+    "fr-CA": "Coupe Feuille",
+    "de-DE": "Blatt-Cup",
+    "es-ES": "Copa Hoja",
+    "es-419": "Copa Hoja",
+    "it-IT": "Trofeo Foglia",
+    "pt-PT": "Taça Folha",
+    "ru-RU": "Кубок листа",
+    "ja-JP": "このはカップ",
+    "ko-KR": "리프 컵",
+    "zh-CN": "树叶杯",
+    "zh-TW": "樹葉盃"
+   }
+  },
+  {
+   "index": 7,
+   "slug": "lightning_cup",
+   "id": "cup.lightning_cup",
+   "names": {
+    "en-GB": "Lightning Cup",
+    "en-US": "Lightning Cup",
+    "nl-NL": "Bliksembeker",
+    "fr-FR": "Coupe Éclair",
+    "fr-CA": "Coupe Éclair",
+    "de-DE": "Blitz-Cup",
+    "es-ES": "Copa Centella",
+    "es-419": "Copa Centella",
+    "it-IT": "Trofeo Fulmine",
+    "pt-PT": "Taça Relâmpago",
+    "ru-RU": "Кубок молнии",
+    "ja-JP": "サンダーカップ",
+    "ko-KR": "번개 컵",
+    "zh-CN": "闪电杯",
+    "zh-TW": "閃電盃"
+   }
+  },
+  {
+   "index": 8,
+   "slug": "egg_cup",
+   "id": "cup.egg_cup",
+   "names": {
+    "en-GB": "Egg Cup",
+    "en-US": "Egg Cup",
+    "nl-NL": "Eierbeker",
+    "fr-FR": "Coupe Œuf",
+    "fr-CA": "Coupe Œuf",
+    "de-DE": "Ei-Cup",
+    "es-ES": "Copa Huevo",
+    "es-419": "Copa Huevo",
+    "it-IT": "Trofeo Uovo",
+    "pt-PT": "Taça Ovo",
+    "ru-RU": "Кубок яйца",
+    "ja-JP": "たまごカップ",
+    "ko-KR": "알 컵",
+    "zh-CN": "圆蛋杯",
+    "zh-TW": "圓蛋盃"
+   }
+  },
+  {
+   "index": 9,
+   "slug": "triforce_cup",
+   "id": "cup.triforce_cup",
+   "names": {
+    "en-GB": "Triforce Cup",
+    "en-US": "Triforce Cup",
+    "nl-NL": "Triforce-beker",
+    "fr-FR": "Coupe Triforce",
+    "fr-CA": "Coupe Triforce",
+    "de-DE": "Triforce-Cup",
+    "es-ES": "Copa Trifuerza",
+    "es-419": "Copa Trifuerza",
+    "it-IT": "Trofeo Triforza",
+    "pt-PT": "Taça Triforce",
+    "ru-RU": "Кубок Зельды",
+    "ja-JP": "ゼルダカップ",
+    "ko-KR": "젤다 컵",
+    "zh-CN": "塞尔达杯",
+    "zh-TW": "薩爾達盃"
+   }
+  },
+  {
+   "index": 10,
+   "slug": "crossing_cup",
+   "id": "cup.crossing_cup",
+   "names": {
+    "en-GB": "Crossing Cup",
+    "en-US": "Crossing Cup",
+    "nl-NL": "Crossing-beker",
+    "fr-FR": "Coupe Crossing",
+    "fr-CA": "Coupe Crossing",
+    "de-DE": "Crossing-Cup",
+    "es-ES": "Copa Crossing",
+    "es-419": "Copa Animal",
+    "it-IT": "Trofeo Crossing",
+    "pt-PT": "Taça Crossing",
+    "ru-RU": "Кубок Crossing",
+    "ja-JP": "どうぶつカップ",
+    "ko-KR": "동물 컵",
+    "zh-CN": "动物杯",
+    "zh-TW": "動物盃"
+   }
+  },
+  {
+   "index": 11,
+   "slug": "bell_cup",
+   "id": "cup.bell_cup",
+   "names": {
+    "en-GB": "Bell Cup",
+    "en-US": "Bell Cup",
+    "nl-NL": "Superbelbeker",
+    "fr-FR": "Coupe Clochette",
+    "fr-CA": "Coupe Clochette",
+    "de-DE": "Glocken-Cup",
+    "es-ES": "Copa Campana",
+    "es-419": "Copa Campana",
+    "it-IT": "Trofeo Campanella",
+    "pt-PT": "Taça Guizo",
+    "ru-RU": "Кубок колокольчика",
+    "ja-JP": "ベルカップ",
+    "ko-KR": "벨 컵",
+    "zh-CN": "铃铛杯",
+    "zh-TW": "鈴鐺盃"
+   }
+  },
+  {
+   "index": 12,
+   "slug": "golden_dash_cup",
+   "id": "cup.golden_dash_cup",
+   "names": {
+    "en-GB": "Golden Dash Cup",
+    "en-US": "Golden Dash Cup",
+    "nl-NL": "Goudensprintbeker",
+    "fr-FR": "Coupe turbo dorée",
+    "fr-CA": "Coupe turbo dorée",
+    "de-DE": "Goldener Turbo-Cup",
+    "es-ES": "Copa Turbo Dorada",
+    "es-419": "Copa Turbo Dorada",
+    "it-IT": "Trofeo Scatto dorato",
+    "pt-PT": "Taça Turbo Dourada",
+    "ru-RU": "Кубок золотого гриба",
+    "ja-JP": "パワフルカップ",
+    "ko-KR": "황금대시 컵",
+    "zh-CN": "强力杯",
+    "zh-TW": "強力盃"
+   }
+  },
+  {
+   "index": 13,
+   "slug": "lucky_cat_cup",
+   "id": "cup.lucky_cat_cup",
+   "names": {
+    "en-GB": "Lucky Cat Cup",
+    "en-US": "Lucky Cat Cup",
+    "nl-NL": "Gelukskatbeker",
+    "fr-FR": "Coupe maneki-neko",
+    "fr-CA": "Coupe maneki-neko",
+    "de-DE": "Glückskatzen-Cup",
+    "es-ES": "Copa Felina Fortuna",
+    "es-419": "Copa Felina Fortuna",
+    "it-IT": "Trofeo Gattofortuna",
+    "pt-PT": "Taça Gato da Sorte",
+    "ru-RU": "Кубок кота счастья",
+    "ja-JP": "まねきネコカップ",
+    "ko-KR": "복고양이 컵",
+    "zh-CN": "招财猫杯",
+    "zh-TW": "招財貓盃"
+   }
+  },
+  {
+   "index": 14,
+   "slug": "turnip_cup",
+   "id": "cup.turnip_cup",
+   "names": {
+    "en-GB": "Turnip Cup",
+    "en-US": "Turnip Cup",
+    "nl-NL": "Knollenbeker",
+    "fr-FR": "Coupe navet",
+    "fr-CA": "Coupe navet",
+    "de-DE": "Rüben-Cup",
+    "es-ES": "Copa Nabo",
+    "es-419": "Copa Nabo",
+    "it-IT": "Trofeo Rapa",
+    "pt-PT": "Taça Nabo",
+    "ru-RU": "Кубок репки",
+    "ja-JP": "カブカップ",
+    "ko-KR": "순무 컵",
+    "zh-CN": "大头菜杯",
+    "zh-TW": "大頭菜盃"
+   }
+  },
+  {
+   "index": 15,
+   "slug": "propeller_cup",
+   "id": "cup.propeller_cup",
+   "names": {
+    "en-GB": "Propeller Cup",
+    "en-US": "Propeller Cup",
+    "nl-NL": "Propellerbeker",
+    "fr-FR": "Coupe hélico",
+    "fr-CA": "Coupe hélico",
+    "de-DE": "Propeller-Cup",
+    "es-ES": "Copa Helicóptero",
+    "es-419": "Copa Hélice",
+    "it-IT": "Trofeo Elica",
+    "pt-PT": "Taça Hélice",
+    "ru-RU": "Кубок пропеллера",
+    "ja-JP": "プロペラカップ",
+    "ko-KR": "프로펠러 컵",
+    "zh-CN": "螺旋桨杯",
+    "zh-TW": "螺旋槳盃"
+   }
+  },
+  {
+   "index": 16,
+   "slug": "rock_cup",
+   "id": "cup.rock_cup",
+   "names": {
+    "en-GB": "Rock Cup",
+    "en-US": "Rock Cup",
+    "nl-NL": "Rotsbeker",
+    "fr-FR": "Coupe pierre",
+    "fr-CA": "Coupe pierre",
+    "de-DE": "Fels-Cup",
+    "es-ES": "Copa Roca",
+    "es-419": "Copa Roca",
+    "it-IT": "Trofeo Roccia",
+    "pt-PT": "Taça Pedra",
+    "ru-RU": "Кубок скалы",
+    "ja-JP": "ゴロいわカップ",
+    "ko-KR": "바위 컵",
+    "zh-CN": "滚滚石杯",
+    "zh-TW": "滾滾石盃"
+   }
+  },
+  {
+   "index": 17,
+   "slug": "moon_cup",
+   "id": "cup.moon_cup",
+   "names": {
+    "en-GB": "Moon Cup",
+    "en-US": "Moon Cup",
+    "nl-NL": "Maanbeker",
+    "fr-FR": "Coupe lune",
+    "fr-CA": "Coupe lune",
+    "de-DE": "Mond-Cup",
+    "es-ES": "Copa Luna",
+    "es-419": "Copa Luna",
+    "it-IT": "Trofeo Luna",
+    "pt-PT": "Taça Lua",
+    "ru-RU": "Кубок луны",
+    "ja-JP": "ムーンカップ",
+    "ko-KR": "문 컵",
+    "zh-CN": "月亮杯",
+    "zh-TW": "月亮盃"
+   }
+  },
+  {
+   "index": 18,
+   "slug": "fruit_cup",
+   "id": "cup.fruit_cup",
+   "names": {
+    "en-GB": "Fruit Cup",
+    "en-US": "Fruit Cup",
+    "nl-NL": "Fruitbeker",
+    "fr-FR": "Coupe fruit",
+    "fr-CA": "Coupe fruit",
+    "de-DE": "Frucht-Cup",
+    "es-ES": "Copa Fruta",
+    "es-419": "Copa Fruta",
+    "it-IT": "Trofeo Frutta",
+    "pt-PT": "Taça Fruta",
+    "ru-RU": "Кубок фрукта",
+    "ja-JP": "フルーツカップ",
+    "ko-KR": "과일 컵",
+    "zh-CN": "水果杯",
+    "zh-TW": "水果盃"
+   }
+  },
+  {
+   "index": 19,
+   "slug": "boomerang_cup",
+   "id": "cup.boomerang_cup",
+   "names": {
+    "en-GB": "Boomerang Cup",
+    "en-US": "Boomerang Cup",
+    "nl-NL": "Boemerangbeker",
+    "fr-FR": "Coupe boomerang",
+    "fr-CA": "Coupe boomerang",
+    "de-DE": "Bumerang-Cup",
+    "es-ES": "Copa Boomerang",
+    "es-419": "Copa Bumerán",
+    "it-IT": "Trofeo Boomerang",
+    "pt-PT": "Taça Bumerangue",
+    "ru-RU": "Кубок бумеранга",
+    "ja-JP": "ブーメランカップ",
+    "ko-KR": "부메랑 컵",
+    "zh-CN": "回旋镖杯",
+    "zh-TW": "迴旋鏢盃"
+   }
+  },
+  {
+   "index": 20,
+   "slug": "feather_cup",
+   "id": "cup.feather_cup",
+   "names": {
+    "en-GB": "Feather Cup",
+    "en-US": "Feather Cup",
+    "nl-NL": "Veerbeker",
+    "fr-FR": "Coupe plume",
+    "fr-CA": "Coupe plume",
+    "de-DE": "Feder-Cup",
+    "es-ES": "Copa Pluma",
+    "es-419": "Copa Pluma",
+    "it-IT": "Trofeo Piuma",
+    "pt-PT": "Taça Pluma",
+    "ru-RU": "Кубок пера",
+    "ja-JP": "ハネカップ",
+    "ko-KR": "깃털 컵",
+    "zh-CN": "羽毛杯",
+    "zh-TW": "羽毛盃"
+   }
+  },
+  {
+   "index": 21,
+   "slug": "cherry_cup",
+   "id": "cup.cherry_cup",
+   "names": {
+    "en-GB": "Cherry Cup",
+    "en-US": "Cherry Cup",
+    "nl-NL": "Kersenbeker",
+    "fr-FR": "Coupe cerises",
+    "fr-CA": "Coupe cerises",
+    "de-DE": "Doppelkirschen-Cup",
+    "es-ES": "Copa Cereza",
+    "es-419": "Copa Cereza",
+    "it-IT": "Trofeo Ciliegia",
+    "pt-PT": "Taça Cereja",
+    "ru-RU": "Кубок вишен",
+    "ja-JP": "チェリーカップ",
+    "ko-KR": "체리 컵",
+    "zh-CN": "樱桃杯",
+    "zh-TW": "櫻桃盃"
+   }
+  },
+  {
+   "index": 22,
+   "slug": "acorn_cup",
+   "id": "cup.acorn_cup",
+   "names": {
+    "en-GB": "Acorn Cup",
+    "en-US": "Acorn Cup",
+    "nl-NL": "Eikenbeker",
+    "fr-FR": "Coupe gland",
+    "fr-CA": "Coupe gland",
+    "de-DE": "Eichel-Cup",
+    "es-ES": "Copa Bellota",
+    "es-419": "Copa Bellota",
+    "it-IT": "Trofeo Ghianda",
+    "pt-PT": "Taça Bolota",
+    "ru-RU": "Кубок желудя",
+    "ja-JP": "ドングリカップ",
+    "ko-KR": "도토리 컵",
+    "zh-CN": "橡栗杯",
+    "zh-TW": "橡栗盃"
+   }
+  },
+  {
+   "index": 23,
+   "slug": "spiny_cup",
+   "id": "cup.spiny_cup",
+   "names": {
+    "en-GB": "Spiny Cup",
+    "en-US": "Spiny Cup",
+    "nl-NL": "Spiny-beker",
+    "fr-FR": "Coupe à épines",
+    "fr-CA": "Coupe à épines",
+    "de-DE": "Stachi-Cup",
+    "es-ES": "Copa Pinchos",
+    "es-419": "Copa Picos",
+    "it-IT": "Trofeo Spinoso",
+    "pt-PT": "Taça Espinhos",
+    "ru-RU": "Кубок колючкина",
+    "ja-JP": "トゲゾーカップ",
+    "ko-KR": "가시돌이 컵",
+    "zh-CN": "刺刺龟杯",
+    "zh-TW": "刺刺龜盃"
    }
   }
  ]

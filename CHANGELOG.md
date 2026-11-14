@@ -7,6 +7,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **Tournament Live scoreboard: Overall only and track names in your language.** A small gear on the spectator
+  dashboard (hidden in OBS) chooses *Automatic* (default: latest race result and overall standings alternate) or
+  *Overall only* (the confirmed overall standings stay on screen, with the race they include and a race still
+  awaiting confirmation), and the language of track and cup names: English + Dutch as before, or one of the 15
+  game languages from the Clean Assets names by canonical track/cup ID, with English as fallback. The browser keeps
+  the choice; OBS sources use `?scoreboard=overall` and `?trackLang=ja`. Display only: scoring, confirmation and
+  the console language recognition reads are unchanged, and the dashboard's own texts stay English.
+  `track-names-v1.json` now also carries the canonical IDs and the cup names.
 - **A2 setup and join pages in all 15 languages of the game** (machine translations except EN/NL): the setup
   wizard and MK8DX beheer, the host's "Prepare this device" page (`/setup`) and the invitation page a phone opens
   from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:
