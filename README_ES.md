@@ -214,17 +214,15 @@ Ha sido una experiencia de aprendizaje increíble, sobre todo en reconocimiento 
 
 Ahora, en 2026, por fin puedo compartir el resultado como un **ecosistema de código abierto**, para que otros puedan usarlo, mejorarlo y, ojalá, divertirse con él tanto como nosotros.
 
-### ❤️ Para Volkert
+### Un homenaje a Volkert
 
-También quiero dedicar una parte de este proyecto a nuestro querido amigo y rival, **Volkert**, que nos dejó demasiado pronto.
+También quiero reconocer a **Volkert**, un respetado rival de las contrarrelojes que falleció hace poco, demasiado joven.
 
-Volkert era una de esas personas que nos animaban a esforzarnos un poco más, a encontrar esa trazada más rápida y a intentar una Contrarreloj más. La rivalidad amistosa, sobre todo en Baby Park y Big Blue, hizo que la competición fuera algo especial.
+Nuestra rivalidad, sobre todo en Parque Bebé y Big Blue en 150 cc, fue una motivación constante para mejorar. Estoy seguro de que los dos pasamos muchas horas intentando arañar esos últimos milisegundos, aunque sospecho que yo le dediqué bastantes más horas que él. Él simplemente tenía más experiencia y era más constante.
 
-Pero, más que los tiempos por vuelta o las clasificaciones, lo que importa son los momentos juntos. Estar en una nave con amigos, riendo, compitiendo, compartiendo pizza y disfrutando de algo tan sencillo como un juego.
+Lo que empezó con solo tres de nosotros apuntando nuestros tiempos en una hoja de Excel fue creciendo poco a poco hasta convertirse en las funciones de contrarreloj que hoy forman parte de este ecosistema.
 
-Esos son los momentos que vale la pena recordar.
-
-Volkert, gracias por la competición, la inspiración y los recuerdos. Siempre formarás parte de esta historia.
+Espero que este proyecto dé a otros la oportunidad de vivir esa misma rivalidad amistosa y esa motivación para seguir mejorando.
 
 ### Sigue corriendo, sigue compartiendo
 

@@ -205,17 +205,15 @@ It has been an incredible learning experience, especially around image recogniti
 
 Now, in 2026, I'm finally able to share the results as an **open-source ecosystem**, so others can use it, improve it and hopefully have just as much fun with it as we have.
 
-### ❤️ For Volkert
+### A tribute to Volkert
 
-I also want to dedicate a part of this project to our dear friend and rival, **Volkert**, who passed away far too soon.
+I'd also like to acknowledge **Volkert**, a respected Time Trial rival who recently passed away far too young.
 
-Volkert was one of those people who kept inspiring us to push a little harder, find that faster racing line and try just one more Time Trial. The friendly rivalry, especially around Baby Park and Big Blue, made the competition something special.
+Our rivalry, particularly on Baby Park and Big Blue 150cc, was a constant motivation to improve. I'm sure we both spent plenty of hours trying to shave off those last few milliseconds, although I suspect I put in quite a few more than he did. He was simply more experienced and consistent.
 
-But more than the lap times or rankings, it's the moments together that matter. Sitting in a warehouse with friends, laughing, competing, sharing pizza and enjoying something as simple as a game.
+What started with just three of us tracking our times in an Excel spreadsheet gradually grew into the Time Trial features that are now part of this ecosystem.
 
-Those are the moments worth remembering.
-
-Volkert, thank you for the competition, the inspiration and the memories. You'll always be part of this story.
+I hope this project will give others the opportunity to experience that same friendly rivalry and motivation to keep improving.
 
 ### Keep racing, keep sharing
 

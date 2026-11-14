@@ -217,17 +217,15 @@ Les techniques individuelles existaient déjà, mais les réunir en un écosyst�
 
 Aujourd'hui, en 2026, je peux enfin partager le résultat sous la forme d'un **écosystème open source**, pour que d'autres puissent l'utiliser, l'améliorer et, je l'espère, s'amuser autant que nous avec.
 
-### ❤️ Pour Volkert
+### Un hommage à Volkert
 
-Je veux aussi dédier une partie de ce projet à notre cher ami et rival, **Volkert**, qui nous a quittés bien trop tôt.
+Je tiens aussi à rendre hommage à **Volkert**, un rival respecté du contre-la-montre, qui nous a quittés récemment, bien trop jeune.
 
-Volkert faisait partie de ces personnes qui nous inspiraient sans cesse à pousser un peu plus fort, à trouver la trajectoire plus rapide et à tenter juste un contre-la-montre de plus. La rivalité amicale, surtout autour de Baby Parc et de Big Blue, rendait la compétition vraiment spéciale.
+Notre rivalité, surtout sur Parc Baby et Big Blue en 150 cc, a été une motivation constante pour progresser. Je suis sûr que nous avons tous les deux passé de nombreuses heures à grappiller ces dernières millisecondes, même si je soupçonne d'en avoir passé bien plus que lui. Il était tout simplement plus expérimenté et plus régulier.
 
-Mais plus que les temps au tour ou les classements, ce sont les moments passés ensemble qui comptent. Être assis dans un entrepôt avec des amis, rire, s'affronter, partager une pizza et profiter de quelque chose d'aussi simple qu'un jeu.
+Ce qui a commencé à trois, en notant nos temps dans un tableau Excel, est peu à peu devenu les fonctions de contre-la-montre qui font aujourd'hui partie de cet écosystème.
 
-Ce sont ces moments-là qui méritent qu'on s'en souvienne.
-
-Volkert, merci pour la compétition, l'inspiration et les souvenirs. Tu feras toujours partie de cette histoire.
+J'espère que ce projet donnera à d'autres l'occasion de vivre cette même rivalité amicale et cette envie de toujours progresser.
 
 ### Continuez à rouler, continuez à partager
 

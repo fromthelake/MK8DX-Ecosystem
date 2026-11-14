@@ -215,17 +215,15 @@ Es war eine unglaubliche Lernerfahrung, besonders rund um Bilderkennung, Automat
 
 Jetzt, im Jahr 2026, kann ich die Ergebnisse endlich als **Open-Source-Ökosystem** teilen, damit andere es nutzen, verbessern und hoffentlich genauso viel Spaß damit haben wie wir.
 
-### ❤️ Für Volkert
+### Eine Würdigung für Volkert
 
-Einen Teil dieses Projekts möchte ich auch unserem lieben Freund und Rivalen **Volkert** widmen, der viel zu früh von uns gegangen ist.
+Ich möchte auch **Volkert** würdigen, einen geschätzten Zeitfahren-Rivalen, der vor Kurzem viel zu jung verstorben ist.
 
-Volkert war einer dieser Menschen, die uns immer wieder dazu inspirierten, uns noch ein bisschen mehr anzustrengen, die schnellere Ideallinie zu finden und noch ein einziges Zeitfahren mehr zu versuchen. Die freundschaftliche Rivalität, besonders rund um Baby-Park und Big Blue, machte den Wettkampf zu etwas Besonderem.
+Unsere Rivalität, vor allem auf Baby-Park und Big Blue mit 150 ccm, war ein ständiger Ansporn, besser zu werden. Ich bin sicher, dass wir beide viele Stunden damit verbracht haben, die letzten Millisekunden herauszuholen, auch wenn ich vermute, dass ich deutlich mehr Stunden investiert habe als er. Er war einfach erfahrener und konstanter.
 
-Aber mehr als die Rundenzeiten oder Ranglisten zählen die gemeinsamen Momente. Mit Freunden in einer Lagerhalle sitzen, lachen, gegeneinander antreten, Pizza teilen und etwas so Einfaches wie ein Spiel genießen.
+Was damit begann, dass wir zu dritt unsere Zeiten in einer Excel-Tabelle festhielten, wuchs nach und nach zu den Zeitfahren-Funktionen, die heute Teil dieses Ökosystems sind.
 
-Das sind die Momente, an die es sich zu erinnern lohnt.
-
-Volkert, danke für den Wettkampf, die Inspiration und die Erinnerungen. Du wirst immer ein Teil dieser Geschichte sein.
+Ich hoffe, dass dieses Projekt anderen die Gelegenheit gibt, dieselbe freundschaftliche Rivalität und denselben Ansporn zu erleben, immer besser zu werden.
 
 ### Fahrt weiter, teilt weiter
 
