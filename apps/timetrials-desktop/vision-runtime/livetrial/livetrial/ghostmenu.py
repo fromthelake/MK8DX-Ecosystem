@@ -324,7 +324,7 @@ SCRIPT_KEYS = ("latin", "ja", "ko", "zh-cn", "zh-tw", "ru")
 NAME_GARBAGE_SYMBOLS = set("+()[]{}|\\/<>=_~^`@#$%&;")
 NAME_MIN_CONFIDENCE = 0.5
 NAME_REREAD_GAIN = 0.1
-_SCRIPT_READERS: dict = {}
+_UNAVAILABLE_SCRIPTS: set = set()   # scripts whose reader could not load (not retried)
 
 
 def name_looks_unread(text: str, confidence: float) -> bool:
@@ -336,13 +336,16 @@ def name_looks_unread(text: str, confidence: float) -> bool:
 
 
 def _script_reader(key: str):
-    if key not in _SCRIPT_READERS:
-        try:
-            from .consolelang import OCR_READERS, _easyocr_reader
-            _SCRIPT_READERS[key] = _easyocr_reader(OCR_READERS[key])
-        except Exception:
-            _SCRIPT_READERS[key] = None
-    return _SCRIPT_READERS[key]
+    """The script's reader from the engine's shared cache (consolelang.READERS),
+    the same instance the console-language probe reads with."""
+    if key in _UNAVAILABLE_SCRIPTS:
+        return None
+    try:
+        from .consolelang import OCR_READERS, shared_reader
+        return shared_reader(OCR_READERS[key])
+    except Exception:
+        _UNAVAILABLE_SCRIPTS.add(key)
+        return None
 
 
 class GhostPanelReader:

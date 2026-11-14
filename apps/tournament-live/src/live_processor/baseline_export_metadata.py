@@ -9,10 +9,10 @@ from typing import Any
 
 import cv2  # type: ignore
 
-from mk8dx_tournament_extraction import track_names  # type: ignore
+from mk8dx_tournament_extraction import ocr_readers, track_names  # type: ignore
 
 from .baseline_assets import load_imported_game_catalog, resolve_live_asset_file
-from .ocr_runtime import easyocr_gpu_requested, optimize_easyocr_reader, write_ocr_runtime_report
+from .ocr_runtime import easyocr_gpu_requested, write_ocr_runtime_report
 from .paths import DIAGNOSTICS_ROOT, assert_write_allowed
 from .run_context import attach_run_id, current_run_id
 
@@ -228,7 +228,8 @@ def extract_track_text_from_image(image: Any, locale: str = "auto") -> tuple[str
     reader = _get_easyocr_reader(languages)
     if reader is None:
         raise RuntimeError("easyocr is not importable for baseline TrackName OCR")
-    results = reader.readtext(roi, detail=1, paragraph=False)
+    with ocr_readers.run_lock(languages, gpu=_easyocr_gpu_enabled()):
+        results = reader.readtext(roi, detail=1, paragraph=False)
     texts: list[str] = []
     confidences: list[float] = []
     for result in results:
@@ -317,9 +318,8 @@ def _get_easyocr_reader(languages: tuple[str, ...]) -> Any:
         if languages not in _EASYOCR_READERS:
             gpu_requested = _easyocr_gpu_enabled()
             write_ocr_runtime_report("track_name_ocr_reader", gpu_requested=gpu_requested, languages=languages)
-            reader = easyocr.Reader(list(languages), gpu=gpu_requested, verbose=False)
-            optimize_easyocr_reader(reader)
-            _EASYOCR_READERS[languages] = reader
+            # the process-wide reader (ocr_readers), shared with the engine's track reader
+            _EASYOCR_READERS[languages] = ocr_readers.shared_reader(languages, gpu=gpu_requested)
         return _EASYOCR_READERS[languages]
 
 

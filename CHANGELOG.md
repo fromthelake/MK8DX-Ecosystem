@@ -48,12 +48,28 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   issue, and the builders to run. `tooling/build_readme_links.py` (with `--check`) keeps the README language
   switcher and own-language guide links in step.
 
+### Changed
+
+- **LiveTrial verifies a detected console language with its own script only.** After automatic detection the
+  10-second menu-text check reads with the decided language's reader and the Latin one instead of all six script
+  readers, and the other script readers are released; a language change still re-opens detection through the
+  templates and nameplates. Detection itself is unchanged. Every LiveTrial reader (capture loop, console-language
+  probe, Select-a-Ghost panel, name strips) now comes from one cache, one reader per language set, and a reader
+  loads under its own lock, so the track-name read no longer waits for the probe loading another script.
+- **One EasyOCR reader per language set in each Tournament process** (`mk8dx_tournament_extraction.ocr_readers`):
+  the recorded engine's track, name and digit readers and Tournament Live's row extractors, track reader and
+  warm-up share it; the warm-up now keeps the readers it loads instead of discarding them.
+
 ### Fixed
 
 - **Android roster import remembers spellings in every script**: the phone's roster-import fold kept only
   `a-z0-9`, so a Cyrillic, Japanese, Korean or Chinese spelling from the file folded to "" and was never kept as
   the Director's alias. It now keeps letters and digits of every script, as the website's workbook key does
   (accents and spacing still folded, kana keep their voicing marks); keys of names it could already read are unchanged.
+- **Step 5/9 and historical imports keep non-Latin names apart**: the workbook name key kept only `a-z0-9`, so
+  every Cyrillic, Japanese, Korean or Chinese player name became the same empty key and the rows overwrote each
+  other. The key now keeps letters and digits of every script (accents and spacing still folded, NFKC, so kana
+  keep their voicing marks); keys of names it could already read are unchanged.
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
   new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
   0.2.3 package 2 would skip the backup.

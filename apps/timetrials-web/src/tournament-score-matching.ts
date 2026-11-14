@@ -30,6 +30,19 @@ export type ScoreMatchSuggestion = Readonly<{
   matchedName: string | null;
 }>;
 
+/**
+ * The key a workbook name (a Player or a track) is looked up by in the Step 5
+ * and Step 9 imports and the historical import: accents folded and spacing and
+ * punctuation dropped, as before, but letters and digits of every script kept.
+ * The old ASCII-only key turned every Cyrillic, Japanese, Korean or Chinese name
+ * into "", so all of them collided on one row. NFKC puts kana back together with
+ * their voicing marks (ガ stays apart from カ) and folds full-width forms.
+ */
+export function workbookNameKey(value: string): string {
+  return value.trim().normalize("NFKD").replace(/[̀-ͯ]/gu, "")
+    .normalize("NFKC").toLocaleLowerCase("nl").replace(/[^\p{L}\p{N}]/gu, "");
+}
+
 export function scoreNameKey(raw: string): string {
   return raw.replace(/\s+/g, " ").trim().toLocaleLowerCase("nl");
 }

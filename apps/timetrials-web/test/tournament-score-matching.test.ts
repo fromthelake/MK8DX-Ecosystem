@@ -7,6 +7,7 @@ import {
   scoreNameKey,
   scoreSimilarity,
   suggestScoreMapping,
+  workbookNameKey,
 } from "../src/tournament-score-matching.js";
 
 /**
@@ -127,5 +128,35 @@ describe("matching workbook names onto Players", () => {
     expect(suggestions).toHaveLength(3);
     expect(suggestions.map((row) => row.workbookName))
       .toEqual(["Nova", "Ben", "unknown"]);
+  });
+});
+
+describe("the workbook name key", () => {
+  // The key before Unicode names: ASCII letters and digits only.
+  const asciiKey = (value: string): string => value.trim().normalize("NFKD").replace(/[̀-ͯ]/gu, "")
+    .toLocaleLowerCase("nl").replace(/[^a-z0-9]/gu, "");
+
+  it("keeps the old key for every name it could already read", () => {
+    for (const name of ["Gianni", "Marc met C", "Mar.", "Queenie_1", "Mike HZ", "BAwSer", "Zoë", "  Jürgen ",
+      "Ｍａｒｉｏ", "Toad's Turnpike", "Wii Mushroom Gorge", "René-Jean", "CraftNL"]) {
+      expect(workbookNameKey(name)).toBe(asciiKey(name));
+    }
+  });
+
+  it("keeps the letters and digits of every script, so non-Latin names no longer collide", () => {
+    const names = ["たろう", "さくら", "김민수", "김민서", "王小明", "陳大文", "Наташа", "Константин", "Kenたろう", "Ivan_Иван"];
+    expect(names.map(asciiKey).filter((key) => key === "").length).toBeGreaterThan(5);
+    const keys = names.map(workbookNameKey);
+    expect(keys.every((key) => key !== "")).toBe(true);
+    expect(new Set(keys).size).toBe(names.length);
+    expect(workbookNameKey("Ivan_Иван")).toBe("ivanиван");
+    expect(workbookNameKey(" Наташа ")).toBe(workbookNameKey("наташа"));
+  });
+
+  it("folds width and keeps voicing marks apart", () => {
+    expect(workbookNameKey("ｶﾞﾝﾀ")).toBe(workbookNameKey("ガンタ"));
+    expect(workbookNameKey("ガ")).not.toBe(workbookNameKey("カ"));
+    expect(workbookNameKey("ば")).not.toBe(workbookNameKey("は"));
+    expect(workbookNameKey("한 별")).toBe(workbookNameKey("한별"));
   });
 });
