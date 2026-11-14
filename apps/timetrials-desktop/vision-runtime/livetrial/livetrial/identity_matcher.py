@@ -834,6 +834,18 @@ def chars_for_part_variant(group: str, base_id: str, variant_id: str) -> list[st
             if (groups.get(group) or {}).get(base_id) == variant_id]
 
 
+def _crop_search_rules():
+    """The shared crop-search decision steps and constants (packages/icon-matcher ``crop_search``, issue #99
+    phase 5): the same module the Web scanner and Android call (``sharedCropSearch.ts``, ``CropSearch.java``).
+    Loaded on first use, from the staged ``mk8dx_icon_matcher`` package the central reader also uses."""
+    rules = _STATE.get("crop_search_rules")
+    if rules is None:
+        import importlib
+        from .shared_field_shadow import _field_package
+        rules = _STATE["crop_search_rules"] = importlib.import_module(_field_package().__name__ + ".crop_search")
+    return rules
+
+
 def identify_crop_search(image_bgr: np.ndarray, box, group: str, *, subset_ids: list[str] | None = None, search: int = 6, gain_correct: bool = True, topk: int = 0, scales: list[float] | None = None) -> dict[str, Any]:
     """Identificeer een slot met positie-zoek (±search px) in NATIEVE kaartpixels.
 
@@ -848,18 +860,23 @@ def identify_crop_search(image_bgr: np.ndarray, box, group: str, *, subset_ids: 
     dat niet). Per schaal wordt de box om het midden herschaald en de positie-
     zoek herhaald; de hoogst-scorende (positie,schaal) wint. None/[]/[1.0] =
     byte-identiek gedrag (2026-07-15: default UIT; dode-zone-bewijs op s06 =
-    juiste character 0.77->0.84 bij de juiste lokale schaal)."""
+    juiste character 0.77->0.84 bij de juiste lokale schaal).
+
+    The decision steps are the shared ones (``_crop_search_rules``: ``look_box``, ``better_look``,
+    ``search_window``, ``window_gain``, ``votes``, ``pick_position``, ``picked_shift``, ``accept_shift``
+    and their constants); the pixel work and what is LiveTrial's own stay here: its own ``identify_crop``
+    and references, Python ``round`` for the box, only the nominal top 3 vote for a position, and up to
+    two rounds (the candidates are ranked again after a shift)."""
     if scales and any(abs(float(s) - 1.0) > 1e-6 for s in scales):
-        x, y, w, h = box
-        cx, cy = x + w / 2.0, y + h / 2.0
+        rules = _crop_search_rules()
         best_s = None
         for s in scales:
-            w2, h2 = w * float(s), h * float(s)
-            out = identify_crop_search(image_bgr, (cx - w2 / 2.0, cy - h2 / 2.0, w2, h2),
+            out = identify_crop_search(image_bgr, tuple(rules.look_box(box, float(s))),
                                        group, subset_ids=subset_ids, search=search,
                                        gain_correct=gain_correct, topk=topk, scales=None)
             out["scale"] = float(s)
-            if best_s is None or float(out.get("score", 0.0)) > float(best_s.get("score", 0.0)):
+            if rules.better_look(float(out.get("score", 0.0)),
+                                 None if best_s is None else float(best_s.get("score", 0.0))):
                 best_s = out
         return best_s if best_s is not None else identify_crop_search(
             image_bgr, box, group, subset_ids=subset_ids, search=search,
@@ -875,45 +892,45 @@ def identify_crop_search(image_bgr: np.ndarray, box, group: str, *, subset_ids: 
         return {"id": None, "name": "", "asset": "", "score": 0.0, "margin": 0.0, "top3": [], "family": "", "dx": 0, "dy": 0}
     out0 = identify_crop(crop0, group, subset_ids=subset_ids, gain_correct=gain_correct, offsets=[(0, 0)], topk=topk)
     out0.update({"dx": 0, "dy": 0})
-    wx1 = max(0, x1 - search); wy1 = max(0, y1 - search)
-    wx2 = min(W, x1 + tw + search); wy2 = min(H, y1 + th + search)
-    win = image_bgr[wy1:wy2, wx1:wx2]
-    if tw < 8 or th < 8 or win.shape[0] < th or win.shape[1] < tw:
+    rules = _crop_search_rules()
+    window = rules.search_window(x1, y1, tw, th, W, H, search)
+    if window is None:
         return out0
+    wx1, wy1, wx2, wy2 = window
+    win = image_bgr[wy1:wy2, wx1:wx2]
     id_to_idx = {rid: i for i, rid in enumerate(g["ids"])}
     rgbs, m3s, msums = _sized_group(group, tw, th)
     q = cv2.cvtColor(win, cv2.COLOR_BGR2RGB).astype(np.float32) / 255.0
     if gain_correct:
         ref_mean = float((rgbs * m3s[:, :, :, :1]).sum() / (m3s.sum() + 1e-6))
-        m = float(q.mean())
-        if m > 1e-4:
-            q = np.clip(q * np.float32(np.clip(ref_mean / m, 0.6, 1.8)), 0.0, 1.0).astype(np.float32)
+        gain = rules.window_gain(ref_mean, float(q.mean()))
+        if gain is not None:
+            q = np.clip(q * np.float32(gain), 0.0, 1.0).astype(np.float32)
     q = np.ascontiguousarray(q)
     # itereren: scheve crops kunnen in ronde 1 verkeerde kandidaten ranken;
     # na de verplaatsing worden de kandidaten opnieuw bepaald (convergeert)
     best = out0
     cur = (0, 0)
     for _ in range(2):
-        cand = [id_to_idx[rid] for rid, _ in (best.get("top3") or []) if rid in id_to_idx]
-        pos_best = None  # (genormaliseerde sqdiff-score, x, y)
-        for i in cand:
-            if msums[i] < 24:
+        candidates = []  # [id, masksum, minVal, x, y], the shared pick_position's input
+        for rid, _ in (best.get("top3") or []):
+            i = id_to_idx.get(rid)
+            if i is None or not rules.votes(rid, float(msums[i])):
                 continue
             res = cv2.matchTemplate(q, rgbs[i], cv2.TM_SQDIFF, mask=m3s[i])
             res = np.nan_to_num(res, nan=1e12, posinf=1e12)
             mn, _, mnloc, _ = cv2.minMaxLoc(res)
-            sc = 1.0 - float(mn) / float(msums[i])
-            if pos_best is None or sc > pos_best[0]:
-                pos_best = (sc, mnloc[0], mnloc[1])
-        if pos_best is None:
+            candidates.append([rid, float(msums[i]), float(mn), mnloc[0], mnloc[1]])
+        picked = rules.pick_position(candidates)
+        if picked is None:
             break
-        bx, by = pos_best[1], pos_best[2]
-        dx = wx1 + bx - x1; dy = wy1 + by - y1
+        dx, dy = rules.picked_shift(window, picked, x1, y1) or (0, 0)
         if (dx, dy) == cur:
             break
+        bx, by = picked
         crop = win[by:by + th, bx:bx + tw]
         out = identify_crop(crop, group, subset_ids=subset_ids, gain_correct=gain_correct, offsets=[(0, 0)], topk=topk)
-        if float(out["score"]) < float(best["score"]):
+        if not rules.accept_shift(float(out["score"]), float(best["score"])):
             break  # verschuiving hielp niet; hou de beste uitslag tot nu toe
         out.update({"dx": dx, "dy": dy})
         best = out
