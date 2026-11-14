@@ -285,6 +285,11 @@ class BroadcastServer:
                     self._send_json({"feeds": feeds})
                 elif path == "/api/handshake":
                     self._send_json(server.handshake())
+                elif path == "/api/display-names":
+                    # Track/cup names per locale for the viewer's chosen display language.
+                    from .display_assets import display_name_catalog
+
+                    self._send_json(display_name_catalog())
                 elif path == "/events":
                     self._stream_events()
                 else:

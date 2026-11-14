@@ -120,6 +120,22 @@ De teksten volgen de taal van Windows (Engels of Nederlands); `MK8DX_TOURNAMENT_
 geïnstalleerd zijn; het heeft PySide6 nodig (de `gui`-extra van de processor) en opent anders, of met
 `--classic-gui`, een eenvoudiger Tkinter-venster.
 
+### Het live scorebord voor publiek en OBS
+
+**Live scorebord openen** (één groep tegelijk) en **Vast scorebord met alle feeds openen** in Tournament Live
+openen het scorebord voor het publiek; voeg dezelfde URL toe als OBS-browserbron. Twee weergave-instellingen
+staan onder het kleine tandwiel rechtsonder (het verschijnt als je de muis beweegt; OBS toont het niet):
+
+- **Scoreboard**: *Automatic* (standaard) wisselt na elke race tussen de uitslag van de laatste race en de totaalstand.
+  *Overall only* houdt de totaalstand in beeld; die bevat alleen bevestigde races en het onderschrift zegt tot en
+  met welke race, bijvoorbeeld *after race 7 of 12 · race 8 awaiting confirmation*.
+- **Track names**: *English + Dutch* (standaard) of een van de 15 talen van het spel, alleen voor baan- en
+  cupnamen. Het verandert niet in welke consoletaal Tournament Live leest.
+
+De browser onthoudt de keuze. Voor OBS zet je hem in de URL: `?scoreboard=overall`, `?trackLang=ja` (of een volledige
+locale zoals `zh-TW`, `es-419`), samen bijvoorbeeld `http://127.0.0.1:8800/?view=grid&scoreboard=overall&trackLang=ja`.
+`?controls=0` verbergt het tandwiel ook in een gewone browser. De eigen teksten van het scorebord blijven Engels.
+
 ### Verbinden met de website (optioneel)
 
 In PowerShell, in de pakketmap:

@@ -44,6 +44,22 @@ def resolve_track_assets(data: dict[str, Any]) -> dict[str, Any] | None:
 
 
 @lru_cache(maxsize=1)
+def display_name_catalog() -> dict[str, Any]:
+    """Track and cup names in the 15 game locales by canonical ID, for the spectator dashboard.
+
+    The slice comes from the packaged Clean Assets table (``track-names-v1.json``) that track recognition reads;
+    it is display-only. The dashboard's language never changes which language recognition reads the console in.
+    """
+    document = json.loads(files("mk8dx_tournament_extraction").joinpath("track-names-v1.json").read_text(encoding="utf-8"))
+    return {
+        "schemaVersion": "mk8dx.broadcast-display-names.v1",
+        "locales": list(document["locales"]),
+        "tracks": {track["id"]: dict(track["names"]) for track in document["tracks"] if track.get("id")},
+        "cups": {cup["id"]: dict(cup["names"]) for cup in document.get("cups", []) if cup.get("id")},
+    }
+
+
+@lru_cache(maxsize=1)
 def canonical_asset_paths() -> frozenset[str]:
     return frozenset(str(track[field]) for track in track_presentations() for field in ("previewPath", "cupIconPath"))
 

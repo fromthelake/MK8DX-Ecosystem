@@ -41,7 +41,13 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  /* CJK and Cyrillic fallbacks for track/cup names in the viewer's language;
+     the lang attribute on those names lets the browser pick the right CJK face. */
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto,
+    "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans JP",
+    "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Microsoft YaHei UI", "PingFang SC", "Noto Sans SC",
+    "Microsoft JhengHei UI", "PingFang TC", "Noto Sans TC", "Noto Sans CJK JP", sans-serif;
   color: var(--text);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
@@ -169,7 +175,8 @@ body.transparent::before { display: none; }
   display: flex; align-items: center; gap: 10px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.trackbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.trackbar__name > #track-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.trackbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .trackbar__cup { width: 40px; height: 40px; object-fit: contain; }
 
 .racechip {
@@ -230,7 +237,7 @@ body.transparent::before { display: none; }
   font-size: 26px; font-weight: 800; line-height: 1.05; margin-top: 5px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.racehero__sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.racehero__sub { font-size: 13px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .racehero__count { text-align: right; flex: none; }
 .racehero__countlabel {
   display: block;
@@ -812,3 +819,36 @@ body.fixed-grid-view .stage {
    grows naturally from the taller rows. */
 body.density-tv .gridboard { grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); }
 body.density-tv .gridcard__tracktext span { font-size: clamp(13px, 1.7vh, 22px); }
+
+/* Viewer display settings: a small gear, bottom right, that fades out while the
+   pointer rests. Not mounted in an OBS browser source or with ?controls=0. */
+.viewctl {
+  position: fixed; right: 12px; bottom: 12px; z-index: 50;
+  display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 8px;
+  max-width: calc(100vw - 24px);
+}
+.viewctl__gear {
+  width: 34px; height: 34px; padding: 7px;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: rgba(13, 17, 48, 0.86); color: var(--muted);
+  cursor: pointer; opacity: 0; transition: opacity .3s ease;
+}
+.viewctl__gear svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+.viewctl__gear:hover, .viewctl__gear:focus-visible { color: var(--text); }
+body.viewctl-awake .viewctl__gear,
+.viewctl__gear:focus-visible,
+.viewctl__gear[aria-expanded="true"] { opacity: 1; }
+.viewctl__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.viewctl__panel {
+  display: flex; flex-direction: column; gap: 10px;
+  width: 280px; max-width: 100%; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(13, 17, 48, 0.96); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+}
+.viewctl__field { display: flex; flex-direction: column; gap: 4px; min-width: 0; color: var(--muted); }
+.viewctl__field select {
+  width: 100%; min-width: 0; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg-elev); color: var(--text); font: inherit;
+}
