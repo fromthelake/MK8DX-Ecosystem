@@ -223,3 +223,48 @@ def test_spacing_is_not_compared():
     roster = PlayerRoster.from_names(["김민수", "Marc met C"])
     assert roster.best_match("김 민수", exact).name == "김민수"
     assert roster.best_match("Marcmet C", exact).name == "Marc met C"
+
+
+@pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
+def test_a_resolved_reading_tries_its_remembered_script_first_and_reconsiders_on_new_evidence(monkeypatch):
+    from mk8dx_tournament_extraction.engine import extract_text
+
+    calls = []
+    japanese = {"text": "たろう"}
+
+    def fake_variant(image, coord_list, *, preprocess, bundle_kind="", field_name="", languages=None):
+        if languages is None or tuple(languages) == tuple(extract_text.PLAYER_NAME_EASYOCR_LANGS):
+            return ["t=55"] * len(coord_list), [90] * len(coord_list)
+        calls.append(tuple(languages)[0])
+        text = {"ja": japanese["text"], "ko": "김민"}[tuple(languages)[0]]
+        return [text] * len(coord_list), [80] * len(coord_list)
+
+    monkeypatch.setattr(extract_text, "_run_easyocr_player_names_batched_variant", fake_variant)
+    monkeypatch.setattr(extract_text, "_get_easyocr_reader", lambda languages: object())
+    monkeypatch.setattr(extract_text, "PLAYER_NAME_BATCH_RAW_MODE", "off")
+    scripts.set_roster(PlayerRoster.from_names(["たろう", "たろ", "김민수"]))
+    image = np.zeros((30, 300, 3), dtype=np.uint8)
+    coords = [((0, 0), (200, 30))]
+
+    def read():
+        calls.clear()
+        return extract_text.extract_player_names_batched(
+            image, coords, bundle_kind="2RaceScore", field_name="RacePlayerName")[0]
+
+    try:
+        assert read() == ["たろう"] and calls == ["ja", "ja", "ko", "ko"]  # first frame: every roster script
+        assert read() == ["たろう"] and calls == ["ja", "ja"]  # same Latin reading: the remembered script only
+        japanese["text"] = "たろ"  # the remembered reader now names another Player: read everything again
+        assert read() == ["たろ"] and calls == ["ja", "ja", "ko", "ko"]
+    finally:
+        scripts.clear_roster_override()
+        scripts.SCRIPT_MEMORY.clear()
+
+
+def test_script_memory_belongs_to_one_roster():
+    memory = scripts.ScriptMemory()
+    first, second = PlayerRoster.from_names(["たろう"]), PlayerRoster.from_names(["たろう"])
+    memory.remember(first, "t = 55", 0, "japanese")
+    assert memory.recall(first, "t=55") == (0, "japanese")
+    assert memory.recall(second, "t=55") is None
+    assert memory.recall(first, "t=55") is None

@@ -1449,6 +1449,34 @@ def warm_player_name_script_readers() -> list[str]:
     return warmed
 
 
+def _read_player_name_rows_with_script(
+    image: np.ndarray,
+    coord_list: List[Tuple[Tuple[int, int], Tuple[int, int]]],
+    row_indices: list[int],
+    script: str,
+    readings: dict[int, dict[str, list[tuple[str, int]]]],
+    *,
+    bundle_kind: str,
+    field_name: str,
+) -> None:
+    if not row_indices or _get_player_name_script_reader(script) is None:
+        return
+    rows = [coord_list[row_index] for row_index in row_indices]
+    for preprocess in ("inv_otsu3", "raw"):
+        names, confidences = _run_easyocr_player_names_batched_variant(
+            image,
+            rows,
+            preprocess=preprocess,
+            bundle_kind=bundle_kind,
+            field_name=field_name,
+            languages=player_name_scripts.SCRIPT_READERS[script],
+        )
+        PLAYER_NAME_SCRIPT_STATS[f"calls_{script}"] += 1
+        for row_index, text, confidence in zip(row_indices, names, confidences):
+            if text:
+                readings[row_index].setdefault(script, []).append((text, confidence))
+
+
 def _apply_player_name_script_fallback(
     image: np.ndarray,
     coord_list: List[Tuple[Tuple[int, int], Tuple[int, int]]],
@@ -1458,49 +1486,70 @@ def _apply_player_name_script_fallback(
     bundle_kind: str,
     field_name: str,
 ) -> None:
-    """Read the rows whose Latin reading matches no roster name with the roster's script readers."""
+    """Read the rows whose Latin reading matches no roster name with the roster's script readers.
+
+    A Latin reading that an earlier frame resolved tries the remembered script first and keeps it
+    only when it names the same Player again; every other row reads with all of the roster's scripts.
+    """
     roster = player_name_scripts.active_roster()
     if roster is None or not roster.scripts:
         return
+    memory = player_name_scripts.SCRIPT_MEMORY
+    latin_texts = {row_index: " ".join(texts).strip() for row_index, texts in enumerate(texts_by_row)}
     pending = [
         row_index
-        for row_index, texts in enumerate(texts_by_row)
-        if player_name_scripts.needs_script_readers(" ".join(texts).strip(), roster)
+        for row_index, latin_text in latin_texts.items()
+        if player_name_scripts.needs_script_readers(latin_text, roster)
     ]
     if not pending:
         return
-    rows = [coord_list[row_index] for row_index in pending]
-    readings: dict[int, dict[str, list[tuple[str, int]]]] = {row_index: {} for row_index in pending}
-    for script in roster.scripts:
-        if _get_player_name_script_reader(script) is None:
-            continue
-        languages = player_name_scripts.SCRIPT_READERS[script]
-        for preprocess in ("inv_otsu3", "raw"):
-            names, confidences = _run_easyocr_player_names_batched_variant(
-                image,
-                rows,
-                preprocess=preprocess,
-                bundle_kind=bundle_kind,
-                field_name=field_name,
-                languages=languages,
-            )
-            for row_index, text, confidence in zip(pending, names, confidences):
-                if text:
-                    readings[row_index].setdefault(script, []).append((text, confidence))
     PLAYER_NAME_SCRIPT_STATS["rows_tried"] += len(pending)
-    for row_index in pending:
-        latin_text = " ".join(texts_by_row[row_index]).strip()
-        latin_confidence = (
-            int(sum(confidences_by_row[row_index]) // len(confidences_by_row[row_index]))
-            if confidences_by_row[row_index]
-            else 0
-        )
-        choice = player_name_scripts.choose_player_name(latin_text, latin_confidence, readings[row_index], roster)
-        if choice.script == "latin":
-            continue
+
+    def latin_confidence(row_index: int) -> int:
+        values = confidences_by_row[row_index]
+        return int(sum(values) // len(values)) if values else 0
+
+    def accept(row_index: int, choice) -> None:
         PLAYER_NAME_SCRIPT_STATS[f"rows_{choice.script}"] += 1
         texts_by_row[row_index] = [choice.text]
         confidences_by_row[row_index] = [choice.confidence]
+
+    full: list[int] = []
+    by_script: dict[str, list[int]] = defaultdict(list)
+    remembered: dict[int, tuple[int, str]] = {}
+    for row_index in pending:
+        recalled = memory.recall(roster, latin_texts[row_index])
+        if recalled is not None and recalled[1] in roster.scripts:
+            remembered[row_index] = recalled
+            by_script[recalled[1]].append(row_index)
+        else:
+            full.append(row_index)
+    readings: dict[int, dict[str, list[tuple[str, int]]]] = {row_index: {} for row_index in pending}
+    for script, row_indices in by_script.items():
+        _read_player_name_rows_with_script(
+            image, coord_list, row_indices, script, readings, bundle_kind=bundle_kind, field_name=field_name)
+    for row_index, (player, script) in remembered.items():
+        choice = player_name_scripts.choose_player_name(
+            latin_texts[row_index], latin_confidence(row_index), readings[row_index], roster)
+        if choice.script == script and choice.match.player == player:
+            PLAYER_NAME_SCRIPT_STATS["rows_remembered"] += 1
+            accept(row_index, choice)
+        else:
+            memory.forget(roster, latin_texts[row_index])
+            full.append(row_index)
+    if not full:
+        return
+    for script in roster.scripts:
+        missing = [row_index for row_index in full if remembered.get(row_index, (None, None))[1] != script]
+        _read_player_name_rows_with_script(
+            image, coord_list, missing, script, readings, bundle_kind=bundle_kind, field_name=field_name)
+    for row_index in full:
+        choice = player_name_scripts.choose_player_name(
+            latin_texts[row_index], latin_confidence(row_index), readings[row_index], roster)
+        if choice.script == "latin":
+            continue
+        memory.remember(roster, latin_texts[row_index], choice.match.player, choice.script)
+        accept(row_index, choice)
 
 
 def extract_player_names_batched(

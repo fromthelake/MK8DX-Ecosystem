@@ -33,11 +33,12 @@ def _key(text: str) -> str:
     return "".join(unicodedata.normalize("NFKC", str(text or "")).casefold().split())
 
 
-def _rss_mb() -> float | None:
+def _rss_mb(peak: bool = False) -> float | None:
     try:
         import psutil
 
-        return psutil.Process().memory_info().rss / 2**20
+        info = psutil.Process().memory_info()
+        return (getattr(info, "peak_wset", info.rss) if peak else info.rss) / 2**20
     except Exception:
         return None
 
@@ -70,10 +71,27 @@ def main(argv: list[str] | None = None) -> int:
         for path in sorted(glob.glob(pattern, recursive=True)):
             cases_by_frame.setdefault((path, args.layout), {})
 
+    # count every recognition call by reader, per phase
+    calls: dict[str, dict[str, int]] = {"before": defaultdict(int), "after": defaultdict(int)}
+    phase = {"name": "before"}
+    batched, single = extract_text._run_easyocr_player_names_batched_variant, extract_text._run_easyocr_player_name_for_context
+
+    def counted_batched(*a, languages=None, **k):
+        reader = "latin" if languages is None else "+".join(languages)
+        calls[phase["name"]][reader] += 1
+        return batched(*a, languages=languages, **k)
+
+    def counted_single(*a, **k):
+        calls[phase["name"]]["latin(row fallback)"] += 1
+        return single(*a, **k)
+
+    extract_text._run_easyocr_player_names_batched_variant = counted_batched
+    extract_text._run_easyocr_player_name_for_context = counted_single
     after_latin = list(extract_text.PLAYER_NAME_EASYOCR_LANGS)
     before_latin = [part.strip() for part in args.before_latin.split(",") if part.strip()]
 
     def read(image, layout, latin, use_roster):
+        phase["name"] = "after" if use_roster else "before"
         extract_text.PLAYER_NAME_EASYOCR_LANGS[:] = latin
         player_name_scripts.set_roster(roster if use_roster else None)
         started = time.perf_counter()
@@ -83,6 +101,10 @@ def main(argv: list[str] | None = None) -> int:
 
     # load the readers before timing, and measure what each one costs
     loads = {}
+    rss = _rss_mb()
+    started = time.perf_counter()
+    extract_text._get_easyocr_reader(tuple(before_latin))
+    loads["latin (before)"] = (round(time.perf_counter() - started, 2), None if rss is None else round(_rss_mb() - rss))
     rss = _rss_mb()
     started = time.perf_counter()
     extract_text._get_easyocr_reader(tuple(after_latin))
@@ -138,6 +160,10 @@ def main(argv: list[str] | None = None) -> int:
 
     print(f"frames {len(cases_by_frame)}; name reading before {seconds['before']:.1f}s, after {seconds['after']:.1f}s")
     print("reader load (s, RSS MB):", json.dumps(loads))
+    print("readers created:", len(extract_text._EASYOCR_READERS), "| peak working set MB:", _rss_mb(peak=True))
+    for label in ("before", "after"):
+        print(f"recognition calls {label}:", json.dumps(dict(calls[label])))
+    print("script fallback:", json.dumps(dict(extract_text.PLAYER_NAME_SCRIPT_STATS)))
     print(f"{'script':28} cases  exact b/a   right b/a   wrong b/a   none b/a")
     for script in sorted(stats):
         b = stats[script]

@@ -280,3 +280,48 @@ def choose_player_name(
         return keep  # two readers point at different Players: the Director decides
     score, confidence, _order, text, script, match = max(qualifying, key=lambda entry: entry[:3])
     return NameChoice(text, confidence, script, match)
+
+
+class ScriptMemory:
+    """Which script reader resolved a Latin reading to which roster Player, for the run.
+
+    Keyed by what the Latin reader saw, never by a result position, and written only after a full,
+    unambiguous roster match over every roster script. The remembered reader is tried first and
+    accepted only when it names the same Player again; anything else re-reads with every script and
+    replaces the memory (the evidence changed). A new roster starts an empty memory.
+    """
+
+    def __init__(self) -> None:
+        import threading
+
+        self._lock = threading.Lock()
+        self._roster: PlayerRoster | None = None
+        self._entries: dict[str, tuple[int, str]] = {}
+
+    @staticmethod
+    def key(latin_text: str) -> str:
+        return "".join(unicodedata.normalize("NFKC", str(latin_text or "")).split())
+
+    def recall(self, roster: PlayerRoster, latin_text: str) -> tuple[int, str] | None:
+        with self._lock:
+            if self._roster is not roster:
+                self._roster, self._entries = roster, {}
+            return self._entries.get(self.key(latin_text))
+
+    def remember(self, roster: PlayerRoster, latin_text: str, player: int, script: str) -> None:
+        with self._lock:
+            if self._roster is not roster:
+                self._roster, self._entries = roster, {}
+            self._entries[self.key(latin_text)] = (player, script)
+
+    def forget(self, roster: PlayerRoster, latin_text: str) -> None:
+        with self._lock:
+            if self._roster is roster:
+                self._entries.pop(self.key(latin_text), None)
+
+    def clear(self) -> None:
+        with self._lock:
+            self._roster, self._entries = None, {}
+
+
+SCRIPT_MEMORY = ScriptMemory()

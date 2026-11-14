@@ -186,7 +186,9 @@ roster name is read again by the EasyOCR readers for the scripts the roster uses
 replaces the Latin one only when it contains its own script, matches exactly one roster Player at the name-only
 threshold Tournament Live relinks drivers with (0.88, spacing ignored), and matches better than the Latin
 reading; otherwise the raw Latin reading goes to the Director as before. The output is the reading, never the
-roster name. The readers load on first use and stay cached (Tournament Live warms them at start); each needs its
+roster name. Once a Latin reading has been resolved that way, later frames with the same Latin reading try that
+script first and keep it only when it names the same Player again (otherwise every script is read again); this
+memory is keyed by the reading, never by a result position, and starts empty for a new roster. The readers load on first use and stay cached (Tournament Live warms them at start); each needs its
 EasyOCR model (`cyrillic_g2`, `japanese_g2`, `korean_g2`, `zh_sim_g2`, `chinese`). A missing model leaves that
 script out. `tooling/tournament/evaluate_player_name_scripts.py` measures the reading per script on frames you
 supply (frames and game-font material stay out of the repository).
