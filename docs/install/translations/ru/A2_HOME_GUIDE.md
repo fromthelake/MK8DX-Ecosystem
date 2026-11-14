@@ -89,14 +89,14 @@ Linux ещё не проверялся с MK8DX от начала до конц�
 
 **Запуск в Windows**
 
-1. **Сделайте:** в распакованной папке дважды щёлкните **Start-MK8DX-LAN.cmd**. → **Вы увидите:** окно с логотипом MK8DX и обратным отсчётом 3-2-1-GO со звуковыми сигналами ([как его отключить](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), затем строки вроде «MK8DX package:» (пакет MK8DX) и «Private installation:» (частная установка). В первый раз также показывается «Preparing the included Python packages (once, without internet).» (подготовка входящих в комплект пакетов Python, один раз, без интернета) и «Loading the included Docker images. This can take several minutes.» (загрузка входящих в комплект образов Docker, это может занять несколько минут). Это займёт несколько минут. Затем появится «MK8DX setup is open in your browser:» (установка MK8DX открыта в вашем браузере), и программа установки откроется в браузере. → **Видите что-то другое?** См. сообщения ниже.
+1. **Сделайте:** в распакованной папке дважды щёлкните **Start-MK8DX-LAN.cmd**. → **Вы увидите:** окно с логотипом MK8DX и обратным отсчётом 3-2-1-GO со звуковыми сигналами ([как его отключить](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), затем строки вроде «Пакет MK8DX:» и «Частная установка:». В первый раз также показывается «Подготовка прилагаемых пакетов Python (один раз, без интернета).» и «Загрузка прилагаемых образов Docker. Это может занять несколько минут.» Это займёт несколько минут. Затем появится «MK8DX setup is open in your browser:» (установка MK8DX открыта в вашем браузере), и программа установки откроется в браузере. → **Видите что-то другое?** См. сообщения ниже.
 2. **Сделайте:** не закрывайте чёрное окно, пока не нажмёте **Готово** в программе установки. В окне об этом тоже сказано: «Keep this window open until you click Finish.» (не закрывайте это окно, пока не нажмёте Finish).
 
 Сообщения в чёрном окне в Windows:
 
-- **«Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.»** (Python от 3.12 до 3.15 отсутствует.) Выполните шаги 6–8 главы 2A, а затем снова дважды щёлкните Start-MK8DX-LAN.cmd.
-- **«Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry.»** (Docker Desktop отсутствует или не запущен.) Запустите Docker Desktop, дождитесь Engine running и снова дважды щёлкните файл.
-- Под ошибкой показано **«The selected step stopped. Read the message above before retrying.»** (выбранный шаг остановлен; прочитайте сообщение выше, прежде чем повторять). Прочитайте строку над ним, устраните причину и нажмите любую клавишу, чтобы закрыть окно.
+- **«Нет Python версии от 3.12 до 3.15. Установите Python install manager с python.org (или из Microsoft Store), выполните: py install 3.15, заново откройте PowerShell и повторите попытку.»** Выполните шаги 6–8 главы 2A, а затем снова дважды щёлкните Start-MK8DX-LAN.cmd.
+- **«Docker Desktop не установлен или не запущен. Запустите Docker Desktop в режиме Linux-контейнеров, дождитесь надписи "Engine running" и повторите попытку.»** Запустите Docker Desktop, дождитесь Engine running и снова дважды щёлкните файл.
+- Под ошибкой показано **«Выбранный шаг остановлен. Прочитайте сообщение выше, прежде чем повторить попытку.»** Прочитайте строку над ним, устраните причину и нажмите любую клавишу, чтобы закрыть окно.
 
 <!-- /os -->
 
@@ -105,14 +105,14 @@ Linux ещё не проверялся с MK8DX от начала до конц�
 **Запуск в Linux и macOS**
 
 1. **Сделайте:** откройте терминал в распакованной папке. Linux: щёлкните правой кнопкой в папке и выберите «Open in Terminal» (Открыть в терминале), если ваш файловый менеджер это предлагает. В macOS и Linux работает и так: откройте Терминал, введите `cd ` (с пробелом после), перетащите папку в окно и нажмите Enter. → **Вы увидите:** терминал находится в папке пакета.
-2. **Сделайте:** введите `sh tooling/start-mk8dx.sh` и нажмите Enter. → **Вы увидите:** логотип MK8DX и обратный отсчёт 3-2-1-GO, затем «MK8DX package:», номер Python, «Docker Compose version». В первый раз также «Loading the included Docker images. This can take several minutes.» (загрузка входящих в комплект образов Docker) и «Preparing the included Python packages (once, without internet).» (подготовка пакетов Python). Затем «Private installation:» и «MK8DX setup is open in your browser:», и программа установки откроется в браузере. → **Видите что-то другое?** Если браузер не открылся, скопируйте из терминала адрес, начинающийся с `http://127.0.0.1:`, в браузер.
+2. **Сделайте:** введите `sh tooling/start-mk8dx.sh` и нажмите Enter. → **Вы увидите:** логотип MK8DX и обратный отсчёт 3-2-1-GO, затем «Пакет MK8DX:», номер Python, «Docker Compose version». В первый раз также «Загрузка прилагаемых образов Docker. Это может занять несколько минут.» и «Подготовка прилагаемых пакетов Python (один раз, без интернета).» Затем «Частная установка:» и «MK8DX setup is open in your browser:», и программа установки откроется в браузере. → **Видите что-то другое?** Если браузер не открылся, скопируйте из терминала адрес, начинающийся с `http://127.0.0.1:`, в браузер.
 3. **Сделайте:** не закрывайте терминал, пока не нажмёте **Готово**.
 
 Сообщения в терминале в Linux и macOS:
 
-- **«Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.»** (Python от 3.12 до 3.15 отсутствует.) Выполните главу 2B или 2C ещё раз.
-- **«Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop).»** (Docker не запущен, или этому пользователю нельзя им пользоваться.) Linux: выполните шаги 3 и 4 главы 2B. macOS: запустите Docker Desktop.
-- **«Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv).»** (Не удалось создать частное окружение Python.) Установите python3-venv, как в шаге 2 главы 2B.
+- **«Нет Python версии от 3.12 до 3.15. Установите его (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) и повторите попытку.»** Выполните главу 2B или 2C ещё раз.
+- **«Docker не запущен или этому пользователю нельзя его использовать (Linux: sudo systemctl start docker и вступите в группу docker; macOS: запустите Docker Desktop).»** Linux: выполните шаги 3 и 4 главы 2B. macOS: запустите Docker Desktop.
+- **«Не удалось создать частное окружение Python (Ubuntu/Debian: sudo apt install python3-venv).»** Установите python3-venv, как в шаге 2 главы 2B.
 
 <!-- /os -->
 
@@ -426,7 +426,7 @@ LiveTrial — это программа для Windows, которая расп�
 - **«MK8DX is already installed on this computer; restore needs a computer without it».** (MK8DX уже установлен на этом компьютере; для восстановления нужен компьютер без него.) Восстановление работает только на компьютере без MK8DX. Попросите помощи у специалиста по ИТ (глава 12).
 - **Docker не работает.** Windows и macOS: запустите Docker Desktop, дождитесь **Engine running** и нажмите **Попробовать снова** или снова запустите MK8DX. Linux: `sudo systemctl start docker`.
 - **У компьютера новый адрес.** Откройте MK8DX beheer и выберите **Переместить** (глава 10).
-- **Windows: «The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443».** (сеть доменная; попросите её администратора разрешить TCP 80/443.) Компьютер находится в корпоративной сети, которую MK8DX не может изменять сам. Попросите администратора этой сети разрешить входящие подключения на TCP-портах 80 и 443.
+- **Windows: «Сеть: 'DomainAuthenticated'; попросите её администратора разрешить TCP 80/443».** Компьютер находится в корпоративной сети, которую MK8DX не может изменять сам. Попросите администратора этой сети разрешить входящие подключения на TCP-портах 80 и 443.
 - **Windows: «Windows did not allow the change (the permission prompt was declined or failed)».** (Windows не разрешила изменение: запрос разрешения отклонён или не удался.) Нажмите **Попробовать снова**, а затем **Yes** (Да) в окне Windows.
 - **Linux: телефоны не могут подключиться, а брандмауэр активен.** Во время установки нажмите **Детали** и выполните команду после «manual:», например `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`. Для firewalld это `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`.
 - **Приложение для Android пишет «Это не QR-код карточки «Подготовить устройство».»** Отсканируйте карточку **Подготовить устройство**, а не личную карточку.

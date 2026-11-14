@@ -1,0 +1,734 @@
+{
+ "schemaVersion": "mk8dx.tournament-processor-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_processor_messages.py",
+ "messages": [
+  {
+   "key": "1  Recordings",
+   "nl": "1  Opnames",
+   "places": [
+    "gui.py:step_recordings"
+   ]
+  },
+  {
+   "key": "2  Session",
+   "nl": "2  Sessie",
+   "places": [
+    "gui.py:step_session"
+   ]
+  },
+  {
+   "key": "3  Run",
+   "nl": "3  Starten",
+   "places": [
+    "gui.py:step_run"
+   ]
+  },
+  {
+   "key": "=== ■ Cancelled ===",
+   "nl": "=== ■ Geannuleerd ===",
+   "places": [
+    "gui.py:log_cancelled"
+   ]
+  },
+  {
+   "key": "=== ▶ {label} ===",
+   "nl": "=== ▶ {label} ===",
+   "places": [
+    "gui.py:log_started"
+   ]
+  },
+  {
+   "key": "=== ✖ Failed with exit code {code} ===",
+   "nl": "=== ✖ Mislukt met code {code} ===",
+   "places": [
+    "gui.py:log_failed"
+   ]
+  },
+  {
+   "key": "=== 🏁 Completed successfully ===",
+   "nl": "=== 🏁 Geslaagd ===",
+   "places": [
+    "gui.py:log_completed"
+   ]
+  },
+  {
+   "key": "Activity log",
+   "nl": "Activiteitenlog",
+   "places": [
+    "gui.py:activity_log"
+   ]
+  },
+  {
+   "key": "Add at least one video or folder first.",
+   "nl": "Voeg eerst minstens één video of map toe.",
+   "places": [
+    "gui.py:err_no_entries"
+   ]
+  },
+  {
+   "key": "Add folder...",
+   "nl": "Map toevoegen...",
+   "places": [
+    "gui.py:add_folder"
+   ]
+  },
+  {
+   "key": "Add video files, or a folder: one folder holds one tournament's recordings.",
+   "nl": "Voeg videobestanden toe, of een map: één map bevat de opnames van één toernooi.",
+   "places": [
+    "gui.py:recordings_hint"
+   ]
+  },
+  {
+   "key": "Add videos...",
+   "nl": "Video's toevoegen...",
+   "places": [
+    "gui.py:add_videos"
+   ]
+  },
+  {
+   "key": "All",
+   "nl": "Alles",
+   "places": [
+    "gui.py:all"
+   ]
+  },
+  {
+   "key": "All files",
+   "nl": "Alle bestanden",
+   "places": [
+    "gui.py:all_files"
+   ]
+  },
+  {
+   "key": "Already prepared: {name}",
+   "nl": "Al klaargezet: {name}",
+   "places": [
+    "gui.py:log_reused"
+   ]
+  },
+  {
+   "key": "An analysis is still running. Stop it and close the window?",
+   "nl": "Er loopt nog een analyse. Stoppen en het venster sluiten?",
+   "places": [
+    "gui.py:confirm_close"
+   ]
+  },
+  {
+   "key": "Analyse the recordings of a tournament night afterwards: races, positions, characters and points, written to Excel, CSV and a website import file for you to check.",
+   "nl": "Analyseer de opnames van een toernooiavond achteraf: races, posities, characters en punten, als Excel, CSV en een importbestand voor de website, om zelf te controleren.",
+   "places": [
+    "gui.py:intro"
+   ]
+  },
+  {
+   "key": "Analysing ... {elapsed} elapsed",
+   "nl": "Bezig met analyseren ... {elapsed} verstreken",
+   "places": [
+    "gui.py:status_running"
+   ]
+  },
+  {
+   "key": "Analysing {count} recording(s)",
+   "nl": "{count} opname(s) analyseren",
+   "places": [
+    "gui.py:run_label"
+   ]
+  },
+  {
+   "key": "Analysis running",
+   "nl": "Analyse loopt",
+   "places": [
+    "gui.py:confirm_close_title"
+   ]
+  },
+  {
+   "key": "Browse...",
+   "nl": "Bladeren...",
+   "places": [
+    "gui.py:browse"
+   ]
+  },
+  {
+   "key": "Cancel",
+   "nl": "Annuleren",
+   "places": [
+    "gui.py:cancel"
+   ]
+  },
+  {
+   "key": "Cancelled",
+   "nl": "Geannuleerd",
+   "places": [
+    "gui.py:cancelled"
+   ]
+  },
+  {
+   "key": "Cannot start",
+   "nl": "Kan niet starten",
+   "places": [
+    "gui.py:error_title"
+   ]
+  },
+  {
+   "key": "Choose a folder with one tournament's recordings",
+   "nl": "Kies een map met de opnames van één toernooi",
+   "places": [
+    "gui.py:pick_folder"
+   ]
+  },
+  {
+   "key": "Choose a results folder.",
+   "nl": "Kies een uitslagenmap.",
+   "places": [
+    "gui.py:err_results_required"
+   ]
+  },
+  {
+   "key": "Choose recordings",
+   "nl": "Opnames kiezen",
+   "places": [
+    "gui.py:card_choose_recordings"
+   ]
+  },
+  {
+   "key": "Choose the results folder",
+   "nl": "Kies de uitslagenmap",
+   "places": [
+    "gui.py:pick_results"
+   ]
+  },
+  {
+   "key": "Choose tournament recordings",
+   "nl": "Kies toernooiopnames",
+   "places": [
+    "gui.py:pick_videos"
+   ]
+  },
+  {
+   "key": "Choose videos",
+   "nl": "Video's kiezen",
+   "places": [
+    "gui.py:card_choose_videos"
+   ]
+  },
+  {
+   "key": "Clear",
+   "nl": "Leegmaken",
+   "places": [
+    "gui.py:clear"
+   ]
+  },
+  {
+   "key": "Copying {name} (different drive; this can take a while) ...",
+   "nl": "{name} wordt gekopieerd (andere schijf; dit kan even duren) ...",
+   "places": [
+    "gui.py:log_copying"
+   ]
+  },
+  {
+   "key": "Could not prepare {path}: {error}",
+   "nl": "Kon {path} niet klaarzetten: {error}",
+   "places": [
+    "gui.py:err_stage"
+   ]
+  },
+  {
+   "key": "Done in {elapsed}. Check the results before you import them.",
+   "nl": "Klaar in {elapsed}. Controleer de uitslagen voordat je ze importeert.",
+   "places": [
+    "gui.py:status_done"
+   ]
+  },
+  {
+   "key": "During a live night use Tournament Live instead; this window is for nights without it.",
+   "nl": "Gebruik tijdens een live avond Tournament Live; dit venster is voor avonden zonder.",
+   "places": [
+    "gui.py:intro_live"
+   ]
+  },
+  {
+   "key": "Enter a session id.",
+   "nl": "Vul een sessie-id in.",
+   "places": [
+    "gui.py:err_session_required"
+   ]
+  },
+  {
+   "key": "Failed",
+   "nl": "Mislukt",
+   "places": [
+    "gui.py:badge_failed"
+   ]
+  },
+  {
+   "key": "Failed (exit {code})",
+   "nl": "Mislukt (code {code})",
+   "places": [
+    "gui.py:failed"
+   ]
+  },
+  {
+   "key": "Finds every race in the ticked recordings: positions, characters and points.",
+   "nl": "Vindt elke race in de aangevinkte opnames: posities, characters en punten.",
+   "places": [
+    "gui.py:card_run_hint"
+   ]
+  },
+  {
+   "key": "Finished",
+   "nl": "Klaar",
+   "places": [
+    "gui.py:finished"
+   ]
+  },
+  {
+   "key": "Folder",
+   "nl": "Map",
+   "places": [
+    "gui.py:kind_folder"
+   ]
+  },
+  {
+   "key": "Folder, {count} videos",
+   "nl": "Map, {count} video's",
+   "places": [
+    "gui.py:kind_folder_count"
+   ]
+  },
+  {
+   "key": "LAN TOURNAMENT · ANALYSIS AFTERWARDS",
+   "nl": "LAN-TOERNOOI · ANALYSE ACHTERAF",
+   "places": [
+    "gui.py:banner_subtitle"
+   ]
+  },
+  {
+   "key": "Linked {name}",
+   "nl": "Gekoppeld: {name}",
+   "places": [
+    "gui.py:log_linked"
+   ]
+  },
+  {
+   "key": "Location",
+   "nl": "Locatie",
+   "places": [
+    "gui.py:col_location"
+   ]
+  },
+  {
+   "key": "MK8DX TOURNAMENT ANALYSIS",
+   "nl": "MK8DX TOURNAMENT ANALYSIS",
+   "places": [
+    "gui.py:banner_title"
+   ]
+  },
+  {
+   "key": "MK8DX Tournament Analysis",
+   "nl": "MK8DX Tournament Analysis",
+   "places": [
+    "gui.py:title"
+   ]
+  },
+  {
+   "key": "Name",
+   "nl": "Naam",
+   "places": [
+    "gui.py:col_name"
+   ]
+  },
+  {
+   "key": "No display is available for the window. Use the command line instead: python -m tournament_processor.vision_cli all --help",
+   "nl": "Er is geen scherm beschikbaar voor het venster. Gebruik de opdrachtregel: python -m tournament_processor.vision_cli all --help",
+   "places": [
+    "gui.py:no_display"
+   ]
+  },
+  {
+   "key": "No results",
+   "nl": "Geen uitslagen",
+   "places": [
+    "gui.py:no_workbook_title"
+   ]
+  },
+  {
+   "key": "No workbook yet. Run the analysis first.",
+   "nl": "Nog geen werkmap. Start eerst de analyse.",
+   "places": [
+    "gui.py:no_workbook"
+   ]
+  },
+  {
+   "key": "None",
+   "nl": "Geen",
+   "places": [
+    "gui.py:none"
+   ]
+  },
+  {
+   "key": "Not a supported video ({suffixes}): {path}",
+   "nl": "Geen ondersteunde video ({suffixes}): {path}",
+   "places": [
+    "gui.py:err_unsupported"
+   ]
+  },
+  {
+   "key": "Not found",
+   "nl": "Niet gevonden",
+   "places": [
+    "gui.py:not_found_title"
+   ]
+  },
+  {
+   "key": "Not found: {path}",
+   "nl": "Niet gevonden: {path}",
+   "places": [
+    "gui.py:err_not_found"
+   ]
+  },
+  {
+   "key": "Nothing selected",
+   "nl": "Niets gekozen",
+   "places": [
+    "gui.py:nothing_selected_title"
+   ]
+  },
+  {
+   "key": "On the line — ready",
+   "nl": "Aan de start — klaar",
+   "places": [
+    "gui.py:status_on_line"
+   ]
+  },
+  {
+   "key": "Open results folder",
+   "nl": "Uitslagenmap openen",
+   "places": [
+    "gui.py:open_results"
+   ]
+  },
+  {
+   "key": "Open the exported workbook, the results folder or the extracted frames.",
+   "nl": "Open de geëxporteerde werkmap, de uitslagenmap of de opgeslagen frames.",
+   "places": [
+    "gui.py:card_results_hint"
+   ]
+  },
+  {
+   "key": "Output from the running analysis appears here, in colour.",
+   "nl": "De uitvoer van de lopende analyse verschijnt hier, in kleur.",
+   "places": [
+    "gui.py:log_placeholder"
+   ]
+  },
+  {
+   "key": "Preparing recordings {done}/{total} ...",
+   "nl": "Opnames klaarzetten {done}/{total} ...",
+   "places": [
+    "gui.py:status_staging"
+   ]
+  },
+  {
+   "key": "Progress",
+   "nl": "Voortgang",
+   "places": [
+    "gui.py:log"
+   ]
+  },
+  {
+   "key": "Quit",
+   "nl": "Afsluiten",
+   "places": [
+    "gui.py:quit_title"
+   ]
+  },
+  {
+   "key": "Ready. Add recordings to begin.",
+   "nl": "Klaar. Voeg opnames toe om te beginnen.",
+   "places": [
+    "gui.py:status_ready"
+   ]
+  },
+  {
+   "key": "Ready: {count} item(s) to analyse.",
+   "nl": "Klaar: {count} item(s) om te analyseren.",
+   "places": [
+    "gui.py:status_ready_count"
+   ]
+  },
+  {
+   "key": "Recognition assets: not configured here; the processor uses its own defaults.",
+   "nl": "Herkenningsbestanden: hier niet ingesteld; de processor gebruikt zijn standaard.",
+   "places": [
+    "gui.py:log_assets_default"
+   ]
+  },
+  {
+   "key": "Remove",
+   "nl": "Verwijderen",
+   "places": [
+    "gui.py:remove"
+   ]
+  },
+  {
+   "key": "Results",
+   "nl": "Uitslagen",
+   "places": [
+    "gui.py:card_results"
+   ]
+  },
+  {
+   "key": "Results are written to <results folder>\\Output_Results: Excel, CSV and *_TournamentRaceResultsV1.json for the website.",
+   "nl": "De uitslagen komen in <uitslagenmap>\\Output_Results: Excel, CSV en *_TournamentRaceResultsV1.json voor de website.",
+   "places": [
+    "gui.py:log_intro"
+   ]
+  },
+  {
+   "key": "Results folder",
+   "nl": "Uitslagenmap",
+   "places": [
+    "gui.py:results_folder"
+   ]
+  },
+  {
+   "key": "Results: {path}",
+   "nl": "Uitslagen: {path}",
+   "places": [
+    "gui.py:log_results"
+   ]
+  },
+  {
+   "key": "Run the analysis",
+   "nl": "De analyse starten",
+   "places": [
+    "gui.py:card_run"
+   ]
+  },
+  {
+   "key": "Running: {command}",
+   "nl": "Opdracht: {command}",
+   "places": [
+    "gui.py:log_command"
+   ]
+  },
+  {
+   "key": "Session id",
+   "nl": "Sessie-id",
+   "places": [
+    "gui.py:session_id"
+   ]
+  },
+  {
+   "key": "Start analysis",
+   "nl": "Analyse starten",
+   "places": [
+    "gui.py:start"
+   ]
+  },
+  {
+   "key": "Stop",
+   "nl": "Stoppen",
+   "places": [
+    "gui.py:stop"
+   ]
+  },
+  {
+   "key": "Stopped with an error (exit code {code}). See the progress log.",
+   "nl": "Gestopt met een fout (code {code}). Zie het voortgangslog.",
+   "places": [
+    "gui.py:status_failed"
+   ]
+  },
+  {
+   "key": "Stopped. Partial output stays in the results folder.",
+   "nl": "Gestopt. Wat al klaar was blijft in de uitslagenmap.",
+   "places": [
+    "gui.py:status_stopped"
+   ]
+  },
+  {
+   "key": "Stopping the analysis ...",
+   "nl": "De analyse wordt gestopt ...",
+   "places": [
+    "gui.py:log_stopping"
+   ]
+  },
+  {
+   "key": "Stored with every race so the website can tell imports apart.",
+   "nl": "Wordt bij elke race opgeslagen, zodat de website imports uit elkaar houdt.",
+   "places": [
+    "gui.py:session_hint"
+   ]
+  },
+  {
+   "key": "The Tournament Processor is not installed in this Python ({python}). Start the window with TournamentAnalysis.cmd from the Tournament Tools package, or install the package.",
+   "nl": "De Tournament Processor is niet geïnstalleerd in deze Python ({python}). Start het venster met TournamentAnalysis.cmd uit het Tournament Tools-pakket, of installeer het pakket.",
+   "places": [
+    "gui.py:err_runtime"
+   ]
+  },
+  {
+   "key": "The frames folder does not exist yet. Run the analysis first.",
+   "nl": "De framesmap bestaat nog niet. Start eerst de analyse.",
+   "places": [
+    "gui.py:frames_missing"
+   ]
+  },
+  {
+   "key": "The recognition assets are missing: {name} points to {path}. Extract the complete package again.",
+   "nl": "De herkenningsbestanden ontbreken: {name} verwijst naar {path}. Pak het volledige pakket opnieuw uit.",
+   "places": [
+    "gui.py:err_assets"
+   ]
+  },
+  {
+   "key": "The results folder does not exist yet. Run the analysis first.",
+   "nl": "De uitslagenmap bestaat nog niet. Start eerst de analyse.",
+   "places": [
+    "gui.py:results_missing"
+   ]
+  },
+  {
+   "key": "The session id contains control characters.",
+   "nl": "De sessie-id bevat stuurtekens.",
+   "places": [
+    "gui.py:err_session_chars"
+   ]
+  },
+  {
+   "key": "The session id is longer than {max} characters.",
+   "nl": "De sessie-id is langer dan {max} tekens.",
+   "places": [
+    "gui.py:err_session_length"
+   ]
+  },
+  {
+   "key": "This folder holds no videos ({suffixes}): {path}",
+   "nl": "Deze map bevat geen video's ({suffixes}): {path}",
+   "places": [
+    "gui.py:err_empty_folder"
+   ]
+  },
+  {
+   "key": "Tick at least one recording to analyse.",
+   "nl": "Vink minstens één opname aan.",
+   "places": [
+    "gui.py:nothing_selected"
+   ]
+  },
+  {
+   "key": "Tick the recordings to include in the next run.",
+   "nl": "Vink de opnames aan die in de volgende run meedoen.",
+   "places": [
+    "gui.py:card_choose_videos_hint"
+   ]
+  },
+  {
+   "key": "Two recordings would get the same name {name}. Rename one of them or put them in separate folders.",
+   "nl": "Twee opnames krijgen dezelfde naam {name}. Geef er één een andere naam of zet ze in aparte mappen.",
+   "places": [
+    "gui.py:err_duplicate"
+   ]
+  },
+  {
+   "key": "Type",
+   "nl": "Soort",
+   "places": [
+    "gui.py:col_kind"
+   ]
+  },
+  {
+   "key": "Unable to open {path}:\n{error}",
+   "nl": "Kan {path} niet openen:\n{error}",
+   "places": [
+    "gui.py:open_error"
+   ]
+  },
+  {
+   "key": "Video",
+   "nl": "Video",
+   "places": [
+    "gui.py:kind_video"
+   ]
+  },
+  {
+   "key": "Video files",
+   "nl": "Videobestanden",
+   "places": [
+    "gui.py:video_files"
+   ]
+  },
+  {
+   "key": "[GUI] Cancelling… terminating the running process.",
+   "nl": "[GUI] Annuleren… het lopende proces wordt beëindigd.",
+   "places": [
+    "gui.py:log_cancelling"
+   ]
+  },
+  {
+   "key": "[GUI] Process error: {error}",
+   "nl": "[GUI] Procesfout: {error}",
+   "places": [
+    "gui.py:log_process_error"
+   ]
+  },
+  {
+   "key": "{path} already exists with different content. Choose another results folder.",
+   "nl": "{path} bestaat al met andere inhoud. Kies een andere uitslagenmap.",
+   "places": [
+    "gui.py:err_exists_differs"
+   ]
+  },
+  {
+   "key": "{reason}; opening the classic window. Install the Qt window with: pip install PySide6",
+   "nl": "{reason}; het klassieke venster wordt geopend. Installeer het Qt-venster met: pip install PySide6",
+   "places": [
+    "gui.py:fallback_classic"
+   ]
+  },
+  {
+   "key": "{selected} of {total} selected",
+   "nl": "{selected} van {total} gekozen",
+   "places": [
+    "gui.py:selected_summary"
+   ]
+  },
+  {
+   "key": "▶  START ANALYSIS",
+   "nl": "▶  ANALYSE STARTEN",
+   "places": [
+    "gui.py:start_big"
+   ]
+  },
+  {
+   "key": "🏁 Finished",
+   "nl": "🏁 Klaar",
+   "places": [
+    "gui.py:badge_finished"
+   ]
+  },
+  {
+   "key": "📁  Open Results Folder",
+   "nl": "📁  Uitslagenmap openen",
+   "places": [
+    "gui.py:open_results_folder"
+   ]
+  },
+  {
+   "key": "📊  Open Latest Excel",
+   "nl": "📊  Laatste Excel openen",
+   "places": [
+    "gui.py:open_excel"
+   ]
+  },
+  {
+   "key": "🖼  Open Frames",
+   "nl": "🖼  Frames openen",
+   "places": [
+    "gui.py:open_frames"
+   ]
+  }
+ ]
+}

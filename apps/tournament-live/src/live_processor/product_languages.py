@@ -51,10 +51,12 @@ def uses_catalog(code: str) -> bool:
 class _Catalog:
     def __init__(self, document: dict) -> None:
         self.exact: dict[str, str] = {}
+        self.messages: dict[str, str] = {}
         self.templates: list[tuple[re.Pattern[str], str, int]] = []
         for source, translation in (document.get("messages") or {}).items():
             if not isinstance(translation, str) or not translation:
                 continue
+            self.messages[source] = translation
             count = len(_PLACEHOLDER.findall(source))
             if count == 0:
                 self.exact[source] = translation
@@ -111,6 +113,39 @@ def translate(code: str, english: str, root: Path = CATALOG_ROOT) -> str:
         return english
     start = english.find(english.strip())
     return english[:start] + translated + english[start + len(english.strip()):]
+
+
+def translate_template(code: str, english_template: str, root: Path | None = None) -> str:
+    """The catalog text of a message template (English with `{0}`, `{1}`) before any value is filled in.
+
+    `translate` matches finished text against the templates; code that still holds the template and its values
+    looks the template up here instead. English when the language has no catalog or the catalog lacks it."""
+    if not english_template or not uses_catalog(code):
+        return english_template
+    catalog = _catalog(code, str(root or CATALOG_ROOT))
+    if catalog is None:
+        return english_template
+    return catalog.messages.get(english_template, english_template)
+
+
+def fill(template: str, values: tuple[object, ...]) -> str:
+    """`template` with `{0}`, `{1}` replaced by the values; an index without a value stays as it is."""
+    if not values:
+        return template
+    return _PLACEHOLDER.sub(
+        lambda found: str(values[int(found.group(1))]) if int(found.group(1)) < len(values) else found.group(0),
+        template,
+    )
+
+
+def say(code: str, english: str, dutch: str, *values: object, root: Path | None = None) -> str:
+    """A text written in the code as its English and Dutch template: Dutch for `nl`, the catalog for the other
+    catalog languages, else English, with the values filled into `{0}`, `{1}`, ...
+
+    tooling/i18n/extract_desktop_messages.py collects every `say`/`_say` call with two string literals into the
+    message source, so the catalogs can translate them."""
+    template = dutch if code == "nl" else translate_template(code, english, root)
+    return fill(template, values)
 
 
 def english_for(code: str, text: str, root: Path = CATALOG_ROOT) -> str | None:

@@ -1,0 +1,1162 @@
+{
+ "schemaVersion": "mk8dx.launcher-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_launcher_messages.py",
+ "messages": [
+  {
+   "key": "'{0}' is not one of the choices above.",
+   "nl": "'{0}' is geen van de keuzes hierboven.",
+   "places": [
+    "install.py:1034"
+   ]
+  },
+  {
+   "key": "'{0}' is not one of the numbers above.",
+   "nl": "'{0}' is geen van de nummers hierboven.",
+   "places": [
+    "start-mk8dx.ps1:207",
+    "start-mk8dx.sh:179",
+    "Manage-MK8DX-No-Docker.cmd:55"
+   ]
+  },
+  {
+   "key": "A2 offline needs this Windows computer to keep one private IPv4 address on your home network.",
+   "nl": "A2 offline heeft nodig dat deze Windows-computer één vast privé IPv4-adres in je thuisnetwerk houdt.",
+   "places": [
+    "install.py:1096"
+   ]
+  },
+  {
+   "key": "Address unchanged.",
+   "nl": "Adres ongewijzigd.",
+   "places": [
+    "install.py:404"
+   ]
+  },
+  {
+   "key": "An example step",
+   "nl": "Een voorbeeldstap",
+   "places": [
+    "mk8dx-ui.ps1:709",
+    "mk8dx-ui.sh:417"
+   ]
+  },
+  {
+   "key": "Applying database updates of the new version",
+   "nl": "Database-updates van de nieuwe versie uitvoeren",
+   "places": [
+    "install.py:915"
+   ]
+  },
+  {
+   "key": "Authorized sender address: ",
+   "nl": "Geautoriseerd afzenderadres: ",
+   "places": [
+    "native_install.py:145"
+   ]
+  },
+  {
+   "key": "Authorized sender email address: ",
+   "nl": "Geautoriseerd e-mailadres van de afzender: ",
+   "places": [
+    "install.py:1111"
+   ]
+  },
+  {
+   "key": "Backup verified",
+   "nl": "Back-up gecontroleerd",
+   "places": [
+    "native_install.py:423"
+   ]
+  },
+  {
+   "key": "Check that everything works",
+   "nl": "Controleren of alles werkt",
+   "places": [
+    "start-mk8dx.ps1:180",
+    "start-mk8dx.sh:159",
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Checked backup, then the update",
+   "nl": "Gecontroleerde back-up, daarna de update",
+   "places": [
+    "start-mk8dx.ps1:198",
+    "start-mk8dx.sh:176"
+   ]
+  },
+  {
+   "key": "Checking Docker",
+   "nl": "Docker controleren",
+   "places": [
+    "start-mk8dx.ps1:39",
+    "mk8dx-ui.ps1:704",
+    "start-mk8dx.sh:60",
+    "mk8dx-ui.sh:413"
+   ]
+  },
+  {
+   "key": "Checking MK8DX",
+   "nl": "MK8DX controleren",
+   "places": [
+    "start-mk8dx.ps1:194",
+    "start-mk8dx.sh:172"
+   ]
+  },
+  {
+   "key": "Checking Python",
+   "nl": "Python controleren",
+   "places": [
+    "start-mk8dx.ps1:27",
+    "mk8dx-ui.ps1:702",
+    "start-mk8dx.sh:51",
+    "mk8dx-ui.sh:411"
+   ]
+  },
+  {
+   "key": "Checking Python and Node.js",
+   "nl": "Python en Node.js controleren",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:16"
+   ]
+  },
+  {
+   "key": "Checking the installation",
+   "nl": "De installatie controleren",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:29"
+   ]
+  },
+  {
+   "key": "Close",
+   "nl": "Sluiten",
+   "places": [
+    "start-mk8dx.sh:165",
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Close this window",
+   "nl": "Dit venster sluiten",
+   "places": [
+    "start-mk8dx.ps1:183"
+   ]
+  },
+  {
+   "key": "Complete prebuilt image bundle is missing.",
+   "nl": "De complete bundel met vooraf gebouwde images ontbreekt.",
+   "places": [
+    "start-mk8dx.sh:86"
+   ]
+  },
+  {
+   "key": "Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv).",
+   "nl": "De private Python-omgeving kon niet worden gemaakt (Ubuntu/Debian: sudo apt install python3-venv).",
+   "places": [
+    "start-mk8dx.sh:103"
+   ]
+  },
+  {
+   "key": "Could not create the private Python environment.",
+   "nl": "De private Python-omgeving kon niet worden gemaakt.",
+   "places": [
+    "start-mk8dx.ps1:72"
+   ]
+  },
+  {
+   "key": "Create an empty database and its limited user in DirectAdmin first. No existing database is erased.",
+   "nl": "Maak eerst in DirectAdmin een lege database en de bijbehorende beperkte gebruiker aan. Er wordt geen bestaande database gewist.",
+   "places": [
+    "native_install.py:129"
+   ]
+  },
+  {
+   "key": "Database host from DirectAdmin: ",
+   "nl": "Databasehost uit DirectAdmin: ",
+   "places": [
+    "native_install.py:131"
+   ]
+  },
+  {
+   "key": "Database port [3306]: ",
+   "nl": "Databasepoort [3306]: ",
+   "places": [
+    "native_install.py:132"
+   ]
+  },
+  {
+   "key": "Database user's password (hidden): ",
+   "nl": "Wachtwoord van de databasegebruiker (verborgen): ",
+   "places": [
+    "native_install.py:135"
+   ]
+  },
+  {
+   "key": "Database: {0} on {1}",
+   "nl": "Database: {0} op {1}",
+   "places": [
+    "native_install.py:118"
+   ]
+  },
+  {
+   "key": "Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows \"Engine running\", and retry.",
+   "nl": "Docker Desktop ontbreekt of draait niet. Start Docker Desktop in de stand voor Linux-containers, wacht tot \"Engine running\" verschijnt en probeer het opnieuw.",
+   "places": [
+    "start-mk8dx.ps1:44"
+   ]
+  },
+  {
+   "key": "Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop).",
+   "nl": "Docker draait niet of deze gebruiker mag het niet gebruiken (Linux: sudo systemctl start docker en word lid van de groep docker; macOS: start Docker Desktop).",
+   "places": [
+    "start-mk8dx.sh:62"
+   ]
+  },
+  {
+   "key": "Done.",
+   "nl": "Klaar.",
+   "places": [
+    "mk8dx-ui.ps1:494",
+    "mk8dx-ui.sh:314"
+   ]
+  },
+  {
+   "key": "Existing path has no safe operator profile.",
+   "nl": "Het bestaande pad heeft geen veilig beheerprofiel.",
+   "places": [
+    "start-mk8dx.sh:127"
+   ]
+  },
+  {
+   "key": "First setup",
+   "nl": "Eerste installatie",
+   "places": [
+    "start-mk8dx.ps1:192",
+    "start-mk8dx.sh:170"
+   ]
+  },
+  {
+   "key": "First setup, or finish an interrupted one",
+   "nl": "Eerste installatie, of een onderbroken installatie afmaken",
+   "places": [
+    "start-mk8dx.ps1:180",
+    "start-mk8dx.sh:157"
+   ]
+  },
+  {
+   "key": "First setup: database, keys and reference times (the first time takes a few minutes)",
+   "nl": "Eerste installatie: database, sleutels en referentietijden (de eerste keer duurt een paar minuten)",
+   "places": [
+    "start-mk8dx.ps1:175",
+    "start-mk8dx.sh:152"
+   ]
+  },
+  {
+   "key": "Folder exists without a complete MK8DX operator profile. Keep it and inspect it; do not reset data.",
+   "nl": "De map bestaat, maar zonder compleet MK8DX-beheerprofiel. Bewaar de map en bekijk hem; zet geen gegevens terug.",
+   "places": [
+    "start-mk8dx.ps1:125"
+   ]
+  },
+  {
+   "key": "Full database name (including provider prefix if shown): ",
+   "nl": "Volledige databasenaam (met het voorvoegsel van de provider, als dat getoond wordt): ",
+   "places": [
+    "native_install.py:133"
+   ]
+  },
+  {
+   "key": "Home or club network with your own mail server (advanced; for most homes and clubs use the mk8dx-a2 package, which needs no mail server)",
+   "nl": "Thuis- of clubnetwerk met je eigen mailserver (geavanceerd; voor de meeste huishoudens en clubs gebruik je het pakket mk8dx-a2, dat geen mailserver nodig heeft)",
+   "places": [
+    "install.py:414"
+   ]
+  },
+  {
+   "key": "Home or club network without internet (the mk8dx-a2 package opens this setup in your browser)",
+   "nl": "Thuis- of clubnetwerk zonder internet (het pakket mk8dx-a2 opent deze installatie in je browser)",
+   "places": [
+    "install.py:416"
+   ]
+  },
+  {
+   "key": "Host page (only on this computer): {0}",
+   "nl": "Hostpagina (alleen op deze computer): {0}",
+   "places": [
+    "install.py:948"
+   ]
+  },
+  {
+   "key": "Image loading failed.",
+   "nl": "Laden van de images mislukt.",
+   "places": [
+    "start-mk8dx.ps1:105"
+   ]
+  },
+  {
+   "key": "Images loaded in {0}.",
+   "nl": "Images geladen in {0}.",
+   "places": [
+    "start-mk8dx.ps1:106"
+   ]
+  },
+  {
+   "key": "Installation path is a link; use a normal folder.",
+   "nl": "Het installatiepad is een koppeling; gebruik een gewone map.",
+   "places": [
+    "start-mk8dx.ps1:123"
+   ]
+  },
+  {
+   "key": "Installation step stopped: {0}",
+   "nl": "Installatiestap gestopt: {0}",
+   "places": [
+    "install.py:1270"
+   ]
+  },
+  {
+   "key": "Installing the included Python packages failed.",
+   "nl": "Het installeren van de meegeleverde Python-pakketten is mislukt.",
+   "places": [
+    "start-mk8dx.ps1:74",
+    "start-mk8dx.sh:105"
+   ]
+  },
+  {
+   "key": "Keep the MK8DX window from Start-MK8DX-No-Docker.cmd open while you use this.",
+   "nl": "Houd het MK8DX-venster van Start-MK8DX-No-Docker.cmd open zolang je dit gebruikt.",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:23"
+   ]
+  },
+  {
+   "key": "LAN firewall rule (Private profile, 80/443): {0}",
+   "nl": "LAN-firewallregel (profiel Particulier, 80/443): {0}",
+   "places": [
+    "install.py:947"
+   ]
+  },
+  {
+   "key": "Limited database user (full name): ",
+   "nl": "Beperkte databasegebruiker (volledige naam): ",
+   "places": [
+    "native_install.py:134"
+   ]
+  },
+  {
+   "key": "Loading the included Docker images",
+   "nl": "De meegeleverde Docker-images laden",
+   "places": [
+    "start-mk8dx.ps1:100"
+   ]
+  },
+  {
+   "key": "Loading the included Docker images ({0} GB). This can take several minutes; the time below keeps counting.",
+   "nl": "De meegeleverde Docker-images laden ({0} GB). Dit kan enkele minuten duren; de tijd hieronder blijft doortellen.",
+   "places": [
+    "start-mk8dx.ps1:86"
+   ]
+  },
+  {
+   "key": "Loading the included Docker images. This can take several minutes.",
+   "nl": "De meegeleverde Docker-images laden. Dit kan enkele minuten duren.",
+   "places": [
+    "start-mk8dx.sh:90"
+   ]
+  },
+  {
+   "key": "Local mail inbox: {0}",
+   "nl": "Lokale mailinbox: {0}",
+   "places": [
+    "install.py:1263"
+   ]
+  },
+  {
+   "key": "Local test mailbox: {0}",
+   "nl": "Lokale testmailbox: {0}",
+   "places": [
+    "native_install.py:119"
+   ]
+  },
+  {
+   "key": "MK8DX is not installed yet. Start {0} first.",
+   "nl": "MK8DX is nog niet geïnstalleerd. Start eerst {0}.",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:9"
+   ]
+  },
+  {
+   "key": "MK8DX is starting. Leave this window open. Open {0}",
+   "nl": "MK8DX start. Laat dit venster open. Open {0}",
+   "places": [
+    "native_install.py:275"
+   ]
+  },
+  {
+   "key": "MK8DX package: {0}",
+   "nl": "MK8DX-pakket: {0}",
+   "places": [
+    "start-mk8dx.ps1:28",
+    "mk8dx-ui.ps1:703",
+    "start-mk8dx.sh:52",
+    "mk8dx-ui.sh:412"
+   ]
+  },
+  {
+   "key": "MK8DX starts now. Leave this window open while you use the website.",
+   "nl": "MK8DX start nu. Laat dit venster open zolang je de website gebruikt.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:33"
+   ]
+  },
+  {
+   "key": "MK8DX stopped. Read the message above, fix it and start this file again.",
+   "nl": "MK8DX is gestopt. Lees de melding hierboven, los het op en start dit bestand opnieuw.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:51"
+   ]
+  },
+  {
+   "key": "MK8DX will create its own MariaDB 11.4 database inside the private installation folder.",
+   "nl": "MK8DX maakt een eigen MariaDB 11.4-database in de private installatiemap.",
+   "places": [
+    "native_install.py:127"
+   ]
+  },
+  {
+   "key": "Mailbox SMTP login: ",
+   "nl": "SMTP-login van de mailbox: ",
+   "places": [
+    "native_install.py:143"
+   ]
+  },
+  {
+   "key": "Mailbox SMTP password (hidden): ",
+   "nl": "SMTP-wachtwoord van de mailbox (verborgen): ",
+   "places": [
+    "native_install.py:144"
+   ]
+  },
+  {
+   "key": "Mailbox SMTP server name: ",
+   "nl": "SMTP-servernaam van de mailbox: ",
+   "places": [
+    "native_install.py:141"
+   ]
+  },
+  {
+   "key": "Make a backup (it is checked right away)",
+   "nl": "Een back-up maken (die wordt meteen gecontroleerd)",
+   "places": [
+    "start-mk8dx.ps1:181",
+    "start-mk8dx.sh:162"
+   ]
+  },
+  {
+   "key": "Make a backup - it is checked right away",
+   "nl": "Een back-up maken - die wordt meteen gecontroleerd",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Make me administrator (after you signed in once)",
+   "nl": "Maak mij beheerder (nadat je één keer bent ingelogd)",
+   "places": [
+    "start-mk8dx.ps1:138",
+    "start-mk8dx.sh:135"
+   ]
+  },
+  {
+   "key": "Make me administrator - after you signed in once",
+   "nl": "Maak mij beheerder - nadat je één keer bent ingelogd",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Making and checking a backup",
+   "nl": "Back-up maken en controleren",
+   "places": [
+    "start-mk8dx.ps1:197",
+    "start-mk8dx.sh:175"
+   ]
+  },
+  {
+   "key": "Missing prebuilt image {0}. Use the complete host installation package.",
+   "nl": "Vooraf gebouwde image {0} ontbreekt. Gebruik het complete installatiepakket voor de host.",
+   "places": [
+    "start-mk8dx.ps1:80"
+   ]
+  },
+  {
+   "key": "Moved to the new address.",
+   "nl": "Verhuisd naar het nieuwe adres.",
+   "places": [
+    "install.py:404"
+   ]
+  },
+  {
+   "key": "Network: {0}",
+   "nl": "Netwerk: {0}",
+   "places": [
+    "install.py:399"
+   ]
+  },
+  {
+   "key": "Next: open XAMPP Control Panel and click Start next to Apache.",
+   "nl": "Volgende stap: open XAMPP Control Panel en klik op Start naast Apache.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:34"
+   ]
+  },
+  {
+   "key": "Next: type 8 to open the website, sign in with your address, then type 5 to become administrator.",
+   "nl": "Volgende stap: typ 8 om de website te openen, log in met je adres en typ daarna 5 om beheerder te worden.",
+   "places": [
+    "start-mk8dx.ps1:169"
+   ]
+  },
+  {
+   "key": "Node.js was not found. Install Node.js 24 from nodejs.org, close this window and start this file again.",
+   "nl": "Node.js is niet gevonden. Installeer Node.js 24 van nodejs.org, sluit dit venster en start dit bestand opnieuw.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:46"
+   ]
+  },
+  {
+   "key": "Note: the package folder is read-only, so the next start loads the images again.",
+   "nl": "Let op: de pakketmap is alleen-lezen, dus bij de volgende start worden de images opnieuw geladen.",
+   "places": [
+    "start-mk8dx.ps1:108",
+    "start-mk8dx.sh:93"
+   ]
+  },
+  {
+   "key": "Open on this computer: {0}",
+   "nl": "Open op deze computer: {0}",
+   "places": [
+    "install.py:960"
+   ]
+  },
+  {
+   "key": "Open the website in your browser",
+   "nl": "De website in je browser openen",
+   "places": [
+    "start-mk8dx.ps1:182"
+   ]
+  },
+  {
+   "key": "Opening MK8DX beheer in your browser",
+   "nl": "MK8DX beheer openen in je browser",
+   "places": [
+    "start-mk8dx.ps1:114",
+    "mk8dx-ui.ps1:711",
+    "start-mk8dx.sh:121",
+    "mk8dx-ui.sh:419"
+   ]
+  },
+  {
+   "key": "Phones and other PCs first open: {0}",
+   "nl": "Telefoons en andere pc's openen eerst: {0}",
+   "places": [
+    "install.py:949"
+   ]
+  },
+  {
+   "key": "Phones and other PCs open {0} and sign in again; paired apps pair again.",
+   "nl": "Telefoons en andere pc's openen {0} en loggen opnieuw in; gekoppelde apps koppel je opnieuw.",
+   "places": [
+    "install.py:405"
+   ]
+  },
+  {
+   "key": "Preparing the MK8DX programs",
+   "nl": "De MK8DX-programma's voorbereiden",
+   "places": [
+    "start-mk8dx.ps1:50",
+    "mk8dx-ui.ps1:707",
+    "start-mk8dx.sh:66",
+    "mk8dx-ui.sh:415"
+   ]
+  },
+  {
+   "key": "Preparing the included Python packages (once, without internet).",
+   "nl": "De meegeleverde Python-pakketten voorbereiden (eenmalig, zonder internet).",
+   "places": [
+    "start-mk8dx.ps1:70",
+    "start-mk8dx.sh:101"
+   ]
+  },
+  {
+   "key": "Press Ctrl+C here to stop this MK8DX Node process and its local test mailbox.",
+   "nl": "Druk hier op Ctrl+C om dit MK8DX-Node-proces en de lokale testmailbox te stoppen.",
+   "places": [
+    "native_install.py:276"
+   ]
+  },
+  {
+   "key": "Private backup (keep it safe, never share it): {0}",
+   "nl": "Private back-up (bewaar hem goed, deel hem nooit): {0}",
+   "places": [
+    "start-mk8dx.ps1:159",
+    "start-mk8dx.sh:149"
+   ]
+  },
+  {
+   "key": "Private backup - keep it safe, never share it: {0}",
+   "nl": "Private back-up - bewaar hem goed, deel hem nooit: {0}",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:46"
+   ]
+  },
+  {
+   "key": "Private backup complete: {0}",
+   "nl": "Private back-up klaar: {0}",
+   "places": [
+    "native_install.py:409"
+   ]
+  },
+  {
+   "key": "Private installation: {0}",
+   "nl": "Private installatie: {0}",
+   "places": [
+    "start-mk8dx.ps1:29",
+    "start-mk8dx.sh:114",
+    "Start-MK8DX-No-Docker.cmd:24",
+    "install.py:1260"
+   ]
+  },
+  {
+   "key": "Private website name [mk8dx.home.arpa]: ",
+   "nl": "Private websitenaam [mk8dx.home.arpa]: ",
+   "places": [
+    "install.py:1102"
+   ]
+  },
+  {
+   "key": "Public website host name (without https://): ",
+   "nl": "Openbare hostnaam van de website (zonder https://): ",
+   "places": [
+    "install.py:1105"
+   ]
+  },
+  {
+   "key": "Public website on shared hosting with Node.js and MariaDB",
+   "nl": "Openbare website op gedeelde hosting met Node.js en MariaDB",
+   "places": [
+    "install.py:419"
+   ]
+  },
+  {
+   "key": "Public website on your own server (a VPS with Docker, your own domain and a mail provider)",
+   "nl": "Openbare website op je eigen server (een VPS met Docker, je eigen domein en een mailprovider)",
+   "places": [
+    "install.py:417"
+   ]
+  },
+  {
+   "key": "Python 3.12 or newer was not found. Install it from python.org with 'Add python.exe to PATH' ticked, close this window and start this file again.",
+   "nl": "Python 3.12 of nieuwer is niet gevonden. Installeer het van python.org met 'Add python.exe to PATH' aangevinkt, sluit dit venster en start dit bestand opnieuw.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:41"
+   ]
+  },
+  {
+   "key": "Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.",
+   "nl": "Python 3.12 tot en met 3.15 ontbreekt. Installeer het (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) en probeer het opnieuw.",
+   "places": [
+    "start-mk8dx.sh:55"
+   ]
+  },
+  {
+   "key": "Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.",
+   "nl": "Python 3.12 tot en met 3.15 ontbreekt. Installeer de Python install manager van python.org (of uit de Microsoft Store), voer uit: py install 3.15, open PowerShell opnieuw en probeer het nog eens.",
+   "places": [
+    "start-mk8dx.ps1:37"
+   ]
+  },
+  {
+   "key": "Ready. MK8DX beheer opens in your browser; keep this window open.",
+   "nl": "Klaar. MK8DX beheer opent in je browser; laat dit venster open.",
+   "places": [
+    "start-mk8dx.ps1:115",
+    "start-mk8dx.sh:122"
+   ]
+  },
+  {
+   "key": "Ready. The setup opens in your browser.",
+   "nl": "Klaar. De installatie opent in je browser.",
+   "places": [
+    "mk8dx-ui.ps1:712",
+    "mk8dx-ui.sh:420"
+   ]
+  },
+  {
+   "key": "SMTP implicit-TLS port [465]: ",
+   "nl": "SMTP-poort met impliciete TLS [465]: ",
+   "places": [
+    "install.py:1109",
+    "native_install.py:142"
+   ]
+  },
+  {
+   "key": "SMTP login (not your MK8DX admin account): ",
+   "nl": "SMTP-login (niet je MK8DX-beheerdersaccount): ",
+   "places": [
+    "install.py:1110"
+   ]
+  },
+  {
+   "key": "SMTP password (hidden): ",
+   "nl": "SMTP-wachtwoord (verborgen): ",
+   "places": [
+    "install.py:1112"
+   ]
+  },
+  {
+   "key": "SMTP server name supplied by your mail provider: ",
+   "nl": "SMTP-servernaam van je mailprovider: ",
+   "places": [
+    "install.py:1108"
+   ]
+  },
+  {
+   "key": "Setup cancelled before a choice was made; nothing was created.",
+   "nl": "Installatie geannuleerd voordat er een keuze was gemaakt; er is niets aangemaakt.",
+   "places": [
+    "install.py:1032"
+   ]
+  },
+  {
+   "key": "Setup cancelled. Start the same file again to continue.",
+   "nl": "Installatie geannuleerd. Start hetzelfde bestand opnieuw om verder te gaan.",
+   "places": [
+    "install.py:1272"
+   ]
+  },
+  {
+   "key": "Show the addresses",
+   "nl": "De adressen tonen",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Show the website address",
+   "nl": "Het websiteadres tonen",
+   "places": [
+    "start-mk8dx.sh:164"
+   ]
+  },
+  {
+   "key": "Sign-in mail - a test inbox: {1}",
+   "nl": "Inlogmail - een testinbox: {1}",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:34",
+    "Manage-MK8DX-No-Docker.cmd:51"
+   ]
+  },
+  {
+   "key": "Sign-in mail arrives in the local test inbox: {0}",
+   "nl": "Inlogmail komt binnen in de lokale testinbox: {0}",
+   "places": [
+    "start-mk8dx.ps1:168"
+   ]
+  },
+  {
+   "key": "Sign-in mail for this trial arrives in the local inbox: {0}",
+   "nl": "Inlogmail voor deze proef komt binnen in de lokale inbox: {0}",
+   "places": [
+    "start-mk8dx.ps1:203"
+   ]
+  },
+  {
+   "key": "Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.",
+   "nl": "Inlogmail: MK8DX verstuurt die via je mailprovider over TLS op poort 465 (impliciete TLS). Een provider die alleen STARTTLS op poort 587 aanbiedt, werkt nog niet. Het wachtwoord is niet zichtbaar terwijl je typt.",
+   "places": [
+    "install.py:1106",
+    "native_install.py:139"
+   ]
+  },
+  {
+   "key": "Start MK8DX",
+   "nl": "MK8DX starten",
+   "places": [
+    "start-mk8dx.ps1:180",
+    "start-mk8dx.sh:158"
+   ]
+  },
+  {
+   "key": "Starting MK8DX",
+   "nl": "MK8DX starten",
+   "places": [
+    "start-mk8dx.ps1:193",
+    "start-mk8dx.sh:171",
+    "Start-MK8DX-No-Docker.cmd:32"
+   ]
+  },
+  {
+   "key": "Starting the new version",
+   "nl": "De nieuwe versie starten",
+   "places": [
+    "install.py:923"
+   ]
+  },
+  {
+   "key": "Stop MK8DX",
+   "nl": "MK8DX stoppen",
+   "places": [
+    "start-mk8dx.ps1:181",
+    "start-mk8dx.sh:160"
+   ]
+  },
+  {
+   "key": "Stopping MK8DX",
+   "nl": "MK8DX stoppen",
+   "places": [
+    "start-mk8dx.ps1:195",
+    "start-mk8dx.sh:173"
+   ]
+  },
+  {
+   "key": "Stopping this MK8DX installation",
+   "nl": "Deze MK8DX-installatie stoppen",
+   "places": [
+    "native_install.py:284"
+   ]
+  },
+  {
+   "key": "That does not look like one email address; try again.",
+   "nl": "Dat lijkt niet op één e-mailadres; probeer het opnieuw.",
+   "places": [
+    "install.py:1119",
+    "native_install.py:149"
+   ]
+  },
+  {
+   "key": "That step did not finish. Is the MK8DX window still open? Read the message above.",
+   "nl": "Die stap is niet afgerond. Is het MK8DX-venster nog open? Lees de melding hierboven.",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:59"
+   ]
+  },
+  {
+   "key": "That step did not finish. Read the message above; your data is kept.",
+   "nl": "Die stap is niet afgerond. Lees de melding hierboven; je gegevens blijven bewaard.",
+   "places": [
+    "mk8dx-ui.ps1:710",
+    "mk8dx-ui.sh:418"
+   ]
+  },
+  {
+   "key": "That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.",
+   "nl": "Die stap is niet afgerond. Lees de melding hierboven; je gegevens blijven bewaard. Los het op en kies de stap opnieuw.",
+   "places": [
+    "start-mk8dx.ps1:146",
+    "start-mk8dx.sh:144"
+   ]
+  },
+  {
+   "key": "The address {0} is not active on this computer; reconnect it or use change-lan-address",
+   "nl": "Het adres {0} is niet actief op deze computer; verbind het opnieuw of gebruik change-lan-address",
+   "places": [
+    "install.py:687",
+    "install.py:735"
+   ]
+  },
+  {
+   "key": "The guided setup did not finish.",
+   "nl": "De begeleide installatie is niet afgerond.",
+   "places": [
+    "start-mk8dx.ps1:129",
+    "start-mk8dx.sh:130"
+   ]
+  },
+  {
+   "key": "The network is '{0}'; ask its administrator to allow TCP 80/443",
+   "nl": "Het netwerk is '{0}'; vraag de beheerder ervan om TCP 80/443 toe te staan",
+   "places": [
+    "install.py:703"
+   ]
+  },
+  {
+   "key": "The network of {0} is '{1}', not Private. In Windows Settings > Network & internet, open this network and choose 'Private network', then run this step again",
+   "nl": "Het netwerk van {0} is '{1}', niet Private. Open in Windows-instellingen > Netwerk en internet dit netwerk, kies 'Particulier netwerk' en voer deze stap daarna opnieuw uit",
+   "places": [
+    "install.py:737"
+   ]
+  },
+  {
+   "key": "The page phones and other PCs open first is updated to this package.",
+   "nl": "De pagina die telefoons en andere pc's eerst openen, is bijgewerkt naar dit pakket.",
+   "places": [
+    "install.py:632"
+   ]
+  },
+  {
+   "key": "The selected step stopped. Read the message above before retrying.",
+   "nl": "De gekozen stap is gestopt. Lees de melding hierboven voordat je het opnieuw probeert.",
+   "places": [
+    "Start-MK8DX.cmd:6",
+    "Start-MK8DX-LAN.cmd:6"
+   ]
+  },
+  {
+   "key": "This Windows computer without Docker (XAMPP and Node.js)",
+   "nl": "Deze Windows-computer zonder Docker (XAMPP en Node.js)",
+   "places": [
+    "install.py:418"
+   ]
+  },
+  {
+   "key": "This Windows host's private IPv4 address (for example 192.168.0.50): ",
+   "nl": "Privé IPv4-adres van deze Windows-host (bijvoorbeeld 192.168.0.50): ",
+   "places": [
+    "install.py:1103"
+   ]
+  },
+  {
+   "key": "This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ",
+   "nl": "Privé IPv4-adres van deze computer (zie ipconfig, bijv. 192.168.0.50): ",
+   "places": [
+    "install.py:1098"
+   ]
+  },
+  {
+   "key": "This installation is an A2 home or club installation; start it from the mk8dx-a2 package.",
+   "nl": "Dit is een A2-installatie voor thuis of de club; start hem vanuit het pakket mk8dx-a2.",
+   "places": [
+    "start-mk8dx.ps1:135",
+    "start-mk8dx.sh:137"
+   ]
+  },
+  {
+   "key": "This installation runs without Docker. A3: press Ctrl+C in the MK8DX window (Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in your hosting panel.",
+   "nl": "Deze installatie draait zonder Docker. A3: druk op Ctrl+C in het MK8DX-venster (Start-MK8DX-No-Docker.cmd) en stop Apache in XAMPP. B2: stop de Node.js-app in je hostingpaneel.",
+   "places": [
+    "install.py:1063"
+   ]
+  },
+  {
+   "key": "This package ({0}) is older than the installation ({1})",
+   "nl": "Dit pakket ({0}) is ouder dan de installatie ({1})",
+   "places": [
+    "install.py:903"
+   ]
+  },
+  {
+   "key": "This package is a different version than your installation runs ({0}). Choose 7 (update) first: it makes a checked backup and applies the database updates. Your data is unchanged.",
+   "nl": "Dit pakket is een andere versie dan je installatie draait ({0}). Kies eerst 7 (bijwerken): die maakt een gecontroleerde back-up en voert de database-updates uit. Je gegevens blijven ongewijzigd.",
+   "places": [
+    "install.py:812"
+   ]
+  },
+  {
+   "key": "Tip: reserve it in your router (DHCP reservation); a new address later means a new phone setup QR.",
+   "nl": "Tip: reserveer het in je router (DHCP-reservering); een nieuw adres betekent later een nieuwe QR-code om telefoons in te stellen.",
+   "places": [
+    "install.py:1097"
+   ]
+  },
+  {
+   "key": "To stop: press Ctrl+C here, then Stop next to Apache.",
+   "nl": "Stoppen: druk hier op Ctrl+C en daarna op Stop naast Apache.",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:34"
+   ]
+  },
+  {
+   "key": "Try MK8DX on this computer only (Docker; sign-in mail stays on this computer)",
+   "nl": "MK8DX alleen op deze computer uitproberen (Docker; inlogmail blijft op deze computer)",
+   "places": [
+    "install.py:413"
+   ]
+  },
+  {
+   "key": "Type a number and press Enter",
+   "nl": "Typ een nummer en druk op Enter",
+   "places": [
+    "start-mk8dx.ps1:188"
+   ]
+  },
+  {
+   "key": "Type a number and press Enter: ",
+   "nl": "Typ een nummer en druk op Enter: ",
+   "places": [
+    "start-mk8dx.sh:166",
+    "Manage-MK8DX-No-Docker.cmd:28"
+   ]
+  },
+  {
+   "key": "Type {0} or {1} and press Enter: ",
+   "nl": "Typ {0} of {1} en druk op Enter: ",
+   "places": [
+    "install.py:1030"
+   ]
+  },
+  {
+   "key": "Unlock the host page (first administrator, invitations)",
+   "nl": "De hostpagina ontgrendelen (eerste beheerder, uitnodigingen)",
+   "places": [
+    "start-mk8dx.ps1:138",
+    "start-mk8dx.sh:139"
+   ]
+  },
+  {
+   "key": "Update to this package (makes a checked backup first)",
+   "nl": "Bijwerken naar dit pakket (maakt eerst een gecontroleerde back-up)",
+   "places": [
+    "start-mk8dx.ps1:182",
+    "start-mk8dx.sh:163"
+   ]
+  },
+  {
+   "key": "Updated to package {0}",
+   "nl": "Bijgewerkt naar pakket {0}",
+   "places": [
+    "install.py:929"
+   ]
+  },
+  {
+   "key": "Updated to the package of this folder",
+   "nl": "Bijgewerkt naar het pakket van deze map",
+   "places": [
+    "install.py:929"
+   ]
+  },
+  {
+   "key": "Waiting for the Docker engine",
+   "nl": "Wachten op de Docker-engine",
+   "places": [
+    "start-mk8dx.ps1:42",
+    "mk8dx-ui.ps1:705",
+    "start-mk8dx.sh:61",
+    "mk8dx-ui.sh:414"
+   ]
+  },
+  {
+   "key": "Web origin: {0}",
+   "nl": "Web-origin: {0}",
+   "places": [
+    "install.py:1261"
+   ]
+  },
+  {
+   "key": "Website after trusting the certificate: {0}",
+   "nl": "Website nadat je het certificaat vertrouwt: {0}",
+   "places": [
+    "install.py:950"
+   ]
+  },
+  {
+   "key": "Website host name, without https://: ",
+   "nl": "Hostnaam van de website, zonder https://: ",
+   "places": [
+    "native_install.py:130"
+   ]
+  },
+  {
+   "key": "Website: {0}",
+   "nl": "Website: {0}",
+   "places": [
+    "start-mk8dx.ps1:166",
+    "start-mk8dx.ps1:200",
+    "mk8dx-ui.ps1:32",
+    "start-mk8dx.sh:177"
+   ]
+  },
+  {
+   "key": "What do you want to do?",
+   "nl": "Wat wil je doen?",
+   "places": [
+    "start-mk8dx.ps1:186",
+    "start-mk8dx.sh:156",
+    "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Where will MK8DX run?",
+   "nl": "Waar gaat MK8DX draaien?",
+   "places": [
+    "install.py:1024"
+   ]
+  },
+  {
+   "key": "Your own future MK8DX administrator email: ",
+   "nl": "Je eigen e-mailadres als toekomstige MK8DX-beheerder: ",
+   "places": [
+    "install.py:1120",
+    "native_install.py:150"
+   ]
+  },
+  {
+   "key": "Your private installation",
+   "nl": "Je private installatie",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:23"
+   ]
+  },
+  {
+   "key": "Your private installation folder is kept: {0}",
+   "nl": "Je private installatiemap blijft bewaard: {0}",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:52"
+   ]
+  },
+  {
+   "key": "community server",
+   "nl": "communityserver",
+   "places": [
+    "start-mk8dx.ps1:22",
+    "start-mk8dx.sh:47"
+   ]
+  },
+  {
+   "key": "community server without Docker - XAMPP and Node.js",
+   "nl": "communityserver zonder Docker - XAMPP en Node.js",
+   "places": [
+    "Start-MK8DX-No-Docker.cmd:15"
+   ]
+  },
+  {
+   "key": "home & club LAN",
+   "nl": "thuis- & club-LAN",
+   "places": [
+    "start-mk8dx.ps1:22",
+    "mk8dx-ui.ps1:700",
+    "start-mk8dx.sh:48",
+    "mk8dx-ui.sh:409"
+   ]
+  },
+  {
+   "key": "manage the installation without Docker",
+   "nl": "de installatie beheren zonder Docker",
+   "places": [
+    "Manage-MK8DX-No-Docker.cmd:22"
+   ]
+  },
+  {
+   "key": "package {0}",
+   "nl": "pakket {0}",
+   "places": [
+    "mk8dx-ui.ps1:361",
+    "mk8dx-ui.sh:187"
+   ]
+  },
+  {
+   "key": "still loading... {0}",
+   "nl": "nog bezig met laden... {0}",
+   "places": [
+    "start-mk8dx.ps1:96"
+   ]
+  },
+  {
+   "key": "{0}. The previous version is selected again. If it does not start, restore the backup made just before: {1}",
+   "nl": "{0}. De vorige versie is weer gekozen. Als die niet start, zet dan de back-up terug die vlak daarvoor is gemaakt: {1}",
+   "places": [
+    "install.py:913"
+   ]
+  }
+ ]
+}

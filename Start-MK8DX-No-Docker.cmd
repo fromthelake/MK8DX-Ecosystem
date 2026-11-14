@@ -21,7 +21,7 @@ if errorlevel 1 goto nopython
 where node >nul 2>nul
 if errorlevel 1 goto nonode
 %UI% -Show Lap -ShowNumber 2/4 -ShowText "Your private installation"
-%UI% -Show Info -ShowText "Private installation: %MK8DX_A3_STATE%"
+%UI% -Show Info -ShowText "Private installation: {0}" -ShowValues "%MK8DX_A3_STATE%"
 if not exist "%MK8DX_A3_STATE%\operator-profile.json" (
     python tooling\install.py wizard --state-dir "%MK8DX_A3_STATE%"
     if errorlevel 1 goto failed
@@ -31,7 +31,7 @@ python tooling\install.py status --state-dir "%MK8DX_A3_STATE%" >nul
 if errorlevel 1 goto failed
 %UI% -Show Lap -ShowNumber 4/4 -ShowText "Starting MK8DX"
 %UI% -Show Finish -ShowText "MK8DX starts now. Leave this window open while you use the website."
-%UI% -Show Info -ShowText "Next: open XAMPP Control Panel and click Start next to Apache.|Website:                     http://127.0.0.1:18090|Sign-in mail - a test inbox: http://127.0.0.1:18227|To stop: press Ctrl+C here, then Stop next to Apache."
+%UI% -Show Info -ShowText "Next: open XAMPP Control Panel and click Start next to Apache.|Website: {0}|Sign-in mail - a test inbox: {1}|To stop: press Ctrl+C here, then Stop next to Apache." -ShowValues "http://127.0.0.1:18090|http://127.0.0.1:18227"
 echo.
 python tooling\install.py start --state-dir "%MK8DX_A3_STATE%"
 if errorlevel 1 goto failed
@@ -49,7 +49,7 @@ exit /b 1
 :failed
 echo.
 %UI% -Show Fail -ShowText "MK8DX stopped. Read the message above, fix it and start this file again."
-%UI% -Show Info -ShowText "Your private installation folder is kept: %MK8DX_A3_STATE%"
+%UI% -Show Info -ShowText "Your private installation folder is kept: {0}" -ShowValues "%MK8DX_A3_STATE%"
 if defined MK8DX_RACE_FILE del "%MK8DX_RACE_FILE%" >nul 2>nul
 pause
 exit /b 1
