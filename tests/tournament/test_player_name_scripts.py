@@ -96,18 +96,34 @@ def test_japanese_and_chinese_readings_compete_on_confidence():
     assert choose_player_name("#f", 55, same).script == "japanese"
 
 
-def test_memory_is_keyed_by_the_latin_reading_and_settles_latin_after_two_boxes():
+def test_memory_is_keyed_by_the_latin_reading_and_doubts_a_contradicting_text():
     memory = ScriptMemory()
-    memory.remember("t = 55", "japanese")
-    assert memory.recall("t=55") == "japanese"
-    memory.forget("t=55")
-    assert memory.recall("t=55") is None
-    memory.remember("Erik", "latin")
+    taro = scripts.NameChoice("たろう", 100, "japanese")
+    assert memory.settle("t = 55", taro) == taro
+    assert memory.recall("t=55") == ("japanese", "たろう")
+    # the same Latin reading now gives a neighbour's name: a doubt, the frame keeps its Latin reading
+    assert memory.settle("t=55", scripts.NameChoice("たろ", 100, "japanese")) is None
+    assert memory.is_ambiguous("t=55")
+    assert memory.settle("t=55", taro) == taro
+    assert memory.recall("t=55") == ("japanese", "たろう")
+
+
+def test_a_reading_that_stayed_latin_settles_once_if_confident_twice_if_weak():
+    memory = ScriptMemory()
+    latin = scripts.NameChoice("Erik", 70, "latin")
+    assert memory.settle("Erik", latin) is None
     assert memory.recall("Erik") is None
-    memory.remember("Erik", "latin")
+    assert memory.recall("Erik", confident=True) == "latin"
+    memory.settle("Erik", latin)
     assert memory.recall("Erik") == "latin"
-    memory.remember("Erik", "korean")
-    assert memory.recall("Erik") == "korean"
+
+
+def test_a_confident_latin_reading_gives_way_only_to_a_confident_reading_in_its_own_letters():
+    choose = scripts.confident_script_choice
+    assert choose("Onbra", 100, {"cyrillic": [("Ольга", 99)]}).text == "Ольга"
+    assert choose("Menno", 100, {"cyrillic": [("Меппо", 100)]}).script == "latin"  # look-alike letters only
+    assert choose("Onbra", 100, {"cyrillic": [("Ольга", 89)]}).script == "latin"
+    assert choose("194", 90, {"japanese": [("ユウキ", 95)]}).text == "ユウキ"
 
 
 def _fake_readers(monkeypatch, extract_text, latin, script_texts, calls):
@@ -128,13 +144,13 @@ def _fake_readers(monkeypatch, extract_text, latin, script_texts, calls):
 
 
 @pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
-def test_the_name_reader_asks_only_rows_a_script_could_win(monkeypatch):
+def test_every_new_reading_is_read_once_and_only_a_clearly_better_one_passes(monkeypatch):
     from mk8dx_tournament_extraction.engine import extract_text
 
     scripts.SCRIPT_MEMORY.clear()
     calls = []
     _fake_readers(monkeypatch, extract_text, [("Erik", 99), ("1235", 62), ("Sander", 90)],
-                  {"ja": ("たろう", 100), "ko": ("*35", 80)}, calls)
+                  {"ja": {30: ("たろう", 100)}, "ko": {30: ("*35", 80), 60: ("산더", 70)}}, calls)
     image = np.zeros((90, 300, 3), dtype=np.uint8)
     coords = [((0, 0), (200, 30)), ((0, 30), (200, 60)), ((0, 60), (200, 90))]
     try:
@@ -144,8 +160,8 @@ def test_the_name_reader_asks_only_rows_a_script_could_win(monkeypatch):
         scripts.SCRIPT_MEMORY.clear()
     assert names == ["Erik", "たろう", "Sander"]
     assert confidences[1] == 100
-    # one row, every script reader, both preprocessings
-    assert calls == [(code, 1) for code in ("ru", "ru", "ja", "ja", "ko", "ko", "ch_sim", "ch_sim", "ch_tra", "ch_tra")]
+    # all three readings are new: every script reader, both preprocessings, one batch
+    assert calls == [(code, 3) for code in ("ru", "ru", "ja", "ja", "ko", "ko", "ch_sim", "ch_sim", "ch_tra", "ch_tra")]
 
 
 @pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
@@ -166,25 +182,37 @@ def test_a_remembered_script_is_tried_first_and_a_settled_latin_reading_is_left_
 
     try:
         assert read() == ["たろう", "Erik"] and len(calls) == 10  # both rows, every script
-        # "1235": Japanese first; "Erik" stayed Latin once, so every script reads it again
+        # "1235": Japanese first; the weak "Erik" stayed Latin once, so every script reads it again
         assert read() == ["たろう", "Erik"]
         assert calls[:2] == [("ja", 1), ("ja", 1)] and len(calls) == 2 + 10
         # "Erik" stayed Latin twice: left alone; "1235" only reads Japanese
         assert read() == ["たろう", "Erik"] and calls == [("ja", 1), ("ja", 1)]
-        japanese["ja"] = {}  # the evidence changed: every other script reads the box again
+        japanese["ja"] = {0: ("たろ", 100)}  # the remembered reader contradicts itself: Latin for this frame
+        assert read() == ["1235", "Erik"] and calls == [("ja", 1), ("ja", 1)]
+        japanese["ja"] = {}  # no plausible reading at all: every other script reads the box again
         assert read() == ["1235", "Erik"] and len(calls) == 2 + 8
     finally:
         scripts.SCRIPT_MEMORY.clear()
 
 
 @pytest.mark.skipif(recorded_assets() is None, reason=SKIP_REASON)
-def test_confident_latin_readings_never_reach_a_script_reader(monkeypatch):
+def test_a_confident_latin_reading_is_read_once(monkeypatch):
     from mk8dx_tournament_extraction.engine import extract_text
 
     scripts.SCRIPT_MEMORY.clear()
     calls = []
-    _fake_readers(monkeypatch, extract_text, [("Gianni", 98), ("Mar.", 90)], {"ru": ("Меппо", 100)}, calls)
+    _fake_readers(monkeypatch, extract_text, [("Menno", 100), ("Onbra", 100)],
+                  {"ru": {0: ("Меппо", 100), 30: ("Ольга", 99)}}, calls)
     image = np.zeros((60, 300, 3), dtype=np.uint8)
-    names, _ = extract_text.extract_player_names_batched(
-        image, [((0, 0), (200, 30)), ((0, 30), (200, 60))], bundle_kind="2RaceScore", field_name="RacePlayerName")
-    assert names == ["Gianni", "Mar."] and calls == []
+    coords = [((0, 0), (200, 30)), ((0, 30), (200, 60))]
+    try:
+        names, _ = extract_text.extract_player_names_batched(
+            image, coords, bundle_kind="2RaceScore", field_name="RacePlayerName")
+        assert names == ["Menno", "Ольга"] and len(calls) == 10
+        calls.clear()
+        names, _ = extract_text.extract_player_names_batched(
+            image, coords, bundle_kind="2RaceScore", field_name="RacePlayerName")
+        # "Menno" settled after one look; "Onbra" resolved to Cyrillic: only that reader
+        assert names == ["Menno", "Ольга"] and calls == [("ru", 1), ("ru", 1)]
+    finally:
+        scripts.SCRIPT_MEMORY.clear()

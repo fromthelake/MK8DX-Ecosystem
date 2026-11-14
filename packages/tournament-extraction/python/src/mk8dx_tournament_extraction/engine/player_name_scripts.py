@@ -165,62 +165,117 @@ def choose_player_name(
 
 
 def may_need_script_readers(latin_text: str | None, latin_confidence: int) -> bool:
-    """Whether a script reading could still win: only when the Latin reading leaves room for the margin.
+    """Whether a script reading could beat the Latin reading on confidence (85 or lower).
 
-    Empty readings keep their existing placeholder handling.
+    Empty readings keep their existing placeholder handling. A confident Latin reading is read by the
+    script readers once anyway (``confident_script_choice``): confidence does not prove Latin text.
     """
     return bool(str(latin_text or "").strip()) and int(latin_confidence) <= 100 - SCRIPT_MARGIN
+
+
+# A confident Latin reading ("Onbra" for Ольга, at 100%) gives way only to a script reading that is
+# itself this confident and cannot pass for Latin letters.
+CONFIDENT_SCRIPT_CONFIDENCE = 90
+# Cyrillic letters that pass for Latin ones in the game font ("Menno" reads as "Меппо" at 100%).
+CYRILLIC_LATIN_LOOKALIKES = frozenset("АВЕКМНОРСТХаеорсухпгиьткшзбчвнЗБЧ")
+
+
+def shows_own_letters(text: str, script: str) -> bool:
+    if script != "cyrillic":
+        return True
+    return any(character_class(char) == "cyrillic" and char not in CYRILLIC_LATIN_LOOKALIKES for char in text)
+
+
+def confident_script_choice(
+    latin_text: str,
+    latin_confidence: int,
+    script_readings: Mapping[str, Sequence[tuple[str, int]]],
+) -> NameChoice:
+    """For a confident Latin reading: a script reading of its own script and letters, at least 90%
+    confident, with no reading in another script family within the margin; else the Latin reading."""
+    keep = NameChoice(latin_text, latin_confidence, "latin")
+    candidates: list[tuple[int, int, str, str]] = []
+    for order, script in enumerate(SCRIPT_ORDER):
+        for text, confidence in script_readings.get(script, ()):
+            text = " ".join(str(text or "").split())
+            visible = visible_name_characters(text)
+            if (visible and script_share(text, script) >= 0.5
+                    and all(is_switch_name_char(char, script) for char in visible)
+                    and int(confidence) >= CONFIDENT_SCRIPT_CONFIDENCE and shows_own_letters(text, script)):
+                candidates.append((int(confidence), -order, text, script))
+    if not candidates:
+        return keep
+    confidence, _order, text, script = max(candidates)
+    family = _family(text)
+    if any(_family(other) != family and other_confidence > confidence - SCRIPT_MARGIN
+           for other_confidence, _, other, _ in candidates):
+        return keep
+    return NameChoice(text, confidence, script)
 
 
 class ScriptMemory:
     """What the script readers made of a Latin reading earlier in the run.
 
-    Keyed by what the Latin reader saw, never by a result position. A script that resolved the
-    reading is tried first next time and kept only when its reading is plausible again (otherwise
-    every script reads the box and the memory is replaced). A reading that stayed Latin on
-    ``LATIN_CONFIRMATIONS`` boxes is not read again by the script readers.
+    Keyed by what the Latin reader saw, never by a result position.
+
+    - A reading that a script resolved remembers that script and the text it gave. Next time that
+      script is tried first; a reading that contradicts the remembered text is a doubt, and the frame
+      keeps its Latin reading (the key is then ambiguous: only frames agreeing with the first text switch).
+    - A reading that stayed Latin is not read again: a confident one after one look, a weak one after
+      ``LATIN_CONFIRMATIONS`` looks.
     """
 
     LATIN_CONFIRMATIONS = 2
 
     def __init__(self) -> None:
         self._lock = threading.Lock()
-        self._scripts: dict[str, str] = {}
+        self._resolved: dict[str, tuple[str, str]] = {}
         self._latin: dict[str, int] = {}
+        self._ambiguous: set[str] = set()
 
     @staticmethod
     def key(latin_text: str) -> str:
         return "".join(unicodedata.normalize("NFKC", str(latin_text or "")).split())
 
-    def recall(self, latin_text: str) -> str | None:
-        """The remembered script, "latin" for a settled Latin reading, or None."""
+    def recall(self, latin_text: str, confident: bool = False) -> tuple[str, str] | str | None:
+        """(script, text) for a resolved reading, "latin" for a settled one, or None."""
         key = self.key(latin_text)
         with self._lock:
-            if key in self._scripts:
-                return self._scripts[key]
-            if self._latin.get(key, 0) >= self.LATIN_CONFIRMATIONS:
+            if key in self._resolved:
+                return self._resolved[key]
+            if self._latin.get(key, 0) >= (1 if confident else self.LATIN_CONFIRMATIONS):
                 return "latin"
         return None
 
-    def remember(self, latin_text: str, script: str) -> None:
+    def settle(self, latin_text: str, choice: "NameChoice") -> NameChoice | None:
+        """Record what this frame's script readers chose; the choice to pass on (None: keep Latin)."""
         key = self.key(latin_text)
         if not key:
-            return
+            return choice if choice.script != "latin" else None
         with self._lock:
-            if script == "latin":
-                self._latin[key] = self._latin.get(key, 0) + 1
-            else:
-                self._scripts[key] = script
+            if choice.script == "latin":
+                if key not in self._resolved:
+                    self._latin[key] = self._latin.get(key, 0) + 1
+                return None
+            known = self._resolved.get(key)
+            if known is None:
+                self._resolved[key] = (choice.script, choice.text)
                 self._latin.pop(key, None)
+                return choice
+            if "".join(known[1].split()) == "".join(choice.text.split()):
+                return choice
+            self._ambiguous.add(key)
+            return None
 
-    def forget(self, latin_text: str) -> None:
+    def is_ambiguous(self, latin_text: str) -> bool:
         with self._lock:
-            self._scripts.pop(self.key(latin_text), None)
+            return self.key(latin_text) in self._ambiguous
 
     def clear(self) -> None:
         with self._lock:
-            self._scripts.clear()
+            self._resolved.clear()
             self._latin.clear()
+            self._ambiguous.clear()
 
 
 SCRIPT_MEMORY = ScriptMemory()

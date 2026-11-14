@@ -1473,69 +1473,77 @@ def _apply_player_name_script_fallback(
     bundle_kind: str,
     field_name: str,
 ) -> None:
-    """Read the name rows a script reading could still win with the script readers (lazy, cached).
+    """Read name rows with the script readers (lazy, cached) and pass on a clearly better reading.
 
-    A Latin reading that an earlier box resolved tries the remembered script first; one that stayed
-    Latin twice is left alone; every other such row is read by all script readers, and the reading
-    chosen by ``player_name_scripts.choose_player_name`` is passed on.
+    A weak Latin reading (85% or lower) is read until it settled; a confident one once, because
+    confidence does not prove Latin text. A reading resolved before tries its script first; a
+    contradicting text keeps the Latin reading for that frame (``player_name_scripts.ScriptMemory``).
     """
     if not PLAYER_NAME_SCRIPT_READERS_ENABLED:
         return
-    memory = player_name_scripts.SCRIPT_MEMORY
+    names = player_name_scripts
+    memory = names.SCRIPT_MEMORY
 
     def latin_confidence(row_index: int) -> int:
         values = confidences_by_row[row_index]
         return int(sum(values) // len(values)) if values else 0
 
     latin_texts = {row_index: " ".join(texts).strip() for row_index, texts in enumerate(texts_by_row)}
-    pending = [
-        row_index
-        for row_index, latin_text in latin_texts.items()
-        if player_name_scripts.may_need_script_readers(latin_text, latin_confidence(row_index))
-    ]
-    recalled = {row_index: memory.recall(latin_texts[row_index]) for row_index in pending}
-    settled = [row_index for row_index in pending if recalled[row_index] == "latin"]
-    PLAYER_NAME_SCRIPT_STATS["rows_settled_latin"] += len(settled)
-    pending = [row_index for row_index in pending if recalled[row_index] != "latin"]
-    if not pending:
+    confident = {row_index: not names.may_need_script_readers(text, latin_confidence(row_index))
+                 for row_index, text in latin_texts.items()}
+    remembered: dict[int, str] = {}
+    full: list[int] = []
+    for row_index, text in latin_texts.items():
+        if not text:
+            continue
+        recalled = memory.recall(text, confident[row_index])
+        if recalled == "latin":
+            PLAYER_NAME_SCRIPT_STATS["rows_settled_latin"] += 1
+        elif isinstance(recalled, tuple):
+            remembered[row_index] = recalled[0]
+        else:
+            full.append(row_index)
+    if not remembered and not full:
         return
-    PLAYER_NAME_SCRIPT_STATS["rows_tried"] += len(pending)
+    PLAYER_NAME_SCRIPT_STATS["rows_tried"] += len(remembered) + len(full)
 
-    def accept(row_index: int, choice) -> None:
-        PLAYER_NAME_SCRIPT_STATS[f"rows_{choice.script}"] += 1
-        texts_by_row[row_index] = [choice.text]
-        confidences_by_row[row_index] = [choice.confidence]
+    def choose(row_index: int, readings_for_row):
+        chooser = names.confident_script_choice if confident[row_index] else names.choose_player_name
+        return chooser(latin_texts[row_index], latin_confidence(row_index), readings_for_row)
 
-    readings: dict[int, dict[str, list[tuple[str, int]]]] = {row_index: {} for row_index in pending}
-    remembered = {row_index: recalled[row_index] for row_index in pending if recalled[row_index]}
+    def settle(row_index: int, choice) -> None:
+        passed = memory.settle(latin_texts[row_index], choice)
+        if passed is None:
+            if choice.script != "latin":
+                PLAYER_NAME_SCRIPT_STATS["rows_doubt"] += 1
+            return
+        PLAYER_NAME_SCRIPT_STATS[f"rows_{passed.script}"] += 1
+        texts_by_row[row_index] = [passed.text]
+        confidences_by_row[row_index] = [passed.confidence]
+
+    readings: dict[int, dict[str, list[tuple[str, int]]]] = {
+        row_index: {} for row_index in [*remembered, *full]}
     by_script: dict[str, list[int]] = defaultdict(list)
     for row_index, script in remembered.items():
         by_script[script].append(row_index)
     for script, row_indices in by_script.items():
         _read_player_name_rows_with_script(
             image, coord_list, row_indices, script, readings, bundle_kind=bundle_kind, field_name=field_name)
-    full = [row_index for row_index in pending if row_index not in remembered]
     for row_index, script in remembered.items():
-        choice = player_name_scripts.choose_player_name(
-            latin_texts[row_index], latin_confidence(row_index), readings[row_index])
+        choice = choose(row_index, readings[row_index])
         if choice.script == script:
             PLAYER_NAME_SCRIPT_STATS["rows_remembered"] += 1
-            accept(row_index, choice)
+            settle(row_index, choice)
         else:
-            memory.forget(latin_texts[row_index])
-            full.append(row_index)
+            full.append(row_index)  # no plausible reading in the remembered script: read every script
     if not full:
         return
-    for script in player_name_scripts.SCRIPT_ORDER:
+    for script in names.SCRIPT_ORDER:
         missing = [row_index for row_index in full if remembered.get(row_index) != script]
         _read_player_name_rows_with_script(
             image, coord_list, missing, script, readings, bundle_kind=bundle_kind, field_name=field_name)
     for row_index in full:
-        choice = player_name_scripts.choose_player_name(
-            latin_texts[row_index], latin_confidence(row_index), readings[row_index])
-        memory.remember(latin_texts[row_index], choice.script)
-        if choice.script != "latin":
-            accept(row_index, choice)
+        settle(row_index, choose(row_index, readings[row_index]))
 
 
 def extract_player_names_batched(
