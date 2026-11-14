@@ -75,3 +75,20 @@ python tooling/assets/shared_asset_source.py verify
 Het werkt de objectopslag, de collectieversie, de selecties per gebruiker en `compatibility.json` bij,
 controleert de hele collectie en draait terug bij een fout. Nieuwe soorten bestanden, modellen en
 cataloguswijzigingen lopen via de software-import hierboven.
+
+## Een downloadbaar upstream-model toelaten
+
+Sommige openbare upstream-modellen staan niet in Git. Builds downloaden ze, controleren ze en plaatsen ze in het
+pakket (zie [Client builds](CLIENT_BUILDS.md#build-time-ocr-models)). Je laat er één toe door het vast te leggen in
+`packages/assets/downloaded-models-v1.json`:
+
+```sh
+python tooling/assets/downloaded_models.py admit --group ocr-models --path model/<naam>.pth \
+  --url https://github.com/JaidedAI/EasyOCR/releases/download/<tag>/<naam>.zip --member <naam>.pth \
+  --md5 <md5 uit de config van het upstream project> --license Apache-2.0
+```
+
+Het commando accepteert alleen https-URL's en een licentie waarvan de tekst in `packages/assets/licenses/` staat.
+Het downloadt het archief en weigert het model als de MD5 van het uitgepakte bestand afwijkt van de upstream-waarde.
+Het legt grootte en SHA-256 van het bestand en van het archief vast. Controleer de JSON-diff en zet het bestand in
+[Third-party materials](THIRD_PARTY_MATERIALS.md). De EasyOCR-herkenningsmodellen zijn zo toegelaten.

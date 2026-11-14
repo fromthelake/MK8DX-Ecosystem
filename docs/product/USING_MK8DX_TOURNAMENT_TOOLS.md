@@ -10,9 +10,11 @@ local extraction needs no account.
 
 1. Extract the complete Tournament Tools archive to a writable folder.
 2. Run `Install-MK8DX-TournamentTools.cmd`. It obtains Python 3.12 and public
-   packages if needed, then writes five launchers. The reviewed EasyOCR detection and
-   Latin-script weights are already in `runtime-assets/ocr-models`; the first English OCR run downloads
-   `english_g2.pth` (about 15 MB) into the same folder once. Review `install.log` if setup fails.
+   packages if needed, then writes five launchers. All OCR models are included:
+   `runtime-assets/ocr-models` holds the EasyOCR detection model and every recognition
+   model the readers use (English, Latin script, Cyrillic, Japanese, Korean, simplified
+   and traditional Chinese), so after the install processing works offline. Review
+   `install.log` if setup fails.
    PyTorch 2.15 uses CUDA 13.2. If `nvidia-smi` reports an older CUDA version,
    automatic setup selects CPU. Forcing CUDA then stops with a driver message;
    update the NVIDIA driver and select `auto` to enable CUDA again.

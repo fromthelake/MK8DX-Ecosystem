@@ -58,10 +58,9 @@ A publicação e o rating da comunidade são decisões separadas no último pass
 
 ### Requisitos
 
-- Windows em x86-64 (testado no Windows 11) e vários GB de espaço livre. O ZIP tem cerca de 160 MB e cerca de 1 GB depois de extraído; o
-  instalador precisa de internet uma vez, para transferir o Python 3.12 e pacotes públicos (mais com GPU/CUDA); os modelos de deteção e
-  de OCR de escrita latina estão incluídos, e a primeira execução de OCR em inglês transfere mais um modelo (english_g2.pth,
-  cerca de 15 MB) uma vez. Depois disso, o processamento funciona offline. Uma placa
+- Windows em x86-64 (testado no Windows 11) e vários GB de espaço livre. O ZIP tem cerca de 450 MB e cerca de 1,3 GB depois de extraído; o
+  instalador precisa de internet uma vez, para transferir o Python 3.12 e pacotes públicos (mais com GPU/CUDA); todos os modelos de OCR
+  estão incluídos. Depois da instalação, o processamento funciona offline. Uma placa
   NVIDIA só acelera o passo de OCR; a primeira leitura de uma gravação corre sempre no CPU (vê
   [que passos usam a placa gráfica](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - Para a captura em direto: uma placa de captura com um controlador do Windows (DirectShow) a funcionar. Para gravações: nada mais.

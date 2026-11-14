@@ -59,11 +59,9 @@ Publicatie en de communityrating zijn aparte beslissingen in de laatste stap.
 
 ### Vereisten
 
-- Windows op x86-64 (getest op Windows 11) en enkele GB vrije ruimte. De ZIP is ongeveer 160 MB en uitgepakt
-  ongeveer 1 GB; de installer heeft één keer internet nodig om Python 3.12 en openbare pakketten te downloaden
-  (meer met GPU/CUDA); de OCR-modellen voor detectie en Latijns
-  schrift zitten erbij, en de eerste Engelse OCR-run downloadt één keer nog één model (english_g2.pth, ongeveer
-  15 MB). Daarna werkt verwerken offline. Een NVIDIA-kaart versnelt
+- Windows op x86-64 (getest op Windows 11) en enkele GB vrije ruimte. De ZIP is ongeveer 450 MB en uitgepakt
+  ongeveer 1,3 GB; de installer heeft één keer internet nodig om Python 3.12 en openbare pakketten te downloaden
+  (meer met GPU/CUDA); alle OCR-modellen zitten erbij. Daarna werkt verwerken offline. Een NVIDIA-kaart versnelt
   alleen de OCR-stap; de eerste scan van een opname draait altijd op de processor (zie
   [welke stappen de videokaart gebruiken](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - Voor live capture: een capturekaart met een werkende Windows-driver (DirectShow). Voor opnames: niets extra.

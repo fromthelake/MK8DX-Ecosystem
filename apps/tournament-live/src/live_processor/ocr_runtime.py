@@ -179,11 +179,19 @@ def _easyocr_model_dir() -> Path:
 
 
 def easyocr_recognition_model_file(languages: list[str] | tuple[str, ...]) -> str | None:
-    """The recognition model file EasyOCR picks for a language set: ``english_g2.pth`` for exactly
-    ``["en"]``, ``latin_g2.pth`` for other Latin-script sets, None for sets this check does not know."""
+    """The recognition model file EasyOCR (1.7.2) picks for a language set, in EasyOCR's own order:
+    ``english_g2.pth`` for exactly ``["en"]``, then traditional Chinese, simplified Chinese, Japanese,
+    Korean and Cyrillic sets, ``latin_g2.pth`` for other Latin-script sets, None for sets this check
+    does not know. Every file it names ships in ``runtime-assets/ocr-models``."""
     langs = [str(lang) for lang in languages]
     if langs == ["en"]:
         return "english_g2.pth"
+    for code, name in (("ch_tra", "chinese.pth"), ("ch_sim", "zh_sim_g2.pth"),
+                       ("ja", "japanese_g2.pth"), ("ko", "korean_g2.pth")):
+        if code in langs:
+            return name
+    if set(langs) & {"ru", "rs_cyrillic", "be", "bg", "uk", "mn"}:
+        return "cyrillic_g2.pth"
     latin = {"en", "nl", "de", "fr", "es", "it", "pt", "pl", "sv", "da", "no", "fi", "cs", "hu", "ro", "tr"}
     return "latin_g2.pth" if langs and set(langs) <= latin else None
 

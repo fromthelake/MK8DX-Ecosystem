@@ -25,6 +25,10 @@ from typing import Mapping
 
 FFMPEG_EXECUTABLE = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
 _TOOLS_RELATIVE = ("tools", "ffmpeg", "bin")
+# Every EasyOCR model file the engine's readers can request (consolelang.OCR_READERS and the
+# field readers), as EasyOCR 1.7.2 names them; the collection's ocr-models group ships them all.
+BUNDLED_OCR_MODELS = ("craft_mlt_25k.pth", "latin_g2.pth", "english_g2.pth", "cyrillic_g2.pth",
+                      "japanese_g2.pth", "korean_g2.pth", "zh_sim_g2.pth", "chinese.pth")
 
 
 def ffmpeg_tools_directory(data_root: str | Path) -> Path:
@@ -76,17 +80,30 @@ def engine_environment(
         present = tools.is_dir()
     except OSError:
         present = False
-    models = Path(runtime_root) / "ocr-models" if runtime_root else None
-    if not present and not (models and (models / "model/latin_g2.pth").is_file()):
+    models = bundled_ocr_models(runtime_root)
+    if not present and models is None:
         return None
     result = {str(key): str(value) for key, value in dict(environment).items()}
     if present:
         existing = result.get("PATH", "")
         result["PATH"] = str(tools) + (os.pathsep + existing if existing else "")
-    if models and (models / "model/latin_g2.pth").is_file() and (
-        models / "model/craft_mlt_25k.pth").is_file():
+    if models is not None:
         result["EASYOCR_MODULE_PATH"] = str(models)
     return result
+
+
+def bundled_ocr_models(runtime_root: str | Path | None) -> Path | None:
+    """The package's ``ocr-models`` folder when it holds every EasyOCR model the engine's
+    readers can load (detection plus the Latin, English, Cyrillic, Japanese, Korean and
+    Chinese recognition models), else None. With it EasyOCR never downloads a model."""
+    if not runtime_root:
+        return None
+    models = Path(runtime_root) / "ocr-models"
+    try:
+        complete = all((models / "model" / name).is_file() for name in BUNDLED_OCR_MODELS)
+    except OSError:
+        complete = False
+    return models if complete else None
 
 
 def capture_requirements(
