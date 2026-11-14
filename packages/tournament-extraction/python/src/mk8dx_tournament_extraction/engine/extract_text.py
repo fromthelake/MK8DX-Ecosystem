@@ -1480,8 +1480,8 @@ def _apply_player_name_script_fallback(
     confidence does not prove Latin text. A reading resolved before tries its script first; a
     contradicting text keeps the Latin reading for that frame (``player_name_scripts.ScriptMemory``).
     """
-    if not PLAYER_NAME_SCRIPT_READERS_ENABLED:
-        return
+    if not PLAYER_NAME_SCRIPT_READERS_ENABLED or not player_name_scripts.enabled():
+        return  # the setting is off (MK8DX_NAME_SCRIPTS): no script reader is loaded, the Latin reading goes on
     names = player_name_scripts
     memory = names.SCRIPT_MEMORY
 

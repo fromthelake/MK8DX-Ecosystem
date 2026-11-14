@@ -193,6 +193,10 @@ reading resolved to earlier ("さくろ" where it was "さくら") is a doubt: t
 Otherwise the Latin reading goes on unchanged. Everything after the reading - the consensus over the frames, the
 linking of a player across the races of a group, the canonical name, the Director's matching - is unchanged.
 The readers load on first use and stay cached; the memory of what each Latin reading resolved to is keyed by the
-reading, never by a result position. No setting is involved; the models ship with the package.
+reading, never by a result position; the models ship with the package. `MK8DX_NAME_SCRIPTS=off` in
+`TournamentTools.config.cmd` (Tournament Live: **Read player names in non-Latin scripts** under **Recognition**;
+Tournament Analysis: the same checkbox, `vision_cli --name-scripts off`) never loads or runs the script readers for
+player names, which saves about 0.9 GB of graphics memory (or RAM without a CUDA card); the Latin reading then goes
+on exactly as without them. The default is on. LiveTrial's console-language detection is not affected.
 `tooling/tournament/evaluate_player_name_scripts.py` measures the reading per script on frames you
 supply (frames and game-font material stay out of the repository).

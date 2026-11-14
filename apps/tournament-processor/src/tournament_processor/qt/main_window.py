@@ -21,11 +21,13 @@ from __future__ import annotations
 import os
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 from typing import Sequence
 
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtWidgets import (
+    QCheckBox,
     QFileDialog,
     QFrame,
     QGridLayout,
@@ -55,6 +57,7 @@ from ..gui import (
     default_session_id,
     entry_is_folder,
     folder_videos,
+    name_scripts_default,
     open_folder,
 )
 from .ansi_log import AnsiLogView
@@ -238,6 +241,12 @@ class MainWindow(QWidget):
         form.setColumnStretch(1, 1)
         layout.addLayout(form)
 
+        # Player names in non-Latin scripts (vision_cli --name-scripts); starts from MK8DX_NAME_SCRIPTS.
+        self._name_scripts_check = QCheckBox(self.t("name_scripts"))
+        self._name_scripts_check.setToolTip(self.t("name_scripts_hint"))
+        self._name_scripts_check.setChecked(name_scripts_default())
+        layout.addWidget(self._name_scripts_check)
+
         # Start is the headline action — the green start light.
         run_row = QHBoxLayout()
         self._start_btn = QPushButton(self.t("start_big"))
@@ -250,7 +259,7 @@ class MainWindow(QWidget):
         run_row.addWidget(self._start_btn, stretch=1)
         run_row.addWidget(self._cancel_btn)
         layout.addLayout(run_row)
-        self._busy_widgets += [self._session_edit, self._root_edit, browse, self._start_btn]
+        self._busy_widgets += [self._session_edit, self._root_edit, browse, self._name_scripts_check, self._start_btn]
         return frame
 
     def _build_results_card(self) -> QFrame:
@@ -399,6 +408,7 @@ class MainWindow(QWidget):
         try:
             check_environment()
             plan = build_plan(selected, self._session_edit.text(), self._root_edit.text())
+            plan = replace(plan, name_scripts=self._name_scripts_check.isChecked())
         except PlanError as error:
             message = error.message(self.t)
             self._log.append_ansi("\x1b[91m" + message + "\x1b[0m")

@@ -89,6 +89,15 @@ Das Installationsprogramm schreibt diese Startdateien:
 `TournamentTools.config.cmd` enthält lokale Pfade und Spracheinstellungen. Behalte sie, den Sitzungsordner `TournamentLive\`
 und deine Ausgabeordner, wenn du ein neueres Paket installierst.
 
+**Spielernamen in anderen Schriften.** Tournament Live und Tournament Analysis lesen Spielernamen außer im
+lateinischen Alphabet auch in Kyrillisch, Japanisch, Koreanisch und Chinesisch. Dafür sind fünf zusätzliche
+Texterkenner nötig, zusammen etwa 1 GB Speicher (auf der Grafikkarte, wenn es eine gibt). Wenn in deiner
+Community niemand diese Schriften nutzt, schalte es aus und spare diesen Speicher: Entferne den Haken bei
+**Spielernamen in nicht-lateinischen Schriften lesen** unter **Erkennung** in Tournament Live oder bei **Analyse
+starten** im Fenster Tournament Analysis, oder setze `MK8DX_NAME_SCRIPTS=off` in `TournamentTools.config.cmd`
+(das gilt auch für `TournamentProcessor.cmd`). Lateinische Namen werden in beiden Fällen gleich gelesen.
+Standardmäßig ist es eingeschaltet.
+
 ### Aufnahmen nachträglich analysieren
 
 Nutze Tournament Live, wenn du den Abend aufnimmst, während er stattfindet. Wenn der Abend ohne es lief und du nur

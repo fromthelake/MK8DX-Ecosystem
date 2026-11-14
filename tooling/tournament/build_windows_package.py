@@ -418,6 +418,9 @@ rem Interface language: auto follows Windows. Set to en or nl to override.
 set "MK8DX_TOURNAMENT_LANGUAGE=auto"
 rem Optional: another image for the Tournament Analysis window banner instead of the packaged one.
 rem set "MK8DX_ANALYSIS_BACKGROUND=C:\\path\\to\\banner.jpg"
+rem Player names in non-Latin scripts (Cyrillic, Japanese, Korean, Chinese): on or off. Off saves the memory
+rem of five extra OCR readers; Latin names read the same. Tournament Live's checkbox, once used, takes precedence.
+set "MK8DX_NAME_SCRIPTS=on"
 rem Optional: set to "cpu" to force CPU OCR even when a CUDA build of torch is present.
 rem set "MK8_EASYOCR_GPU_MODE=cpu"
 """

@@ -93,6 +93,8 @@ Tournament Tools から届いたレースの場合：そのグループの **受
 `TournamentTools.config.cmd` にはローカルのパスと言語の設定が入っています。新しいパッケージをインストールするときは、
 このファイル、`TournamentLive\` セッションフォルダー、出力フォルダーを残しておいてください。
 
+**ほかの文字のプレイヤー名。** Tournament Live と Tournament Analysis は、ラテン文字に加えてキリル文字、日本語、韓国語、中国語のプレイヤー名も読み取ります。そのために追加の文字読み取り機能が 5 つ必要で、合計で約 1 GB のメモリを使います（グラフィックカードがある場合はその上で）。コミュニティでこれらの文字を使う人がいなければ、オフにしてそのメモリを節約できます。Tournament Live の **認識** にある **ラテン文字以外のプレイヤー名を読み取る** のチェックを外すか、Tournament Analysis ウィンドウの **分析を実行** で外すか、`TournamentTools.config.cmd` で `MK8DX_NAME_SCRIPTS=off` を設定します（`TournamentProcessor.cmd` にも適用されます）。ラテン文字の名前はどちらでも同じように読み取られます。初期設定はオンです。
+
 ### 録画をあとから解析する
 
 大会の夜をその場でキャプチャーするときは Tournament Live を使います。Tournament Live を使わずに大会の夜を行い、

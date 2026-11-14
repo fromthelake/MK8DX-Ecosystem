@@ -122,3 +122,15 @@ def test_package_installs_the_qt_window_and_offers_the_background_setting(tmp_pa
     _, helper = _setup_helper(tmp_path)
     assert any(item.startswith("mk8dx-tournament-processor[gui]==") for item in helper.DISTRIBUTIONS)
     assert 'rem set "MK8DX_ANALYSIS_BACKGROUND=' in helper.CONFIG_CMD
+
+
+def test_package_settings_name_reading_in_every_script_and_the_engine_reads_it(tmp_path):
+    import re
+
+    from mk8dx_tournament_extraction.engine import player_name_scripts
+
+    _, helper = _setup_helper(tmp_path)
+    values = re.findall(r'^set "MK8DX_NAME_SCRIPTS=([^"]*)"$', helper.CONFIG_CMD, re.M)
+    assert values == ["on"]  # default on: correct results first
+    assert player_name_scripts.enabled({"MK8DX_NAME_SCRIPTS": values[0]}) is True
+    assert player_name_scripts.enabled({"MK8DX_NAME_SCRIPTS": "off"}) is False

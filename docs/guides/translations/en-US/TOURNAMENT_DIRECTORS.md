@@ -88,6 +88,14 @@ The installer writes these launchers:
 `TournamentTools.config.cmd` holds local paths and language preferences. Keep it, the `TournamentLive\` session
 folder and your output folders when you install a newer package.
 
+**Player names in other scripts.** Tournament Live and Tournament Analysis read player names in Cyrillic,
+Japanese, Korean and Chinese as well as in the Latin alphabet. That takes five extra text readers, about 1 GB of
+memory in all (on the graphics card when there is one). If nobody in your community uses those scripts, turn it
+off to save that memory: untick **Read player names in non-Latin scripts** under **Recognition** in Tournament
+Live or in **Run the analysis** in the Tournament Analysis window, or set `MK8DX_NAME_SCRIPTS=off` in
+`TournamentTools.config.cmd` (it also applies to `TournamentProcessor.cmd`). Latin names are read the same
+either way. It is on by default.
+
 ### Analyze recordings afterward
 
 Use Tournament Live when you capture the night as it happens. When the night ran without it and you only have

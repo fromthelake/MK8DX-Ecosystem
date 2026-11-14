@@ -161,6 +161,13 @@ TEXTS: dict[str, tuple[str, str]] = {
     "card_run": ("Run the analysis", "De analyse starten"),
     "card_run_hint": ("Finds every race in the ticked recordings: positions, characters and points.",
                       "Vindt elke race in de aangevinkte opnames: posities, characters en punten."),
+    "name_scripts": ("Read player names in non-Latin scripts", "Spelersnamen in niet-Latijnse schriften lezen"),
+    "name_scripts_hint": (
+        "Cyrillic, Japanese, Korean and Chinese player names. Off saves memory: five extra text readers are not "
+        "loaded. Latin names are read the same either way.",
+        "Spelersnamen in het Cyrillisch, Japans, Koreaans en Chinees. Uit bespaart geheugen: vijf extra "
+        "tekstlezers worden niet geladen. Latijnse namen worden hoe dan ook hetzelfde gelezen.",
+    ),
     "start_big": ("▶  START ANALYSIS", "▶  ANALYSE STARTEN"),
     "cancel": ("Cancel", "Annuleren"),
     "card_results": ("Results", "Uitslagen"),
@@ -250,18 +257,32 @@ class RunPlan:
     session_id: str
     staging: tuple[tuple[Path, Path], ...]
     targets: tuple[str, ...]
+    # Player names in non-Latin scripts (vision_cli --name-scripts); None leaves MK8DX_NAME_SCRIPTS to decide.
+    name_scripts: bool | None = None
 
     @property
     def output_dir(self) -> Path:
         return self.runtime_root / OUTPUT_FOLDER
 
     def command(self, python: str | None = None) -> list[str]:
-        return [
+        command = [
             python or sys.executable, "-u", "-m", "tournament_processor.vision_cli", "all",
             "--runtime-root", str(self.runtime_root),
             "--session-id", self.session_id,
-            "--videos", *self.targets,
         ]
+        if self.name_scripts is not None:
+            command += ["--name-scripts", "on" if self.name_scripts else "off"]
+        return [*command, "--videos", *self.targets]
+
+
+def name_scripts_default(environ: Mapping[str, str] | None = None) -> bool:
+    """The checkbox's start value: MK8DX_NAME_SCRIPTS (TournamentTools.config.cmd), on unless it says off.
+
+    The same parsing as the engine's ``player_name_scripts.parse_setting``, repeated so this module imports
+    without the recognition stack (a test keeps them equal)."""
+    environ = os.environ if environ is None else environ
+    value = str(environ.get("MK8DX_NAME_SCRIPTS", "") or "").strip().strip('"').strip().lower()
+    return value not in {"off", "0", "false", "no"}
 
 
 def is_video(path: Path) -> bool:

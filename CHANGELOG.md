@@ -13,6 +13,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   reading in its own script is passed on; otherwise the Latin reading, exactly as before. Same in Tournament Live
   and the Processor/Analysis; the cross-race linking and the Director's workflow are unchanged.
   `tooling/tournament/evaluate_player_name_scripts.py` measures it per script.
+- **Setting to turn off name reading in non-Latin scripts**, to save memory: `MK8DX_NAME_SCRIPTS=on|off` in
+  `TournamentTools.config.cmd` (default on), the **Read player names in non-Latin scripts** checkbox under
+  **Recognition** in Tournament Live (saved with its other settings) and in the Tournament Analysis window, and
+  `vision_cli --name-scripts on|off`. Off never loads or runs the five script readers for player names; the Latin
+  reading goes on exactly as before. On TN13 group 1 the results were identical and the graphics memory peak fell
+  from 1.1 GB to 0.25 GB (2 readers loaded instead of 7). LiveTrial's console-language detection is unchanged.
 - **Tournament Live scoreboard: Overall only and track names in your language.** A small gear on the spectator
   dashboard (hidden in OBS) chooses *Automatic* (default: latest race result and overall standings alternate) or
   *Overall only* (the confirmed overall standings stay on screen, with the race they include and a race still

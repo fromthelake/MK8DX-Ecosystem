@@ -91,6 +91,14 @@ De installer maakt deze starters:
 `TournamentTools.config.cmd` bevat lokale paden en taalvoorkeuren. Bewaar dat bestand, de sessiemap
 `TournamentLive\` en je uitvoermappen als je een nieuwer pakket installeert.
 
+**Spelersnamen in andere schriften.** Tournament Live en Tournament Analysis lezen spelersnamen behalve in het
+Latijnse alfabet ook in het Cyrillisch, Japans, Koreaans en Chinees. Daarvoor zijn vijf extra tekstlezers nodig,
+samen ongeveer 1 GB geheugen (op de videokaart als die er is). Gebruikt niemand in je community die schriften,
+zet het dan uit om dat geheugen te besparen: vink **Spelersnamen in niet-Latijnse schriften lezen** uit onder
+**Herkenning** in Tournament Live of bij **De analyse starten** in het venster Tournament Analysis, of zet
+`MK8DX_NAME_SCRIPTS=off` in `TournamentTools.config.cmd` (dat geldt ook voor `TournamentProcessor.cmd`).
+Latijnse namen worden hoe dan ook hetzelfde gelezen. Standaard staat het aan.
+
 ### Opnames achteraf analyseren
 
 Gebruik Tournament Live als je de avond vastlegt terwijl hij bezig is. Liep de avond zonder Live en heb je alleen
