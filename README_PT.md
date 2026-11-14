@@ -314,7 +314,7 @@ todos.
 
 As versões estáveis estão em [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); a 0.2.0
 acrescentou o A2, em casa ou no clube; a 0.2.1 dá à app Android uma cópia offline dos teus tempos e um layout mais
-calmo. A 0.2.2 volta a pôr a análise de gravações a funcionar e acrescenta a janela Tournament Analysis. Vê o [changelog](CHANGELOG.md), os [Pacotes de release](docs/RELEASE_PACKAGES.md) e o guia completo
+calmo. A 0.2.2 volta a pôr a análise de gravações a funcionar e acrescenta a janela Tournament Analysis. A 0.2.3 executa o gateway web sem root e torna o repositório mais fácil de começar a usar. Vê o [changelog](CHANGELOG.md), os [Pacotes de release](docs/RELEASE_PACKAGES.md) e o guia completo
 ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
 O reconhecimento nunca torna um resultado oficial por si só: tu revês os teus próprios Contrarrelógios, e um

@@ -311,7 +311,7 @@ para todos.
 
 Las versiones estables están en [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
 la 0.2.0 añadió A2, en casa o en el club; la 0.2.1 da a la app de Android una copia sin conexión de tus
-tiempos y un diseño más tranquilo. La 0.2.2 hace que vuelva a funcionar el análisis de grabaciones y añade la ventana Tournament Analysis. Consulta el [registro de cambios](CHANGELOG.md), los
+tiempos y un diseño más tranquilo. La 0.2.2 hace que vuelva a funcionar el análisis de grabaciones y añade la ventana Tournament Analysis. La 0.2.3 ejecuta la pasarela web sin root y facilita empezar con el repositorio. Consulta el [registro de cambios](CHANGELOG.md), los
 [paquetes de release](docs/RELEASE_PACKAGES.md) y la guía completa
 ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
