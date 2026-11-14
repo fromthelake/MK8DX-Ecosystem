@@ -50,3 +50,28 @@ def test_synthetic_part_is_current():
     spec.loader.exec_module(gen)
     committed = [case for case in _doc()["cases"] if case["source"] == "synthetic"]
     assert json.loads(json.dumps(gen.synthetic_cases())) == committed
+    assert json.loads(json.dumps(gen.helper_cases())) == _doc()["helperCases"]
+    assert gen.constants() == _doc()["constants"]
+
+
+def test_constants_are_the_vectors():
+    want = _doc()["constants"]
+    assert want == {"characterScales": list(cs.CHARACTER_SCALES), "searchPx": cs.SEARCH_PX,
+                    "boostMargin": cs.BOOST_MARGIN, "boostSatMin": cs.BOOST_SAT_MIN,
+                    "boostSatMax": cs.BOOST_SAT_MAX, "boostSatTarget": cs.BOOST_SAT_TARGET,
+                    "boostMaxFactor": cs.BOOST_MAX_FACTOR, "windowGainMin": cs.WINDOW_GAIN_MIN,
+                    "windowGainMax": cs.WINDOW_GAIN_MAX, "minWindowMean": cs.MIN_WINDOW_MEAN,
+                    "minTemplatePx": cs.MIN_TEMPLATE_PX, "minCropPx": cs.MIN_CROP_PX,
+                    "minTemplateSum": cs.MIN_TEMPLATE_SUM}
+
+
+def test_helper_cases_replay():
+    """The step functions the Web scanner and Android call (phase 4), one case per branch."""
+    fns = {"searchPx": cs.search_px, "searchWindow": cs.search_window, "windowGain": cs.window_gain,
+           "votes": lambda rid, total, subset: cs.votes(rid, total, None if subset is None else set(subset)),
+           "pickedShift": cs.picked_shift, "acceptShift": cs.accept_shift, "boostRegion": cs.boost_region,
+           "boostFactor": cs.boost_factor, "lookBox": cs.look_box, "betterLook": cs.better_look,
+           "cropBox": cs.crop_box}
+    cases = _doc()["helperCases"]
+    assert {case["fn"] for case in cases} == set(fns)
+    assert [case for case in cases if fns[case["fn"]](*case["args"]) != case["expected"]] == []

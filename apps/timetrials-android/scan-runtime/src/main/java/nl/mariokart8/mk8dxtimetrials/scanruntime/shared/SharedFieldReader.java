@@ -6,6 +6,7 @@ import android.util.Log;
 
 import nl.mariokart8.iconmatcher.ContextRules;
 import nl.mariokart8.iconmatcher.ContextRules.Decision;
+import nl.mariokart8.iconmatcher.CropSearch;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.Mat;
@@ -448,12 +449,9 @@ public final class SharedFieldReader {
         int y1 = slot.optInt(1);
         int slotW = slot.optInt(2);
         int slotH = slot.optInt(3);
-        double scale = entry.optDouble("scale", 1.0);
-        int cw = Math.max(8, (int) Math.round(slotW * scale));
-        int ch = Math.max(8, (int) Math.round(slotH * scale));
-        int x = (int) Math.round(x1 + (slotW - cw) / 2.0) + (int) Math.round(entry.optDouble("dx", 0));
-        int y = (int) Math.round(y1 + (slotH - ch) / 2.0) + (int) Math.round(entry.optDouble("dy", 0));
-        return new int[]{x, y, cw, ch, x1, y1, slotW, slotH};
+        int[] crop = CropSearch.cropBox(new int[]{x1, y1, slotW, slotH}, entry.optDouble("scale", 1.0),
+                (int) Math.round(entry.optDouble("dx", 0)), (int) Math.round(entry.optDouble("dy", 0)));
+        return new int[]{crop[0], crop[1], crop[2], crop[3], x1, y1, slotW, slotH};
     }
 
     private Visual readField(Mat canonical, String kind, JSONObject entry) {

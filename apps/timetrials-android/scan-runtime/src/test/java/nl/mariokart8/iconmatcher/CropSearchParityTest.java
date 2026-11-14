@@ -59,6 +59,100 @@ public class CropSearchParityTest {
                 && got.score == want.getDouble("score") && got.shifted == want.getBoolean("shifted");
     }
 
+    private static JSONObject doc() throws Exception {
+        return new JSONObject(new String(Files.readAllBytes(Paths.get(PUBLIC_VECTORS)), StandardCharsets.UTF_8));
+    }
+
+    /** A helper's Java result against the JSON value Python recorded (numbers compared as doubles). */
+    private static boolean matches(Object got, Object want) throws Exception {
+        if (got == null || want == JSONObject.NULL) {
+            return got == null && want == JSONObject.NULL;
+        }
+        if (got instanceof int[] || got instanceof double[]) {
+            if (!(want instanceof JSONArray)) return false;
+            JSONArray array = (JSONArray) want;
+            int n = got instanceof int[] ? ((int[]) got).length : ((double[]) got).length;
+            if (array.length() != n) return false;
+            for (int i = 0; i < n; i++) {
+                double value = got instanceof int[] ? ((int[]) got)[i] : ((double[]) got)[i];
+                if (value != array.getDouble(i)) return false;
+            }
+            return true;
+        }
+        if (got instanceof Boolean) return got.equals(want);
+        return want instanceof Number && ((Number) got).doubleValue() == ((Number) want).doubleValue();
+    }
+
+    private static Set<String> subset(Object raw) throws Exception {
+        if (raw == JSONObject.NULL) return null;
+        Set<String> out = new HashSet<>();
+        JSONArray ids = (JSONArray) raw;
+        for (int i = 0; i < ids.length(); i++) out.add(ids.getString(i));
+        return out;
+    }
+
+    private static Object call(String fn, JSONArray a) throws Exception {
+        switch (fn) {
+            case "searchPx": return CropSearch.searchPx(a.getString(0));
+            case "searchWindow": return CropSearch.searchWindow(a.getInt(0), a.getInt(1), a.getInt(2), a.getInt(3),
+                    a.getInt(4), a.getInt(5), a.getInt(6));
+            case "windowGain": return CropSearch.windowGain(a.getDouble(0), a.getDouble(1));
+            case "votes": return CropSearch.votes(a.getString(0), a.getDouble(1), subset(a.get(2)));
+            case "pickedShift": return CropSearch.pickedShift(ints(a.getJSONArray(0)), ints(a.getJSONArray(1)),
+                    a.getInt(2), a.getInt(3));
+            case "acceptShift": return CropSearch.acceptShift(a.getDouble(0), a.getDouble(1));
+            case "boostRegion": return CropSearch.boostRegion(ints(a.getJSONArray(0)), a.getInt(1), a.getInt(2));
+            case "boostFactor": return CropSearch.boostFactor(a.getDouble(0));
+            case "lookBox": return CropSearch.lookBox(ints(a.getJSONArray(0)), a.getDouble(1), a.getInt(2), a.getInt(3));
+            case "betterLook": return CropSearch.betterLook(a.getDouble(0), a.isNull(1) ? null : a.getDouble(1));
+            case "cropBox": return CropSearch.cropBox(ints(a.getJSONArray(0)), a.getDouble(1), a.getInt(2), a.getInt(3));
+            default: throw new IllegalArgumentException("unknown helper " + fn);
+        }
+    }
+
+    /** The constants the APK's CleanAssetsMatcher/KartConfigMatcher read from CropSearch (phase 4). */
+    @Test
+    public void constantsAreTheVectors() throws Exception {
+        JSONObject want = doc().getJSONObject("constants");
+        JSONArray scales = want.getJSONArray("characterScales");
+        double[] got = CropSearch.characterScales();
+        assertEquals(scales.length(), got.length);
+        for (int i = 0; i < got.length; i++) assertEquals(scales.getDouble(i), got[i], 0.0);
+        JSONObject px = want.getJSONObject("searchPx");
+        assertEquals(3, px.length());
+        for (String group : new String[]{"characters", "bodies", "gliders"}) {
+            assertEquals(group, px.getInt(group), CropSearch.searchPx(group));
+        }
+        assertEquals(want.getInt("boostMargin"), CropSearch.BOOST_MARGIN);
+        assertEquals(want.getDouble("boostSatMin"), CropSearch.BOOST_SAT_MIN, 0.0);
+        assertEquals(want.getDouble("boostSatMax"), CropSearch.BOOST_SAT_MAX, 0.0);
+        assertEquals(want.getDouble("boostSatTarget"), CropSearch.BOOST_SAT_TARGET, 0.0);
+        assertEquals(want.getDouble("boostMaxFactor"), CropSearch.BOOST_MAX_FACTOR, 0.0);
+        assertEquals(want.getDouble("windowGainMin"), CropSearch.WINDOW_GAIN_MIN, 0.0);
+        assertEquals(want.getDouble("windowGainMax"), CropSearch.WINDOW_GAIN_MAX, 0.0);
+        assertEquals(want.getDouble("minWindowMean"), CropSearch.MIN_WINDOW_MEAN, 0.0);
+        assertEquals(want.getInt("minTemplatePx"), CropSearch.MIN_TEMPLATE_PX);
+        assertEquals(want.getInt("minCropPx"), CropSearch.MIN_CROP_PX);
+        assertEquals(want.getDouble("minTemplateSum"), CropSearch.MIN_TEMPLATE_SUM, 0.0);
+        assertEquals(13, want.length());
+    }
+
+    /** The step functions the APK calls, one case per branch. */
+    @Test
+    public void helperCasesReplay() throws Exception {
+        JSONArray cases = doc().getJSONArray("helperCases");
+        List<String> failures = new ArrayList<>();
+        for (int i = 0; i < cases.length(); i++) {
+            JSONObject item = cases.getJSONObject(i);
+            if (!matches(call(item.getString("fn"), item.getJSONArray("args")), item.get("expected"))) {
+                failures.add(item.getString("fn") + item.getJSONArray("args"));
+            }
+        }
+        System.out.println("crop search helpers=" + cases.length() + " differences=" + failures.size());
+        assertTrue("helper cases", cases.length() >= 40);
+        assertEquals("differences: " + failures, 0, failures.size());
+    }
+
     @Test
     public void javaCropSearchEqualsPython() throws Exception {
         JSONObject doc = new JSONObject(new String(Files.readAllBytes(Paths.get(PUBLIC_VECTORS)), StandardCharsets.UTF_8));

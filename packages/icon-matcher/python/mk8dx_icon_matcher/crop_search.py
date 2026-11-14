@@ -1,8 +1,8 @@
-"""The icon crop search of the Web scanner and Android (issue #99, phase 3): where inside a
+"""The icon crop search of the Web scanner and Android (issue #99, phases 3 and 4): where inside a
 character, kart-body or glider slot of the canonical result card the product cuts the icon crop
 that the shared reader then scores.
 
-This is a Python reference of product code that is not shared yet: the Web scanner's
+This is a Python reference of the product search, pixel work included: the Web scanner's
 ``cleanAssets.ts`` (``identifyCrop``, ``identifyCropSearch``) and ``kartConfig.ts`` (``matchCard``:
 the character scale sweep and saturation boost), ports of the APK's ``CleanAssetsMatcher`` and
 ``KartConfigMatcher``. Tyres and flags are not here: their crops come from the central tyre window
@@ -33,7 +33,11 @@ of all inputs; ``hsv_to_bgr`` equals OpenCV.js on every one of the 11.8 million 
 ``convertTo`` scale (``rint(float32(v) * float32(alpha))``). The decision steps are pure functions
 (``search_window``, ``pick_position``, ``decide_search``, ``decide_field``, ``crop_box``) so the
 TypeScript (``ts/sharedCropSearch.ts``) and Java (``CropSearch.java``) replays of
-``vectors/crop-search-v1.json`` run without OpenCV.
+``vectors/crop-search-v1.json`` run without OpenCV. Since phase 4 the Web scanner and Android call those
+two modules for every decision step and constant of the search (``votes``, ``pick_position``,
+``search_window``, ``window_gain``, ``picked_shift``, ``accept_shift``, ``boost_region``,
+``boost_factor``, ``look_box``, ``better_look``, ``crop_box``); only the pixel work stays in the products.
+The vectors carry the constants and cases per helper, so the three runtimes cannot drift apart.
 
 Rounding is the products' ``Math.round`` (half up, ``floor(x + 0.5)``), never Python's ``round``.
 """
@@ -50,10 +54,20 @@ import numpy as np
 
 SCHEMA = "mk8dx.crop-search.v1"
 F32 = np.float32
+# The searcher's constants. ts/sharedCropSearch.ts and CropSearch.java hold the same values; the
+# vectors' ``constants`` record is checked against all three.
 CHARACTER_SCALES = (0.94, 0.96, 0.98, 1.0, 1.02, 1.04, 1.06)
 SEARCH_PX = {"characters": 10, "bodies": 6, "gliders": 6}
-SEARCH_PAD_PX = 10             # kartConfig.ts SEARCH_PAD_PX; the boost region adds 8 more
-BOOST_MARGIN = SEARCH_PAD_PX + 8
+BOOST_MARGIN = 18              # pixels around the character slot that the ghost-card boost measures
+BOOST_SAT_MIN = 1.0            # the boost runs for a mean saturation strictly between these two
+BOOST_SAT_MAX = 80.0
+BOOST_SAT_TARGET = 90.0        # the factor lifts the mean towards this saturation ...
+BOOST_MAX_FACTOR = 2.0         # ... by at most this much
+WINDOW_GAIN_MIN = 0.6          # the search window's gain towards the references' mean
+WINDOW_GAIN_MAX = 1.8
+MIN_WINDOW_MEAN = 1e-4         # a darker window keeps gain 1
+MIN_TEMPLATE_PX = 8            # a smaller crop (rounded) runs no position pass
+MIN_CROP_PX = 8                # the smallest crop side the shared reader receives
 MIN_TEMPLATE_SUM = 24.0        # a sized reference with fewer mask values does not vote for a position
 CENTER_ONLY = ((0, 0),)
 DEFAULT_OFFSETS = ((0, 0), (1, 0), (-1, 0), (0, 1), (0, -1))
@@ -300,9 +314,26 @@ def search_window(x1: int, y1: int, tw: int, th: int, width: int, height: int, s
     """``[wx1, wy1, wx2, wy2]`` the position pass searches, or None when it does not run."""
     wx1, wy1 = max(0, x1 - search), max(0, y1 - search)
     wx2, wy2 = min(width, x1 + tw + search), min(height, y1 + th + search)
-    if tw < 8 or th < 8 or wy2 - wy1 < th or wx2 - wx1 < tw:
+    if tw < MIN_TEMPLATE_PX or th < MIN_TEMPLATE_PX or wy2 - wy1 < th or wx2 - wx1 < tw:
         return None
     return [wx1, wy1, wx2, wy2]
+
+
+def search_px(group: str) -> int:
+    """The position pass radius of a group: 10 px for characters, 6 px for bodies and gliders."""
+    return SEARCH_PX[group]
+
+
+def window_gain(ref_mean: float, window_mean: float):
+    """The search window's gain towards the references' mean, or None (gain 1) for a dark window."""
+    if window_mean > MIN_WINDOW_MEAN:
+        return max(WINDOW_GAIN_MIN, min(WINDOW_GAIN_MAX, ref_mean / window_mean))
+    return None
+
+
+def votes(rid: str, total: float, subset=None) -> bool:
+    """Whether a sized reference takes part in the position pass."""
+    return not (total < MIN_TEMPLATE_SUM or (subset is not None and rid not in subset))
 
 
 def pick_position(candidates, subset=None):
@@ -311,12 +342,49 @@ def pick_position(candidates, subset=None):
     ``1 - minVal / masksum`` gives the top-left ``(x, y)`` in the window, or None."""
     best_score, best = -math.inf, None
     for rid, total, min_val, x, y in candidates:
-        if total < MIN_TEMPLATE_SUM or (subset is not None and rid not in subset):
+        if not votes(rid, total, subset):
             continue
         score = 1.0 - min_val / total
         if score > best_score:
             best_score, best = score, (int(x), int(y))
     return best
+
+
+def picked_shift(window, picked, x1: int, y1: int):
+    """The shift ``[dx, dy]`` of the picked window position from the nominal crop, or None when zero."""
+    dx, dy = window[0] + picked[0] - x1, window[1] + picked[1] - y1
+    return None if dx == 0 and dy == 0 else [dx, dy]
+
+
+def accept_shift(shifted_score: float, center_score: float) -> bool:
+    """The shifted crop replaces the nominal one when its rounded score is at least as high."""
+    return shifted_score >= center_score
+
+
+def boost_region(slot, width: int, height: int) -> list[int]:
+    """``[x, y, w, h]`` around a character slot that the ghost-card saturation boost measures and recolours."""
+    x1, y1, slot_w, slot_h = (int(v) for v in slot)
+    roi_x, roi_y = max(0, x1 - BOOST_MARGIN), max(0, y1 - BOOST_MARGIN)
+    return [roi_x, roi_y, min(width - roi_x, slot_w + 2 * BOOST_MARGIN), min(height - roi_y, slot_h + 2 * BOOST_MARGIN)]
+
+
+def boost_factor(mean_sat: float):
+    """The ghost-card boost's saturation factor for the region's mean saturation, or None (no boost)."""
+    if BOOST_SAT_MIN < mean_sat < BOOST_SAT_MAX:
+        return min(BOOST_MAX_FACTOR, BOOST_SAT_TARGET / mean_sat)
+    return None
+
+
+def look_box(slot, scale: float, roi_x: int = 0, roi_y: int = 0) -> list[float]:
+    """The fractional ``[x, y, w, h]`` one look of the character sweep searches, in its source's coordinates."""
+    x1, y1, slot_w, slot_h = slot
+    w2, h2 = slot_w * scale, slot_h * scale
+    return [x1 + (slot_w - w2) / 2.0 - roi_x, y1 + (slot_h - h2) / 2.0 - roi_y, w2, h2]
+
+
+def better_look(score: float, best_score) -> bool:
+    """Whether a look beats the best so far (None: it is the first): the first strictly highest wins."""
+    return best_score is None or score > best_score
 
 
 def decide_search(look: dict, width: int, height: int) -> dict:
@@ -335,17 +403,17 @@ def decide_search(look: dict, width: int, height: int) -> dict:
         return {"dx": 0, "dy": 0, "score": center, "shifted": False, "window": None}
     subset = None if look.get("subset") is None else set(look["subset"])
     picked = pick_position(look["candidates"], subset)
-    if picked is not None:
-        dx, dy = window[0] + picked[0] - x1, window[1] + picked[1] - y1
-        if (dx != 0 or dy != 0) and float(look["shiftedScore"]) >= center:
-            return {"dx": dx, "dy": dy, "score": float(look["shiftedScore"]), "shifted": True, "window": window}
+    shift = None if picked is None else picked_shift(window, picked, x1, y1)
+    if shift is not None and accept_shift(float(look["shiftedScore"]), center):
+        return {"dx": shift[0], "dy": shift[1], "score": float(look["shiftedScore"]), "shifted": True,
+                "window": window}
     return {"dx": 0, "dy": 0, "score": center, "shifted": False, "window": window}
 
 
 def crop_box(slot, scale: float, dx: int, dy: int) -> list[int]:
     """The crop the shared reader scores: the slot scaled about its centre, then shifted."""
     x1, y1, slot_w, slot_h = slot
-    cw, ch = max(8, js_round(slot_w * scale)), max(8, js_round(slot_h * scale))
+    cw, ch = max(MIN_CROP_PX, js_round(slot_w * scale)), max(MIN_CROP_PX, js_round(slot_h * scale))
     return [js_round(x1 + (slot_w - cw) / 2.0) + dx, js_round(y1 + (slot_h - ch) / 2.0) + dy, cw, ch]
 
 
@@ -354,7 +422,7 @@ def decide_field(case: dict) -> dict:
     looks = [decide_search(look, case["width"], case["height"]) for look in case["looks"]]
     best = None
     for look, got in zip(case["looks"], looks):
-        if best is None or got["score"] > best[1]["score"]:
+        if better_look(got["score"], None if best is None else best[1]["score"]):
             best = (look, got)
     scale = float(best[0]["scale"])
     return {"scale": scale, "dx": best[1]["dx"], "dy": best[1]["dy"], "score": best[1]["score"],
@@ -393,13 +461,12 @@ def identify_crop_search(image: np.ndarray, bx: float, by: float, bw: float, bh:
     ref_den = _seq_sum([s / 3.0 for s in sums])
     ref_mean = ref_num / max(ref_den, 1e-6) / 3.0
     mean = cv2.mean(win)
-    m = (mean[0] + mean[1] + mean[2]) / 3.0
-    if m > 1e-4:
-        gain = max(0.6, min(1.8, ref_mean / m))
+    gain = window_gain(ref_mean, (mean[0] + mean[1] + mean[2]) / 3.0)
+    if gain is not None:
         win = np.minimum(win * F32(gain), F32(1.0))
     candidates = []
     for i, rid in enumerate(group.ids):
-        if sums[i] < MIN_TEMPLATE_SUM or (subset is not None and rid not in subset):
+        if not votes(rid, sums[i], subset):
             continue
         result = cv2.matchTemplate(win, rgbs[i], cv2.TM_SQDIFF, mask=masks[i])
         result[np.isnan(result)] = 1e12
@@ -408,38 +475,35 @@ def identify_crop_search(image: np.ndarray, bx: float, by: float, bw: float, bh:
     picked = pick_position(candidates, None)
     if trace is not None:
         trace["candidates"] = candidates
-    if picked is not None:
-        dx, dy = wx1 + picked[0] - x1, wy1 + picked[1] - y1
-        if dx != 0 or dy != 0:
-            sx, sy, sw, sh = clip_rect(x1 + dx, y1 + dy, tw, th, width, height)
-            out = identify_crop(image[sy:sy + sh, sx:sx + sw], group, subset, CENTER_ONLY, raw_rgb)
-            if trace is not None:
-                trace["shiftedScore"] = out["score"]
-            if out["score"] >= best["score"]:
-                out.update(dx=dx, dy=dy)
-                best = out
+    shift = None if picked is None else picked_shift(window, picked, x1, y1)
+    if shift is not None:
+        dx, dy = shift
+        sx, sy, sw, sh = clip_rect(x1 + dx, y1 + dy, tw, th, width, height)
+        out = identify_crop(image[sy:sy + sh, sx:sx + sw], group, subset, CENTER_ONLY, raw_rgb)
+        if trace is not None:
+            trace["shiftedScore"] = out["score"]
+        if accept_shift(out["score"], best["score"]):
+            out.update(dx=dx, dy=dy)
+            best = out
     return best
 
 
 def boost_saturation(canonical: np.ndarray, slot) -> tuple[np.ndarray, int, int] | None:
     """The ghost-card saturation boost around a character slot: ``(image, roi_x, roi_y)`` or None."""
     height, width = canonical.shape[:2]
-    x1, y1, slot_w, slot_h = (int(v) for v in slot)
-    roi_x, roi_y = max(0, x1 - BOOST_MARGIN), max(0, y1 - BOOST_MARGIN)
-    roi_w, roi_h = min(width - roi_x, slot_w + 2 * BOOST_MARGIN), min(height - roi_y, slot_h + 2 * BOOST_MARGIN)
+    roi_x, roi_y, roi_w, roi_h = boost_region(slot, width, height)
     hsv = cv2.cvtColor(np.ascontiguousarray(canonical[roi_y:roi_y + roi_h, roi_x:roi_x + roi_w]), cv2.COLOR_BGR2HSV)
-    mean_sat = cv2.mean(hsv)[1]
-    if not 1.0 < mean_sat < 80.0:
+    factor = boost_factor(cv2.mean(hsv)[1])
+    if factor is None:
         return None
     hsv = hsv.copy()
-    hsv[..., 1] = scale_u8(hsv[..., 1], min(2.0, 90.0 / mean_sat))
+    hsv[..., 1] = scale_u8(hsv[..., 1], factor)
     return hsv_to_bgr(hsv), roi_x, roi_y
 
 
 def search_character(canonical: np.ndarray, slot, group: CropGroup, yellow_card: bool, subset=None,
                      raw_rgb: bool = False, trace: dict | None = None) -> dict:
     """The character slot: the boost on a ghost card, then the seven-scale sweep."""
-    x1, y1, slot_w, slot_h = slot
     source, roi_x, roi_y = canonical, 0, 0
     if not yellow_card:
         boosted = boost_saturation(canonical, slot)
@@ -447,13 +511,12 @@ def search_character(canonical: np.ndarray, slot, group: CropGroup, yellow_card:
             source, roi_x, roi_y = boosted
     looks, best = [], None
     for scale in CHARACTER_SCALES:
-        w2, h2 = slot_w * scale, slot_h * scale
         look: dict = {}
-        got = identify_crop_search(source, x1 + (slot_w - w2) / 2.0 - roi_x, y1 + (slot_h - h2) / 2.0 - roi_y,
-                                   w2, h2, group, subset, SEARCH_PX["characters"], raw_rgb, look)
+        got = identify_crop_search(source, *look_box(slot, scale, roi_x, roi_y), group, subset,
+                                   search_px("characters"), raw_rgb, look)
         got["scale"] = scale
         looks.append({"scale": scale, **look})
-        if best is None or got["score"] > best["score"]:
+        if better_look(got["score"], None if best is None else best["score"]):
             best = got
     if trace is not None:
         trace.update(width=source.shape[1], height=source.shape[0], roiOffset=[roi_x, roi_y], looks=looks)
@@ -465,7 +528,7 @@ def search_part(canonical: np.ndarray, slot, group: CropGroup, subset=None, raw_
     """A body or glider slot: one look at scale 1, 6 px around the slot."""
     x1, y1, slot_w, slot_h = slot
     look: dict = {}
-    got = identify_crop_search(canonical, x1, y1, slot_w, slot_h, group, subset, SEARCH_PX[group.name], raw_rgb, look)
+    got = identify_crop_search(canonical, x1, y1, slot_w, slot_h, group, subset, search_px(group.name), raw_rgb, look)
     got["scale"] = 1.0
     if trace is not None:
         trace.update(width=canonical.shape[1], height=canonical.shape[0], roiOffset=[0, 0],

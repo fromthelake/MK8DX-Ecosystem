@@ -21,6 +21,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   frames it equals the browser scanner on all 154 searches of 50 fields. The new vector
   `crop-search-v1.json` (26 synthetic cases, 50 real crops, numbers only) is replayed in Python, TypeScript and
   Java. The scanners' behaviour does not change: they still run their own search until phase 4.
+- **One shared crop-search rule in the Web scanner and Android** (#99, phase 4). The browser scanner
+  (`cleanAssets.ts`, `kartConfig.ts`) and the APK engine (`CleanAssetsMatcher`, `KartConfigMatcher`, the shared
+  field reader's crop box) now call `sharedCropSearch.ts` and `CropSearch.java` for every decision of the icon crop
+  search: the search window, window gain, position vote, shift acceptance, ghost-card boost region and factor,
+  character scales, scale choice and crop box. Only the pixel work stays in the products. The searcher's constants
+  live in those shared modules, and `crop-search-v1.json` now carries them with 64 helper cases that Python,
+  TypeScript and Java replay. Android drops a second position pass that always repeated the first. Behaviour does
+  not change: on the 12 public test-set frames the browser scanner gives the same 154 searches and 63 fields, and
+  the Android engine on an emulator gives the same result and kart configuration for all 12 frames. Android's
+  float32 score arithmetic stays and was measured: at most 5e-8 from the double reference, with no decision changed.
 
 ## 0.2.3 — 2026-11-14
 
