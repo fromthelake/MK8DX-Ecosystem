@@ -195,6 +195,18 @@ v0.2.2-pakket: drie bron-pc's speelden opgenomen kwalificatievideo's af in hun e
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Een videoreplay zonder capturekaart
 test het capturepad niet.
 
+### Spelersnamen in andere schriften
+
+Spelersnamen worden gelezen met een Latijnse lezer (Engels, Nederlands, Duits, Frans, Spaans, Italiaans,
+Portugees, Pools). Een Switch-profielnaam kan ook Cyrillisch, Japans, Koreaans of Chinees zijn. Om die te lezen,
+geef je de tools de deelnemers van de avond: zet één speler per regel in een UTF-8-tekstbestand (andere namen
+van een speler na `|`, bijvoorbeeld `たろう | Taro`) en zet `set "MK8DX_TOURNAMENT_ROSTER=C:\pad\spelers.txt"` in
+`TournamentTools.config.cmd`. Past een in Latijnse letters gelezen naam bij niemand op die lijst, dan lezen de
+tools hem ook met de lezers voor de schriften die op de lijst zelf voorkomen, en houden ze een lezing alleen als
+die duidelijk bij één speler op de lijst past. Anders krijg je zoals vroeger de ruwe lezing en koppel je die zelf
+bij **Binnenkomende uitslagen**. Zonder lijst, of met alleen Latijnse namen erop, verandert er niets. Elke extra
+lezer laadt één keer zodra hij nodig is (ongeveer een seconde, tot enkele honderden MB geheugen).
+
 ## Zelf de tools bouwen
 
 `python tooling/tournament/build_windows_package.py --output <new folder> --version local` vanuit een kloon bouwt

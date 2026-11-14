@@ -189,6 +189,18 @@ v0.2.2 package: three source PCs played recorded qualification videos into their
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). A video replay without a capture card
 does not test the capture path.
 
+### Player names in other scripts
+
+Player names are read with a Latin reader (English, Dutch, German, French, Spanish, Italian, Portuguese, Polish).
+A Switch profile name can also be Cyrillic, Japanese, Korean or Chinese. To read those, give the tools the
+night's participants: put one Player per line in a UTF-8 text file (other names a Player goes by after `|`, for
+example `たろう | Taro`) and add `set "MK8DX_TOURNAMENT_ROSTER=C:\path\players.txt"` to
+`TournamentTools.config.cmd`. When a name read in Latin letters matches nobody on that list, the tools also read
+it with the readers for the scripts the list itself uses, and keep a reading only when it clearly matches one
+Player on the list. Otherwise you get the raw reading, as before, and match it yourself under **Incoming
+results**. Without the list, or with only Latin names on it, nothing changes. Each extra script reader loads once
+when it is first needed (about a second, up to a few hundred MB of memory).
+
 ## Build the tools yourself
 
 `python tooling/tournament/build_windows_package.py --output <new folder> --version local` from a clone builds

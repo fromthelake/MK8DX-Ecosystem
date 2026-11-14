@@ -174,3 +174,19 @@ launcher uses `runtime-assets/live`; the recorded launcher uses
 Back up session/output folders before replacing the package. No original MK8DX
 source or private asset folder is needed. Publication and third-party rights
 remain covered by [Third-party materials](../THIRD_PARTY_MATERIALS.md).
+
+### Player names in every script
+
+`MK8DX_TOURNAMENT_ROSTER` in `TournamentTools.config.cmd` names a UTF-8 file with the night's participants
+(`.txt`: one Player per line, other names after `|`; `.csv`: one Player per row; `.json`: a list of names or of
+`{"displayName", "aliases"}`, also per group). Tournament Live and the Processor/Analysis read player names with
+a Latin reader (`MK8_PLAYER_NAME_EASYOCR_LANGS`, default `en,es,fr,de,nl,pl,it,pt`). A reading that matches no
+roster name is read again by the EasyOCR readers for the scripts the roster uses — `ru`, `ja`, `ko`, `ch_sim`,
+`ch_tra`, each with `en`, in that order; Han characters try Japanese and both Chinese readers. A script reading
+replaces the Latin one only when it contains its own script, matches exactly one roster Player at the name-only
+threshold Tournament Live relinks drivers with (0.88, spacing ignored), and matches better than the Latin
+reading; otherwise the raw Latin reading goes to the Director as before. The output is the reading, never the
+roster name. The readers load on first use and stay cached (Tournament Live warms them at start); each needs its
+EasyOCR model (`cyrillic_g2`, `japanese_g2`, `korean_g2`, `zh_sim_g2`, `chinese`). A missing model leaves that
+script out. `tooling/tournament/evaluate_player_name_scripts.py` measures the reading per script on frames you
+supply (frames and game-font material stay out of the repository).
