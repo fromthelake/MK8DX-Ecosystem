@@ -31,6 +31,7 @@ async function instance(): Promise<{ app: ReturnType<typeof Fastify>; asked: App
   const store: AppDownloadStore = {
     catalog(language = "en") { asked.push(language); return catalog(language); },
     async open() { return null; },
+    locate() { return null; },
   };
   const app = Fastify();
   await registerAppDownloadRoutes(app, {
@@ -84,6 +85,7 @@ describe("the LiveTrial floor on the catalog route", () => {
         };
       },
       async open() { return null; },
+      locate() { return null; },
     };
     const app = Fastify();
     await registerAppDownloadRoutes(app, {

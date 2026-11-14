@@ -301,6 +301,7 @@ import { MysqlPublicTournamentRepository } from
 import { MysqlRatingAdministrationRepository } from
   "../rating/mysql-rating-administration-repository.js";
 import type { AppDownloadStore } from "../runtime/app-downloads.js";
+import type { AppDownloadLinks } from "../runtime/app-download-links.js";
 import { TournamentOperationService } from
   "../tournaments/tournament-operation-service.js";
 import { MysqlHistoryEditionRepository } from "../tournaments/history-edition-projection.js";
@@ -613,7 +614,7 @@ export type LocalApiRuntimeRoutePolicies = Readonly<{
   publicBundle?: Readonly<{ root: string; origin: string }>;
   gameAssets?: Readonly<{ rootDirectory: string }>;
   // The owner's native app builds offered to signed-in members (Apps page).
-  appDownloads?: Readonly<{ store: AppDownloadStore }>;
+  appDownloads?: Readonly<{ store: AppDownloadStore; staticLinks?: AppDownloadLinks }>;
   webPush?: WebPushConfiguration;
 }>;
 

@@ -68,6 +68,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixed
 
+- **App downloads on shared hosting that limits application responses**: LiteSpeed/Passenger hosts answered a large
+  APK streamed through the API with their own small error page. An opt-in setting
+  (`MK8DX_HOSTED_APP_DOWNLOAD_LINK_DOCUMENT_ROOT` + `MK8DX_HOSTED_APP_DOWNLOAD_LINK_DIRECTORY`, optional
+  `…_URL_PATH` and `…_TTL_SECONDS`, default 10 minutes) makes the signed-in file route redirect to a short-lived,
+  unguessable link inside the document root that the web server serves itself, resumable. Expired link folders are
+  removed at every download and at startup; an unsafe setting stops the start. Without it the route streams as
+  before, now typed `application/vnd.android.package-archive` for an APK.
+
 - **Android roster import remembers spellings in every script**: the phone's roster-import fold kept only
   `a-z0-9`, so a Cyrillic, Japanese, Korean or Chinese spelling from the file folded to "" and was never kept as
   the Director's alias. It now keeps letters and digits of every script, as the website's workbook key does

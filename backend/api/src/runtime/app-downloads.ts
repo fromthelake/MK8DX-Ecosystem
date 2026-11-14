@@ -280,6 +280,9 @@ export type AppDownloadStore = Readonly<{
     bytes: number;
     stream: Readable;
   }> | null>;
+  // The stored file's absolute path, for the opt-in static-link mode.
+  // Returns null when the id is not in the closed manifest.
+  locate(id: string): Readonly<{ entry: AppDownloadEntry; filePath: string }> | null;
 }>;
 
 // The manifest is read once at startup: the set of downloadable artifacts is
@@ -348,6 +351,11 @@ export async function loadAppDownloads(
   return {
     catalog(language: AppDownloadLanguage = "en"): AppDownloadCatalog {
       return catalogs.get(language) ?? catalogs.get("en")!;
+    },
+    locate(id: string) {
+      const found = entries.find((row) => row.id === id);
+      if (found === undefined) { return null; }
+      return { entry: found, filePath: join(root, found.fileName) };
     },
     async open(id: string) {
       const found = entries.find((row) => row.id === id);

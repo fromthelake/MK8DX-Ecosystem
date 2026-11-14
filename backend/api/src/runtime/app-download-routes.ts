@@ -4,6 +4,7 @@ import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorResolver } from "../identity/types.js";
 import { APP_DOWNLOAD_LANGUAGES, isAppDownloadLanguage } from "./app-downloads.js";
 import type { AppDownloadStore } from "./app-downloads.js";
+import type { AppDownloadLinks } from "./app-download-links.js";
 
 // Downloads are for the owner's known community, so both routes require a
 // signed-in account. Nothing here reveals a filesystem path.
@@ -11,7 +12,12 @@ import type { AppDownloadStore } from "./app-downloads.js";
 export type AppDownloadRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   store: AppDownloadStore;
+  // Opt-in for hosts whose proxy cannot deliver a large file streamed through
+  // the application: redirect to a short-lived link the web server serves.
+  staticLinks?: AppDownloadLinks;
 }>;
+
+const APK_CONTENT_TYPE = "application/vnd.android.package-archive";
 
 const entrySchema = {
   type: "object",
@@ -114,6 +120,30 @@ export async function registerAppDownloadRoutes(
           message: "Sign in to download the MK8DX apps.",
         });
       }
+      if (options.staticLinks !== undefined) {
+        const located = options.store.locate(request.params.downloadId);
+        if (located === null) {
+          return reply.code(404).send({
+            code: "download_not_found",
+            message: "That download is not available.",
+          });
+        }
+        let location: string;
+        try {
+          location = await options.staticLinks.create(
+            located.filePath, located.entry.fileName,
+          );
+        } catch {
+          request.log.error({ event: "app_download_link_failed" });
+          return reply.code(503).send({
+            code: "download_unavailable",
+            message: "That download cannot be prepared right now.",
+          });
+        }
+        void reply.header("cache-control", "no-store");
+        void reply.header("referrer-policy", "no-referrer");
+        return reply.redirect(location, 302);
+      }
       const opened = await options.store.open(request.params.downloadId);
       if (opened === null) {
         return reply.code(404).send({
@@ -121,7 +151,12 @@ export async function registerAppDownloadRoutes(
           message: "That download is not available.",
         });
       }
-      void reply.header("content-type", "application/octet-stream");
+      void reply.header(
+        "content-type",
+        opened.entry.fileName.toLowerCase().endsWith(".apk")
+          ? APK_CONTENT_TYPE
+          : "application/octet-stream",
+      );
       void reply.header("content-length", String(opened.bytes));
       void reply.header(
         "content-disposition",

@@ -12,6 +12,11 @@ import {
 } from "../runtime/operational-log.js";
 import { loadAppDownloads } from "../runtime/app-downloads.js";
 import type { AppDownloadStore } from "../runtime/app-downloads.js";
+import {
+  prepareAppDownloadLinks,
+  readAppDownloadLinkConfig,
+  type AppDownloadLinks,
+} from "../runtime/app-download-links.js";
 import { loadStaticWebFiles } from "../runtime/static-web.js";
 
 const allowedHosts = new Set(["127.0.0.1", "::1", "0.0.0.0"]);
@@ -69,6 +74,14 @@ export async function startPasswordlessHostedServer(
   // Optional: when configured, the owner's private app builds are offered to
   // signed-in community members from outside the document root.
   const downloadRoot = environment["MK8DX_HOSTED_APP_DOWNLOAD_ROOT"];
+  // Opt-in for shared hosts whose proxy refuses large application responses:
+  // the file route redirects to a short-lived link the web server serves
+  // itself. An incomplete or unsafe setting stops the start with its reason
+  // rather than silently falling back to streaming.
+  const downloadLinkConfig = readAppDownloadLinkConfig(environment);
+  const downloadLinks = downloadLinkConfig === null
+    ? undefined
+    : await prepareAppDownloadLinks(downloadLinkConfig);
   const runtime = await createPasswordlessHostedRuntime({
     ...runtimeConfig,
     operationalLog,
@@ -87,7 +100,7 @@ export async function startPasswordlessHostedServer(
     ...(gameAssetRoot === undefined || gameAssetRoot.length === 0
       ? {}
       : { gameAssets: { rootDirectory: gameAssetRoot } }),
-    ...(await optionalAppDownloads(downloadRoot)),
+    ...(await optionalAppDownloads(downloadRoot, downloadLinks)),
   });
   try {
     const address = await runtime.app.listen(serverConfig);
@@ -123,10 +136,16 @@ export async function startPasswordlessHostedServer(
 // nothing to install yet.
 async function optionalAppDownloads(
   rootDirectory: string | undefined,
-): Promise<Readonly<{ appDownloads?: { store: AppDownloadStore } }>> {
+  staticLinks: AppDownloadLinks | undefined,
+): Promise<Readonly<{
+  appDownloads?: { store: AppDownloadStore; staticLinks?: AppDownloadLinks };
+}>> {
   if (rootDirectory === undefined || rootDirectory.length === 0) { return {}; }
   try {
-    return { appDownloads: { store: await loadAppDownloads(rootDirectory) } };
+    const store = await loadAppDownloads(rootDirectory);
+    return {
+      appDownloads: staticLinks === undefined ? { store } : { store, staticLinks },
+    };
   } catch {
     return {};
   }
