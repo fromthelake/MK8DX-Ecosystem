@@ -10,12 +10,17 @@ search box, step cards (Do / You see / See something else?) and screenshots. It 
 under the setup wizard's strict CSP: no inline script or style, only guide.js and guide.css.
 
 Markdown it understands: "# " and "## " headings, a line that is only **bold** (a sub-heading),
-"1. " and "- " list items, paragraphs, **bold**, *italic*, `code`, "(Afbeelding: name)" /
-"(Image: name)" screenshot lines (img/<name>-<lang>.png, skipped while the file is missing), and
+"1. " and "- " list items, paragraphs, **bold**, *italic*, `code`, screenshot lines, and
 two HTML comments that GitHub hides: "<!-- os: windows -->" … "<!-- /os -->" around a block for one
 or more computers, and "<!-- filter: device -->" … "<!-- /filter -->" around a block whose list
 items are filtered by device instead of by computer. A list item that starts with **Windows**,
 **Linux**, **macOS**/**Mac**, **Android** or **iPhone** is filtered automatically.
+
+A screenshot line is a real Markdown image, "![alt](guide/img/<name>-<lang>.png)", while that file
+exists, and a slot that GitHub hides, "<!-- image: name -->" / "<!-- afbeelding: name -->", while it
+does not. This tool keeps those lines in step with docs/install/guide/img (a plain "(Image: name)"
+line is accepted and rewritten too), so GitHub shows the screenshots and never a placeholder;
+--check fails while a Markdown guide's screenshot lines or the HTML are out of date.
 """
 from __future__ import annotations
 
@@ -46,6 +51,36 @@ TEXT = {
 }
 COMPUTERS = (("windows", "Windows"), ("linux", "Linux"), ("macos", "macOS"))
 DEVICES = (("android", "Android"), ("iphone", "iPhone / iPad"), ("windows", "Windows"), ("mac", "Mac"), ("linux", "Linux"))
+SLOT_WORD = {"nl": "afbeelding", "en": "image"}
+PICTURE = re.compile(r"\((?:Afbeelding|Image): ([a-z0-9-]+)\)"
+                     r"|<!-- (?:afbeelding|image): ([a-z0-9-]+) -->"
+                     r"|!\[[^\]]*\]\(guide/img/([a-z0-9-]+)-(?:nl|en)\.png\)")
+
+
+def _picture(line: str) -> str | None:
+    """The screenshot name of a screenshot line (in any of its three forms), else None."""
+    match = PICTURE.fullmatch(line.strip())
+    return next(group for group in match.groups() if group) if match else None
+
+
+def _images() -> set[str]:
+    return {p.name for p in (OUT / "img").glob("*.png")} if (OUT / "img").is_dir() else set()
+
+
+def markdown(lang: str, images: set[str] | None = None) -> str:
+    """The Markdown guide with every screenshot line in its current form: an image, or a hidden slot."""
+    images = images if images is not None else _images()
+    lines = []
+    for line in SOURCES[lang].read_bytes().decode("utf-8").split("\n"):
+        name = _picture(line)
+        if name:
+            ending = "\r" if line.endswith("\r") else ""
+            if f"{name}-{lang}.png" in images:
+                line = f"![{name.replace('-', ' ')}](guide/img/{name}-{lang}.png){ending}"
+            else:
+                line = f"<!-- {SLOT_WORD[lang]}: {name} -->{ending}"
+        lines.append(line)
+    return "\n".join(lines)
 
 
 def _inline(text: str) -> str:
@@ -106,7 +141,7 @@ def _step(raw: str, lang: str) -> str | None:
 
 def render(lang: str, images: set[str] | None = None) -> str:
     source = SOURCES[lang].read_text(encoding="utf-8")
-    images = images if images is not None else {p.name for p in (OUT / "img").glob("*.png")} if (OUT / "img").is_dir() else set()
+    images = images if images is not None else _images()
     text = TEXT[lang]
     body: list[str] = []
     toc: list[tuple[str, str]] = []
@@ -141,12 +176,12 @@ def render(lang: str, images: set[str] | None = None) -> str:
             close_list()
             device_block = False
             continue
-        picture = re.fullmatch(r"\((?:Afbeelding|Image): ([a-z0-9-]+)\)", line.strip())
+        picture = _picture(line)
         if picture:
             close_list()
-            name = f"{picture.group(1)}-{lang}.png"
+            name = f"{picture}-{lang}.png"
             if name in images:
-                body.append(f'<figure><img src="img/{name}" alt="{html.escape(picture.group(1))}" loading="lazy"></figure>')
+                body.append(f'<figure><img src="img/{name}" alt="{html.escape(picture)}" loading="lazy"></figure>')
             continue
         kind = "ol" if re.match(r"\d+\. ", line) else "ul" if line.startswith("- ") else None
         if in_list and kind != in_list:
@@ -213,20 +248,26 @@ def render(lang: str, images: set[str] | None = None) -> str:
 
 
 def build(check: bool = False) -> int:
-    expected = {f"{lang}.html": render(lang) for lang in SOURCES}
-    stale = [name for name, content in expected.items()
-             if not (OUT / name).is_file() or (OUT / name).read_text(encoding="utf-8") != content]
+    sources = {SOURCES[lang]: markdown(lang) for lang in SOURCES}
+    stale_sources = [path for path, content in sources.items() if path.read_bytes().decode("utf-8") != content]
     if check:
+        pages = {OUT / f"{lang}.html": render(lang) for lang in SOURCES}
+        stale = stale_sources + [path for path, content in pages.items()
+                                 if not path.is_file() or path.read_text(encoding="utf-8") != content]
         if stale:
-            print("Out of date: " + ", ".join(f"docs/install/guide/{name}" for name in stale) +
+            print("Out of date: " + ", ".join(path.relative_to(ROOT).as_posix() for path in stale) +
                   " (run python tooling/build_guide_html.py)")
             return 1
-        print("guide HTML up to date")
+        print("guide Markdown screenshot lines and HTML up to date")
         return 0
+    for path in stale_sources:
+        path.write_bytes(sources[path].encode("utf-8"))
+    pages = {f"{lang}.html": render(lang) for lang in SOURCES}
     OUT.mkdir(parents=True, exist_ok=True)
-    for name, content in expected.items():
+    for name, content in pages.items():
         (OUT / name).write_bytes(content.encode("utf-8"))
-    print("wrote " + ", ".join(f"docs/install/guide/{name}" for name in expected))
+    print("wrote " + ", ".join([path.relative_to(ROOT).as_posix() for path in stale_sources] +
+                               [f"docs/install/guide/{name}" for name in pages]))
     return 0
 
 

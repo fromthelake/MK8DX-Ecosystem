@@ -236,7 +236,7 @@ Mail settings at mijn.host: https://mijn.host/kb/email/e-mail-account-instellen-
 
 5. In DirectAdmin, open Extra Features → Setup Node.js App → Create Application. Select Node.js 24 if your panel offers it. Choose Production for the final site, Application root apps/mk8dx outside public_html, Application URL at the chosen domain root, and Application startup file api/dist/composition/passenger-hosted-main.js. The panel may first show a default app.js; change the startup setting to the specified file before restarting MK8DX. Copy the exact Node-environment activation line shown at the top of your panel. If Node 24 or the startup setting is unavailable, do not guess with an older Node version; that is a specific account check.
 
-6. Find your own server name and SSH username in the mijn.host panel. On your Windows PC, open PowerShell and connect on the documented SSH port 26. Compare the SSH host-key fingerprint with a value supplied independently by mijn.host before accepting it. Replace the angle-bracket examples with your own values, omitting the brackets:
+6. Find your own server name and SSH username in the mijn.host panel. On your Windows PC, open PowerShell and connect on the documented SSH port 26. Compare the SSH host-key fingerprint with a value supplied independently by mijn.host before accepting it. B2 works on any shared Node.js host that gives you SSH; mijn.host is the tested example, and port 26 is that provider's SSH port, so use your own host's port (often 22) elsewhere. The package keeps its mk8dx-mijnhost-node name. Replace the angle-bracket examples with your own values, omitting the brackets:
 
 ssh -p 26 <your-username>@<your-server-name>
 

@@ -1,6 +1,6 @@
 # Getting started on a local computer
 
-For a normal installation from a prebuilt package, use the [user guide](install/MK8DX_User_Guide_EN.txt) instead; its launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) are the ordinary route. This page builds the server from source, for developers.
+Players and organisers do not need this page: start at [Get started](../README.md#get-started) in the README, the single entry point that names one guide per goal. This page is the developer route: it builds the server from source with Docker.
 
 This guide creates a new Docker project on your computer. It was tested on Windows 11 with PowerShell and Docker Desktop in Linux-container mode; the Linux variants of the commands are at the end.
 
@@ -117,4 +117,4 @@ printf '%s\n' 'your-test-address@example.test' | compose run -T --rm --no-deps a
 In Git Bash on Windows, prefix commands that pass `/app/...` arguments with `MSYS_NO_PATHCONV=1`. Problems:
 [Troubleshooting](DEVELOPMENT.md#troubleshooting).
 
-Production uses [Operations](OPERATIONS.md) and the separate production Compose profile. Real DNS, TLS, SMTP, backup storage and a human operator validation are external requirements. The prebuilt images are distributed inside the host package, not through a container registry.
+Production uses [Operations](OPERATIONS.md) and the separate production Compose profile. Real DNS, TLS, SMTP, backup storage and a human operator validation are external requirements. The prebuilt images ship inside the release packages (the host package and the A2 packages, listed in the release `manifest.json`). The x86-64 images are also public on GitHub Container Registry and can be pulled without signing in, for example `ghcr.io/fromthelake/mk8dx-api:v0.2.2-amd64` and `ghcr.io/fromthelake/mk8dx-web:v0.2.2-amd64` (tags follow `<release>-amd64`); the arm64 images exist only inside the arm64 A2 packages.
