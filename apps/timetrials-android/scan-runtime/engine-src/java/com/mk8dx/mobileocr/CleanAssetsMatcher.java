@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import nl.mariokart8.iconmatcher.CropSearch;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.android.Utils;
@@ -569,13 +570,16 @@ public final class CleanAssetsMatcher {
         JSONObject best = identifyCrop(crop0, groupName, subsetIds, CENTER_ONLY, topk);
         crop0.release();
         best.put("dx", 0).put("dy", 0);
-        int wx1 = Math.max(0, x1 - search);
-        int wy1 = Math.max(0, y1 - search);
-        int wx2 = Math.min(imgW, x1 + tw + search);
-        int wy2 = Math.min(imgH, y1 + th + search);
-        if (tw < 8 || th < 8 || wy2 - wy1 < th || wx2 - wx1 < tw) {
+        // The decision steps and constants are the shared crop search's (packages/icon-matcher
+        // CropSearch, issue #99); the pixel work stays here.
+        int[] window = CropSearch.searchWindow(x1, y1, tw, th, imgW, imgH, search);
+        if (window == null) {
             return best;
         }
+        int wx1 = window[0];
+        int wy1 = window[1];
+        int wx2 = window[2];
+        int wy2 = window[3];
         List<Mat> rgbs = sizedRgb(groupName, tw, th);
         List<Mat> masks = sizedMask(groupName, tw, th);
         double[] msums = sizedSumCache.get(groupName + "|" + tw + "x" + th);
@@ -590,60 +594,41 @@ public final class CleanAssetsMatcher {
         }
         double refMean = refNum / Math.max(refDen, 1e-6) / 3.0;
         org.opencv.core.Scalar winMean = Core.mean(winF);
-        double m = (winMean.val[0] + winMean.val[1] + winMean.val[2]) / 3.0;
-        if (m > 1e-4) {
-            double gain = Math.max(0.6, Math.min(1.8, refMean / m));
+        Double gain = CropSearch.windowGain(refMean, (winMean.val[0] + winMean.val[1] + winMean.val[2]) / 3.0);
+        if (gain != null) {
             Core.multiply(winF, new org.opencv.core.Scalar(gain, gain, gain), winF);
             Core.min(winF, new org.opencv.core.Scalar(1.0, 1.0, 1.0), winF);
         }
-        int curDx = 0;
-        int curDy = 0;
-        for (int round = 0; round < 2; round++) {
-            // positie-stage over ALLE refs (was: top3 van de nominale crop —
-            // seed-lock: een verkeerd geframede crop geeft verkeerde top3 en
-            // de ware kandidaat krijgt nooit zijn betere positie te bewijzen;
-            // ghost Baby Mario 0.831@(+8,-8) verloor zo van DK 0.764).
-            // matchTemplate is native/SIMD op een klein venster — goedkoop.
-            double posBestScore = -Double.MAX_VALUE;
-            int posBestX = -1;
-            int posBestY = -1;
-            Mat result = new Mat();
-            for (int refIdx = 0; refIdx < g.ids.size(); refIdx++) {
-                if (msums[refIdx] < 24.0) {
-                    continue;
-                }
-                if (subsetIds != null && !subsetIds.contains(g.ids.get(refIdx))) {
-                    continue;
-                }
-                Imgproc.matchTemplate(winF, rgbs.get(refIdx), result, Imgproc.TM_SQDIFF, masks.get(refIdx));
-                Core.patchNaNs(result, 1e12);
-                Core.MinMaxLocResult mm = Core.minMaxLoc(result);
-                double sc = 1.0 - mm.minVal / msums[refIdx];
-                if (sc > posBestScore) {
-                    posBestScore = sc;
-                    posBestX = (int) mm.minLoc.x;
-                    posBestY = (int) mm.minLoc.y;
-                }
+        // Position pass over ALL references (not the nominal crop's top three: a wrongly framed crop
+        // gives a wrong top three, and the true candidate never gets to prove its better position;
+        // ghost Baby Mario 0.831 at (+8,-8) lost to DK 0.764 that way). matchTemplate is native/SIMD
+        // on a small window, so it is cheap. One pass: the window and the references do not change,
+        // so a second pass (as this port once ran) picked the same position and stopped.
+        List<CropSearch.Candidate> candidates = new ArrayList<>();
+        Mat result = new Mat();
+        for (int refIdx = 0; refIdx < g.ids.size(); refIdx++) {
+            if (!CropSearch.votes(g.ids.get(refIdx), msums[refIdx], subsetIds)) {
+                continue;
             }
-            result.release();
-            if (posBestX < 0) {
-                break;
-            }
-            int dx = wx1 + posBestX - x1;
-            int dy = wy1 + posBestY - y1;
-            if (dx == curDx && dy == curDy) {
-                break;
-            }
+            Imgproc.matchTemplate(winF, rgbs.get(refIdx), result, Imgproc.TM_SQDIFF, masks.get(refIdx));
+            Core.patchNaNs(result, 1e12);
+            Core.MinMaxLocResult mm = Core.minMaxLoc(result);
+            candidates.add(new CropSearch.Candidate(g.ids.get(refIdx), msums[refIdx], mm.minVal,
+                    (int) mm.minLoc.x, (int) mm.minLoc.y));
+        }
+        result.release();
+        int[] picked = CropSearch.pickPosition(candidates, null);
+        int[] shift = picked == null ? null : CropSearch.pickedShift(window, picked, x1, y1);
+        if (shift != null) {
+            int dx = shift[0];
+            int dy = shift[1];
             Mat shifted = new Mat(imageBgr, clipRect(x1 + dx, y1 + dy, tw, th, imgW, imgH));
             JSONObject out = identifyCrop(shifted, groupName, subsetIds, CENTER_ONLY, topk);
             shifted.release();
-            if (out.optDouble("score", 0.0) < best.optDouble("score", 0.0)) {
-                break;
+            if (CropSearch.acceptShift(out.optDouble("score", 0.0), best.optDouble("score", 0.0))) {
+                out.put("dx", dx).put("dy", dy);
+                best = out;
             }
-            out.put("dx", dx).put("dy", dy);
-            best = out;
-            curDx = dx;
-            curDy = dy;
         }
         winF.release();
         return best;

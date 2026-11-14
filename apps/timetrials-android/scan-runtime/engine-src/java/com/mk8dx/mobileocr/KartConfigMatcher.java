@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import nl.mariokart8.iconmatcher.CropSearch;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.android.Utils;
@@ -37,7 +38,6 @@ import java.util.Set;
 public final class KartConfigMatcher {
 
     private static final String ASSET_ROOT = "kart_config";
-    private static final int SEARCH_PAD_PX = 10;
     // Whether a slot holds a picture is the central slot-presence decision (SlotPresence, source
     // "photo": grey-value standard deviation); this engine measures the slot.
     private static final double FLAG_POS_PENALTY = 0.010;
@@ -408,31 +408,32 @@ public final class KartConfigMatcher {
                     out.put(outKey, result.put("slot_xywh", new JSONArray().put(x1).put(y1).put(slotW).put(slotH)));
                     continue;
                 }
-                int kindSearch = "character_icon".equals(iconKind) ? 10 : 6;
+                int kindSearch = CropSearch.searchPx(group);
                 int wantTopk = "character_icon".equals(iconKind) ? 12 : 0;
+                int[] slotBox = {x1, y1, slotW, slotH};
                 if ("character_icon".equals(iconKind)) {
                     // ghost-avatar is GEDIMD: de verzadiging wordt weggedrukt en
                     // een kleurloze lookalike (Dry Bones) is daar ongevoelig voor
                     // — die won moes-vergelijkingen met 0.004. Saturatie-herstel
-                    // herbewapent het kleurbewijs (Baby Luigi 0.788 vs 0.747)
+                    // herbewapent het kleurbewijs (Baby Luigi 0.788 vs 0.747).
+                    // The decision steps and constants are the shared crop search's
+                    // (packages/icon-matcher CropSearch, issue #99); the pixel work stays here.
                     Mat charSource = canonical;
                     int roiX = 0;
                     int roiY = 0;
                     Mat boosted = null;
                     if (!yellowCard) {
-                        int margin = SEARCH_PAD_PX + 8;
-                        roiX = Math.max(0, x1 - margin);
-                        roiY = Math.max(0, y1 - margin);
-                        int roiW = Math.min(canonical.cols() - roiX, slotW + 2 * margin);
-                        int roiH = Math.min(canonical.rows() - roiY, slotH + 2 * margin);
-                        Mat roi = new Mat(canonical, new Rect(roiX, roiY, roiW, roiH));
+                        int[] region = CropSearch.boostRegion(slotBox, canonical.cols(), canonical.rows());
+                        roiX = region[0];
+                        roiY = region[1];
+                        Mat roi = new Mat(canonical, new Rect(region[0], region[1], region[2], region[3]));
                         Mat hsv = new Mat();
                         Imgproc.cvtColor(roi, hsv, Imgproc.COLOR_BGR2HSV);
-                        double meanSat = Core.mean(hsv).val[1];
-                        if (meanSat > 1.0 && meanSat < 80.0) {
+                        Double factor = CropSearch.boostFactor(Core.mean(hsv).val[1]);
+                        if (factor != null) {
                             List<Mat> ch = new ArrayList<>();
                             Core.split(hsv, ch);
-                            ch.get(1).convertTo(ch.get(1), -1, Math.min(2.0, 90.0 / meanSat), 0);
+                            ch.get(1).convertTo(ch.get(1), -1, factor, 0);
                             Core.merge(ch, hsv);
                             boosted = new Mat();
                             Imgproc.cvtColor(hsv, boosted, Imgproc.COLOR_HSV2BGR);
@@ -456,14 +457,12 @@ public final class KartConfigMatcher {
                     // exact-id-kleurvarianten en levert geen meetbare wall-clock
                     // op; de winst zit in de unanimiteit-stop op stemframes
                     JSONObject best = null;
-                    for (double scale : new double[]{0.94, 0.96, 0.98, 1.0, 1.02, 1.04, 1.06}) {
-                        double w2 = slotW * scale;
-                        double h2 = slotH * scale;
-                        double sx1 = x1 + (slotW - w2) / 2.0 - roiX;
-                        double sy1 = y1 + (slotH - h2) / 2.0 - roiY;
-                        JSONObject candidate = cleanAssets.identifyCropSearch(charSource, sx1, sy1, w2, h2, group, subset, kindSearch, wantTopk);
+                    for (double scale : CropSearch.characterScales()) {
+                        double[] look = CropSearch.lookBox(slotBox, scale, roiX, roiY);
+                        JSONObject candidate = cleanAssets.identifyCropSearch(charSource, look[0], look[1], look[2], look[3], group, subset, kindSearch, wantTopk);
                         candidate.put("scale", scale);
-                        if (best == null || candidate.optDouble("score", 0.0) > best.optDouble("score", 0.0)) {
+                        if (CropSearch.betterLook(candidate.optDouble("score", 0.0),
+                                best == null ? null : best.optDouble("score", 0.0))) {
                             best = candidate;
                         }
                     }
@@ -519,12 +518,9 @@ public final class KartConfigMatcher {
                 // crop op de GEVONDEN positie snijden (dx/dy/schaal uit de zoek)
                 // i.p.v. het nominale slot — de cut-out toont dan exact wat de
                 // matcher beoordeeld heeft (gebruikersvraag 2026-07-20)
-                double cropScale = result.optDouble("scale", 1.0);
-                int cw = Math.max(8, (int) Math.round(slotW * cropScale));
-                int ch = Math.max(8, (int) Math.round(slotH * cropScale));
-                int cx = (int) Math.round(x1 + (slotW - cw) / 2.0) + result.optInt("dx", 0);
-                int cy = (int) Math.round(y1 + (slotH - ch) / 2.0) + result.optInt("dy", 0);
-                if (saveCropPng(canonical, cx, cy, cw, ch, cropFile)) {
+                int[] crop = CropSearch.cropBox(new int[]{x1, y1, slotW, slotH}, result.optDouble("scale", 1.0),
+                        result.optInt("dx", 0), result.optInt("dy", 0));
+                if (saveCropPng(canonical, crop[0], crop[1], crop[2], crop[3], cropFile)) {
                     result.put("crop_path", cropFile.getAbsolutePath());
                 }
             }

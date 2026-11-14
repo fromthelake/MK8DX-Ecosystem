@@ -35,7 +35,7 @@ for the same-source qualification.
 | Frame geometry and card registration | `frame_geometry` | `sharedFrameGeometry.ts` | `FrameGeometry.java` |
 | Select-a-Ghost panel registration | `panel_registration` | `sharedPanelRegistration.ts` | `PanelRegistration.java` |
 | Detector post-processing | `detections` | `sharedDetections.ts` | `Detections.java` |
-| Icon crop position (reference; the products still run their own search, see below) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
+| Icon crop position (decision steps and constants shared; pixel work in the products, see below) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
 | Lap-row grid (digit slots) | `lap_grid` | `sharedLapGrid.ts` | `LapGrid.java` |
 | Seven-segment digits | `segment_digits` | `sharedSegmentDigits.ts` | `SegmentDigits.java` |
 | Time decision (lap sum, repair) | `time_decision` | `sharedTimeDecision.ts` | `TimeDecision.java` |
@@ -158,17 +158,22 @@ still accept private vectors through their former `MK8DX_*_VECTORS` variables.
 
 ### Icon crop search: real crops from the public test set
 
-The character, kart-body and glider crops the shared reader scores are still cut by product code: the Web
-scanner's `cleanAssets.ts` `identifyCropSearch` and the scale sweep in `kartConfig.ts` (ports of the APK's
-`CleanAssetsMatcher` and `KartConfigMatcher`). `python/mk8dx_icon_matcher/crop_search.py` is a Python reference of
-that search, pixel work included: the nominal crop's score, the masked `TM_SQDIFF` position pass over every
-reference, the shifted crop, the ghost-card saturation boost, the seven character scales and the crop box. Tyre and
-flag crops are not part of it; they come from the central tyre window and `flag_window`. The products still run
-their own copy: replacing both with one shared rule is phase 4 of issue #99.
+The character, kart-body and glider crops the shared reader scores are cut by the Web scanner's `cleanAssets.ts`
+`identifyCropSearch` and the scale sweep in `kartConfig.ts`, and by the APK's `CleanAssetsMatcher` and
+`KartConfigMatcher`. `python/mk8dx_icon_matcher/crop_search.py` is a Python reference of that search, pixel work
+included: the nominal crop's score, the masked `TM_SQDIFF` position pass over every reference, the shifted crop,
+the ghost-card saturation boost, the seven character scales and the crop box. Tyre and flag crops are not part of
+it; they come from the central tyre window and `flag_window`.
+
+Since phase 4 of issue #99 the products keep only the pixel work (resizing, `matchTemplate`, HSV, the crop score).
+Every decision step and constant comes from `sharedCropSearch.ts` (Web) and `CropSearch.java` (Android):
+`searchWindow`, `windowGain`, `votes`, `pickPosition`, `pickedShift`, `acceptShift`, `boostRegion`,
+`boostFactor`, `lookBox` with `CHARACTER_SCALES`, `betterLook`, `searchPx` and `cropBox`. The vectors' `constants`
+record and `helperCases` (one call per branch of every step) are checked in all three runtimes.
 
 | Vector | What it pins | Replayed by |
 | --- | --- | --- |
-| `vectors/crop-search-v1.json` | the search decision (window, position vote, shift acceptance, scale choice, crop box). 26 synthetic cases cover every branch and rounding edge. 50 **real crops** (17 character, 17 kart, 16 glider fields from all 12 public test-set frames) carry the reference's measurements on the canonical cards the Web scanner produced, together with the Web scanner's own decision. | `python/tests/test_crop_search_vectors.py`, `ts/crop_search_parity.mjs` (`sharedCropSearch.ts`), Android `CropSearchParityTest` (`CropSearch.java`) |
+| `vectors/crop-search-v1.json` | the searcher's constants, 64 helper cases, and the search decision (window, position vote, shift acceptance, scale choice, crop box). 26 synthetic cases cover every branch and rounding edge. 50 **real crops** (17 character, 17 kart, 16 glider fields from all 12 public test-set frames) carry the reference's measurements on the canonical cards the Web scanner produced, together with the Web scanner's own decision. | `python/tests/test_crop_search_vectors.py`, `ts/crop_search_parity.mjs` (`sharedCropSearch.ts`), Android `CropSearchParityTest` (`CropSearch.java`) |
 
 A real case holds numbers only, and no pixels. It stores the slot, the nominal and shifted scores, the five best
 references of the position pass and the decisions. On those 50 fields the reference's own pixel search equals the
@@ -189,6 +194,12 @@ out in the reference because desktop OpenCV differs from OpenCV.js there. `HSV2B
 lower on about a third of all inputs; `hsv_to_bgr` equals OpenCV.js on all 11.8 million. The other is the 8-bit
 `convertTo` scale. Masked `TM_SQDIFF` differs between the two builds in the last float bits (about 2e-7 relative).
 The closest real position vote is 3e-4 apart, so that difference does not reach a decision.
+
+Android computes the crop score (`dRgbScore`) and the achromatic guard's saturation (`qSatHue`) in float32 and
+converts bytes with `convertTo`; the Web and the reference use double and `v / 255`. Phase 4 left that pixel work in
+place and measured it: with Android's float32 arithmetic emulated on the 50 real fields, the 21,607 reference scores
+differ by at most 5e-8. One of them rounds differently at four digits, but it is not a winner. No score, margin,
+top three, shift or scale of any search changes.
 
 ## Changing the reader
 

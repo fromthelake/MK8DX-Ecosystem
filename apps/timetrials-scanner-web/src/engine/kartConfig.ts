@@ -3,6 +3,8 @@
 // kleurzweem-tiebreak; deploy-registratie (edge-NCC op kaarttemplates);
 // tekst-tweede-bewijs; rescueCharacterViaParts; realignPartColors (v0.4.1).
 import { slotPresent } from '../../../../packages/icon-matcher/ts/sharedSlotPresence';
+import { CHARACTER_SCALES, betterLook, boostFactor, boostRegion, cropBox, lookBox, searchPx }
+  from '../../../../packages/icon-matcher/ts/sharedCropSearch';
 import type { AssetSource } from './assets';
 import { TIRE_NAMES } from './tireNames.generated';
 import { loadBgrAlpha, loadGray } from './assets';
@@ -1132,29 +1134,28 @@ export class KartConfigMatcher {
           out[outKey] = result;
           continue;
         }
-        const kindSearch = iconKind === 'character_icon' ? 10 : 6;
+        const kindSearch = searchPx(group);
         const wantTopk = iconKind === 'character_icon' ? 12 : 0;
         if (iconKind === 'character_icon') {
+          // The decision steps and constants are the shared crop search's (issue #99); the pixel work is ours.
           let charSource = canonical;
           let roiX = 0;
           let roiY = 0;
           let boosted: any = null;
           if (!yellowCard) {
-            const margin = SEARCH_PAD_PX + 8;
-            roiX = Math.max(0, x1 - margin);
-            roiY = Math.max(0, y1 - margin);
-            const roiW = Math.min(canonical.cols - roiX, slotW + 2 * margin);
-            const roiH = Math.min(canonical.rows - roiY, slotH + 2 * margin);
-            const roiMat = canonical.roi(new c.Rect(roiX, roiY, roiW, roiH));
+            const region = boostRegion([x1, y1, slotW, slotH], canonical.cols, canonical.rows);
+            roiX = region[0];
+            roiY = region[1];
+            const roiMat = canonical.roi(new c.Rect(region[0], region[1], region[2], region[3]));
             const hsv = new c.Mat();
             c.cvtColor(roiMat, hsv, c.COLOR_BGR2HSV);
-            const meanSat = c.mean(hsv)[1];
-            if (meanSat > 1.0 && meanSat < 80.0) {
+            const factor = boostFactor(c.mean(hsv)[1]);
+            if (factor !== null) {
               const ch = new c.MatVector();
               c.split(hsv, ch);
               const s = ch.get(1);
               const sBoost = new c.Mat();
-              s.convertTo(sBoost, -1, Math.min(2.0, 90.0 / meanSat), 0);
+              s.convertTo(sBoost, -1, factor, 0);
               const merged = new c.MatVector();
               merged.push_back(ch.get(0));
               merged.push_back(sBoost);
@@ -1175,14 +1176,11 @@ export class KartConfigMatcher {
             roiMat.delete();
           }
           let best: IdentityEntry | null = null;
-          for (const scale of [0.94, 0.96, 0.98, 1.0, 1.02, 1.04, 1.06]) {
-            const w2 = slotW * scale;
-            const h2 = slotH * scale;
-            const sx1 = x1 + (slotW - w2) / 2.0 - roiX;
-            const sy1 = y1 + (slotH - h2) / 2.0 - roiY;
+          for (const scale of CHARACTER_SCALES) {
+            const [sx1, sy1, w2, h2] = lookBox([x1, y1, slotW, slotH], scale, roiX, roiY);
             const candidate = this.cleanAssets.identifyCropSearch(charSource, sx1, sy1, w2, h2, group, subset, kindSearch, wantTopk, rawRgbCandidate, achromaticGapCandidate);
             candidate.scale = scale;
-            if (!best || (candidate.score ?? 0.0) > (best.score ?? 0.0)) best = candidate;
+            if (betterLook(candidate.score ?? 0.0, best ? best.score ?? 0.0 : null)) best = candidate;
           }
           if (boosted) boosted.delete();
           result = best!;
@@ -1219,23 +1217,14 @@ export class KartConfigMatcher {
       if (assetRef) result.asset_ref = assetRef;
       if (this.saveCrops) {
         const cropScale = result.scale ?? 1.0;
-        const cw = Math.max(8, Math.round(slotW * cropScale));
-        const chh = Math.max(8, Math.round(slotH * cropScale));
-        const cx = Math.round(x1 + (slotW - cw) / 2.0) + (result.dx ?? 0);
-        const cy = Math.round(y1 + (slotH - chh) / 2.0) + (result.dy ?? 0);
+        const [cx, cy, cw, chh] = cropBox([x1, y1, slotW, slotH], cropScale, result.dx ?? 0, result.dy ?? 0);
         const png = await cropPng(canonical, cx, cy, cw, chh);
         if (png) result.crop_png = png;
       }
       if (this.sharedIconQa) {
         const kind = REG_GROUP[iconKind] as VisualFieldRead['kind'];
         const profile = iconKind === 'character_icon' && ghostDetail ? 'ghost_select' : 'result';
-        const scale = result.scale ?? 1.0;
-        const cw = Math.max(8, Math.round(slotW * scale));
-        const ch = Math.max(8, Math.round(slotH * scale));
-        let box = result.match_xywh ?? [
-          Math.round(x1 + (slotW - cw) / 2.0) + (result.dx ?? 0),
-          Math.round(y1 + (slotH - ch) / 2.0) + (result.dy ?? 0), cw, ch,
-        ];
+        let box = result.match_xywh ?? cropBox([x1, y1, slotW, slotH], result.scale ?? 1.0, result.dx ?? 0, result.dy ?? 0);
         if (this.sharedFlagWindowQa && iconKind === 'flag_icon') {
           // Central flag position (packages/icon-matcher sharedFlagWindow):
           // the shared references choose the flag inside its padded slot, not

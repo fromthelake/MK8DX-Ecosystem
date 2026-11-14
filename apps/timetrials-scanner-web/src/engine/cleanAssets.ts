@@ -6,6 +6,8 @@ import type { AssetSource } from './assets';
 import { loadBgr, loadGray } from './assets';
 import { cv } from './cv';
 import type { IdentityEntry } from './types';
+import { acceptShift, pickPosition, pickedShift, searchWindow, votes, windowGain,
+  type Candidate } from '../../../../packages/icon-matcher/ts/sharedCropSearch';
 
 const PACK_ROOT = 'clean_assets';
 const DEFAULT_OFFSETS: [number, number][] = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -524,11 +526,10 @@ export class CleanAssetsMatcher {
     crop0.delete();
     best.dx = 0;
     best.dy = 0;
-    const wx1 = Math.max(0, x1 - search);
-    const wy1 = Math.max(0, y1 - search);
-    const wx2 = Math.min(imgW, x1 + tw + search);
-    const wy2 = Math.min(imgH, y1 + th + search);
-    if (tw < 8 || th < 8 || wy2 - wy1 < th || wx2 - wx1 < tw) return best;
+    // The decision steps and constants are the shared crop search's (issue #99); the pixel work is ours.
+    const window = searchWindow(x1, y1, tw, th, imgW, imgH, search);
+    if (window === null) return best;
+    const [wx1, wy1, wx2, wy2] = window;
     const sized = this.sized(groupName, tw, th);
     const winRoi = imageBgr.roi(new c.Rect(wx1, wy1, wx2 - wx1, wy2 - wy1));
     const winF = new c.Mat();
@@ -542,9 +543,8 @@ export class CleanAssetsMatcher {
     }
     const refMean = refNum / Math.max(refDen, 1e-6) / 3.0;
     const winMean = c.mean(winF);
-    const m = (winMean[0] + winMean[1] + winMean[2]) / 3.0;
-    if (m > 1e-4) {
-      const gain = Math.max(0.6, Math.min(1.8, refMean / m));
+    const gain = windowGain(refMean, (winMean[0] + winMean[1] + winMean[2]) / 3.0);
+    if (gain !== null) {
       const gainMat = new c.Mat(winF.rows, winF.cols, c.CV_32FC3, new c.Scalar(gain, gain, gain));
       c.multiply(winF, gainMat, winF);
       gainMat.delete();
@@ -552,37 +552,29 @@ export class CleanAssetsMatcher {
       c.min(winF, oneMat, winF);
       oneMat.delete();
     }
-    let posBestScore = -Number.MAX_VALUE;
-    let posBestX = -1;
-    let posBestY = -1;
+    const subset = subsetIds ?? null;
+    const candidates: Candidate[] = [];
     const result = new c.Mat();
     for (let refIdx = 0; refIdx < g.ids.length; refIdx++) {
-      if (sized.sums[refIdx] < 24.0) continue;
-      if (subsetIds && !subsetIds.has(g.ids[refIdx])) continue;
+      if (!votes(g.ids[refIdx], sized.sums[refIdx], subset)) continue;
       c.matchTemplate(winF, sized.rgbs[refIdx], result, c.TM_SQDIFF, sized.masks[refIdx]);
       patchNaNs(result, 1e12);
       const mm = c.minMaxLoc(result);
-      const sc = 1.0 - mm.minVal / sized.sums[refIdx];
-      if (sc > posBestScore) {
-        posBestScore = sc;
-        posBestX = mm.minLoc.x;
-        posBestY = mm.minLoc.y;
-      }
+      candidates.push([g.ids[refIdx], sized.sums[refIdx], mm.minVal, mm.minLoc.x, mm.minLoc.y]);
     }
     result.delete();
-    if (posBestX >= 0) {
-      const dx = wx1 + posBestX - x1;
-      const dy = wy1 + posBestY - y1;
-      if (dx !== 0 || dy !== 0) {
-        const r = clipRect(x1 + dx, y1 + dy, tw, th, imgW, imgH);
-        const shifted = imageBgr.roi(new c.Rect(r.x, r.y, r.width, r.height));
-        const out = this.identifyCrop(shifted, groupName, subsetIds, CENTER_ONLY, topk, rawRgbCandidate, achromaticGapCandidate);
-        shifted.delete();
-        if ((out.score ?? 0.0) >= (best.score ?? 0.0)) {
-          out.dx = dx;
-          out.dy = dy;
-          best = out;
-        }
+    const picked = pickPosition(candidates, null);
+    const shift = picked === null ? null : pickedShift(window, picked, x1, y1);
+    if (shift !== null) {
+      const [dx, dy] = shift;
+      const r = clipRect(x1 + dx, y1 + dy, tw, th, imgW, imgH);
+      const shifted = imageBgr.roi(new c.Rect(r.x, r.y, r.width, r.height));
+      const out = this.identifyCrop(shifted, groupName, subsetIds, CENTER_ONLY, topk, rawRgbCandidate, achromaticGapCandidate);
+      shifted.delete();
+      if (acceptShift(out.score ?? 0.0, best.score ?? 0.0)) {
+        out.dx = dx;
+        out.dy = dy;
+        best = out;
       }
     }
     winF.delete();

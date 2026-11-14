@@ -1,8 +1,10 @@
 """Write vectors/crop-search-v1.json from the Python reference of the Web/Android icon crop search
 (python/mk8dx_icon_matcher/crop_search.py; issue #99, phase 3).
 
-Two kinds of case, both replayed by Python, TypeScript and Java through the decision functions
-(``decide_field``, ``ts/sharedCropSearch.ts``, ``CropSearch.java``):
+The file holds the searcher's ``constants`` (each runtime checks its shared module against them),
+``helperCases`` (one call per branch of every step function the Web scanner and Android call, issue #99
+phase 4) and two kinds of whole-search case, all replayed by Python, TypeScript and Java through the
+decision functions (``decide_field``, ``ts/sharedCropSearch.ts``, ``CropSearch.java``):
 
 - ``synthetic``: hand-built measurements on every branch and rounding edge of the decision;
 - ``public-test-set``: real crops. The browser scanner reads the public test set
@@ -117,6 +119,52 @@ def synthetic_cases() -> list[dict]:
     return cases
 
 
+def constants() -> dict:
+    """The searcher's constants: each runtime's shared module must hold exactly these."""
+    return {"characterScales": list(cs.CHARACTER_SCALES), "searchPx": dict(cs.SEARCH_PX),
+            "boostMargin": cs.BOOST_MARGIN, "boostSatMin": cs.BOOST_SAT_MIN, "boostSatMax": cs.BOOST_SAT_MAX,
+            "boostSatTarget": cs.BOOST_SAT_TARGET, "boostMaxFactor": cs.BOOST_MAX_FACTOR,
+            "windowGainMin": cs.WINDOW_GAIN_MIN, "windowGainMax": cs.WINDOW_GAIN_MAX,
+            "minWindowMean": cs.MIN_WINDOW_MEAN, "minTemplatePx": cs.MIN_TEMPLATE_PX, "minCropPx": cs.MIN_CROP_PX,
+            "minTemplateSum": cs.MIN_TEMPLATE_SUM}
+
+
+def helper_cases() -> list[dict]:
+    """The step functions the products call, one case per branch and edge: ``fn``, ``args``, ``expected``."""
+    calls = [
+        ("searchPx", ["characters"]), ("searchPx", ["bodies"]), ("searchPx", ["gliders"]),
+        ("searchWindow", [40, 30, 48, 48, 1280, 720, 10]), ("searchWindow", [3, 2, 48, 48, 1280, 720, 10]),
+        ("searchWindow", [1228, 668, 48, 48, 1280, 720, 6]), ("searchWindow", [40, 30, 7, 48, 1280, 720, 10]),
+        ("searchWindow", [40, 30, 8, 8, 1280, 720, 10]), ("searchWindow", [0, 0, 48, 48, 40, 60, 10]),
+        ("windowGain", [0.5, 0.0001]), ("windowGain", [0.5, 0.00010001]), ("windowGain", [0.5, 0.25]),
+        ("windowGain", [0.5, 1.0]), ("windowGain", [0.5, 0.9]), ("windowGain", [0.5, 0.2]),
+        ("windowGain", [0.45, 0.3]), ("windowGain", [0.3, 0.6]), ("windowGain", [0.4, 0.0]),
+        ("votes", ["a", 24.0, None]), ("votes", ["a", 23.999, None]), ("votes", ["a", 2000.0, ["a", "b"]]),
+        ("votes", ["c", 2000.0, ["a", "b"]]), ("votes", ["a", 2000.0, []]),
+        ("pickedShift", [[30, 20, 98, 88], [10, 10], 40, 30]), ("pickedShift", [[30, 20, 98, 88], [13, 7], 40, 30]),
+        ("pickedShift", [[0, 0, 61, 60], [0, 0], 3, 2]),
+        ("acceptShift", [0.8, 0.8]), ("acceptShift", [0.8001, 0.8]), ("acceptShift", [0.7999, 0.8]),
+        ("boostRegion", [[600, 400, 48, 48], 1280, 720]), ("boostRegion", [[5, 7, 48, 48], 1280, 720]),
+        ("boostRegion", [[1250, 700, 48, 48], 1280, 720]), ("boostRegion", [[570, 120, 83, 77], 1280, 720]),
+        ("boostFactor", [1.0]), ("boostFactor", [1.0001]), ("boostFactor", [30.0]), ("boostFactor", [45.0]),
+        ("boostFactor", [61.37]), ("boostFactor", [79.999]), ("boostFactor", [80.0]), ("boostFactor", [0.0]),
+        ("betterLook", [0.8, None]), ("betterLook", [0.8, 0.8]), ("betterLook", [0.8001, 0.8]),
+        ("betterLook", [0.0, None]),
+        ("cropBox", [[40, 30, 48, 48], 1.0, 0, 0]), ("cropBox", [[40, 30, 45, 45], 0.94, -3, 2]),
+        ("cropBox", [[570, 120, 48, 48], 0.96, -4, 0]), ("cropBox", [[0, 0, 7, 7], 0.94, 0, 0]),
+        ("cropBox", [[443, 83, 83, 77], 1.06, 5, -1]),
+    ]
+    for scale in cs.CHARACTER_SCALES:
+        calls.append(("lookBox", [[570, 120, 48, 48], scale, 0, 0]))
+        calls.append(("lookBox", [[600, 400, 45, 47], scale, 582, 382]))
+    fns = {"searchPx": cs.search_px, "searchWindow": cs.search_window, "windowGain": cs.window_gain,
+           "votes": lambda rid, total, subset: cs.votes(rid, total, None if subset is None else set(subset)),
+           "pickedShift": cs.picked_shift, "acceptShift": cs.accept_shift, "boostRegion": cs.boost_region,
+           "boostFactor": cs.boost_factor, "lookBox": cs.look_box, "betterLook": cs.better_look,
+           "cropBox": cs.crop_box}
+    return [{"fn": fn, "args": args, "expected": fns[fn](*args)} for fn, args in calls]
+
+
 def _sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -192,7 +240,8 @@ def build(capture: Path | None, clean_assets: Path | None) -> dict:
         real = [c for c in previous.get("cases", []) if c["source"] != "synthetic"]
         source = previous.get("realSource", {})
     return {"schema": SCHEMA, "generator": "packages/icon-matcher/tools/generate_crop_search_vectors.py",
-            "realSource": source, "cases": synthetic_cases() + real}
+            "realSource": source, "constants": constants(), "helperCases": helper_cases(),
+            "cases": synthetic_cases() + real}
 
 
 def dump(doc: dict) -> str:
