@@ -41,7 +41,13 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+  /* CJK and Cyrillic fallbacks for track/cup names in the viewer's language;
+     the lang attribute on those names lets the browser pick the right CJK face. */
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, Roboto,
+    "Yu Gothic UI", "Meiryo UI", "Hiragino Sans", "Noto Sans JP",
+    "Malgun Gothic", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Microsoft YaHei UI", "PingFang SC", "Noto Sans SC",
+    "Microsoft JhengHei UI", "PingFang TC", "Noto Sans TC", "Noto Sans CJK JP", sans-serif;
   color: var(--text);
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
@@ -169,7 +175,8 @@ body.transparent::before { display: none; }
   display: flex; align-items: center; gap: 10px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.trackbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.trackbar__name > #track-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.trackbar__sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .trackbar__cup { width: 40px; height: 40px; object-fit: contain; }
 
 .racechip {
@@ -230,7 +237,7 @@ body.transparent::before { display: none; }
   font-size: 26px; font-weight: 800; line-height: 1.05; margin-top: 5px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.racehero__sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.racehero__sub { font-size: 13px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .racehero__count { text-align: right; flex: none; }
 .racehero__countlabel {
   display: block;
@@ -812,3 +819,71 @@ body.fixed-grid-view .stage {
    grows naturally from the taller rows. */
 body.density-tv .gridboard { grid-template-columns: repeat(auto-fit, minmax(560px, 1fr)); }
 body.density-tv .gridcard__tracktext span { font-size: clamp(13px, 1.7vh, 22px); }
+
+/* Viewer display settings: a small gear, bottom right, that fades out while the
+   pointer rests. Not mounted in an OBS browser source or with ?controls=0. */
+.viewctl {
+  position: fixed; right: 12px; bottom: 12px; z-index: 50;
+  display: flex; flex-direction: column-reverse; align-items: flex-end; gap: 8px;
+  max-width: calc(100vw - 24px);
+}
+.viewctl__gear {
+  width: 34px; height: 34px; padding: 7px;
+  border: 1px solid var(--line); border-radius: 50%;
+  background: rgba(13, 17, 48, 0.86); color: var(--muted);
+  cursor: pointer; opacity: 0; transition: opacity .3s ease;
+}
+.viewctl__gear svg { width: 100%; height: 100%; fill: currentColor; display: block; }
+.viewctl__gear:hover, .viewctl__gear:focus-visible { color: var(--text); }
+body.viewctl-awake .viewctl__gear,
+.viewctl__gear:focus-visible,
+.viewctl__gear[aria-expanded="true"] { opacity: 1; }
+.viewctl__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.viewctl__panel {
+  display: flex; flex-direction: column; gap: 10px;
+  width: 280px; max-width: 100%; padding: 12px 14px;
+  border: 1px solid var(--line); border-radius: 12px;
+  background: rgba(13, 17, 48, 0.96); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+  font-size: 13px;
+}
+.viewctl__field { display: flex; flex-direction: column; gap: 4px; min-width: 0; color: var(--muted); }
+.viewctl__field select {
+  width: 100%; min-width: 0; padding: 6px 8px;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg-elev); color: var(--text); font: inherit;
+}
+
+/* Phone widths. The 740px board shrinks to the viewport here, so the fixed
+   columns used to leave the driver name a letter or two: narrow the position,
+   +/-, points and total columns and the avatar so the name gets the room. The
+   fixed grid stacks its cards and scrolls instead of squeezing 12 rows into a
+   third of the screen. Wider layouts (OBS 1920x1080) are untouched. */
+@media (max-width: 600px) {
+  .cols,
+  .row { grid-template-columns: 26px 22px minmax(0, 1fr) 48px 40px; gap: 6px; }
+  .cols { padding: 10px 14px 6px; letter-spacing: .06em; }
+  .rows { padding: 4px 8px 12px; }
+  .row { padding: 8px 6px; }
+  .row__rank { font-size: 16px; }
+  .row.rank-1 .row__rank, .row.rank-2 .row__rank, .row.rank-3 .row__rank { font-size: 18px; }
+  .row__delta { font-size: 12px; }
+  .row__driver { gap: 8px; }
+  .row__icon { width: 32px; height: 32px; }
+  .row__name { font-size: 15px; }
+  .row__total { font-size: 16px; }
+
+  body.fixed-grid-view .stage { overflow-y: auto; align-items: flex-start; padding: 10px; }
+  .gridboard { height: auto; grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; gap: 12px; }
+  .gridrows { flex: none; }
+  .gridrow { flex: none; height: 40px; }
+  .gridcols,
+  .gridrow { grid-template-columns: 24px 16px minmax(0, 1fr) 46px 34px 40px; gap: 5px; }
+  .gridcols { padding: 8px 12px 6px; }
+  .gridrows { padding: 0 8px 10px; }
+  .gridrow { padding: 4px 8px; }
+  .gridrow__rank, .gridrow__total { font-size: 18px; }
+  .gridrow.rank-1 .gridrow__rank { font-size: 21px; }
+  .gridrow__delta, .gridrow__gap { font-size: 12px; }
+  .gridrow__driver b { font-size: 16px; }
+  .gridrow__race .racepill { font-size: 12px; }
+}

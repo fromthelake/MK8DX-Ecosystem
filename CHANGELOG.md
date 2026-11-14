@@ -7,6 +7,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **Tournament Live scoreboard: Overall only and track names in your language.** A small gear on the spectator
+  dashboard (hidden in OBS) chooses *Automatic* (default: latest race result and overall standings alternate) or
+  *Overall only* (the confirmed overall standings stay on screen, with the race they include and a race still
+  awaiting confirmation), and the language of track and cup names: English + Dutch as before, or one of the 15
+  game languages from the Clean Assets names by canonical track/cup ID, with English as fallback. The browser keeps
+  the choice; OBS sources use `?scoreboard=overall` and `?trackLang=ja`. Display only: scoring, confirmation and
+  the console language recognition reads are unchanged, and the dashboard's own texts stay English.
+  `track-names-v1.json` now also carries the canonical IDs and the cup names.
 - **A2 setup and join pages in all 15 languages of the game** (machine translations except EN/NL): the setup
   wizard and MK8DX beheer, the host's "Prepare this device" page (`/setup`) and the invitation page a phone opens
   from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:
@@ -54,6 +62,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixed
 
+- **Step 5/9 and historical imports keep non-Latin names apart**: the workbook name key kept only `a-z0-9`, so
+  every Cyrillic, Japanese, Korean or Chinese player name became the same empty key and the rows overwrote each
+  other. The key now keeps letters and digits of every script (accents and spacing still folded, NFKC, so kana
+  keep their voicing marks); keys of names it could already read are unchanged.
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
   new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
   0.2.3 package 2 would skip the backup.
