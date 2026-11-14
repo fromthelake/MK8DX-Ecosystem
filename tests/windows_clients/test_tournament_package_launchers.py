@@ -72,6 +72,16 @@ def test_installer_and_readme_name_the_analysis_launcher(tmp_path):
     builder.INSTALLER_CMD.encode("ascii")
 
 
+def test_installer_and_readme_name_every_launcher(tmp_path):
+    builder, _ = _setup_helper(tmp_path)
+    for name in ("TournamentProcessor.cmd", "TournamentAnalysis.cmd", "TournamentLive.cmd",
+                 "TournamentLiveCli.cmd", "TournamentConnect.cmd"):
+        assert any(line.startswith(f'call :say " {name}') for line in builder.INSTALLER_CMD.splitlines()), name
+        assert f"     {name}" in builder.README_FIRST, name
+    assert "ocr-models" in builder.README_FIRST
+    assert "first OCR run" not in builder.README_FIRST
+
+
 def test_package_installs_the_qt_window_and_offers_the_background_setting(tmp_path):
     _, helper = _setup_helper(tmp_path)
     assert any(item.startswith("mk8dx-tournament-processor[gui]==") for item in helper.DISTRIBUTIONS)
