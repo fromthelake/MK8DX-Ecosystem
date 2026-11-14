@@ -35,6 +35,7 @@ for the same-source qualification.
 | Frame geometry and card registration | `frame_geometry` | `sharedFrameGeometry.ts` | `FrameGeometry.java` |
 | Select-a-Ghost panel registration | `panel_registration` | `sharedPanelRegistration.ts` | `PanelRegistration.java` |
 | Detector post-processing | `detections` | `sharedDetections.ts` | `Detections.java` |
+| Icon crop position (reference; the products still run their own search, see below) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
 | Lap-row grid (digit slots) | `lap_grid` | `sharedLapGrid.ts` | `LapGrid.java` |
 | Seven-segment digits | `segment_digits` | `sharedSegmentDigits.ts` | `SegmentDigits.java` |
 | Time decision (lap sum, repair) | `time_decision` | `sharedTimeDecision.ts` | `TimeDecision.java` |
@@ -154,6 +155,40 @@ reference bank equals the pack's tensors.
 frame-geometry and lap-grid need the pack's `frame-definitions-v1.json` (`MK8DX_RECOGNITION_PACK` or
 `MK8DX_FRAME_DEFINITIONS`); refinement needs its tensor pack. Without them those replays skip. The Java tests
 still accept private vectors through their former `MK8DX_*_VECTORS` variables.
+
+### Icon crop search: real crops from the public test set
+
+The character, kart-body and glider crops the shared reader scores are still cut by product code: the Web
+scanner's `cleanAssets.ts` `identifyCropSearch` and the scale sweep in `kartConfig.ts` (ports of the APK's
+`CleanAssetsMatcher` and `KartConfigMatcher`). `python/mk8dx_icon_matcher/crop_search.py` is a Python reference of
+that search, pixel work included: the nominal crop's score, the masked `TM_SQDIFF` position pass over every
+reference, the shifted crop, the ghost-card saturation boost, the seven character scales and the crop box. Tyre and
+flag crops are not part of it; they come from the central tyre window and `flag_window`. The products still run
+their own copy: replacing both with one shared rule is phase 4 of issue #99.
+
+| Vector | What it pins | Replayed by |
+| --- | --- | --- |
+| `vectors/crop-search-v1.json` | the search decision (window, position vote, shift acceptance, scale choice, crop box). 26 synthetic cases cover every branch and rounding edge. 50 **real crops** (17 character, 17 kart, 16 glider fields from all 12 public test-set frames) carry the reference's measurements on the canonical cards the Web scanner produced, together with the Web scanner's own decision. | `python/tests/test_crop_search_vectors.py`, `ts/crop_search_parity.mjs` (`sharedCropSearch.ts`), Android `CropSearchParityTest` (`CropSearch.java`) |
+
+A real case holds numbers only, and no pixels. It stores the slot, the nominal and shifted scores, the five best
+references of the position pass and the decisions. On those 50 fields the reference's own pixel search equals the
+Web scanner on every one of its 154 searches: scale, shift, score, margins, top three and crop box. To regenerate
+the real cases, record the browser scanner on the public test set. The reference then searches the same canonical
+cards. The capture holds those cards, so keep it outside the repository:
+
+```sh
+# needs the scanner's npm ci, sync-assets and Playwright Chromium
+node packages/icon-matcher/tools/capture_crop_search_web.mjs /tmp/crop-search-capture.json.gz
+PYTHONPATH=packages/icon-matcher/python python packages/icon-matcher/tools/generate_crop_search_vectors.py \
+  --capture /tmp/crop-search-capture.json.gz --clean-assets apps/timetrials-scanner-web/public/assets/clean_assets
+python packages/icon-matcher/tools/generate_crop_search_vectors.py --check   # synthetic part current, real cases kept
+```
+
+Tolerances: decisions and rounded scores are identical in all three runtimes. Two OpenCV operations are written
+out in the reference because desktop OpenCV differs from OpenCV.js there. `HSV2BGR` on desktop SIMD gives values one
+lower on about a third of all inputs; `hsv_to_bgr` equals OpenCV.js on all 11.8 million. The other is the 8-bit
+`convertTo` scale. Masked `TM_SQDIFF` differs between the two builds in the last float bits (about 2e-7 relative).
+The closest real position vote is 3e-4 apart, so that difference does not reach a decision.
 
 ## Changing the reader
 
