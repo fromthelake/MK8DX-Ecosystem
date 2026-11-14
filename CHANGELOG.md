@@ -18,9 +18,23 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   send later, what stays on the PC, and that Tournament Live's Excel stays in `Live_Output\exports` after closing.
   English versions of the Dutch-only install docs and Dutch versions of the player, LiveTrial, Tournament and
   hosting guides.
+- **LiveTrial and Tournament Directors guides in all 15 languages** (`docs/guides/translations/<locale>/`, machine
+  translations except EN/NL). The English guides list every language under their title, and each README's Get
+  started rows link the reader's own LiveTrial, Tournament Directors and Players guide.
+- **Change a user guide** in the developer guide (EN/NL), the pull request checklist and CONTRIBUTING: which files
+  hold the EN/NL guides and the 13 translations, update them in the same pull request or open a `translation`
+  issue, and the builders to run. `tooling/build_readme_links.py` (with `--check`) keeps the README language
+  switcher and own-language guide links in step.
 
 ### Fixed
 
+- **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
+  new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
+  0.2.3 package 2 would skip the backup.
+- **The Tournament Tools guides no longer say every OCR model is included.** The package carries the detection and
+  Latin-script EasyOCR models; the first English OCR run downloads `english_g2.pth` (about 15 MB) once, as the
+  package README already said. Corrected in the Tournament Directors guide (EN/NL), the client install pages, the
+  Tournament Tools reference and all 15 user guides.
 - **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
   in a new package's folder would run the new version on the existing installation without the checked backup and
   the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start

@@ -128,6 +128,36 @@ tekst als probleem. Hij meldt `"problemCount": 0` als elke catalogus elke tekst 
 `messages.source.json`, de vertaalbestanden en de opnieuw gebouwde catalogi. De Android- en desktop-extractors
 (`extract_android_messages.py`, `extract_desktop_messages.py`) werken zo voor hun catalogi.
 
+## Een handleiding wijzigen
+
+De Engelse en Nederlandse handleidingen worden door mensen geschreven en nagekeken; de andere 13 talen zijn
+machinevertalingen van het Engels. Waar ze staan:
+
+- A2-handleiding: `docs/install/A2_HOME_GUIDE_EN.md` en `A2_THUIS_HANDLEIDING_NL.md`; vertalingen in
+  `docs/install/translations/<locale>/A2_HOME_GUIDE.md`.
+- Leeshandleiding: `docs/install/MK8DX_User_Guide_EN.txt` en `MK8DX_Handleiding_NL.txt`; vertalingen in
+  `docs/install/translations/<locale>/MK8DX_User_Guide.txt`. De DOCX-bestanden ernaast worden uit de TXT gebouwd.
+- Clubhandleidingen: `docs/guides/*.md`; Nederlands en de vertalingen in `docs/guides/translations/<locale>/`.
+- `docs/install/translations/<locale>/guide-words.json` bevat per taal de vaste staplabels, de woorden van de
+  HTML-pagina en de hoofdstuktitels van de leeshandleiding; de bouwers lezen het, dus een hernoemd hoofdstuk wijzig
+  je daar ook.
+
+Wijzig je een Engelse handleiding, wijzig dan in dezelfde pull request de Nederlandse en de vertalingen van
+hetzelfde stuk; een machinevertaling mag. Lukt dat niet, open dan een issue met label `translation` dat de
+handleiding en het gewijzigde stuk noemt. Houd de opbouw van elke vertaling (koppen, codeblokken,
+`<!-- -->`-commentaar) gelijk aan het Engels. Bouw en controleer daarna:
+
+```sh
+python tooling/build_guide_html.py                  # docs/install/guide/<locale>.html
+python tooling/release/build_reading_guides.py      # de DOCX-bestanden (vraagt python-docx)
+python tooling/build_readme_links.py                # taalkeuze en eigen-taalhandleidingen in de README's
+python tooling/build_guide_html.py --check
+python tooling/check_docs.py
+```
+
+Lezers melden een foute of onduidelijke tekst met het issueformulier **Translation correction**
+(`.github/ISSUE_TEMPLATE/translation.yml`).
+
 ## Lokaal draaien
 
 - Website, API en database met Docker vanuit de bron: [Getting started](GETTING_STARTED.md) (Engels).
