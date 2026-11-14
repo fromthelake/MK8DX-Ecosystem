@@ -116,11 +116,11 @@ flowchart TB
   voegt scannen op de telefoon toe, je tijden zonder internet en in één tik wisselen tussen community's
   ([Players](docs/guides/PLAYERS.md), Engels).
 - **Een Windows-pc met een capture card is optioneel.** LiveTrial legt elke Time Trial-rit vanzelf vast; je
-  stuurt hem met één klik naar je community, of automatisch ([LiveTrial](docs/guides/LIVETRIAL.md), Engels).
+  stuurt hem met één klik naar je community, of automatisch ([LiveTrial](docs/guides/translations/nl/LIVETRIAL.md)).
 - **Toernooiavonden draai je op de website.** Tournament Live (tijdens de avond) en Tournament Analysis (opnames
   achteraf) stellen alleen race-uitslagen voor; scores kun je ook intypen of importeren uit Excel/CSV. Niets
   verandert de stand voordat de organisator het accepteert
-  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md), Engels).
+  ([Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md)).
 - **Herkenning is gedeeld, geen dienst.** Elke app heeft een eigen kopie en leest het scherm op je eigen
   apparaat; de server controleert alleen de voorgestelde uitslag
   ([Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE_NL.md) ·
@@ -131,8 +131,8 @@ flowchart TB
 | Ik wil… | Begin hier |
 | --- | --- |
 | **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [MK8DX installeren en gebruiken](docs/install/MK8DX_Handleiding_NL.docx) ([TXT](docs/install/MK8DX_Handleiding_NL.txt)) |
-| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels); de Tournament Tools werken ook zonder communitywebsite |
-| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card; werkt ook zonder communitywebsite |
+| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md); de Tournament Tools werken ook zonder communitywebsite |
+| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/translations/nl/LIVETRIAL.md) — Windows + een capture card; werkt ook zonder communitywebsite |
 | **mijn tijden posten en vergelijken** | [Players](docs/guides/translations/nl/PLAYERS.md) — elke browser; Android 8.0+ |
 | **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
 | **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
@@ -219,7 +219,7 @@ Excel-werkmap, een CSV en een importbestand voor de website, dat de organisator 
 importeert — dezelfde controle als bij Tournament Live. Een opname van 22 minuten met vier races duurde op een laptop ongeveer 70 seconden. Dubbelklik in het Windows-pakket
 Tournament Tools op `TournamentAnalysis.cmd` (een video naar `TournamentProcessor.cmd` slepen
 werkt nog steeds); ontwikkelaars starten `python -m tournament_processor.gui`.
-[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) (Engels)
+[Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md#opnames-achteraf-analyseren)
 beschrijft de stappen.
 
 ![Venster Tournament Analysis tijdens een analyse: links een map met één cup-opname aangevinkt, de analyse loopt; rechts het gekleurde activiteitenlog met gevonden races, en onderaan de Rainbow Road-voortgangsbalk op 56% en de klok](docs/readme/tournament-analysis.jpg)

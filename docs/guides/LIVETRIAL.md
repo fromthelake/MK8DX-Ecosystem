@@ -2,6 +2,8 @@
 
 Nederlands: [translations/nl/LIVETRIAL.md](translations/nl/LIVETRIAL.md)
 
+Other languages (machine translations): [English (US)](translations/en-US/LIVETRIAL.md) · [Deutsch](translations/de/LIVETRIAL.md) · [Español](translations/es/LIVETRIAL.md) · [Español (Latinoamérica)](translations/es-419/LIVETRIAL.md) · [Français](translations/fr/LIVETRIAL.md) · [Français (Canada)](translations/fr-CA/LIVETRIAL.md) · [Italiano](translations/it/LIVETRIAL.md) · [Português](translations/pt/LIVETRIAL.md) · [Русский](translations/ru/LIVETRIAL.md) · [日本語](translations/ja/LIVETRIAL.md) · [한국어](translations/ko/LIVETRIAL.md) · [简体中文](translations/zh-CN/LIVETRIAL.md) · [繁體中文](translations/zh-TW/LIVETRIAL.md)
+
 [All guides](../../README.md#get-started) · [LiveTrial component README](../../apps/timetrials-desktop/README.md)
 
 LiveTrial is a Windows program that watches your Time Trials through a capture card, or reads recorded videos,

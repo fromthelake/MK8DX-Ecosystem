@@ -208,6 +208,35 @@ lists every missing text as a problem. It prints `"problemCount": 0` when every 
 `messages.source.json`, the translation files and the regenerated catalogs. The Android and desktop extractors
 (`extract_android_messages.py`, `extract_desktop_messages.py`) work the same way for their catalogs.
 
+## Change a user guide
+
+English and Dutch guides are written and reviewed by people; the other 13 languages are machine translations of
+the English. Where they live:
+
+- A2 guide: `docs/install/A2_HOME_GUIDE_EN.md` and `A2_THUIS_HANDLEIDING_NL.md`; translations in
+  `docs/install/translations/<locale>/A2_HOME_GUIDE.md`.
+- Reading guide: `docs/install/MK8DX_User_Guide_EN.txt` and `MK8DX_Handleiding_NL.txt`; translations in
+  `docs/install/translations/<locale>/MK8DX_User_Guide.txt`. The DOCX files next to them are built from the TXT.
+- Club guides: `docs/guides/*.md`; Dutch and the translations in `docs/guides/translations/<locale>/`.
+- `docs/install/translations/<locale>/guide-words.json` holds each language's fixed step labels, HTML page words
+  and the reading guide's chapter titles; the builders read it, so a renamed chapter changes there too.
+
+When you change an English guide, change the Dutch one and the translations of the same section in the same pull
+request; a machine translation is fine. If you cannot, open an issue labelled `translation` that names the guide
+and the changed section. Keep each translation's structure (headings, code blocks, `<!-- -->` comments) identical
+to the English. Then rebuild and check:
+
+```sh
+python tooling/build_guide_html.py                  # docs/install/guide/<locale>.html
+python tooling/release/build_reading_guides.py      # the DOCX files (needs python-docx)
+python tooling/build_readme_links.py                # README language switcher and own-language guide links
+python tooling/build_guide_html.py --check
+python tooling/check_docs.py
+```
+
+Readers report wrong or unclear text with the **Translation correction** issue form
+(`.github/ISSUE_TEMPLATE/translation.yml`).
+
 ## Run it locally
 
 - Website, API and database with Docker from source: [Getting started](GETTING_STARTED.md) (Windows and Linux;

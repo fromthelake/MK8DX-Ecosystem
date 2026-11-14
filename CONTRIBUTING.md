@@ -60,6 +60,9 @@ parity vectors of the central reader (`packages/icon-matcher`) are the recogniti
 - A `release/*` branch exists only for an actual maintenance or release need and is
   merged into `main` through a pull request; it is not a second development line.
 - Do not force-push shared branches, rewrite published history or delete release tags.
+- A change to an English user guide also updates the Dutch guide and the 13 machine translations, or opens an
+  issue labelled `translation` naming the changed section; [Change a user guide](docs/DEVELOPMENT.md#change-a-user-guide)
+  lists the files and the builders to run.
 
 ## Releases
 

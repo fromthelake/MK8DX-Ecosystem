@@ -87,9 +87,9 @@ Start Docker Desktop, open the same folder and double-click `Start-MK8DX.cmd`. T
 | 0 | close the window |
 
 **Updating to 0.2.3:** this version moves the database from MySQL 8.4 to 9.7 LTS. MySQL upgrades the data files
-once, at the first start on the new version; only a backup can undo that. So in the new package folder type **7**
-before **2**: 2 would start the new version without the backup and without the database updates. **3** (check) is
-harmless.
+once, at the first start on the new version; only a backup can undo that. So in the new package folder type **7** (update)
+first: it makes a checked backup and applies the database updates. From 0.2.4 on, **2** (start) refuses until the
+update has run; with a 0.2.3 package, 2 would skip the backup. **3** (check) is harmless.
 
 Your data stays in `%LOCALAPPDATA%\MK8DX\Server` and in Docker; a newer package replaces only the program folder.
 Never run `docker compose down -v`. Restoring a backup on another computer: the chapter *Back up, restore, and update* in the

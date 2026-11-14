@@ -170,7 +170,8 @@ werkt maar één keer per installatie. Zie [Operations](../../../OPERATIONS.md) 
   `/opt/mk8dx/host-new`), start dan het startscript daarvan met **dezelfde** installatiemap en kies 7.
   Bewaar de oude map tot de update is gecontroleerd. De update naar 0.2.3 zet de database over van MySQL 8.4
   naar 9.7 LTS. MySQL werkt de databestanden één keer bij, bij de eerste start op de nieuwe versie, en alleen een back-up maakt
-  dat ongedaan. Kies dus 7 vóór 2: 2 zou de nieuwe versie starten zonder de back-up en zonder de database-updates
+  dat ongedaan. Kies dus eerst 7 (bijwerken): die maakt een gecontroleerde back-up en voert de database-updates uit.
+  Vanaf 0.2.4 weigert 2 (starten) tot de update gedraaid heeft; met een 0.2.3-pakket zou 2 de back-up overslaan
   (3, controleren, kan geen kwaad).
 - **Mail of adres wijzigen**: `python3 tooling/install.py change-smtp|change-origin ...`, daarna `apply` en
   `check`, vanuit de pakketmap; het instellingenhoofdstuk van de handleiding heeft de exacte opdrachten.

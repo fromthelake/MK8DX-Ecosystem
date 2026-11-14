@@ -2,6 +2,8 @@
 
 Nederlands: [translations/nl/PLAYERS.md](translations/nl/PLAYERS.md)
 
+Other languages (machine translations): [English (US)](translations/en-US/PLAYERS.md) · [Deutsch](translations/de/PLAYERS.md) · [Español](translations/es/PLAYERS.md) · [Español (Latinoamérica)](translations/es-419/PLAYERS.md) · [Français](translations/fr/PLAYERS.md) · [Français (Canada)](translations/fr-CA/PLAYERS.md) · [Italiano](translations/it/PLAYERS.md) · [Português](translations/pt/PLAYERS.md) · [Русский](translations/ru/PLAYERS.md) · [日本語](translations/ja/PLAYERS.md) · [한국어](translations/ko/PLAYERS.md) · [简体中文](translations/zh-CN/PLAYERS.md) · [繁體中文](translations/zh-TW/PLAYERS.md)
+
 [All guides](../../README.md#get-started)
 
 You need the address of your community's MK8DX website, for example `https://www.example.org`. Every community
