@@ -3,6 +3,18 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Added
+
+- **User guides in all 15 languages of the game** (machine translations except EN/NL, marked as such;
+  corrections welcome via the Translation correction form): the A2 guide, the user guide (TXT and DOCX) and the
+  players guide in `docs/install/translations/<locale>/` and `docs/guides/translations/<locale>/`, the
+  illustrated A2 guide as `docs/install/guide/<locale>.html` with a language menu on every page, and
+  `README_EN_US.md`. The setup wizard's Manual link opens the guide in the browser's language; the release
+  attaches `MK8DX_User_Guide_<locale>.txt`/`.docx`, and every package that carried the EN/NL guides carries all
+  of them.
+
 ## 0.2.3 — 2026-11-14
 
 Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to

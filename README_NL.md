@@ -2,7 +2,7 @@
 
 **Host je eigen Mario Kart 8 Deluxe-communitywebsite — voor Time Trials *én* toernooiavonden.**
 
-Taal: [English](README.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Taal: [English](README.md) · [English (US)](README_EN_US.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 ![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](docs/readme/web-home.jpg)
 
@@ -130,10 +130,10 @@ flowchart TB
 
 | Ik wil… | Begin hier |
 | --- | --- |
-| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) |
+| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [MK8DX installeren en gebruiken](docs/install/MK8DX_Handleiding_NL.docx) ([TXT](docs/install/MK8DX_Handleiding_NL.txt)) |
 | **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels); de Tournament Tools werken ook zonder communitywebsite |
 | **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card; werkt ook zonder communitywebsite |
-| **mijn tijden posten en vergelijken** | [Players](docs/guides/PLAYERS.md) (Engels) — elke browser; Android 8.0+ |
+| **mijn tijden posten en vergelijken** | [Players](docs/guides/translations/nl/PLAYERS.md) — elke browser; Android 8.0+ |
 | **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
 | **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
 

@@ -2,7 +2,7 @@
 
 **自分たちのマリオカート8 デラックス コミュニティサイトを、自分の手で運営しよう — タイムアタックにも、大会の夜にも。**
 
-言語: [English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+言語: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *この翻訳は英語版 README から機械翻訳したものです。修正のご提案を歓迎します。*
 
@@ -98,10 +98,10 @@ flowchart TB
 
 | やりたいこと | ここから始めよう |
 | --- | --- |
-| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[日本語](docs/install/translations/ja/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX のインストールと使い方](docs/install/translations/ja/MK8DX_User_Guide_ja.docx) ([TXT](docs/install/translations/ja/MK8DX_User_Guide.txt)) |
 | **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)。Tournament Tools はコミュニティサイトがなくても使えます |
 | **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + キャプチャーボード。コミュニティサイトがなくても使えます |
-| **タイムを投稿して比べたい** | [Players](docs/guides/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
+| **タイムを投稿して比べたい** | [Players](docs/guides/translations/ja/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
 | **コミュニティサイトをホストしたい** | [Host a community server](docs/guides/HOSTING.md) |
 | **コードを変更したい** | [Developer guide](docs/DEVELOPMENT.md)、[Testing](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
 

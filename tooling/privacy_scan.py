@@ -32,6 +32,8 @@ READING_GUIDES = {
     "docs/install/MK8DX_Handleiding_NL.docx",
     "docs/install/MK8DX_User_Guide_EN.docx",
 }
+# The translated reading guides (tooling/release/build_reading_guides.py), one per locale folder.
+TRANSLATED_READING_GUIDE = re.compile(r"docs/install/translations/([a-z]{2}(?:-[A-Z]{2}|-[0-9]{3})?)/MK8DX_User_Guide_\1\.docx")
 WORD_TEMPLATE_THUMBNAIL_SHA256 = "96367138dc44ce09bf2c8f0f8e49348a1478d2c5c0af69bbc2bbc38b63cdcead"
 # The public recognition test set is admitted file by file through a reviewed list (SHA-256 and size).
 TEST_SET_PREFIX = "packages/assets/test-set/"
@@ -39,7 +41,7 @@ TEST_SET_MANIFEST = TEST_SET_PREFIX + "test-set-files-v1.json"
 
 
 def review_reading_guide(path, relative, findings):
-    """Admit only the two guides after inspecting XML and a pinned stock thumbnail."""
+    """Admit only the reading guides after inspecting XML and a pinned stock thumbnail."""
     try:
         with zipfile.ZipFile(path) as archive:
             members = archive.infolist()
@@ -163,7 +165,7 @@ def main():
                 continue
             content = path.read_bytes()
             checked += 1
-            if relative in READING_GUIDES:
+            if relative in READING_GUIDES or TRANSLATED_READING_GUIDE.fullmatch(relative):
                 review_reading_guide(path, relative, findings)
                 continue
             part = re.fullmatch(r"([0-9a-f]{64})\.part([1-9][0-9]*)", name)

@@ -1,5 +1,7 @@
 # Dagelijks beheer, updates en herstel
 
+English: [ADMINISTRATION_EN.md](ADMINISTRATION_EN.md)
+
 Gebruik telkens **dezelfde private gegevensmap**. Op Windows A1 is dat standaard `%LOCALAPPDATA%\MK8DX\Server`, op A2 de aparte `LAN`-map uit de gids, op B1 `/var/lib/mk8dx/instance`. Een map met alleen software is vervangbaar; de gegevensmap en het Docker-volume zijn dat niet. Menu **3 status** toont route/adres/project zonder geheimen. `docker compose down -v` is geen stopcommando: `-v` verwijdert de databasevolume.
 
 ## Stoppen, starten en controleren

@@ -1,5 +1,7 @@
 # B1 — je eigen openbare MK8DX-site op een VPS
 
+English: [B1_VPS_EN.md](B1_VPS_EN.md)
+
 Deze route is bedoeld voor een **zelfbeheerde Ubuntu 24.04 LTS x86-64 VPS** met ten minste de **geadviseerde** 2 vCPU, 8 GB RAM en 40 GB SSD. Een voorbeeld van een passend pakket is mijn.host **unmanaged VPS M**: de [actuele VPS-pagina](https://mijn.host/vps) noemt 2 cores, 8 GB RAM, 40 GB opslag en root/SSH, maar er is **geen MK8DX-installatie op dat exacte pakket getest**. De aanbieder beheert de fysieke machine; jij beheert Ubuntu, Docker, MK8DX, mail, backups en beveiligingsupdates. Controleer vóór betaling het besteloverzicht, IPv4, x86-64/Ubuntu 24.04, root of sudo, eigen poorten 80/443, permanente opslag, uitgaand SMTP 465 en eventuele aparte mailbox. Koop niets op basis van alleen de woorden “Node.js” of “SSH”. Zie [B2](B2_WEBHOSTING.md) voor gedeelde webhosting met Node.js (zoals mijn.host Starter).
 
 In deze handleiding is `www.mijneigenwebsite.nl` een **voorbeeld**, geen bestaand doel. Vervang het door één eigen gekozen hostnaam. Het server-IP in voorbeelden `203.0.113.10` is documentatie-IP, geen echte server. De SSH-poort in voorbeelden `22` is ook alleen een vorm; neem de werkelijke VPS-poort uit je providergegevens. Gebruik geen webhosting-SSH-poort 26 als VPS-aanname.

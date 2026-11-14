@@ -2,7 +2,7 @@
 
 **自己架設專屬的瑪利歐賽車8 豪華版社群網站——計時賽*和*錦標賽之夜，一次搞定。**
 
-語言：[English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · 繁體中文
+語言：[English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · 繁體中文
 
 *本譯文由機器根據英文版 README 翻譯而成，歡迎指正。*
 
@@ -98,10 +98,10 @@ flowchart TB
 
 | 我想要… | 從這裡開始 |
 | --- | --- |
-| **在家裡或俱樂部執行 MK8DX** | 從 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下載適合你電腦的 A2 套件：解壓縮、啟動、點選「下一步」。逐步說明（A2 套件裡另有附插圖的版本）：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **在家裡或俱樂部執行 MK8DX** | 從 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下載適合你電腦的 A2 套件：解壓縮、啟動、點選「下一步」。逐步說明（A2 套件裡另有附插圖的版本）：[繁體中文](docs/install/translations/zh-TW/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [安裝與使用 MK8DX](docs/install/translations/zh-TW/MK8DX_User_Guide_zh-TW.docx) ([TXT](docs/install/translations/zh-TW/MK8DX_User_Guide.txt)) |
 | **舉辦 LAN 錦標賽之夜** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)；Tournament Tools 沒有社群網站也能使用 |
 | **自動記錄我的計時賽** | [LiveTrial](docs/guides/LIVETRIAL.md)——Windows + 一張擷取卡；沒有社群網站也能使用 |
-| **送出並比較我的成績** | [Players](docs/guides/PLAYERS.md)——任何瀏覽器；Android 8.0 以上 |
+| **送出並比較我的成績** | [Players](docs/guides/translations/zh-TW/PLAYERS.md)——任何瀏覽器；Android 8.0 以上 |
 | **架設社群網站** | [架設社群伺服器](docs/guides/HOSTING.md) |
 | **修改程式碼** | [開發者指南](docs/DEVELOPMENT.md)、[測試](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
 

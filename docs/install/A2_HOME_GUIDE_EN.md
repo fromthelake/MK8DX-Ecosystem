@@ -280,7 +280,7 @@ This needs app version 2.95.0 or newer. The app does not need the certificate in
 
 Unpairing: tap the community name at the top → **Add a community** → **Forget this installation**.
 
-Club and home in one app: the app can hold several communities. Tap the community name at the top and then **Switch**; each community keeps its own account and unsent times. Your own times are under your name → **My times**, also when the phone cannot reach the MK8DX computer.
+Club and home in one app: the app can hold several communities. Tap the community name at the top and then **Change community**; each community keeps its own account and unsent times. Your own times are under your name → **My times**, also when the phone cannot reach the MK8DX computer.
 
 **LiveTrial on a second Windows PC**
 
@@ -307,7 +307,7 @@ Good to know: without a Player, LiveTrial's sign-in ends with a message to set u
 - Everyone signs in once with their own card on that device.
 - **Website:** after that you switch with one tap from the account menu: choose **Switch account** and then the person.
 - **PIN:** anyone can set a 4-digit PIN on the website under **Settings** → **PIN for switching accounts**. Switching to that account then asks for that PIN first.
-- **Android app:** tap your name at the top → **Switch Player** (or **Settings** → **Player on this phone**), and choose the person with **Switch**. If that person has a PIN, the app asks **PIN required** and **PIN (4 digits)**. A wrong PIN gives "That PIN is not right."
+- **Android app:** tap your name at the top → **Switch Player** (or **Settings** → **Player on this phone**), and choose the person with **Change Player**. If that person has a PIN, the app asks **PIN required** and **PIN (4 digits)**. A wrong PIN gives "That PIN is not right."
 - **Administrators** are in that list only when they have set a PIN (Settings → PIN for switching accounts). Without a PIN they sign in afresh with a card. It is stricter for an administrator: after the 5th wrong PIN the administrator account disappears from that device, and also after 14 days without use; then a card is needed again. In the Android app administrators are not in the list (yet).
 
 **Signing out**

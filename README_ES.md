@@ -2,7 +2,7 @@
 
 **Aloja tu propia web de comunidad de Mario Kart 8 Deluxe: para Contrarreloj *y* para noches de torneo.**
 
-Idioma: [English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · Español · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Idioma: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · Español · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *Esta traducción se ha hecho automáticamente a partir del README en inglés; las correcciones son bienvenidas.*
 
@@ -133,10 +133,10 @@ flowchart TB
 
 | Quiero… | Empieza aquí |
 | --- | --- |
-| **ejecutar MK8DX en casa o en mi club** | El paquete A2 para tu ordenador desde [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): descomprímelo, inícialo y haz clic en Siguiente. Paso a paso (el paquete A2 también incluye una versión ilustrada): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **ejecutar MK8DX en casa o en mi club** | El paquete A2 para tu ordenador desde [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): descomprímelo, inícialo y haz clic en Siguiente. Paso a paso (el paquete A2 también incluye una versión ilustrada): [Español](docs/install/translations/es/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Instalar y usar MK8DX](docs/install/translations/es/MK8DX_User_Guide_es.docx) ([TXT](docs/install/translations/es/MK8DX_User_Guide.txt)) |
 | **organizar noches de torneo LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); las Tournament Tools también funcionan sin web de comunidad |
 | **registrar mis Contrarreloj automáticamente** | [LiveTrial](docs/guides/LIVETRIAL.md): Windows + una capturadora; también funciona sin web de comunidad |
-| **publicar y comparar mis tiempos** | [Players](docs/guides/PLAYERS.md): cualquier navegador; Android 8.0+ |
+| **publicar y comparar mis tiempos** | [Players](docs/guides/translations/es/PLAYERS.md): cualquier navegador; Android 8.0+ |
 | **alojar una web de comunidad** | [Alojar un servidor de comunidad](docs/guides/HOSTING.md) |
 | **cambiar el código** | [Guía para desarrolladores](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 

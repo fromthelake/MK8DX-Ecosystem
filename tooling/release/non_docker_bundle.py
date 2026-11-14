@@ -11,8 +11,23 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+TRANSLATIONS = ROOT / "docs/install/translations"
+
+
+def translated_docs() -> tuple[str, ...]:
+    """The user guide of every translation folder: its TXT and the DOCX built from it."""
+    rows = []
+    for folder in sorted(TRANSLATIONS.iterdir()) if TRANSLATIONS.is_dir() else ():
+        if (folder / "MK8DX_User_Guide.txt").is_file():
+            rows += [f"docs/install/translations/{folder.name}/MK8DX_User_Guide_{folder.name}.docx",
+                     f"docs/install/translations/{folder.name}/MK8DX_User_Guide.txt"]
+    return tuple(rows)
+
+
 DOCS = ("docs/install/MK8DX_Handleiding_NL.docx", "docs/install/MK8DX_Handleiding_NL.txt",
-        "docs/install/MK8DX_User_Guide_EN.docx", "docs/install/MK8DX_User_Guide_EN.txt")
+        "docs/install/MK8DX_User_Guide_EN.docx", "docs/install/MK8DX_User_Guide_EN.txt", *translated_docs())
+OTHER_LANGUAGES = ("Other languages of the game: docs/install/translations/<language>/MK8DX_User_Guide_<language>.docx\n"
+                   "(machine translations; the English guide is authoritative).\n")
 
 
 def digest(path):
@@ -95,6 +110,7 @@ def main():
             "  python3 tooling/install.py wizard --state-dir \"$HOME/mk8dx-private\"   (type B2)\n"
             "Step by step: docs/install/MK8DX_User_Guide_EN.docx (English, chapter 4) or\n"
             "docs/install/MK8DX_Handleiding_NL.docx (Nederlands, hoofdstuk 4).\n"
+            + OTHER_LANGUAGES +
             "Your installation data belongs outside this folder and outside public_html.\n",
             encoding="utf-8")
         hosted_result = write_zip(hosted, output / f"mk8dx-mijnhost-node-{args.revision}.zip", "B2", args.revision)
@@ -119,6 +135,7 @@ def main():
             "4. Manage-MK8DX-No-Docker.cmd: check, make yourself administrator, make a checked backup.\n"
             "Step by step: docs/install/MK8DX_User_Guide_EN.docx (English, chapter 2) or\n"
             "docs/install/MK8DX_Handleiding_NL.docx (Nederlands, hoofdstuk 2).\n"
+            + OTHER_LANGUAGES +
             "B2 (shared hosting) uses the mk8dx-mijnhost-node package instead.\n"
             "Your installation data belongs outside this folder.\n",
             encoding="utf-8")

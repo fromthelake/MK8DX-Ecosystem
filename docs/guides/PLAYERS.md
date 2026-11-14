@@ -1,5 +1,7 @@
 # Players: the website and the Android app
 
+Nederlands: [translations/nl/PLAYERS.md](translations/nl/PLAYERS.md)
+
 [All guides](../../README.md#get-started)
 
 You need the address of your community's MK8DX website, for example `https://www.example.org`. Every community
@@ -100,7 +102,7 @@ The top of the app shows the logo (back to Home), the **community chip** with th
 using, the bell and your name. Your name opens **You**: your Player with **Switch Player**, and the tabs
 **My times**, **Records** and **Rivals**, with a **Settings** row below them.
 
-- **Several communities**: tap the community chip to open **Communities**. The active one is green; **Switch**
+- **Several communities**: tap the community chip to open **Communities**. The active one is green; **Change community**
   changes to another in one tap, **Remove from this phone** forgets one (only once nothing waits to be sent), and
   **Add a community** opens the first-start screen again. Each community keeps its own sign-in, its own unsent
   runs and, at home or at the club, its own trust; nothing moves between them by itself. When the administrator

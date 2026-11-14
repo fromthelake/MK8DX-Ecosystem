@@ -280,7 +280,7 @@ Dit vraagt appversie 2.95.0 of nieuwer. De app heeft het certificaat niet nodig 
 
 Ontkoppelen: tik bovenin op de naam van de community → **Een community toevoegen** → **Deze installatie vergeten**.
 
-Club en thuis in één app: de app kan meerdere community's bevatten. Tik bovenin op de naam van de community en daarna op **Wisselen**; elke community houdt een eigen account en eigen niet verzonden tijden. Je eigen tijden staan onder je naam → **Mijn tijden**, ook als de telefoon de MK8DX-computer niet kan bereiken.
+Club en thuis in één app: de app kan meerdere community's bevatten. Tik bovenin op de naam van de community en daarna op **Community wisselen**; elke community houdt een eigen account en eigen niet verzonden tijden. Je eigen tijden staan onder je naam → **Mijn tijden**, ook als de telefoon de MK8DX-computer niet kan bereiken.
 
 **LiveTrial op een tweede Windows-pc**
 
@@ -307,7 +307,7 @@ Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding
 - Iedereen logt één keer in met zijn eigen kaart op dat apparaat.
 - **Website:** daarna wissel je met één tik via het accountmenu: kies **Ander account** en dan de persoon.
 - **Pincode:** wie wil, zet op de website bij **Instellingen** → **Pincode voor ander account** een pincode van 4 cijfers. Wisselen naar dat account vraagt dan eerst om die pincode.
-- **Android-app:** tik bovenin op je naam → **Speler wisselen** (of **Instellingen** → **Speler op deze telefoon**), en kies de persoon met **Wisselen**. Heeft die persoon een pincode, dan vraagt de app **Pincode nodig** en **Pincode (4 cijfers)**. Een verkeerde pincode geeft "Die pincode klopt niet."
+- **Android-app:** tik bovenin op je naam → **Speler wisselen** (of **Instellingen** → **Speler op deze telefoon**), en kies de persoon met **Speler wisselen**. Heeft die persoon een pincode, dan vraagt de app **Pincode nodig** en **Pincode (4 cijfers)**. Een verkeerde pincode geeft "Die pincode klopt niet."
 - **Beheerders** staan alleen in die lijst als ze een pincode hebben ingesteld (Instellingen → Pincode voor ander account). Zonder pincode loggen ze opnieuw in met een kaart. Voor een beheerder is het strenger: na de 5e verkeerde pincode verdwijnt het beheerdersaccount van dat apparaat, en na 14 dagen niet gebruiken ook; daarna is weer een kaart nodig. In de Android-app staan beheerders (nog) niet in de lijst.
 
 **Uitloggen**

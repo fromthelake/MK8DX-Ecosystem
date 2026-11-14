@@ -2,7 +2,7 @@
 
 **나만의 마리오 카트 8 디럭스 커뮤니티 웹사이트를 직접 운영하세요 — 타임 어택에도, 대회의 밤에도.**
 
-언어: [English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+언어: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *이 번역은 영어 README를 기계 번역한 것입니다. 수정 제안을 환영합니다.*
 
@@ -98,10 +98,10 @@ flowchart TB
 
 | 하고 싶은 일 | 여기서 시작하세요 |
 | --- | --- |
-| **집이나 클럽에서 MK8DX 실행하기** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에서 내 컴퓨터용 A2 패키지를 받으세요: 압축을 풀고, 실행하고, '다음'을 클릭. 단계별 안내(A2 패키지에는 그림이 들어간 버전도 있습니다): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **집이나 클럽에서 MK8DX 실행하기** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에서 내 컴퓨터용 A2 패키지를 받으세요: 압축을 풀고, 실행하고, '다음'을 클릭. 단계별 안내(A2 패키지에는 그림이 들어간 버전도 있습니다): [한국어](docs/install/translations/ko/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX 설치와 사용](docs/install/translations/ko/MK8DX_User_Guide_ko.docx) ([TXT](docs/install/translations/ko/MK8DX_User_Guide.txt)) |
 | **LAN 대회의 밤 운영하기** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md). Tournament Tools는 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
 | **타임 어택을 자동으로 기록하기** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + 캡처 카드. 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
-| **내 기록을 올리고 비교하기** | [Players](docs/guides/PLAYERS.md) — 어떤 브라우저든 OK, Android 8.0 이상 |
+| **내 기록을 올리고 비교하기** | [Players](docs/guides/translations/ko/PLAYERS.md) — 어떤 브라우저든 OK, Android 8.0 이상 |
 | **커뮤니티 웹사이트 호스팅하기** | [Host a community server](docs/guides/HOSTING.md) |
 | **코드 수정하기** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 

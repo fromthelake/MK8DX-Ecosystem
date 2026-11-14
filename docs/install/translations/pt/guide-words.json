@@ -1,0 +1,50 @@
+{
+ "locale": "pt",
+ "language": "Português",
+ "steps": {
+  "where": "Onde:",
+  "do": "Faz:",
+  "see": "Vês:",
+  "else": "Vês outra coisa?"
+ },
+ "slot": "imagem",
+ "html": {
+  "title": "MK8DX em casa ou no teu clube — manual",
+  "computer": "O meu computador",
+  "device": "O meu dispositivo",
+  "all": "Todos",
+  "search": "Pesquisar no manual",
+  "contents": "Índice",
+  "print": "Imprimir",
+  "open": "Abrir tudo",
+  "close": "Fechar tudo",
+  "none": "Nada encontrado.",
+  "do": "Faz",
+  "see": "Vês",
+  "else": "Vês outra coisa?",
+  "filtered": "Só são mostrados os passos para a tua escolha."
+ },
+ "userGuide": {
+  "chapters": [
+   "Bem-vindo",
+   "Experimentar num computador",
+   "Num computador sem Docker: XAMPP e Node.js",
+   "Usar na tua rede doméstica",
+   "Alojamento partilhado público com Node.js, sem Docker",
+   "Criar um site público num VPS",
+   "Usar o Android, o LiveTrial, o leitor e o Torneio",
+   "Alterar definições e gerir o site",
+   "Cópia de segurança, restauro e atualização",
+   "Resolução de problemas e compilar tu mesmo",
+   "Usar o Linux",
+   "Usar o macOS"
+  ],
+  "subheadings": [
+   "O que está neste guia",
+   "Restaurar uma cópia de segurança",
+   "O que podes experimentar localmente agora",
+   "O que ainda precisa de desenvolvimento"
+  ]
+ },
+ "machineTranslationNote": "Esta é uma tradução automática do manual em inglês; a versão inglesa é a que prevalece. As correções são bem-vindas através do formulário de issue «Translation correction»."
+}

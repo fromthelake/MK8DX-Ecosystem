@@ -1,0 +1,9 @@
+{"locale": "ko", "language": "한국어",
+ "steps": {"where": "위치:", "do": "할 일:", "see": "보이는 화면:", "else": "다르게 보이나요?"},
+ "slot": "이미지",
+ "html": {"title": "집이나 클럽에서 쓰는 MK8DX — 설명서", "computer": "내 컴퓨터", "device": "내 기기", "all": "전체", "search": "설명서 검색",
+          "contents": "목차", "print": "인쇄", "open": "모두 펼치기", "close": "모두 접기", "none": "찾은 항목이 없습니다.",
+          "do": "할 일", "see": "보이는 화면", "else": "다르게 보이나요?", "filtered": "선택한 항목에 해당하는 단계만 표시됩니다."},
+ "userGuide": {"chapters": ["환영합니다", "컴퓨터 한 대에서 시험해 보기", "Docker 없이 컴퓨터 한 대에서: XAMPP와 Node.js", "홈 네트워크에서 사용하기", "Docker 없이 Node.js로 공개 공유 호스팅", "VPS에 공개 웹사이트 만들기", "Android, LiveTrial, 스캐너, Tournament 사용하기", "설정 변경과 사이트 관리", "백업, 복원, 업데이트", "문제 해결과 직접 빌드하기", "Linux 사용하기", "macOS 사용하기"],
+               "subheadings": ["이 안내서의 내용", "백업 복원하기", "지금 로컬에서 시험해 볼 수 있는 것", "아직 개발이 필요한 것"]},
+ "machineTranslationNote": "이 문서는 영어 안내서를 기계 번역한 것입니다. 기준은 영어판이며, 수정 제안은 \"Translation correction\" 이슈 양식으로 보내 주세요."}

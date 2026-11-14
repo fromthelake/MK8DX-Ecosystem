@@ -1,11 +1,26 @@
-"""Render the two self-contained UTF-8 reading guides as Word documents.
+"""Render the self-contained UTF-8 reading guides as Word documents.
+
+  python tooling/release/build_reading_guides.py
 
 Maintainer-only dependency: python-docx. The checked-in TXT is authoritative;
-ordinary installers only open the prebuilt DOCX or TXT in docs/install.
+ordinary installers only open the prebuilt DOCX or TXT.
+
+- docs/install/MK8DX_User_Guide_EN.txt -> MK8DX_User_Guide_EN.docx (English, the source)
+- docs/install/MK8DX_Handleiding_NL.txt -> MK8DX_Handleiding_NL.docx (Nederlands)
+- docs/install/translations/<locale>/MK8DX_User_Guide.txt -> MK8DX_User_Guide_<locale>.docx in the same
+  folder, for every locale folder that also has guide-words.json (its userGuide.chapters/subheadings
+  name the heading lines). The locale in the file name keeps release assets apart.
+
+Japanese, Korean and Chinese documents name an East Asian font (w:eastAsia) so Word renders them.
+A document is only rewritten when its content changes, and then with fixed ZIP timestamps, so an
+unchanged guide stays byte-for-byte the same.
 """
 from __future__ import annotations
 
+import io
+import json
 import re
+import zipfile
 from pathlib import Path
 
 from docx import Document
@@ -41,6 +56,37 @@ GUIDES = {
                         "What you can try locally now", "What still needs development"},
     },
 }
+TRANSLATIONS = ROOT / "docs" / "install" / "translations"
+EAST_ASIAN_FONTS = {"ja": ("Yu Gothic", "ja-JP"), "ko": ("Malgun Gothic", "ko-KR"),
+                    "zh-CN": ("Microsoft YaHei", "zh-CN"), "zh-TW": ("Microsoft JhengHei", "zh-TW")}
+# Word's proofing language of a translated guide (the document default).
+PROOFING = {"de": "de-DE", "en-US": "en-US", "es": "es-ES", "es-419": "es-419", "fr": "fr-FR", "fr-CA": "fr-CA",
+            "it": "it-IT", "ja": "ja-JP", "ko": "ko-KR", "nl": "nl-NL", "pt": "pt-PT", "ru": "ru-RU",
+            "zh-CN": "zh-CN", "zh-TW": "zh-TW"}
+FIXED_ZIP_TIME = (2026, 1, 1, 0, 0, 0)
+
+
+def translated_guides() -> dict[Path, dict]:
+    """Every translated TXT guide, found from the locale folders (TXT + guide-words.json)."""
+    guides = {}
+    for folder in sorted(TRANSLATIONS.iterdir()) if TRANSLATIONS.is_dir() else ():
+        words = folder / "guide-words.json"
+        text = folder / "MK8DX_User_Guide.txt"
+        if words.is_file() and text.is_file():
+            user_guide = json.loads(words.read_text(encoding="utf-8"))["userGuide"]
+            guides[text] = {"locale": folder.name, "out": folder / f"MK8DX_User_Guide_{folder.name}.docx",
+                            "chapters": set(user_guide["chapters"]), "subheadings": set(user_guide["subheadings"])}
+    return guides
+
+
+def all_guides() -> dict[Path, dict]:
+    install = ROOT / "docs" / "install"
+    guides = {install / f"{stem}.txt": {**layout, "locale": stem[-2:].lower(), "out": install / f"{stem}.docx"}
+              for stem, layout in GUIDES.items()}
+    guides.update(translated_guides())
+    return guides
+
+
 URL = re.compile(r"https?://[^\s]+")
 COMMAND = re.compile(
     r"^(?:docker |python |python3 |node |npm |powershell |scp |ssh |ssh-keygen |sha256sum |shasum |New-Item |Get-FileHash |"
@@ -98,8 +144,66 @@ def page_number(footer):
     run._r.extend((begin, instruction, end))
 
 
-def build(stem, layout):
-    text_path = ROOT / "docs" / "install" / f"{stem}.txt"
+def proofing_language(document, tag: str):
+    defaults = document.styles.element.find(qn("w:docDefaults"))
+    lang = defaults.find(qn("w:rPrDefault")).find(qn("w:rPr")).find(qn("w:lang"))
+    if lang is not None:
+        lang.set(qn("w:val"), tag)
+
+
+def east_asian(document, font: str, language: str):
+    """Name the East Asian font and language on the document defaults and on every style used."""
+    def fonts(r_pr):
+        r_fonts = r_pr.find(qn("w:rFonts"))
+        if r_fonts is None:
+            r_fonts = OxmlElement("w:rFonts")
+            r_pr.insert(0, r_fonts)
+        r_fonts.set(qn("w:eastAsia"), font)
+        if r_fonts.get(qn("w:eastAsiaTheme")) is not None:
+            del r_fonts.attrib[qn("w:eastAsiaTheme")]
+        lang = r_pr.find(qn("w:lang"))
+        if lang is None:
+            lang = OxmlElement("w:lang")
+            r_pr.append(lang)
+        lang.set(qn("w:eastAsia"), language)
+
+    defaults = document.styles.element.find(qn("w:docDefaults"))
+    r_pr_default = defaults.find(qn("w:rPrDefault")) if defaults is not None else None
+    if r_pr_default is not None:
+        r_pr = r_pr_default.find(qn("w:rPr"))
+        if r_pr is None:
+            r_pr = OxmlElement("w:rPr")
+            r_pr_default.append(r_pr)
+        fonts(r_pr)
+    for name in ("Normal", "Title", "Heading 1", "Heading 2", "Command", "Guide Subtitle"):
+        fonts(document.styles[name].element.get_or_add_rPr())
+
+
+def save(document, out: Path) -> bool:
+    """Write the document with fixed ZIP timestamps, and only when its content changed."""
+    buffer = io.BytesIO()
+    document.save(buffer)
+    with zipfile.ZipFile(buffer) as built:
+        members = [(item, built.read(item)) for item in built.infolist()]
+    if out.is_file():
+        try:
+            with zipfile.ZipFile(out) as existing:
+                if [(item.filename, data) for item, data in members] ==                         [(item.filename, existing.read(item)) for item in existing.infolist()]:
+                    return False
+        except zipfile.BadZipFile:
+            pass
+    result = io.BytesIO()
+    with zipfile.ZipFile(result, "w", zipfile.ZIP_DEFLATED) as archive:
+        for item, data in members:
+            info = zipfile.ZipInfo(item.filename, FIXED_ZIP_TIME)
+            info.compress_type = zipfile.ZIP_DEFLATED
+            info.external_attr = item.external_attr
+            archive.writestr(info, data)
+    out.write_bytes(result.getvalue())
+    return True
+
+
+def build(text_path: Path, layout: dict):
     lines = text_path.read_text(encoding="utf-8-sig").splitlines()
     if len(lines) < 100 or not lines[0].strip() or lines[1].strip():
         raise ValueError(f"Unexpected reading guide shape: {text_path}")
@@ -163,7 +267,7 @@ def build(stem, layout):
             paragraph = document.add_paragraph(style="Guide Subtitle")
         elif line in layout["chapters"]:
             paragraph = document.add_paragraph(style="Heading 1")
-            if stem == "MK8DX_Handleiding_NL" and line == "Als het niet lukt en zelf bouwen":
+            if text_path.stem == "MK8DX_Handleiding_NL" and line == "Als het niet lukt en zelf bouwen":
                 paragraph.paragraph_format.page_break_before = True
         elif line in layout["subheadings"]:
             paragraph = document.add_paragraph(style="Heading 2")
@@ -172,11 +276,19 @@ def build(stem, layout):
         else:
             paragraph = document.add_paragraph(style="Normal")
         add_text(paragraph, line)
-    out = text_path.with_suffix(".docx")
-    document.save(out)
-    print(f"{out} ({nonempty} paragraphs)")
+    present = {line.rstrip() for line in lines}
+    missing = sorted((layout["chapters"] | layout["subheadings"]) - present)
+    if missing:
+        raise ValueError(f"{text_path}: heading lines not found: {missing}")
+    if text_path.parent.parent == TRANSLATIONS and layout["locale"] in PROOFING:
+        proofing_language(document, PROOFING[layout["locale"]])
+    if layout["locale"] in EAST_ASIAN_FONTS:
+        east_asian(document, *EAST_ASIAN_FONTS[layout["locale"]])
+    out = layout["out"]
+    written = save(document, out)
+    print(f"{out.relative_to(ROOT).as_posix()} ({nonempty} paragraphs{'' if written else ', unchanged'})")
 
 
 if __name__ == "__main__":
-    for name, layout in GUIDES.items():
-        build(name, layout)
+    for path, guide_layout in all_guides().items():
+        build(path, guide_layout)
