@@ -217,17 +217,15 @@ Foi uma experiência de aprendizagem incrível, sobretudo em reconhecimento de i
 
 Agora, em 2026, consigo finalmente partilhar os resultados como um **ecossistema open source**, para que outros o possam usar, melhorar e, espero, divertir-se tanto com ele como nós.
 
-### ❤️ Para o Volkert
+### Uma homenagem ao Volkert
 
-Quero também dedicar uma parte deste projeto ao nosso querido amigo e rival, **Volkert**, que nos deixou cedo demais.
+Quero também lembrar o **Volkert**, um rival respeitado nas provas contra o relógio, que faleceu recentemente, demasiado jovem.
 
-O Volkert era uma daquelas pessoas que nos continuavam a inspirar a esforçar-nos um pouco mais, a encontrar aquela trajetória mais rápida e a tentar só mais um Contrarrelógio. A rivalidade amigável, sobretudo à volta do Parque Bebé e do Big Blue, tornou a competição algo especial.
+A nossa rivalidade, sobretudo em Parque Bebé e Big Blue a 150cc, foi uma motivação constante para melhorar. Tenho a certeza de que ambos passámos muitas horas a tentar tirar aqueles últimos milissegundos, embora suspeite que eu tenha dedicado bastantes mais horas do que ele. Ele era simplesmente mais experiente e mais consistente.
 
-Mas, mais do que os tempos de volta ou as classificações, são os momentos juntos que importam. Estar sentado num armazém com amigos, a rir, a competir, a partilhar pizza e a desfrutar de algo tão simples como um jogo.
+O que começou connosco, apenas três, a registar os nossos tempos numa folha de Excel cresceu aos poucos até se tornar nas funcionalidades de contrarrelógio que hoje fazem parte deste ecossistema.
 
-São esses os momentos que vale a pena recordar.
-
-Volkert, obrigado pela competição, pela inspiração e pelas memórias. Farás sempre parte desta história.
+Espero que este projeto dê a outros a oportunidade de viver essa mesma rivalidade amigável e essa motivação para continuar a melhorar.
 
 ### Continuem a correr, continuem a partilhar
 

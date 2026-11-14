@@ -208,17 +208,15 @@ Het is een ongelooflijke leerschool geweest, vooral op het gebied van beeldherke
 
 Nu, in 2026, kan ik het resultaat eindelijk delen als **open-source ecosysteem**, zodat anderen het kunnen gebruiken, verbeteren en er hopelijk net zoveel plezier aan beleven als wij.
 
-### ❤️ Voor Volkert
+### Een eerbetoon aan Volkert
 
-Ik wil een deel van dit project ook opdragen aan onze dierbare vriend en rivaal **Volkert**, die veel te vroeg is overleden.
+Ik wil ook stilstaan bij **Volkert**, een gewaardeerde Time Trial-rivaal die onlangs veel te jong is overleden.
 
-Volkert was zo iemand die ons steeds weer inspireerde om nét iets harder te pushen, die snellere racelijn te vinden en nog één Time Trial te proberen. De vriendschappelijke rivaliteit, vooral rond Baby Park en Big Blue, maakte de competitie iets bijzonders.
+Onze rivaliteit, vooral op Baby Park en Big Blue 150cc, was een constante motivatie om beter te worden. Ik weet zeker dat we allebei heel wat uren hebben gestoken in het afschaven van die laatste milliseconden, al vermoed ik dat ik er een flink stuk meer in heb gestoken dan hij. Hij was gewoon ervarener en constanter.
 
-Maar meer nog dan de rondetijden of de ranglijsten gaat het om de momenten samen. Met vrienden in een loods zitten, lachen, strijden, pizza delen en genieten van iets simpels als een spelletje.
+Wat begon met z'n drieën die onze tijden bijhielden in een Excel-sheet, groeide stap voor stap uit tot de Time Trial-functies die nu deel uitmaken van dit ecosysteem.
 
-Dat zijn de momenten die het waard zijn om te onthouden.
-
-Volkert, bedankt voor de strijd, de inspiratie en de herinneringen. Je blijft altijd een deel van dit verhaal.
+Ik hoop dat dit project anderen de kans geeft om diezelfde vriendschappelijke rivaliteit en motivatie om steeds beter te worden te ervaren.
 
 ### Blijf racen, blijf delen
 

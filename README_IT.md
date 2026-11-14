@@ -212,17 +212,15 @@ Le singole tecniche esistevano già, ma metterle insieme in un ecosistema funzio
 
 Ora, nel 2026, posso finalmente condividere il risultato come **ecosistema open source**, così che altri possano usarlo, migliorarlo e, spero, divertirsi tanto quanto ci siamo divertiti noi.
 
-### ❤️ Per Volkert
+### Un tributo a Volkert
 
-Voglio anche dedicare una parte di questo progetto al nostro caro amico e rivale, **Volkert**, che ci ha lasciati troppo presto.
+Vorrei anche ricordare **Volkert**, un rispettato rivale nelle prove a tempo, scomparso di recente troppo giovane.
 
-Volkert era una di quelle persone che continuavano a spronarci a dare un po' di più, a trovare quella traiettoria più veloce e a tentare ancora una Prova a tempo. La rivalità amichevole, soprattutto su Baby Park e Big Blue, ha reso la competizione qualcosa di speciale.
+La nostra rivalità, soprattutto su Baby Park e Big Blue a 150cc, è stata una motivazione costante a migliorare. Sono sicuro che entrambi abbiamo passato molte ore a limare quegli ultimi millisecondi, anche se sospetto di averne passate parecchie più di lui. Lui era semplicemente più esperto e più costante.
 
-Ma più dei tempi sul giro o delle classifiche, contano i momenti passati insieme. Stare in un capannone con gli amici, ridere, sfidarsi, dividersi la pizza e godersi qualcosa di semplice come un gioco.
+Quello che è iniziato con noi tre che annotavamo i nostri tempi in un foglio Excel è cresciuto poco a poco fino a diventare le funzioni di prova a tempo che oggi fanno parte di questo ecosistema.
 
-Sono questi i momenti che vale la pena ricordare.
-
-Volkert, grazie per le sfide, l'ispirazione e i ricordi. Farai sempre parte di questa storia.
+Spero che questo progetto dia ad altri l'opportunità di vivere la stessa rivalità amichevole e la stessa voglia di continuare a migliorare.
 
 ### Continua a correre, continua a condividere
 
