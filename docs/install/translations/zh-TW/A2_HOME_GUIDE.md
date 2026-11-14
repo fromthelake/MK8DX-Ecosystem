@@ -90,7 +90,7 @@ Linux 尚未與 MK8DX 一起經過端對端測試。以下步驟是針對 Ubuntu
 **在 Windows 上啟動**
 
 1. **操作：** 在解壓縮後的資料夾中，按兩下 **Start-MK8DX-LAN.cmd**。→ **你會看到：** 一個顯示 MK8DX 標誌和帶有提示音的 3-2-1-GO 倒數的視窗（[如何關閉它](../../../guides/HOSTING.md#the-launcher-window-look-and-options)），接著是「MK8DX package:」（MK8DX 套件：）和「Private installation:」（私人安裝：）等行。第一次還會顯示「Preparing the included Python packages (once, without internet).」（正在準備隨附的 Python 套件（僅一次，不需網際網路）。）和「Loading the included Docker images. This can take several minutes.」（正在載入隨附的 Docker 映像檔。這可能需要幾分鐘。）。這需要幾分鐘。接著顯示「MK8DX setup is open in your browser:」（MK8DX 安裝程式已在瀏覽器中開啟：），安裝程式會在你的瀏覽器中開啟。→ **看到的不一樣？** 請看下方的訊息說明。
-2. **操作：** 在安裝程式中點選 **Finish**（完成）之前，請一直保持黑色視窗開啟。視窗中也這樣寫著：「Keep this window open until you click Finish.」（點選 Finish 之前請保持此視窗開啟。）
+2. **操作：** 在安裝程式中點選 **完成**之前，請一直保持黑色視窗開啟。視窗中也這樣寫著：「Keep this window open until you click Finish.」（點選 Finish 之前請保持此視窗開啟。）
 
 Windows 黑色視窗中的訊息：
 
@@ -106,7 +106,7 @@ Windows 黑色視窗中的訊息：
 
 1. **操作：** 在解壓縮後的資料夾中開啟終端機。Linux：如果你的檔案管理員提供這個選項，在資料夾中按右鍵並選擇「Open in Terminal」（在終端機中開啟）。在 macOS 和 Linux 上也可以這樣做：開啟終端機，輸入 `cd `（後面加一個空格），把資料夾拖進視窗，然後按 Enter。→ **你會看到：** 終端機位於套件資料夾中。
 2. **操作：** 輸入 `sh tooling/start-mk8dx.sh` 並按 Enter。→ **你會看到：** MK8DX 標誌和 3-2-1-GO 倒數，接著是「MK8DX package:」（MK8DX 套件：）、Python 版本號和「Docker Compose version」。第一次還會顯示「Loading the included Docker images. This can take several minutes.」（正在載入隨附的 Docker 映像檔。這可能需要幾分鐘。）和「Preparing the included Python packages (once, without internet).」（正在準備隨附的 Python 套件（僅一次，不需網際網路）。）。接著是「Private installation:」（私人安裝：）和「MK8DX setup is open in your browser:」（MK8DX 安裝程式已在瀏覽器中開啟：），安裝程式會在你的瀏覽器中開啟。→ **看到的不一樣？** 如果沒有開啟瀏覽器，請把終端機中以 `http://127.0.0.1:` 開頭的網址複製到瀏覽器中。
-3. **操作：** 在點選 **Finish**（完成）之前，請一直保持終端機開啟。
+3. **操作：** 在點選 **完成**之前，請一直保持終端機開啟。
 
 Linux 和 macOS 終端機中的訊息：
 
@@ -118,19 +118,19 @@ Linux 和 macOS 終端機中的訊息：
 
 **瀏覽器中的安裝程式**
 
-安裝程式是瀏覽器中的一個網頁，只能在 MK8DX 電腦本機上使用。如果你的瀏覽器使用荷蘭文，它就顯示荷蘭文，否則顯示英文。右上角是 **Manual**（手冊）：它會開啟本手冊。底部是 **Back**（返回）、有時還有 **Advanced**（進階），以及 **Next**（下一步）。上方的圓點顯示你進行到哪一步。
+安裝程式是瀏覽器中的一個網頁，只能在 MK8DX 電腦本機上使用。它使用你的瀏覽器的語言（遊戲的 15 種語言之一；否則顯示英文）。右上角是語言選單（用來選擇其他語言）和 **使用手冊**：它會開啟本手冊。底部是 **返回**、有時還有 **進階**，以及 **下一步**。上方的圓點顯示你進行到哪一步。
 
-1. **Welcome to MK8DX.**（歡迎使用 MK8DX。）**操作：** 閱讀畫面內容並點選 **Next**。→ **你會看到：** 「Quick check」（快速檢查）。此畫面上的 **Restore a backup**（還原備份）按鈕只用於新電腦（第 10 章）。
-2. **Quick check.**（快速檢查。）**操作：** 稍等一下。→ **你會看到：** **Docker Desktop is running**（Docker Desktop 執行中）、**Enough free disk space**（磁碟空間足夠）（顯示 GB 數）和 **Windows, Linux or macOS** 旁邊出現三個綠色勾號。點選 **Next**。→ **看到的不一樣？** 一個驚嘆號和一段說明，例如「Start Docker Desktop, wait for 'Engine running' and click Try again.」（啟動 Docker Desktop，等到顯示 'Engine running' 後點選 Try again。）或「Free at least 6 GB on this drive.」（請在此磁碟機上騰出至少 6 GB 空間。）。解決問題後點選 **Try again**（再試一次）。在 Linux 上，第一項檢查也叫做「Docker Desktop is running」；在那裡它指的是 Docker Engine。
-3. **What kind of installation?**（哪一種安裝？）**操作：** 保持選取 **Home, club or LAN-night network, no internet needed**（家用、俱樂部或區域網路之夜的網路，不需網際網路）（建議），然後點選 **Next**。→ **你會看到：** 「Your network」（你的網路）。
-4. **Your network.**（你的網路。）**網路位址**（IP 位址）是網路中各裝置找到這台電腦所用的號碼，就像門牌號碼一樣。**操作：** 閱讀「Phones, tablets and other PCs reach MK8DX at this address:」（手機、平板和其他電腦透過此位址連到 MK8DX：）下方的位址並把它記下來，例如 `https://192.168.1.50`。點選 **Install**（安裝）。→ **你會看到：** 在 Windows 上顯示「This network is set up as a home (private) network.」（此網路已設定為家用（私人）網路。）或「Windows currently treats this network as public. When you click Install, MK8DX marks it private and allows only MK8DX.」（Windows 目前將此網路視為公用網路。點選 Install 後，MK8DX 會將它標示為私人網路，並且只允許 MK8DX 通過。）。在 Linux 和 macOS 上，這裡不會顯示關於網路的句子。→ **看到的不一樣？** 如果電腦有多個連線（網路線和 Wi-Fi），請點選 **Advanced**（進階），在「Choose another address of this computer:」（選擇此電腦的另一個位址：）處選擇手機所在網路的位址。如果顯示「No network address found.」（找不到網路位址。），請把電腦連上你的家用網路，然後點選 **Try again**（再試一次）。
-5. **Installing.**（安裝中。）**操作：** 等待並保持視窗開啟。→ **你會看到：** 「MK8DX is being set up. Keep this window open.」（正在設定 MK8DX。請保持此視窗開啟。），接著依序顯示「Preparing the installation」（正在準備安裝）、「Allowing the network (Windows asks for permission)」（正在允許網路（Windows 會要求權限））、「Starting the database and website」（正在啟動資料庫和網站）、「Checking」（正在檢查），最後是「MK8DX is running. Two short steps left.」（MK8DX 正在執行。只剩兩個簡短的步驟。）。點選 **Next**。在 Windows 上，會有一個 Windows 視窗詢問一次是否允許 Windows PowerShell 進行變更：點選 **Yes**（是）。這樣 MK8DX 會把你的家用網路標示為私人網路，並且只讓 MK8DX 通過防火牆（Windows 的保護機制）。→ **看到的不一樣？** 出現紅色錯誤：點選 **Details**（詳細資料）查看出了什麼問題，解決後點選 **Try again**（再試一次）。如果你在 Windows 視窗中點選了「否」，畫面會顯示 Windows 不允許此變更；點選 **Try again**，然後點選 **Yes**（是）。
-6. **僅限 Linux：防火牆。** **操作：** 在安裝過程中或安裝之後，點選 **Details**（詳細資料），找出以「Network:」開頭的那一行。→ **你會看到：** 「not-needed」（不需處理），或「manual:」後面接著一道指令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。→ **接著操作：** 在終端機中一字不差地輸入那道指令（使用那裡顯示的你自己的位址）。沒有這道指令，手機就打不開網站。
-7. **Your administrator account.**（你的管理員帳號。）**管理員** 是新增人員和製作登入卡的人；也就是你。**操作：** 在 **Your name**（你的名稱）處輸入一個名稱，例如「爸爸」或「俱樂部團隊」，然後點選 **Next**。這個名稱只在本安裝中可見。→ **你會看到：** 「Who plays?」（誰要玩？）
-8. **Who plays?**（誰要玩？）**操作：** 在 **Names (one per line)**（名稱（每行一個））處輸入玩家的名稱，每個名稱各占一行，然後點選 **Add**（新增）。或者直接點選 **Skip**（略過）：之後你可以在 MK8DX beheer 中用完全相同的方式完成（第 5 章）。→ **你會看到：** 名稱出現在「In this installation:」（本安裝中：）下方，你自己的名稱後面附有「(administrator)」（管理員）。點選 **Next**。
-9. **Sign in on phones and PCs.**（在手機和電腦上登入。）**操作：** 你現在就可以在這裡製作登入卡（第 5 章和第 6 章會說明怎麼做），也可以直接點選 **Next**。→ **你會看到：** 「Done! Enjoy the races.」（完成！盡情享受比賽吧。）
-10. **Done! Enjoy the races.**（完成！盡情享受比賽吧。）**操作：** 記下兩個網址：**Website**（網站）（例如 `https://192.168.1.50`）和 **New device**（新裝置）（例如 `http://192.168.1.50/setup`）。保持三個勾選項目開啟：**Start MK8DX with Windows**（隨 Windows 啟動 MK8DX）、**Make a backup every night**（每晚建立備份）和 **Put an 'MK8DX beheer' shortcut on the desktop**（在桌面放置 'MK8DX beheer' 捷徑）。點選 **Finish**（完成）。→ **你會看到：** 你的復原碼（第 4 章）。→ **在 Linux 和 macOS 上**，第一個勾選項目叫做「Start MK8DX when the computer starts」（電腦啟動時啟動 MK8DX）。在 macOS 上，它會在你登入時開啟 Docker Desktop。在 Linux 上，第 2B 章中的 `sudo systemctl enable --now docker` 負責這件事；如果你還沒有做，安裝程式會在點選 Finish 後顯示這道指令。
-11. **關閉。** **操作：** 閱讀第 4 章並保管好復原碼。然後點選 **Close**（關閉）。→ **你會看到：** 「You can close this window now.」（你現在可以關閉此視窗了。）關閉瀏覽器分頁。在 Windows 上，黑色視窗會要求按一個鍵；按任意鍵後它就會關閉。如果你什麼都不做，安裝網頁會在 10 分鐘後自動停止。MK8DX 本身會繼續執行。
+1. **歡迎來到 MK8DX。** **操作：** 閱讀畫面內容並點選 **下一步**。→ **你會看到：** 「快速檢查」。此畫面上的 **還原備份**按鈕只用於新電腦（第 10 章）。
+2. **快速檢查。** **操作：** 稍等一下。→ **你會看到：** **Docker Desktop 正在執行**、**磁碟可用空間充足**（顯示 GB 數）和 **Windows, Linux or macOS** 旁邊出現三個綠色勾號。點選 **下一步**。→ **看到的不一樣？** 一個驚嘆號和一段說明，例如「啟動 Docker Desktop，等待出現「Engine running」，然後按一下「再試一次」。」或「請在此磁碟機上至少釋出 6 GB 空間。」。解決問題後點選 **再試一次**。在 Linux 上，第一項檢查也叫做「Docker Desktop is running」；在那裡它指的是 Docker Engine。
+3. **哪種安裝？** **操作：** 保持選取 **家中、社團或 LAN 之夜的網路，不需要網際網路**（建議），然後點選 **下一步**。→ **你會看到：** 「你的網路」。
+4. **你的網路。** **網路位址**（IP 位址）是網路中各裝置找到這台電腦所用的號碼，就像門牌號碼一樣。**操作：** 閱讀「手機、平板和其他電腦可透過這個位址連到 MK8DX：」下方的位址並把它記下來，例如 `https://192.168.1.50`。點選 **安裝**。→ **你會看到：** 在 Windows 上顯示「此網路已設定為家用（私人）網路。」或「Windows 目前將此網路視為公用網路。按一下「安裝」後，MK8DX 會將它設為私人網路，並只允許 MK8DX 通過。」。在 Linux 和 macOS 上，這裡不會顯示關於網路的句子。→ **看到的不一樣？** 如果電腦有多個連線（網路線和 Wi-Fi），請點選 **進階**，在「選擇這台電腦的其他位址：」處選擇手機所在網路的位址。如果顯示「找不到網路位址。」，請把電腦連上你的家用網路，然後點選 **再試一次**。
+5. **安裝中。** **操作：** 等待並保持視窗開啟。→ **你會看到：** 「正在設定 MK8DX。請保持此視窗開啟。」，接著依序顯示「正在準備安裝」、「允許網路存取（Windows 會要求權限）」、「正在啟動資料庫與網站」、「檢查中」，最後是「MK8DX 正在執行。只剩兩個簡短步驟。」。點選 **下一步**。在 Windows 上，會有一個 Windows 視窗詢問一次是否允許 Windows PowerShell 進行變更：點選 **Yes**（是）。這樣 MK8DX 會把你的家用網路標示為私人網路，並且只讓 MK8DX 通過防火牆（Windows 的保護機制）。→ **看到的不一樣？** 出現紅色錯誤：點選 **詳細資料**查看出了什麼問題，解決後點選 **再試一次**。如果你在 Windows 視窗中點選了「否」，畫面會顯示 Windows 不允許此變更；點選 **再試一次**，然後點選 **Yes**（是）。
+6. **僅限 Linux：防火牆。** **操作：** 在安裝過程中或安裝之後，點選 **詳細資料**，找出以「Network:」開頭的那一行。→ **你會看到：** 「not-needed」（不需處理），或「manual:」後面接著一道指令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。→ **接著操作：** 在終端機中一字不差地輸入那道指令（使用那裡顯示的你自己的位址）。沒有這道指令，手機就打不開網站。
+7. **你的管理員帳號。** **管理員** 是新增人員和製作登入卡的人；也就是你。**操作：** 在 **你的名稱**處輸入一個名稱，例如「爸爸」或「俱樂部團隊」，然後點選 **下一步**。這個名稱只在本安裝中可見。→ **你會看到：** 「誰要玩？」
+8. **誰要玩？** **操作：** 在 **名稱（每行一個）** 處輸入玩家的名稱，每個名稱各占一行，然後點選 **新增**。或者直接點選 **略過**：之後你可以在 MK8DX beheer 中用完全相同的方式完成（第 5 章）。→ **你會看到：** 名稱出現在「此安裝中：」下方，你自己的名稱後面附有「(管理員)」。點選 **下一步**。
+9. **在手機和電腦上登入。** **操作：** 你現在就可以在這裡製作登入卡（第 5 章和第 6 章會說明怎麼做），也可以直接點選 **下一步**。→ **你會看到：** 「完成！盡情享受比賽吧。」
+10. **完成！盡情享受比賽吧。** **操作：** 記下兩個網址：**網站**（例如 `https://192.168.1.50`）和 **新裝置**（例如 `http://192.168.1.50/setup`）。保持三個勾選項目開啟：**隨 Windows 啟動 MK8DX**、**每晚建立一份備份**和 **在桌面上建立「MK8DX beheer」捷徑**。點選 **完成**。→ **你會看到：** 你的復原碼（第 4 章）。→ **在 Linux 和 macOS 上**，第一個勾選項目叫做「電腦開機時啟動 MK8DX」。在 macOS 上，它會在你登入時開啟 Docker Desktop。在 Linux 上，第 2B 章中的 `sudo systemctl enable --now docker` 負責這件事；如果你還沒有做，安裝程式會在點選「完成」後顯示這道指令。
+11. **關閉。** **操作：** 閱讀第 4 章並保管好復原碼。然後點選 **關閉**。→ **你會看到：** 「現在可以關閉此視窗了。」關閉瀏覽器分頁。在 Windows 上，黑色視窗會要求按一個鍵；按任意鍵後它就會關閉。如果你什麼都不做，安裝網頁會在 10 分鐘後自動停止。MK8DX 本身會繼續執行。
 
 ![安裝精靈歡迎畫面](../../guide/img/wizard-welcome-en.png)
 
@@ -148,8 +148,8 @@ Linux 和 macOS 終端機中的訊息：
 
 **復原碼** 就是這把金鑰。它由五組、每組四個字母和數字組成，例如 `ABCD-EFGH-JKLM-NPQR-STUV`。只有在另一台電腦上還原備份時才需要它。
 
-1. **操作：** 點選 **Finish**（完成）之後，查看 **MK8DX recovery code**（MK8DX 復原碼）卡片。→ **你會看到：** 復原碼、句子「A backup cannot be opened without this code. It is shown only once.」（沒有此代碼就無法開啟備份。它只會顯示一次。），以及下方備份存放的資料夾。
-2. **操作：** 把復原碼抄在紙上，或點選 **Print cards**（列印卡片）列印此頁面。逐一核對每個字母。→ **你會看到：** 紙上的復原碼。→ **為什麼只顯示一次？** MK8DX 會在這台電腦上受保護地保存復原碼，用於每晚的備份，但再也不會顯示它。如果電腦壞了，你就只剩下那張紙。
+1. **操作：** 點選 **完成**之後，查看 **MK8DX 復原碼**卡片。→ **你會看到：** 復原碼、句子「沒有這組代碼就無法開啟備份。它只會顯示一次。」，以及下方備份存放的資料夾。
+2. **操作：** 把復原碼抄在紙上，或點選 **列印卡片**列印此頁面。逐一核對每個字母。→ **你會看到：** 紙上的復原碼。→ **為什麼只顯示一次？** MK8DX 會在這台電腦上受保護地保存復原碼，用於每晚的備份，但再也不會顯示它。如果電腦壞了，你就只剩下那張紙。
 3. **操作：** 把紙保存在安全的地方，不要放在電腦旁邊。任何拿到復原碼和備份的人都能開啟所有內容。
 
 備份的位置：
@@ -160,47 +160,47 @@ Linux 和 macOS 終端機中的訊息：
 
 偶爾把 `MK8DX-backups` 資料夾複製到 USB 隨身碟或另一顆硬碟上。否則，如果電腦壞了，備份就只存在那台壞掉的電腦上。
 
-如果你取消勾選 **Make a backup every night**（每晚建立備份），就不會得到復原碼，也不會建立備份。如果你之後在 MK8DX beheer 中重新開啟它並點選 **Finish**，那時就會看到你的復原碼。
+如果你取消勾選 **每晚建立一份備份**，就不會得到復原碼，也不會建立備份。如果你之後在 MK8DX beheer 中重新開啟它並點選 **完成**，那時就會看到你的復原碼。
 
 ![復原碼](../../guide/img/recovery-code-en.png)
 
 ## 5. 人員與登入卡（MK8DX beheer）
 
-**MK8DX beheer**（荷蘭文，意思是「MK8DX 管理」）和安裝程式是同一個網頁，只是供之後使用：新增人員和製作登入卡。它只能在 MK8DX 電腦本機上使用。桌面捷徑在所有語言中都叫做「MK8DX beheer」；網頁的英文標題是 **MK8DX administration**（MK8DX 管理）。
+**MK8DX beheer**（荷蘭文，意思是「MK8DX 管理」）和安裝程式是同一個網頁，只是供之後使用：新增人員和製作登入卡。它只能在 MK8DX 電腦本機上使用。桌面捷徑在所有語言中都叫做「MK8DX beheer」；網頁標題是 **MK8DX 管理**。
 
 **帳號** 是登入的人。**玩家** 是排名中的選手，附有自己的成績。登入後，每個人在網站上選擇或認領自己的玩家。名稱絕不會被自動連結。
 
 **開啟 MK8DX beheer**
 
-1. **操作（Windows）：** 按兩下桌面上的 **MK8DX beheer**。這個捷徑啟動的內容和 Start-MK8DX-LAN.cmd 相同。→ **你會看到：** 啟動視窗及其簡短的賽車開場，接著瀏覽器中出現頂端寫著「administration」的網頁，標題為 **MK8DX administration**（MK8DX 管理）。→ **看到的不一樣？** 沒有捷徑：在 MK8DX 資料夾中按兩下 Start-MK8DX-LAN.cmd。
-2. **操作（Linux）：** 從桌面或應用程式選單啟動 **MK8DX beheer**。在某些 Linux 桌面上，你必須先允許這樣的圖示執行（在它上面按右鍵並選擇允許啟動的選項）。也可以像第 3 章那樣，在 MK8DX 資料夾中執行 `sh tooling/start-mk8dx.sh`。→ **你會看到：** 一個終端機，接著是 **MK8DX administration** 網頁。
-3. **操作（macOS，未測試）：** 按兩下桌面上的 **MK8DX beheer.command**，或像第 3 章那樣執行 `sh tooling/start-mk8dx.sh`。→ **你會看到：** 終端機，接著是 **MK8DX administration** 網頁。
+1. **操作（Windows）：** 按兩下桌面上的 **MK8DX beheer**。這個捷徑啟動的內容和 Start-MK8DX-LAN.cmd 相同。→ **你會看到：** 啟動視窗及其簡短的賽車開場，接著瀏覽器中出現頂端寫著「管理」的網頁，標題為 **MK8DX 管理**。→ **看到的不一樣？** 沒有捷徑：在 MK8DX 資料夾中按兩下 Start-MK8DX-LAN.cmd。
+2. **操作（Linux）：** 從桌面或應用程式選單啟動 **MK8DX beheer**。在某些 Linux 桌面上，你必須先允許這樣的圖示執行（在它上面按右鍵並選擇允許啟動的選項）。也可以像第 3 章那樣，在 MK8DX 資料夾中執行 `sh tooling/start-mk8dx.sh`。→ **你會看到：** 一個終端機，接著是 **MK8DX 管理** 網頁。
+3. **操作（macOS，未測試）：** 按兩下桌面上的 **MK8DX beheer.command**，或像第 3 章那樣執行 `sh tooling/start-mk8dx.sh`。→ **你會看到：** 終端機，接著是 **MK8DX 管理** 網頁。
 
 **新增人員**
 
-1. **操作：** 在 **Names (one per line)**（名稱（每行一個））處輸入名稱，然後點選 **Add**（新增）。→ **你會看到：** 名稱出現在「In this installation:」（本安裝中：）下方。
-2. **操作：** 點選 **Next**（下一步）。→ **你會看到：** 分成兩個步驟的「Sign in on phones and PCs」（在手機和電腦上登入）：**Step 1 · Prepare the device**（步驟 1 · 準備裝置），其中有 **Prepare a device**（準備裝置）卡片（每台裝置一次，此時還不會讓你登入）；以及 **Step 2 · Sign in as the right person**（步驟 2 · 以正確的身分登入），其中每個人都有一個附 **Make card**（製作卡片）按鈕的方框。
+1. **操作：** 在 **名稱（每行一個）** 處輸入名稱，然後點選 **新增**。→ **你會看到：** 名稱出現在「此安裝中：」下方。
+2. **操作：** 點選 **下一步**。→ **你會看到：** 分成兩個步驟的「在手機和電腦上登入」：**步驟 1 · 準備裝置**，其中有 **準備裝置**卡片（每台裝置一次，此時還不會讓你登入）；以及 **步驟 2 · 以正確的人的身分登入**，其中每個人都有一個附 **產生卡片**按鈕的方框。
 
 **製作與列印卡片**
 
-1. **操作：** 點選某個人旁邊的 **Make card**（製作卡片）。→ **你會看到：** 一個 QR 碼，附有「Valid until」（有效期限至）和一個時間。一張卡只能使用一次，有效期 15 分鐘。讓那個人立刻掃描（第 6 章），或者把它列印出來。
-2. **操作：** 先製作好你需要的所有卡片，然後點選 **Print cards**（列印卡片）。→ **你會看到：** 瀏覽器的列印視窗，畫面上的每張卡都在其中，包括 Prepare a device 卡片。
+1. **操作：** 點選某個人旁邊的 **產生卡片**。→ **你會看到：** 一個 QR 碼，附有「有效期限至」和一個時間。一張卡只能使用一次，有效期 15 分鐘。讓那個人立刻掃描（第 6 章），或者把它列印出來。
+2. **操作：** 先製作好你需要的所有卡片，然後點選 **列印卡片**。→ **你會看到：** 瀏覽器的列印視窗，畫面上的每張卡都在其中，包括「準備裝置」卡片。
 3. **操作：** 如果你想在手機上登入，也為自己製作一張卡（名稱後面附有「(administrator)」的那個）。
 
 **更換或撤銷卡片**
 
-- **New card**（新卡片）：為那個人製作一張新卡。之後，那個人在此畫面上的上一張卡就會失效。
-- **Revoke card**（撤銷卡片）：卡片立即失效。你會看到「Revoked: this card no longer works.」（已撤銷：此卡片已失效。）。當卡片遺失或給錯人時使用它。
-- 你只能撤銷仍在此畫面上的卡片。如果你已經關閉了 MK8DX beheer，未使用的卡片會在 15 分鐘後自動過期。如果它可能已經被使用過，請選擇下方的 **Sign out everywhere**（在所有地方登出）。
+- **新卡片**：為那個人製作一張新卡。之後，那個人在此畫面上的上一張卡就會失效。
+- **撤銷卡片**：卡片立即失效。你會看到「已撤銷：這張卡片已失效。」。當卡片遺失或給錯人時使用它。
+- 你只能撤銷仍在此畫面上的卡片。如果你已經關閉了 MK8DX beheer，未使用的卡片會在 15 分鐘後自動過期。如果它可能已經被使用過，請選擇下方的 **在所有地方登出**。
 
 **讓某人在所有地方登出**
 
-1. **操作：** 開啟 MK8DX beheer。在第一個畫面上，每個人都有一個 **Sign out everywhere**（在所有地方登出）按鈕。點選它。→ **你會看到：** 按鈕變成 **Sure? Click again**（確定嗎？再點選一次）。
-2. **操作：** 再點選一次。→ **你會看到：** 「Signed out on every device. A new card lets this person sign in again.」（已在所有裝置上登出。用一張新卡可讓此人重新登入。）。此人現在已在網站和 App 中登出，一鍵切換到該帳號的功能消失，此人尚未使用的卡片也會失效。→ **看到的不一樣？** 在你自己的名稱旁邊顯示「Sign yourself out from the account menu on the website ('Sign out on all devices').」（請在網站的帳號選單中自行登出（'Sign out on all devices'）。）
+1. **操作：** 開啟 MK8DX beheer。在第一個畫面上，每個人都有一個 **在所有地方登出**按鈕。點選它。→ **你會看到：** 按鈕變成 **確定嗎？再按一次**。
+2. **操作：** 再點選一次。→ **你會看到：** 「已在所有裝置上登出。使用新卡片即可讓此人重新登入。」。此人現在已在網站和 App 中登出，一鍵切換到該帳號的功能消失，此人尚未使用的卡片也會失效。→ **看到的不一樣？** 在你自己的名稱旁邊顯示「你自己可以透過網站上的帳號選單登出（「在所有裝置上登出」）。」
 
 **關閉 MK8DX beheer**
 
-1. **操作：** 一直點選 **Next**（下一步），直到出現「Done! Enjoy the races.」（完成！盡情享受比賽吧。），保持勾選項目開啟，點選 **Finish**（完成），然後點選 **Close**（關閉）。→ **你會看到：** 「You can close this window now.」（你現在可以關閉此視窗了。）MK8DX 會繼續執行。
+1. **操作：** 一直點選 **下一步**，直到出現「完成！盡情享受比賽吧。」，保持勾選項目開啟，點選 **完成**，然後點選 **關閉**。→ **你會看到：** 「現在可以關閉此視窗了。」MK8DX 會繼續執行。
 
 ![管理網頁中的人員](../../guide/img/admin-people-en.png)
 
@@ -221,23 +221,23 @@ Linux 和 macOS 終端機中的訊息：
 
 - 每次造訪時，瀏覽器都會顯示整頁警告，例如「Your connection is not private」（你的連線不是私人連線）。你可以把它按掉，但不要這樣做：那樣你就再也看不出自己是否真的在和你的 MK8DX 通訊。
 - 即使把警告按掉，**瀏覽器通知** 也無法使用：瀏覽器只在憑證受信任時才允許通知。其他瀏覽器功能也可能拒絕運作。
-- 不安裝憑證也能使用的是：**Android App**。它會從 **Prepare a device**（準備裝置）卡片中自行取得憑證（第 7 章）。同一台裝置上的瀏覽器仍然需要憑證。
+- 不安裝憑證也能使用的是：**Android App**。它會從 **準備裝置**卡片中自行取得憑證（第 7 章）。同一台裝置上的瀏覽器仍然需要憑證。
 
 **MK8DX 電腦本身**
 
 執行 MK8DX 的電腦也必須信任 MK8DX 一次，否則它的瀏覽器會對網站發出警告。
 
-1. **操作：** 開啟 MK8DX beheer，一直點選 **Next**（下一步），直到出現「Sign in on phones and PCs」（在手機和電腦上登入），查看 **Step 1**（步驟 1）下方的 **This computer**（這台電腦）區塊。→ **你會看到：** 「This computer already trusts MK8DX.」（這台電腦已經信任 MK8DX。）這樣就完成了。→ **看到的不一樣？** 如果顯示 **Prepare this computer**（準備這台電腦）按鈕，請前往第 2 步。
-2. **操作：** 點選 **Prepare this computer**（準備這台電腦）。→ **你會看到：** 一個 Windows 視窗 **Security Warning**（安全性警告），詢問你是否要安裝憑證，並顯示一個 **thumbprint (sha1)**（指紋（sha1））。把它和 MK8DX beheer 中的指紋比較；如果相符，點選 **Yes**（是）。→ **你會看到：** 「This computer already trusts MK8DX.」（這台電腦已經信任 MK8DX。）→ **看到的不一樣？** 如果你點選了 **No**（否），或是指紋不相符：不要點選「是」，關閉視窗並請人協助。在 Linux 或 macOS 上，這裡沒有按鈕，而是提示你在這台電腦的瀏覽器中開啟 Prepare a device 下方的網址；接著在這台電腦上依照下面的步驟操作。
+1. **操作：** 開啟 MK8DX beheer，一直點選 **下一步**，直到出現「在手機和電腦上登入」，查看 **步驟 1**下方的 **這台電腦**區塊。→ **你會看到：** 「這台電腦已信任 MK8DX。」這樣就完成了。→ **看到的不一樣？** 如果顯示 **準備這台電腦**按鈕，請前往第 2 步。
+2. **操作：** 點選 **準備這台電腦**。→ **你會看到：** 一個 Windows 視窗 **Security Warning**（安全性警告），詢問你是否要安裝憑證，並顯示一個 **thumbprint (sha1)**（指紋（sha1））。把它和 MK8DX beheer 中的指紋比較；如果相符，點選 **Yes**（是）。→ **你會看到：** 「這台電腦已信任 MK8DX。」→ **看到的不一樣？** 如果你點選了 **No**（否），或是指紋不相符：不要點選「是」，關閉視窗並請人協助。在 Linux 或 macOS 上，這裡沒有按鈕，而是提示你在這台電腦的瀏覽器中開啟「準備裝置」下方的網址；接著在這台電腦上依照下面的步驟操作。
 
-**每台裝置一次：Prepare a device（準備裝置）**
+**每台裝置一次：準備裝置**
 
 1. **操作：** 把手機、平板或電腦連上與 MK8DX 電腦相同的 Wi-Fi 或有線網路。在手機上，不要用行動數據代替 Wi-Fi。→ **你會看到：** 連線處顯示你自己的 Wi-Fi 名稱。
-2. **操作：** 用相機掃描 **Prepare a device**（準備裝置）卡片上的 QR 碼（在 MK8DX beheer 中或紙上），然後點一下出現的連結。沒有相機時，在瀏覽器中輸入 **New device**（新裝置）網址，例如 `http://192.168.1.50/setup`。→ **你會看到：** **Prepare this device**（準備此裝置）網頁，上面寫著「Do this once per phone, tablet or PC. Afterwards, scan your personal sign-in card.」（每支手機、平板或電腦做一次即可。之後掃描你的個人登入卡。）→ **看到的不一樣？** 如果網頁打不開：檢查網路，並確認 MK8DX 電腦已開機（第 11 章）。
-3. **操作：** 把「First check this code.」（請先核對此代碼。）下方的代碼與 Prepare a device 卡片上的 **Fingerprint**（指紋）（四組、每組四個字元）比較。→ **你會看到：** 完全相同的代碼。→ **看到的不一樣？** 如果代碼不同，什麼都不要安裝。你可能連在另一個網路或另一個位址上；請先檢查這一點。
-4. **操作：** 依照與你的裝置相符的部分操作。你正在使用的裝置對應的部分已經展開；要查看其他裝置，請在「Another kind of device?」（其他類型的裝置？）下展開。點一下 **Download certificate**（下載憑證）（iPhone 和 iPad：**Download profile**（下載描述檔）），然後依照下面的步驟操作。→ **你會看到：** 底部顯示「Done? Scan your personal sign-in card, or open」（完成了嗎？請掃描你的個人登入卡，或開啟）以及網站網址。
+2. **操作：** 用相機掃描 **準備裝置**卡片上的 QR 碼（在 MK8DX beheer 中或紙上），然後點一下出現的連結。沒有相機時，在瀏覽器中輸入 **新裝置**網址，例如 `http://192.168.1.50/setup`。→ **你會看到：** **準備這台裝置**網頁，上面寫著「每支手機、平板或電腦只需做一次。之後掃描你的個人登入卡。」→ **看到的不一樣？** 如果網頁打不開：檢查網路，並確認 MK8DX 電腦已開機（第 11 章）。
+3. **操作：** 把「請先核對這組代碼。」下方的代碼與「準備裝置」卡片上的 **指紋**（四組、每組四個字元）比較。→ **你會看到：** 完全相同的代碼。→ **看到的不一樣？** 如果代碼不同，什麼都不要安裝。你可能連在另一個網路或另一個位址上；請先檢查這一點。
+4. **操作：** 依照與你的裝置相符的部分操作。你正在使用的裝置對應的部分已經展開；要查看其他裝置，請在「其他類型的裝置？」下展開。點一下 **下載憑證**（iPhone 和 iPad：**下載描述檔**），然後依照下面的步驟操作。→ **你會看到：** 底部顯示「完成了嗎？掃描你的個人登入卡，或開啟」以及網站網址。
 
-Prepare this device 網頁上的步驟：
+「準備這台裝置」網頁上的步驟：
 
 <!-- filter: device -->
 
@@ -251,16 +251,16 @@ Prepare this device 網頁上的步驟：
 
 **用你的個人卡片登入**
 
-1. **操作：** 掃描你自己的卡片（印有你名稱的那張），然後點一下連結。→ **你會看到：** **Join this MK8DX installation**（加入此 MK8DX 安裝）以及「First check that this HTTPS address belongs to the host you trust. The invitation can be used once.」（請先確認此 HTTPS 網址屬於你信任的主機。此邀請只能使用一次。）。瀏覽器網址列必須顯示網站網址，例如 `https://192.168.1.50`。→ **看到的不一樣？** 瀏覽器出現關於憑證或不安全連線的警告：絕對不要把它按掉。請先完成上面的 Prepare a device。
-2. **操作：** 檢查 **You sign in as:**（你將登入為：）下方卡片上的名稱。如果是你的名稱，等待「Invitation ready. Confirm to sign in.」（邀請已就緒。確認後即可登入。），然後點一下 **Accept invitation**（接受邀請）。如果顯示的是別人的名稱，不要點一下接受：這張卡對正確的人仍然有效。→ **你會看到：** 「You are signed in as」（你已登入為）和你的名稱，以及 **Continue to MK8DX**（繼續前往 MK8DX）。點一下它。→ **看到的不一樣？** 「This invitation is invalid. Ask the administrator for a new QR code.」（此邀請無效。請向管理員索取新的 QR 碼。）或「Sign-in failed. Ask the administrator for a new invitation.」（登入失敗。請向管理員索取新的邀請。）：卡片已被使用、已過期或已被撤銷。請管理員製作一張 **New card**（新卡片）。
+1. **操作：** 掃描你自己的卡片（印有你名稱的那張），然後點一下連結。→ **你會看到：** **加入這個 MK8DX 安裝**以及「請先確認這個 HTTPS 位址屬於你信任的主機。此邀請只能使用一次。」。瀏覽器網址列必須顯示網站網址，例如 `https://192.168.1.50`。→ **看到的不一樣？** 瀏覽器出現關於憑證或不安全連線的警告：絕對不要把它按掉。請先完成上面的「準備裝置」。
+2. **操作：** 檢查 **你將登入為：** 下方卡片上的名稱。如果是你的名稱，等待「邀請已就緒。確認即可登入。」，然後點一下 **接受邀請**。如果顯示的是別人的名稱，不要點一下接受：這張卡對正確的人仍然有效。→ **你會看到：** 「你已登入為」和你的名稱，以及 **繼續前往 MK8DX**。點一下它。→ **看到的不一樣？** 「此邀請無效。請向管理員索取新的 QR 碼。」或「登入失敗。請向管理員索取新的邀請。」：卡片已被使用、已過期或已被撤銷。請管理員製作一張 **新卡片**。
 3. **操作：** 依照網站上的歡迎步驟操作：你在這裡是否已經有成績或參加過錦標賽，以及你希望別人怎麼稱呼你。你就是這樣選擇或認領自己的玩家的。→ **你會看到：** 你的名稱和你的成績。→ **看到的不一樣？** 如果你卡片上的名稱（例如「爸爸」）沒有被預先填好：這是正常的。卡片上的名稱只是 MK8DX 管理中的標籤；你的玩家名稱由你自己在這裡選擇。
 
 **同一個人的另一台裝置**
 
 - 玩家可以自己製作卡片：網站的帳號選單中有 **也在另一台裝置上登入**。它會開啟 **在另一台裝置上登入**，其中有一張「Works once, valid until」（僅能使用一次，有效期限至）某個時間的卡片。用另一台裝置掃描它。只把它出示給你自己的裝置：任何掃描它的人都會登入你的帳號。
-- 管理員沒有這個按鈕。他們在 MK8DX beheer 中為自己製作一張 **New card**（新卡片）。
-- 新裝置一定要先做一次 Prepare a device。
-- **沒有相機，或要在 MK8DX 電腦本機上登入？** 在 MK8DX beheer 中製作那個人的卡片，然後點選 **Sign in on this computer**（在這台電腦上登入）（在 MK8DX 電腦的瀏覽器中開啟登入網頁）或 **Copy link**（複製連結）。複製的連結只能傳給那個人本人，例如透過私訊：任何開啟它的人都能以那個人的身分登入。它只能使用一次，有效期 15 分鐘。在 Prepare a device 卡片上，**Copy address**（複製網址）會複製網址；網址不是秘密。
+- 管理員沒有這個按鈕。他們在 MK8DX beheer 中為自己製作一張 **新卡片**。
+- 新裝置一定要先做一次「準備裝置」。
+- **沒有相機，或要在 MK8DX 電腦本機上登入？** 在 MK8DX beheer 中製作那個人的卡片，然後點選 **在這台電腦上登入**（在 MK8DX 電腦的瀏覽器中開啟登入網頁）或 **複製連結**。複製的連結只能傳給那個人本人，例如透過私訊：任何開啟它的人都能以那個人的身分登入。它只能使用一次，有效期 15 分鐘。在「準備裝置」卡片上，**複製位址**會複製網址；網址不是秘密。
 
 **在某台裝置上退出此安裝：** 在你安裝憑證時使用的同一處設定中，把憑證再移除。
 
@@ -272,11 +272,11 @@ Prepare this device 網頁上的步驟：
 
 **配對 Android App**
 
-這需要 2.95.0 或更新版本的 App。App 不需要在 Android 設定中安裝憑證，但登入要透過手機的瀏覽器進行。所以請先在這支手機上完成第 6 章：Prepare a device（準備裝置），並在瀏覽器中用你的卡片登入。
+這需要 2.95.0 或更新版本的 App。App 不需要在 Android 設定中安裝憑證，但登入要透過手機的瀏覽器進行。所以請先在這支手機上完成第 6 章：「準備裝置」，並在瀏覽器中用你的卡片登入。
 
 1. **操作：** 開啟 App。全新安裝時，它會從 **選擇你的社群** 開始；否則請點一下 App 頂端的社群名稱，然後點一下 **新增社群**。→ **你會看到：** **選擇你的社群**，其中有 **在家或在俱樂部** 和 **線上社群** 兩個面板。在 **在家或在俱樂部** 下點一下 **掃描 QR 碼**。
-2. **操作：** 如有需要，點一下 **使用相機** 並允許使用相機。掃描 **Prepare a device**（準備裝置）卡片上的 QR 碼。→ **你會看到：** **確認這是你的安裝**，其中有 **位址** 和 **金鑰指紋 (SHA-256)**。→ **看到的不一樣？** 「This is not the QR code of a Prepare a device card.」（這不是 Prepare a device 卡片的 QR 碼。）：你掃描的是個人卡片。請掃描 Prepare a device 卡片。如果掃描失敗，在 **或貼上設定連結** 處輸入 New device 網址（例如 `http://192.168.1.50/setup`），然後點一下 **下一步**。
-3. **操作：** 把位址和網站網址比較，把那串長金鑰和 Prepare this device（準備此裝置）網頁比較：在那裡展開 **Full fingerprints**（完整指紋），查看「Root public key SHA-256 (SPKI)」（根公開金鑰 SHA-256 (SPKI)）。你可以在另一台裝置上開啟那個網頁，也可以在 MK8DX 電腦本機上透過 New device 網址開啟。→ **你會看到：** 兩者完全相同。點一下 **連線**（如果 App 之前設定的是另一台伺服器，請確認變更）。→ **看到的不一樣？** 如果不同，點一下 **返回**，不要連線。「Could not get a matching certificate from」（無法從以下位址取得相符的憑證）：檢查網路並確認 MK8DX 電腦已開機，然後再試一次。
+2. **操作：** 如有需要，點一下 **使用相機** 並允許使用相機。掃描 **準備裝置**卡片上的 QR 碼。→ **你會看到：** **確認這是你的安裝**，其中有 **位址** 和 **金鑰指紋 (SHA-256)**。→ **看到的不一樣？** 「這不是「準備裝置」卡片的 QR 碼。」：你掃描的是個人卡片。請掃描「準備裝置」卡片。如果掃描失敗，在 **或貼上設定連結** 處輸入 New device 網址（例如 `http://192.168.1.50/setup`），然後點一下 **下一步**。
+3. **操作：** 把位址和網站網址比較，把那串長金鑰和「準備這台裝置」網頁比較：在那裡展開 **完整指紋**，查看「根公開金鑰 SHA-256 (SPKI)」。你可以在另一台裝置上開啟那個網頁，也可以在 MK8DX 電腦本機上透過 New device 網址開啟。→ **你會看到：** 兩者完全相同。點一下 **連線**（如果 App 之前設定的是另一台伺服器，請確認變更）。→ **看到的不一樣？** 如果不同，點一下 **返回**，不要連線。「Could not get a matching certificate from」（無法從以下位址取得相符的憑證）：檢查網路並確認 MK8DX 電腦已開機，然後再試一次。
 4. **操作：** 在 **設定** 中的 **此手機上的玩家** 處，點一下 **登入**。App 會提醒你：在家或在俱樂部時，你用個人登入卡登入，而不是用電子郵件。點一下 **登入以同步**。→ **你會看到：** 瀏覽器開啟核准網頁。確認網站顯示的代碼和 App 中的相同，然後核准此裝置。回到 App。→ **看到的不一樣？** 如果瀏覽器要求你登入，請先用你的卡片登入（第 6 章）。
 5. **操作：** 在 App 中發布一筆成績。→ **你會看到：** 該成績出現在本安裝的網站上。
 
@@ -315,12 +315,12 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 **登出**
 
 - 在網站右上角的帳號選單中：**登出**（僅此裝置）或 **在所有裝置上登出**。
-- 要讓別人在所有地方登出，由管理員在 MK8DX beheer 中用 **Sign out everywhere**（在所有地方登出）完成（第 5 章）。
+- 要讓別人在所有地方登出，由管理員在 MK8DX beheer 中用 **在所有地方登出**完成（第 5 章）。
 
 **卡片遺失或手機遺失**
 
-- 遺失的卡片尚未被使用：如果它仍在 MK8DX beheer 的畫面上，點選 **Revoke card**（撤銷卡片）；否則它會在 15 分鐘後自動過期。
-- 手機遺失，或卡片可能已被使用：在 MK8DX beheer 中，選擇那個人旁邊的 **Sign out everywhere**（在所有地方登出）並再點選一次。然後給那個人一張 **New card**（新卡片）。
+- 遺失的卡片尚未被使用：如果它仍在 MK8DX beheer 的畫面上，點選 **撤銷卡片**；否則它會在 15 分鐘後自動過期。
+- 手機遺失，或卡片可能已被使用：在 MK8DX beheer 中，選擇那個人旁邊的 **在所有地方登出**並再點選一次。然後給那個人一張 **新卡片**。
 
 **淺色或深色：** 在新裝置上，網站會依照該裝置的 **系統** 設定。登入後，選擇 **帳號** → **設定** → **外觀** → **深色** 即可使用深色外觀；這個選擇會隨你的帳號保存。
 
@@ -354,12 +354,12 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 
 1. **操作：** 依照第 2 章準備新電腦。→ **你會看到：** Docker 在執行中，Python 可以使用。
 2. **操作：** 把隨身碟中的 `MK8DX-backups` 資料夾複製到「文件」資料夾（Windows）或 `~/Documents`（Linux 和 macOS）中。或者讓隨身碟保持插著。→ **你會看到：** 新電腦上或隨身碟上的 `MK8DX-backups` 資料夾。
-3. **操作：** 依照第 3 章解壓縮並啟動 MK8DX 套件。在歡迎畫面上點選 **Restore a backup**（還原備份）。→ **你會看到：** 「Quick check」（快速檢查），接著是 **Restore a backup**（還原備份），上面寫著「Choose the backup and enter the recovery code you wrote down during the first installation.」（選擇備份，並輸入你在首次安裝時記下的復原碼。）
-4. **操作：** 選擇備份（最新的在最上面，附有日期和時間）。→ **看到的不一樣？** 「There is no MK8DX backup in this folder.」（此資料夾中沒有 MK8DX 備份。）（這則訊息寫的是 Windows 資料夾，在 Linux 和 macOS 上也是如此）：在 **Another folder (for example a USB stick):**（其他資料夾（例如 USB 隨身碟）：）處輸入存放備份的資料夾，然後點選 **Search**（搜尋）。點選 **Advanced**（進階）時也會出現這個欄位。
-5. **操作：** 在 **Recovery code**（復原碼）處輸入紙上的復原碼。空格、小寫字母或省略連字號都沒有關係。點選 **Next**（下一步）。→ **你會看到：** 「Your network」（你的網路）。只有輸入完整的復原碼後，Next 按鈕才能使用。
-6. **操作：** 依照第 3 章核對位址，然後點選 **Restore**（還原）。→ **你會看到：** 「Opening and restoring the backup」（正在開啟並還原備份），接著是「MK8DX is running again, with everything from the backup.」（MK8DX 已重新執行，備份中的所有內容都已還原。）。在 Windows 上，Windows 會再要求一次權限：點選 **Yes**（是）。→ **看到的不一樣？** 「This recovery code does not open the backup. Check the code and try again.」（此復原碼無法開啟備份。請檢查代碼後再試一次。）：點選兩次 **Back**（返回）回到復原碼畫面，更正復原碼（或選擇另一份備份），然後再試一次。
-7. **操作：** 在 MK8DX beheer 中一直點選 **Next**，直到出現「Done! Enjoy the races.」（完成！盡情享受比賽吧。），然後點選 **Finish**（完成）。→ **你會看到：** 「New backups use the same recovery code as before.」（新的備份使用與先前相同的復原碼。）你紙上的復原碼仍然有效。
-8. **還原之後：** 所有人、所有成績、錦標賽和設定都回來了。手機和電腦仍然信任 MK8DX。如果新電腦的位址不同，每個人都要再掃描一次 **Prepare a device**（準備裝置）卡片並重新登入；App 也要重新配對（第 7 章）。
+3. **操作：** 依照第 3 章解壓縮並啟動 MK8DX 套件。在歡迎畫面上點選 **還原備份**。→ **你會看到：** 「快速檢查」，接著是 **還原備份**，上面寫著「選擇備份，並輸入你在首次安裝時抄下的復原碼。」
+4. **操作：** 選擇備份（最新的在最上面，附有日期和時間）。→ **看到的不一樣？** 「這個資料夾中沒有 MK8DX 備份。」（這則訊息寫的是 Windows 資料夾，在 Linux 和 macOS 上也是如此）：在 **其他資料夾（例如 USB 隨身碟）：** 處輸入存放備份的資料夾，然後點選 **搜尋**。點選 **進階**時也會出現這個欄位。
+5. **操作：** 在 **復原碼**處輸入紙上的復原碼。空格、小寫字母或省略連字號都沒有關係。點選 **下一步**。→ **你會看到：** 「你的網路」。只有輸入完整的復原碼後，「下一步」按鈕才能使用。
+6. **操作：** 依照第 3 章核對位址，然後點選 **恢復**。→ **你會看到：** 「正在開啟並還原備份」，接著是「MK8DX 已重新執行，備份中的所有內容都已還原。」。在 Windows 上，Windows 會再要求一次權限：點選 **Yes**（是）。→ **看到的不一樣？** 「這組復原碼無法開啟此備份。請檢查代碼後再試一次。」：點選兩次 **返回**回到復原碼畫面，更正復原碼（或選擇另一份備份），然後再試一次。
+7. **操作：** 在 MK8DX beheer 中一直點選 **下一步**，直到出現「完成！盡情享受比賽吧。」，然後點選 **完成**。→ **你會看到：** 「新備份會使用與先前相同的復原碼。」你紙上的復原碼仍然有效。
+8. **還原之後：** 所有人、所有成績、錦標賽和設定都回來了。手機和電腦仍然信任 MK8DX。如果新電腦的位址不同，每個人都要再掃描一次 **準備裝置**卡片並重新登入；App 也要重新配對（第 7 章）。
 
 **另一個網路位址**
 
@@ -382,13 +382,13 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 - 使用路由器中的保留功能，而不是在 Windows 或 Linux 的網路設定中自己輸入位址。路由器不知道你手動輸入的位址：它之後可能會把這個位址分配給某支手機或某台遊戲機。
 - 如果你無法進入路由器（例如在俱樂部），只能手動設定：請選擇路由器分配範圍（「DHCP 位址集區」）之外的位址（如果路由器分配的是 `192.168.1.100` 到 `192.168.1.199`，就選擇例如 `192.168.1.50`），並先檢查沒有人在使用它：`ping 192.168.1.50` 必須沒有回應。照抄路由器分配的子網路遮罩、閘道和 DNS。最好請管理那個網路的人協助。
 - 一個網路中只讓一台裝置分配位址。前後串接的兩台路由器（例如業者的數據機和你自己的 Wi-Fi 路由器）是兩個網路：請把 MK8DX 電腦和所有手機放在同一個網路中，或者把第二台路由器切換成 **存取點模式**（access point mode）。
-- 發生衝突後：給另一台裝置換一個位址（或給 MK8DX 電腦設定保留），然後開啟 MK8DX beheer。如果你看到 **This computer has a new network address**（這台電腦有了新的網路位址），請依照下面的步驟操作。
+- 發生衝突後：給另一台裝置換一個位址（或給 MK8DX 電腦設定保留），然後開啟 MK8DX beheer。如果你看到 **這台電腦有新的網路位址**，請依照下面的步驟操作。
 
 **搬移到新位址**
 
-1. **操作：** 如果電腦還是取得了另一個位址，請開啟 **MK8DX beheer**（第 5 章）。→ **你會看到：** **This computer has a new network address**（這台電腦有了新的網路位址），附有「MK8DX was on」（MK8DX 原本位於）舊位址，下方是新位址。
-2. **操作：** 點選 **Move**（搬移）。如有需要，可以用 **Advanced**（進階）選擇另一個位址。→ **你會看到：** 「Moving to the new address (Windows asks for permission)」（正在搬移到新位址（Windows 會要求權限））；在 Windows 視窗中點選 **Yes**（是）。接著顯示「MK8DX runs on the new address.」（MK8DX 已在新位址上執行。）
-3. **操作：** 點選 **Next**（下一步），然後像在 MK8DX beheer 中一樣繼續。讓手機和電腦再掃描一次 **Prepare a device**（準備裝置）卡片並重新登入；App 也要重新配對。它們仍然信任 MK8DX；Prepare a device 卡片上現在是新位址。
+1. **操作：** 如果電腦還是取得了另一個位址，請開啟 **MK8DX beheer**（第 5 章）。→ **你會看到：** **這台電腦有新的網路位址**，附有「MK8DX 原本在」舊位址，下方是新位址。
+2. **操作：** 點選 **移動**。如有需要，可以用 **進階**選擇另一個位址。→ **你會看到：** 「正在移至新位址（Windows 會要求權限）」；在 Windows 視窗中點選 **Yes**（是）。接著顯示「MK8DX 已在新位址上執行。」
+3. **操作：** 點選 **下一步**，然後像在 MK8DX beheer 中一樣繼續。讓手機和電腦再掃描一次 **準備裝置**卡片並重新登入；App 也要重新配對。它們仍然信任 MK8DX；「準備裝置」卡片上現在是新位址。
 
 **電腦重新啟動之後**
 
@@ -406,9 +406,9 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 **更新**
 
 1. **操作：** 下載新的 MK8DX 套件，並像第 3 章那樣把它解壓縮到一個 **新** 資料夾中（包括解除封鎖）。暫時保留舊資料夾。→ **你會看到：** 第二個含有 `Start-MK8DX-LAN.cmd` 的資料夾。
-2. **操作：** 按兩下 **新** 資料夾中的 `Start-MK8DX-LAN.cmd`。→ **你會看到：** 先是程式載入並顯示一個走動的計時，接著瀏覽器中出現 **A newer version of MK8DX**（較新版本的 MK8DX），並顯示舊版本和新版本。→ **看到的不一樣？** 如果直接開啟了 MK8DX beheer，表示這個版本已經在執行。如果提示套件比目前的安裝還舊，請使用最新的套件。
-3. **操作：** 點選 **Update**（更新）。→ **你會看到：** 「Making and checking a backup」（正在建立並檢查備份），接著是「Installing and starting the new version」（正在安裝並啟動新版本），每一步都顯示一個走動的計時；幾分鐘後顯示 **MK8DX is updated**（MK8DX 已更新），以及舊版本和新版本。所有人員、成績、錦標賽和登入都會保留；手機不需要再做任何操作。自動備份、憑證更新和 **MK8DX beheer** 捷徑都已經移到新資料夾。剛剛建立的備份位於 Documents\MK8DX-backups 中，名稱裡帶有 `before-update`。如果你是從 0.2.3 之前的版本更新，這次更新還會把資料庫從 MySQL 8.4 遷移到 9.7 LTS；第一次更新會稍微久一點，而在它之前建立的備份就是你的退路。黑色的啟動視窗會顯示 `OK  MK8DX update completed`。→ **看到的不一樣？** 如果啟動視窗顯示 `MK8DX update FAILED` 和原因，或是瀏覽器顯示錯誤：閱讀原因，解決問題（例如啟動 Docker Desktop），然後從新資料夾重新啟動。
-4. **操作：** 點選 **Close**（關閉）。如果你之後還想設定別的東西，請先點選 **Go to MK8DX beheer**（前往 MK8DX beheer）。→ **你會看到：** 瀏覽器視窗關閉；在啟動視窗中按任意鍵將它關閉。
+2. **操作：** 按兩下 **新** 資料夾中的 `Start-MK8DX-LAN.cmd`。→ **你會看到：** 先是程式載入並顯示一個走動的計時，接著瀏覽器中出現 **MK8DX 的新版本**，並顯示舊版本和新版本。→ **看到的不一樣？** 如果直接開啟了 MK8DX beheer，表示這個版本已經在執行。如果提示套件比目前的安裝還舊，請使用最新的套件。
+3. **操作：** 點選 **更新**。→ **你會看到：** 「正在建立並檢查備份」，接著是「正在安裝並啟動新版本」，每一步都顯示一個走動的計時；幾分鐘後顯示 **MK8DX 已更新**，以及舊版本和新版本。所有人員、成績、錦標賽和登入都會保留；手機不需要再做任何操作。自動備份、憑證更新和 **MK8DX beheer** 捷徑都已經移到新資料夾。剛剛建立的備份位於 Documents\MK8DX-backups 中，名稱裡帶有 `before-update`。如果你是從 0.2.3 之前的版本更新，這次更新還會把資料庫從 MySQL 8.4 遷移到 9.7 LTS；第一次更新會稍微久一點，而在它之前建立的備份就是你的退路。黑色的啟動視窗會顯示 `OK  MK8DX update completed`。→ **看到的不一樣？** 如果啟動視窗顯示 `MK8DX update FAILED` 和原因，或是瀏覽器顯示錯誤：閱讀原因，解決問題（例如啟動 Docker Desktop），然後從新資料夾重新啟動。
+4. **操作：** 點選 **關閉**。如果你之後還想設定別的東西，請先點選 **前往 MK8DX beheer**。→ **你會看到：** 瀏覽器視窗關閉；在啟動視窗中按任意鍵將它關閉。
 5. **操作：** 接著刪除舊資料夾。→ **你會看到：** MK8DX 繼續正常運作。
 
 其他安裝方式（單台電腦、你自己的伺服器、虛擬主機）請見 `docs/install/MK8DX_User_Guide_EN.txt`。
@@ -419,17 +419,17 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 
 ## 11. 疑難排解
 
-- **手機打不開網站。** 手機是否在同一個 Wi-Fi 網路中（沒有使用行動數據，也不在訪客網路中）？MK8DX 電腦是否已開機、保持喚醒並已登入，Docker 是否在執行中？網址是否與第 3 章中的 **Website**（網站）一致？Linux：你是否執行了第 3 章中的防火牆指令？電腦是否有了新位址：請見下文。
-- **瀏覽器對憑證發出警告。** 不要把警告按掉。在那台裝置上完成 Prepare a device（準備裝置）（第 6 章）並核對指紋。
-- **卡片不能用了。** 一張卡只能使用一次，有效期 15 分鐘，在 **Revoke card**（撤銷卡片）、**New card**（新卡片）或 **Sign out everywhere**（在所有地方登出）之後也會失效。請在 MK8DX beheer 中製作一張新卡。
-- **「This recovery code does not open the backup.」**（此復原碼無法開啟備份。）逐一核對復原碼的每個字母；大寫、小寫、空格和連字號都沒有關係。復原碼中絕不會出現字母 I 和 O，也不會出現數字 0 和 1。也要選擇正確的備份：另一個安裝的備份無法用你的復原碼開啟。
+- **手機打不開網站。** 手機是否在同一個 Wi-Fi 網路中（沒有使用行動數據，也不在訪客網路中）？MK8DX 電腦是否已開機、保持喚醒並已登入，Docker 是否在執行中？網址是否與第 3 章中的 **網站**一致？Linux：你是否執行了第 3 章中的防火牆指令？電腦是否有了新位址：請見下文。
+- **瀏覽器對憑證發出警告。** 不要把警告按掉。在那台裝置上完成「準備裝置」（第 6 章）並核對指紋。
+- **卡片不能用了。** 一張卡只能使用一次，有效期 15 分鐘，在 **撤銷卡片**、**新卡片**或 **在所有地方登出**之後也會失效。請在 MK8DX beheer 中製作一張新卡。
+- **「這組復原碼無法開啟此備份。」** 逐一核對復原碼的每個字母；大寫、小寫、空格和連字號都沒有關係。復原碼中絕不會出現字母 I 和 O，也不會出現數字 0 和 1。也要選擇正確的備份：另一個安裝的備份無法用你的復原碼開啟。
 - **「MK8DX is already installed on this computer; restore needs a computer without it」.**（這台電腦上已經安裝了 MK8DX；還原需要一台沒有安裝它的電腦。）還原只能在沒有 MK8DX 的電腦上進行。請找懂資訊的人協助（第 12 章）。
-- **Docker 沒有執行。** Windows 和 macOS：啟動 Docker Desktop，等到顯示 **Engine running**（引擎執行中），然後點選 **Try again**（再試一次），或重新啟動 MK8DX。Linux：`sudo systemctl start docker`。
-- **電腦有了新位址。** 開啟 MK8DX beheer 並選擇 **Move**（搬移）（第 10 章）。
+- **Docker 沒有執行。** Windows 和 macOS：啟動 Docker Desktop，等到顯示 **Engine running**（引擎執行中），然後點選 **再試一次**，或重新啟動 MK8DX。Linux：`sudo systemctl start docker`。
+- **電腦有了新位址。** 開啟 MK8DX beheer 並選擇 **移動**（第 10 章）。
 - **Windows：「The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443」.**（此網路為 'DomainAuthenticated'（網域網路）；請它的管理員允許 TCP 80/443。）這台電腦位於公司網路中，MK8DX 不能自行變更它。請該網路的管理員允許 TCP 連接埠 80 和 443 上的連入連線。
-- **Windows：「Windows did not allow the change (the permission prompt was declined or failed)」.**（Windows 不允許此變更（權限提示遭到拒絕或失敗）。）點選 **Try again**（再試一次），然後在 Windows 視窗中點選 **Yes**（是）。
-- **Linux：手機連不進來，而且防火牆已啟用。** 在安裝過程中點選 **Details**（詳細資料），執行「manual:」後面的指令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。使用 firewalld 時的指令是 `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`。
-- **Android App 顯示「This is not the QR code of a Prepare a device card.」**（這不是 Prepare a device 卡片的 QR 碼。）請掃描 **Prepare a device**（準備裝置）卡片，而不是個人卡片。
+- **Windows：「Windows did not allow the change (the permission prompt was declined or failed)」.**（Windows 不允許此變更（權限提示遭到拒絕或失敗）。）點選 **再試一次**，然後在 Windows 視窗中點選 **Yes**（是）。
+- **Linux：手機連不進來，而且防火牆已啟用。** 在安裝過程中點選 **詳細資料**，執行「manual:」後面的指令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。使用 firewalld 時的指令是 `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`。
+- **Android App 顯示「這不是「準備裝置」卡片的 QR 碼。」**請掃描 **準備裝置**卡片，而不是個人卡片。
 
 ## 12. 給資訊人員（選讀）
 
@@ -449,7 +449,7 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 - `tooling/install.py check --state-dir <folder>`：在 status 的基礎上，再檢查 Docker Compose 設定和容器。
 - `tooling/auto_backup.py run --state-dir <folder>`：像夜間工作一樣，用儲存的復原碼立即建立一份加密備份（加上 `--backup-root <folder>` 可存到另一個資料夾）。注意：`install.py backup` 用於其他安裝方式，不會建立 A2 備份。
 - `tooling/install.py maintain-ca --qa-offline-candidate --state-dir <folder>`：到期時更新憑證，否則什麼都不做；`--force-ca-rotation` 會立即更新。
-- `tooling/install.py change-lan-address --lan-bind-address 192.168.1.51 --qa-offline-candidate --state-dir <folder>`：搬移到新位址，和 **Move**（搬移）相同。
+- `tooling/install.py change-lan-address --lan-bind-address 192.168.1.51 --qa-offline-candidate --state-dir <folder>`：搬移到新位址，和 **移動**相同。
 - `tooling/install.py stop --state-dir <folder>` 和 `tooling/install.py start --qa-offline-candidate --state-dir <folder>`：停止和啟動。
 - `tooling/install.py upgrade --backup-output <new folder> --qa-offline-candidate --state-dir <folder>`：先建立並驗證備份，接著套用資料庫更新，並使用本安裝建立時所用的映像檔重新啟動容器。切換到較新套件中的映像檔目前還不包括在內，而且這種方式尚未針對 A2 測試。
 - `tooling/setup_wizard.py --state-dir <folder>`：安裝網頁本身；`--no-browser` 不開啟瀏覽器。

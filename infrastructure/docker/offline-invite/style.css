@@ -12,3 +12,5 @@ a[hidden] { display: none; }
 .who { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
 .who strong { display: block; font-size: 1.6rem; overflow-wrap: anywhere; }
 .not-you { font-size: 0.9rem; opacity: 0.8; }
+.language { display: block; margin: 0 0 0 auto; max-width: 60%; padding: .35rem .5rem; border-radius: .4rem;
+  font: inherit; font-size: .9rem; color: #f5f7ff; background: #11183a; border: 1px solid #323c6b; }

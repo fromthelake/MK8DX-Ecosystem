@@ -116,7 +116,7 @@ Meldingen in de terminal op Linux en macOS:
 
 **De installatie in de browser**
 
-De installatie is een pagina in je browser die alleen op de MK8DX-computer zelf werkt. Ze is in het Nederlands als je browser Nederlands gebruikt, en anders in het Engels. Rechtsboven staat **Handleiding**: die opent deze handleiding. Onderaan staan **Vorige**, soms **Geavanceerd**, en **Volgende**. De bolletjes bovenaan laten zien hoe ver je bent.
+De installatie is een pagina in je browser die alleen op de MK8DX-computer zelf werkt. Ze is in de taal van je browser (een van de 15 talen van het spel; anders Engels). Rechtsboven staan het taalmenu, om een andere taal te kiezen, en **Handleiding**: die opent deze handleiding. Onderaan staan **Vorige**, soms **Geavanceerd**, en **Volgende**. De bolletjes bovenaan laten zien hoe ver je bent.
 
 1. **Welkom bij MK8DX.** **Doe:** lees het scherm en klik op **Volgende**. → **Je ziet:** "Even controleren". De knop **Een back-up terugzetten** op dit scherm is alleen voor een nieuwe computer (hoofdstuk 10).
 2. **Even controleren.** **Doe:** wacht even. → **Je ziet:** drie groene vinkjes bij **Docker Desktop draait**, **Genoeg vrije schijfruimte** (met het aantal GB) en **Windows, Linux of macOS**. Klik op **Volgende**. → **Zie je iets anders?** Een uitroepteken met uitleg, bijvoorbeeld "Start Docker Desktop, wacht tot 'Engine running' en klik op Opnieuw proberen." of "Maak minstens 6 GB vrij op deze schijf." Los het op en klik op **Opnieuw proberen**. Op Linux heet de eerste controle ook "Docker Desktop draait"; daar gaat het om Docker Engine.

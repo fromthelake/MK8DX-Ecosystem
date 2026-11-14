@@ -7,6 +7,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **A2 setup and join pages in all 15 languages of the game** (machine translations except EN/NL): the setup
+  wizard and MK8DX beheer, the host's "Prepare this device" page (`/setup`) and the invitation page a phone opens
+  from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:
+  es-MX → es-419, zh-Hant/TW/HK → zh-TW, then the base language, else English) and have a language menu; the
+  invitation page also follows the language chosen on the website. The A2 guides now quote the labels as the
+  wizard shows them in that language. The launcher window stays English. An existing installation shows the new
+  `/setup` page once its certificate files are made again (a new installation or address).
 - **User guides in all 15 languages of the game** (machine translations except EN/NL, marked as such;
   corrections welcome via the Translation correction form): the A2 guide, the user guide (TXT and DOCX) and the
   players guide in `docs/install/translations/<locale>/` and `docs/guides/translations/<locale>/`, the

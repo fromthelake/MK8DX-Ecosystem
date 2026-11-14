@@ -116,7 +116,7 @@ Messages in the terminal on Linux and macOS:
 
 **The setup in the browser**
 
-The setup is a page in your browser that only works on the MK8DX computer itself. It is in Dutch if your browser uses Dutch, and otherwise in English. At the top right is **Manual**: it opens this manual. At the bottom are **Back**, sometimes **Advanced**, and **Next**. The dots at the top show how far you are.
+The setup is a page in your browser that only works on the MK8DX computer itself. It is in your browser's language (one of the 15 languages of the game; otherwise English). At the top right are the language menu, to choose another language, and **Manual**: it opens this manual. At the bottom are **Back**, sometimes **Advanced**, and **Next**. The dots at the top show how far you are.
 
 1. **Welcome to MK8DX.** **Do:** read the screen and click **Next**. → **You see:** "Quick check". The **Restore a backup** button on this screen is only for a new computer (chapter 10).
 2. **Quick check.** **Do:** wait a moment. → **You see:** three green ticks at **Docker Desktop is running**, **Enough free disk space** (with the number of GB) and **Windows, Linux or macOS**. Click **Next**. → **See something else?** An exclamation mark with an explanation, for example "Start Docker Desktop, wait for 'Engine running' and click Try again." or "Free at least 6 GB on this drive." Fix it and click **Try again**. On Linux the first check is also called "Docker Desktop is running"; there it is about Docker Engine.

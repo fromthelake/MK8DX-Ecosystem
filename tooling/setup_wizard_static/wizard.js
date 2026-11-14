@@ -1,11 +1,16 @@
 "use strict";
 // MK8DX setup wizard (A2 offline). Text via textContent only; no inline script or style (CSP).
 const TOKEN = document.querySelector('meta[name="mk8dx-wizard"]').content;
-const LANG = (navigator.language || "en").toLowerCase().startsWith("nl") ? "nl" : "en";
-document.documentElement.lang = LANG;
+// Language: a saved choice (?lang= or the selector), else the browser's languages (language.js), else English.
+// English and Dutch are written here; the other 13 come from i18n/<language>.json, English text -> translation
+// (tooling/i18n/build_web_catalogs.mjs). A text missing from a catalog stays English.
+const QUERY_LANG = MK8DXLanguage.LANGUAGES.map(([code]) => code)
+  .find((code) => code.toLowerCase() === (new URLSearchParams(window.location.search).get("lang") || "").toLowerCase());
+let LANG = MK8DXLanguage.choose(QUERY_LANG || MK8DXLanguage.saved(), MK8DXLanguage.browser());
 
-const T = {
+const SOURCE = {
   nl: {
+    pageTitle: "MK8DX installeren", brandAdmin: "beheer", language: "Taal", stepsLabel: "Stappen",
     brandSub: "installatie", help: "Handleiding", next: "Volgende", back: "Vorige", advanced: "Geavanceerd",
     install: "Installeren", finish: "Voltooien", retry: "Opnieuw proberen", close: "Sluiten",
     welcomeTitle: "Welkom bij MK8DX",
@@ -100,6 +105,7 @@ const T = {
     moveAfter: "Telefoons en pc's blijven MK8DX vertrouwen. Laat ze één keer de kaart 'Apparaat voorbereiden' scannen en opnieuw inloggen; gekoppelde apps koppel je opnieuw.",
   },
   en: {
+    pageTitle: "Install MK8DX", brandAdmin: "administration", language: "Language", stepsLabel: "Steps",
     brandSub: "setup", help: "Manual", next: "Next", back: "Back", advanced: "Advanced",
     install: "Install", finish: "Finish", retry: "Try again", close: "Close",
     welcomeTitle: "Welcome to MK8DX",
@@ -193,7 +199,8 @@ const T = {
     moveDone: "MK8DX runs on the new address.",
     moveAfter: "Phones and PCs keep trusting MK8DX. Let them scan the 'Prepare a device' card once and sign in again; pair apps again.",
   },
-}[LANG];
+};
+let T = SOURCE.en;
 
 const $ = (id) => document.getElementById(id);
 function el(tag, cls, text) { const n = document.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; }
@@ -210,9 +217,46 @@ async function api(path, body) {
   if (!response.ok) throw new Error(data.error || response.statusText);
   return data;
 }
-document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = T[n.dataset.t]; });
-// The guide exists in all 15 languages of the game; the server picks the browser's language.
-$("help").href = "/help";
+// The texts of one language: Dutch and English from SOURCE, the others from their catalog over English.
+async function texts(code) {
+  if (code === "nl") return SOURCE.nl;
+  if (code === "en" || code === "en-US") return SOURCE.en;
+  let messages = {};
+  try {
+    const response = await fetch(`/i18n/${code}.json`, { cache: "no-store" });
+    if (response.ok) messages = (await response.json()).messages || {};
+  } catch { /* English stays */ }
+  const out = {};
+  for (const [key, english] of Object.entries(SOURCE.en)) {
+    out[key] = typeof messages[english] === "string" && messages[english] ? messages[english] : english;
+  }
+  return out;
+}
+// Text outside the current step: header, buttons' labels, the page title and language.
+function applyStatic() {
+  document.documentElement.lang = LANG;
+  document.querySelectorAll("[data-t]").forEach((n) => { n.textContent = T[n.dataset.t]; });
+  if (state.admin) document.querySelector(".brand-sub").textContent = T.brandAdmin;
+  document.title = state.manage ? T.manageTitle : T.pageTitle;
+  $("steps").setAttribute("aria-label", T.stepsLabel);
+  $("lang").setAttribute("aria-label", T.language); $("lang").title = T.language;
+  // The guide exists in all 15 languages of the game; the server matches this language.
+  $("help").href = `/help?lang=${encodeURIComponent(LANG)}`;
+}
+function languageSelector() {
+  const select = $("lang");
+  for (const [code, label] of MK8DXLanguage.LANGUAGES) {
+    const option = el("option", "", label); option.value = code; option.lang = code; select.append(option);
+  }
+  select.value = LANG;
+  select.addEventListener("change", async () => {
+    LANG = MK8DXLanguage.choose(select.value, []); MK8DXLanguage.save(LANG);
+    T = await texts(LANG); applyStatic();
+    // A running or once-only step keeps its content; the next step opens in the new language.
+    if (!["install", "done", "updated"].includes(state.step)) render();
+  });
+}
+function adminHeader() { state.admin = true; document.querySelector(".brand-sub").textContent = T.brandAdmin; }
 
 const FLOW = ["welcome", "check", "kind", "network", "install", "admin", "people", "cards", "done"];
 // A new computer: the backup already holds the administrator and the people.
@@ -628,24 +672,27 @@ async function manageFlow() {
   try {
     state.people = await api("/api/people");
     state.manage = true; state.flow = ["people", "cards", "done"]; state.step = "people";
-    document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
+    adminHeader();
     document.title = T.manageTitle;
   } catch { state.flow = ["admin", "people", "cards", "done"]; state.step = "admin"; }
 }
 
 (async () => {
+  if (QUERY_LANG) MK8DXLanguage.save(QUERY_LANG);
+  T = await texts(LANG);
+  languageSelector(); applyStatic();
   try {
     const status = await api("/api/status");
     if (status.installed && status.addressActive === false) {
       // The computer's address changed: move first, then the usual administration.
       state.moving = true; state.boundAddress = status.boundAddress;
       state.flow = ["move", "install", "people", "cards", "done"]; state.step = "move";
-      document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
+      adminHeader();
     } else if (status.installed && status.update && status.update.available) {
       // A newer package opened on this installation: offer the update first ("Not now" goes to administration).
       // An update is its own short route: offer, progress, done. The tasks are moved by the update itself.
       state.update = status.update; state.flow = ["update", "install", "updated"]; state.step = "update";
-      document.querySelector(".brand-sub").textContent = LANG === "nl" ? "beheer" : "administration";
+      adminHeader();
     } else if (status.installed) {
       await manageFlow();
     }
