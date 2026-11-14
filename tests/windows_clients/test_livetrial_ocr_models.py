@@ -28,5 +28,8 @@ def test_an_incomplete_bundle_is_not_used(tmp_path):
 
 def test_the_collection_ships_every_model_livetrial_checks_for():
     manifest = json.loads((ROOT / "packages/assets/collection/collection-manifest.v1.json").read_text(encoding="utf-8"))
-    shipped = {name.removeprefix("ocr-models/model/") for name in manifest["files"] if name.startswith("ocr-models/")}
-    assert set(requirements.BUNDLED_OCR_MODELS) == shipped
+    shipped = {name.removeprefix("ocr-models/") for name in manifest["files"] if name.startswith("ocr-models/")}
+    pins = json.loads((ROOT / "packages/assets/downloaded-models-v1.json").read_text(encoding="utf-8"))
+    shipped |= set(pins["groups"]["ocr-models"]["files"])  # fetched and staged by tooling/livetrial/prepare_engine.py
+    assert {f"model/{name}" for name in requirements.BUNDLED_OCR_MODELS} == shipped
+    assert '"stage", "--group", "ocr-models"' in (ROOT / "tooling/livetrial/prepare_engine.py").read_text(encoding="utf-8")

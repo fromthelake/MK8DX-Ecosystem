@@ -25,6 +25,5 @@ CLAUDE.local.md
 # A collection object over GitHub's 100 MiB file limit is tracked as numbered parts; the joined file
 # is a local copy that tooling/assets/shared_asset_source.py rebuilds.
 packages/assets/collection/objects/1a/1ab4350c9a0cc7fa1a04631d14c2e05a5d84e8ebef719d8a2eb03906e9246b20
-packages/assets/collection/objects/19/19ecc60f4e079eb2cd7f25f3513fc996cf80819fc1f1d0aee24c58402cc4776d
 packages/assets/collection/objects/**/*.joining
 *.egg-info/

@@ -6,10 +6,12 @@ import json
 import os
 import stat
 import subprocess
+import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 MATERIALIZER = REPO / "tooling/assets/materialize_collection.mjs"
+MODEL_DOWNLOADER = REPO / "tooling/assets/downloaded_models.py"  # build-time models, verified and cached
 
 
 def main() -> None:
@@ -36,6 +38,8 @@ def main() -> None:
                                    ("tournament-text", output)):
         subprocess.run(["node", str(MATERIALIZER), selection, str(destination)],
                        cwd=REPO, check=True, env=os.environ.copy())
+    subprocess.run([sys.executable, str(MODEL_DOWNLOADER), "stage", "--group", "ocr-models",
+                    "--output", str(output / "ocr-models")], cwd=REPO, check=True, env=os.environ.copy())
     receipt = {"role": args.role, "collectionGroup": group,
                "environment": {
                    "MK8DX_TOURNAMENT_RUNTIME_ROOT": str(output),

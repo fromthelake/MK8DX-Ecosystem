@@ -7,11 +7,13 @@ import os
 import shutil
 import stat
 import subprocess
+import sys
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
 SOURCE = REPO / "apps/timetrials-desktop/vision-runtime/livetrial"
 MATERIALIZER = REPO / "tooling/assets/materialize_collection.mjs"
+MODEL_DOWNLOADER = REPO / "tooling/assets/downloaded_models.py"  # build-time models, verified and cached
 
 
 def no_reparse(path: Path, root: Path) -> None:
@@ -47,6 +49,8 @@ def main() -> None:
                         ("ocr-models", output / "ocr-models")):
         subprocess.run(["node", str(MATERIALIZER), group, str(dest)],
                        cwd=REPO, check=True, env=os.environ.copy())
+    subprocess.run([sys.executable, str(MODEL_DOWNLOADER), "stage", "--group", "ocr-models",
+                    "--output", str(output / "ocr-models")], cwd=REPO, check=True, env=os.environ.copy())
     # The shared field reader the engine imports (packages/icon-matcher) and, from the central recognition pack,
     # the card anchors, the Time Trial frame geometry and the pack record (central_versions.py reads it).
     shutil.copytree(REPO / "packages/icon-matcher/python/mk8dx_icon_matcher", output / "livetrial/mk8dx_icon_matcher",

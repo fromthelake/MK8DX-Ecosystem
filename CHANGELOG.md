@@ -38,15 +38,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
   new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
   0.2.3 package 2 would skip the backup.
-- **Tournament Tools and LiveTrial ship every EasyOCR model, so OCR works offline from the start.** The `ocr-models`
-  collection group held only the detection and Latin-script models, so the English-only reader (`english_g2.pth`)
-  and, on a Russian, Japanese, Korean or Chinese console, the track and console-language readers downloaded their
-  model on the first run (and failed offline). The group now also holds `english_g2.pth`, `cyrillic_g2.pth`,
-  `japanese_g2.pth`, `korean_g2.pth`, `zh_sim_g2.pth` and `chinese.pth` (traditional Chinese), from EasyOCR's own
-  releases, MD5-checked against easyocr 1.7.2 and Apache-2.0 (collection
-  `master-schema9-v5.10-pack-0.4.2-2026-11-14-r1`, about 297 MiB more; `chinese.pth` is 216 MiB and stored in three
-  parts). `tooling/assets/update_collection.py` gained `admissions` for exactly this: a new public upstream file in
-  an existing group with its SHA-256, size, upstream MD5, source URL and license pinned and kept in the manifest.
+- **Tournament Tools and LiveTrial ship every EasyOCR model, so OCR works offline from the start.** The packages
+  had only the detection and Latin-script models (`ocr-models` collection group). The English-only reader
+  (`english_g2.pth`) therefore downloaded its model on the first run and failed offline. So did the track and
+  console-language readers on a Russian, Japanese, Korean or Chinese console. The builds now also stage
+  `english_g2.pth`, `cyrillic_g2.pth`, `japanese_g2.pth`, `korean_g2.pth`, `zh_sim_g2.pth` and `chinese.pth`
+  (traditional Chinese): about 297 MiB, Apache-2.0. They are not stored in Git. `packages/assets/downloaded-models-v1.json`
+  pins each file's size, SHA-256, upstream MD5 (easyocr 1.7.2 `config.py`) and license, plus the official EasyOCR
+  release archive and its hash. `tooling/assets/downloaded_models.py` downloads each archive once into a cache
+  (`MK8DX_MODEL_CACHE`; CI caches it, keyed on the pins), verifies it and fails closed. `admit` records a new model.
   The Tournament Directors guide (EN/NL and translations), the client install pages, the Tournament Tools reference,
   all 15 user guides and the package README now say all OCR models are included and processing works offline after
   the install.

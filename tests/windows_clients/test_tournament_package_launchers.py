@@ -92,9 +92,14 @@ def test_package_stages_every_ocr_model_a_reader_can_request():
 
     builder_source = BUILDER.read_text(encoding="utf-8")
     assert '("ocr-models", "ocr-models")' in builder_source
+    assert '"stage", "--group", "ocr-models"' in builder_source
+    # The package stages the collection's ocr-models group plus the build-time downloaded models.
     manifest = json.loads((ROOT / "packages/assets/collection/collection-manifest.v1.json").read_text(encoding="utf-8"))
-    staged = {name.removeprefix("ocr-models/model/") for name in manifest["files"] if name.startswith("ocr-models/")}
-    assert len(staged) == manifest["sources"]["ocr-models"]["fileCount"]
+    collected = {name.removeprefix("ocr-models/model/") for name in manifest["files"] if name.startswith("ocr-models/")}
+    pins = json.loads((ROOT / "packages/assets/downloaded-models-v1.json").read_text(encoding="utf-8"))
+    downloaded = {name.removeprefix("model/") for name in pins["groups"]["ocr-models"]["files"]}
+    assert not collected & downloaded
+    staged = collected | downloaded
     # The row/score reader, the default track reader, every game locale's track reader and
     # LiveTrial's console-language readers (consolelang.OCR_READERS, read without importing the engine).
     import ast

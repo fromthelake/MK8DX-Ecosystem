@@ -218,7 +218,14 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
+      - name: Cache the build-time OCR model archives (keyed on their pins)
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/mk8dx-model-cache/archives
+          key: mk8dx-model-archives-${{ hashFiles('packages/assets/downloaded-models-v1.json') }}
       - name: Tournament tools package (wheels, both recognition variants, locale templates)
+        env:
+          MK8DX_MODEL_CACHE: ${{ runner.temp }}/mk8dx-model-cache
         shell: pwsh
         run: |
           python -m pip install --disable-pip-version-check build wheel

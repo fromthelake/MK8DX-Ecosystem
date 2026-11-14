@@ -6,7 +6,7 @@
 
 `collection/collection-manifest.v1.json` is the release inventory for physical
 runtime objects. Its current release version is
-`master-schema9-v5.10-pack-0.4.2-2026-11-14-r1` (the same value as `assetCollectionVersion` in
+`master-schema9-v5.10-pack-0.4.2-2026-11-05-r1` (the same value as `assetCollectionVersion` in
 `compatibility.json`): group `schema9` is Clean Assets v5.10 (catalog `2375050f…`) and group `recognition-pack`
 is the central recognition pack (field semantics 0.4.2, `recognition-pack/manifest.json`) that the scanner,
 Android, LiveTrial and Tournament builds take with `--recognition-pack` (materialize it with
@@ -20,6 +20,11 @@ creates the selected Web, Android, LiveTrial and Tournament build views from it.
 The object store is the single authoritative copy; generated views are ignored
 build outputs. The schema-9 catalogue, database migrations and reference seeds
 retain their distinct domain ownership.
+
+The six EasyOCR recognition models beyond `craft_mlt_25k.pth` and `latin_g2.pth` are not in the collection.
+`downloaded-models-v1.json` pins them (size, SHA-256, upstream MD5, license, official archive URL and archive hash).
+The LiveTrial and Tournament builds download, verify and stage them into `ocr-models/model/` with
+`tooling/assets/downloaded_models.py`; see [Client builds](../../docs/CLIENT_BUILDS.md#build-time-ocr-models).
 
 No Git LFS is used. The one object above GitHub's 100 MiB file limit (the
 121,579,098-byte scanner ONNX model) is stored as `<sha>.part1` and `<sha>.part2`;

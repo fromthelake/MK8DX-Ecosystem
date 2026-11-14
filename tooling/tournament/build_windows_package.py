@@ -14,8 +14,9 @@ Usage (PowerShell, from the repository root):
 
 The output folder must not exist yet. A sibling ``<output>.zip`` is written
 unless ``--no-zip`` is given. Building needs network access once (pip fetches
-the setuptools build backend for the wheels); the build itself never downloads
-the runtime closure.
+the setuptools build backend for the wheels, and the pinned EasyOCR models are
+fetched into the model cache, see docs/CLIENT_BUILDS.md); the build itself never
+downloads the runtime closure.
 
 The package includes reviewed live and recorded asset variants from the
 repository's internal collection, including the EasyOCR recognition models
@@ -54,6 +55,9 @@ PROJECTS = (
 )
 TORCH_SELECTOR = PROJECTS[1] / "src" / "mk8dx_tournament_extraction" / "setup_torch.py"
 COLLECTION_MATERIALIZER = REPOSITORY_ROOT / "tooling/assets/materialize_collection.mjs"
+# Public upstream models kept out of Git: fetched at build time into a cache, verified against
+# packages/assets/downloaded-models-v1.json and staged beside the collection's own models.
+MODEL_DOWNLOADER = REPOSITORY_ROOT / "tooling/assets/downloaded_models.py"
 
 # python.org embeddable runtime used when the machine has no 64-bit Python 3.12.
 # The MD5 shown on https://www.python.org/downloads/release/python-31210/ for
@@ -1144,6 +1148,8 @@ def main() -> int:
                                 ("tournament-text", "live"), ("tournament-text", "recorded")):
             subprocess.run(["node", str(COLLECTION_MATERIALIZER), group,
                             str(assets / relative)], cwd=REPOSITORY_ROOT, check=True)
+        subprocess.run([sys.executable, str(MODEL_DOWNLOADER), "stage", "--group", "ocr-models",
+                        "--output", str(assets / "ocr-models")], cwd=REPOSITORY_ROOT, check=True)
         # The Live replay/recognition code reads this catalog at the reference
         # root, while the reviewed collection keeps it in its original
         # baseline_extractor layout. Ship that same reviewed file at both
