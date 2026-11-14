@@ -64,6 +64,7 @@ from .ocr_name_matching import (
 from .ocr_common import find_metadata_entry, load_consensus_frame_entries, load_exported_frame_metadata
 from .extract_common import write_export_image
 from .low_res_identity import apply_low_res_identity_pipeline, is_low_res_height
+from . import player_name_scripts
 from .name_unicode import (
     allowed_name_char_ratio,
     distinct_visible_name_count,
@@ -500,7 +501,7 @@ if PLAYER_NAME_BATCH_RAW_MODE not in {"all", "weak", "off"}:
     PLAYER_NAME_BATCH_RAW_MODE = "all"
 PLAYER_NAME_EASYOCR_LANGS = [
     part.strip()
-    for part in os.environ.get("MK8_PLAYER_NAME_EASYOCR_LANGS", "en,es,fr,de,nl,pl").split(",")
+    for part in os.environ.get("MK8_PLAYER_NAME_EASYOCR_LANGS", "en,es,fr,de,nl,pl,it,pt").split(",")
     if part.strip()
 ]
 def _track_ocr_languages() -> list[str]:
@@ -667,6 +668,7 @@ class OcrProfiler:
 
 OCR_PROFILER = OcrProfiler()
 PLAYER_NAME_FALLBACK_STATS = defaultdict(int)
+PLAYER_NAME_SCRIPT_STATS = defaultdict(int)
 _EASYOCR_READERS: dict[tuple[str, ...], object] = {}
 _EASYOCR_READER_LOCK = threading.Lock()
 _EASYOCR_READER_RUN_LOCKS: dict[tuple[str, ...], threading.Lock] = {}
@@ -1312,14 +1314,16 @@ def _run_easyocr_player_names_batched_variant(
     preprocess: str,
     bundle_kind: str = "",
     field_name: str = "",
+    languages: list[str] | tuple[str, ...] | None = None,
 ) -> tuple[list[str], list[int]]:
-    reader = _get_easyocr_reader(PLAYER_NAME_EASYOCR_LANGS)
+    languages = PLAYER_NAME_EASYOCR_LANGS if languages is None else languages
+    reader = _get_easyocr_reader(languages)
     if reader is None:
         return [""] * len(coord_list), [0] * len(coord_list)
 
     canvas, horizontal_list = _build_player_name_canvas(image, coord_list, preprocess=preprocess)
     start_time = time.perf_counter()
-    with _easyocr_reader_run_context(PLAYER_NAME_EASYOCR_LANGS):
+    with _easyocr_reader_run_context(languages):
         result = reader.recognize(
             canvas,
             horizontal_list=horizontal_list,
@@ -1330,6 +1334,8 @@ def _run_easyocr_player_names_batched_variant(
         )
     duration_s = time.perf_counter() - start_time
     profile_label = "player_name_easyocr_batch_raw" if preprocess == "raw" else "player_name_easyocr_batch_inv_otsu"
+    if languages is not PLAYER_NAME_EASYOCR_LANGS:
+        profile_label += "_" + "_".join(languages)
     OCR_PROFILER.record(profile_label, duration_s)
     if bundle_kind and field_name:
         method_name = "batch_raw" if preprocess == "raw" else "batch_inv_otsu"
@@ -1412,6 +1418,91 @@ def _run_easyocr_player_names_batched(
     return extracted_names, confidence_scores
 
 
+_SCRIPT_READER_FAILURES: set[str] = set()
+
+
+def _get_player_name_script_reader(script: str):
+    """A script reader, created on first use and cached; None when it cannot be created."""
+    languages = player_name_scripts.SCRIPT_READERS[script]
+    if script in _SCRIPT_READER_FAILURES:
+        return None
+    try:
+        return _get_easyocr_reader(languages)
+    except Exception as exc:  # a missing model must not stop the Latin reading
+        _SCRIPT_READER_FAILURES.add(script)
+        LOGGER.warning("Player-name %s reader unavailable (%s); names keep the Latin reading.", script, exc)
+        return None
+
+
+def warm_player_name_script_readers() -> list[str]:
+    """Create the script readers the active roster needs (Tournament Live warm-up)."""
+    roster = player_name_scripts.active_roster()
+    if roster is None:
+        return []
+    dummy = np.full((64, 200, 3), 255, dtype=np.uint8)
+    warmed = []
+    for script in roster.scripts:
+        reader = _get_player_name_script_reader(script)
+        if reader is not None:
+            reader.readtext(dummy)
+            warmed.append(script)
+    return warmed
+
+
+def _apply_player_name_script_fallback(
+    image: np.ndarray,
+    coord_list: List[Tuple[Tuple[int, int], Tuple[int, int]]],
+    texts_by_row: list[list[str]],
+    confidences_by_row: list[list[int]],
+    *,
+    bundle_kind: str,
+    field_name: str,
+) -> None:
+    """Read the rows whose Latin reading matches no roster name with the roster's script readers."""
+    roster = player_name_scripts.active_roster()
+    if roster is None or not roster.scripts:
+        return
+    pending = [
+        row_index
+        for row_index, texts in enumerate(texts_by_row)
+        if player_name_scripts.needs_script_readers(" ".join(texts).strip(), roster)
+    ]
+    if not pending:
+        return
+    rows = [coord_list[row_index] for row_index in pending]
+    readings: dict[int, dict[str, list[tuple[str, int]]]] = {row_index: {} for row_index in pending}
+    for script in roster.scripts:
+        if _get_player_name_script_reader(script) is None:
+            continue
+        languages = player_name_scripts.SCRIPT_READERS[script]
+        for preprocess in ("inv_otsu3", "raw"):
+            names, confidences = _run_easyocr_player_names_batched_variant(
+                image,
+                rows,
+                preprocess=preprocess,
+                bundle_kind=bundle_kind,
+                field_name=field_name,
+                languages=languages,
+            )
+            for row_index, text, confidence in zip(pending, names, confidences):
+                if text:
+                    readings[row_index].setdefault(script, []).append((text, confidence))
+    PLAYER_NAME_SCRIPT_STATS["rows_tried"] += len(pending)
+    for row_index in pending:
+        latin_text = " ".join(texts_by_row[row_index]).strip()
+        latin_confidence = (
+            int(sum(confidences_by_row[row_index]) // len(confidences_by_row[row_index]))
+            if confidences_by_row[row_index]
+            else 0
+        )
+        choice = player_name_scripts.choose_player_name(latin_text, latin_confidence, readings[row_index], roster)
+        if choice.script == "latin":
+            continue
+        PLAYER_NAME_SCRIPT_STATS[f"rows_{choice.script}"] += 1
+        texts_by_row[row_index] = [choice.text]
+        confidences_by_row[row_index] = [choice.confidence]
+
+
 def extract_player_names_batched(
     image: np.ndarray,
     coord_list: List[Tuple[Tuple[int, int], Tuple[int, int]]],
@@ -1460,6 +1551,14 @@ def extract_player_names_batched(
                     easyocr_confidence = refined_confidence
             texts_by_row.append([easyocr_text] if easyocr_text else [])
             confidences_by_row.append([easyocr_confidence] if easyocr_text else [])
+        _apply_player_name_script_fallback(
+            image,
+            coord_list,
+            texts_by_row,
+            confidences_by_row,
+            bundle_kind=bundle_kind,
+            field_name=field_name,
+        )
     else:
         rois = []
         widths = []

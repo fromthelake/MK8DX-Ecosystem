@@ -870,6 +870,13 @@ class GuiVirtualCaptureController:
             warmed.append("consensus_player_name")
         except Exception:
             pass
+        # Script readers (Cyrillic, Japanese, Korean, Chinese) the roster's own names need.
+        try:
+            from mk8dx_tournament_extraction.engine.extract_text import warm_player_name_script_readers
+
+            warmed.extend(f"player_name_{script}" for script in warm_player_name_script_readers())
+        except Exception:
+            pass
         self.event_bus.emit(
             "OCR_PREWARM_DONE",
             message=f"OCR readers warmed ({', '.join(warmed) or 'none'}) in {time.perf_counter() - started:.1f}s",
