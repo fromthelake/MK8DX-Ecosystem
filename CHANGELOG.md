@@ -8,11 +8,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 ### Added
 
 - **Tournament reads player names in every script a Switch profile name can use**: the Latin name reader also
-  covers Italian and Portuguese, and with the night's participant list in `MK8DX_TOURNAMENT_ROSTER` a name that
-  matches nobody on it is read again with the Cyrillic, Japanese, Korean, simplified and traditional Chinese
-  readers the list's own names need (loaded on first use). A script reading is kept only when it clearly matches
-  one listed Player; otherwise the raw reading goes to the Director as before. Same behaviour in Tournament Live
-  and the Processor/Analysis; `tooling/tournament/evaluate_player_name_scripts.py` measures it per script.
+  covers Italian and Portuguese, and a name box whose Latin reading leaves room is also read by Cyrillic,
+  Japanese, Korean, simplified and traditional Chinese readers (loaded on first use). A clearly more confident
+  reading in its own script is passed on; otherwise the Latin reading, exactly as before. Same in Tournament Live
+  and the Processor/Analysis; the cross-race linking and the Director's workflow are unchanged.
+  `tooling/tournament/evaluate_player_name_scripts.py` measures it per script.
 - **A2 setup and join pages in all 15 languages of the game** (machine translations except EN/NL): the setup
   wizard and MK8DX beheer, the host's "Prepare this device" page (`/setup`) and the invitation page a phone opens
   from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:

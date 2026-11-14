@@ -1,41 +1,32 @@
 """Player names in every script a Switch profile name can use.
 
-The scoreboard name reader is a Latin EasyOCR reader. A Switch profile name can
-also be Cyrillic, Japanese, Korean or Chinese, which that reader cannot read.
-EasyOCR combines at most one of those scripts with English in a reader, so each
-script gets its own reader: Cyrillic, Japanese, Korean, simplified Chinese and
-traditional Chinese.
+The scoreboard name reader is a Latin EasyOCR reader. A Switch profile name can also be Cyrillic,
+Japanese, Korean or Chinese; the Latin reader turns those into garbage that differs from frame to
+frame and race to race, so the per-group identity tracking cannot link that player across races.
+EasyOCR combines at most one of those scripts with English in a reader, so each script has its own
+reader (Cyrillic, Japanese, Korean, simplified Chinese, traditional Chinese).
 
-The script readers are a fallback that needs the tournament's own roster
-(``MK8DX_TOURNAMENT_ROSTER``, a file with the participants' names):
+This module only decides, per name box, between the Latin reading and the script readings:
 
-1. The Latin reading is kept whenever it matches a roster name.
-2. Otherwise the readers for the scripts the roster itself uses read the same
-   name box, and a reading replaces the Latin one only when it shows its
-   reader's script, matches one roster Player unambiguously at the same name-only
-   threshold Tournament Live uses to relink a driver
-   (``broadcast_state._fuzzy_roster_match``), and matches better than the Latin
-   reading.
-3. Anything else keeps the Latin reading: the Director matches it as before.
+1. A Latin reading that is plausible for a Switch name is passed on unchanged, exactly as before.
+2. When a script reading could still clear the margin below (the Latin confidence leaves room for
+   it), the script readers read the box too. The Latin reading's shape is no guide: the Latin
+   reader turns Cyrillic into plausible words ("Onbra" for Ольга, at full confidence) and kana into
+   digits ("1235" for たろう).
+3. A script reading replaces it only when it is plausible itself: its own script dominates, every
+   character is a Switch name character, and its confidence is clearly better than the Latin one.
+   Two plausible readings in different scripts are a doubt: the Latin reading is passed on.
 
-The output is still what was read, never the roster name: identities are
-matched by the Director (Step 5 / Step 9 / Incoming results), not here.
+Nothing downstream changes: consensus, identity tracking across races and the Director's workflow
+receive a reading as they always did. No roster, setting or review step is involved.
 """
 from __future__ import annotations
 
-import csv
-import json
-import os
+import threading
 import unicodedata
 from dataclasses import dataclass
-from pathlib import Path
-from typing import Callable, Iterable, Mapping, Sequence
+from typing import Mapping, Sequence
 
-ROSTER_ENV = "MK8DX_TOURNAMENT_ROSTER"
-
-# Name-only roster threshold of Tournament Live's driver relinking
-# (broadcast_state._fuzzy_roster_match, characters not corroborating).
-ROSTER_MATCH_THRESHOLD = 0.88
 
 # One reader per non-Latin script, each with English (EasyOCR's rule), tried in this order.
 SCRIPT_READERS: dict[str, tuple[str, ...]] = {
@@ -55,6 +46,10 @@ READER_CLASSES: dict[str, frozenset[str]] = {
     "simplified_chinese": frozenset({"han"}),
     "traditional_chinese": frozenset({"han"}),
 }
+
+# A script reading must be at least this confident and beat the Latin reading by this margin.
+MIN_SCRIPT_CONFIDENCE = 50
+SCRIPT_MARGIN = 15
 
 _RANGES: tuple[tuple[int, int, str], ...] = (
     (0x0400, 0x052F, "cyrillic"),
@@ -90,151 +85,31 @@ def text_classes(text: str | None) -> set[str]:
     return {name for name in (character_class(char) for char in str(text or "")) if name}
 
 
-def shows_reader_script(text: str | None, script: str) -> bool:
-    """Whether a reading contains characters of its reader's own script."""
-    return bool(text_classes(text) & READER_CLASSES[script])
+def visible_name_characters(text: str | None) -> list[str]:
+    return [char for char in " ".join(str(text or "").split()) if not char.isspace()]
 
 
-def scripts_for_names(names: Iterable[str]) -> tuple[str, ...]:
-    """The script readers worth trying for a roster, in fallback order."""
-    classes: set[str] = set()
-    for name in names:
-        classes |= text_classes(name)
-    wanted = {script for script, own in READER_CLASSES.items() if own & classes}
-    return tuple(script for script in SCRIPT_ORDER if script in wanted)
+def script_share(text: str | None, script: str) -> float:
+    """Share of the visible characters that belong to the reader's own script."""
+    visible = visible_name_characters(text)
+    if not visible:
+        return 0.0
+    own = READER_CLASSES[script]
+    return sum(1 for char in visible if character_class(char) in own) / len(visible)
 
 
-def _default_similarity(left: str, right: str) -> float:
-    from .ocr_name_matching import weighted_similarity
+def is_switch_name_char(char: str, script: str | None = None) -> bool:
+    """A character a Switch profile name can hold.
 
-    return float(weighted_similarity(left, right))
-
-
-@dataclass(frozen=True)
-class RosterMatch:
-    score: float
-    player: int  # index of the roster entry, -1 for none
-    name: str
-
-
-NO_MATCH = RosterMatch(0.0, -1, "")
-
-
-@dataclass(frozen=True)
-class PlayerRoster:
-    """Participants as name tuples: display name first, then the names they also answer to."""
-
-    players: tuple[tuple[str, ...], ...]
-
-    @classmethod
-    def from_names(cls, players: Iterable[str | Sequence[str]]) -> "PlayerRoster":
-        entries: list[tuple[str, ...]] = []
-        for player in players:
-            names = (player,) if isinstance(player, str) else tuple(player)
-            cleaned = tuple(dict.fromkeys(" ".join(str(name).split()) for name in names if str(name).strip()))
-            if cleaned:
-                entries.append(cleaned)
-        return cls(tuple(entries))
-
-    @property
-    def names(self) -> tuple[str, ...]:
-        return tuple(name for player in self.players for name in player)
-
-    @property
-    def scripts(self) -> tuple[str, ...]:
-        return scripts_for_names(self.names)
-
-    def best_match(self, text: str | None, similarity: Callable[[str, str], float] | None = None) -> RosterMatch:
-        # Spacing is not compared: a reader may split "김민수" into "김 민수".
-        reading = "".join(str(text or "").split())
-        if not reading:
-            return NO_MATCH
-        similarity = similarity or _default_similarity
-        best = NO_MATCH
-        for index, player in enumerate(self.players):
-            for name in player:
-                score = float(similarity(reading, "".join(name.split())))
-                if score > best.score:
-                    best = RosterMatch(score, index, name)
-        return best
-
-
-def _json_players(value: object) -> list[str | tuple[str, ...]]:
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, Mapping):
-        if "displayName" in value or "name" in value:
-            first = str(value.get("displayName") or value.get("name") or "")
-            aliases = value.get("aliases") or []
-            return [tuple([first, *[str(alias) for alias in aliases if isinstance(alias, str)]])]
-        players: list[str | tuple[str, ...]] = []
-        for nested in value.values():  # e.g. {"1": [...], "2": [...]} per group
-            players.extend(_json_players(nested))
-        return players
-    if isinstance(value, list):
-        players = []
-        for nested in value:
-            players.extend(_json_players(nested))
-        return players
-    return []
-
-
-def load_roster(path: str | os.PathLike[str]) -> PlayerRoster:
-    """Read a roster file.
-
-    ``.json``: a list of names, a list of ``{"displayName", "aliases"}`` objects, or
-    an object of such lists per group. ``.csv``: one Player per row, the other
-    cells are names the Player also answers to. Anything else: one Player per
-    line, other names after ``|``; empty lines and lines starting with ``#`` are
-    skipped.
+    ``mii_allowed_chars.json`` (Latin, Greek, kana, symbols) is the Mii table; a Switch profile name
+    also takes the Hangul, Han and Cyrillic characters of the console's languages, so a script
+    reading's own script counts as allowed too.
     """
-    file = Path(path)
-    text = file.read_text(encoding="utf-8-sig")
-    suffix = file.suffix.lower()
-    if suffix == ".json":
-        return PlayerRoster.from_names(_json_players(json.loads(text)))
-    if suffix == ".csv":
-        rows = csv.reader(text.splitlines(), delimiter=";" if text.count(";") > text.count(",") else ",")
-        return PlayerRoster.from_names(tuple(cell for cell in row if cell.strip()) for row in rows)
-    players: list[tuple[str, ...]] = []
-    for line in text.splitlines():
-        if not line.strip() or line.lstrip().startswith("#"):
-            continue
-        players.append(tuple(part for part in line.split("|")))
-    return PlayerRoster.from_names(players)
+    from .name_unicode import is_allowed_name_char  # reads the runtime data on first use
 
-
-_ROSTER_CACHE: dict[tuple[str, int], PlayerRoster | None] = {}
-_ROSTER_OVERRIDE: list[PlayerRoster | None] = []
-
-
-def set_roster(roster: PlayerRoster | None) -> None:
-    """Use this roster instead of ``MK8DX_TOURNAMENT_ROSTER`` (tests, embedding callers)."""
-    _ROSTER_OVERRIDE[:] = [roster]
-
-
-def clear_roster_override() -> None:
-    _ROSTER_OVERRIDE.clear()
-
-
-def active_roster() -> PlayerRoster | None:
-    if _ROSTER_OVERRIDE:
-        return _ROSTER_OVERRIDE[0]
-    value = os.environ.get(ROSTER_ENV, "").strip().strip('"')
-    if not value:
-        return None
-    path = Path(value)
-    try:
-        key = (str(path.resolve()), path.stat().st_mtime_ns)
-    except OSError:
-        return None
-    if key not in _ROSTER_CACHE:
-        try:
-            roster = load_roster(path)
-        except (OSError, ValueError, UnicodeDecodeError):
-            roster = None
-        _ROSTER_CACHE[key] = roster if roster is not None and roster.players else None
-    return _ROSTER_CACHE[key]
+    if is_allowed_name_char(char):
+        return True
+    return script is not None and character_class(char) in READER_CLASSES[script]
 
 
 @dataclass(frozen=True)
@@ -242,86 +117,110 @@ class NameChoice:
     text: str
     confidence: int
     script: str  # "latin" or the script reader that won
-    match: RosterMatch
 
 
-def needs_script_readers(latin_text: str, roster: PlayerRoster | None,
-                         similarity: Callable[[str, str], float] | None = None) -> bool:
-    if roster is None or not roster.scripts:
+def plausible_script_reading(text: str, confidence: int, script: str, latin_confidence: int) -> bool:
+    visible = visible_name_characters(text)
+    if not visible or script_share(text, script) < 0.5:
         return False
-    return roster.best_match(latin_text, similarity).score < ROSTER_MATCH_THRESHOLD
+    if any(not is_switch_name_char(char, script) for char in visible):
+        return False
+    return int(confidence) >= MIN_SCRIPT_CONFIDENCE and int(confidence) >= int(latin_confidence) + SCRIPT_MARGIN
+
+
+def _family(text: str) -> str:
+    classes = text_classes(text)
+    if "hangul" in classes:
+        return "hangul"
+    if "cyrillic" in classes:
+        return "cyrillic"
+    return "cjk"  # kana and Han: the Japanese and Chinese readers compete on confidence
 
 
 def choose_player_name(
     latin_text: str,
     latin_confidence: int,
     script_readings: Mapping[str, Sequence[tuple[str, int]]],
-    roster: PlayerRoster | None,
-    similarity: Callable[[str, str], float] | None = None,
 ) -> NameChoice:
-    """Keep the Latin reading unless one script reading unambiguously matches the roster better."""
-    if roster is None:
-        return NameChoice(latin_text, latin_confidence, "latin", NO_MATCH)
-    latin_match = roster.best_match(latin_text, similarity)
-    keep = NameChoice(latin_text, latin_confidence, "latin", latin_match)
-    if latin_match.score >= ROSTER_MATCH_THRESHOLD:
-        return keep
-    qualifying: list[tuple[float, int, int, str, str, RosterMatch]] = []
+    """The most confident plausible script reading, or the Latin reading unchanged.
+
+    A plausible reading in another script family (Cyrillic, Hangul, kana/Han) that comes within the
+    margin of the best one is a doubt: the Latin reading is passed on as before.
+    """
+    keep = NameChoice(latin_text, latin_confidence, "latin")
+    candidates: list[tuple[int, int, str, str]] = []
     for order, script in enumerate(SCRIPT_ORDER):
         for text, confidence in script_readings.get(script, ()):
-            if not text or not shows_reader_script(text, script):
-                continue
-            match = roster.best_match(text, similarity)
-            if match.score >= ROSTER_MATCH_THRESHOLD and match.score > latin_match.score:
-                qualifying.append((match.score, int(confidence), -order, text, script, match))
-    if not qualifying:
+            text = " ".join(str(text or "").split())
+            if plausible_script_reading(text, confidence, script, latin_confidence):
+                candidates.append((int(confidence), -order, text, script))
+    if not candidates:
         return keep
-    if len({entry[5].player for entry in qualifying}) > 1:
-        return keep  # two readers point at different Players: the Director decides
-    score, confidence, _order, text, script, match = max(qualifying, key=lambda entry: entry[:3])
-    return NameChoice(text, confidence, script, match)
+    confidence, _order, text, script = max(candidates)
+    family = _family(text)
+    if any(_family(other) != family and other_confidence > confidence - SCRIPT_MARGIN
+           for other_confidence, _, other, _ in candidates):
+        return keep
+    return NameChoice(text, confidence, script)
+
+
+def may_need_script_readers(latin_text: str | None, latin_confidence: int) -> bool:
+    """Whether a script reading could still win: only when the Latin reading leaves room for the margin.
+
+    Empty readings keep their existing placeholder handling.
+    """
+    return bool(str(latin_text or "").strip()) and int(latin_confidence) <= 100 - SCRIPT_MARGIN
 
 
 class ScriptMemory:
-    """Which script reader resolved a Latin reading to which roster Player, for the run.
+    """What the script readers made of a Latin reading earlier in the run.
 
-    Keyed by what the Latin reader saw, never by a result position, and written only after a full,
-    unambiguous roster match over every roster script. The remembered reader is tried first and
-    accepted only when it names the same Player again; anything else re-reads with every script and
-    replaces the memory (the evidence changed). A new roster starts an empty memory.
+    Keyed by what the Latin reader saw, never by a result position. A script that resolved the
+    reading is tried first next time and kept only when its reading is plausible again (otherwise
+    every script reads the box and the memory is replaced). A reading that stayed Latin on
+    ``LATIN_CONFIRMATIONS`` boxes is not read again by the script readers.
     """
 
-    def __init__(self) -> None:
-        import threading
+    LATIN_CONFIRMATIONS = 2
 
+    def __init__(self) -> None:
         self._lock = threading.Lock()
-        self._roster: PlayerRoster | None = None
-        self._entries: dict[str, tuple[int, str]] = {}
+        self._scripts: dict[str, str] = {}
+        self._latin: dict[str, int] = {}
 
     @staticmethod
     def key(latin_text: str) -> str:
         return "".join(unicodedata.normalize("NFKC", str(latin_text or "")).split())
 
-    def recall(self, roster: PlayerRoster, latin_text: str) -> tuple[int, str] | None:
+    def recall(self, latin_text: str) -> str | None:
+        """The remembered script, "latin" for a settled Latin reading, or None."""
+        key = self.key(latin_text)
         with self._lock:
-            if self._roster is not roster:
-                self._roster, self._entries = roster, {}
-            return self._entries.get(self.key(latin_text))
+            if key in self._scripts:
+                return self._scripts[key]
+            if self._latin.get(key, 0) >= self.LATIN_CONFIRMATIONS:
+                return "latin"
+        return None
 
-    def remember(self, roster: PlayerRoster, latin_text: str, player: int, script: str) -> None:
+    def remember(self, latin_text: str, script: str) -> None:
+        key = self.key(latin_text)
+        if not key:
+            return
         with self._lock:
-            if self._roster is not roster:
-                self._roster, self._entries = roster, {}
-            self._entries[self.key(latin_text)] = (player, script)
+            if script == "latin":
+                self._latin[key] = self._latin.get(key, 0) + 1
+            else:
+                self._scripts[key] = script
+                self._latin.pop(key, None)
 
-    def forget(self, roster: PlayerRoster, latin_text: str) -> None:
+    def forget(self, latin_text: str) -> None:
         with self._lock:
-            if self._roster is roster:
-                self._entries.pop(self.key(latin_text), None)
+            self._scripts.pop(self.key(latin_text), None)
 
     def clear(self) -> None:
         with self._lock:
-            self._roster, self._entries = None, {}
+            self._scripts.clear()
+            self._latin.clear()
 
 
 SCRIPT_MEMORY = ScriptMemory()
