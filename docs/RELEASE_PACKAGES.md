@@ -115,6 +115,10 @@ Pass the folder to `pip download --find-links dist/intel-wheel` when you collect
 Before tagging, set `productVersion` in `compatibility.json` and `ecosystemVersion` in
 `component-registry.json` to the new version (without the `v`) in the release pull request; the release
 manifest copies `compatibility.json`.
+In the same pull request, update the version and the package file names in `docs/install/MK8DX_User_Guide_EN.txt`
+and `docs/install/MK8DX_Handleiding_NL.txt` (they are attached to the release and name its files), regenerate the
+DOCX copies with `python tooling/release/build_reading_guides.py` (needs python-docx), and add the release to the
+Project status paragraph of every README.
 
 1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the server ZIPs (host-local, the A2 packages, A3 and B2),
    verify their `sourceCommit` equals the tag commit, and check their internal manifests and bytes.

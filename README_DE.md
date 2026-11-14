@@ -313,7 +313,7 @@ alle besser.
 
 Stabile Releases gibt es auf [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0
 brachte A2, zu Hause oder im Verein; 0.2.1 gibt der Android-App eine Offline-Kopie deiner Zeiten und ein
-ruhigeres Layout. 0.2.2 bringt die Analyse von Aufnahmen wieder zum Laufen und ergänzt das Fenster Tournament Analysis. Siehe das [Changelog](CHANGELOG.md), die [Release-Pakete](docs/RELEASE_PACKAGES.md) und das
+ruhigeres Layout. 0.2.2 bringt die Analyse von Aufnahmen wieder zum Laufen und ergänzt das Fenster Tournament Analysis. 0.2.3 betreibt das Web-Gateway ohne Root-Rechte und erleichtert den Einstieg in das Repository. Siehe das [Changelog](CHANGELOG.md), die [Release-Pakete](docs/RELEASE_PACKAGES.md) und das
 vollständige Handbuch ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
 Die Erkennung macht ein Ergebnis niemals von selbst offiziell: Deine eigenen Zeitfahren prüfst du selbst,
