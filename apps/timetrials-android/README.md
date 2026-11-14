@@ -73,8 +73,7 @@ attempt with an exact acknowledgement—retry policy lives outside the transport
 The generated loadout catalog derives image filenames from the
 canonical manifest `iconPath`, not from filtered picker position. This matters
 for character variants: stable record IDs, displayed names and packaged icons
-must resolve through the same mapping. See
-`docs/provenance/ANDROID_LOADOUT_PRESENTATION_EVIDENCE.md`.
+must resolve through the same mapping.
 
 ## Offline scanner packaging
 

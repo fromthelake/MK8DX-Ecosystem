@@ -49,7 +49,8 @@ the project's own code and documentation only; the game material inside the pack
 
 ## Building the packages
 
-The product version is SemVer: the `v0.1.0-rc.N` tags are candidates and `v0.1.0` is the stable release tag.
+The product version is SemVer and every release is tagged `vX.Y.Z`. A release-candidate tag `vX.Y.Z-rc.N` is only
+for testing a candidate and is removed once the stable release is published.
 `productVersion` in [compatibility.json](../compatibility.json) matches the version being packaged.
 The [changelog](../CHANGELOG.md) keeps future work under *Unreleased*; advance the version for the next
 development release after tagging.
@@ -129,7 +130,7 @@ Project status paragraph of every README.
    guides tell people to stop when a package has no matching line:
 
    ```sh
-   tag=v0.1.0
+   tag=vX.Y.Z   # the release being published
    mkdir release-check && cd release-check
    gh release download "$tag" --repo fromthelake/MK8DX-Ecosystem
    rm SHA256SUMS.txt
@@ -143,7 +144,7 @@ Project status paragraph of every README.
    At draft review, start **every route called supported** in the release notes afresh from that draft's downloaded
    assets. Record its source commit, migrations, readiness and affected routes. For A1, load the Docker images
    inside the downloaded host ZIP even if a local image already has the same tag; a cached tag is not package
-   evidence. For v0.1.0, this means fresh A1 and A3 installations. Test an upgrade with data before publishing.
+   evidence. Since v0.2.0 that means fresh A1, A2 and A3 installations. Test an upgrade with data before publishing.
    Check anonymous pulls of the matching GHCR images: newly created GitHub container packages default to private
    visibility even when linked to a public repository. The maintainer must make them public in GitHub package
    settings before describing them as public downloads.

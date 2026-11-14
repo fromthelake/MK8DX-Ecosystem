@@ -57,15 +57,15 @@ parity vectors of the central reader (`packages/icon-matcher`) are the recogniti
   approval is required, force pushes and deleting `main` are blocked.
 - Work on a short-lived branch from `main` named `feat/`, `fix/`, `docs/` or `chore/` plus a short description,
   open a pull request, and **squash-merge** it once the checks pass. GitHub deletes the branch after the merge.
-- A `release/*` branch exists only for an actual maintenance or release need (for example `release/0.2`) and is
+- A `release/*` branch exists only for an actual maintenance or release need and is
   merged into `main` through a pull request; it is not a second development line.
 - Do not force-push shared branches, rewrite published history or delete release tags.
 
 ## Releases
 
-A maintainer tags `v<version>`; the Release workflow builds the client packages and the source archive, writes
-`SHA256SUMS.txt` and `manifest.json`, and opens a draft release. The maintainer attaches the server packages (and
-a release-signed APK, if any), refreshes `SHA256SUMS.txt`, reviews and publishes it. See
+A maintainer tags `v<version>`; the Release workflow builds the client, source and server packages, writes
+`SHA256SUMS.txt` and `manifest.json`, and opens a draft release. The maintainer attaches the release-signed APK
+(if any), refreshes `SHA256SUMS.txt`, reviews and publishes it. See
 [Release packages](docs/RELEASE_PACKAGES.md#publishing-a-release).
 
 Please follow the [code of conduct](CODE_OF_CONDUCT.md). Report security

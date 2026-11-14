@@ -230,8 +230,9 @@ every run's clip and each ghost replay's clip (**Ghost replay · name**).
 
 Details: [user guide](docs/YOUTUBE_USER_GUIDE.md) and
 [own Google client setup](docs/YOUTUBE_DEVELOPER_SETUP.md). The public pages Google reviews are
-https://example.invalid/livetrial, /privacy and /terms (`apps/timetrials-web/pages/`); the audit
-material is in `docs/youtube/`.
+https://example.invalid/livetrial, /privacy and /terms (optional static pages in the web root's `pages/`
+folder; they are not part of this repository); the audit
+steps are in [YouTube API approval](docs/YOUTUBE_GOOGLE_APPROVAL.md).
 
 ## Capture and recorded analysis
 
