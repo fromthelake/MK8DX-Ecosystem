@@ -88,6 +88,12 @@ Tournament Tools에서 온 레이스: 그룹의 **수신된 결과**를 열고, 
 `TournamentTools.config.cmd`에는 로컬 경로와 언어 설정이 들어 있습니다. 새 패키지를 설치할 때 이 파일,
 `TournamentLive\` 세션 폴더와 출력 폴더를 보관하세요.
 
+**다른 문자의 플레이어 이름.** Tournament Live와 Tournament Analysis는 라틴 문자뿐 아니라 키릴 문자, 일본어, 한국어, 중국어로 된 플레이어 이름도 읽습니다. 이를
+위해 추가 텍스트 판독기 5개가 필요하며, 모두 합쳐 약 1GB의 메모리를 사용합니다(그래픽 카드가 있으면 그래픽 카드 메모리). 커뮤니티에서 이 문자들을 쓰는 사람이 없다면 꺼서 그 메모리를 아낄 수
+있습니다. Tournament Live의 **인식**에서 **라틴 문자가 아닌 플레이어 이름 읽기**를 해제하거나, Tournament Analysis 창의 **분석 실행**에서 해제하거나,
+`TournamentTools.config.cmd`에서 `MK8DX_NAME_SCRIPTS=off`로 설정하세요(`TournamentProcessor.cmd`에도 적용됩니다). 라틴 문자 이름은 어느
+쪽이든 똑같이 읽습니다. 기본값은 켜짐입니다.
+
 ### 나중에 녹화 분석하기
 
 밤을 진행하면서 캡처할 때는 Tournament Live를 사용합니다. Tournament Live 없이 밤을 진행해서 녹화만 있다면,

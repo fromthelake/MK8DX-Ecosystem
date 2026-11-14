@@ -88,6 +88,8 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 `TournamentTools.config.cmd` 保存本地路径和语言偏好。安装更新的包时，请保留它、`TournamentLive\` 会话
 文件夹以及你的输出文件夹。
 
+**其他文字的玩家名称。** Tournament Live 和 Tournament Analysis 除了拉丁字母外，还会读取西里尔文、日文、韩文和中文的玩家名称。这需要五个额外的文字识别器，总共约 1 GB 内存（有显卡时占用显卡内存）。如果你的社区里没有人使用这些文字，可以关闭它来节省这部分内存：在 Tournament Live 的 **识别** 中，或在 Tournament Analysis 窗口的 **运行分析** 中取消勾选 **读取非拉丁文字的玩家名称**，或在 `TournamentTools.config.cmd` 中设置 `MK8DX_NAME_SCRIPTS=off`（也适用于 `TournamentProcessor.cmd`）。拉丁文字名称在两种情况下读取结果相同。默认开启。
+
 ### 事后分析录像
 
 如果你在当晚比赛进行时采集画面，请使用 Tournament Live。如果当晚没有使用它，而你只有

@@ -257,3 +257,32 @@ def test_help_does_not_open_a_window(capsys):
         gui.main(["--help"])
     assert stop.value.code == 0
     assert "vision_cli all" in capsys.readouterr().out
+
+
+def test_the_name_scripts_choice_reaches_vision_cli(tmp_path, monkeypatch):
+    from tournament_processor import vision_cli
+
+    video = _touch(tmp_path / "Qualifier group 1.mkv")
+    plan = gui.build_plan([video], "night", tmp_path / "Session")
+    assert "--name-scripts" not in plan.command("python")  # the window always says; None leaves it to the env
+    for choice, text in ((True, "on"), (False, "off")):
+        command = gui.RunPlan(plan.runtime_root, plan.session_id, plan.staging, plan.targets,
+                              name_scripts=choice).command("python")
+        args = vision_cli._parser().parse_args(command[4:])
+        assert args.name_scripts == text and args.videos == ["Qualifier group 1.mkv"]
+        monkeypatch.delenv("MK8DX_NAME_SCRIPTS", raising=False)
+        args.runtime_root = tmp_path / "Session"
+        vision_cli._configure_paths(args)
+        import os
+
+        assert os.environ["MK8DX_NAME_SCRIPTS"] == text
+    assert vision_cli._parser().parse_args(["all", "--session-id", "x"]).name_scripts is None
+
+
+@pytest.mark.parametrize("value", ["", "on", "ON", "off", "Off", "0", "1", "false", "no", "yes", '"off"', "junk"])
+def test_the_checkbox_default_reads_the_setting_like_the_engine(value):
+    from mk8dx_tournament_extraction.engine import player_name_scripts
+
+    environ = {"MK8DX_NAME_SCRIPTS": value}
+    assert gui.name_scripts_default(environ) is player_name_scripts.enabled(environ)
+    assert gui.name_scripts_default({}) is True

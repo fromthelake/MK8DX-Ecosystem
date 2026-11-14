@@ -234,6 +234,13 @@
    ]
   },
   {
+   "key": "Cyrillic, Japanese, Korean and Chinese player names. Off saves memory: five extra text readers are not loaded. Latin names are read the same either way.",
+   "nl": "Spelersnamen in het Cyrillisch, Japans, Koreaans en Chinees. Uit bespaart geheugen: vijf extra tekstlezers worden niet geladen. Latijnse namen worden hoe dan ook hetzelfde gelezen.",
+   "places": [
+    "gui.py:name_scripts_hint"
+   ]
+  },
+  {
    "key": "Done in {elapsed}. Check the results before you import them.",
    "nl": "Klaar in {elapsed}. Controleer de uitslagen voordat je ze importeert.",
    "places": [
@@ -441,6 +448,13 @@
    "nl": "Afsluiten",
    "places": [
     "gui.py:quit_title"
+   ]
+  },
+  {
+   "key": "Read player names in non-Latin scripts",
+   "nl": "Spelersnamen in niet-Latijnse schriften lezen",
+   "places": [
+    "gui.py:name_scripts"
    ]
   },
   {

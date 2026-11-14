@@ -38,6 +38,7 @@ from mk8dx_tournament_connected.client import (
     sign_in,
 )
 from mk8dx_tournament_connected.session import SessionStore
+from mk8dx_tournament_extraction.engine import player_name_scripts
 from mk8dx_tournament_extraction.game_messages import AUTO, GAME_LOCALES, normalize_game_locale
 
 from .product_languages import (
@@ -302,6 +303,9 @@ _DUTCH_UI = {
     "results retained; waiting for Tournament Manager delivery; Retry upload": "uitslagen bewaard; wachten op levering aan Tournament Manager; Upload opnieuw proberen",
     "previous recordings recovered": "vorige opnamen hersteld",
     "RECORDINGS SAFE — TOURNAMENT MANAGER DELIVERY PENDING": "OPNAMEN VEILIG — LEVERING AAN TOURNAMENT MANAGER WACHT NOG",
+    "Recognition": "Herkenning",
+    "Read player names in non-Latin scripts": "Spelersnamen in niet-Latijnse schriften lezen",
+    "Cyrillic, Japanese, Korean and Chinese player names. Off saves memory: five extra text readers are not loaded. Latin names are read the same either way.": "Spelersnamen in het Cyrillisch, Japans, Koreaans en Chinees. Uit bespaart geheugen: vijf extra tekstlezers worden niet geladen. Latijnse namen worden hoe dan ook hetzelfde gelezen.",
 }
 _ENGLISH_UI = {dutch: english for english, dutch in _DUTCH_UI.items()}
 
@@ -443,6 +447,10 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         self._settings = QtCore.QSettings("MK8DX", "TournamentLive")
         self._capture_names = CaptureCardNames(self._settings.value("capture_card_names", ""))
         self.language = parse_language(self._settings.value("language", "en")) or "en"
+        # Player names in non-Latin scripts: the saved checkbox, else MK8DX_NAME_SCRIPTS (TournamentTools.config.cmd),
+        # else on. Applied to this process before the warm-up and the first race (the engine reads it per frame).
+        self.name_scripts = player_name_scripts.saved_or_environment(self._settings.value("name_scripts", ""))
+        player_name_scripts.apply(self.name_scripts)
         self.setWindowTitle("MK8DX Tournament Live")
         self.resize(1680, 980)
 
@@ -1540,6 +1548,17 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         layout.addWidget(mode_group)
         self._refresh_recording_choice_banner()
 
+        recognition_group = QtWidgets.QGroupBox("Recognition")
+        rg = QtWidgets.QVBoxLayout(recognition_group)
+        self.name_scripts_check = QtWidgets.QCheckBox("Read player names in non-Latin scripts")
+        self.name_scripts_check.setToolTip(
+            "Cyrillic, Japanese, Korean and Chinese player names. Off saves memory: five extra text readers are not "
+            "loaded. Latin names are read the same either way.")
+        self.name_scripts_check.setChecked(self.name_scripts)
+        self.name_scripts_check.toggled.connect(self._set_name_scripts)
+        rg.addWidget(self.name_scripts_check)
+        layout.addWidget(recognition_group)
+
         # Start all <-> Stop all toggle: red while a run is active so the
         # operator always sees the session state at a glance.
         self.start_button = QtWidgets.QPushButton("Start all")
@@ -1794,6 +1813,12 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             f"QLabel {{ background: {background}; color: {foreground}; border: 1px solid {border}; "
             "padding: 8px; font-weight: 800; }"
         )
+
+    def _set_name_scripts(self, checked: bool) -> None:
+        """Save the choice and apply it from the next frame; readers already loaded stay until the window closes."""
+        self.name_scripts = bool(checked)
+        self._settings.setValue("name_scripts", player_name_scripts.setting_text(self.name_scripts))
+        player_name_scripts.apply(self.name_scripts)
 
     def _refresh_recording_choice_banner(self, _checked: bool | None = None) -> None:
         if getattr(self, "controller", None) is not None:

@@ -42,6 +42,11 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument("--producer-version", default="tournament-processor-0.2.0")
     parser.add_argument("--created-at-ms", type=int, help="Deterministic UTC epoch milliseconds for regression")
     parser.add_argument("--diagnostics", type=Path, help="Write all-run overlap/process timing events to this JSONL file")
+    parser.add_argument(
+        "--name-scripts", choices=("on", "off"),
+        help=("Read player names in non-Latin scripts (Cyrillic, Japanese, Korean, Chinese); off saves the memory "
+              "of five OCR readers. Default: MK8DX_NAME_SCRIPTS, else on"),
+    )
     return parser
 
 
@@ -105,6 +110,9 @@ def _configure_paths(args: argparse.Namespace) -> Path:
         os.environ["MK8DX_TOURNAMENT_REFERENCE_ROOT"] = str(args.reference_root.resolve())
     if args.engine_data_root:
         os.environ["MK8DX_TOURNAMENT_ENGINE_DATA_ROOT"] = str(args.engine_data_root.resolve())
+    if getattr(args, "name_scripts", None):
+        # The engine reads MK8DX_NAME_SCRIPTS (player_name_scripts.enabled); worker processes inherit it.
+        os.environ["MK8DX_NAME_SCRIPTS"] = args.name_scripts
     return runtime_root
 
 

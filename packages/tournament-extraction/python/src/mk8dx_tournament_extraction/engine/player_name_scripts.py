@@ -18,14 +18,55 @@ This module only decides, per name box, between the Latin reading and the script
    Two plausible readings in different scripts are a doubt: the Latin reading is passed on.
 
 Nothing downstream changes: consensus, identity tracking across races and the Director's workflow
-receive a reading as they always did. No roster, setting or review step is involved.
+receive a reading as they always did. No roster or review step is involved. One setting
+(``MK8DX_NAME_SCRIPTS``, default on) turns the script readers off to save memory.
 """
 from __future__ import annotations
 
+import os
 import threading
 import unicodedata
 from dataclasses import dataclass
 from typing import Mapping, Sequence
+
+
+# The Director's setting (TournamentTools.config.cmd, Tournament Live's checkbox, Tournament Analysis'
+# --name-scripts): "off" never loads or runs the script readers for player names, which saves their memory;
+# the Latin reading then goes on exactly as without this module. Default on.
+SETTING_ENV = "MK8DX_NAME_SCRIPTS"
+_ON = frozenset({"on", "1", "true", "yes"})
+_OFF = frozenset({"off", "0", "false", "no"})
+
+
+def parse_setting(value: object) -> bool | None:
+    """True for on, False for off (any case, also 1/0, true/false, yes/no); None when unset or unknown."""
+    text = str(value if value is not None else "").strip().strip('"').strip().lower()
+    if text in _ON:
+        return True
+    if text in _OFF:
+        return False
+    return None
+
+
+def setting_text(enabled: bool) -> str:
+    return "on" if enabled else "off"
+
+
+def enabled(environ: Mapping[str, str] | None = None) -> bool:
+    """Whether player names are read in the non-Latin scripts (``MK8DX_NAME_SCRIPTS``; on unless it says off)."""
+    environ = os.environ if environ is None else environ
+    return parse_setting(environ.get(SETTING_ENV)) is not False
+
+
+def saved_or_environment(saved: object, environ: Mapping[str, str] | None = None) -> bool:
+    """A window's saved choice (Tournament Live's checkbox) when it has one, else ``enabled(environ)``."""
+    choice = parse_setting(saved)
+    return enabled(environ) if choice is None else choice
+
+
+def apply(choice: bool, environ: dict[str, str] | None = None) -> None:
+    """Make ``choice`` the setting of this process (and the processes it starts)."""
+    (os.environ if environ is None else environ)[SETTING_ENV] = setting_text(choice)
 
 
 # One reader per non-Latin script, each with English (EasyOCR's rule), tried in this order.
