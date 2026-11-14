@@ -21,4 +21,6 @@ List the checks you ran from [docs/TESTING.md](../docs/TESTING.md) and their res
 - [ ] No new Nintendo or other third-party material, or its provenance is explained (see
       [THIRD_PARTY_MATERIALS.md](../docs/THIRD_PARTY_MATERIALS.md)).
 - [ ] Documentation is updated where behaviour, commands or installation steps changed.
+- [ ] A changed English user guide has its Dutch version and translations updated, or an issue labelled
+      `translation` lists the changed section (see [Change a user guide](../docs/DEVELOPMENT.md#change-a-user-guide)).
 - [ ] AI assistance, if any, is disclosed above (see CONTRIBUTING.md).

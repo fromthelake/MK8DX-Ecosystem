@@ -18,9 +18,23 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   send later, what stays on the PC, and that Tournament Live's Excel stays in `Live_Output\exports` after closing.
   English versions of the Dutch-only install docs and Dutch versions of the player, LiveTrial, Tournament and
   hosting guides.
+- **LiveTrial and Tournament Directors guides in all 15 languages** (`docs/guides/translations/<locale>/`, machine
+  translations except EN/NL). The English guides list every language under their title, and each README's Get
+  started rows link the reader's own LiveTrial, Tournament Directors and Players guide.
+- **Change a user guide** in the developer guide (EN/NL), the pull request checklist and CONTRIBUTING: which files
+  hold the EN/NL guides and the 13 translations, update them in the same pull request or open a `translation`
+  issue, and the builders to run. `tooling/build_readme_links.py` (with `--check`) keeps the README language
+  switcher and own-language guide links in step.
 
 ### Fixed
 
+- **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
+  new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
+  0.2.3 package 2 would skip the backup.
+- **The Tournament Tools guides no longer say every OCR model is included.** The package carries the detection and
+  Latin-script EasyOCR models; the first English OCR run downloads `english_g2.pth` (about 15 MB) once, as the
+  package README already said. Corrected in the Tournament Directors guide (EN/NL), the client install pages, the
+  Tournament Tools reference and all 15 user guides.
 - **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
   in a new package's folder would run the new version on the existing installation without the checked backup and
   the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
@@ -28,6 +42,22 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
 - **Android: Change Player and Change community** instead of a bare **Switch** (#201). In es, es-419, it, ko,
   pt and ru the account and community buttons showed the console's name untranslated.
+- **Tournament Connect and Tournament Live work with A1 and A3.** Both refused `http://127.0.0.1:<port>` and
+  `http://localhost:<port>` with "Tournament Manager connection requires HTTPS" unless
+  `MK8DX_TOURNAMENT_ALLOW_INSECURE_LOOPBACK=1` was set. Plain HTTP is now accepted for exactly these loopback
+  addresses (with a port), which never leave the PC; every other address still needs HTTPS. The old variable is
+  ignored.
+- **`TournamentConnect.cmd sign-in` asks for the website address** when none is set, validates it like
+  `server <address>` and stores it; without a terminal it stops and names `TournamentConnect.cmd server <address>`.
+  It used to try the placeholder `https://example.invalid` and fail with a DNS error.
+- **Tournament Live's OCR warm-up says what happens to the recognition models**: "Loading recognition models"
+  when they are on disk, otherwise that EasyOCR downloads the named model once. The English-only reader's
+  `english_g2.pth` is not in the collection, so EasyOCR's "Downloading recognition model" on a first run is a real
+  one-time download; the Tools package README and the Processor message no longer claim the first run is offline.
+- **Guides** (EN, NL and the 13 translated user guides): Tournament Live to the website (choose the tournament,
+  then Step 5 → Available Tournament Live recordings → Link to group), a remembered capture card that blocks
+  Start all, XAMPP Apache also wanting ports 80/443 (A3), the Docker "address pools fully subnetted" error (A1),
+  Create new tournament for administrators and the NS1/NS2 Switch ticks in Step 2 (Tournament Directors).
 
 ### Recognition
 

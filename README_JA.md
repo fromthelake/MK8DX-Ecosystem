@@ -99,8 +99,8 @@ flowchart TB
 | やりたいこと | ここから始めよう |
 | --- | --- |
 | **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[日本語](docs/install/translations/ja/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX のインストールと使い方](docs/install/translations/ja/MK8DX_User_Guide_ja.docx) ([TXT](docs/install/translations/ja/MK8DX_User_Guide.txt)) |
-| **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)。Tournament Tools はコミュニティサイトがなくても使えます |
-| **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + キャプチャーボード。コミュニティサイトがなくても使えます |
+| **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/translations/ja/TOURNAMENT_DIRECTORS.md)。Tournament Tools はコミュニティサイトがなくても使えます |
+| **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/translations/ja/LIVETRIAL.md) — Windows + キャプチャーボード。コミュニティサイトがなくても使えます |
 | **タイムを投稿して比べたい** | [Players](docs/guides/translations/ja/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
 | **コミュニティサイトをホストしたい** | [Host a community server](docs/guides/HOSTING.md) |
 | **コードを変更したい** | [Developer guide](docs/DEVELOPMENT.md)、[Testing](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |

@@ -112,6 +112,8 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 预期结果是 “MariaDB 11.4.13” 和 “ready”（就绪）。网站、扫描器、数据库和测试收件箱都绑定在这台电脑上。不要在路由器上转发端口，也不要把 phpMyAdmin 或测试收件箱暴露给其他人。
 
+Apache 没有变绿？未改动的 XAMPP Apache 除了 18090 之外，还要使用端口 80 和 443。如果这台电脑上的 A2 安装、IIS 或其他 Web 服务器已经占用了其中一个端口，Apache 就无法启动，XAMPP Control Panel（XAMPP 控制面板）的日志会显示被占用的端口。请在计划好的时间段内停止那个程序，或者在另一台电脑上使用 A3。不要删除另一个网站。
+
 7. 在网站上点击“登录”，准确使用第 5 步中的管理员地址。在 Mailpit 中打开最新的邮件，并点击其中的登录链接。你仍然只是普通用户。现在双击软件包文件夹中的 Manage-MK8DX-No-Docker.cmd（保持 MK8DX 窗口打开），输入 2 并按 Enter。它在后台运行的是：python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"。
 
 它只对已经验证过电子邮件的账户有效。预期结果是 “created”（已创建），重复操作时是 “unchanged”（未更改）。刷新网站。其他第一个注册的人不会自动成为管理员。
@@ -474,17 +476,19 @@ LiveTrial 会保存地址并自动重启。重启期间请保持窗口打开。�
 
 浏览器扫描器已经是网站的一部分。在你受信任的 HTTPS 地址上打开 /scanner/，从“图片上传”开始。选择你自己的成绩图片，检查识别出的详细信息，核对无误后再确认。使用实时相机需要浏览器权限，并且在 localhost 以外需要受信任的 HTTPS。识别效果还取决于录像质量。文档中描述了 A2 的第二台 Windows 浏览器方式，但尚未经过端到端测试。
 
-对于 Windows x86-64 上的锦标赛工具，检查 tournament-tools-v0.2.3.zip 并解压完整的 ZIP。打开 Install-MK8DX-TournamentTools.cmd。请预留数 GB 的可用空间：大约 160 MB 的 ZIP 和大约 1 GB 的解压空间并不能涵盖所有依赖和你自己的媒体文件。安装程序需要联网一次，用来下载 Python 3.12 和公开软件包；OCR 模型已经附带，之后处理可以离线进行。尚未测量所有依赖和媒体的确切最低空间要求。不需要设置 GPU：使用较新的 NVIDIA 驱动时，安装程序会自动选择 CUDA 版本，然后显卡会加快名字、积分和时间的读取（OCR）。录像的第一次扫描总是在处理器上运行，因为软件包中的 OpenCV 版本不支持 CUDA；软件包中的 USING_MK8DX_TOURNAMENT_TOOLS.md 说明了这两个步骤。等待显示 SUCCESS，并保持 runtime-assets 完好。如果失败，请阅读软件包文件夹中的 install.log。
+对于 Windows x86-64 上的锦标赛工具，检查 tournament-tools-v0.2.3.zip 并解压完整的 ZIP。打开 Install-MK8DX-TournamentTools.cmd。请预留数 GB 的可用空间：大约 160 MB 的 ZIP 和大约 1 GB 的解压空间并不能涵盖所有依赖和你自己的媒体文件。安装程序需要联网一次，用来下载 Python 3.12 和公开软件包；用于检测和拉丁文字的 OCR 模型已经附带；第一次进行英文 OCR 时会一次性再下载一个模型（english_g2.pth，约 15 MB），之后处理可以离线进行。尚未测量所有依赖和媒体的确切最低空间要求。不需要设置 GPU：使用较新的 NVIDIA 驱动时，安装程序会自动选择 CUDA 版本，然后显卡会加快名字、积分和时间的读取（OCR）。录像的第一次扫描总是在处理器上运行，因为软件包中的 OpenCV 版本不支持 CUDA；软件包中的 USING_MK8DX_TOURNAMENT_TOOLS.md 说明了这两个步骤。等待显示 SUCCESS，并保持 runtime-assets 完好。如果失败，请阅读软件包文件夹中的 install.log。
 
 把 .mp4 或 .mkv 录像拖到 TournamentProcessor.cmd 上。程序会在视频旁边创建一个会话文件夹，其中包含 Excel、CSV 以及一个以 _TournamentRaceResultsV1.json 结尾的文件。TournamentLive.cmd 需要合适的采集硬件和用于实时输入的驱动程序。
 
 你也可以在没有采集卡的情况下用现有视频试用 Tournament Live。打开 TournamentLive.cmd，选择“添加视频文件”，选择一个 .mp4 或 .mkv 文件，然后选择“全部开始”。等待视频和分析完成。查看“已确认的排名”，并选择“打开导出文件夹”找到成绩文件。这种普通的视频方式使用的比分选择会等待积分动画和最终排名稳定下来。请自己检查名字、名次和积分；OCR 可能出错。视频回放并不能测试实体采集卡。单独的 TournamentLiveCli.cmd 回放命令用于诊断，不能替代这种方式。
 
+要把这次运行交给你的网站，请在 Tournament Live 中选择“连接到 Tournament Manager”（连接后为“更换锦标赛”），完成浏览器登录，并从列表中选择锦标赛。这个选择只是一个建议。在网站上打开该锦标赛，进入第 5 步（决赛小组为第 9 步），在“可用的锦标赛实时录像”下找到这次运行。在“关联到小组”中选择它的小组，然后选择“关联已审核的录像”。在你接受之前，这些比赛会作为待处理的证据等待。Tournament Live 可能会自动添加它记得的采集卡，作为“小组 1”上的额外来源。如果“小组 1”上还有一个视频，“全部开始”会停下来，并要求你把每路画面分配到不同的小组：选中额外的来源并选择“移除所选”，或者给它分配自己的小组，然后重新开始。
+
 如需可选的网站连接，在软件包文件夹中打开 PowerShell 并运行：
 
 .\TournamentConnect.cmd sign-in
 
-第一次请输入你的安装的准确地址，并完成浏览器登录。下面这些命令用于显示或更改地址；更改时会要求确认：
+第一次请输入你的安装的准确地址，并完成浏览器登录。在 A1 或 A3 上，这就是 MK8DX 窗口显示的 http://127.0.0.1 地址，例如 http://127.0.0.1:18080；未加密的 HTTP 只接受这台电脑上的这类地址。下面这些命令用于显示或更改地址；更改时会要求确认：
 
 .\TournamentConnect.cmd server
 .\TournamentConnect.cmd server https://www.example.org
@@ -581,11 +585,13 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 进行软件更新时，先检查新主机软件包的 SHA-256。把它解压到旧软件文件夹旁边。使用同一个私有数据文件夹，并在新软件包中选择菜单 7。助手会先创建并验证备份，运行缺失的迁移，并只替换附带的服务器程序。之后检查项目身份是否相同，以及网站、登录和数据。如果失败，请保留备份，并且在数据库结构更改之后不要盲目运行旧的镜像。
 
-更新到 0.2.3 会把 Docker 数据库从 MySQL 8.4 迁移到 MySQL 9.7 LTS。MySQL 会在新版本首次启动时对数据文件进行一次升级；只有恢复备份才能撤销这一操作。所以在新的软件包文件夹中，请先选 7 再选 2：如果先选 2，就会在没有备份、也没有数据库更新的情况下启动新版本。菜单 3（检查）是无害的。在 A2 软件包中，浏览器里的 Update（更新）会自行先创建备份；第一次更新只是会稍微久一些，备份位于 Documents\MK8DX-backups 中。A3 和 B2 使用它们自己的 MariaDB 或 MySQL，不受影响。
+更新到 0.2.3 会把 Docker 数据库从 MySQL 8.4 迁移到 MySQL 9.7 LTS。MySQL 会在新版本首次启动时对数据文件进行一次升级；只有恢复备份才能撤销这一操作。所以在新的软件包文件夹中，请先选 7（更新）：它会创建经过检查的备份并应用数据库更新。从 0.2.4 起，在更新完成之前，2（启动）会拒绝运行；如果是 0.2.3 的软件包，选 2 会跳过备份。菜单 3（检查）是无害的。在 A2 软件包中，浏览器里的 Update（更新）会自行先创建备份；第一次更新只是会稍微久一些，备份位于 Documents\MK8DX-backups 中。A3 和 B2 使用它们自己的 MariaDB 或 MySQL，不受影响。
 
 故障排除和自行构建
 
 如果网站是空的，请先使用菜单 3，并检查 Docker 是否在运行。在 A1 上，登录邮件会发送到 Mailpit；在 A2 和 B1 上，它应当发送到真实的收件箱。请始终确认你使用的是同一个安装、地址和电子邮件。在公共方式中收不到登录邮件时，需要检查真实的 SMTP 设置值以及服务商是否可以访问。/health/ready 报告的是 API 和数据库是否就绪，而不是收件箱投递情况。
+
+如果 Start-MK8DX.cmd 在 A1 上因“all predefined address pools have been fully subnetted”而停止，说明旧的 Docker 网络已经用完了 Docker 的地址范围。在 PowerShell 中运行 docker network ls 查看它们。只删除你确定不再使用的网络，例如使用 docker network prune，它只会删除没有任何容器使用的网络。然后重新打开 Start-MK8DX.cmd。
 
 在 A2 上，请先检查两台电脑上的 hosts 条目、私有网络、防火墙端口和证书指纹。在 B1 上，检查 DNS A 记录、服务商端口 80/443、有效的 HTTPS，然后再检查邮件。不要忽视证书警告。求助时绝不要分享 secrets.json、备份、登录链接、SSH 密钥或包含密码的日志行。
 

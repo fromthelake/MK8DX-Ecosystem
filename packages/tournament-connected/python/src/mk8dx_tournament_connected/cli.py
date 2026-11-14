@@ -2,12 +2,33 @@ from __future__ import annotations
 
 import argparse
 import os
+import sys
 from datetime import datetime
 from pathlib import Path
 
 from .client import ConnectionTarget, ConnectionTargetStore, ConnectedClient, ConnectedError, queue_upload, sign_in
 from .session import SessionStore
-from .server import selected_origin, save_origin
+from .server import exact_origin, selected_origin, save_origin
+
+
+ADDRESS_PROMPT = ("Website address of your community (for example https://tournament.example.org, "
+                  "or http://127.0.0.1:<port> for a website on this PC): ")
+NO_ADDRESS = ("No website address is set yet. Run TournamentConnect.cmd server <address> first, "
+              "for example TournamentConnect.cmd server https://tournament.example.org")
+
+
+def _ask_address_once() -> None:
+    """sign-in with no address configured asks for it once and stores it like ``server <address>``."""
+    if os.environ.get("MK8DX_TOURNAMENT_API_ORIGIN") or selected_origin():
+        return
+    if not sys.stdin or not sys.stdin.isatty():
+        raise ConnectedError(NO_ADDRESS)
+    try:
+        address = input(ADDRESS_PROMPT).strip()
+    except EOFError:
+        raise ConnectedError(NO_ADDRESS) from None
+    save_origin(exact_origin(address))
+    print(f"Website address saved: {address}")
 
 
 def _choose(items: tuple, description) -> object:
@@ -46,6 +67,8 @@ def main(argv: list[str] | None = None) -> int:
                 save_origin(args.address)
             print(os.environ.get("MK8DX_TOURNAMENT_API_ORIGIN") or selected_origin() or "https://example.invalid")
             return 0
+        if args.command == "sign-in":
+            _ask_address_once()
         store = SessionStore()
         if args.command == "sign-in":
             sign_in(store)
