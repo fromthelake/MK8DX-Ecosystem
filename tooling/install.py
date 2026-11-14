@@ -744,12 +744,64 @@ def offline_addresses(state):
             "website": profile["origin"]}
 
 
+def _compose_rows(output):
+    """Rows of `docker compose ps --format json`: one JSON array, or one JSON object per line (older Compose)."""
+    text = output.strip()
+    if not text:
+        return []
+    if text.startswith("["):
+        return json.loads(text)
+    return [json.loads(line) for line in text.splitlines() if line.strip()]
+
+
+def images_behind_package(state):
+    """Services whose existing container runs another image than this package would start (#197).
+
+    A host package's Compose files name its own images, so `start` from a newer package folder would run
+    the new version on the installation without the checked backup and the database updates that the
+    update (`upgrade`) does first; a newer MySQL also upgrades the data files for good. Only a host
+    package is checked: a source checkout builds its own images under fixed names."""
+    if not (ROOT / "PACKAGE_MANIFEST.json").is_file():
+        return []
+    clean_env = {k: v for k, v in os.environ.items() if not k.startswith(("COMPOSE_", "MK8DX_"))}
+    command = compose_command(state)
+    config = subprocess.run(command + ["config", "--format", "json"], cwd=ROOT, env=clean_env, check=True,
+                            capture_output=True, text=True).stdout
+    wanted = {name: service.get("image") for name, service in json.loads(config).get("services", {}).items()}
+    running = subprocess.run(command + ["ps", "--all", "--format", "json"], cwd=ROOT, env=clean_env, check=True,
+                             capture_output=True, text=True).stdout
+
+    def inspect(*arguments):
+        result = subprocess.run(["docker", *arguments], capture_output=True, text=True, check=False)
+        return result.stdout.strip() if result.returncode == 0 else None
+
+    behind = set()
+    # Only the services the update exists for: the database and the API whose migrations it applies. Other
+    # services (the gateway, Mailpit) may change their image freely at a start. Compared by image ID: `ps`
+    # shows a bare ID once the container's tag points elsewhere.
+    for row in _compose_rows(running):
+        service = row.get("Service")
+        if service not in ("mysql", "api") or not wanted.get(service) or not row.get("ID"):
+            continue
+        package_id = inspect("image", "inspect", "--format", "{{.Id}}", wanted[service])
+        container_id = inspect("container", "inspect", "--format", "{{.Image}}", row["ID"])
+        if package_id and container_id and package_id != container_id:
+            behind.add(service)
+    return sorted(behind)
+
+
 def operate(state, action, backup_output=None, user_account_id=None, force_ca_rotation=False,
             qa_offline_candidate=False):
     route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
     if route == "A2_OFFLINE" and action in OFFLINE_GATED and not qa_offline_candidate:
         raise ValueError("A2 offline is not yet qualified for general use (fail-closed until its acceptance passes). "
                          "Only a disposable QA host may continue with --qa-offline-candidate")
+    if action in ("start", "apply") and route != "A2_OFFLINE":
+        behind = images_behind_package(state)
+        if behind:
+            raise ValueError("This package is a different version than your installation runs "
+                             f"({', '.join(behind)}). Choose 7 (update) first: it makes a checked backup and "
+                             "applies the database updates. Your data is unchanged.")
     services = route_services(route)
     recreated = tuple(s for s in services if s not in ("mysql", "mailpit"))
     if action == "maintain-ca":

@@ -18,8 +18,9 @@ the setuptools build backend for the wheels); the build itself never downloads
 the runtime closure.
 
 The package includes reviewed live and recorded asset variants from the
-repository's internal collection. EasyOCR weights are fetched from their public
-upstream dependency on first run. Publication requires a separate rights review.
+repository's internal collection, including the EasyOCR recognition models
+(``runtime-assets\\ocr-models``), so the first OCR run needs no download.
+Publication requires a separate rights review.
 """
 
 from __future__ import annotations
@@ -90,7 +91,8 @@ rem
 rem  Double-click this file. It prepares a Python 3.12 runtime INSIDE this
 rem  folder (runtime\), installs the Tournament Processor / Tournament Live
 rem  tools plus their dependencies into it, and writes the launcher files
-rem  TournamentProcessor.cmd, TournamentAnalysis.cmd, TournamentLive.cmd and TournamentLiveCli.cmd.
+rem  TournamentProcessor.cmd, TournamentAnalysis.cmd, TournamentLive.cmd, TournamentLiveCli.cmd
+rem  and TournamentConnect.cmd.
 rem  Nothing is installed system-wide. Re-run it later to update.
 rem
 rem  Internet is required once: PyTorch, EasyOCR, OpenCV and Qt are downloaded
@@ -228,6 +230,7 @@ call :say " TournamentProcessor.cmd  - process a recorded video (drag it onto th
 call :say " TournamentAnalysis.cmd   - window to analyse recordings afterwards" " TournamentAnalysis.cmd   - venster om opnames achteraf te analyseren"
 call :say " TournamentLive.cmd       - live capture-card tournament app" " TournamentLive.cmd       - live toernooi-app voor een capturekaart"
 call :say " TournamentLiveCli.cmd    - advanced command line" " TournamentLiveCli.cmd    - geavanceerde opdrachtregel"
+call :say " TournamentConnect.cmd    - optional connection to the website" " TournamentConnect.cmd    - optionele verbinding met de website"
 call :say " TournamentTools.config.cmd - local settings and bundled assets" " TournamentTools.config.cmd - lokale instellingen en meegeleverde assets"
 echo.
 call :say " Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow." " Lees README-FIRST.txt en USING_MK8DX_TOURNAMENT_TOOLS.md voor de werkwijze."
@@ -959,6 +962,7 @@ Install (once; internet needed)
      TournamentAnalysis.cmd    window to analyse recordings afterwards (videos or folders)
      TournamentLive.cmd        live capture-card tournament GUI
      TournamentLiveCli.cmd     live tools command line
+     TournamentConnect.cmd     optional connection to the website (sign in, send results)
 4. The package already contains the live and recorded recognition assets.
    Keep runtime-assets\\ with the launchers.
 
@@ -982,8 +986,8 @@ Update
 
 Known limitations
 -----------------
-  - Internet is needed for the install and for the first OCR run (EasyOCR model
-    download); afterwards the tools work offline.
+  - Internet is needed once, for the install. The EasyOCR recognition models
+    are included in runtime-assets\\ocr-models\\; afterwards the tools work offline.
   - Tournament Live needs a capture card / video device visible to Windows.
   - If a tool stops with "DLL load failed" install the Microsoft Visual C++
     Redistributable 2015-2022 (x64) from Microsoft and retry.

@@ -183,6 +183,9 @@ public final class SegmentDigits {
         double[][] regions = {{0.20, 0.03, 0.80, 0.18}, {0.72, 0.12, 0.95, 0.48}, {0.72, 0.52, 0.95, 0.88},
                 {0.20, 0.82, 0.80, 0.97}, {0.05, 0.52, 0.28, 0.88}, {0.05, 0.12, 0.28, 0.48}, {0.20, 0.42, 0.80, 0.58}};
         double[] out = new double[KEYS.length];
+        // An empty patch (zero width or height) has no pixels: every segment scores 0, the all-off
+        // pattern, which decodes to no digit ("?"). Same as the Python reference and the TypeScript port.
+        if (w <= 0 || h <= 0) return out;
         for (int k = 0; k < KEYS.length; k++) {
             double[] r = regions[k];
             int left = Math.max(0, Math.min(w - 1, (int) Math.round(w * r[0])));

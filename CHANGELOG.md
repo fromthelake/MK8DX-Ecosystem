@@ -5,6 +5,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Fixed
+
+- **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
+  in a new package's folder would run the new version on the existing installation without the checked backup and
+  the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
+  and apply now compare the database and API images of the installation's containers with this package's images
+  and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
+
 ### Recognition
 
 - **A Python reference for the Web/Android icon crop search** (#99, phase 3). `crop_search.py` in the central reader
