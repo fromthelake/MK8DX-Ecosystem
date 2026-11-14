@@ -56,10 +56,9 @@ Tournament Tools에서 온 레이스: 그룹의 **수신된 결과**를 열고, 
 
 ### 요구 사항
 
-- x86-64 Windows(Windows 11에서 테스트됨)와 몇 GB의 여유 공간. ZIP은 약 160 MB이고 압축을 풀면 약 1 GB입니다.
-  설치 프로그램은 Python 3.12와 공개 패키지를 내려받기 위해 한 번 인터넷이 필요합니다(GPU/CUDA를 쓰면 더 많음). 감지 모델과
-  라틴 문자 OCR 모델은 포함되어 있으며, 영어 OCR을 처음 실행할 때 모델 하나(english_g2.pth,
-  약 15 MB)를 한 번 더 내려받습니다. 그 뒤로는 오프라인으로 처리할 수 있습니다. NVIDIA
+- x86-64 Windows(Windows 11에서 테스트됨)와 몇 GB의 여유 공간. ZIP은 약 440 MB이고 압축을 풀면 약 1.3 GB입니다.
+  설치 프로그램은 Python 3.12와 공개 패키지를 내려받기 위해 한 번 인터넷이 필요합니다(GPU/CUDA를 쓰면 더 많음). 모든 OCR 모델이
+  포함되어 있습니다. 설치 후에는 오프라인으로 처리할 수 있습니다. NVIDIA
   그래픽 카드는 OCR 단계만 빠르게 합니다. 녹화의 첫 스캔은 항상 CPU에서 실행됩니다(
   [which steps use the graphics card](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card) 참고).
 - 실시간 캡처: Windows(DirectShow) 드라이버가 정상 작동하는 캡처 카드. 녹화만 쓴다면 추가로 필요한 것은 없습니다.

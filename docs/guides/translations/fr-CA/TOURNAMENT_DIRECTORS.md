@@ -58,10 +58,9 @@ La publication et la cote de la communauté sont des décisions distinctes de l'
 
 ### Configuration requise
 
-- Windows sur x86-64 (testé sous Windows 11) et plusieurs Go d'espace libre. Le ZIP fait environ 160 Mo et environ 1 Go une fois extrait;
-  l'installateur a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics (davantage avec GPU/CUDA); les modèles
-  de détection et d'OCR pour l'alphabet latin sont inclus, et la première exécution de l'OCR anglais télécharge un modèle de plus
-  (english_g2.pth, environ 15 Mo) une fois. Ensuite, le traitement fonctionne hors ligne. Une carte
+- Windows sur x86-64 (testé sous Windows 11) et plusieurs Go d'espace libre. Le ZIP fait environ 440 Mo et environ 1,3 Go une fois extrait;
+  l'installateur a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics (davantage avec GPU/CUDA); tous les modèles
+  d'OCR sont inclus. Après l'installation, le traitement fonctionne hors ligne. Une carte
   NVIDIA n'accélère que l'étape OCR; le premier scan d'un enregistrement tourne toujours sur le CPU (voir
   [quelles étapes utilisent la carte graphique](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - Pour la capture en direct : une carte d'acquisition avec un pilote Windows (DirectShow) fonctionnel. Pour les

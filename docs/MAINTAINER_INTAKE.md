@@ -72,5 +72,12 @@ python tooling/assets/shared_asset_source.py verify
 ```
 
 It updates the object store, the collection version, the consumer selections and `compatibility.json`, verifies
-the whole collection and rolls back on failure. New kinds of resources, models and catalog changes go through
-the software import above instead.
+the whole collection and rolls back on failure.
+
+The same policy can instead (or also) list `admissions`: a new public upstream model file (`.pth`) for an existing
+group, with `logical` and `sourceRelative` paths, its `sha256` and `sizeBytes`, the `upstreamMd5` the upstream
+project publishes, an https `sourceUrl` and a `license` whose text is in `packages/assets/licenses/`. The file must
+match both hashes; its manifest row takes the group's role and consumers and keeps `provenance` (license, source URL,
+upstream MD5). An object over GitHub's 100 MiB limit is stored as `<sha>.partN` and its joined copy is added to
+`.gitignore`. The EasyOCR recognition models were admitted this way. New groups, new kinds of resources, changes to
+existing models and catalog changes go through the software import above instead.

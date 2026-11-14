@@ -31,10 +31,18 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
   new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
   0.2.3 package 2 would skip the backup.
-- **The Tournament Tools guides no longer say every OCR model is included.** The package carries the detection and
-  Latin-script EasyOCR models; the first English OCR run downloads `english_g2.pth` (about 15 MB) once, as the
-  package README already said. Corrected in the Tournament Directors guide (EN/NL), the client install pages, the
-  Tournament Tools reference and all 15 user guides.
+- **Tournament Tools and LiveTrial ship every EasyOCR model, so OCR works offline from the start.** The `ocr-models`
+  collection group held only the detection and Latin-script models, so the English-only reader (`english_g2.pth`)
+  and, on a Russian, Japanese, Korean or Chinese console, the track and console-language readers downloaded their
+  model on the first run (and failed offline). The group now also holds `english_g2.pth`, `cyrillic_g2.pth`,
+  `japanese_g2.pth`, `korean_g2.pth`, `zh_sim_g2.pth` and `chinese.pth` (traditional Chinese), from EasyOCR's own
+  releases, MD5-checked against easyocr 1.7.2 and Apache-2.0 (collection
+  `master-schema9-v5.10-pack-0.4.2-2026-11-14-r1`, about 297 MiB more; `chinese.pth` is 216 MiB and stored in three
+  parts). `tooling/assets/update_collection.py` gained `admissions` for exactly this: a new public upstream file in
+  an existing group with its SHA-256, size, upstream MD5, source URL and license pinned and kept in the manifest.
+  The Tournament Directors guide (EN/NL and translations), the client install pages, the Tournament Tools reference,
+  all 15 user guides and the package README now say all OCR models are included and processing works offline after
+  the install.
 - **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
   in a new package's folder would run the new version on the existing installation without the checked backup and
   the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
@@ -50,10 +58,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **`TournamentConnect.cmd sign-in` asks for the website address** when none is set, validates it like
   `server <address>` and stores it; without a terminal it stops and names `TournamentConnect.cmd server <address>`.
   It used to try the placeholder `https://example.invalid` and fail with a DNS error.
-- **Tournament Live's OCR warm-up says what happens to the recognition models**: "Loading recognition models"
-  when they are on disk, otherwise that EasyOCR downloads the named model once. The English-only reader's
-  `english_g2.pth` is not in the collection, so EasyOCR's "Downloading recognition model" on a first run is a real
-  one-time download; the Tools package README and the Processor message no longer claim the first run is offline.
+- **Tournament Live's OCR warm-up says what happens to the recognition models**: "Loading recognition models (no
+  download needed)" when they are on disk (the normal case, now that the package ships them all), otherwise that
+  EasyOCR downloads the named model once. It knows the model file of every reader set, including the Cyrillic,
+  Japanese, Korean and Chinese ones.
 - **Guides** (EN, NL and the 13 translated user guides): Tournament Live to the website (choose the tournament,
   then Step 5 → Available Tournament Live recordings → Link to group), a remembered capture card that blocks
   Start all, XAMPP Apache also wanting ports 80/443 (A3), the Docker "address pools fully subnetted" error (A1),

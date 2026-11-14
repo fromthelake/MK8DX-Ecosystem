@@ -73,5 +73,13 @@ python tooling/assets/shared_asset_source.py verify
 ```
 
 Het werkt de objectopslag, de collectieversie, de selecties per gebruiker en `compatibility.json` bij,
-controleert de hele collectie en draait terug bij een fout. Nieuwe soorten bestanden, modellen en
-cataloguswijzigingen lopen via de software-import hierboven.
+controleert de hele collectie en draait terug bij een fout.
+
+Dezelfde policy kan in plaats daarvan (of ook) `admissions` noemen: een nieuw openbaar modelbestand (`.pth`) van een
+upstream project voor een bestaande groep, met de paden `logical` en `sourceRelative`, de `sha256` en `sizeBytes`,
+de `upstreamMd5` die het upstream project publiceert, een https-`sourceUrl` en een `license` waarvan de tekst in
+`packages/assets/licenses/` staat. Het bestand moet met beide hashes kloppen; de manifestregel krijgt de rol en
+gebruikers van de groep en bewaart `provenance` (licentie, bron-URL, upstream-MD5). Een object boven de 100 MiB-grens
+van GitHub wordt als `<sha>.partN` opgeslagen en de samengevoegde kopie komt in `.gitignore`. De
+EasyOCR-herkenningsmodellen zijn zo toegelaten. Nieuwe groepen, nieuwe soorten bestanden, wijzigingen aan bestaande
+modellen en cataloguswijzigingen lopen via de software-import hierboven.

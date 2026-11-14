@@ -57,10 +57,9 @@ Veröffentlichung und Community-Wertung sind getrennte Entscheidungen im letzten
 
 ### Voraussetzungen
 
-- Windows auf x86-64 (getestet unter Windows 11) und mehrere GB freier Speicher. Das ZIP ist etwa 160 MB groß und entpackt etwa 1 GB; das
-  Installationsprogramm braucht einmal Internet, um Python 3.12 und öffentliche Pakete herunterzuladen (mehr mit GPU/CUDA); die Erkennungs-
-  und OCR-Modelle für lateinische Schrift sind enthalten, und der erste englische OCR-Lauf lädt einmal ein weiteres Modell herunter (english_g2.pth,
-  etwa 15 MB). Danach funktioniert die Verarbeitung offline. Eine NVIDIA-Karte
+- Windows auf x86-64 (getestet unter Windows 11) und mehrere GB freier Speicher. Das ZIP ist etwa 440 MB groß und entpackt etwa 1,3 GB; das
+  Installationsprogramm braucht einmal Internet, um Python 3.12 und öffentliche Pakete herunterzuladen (mehr mit GPU/CUDA); alle OCR-Modelle
+  sind enthalten. Nach der Installation funktioniert die Verarbeitung offline. Eine NVIDIA-Karte
   beschleunigt nur den OCR-Schritt; der erste Scan einer Aufnahme läuft immer auf der CPU (siehe
   [which steps use the graphics card](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - Für die Live-Aufnahme: eine Capture-Karte mit einem funktionierenden Windows-Treiber (DirectShow). Für Aufnahmen: nichts weiter.

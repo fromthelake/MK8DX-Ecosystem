@@ -70,7 +70,7 @@ working folder, private recordings or review crops, which are not in this reposi
 
 | Script | What it does | Private inputs |
 | --- | --- | --- |
-| `assets/update_collection.py` | Reviewed exact replacement of collection objects (policy and plan live outside the tree). | replacement policy and inputs |
+| `assets/update_collection.py` | Reviewed exact replacement of collection objects, and admission of a new public upstream model file into an existing group with its provenance (policy and plan live outside the tree). | replacement/admission policy and inputs |
 | `assets/schema9_asset_catalog.py`, `assets/export_schema9_catalog_snapshot.py`, `assets/verify_schema9_release.py` | Build and verify the stable-ID game catalog. | a Clean Assets release |
 | `assets/export_android_*.py`, `assets/export_android_product_catalogs.mjs`, `assets/export_web_track_catalog.py`, `assets/export_scanner_tire_names.py` | Export catalogs for Android, the website and the scanners. | a Clean Assets release |
 | `assets/generate_dutch_presentation_catalog.mjs`, `assets/generate_loadout_variants.mjs`, `assets/stage_loadout_variant_assets.mjs` | Presentation catalogs and loadout colour variants. | the Icon Matcher references |

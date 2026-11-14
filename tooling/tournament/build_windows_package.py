@@ -19,9 +19,9 @@ the runtime closure.
 
 The package includes reviewed live and recorded asset variants from the
 repository's internal collection, including the EasyOCR recognition models
-(``runtime-assets\\ocr-models``: detection and Latin-script recognition). The
-English-only reader's model (english_g2.pth) is not in the collection yet, so
-EasyOCR downloads it once into that folder on the first OCR run.
+(``runtime-assets\\ocr-models``: detection plus every recognition model the
+English, Latin-script, Cyrillic, Japanese, Korean and Chinese readers use), so
+OCR never downloads a model and processing works offline after the install.
 Publication requires a separate rights review.
 """
 
@@ -855,8 +855,8 @@ def process_video(package_root: Path, target: Path) -> int:
     print(_text(f"Output folder  : {runtime_root / 'Output_Results'}", f"Uitvoermap     : {runtime_root / 'Output_Results'}"))
     print(_text("Processing the recording ...", "De opname wordt verwerkt ..."))
     print(_text(
-        "(the first run downloads the English EasyOCR model once; later runs work offline)",
-        "(de eerste keer wordt het Engelse EasyOCR-model eenmalig gedownload; daarna werkt het offline)",
+        "(all EasyOCR models are included; no download needed, this works offline)",
+        "(alle EasyOCR-modellen zitten erbij; er wordt niets gedownload, dit werkt offline)",
     ))
     from tournament_processor.vision_cli import run
 
@@ -988,10 +988,9 @@ Update
 
 Known limitations
 -----------------
-  - Internet is needed for the install and once more on the first OCR run:
-    runtime-assets\\ocr-models\\ holds the detection and Latin-script models,
-    and EasyOCR downloads the English model (english_g2.pth) into the same
-    folder once; afterwards the tools work offline.
+  - Internet is needed for the install only. All OCR models are included
+    (runtime-assets\\ocr-models\\), so after the install processing works
+    offline.
   - Tournament Live needs a capture card / video device visible to Windows.
   - If a tool stops with "DLL load failed" install the Microsoft Visual C++
     Redistributable 2015-2022 (x64) from Microsoft and retry.

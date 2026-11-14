@@ -56,10 +56,9 @@ Analysis 和 Live）可以單獨使用。它們會在你的電腦上寫出 Excel
 
 ### 需求
 
-- x86-64 的 Windows（已在 Windows 11 上測試）以及數 GB 的可用空間。ZIP 大約 160 MB，解壓縮後大約 1 GB；
-  安裝程式需要連上網路一次，以下載 Python 3.12 和公開的套件（使用 GPU/CUDA 時更多）；偵測模型和
-  拉丁字母 OCR 模型已包含在內，第一次執行英文 OCR 時會再下載一個模型（english_g2.pth，
-  大約 15 MB），只下載一次。之後處理可以離線進行。NVIDIA
+- x86-64 的 Windows（已在 Windows 11 上測試）以及數 GB 的可用空間。ZIP 大約 440 MB，解壓縮後大約 1.3 GB；
+  安裝程式需要連上網路一次，以下載 Python 3.12 和公開的套件（使用 GPU/CUDA 時更多）；所有 OCR
+  模型皆已包含在內。安裝完成後，處理可以離線進行。NVIDIA
   顯示卡只會加快 OCR 步驟；錄影的第一次掃描一律在 CPU 上執行（請見
   [which steps use the graphics card](../../../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)）。
 - 即時擷取：一張具有可正常運作的 Windows（DirectShow）驅動程式的擷取卡。使用錄影時：不需要額外的東西。

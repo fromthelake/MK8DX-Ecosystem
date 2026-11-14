@@ -79,9 +79,36 @@ def test_installer_and_readme_name_every_launcher(tmp_path):
         assert any(line.startswith(f'call :say " {name}') for line in builder.INSTALLER_CMD.splitlines()), name
         assert f"     {name}" in builder.README_FIRST, name
     assert "ocr-models" in builder.README_FIRST
-    # Only detection + Latin recognition are in the collection; the English-only reader's
-    # english_g2.pth is still a one-time EasyOCR download, so README-FIRST must say so.
-    assert "english_g2.pth" in builder.README_FIRST
+    # Every OCR model ships in the package, so README-FIRST promises offline processing.
+    assert "All OCR models are included" in builder.README_FIRST
+    assert "english_g2.pth" not in builder.README_FIRST
+
+
+def test_package_stages_every_ocr_model_a_reader_can_request():
+    import json
+
+    from live_processor import ocr_runtime
+    from mk8dx_tournament_extraction import track_names
+
+    builder_source = BUILDER.read_text(encoding="utf-8")
+    assert '("ocr-models", "ocr-models")' in builder_source
+    manifest = json.loads((ROOT / "packages/assets/collection/collection-manifest.v1.json").read_text(encoding="utf-8"))
+    staged = {name.removeprefix("ocr-models/model/") for name in manifest["files"] if name.startswith("ocr-models/")}
+    assert len(staged) == manifest["sources"]["ocr-models"]["fileCount"]
+    # The row/score reader, the default track reader, every game locale's track reader and
+    # LiveTrial's console-language readers (consolelang.OCR_READERS, read without importing the engine).
+    import ast
+
+    consolelang = ROOT / "apps/timetrials-desktop/engine-overlay/livetrial/livetrial/consolelang.py"
+    readers = next(ast.literal_eval(node.value) for node in ast.parse(consolelang.read_text(encoding="utf-8")).body
+                   if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", "") == "OCR_READERS")
+    sets = [["en"], ["en", "nl"], *(list(langs) for langs in track_names.OCR_LANGUAGES.values()),
+            *readers.values()]
+    needed = {ocr_runtime.easyocr_recognition_model_file(langs) for langs in sets}
+    assert None not in needed
+    assert needed | {"craft_mlt_25k.pth"} <= staged
+    assert needed == {"english_g2.pth", "latin_g2.pth", "cyrillic_g2.pth", "japanese_g2.pth",
+                      "korean_g2.pth", "zh_sim_g2.pth", "chinese.pth"}
 
 
 def test_package_installs_the_qt_window_and_offers_the_background_setting(tmp_path):

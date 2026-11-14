@@ -476,7 +476,7 @@ LiveTrial 會儲存網址並自動重新啟動。重新啟動期間請保持視�
 
 瀏覽器掃描器已經是網站的一部分。在你受信任的 HTTPS 網址上開啟 /scanner/，從「圖片上傳」開始。選擇你自己的成績圖片，檢查辨識出的詳細資料，核對無誤後再確認。使用即時相機需要瀏覽器權限，而且在 localhost 以外需要受信任的 HTTPS。辨識效果也取決於錄影品質。文件中描述了 A2 的第二台 Windows 瀏覽器方式，但尚未經過端對端測試。
 
-對於 Windows x86-64 上的錦標賽工具，檢查 tournament-tools-v0.2.3.zip 並解壓縮完整的 ZIP。開啟 Install-MK8DX-TournamentTools.cmd。請預留數 GB 的可用空間：大約 160 MB 的 ZIP 和大約 1 GB 的解壓縮空間並不能涵蓋所有相依套件和你自己的媒體檔案。安裝程式需要連上網際網路一次，用來下載 Python 3.12 和公開套件；用於偵測和拉丁文字的 OCR 模型已經隨附；第一次進行英文 OCR 時會一次性再下載一個模型（english_g2.pth，約 15 MB），之後處理可以離線進行。尚未測量所有相依套件和媒體的確切最低空間需求。不需要設定 GPU：使用較新的 NVIDIA 驅動程式時，安裝程式會自動選擇 CUDA 版本，接著顯示卡會加快名稱、積分和時間的讀取（OCR）。錄影的第一次掃描一律在處理器上執行，因為套件中的 OpenCV 版本不支援 CUDA；套件中的 USING_MK8DX_TOURNAMENT_TOOLS.md 說明了這兩個步驟。等待顯示 SUCCESS，並保持 runtime-assets 完整。如果失敗，請閱讀套件資料夾中的 install.log。
+對於 Windows x86-64 上的錦標賽工具，檢查 tournament-tools-v0.2.3.zip 並解壓縮完整的 ZIP。開啟 Install-MK8DX-TournamentTools.cmd。請預留數 GB 的可用空間：大約 440 MB 的 ZIP 和大約 1.3 GB 的解壓縮空間並不能涵蓋所有相依套件和你自己的媒體檔案。安裝程式需要連上網際網路一次，用來下載 Python 3.12 和公開套件；OCR 模型已經隨附，之後處理可以離線進行。尚未測量所有相依套件和媒體的確切最低空間需求。不需要設定 GPU：使用較新的 NVIDIA 驅動程式時，安裝程式會自動選擇 CUDA 版本，接著顯示卡會加快名稱、積分和時間的讀取（OCR）。錄影的第一次掃描一律在處理器上執行，因為套件中的 OpenCV 版本不支援 CUDA；套件中的 USING_MK8DX_TOURNAMENT_TOOLS.md 說明了這兩個步驟。等待顯示 SUCCESS，並保持 runtime-assets 完整。如果失敗，請閱讀套件資料夾中的 install.log。
 
 把 .mp4 或 .mkv 錄影拖到 TournamentProcessor.cmd 上。程式會在影片旁邊建立一個工作階段資料夾，其中包含 Excel、CSV 以及一個以 _TournamentRaceResultsV1.json 結尾的檔案。TournamentLive.cmd 需要合適的擷取硬體和用於即時輸入的驅動程式。
 
