@@ -3419,6 +3419,48 @@
    ],
    "slot": 5,
    "width": 22
+  },
+  {
+   "best": null,
+   "bestRequired": null,
+   "binary": "",
+   "boundary": false,
+   "height": 27,
+   "id": 78,
+   "kind": "lap",
+   "required": null,
+   "segmentScores": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "slot": 1,
+   "width": 0
+  },
+  {
+   "best": null,
+   "bestRequired": null,
+   "binary": "",
+   "boundary": false,
+   "height": 0,
+   "id": 79,
+   "kind": "total",
+   "required": "8",
+   "segmentScores": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "slot": 3,
+   "width": 22
   }
  ],
  "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",

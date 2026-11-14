@@ -219,6 +219,9 @@ export function compareCandidates(a: SegmentCandidate, b: SegmentCandidate): num
 
 /** Fallback zonder sjabloon: dekking per regio (OfflineParityNativePipeline.segmentScores). */
 export function segmentScores(binary: Uint8Array, w: number, h: number): Record<string, number> {
+  // An empty patch (zero width or height) has no pixels: every segment scores 0, the all-off
+  // pattern, which decodes to no digit ('?'). Same as the Python reference and the Java port.
+  if (w <= 0 || h <= 0) return Object.fromEntries(SEGMENT_KEYS.map((key) => [key, 0.0]));
   const coverage = (x1: number, y1: number, x2: number, y2: number): number => {
     const left = Math.max(0, Math.min(w - 1, Math.round(w * x1)));
     const top = Math.max(0, Math.min(h - 1, Math.round(h * y1)));

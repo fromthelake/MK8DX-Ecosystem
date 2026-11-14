@@ -14,6 +14,29 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   `README_EN_US.md`. The setup wizard's Manual link opens the guide in the browser's language; the release
   attaches `MK8DX_User_Guide_<locale>.txt`/`.docx`, and every package that carried the EN/NL guides carries all
   of them.
+- **Connect later** in the LiveTrial and Tournament Directors guides (EN/NL): what is sent when you sign in or
+  send later, what stays on the PC, and that Tournament Live's Excel stays in `Live_Output\exports` after closing.
+  English versions of the Dutch-only install docs and Dutch versions of the player, LiveTrial, Tournament and
+  hosting guides.
+
+### Fixed
+
+- **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
+  in a new package's folder would run the new version on the existing installation without the checked backup and
+  the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
+  and apply now compare the database and API images of the installation's containers with this package's images
+  and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
+- **Android: Change Player and Change community** instead of a bare **Switch** (#201). In es, es-419, it, ko,
+  pt and ru the account and community buttons showed the console's name untranslated.
+
+### Recognition
+
+- **A Python reference for the Web/Android icon crop search** (#99, phase 3). `crop_search.py` in the central reader
+  reproduces how the browser scanner and Android cut the character, kart and glider crops (nominal score, masked
+  position pass, shift, ghost-card saturation boost, seven character scales, crop box). On the 12 public test-set
+  frames it equals the browser scanner on all 154 searches of 50 fields. The new vector
+  `crop-search-v1.json` (26 synthetic cases, 50 real crops, numbers only) is replayed in Python, TypeScript and
+  Java. The scanners' behaviour does not change: they still run their own search until phase 4.
 
 ## 0.2.3 — 2026-11-14
 

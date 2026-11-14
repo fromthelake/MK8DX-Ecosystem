@@ -1423,6 +1423,20 @@
    "nl": "Wijzig"
   },
   {
+   "key": "Change Player",
+   "places": [
+    "AndroidDutchUiCopy.kt:456"
+   ],
+   "nl": "Speler wisselen"
+  },
+  {
+   "key": "Change community",
+   "places": [
+    "AndroidCommunityServerPanel.kt:236"
+   ],
+   "nl": "Community wisselen"
+  },
+  {
    "key": "Change consoles",
    "places": [
     "AndroidTournamentSignup.kt:357"
@@ -9329,14 +9343,6 @@
     "AndroidDutchUiCopy.kt:378"
    ],
    "nl": "Veeg voor latere stappen →"
-  },
-  {
-   "key": "Switch",
-   "places": [
-    "AndroidCommunityServerPanel.kt:236",
-    "AndroidDutchUiCopy.kt:456"
-   ],
-   "nl": "Wisselen"
   },
   {
    "key": "Switch Player",

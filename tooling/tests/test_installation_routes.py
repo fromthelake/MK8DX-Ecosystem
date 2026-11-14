@@ -1,4 +1,6 @@
 """Focused operator and device-configuration regression checks with synthetic data."""
+import contextlib
+import io
 import json
 import os
 import stat
@@ -16,6 +18,14 @@ sys.path.insert(0, str(ROOT / "packages/tournament-connected/python/src"))
 from tooling import install
 from livetrial_settings import read_server_origin, server_data_root, write_server_origin
 from mk8dx_tournament_connected import server as tournament_server
+
+
+def _printed(call, *args, **kwargs):
+    """Run a tool function with its console output captured; return that output."""
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        call(*args, **kwargs)
+    return output.getvalue()
 
 
 class OperatorProfileTest(unittest.TestCase):
@@ -75,9 +85,12 @@ class OperatorProfileTest(unittest.TestCase):
             self.assertEqual(public, {"schemaVersion": "mk8dx.public-client.v1", "websiteOrigin": "https://example.invalid"})
             self.assertNotIn("synthetic", (state / "api.env").read_text())
             self.assertNotIn("owner@example.invalid", (state / "public-client.json").read_text())
-            install.status(state)
-            install.change_origin(state, "https://new.example.invalid")
-            install.status(state)
+            shown = json.loads(_printed(install.status, state))
+            self.assertEqual((shown["route"], shown["origin"], shown["smtpHost"]),
+                             ("B1", "https://example.invalid", "mail.example.invalid"))
+            self.assertTrue(shown["adminEmailConfigured"])
+            self.assertIn("Origin saved", _printed(install.change_origin, state, "https://new.example.invalid"))
+            self.assertEqual(json.loads(_printed(install.status, state))["origin"], "https://new.example.invalid")
             self.assertEqual(json.loads((state / "secrets.json").read_text()), before)
             self.assertEqual(install.read_dotenv(state / "compose.env")["MK8DX_DOMAIN"], "new.example.invalid")
             current = (state / "operator-profile.json").read_bytes()
@@ -85,8 +98,12 @@ class OperatorProfileTest(unittest.TestCase):
                 install.change_origin(state, "http://evil.example.invalid")
             self.assertEqual((state / "operator-profile.json").read_bytes(), current)
             with patch("builtins.input", side_effect=["", "", "", ""]), patch("getpass.getpass", return_value="new'$#pass"):
-                install.change_smtp(state)
-            install.status(state)
+                printed = _printed(install.change_smtp, state)
+            self.assertIn("SMTP configuration saved privately", printed)
+            self.assertNotIn("new'$#pass", printed)
+            shown = _printed(install.status, state)
+            self.assertNotIn("pass", shown.lower())
+            self.assertEqual(json.loads(shown)["origin"], "https://new.example.invalid")
             self.assertEqual(json.loads((state / "secrets.json").read_text())["MK8DX_HOSTED_SMTP_PASSWORD"], "new'$#pass")
             self.assertEqual(json.loads((state / "operator-profile.json").read_text())["project"],
                              install.read_dotenv(state / "compose.env")["MK8DX_PROJECT_NAME"])
@@ -163,7 +180,9 @@ class ClientAddressForwardingTest(unittest.TestCase):
             for values in (runtime, operator):
                 self.assertEqual(json.loads(values["MK8DX_HOSTED_AUTH_TRUSTED_PROXIES_JSON"]), ["web"])
                 self.assertEqual(json.loads(values["MK8DX_HOSTED_AUTH_CLIENT_IP_HEADERS_JSON"]), ["x-real-ip"])
-            install.status(state)
+            shown = json.loads(_printed(install.status, state))
+            self.assertEqual(shown["route"], "A1")
+            self.assertTrue(shown["localMailInbox"].startswith("http://127.0.0.1:"))
 
     def test_compose_sets_the_gateway_trust_for_existing_installations_too(self):
         # compose.yaml `environment` overrides the api.env of an older installation

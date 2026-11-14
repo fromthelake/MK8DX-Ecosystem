@@ -1,5 +1,7 @@
 """The illustrated HTML guide is built from the Markdown guides and stays in step with them."""
 
+import contextlib
+import io
 import re
 import unittest
 
@@ -9,7 +11,11 @@ from tooling import build_guide_html
 class GuideHtmlTest(unittest.TestCase):
     def test_committed_html_matches_the_markdown(self):
         # Edit docs/install/A2_*.md, then run: python tooling/build_guide_html.py
-        self.assertEqual(build_guide_html.build(check=True), 0)
+        printed = io.StringIO()
+        with contextlib.redirect_stdout(printed):
+            result = build_guide_html.build(check=True)
+        self.assertEqual(result, 0, printed.getvalue())
+        self.assertIn("up to date", printed.getvalue())
 
     def test_both_languages_have_the_same_shape(self):
         pages = {lang: build_guide_html.render(lang, images=set()) for lang in ("nl", "en")}
