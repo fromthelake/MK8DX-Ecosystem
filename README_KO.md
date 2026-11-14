@@ -216,7 +216,7 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 ## 프로젝트 현황
 
-안정 릴리스는 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에 있습니다. 0.2.0에서는 집이나 클럽에서 쓰는 A2가 추가되었고, 0.2.1에서는 Android 앱에 내 기록의 오프라인 사본과 더 차분한 레이아웃이 생겼습니다. 0.2.2에서는 녹화 분석이 다시 동작하고 Tournament Analysis 창이 추가되었습니다. 0.2.3에서는 웹 게이트웨이가 root 없이 실행되고, 저장소를 더 쉽게 시작할 수 있게 되었습니다. [변경 내역](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md), 그리고 전체 안내서([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt))를 참고하세요.
+안정 릴리스는 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에 있습니다. 0.2.0에서는 집이나 클럽에서 쓰는 A2가 추가되었고, 0.2.1에서는 Android 앱에 내 기록의 오프라인 사본과 더 차분한 레이아웃이 생겼습니다. 0.2.2에서는 녹화 분석이 다시 동작하고 Tournament Analysis 창이 추가되었습니다. 0.2.3에서는 웹 게이트웨이가 root 없이 실행되고, 저장소를 더 쉽게 시작할 수 있게 되었습니다. 또한 커뮤니티 서버의 데이터베이스가 MySQL 9.7 LTS로 바뀌었고, 모든 스캐너에서 카트와 글라이더 색상이 이제 캐릭터를 따릅니다. [변경 내역](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md), 그리고 전체 안내서([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt))를 참고하세요.
 
 인식 기능이 스스로 결과를 공식으로 만드는 일은 없습니다. 자신의 타임 어택은 직접 검토하고, 대회 레이스는 주최자가 확인한 뒤에 반영됩니다.
 

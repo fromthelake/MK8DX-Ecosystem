@@ -3,7 +3,30 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.3 — 2026-11-14
+
+Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to
+start with: a "How it fits together" diagram and **Get started** near the top of every README, one entry point in
+the docs, and real screenshots in the A2 guide on GitHub. The Docker routes move to **MySQL 9.7 LTS** (an existing
+database is upgraded on the first start; the update makes a verified backup first), and kart and glider colours follow
+the character in every scanner. Android app 2.99.2 (171).
+
+### Security
+
+- **The gateway's Caddy no longer runs as root** (#34). The Web image's new entrypoint gives Caddy's storage
+  (`caddy_data`, `caddy_config`) to the user `caddy` (uid 10002) and then starts Caddy as that user. Existing
+  installations move over at their next start: the LAN certificate authority, the certificates and their 0600
+  modes stay as they are. On Linux, where the A2 certificate signer and setup page are the operator's own 0600
+  files, Caddy runs as the operator's uid instead. Caddy keeps running as root, with a log line, only when nothing
+  but root could read a mounted file. The Compose files are unchanged, so older and newer images keep working
+  with either. The installer now makes `public-client.json` (public content) readable inside the private
+  installation folder, like `operator.json`. The LAN gateway no longer tries to install its root certificate in
+  the container (`skip_install_trust`).
+- **MySQL, Mailpit and the CI MariaDB images are pinned by digest** (#34) as `name:tag@sha256:...`, and Dependabot
+  updates the Compose pins. Release builds fetch these images by digest, and `host_bundle.py` refuses a local copy
+  with another digest. The packaged Compose files still name the tag, because images loaded from the package's tar
+  keep only their tag.
+- better-auth 1.7.20 (patch). Mailpit 1.33.1, pinned by digest.
 
 ### Changed
 
@@ -28,32 +51,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   where OCR text is normalized, before the context rules (#99). Other digit scripts are no row number.
 - `context-v1` parity vectors cover these cases and the OCR digit normalization; the Python, TypeScript and Java
   replays (new Android `ContextParityTest`) have no known exceptions any more.
-
-## 0.2.3 — 2026-11-14
-
-Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to
-start with: a "How it fits together" diagram and **Get started** near the top of every README, one entry point in
-the docs, and real screenshots in the A2 guide on GitHub. No database changes and no app changes since 0.2.2.
-
-### Security
-
-- **The gateway's Caddy no longer runs as root** (#34). The Web image's new entrypoint gives Caddy's storage
-  (`caddy_data`, `caddy_config`) to the user `caddy` (uid 10002) and then starts Caddy as that user. Existing
-  installations move over at their next start: the LAN certificate authority, the certificates and their 0600
-  modes stay as they are. On Linux, where the A2 certificate signer and setup page are the operator's own 0600
-  files, Caddy runs as the operator's uid instead. Caddy keeps running as root, with a log line, only when nothing
-  but root could read a mounted file. The Compose files are unchanged, so older and newer images keep working
-  with either. The installer now makes `public-client.json` (public content) readable inside the private
-  installation folder, like `operator.json`. The LAN gateway no longer tries to install its root certificate in
-  the container (`skip_install_trust`).
-- **MySQL, Mailpit and the CI MariaDB images are pinned by digest** (#34) as `name:tag@sha256:...`, and Dependabot
-  updates the Compose pins. Release builds fetch these images by digest, and `host_bundle.py` refuses a local copy
-  with another digest. The packaged Compose files still name the tag, because images loaded from the package's tar
-  keep only their tag.
-- better-auth 1.7.20 (patch). Mailpit 1.33.1 and MySQL 8.4.13 (same 8.4 LTS line), both pinned by digest.
-
-### Changed
-
+- Android app 2.99.2 (171): the shared context rules above; nothing else changed in the app.
 - **README, all twelve languages:** a new "How it fits together" section with a diagram of how the apps, the
   community server and the shared recognition relate, followed directly by **Get started**. The product sections
   follow, then the project status, the documentation table and the story. The tribute to Volkert has the owner's new
@@ -73,7 +71,7 @@ the docs, and real screenshots in the A2 guide on GitHub. No database changes an
   fails before a release.
 - CI replays new recognition parity vectors in Python, TypeScript and Java: refinement, frame geometry, lap grid,
   seven-segment digits and name matching (#99). No runtime disagrees.
-- Dependabot keeps MySQL on the 8.4 LTS line and leaves OpenCV alone: OpenCV is pinned to the same build in Python,
+- Dependabot leaves OpenCV alone: OpenCV is pinned to the same build in Python,
   Web and Android and is upgraded together, never in one runtime (#99). Gradle wrapper 9.9.1.
 
 ## 0.2.2 — 2026-11-13

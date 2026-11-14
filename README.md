@@ -296,7 +296,7 @@ Every pull request, bug report and translation fix makes the next LAN night bett
 
 Stable releases are on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 added A2,
 at home or at the club; 0.2.1 gives the Android app an offline copy of your times and a calmer layout. 0.2.2 makes recorded-video
-analysis work again and adds the Tournament Analysis window. 0.2.3 runs the web gateway without root and makes the repository easier to start with. See the
+analysis work again and adds the Tournament Analysis window. 0.2.3 runs the web gateway without root and makes the repository easier to start with. It also moves the community server's database to MySQL 9.7 LTS, and in every scanner the kart and glider colour now follow the character. See the
 [changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
 ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 

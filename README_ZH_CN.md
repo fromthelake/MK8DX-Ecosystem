@@ -216,7 +216,7 @@ MK8DX 是开源项目，由玩家为玩家打造。你可以为你的俱乐部�
 
 ## 项目状态
 
-稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
 
 识别结果永远不会自动成为正式成绩：你自己的计时赛由你审核，锦标赛的比赛则要经组织者核对后才会计入。
 

@@ -306,7 +306,7 @@ per tutti.
 
 Le versioni stabili sono su [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
 la 0.2.0 ha aggiunto A2, a casa o al club; la 0.2.1 dà all'app Android una copia offline dei tuoi tempi e
-un layout più tranquillo. La 0.2.2 fa funzionare di nuovo l'analisi delle registrazioni e aggiunge la finestra Tournament Analysis. La 0.2.3 esegue il gateway web senza root e rende più facile iniziare con il repository. Vedi il [changelog](CHANGELOG.md), i [pacchetti di release](docs/RELEASE_PACKAGES.md)
+un layout più tranquillo. La 0.2.2 fa funzionare di nuovo l'analisi delle registrazioni e aggiunge la finestra Tournament Analysis. La 0.2.3 esegue il gateway web senza root e rende più facile iniziare con il repository. Porta inoltre il database del server della community a MySQL 9.7 LTS e, in ogni scanner, il colore di kart e deltaplano ora segue il personaggio. Vedi il [changelog](CHANGELOG.md), i [pacchetti di release](docs/RELEASE_PACKAGES.md)
 e la guida completa ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
 
 Il riconoscimento non rende mai ufficiale un risultato da solo: le tue Prove a tempo le controlli tu, e
