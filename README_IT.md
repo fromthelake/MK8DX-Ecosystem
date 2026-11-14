@@ -133,8 +133,8 @@ flowchart TB
 | Voglio… | Inizia qui |
 | --- | --- |
 | **usare MK8DX a casa o nel mio club** | Il pacchetto A2 per il tuo computer da [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): estrai, avvia, fai clic su Avanti. Passo passo (il pacchetto A2 contiene anche una versione illustrata): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **organizzare serate di torneo LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **registrare automaticamente le mie Prove a tempo** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + una scheda di acquisizione |
+| **organizzare serate di torneo LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); i Tournament Tools funzionano anche senza un sito della community |
+| **registrare automaticamente le mie Prove a tempo** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + una scheda di acquisizione; funziona anche senza un sito della community |
 | **pubblicare e confrontare i miei tempi** | [Players](docs/guides/PLAYERS.md) — qualsiasi browser; Android 8.0+ |
 | **ospitare un sito della community** | [Ospitare un server della community](docs/guides/HOSTING.md) |
 | **modificare il codice** | [Guida per sviluppatori](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |

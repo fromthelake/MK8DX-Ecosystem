@@ -10,7 +10,7 @@ Releasepakketten hangen aan de GitHub Releases van het project. Open de releasep
 
 Kies één manier om de website te gebruiken. Op één Windows-computer kan dat met Docker of met XAMPP, Node.js en de meegeleverde actuele MariaDB. Een tweede Windows-pc in je eigen netwerk kan de uitgewerkte Docker-netwerkroute gebruiken. Voor een openbaar domein kies je gedeelde webhosting met Node.js (het hoofdstuk gebruikt mijn.host Starter als voorbeeld) of een eigen VPS met Docker. Je hoeft de hoofdstukken niet na elkaar uit te voeren. De telefoon- en Windowsprogramma's komen na de websiteroutes.
 
-A1 (Docker op één computer) en A3 (XAMPP/Node.js op Windows) zijn ondersteund na verse installatie- en upgradeproeven met behoud van gegevens. A2 (thuis of op de club, nieuw in 0.2.0) heeft een eigen pakket met een begeleide installatie in de browser en is van begin tot eind getest op Windows 11. B1 (Docker-VPS) en B2 (gedeelde Node.js-hosting) zijn gedocumenteerd maar nog niet end-to-end getest. De lokale A1- en A3-installaties zijn op Windows 11 met een x86-64-processor getest, met accounts en LiveTrial- en Tournament Processor/Connect-resultaten tot in database en website. Fysieke Tournament Live-capture is met het 0.2.2-pakket volledig geaccepteerd in een proef op 1×. Voor iemand die alleen Linux of macOS heeft, zonder Windows-computer of andere server, zijn de mogelijkheden beperkter. De twee hoofdstukken aan het eind leggen uit wat je op diezelfde computer lokaal kunt proberen en welke onderdelen nog niet voor jouw besturingssysteem bestaan.
+A1 (Docker op één computer) en A3 (XAMPP/Node.js op Windows) zijn ondersteund na verse installatie- en upgradeproeven met behoud van gegevens. A2 (thuis of op de club, nieuw in 0.2.0) heeft een eigen pakket met een begeleide installatie in de browser en is van begin tot eind getest op Windows 11. B1 (Docker-VPS) is gedocumenteerd maar nog niet end-to-end getest. B2 (gedeelde Node.js-hosting): onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd. De lokale A1- en A3-installaties zijn op Windows 11 met een x86-64-processor getest, met accounts en LiveTrial- en Tournament Processor/Connect-resultaten tot in database en website. Fysieke Tournament Live-capture is met het 0.2.2-pakket volledig geaccepteerd in een proef op 1×. Voor iemand die alleen Linux of macOS heeft, zonder Windows-computer of andere server, zijn de mogelijkheden beperkter. De twee hoofdstukken aan het eind leggen uit wat je op diezelfde computer lokaal kunt proberen en welke onderdelen nog niet voor jouw besturingssysteem bestaan.
 
 De volgorde in deze handleiding
 
@@ -40,13 +40,13 @@ docker compose version
 
 Als Docker niet start, volg dan eerst de WSL- of virtualisatiemelding van Docker. Een gesloten Docker Desktop kan MK8DX niet starten.
 
-2. Installeer Python 3.12 of nieuwer voor Windows x86-64 vanaf de officiële downloadpagina. Vink in het installatievenster ‘Add python.exe to PATH’ aan en kies ‘Install Now’. Sluit PowerShell en open het opnieuw. Controleer de installatie:
+2. Installeer Python 3.12 tot en met 3.15 voor Windows x86-64 vanaf de officiële downloadpagina. Vink in het installatievenster ‘Add python.exe to PATH’ aan en kies ‘Install Now’. Sluit PowerShell en open het opnieuw. Controleer de installatie:
 
 Python voor Windows: https://www.python.org/downloads/windows/
 
 python --version
 
-Zie je geen versie 3.12 of hoger, herstel Python via dezelfde installer. Controleer ook of Windows een Microsoft Store-alias opent in plaats van de geïnstalleerde Python. Je gebruikt Python hier alleen voor de installatiehulp; je hoeft geen software te bouwen.
+Zie je geen versie van 3.12 tot en met 3.15, herstel Python via dezelfde installer. Controleer ook of Windows een Microsoft Store-alias opent in plaats van de geïnstalleerde Python. Je gebruikt Python hier alleen voor de installatiehulp; je hoeft geen software te bouwen.
 
 3. Leg mk8dx-host-local-v0.2.3-amd64.zip en SHA256SUMS.txt in dezelfde downloadmap. Open PowerShell in die map en controleer het hostpakket:
 
@@ -101,7 +101,7 @@ De hulp bewaart eerst een kopie van apache\conf\httpd.conf in %LOCALAPPDATA%\MK8
 
 5. Dubbelklik in de MK8DX-map op Start-MK8DX-No-Docker.cmd. Kies de getoonde route A3 en typ het e-mailadres waarmee je later beheerder wilt worden. Het venster maakt één private installatie in %LOCALAPPDATA%\MK8DX\NoDocker. Bij de eerste start pakt het alleen daar MariaDB 11.4.13 uit, maakt een eigen database en beperkte gebruiker aan, voert de migraties en Nintendo Staff- en World Records-referenties uit, en start Node.js en Mailpit. Dit kan enkele minuten duren. Laat dit MK8DX-venster open. Bij een herstart blijven sleutels, accounts, resultaten en de database staan.
 
-In dit venster zie je bij iedere start ook ‘origin’ en ‘localMailInbox’. ‘origin’ is het volledige adres voor je browser en LiveTrial: http://127.0.0.1:18090. ‘localMailInbox’ is de lokale testbrievenbus: http://127.0.0.1:18227. Open Mailpit alleen in je browser. De cijfers na de dubbele punt zijn de poorten. ‘127.0.0.1’ betekent deze computer, dus deze adressen werken niet op een ander apparaat. Ben je ze vergeten, kijk dan bovenaan hetzelfde MK8DX-venster wanneer je het de volgende keer start.
+In dit venster zie je bij iedere start ook ‘Website:’ en ‘Sign-in mail - a test inbox:’. Bij ‘Website’ staat het volledige adres voor je browser en LiveTrial: http://127.0.0.1:18090. Bij ‘Sign-in mail - a test inbox’ staat de lokale testbrievenbus: http://127.0.0.1:18227. Open Mailpit alleen in je browser. De cijfers na de dubbele punt zijn de poorten. ‘127.0.0.1’ betekent deze computer, dus deze adressen werken niet op een ander apparaat. Ben je ze vergeten, kijk dan bovenaan hetzelfde MK8DX-venster wanneer je het de volgende keer start.
 
 6. Open het XAMPP Control Panel. Is Apache al groen, klik dan alleen bij Apache op Stop, wacht tot de regel niet meer groen is en klik weer op Start. Zo leest Apache de nieuwe site-instelling uit stap 4. Was Apache nog uit, klik dan meteen op Start. Open in je browser http://127.0.0.1:18090. De testbrievenbus staat op http://127.0.0.1:18227. Zie je geen site, controleer eerst het MK8DX-venster, dan in XAMPP of Apache groen is. In een nieuw PowerShell-venster, in de MK8DX-pakketmap, controleer je de database en API:
 
@@ -150,7 +150,7 @@ Verwacht ‘Backup verified’ en daarna een geslaagde controle van alle migrati
 
 Op je eigen netwerk gebruiken
 
-Voor thuis of op de club gebruik je het A2-pakket. Download mk8dx-a2-windows-amd64-v0.2.3.zip (Linux: mk8dx-a2-linux-amd64 of mk8dx-a2-linux-arm64; macOS met Apple silicon: mk8dx-a2-macos-arm64; voor Macs met een Intel-processor is er geen pakket) en SHA256SUMS.txt, controleer de checksum zoals bij ‘Proberen op één computer’, pak het pakket uit en dubbelklik op Start-MK8DX-LAN.cmd (Linux en macOS: sh tooling/start-mk8dx.sh). In je browser opent een installatie die je met Volgende door alles leidt: het netwerkadres, je beheerdersaccount, een herstelcode op papier voor de nachtelijke back-ups, en de mensen met elk een inlogkaart voor hun telefoon of pc. Je hebt geen internet, geen mailserver en geen hosts-bestand nodig.
+Voor thuis of op de club gebruik je het A2-pakket. Download mk8dx-a2-windows-amd64-v0.2.3.zip (Linux: mk8dx-a2-linux-amd64 of mk8dx-a2-linux-arm64; macOS met Apple silicon: mk8dx-a2-macos-arm64; macOS met een Intel-processor: mk8dx-a2-macos-amd64) en SHA256SUMS.txt, controleer de checksum zoals bij ‘Proberen op één computer’, pak het pakket uit en dubbelklik op Start-MK8DX-LAN.cmd (Linux en macOS: sh tooling/start-mk8dx.sh). In je browser opent een installatie die je met Volgende door alles leidt: het netwerkadres, je beheerdersaccount, een herstelcode op papier voor de nachtelijke back-ups, en de mensen met elk een inlogkaart voor hun telefoon of pc. Je hebt geen internet, geen mailserver en geen hosts-bestand nodig.
 
 De volledige stap-voor-stap-handleiding, met afbeeldingen, is docs/install/A2_THUIS_HANDLEIDING_NL.md; in het pakket staat hij ook als docs/install/guide/nl.html, en de installatie opent hem met de link Handleiding. Daarin staan ook het voorbereiden van Windows, Linux of macOS, telefoons en pc's, de Android-app, LiveTrial, toernooiavonden, back-ups, verhuizen naar een nieuwe computer, een vast adres, een nieuw netwerkadres en updates.
 
@@ -374,7 +374,7 @@ free -h
 df -h /
 python3 --version
 
-Je verwacht Ubuntu 24.04, x86_64 en Python 3.12 of hoger. Ontbreekt Python, voer op een nieuwe Ubuntu 24.04-server uit:
+Je verwacht Ubuntu 24.04, x86_64 en Python 3.12 tot en met 3.15. Ontbreekt Python, voer op een nieuwe Ubuntu 24.04-server uit:
 
 apt update
 apt install python3
@@ -454,9 +454,9 @@ Het antwoord is created of, bij herhaling, unchanged. Ververs de site. Controlee
 
 Android, LiveTrial, scanner en Tournament gebruiken
 
-Deze hulpmiddelen gebruiken het adres van een bestaande community. De website-installatie komt eerst. Voor LiveTrial en Tournament op dezelfde Windows-computer mag dat http://127.0.0.1:18080 (A1) of http://127.0.0.1:18090 (A3) zijn. Voor een openbare website gebruik je het vertrouwde HTTPS-adres. Android vraagt een vertrouwde HTTPS-site; de lokale Windows-proef bewijst geen Android-verbinding. De generieke Android-app en de Windows-clients laten je het communityadres zelf kiezen; een ander domein vereist dus geen broncodewijziging. In de publieke clientinstellingen staan geen serverwachtwoorden. Geef een app nooit het interne adres mysql, een API-containeradres of een SSH-IP.
+Om resultaten te versturen gebruiken deze hulpmiddelen het adres van een bestaande community. LiveTrial en de Tournament Tools werken ook zonder website; de Android-app en de browserscanner hebben er wel een nodig. Voor LiveTrial en Tournament op dezelfde Windows-computer mag dat http://127.0.0.1:18080 (A1) of http://127.0.0.1:18090 (A3) zijn. Voor een openbare website gebruik je het vertrouwde HTTPS-adres. Android vraagt een vertrouwde HTTPS-site; de lokale Windows-proef bewijst geen Android-verbinding. De generieke Android-app en de Windows-clients laten je het communityadres zelf kiezen; een ander domein vereist dus geen broncodewijziging. In de publieke clientinstellingen staan geen serverwachtwoorden. Geef een app nooit het interne adres mysql, een API-containeradres of een SSH-IP.
 
-Neem steeds het volledige websiteadres uit ‘origin’ of ‘Web origin’ van jouw eigen installatie, inclusief de poort als die wordt getoond. Vul nooit het adres ‘localMailInbox’ in LiveTrial in: dat opent alleen de lokale testbrievenbus. Op een tweede apparaat gebruik je het HTTPS-netwerkadres of je openbare domein, niet 127.0.0.1 van de server.
+Neem steeds het volledige websiteadres bij ‘Website’ (of ‘origin’ of ‘Web origin’) van jouw eigen installatie, inclusief de poort als die wordt getoond. Vul nooit het adres van de testbrievenbus (‘Sign-in mail’ of ‘localMailInbox’) in LiveTrial in: dat opent alleen de lokale testbrievenbus. Op een tweede apparaat gebruik je het HTTPS-netwerkadres of je openbare domein, niet 127.0.0.1 van de server.
 
 Voor Android heb je een toestel met Android 8.0 of nieuwer nodig; arm64 is aanbevolen. De lokaal met de releasesleutel ondertekende APK is ongeveer 530 MB. Houd minstens 1 GB vrij als installatiemarge. Controleer mk8dx-android-release-v0.2.3.apk met de regel in SHA256SUMS.txt op je pc, kopieer hem naar je telefoon en open hem vanuit Bestanden of Downloads. Als Android toestemming vraagt voor installeren uit deze bestandsapp, geef die alleen voor het gecontroleerde pakket. Je kunt die toestemming na installatie weer uitzetten.
 
@@ -472,7 +472,7 @@ Staat er nog een leeg veld met https://www.example.org of opent de verkeerde web
 
 De browserscanner zit al in de website. Open op jouw vertrouwde HTTPS-adres /scanner/ en begin met ‘afbeelding uploaden’. Kies een eigen resultaatfoto, bekijk de herkende gegevens en bevestig ze pas daarna. Live cameragebruik vraagt browsertoestemming en een vertrouwde HTTPS-verbinding buiten localhost. Herkenning hangt ook van de opname af. De beschreven tweede Windows-browserroute van A2 is gedocumenteerd maar nog niet end-to-end getest.
 
-Voor Tournament op Windows x86-64 controleer je tournament-tools-v0.2.3.zip en pak je de hele ZIP uit. Open Install-MK8DX-TournamentTools.cmd. Houd meerdere GB vrije ruimte beschikbaar: de ZIP van ongeveer 160 MB en ongeveer 1 GB voor uitpakken zijn niet het hele ruimtegebruik. De installer kan Python 3.12, publieke pakketten en bij OCR-gebruik een model ophalen. Een exact minimum voor alle afhankelijkheden en eigen media is niet gemeten. Een GPU-instelling is niet nodig: met een recente NVIDIA-driver kiest de installer zelf de CUDA-versie, en dan versnelt de videokaart het lezen van namen, punten en tijden (OCR). De eerste scan van een opname draait altijd op de processor, omdat de OpenCV-versie in het pakket geen CUDA-ondersteuning heeft; USING_MK8DX_TOURNAMENT_TOOLS.md in het pakket legt beide stappen uit. Wacht op SUCCESS en houd runtime-assets intact. Bij een fout kijk je in install.log in de pakketmap.
+Voor Tournament op Windows x86-64 controleer je tournament-tools-v0.2.3.zip en pak je de hele ZIP uit. Open Install-MK8DX-TournamentTools.cmd. Houd meerdere GB vrije ruimte beschikbaar: de ZIP van ongeveer 160 MB en ongeveer 1 GB voor uitpakken zijn niet het hele ruimtegebruik. De installer heeft één keer internet nodig om Python 3.12 en publieke pakketten op te halen; de OCR-modellen zitten in het pakket en daarna werkt verwerken offline. Een exact minimum voor alle afhankelijkheden en eigen media is niet gemeten. Een GPU-instelling is niet nodig: met een recente NVIDIA-driver kiest de installer zelf de CUDA-versie, en dan versnelt de videokaart het lezen van namen, punten en tijden (OCR). De eerste scan van een opname draait altijd op de processor, omdat de OpenCV-versie in het pakket geen CUDA-ondersteuning heeft; USING_MK8DX_TOURNAMENT_TOOLS.md in het pakket legt beide stappen uit. Wacht op SUCCESS en houd runtime-assets intact. Bij een fout kijk je in install.log in de pakketmap.
 
 Sleep een .mp4- of .mkv-opname op TournamentProcessor.cmd. Het programma maakt naast de video een sessiemap met Excel, CSV en een bestand dat op _TournamentRaceResultsV1.json eindigt. Voor TournamentLive.cmd met live capture heb je passende hardware en driver nodig.
 
@@ -579,6 +579,8 @@ Vervang het voorbeeld-IP en zorg dat TCP 443 op de nieuwe host alleen voor Priv�
 
 Voor een software-update controleer je eerst de SHA-256 van het nieuwe hostpakket. Pak het naast de oude softwaremap uit. Gebruik dezelfde private gegevensmap en kies in het nieuwe pakket menu 7. De hulp maakt en verifieert eerst een backup, voert ontbrekende migraties uit en vervangt alleen de meegeleverde serverprogramma's. Controleer daarna dezelfde projectidentiteit, je website, aanmelding en gegevens. Bewaar bij een fout de backup en draai niet blind een ouder image terug na een databaseschemawijziging.
 
+De update naar 0.2.3 zet de Docker-database over van MySQL 8.4 naar MySQL 9.7 LTS. MySQL zet de gegevensbestanden één keer om bij de eerste start op de nieuwe versie; alleen een backup terugzetten maakt dat ongedaan. Kies in de nieuwe pakketmap daarom eerst 7 en pas daarna 2: kies je eerst 2, dan start de nieuwe versie zonder backup en zonder de database-updates. Menu 3 (controleren) kan geen kwaad. Bij het A2-pakket maakt Bijwerken in de browser zelf eerst de backup; de eerste update duurt alleen wat langer, en de backup staat in Documenten\MK8DX-backups. A3 en B2 gebruiken hun eigen MariaDB of MySQL en merken hier niets van.
+
 Als het niet lukt en zelf bouwen
 
 Bij een lege website begin je met menu 3 en controleer je of Docker draait. Bij A1 staat de aanmeldmail in Mailpit, bij A2 en B1 hoort hij in een echte inbox. Controleer altijd of je dezelfde installatie, hetzelfde adres en hetzelfde e-mailadres gebruikt. Een ontbrekende aanmeldmail op een publieke route vraagt controle van de echte SMTP-gegevens en providerbereik. /health/ready zegt iets over de API en database, niet over bezorging in een inbox.
@@ -591,7 +593,7 @@ Linux gebruiken
 
 Wat je nu lokaal kunt proberen
 
-Je hebt alleen je eigen Linux-computer nodig, geen Windows-computer. Heb je Ubuntu 24.04 op x86-64, dan is het meegeleverde Docker-hostpakket de lokale serverroute. Controleer eerst met uname -m dat de uitkomst x86_64 is. Installeer Docker Engine met de Compose-plugin, Python 3.12 of nieuwer en unzip. De Ubuntu-Docker-installatie staat stap voor stap in ‘Een openbare website op een VPS maken’; voor deze lokale proef sla je daar DNS, firewall-openstelling en echte SMTP over. Download mk8dx-host-local-v0.2.3-amd64.zip en de bijbehorende SHA256SUMS.txt uit dezelfde release. Open Terminal in de downloadmap en controleer de ZIP. Vergelijk de uitkomst met de regel in SHA256SUMS.txt. Stop bij een verschil:
+Je hebt alleen je eigen Linux-computer nodig, geen Windows-computer. Heb je Ubuntu 24.04 op x86-64, dan is het meegeleverde Docker-hostpakket de lokale serverroute. Controleer eerst met uname -m dat de uitkomst x86_64 is. Installeer Docker Engine met de Compose-plugin, Python 3.12 tot en met 3.15 en unzip. De Ubuntu-Docker-installatie staat stap voor stap in ‘Een openbare website op een VPS maken’; voor deze lokale proef sla je daar DNS, firewall-openstelling en echte SMTP over. Download mk8dx-host-local-v0.2.3-amd64.zip en de bijbehorende SHA256SUMS.txt uit dezelfde release. Open Terminal in de downloadmap en controleer de ZIP. Vergelijk de uitkomst met de regel in SHA256SUMS.txt. Stop bij een verschil:
 
 sha256sum mk8dx-host-local-v0.2.3-amd64.zip
 
@@ -609,7 +611,7 @@ Typ A1; de eerste installatie start vanzelf. De starter toont het volledige webs
 
 Wat nog ontwikkeling vraagt
 
-De website en browserscanner zijn browseronderdelen. De meegeleverde LiveTrial- en Tournament-programma's zijn Windows-programma's en starten niet rechtstreeks op Linux. Ook de XAMPP-ZIP met Windows Apache-hulp is geen Linux-installer. Er is geen native Linux-client of captureproef. Wie alles op Linux wil gebruiken, moet de desktopclients met hun herkennings- en captureafhankelijkheden porten, bouwen en daarna aanmelden, verzenden, database en website testen. Het Android-pakket installeer je op Android, niet op Linux. Een Linux ARM-machine heeft nog geen native MK8DX-image; de huidige images zijn amd64.
+De website en browserscanner zijn browseronderdelen. De meegeleverde LiveTrial- en Tournament-programma's zijn Windows-programma's en starten niet rechtstreeks op Linux. Ook de XAMPP-ZIP met Windows Apache-hulp is geen Linux-installer. Er is geen native Linux-client of captureproef. Wie alles op Linux wil gebruiken, moet de desktopclients met hun herkennings- en captureafhankelijkheden porten, bouwen en daarna aanmelden, verzenden, database en website testen. Het Android-pakket installeer je op Android, niet op Linux. Het A1/B1-hostpakket is alleen voor amd64; gebruik op een Linux ARM-machine (arm64) het A2-pakket mk8dx-a2-linux-arm64.
 
 macOS gebruiken
 
@@ -617,7 +619,7 @@ Wat je nu lokaal kunt proberen
 
 Je hebt alleen je eigen Mac, zonder Windows-computer of andere server. Op een Intel Mac kan een ontwikkelaar proberen de meegeleverde Linux/amd64-Docker-images lokaal te draaien. Als website, API en database daadwerkelijk starten, open je het getoonde A1-websiteadres en Mailpit op diezelfde Mac in de browser. De browserscanner hoort bij de website. Er is nog geen Mac-proef met een nieuw account, inzending, database en zichtbare websiteuitslag; beloof jezelf dus geen complete installatie op basis van alleen een draaiende homepage.
 
-Installeer op een Intel Mac Docker Desktop voor Mac en Python 3.12 of nieuwer. Download dezelfde host-ZIP en SHA256SUMS.txt. Open Terminal in de downloadmap, voer shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip uit en vergelijk de uitkomst met SHA256SUMS.txt. Stop bij een verschil. Gebruik daarna de mkdir-, unzip- en cd-opdrachten uit het Linux-hoofdstuk. Start dezelfde shellstarter en kies A1. Dit is een ontwikkelaarsproef, geen geteste Mac-gebruikersroute. Op een Mac met Apple Silicon vraagt hetzelfde pakket emulatie van de amd64-images; er is geen native arm64-pakket. Ook met emulatie is werking en snelheid hier niet bewezen. Voor een betrouwbaar lokaal Apple Silicon-pakket zijn arm64-images en een eigen Mac-acceptatieproef nodig.
+Installeer op een Intel Mac Docker Desktop voor Mac en Python 3.12 tot en met 3.15. Download dezelfde host-ZIP en SHA256SUMS.txt. Open Terminal in de downloadmap, voer shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip uit en vergelijk de uitkomst met SHA256SUMS.txt. Stop bij een verschil. Gebruik daarna de mkdir-, unzip- en cd-opdrachten uit het Linux-hoofdstuk. Start dezelfde shellstarter en kies A1. Dit is een ontwikkelaarsproef, geen geteste Mac-gebruikersroute. Op een Mac met Apple Silicon vraagt dit A1-hostpakket emulatie van de amd64-images; er is geen native arm64-pakket voor A1, en werking en snelheid met emulatie zijn niet bewezen. Gebruik op een Mac met Apple Silicon liever het A2-pakket mk8dx-a2-macos-arm64 (zie ‘Op je eigen netwerk gebruiken’).
 
 Docker Desktop voor Mac: https://docs.docker.com/desktop/setup/install/mac-install/
 

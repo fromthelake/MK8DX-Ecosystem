@@ -73,6 +73,11 @@ the character in every scanner. Android app 2.99.2 (171).
   seven-segment digits and name matching (#99). No runtime disagrees.
 - Dependabot leaves OpenCV alone: OpenCV is pinned to the same build in Python,
   Web and Android and is upgraded together, never in one runtime (#99). Gradle wrapper 9.9.1.
+- Install and standalone guides match 0.2.3: every update section says to choose 7 (checked backup and database
+  updates) before 2 for the MySQL 9.7 move, the Intel Mac and arm64 A2 packages are named, the launcher address
+  labels and Python 3.12 to 3.15 are correct, and LiveTrial and the Tournament Tools are described as working
+  without a community website.
+- Scanner build: vite 8.3.8 (Dependabot minor-patch group, #194).
 
 ## 0.2.2 — 2026-11-13
 

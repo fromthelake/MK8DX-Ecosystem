@@ -166,7 +166,10 @@ works only once per installation. See [Operations](../OPERATIONS.md) for the bou
   Copy the whole folder to protected storage off the server. It contains the database, accounts and keys.
 - **Updates**: check the new host package and extract it into a new, empty folder next to the old one (for
   example `/opt/mk8dx/host-new`), then run its launcher with the **same** installation directory and choose 7.
-  Keep the old folder until the update has been checked.
+  Keep the old folder until the update has been checked. The update to 0.2.3 moves the database from MySQL 8.4
+  to 9.7 LTS. MySQL upgrades the data files once, at the first start on the new version, and only a backup undoes
+  that. So choose 7 before 2: 2 would start the new version without the backup and without the database updates
+  (3, check, is harmless).
 - **Change mail or address**: `python3 tooling/install.py change-smtp|change-origin ...`, then `apply` and
   `check`, from the package folder; the user guide's settings chapter has the exact commands.
 - **Restore**: `python3 tooling/lifecycle.py restore-new --backup <folder> --state-dir <new directory>` creates a

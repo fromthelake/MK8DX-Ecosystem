@@ -59,9 +59,11 @@ docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml up -d --no-build
 ```
 
+0.2.3 moves `compose.yaml` from MySQL 8.4 to MySQL 9.7 LTS. MySQL upgrades the data files once, at the first start on the new image, and that cannot be undone except by restoring a backup. So make and verify the backup while the old database container still runs, before the `up -d` above recreates it on 9.7.
+
 Check readiness, sign-in and critical workflows after the recreation. A new Staff or World Records seed is a separate conscious operator action using the seed CLI from step 6 of [Getting started](GETTING_STARTED.md#6-add-the-two-reviewed-reference-sets). The seed refuses to overwrite intentional local reference edits without review. Startup never refreshes from an external feed. Returning to an older image after a schema change is not a database rollback; use a compatible backup or a tested forward fix.
 
-Upgrades are tested by recreating a local installation on the new version with its existing volume. The prebuilt images come with the host package; no container registry tag is published.
+Upgrades are tested by recreating a local installation on the new version with its existing volume. The prebuilt images come with the host package; a release also pushes the amd64 Web and API images to GHCR (`ghcr.io/fromthelake/mk8dx-{web,api}:<tag>-amd64`).
 
 The migration catalog is hash-pinned and applied migrations are never rewritten. The public history starts at 0.1.0-rc.8, in which the historical data repairs 0048, 0049 and 0057 carry neutral texts (no personal data). Every installation made from this repository (or its releases) upgrades normally. A database that already applied the original texts of those migrations before the public history existed (the maintainer's own installation) keeps upgrading from the maintainer's tree, not from these packages: the migration check refuses the changed hashes on purpose.
 

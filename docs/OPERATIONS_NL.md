@@ -61,6 +61,8 @@ docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml up -d --no-build
 ```
 
+0.2.3 zet `compose.yaml` over van MySQL 8.4 naar MySQL 9.7 LTS. MySQL zet de gegevensbestanden één keer om bij de eerste start op het nieuwe image; dat maak je alleen ongedaan door een backup terug te zetten. Maak en controleer de backup dus terwijl de oude databasecontainer nog draait, vóór de `up -d` hierboven hem op 9.7 opnieuw maakt.
+
 Een nieuwe referentieset is een **aparte** actie met de seed-CLI uit stap 6 van [Aan de slag](GETTING_STARTED.md#6-add-the-two-reviewed-reference-sets). Bij lokaal gewijzigde wereldrecords weigert die de update tot het conflict beoordeeld is. Een gewone herstart haalt geen externe records op. Schakel niet blind naar een oud image terug na een schema-upgrade: database-rollback vraagt herstel van een passende backup of een geteste voorwaartse correctie.
 
 De migratiecatalogus is hash-gepind en toegepaste migraties worden nooit herschreven. De publieke geschiedenis begint bij 0.1.0-rc.8, waarin de historische datareparaties 0048, 0049 en 0057 neutrale teksten hebben (geen persoonsgegevens). Elke installatie uit deze repository (of haar releases) werkt gewoon bij. Een database die de oorspronkelijke teksten van die migraties al toepaste vóór de publieke geschiedenis bestond (de eigen installatie van de maintainer), werkt verder bij vanuit de boom van de maintainer, niet met deze pakketten: de migratiecontrole weigert de gewijzigde hashes bewust.

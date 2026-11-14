@@ -135,8 +135,8 @@ flowchart TB
 | Я хочу… | Начните здесь |
 | --- | --- |
 | **запустить MK8DX дома или в своём клубе** | Пакет A2 для вашего компьютера из [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): распакуйте, запустите, нажимайте «Далее». Пошагово (в пакете A2 есть и иллюстрированная версия): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **организовывать турнирные LAN-вечера** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **автоматически записывать свои гонки на время** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + карта захвата |
+| **организовывать турнирные LAN-вечера** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); Tournament Tools работают и без сайта сообщества |
+| **автоматически записывать свои гонки на время** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + карта захвата; работает и без сайта сообщества |
 | **публиковать и сравнивать своё время** | [Игроки](docs/guides/PLAYERS.md) — любой браузер; Android 8.0+ |
 | **разместить сайт сообщества** | [Разместить сервер сообщества](docs/guides/HOSTING.md) |
 | **изменять код** | [Руководство разработчика](docs/DEVELOPMENT.md), [Тестирование](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |

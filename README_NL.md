@@ -131,8 +131,8 @@ flowchart TB
 | Ik wil… | Begin hier |
 | --- | --- |
 | **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) |
-| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels) |
-| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card |
+| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels); de Tournament Tools werken ook zonder communitywebsite |
+| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card; werkt ook zonder communitywebsite |
 | **mijn tijden posten en vergelijken** | [Players](docs/guides/PLAYERS.md) (Engels) — elke browser; Android 8.0+ |
 | **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
 | **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |

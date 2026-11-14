@@ -7,6 +7,12 @@ recognizes each run (total and lap times, character and kart setup, ghost) and s
 After you sign in once, it can send the results to your community's website. Results that cannot be sent yet
 wait on the PC.
 
+## Without a community website
+
+LiveTrial also works on its own. Capture, video analysis, **Run history**, clips and corrections all work locally.
+Runs recorded without an account stay only on this PC until you send them with **Send as <account>**. The
+**My records**, **Rank** and **Build** tabs need a signed-in community.
+
 ## Requirements
 
 - Windows on x86-64 (tested on Windows 11). About 1 GB for the program plus room for your recordings.
