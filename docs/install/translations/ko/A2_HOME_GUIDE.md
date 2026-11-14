@@ -89,14 +89,14 @@ Linux는 아직 MK8DX와 함께 처음부터 끝까지 테스트되지 않았습
 
 **Windows에서 시작하기**
 
-1. **할 일:** 압축을 푼 폴더에서 **Start-MK8DX-LAN.cmd**를 두 번 클릭합니다. → **보이는 화면:** MK8DX 로고와 신호음이 있는 3-2-1-GO 카운트다운이 나오는 창([생략하려면](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), 그다음 "MK8DX package:"(MK8DX 패키지)와 "Private installation:"(개인 설치) 같은 줄. 처음에는 "Preparing the included Python packages (once, without internet)."(포함된 Python 패키지 준비 중(한 번만, 인터넷 없이))와 "Loading the included Docker images. This can take several minutes."(포함된 Docker 이미지 불러오는 중. 몇 분 걸릴 수 있음)도 나옵니다. 몇 분 걸립니다. 그다음 "MK8DX setup is open in your browser:"(MK8DX 설치가 브라우저에서 열렸음)가 나오고 브라우저에서 설치 화면이 열립니다. → **다르게 보이나요?** 아래 메시지를 참고하세요.
+1. **할 일:** 압축을 푼 폴더에서 **Start-MK8DX-LAN.cmd**를 두 번 클릭합니다. → **보이는 화면:** MK8DX 로고와 신호음이 있는 3-2-1-GO 카운트다운이 나오는 창([생략하려면](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), 그다음 "MK8DX 패키지:"와 "비공개 설치:" 같은 줄. 처음에는 "포함된 Python 패키지를 준비하는 중(한 번만, 인터넷 없이)."와 "포함된 Docker 이미지를 불러오는 중이에요. 몇 분 걸릴 수 있어요."도 나옵니다. 몇 분 걸립니다. 그다음 "MK8DX setup is open in your browser:"(MK8DX 설치가 브라우저에서 열렸음)가 나오고 브라우저에서 설치 화면이 열립니다. → **다르게 보이나요?** 아래 메시지를 참고하세요.
 2. **할 일:** 설치 화면에서 **Finish**(마침)를 클릭할 때까지 검은 창을 열어 두세요. 창에도 그렇게 적혀 있습니다: "Keep this window open until you click Finish."(Finish를 클릭할 때까지 이 창을 열어 두세요).
 
 Windows의 검은 창에 나오는 메시지:
 
-- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."**(Python 3.12~3.15가 없습니다. python.org(또는 Microsoft Store)에서 Python 설치 관리자를 설치하고 py install 3.15를 실행한 뒤 PowerShell을 다시 열고 다시 시도하세요.) 2A장의 6~8단계를 한 다음 Start-MK8DX-LAN.cmd를 다시 두 번 클릭하세요.
-- **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."**(Docker Desktop이 없거나 실행 중이 아닙니다. Linux 컨테이너 모드로 Docker Desktop을 시작하고 "Engine running"이 나올 때까지 기다린 뒤 다시 시도하세요.) Docker Desktop을 시작하고 Engine running이 나올 때까지 기다린 뒤 다시 두 번 클릭하세요.
-- 오류 아래에 **"The selected step stopped. Read the message above before retrying."**(선택한 단계가 중지되었습니다. 다시 시도하기 전에 위의 메시지를 읽으세요.)가 나옵니다. 그 위의 줄을 읽고 문제를 해결한 다음 아무 키나 눌러 창을 닫으세요.
+- **"Python 3.12~3.15가 없어요. python.org(또는 Microsoft Store)에서 Python install manager를 설치하고, py install 3.15를 실행한 다음, PowerShell을 다시 열고 다시 시도하세요."** 2A장의 6~8단계를 한 다음 Start-MK8DX-LAN.cmd를 다시 두 번 클릭하세요.
+- **"Docker Desktop이 없거나 실행되고 있지 않아요. Docker Desktop을 Linux 컨테이너 모드로 시작하고 "Engine running"이 표시될 때까지 기다린 다음 다시 시도하세요."** Docker Desktop을 시작하고 Engine running이 나올 때까지 기다린 뒤 다시 두 번 클릭하세요.
+- 오류 아래에 **"선택한 단계가 중지됐어요. 다시 시도하기 전에 위 메시지를 읽어 보세요."**가 나옵니다. 그 위의 줄을 읽고 문제를 해결한 다음 아무 키나 눌러 창을 닫으세요.
 
 <!-- /os -->
 
@@ -105,14 +105,14 @@ Windows의 검은 창에 나오는 메시지:
 **Linux와 macOS에서 시작하기**
 
 1. **할 일:** 압축을 푼 폴더에서 터미널을 엽니다. Linux: 파일 관리자가 제공하면 폴더 안에서 마우스 오른쪽 단추를 클릭하고 "Open in Terminal"(터미널에서 열기)을 선택합니다. macOS와 Linux에서는 이렇게도 됩니다: 터미널을 열고 `cd `(뒤에 공백 하나)를 입력한 다음 폴더를 창으로 끌어다 놓고 Enter를 누릅니다. → **보이는 화면:** 터미널이 패키지 폴더에 있습니다.
-2. **할 일:** `sh tooling/start-mk8dx.sh`를 입력하고 Enter를 누릅니다. → **보이는 화면:** MK8DX 로고와 3-2-1-GO 카운트다운, 그다음 "MK8DX package:"(MK8DX 패키지), Python 버전 번호, "Docker Compose version". 처음에는 "Loading the included Docker images. This can take several minutes."(포함된 Docker 이미지 불러오는 중. 몇 분 걸릴 수 있음)와 "Preparing the included Python packages (once, without internet)."(포함된 Python 패키지 준비 중(한 번만, 인터넷 없이))도 나옵니다. 그다음 "Private installation:"(개인 설치)과 "MK8DX setup is open in your browser:"(MK8DX 설치가 브라우저에서 열렸음)가 나오고 브라우저에서 설치 화면이 열립니다. → **다르게 보이나요?** 브라우저가 열리지 않으면 터미널에서 `http://127.0.0.1:`로 시작하는 주소를 복사해 브라우저에 붙여 넣으세요.
+2. **할 일:** `sh tooling/start-mk8dx.sh`를 입력하고 Enter를 누릅니다. → **보이는 화면:** MK8DX 로고와 3-2-1-GO 카운트다운, 그다음 "MK8DX 패키지:", Python 버전 번호, "Docker Compose version". 처음에는 "포함된 Docker 이미지를 불러오는 중이에요. 몇 분 걸릴 수 있어요."와 "포함된 Python 패키지를 준비하는 중(한 번만, 인터넷 없이)."도 나옵니다. 그다음 "비공개 설치:"과 "MK8DX setup is open in your browser:"(MK8DX 설치가 브라우저에서 열렸음)가 나오고 브라우저에서 설치 화면이 열립니다. → **다르게 보이나요?** 브라우저가 열리지 않으면 터미널에서 `http://127.0.0.1:`로 시작하는 주소를 복사해 브라우저에 붙여 넣으세요.
 3. **할 일:** **Finish**(마침)를 클릭할 때까지 터미널을 열어 두세요.
 
 Linux와 macOS의 터미널에 나오는 메시지:
 
-- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."**(Python 3.12~3.15가 없습니다. 설치한 뒤 다시 시도하세요.) 2B장 또는 2C장을 다시 하세요.
-- **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."**(Docker가 실행 중이 아니거나 이 사용자는 Docker를 쓸 수 없습니다.) Linux: 2B장의 3단계와 4단계를 하세요. macOS: Docker Desktop을 시작하세요.
-- **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."**(개인 Python 환경을 만들 수 없습니다.) 2B장 2단계처럼 python3-venv를 설치하세요.
+- **"Python 3.12~3.15가 없어요. 설치한 다음(Ubuntu/Debian: sudo apt install python3 python3-venv, macOS: python.org) 다시 시도하세요."** 2B장 또는 2C장을 다시 하세요.
+- **"Docker가 실행되고 있지 않거나 이 사용자에게 사용 권한이 없어요(Linux: sudo systemctl start docker를 실행하고 docker 그룹에 가입하세요. macOS: Docker Desktop을 시작하세요)."** Linux: 2B장의 3단계와 4단계를 하세요. macOS: Docker Desktop을 시작하세요.
+- **"비공개 Python 환경을 만들 수 없었어요(Ubuntu/Debian: sudo apt install python3-venv)."** 2B장 2단계처럼 python3-venv를 설치하세요.
 
 <!-- /os -->
 
@@ -426,7 +426,7 @@ MK8DX 컴퓨터의 주소는 공유기가 줍니다. 보통은 그대로 유지�
 - **"MK8DX is already installed on this computer; restore needs a computer without it".**(이 컴퓨터에는 이미 MK8DX가 설치되어 있습니다. 복원에는 MK8DX가 없는 컴퓨터가 필요합니다.) 복원은 MK8DX가 없는 컴퓨터에서만 됩니다. IT 담당자에게 도움을 요청하세요(12장).
 - **Docker가 실행 중이 아닙니다.** Windows와 macOS: Docker Desktop을 시작하고 **Engine running**(엔진 실행 중)을 기다린 뒤 **다시 시도**를 클릭하거나 MK8DX를 다시 시작하세요. Linux: `sudo systemctl start docker`.
 - **컴퓨터에 새 주소가 있습니다.** MK8DX beheer를 열고 **이동**을 선택하세요(10장).
-- **Windows: "The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443".**(이 네트워크는 'DomainAuthenticated'입니다. 관리자에게 TCP 80/443을 허용해 달라고 요청하세요.) 컴퓨터가 MK8DX가 스스로 바꿀 수 없는 회사 네트워크에 있습니다. 그 네트워크의 관리자에게 TCP 포트 80과 443으로 들어오는 연결을 허용해 달라고 요청하세요.
+- **Windows: "네트워크가 'DomainAuthenticated'이에요. 네트워크 관리자에게 TCP 80/443을 허용해 달라고 요청하세요".** 컴퓨터가 MK8DX가 스스로 바꿀 수 없는 회사 네트워크에 있습니다. 그 네트워크의 관리자에게 TCP 포트 80과 443으로 들어오는 연결을 허용해 달라고 요청하세요.
 - **Windows: "Windows did not allow the change (the permission prompt was declined or failed)".**(Windows가 변경을 허용하지 않았습니다(권한 요청이 거부되었거나 실패함).) **다시 시도**를 클릭한 다음 Windows 창에서 **Yes**(예)를 클릭하세요.
 - **Linux: 휴대폰이 접속하지 못하고 방화벽이 켜져 있습니다.** 설치 중에 **세부 정보**를 클릭하고 "manual:" 뒤의 명령을 실행하세요. 예: `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`. firewalld에서는 `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`입니다.
 - **Android 앱에 "'기기 준비' 카드의 QR 코드가 아닙니다."라고 나옵니다.** 개인 카드가 아니라 **기기 준비** 카드를 스캔하세요.

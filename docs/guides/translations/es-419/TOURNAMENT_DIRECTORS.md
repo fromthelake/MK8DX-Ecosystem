@@ -96,16 +96,16 @@ Usa Tournament Live cuando captures la noche mientras ocurre. Si la noche se jug
 grabaciones, analízalas después con la ventana **Tournament Analysis**:
 
 1. Haz doble clic en `TournamentAnalysis.cmd` en la carpeta del paquete.
-2. **① Choose recordings** (elegir grabaciones): **Add videos...** (añadir videos) elige una o más grabaciones (`.mp4`, `.mkv`, `.mov`, `.avi`,
-   `.ts`); **Add folder...** (añadir carpeta) añade una carpeta que contiene las grabaciones de un torneo.
-3. **② Choose videos** (elegir videos): todo lo que has añadido está marcado; desmarca lo que no se deba analizar (**All**, **None**,
-   **Clear**: todos, ninguno, vaciar).
-4. **③ Run the analysis** (ejecutar el análisis): comprueba el **Session id** (ID de sesión; se rellena a partir del primer nombre y la fecha y se guarda
-   con cada carrera) y la **Results folder** (carpeta de resultados; por defecto `<first name>_TournamentSession` junto a la primera
-   grabación), y después elige **START ANALYSIS** (iniciar análisis). La ventana ejecuta el mismo procesamiento que `TournamentProcessor.cmd`;
-   el registro de actividad muestra su salida en color, el semáforo de inicio se pone ámbar y **Cancel** (cancelar) lo detiene. Las grabaciones
+2. **① Elegir grabaciones**: **Añadir vídeos...** elige una o más grabaciones (`.mp4`, `.mkv`, `.mov`, `.avi`,
+   `.ts`); **Añadir carpeta...** añade una carpeta que contiene las grabaciones de un torneo.
+3. **② Elegir vídeos**: todo lo que has añadido está marcado; desmarca lo que no se deba analizar (**Todos**, **Ninguno**,
+   **Borrar**: todos, ninguno, vaciar).
+4. **③ Ejecutar el análisis**: comprueba el **ID de sesión** (se rellena a partir del primer nombre y la fecha y se guarda
+   con cada carrera) y la **Carpeta de resultados** (por defecto `<first name>_TournamentSession` junto a la primera
+   grabación), y después elige **INICIAR ANÁLISIS**. La ventana ejecuta el mismo procesamiento que `TournamentProcessor.cmd`;
+   el registro de actividad muestra su salida en color, el semáforo de inicio se pone ámbar y **Cancelar** lo detiene. Las grabaciones
    se enlazan en `Input_Videos\` de la carpeta de resultados, o se copian cuando están en otra unidad.
-5. **🏁 Results** (resultados): cuando ponga **Finished** (terminado), elige **Open Latest Excel** (abrir el último Excel) u **Open Results Folder** (abrir la carpeta de resultados): `Output_Results\`
+5. **🏁 Resultados**: cuando ponga **Terminado**, elige **Abrir el último Excel** u **Abrir carpeta de resultados**: `Output_Results\`
    contiene el libro de Excel, el CSV y `*_TournamentRaceResultsV1.json`. Revisa las carreras y después importa el JSON
    en la web como se describe más arriba.
 
@@ -139,12 +139,11 @@ publica automáticamente.
 ### Tournament Live a la web
 
 1. En Tournament Live elige **Conectar con Tournament Manager** (después **Cambiar Torneo**), termina el inicio de
-   sesión en el navegador y elige la noche en **Choose Tournament** (elegir torneo). Esa elección es solo una sugerencia; puedes hacerla antes
+   sesión en el navegador y elige la noche en **Elegir Torneo**. Esa elección es solo una sugerencia; puedes hacerla antes
    o después de la sesión.
 2. Pon en marcha las señales (**Añadir archivo de vídeo** o una capturadora, y después **Iniciar todo**). Tournament Live
    puede añadir por sí solo una capturadora que recuerda, como fuente extra en el Grupo 1. Si además hay un video en el
-   Grupo 1, **Iniciar todo** se detiene con *Assign every feed to exactly one different group* (asigna cada señal a
-   exactamente un grupo distinto): selecciona la fuente extra y elige **Quitar seleccionados**, o dale su propio grupo,
+   Grupo 1, **Iniciar todo** se detiene con *Asigna cada señal a exactamente un grupo distinto del paso actual antes de pulsar START*: selecciona la fuente extra y elige **Quitar seleccionados**, o dale su propio grupo,
    y vuelve a iniciar.
 3. En la web, abre la noche, ve al Paso 5 (Paso 9 para los grupos finales) y busca la sesión en **Grabaciones de Tournament Live disponibles**.
    Elige su grupo en **Vincular al grupo** y después **Vincular grabación revisada**. Las carreras esperan como evidencia

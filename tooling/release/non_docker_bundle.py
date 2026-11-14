@@ -61,7 +61,8 @@ def content(stage):
     copy_file(ROOT / "infrastructure/mysql/migration-catalog-v1.json", stage / "mysql/migration-catalog-v1.json")
     copy_tree(ROOT / "infrastructure/mysql/migrations", stage / "mysql/migrations")
     copy_tree(ROOT / "infrastructure/mysql/reference", stage / "mysql/reference")
-    for name in ("tooling/install.py", "tooling/native_install.py", "LICENSE",
+    for name in ("tooling/install.py", "tooling/native_install.py", "tooling/launcher_text.py",
+                 *LAUNCHER_CATALOGS, "LICENSE",
                  "LICENSE_SCOPE.md", "SOURCE_FOR_BINARIES.txt",
                  "docs/THIRD_PARTY_MATERIALS.md", *DOCS):
         copy_file(ROOT / name, stage / name)
@@ -69,6 +70,11 @@ def content(stage):
               stage / "apache/apache-mk8dx-local.conf")
     subprocess.run(["node", str(ROOT / "tooling/assets/materialize_collection.mjs"),
                     "web", str(stage / "assets")], cwd=ROOT, check=True)
+
+
+# The launcher texts in the 15 game languages (tooling/launcher_text.py, tooling/mk8dx-ui.ps1).
+LAUNCHER_CATALOGS = tuple(f"tooling/launcher_i18n/{language}.json" for language in (
+    "nl", "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW"))
 
 
 def write_zip(stage, output, route, revision):

@@ -95,16 +95,16 @@ Nutze Tournament Live, wenn du den Abend aufnimmst, während er stattfindet. Wen
 Aufnahmen hast, analysiere sie nachträglich mit dem Fenster **Tournament Analysis**:
 
 1. Doppelklicke auf `TournamentAnalysis.cmd` im Paketordner.
-2. **① Choose recordings** (Aufnahmen wählen): **Add videos...** (Videos hinzufügen...) wählt eine oder mehrere Aufnahmen (`.mp4`, `.mkv`, `.mov`, `.avi`,
-   `.ts`); **Add folder...** (Ordner hinzufügen...) fügt einen Ordner hinzu, der die Aufnahmen eines Turniers enthält.
-3. **② Choose videos** (Videos wählen): Alles, was du hinzugefügt hast, ist abgehakt; entferne das Häkchen bei dem, was nicht analysiert werden soll (**All** (Alle), **None** (Keine),
-   **Clear** (Leeren)).
-4. **③ Run the analysis** (Analyse ausführen): Prüfe die **Session id** (Sitzungs-ID; aus dem ersten Namen und dem Datum ausgefüllt; sie wird
-   bei jedem Rennen gespeichert) und den **Results folder** (Ergebnisordner; standardmäßig `<first name>_TournamentSession` neben der ersten
-   Aufnahme) und wähle dann **START ANALYSIS** (Analyse starten). Das Fenster führt dieselbe Verarbeitung aus wie `TournamentProcessor.cmd`;
-   das Aktivitätsprotokoll zeigt seine farbige Ausgabe, das Startlicht wird bernsteinfarben, und **Cancel** (Abbrechen) beendet sie. Aufnahmen
+2. **① Aufnahmen wählen**: **Videos hinzufügen...** wählt eine oder mehrere Aufnahmen (`.mp4`, `.mkv`, `.mov`, `.avi`,
+   `.ts`); **Ordner hinzufügen...** fügt einen Ordner hinzu, der die Aufnahmen eines Turniers enthält.
+3. **② Videos wählen**: Alles, was du hinzugefügt hast, ist abgehakt; entferne das Häkchen bei dem, was nicht analysiert werden soll (**Alle**, **Keine**,
+   **Leeren**).
+4. **③ Analyse starten**: Prüfe die **Sitzungs-ID** (aus dem ersten Namen und dem Datum ausgefüllt; sie wird
+   bei jedem Rennen gespeichert) und den **Ergebnisordner** (standardmäßig `<first name>_TournamentSession` neben der ersten
+   Aufnahme) und wähle dann **ANALYSE STARTEN**. Das Fenster führt dieselbe Verarbeitung aus wie `TournamentProcessor.cmd`;
+   das Aktivitätsprotokoll zeigt seine farbige Ausgabe, das Startlicht wird bernsteinfarben, und **Abbrechen** beendet sie. Aufnahmen
    werden in `Input_Videos\` des Ergebnisordners verknüpft oder kopiert, wenn sie auf einem anderen Laufwerk liegen.
-5. **🏁 Results** (Ergebnisse): Wenn dort **Finished** (Fertig) steht, **Open Latest Excel** (Neueste Excel-Datei öffnen) oder **Open Results Folder** (Ergebnisordner öffnen): `Output_Results\`
+5. **🏁 Ergebnisse**: Wenn dort **Beendet** steht, **Neueste Excel-Datei öffnen** oder **Ergebnisordner öffnen**: `Output_Results\`
    enthält die Excel-Arbeitsmappe, die CSV und `*_TournamentRaceResultsV1.json`. Prüfe die Rennen und importiere dann die JSON
    auf der Website wie oben beschrieben.
 
@@ -137,12 +137,11 @@ diesem Server. Ein abgeliefertes Rennen landet in **Eingehende Ergebnisse**; es 
 ### Tournament Live zur Website
 
 1. Wähle in Tournament Live **Mit Tournament Manager verbinden** (später **Turnier wechseln**), schließe die Anmeldung im
-   Browser ab und wähle den Abend in **Choose Tournament** (Turnier wählen). Diese Wahl ist nur ein Vorschlag; du kannst sie vor
+   Browser ab und wähle den Abend in **Turnier wählen**. Diese Wahl ist nur ein Vorschlag; du kannst sie vor
    oder nach dem Lauf treffen.
 2. Starte die Feeds (**Videodatei hinzufügen** oder eine Capture-Karte, dann **Alle starten**). Tournament Live fügt eine
-   Capture-Karte, die es sich gemerkt hat, womöglich selbst hinzu, als zusätzliche Quelle in Group 1 (Gruppe 1). Liegt auch ein Video
-   in Group 1, stoppt **Alle starten** mit *Assign every feed to exactly one different group* (Weise jeden Feed genau einer anderen
-   Gruppe zu): Wähle die zusätzliche Quelle aus und wähle **Auswahl entfernen**, oder gib ihr eine eigene Gruppe, und starte erneut.
+   Capture-Karte, die es sich gemerkt hat, womöglich selbst hinzu, als zusätzliche Quelle in Gruppe 1. Liegt auch ein Video
+   in Group 1, stoppt **Alle starten** mit *Ordne jeden Feed genau einer anderen Gruppe des aktuellen Schritts zu, bevor du START drückst*: Wähle die zusätzliche Quelle aus und wähle **Auswahl entfernen**, oder gib ihr eine eigene Gruppe, und starte erneut.
 3. Öffne auf der Website den Abend, gehe zu Schritt 5 (Schritt 9 für die Finalgruppen) und suche den Lauf unter **Verfügbare Tournament-Live-Aufnahmen**.
    Wähle seine Gruppe in **Mit Gruppe verknüpfen** und dann **Geprüfte Aufnahme verknüpfen**. Die Rennen warten als ausstehende
    Belege, bis du sie annimmst.

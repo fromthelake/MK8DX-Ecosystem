@@ -41,7 +41,8 @@ from mk8dx_tournament_connected.session import SessionStore
 from mk8dx_tournament_extraction.game_messages import AUTO, GAME_LOCALES, normalize_game_locale
 
 from .product_languages import (
-    LANGUAGES as PRODUCT_LANGUAGES, english_for, english_for_any_language, parse_language, translate, uses_catalog,
+    LANGUAGES as PRODUCT_LANGUAGES, english_for, english_for_any_language, parse_language, say, translate,
+    uses_catalog,
 )
 from .baseline_assets import IMPORTED_ASSETS_ROOT
 from .baseline_export_metadata import character_index
@@ -288,6 +289,19 @@ _DUTCH_UI = {
     "Console language": "Consoletaal", "Auto": "Automatisch",
     "The game language of this console (for English, French and Spanish also its region). Auto finds it from the race-end banner; a chosen language reads only that language.":
         "De speltaal van deze console (bij Engels, Frans en Spaans ook de regio). Automatisch herkent hem aan de eindbanner van de race; een gekozen taal leest alleen die taal.",
+    "Con-Error Preset": "Verbindingsfoutvoorbeeld",
+    "Recognized capture cards will be connected automatically. Check the card-to-group routes below.":
+        "Bekende capturekaarten worden automatisch verbonden. Controleer hieronder de koppeling kaart → groep.",
+    "This physical capture card is already assigned to a feed.": "Deze fysieke capturekaart is al aan een feed gekoppeld.",
+    "checking current Tournament step before new run...": "huidige toernooistap controleren vóór de nieuwe run...",
+    "Tournament group routing incomplete; Start blocked": "groepskoppeling van het toernooi onvolledig; START geblokkeerd",
+    "new run cancelled; previous run retained": "nieuwe run geannuleerd; vorige run blijft bewaard",
+    "Tournament context refreshed; confirm new groups before Start": "toernooicontext vernieuwd; bevestig de nieuwe groepen vóór START",
+    "start cancelled — MKV recording remains off": "start geannuleerd — MKV-opname blijft uit",
+    "stopped locally; Tournament Manager delivery remains queued": "lokaal gestopt; levering aan Tournament Manager blijft in de wachtrij",
+    "results retained; waiting for Tournament Manager delivery; Retry upload": "uitslagen bewaard; wachten op levering aan Tournament Manager; Upload opnieuw proberen",
+    "previous recordings recovered": "vorige opnamen hersteld",
+    "RECORDINGS SAFE — TOURNAMENT MANAGER DELIVERY PENDING": "OPNAMEN VEILIG — LEVERING AAN TOURNAMENT MANAGER WACHT NOG",
 }
 _ENGLISH_UI = {dutch: english for english, dutch in _DUTCH_UI.items()}
 
@@ -665,6 +679,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         layout.addWidget(label)
         return frame, layout
 
+    def _say(self, english: str, dutch: str, *values: object) -> str:
+        """A text the code writes in English and Dutch (templates with `{0}`, `{1}`): Dutch, the catalog language
+        or English, values filled in. extract_desktop_messages.py collects these calls for the catalogs."""
+        return say(getattr(self, "language", "en"), english, dutch, *values)
+
     def _tr(self, value: str) -> str:
         # A widget still carries the text of the language switched away from (see english_for_any_language).
         english = (_ENGLISH_UI.get(value) or english_for(self.language, value)
@@ -731,6 +750,10 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             (r"^OCR warm-up incomplete: (.+)\. Recording/capture are unaffected; readers build on first use\.$", lambda m: f"OCR-opwarming onvolledig: {m.group(1)}. Opnemen blijft werken; lezers worden bij het eerste gebruik opgebouwd."),
             (r"^Round (.+) \| waiting for track/cup OCR$", lambda m: f"Ronde {m.group(1)} | wachten op herkenning van circuit/beker"),
             (r"^Round (.+) \| Track UK: (.+) \| Track NL: (.+) \| Cup UK: (.+) \| Cup NL: (.+)$", lambda m: f"Ronde {m.group(1)} | Circuit EN: {m.group(2)} | Circuit NL: {m.group(3)} | Beker EN: {m.group(4)} | Beker NL: {m.group(5)}"),
+            (r"^recording recovery failed: (.+)$", lambda m: f"opnameherstel mislukt: {m.group(1)}"),
+            (r"^recording failed for (.+): (.+)$", lambda m: f"opname mislukt voor {m.group(1)}: {m.group(2)}"),
+            (r"^RECORDING ERROR — START CANCELLED: (.+)$", lambda m: f"OPNAMEFOUT — START GEANNULEERD: {m.group(1)}"),
+            (r"^RECORDING ERROR — RECOVERY FAILED: (.+)$", lambda m: f"OPNAMEFOUT — HERSTEL MISLUKT: {m.group(1)}"),
         )
         for pattern, formatter in dynamic_patterns:
             match = re.match(pattern, english)
@@ -817,8 +840,8 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         identity = getattr(self, "_account_identity", {})
         name = identity.get("displayName")
         if token and identity.get("sessionKey") == session_identity_key(token) and isinstance(name, str) and name:
-            return f"Aangemeld als {name}" if self.language == "nl" else f"Signed in as {name}"
-        return "Aangemeld" if self.language == "nl" else "Signed in"
+            return Mk8dxQtGui._say(self, "Signed in as {0}", "Aangemeld als {0}", name)
+        return Mk8dxQtGui._say(self, "Signed in", "Aangemeld")
 
     def _refresh_account_identity(self) -> None:
         if self._identity_thread is not None and self._identity_thread.is_alive():
@@ -845,15 +868,14 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if context is None:
             if SessionStore().load() is not None:
                 self.connection_mode.setText(
-                    f"{Mk8dxQtGui._signed_in_label(self)}\nGeen toernooi voorgesteld"
-                    if self.language == "nl" else
-                    f"{Mk8dxQtGui._signed_in_label(self)}\nNo Tournament suggested"
+                    f"{Mk8dxQtGui._signed_in_label(self)}\n"
+                    + Mk8dxQtGui._say(self, "No Tournament suggested", "Geen toernooi voorgesteld")
                 )
-                self.connection_detail.setText(
-                    "De zelfstandige run gaat na STOP online. Je kunt nu of achteraf een toernooi voorstellen; de directeur beslist over de koppeling."
-                    if self.language == "nl" else
-                    "The independent run goes online after Stop. You can suggest a Tournament now or afterwards; the director decides the link."
-                )
+                self.connection_detail.setText(Mk8dxQtGui._say(
+                    self,
+                    "The independent run goes online after Stop. You can suggest a Tournament now or afterwards; the director decides the link.",
+                    "De zelfstandige run gaat na STOP online. Je kunt nu of achteraf een toernooi voorstellen; de directeur beslist over de koppeling.",
+                ))
             else:
                 self.connection_mode.setText(self._tr("LOCAL / OFFLINE"))
                 self.connection_detail.setText(self._tr(
@@ -861,7 +883,7 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 ))
             if hasattr(self, "connect_button"):
                 self.connect_button.setText(
-                    ("Toernooi voorstellen" if self.language == "nl" else "Suggest Tournament")
+                    Mk8dxQtGui._say(self, "Suggest Tournament", "Toernooi voorstellen")
                     if SessionStore().load() is not None else
                     self._tr("Connect to Tournament Manager")
                 )
@@ -871,20 +893,19 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         active_groups = self._active_connection_groups()
         assigned = [group for group in active_groups if str(group.get("groupId")) in assigned_ids]
         groups = ", ".join(str(group.get("name")) for group in assigned) or (
-            "kies of controleer een groep per bron" if self.language == "nl" else "choose or verify a group per source"
+            Mk8dxQtGui._say(self, "choose or verify a group per source", "kies of controleer een groep per bron")
         )
         step = score_workflow_step(context.workflow_step, context.stage)
         score_label = (
-            "Kwalificatiebewijs" if step < 7 and self.language == "nl" else
-            "Finalebewijs" if step >= 7 and self.language == "nl" else
-            "Qualifier evidence" if step < 7 else "Final evidence"
+            Mk8dxQtGui._say(self, "Qualifier evidence", "Kwalificatiebewijs") if step < 7 else
+            Mk8dxQtGui._say(self, "Final evidence", "Finalebewijs")
         )
-        group_label = "Groep" if self.language == "nl" else "Group"
-        step_label = "Stap" if self.language == "nl" else "Step"
-        review_help = (
-            "Controleer kaart → groep vóór START. Na race 1 kan een sterke naammatch View openen; scores tellen pas na Player-koppeling en groepscontrole na STOP."
-            if self.language == "nl" else
-            "Check card → group before Start. After race 1 a strong name match may open View; scores count only after Player matching and group review after Stop."
+        group_label = Mk8dxQtGui._say(self, "Group", "Groep")
+        step_label = Mk8dxQtGui._say(self, "Step", "Stap")
+        review_help = Mk8dxQtGui._say(
+            self,
+            "Check card → group before Start. After race 1 a strong name match may open View; scores count only after Player matching and group review after Stop.",
+            "Controleer kaart → groep vóór START. Na race 1 kan een sterke naammatch View openen; scores tellen pas na Player-koppeling en groepscontrole na STOP.",
         )
         self.connection_detail.setText(
             f"{context.tournament_name}\n{step_label} {step} · {score_label} · {group_label}: {groups}\n{review_help}"
@@ -895,29 +916,30 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if not hasattr(self, "retry_upload_button"):
             return
         pending = queued_upload_count()
-        label = "Upload opnieuw proberen" if self.language == "nl" else "Retry upload"
+        label = Mk8dxQtGui._say(self, "Retry upload", "Upload opnieuw proberen")
         self.retry_upload_button.setText(f"{label} ({pending})" if pending else label)
-        self.retry_upload_button.setToolTip(
-            "Automatische verzending begint zodra de verbinding terug is. Gebruik deze knop om nu opnieuw te proberen."
-            if self.language == "nl" else
-            "Automatic delivery starts when connectivity returns. Use this button to retry now."
-        )
+        self.retry_upload_button.setToolTip(Mk8dxQtGui._say(
+            self,
+            "Automatic delivery starts when connectivity returns. Use this button to retry now.",
+            "Automatische verzending begint zodra de verbinding terug is. Gebruik deze knop om nu opnieuw te proberen.",
+        ))
         if hasattr(self, "upload_status"):
             if getattr(self, "_automatic_upload_retry_active", False):
-                status = "Bewaarde uploads worden automatisch verstuurd…" if self.language == "nl" else "Sending retained uploads automatically…"
+                status = Mk8dxQtGui._say(self, "Sending retained uploads automatically…", "Bewaarde uploads worden automatisch verstuurd…")
             elif getattr(self, "_retry_upload_active", False):
-                status = "Bewaarde uploads worden verstuurd…" if self.language == "nl" else "Sending retained uploads…"
+                status = Mk8dxQtGui._say(self, "Sending retained uploads…", "Bewaarde uploads worden verstuurd…")
             elif pending:
-                status = (
-                    f"{pending} upload(s) wachten · lokaal bewaard. Automatisch herstel staat aan; handmatig opnieuw proberen kan ook."
-                    if self.language == "nl" else
-                    f"{pending} upload(s) waiting · saved locally. Automatic recovery is active; manual retry remains available."
+                status = Mk8dxQtGui._say(
+                    self,
+                    "{0} upload(s) waiting · saved locally. Automatic recovery is active; manual retry remains available.",
+                    "{0} upload(s) wachten · lokaal bewaard. Automatisch herstel staat aan; handmatig opnieuw proberen kan ook.",
+                    pending,
                 )
             else:
-                status = (
-                    "Geen uploads in wachtrij. Overnemen in het toernooi gebeurt apart op de website."
-                    if self.language == "nl" else
-                    "No uploads queued. Accepting results into the Tournament is a separate website action."
+                status = Mk8dxQtGui._say(
+                    self,
+                    "No uploads queued. Accepting results into the Tournament is a separate website action.",
+                    "Geen uploads in wachtrij. Overnemen in het toernooi gebeurt apart op de website.",
                 )
             self.upload_status.setText(status)
             self.upload_status.setStyleSheet(f"color: {'#f0b429' if pending else COLORS['muted']}; padding: 2px 8px;")
@@ -926,9 +948,7 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if self._connection_thread is not None and self._connection_thread.is_alive():
             return
         self.connect_button.setEnabled(False)
-        self.connection_detail.setText(
-            "Browsertoestemming openen…" if self.language == "nl" else "Opening browser authorization…"
-        )
+        self.connection_detail.setText(self._say("Opening browser authorization…", "Browsertoestemming openen…"))
 
         def worker() -> None:
             try:
@@ -1036,23 +1056,16 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if missing or duplicates:
             details = []
             if missing:
-                details.append(
-                    ("Geen actuele groep: " if self.language == "nl" else "No current group: ")
-                    + ", ".join(missing)
-                )
+                details.append(self._say("No current group: {0}", "Geen actuele groep: {0}", ", ".join(missing)))
             if duplicates:
-                details.append(
-                    ("Groep dubbel gebruikt: " if self.language == "nl" else "Group used twice: ")
-                    + ", ".join(duplicates)
-                )
-            instruction = (
-                "Koppel iedere feed aan precies één verschillende groep van de huidige stap voordat je START drukt."
-                if self.language == "nl" else
-                "Assign every feed to exactly one different group from the current step before pressing Start."
+                details.append(self._say("Group used twice: {0}", "Groep dubbel gebruikt: {0}", ", ".join(duplicates)))
+            instruction = self._say(
+                "Assign every feed to exactly one different group from the current step before pressing Start.",
+                "Koppel iedere feed aan precies één verschillende groep van de huidige stap voordat je START drukt.",
             )
             QtWidgets.QMessageBox.warning(
                 self,
-                "Tournament-koppeling" if self.language == "nl" else "Tournament connection",
+                self._say("Tournament connection", "Tournament-koppeling"),
                 "\n".join((*details, "", instruction)),
             )
             self._set_status(
@@ -1069,36 +1082,33 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             self._update_connection_bar()
             QtWidgets.QMessageBox.information(
                 self,
-                "Tournament connection",
-                (
-                    "Er is geen actief toernooi om voor te stellen. Je blijft aangemeld en de run wordt zonder toernooikoppeling geüpload."
-                    if self.language == "nl" else
-                    "No active Tournament is available to suggest. You remain signed in and the run uploads without a Tournament link."
+                self._say("Tournament connection", "Tournament-koppeling"),
+                self._say(
+                    "No active Tournament is available to suggest. You remain signed in and the run uploads without a Tournament link.",
+                    "Er is geen actief toernooi om voor te stellen. Je blijft aangemeld en de run wordt zonder toernooikoppeling geüpload.",
                 ),
             )
             return
         labels = []
-        unassigned_label = (
-            "Geen toernooi voorstellen · directeur koppelt later"
-            if self.language == "nl" else
-            "Do not suggest a Tournament · director links later"
+        unassigned_label = self._say(
+            "Do not suggest a Tournament · director links later",
+            "Geen toernooi voorstellen · directeur koppelt later",
         )
         labels.append(unassigned_label)
         for tournament in choices:
-            when = ("date/time unknown" if tournament.start_at_ms is None else
+            when = (self._say("date/time unknown", "datum/tijd onbekend") if tournament.start_at_ms is None else
                     datetime.fromtimestamp(tournament.start_at_ms / 1000).astimezone().strftime("%d %b %Y %H:%M"))
             step = score_workflow_step(tournament.workflow_step, tournament.stage)
             score_label = (
-                "kwalificatiebewijs" if step < 7 and self.language == "nl" else
-                "finalebewijs" if step >= 7 and self.language == "nl" else
-                "qualifier evidence" if step < 7 else "final evidence"
+                self._say("qualifier evidence", "kwalificatiebewijs") if step < 7 else
+                self._say("final evidence", "finalebewijs")
             )
-            step_label = "Stap" if self.language == "nl" else "Step"
+            step_label = self._say("Step", "Stap")
             labels.append(f"{tournament.name} · {when} · {step_label} {step}: {score_label}")
         label, accepted = QtWidgets.QInputDialog.getItem(
             self,
-            "Toernooi kiezen" if self.language == "nl" else "Choose Tournament",
-            "Toernooi" if self.language == "nl" else "Tournament",
+            self._say("Choose Tournament", "Toernooi kiezen"),
+            self._say("Tournament", "Toernooi"),
             labels,
             0,
             False,
@@ -1137,11 +1147,9 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if not canonical.is_file():
             return
         self.connect_button.setEnabled(False)
-        self.connection_detail.setText(
-            "Voorstel bij afgeronde opname bijwerken…"
-            if self.language == "nl" else
-            "Updating the completed recording suggestion…"
-        )
+        self.connection_detail.setText(self._say(
+            "Updating the completed recording suggestion…", "Voorstel bij afgeronde opname bijwerken…"
+        ))
 
         def worker() -> None:
             try:
@@ -1287,19 +1295,18 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 try:
                     self._choose_tournament(payload)
                 except Exception as error:
-                    QtWidgets.QMessageBox.warning(self, "Tournament connection", str(error))
+                    QtWidgets.QMessageBox.warning(self, self._say("Tournament connection", "Tournament-koppeling"), str(error))
             elif kind == "new_run_context":
                 self._pending_new_run_context_refresh = False
                 if payload is None:
                     QtWidgets.QMessageBox.warning(
                         self,
-                        "Tournament connection",
-                        (
-                            "Het geselecteerde toernooi is niet meer actief of beschikbaar. "
-                            "De vorige run blijft bewaard. Kies een ander voorstel of kies Offline werken."
-                            if self.language == "nl" else
+                        self._say("Tournament connection", "Tournament-koppeling"),
+                        self._say(
                             "The selected Tournament is no longer active or available. The previous run remains retained. "
-                            "Choose another suggestion or choose Work offline."
+                            "Choose another suggestion or choose Work offline.",
+                            "Het geselecteerde toernooi is niet meer actief of beschikbaar. "
+                            "De vorige run blijft bewaard. Kies een ander voorstel of kies Offline werken.",
                         ),
                     )
                     self._set_status("new run cancelled; previous run retained")
@@ -1308,13 +1315,12 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 if changed:
                     QtWidgets.QMessageBox.information(
                         self,
-                        "Tournament connection",
-                        (
-                            "De Tournament Manager-stap of groepsindeling is gewijzigd. De vorige run blijft bewaard. "
-                            "Koppel iedere feed aan de nieuwe groep, controleer Races per groep en druk daarna opnieuw op START."
-                            if self.language == "nl" else
+                        self._say("Tournament connection", "Tournament-koppeling"),
+                        self._say(
                             "The Tournament Manager step or group layout changed. The previous run remains retained. "
-                            "Assign every feed to its new group, verify Races per group, then press START again."
+                            "Assign every feed to its new group, verify Races per group, then press START again.",
+                            "De Tournament Manager-stap of groepsindeling is gewijzigd. De vorige run blijft bewaard. "
+                            "Koppel iedere feed aan de nieuwe groep, controleer Races per groep en druk daarna opnieuw op START.",
                         ),
                     )
                     self._set_status("Tournament context refreshed; confirm new groups before Start")
@@ -1325,28 +1331,30 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 self._pending_new_run_context_refresh = False
                 QtWidgets.QMessageBox.warning(
                     self,
-                    "Tournament connection",
-                    (
-                        f"De actuele Tournament Manager-context kon niet worden gecontroleerd: {payload}\n\n"
-                        "De vorige run blijft bewaard. Probeer opnieuw, kies Toernooi wijzigen of kies Offline werken."
-                        if self.language == "nl" else
-                        f"The current Tournament Manager context could not be checked: {payload}\n\n"
-                        "The previous run remains retained. Retry, choose Change Tournament, or choose Work offline."
+                    self._say("Tournament connection", "Tournament-koppeling"),
+                    self._say(
+                        "The current Tournament Manager context could not be checked: {0}\n\n"
+                        "The previous run remains retained. Retry, choose Change Tournament, or choose Work offline.",
+                        "De actuele Tournament Manager-context kon niet worden gecontroleerd: {0}\n\n"
+                        "De vorige run blijft bewaard. Probeer opnieuw, kies Toernooi wijzigen of kies Offline werken.",
+                        payload,
                     ),
                 )
                 self._set_status("new run cancelled; previous run retained")
             elif kind == "authorization":
                 code, _url = payload
-                self.connection_detail.setText(
-                    (f"Browsercode: {code} · keur deze verbinding goed in de geopende browser."
-                     if self.language == "nl" else
-                     f"Browser code: {code} · approve this connection in the opened browser.")
-                )
+                self.connection_detail.setText(self._say(
+                    "Browser code: {0} · approve this connection in the opened browser.",
+                    "Browsercode: {0} · keur deze verbinding goed in de geopende browser.",
+                    code,
+                ))
             elif kind == "retry":
                 uploaded, retained = payload
-                message = (f"{uploaded} uitslagen geüpload; {retained} lokaal bewaard."
-                           if self.language == "nl" else
-                           f"{uploaded} results uploaded; {retained} retained locally.")
+                message = self._say(
+                    "{0} results uploaded; {1} retained locally.",
+                    "{0} uitslagen geüpload; {1} lokaal bewaard.",
+                    uploaded, retained,
+                )
                 self.connection_detail.setText(message)
                 self._update_retry_upload_button()
             elif kind == "automatic_retry":
@@ -1358,35 +1366,30 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 else:
                     self._automatic_upload_retry_failures = 0
                     self._automatic_upload_retry_due_at = time.monotonic() + 5
-                self.connection_detail.setText(
-                    (
-                        f"Automatisch herstel: {uploaded} uitslagen geüpload; {retained} lokaal bewaard."
-                        if self.language == "nl" else
-                        f"Automatic recovery: {uploaded} results uploaded; {retained} retained locally."
-                    )
-                )
+                self.connection_detail.setText(self._say(
+                    "Automatic recovery: {0} results uploaded; {1} retained locally.",
+                    "Automatisch herstel: {0} uitslagen geüpload; {1} lokaal bewaard.",
+                    uploaded, retained,
+                ))
                 self._update_retry_upload_button()
             elif kind == "automatic_retry_error":
                 self._automatic_upload_retry_failures += 1
                 delay = automatic_upload_retry_delay_seconds(self._automatic_upload_retry_failures)
                 self._automatic_upload_retry_due_at = time.monotonic() + delay
-                self.connection_detail.setText(
-                    (
-                        f"Automatisch uploadherstel probeert het over {delay} seconden opnieuw; resultaten blijven lokaal bewaard."
-                        if self.language == "nl" else
-                        f"Automatic upload recovery will retry in {delay} seconds; results remain saved locally."
-                    )
-                )
+                self.connection_detail.setText(self._say(
+                    "Automatic upload recovery will retry in {0} seconds; results remain saved locally.",
+                    "Automatisch uploadherstel probeert het over {0} seconden opnieuw; resultaten blijven lokaal bewaard.",
+                    delay,
+                ))
                 self._update_retry_upload_button()
             elif kind == "completed_run_suggestion":
                 self._update_connection_bar()
                 QtWidgets.QMessageBox.information(
                     self,
-                    "Tournament connection",
-                    (
-                        "Het toernooivoorstel is toegevoegd aan de afgeronde opname. De directeur kiest en controleert de definitieve koppeling."
-                        if self.language == "nl" else
-                        "The Tournament suggestion was added to the completed recording. The director chooses and reviews the final link."
+                    self._say("Tournament connection", "Tournament-koppeling"),
+                    self._say(
+                        "The Tournament suggestion was added to the completed recording. The director chooses and reviews the final link.",
+                        "Het toernooivoorstel is toegevoegd aan de afgeronde opname. De directeur kiest en controleert de definitieve koppeling.",
                     ),
                 )
             elif kind == "live_registered":
@@ -1394,11 +1397,10 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 if run_id == self._connected_live_run_id:
                     self._connected_live_record_id = receipt.record_id
                     self._connected_live_registration_failures = 0
-                    self.connection_detail.setText(
-                        "Live-run geregistreerd; race 1 controleert de groepsmatch. Scores wachten op de eindcontrole na STOP."
-                        if self.language == "nl" else
-                        "Live run registered; race 1 checks the group match. Scores wait for final review after Stop."
-                    )
+                    self.connection_detail.setText(self._say(
+                        "Live run registered; race 1 checks the group match. Scores wait for final review after Stop.",
+                        "Live-run geregistreerd; race 1 controleert de groepsmatch. Scores wachten op de eindcontrole na STOP.",
+                    ))
                     if self._connected_live_stop_requested:
                         self._mark_connected_live_stopping(run_id)
             elif kind == "live_registration_error":
@@ -1406,30 +1408,29 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 if run_id == self._connected_live_run_id:
                     self._connected_live_registration_failures += 1
                     delay = automatic_upload_retry_delay_seconds(self._connected_live_registration_failures)
-                    self.connection_detail.setText(
-                        f"Live-registratie probeert het over {delay}s opnieuw; lokaal opnemen blijft actief: {error}"
-                        if self.language == "nl" else
-                        f"Live registration retries in {delay}s; local capture remains active: {error}"
-                    )
+                    self.connection_detail.setText(self._say(
+                        "Live registration retries in {0}s; local capture remains active: {1}",
+                        "Live-registratie probeert het over {0}s opnieuw; lokaal opnemen blijft actief: {1}",
+                        delay, error,
+                    ))
                     QtCore.QTimer.singleShot(delay * 1000, lambda expected=run_id: self._retry_connected_live_registration(expected))
             elif kind == "live_stopping":
                 run_id = payload
                 if run_id == self._connected_live_run_id:
-                    self.connection_detail.setText(
-                        "Stop online gemeld; laatste upload en eindcontrole volgen."
-                        if self.language == "nl" else
-                        "Stop reported online; final upload and review follow."
-                    )
+                    self.connection_detail.setText(self._say(
+                        "Stop reported online; final upload and review follow.",
+                        "Stop online gemeld; laatste upload en eindcontrole volgen.",
+                    ))
             elif kind == "live_stopping_error":
                 run_id, error = payload
                 if run_id == self._connected_live_run_id:
-                    self.connection_detail.setText(
-                        f"Stopstatus kon nog niet online worden gemeld; lokale resultaten blijven bewaard: {error}"
-                        if self.language == "nl" else
-                        f"Stop status is not online yet; local results remain retained: {error}"
-                    )
+                    self.connection_detail.setText(self._say(
+                        "Stop status is not online yet; local results remain retained: {0}",
+                        "Stopstatus kon nog niet online worden gemeld; lokale resultaten blijven bewaard: {0}",
+                        error,
+                    ))
             else:
-                QtWidgets.QMessageBox.warning(self, "Tournament connection", str(payload))
+                QtWidgets.QMessageBox.warning(self, self._say("Tournament connection", "Tournament-koppeling"), str(payload))
                 self._update_connection_bar()
 
     def _build_left_panel(self) -> QtWidgets.QWidget:
@@ -1638,36 +1639,35 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         self.broadcast_url_edit.setText(url)
 
     def _set_status(self, text: str) -> None:
-        self.status_line.setText(f"Status: {self._tr(text)}")
+        self.status_line.setText(f"{self._tr('Status')}: {self._tr(text)}")
 
     def _show_export_attention(self, races: list[dict], late_starts: list[dict]) -> None:
-        nl = self.language == "nl"
         parts: list[str] = []
         if races:
             listed = ", ".join(f"{race.get('video', '')} race {race.get('race', '')}" for race in races[:6])
             if len(races) > 6:
                 listed += ", …"
-            parts.append(
-                f"Baan nog invullen ({len(races)}): {listed}. Geen baankaart in de opname; "
-                "in de werkmap staat UNKNOWN. Vul de baan in vóór het importeren. "
-                "Deze races gaan pas daarna naar de uitslag en de live-feed."
-                if nl else
-                f"Track still to fill in ({len(races)}): {listed}. No track card in the recording; "
+            parts.append(self._say(
+                "Track still to fill in ({0}): {1}. No track card in the recording; "
                 "the workbook says UNKNOWN. Fill in the track before importing. "
-                "These races reach the results and the live feed only after that."
-            )
+                "These races reach the results and the live feed only after that.",
+                "Baan nog invullen ({0}): {1}. Geen baankaart in de opname; "
+                "in de werkmap staat UNKNOWN. Vul de baan in vóór het importeren. "
+                "Deze races gaan pas daarna naar de uitslag en de live-feed.",
+                len(races), listed,
+            ))
         for late in late_starts[:3]:
             carried = [entry for entry in late.get("carried") or [] if int(entry.get("points") or 0) > 0]
             example = ", ".join(f"{entry.get('player', '')} {entry.get('points')}" for entry in carried[:3])
-            parts.append(
-                f"Opname begon later: {late.get('video', '')} start met tussenstanden ({example}…). "
-                "De werkmap telt die punten mee, de races niet: neem bij Stap 5/9 de Excel over "
-                "(punten van vóór de opname meetellen) of corrigeer de totalen."
-                if nl else
-                f"Recording started late: {late.get('video', '')} begins with running totals ({example}…). "
+            parts.append(self._say(
+                "Recording started late: {0} begins with running totals ({1}…). "
                 "The workbook counts those points, the races do not: import the Excel at Step 5/9 "
-                "(count points from before the recording) or correct the totals."
-            )
+                "(count points from before the recording) or correct the totals.",
+                "Opname begon later: {0} start met tussenstanden ({1}…). "
+                "De werkmap telt die punten mee, de races niet: neem bij Stap 5/9 de Excel over "
+                "(punten van vóór de opname meetellen) of corrigeer de totalen.",
+                late.get("video", ""), example,
+            ))
         if not parts:
             self.track_attention_line.hide()
             return
@@ -1696,80 +1696,64 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if self._stop_progress_state == "hidden":
             self.stop_progress_panel.hide()
             return
-        nl = self.language == "nl"
-        titles = (
-            (),
-            ("Capture stoppen en MKV-parts sluiten", "Stopping capture and closing MKV parts"),
-            ("Laatste analyse voltooien", "Completing final analysis"),
-            ("Lokale resultaten veilig opslaan", "Safely saving local results"),
-            ("Resultaten aan Tournament Manager leveren", "Delivering results to Tournament Manager"),
-            ("Opnames samenvoegen en controleren", "Assembling and verifying recordings"),
-        )
         stage = self._stop_progress_stage
-        title = titles[stage][0 if nl else 1]
+        title = (
+            "",
+            self._say("Stopping capture and closing MKV parts", "Capture stoppen en MKV-parts sluiten"),
+            self._say("Completing final analysis", "Laatste analyse voltooien"),
+            self._say("Safely saving local results", "Lokale resultaten veilig opslaan"),
+            self._say("Delivering results to Tournament Manager", "Resultaten aan Tournament Manager leveren"),
+            self._say("Assembling and verifying recordings", "Opnames samenvoegen en controleren"),
+        )[stage]
+        finishing = self._say("FINISHING STOP — step {0} of 5: {1}", "STOP AFRONDEN — stap {0} van 5: {1}", stage, title)
         if self._stop_progress_state == "complete":
-            heading = "STOP VOLTOOID — nieuwe START is veilig" if nl else "STOP COMPLETE — a new START is safe"
-            detail = (
-                "Analyse, ecosystem delivery en opnamefinalisatie zijn afgerond."
-                if nl else
-                "Analysis, ecosystem delivery and recording finalization are complete."
+            heading = self._say("STOP COMPLETE — a new START is safe", "STOP VOLTOOID — nieuwe START is veilig")
+            detail = self._say(
+                "Analysis, ecosystem delivery and recording finalization are complete.",
+                "Analyse, ecosystem delivery en opnamefinalisatie zijn afgerond.",
             )
             colors = ("#123d27", "#b9f6ce", "#2f9d5b")
         elif self._stop_progress_state == "pending_delivery":
             context = getattr(self, "connection_context", None)
             manager_step = score_workflow_step(context.workflow_step, context.stage) if context is not None else "5/9"
-            heading = (
-                "STOP LOKAAL VOLTOOID — nieuwe START is veilig"
-                if nl else
-                "STOP LOCALLY COMPLETE — a new START is safe"
+            heading = self._say(
+                "STOP LOCALLY COMPLETE — a new START is safe",
+                "STOP LOKAAL VOLTOOID — nieuwe START is veilig",
             )
-            detail = (
-                f"Ecosystem delivery wacht nog. Tournament Manager Stap {manager_step} blijft onvolledig; "
-                "gebruik Upload opnieuw proberen, Excel-import of handmatige invoer."
-                if nl else
-                f"Ecosystem delivery is still pending. Tournament Manager Step {manager_step} remains incomplete; "
-                "use Retry upload, Excel import, or manual entry."
+            detail = self._say(
+                "Ecosystem delivery is still pending. Tournament Manager Step {0} remains incomplete; "
+                "use Retry upload, Excel import, or manual entry.",
+                "Ecosystem delivery wacht nog. Tournament Manager Stap {0} blijft onvolledig; "
+                "gebruik Upload opnieuw proberen, Excel-import of handmatige invoer.",
+                manager_step,
             )
             colors = ("#5b4a16", "#ffe8a3", "#9f7f20")
         elif self._stop_progress_state == "waiting":
-            heading = (
-                f"STOP AFRONDEN — stap {stage} van 5: {title}"
-                if nl else
-                f"FINISHING STOP — step {stage} of 5: {title}"
-            )
-            detail = (
-                "Resultaten staan lokaal veilig in de wachtrij; de opnames worden nu afgerond."
-                if nl else
-                "Results are safely retained in the outbox; recordings are now being finalized."
+            heading = finishing
+            detail = self._say(
+                "Results are safely retained in the outbox; recordings are now being finalized.",
+                "Resultaten staan lokaal veilig in de wachtrij; de opnames worden nu afgerond.",
             )
             colors = ("#5b4a16", "#ffe8a3", "#9f7f20")
         elif self._stop_progress_state == "failed":
-            heading = "STOP KAN NIET VEILIG AFRONDEN" if nl else "STOP COULD NOT FINISH SAFELY"
-            detail = (
-                "De vorige run blijft bewaard. Los de getoonde fout op voordat je opnieuw START."
-                if nl else
-                "The previous run remains retained. Resolve the shown error before starting again."
+            heading = self._say("STOP COULD NOT FINISH SAFELY", "STOP KAN NIET VEILIG AFRONDEN")
+            detail = self._say(
+                "The previous run remains retained. Resolve the shown error before starting again.",
+                "De vorige run blijft bewaard. Los de getoonde fout op voordat je opnieuw START.",
             )
             colors = ("#5a1717", "#ffd0d0", "#d43f3f")
         else:
-            heading = (
-                f"STOP AFRONDEN — stap {stage} van 5: {title}"
-                if nl else
-                f"FINISHING STOP — step {stage} of 5: {title}"
-            )
+            heading = finishing
             if stage == 2:
-                detail = (
-                    f"Bevestigd {self._stop_progress_confirmed} van {self._stop_progress_found} gedetecteerde races. "
-                    "Niet afsluiten; START blijft geblokkeerd."
-                    if nl else
-                    f"Confirmed {self._stop_progress_confirmed} of {self._stop_progress_found} detected races. "
-                    "Do not close; START remains blocked."
+                detail = self._say(
+                    "Confirmed {0} of {1} detected races. Do not close; START remains blocked.",
+                    "Bevestigd {0} van {1} gedetecteerde races. Niet afsluiten; START blijft geblokkeerd.",
+                    self._stop_progress_confirmed, self._stop_progress_found,
                 )
             else:
-                detail = (
-                    "Niet afsluiten; START blijft geblokkeerd totdat alle stappen klaar zijn."
-                    if nl else
-                    "Do not close; START remains blocked until every step is complete."
+                detail = self._say(
+                    "Do not close; START remains blocked until every step is complete.",
+                    "Niet afsluiten; START blijft geblokkeerd totdat alle stappen klaar zijn.",
                 )
             colors = ("#5b4a16", "#ffe8a3", "#9f7f20")
         background, foreground, border = colors
@@ -1778,11 +1762,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         terminal = self._stop_progress_state in {"complete", "pending_delivery"}
         self.stop_progress_bar.setValue(5 if terminal else stage)
         self.stop_progress_bar.setFormat(
-            ("Voltooid" if nl else "Complete")
+            self._say("Complete", "Voltooid")
             if self._stop_progress_state == "complete" else
-            ("Lokaal voltooid" if nl else "Locally complete")
+            self._say("Locally complete", "Lokaal voltooid")
             if self._stop_progress_state == "pending_delivery" else
-            ((f"Stap {stage} / 5") if nl else f"Step {stage} / 5")
+            self._say("Step {0} / 5", "Stap {0} / 5", stage)
         )
         self.stop_progress_panel.setStyleSheet(
             f"QFrame#panel {{ background: {background}; border: 1px solid {border}; }}"
@@ -1826,13 +1810,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         dialog = QtWidgets.QMessageBox(self)
         dialog.setIcon(QtWidgets.QMessageBox.Icon.Warning)
         dialog.setWindowTitle(self._tr("Recover previous recording"))
-        dialog.setText(
-            (
-                f"{len(manifests)} onafgeronde opname-run(s) zijn veilig lokaal bewaard. Nu controleren en herstellen?"
-                if self.language == "nl"
-                else f"{len(manifests)} unfinished recording run(s) are retained locally. Validate and recover now?"
-            )
-        )
+        dialog.setText(self._say(
+            "{0} unfinished recording run(s) are retained locally. Validate and recover now?",
+            "{0} onafgeronde opname-run(s) zijn veilig lokaal bewaard. Nu controleren en herstellen?",
+            len(manifests),
+        ))
         recover = dialog.addButton(self._tr("Recover previous recording"), QtWidgets.QMessageBox.ButtonRole.AcceptRole)
         later = dialog.addButton(self._tr("Not now"), QtWidgets.QMessageBox.ButtonRole.RejectRole)
         dialog.setDefaultButton(recover)
@@ -1847,12 +1829,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 reports = [recover_recording_run(path) for path in manifests]
                 failed_runs = [str(report["run_id"]) for report in reports if report.get("ok") is not True]
                 if failed_runs:
-                    message = (
-                        "Herstelcontrole mislukt; bestanden blijven bewaard voor: "
-                        if self.language == "nl" else
-                        "Recovery validation failed; retained files remain available for: "
-                    )
-                    raise RuntimeError(message + ", ".join(failed_runs))
+                    raise RuntimeError(self._say(
+                        "Recovery validation failed; retained files remain available for: {0}",
+                        "Herstelcontrole mislukt; bestanden blijven bewaard voor: {0}",
+                        ", ".join(failed_runs),
+                    ))
             except Exception as error:
                 self._shutdown_queue.put(("recovery_error", str(error)))
             else:
@@ -2378,10 +2359,9 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         capture_sources = [source for source in self.sources if source.capture_device is not None]
         identities = [capture_device_identity(source.capture_device) for source in capture_sources]
         if len(identities) != len(set(identities)):
-            text = (
-                "BLOKKADE: dezelfde fysieke capturekaart staat bij meer dan één feed. Verwijder de dubbele koppeling."
-                if self.language == "nl" else
-                "BLOCKED: the same physical capture card is assigned to more than one feed. Remove the duplicate route."
+            text = self._say(
+                "BLOCKED: the same physical capture card is assigned to more than one feed. Remove the duplicate route.",
+                "BLOKKADE: dezelfde fysieke capturekaart staat bij meer dan één feed. Verwijder de dubbele koppeling.",
             )
             self.capture_routing_status.setStyleSheet(
                 "QLabel { background: #4c1d1d; color: #fecaca; border: 1px solid #dc2626; "
@@ -2390,10 +2370,9 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             self.capture_routing_status.setText(text)
             return
         if not capture_sources:
-            text = (
-                "Bekende capturekaarten worden automatisch verbonden. Controleer daarna hieronder kaart → groep."
-                if self.language == "nl" else
-                "Recognized capture cards connect automatically. Then check each card → group route below."
+            text = self._say(
+                "Recognized capture cards connect automatically. Then check each card → group route below.",
+                "Bekende capturekaarten worden automatisch verbonden. Controleer daarna hieronder kaart → groep.",
             )
         else:
             routes = []
@@ -2401,12 +2380,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 card = self._capture_name(source) or source.display_label
                 group = self.source_groups.get(source.stream_label, DEFAULT_GROUP)
                 routes.append(f"{card} → {group}")
-            phase = "finale" if self._routing_phase() == "final" and self.language == "nl" else (
-                "final" if self._routing_phase() == "final" else
-                ("kwalificatie" if self.language == "nl" else "qualifier")
+            phase = (
+                self._say("final", "finale") if self._routing_phase() == "final" else
+                self._say("qualifier", "kwalificatie")
             )
-            prefix = "Controleer koppeling" if self.language == "nl" else "Check routing"
-            text = f"{prefix} ({phase}): " + "  ·  ".join(routes)
+            text = self._say("Check routing ({0}): {1}", "Controleer koppeling ({0}): {1}", phase, "  ·  ".join(routes))
         self.capture_routing_status.setStyleSheet(
             "QLabel { background: #172554; color: #dbeafe; border: 1px solid #2563eb; "
             "border-radius: 6px; padding: 7px; font-weight: 650; }"
@@ -2984,46 +2962,41 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if recording_state is not None and recording_state not in TERMINAL_RECORDING_STATES:
             QtWidgets.QMessageBox.warning(
                 self,
-                "Previous run is not safely finalized",
-                (
-                    f"Run {controller.run_id} has recording state '{recording_state.value}'. "
+                self._say("Previous run is not safely finalized", "Vorige run is niet veilig afgerond"),
+                self._say(
+                    "Run {0} has recording state '{1}'. "
                     "A new run is blocked so its retained evidence cannot be hidden. "
-                    "Finish/recover the previous recording first."
-                    if self.language != "nl" else
-                    f"Run {controller.run_id} heeft opnamestatus '{recording_state.value}'. "
+                    "Finish/recover the previous recording first.",
+                    "Run {0} heeft opnamestatus '{1}'. "
                     "Een nieuwe run is geblokkeerd zodat het bewaarde bewijs niet wordt verborgen. "
-                    "Rond de vorige opname eerst af of herstel deze."
+                    "Rond de vorige opname eerst af of herstel deze.",
+                    controller.run_id, recording_state.value,
                 ),
             )
             return False
 
         dialog = QtWidgets.QMessageBox(self)
         dialog.setIcon(QtWidgets.QMessageBox.Icon.Warning)
-        dialog.setWindowTitle("Nieuwe run starten?" if self.language == "nl" else "Start a new run?")
-        dialog.setText(
-            (
-                f"De vorige run {controller.run_id} blijft volledig bewaard.\n\n"
-                "START maakt nieuwe opnames, analyses en resultaten en maakt alleen het live dashboard leeg. "
-                "Er wordt niets van de vorige run verwijderd of overschreven."
-                if self.language == "nl" else
-                f"The previous run {controller.run_id} remains fully retained.\n\n"
-                "START creates new recordings, analysis and results and clears only the live dashboard. "
-                "Nothing from the previous run is deleted or overwritten."
-            )
-        )
-        dialog.setInformativeText(
-            (
-                "Kies Annuleren als deze klik niet bedoeld was. Opnamen en exports blijven bereikbaar via de Open-knoppen."
-                if self.language == "nl" else
-                "Choose Cancel if this click was accidental. Recordings and exports remain available through the Open buttons."
-            )
-        )
+        dialog.setWindowTitle(self._say("Start a new run?", "Nieuwe run starten?"))
+        dialog.setText(self._say(
+            "The previous run {0} remains fully retained.\n\n"
+            "START creates new recordings, analysis and results and clears only the live dashboard. "
+            "Nothing from the previous run is deleted or overwritten.",
+            "De vorige run {0} blijft volledig bewaard.\n\n"
+            "START maakt nieuwe opnames, analyses en resultaten en maakt alleen het live dashboard leeg. "
+            "Er wordt niets van de vorige run verwijderd of overschreven.",
+            controller.run_id,
+        ))
+        dialog.setInformativeText(self._say(
+            "Choose Cancel if this click was accidental. Recordings and exports remain available through the Open buttons.",
+            "Kies Annuleren als deze klik niet bedoeld was. Opnamen en exports blijven bereikbaar via de Open-knoppen.",
+        ))
         start_new = dialog.addButton(
-            "Nieuwe run starten" if self.language == "nl" else "Start new run",
+            self._say("Start new run", "Nieuwe run starten"),
             QtWidgets.QMessageBox.ButtonRole.DestructiveRole,
         )
         cancel = dialog.addButton(
-            "Annuleren" if self.language == "nl" else "Cancel",
+            self._say("Cancel", "Annuleren"),
             QtWidgets.QMessageBox.ButtonRole.RejectRole,
         )
         dialog.setDefaultButton(cancel)
@@ -3060,12 +3033,11 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             QtWidgets.QMessageBox.warning(
                 self,
                 self._tr("Sources"),
-                (
-                    "Dezelfde fysieke capturekaart kan niet voor twee of meer groepen worden gebruikt. "
-                    "Verwijder de dubbele bron voordat je start."
-                    if self.language == "nl" else
+                self._say(
                     "The same physical capture card cannot be used for two or more groups. "
-                    "Remove the duplicate source before starting."
+                    "Remove the duplicate source before starting.",
+                    "Dezelfde fysieke capturekaart kan niet voor twee of meer groepen worden gebruikt. "
+                    "Verwijder de dubbele bron voordat je start.",
                 ),
             )
             return
@@ -3536,27 +3508,25 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
             connected_feed = str(event.data.get("connected_feed") or "")
             if connected_feed.startswith("uploaded:"):
                 uploaded = connected_feed.partition(":")[2]
-                message = (
-                    f"{uploaded} uitslag(en) naar Tournament Manager verzonden; lokale werkmap bijgewerkt"
-                    if self.language == "nl"
-                    else f"{uploaded} result(s) sent to Tournament Manager; local workbook updated"
+                message = self._say(
+                    "{0} result(s) sent to Tournament Manager; local workbook updated",
+                    "{0} uitslag(en) naar Tournament Manager verzonden; lokale werkmap bijgewerkt",
+                    uploaded,
                 )
-                self.status_line.setText(f"Status: {message}")
+                self.status_line.setText(f"{self._tr('Status')}: {message}")
             elif connected_feed.startswith("offline_or_queued"):
-                message = (
-                    "Uitslag lokaal bewaard; upload staat klaar voor Opnieuw proberen"
-                    if self.language == "nl"
-                    else "Result retained locally; upload is ready for Retry"
+                message = self._say(
+                    "Result retained locally; upload is ready for Retry",
+                    "Uitslag lokaal bewaard; upload staat klaar voor Opnieuw proberen",
                 )
-                self.status_line.setText(f"Status: {message}")
+                self.status_line.setText(f"{self._tr('Status')}: {message}")
                 self._update_retry_upload_button()
             elif connected_feed == "offline":
-                message = (
-                    "Uitslag lokaal bewaard; offline werken blijft actief"
-                    if self.language == "nl"
-                    else "Result retained locally; continuing offline"
+                message = self._say(
+                    "Result retained locally; continuing offline",
+                    "Uitslag lokaal bewaard; offline werken blijft actief",
                 )
-                self.status_line.setText(f"Status: {message}")
+                self.status_line.setText(f"{self._tr('Status')}: {message}")
             else:
                 self._set_status(f"{export_type} workbook updated: {workbook}")
         elif event.event_type == "LIVE_WORKBOOK_FAILED":

@@ -19,6 +19,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
+import nl.mariokart8.iconmatcher.CanonicalWarp;
 import nl.mariokart8.iconmatcher.CardQuad;
 import nl.mariokart8.iconmatcher.CardQuad.Line;
 
@@ -39,8 +40,6 @@ public class OfflineParityNativePipeline {
 
     private static final String ACCEPTED_EVIDENCE = "native_dynamic_refined_slot_details_equivalent";
     private static final String DIAGNOSTIC_EVIDENCE = "fixed_grid_exported_segment_evidence";
-    private static final double[] CANONICAL_PLAYER_BOX_RACE7 = new double[]{548.0, 362.0, 1231.0, 661.0};
-    private static final double[] CANONICAL_GHOST_BOX_RACE7 = new double[]{548.0, 42.0, 1231.0, 349.0};
     private final JSONObject relGrid;
     private final SegmentTemplate lapTemplate;
     private final SegmentTemplate totalTemplate;
@@ -57,14 +56,11 @@ public class OfflineParityNativePipeline {
 
     public static final String LAYOUT_ENDSCREEN = "endscreen";
     public static final String LAYOUT_GHOST_DETAIL = "ghost_detail";
-    // Canonieke targetboxen voor ghost_detail: de badge-center/rowGap-
-    // geprojecteerde ROI (AutoCardRoiSelector.selectGhostDetail) wordt hierop
-    // gepind; maat zo gekozen dat de 7-seg-glyphs op de canonieke celmaten
-    // (lap 19x27, totaal 22x33) landen. Gekalibreerd op de native
-    // 1920x1080-referentiebeelden; wijzigt een box, dan moet
+    // De canonieke targetboxen (ook die voor ghost_detail: de badge-center/rowGap-
+    // geprojecteerde ROI wordt hierop gepind, zodat de 7-seg-glyphs op de canonieke
+    // celmaten lap 19x27 en totaal 22x33 landen) staan centraal in CanonicalWarp
+    // (packages/icon-matcher, issue #99 phase 5); wijzigt een box, dan moet
     // grid/ghost_detail_relative_grid.json mee (zie docs/scanner-layouts.md).
-    private static final double[] CANONICAL_GHOST_DETAIL_BOX_RACE3 = new double[]{540.0, 170.0, 782.0, 331.0};
-    private static final double[] CANONICAL_GHOST_DETAIL_BOX_RACE7 = new double[]{540.0, 120.0, 767.0, 379.0};
 
     /** Optionele identiteits-matcher (node 27, fase 1); null = stage wordt overgeslagen. */
     public OfflineParityNativePipeline withKartConfigMatcher(KartConfigMatcher matcher) {
@@ -386,17 +382,14 @@ public class OfflineParityNativePipeline {
                 // (warp >= ANTIALIAS_BELOW_SCALE) blijven byte-gelijk.
                 Mat warpSource = fullBgr;
                 Mat reduced = null;
-                double shrink = Math.min(alignResult.scaleX, alignResult.scaleY);
-                if (shrink > 0.0 && shrink < ANTIALIAS_BELOW_SCALE) {
-                    double factor = shrink / ANTIALIAS_TARGET_SCALE;
-                    int reducedW = Math.max(1, (int) Math.round(fullBgr.cols() * factor));
-                    int reducedH = Math.max(1, (int) Math.round(fullBgr.rows() * factor));
+                CanonicalWarp.AntialiasPlan plan = CanonicalWarp.antialiasPlan(new double[]{alignResult.scaleX,
+                        alignResult.scaleY, alignResult.translateX, alignResult.translateY}, fullBgr.cols(), fullBgr.rows());
+                if (plan != null) {
+                    double factor = plan.factor;
                     reduced = new Mat();
-                    Imgproc.resize(fullBgr, reduced, new org.opencv.core.Size(reducedW, reducedH), 0, 0, Imgproc.INTER_AREA);
+                    Imgproc.resize(fullBgr, reduced, new org.opencv.core.Size(plan.reducedW, plan.reducedH), 0, 0, Imgproc.INTER_AREA);
                     Mat unscale = Mat.eye(3, 3, CvType.CV_64F);
-                    unscale.put(0, 0, fullBgr.cols() / (double) reducedW, 0.0, 0.0,
-                            0.0, fullBgr.rows() / (double) reducedH, 0.0,
-                            0.0, 0.0, 1.0);
+                    unscale.put(0, 0, plan.unscale);
                     Mat rescaled = new Mat();
                     Core.gemm(composed, unscale, 1.0, new Mat(), 0.0, rescaled);
                     composed.release();
@@ -683,28 +676,21 @@ public class OfflineParityNativePipeline {
         }
     }
 
-    private Rect boundingRect(Quad quad, int width, int height) {
+    // MK8DX ecosystem overlay (issue #99 phase 5): the canonical card geometry of stages 17 and 18
+    // (bounding rectangle, destination corners, target box, alignment, anti-alias plan) is the central
+    // CanonicalWarp, the same arithmetic as the Web scanner and Python (vectors/canonical-warp-v1.json).
+    private static double[][] corners(Quad quad) {
         Point[] points = quad.points();
-        double minX = Double.MAX_VALUE;
-        double minY = Double.MAX_VALUE;
-        double maxX = -Double.MAX_VALUE;
-        double maxY = -Double.MAX_VALUE;
-        for (Point point : points) {
-            minX = Math.min(minX, point.x);
-            minY = Math.min(minY, point.y);
-            maxX = Math.max(maxX, point.x);
-            maxY = Math.max(maxY, point.y);
-        }
-        int x = Math.max(0, Math.min(width - 1, (int) Math.floor(minX)));
-        int y = Math.max(0, Math.min(height - 1, (int) Math.floor(minY)));
-        int right = Math.max(x + 1, Math.min(width, (int) Math.ceil(maxX)));
-        int bottom = Math.max(y + 1, Math.min(height, (int) Math.ceil(maxY)));
-        return new Rect(x, y, right - x, bottom - y);
+        double[][] out = new double[points.length][];
+        for (int i = 0; i < points.length; i++) out[i] = new double[]{points[i].x, points[i].y};
+        return out;
     }
 
-    // Onder deze warp-schaal eerst middelend verkleinen, tot de warp deze schaal overhoudt.
-    private static final double ANTIALIAS_BELOW_SCALE = 0.5;
-    private static final double ANTIALIAS_TARGET_SCALE = 0.8;
+    private Rect boundingRect(Quad quad, int width, int height) {
+        int[] r = CanonicalWarp.boundingRect(corners(quad), width, height);
+        return new Rect(r[0], r[1], r[2], r[3]);
+    }
+
     private double lastAntialiasFactor = 1.0;
     // Zolang de rechtzet-seed loopt: alleen een sluitende lap-som telt als read.
     private boolean strictSeedAttempt = false;
@@ -791,12 +777,9 @@ public class OfflineParityNativePipeline {
     }
 
     private Quad quadFromRect(Rect rect) {
-        return new Quad(
-                new Point(rect.x, rect.y),
-                new Point(rect.x + rect.width - 1, rect.y),
-                new Point(rect.x + rect.width - 1, rect.y + rect.height - 1),
-                new Point(rect.x, rect.y + rect.height - 1)
-        );
+        double[][] q = CanonicalWarp.quadFromRect(new int[]{rect.x, rect.y, rect.width, rect.height});
+        return new Quad(new Point(q[0][0], q[0][1]), new Point(q[1][0], q[1][1]),
+                new Point(q[2][0], q[2][1]), new Point(q[3][0], q[3][1]));
     }
 
     private CanonicalAlignResult canonicalPlayerBoxAlign(Mat warp, Quad currentQuad, AutoCardRoiSelector.Selection roiSelection) throws Exception {
@@ -805,20 +788,19 @@ public class OfflineParityNativePipeline {
         YellowSlot yellow = isGhostDetail() ? new YellowSlot(null, 0.0, 0.0) : detectYellowPlayerSlot(warp);
         String owner = isGhostDetail() ? "ghost" : ("top".equals(yellow.position) ? "ghost" : "player");
         String raceKey = inferStep01RaceKey(roiSelection);
-        TargetBox targetProfile = isGhostDetail()
-                ? new TargetBox("race7".equals(raceKey) ? CANONICAL_GHOST_DETAIL_BOX_RACE7 : CANONICAL_GHOST_DETAIL_BOX_RACE3,
-                        "fixed_ghost_detail_canonical_target_" + ("race7".equals(raceKey) ? "race7" : "race3"))
-                : canonicalTargetBox(owner, raceKey);
+        TargetBox targetProfile = canonicalTargetBox(owner, raceKey);
         double[] target = targetProfile.box;
         String ownerUsed = isGhostDetail()
                 ? "ghost_detail_single_panel"
                 : ("top".equals(yellow.position) ? "ghost_positional_top" : "player_positional_bottom");
         BoxD currentBox = boxFromQuad(currentQuad);
         BoxD targetBox = new BoxD(target[0], target[1], target[2], target[3]);
-        double sx = targetBox.width() / Math.max(1.0, currentBox.width());
-        double sy = targetBox.height() / Math.max(1.0, currentBox.height());
-        double tx = targetBox.left - currentBox.left * sx;
-        double ty = targetBox.top - currentBox.top * sy;
+        double[] align = CanonicalWarp.canonicalAlign(
+                new double[]{currentBox.left, currentBox.top, currentBox.right, currentBox.bottom}, target);
+        double sx = align[0];
+        double sy = align[1];
+        double tx = align[2];
+        double ty = align[3];
         Mat matrix = new Mat(2, 3, CvType.CV_64F);
         Mat out = new Mat();
         try {
@@ -882,78 +864,18 @@ public class OfflineParityNativePipeline {
         return evidence.put("no_runtime_label_fallback", true);
     }
 
+    /** Where the card lies on the canonical frame (central CanonicalWarp.targetBox; race 3 from the grid's content extents). */
     private TargetBox canonicalTargetBox(String owner, String raceKey) {
-        double[] race7 = "ghost".equals(owner) ? CANONICAL_GHOST_BOX_RACE7 : CANONICAL_PLAYER_BOX_RACE7;
-        if (!"race3".equals(raceKey)) {
-            return new TargetBox(race7, "fixed_race7_canonical_target");
-        }
-        BoxD race3Content = ownerContentExtent("race3", owner);
-        BoxD race7Content = ownerContentExtent("race7", owner);
-        if (race3Content == null || race7Content == null) {
-            return new TargetBox(race7, "fallback_fixed_race7_missing_relative_grid_content_extent");
-        }
-        double leftMargin = race7Content.left - race7[0];
-        double topMargin = race7Content.top - race7[1];
-        double rightMargin = race7[2] - race7Content.right;
-        double bottomMargin = race7[3] - race7Content.bottom;
-        return new TargetBox(
-                new double[]{
-                        race3Content.left - leftMargin,
-                        race3Content.top - topMargin,
-                        race3Content.right + rightMargin,
-                        race3Content.bottom + bottomMargin
-                },
-                "derived_from_race3_relative_grid_using_race7_card_content_margins"
-        );
-    }
-
-    private BoxD ownerContentExtent(String raceKey, String owner) {
-        JSONObject ownerGrid = ownerGridForRace(raceKey, owner);
-        if (ownerGrid == null) {
-            return null;
-        }
-        List<BoxD> boxes = new ArrayList<>();
-        appendRelativeBoxes(ownerGrid, "lap_index_boxes_rel", boxes);
-        appendRelativeBoxes(ownerGrid, "total_strip_rel", boxes);
-        appendRelativeBoxes(ownerGrid, "lap_strips_rel", boxes);
-        if (boxes.isEmpty()) {
-            return null;
-        }
-        return union(boxes);
-    }
-
-    private void appendRelativeBoxes(JSONObject ownerGrid, String key, List<BoxD> boxes) {
-        Object value = ownerGrid.opt(key);
-        if (value instanceof JSONArray) {
-            appendRelativeBoxArray(ownerGrid, (JSONArray) value, boxes);
-        }
-    }
-
-    private void appendRelativeBoxArray(JSONObject ownerGrid, JSONArray arr, List<BoxD> boxes) {
-        if (arr.length() == 4 && !(arr.opt(0) instanceof JSONArray)) {
-            boxes.add(ownerAbsBox(ownerGrid, arr));
-            return;
-        }
-        for (int i = 0; i < arr.length(); i++) {
-            JSONArray child = arr.optJSONArray(i);
-            if (child != null) {
-                appendRelativeBoxArray(ownerGrid, child, boxes);
-            }
-        }
+        boolean race3 = "race3".equals(raceKey) && !isGhostDetail();
+        CanonicalWarp.Target target = CanonicalWarp.targetBox(owner, raceKey, isGhostDetail(),
+                race3 ? CanonicalWarp.contentExtent(ownerGridForRace("race3", owner)) : null,
+                race3 ? CanonicalWarp.contentExtent(ownerGridForRace("race7", owner)) : null);
+        return new TargetBox(target.box, target.source);
     }
 
     private BoxD boxFromQuad(Quad quad) {
-        double left = Double.MAX_VALUE;
-        double top = Double.MAX_VALUE;
-        double right = -Double.MAX_VALUE;
-        double bottom = -Double.MAX_VALUE;
-        for (Point point : quad.points()) {
-            left = Math.min(left, point.x);
-            top = Math.min(top, point.y);
-            right = Math.max(right, point.x);
-            bottom = Math.max(bottom, point.y);
-        }
-        return new BoxD(left, top, right, bottom);
+        double[] box = CanonicalWarp.quadBox(corners(quad));
+        return new BoxD(box[0], box[1], box[2], box[3]);
     }
 
     private YellowSlot detectYellowPlayerSlot(Mat bgr) {

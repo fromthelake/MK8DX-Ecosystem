@@ -97,19 +97,18 @@ Utilise Tournament Live quand tu captures la soirée en direct. Si la soirée s'
 des enregistrements, analyse-les après coup avec la fenêtre **Tournament Analysis** :
 
 1. Double-clique sur `TournamentAnalysis.cmd` dans le dossier du paquet.
-2. **① Choose recordings** (choisir les enregistrements) : **Add videos...** (ajouter des vidéos) sélectionne un ou
-   plusieurs enregistrements (`.mp4`, `.mkv`, `.mov`, `.avi`, `.ts`) ; **Add folder...** (ajouter un dossier) ajoute un
+2. **① Choisir les enregistrements** : **Ajouter des vidéos...** sélectionne un ou
+   plusieurs enregistrements (`.mp4`, `.mkv`, `.mov`, `.avi`, `.ts`) ; **Ajouter un dossier...** ajoute un
    dossier qui contient les enregistrements d'un tournoi.
-3. **② Choose videos** (choisir les vidéos) : tout ce que tu as ajouté est coché ; décoche ce qui ne doit pas être
-   analysé (**All** (tout), **None** (aucun), **Clear** (vider)).
-4. **③ Run the analysis** (lancer l'analyse) : vérifie le **Session id** (identifiant de session, rempli à partir du
-   premier nom et de la date ; il est stocké avec chaque course) et le **Results folder** (dossier des résultats, par
-   défaut `<first name>_TournamentSession` à côté du premier enregistrement), puis choisis **START ANALYSIS** (démarrer
-   l'analyse). La fenêtre exécute le même traitement que `TournamentProcessor.cmd` ; le journal d'activité affiche sa
-   sortie en couleur, le voyant de départ passe à l'orange et **Cancel** (annuler) l'arrête. Les enregistrements sont
+3. **② Choisir les vidéos** : tout ce que tu as ajouté est coché ; décoche ce qui ne doit pas être
+   analysé (**Tout**, **Aucun**, **Effacer**).
+4. **③ Lancer l'analyse** : vérifie le **ID de session** (rempli à partir du
+   premier nom et de la date ; il est stocké avec chaque course) et le **Dossier de résultats** (par
+   défaut `<first name>_TournamentSession` à côté du premier enregistrement), puis choisis **DÉMARRER L'ANALYSE**. La fenêtre exécute le même traitement que `TournamentProcessor.cmd` ; le journal d'activité affiche sa
+   sortie en couleur, le voyant de départ passe à l'orange et **Annuler** l'arrête. Les enregistrements sont
    liés dans `Input_Videos\` du dossier des résultats, ou copiés lorsqu'ils sont sur un autre disque.
-5. **🏁 Results** (résultats) : quand il indique **Finished** (terminé), **Open Latest Excel** (ouvrir le dernier Excel)
-   ou **Open Results Folder** (ouvrir le dossier des résultats) : `Output_Results\` contient le classeur Excel, le CSV et
+5. **🏁 Résultats** : quand il indique **Terminé**, **Ouvrir le dernier Excel**
+   ou **Ouvrir le dossier de résultats** : `Output_Results\` contient le classeur Excel, le CSV et
    `*_TournamentRaceResultsV1.json`. Vérifie les courses, puis importe le JSON sur le site comme décrit plus haut.
 
 Les textes suivent la langue de Windows (anglais ou néerlandais) ; `MK8DX_TOURNAMENT_LANGUAGE` dans
@@ -147,7 +146,7 @@ automatiquement.
 ### Tournament Live vers le site
 
 1. Dans Tournament Live, choisis **Se connecter à Tournament Manager** (plus tard **Changer de tournoi**), termine la
-   connexion dans le navigateur et choisis la soirée dans **Choose Tournament** (choisir le tournoi). Ce choix n'est
+   connexion dans le navigateur et choisis la soirée dans **Choisir un tournoi**. Ce choix n'est
    qu'une suggestion ; tu peux le faire avant ou après le run.
 2. Lance les flux (**Ajouter un fichier vidéo** ou une carte d'acquisition, puis **Tout démarrer**). Tournament Live
    peut ajouter tout seul une carte d'acquisition qu'il a mémorisée, comme source supplémentaire sur le Groupe 1. S'il

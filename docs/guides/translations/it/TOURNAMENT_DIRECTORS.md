@@ -95,16 +95,16 @@ Usa Tournament Live quando acquisisci la serata mentre si svolge. Quando la sera
 le registrazioni, analizzale in seguito con la finestra **Tournament Analysis**:
 
 1. Fai doppio clic su `TournamentAnalysis.cmd` nella cartella del pacchetto.
-2. **① Choose recordings** (Scegli le registrazioni): **Add videos...** (Aggiungi video...) sceglie una o più registrazioni (`.mp4`, `.mkv`, `.mov`, `.avi`,
-   `.ts`); **Add folder...** (Aggiungi cartella...) aggiunge una cartella che contiene le registrazioni di un torneo.
-3. **② Choose videos** (Scegli i video): tutto ciò che hai aggiunto è spuntato; togli la spunta a ciò che non va analizzato (**All** (Tutti), **None** (Nessuno),
-   **Clear** (Svuota)).
-4. **③ Run the analysis** (Esegui l'analisi): controlla il **Session id** (ID sessione; compilato dal primo nome e dalla data; viene salvato
-   con ogni gara) e il **Results folder** (Cartella dei risultati; per impostazione predefinita `<first name>_TournamentSession` accanto alla prima
-   registrazione), poi scegli **START ANALYSIS** (Avvia analisi). La finestra esegue la stessa elaborazione di `TournamentProcessor.cmd`;
-   il registro delle attività mostra il suo output colorato, la luce di avvio diventa ambra e **Cancel** (Annulla) la interrompe. Le registrazioni
+2. **① Scegli registrazioni**: **Aggiungi video...** sceglie una o più registrazioni (`.mp4`, `.mkv`, `.mov`, `.avi`,
+   `.ts`); **Aggiungi cartella...** aggiunge una cartella che contiene le registrazioni di un torneo.
+3. **② Scegli video**: tutto ciò che hai aggiunto è spuntato; togli la spunta a ciò che non va analizzato (**Tutti**, **Nessuno**,
+   **Cancella**).
+4. **③ Avvia l'analisi**: controlla il **ID sessione** (compilato dal primo nome e dalla data; viene salvato
+   con ogni gara) e il **Cartella dei risultati** (per impostazione predefinita `<first name>_TournamentSession` accanto alla prima
+   registrazione), poi scegli **AVVIA ANALISI**. La finestra esegue la stessa elaborazione di `TournamentProcessor.cmd`;
+   il registro delle attività mostra il suo output colorato, la luce di avvio diventa ambra e **Annulla** la interrompe. Le registrazioni
    vengono collegate in `Input_Videos\` della cartella dei risultati, oppure copiate quando si trovano su un'altra unità.
-5. **🏁 Results** (Risultati): quando compare **Finished** (Completato), **Open Latest Excel** (Apri l'ultimo Excel) o **Open Results Folder** (Apri la cartella dei risultati): `Output_Results\`
+5. **🏁 Risultati**: quando compare **Completato**, **Apri l'ultimo Excel** o **Apri cartella dei risultati**: `Output_Results\`
    contiene la cartella di lavoro Excel, il CSV e `*_TournamentRaceResultsV1.json`. Controlla le gare, poi importa il JSON
    sul sito come descritto sopra.
 
@@ -137,11 +137,11 @@ server. Una gara consegnata finisce in **Risultati in arrivo**; non viene mai pu
 ### Da Tournament Live al sito
 
 1. In Tournament Live scegli **Collegati a Tournament Manager** (in seguito **Cambia Torneo**), completa l'accesso nel
-   browser e scegli la serata in **Choose Tournament** (Scegli il torneo). Quella scelta è solo un suggerimento; puoi farla prima
+   browser e scegli la serata in **Scegli Torneo**. Quella scelta è solo un suggerimento; puoi farla prima
    o dopo la sessione.
 2. Avvia i feed (**Aggiungi file video** o una scheda di acquisizione, poi **Avvia tutto**). Tournament Live può aggiungere
-   da solo una scheda di acquisizione che ricorda, come sorgente in più su Group 1 (Gruppo 1). Con un video anche su Group 1,
-   **Avvia tutto** si ferma con *Assign every feed to exactly one different group* (Assegna ogni feed a esattamente un gruppo diverso):
+   da solo una scheda di acquisizione che ricorda, come sorgente in più su Gruppo 1. Con un video anche su Group 1,
+   **Avvia tutto** si ferma con *Assegna ogni feed a esattamente un gruppo diverso del passaggio attuale prima di premere START*:
    seleziona la sorgente in più e scegli **Rimuovi selezionati**, oppure dalle un gruppo proprio, e avvia di nuovo.
 3. Sul sito apri la serata, vai al passaggio 5 (passaggio 9 per i gruppi finali) e trova la sessione in **Registrazioni Tournament Live disponibili**.
    Scegli il suo gruppo in **Collega al gruppo**, poi **Collega la registrazione controllata**. Le gare restano in attesa come prove

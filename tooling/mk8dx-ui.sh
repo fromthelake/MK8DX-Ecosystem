@@ -14,6 +14,34 @@
 
 ui_esc=$(printf '\033')
 ui_reset="${ui_esc}[0m"
+
+# Launcher texts in the 15 game languages: (ui_t 'Website: {0}' "$origin") prints the text in the launcher
+# language, with {0}, {1} filled. tooling/launcher_text.py chooses the language (MK8DX_LANGUAGE, else LC_ALL /
+# LC_MESSAGES / LANG; the rules of tooling/mk8dx-ui.ps1) and hands over its catalog once as "English<TAB>text"
+# lines, so this file never parses JSON. Without Python or a catalog the text stays English.
+ui_texts=
+for ui_python in python3 python; do
+  if [ -f tooling/launcher_text.py ] && command -v "$ui_python" >/dev/null 2>&1; then
+    ui_texts=$("$ui_python" tooling/launcher_text.py --tsv 2>/dev/null) && break
+    ui_texts=
+  fi
+done
+ui_tab=$(printf '\t')
+ui_t() {
+  ui_text=$1; shift
+  if [ -n "$ui_texts" ]; then
+    ui_found=$(printf '%s\n' "$ui_texts" | awk -F "$ui_tab" -v key="$ui_text" '$1 == key { print $2; exit }')
+    [ -z "$ui_found" ] || ui_text=$ui_found
+  fi
+  ui_index=0
+  for ui_value do
+    case $ui_text in
+      *"{$ui_index}"*) ui_text="${ui_text%%"{$ui_index}"*}$ui_value${ui_text#*"{$ui_index}"}" ;;
+    esac
+    ui_index=$((ui_index + 1))
+  done
+  printf '%s' "$ui_text"
+}
 ui_mode=rich
 if [ ! -t 1 ] || [ "${TERM:-}" = dumb ] || [ "${MK8DX_PLAIN:-}" = 1 ] || [ -n "${NO_COLOR+x}" ]; then
   ui_mode=plain
@@ -156,7 +184,7 @@ ui_logo_rich() {
 }
 
 ui_header() {  # ui_header SUBTITLE [REVISION]
-  tail="   ${1:-}"; [ -n "${2:-}" ] && tail="$tail   package $2"
+  tail="   ${1:-}"; [ -n "${2:-}" ] && tail="$tail   $(ui_t 'package {0}' "$2")"
   printf '\n'
   if [ "$ui_mode" = rich ]; then
     ui_checker 56; printf '\n'
@@ -283,7 +311,7 @@ ui_info() {  # ui_info TEXT: "Label: value" lines get a grey label and a cyan va
 }
 
 ui_ok() {  # the words stay "OK  <text>" in every mode: the guides quote them
-  text=${1:-Done.}
+  text=${1:-$(ui_t 'Done.')}
   case $ui_mode in
     plain) printf 'OK  %s\n' "$text" ;;
     basic) printf '%s[32mOK  %s%s\n' "$ui_esc" "$text" "$ui_reset" ;;
@@ -378,17 +406,17 @@ case "${ui_sourced:-}${1:-}" in
     for arg in "$@"; do
       case $arg in --plain) ui_set_plain ;; --skip-countdown) ui_skip_countdown=1 ;; esac
     done
-    ui_header 'home & club LAN' demo
+    ui_header "$(ui_t 'home & club LAN')" demo
     ui_start
-    ui_lap 1/4 'Checking Python'
-    ui_info 'MK8DX package: /opt/mk8dx/demo'
-    ui_lap 2/4 'Checking Docker'
-    if ui_spin_quiet 'Waiting for the Docker engine' sleep 1; then ui_info 'The spinner returned 0.'; fi
-    ui_lap 3/4 'Preparing the MK8DX programs'
+    ui_lap 1/4 "$(ui_t 'Checking Python')"
+    ui_info "$(ui_t 'MK8DX package: {0}' /opt/mk8dx/demo)"
+    ui_lap 2/4 "$(ui_t 'Checking Docker')"
+    if ui_spin_quiet "$(ui_t 'Waiting for the Docker engine')" sleep 1; then ui_info 'The spinner returned 0.'; fi
+    ui_lap 3/4 "$(ui_t 'Preparing the MK8DX programs')"
     ui_ok
-    ui_step 'An example step'
-    ui_fail 'That step did not finish. Read the message above; your data is kept.'
-    ui_lap 4/4 'Opening MK8DX beheer in your browser'
-    ui_finish 'Ready. The setup opens in your browser.'
+    ui_step "$(ui_t 'An example step')"
+    ui_fail "$(ui_t 'That step did not finish. Read the message above; your data is kept.')"
+    ui_lap 4/4 "$(ui_t 'Opening MK8DX beheer in your browser')"
+    ui_finish "$(ui_t 'Ready. The setup opens in your browser.')"
     ;;
 esac

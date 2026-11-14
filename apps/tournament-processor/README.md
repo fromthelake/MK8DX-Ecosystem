@@ -52,8 +52,12 @@ in `gui_classic.py` opens instead (as Tournament Live's `run_gui` does).
    Excel, CSV, `*_TournamentRaceResultsV1.json`) and **Open Frames**.
 
 The window does no recognition of its own; results are those of the command line.
-Texts are English or Dutch (`MK8DX_TOURNAMENT_LANGUAGE`, otherwise the Windows
-language). The banner paints the original window's artwork (`qt/assets/bg.jpg`, listed
+Texts come in the 15 game languages: English and Dutch in `gui.py` (`TEXTS`), the
+other 13 from catalogs in `src/tournament_processor/i18n/` (source
+`i18n/messages.source.json` from `tooling/i18n/extract_processor_messages.py`, built by
+`tooling/i18n/build_web_catalogs.mjs`). `--language`, `MK8DX_LANGUAGE` or
+`MK8DX_TOURNAMENT_LANGUAGE` chooses; otherwise Tournament Live's saved language, then the
+Windows display language. The banner paints the original window's artwork (`qt/assets/bg.jpg`, listed
 in `docs/THIRD_PARTY_MATERIALS.md` and `packages/assets/native-binaries-v1.json`);
 `MK8DX_ANALYSIS_BACKGROUND` may name another image, and without any image the banner
 is drawn in code. Only the original's `gui/` presentation modules were ported; its

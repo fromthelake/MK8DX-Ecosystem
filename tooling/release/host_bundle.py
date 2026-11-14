@@ -45,7 +45,10 @@ FILES = (
     "Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "compose.yaml", "compose.local.yaml", "compose.lan.yaml",
     "compose.production.yaml", "compose.images.yaml", "tooling/install.py", "tooling/lifecycle.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",
-    "tooling/mk8dx-ui.sh",
+    "tooling/mk8dx-ui.sh", "tooling/launcher_text.py",
+    # The launcher texts in the 15 game languages (tooling/i18n/build_web_catalogs.mjs, product "launcher").
+    *(f"tooling/launcher_i18n/{language}.json" for language in (
+        "nl", "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW")),
     "LICENSE", "LICENSE_SCOPE.md", "SOURCE_FOR_BINARIES.txt",
     "infrastructure/docker/Caddyfile.local", "infrastructure/docker/Caddyfile.lan",
     "infrastructure/docker/Caddyfile.production", "docs/OPERATIONS_NL.md",

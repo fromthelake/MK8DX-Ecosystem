@@ -12,8 +12,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:
   es-MX → es-419, zh-Hant/TW/HK → zh-TW, then the base language, else English) and have a language menu; the
   invitation page also follows the language chosen on the website. The A2 guides now quote the labels as the
-  wizard shows them in that language. The launcher window stays English. An existing installation shows the new
-  `/setup` page once its certificate files are made again (a new installation or address).
+  wizard shows them in that language. A package update writes the `/setup` page of an existing installation
+  again, so it gets the 15-language page too.
+- **Launcher windows, Tournament Live and Tournament Analysis in all 15 languages of the game** (machine
+  translations except EN/NL): the start and manage windows (`Start-MK8DX*.cmd`, `Manage-MK8DX-No-Docker.cmd`,
+  `tooling/start-mk8dx.ps1`/`.sh`) with their menu, steps and messages, and the questions of the guided setup in
+  `tooling/install.py`; the Tournament Live window's remaining English/Dutch-only texts; the Tournament Analysis
+  window. The launchers follow `MK8DX_LANGUAGE` or the system language (exact, regional, base, else English) and
+  keep the race-style look and `-Plain`/`--plain`/`NO_COLOR`; Chinese, Japanese, Korean and Russian also show
+  correctly when the output is redirected. The translated guides quote the launcher lines as the window shows them.
 - **User guides in all 15 languages of the game** (machine translations except EN/NL, marked as such;
   corrections welcome via the Translation correction form): the A2 guide, the user guide (TXT and DOCX) and the
   players guide in `docs/install/translations/<locale>/` and `docs/guides/translations/<locale>/`, the
@@ -92,6 +99,19 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   not change: on the 12 public test-set frames the browser scanner gives the same 154 searches and 63 fields, and
   the Android engine on an emulator gives the same result and kart configuration for all 12 frames. Android's
   float32 score arithmetic stays and was measured: at most 5e-8 from the double reference, with no decision changed.
+- **LiveTrial reads icons only with the central reader, and the card geometry before the crop is shared** (#99,
+  phase 5). The LiveTrial engine's own icon matcher and crop search (`identify_crop`, `identify_crop_search`,
+  `register_card` in `identity_matcher.py`) are removed. They were only the Select-a-Ghost fallback when the central
+  reader was not loaded, which never happens in a build. Without the central reader the panel's fields now stay
+  unknown, the rule the result cards already followed. The engine no longer loads every reference image at start.
+  The new `canonical_warp` module (Python,
+  `sharedCanonicalWarp.ts`, `CanonicalWarp.java`) holds the geometry between the card quad and the 1280x720
+  canonical card: bounding rectangle, warp corners, target box, alignment and anti-alias reduction. The Web scanner
+  and Android call it. The vector `canonical-warp-v1.json` (11 synthetic cards, 12 real cards from the public test
+  set, numbers only) replays identically in all three and equals the Web scanner double for double. Behaviour does
+  not change: the Web scanner's 64 recorded warp calls on the 12 frames are identical before and after, and
+  12/12 frames match their labels. The Android engine on an emulator gives the same result, kart configuration,
+  stage 17/18 geometry and stage images (by hash) on 12/12 frames.
 
 ## 0.2.3 — 2026-11-14
 

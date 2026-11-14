@@ -96,16 +96,16 @@ Usa o Tournament Live quando capturas a noite enquanto decorre. Quando a noite d
 gravações, analisa-as depois com a janela **Tournament Analysis**:
 
 1. Faz duplo clique em `TournamentAnalysis.cmd` na pasta do pacote.
-2. **① Choose recordings** (escolher gravações): **Add videos...** (adicionar vídeos) escolhe uma ou mais gravações (`.mp4`, `.mkv`, `.mov`, `.avi`,
-   `.ts`); **Add folder...** (adicionar pasta) adiciona uma pasta que contém as gravações de um torneio.
-3. **② Choose videos** (escolher vídeos): tudo o que adicionaste fica marcado; desmarca o que não deve ser analisado (**All**, **None**,
-   **Clear**: todos, nenhum, limpar).
-4. **③ Run the analysis** (executar a análise): verifica o **Session id** (ID da sessão; preenchido a partir do primeiro nome e da data e guardado
-   com cada corrida) e a **Results folder** (pasta de resultados; por predefinição `<first name>_TournamentSession` ao lado da primeira
-   gravação) e depois escolhe **START ANALYSIS** (iniciar análise). A janela executa o mesmo processamento que `TournamentProcessor.cmd`;
-   o registo de atividade mostra a saída a cores, a luz de início fica âmbar e **Cancel** (cancelar) termina-o. As gravações
+2. **① Escolher gravações**: **Adicionar vídeos...** escolhe uma ou mais gravações (`.mp4`, `.mkv`, `.mov`, `.avi`,
+   `.ts`); **Adicionar pasta...** adiciona uma pasta que contém as gravações de um torneio.
+3. **② Escolher vídeos**: tudo o que adicionaste fica marcado; desmarca o que não deve ser analisado (**Todos**, **Nenhum**,
+   **Limpar**: todos, nenhum, limpar).
+4. **③ Executar a análise**: verifica o **ID de sessão** (preenchido a partir do primeiro nome e da data e guardado
+   com cada corrida) e a **Pasta de resultados** (por predefinição `<first name>_TournamentSession` ao lado da primeira
+   gravação) e depois escolhe **INICIAR ANÁLISE**. A janela executa o mesmo processamento que `TournamentProcessor.cmd`;
+   o registo de atividade mostra a saída a cores, a luz de início fica âmbar e **Cancelar** termina-o. As gravações
    são ligadas em `Input_Videos\` da pasta de resultados, ou copiadas quando estão noutra unidade.
-5. **🏁 Results** (resultados): quando aparecer **Finished** (concluído), escolhe **Open Latest Excel** (abrir o Excel mais recente) ou **Open Results Folder** (abrir a pasta de resultados): `Output_Results\`
+5. **🏁 Resultados**: quando aparecer **Concluído**, escolhe **Abrir o Excel mais recente** ou **Abrir pasta de resultados**: `Output_Results\`
    contém o livro de Excel, o CSV e `*_TournamentRaceResultsV1.json`. Verifica as corridas e depois importa o JSON
    no site como descrito acima.
 
@@ -139,12 +139,11 @@ publicada automaticamente.
 ### Tournament Live para o site
 
 1. No Tournament Live escolhe **Ligar ao Tournament Manager** (mais tarde **Mudar de Torneio**), conclui o início
-   de sessão no navegador e escolhe a noite em **Choose Tournament** (escolher torneio). Essa escolha é só uma sugestão; podes fazê-la antes
+   de sessão no navegador e escolhe a noite em **Escolher Torneio**. Essa escolha é só uma sugestão; podes fazê-la antes
    ou depois da sessão.
 2. Põe as transmissões a correr (**Adicionar ficheiro de vídeo** ou uma placa de captura, depois **Iniciar tudo**). O
    Tournament Live pode adicionar sozinho uma placa de captura de que se lembra, como fonte extra no Grupo 1. Se houver
-   também um vídeo no Grupo 1, **Iniciar tudo** para com *Assign every feed to exactly one different group* (atribui
-   cada transmissão a exatamente um grupo diferente): seleciona a fonte extra e escolhe **Remover selecionados**, ou dá-lhe
+   também um vídeo no Grupo 1, **Iniciar tudo** para com *Atribui cada transmissão a exatamente um grupo diferente do passo atual antes de premires START*: seleciona a fonte extra e escolhe **Remover selecionados**, ou dá-lhe
    o seu próprio grupo, e inicia de novo.
 3. No site, abre a noite, vai ao Passo 5 (Passo 9 para os grupos finais) e procura a sessão em **Gravações do Tournament Live disponíveis**.
    Escolhe o grupo dela em **Associar ao grupo** e depois **Associar gravação revista**. As corridas ficam à espera como

@@ -437,7 +437,7 @@ class GhostPanelReader:
         return {"id": found.key[:found.key.index("#")], "raw": raw, "ratio": round(found.fuzzy, 3),
                 "margin": round(found.margin, 3)}
 
-    def _icon(self, bgr, box, group, subset=None, *, screen="collapsed",
+    def _icon(self, bgr, box, group, *, screen="collapsed",
               character=None, text=None) -> dict | None:
         if self.shared_candidate is not None:
             result = self.shared_candidate.read(
@@ -460,15 +460,9 @@ class GhostPanelReader:
                     "variantMargin": result["variantMargin"],
                     **({"suggestion": result["suggestion"]}
                        if result["suggestion"] else {})}
-        try:
-            from . import identity_matcher as cam
-            r = cam.identify_crop_search(bgr, box, group, subset_ids=subset, search=2, topk=8)
-        except Exception:
-            return None
-        if not r or not r.get("id"):
-            return None
-        return {"id": r["id"], "score": round(float(r.get("score", 0.0)), 3),
-                "margin": round(float(r.get("margin", 0.0)), 3)}
+        # Without the central reader the field stays unknown (runner.py); the engine's own
+        # icon search was removed (issue #99, phase 5).
+        return None
 
     def _decide_centrally(self, bgr, header, layout, profile, out) -> None:
         """The expanded panel decided by the central Select-a-Ghost picker (packages/icon-matcher
@@ -581,32 +575,23 @@ class GhostPanelReader:
         if layout:
             char_id = (out.get("character") or {}).get("id")
             for kind, group in (("body", "bodies"), ("tire", "tires"), ("glider", "gliders")):
-                subset = None
-                if char_id and group != "tires":
-                    try:
-                        from . import identity_matcher as cam
-                        subset = cam.parts_subset_for_character(char_id, group)
-                    except Exception:
-                        subset = None
-                character = None
-                if self.shared_candidate is not None:
-                    refs = self.shared_candidate.matcher.references
-                    character = self.shared_candidate.api.Decision(
-                        char_id, refs.family.get(char_id),
-                        "accepted" if char_id else "unknown", (), char_id)
+                if self.shared_candidate is None:
+                    # Without the central reader the field stays unknown (runner.py); the
+                    # engine's own icon search was removed (issue #99, phase 5).
+                    out[kind] = None
+                    continue
+                refs = self.shared_candidate.matcher.references
+                character = self.shared_candidate.api.Decision(
+                    char_id, refs.family.get(char_id),
+                    "accepted" if char_id else "unknown", (), char_id)
                 text = self._part_from_text(
                     self._text(bgr, _box(layout["partNames"]["cells"][kind])), group)
-                if self.shared_candidate is not None:
-                    # The central reader decides with the printed name as its text
-                    # clue and the character's catalog colour (combine_part), the
-                    # same rules as on result cards in every product.
-                    icon = self._icon(bgr, _box(layout["icons"]["cells"][kind]), group,
-                                      subset, screen=out["state"], character=character, text=text)
-                    out[kind] = dict(icon, nameRaw=text["raw"]) if icon and text else icon
-                else:
-                    icon = self._icon(bgr, _box(layout["icons"]["cells"][kind]), group,
-                                      subset, screen=out["state"], character=character)
-                    out[kind] = _colour_for_character(_agree(icon, text), subset)
+                # The central reader decides with the printed name as its text
+                # clue and the character's catalog colour (combine_part), the
+                # same rules as on result cards in every product.
+                icon = self._icon(bgr, _box(layout["icons"]["cells"][kind]), group,
+                                  screen=out["state"], character=character, text=text)
+                out[kind] = dict(icon, nameRaw=text["raw"]) if icon and text else icon
         # A collapsed panel keeps the central field reader per field (field_reader.read_field, the
         # ghost_select profile): the panel picker needs the expanded panel's colour fit, and without
         # it (shape-backed) it refused 17 right HDMI characters on staff76 (2026-10-31).
@@ -633,46 +618,6 @@ def _picker_modules(api):
     if not hasattr(picker, "decide_ghost_select_frame"):
         return None
     return picker, photometric, photometric.PanelPhotometry.load()
-
-
-def _family(rid: str | None) -> str | None:
-    if not rid:
-        return None
-    parts = rid.split(".")
-    if parts[0].endswith("_variant") and len(parts) >= 2:
-        return parts[0].replace("_variant", "") + "." + parts[1]
-    return rid
-
-
-def _agree(icon: dict | None, text: dict | None) -> dict | None:
-    """The panel prints the part's NAME beside its icon: two independent reads.
-    The name is exact once it matches (and names no colour), the icon carries
-    the colour variant. Agreement keeps the icon id (variant) and says so."""
-    if not icon and not text:
-        return None
-    if icon and text and _family(icon["id"]) == _family(text["id"]):
-        return dict(icon, nameRaw=text["raw"], nameConfirms=True)
-    if text and text["ratio"] >= 0.8:
-        return {"id": text["id"], "nameRaw": text["raw"], "ratio": text["ratio"],
-                **({"iconId": icon["id"], "iconScore": icon["score"]} if icon else {})}
-    return dict(icon or {}, **({"nameRaw": text["raw"]} if text else {}))
-
-
-def _colour_for_character(part: dict | None, subset: list | None) -> dict | None:
-    """The part in the colour the game gives THIS character. The printed name
-    fixes which body or glider it is but not its colour, and the small icon
-    loses the colour vote to lookalikes (owner 2026-09-28: Races as they come
-    in showed Buggybud and gliders in the wrong colour). The character's own
-    colour set (identity_matcher.parts_subset_for_character, what the result-
-    card reader uses) holds exactly one entry per base part: its variant, or
-    the base part when that character has no special colour."""
-    if not part or not part.get("id") or not subset:
-        return part
-    family = _family(part["id"])
-    coloured = next((pid for pid in subset if _family(pid) == family), None)
-    if coloured is None or coloured == part["id"]:
-        return part
-    return dict(part, id=coloured, readId=part["id"], colourFrom="character")
 
 
 def mark_staff_ghost(tdb, panel: dict | None, track_id: str | None, cc) -> dict | None:

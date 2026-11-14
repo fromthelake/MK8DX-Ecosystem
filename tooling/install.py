@@ -20,6 +20,9 @@ from urllib.parse import urlsplit
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+# The texts the launcher window shows come in the launcher language (tooling/launcher_text.py, English is the key).
+from tooling.launcher_text import t, utf8_output  # noqa: E402
+
 PROFILE = "operator-profile.json"
 SECRET = "secrets.json"
 PUBLIC = "public-client.json"
@@ -393,14 +396,14 @@ def move_offline_installation(state, value, qa_offline_candidate=False):
     except Exception:
         run_compose(state, "up", "-d", "--no-build", "web")
         raise
-    print(f"Network: {prepare_offline_network(state)}")
+    print(t("Network: {0}", prepare_offline_network(state)))
     services = tuple(s for s in route_services("A2_OFFLINE") if s != "mysql")
     run_compose(state, "up", "-d", "--wait", "--no-build", "--force-recreate", *services)
     status(state)
     addresses = offline_addresses(state)
-    print(("Moved to the new address. " if changed else "Address unchanged. ") +
-          f"Phones and other PCs open {addresses['phoneSetup']} and sign in again; paired apps pair again.")
-    print(f"Website: {addresses['website']}")
+    print((t("Moved to the new address.") if changed else t("Address unchanged.")) + " " +
+          t("Phones and other PCs open {0} and sign in again; paired apps pair again.", addresses['phoneSetup']))
+    print(t("Website: {0}", addresses['website']))
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -622,6 +625,13 @@ def record_package(state):
         write_new(path, content)
 
 
+def refresh_offline_setup_page(state):
+    """A2 offline: the /setup page in this package's languages (see offline_lan_ca.refresh_setup_page)."""
+    from tooling.offline_lan_ca import refresh_setup_page
+    if refresh_setup_page(Path(state)):
+        print(t("The page phones and other PCs open first is updated to this package."))
+
+
 def use_package_images(state):
     """Point the installation at this package's images; returns the previous compose values for a rollback."""
     shipped = package_images()
@@ -674,7 +684,7 @@ def offline_network_state(state):
     probe = _powershell(_rule_probe(ip), timeout=60)
     category, _, exists = probe.stdout.strip().partition("|")
     if probe.returncode != 0 or not category:
-        raise ValueError(f"The address {ip} is not active on this computer; reconnect it or use change-lan-address")
+        raise ValueError(t("The address {0} is not active on this computer; reconnect it or use change-lan-address", ip))
     return category, exists == "True"
 
 
@@ -690,7 +700,7 @@ def prepare_offline_network(state):
     if category == "Private" and exists:
         return "present"
     if category not in ("Private", "Public"):
-        raise ValueError(f"The network is '{category}'; ask its administrator to allow TCP 80/443")
+        raise ValueError(t("The network is '{0}'; ask its administrator to allow TCP 80/443", category))
     profile = json.loads((Path(state) / PROFILE).read_text(encoding="utf-8"))
     ip = profile["bindAddress"]
     rule = offline_rule_name(ip)
@@ -722,10 +732,10 @@ def ensure_offline_firewall(state):
     probe = _powershell(_rule_probe(ip), timeout=60)
     category, _, exists = probe.stdout.strip().partition("|")
     if probe.returncode != 0 or not category:
-        raise ValueError(f"The address {ip} is not active on this computer; reconnect it or use change-lan-address")
+        raise ValueError(t("The address {0} is not active on this computer; reconnect it or use change-lan-address", ip))
     if category != "Private":
-        raise ValueError(f"The network of {ip} is '{category}', not Private. In Windows Settings > Network & internet, "
-                         "open this network and choose 'Private network', then run this step again")
+        raise ValueError(t("The network of {0} is '{1}', not Private. In Windows Settings > Network & internet, "
+                           "open this network and choose 'Private network', then run this step again", ip, category))
     if exists == "True":
         return "present"
     created = _powershell(
@@ -799,9 +809,9 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
     if action in ("start", "apply") and route != "A2_OFFLINE":
         behind = images_behind_package(state)
         if behind:
-            raise ValueError("This package is a different version than your installation runs "
-                             f"({', '.join(behind)}). Choose 7 (update) first: it makes a checked backup and "
-                             "applies the database updates. Your data is unchanged.")
+            raise ValueError(t("This package is a different version than your installation runs ({0}). Choose 7 "
+                               "(update) first: it makes a checked backup and applies the database updates. Your "
+                               "data is unchanged.", ', '.join(behind)))
     services = route_services(route)
     recreated = tuple(s for s in services if s not in ("mysql", "mailpit"))
     if action == "maintain-ca":
@@ -890,7 +900,7 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         verify_backup(backup_output)
         offer = update_offer(state)
         if offer.get("olderPackage"):
-            raise ValueError(f"This package ({offer['to']}) is older than the installation ({offer['from']})")
+            raise ValueError(t("This package ({0}) is older than the installation ({1})", offer['to'], offer['from']))
         before = use_package_images(state)
         try:
             run_compose(state, "config", "--quiet")
@@ -900,9 +910,9 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             # already have upgraded the data files, which the older one cannot open; then the verified
             # backup made just before restores everything (it is a logical dump).
             replace_group([Path(state) / "compose.env"], [before])
-            raise RuntimeError(f"{error}. The previous version is selected again. If it does not start, "
-                               f"restore the backup made just before: {backup_output}") from error
-        print("Applying database updates of the new version")
+            raise RuntimeError(t("{0}. The previous version is selected again. If it does not start, restore the "
+                                 "backup made just before: {1}", error, backup_output)) from error
+        print(t("Applying database updates of the new version"))
         run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
                     "dist/composition/migration-apply-main.js", "--migration-catalog",
                     "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx", "--backup-verified")
@@ -910,11 +920,13 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
                     "dist/composition/reference-seed-main.js", "--staff-seed",
                     "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
                     "/app/infrastructure/mysql/reference/world-records-v1.json")
-        print("Starting the new version")
+        print(t("Starting the new version"))
         run_compose(state, "up", "-d", "--wait", "--no-build", "--force-recreate", *recreated)
         status(state)
         record_package(state)
-        print(f"Updated to package {offer.get('to') or 'of this folder'}")
+        # An installation made before this package keeps its old /setup page until it is written again.
+        refresh_offline_setup_page(state)
+        print(t("Updated to package {0}", offer['to']) if offer.get('to') else t("Updated to the package of this folder"))
     elif action in ("setup", "start"):
         run_compose(state, "config", "--quiet")
         if action == "setup":
@@ -929,12 +941,13 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         if route == "A2_OFFLINE":
             run_compose(state, "up", "-d", "--wait", "--no-build", *services)
             status(state)
+            refresh_offline_setup_page(state)
             firewall = ensure_offline_firewall(state)
             addresses = offline_addresses(state)
-            print(f"LAN firewall rule (Private profile, 80/443): {firewall}")
-            print(f"Host page (only on this computer): {addresses['hostPage']}")
-            print(f"Phones and other PCs first open: {addresses['phoneSetup']}")
-            print(f"Website after trusting the certificate: {addresses['website']}")
+            print(t("LAN firewall rule (Private profile, 80/443): {0}", firewall))
+            print(t("Host page (only on this computer): {0}", addresses['hostPage']))
+            print(t("Phones and other PCs first open: {0}", addresses['phoneSetup']))
+            print(t("Website after trusting the certificate: {0}", addresses['website']))
             return
         run_compose(state, "up", "-d", "--no-build", *services)
         status(state)
@@ -944,7 +957,7 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         run_compose(state, "run", "-T", "--rm", "--no-deps", "host-admin", "node",
                     "dist/administration/offline-host-unlock-main.js",
                     *(["--bootstrap"] if user_account_id is None else ["--user-account-id", user_account_id]))
-        print(f"Open on this computer: {offline_addresses(state)['hostPage']}")
+        print(t("Open on this computer: {0}", offline_addresses(state)['hostPage']))
     elif action == "admin":
         profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
         address = profile.get("adminEmail")
@@ -959,6 +972,7 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
 
 
 def main():
+    utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "host-unlock", "upgrade", "update-package", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
     parser.add_argument("--state-dir", type=Path, required=True)
@@ -1007,17 +1021,17 @@ def main():
     native_route = None
     if args.action == "wizard":
         offered = package_routes()
-        print("Where will MK8DX run?")
+        print(t("Where will MK8DX run?"))
         for code in offered:
-            print(f"  {code:<4} {ROUTE_CHOICES[code]}")
+            print(f"  {code:<4} {t(ROUTE_CHOICES[code])}")
         selected = ""
         while selected not in offered:
             try:
-                selected = input(f"Type {', '.join(offered[:-1])} or {offered[-1]} and press Enter: ").strip().upper().replace(" ", "")
+                selected = input(t("Type {0} or {1} and press Enter: ", ', '.join(offered[:-1]), offered[-1])).strip().upper().replace(" ", "")
             except EOFError:
-                raise SystemExit("Setup cancelled before a choice was made; nothing was created.") from None
+                raise SystemExit(t("Setup cancelled before a choice was made; nothing was created.")) from None
             if selected not in offered:
-                print(f"'{selected}' is not one of the choices above.")
+                print(t("'{0}' is not one of the choices above.", selected))
         if selected in ("A3", "B2"):
             from native_install import wizard as native_wizard
             native_wizard(args.state_dir, selected)
@@ -1046,9 +1060,9 @@ def main():
         if candidate.is_file() and json.loads(candidate.read_text(encoding="utf-8")).get("route") in ("A3", "B2"):
             from native_install import operate as native_operate, change_origin as native_origin, change_smtp as native_smtp
             if args.action == "stop":
-                raise SystemExit("This installation runs without Docker. A3: press Ctrl+C in the MK8DX window "
-                                 "(Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in "
-                                 "your hosting panel.")
+                raise SystemExit(t("This installation runs without Docker. A3: press Ctrl+C in the MK8DX window "
+                                   "(Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in "
+                                   "your hosting panel."))
             if args.action == "change-origin": native_origin(args.state_dir, args.origin)
             elif args.action == "change-smtp": native_smtp(args.state_dir)
             elif args.action == "set-admin-email": change_admin_email(args.state_dir, args.admin_email)
@@ -1079,31 +1093,31 @@ def main():
         args.mode = {"A1": "local", "A2": "lan", "A2O": "offline-lan", "B1": "production"}[route]
         if route == "A2O":
             from tooling.offline_lan_ca import private_lan_ip
-            print("A2 offline needs this Windows computer to keep one private IPv4 address on your home network.")
-            print("Tip: reserve it in your router (DHCP reservation); a new address later means a new phone setup QR.")
-            args.lan_bind_address = input("This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ").strip()
+            print(t("A2 offline needs this Windows computer to keep one private IPv4 address on your home network."))
+            print(t("Tip: reserve it in your router (DHCP reservation); a new address later means a new phone setup QR."))
+            args.lan_bind_address = input(t("This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ")).strip()
             private_lan_ip(args.lan_bind_address)
         elif route != "A1":
             if route == "A2":
-                args.domain = input("Private website name [mk8dx.home.arpa]: ").strip() or "mk8dx.home.arpa"
-                args.lan_bind_address = input("This Windows host's private IPv4 address (for example 192.168.0.50): ").strip()
+                args.domain = input(t("Private website name [mk8dx.home.arpa]: ")).strip() or "mk8dx.home.arpa"
+                args.lan_bind_address = input(t("This Windows host's private IPv4 address (for example 192.168.0.50): ")).strip()
             else:
-                args.domain = input("Public website host name (without https://): ").strip()
-            print("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
-                  "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.")
-            args.smtp_host = input("SMTP server name supplied by your mail provider: ").strip()
-            args.smtp_port = int(input("SMTP implicit-TLS port [465]: ").strip() or "465")
-            args.smtp_user = input("SMTP login (not your MK8DX admin account): ").strip()
-            args.smtp_from = input("Authorized sender email address: ").strip()
-            args.smtp_password = getpass.getpass("SMTP password (hidden): ")
+                args.domain = input(t("Public website host name (without https://): ")).strip()
+            print(t("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
+                    "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type."))
+            args.smtp_host = input(t("SMTP server name supplied by your mail provider: ")).strip()
+            args.smtp_port = int(input(t("SMTP implicit-TLS port [465]: ")).strip() or "465")
+            args.smtp_user = input(t("SMTP login (not your MK8DX admin account): ")).strip()
+            args.smtp_from = input(t("Authorized sender email address: ")).strip()
+            args.smtp_password = getpass.getpass(t("SMTP password (hidden): "))
         else:
             args.smtp_password = ""
         if route != "A2O":  # A2 offline has no email: the administrator is created on the host page
             args.admin_email = ""
             while "@" not in args.admin_email or " " in args.admin_email or args.admin_email.startswith("@"):
                 if args.admin_email:
-                    print("That does not look like one email address; try again.")
-                args.admin_email = input("Your own future MK8DX administrator email: ").strip()
+                    print(t("That does not look like one email address; try again."))
+                args.admin_email = input(t("Your own future MK8DX administrator email: ")).strip()
     if args.action == "adopt":
         adopt(args.state_dir)
         return
@@ -1243,16 +1257,16 @@ def main():
                                  "MK8DX_HOSTED_SMTP_PASSWORD": smtp_password,
                                  "MK8DX_DATABASE_ROOT_PASSWORD": compose["MK8DX_DATABASE_ROOT_PASSWORD"]})
     write_json(target / PUBLIC, public_client(origin, offline))
-    print(f"Private installation: {target}")
-    print(f"Web origin: {origin}")
+    print(t("Private installation: {0}", target))
+    print(t("Web origin: {0}", origin))
     if local:
-        print(f"Local mail inbox: http://127.0.0.1:{mailpit_port}")
+        print(t("Local mail inbox: {0}", f"http://127.0.0.1:{mailpit_port}"))
 
 
 if __name__ == "__main__":
     try:
         main()
     except (OSError, ValueError, RuntimeError, subprocess.CalledProcessError, KeyError, json.JSONDecodeError) as error:
-        raise SystemExit(f"Installation step stopped: {error}") from None
+        raise SystemExit(t("Installation step stopped: {0}", error)) from None
     except (EOFError, KeyboardInterrupt):
-        raise SystemExit("Setup cancelled. Start the same file again to continue.") from None
+        raise SystemExit(t("Setup cancelled. Start the same file again to continue.")) from None
