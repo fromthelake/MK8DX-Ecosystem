@@ -843,10 +843,13 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         try:
             run_compose(state, "config", "--quiet")
             run_compose(state, "up", "-d", "--wait", "--no-build", "mysql")
-        except Exception:
-            # Nothing ran on the new images yet: go back to the old ones exactly.
+        except Exception as error:
+            # No migration ran on the new images yet: go back to the old ones exactly. A newer MySQL may
+            # already have upgraded the data files, which the older one cannot open; then the verified
+            # backup made just before restores everything (it is a logical dump).
             replace_group([Path(state) / "compose.env"], [before])
-            raise
+            raise RuntimeError(f"{error}. The previous version is selected again. If it does not start, "
+                               f"restore the backup made just before: {backup_output}") from error
         print("Applying database updates of the new version")
         run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
                     "dist/composition/migration-apply-main.js", "--migration-catalog",

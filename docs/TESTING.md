@@ -117,11 +117,12 @@ python -m pytest -q -p no:cacheprovider -rs tests/tournament
 ## Database integration tests
 
 The API's database tests (`backend/api/test/*.integration.test.ts`) are opt-in and skip without the
-settings below. Verify runs its current suite inventory against both disposable MySQL 8.4.11 and MariaDB 11.4.12 containers.
+settings below. Verify runs its current suite inventory against disposable MySQL 9.7 (the Docker routes' engine), MySQL 8.4 (the oldest an
+external database may run) and MariaDB 11.4 containers.
 Each suite gets its own newly migrated schema; the reference-seed suite uses a synthetic configuration and an
 initial reference seed before testing its update path.
 Run them only against a **disposable** server, never against an installation's database. The CI entry point is
-`bash tooling/run_database_integration_ci.sh mysql` or `mariadb` after `npm ci` and the API build on Linux.
+`bash tooling/run_database_integration_ci.sh mysql`, `mysql84` or `mariadb` after `npm ci` and the API build on Linux.
 
 | Variable | Value |
 | --- | --- |

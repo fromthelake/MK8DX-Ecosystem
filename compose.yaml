@@ -3,7 +3,9 @@ services:
   mysql:
     # Tag and digest pinned (Dependabot updates both). Host packages carry this image in their
     # tar and start it by tag: tooling/release/host_bundle.py checks the digest and drops it there.
-    image: mysql:8.4.13@sha256:a81d043930e51745522bd5c430961cf8286f0a23f0a9a2a6e0108f7ea71b0902
+    # MySQL 9.7 LTS. An existing 8.4 data volume is upgraded in place on first start; that cannot be undone,
+    # so an update takes a verified backup first and a rollback restores that backup (docs/OPERATIONS.md).
+    image: mysql:9.7.4@sha256:df90258da46f6e7ff8574ff84f17618aba0765cac749928299c69fd4e7cb8ad8
     environment:
       MYSQL_DATABASE: ${MK8DX_DATABASE:?}
       MYSQL_USER: ${MK8DX_DATABASE_USER:?}
@@ -16,6 +18,8 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
+      # The first start after a MySQL version change upgrades the data dictionary; give it time.
+      start_period: 300s
     restart: unless-stopped
     logging: {options: {max-size: "10m", max-file: "3"}}
   api:

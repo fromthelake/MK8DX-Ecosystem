@@ -9,8 +9,10 @@ case "$mk8dx_engine" in
   mysql)
     mk8dx_image="$(grep -E '^    image: mysql:[^@ ]+@sha256:[0-9a-f]{64}$' "$(dirname "$0")/../compose.yaml" | sed 's/^    image: //')"
     mk8dx_client='mysql' ;;
+  # The oldest MySQL an external database may run (B1/B2 accept MySQL 8.4+); refreshed by hand.
+  mysql84) mk8dx_image='mysql:8.4.13@sha256:a81d043930e51745522bd5c430961cf8286f0a23f0a9a2a6e0108f7ea71b0902'; mk8dx_client='mysql' ;;
   mariadb) mk8dx_image='mariadb:11.4.12@sha256:4f1d8d202fcf7bcb3902f63af09f9c1a050c2922a89652f22abaec0d4f015e83'; mk8dx_client='mariadb' ;;
-  *) echo 'usage: run_database_integration_ci.sh mysql|mariadb' >&2; exit 2 ;;
+  *) echo 'usage: run_database_integration_ci.sh mysql|mysql84|mariadb' >&2; exit 2 ;;
 esac
 if [[ "$mk8dx_image" != *@sha256:* ]]; then
   echo 'compose.yaml names no digest-pinned mysql image' >&2; exit 2
