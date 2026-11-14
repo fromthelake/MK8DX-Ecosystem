@@ -5,6 +5,7 @@ import json
 import math
 import os
 import re
+import threading
 from hashlib import sha256
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -26,7 +27,9 @@ from .baseline_vision import (
     template_gate_tile,
     to_working_canvas,
 )
-from .ocr_runtime import optimize_easyocr_reader, write_ocr_runtime_report
+from mk8dx_tournament_extraction import ocr_readers  # type: ignore
+
+from .ocr_runtime import write_ocr_runtime_report
 from .paths import DIAGNOSTICS_ROOT, assert_read_allowed, assert_write_allowed
 from .run_context import attach_run_id
 
@@ -194,6 +197,7 @@ class BaselineRowOcrExtractor:
         self.position_templates = load_score_gate_templates()
         self.character_templates = load_character_templates()
         self.reader: Any | None = None
+        self.run_lock = threading.Lock()  # the shared reader's run lock once the reader is loaded
         self.reader_error: str | None = None
         self.shared_shadow = None
         if os.environ.get("MK8DX_TOURNAMENT_SHARED_FIELD_SHADOW") == "1":
@@ -436,7 +440,8 @@ class BaselineRowOcrExtractor:
             return FieldResult("", 0.0, "REJECTED_ROW", f"{field} crop does not exist", crop_path=str(crop_path))
         try:
             reader = self._get_reader()
-            result = reader.readtext(str(crop_path), detail=1)
+            with self.run_lock:
+                result = reader.readtext(str(crop_path), detail=1)
         except Exception as exc:
             return FieldResult("", 0.0, "REJECTED_ROW", f"OCR backend unavailable: {exc}", crop_path=str(crop_path))
         texts: list[str] = []
@@ -460,13 +465,14 @@ class BaselineRowOcrExtractor:
         if self.reader_error is not None:
             raise RuntimeError(self.reader_error)
         try:
-            import easyocr  # type: ignore
+            import easyocr  # type: ignore  # noqa: F401 - unavailable EasyOCR is reported as below
             import torch  # type: ignore
 
             gpu_requested = bool(torch.cuda.is_available())
             write_ocr_runtime_report("row_ocr_reader", gpu_requested=gpu_requested, languages=self.languages)
-            self.reader = easyocr.Reader(self.languages, gpu=gpu_requested, verbose=False)
-            optimize_easyocr_reader(self.reader)
+            # one reader per language set in the process (ocr_readers): every extractor shares it
+            self.run_lock = ocr_readers.run_lock(self.languages, gpu=gpu_requested)
+            self.reader = ocr_readers.shared_reader(self.languages, gpu=gpu_requested)
             return self.reader
         except Exception as exc:
             self.reader_error = f"EasyOCR unavailable or failed to initialize: {exc}"

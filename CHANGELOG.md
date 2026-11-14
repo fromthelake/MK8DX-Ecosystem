@@ -40,6 +40,18 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   issue, and the builders to run. `tooling/build_readme_links.py` (with `--check`) keeps the README language
   switcher and own-language guide links in step.
 
+### Changed
+
+- **LiveTrial verifies a detected console language with its own script only.** After automatic detection the
+  10-second menu-text check reads with the decided language's reader and the Latin one instead of all six script
+  readers, and the other script readers are released; a language change still re-opens detection through the
+  templates and nameplates. Detection itself is unchanged. Every LiveTrial reader (capture loop, console-language
+  probe, Select-a-Ghost panel, name strips) now comes from one cache, one reader per language set, and a reader
+  loads under its own lock, so the track-name read no longer waits for the probe loading another script.
+- **One EasyOCR reader per language set in each Tournament process** (`mk8dx_tournament_extraction.ocr_readers`):
+  the recorded engine's track, name and digit readers and Tournament Live's row extractors, track reader and
+  warm-up share it; the warm-up now keeps the readers it loads instead of discarding them.
+
 ### Fixed
 
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
