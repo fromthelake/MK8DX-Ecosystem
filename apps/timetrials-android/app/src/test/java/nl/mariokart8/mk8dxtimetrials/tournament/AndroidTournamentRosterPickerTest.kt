@@ -4,6 +4,7 @@ import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.androidDisambiguatedName
 import nl.mariokart8.mk8dxtimetrials.ui.androidRepeatedDisplayNames
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -60,6 +61,30 @@ class AndroidTournamentRosterPickerTest {
                 ),
             ),
         )
+    }
+
+    @Test
+    fun aSpellingInAnotherScriptIsRememberedToo() {
+        // the ASCII-only fold made every non-Latin spelling "" and skipped it
+        assertEquals(
+            listOf("player.mal" to "マル", "player.mal_2" to "Мал"),
+            androidRosterAliasesToRemember(
+                listOf("マル" to mal, "Мал" to otherMal, "まる" to mal.copy(displayName = "まる")),
+            ),
+        )
+    }
+
+    @Test
+    fun theFoldKeepsEveryScriptAndTheOldKeys() {
+        listOf("Mal", "Zoë", "  Jürgen ", "Marc met C", "Queenie_1", "Ｍａｒｉｏ").forEach { name ->
+            val ascii = java.text.Normalizer.normalize(name, java.text.Normalizer.Form.NFKD)
+                .replace(Regex("\\p{M}"), "").lowercase(java.util.Locale.ROOT).replace(Regex("[^a-z0-9]"), "")
+            assertEquals(ascii, androidRosterFoldKey(name))
+        }
+        val names = listOf("たろう", "김민수", "김민서", "王小明", "陳大文", "Наташа", "Kenたろう")
+        assertEquals(names.size, names.map(::androidRosterFoldKey).filter { it.isNotEmpty() }.toSet().size)
+        assertEquals(androidRosterFoldKey("ｶﾞﾝﾀ"), androidRosterFoldKey("ガンタ"))
+        assertNotEquals(androidRosterFoldKey("ガ"), androidRosterFoldKey("カ"))
     }
 
     @Test
