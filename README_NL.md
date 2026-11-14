@@ -62,6 +62,126 @@ abonnement, geen reclame.
 
 ---
 
+## Hoe het in elkaar grijpt
+
+MK8DX is geen los programma maar een kleine familie rond één **communityserver**. De server bewaart
+alles wat telt: accounts, tijden, toernooien en standen. De apps eromheen lezen het spelscherm op je eigen
+apparaten en sturen wat ze vonden naar de community die jij kiest.
+
+```mermaid
+flowchart TB
+  REC["Gedeelde herkenning<br/>ingebouwd in elke app"]
+
+  subgraph devices["Telefoons en browsers van spelers"]
+    WEB["Elke browser<br/>website + scanner"]
+    APP["Android-app<br/>met scanner"]
+  end
+
+  subgraph pcs["Windows-pc + capture card"]
+    LT["LiveTrial<br/>automatische Time Trials"]
+    TL["Tournament Live<br/>races op de avond"]
+    TA["Tournament Analysis<br/>opnames achteraf"]
+  end
+
+  subgraph server["Communityserver: thuis, bij de club of online"]
+    DIR{"Organisator controleert<br/>elke race"}
+    API["Website + API"]
+    DB[("Database")]
+  end
+
+  WR["Wereldrecords<br/>dagelijks ververst"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"tijden, ranglijsten, rivalen"| API
+  APP <-->|"tijden, verstuurd zodra online"| API
+  LT -->|"Time Trial-ritten"| API
+  TL -->|"race-uitslagen, live"| DIR
+  TA -->|"importbestand"| DIR
+  DIR -->|"geaccepteerd = officieel"| API
+  API <--> DB
+  WR --> API
+```
+
+**Welke onderdelen heb ik nodig?**
+
+- **Eén communityserver — het enige onderdeel dat elke community nodig heeft.** Dat is de website met
+  zijn API en database. Draai hem op je thuis- of clubnetwerk ([A2](docs/install/A2_THUIS_HANDLEIDING_NL.md), na
+  de installatie geen internet nodig) of online op een server of webhosting
+  ([Een communityserver hosten](docs/guides/HOSTING.md), Engels).
+- **Spelers hebben niet meer nodig dan een browser.** De website brengt de browserscanner mee. De Android-app
+  voegt scannen op de telefoon toe, je tijden zonder internet en in één tik wisselen tussen community's
+  ([Players](docs/guides/PLAYERS.md), Engels).
+- **Een Windows-pc met een capture card is optioneel.** LiveTrial legt elke Time Trial-rit vanzelf vast; je
+  stuurt hem met één klik naar je community, of automatisch ([LiveTrial](docs/guides/LIVETRIAL.md), Engels).
+- **Toernooiavonden draai je op de website.** Tournament Live (tijdens de avond) en Tournament Analysis (opnames
+  achteraf) stellen alleen race-uitslagen voor; scores kun je ook intypen of importeren uit Excel/CSV. Niets
+  verandert de stand voordat de organisator het accepteert
+  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md), Engels).
+- **Herkenning is gedeeld, geen dienst.** Elke app heeft een eigen kopie en leest het scherm op je eigen
+  apparaat; de server controleert alleen de voorgestelde uitslag
+  ([Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE_NL.md) ·
+  [Architectuur](docs/architecture/COMPONENTS_NL.md)).
+
+## Aan de slag
+
+| Ik wil… | Begin hier |
+| --- | --- |
+| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) |
+| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels) |
+| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card |
+| **mijn tijden posten en vergelijken** | [Players](docs/guides/PLAYERS.md) (Engels) — elke browser; Android 8.0+ |
+| **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
+| **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
+
+Elke regel noemt de handleiding die je van begin tot eind volgt. De server uit de broncode bouwen in plaats
+van een releasepakket gebruiken is voor ontwikkelaars: [Starten vanuit de broncode](docs/GETTING_STARTED.md) (Engels).
+
+### Welke computer voor welke route
+
+Elke route geeft je dezelfde website; ze verschillen in waar hij draait en wie hem kan bereiken.
+
+| Route | Voor | Draait op | Status |
+| --- | --- | --- | --- |
+| **A2** thuis- of clubnetwerk | Je eigen netwerk, na de installatie geen internet nodig, inlogkaarten voor iedereen | Windows 11 (x86-64), Linux (x86-64 of arm64), Mac (Apple-chip of Intel) | Volledig getest op Windows 11; Linux in WSL 2; Mac gebouwd, nog niet op een echte Mac getest |
+| **A1** één computer | Uitproberen op de computer waar je achter zit | Windows 11 of Linux, x86-64, met Docker | Getest: installeren, bijwerken, back-up |
+| **A3** één computer zonder Docker | Een Windows-pc waar Docker geen optie is | Windows 11 met XAMPP en Node.js | Getest: installeren, bijwerken, back-up |
+| **B1** openbare website | Je online community, je eigen domein en e-mail | Een Linux x86-64-server (VPS) met Docker; Ubuntu 24.04 beschreven | Beschreven, nog niet volledig getest |
+| **B2** webhosting | Online, zonder eigen server | Een hostingpakket met Node.js (Passenger), MariaDB/MySQL en SSH | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd |
+
+De apps eromheen:
+
+| App | Draait op | Waarom |
+| --- | --- | --- |
+| Website en browserscanner | Elke moderne browser; voor scannen Chrome of Edge aanbevolen | De scanner draait volledig op je eigen apparaat en heeft een browser nodig die hem meerdere threads geeft |
+| Android-app | Android 8.0 of nieuwer, arm64 aanbevolen | Scant op de telefoon zelf, ook zonder verbinding |
+| iPhone en iPad | De website in de browser; scannen in Safari wordt nog getest | Er is geen iOS-app: die bouwen en ondertekenen vraagt een Mac en een Apple-ontwikkelaarsaccount |
+| LiveTrial en Tournament Live | Windows op x86-64 (getest op Windows 11), met een USB-HDMI-capture card per scherm | De capture cards en de meegeleverde herkenning zijn gebouwd en getest voor Windows; er is geen macOS- of Linux-versie |
+
+**Eerste start van de Android-app:** die vraagt *Kies je community*. Thuis of bij de club scan je de kaart
+**Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
+Daarna log je in via de browser. Details: [Spelers](docs/guides/PLAYERS.md#first-start) (Engels).
+
+**Eén app, meerdere community's:** met de communitychip bovenin wissel je met één tik tussen je club, je
+installatie thuis en een online community; elk houdt een eigen account en eigen niet verzonden tijden. Onder
+**Jij** → **Mijn tijden** zie je je beste tijd per circuit, ook zonder internet, en met meer dan één community
+neem je je beste tijden mee naar een andere — als die community ze aanneemt.
+
+**Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
+serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
+beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem
+vanaf de broncode op een Intel-Mac en test hem daar ([hoe](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)).
+A3 bestaat voor wie geen Docker kan of wil draaien. De [hostinghandleiding](docs/guides/HOSTING.md) en de
+[releasepakketten](docs/RELEASE_PACKAGES.md) noemen elk bestand en de precieze eisen.
+
+Een nieuwe installatie begint leeg: er worden geen communityaccounts of uitslagen overgenomen. Ze bevat alleen
+de spelcatalogus en de referentiesets van de Nintendo staff ghosts en de wereldrecords.
+
+---
+
 ## 🏁 LAN-toernooiavonden
 
 Weet je nog, LAN-party's? Twee spelers per scherm, een zaal vol Switches, iedereen schreeuwend op
@@ -164,6 +284,48 @@ Chinees, Russisch en meer. Engels en Nederlands zijn door mensen nagekeken; de a
 machinaal vertaald en de herkenning wordt in een deel ervan nog op echte consoles gecontroleerd.
 Speel je in jouw taal? Jouw hulp bij het controleren is de waardevolste bijdrage die er is.
 
+## 🛠️ Maak het van jezelf
+
+MK8DX is open source, gebouwd door spelers voor spelers. Draai het voor je club, je familie of de
+LAN-scene in je stad; pas het aan aan hoe *jouw* avonden werken; en bouw erop verder:
+
+- **Vertaal of controleer** jouw taal (de website, de apps en de herkenning in het spel).
+- **Test de herkenning** met je eigen console, taal en capture card, en meld wat hij mist.
+- **Voeg toe wat je community nodig heeft** — nieuwe toernooivormen, statistieken, manieren om
+  uitslagen te delen.
+- **Verbeter de documentatie**, zodat de volgende organisator nog sneller op weg is.
+
+Begin bij [Bijdragen](CONTRIBUTING.md) en de [ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md).
+Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
+iedereen.
+
+## Status
+
+Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
+A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
+0.2.2 laat het analyseren van opnames weer werken en voegt het venster Tournament Analysis toe.
+Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
+volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
+[English](docs/install/MK8DX_User_Guide_EN.txt)).
+
+Herkenning maakt een uitslag nooit vanzelf officieel: je controleert je eigen Time Trials, en een
+organisator controleert toernooiraces voordat ze tellen.
+
+## Documentatie
+
+| Ik wil… | Lees |
+| --- | --- |
+| begrijpen hoe de herkenning werkt | [Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE.md) (Engels) |
+| de onderdelen begrijpen en hoe een uitslag reist | [Architectuur](docs/architecture/COMPONENTS.md) (Engels) |
+| de code bouwen of aanpassen | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md) en [Testen](docs/TESTING_NL.md) |
+| de native apps bouwen | [Client builds](docs/CLIENT_BUILDS.md) (Engels) |
+| een installatie beheren (back-up, bijwerken, herstel) | [Beheer](docs/OPERATIONS_NL.md) |
+| weten waarom iets is zoals het is | [Besluitenoverzicht](docs/decisions/README.md) (Engels) |
+| bijdragen | [Bijdragen](CONTRIBUTING.md), [Gedragscode](CODE_OF_CONDUCT.md) |
+| hulp krijgen | [Hulp krijgen](SUPPORT.md) |
+| een beveiligingsprobleem melden | [Beveiligingsbeleid](SECURITY.md) |
+| met een coding agent werken | [AGENTS.md](AGENTS.md) |
+
 ## 💡 Het verhaal erachter
 
 **Het begon allemaal met een lokaal Mario Kart-toernooi, een paar enthousiastelingen en een uitnodiging in december 2023.**
@@ -231,100 +393,6 @@ En tot slot een dikke dankjewel aan **Nintendo** voor het maken van zulke fantas
 Zo is dit hele avontuur tenslotte ook begonnen.
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ Maak het van jezelf
-
-MK8DX is open source, gebouwd door spelers voor spelers. Draai het voor je club, je familie of de
-LAN-scene in je stad; pas het aan aan hoe *jouw* avonden werken; en bouw erop verder:
-
-- **Vertaal of controleer** jouw taal (de website, de apps en de herkenning in het spel).
-- **Test de herkenning** met je eigen console, taal en capture card, en meld wat hij mist.
-- **Voeg toe wat je community nodig heeft** — nieuwe toernooivormen, statistieken, manieren om
-  uitslagen te delen.
-- **Verbeter de documentatie**, zodat de volgende organisator nog sneller op weg is.
-
-Begin bij [Bijdragen](CONTRIBUTING.md) en de [ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md).
-Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
-iedereen.
-
----
-
-## Aan de slag
-
-| Ik wil… | Begin hier |
-| --- | --- |
-| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap met plaatjes: [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) |
-| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) (Engels) |
-| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/LIVETRIAL.md) (Engels) — Windows + een capture card |
-| **mijn tijden posten en vergelijken** | [Players](docs/guides/PLAYERS.md) (Engels) — elke browser; Android 8.0+ |
-| **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
-| **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
-
-### Welke computer voor welke route
-
-Elke route geeft je dezelfde website; ze verschillen in waar hij draait en wie hem kan bereiken.
-
-| Route | Voor | Draait op | Status |
-| --- | --- | --- | --- |
-| **A2** thuis- of clubnetwerk | Je eigen netwerk, na de installatie geen internet nodig, inlogkaarten voor iedereen | Windows 11 (x86-64), Linux (x86-64 of arm64), Mac (Apple-chip of Intel) | Volledig getest op Windows 11; Linux in WSL 2; Mac gebouwd, nog niet op een echte Mac getest |
-| **A1** één computer | Uitproberen op de computer waar je achter zit | Windows 11 of Linux, x86-64, met Docker | Getest: installeren, bijwerken, back-up |
-| **A3** één computer zonder Docker | Een Windows-pc waar Docker geen optie is | Windows 11 met XAMPP en Node.js | Getest: installeren, bijwerken, back-up |
-| **B1** openbare website | Je online community, je eigen domein en e-mail | Een Linux x86-64-server (VPS) met Docker; Ubuntu 24.04 beschreven | Beschreven, nog niet volledig getest |
-| **B2** webhosting | Online, zonder eigen server | Een hostingpakket met Node.js (Passenger), MariaDB/MySQL en SSH | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd |
-
-De apps eromheen:
-
-| App | Draait op | Waarom |
-| --- | --- | --- |
-| Website en browserscanner | Elke moderne browser; voor scannen Chrome of Edge aanbevolen | De scanner draait volledig op je eigen apparaat en heeft een browser nodig die hem meerdere threads geeft |
-| Android-app | Android 8.0 of nieuwer, arm64 aanbevolen | Scant op de telefoon zelf, ook zonder verbinding |
-| iPhone en iPad | De website in de browser; scannen in Safari wordt nog getest | Er is geen iOS-app: die bouwen en ondertekenen vraagt een Mac en een Apple-ontwikkelaarsaccount |
-| LiveTrial en Tournament Live | Windows op x86-64 (getest op Windows 11), met een USB-HDMI-capture card per scherm | De capture cards en de meegeleverde herkenning zijn gebouwd en getest voor Windows; er is geen macOS- of Linux-versie |
-
-**Eerste start van de Android-app:** die vraagt *Kies je community*. Thuis of bij de club scan je de kaart
-**Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
-Daarna log je in via de browser. Details: [Spelers](docs/guides/PLAYERS.md#first-start) (Engels).
-
-**Eén app, meerdere community's:** met de communitychip bovenin wissel je met één tik tussen je club, je
-installatie thuis en een online community; elk houdt een eigen account en eigen niet verzonden tijden. Onder
-**Jij** → **Mijn tijden** zie je je beste tijd per circuit, ook zonder internet, en met meer dan één community
-neem je je beste tijden mee naar een andere — als die community ze aanneemt.
-
-**Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
-serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
-beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem
-vanaf de broncode op een Intel-Mac en test hem daar ([hoe](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)).
-A3 bestaat voor wie geen Docker kan of wil draaien. De [hostinghandleiding](docs/guides/HOSTING.md) en de
-[releasepakketten](docs/RELEASE_PACKAGES.md) noemen elk bestand en de precieze eisen.
-
-Een nieuwe installatie begint leeg: er worden geen communityaccounts of uitslagen overgenomen. Ze bevat alleen
-de spelcatalogus en de referentiesets van de Nintendo staff ghosts en de wereldrecords.
-
-## Status
-
-Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
-A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
-Zie de [changelog](CHANGELOG.md), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
-volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
-[English](docs/install/MK8DX_User_Guide_EN.txt)).
-
-Herkenning maakt een uitslag nooit vanzelf officieel: je controleert je eigen Time Trials, en een
-organisator controleert toernooiraces voordat ze tellen.
-
-## Documentatie
-
-| Ik wil… | Lees |
-| --- | --- |
-| begrijpen hoe de herkenning werkt | [Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE.md) (Engels) |
-| de onderdelen begrijpen en hoe een uitslag reist | [Architectuur](docs/architecture/COMPONENTS.md) (Engels) |
-| de code bouwen of aanpassen | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md) en [Testen](docs/TESTING_NL.md) |
-| de native apps bouwen | [Client builds](docs/CLIENT_BUILDS.md) (Engels) |
-| een installatie beheren (back-up, bijwerken, herstel) | [Beheer](docs/OPERATIONS_NL.md) |
-| weten waarom iets is zoals het is | [Besluitenoverzicht](docs/decisions/README.md) (Engels) |
-| bijdragen | [Bijdragen](CONTRIBUTING.md), [Gedragscode](CODE_OF_CONDUCT.md) |
-| hulp krijgen | [Hulp krijgen](SUPPORT.md) |
-| een beveiligingsprobleem melden | [Beveiligingsbeleid](SECURITY.md) |
-| met een coding agent werken | [AGENTS.md](AGENTS.md) |
 
 ## Licentie en Nintendo
 
