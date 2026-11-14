@@ -60,8 +60,8 @@ Publication and the community rating are separate decisions in the final step.
    `Get-FileHash '.\tournament-tools-<version>.zip' -Algorithm SHA256`, and compare the whole value.
 2. Extract the complete ZIP to a writable folder (not `Program Files`). Keep `runtime-assets\` next to the
    launchers.
-3. Double-click `Install-MK8DX-TournamentTools.cmd` and wait for `SUCCESS`. Start with the normal CPU setup. If it
-   fails, read `install.log` in the package folder.
+3. Double-click `Install-MK8DX-TournamentTools.cmd` and wait for `SUCCESS`. It selects NVIDIA CUDA or CPU PyTorch
+   for this computer by itself. If it fails, read `install.log` in the package folder.
 
 The installer writes these launchers:
 
