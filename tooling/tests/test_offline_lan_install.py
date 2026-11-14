@@ -1,5 +1,7 @@
 """Focused offline installer isolation checks; no containers are started."""
 
+import contextlib
+import io
 import json
 import subprocess
 import sys
@@ -14,6 +16,14 @@ from tooling import offline_lan_ca_lifecycle
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+
+def _printed(call, *args, **kwargs):
+    """Run a tool function with its console output captured; return that output."""
+    output = io.StringIO()
+    with contextlib.redirect_stdout(output):
+        call(*args, **kwargs)
+    return output.getvalue()
 
 
 class OfflineLanInstallTest(unittest.TestCase):
@@ -50,7 +60,8 @@ class OfflineLanInstallTest(unittest.TestCase):
             config = subprocess.run(install.compose_command(state) + ["config", "--quiet"],
                                     cwd=ROOT, capture_output=True, text=True)
             self.assertEqual(config.returncode, 0, config.stderr)
-            install.status(state)
+            shown = json.loads(_printed(install.status, state))
+            self.assertEqual((shown["route"], shown["origin"]), ("A2_OFFLINE", "https://192.168.50.20"))
             with patch("subprocess.run") as run:
                 install.run_compose(state, "up", "-d", "--no-build", "web")
                 self.assertIn(["up", "--pull", "never", "-d", "--no-build", "web"],
@@ -65,14 +76,19 @@ class OfflineLanInstallTest(unittest.TestCase):
                     install.operate(state, action)
             with patch.object(install, "run_compose") as run_up, \
                     patch.object(install, "ensure_offline_firewall", return_value="present") as firewall:
-                install.operate(state, "start", qa_offline_candidate=True)
+                printed = _printed(install.operate, state, "start", qa_offline_candidate=True)
+                self.assertIn("LAN firewall rule (Private profile, 80/443): present", printed)
+                self.assertIn("Phones and other PCs first open: http://192.168.50.20/setup", printed)
+                self.assertIn("Website after trusting the certificate: https://192.168.50.20", printed)
                 self.assertEqual(run_up.call_args_list[-1].args[1:],
                                  ("up", "-d", "--wait", "--no-build", "mysql", "api", "web", "host-admin"))
                 firewall.assert_called_once()
-                install.operate(state, "apply", qa_offline_candidate=True)
+                self.assertEqual(json.loads(_printed(install.operate, state, "apply", qa_offline_candidate=True))
+                                 ["route"], "A2_OFFLINE")
                 self.assertEqual(run_up.call_args_list[-1].args[1:],
                                  ("up", "-d", "--no-build", "--force-recreate", "api", "web", "host-admin"))
-                install.operate(state, "admin", qa_offline_candidate=True)
+                self.assertIn("Open on this computer: http://127.0.0.1:",
+                              _printed(install.operate, state, "admin", qa_offline_candidate=True))
                 self.assertIn("--bootstrap", run_up.call_args.args)
             addresses = install.offline_addresses(state)
             self.assertEqual(addresses["phoneSetup"], "http://192.168.50.20/setup")
@@ -86,7 +102,8 @@ class OfflineLanInstallTest(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "canonical UserAccount"):
                 install.operate(state, "host-unlock", user_account_id="user_account.other")
             with patch.object(install, "run_compose") as run_gateway:
-                install.operate(state, "maintain-ca")
+                self.assertIn("Offline CA signer is not due for rotation",
+                              _printed(install.operate, state, "maintain-ca"))
                 run_gateway.assert_not_called()
             metadata_path = state / "offline-ca/metadata.json"
             metadata = json.loads(metadata_path.read_text())
@@ -97,7 +114,8 @@ class OfflineLanInstallTest(unittest.TestCase):
             with patch.object(install, "run_compose") as run_gateway, \
                     patch.object(install, "leaf_storage") as leaf_storage, \
                     patch.object(install, "verify_rotated_leaf") as verify_leaf:
-                install.operate(state, "maintain-ca")
+                self.assertIn("Offline CA signer and served leaf rotated; HTTPS verified",
+                              _printed(install.operate, state, "maintain-ca"))
                 self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],
                                  [("stop", "web"),
                                   ("up", "-d", "--wait", "--no-build", "--force-recreate", "web")])
@@ -113,7 +131,7 @@ class OfflineLanInstallTest(unittest.TestCase):
                     patch.object(install, "run_compose") as run_gateway, \
                     patch.object(install, "leaf_storage") as leaf_storage:
                 with self.assertRaisesRegex(ValueError, "signer refused"):
-                    install.operate(state, "maintain-ca")
+                    _printed(install.operate, state, "maintain-ca")
                 self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],
                                  [("stop", "web"), ("stop", "web"),
                                   ("up", "-d", "--wait", "--no-build", "--force-recreate", "web")])
@@ -124,7 +142,7 @@ class OfflineLanInstallTest(unittest.TestCase):
                     patch.object(install, "leaf_storage") as leaf_storage, \
                     patch.object(install, "verify_rotated_leaf", side_effect=RuntimeError("wrong served chain")):
                 with self.assertRaisesRegex(RuntimeError, "wrong served chain"):
-                    install.operate(state, "maintain-ca", force_ca_rotation=True)
+                    _printed(install.operate, state, "maintain-ca", force_ca_rotation=True)
                 self.assertEqual([call.args[1] for call in leaf_storage.call_args_list],
                                  [install._LEAF_QUARANTINE, install._LEAF_RESTORE])
                 self.assertEqual([call.args[1:] for call in run_gateway.call_args_list],

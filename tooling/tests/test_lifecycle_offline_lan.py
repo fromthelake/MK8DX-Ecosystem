@@ -1,5 +1,6 @@
 """A2 backup and restore keep the CA without exposing its private key."""
 
+import contextlib
 import io
 import json
 import subprocess
@@ -71,9 +72,12 @@ class OfflineLanBackupTest(unittest.TestCase):
                     return FakeProcess(command, **kwargs)
                 return real_popen(command, **kwargs)
 
+            printed = io.StringIO()
             with patch.object(lifecycle.subprocess, "Popen", fake_popen), \
-                    patch.object(lifecycle.subprocess, "run", fake_run):
+                    patch.object(lifecycle.subprocess, "run", fake_run), \
+                    contextlib.redirect_stdout(printed):
                 lifecycle.backup(state, backup, phrase)
+                self.assertIn("Backup complete and sealed with the recovery code", printed.getvalue())
                 manifest = lifecycle.verify_backup(backup)
                 self.assertEqual(manifest["route"], "A2_OFFLINE")
                 # Sealed with the recovery code: no installation file or dump lies in the folder.
@@ -100,6 +104,9 @@ class OfflineLanBackupTest(unittest.TestCase):
                 lifecycle.restore_new(backup, moved, phrase, "192.168.0.77")
                 with self.assertRaisesRegex(Exception, "private"):
                     lifecycle.restore_new(backup, base / "public", phrase, "8.8.8.8")
+            for origin_shown in (origin, "https://192.168.0.77"):
+                self.assertIn("restored to a new isolated project. Web origin: " + origin_shown, printed.getvalue())
+            self.assertNotIn("synthetic-owner-recovery-phrase", printed.getvalue())
 
             new_origin = "https://192.168.0.77"
             moved_profile = json.loads((moved / "operator-profile.json").read_text())
