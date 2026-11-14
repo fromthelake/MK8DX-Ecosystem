@@ -7,6 +7,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
+- **Database: MySQL 9.7 LTS** for the Docker routes (A1, A2, production profile), up from 8.4 LTS. An existing
+  8.4 database is upgraded in place on the first start of the new package; tested on a migrated and seeded schema
+  (114 tables identical before and after, the app account still signs in, migrations see all 91 as applied). The
+  upgrade cannot be undone, so the package update keeps its verified backup first; that backup is a logical dump and
+  restores into 9.7. Backups no longer carry GTID state (`--set-gtid-purged=OFF`). CI runs the database suites on
+  MySQL 9.7, MySQL 8.4 (still the minimum for an external database) and MariaDB 11.4. Dependabot stays on the 9.7
+  line; 26.x/27.x are short-lived Innovation releases.
 - **Kart and glider colour follow the character** (field semantics 0.4.3, #99). Python, TypeScript and Java now
   share one rule for bodies and gliders, so a scanned result never pairs a character with a kart or glider colour
   that character cannot have. With an accepted character the catalog colour is the part; when the icon clearly

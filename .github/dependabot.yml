@@ -69,8 +69,8 @@ updates:
     open-pull-requests-limit: 3
     ignore:
       - dependency-name: "mk8dx/*"
-      # MySQL stays on the 8.4 LTS line the schema, migrations and MariaDB compatibility are tested on;
-      # a new major (innovation or next LTS) is a deliberate migration, not a Dependabot bump.
+      # MySQL stays on the 9.7 LTS line. Calendar versions (26.x, 27.x) are short-lived Innovation releases
+      # and the next LTS (28.4) is a deliberate migration with an upgrade test, not a Dependabot bump.
       - dependency-name: "mysql"
         update-types: ["version-update:semver-major"]
     groups:

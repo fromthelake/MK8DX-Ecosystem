@@ -82,7 +82,7 @@ python -m pytest -q -p no:cacheprovider -rs tests/tournament
 ## Database-integratietests
 
 De MySQL-tests van de API (`backend/api/test/*.integration.test.ts`, 35 bestanden) draai je bewust; zonder de
-instellingen hieronder worden ze overgeslagen. Gebruik een **wegwerp**-MySQL 8.4-server, nooit de database van
+instellingen hieronder worden ze overgeslagen. Gebruik een **wegwerp**-MySQL-server (9.7, of 8.4 als oudste ondersteunde), nooit de database van
 een installatie.
 
 | Variabele | Waarde |

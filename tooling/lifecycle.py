@@ -138,7 +138,8 @@ def backup(state, output, recovery_phrase_file=None):
         from tooling.offline_lan_ca_lifecycle import export_recovery
         export_recovery(state, output / OFFLINE_CA_BACKUP, phrase)
     dump_command = command + ["exec", "-T", "mysql", "sh", "-c",
-        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -u root --single-transaction --routines --triggers --events --no-tablespaces mk8dx']
+        'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -u root --single-transaction --routines --triggers --events --no-tablespaces '
+        '--set-gtid-purged=OFF mk8dx']
     with open(output / "database.sql.gz", "xb") as raw:
         with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as compressed:
             process = subprocess.Popen(dump_command, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -186,7 +187,7 @@ def _sealed_backup(state, output, names, phrase, command):
         dump = io.BytesIO()
         dump_command = command + ["exec", "-T", "mysql", "sh", "-c",
             'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysqldump -u root --single-transaction --routines --triggers '
-            '--events --no-tablespaces mk8dx']
+            '--events --no-tablespaces --set-gtid-purged=OFF mk8dx']
         with gzip.GzipFile(fileobj=dump, mode="wb", mtime=0) as compressed:
             process = subprocess.Popen(dump_command, cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             assert process.stdout is not None
