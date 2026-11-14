@@ -1,0 +1,104 @@
+{
+ "schemaVersion": "mk8dx.a2-invite-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_a2_messages.py",
+ "messages": [
+  {
+   "key": "Accept invitation",
+   "nl": "Uitnodiging accepteren",
+   "places": [
+    "app.js:redeem"
+   ]
+  },
+  {
+   "key": "Accepting invitation…",
+   "nl": "Uitnodiging wordt ingewisseld…",
+   "places": [
+    "app.js:sending"
+   ]
+  },
+  {
+   "key": "Checking invitation…",
+   "nl": "Uitnodiging controleren…",
+   "places": [
+    "app.js:checking"
+   ]
+  },
+  {
+   "key": "Continue to MK8DX",
+   "nl": "Verder naar MK8DX",
+   "places": [
+    "app.js:continue"
+   ]
+  },
+  {
+   "key": "First check that this HTTPS address belongs to the host you trust. The invitation can be used once.",
+   "nl": "Controleer eerst of dit HTTPS-adres bij de vertrouwde host hoort. Deze uitnodiging werkt één keer.",
+   "places": [
+    "app.js:explanation"
+   ]
+  },
+  {
+   "key": "Invitation ready. Confirm to sign in.",
+   "nl": "Uitnodiging klaar. Bevestig om in te loggen.",
+   "places": [
+    "app.js:ready"
+   ]
+  },
+  {
+   "key": "Join this MK8DX installation",
+   "nl": "Doe mee met deze MK8DX-installatie",
+   "places": [
+    "app.js:title"
+   ]
+  },
+  {
+   "key": "Language",
+   "nl": "Taal",
+   "places": [
+    "app.js:language"
+   ]
+  },
+  {
+   "key": "Not you? Then do not tap accept; the card stays valid for the right person.",
+   "nl": "Ben jij dit niet? Tik dan niet op accepteren; de kaart blijft geldig voor de juiste persoon.",
+   "places": [
+    "app.js:notYou"
+   ]
+  },
+  {
+   "key": "Sign-in failed. Ask the administrator for a new invitation.",
+   "nl": "Inloggen is niet gelukt. Vraag de beheerder om een nieuwe uitnodiging.",
+   "places": [
+    "app.js:failed"
+   ]
+  },
+  {
+   "key": "This invitation is invalid. Ask the administrator for a new QR code.",
+   "nl": "Deze uitnodiging is ongeldig. Vraag de beheerder om een nieuwe QR-code.",
+   "places": [
+    "app.js:invalid"
+   ]
+  },
+  {
+   "key": "You are signed in as",
+   "nl": "Je bent ingelogd als",
+   "places": [
+    "app.js:signedInAs"
+   ]
+  },
+  {
+   "key": "You are signed in to this installation.",
+   "nl": "Je bent ingelogd op deze installatie.",
+   "places": [
+    "app.js:accepted"
+   ]
+  },
+  {
+   "key": "You sign in as:",
+   "nl": "Je logt in als:",
+   "places": [
+    "app.js:signsInAs"
+   ]
+  }
+ ]
+}

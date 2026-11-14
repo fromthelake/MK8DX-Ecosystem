@@ -1,21 +1,22 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="mk8dx-wizard" content="__WIZARD_TOKEN__">
-<title>MK8DX installeren</title>
+<title>MK8DX</title>
 <link rel="icon" href="/icon.png">
 <link rel="stylesheet" href="/wizard.css">
+<script src="/language.js" defer></script>
 <script src="/wizard.js" defer></script>
 </head>
 <body>
 <div class="frame">
   <header class="top">
     <div class="brand"><img class="brand-icon" src="/icon.png" alt="" width="40" height="40"><span class="brand-mark">MK8DX</span><span class="brand-sub" data-t="brandSub"></span></div>
-    <a class="help" id="help" target="_blank" rel="noopener" data-t="help"></a>
+    <div class="top-tools"><select id="lang" class="lang-select"></select><a class="help" id="help" target="_blank" rel="noopener" data-t="help"></a></div>
   </header>
-  <ol class="steps" id="steps" aria-label="Stappen"></ol>
+  <ol class="steps" id="steps"></ol>
   <main class="card" id="main" tabindex="-1" aria-live="polite"></main>
   <footer class="actions">
     <button type="button" class="secondary" id="back"></button>

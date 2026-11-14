@@ -271,6 +271,23 @@ class WizardServerTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(self.request("GET", path, headers)[0], 404)
 
+    def test_language_script_and_catalogs_are_served_and_nothing_else(self):
+        headers = {"Host": self.host}
+        status, body, csp = self.request("GET", "/language.js", headers)
+        self.assertEqual(status, 200)
+        self.assertIn(b"MK8DXLanguage", body)
+        status, body, _ = self.request("GET", "/i18n/de.json", headers)
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body)["language"], "de")
+        self.assertEqual(self.request("GET", "/i18n/es-419.json", headers)[0], 200)
+        for path in ("/i18n/xx.json", "/i18n/../wizard.js", "/i18n/de.json.bak", "/i18n/nl.json", "/i18n/"):
+            with self.subTest(path=path):
+                self.assertEqual(self.request("GET", path, headers)[0], 404)
+        page = self.request("GET", "/", headers)[1]
+        self.assertIn(b'<script src="/language.js" defer></script>', page)
+        self.assertNotIn(b"<script>", page)
+        self.assertNotIn(b"style=", page)
+
     def test_help_follows_the_browser_language_unless_the_link_names_one(self):
         cases = ((None, "de-CH,de;q=0.9,en;q=0.5"), ("nl", "de-DE,de"), (None, "xx-YY, *"))
         for query, accept in cases:
