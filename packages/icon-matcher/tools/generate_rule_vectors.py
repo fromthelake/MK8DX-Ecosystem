@@ -589,6 +589,9 @@ def build_segment_digits() -> dict:
     add("lap", 1, bytes(19 * 27), 19, 27)
     add("lap", 2, render_digit(lap, "1", 19, 27, 1, 1), 19, 27)
     add("total", 5, render_digit(templates["total"], "7", 22, 33, 2, 1), 22, 33, required="1")
+    # zero-width and zero-height patches (#186): no placement and all-off segment scores (no digit)
+    add("lap", 1, b"", 0, 27)
+    add("total", 3, b"", 22, 0, required="8")
     return {"schema": "mk8dx.segment-digit-vectors.v1",
             "source": "packages/icon-matcher/python/mk8dx_icon_matcher/segment_digits.py",
             "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",

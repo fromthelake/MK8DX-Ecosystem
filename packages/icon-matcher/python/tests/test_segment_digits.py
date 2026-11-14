@@ -60,3 +60,11 @@ def test_python_reproduces_the_recorded_vectors():
         assert (best is None) == (want is None), case["id"]
         if best is not None:
             assert (best.decoded, best.x, best.y) == (want["decoded"], want["x"], want["y"]), case["id"]
+
+
+@pytest.mark.parametrize("width,height", [(0, 27), (19, 0), (0, 0)])
+def test_an_empty_patch_reads_as_no_digit(width, height):
+    scores = sd.segment_scores(b"", width, height)
+    assert scores == {key: 0.0 for key in sd.SEGMENT_KEYS}
+    assert sd.decode_pattern("".join("1" if scores[k] >= sd.SEGMENT_ON else "0" for k in sd.SEGMENT_KEYS)) == "?"
+    assert sd.best_segment_candidate(b"", width, height, _synthetic_template(), "lap", 1) is None

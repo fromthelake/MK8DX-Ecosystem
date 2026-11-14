@@ -196,7 +196,13 @@ def read_slot(crop_bgr, template: SegmentTemplate, kind: str, slot_index: int, *
 
 
 def segment_scores(binary, w: int, h: int) -> dict:
-    """Fallback without a template: coverage per region (OfflineParityNativePipeline.segmentScores)."""
+    """Fallback without a template: coverage per region (OfflineParityNativePipeline.segmentScores).
+
+    An empty patch (zero width or height) has no pixels to cover: every segment scores 0.0, the
+    all-off pattern, which decodes to no digit ("?")."""
+    if w <= 0 or h <= 0:
+        return {key: 0.0 for key in SEGMENT_KEYS}
+
     def coverage(x1, y1, x2, y2):
         left = max(0, min(w - 1, _round(w * x1)))
         top = max(0, min(h - 1, _round(h * y1)))
