@@ -549,6 +549,9 @@ def manual_html(lang: str) -> bytes:
         return re.sub(r"`(.+?)`", r"<code>\1</code>", text)
 
     for line in source.splitlines():
+        # Screenshot lines and the HTML comments GitHub hides belong to the illustrated guide only.
+        if re.fullmatch(r"<!--.*-->|!\[[^\]]*\]\([^)]*\)|\((?:Afbeelding|Image): [a-z0-9-]+\)", line.strip()):
+            continue
         kind = "ol" if re.match(r"\d+\. ", line) else "ul" if line.startswith("- ") else None
         if in_list and kind != in_list:
             parts.append(f"</{in_list}>")

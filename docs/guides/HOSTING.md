@@ -241,7 +241,9 @@ An installation built from source is removed the same way from the repository ro
   `sh tooling/start-mk8dx.sh`); the setup opens in your browser. Follow the [A2 guide](../install/A2_HOME_GUIDE_EN.md).
 - **Shared hosting (B2)**: chapter 4 of the user guide (upload over SSH, `python3 tooling/install.py wizard`,
   `setup`, `passenger-config`, then start the Node.js app in your hosting panel). Any hosting plan with Node.js
-  (Passenger), MariaDB/MySQL and SSH fits; the chapter uses mijn.host Starter as its worked example.
+  (Passenger), MariaDB/MySQL and SSH fits; the chapter uses mijn.host Starter as its worked example. Despite its
+  name, `mk8dx-mijnhost-node-….zip` is the package for any such Node.js host: mijn.host is the tested example,
+  and the port 26 in its `ssh -p 26`/`scp -P 26` commands is that provider's SSH port, so use your own host's.
 - **Building the A3 and B2 packages from a clone**: `tooling/release/non_docker_bundle.py` makes both ZIPs, on
   Windows (it calls `npm.cmd`). First build the API and website (`npm ci` and `npm run build` with
   `--prefix backend/api` and `--prefix apps/timetrials-web`) and the browser scanner as in

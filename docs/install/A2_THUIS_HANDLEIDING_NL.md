@@ -27,7 +27,7 @@ Wat je niet nodig hebt:
 - **Geen account bij een ander bedrijf**, geen e-mailadres en geen cloud.
 - **Geen abonnement.** MK8DX en Python zijn gratis. Docker Desktop is gratis voor persoonlijk gebruik en kleine organisaties; de voorwaarden staan op de website van Docker. Op Linux gebruik je de gratis Docker Engine.
 
-(Afbeelding: overzicht-netwerk)
+<!-- afbeelding: overzicht-netwerk -->
 
 ## 2. De computer voorbereiden
 
@@ -49,9 +49,9 @@ Doe alleen het deel voor jouw computer (2A, 2B of 2C) en sla de andere twee over
 7. **Doe:** klik op Start, typ `PowerShell`, open **Windows PowerShell**, typ `py install 3.15` en druk op Enter. Dat installeert Python zelf (de install manager is alleen het hulpprogramma dat Python binnenhaalt). → **Je ziet:** de eerste keer een paar vragen om de instellingen te controleren; beantwoord die met Enter (de voorgestelde keuze) of met `y`. Daarna wordt Python gedownload en geïnstalleerd. Een vraag om een map aan je PATH toe te voegen mag je met `y` beantwoorden; nodig is het niet. → **Zie je iets anders?** Installeer precies 3.15 zoals hierboven; 3.12, 3.13 of 3.14 werkt ook, een nieuwere versie (3.16 of hoger) nog niet.
 8. **Doe:** sluit PowerShell, open hem opnieuw, typ `python --version` en druk op Enter. → **Je ziet:** `Python 3.15` met nog een nummer erachter, bijvoorbeeld `Python 3.15.2`. → **Zie je iets anders?** Opent de Microsoft Store, of staat er dat python niet gevonden is: klik op Start, typ **App-uitvoeringsaliassen beheren** en open het. Zet **Python (default)** aan en zet **App-installatieprogramma python.exe** en **python3.exe** uit. Heb je vroeger een oude Python of de "Python launcher" geïnstalleerd, verwijder die dan via **Instellingen → Apps → Geïnstalleerde apps** en probeer het opnieuw.
 
-(Afbeelding: docker-engine-running)
+<!-- afbeelding: docker-engine-running -->
 
-(Afbeelding: python-install-manager)
+<!-- afbeelding: python-install-manager -->
 
 ## 2B. Linux voorbereiden (Ubuntu of Debian)
 
@@ -130,15 +130,15 @@ De installatie is een pagina in je browser die alleen op de MK8DX-computer zelf 
 10. **Klaar! Veel racegenot.** **Doe:** schrijf de twee adressen op: **Website** (bijvoorbeeld `https://192.168.1.50`) en **Nieuw apparaat** (bijvoorbeeld `http://192.168.1.50/setup`). Laat de drie vinkjes aan: **MK8DX starten met Windows**, **Elke nacht een back-up maken** en **Snelkoppeling 'MK8DX beheer' op het bureaublad zetten**. Klik op **Voltooien**. → **Je ziet:** je herstelcode (hoofdstuk 4). → **Op Linux en macOS** heet het eerste vinkje "MK8DX starten als de computer opstart". Op macOS opent het dan Docker Desktop bij het aanmelden. Op Linux zorgt `sudo systemctl enable --now docker` uit hoofdstuk 2B daarvoor; heb je dat nog niet gedaan, dan toont de installatie na Voltooien precies dat commando.
 11. **Afsluiten.** **Doe:** lees hoofdstuk 4 en bewaar de herstelcode. Klik daarna op **Sluiten**. → **Je ziet:** "Je kunt dit venster nu sluiten." Sluit het browsertabblad. Op Windows vraagt het zwarte venster om een toets; druk op een toets en het sluit. Doe je niets, dan stopt de installatiepagina na 10 minuten vanzelf. MK8DX zelf blijft draaien.
 
-(Afbeelding: wizard-welkom)
+![wizard welkom](guide/img/wizard-welkom-nl.png)
 
-(Afbeelding: wizard-controle)
+![wizard controle](guide/img/wizard-controle-nl.png)
 
-(Afbeelding: wizard-netwerk)
+![wizard netwerk](guide/img/wizard-netwerk-nl.png)
 
-(Afbeelding: windows-toestemming)
+<!-- afbeelding: windows-toestemming -->
 
-(Afbeelding: wizard-klaar)
+![wizard klaar](guide/img/wizard-klaar-nl.png)
 
 ## 4. De herstelcode en de back-upmap
 
@@ -160,7 +160,7 @@ Kopieer de map `MK8DX-backups` af en toe naar een USB-stick of een andere schijf
 
 Zette je het vinkje **Elke nacht een back-up maken** uit, dan krijg je geen herstelcode en worden er geen back-ups gemaakt. Zet je het later in MK8DX beheer weer aan en klik je op **Voltooien**, dan krijg je op dat moment je herstelcode te zien.
 
-(Afbeelding: herstelcode)
+![herstelcode](guide/img/herstelcode-nl.png)
 
 ## 5. Mensen en inlogkaarten (MK8DX beheer)
 
@@ -200,9 +200,9 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 
 1. **Doe:** klik op **Volgende** tot "Klaar! Veel racegenot.", laat de vinkjes aan en klik op **Voltooien** en daarna op **Sluiten**. → **Je ziet:** "Je kunt dit venster nu sluiten." MK8DX blijft draaien.
 
-(Afbeelding: beheer-mensen)
+![beheer mensen](guide/img/beheer-mensen-nl.png)
 
-(Afbeelding: beheer-kaarten)
+![beheer kaarten](guide/img/beheer-kaarten-nl.png)
 
 ## 6. Een apparaat voorbereiden en inloggen
 
@@ -262,9 +262,9 @@ De stappen op de pagina Dit apparaat voorbereiden:
 
 **Stoppen met deze installatie op een apparaat:** verwijder het certificaat weer via dezelfde instellingen waarmee je het installeerde.
 
-(Afbeelding: telefoon-apparaat-voorbereiden)
+![telefoon apparaat voorbereiden](guide/img/telefoon-apparaat-voorbereiden-nl.png)
 
-(Afbeelding: telefoon-uitnodiging-accepteren)
+![telefoon uitnodiging accepteren](guide/img/telefoon-uitnodiging-accepteren-nl.png)
 
 ## 7. De Android-app en LiveTrial
 
@@ -294,9 +294,9 @@ LiveTrial is een Windows-programma dat je Time Trials via een capturekaart (een 
 
 Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding dat je eerst je Player op de website moet instellen. Na het wijzigen van het adres start LiveTrial opnieuw; gebeurt dat niet, sluit LiveTrial dan en open het opnieuw. Accounts en wachtende runs voor een andere server blijven bij die server. Gebruik je deze pc niet meer met de installatie, verwijder het MK8DX-certificaat dan weer uit **Vertrouwde basiscertificeringsinstanties** (hoofdstuk 6).
 
-(Afbeelding: android-server-wijzigen)
+![android server wijzigen](guide/img/android-server-wijzigen-nl.png)
 
-(Afbeelding: android-vergelijken)
+![android vergelijken](guide/img/android-vergelijken-nl.png)
 
 ## 8. Dagelijks gebruik
 
@@ -322,7 +322,7 @@ Goed om te weten: zonder Player eindigt het inloggen in LiveTrial met de melding
 
 **Licht of donker:** de website volgt op een nieuw apparaat de instelling **Systeem** van dat apparaat. Na het inloggen kies je via **Account** → **Instellingen** → **Weergave** → **Donker** het donkere thema; die keuze wordt bij je account bewaard.
 
-(Afbeelding: website-ander-account)
+![website ander account](guide/img/website-ander-account-nl.png)
 
 **Een naam voor je community:** een beheerder kan de installatie een naam geven, bijvoorbeeld "Club Noord", op de website onder **Beheer** → **Installatie-instellingen** → **Communitynaam**, en klikt op **Naam opslaan**. De apps tonen dan die naam in plaats van het webadres. Maak het veld leeg en sla op om de naam weer weg te halen.
 
@@ -411,9 +411,9 @@ Een adresconflict ontstaat als twee apparaten hetzelfde adres gebruiken. Een van
 
 Andere installatieroutes (één computer, eigen server, webhosting) staan in `docs/install/MK8DX_Handleiding_NL.txt`.
 
-(Afbeelding: wizard-terugzetten)
+![wizard terugzetten](guide/img/wizard-terugzetten-nl.png)
 
-(Afbeelding: wizard-verhuizen)
+![wizard verhuizen](guide/img/wizard-verhuizen-nl.png)
 
 ## 11. Problemen oplossen
 
