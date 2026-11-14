@@ -1,6 +1,6 @@
 Installing and using MK8DX
 
-Guide for MK8DX 0.2.3 · 14 November 2026 (release candidates add -rc.N to the file names, for example v0.2.3-rc.2)
+Guide for MK8DX 0.2.3 · 14 November 2026
 
 Welcome
 
@@ -10,7 +10,7 @@ Release packages are attached to the project's GitHub Releases. Open the release
 
 Choose one way to use the website. On one Windows computer, use either Docker or XAMPP, Node.js, and the included current MariaDB. The documented Docker network route reaches a second Windows PC on your trusted network. For a public domain, choose either shared web hosting with Node.js (the chapter uses mijn.host Starter as its example) or your own Docker VPS. These chapters are alternatives, not a course you must complete in order. Phone and Windows clients come after the website routes.
 
-A1 (Docker on one computer) and A3 (XAMPP/Node.js on Windows) are supported after fresh installation and upgrade tests with retained data. A2 (home or club network, new in 0.2.0) has its own package with a guided setup in the browser and was tested end to end on Windows 11. B1 (Docker VPS) and B2 (shared Node.js hosting) are documented but have not been tested end to end. The local A1 and A3 installations were tested on Windows 11 x86-64, including accounts and LiveTrial and Tournament Processor/Connect results in the database and website. Physical Tournament Live capture has not thereby received complete acceptance. If you only have Linux or macOS, with no Windows computer or other server, the choices are narrower. The two chapters at the end explain what you can try locally on that same computer and which products do not yet exist for your operating system.
+A1 (Docker on one computer) and A3 (XAMPP/Node.js on Windows) are supported after fresh installation and upgrade tests with retained data. A2 (home or club network, new in 0.2.0) has its own package with a guided setup in the browser and was tested end to end on Windows 11. B1 (Docker VPS) and B2 (shared Node.js hosting) are documented but have not been tested end to end. The local A1 and A3 installations were tested on Windows 11 x86-64, including accounts and LiveTrial and Tournament Processor/Connect results in the database and website. Physical Tournament Live capture passed a complete 1× acceptance run with the 0.2.2 package. If you only have Linux or macOS, with no Windows computer or other server, the choices are narrower. The two chapters at the end explain what you can try locally on that same computer and which products do not yet exist for your operating system.
 
 What is in this guide
 

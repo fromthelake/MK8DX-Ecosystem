@@ -1,6 +1,6 @@
 MK8DX installeren en gebruiken
 
-Handleiding voor MK8DX 0.2.3 · 14 november 2026 (releasekandidaten hebben -rc.N in de bestandsnaam, bijvoorbeeld v0.2.3-rc.2)
+Handleiding voor MK8DX 0.2.3 · 14 november 2026
 
 Welkom
 
@@ -10,7 +10,7 @@ Releasepakketten hangen aan de GitHub Releases van het project. Open de releasep
 
 Kies één manier om de website te gebruiken. Op één Windows-computer kan dat met Docker of met XAMPP, Node.js en de meegeleverde actuele MariaDB. Een tweede Windows-pc in je eigen netwerk kan de uitgewerkte Docker-netwerkroute gebruiken. Voor een openbaar domein kies je gedeelde webhosting met Node.js (het hoofdstuk gebruikt mijn.host Starter als voorbeeld) of een eigen VPS met Docker. Je hoeft de hoofdstukken niet na elkaar uit te voeren. De telefoon- en Windowsprogramma's komen na de websiteroutes.
 
-A1 (Docker op één computer) en A3 (XAMPP/Node.js op Windows) zijn ondersteund na verse installatie- en upgradeproeven met behoud van gegevens. A2 (thuis of op de club, nieuw in 0.2.0) heeft een eigen pakket met een begeleide installatie in de browser en is van begin tot eind getest op Windows 11. B1 (Docker-VPS) en B2 (gedeelde Node.js-hosting) zijn gedocumenteerd maar nog niet end-to-end getest. De lokale A1- en A3-installaties zijn op Windows 11 met een x86-64-processor getest, met accounts en LiveTrial- en Tournament Processor/Connect-resultaten tot in database en website. Fysieke Tournament Live-capture is daarmee niet volledig geaccepteerd. Voor iemand die alleen Linux of macOS heeft, zonder Windows-computer of andere server, zijn de mogelijkheden beperkter. De twee hoofdstukken aan het eind leggen uit wat je op diezelfde computer lokaal kunt proberen en welke onderdelen nog niet voor jouw besturingssysteem bestaan.
+A1 (Docker op één computer) en A3 (XAMPP/Node.js op Windows) zijn ondersteund na verse installatie- en upgradeproeven met behoud van gegevens. A2 (thuis of op de club, nieuw in 0.2.0) heeft een eigen pakket met een begeleide installatie in de browser en is van begin tot eind getest op Windows 11. B1 (Docker-VPS) en B2 (gedeelde Node.js-hosting) zijn gedocumenteerd maar nog niet end-to-end getest. De lokale A1- en A3-installaties zijn op Windows 11 met een x86-64-processor getest, met accounts en LiveTrial- en Tournament Processor/Connect-resultaten tot in database en website. Fysieke Tournament Live-capture is met het 0.2.2-pakket volledig geaccepteerd in een proef op 1×. Voor iemand die alleen Linux of macOS heeft, zonder Windows-computer of andere server, zijn de mogelijkheden beperkter. De twee hoofdstukken aan het eind leggen uit wat je op diezelfde computer lokaal kunt proberen en welke onderdelen nog niet voor jouw besturingssysteem bestaan.
 
 De volgorde in deze handleiding
 
