@@ -57,7 +57,7 @@ Veröffentlichung und Community-Wertung sind getrennte Entscheidungen im letzten
 
 ### Voraussetzungen
 
-- Windows auf x86-64 (getestet unter Windows 11) und mehrere GB freier Speicher. Das ZIP ist etwa 440 MB groß und entpackt etwa 1,3 GB; das
+- Windows auf x86-64 (getestet unter Windows 11) und mehrere GB freier Speicher. Das ZIP ist etwa 450 MB groß und entpackt etwa 1,3 GB; das
   Installationsprogramm braucht einmal Internet, um Python 3.12 und öffentliche Pakete herunterzuladen (mehr mit GPU/CUDA); alle OCR-Modelle
   sind enthalten. Nach der Installation funktioniert die Verarbeitung offline. Eine NVIDIA-Karte
   beschleunigt nur den OCR-Schritt; der erste Scan einer Aufnahme läuft immer auf der CPU (siehe

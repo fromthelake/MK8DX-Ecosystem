@@ -59,7 +59,7 @@ Publicatie en de communityrating zijn aparte beslissingen in de laatste stap.
 
 ### Vereisten
 
-- Windows op x86-64 (getest op Windows 11) en enkele GB vrije ruimte. De ZIP is ongeveer 440 MB en uitgepakt
+- Windows op x86-64 (getest op Windows 11) en enkele GB vrije ruimte. De ZIP is ongeveer 450 MB en uitgepakt
   ongeveer 1,3 GB; de installer heeft één keer internet nodig om Python 3.12 en openbare pakketten te downloaden
   (meer met GPU/CUDA); alle OCR-modellen zitten erbij. Daarna werkt verwerken offline. Een NVIDIA-kaart versnelt
   alleen de OCR-stap; de eerste scan van een opname draait altijd op de processor (zie

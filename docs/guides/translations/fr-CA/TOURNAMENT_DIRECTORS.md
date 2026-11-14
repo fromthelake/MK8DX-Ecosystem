@@ -58,7 +58,7 @@ La publication et la cote de la communauté sont des décisions distinctes de l'
 
 ### Configuration requise
 
-- Windows sur x86-64 (testé sous Windows 11) et plusieurs Go d'espace libre. Le ZIP fait environ 440 Mo et environ 1,3 Go une fois extrait;
+- Windows sur x86-64 (testé sous Windows 11) et plusieurs Go d'espace libre. Le ZIP fait environ 450 Mo et environ 1,3 Go une fois extrait;
   l'installateur a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics (davantage avec GPU/CUDA); tous les modèles
   d'OCR sont inclus. Après l'installation, le traitement fonctionne hors ligne. Une carte
   NVIDIA n'accélère que l'étape OCR; le premier scan d'un enregistrement tourne toujours sur le CPU (voir

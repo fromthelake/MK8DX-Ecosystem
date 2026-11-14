@@ -58,7 +58,7 @@ Publication and the community rating are separate decisions in the final step.
 
 ### Requirements
 
-- Windows on x86-64 (tested on Windows 11) and several GB of free space. The ZIP is about 440 MB and about 1.3 GB extracted; the
+- Windows on x86-64 (tested on Windows 11) and several GB of free space. The ZIP is about 450 MB and about 1.3 GB extracted; the
   installer needs internet once, to download Python 3.12 and public packages (more with GPU/CUDA); all OCR models are
   included. After that, processing works offline. An NVIDIA
   card speeds up the OCR step only; the first scan of a recording always runs on the CPU (see

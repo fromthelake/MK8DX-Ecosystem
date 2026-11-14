@@ -56,7 +56,7 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 
 ### 要求
 
-- x86-64 的 Windows（已在 Windows 11 上测试）以及几 GB 的可用空间。ZIP 大约 440 MB，解压后大约 1.3 GB；
+- x86-64 的 Windows（已在 Windows 11 上测试）以及几 GB 的可用空间。ZIP 大约 450 MB，解压后大约 1.3 GB；
   安装程序需要联网一次，以下载 Python 3.12 和公开的软件包（使用 GPU/CUDA 时更多）；所有 OCR
   模型均已包含在内。安装完成后，处理可以离线进行。NVIDIA
   显卡只会加快 OCR 步骤；录像的第一次扫描总是在 CPU 上运行（见
