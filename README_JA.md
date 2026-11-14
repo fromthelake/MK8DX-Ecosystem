@@ -44,6 +44,100 @@ MK8DX Ecosystem は、自分でホストして使うソフトウェアです。�
 
 ---
 
+## 全体のつながり
+
+MK8DX はひとつのプログラムではなく、ひとつの**コミュニティサーバー**を中心にした小さなファミリーです。サーバーは、アカウント、タイム、大会、順位表など、大切なものをすべて保存します。その周りのアプリは、あなた自身の端末でゲーム画面を読み取り、見つけた内容をあなたが選んだコミュニティに送ります。
+
+```mermaid
+flowchart TB
+  REC["共通の認識エンジン<br/>すべてのアプリに内蔵"]
+
+  subgraph devices["プレイヤーのスマホとブラウザー"]
+    WEB["任意のブラウザー<br/>サイト + スキャナー"]
+    APP["Android アプリ<br/>スキャナー付き"]
+  end
+
+  subgraph pcs["Windows PC + キャプチャーボード"]
+    LT["LiveTrial<br/>タイムアタックを自動記録"]
+    TL["Tournament Live<br/>当日のレース"]
+    TA["Tournament Analysis<br/>あとから録画を解析"]
+  end
+
+  subgraph server["コミュニティサーバー：自宅、クラブ、またはオンライン"]
+    DIR{"主催者が<br/>全レースを確認"}
+    API["サイト + API"]
+    DB[("データベース")]
+  end
+
+  WR["世界記録<br/>毎日更新"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"タイム、ランキング、ライバル"| API
+  APP <-->|"タイム、オンライン時に送信"| API
+  LT -->|"タイムアタックの走行"| API
+  TL -->|"レース結果、ライブ"| DIR
+  TA -->|"インポートファイル"| DIR
+  DIR -->|"承認 = 公式"| API
+  API <--> DB
+  WR --> API
+```
+
+**どの部分が必要？**
+
+- **コミュニティサーバーひとつ — どのコミュニティにも必要な唯一の部分です。** API とデータベースを備えたウェブサイトです。自宅やクラブのネットワークで動かすか（[A2](docs/install/A2_HOME_GUIDE_EN.md)、セットアップ後はインターネット不要）、サーバーやウェブホスティングでオンライン運用します（[Host a community server](docs/guides/HOSTING.md)）。
+- **プレイヤーに必要なのはブラウザーだけです。** ウェブサイトにはブラウザースキャナーが付いています。Android アプリでは、スマホでのスキャン、インターネットなしでの自分のタイム表示、ワンタップでのコミュニティ切り替えが加わります（[Players](docs/guides/PLAYERS.md)）。
+- **キャプチャーボード付きの Windows PC は任意です。** LiveTrial はタイムアタックの走行をすべて自動で記録します。コミュニティへはワンクリック、または自動で送信できます（[LiveTrial](docs/guides/LIVETRIAL.md)）。
+- **大会の夜はウェブサイトで運営します。** Tournament Live（当日）と Tournament Analysis（あとから録画を解析）はレース結果を提案するだけです。得点は手入力や Excel/CSV からのインポートでも登録できます。主催者が承認するまで順位表は変わりません（[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)）。
+- **認識は共通部品であり、サービスではありません。** 各アプリが自分用のコピーを持ち、あなたの端末で画面を読み取ります。サーバーは提案された結果を確認するだけです（[Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) · [Architecture](docs/architecture/COMPONENTS.md)）。
+
+## はじめよう
+
+| やりたいこと | ここから始めよう |
+| --- | --- |
+| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + キャプチャーボード |
+| **タイムを投稿して比べたい** | [Players](docs/guides/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
+| **コミュニティサイトをホストしたい** | [Host a community server](docs/guides/HOSTING.md) |
+| **コードを変更したい** | [Developer guide](docs/DEVELOPMENT.md)、[Testing](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
+
+各行には、最初から最後までたどるべきガイドを挙げています。リリースパッケージではなくソースコードからサーバーをビルドするのは開発者向けです：[Getting started from source](docs/GETTING_STARTED.md)。
+
+### どのルートにどのコンピューターを使うか
+
+どのルートでも同じウェブサイトが手に入ります。違うのは、どこで動かすか、誰がアクセスできるかです。
+
+| ルート | 用途 | 動作環境 | 状況 |
+| --- | --- | --- | --- |
+| **A2** 自宅またはクラブのネットワーク | 自分のネットワークで、セットアップ後はインターネット不要、全員にサインインカード | Windows 11 (x86-64)、Linux (x86-64 または arm64)、Mac (Apple シリコンまたは Intel) | Windows 11 でエンドツーエンドのテスト済み。Linux は WSL 2 上でテスト済み。Mac はビルド済みだが実機ではまだ未テスト |
+| **A1** 1 台のコンピューター | 手元のコンピューターで試してみる | Windows 11 または Linux、x86-64、Docker あり | テスト済み：インストール、アップグレード、バックアップ |
+| **A3** Docker なしの 1 台のコンピューター | Docker を使えない Windows PC | XAMPP と Node.js を入れた Windows 11 | テスト済み：インストール、アップグレード、バックアップ |
+| **B1** 公開ウェブサイト | オンラインコミュニティ向け、独自ドメインとメール | Docker を入れた Linux x86-64 サーバー (VPS)。Ubuntu 24.04 の手順あり | ドキュメントあり、エンドツーエンドではまだ未テスト |
+| **B2** ウェブホスティング | 自前のサーバーなしでオンライン運用 | Node.js (Passenger)、MariaDB/MySQL、SSH が使えるホスティングプラン | 私たち自身のコミュニティサイトはこの方法で動いています。公開パッケージを新しいホスティングアカウントにゼロからインストールしたことはまだありません |
+
+周辺のアプリ：
+
+| アプリ | 動作環境 | 理由 |
+| --- | --- | --- |
+| ウェブサイトとブラウザー版スキャナー | 最新のブラウザーならどれでも。スキャンには Chrome または Edge を推奨 | スキャナーは完全にデバイス上で動作し、複数のスレッドを使えるブラウザーが必要です |
+| Android アプリ | Android 8.0 以降、arm64 推奨 | スマートフォン自体でスキャンするので、接続がなくても使えます |
+| iPhone と iPad | ブラウザーでウェブサイトを利用。Safari でのスキャンは現在テスト中 | iOS アプリはありません：ビルドと署名には Mac と Apple の開発者アカウントが必要です |
+| LiveTrial と Tournament Live | x86-64 の Windows（Windows 11 でテスト済み）、画面ごとに USB HDMI キャプチャーボード | キャプチャーボードと同梱の認識エンジンは Windows 向けにビルド・テストされています。macOS 版や Linux 版はありません |
+
+**Android アプリの初回起動：** *コミュニティを選択* と表示されます。自宅やクラブでは、管理者が見せる **Prepare a device** カードをスキャンします。オンラインコミュニティの場合は、そのウェブサイトのアドレスを入力します。そのあとブラウザーでサインインします。詳しくは [Players](docs/guides/PLAYERS.md#first-start) をご覧ください。
+
+**ひとつのアプリで、複数のコミュニティ：** 上部のコミュニティチップをワンタップするだけで、クラブ、自宅のインストール、オンラインコミュニティを切り替えられます。それぞれが独自のアカウントと未送信のタイムを保持します。**あなた** → **自分のタイム** では、インターネットがなくてもコースごとのベストタイムを確認できます。複数のコミュニティに参加している場合は、ベストタイムを別のコミュニティへ持ち込むこともできます — そのコミュニティが受け入れていれば。
+
+**なぜすべてがどこでも使えるわけではないの？** 各パッケージは、ビルドして試した環境でのみ提供しています。A1 と B1 のサーバーイメージは x86-64 向けのみで、A2 には arm64 版もあります。Intel Mac では A2 が必要とするセキュリティライブラリ（`cryptography`）が配布されなくなったため、リリースでは Intel Mac 上でソースからビルドし、そこでテストしています（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 は、Docker を使えない、または使いたくない人のためにあります。[ホスティングガイド](docs/guides/HOSTING.md) と [リリースパッケージ](docs/RELEASE_PACKAGES.md) に、すべてのファイルとその正確な要件が載っています。
+
+新しくインストールした環境は空の状態から始まります。コミュニティのアカウントや結果は引き継がれません。含まれるのは、ゲームカタログと、任天堂のスタッフゴーストおよび世界記録の参照データだけです。
+
+---
+
 ## 🏁 LAN 大会の夜
 
 LAN パーティーを覚えていますか？ 1 画面に 2 人、部屋いっぱいの Switch、レインボーロードに向かってみんなで叫ぶあの夜。MK8DX はその夜を取り戻し、レース以外のことをすべて引き受けます。誰がどこに座るか、次にどのグループが走るか、スコア、決勝、そして順位。
@@ -108,6 +202,38 @@ LiveTrial は HDMI の映像を見て、自動で次のものを認識します�
 ## 🌍 あなたの言語で — 全 15 言語に対応
 
 マリオカート8 デラックスは世界中で遊ばれています。だから MK8DX はすべてのゲーム言語に対応するように作られています。ウェブサイト、Android アプリ、LiveTrial、Tournament ツールは **15 言語**で利用でき、認識も**全 15 のゲーム言語バリエーション**に対応しています — オランダ語や英語から、日本語、韓国語、中国語、ロシア語まで。英語とオランダ語は人の手で確認済みですが、その他の言語は機械翻訳で、一部の言語の認識は実機でまだ検証中です。あなたの言語で遊んでいますか？ その確認を手伝っていただくことが、何よりも価値のある貢献です。
+
+## 🛠️ あなたのものにしよう
+
+MK8DX はオープンソースで、プレイヤーがプレイヤーのために作っています。あなたのクラブ、家族、あるいは街の LAN シーンのために動かし、*あなたたち*の夜のやり方に合わせて調整し、その上にさらに作り上げてください。
+
+- あなたの言語を**翻訳・レビュー**する（ウェブサイト、アプリ、ゲーム内の認識）。
+- 自分の本体、言語、キャプチャーボードで**認識をテスト**し、読み取れなかったものを報告する。
+- **コミュニティに必要なものを追加**する — 新しい大会形式、統計、結果の共有方法。
+- **ドキュメントを改善**して、次の主催者がもっと早く始められるようにする。
+
+まずは [Contributing](CONTRIBUTING.md) と [開発者ガイド](docs/DEVELOPMENT.md) から始めてください。プルリクエスト、バグ報告、翻訳の修正のひとつひとつが、次の LAN の夜をみんなにとってより良いものにします。
+
+## プロジェクトの状況
+
+安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。0.2.2 では録画の解析が再び動くようになり、Tournament Analysis ウィンドウが加わりました。[変更履歴](CHANGELOG.md)、[Release packages](docs/RELEASE_PACKAGES.md)、そして完全版ガイド（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）をご覧ください。
+
+認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
+
+## ドキュメント
+
+| やりたいこと | 読むもの |
+| --- | --- |
+| 認識の仕組みを理解したい | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
+| 構成要素と、結果がどのように伝わるかを理解したい | [Architecture](docs/architecture/COMPONENTS.md) |
+| コードをビルド・変更したい | [Developer guide](docs/DEVELOPMENT.md) と [Testing](docs/TESTING.md) |
+| ネイティブクライアントをビルドしたい | [Client builds](docs/CLIENT_BUILDS.md) |
+| インストールを運用したい（バックアップ、アップグレード、復旧） | [Operations](docs/OPERATIONS.md) |
+| なぜそうなっているのかを知りたい | [Decision index](docs/decisions/README.md) |
+| 貢献したい | [Contributing](CONTRIBUTING.md)、[Code of conduct](CODE_OF_CONDUCT.md) |
+| 助けがほしい | [Getting help](SUPPORT.md) |
+| セキュリティ上の問題を報告したい | [Security policy](SECURITY.md) |
+| コーディングエージェントと作業したい | [AGENTS.md](AGENTS.md) |
 
 ## 💡 誕生のストーリー
 
@@ -176,80 +302,6 @@ MK8DX Ecosystem は 2024 年から開発を続けてきました。たくさん�
 結局のところ、この冒険はすべてそうやって始まったのですから。
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ あなたのものにしよう
-
-MK8DX はオープンソースで、プレイヤーがプレイヤーのために作っています。あなたのクラブ、家族、あるいは街の LAN シーンのために動かし、*あなたたち*の夜のやり方に合わせて調整し、その上にさらに作り上げてください。
-
-- あなたの言語を**翻訳・レビュー**する（ウェブサイト、アプリ、ゲーム内の認識）。
-- 自分の本体、言語、キャプチャーボードで**認識をテスト**し、読み取れなかったものを報告する。
-- **コミュニティに必要なものを追加**する — 新しい大会形式、統計、結果の共有方法。
-- **ドキュメントを改善**して、次の主催者がもっと早く始められるようにする。
-
-まずは [Contributing](CONTRIBUTING.md) と [開発者ガイド](docs/DEVELOPMENT.md) から始めてください。プルリクエスト、バグ報告、翻訳の修正のひとつひとつが、次の LAN の夜をみんなにとってより良いものにします。
-
----
-
-## はじめよう
-
-| やりたいこと | ここから始めよう |
-| --- | --- |
-| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。画像付きのステップバイステップガイド：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + キャプチャーボード |
-| **タイムを投稿して比べたい** | [Players](docs/guides/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
-| **コミュニティサイトをホストしたい** | [Host a community server](docs/guides/HOSTING.md) |
-| **コードを変更したい** | [Developer guide](docs/DEVELOPMENT.md)、[Testing](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
-
-### どのルートにどのコンピューターを使うか
-
-どのルートでも同じウェブサイトが手に入ります。違うのは、どこで動かすか、誰がアクセスできるかです。
-
-| ルート | 用途 | 動作環境 | 状況 |
-| --- | --- | --- | --- |
-| **A2** 自宅またはクラブのネットワーク | 自分のネットワークで、セットアップ後はインターネット不要、全員にサインインカード | Windows 11 (x86-64)、Linux (x86-64 または arm64)、Mac (Apple シリコンまたは Intel) | Windows 11 でエンドツーエンドのテスト済み。Linux は WSL 2 上でテスト済み。Mac はビルド済みだが実機ではまだ未テスト |
-| **A1** 1 台のコンピューター | 手元のコンピューターで試してみる | Windows 11 または Linux、x86-64、Docker あり | テスト済み：インストール、アップグレード、バックアップ |
-| **A3** Docker なしの 1 台のコンピューター | Docker を使えない Windows PC | XAMPP と Node.js を入れた Windows 11 | テスト済み：インストール、アップグレード、バックアップ |
-| **B1** 公開ウェブサイト | オンラインコミュニティ向け、独自ドメインとメール | Docker を入れた Linux x86-64 サーバー (VPS)。Ubuntu 24.04 の手順あり | ドキュメントあり、エンドツーエンドではまだ未テスト |
-| **B2** ウェブホスティング | 自前のサーバーなしでオンライン運用 | Node.js (Passenger)、MariaDB/MySQL、SSH が使えるホスティングプラン | 私たち自身のコミュニティサイトはこの方法で動いています。公開パッケージを新しいホスティングアカウントにゼロからインストールしたことはまだありません |
-
-周辺のアプリ：
-
-| アプリ | 動作環境 | 理由 |
-| --- | --- | --- |
-| ウェブサイトとブラウザー版スキャナー | 最新のブラウザーならどれでも。スキャンには Chrome または Edge を推奨 | スキャナーは完全にデバイス上で動作し、複数のスレッドを使えるブラウザーが必要です |
-| Android アプリ | Android 8.0 以降、arm64 推奨 | スマートフォン自体でスキャンするので、接続がなくても使えます |
-| iPhone と iPad | ブラウザーでウェブサイトを利用。Safari でのスキャンは現在テスト中 | iOS アプリはありません：ビルドと署名には Mac と Apple の開発者アカウントが必要です |
-| LiveTrial と Tournament Live | x86-64 の Windows（Windows 11 でテスト済み）、画面ごとに USB HDMI キャプチャーボード | キャプチャーボードと同梱の認識エンジンは Windows 向けにビルド・テストされています。macOS 版や Linux 版はありません |
-
-**Android アプリの初回起動：** *コミュニティを選択* と表示されます。自宅やクラブでは、管理者が見せる **Prepare a device** カードをスキャンします。オンラインコミュニティの場合は、そのウェブサイトのアドレスを入力します。そのあとブラウザーでサインインします。詳しくは [Players](docs/guides/PLAYERS.md#first-start) をご覧ください。
-
-**ひとつのアプリで、複数のコミュニティ：** 上部のコミュニティチップをワンタップするだけで、クラブ、自宅のインストール、オンラインコミュニティを切り替えられます。それぞれが独自のアカウントと未送信のタイムを保持します。**あなた** → **自分のタイム** では、インターネットがなくてもコースごとのベストタイムを確認できます。複数のコミュニティに参加している場合は、ベストタイムを別のコミュニティへ持ち込むこともできます — そのコミュニティが受け入れていれば。
-
-**なぜすべてがどこでも使えるわけではないの？** 各パッケージは、ビルドして試した環境でのみ提供しています。A1 と B1 のサーバーイメージは x86-64 向けのみで、A2 には arm64 版もあります。Intel Mac では A2 が必要とするセキュリティライブラリ（`cryptography`）が配布されなくなったため、リリースでは Intel Mac 上でソースからビルドし、そこでテストしています（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 は、Docker を使えない、または使いたくない人のためにあります。[ホスティングガイド](docs/guides/HOSTING.md) と [リリースパッケージ](docs/RELEASE_PACKAGES.md) に、すべてのファイルとその正確な要件が載っています。
-
-新しくインストールした環境は空の状態から始まります。コミュニティのアカウントや結果は引き継がれません。含まれるのは、ゲームカタログと、任天堂のスタッフゴーストおよび世界記録の参照データだけです。
-
-## プロジェクトの状況
-
-安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。[変更履歴](CHANGELOG.md)、[Release packages](docs/RELEASE_PACKAGES.md)、そして完全版ガイド（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）をご覧ください。
-
-認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
-
-## ドキュメント
-
-| やりたいこと | 読むもの |
-| --- | --- |
-| 認識の仕組みを理解したい | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| 構成要素と、結果がどのように伝わるかを理解したい | [Architecture](docs/architecture/COMPONENTS.md) |
-| コードをビルド・変更したい | [Developer guide](docs/DEVELOPMENT.md) と [Testing](docs/TESTING.md) |
-| ネイティブクライアントをビルドしたい | [Client builds](docs/CLIENT_BUILDS.md) |
-| インストールを運用したい（バックアップ、アップグレード、復旧） | [Operations](docs/OPERATIONS.md) |
-| なぜそうなっているのかを知りたい | [Decision index](docs/decisions/README.md) |
-| 貢献したい | [Contributing](CONTRIBUTING.md)、[Code of conduct](CODE_OF_CONDUCT.md) |
-| 助けがほしい | [Getting help](SUPPORT.md) |
-| セキュリティ上の問題を報告したい | [Security policy](SECURITY.md) |
-| コーディングエージェントと作業したい | [AGENTS.md](AGENTS.md) |
 
 ## ライセンスと任天堂について
 

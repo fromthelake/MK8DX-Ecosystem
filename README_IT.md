@@ -64,6 +64,126 @@ nessun abbonamento, nessuna pubblicità.
 
 ---
 
+## Come si incastra tutto
+
+MK8DX non è un solo programma ma una piccola famiglia attorno a un **server della community**. Il
+server conserva tutto ciò che conta: account, tempi, tornei e classifiche. Le app intorno leggono la schermata
+del gioco sui tuoi dispositivi e inviano ciò che hanno trovato alla community che hai scelto.
+
+```mermaid
+flowchart TB
+  REC["Riconoscimento condiviso<br/>integrato in ogni app"]
+
+  subgraph devices["Telefoni e browser dei giocatori"]
+    WEB["Qualsiasi browser<br/>sito + scanner"]
+    APP["App Android<br/>con scanner"]
+  end
+
+  subgraph pcs["PC Windows + scheda di acquisizione"]
+    LT["LiveTrial<br/>prove a tempo automatiche"]
+    TL["Tournament Live<br/>gare della serata"]
+    TA["Tournament Analysis<br/>registrazioni dopo"]
+  end
+
+  subgraph server["Server della community: a casa, al club o online"]
+    DIR{"L'organizzatore controlla<br/>ogni gara"}
+    API["Sito + API"]
+    DB[("Database")]
+  end
+
+  WR["Record mondiali<br/>aggiornati ogni giorno"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"tempi, classifiche, rivali"| API
+  APP <-->|"tempi, inviati appena online"| API
+  LT -->|"prove a tempo"| API
+  TL -->|"risultati, in diretta"| DIR
+  TA -->|"file di importazione"| DIR
+  DIR -->|"accettato = ufficiale"| API
+  API <--> DB
+  WR --> API
+```
+
+**Quali pezzi mi servono?**
+
+- **Un server della community: l'unico pezzo che serve a ogni community.** È il sito con la sua API e il
+  suo database. Fallo girare sulla rete di casa o del club ([A2](docs/install/A2_HOME_GUIDE_EN.md), senza
+  internet dopo l'installazione) oppure online su un server o un hosting web
+  ([Ospitare un server della community](docs/guides/HOSTING.md)).
+- **Ai giocatori basta un browser.** Il sito porta con sé lo scanner nel browser. L'app Android aggiunge la
+  scansione sul telefono, i tuoi tempi senza internet e il passaggio da una community all'altra con un tocco
+  ([Players](docs/guides/PLAYERS.md)).
+- **Un PC Windows con una scheda di acquisizione è facoltativo.** LiveTrial registra da solo ogni prova a tempo;
+  la invii alla tua community con un clic, oppure in automatico ([LiveTrial](docs/guides/LIVETRIAL.md)).
+- **Le serate di torneo si gestiscono sul sito.** Tournament Live (durante la serata) e Tournament Analysis
+  (registrazioni dopo) propongono soltanto i risultati; i punteggi si possono anche digitare o importare da
+  Excel/CSV. Nulla cambia la classifica finché l'organizzatore non lo accetta
+  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
+- **Il riconoscimento è condiviso, non un servizio.** Ogni app ne ha una propria copia e legge lo schermo sul tuo
+  dispositivo; il server controlla solo il risultato proposto
+  ([Pipeline di riconoscimento](docs/architecture/RECOGNITION_PIPELINE.md) ·
+  [Architettura](docs/architecture/COMPONENTS.md)).
+
+## Per iniziare
+
+| Voglio… | Inizia qui |
+| --- | --- |
+| **usare MK8DX a casa o nel mio club** | Il pacchetto A2 per il tuo computer da [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): estrai, avvia, fai clic su Avanti. Passo passo (il pacchetto A2 contiene anche una versione illustrata): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **organizzare serate di torneo LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **registrare automaticamente le mie Prove a tempo** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + una scheda di acquisizione |
+| **pubblicare e confrontare i miei tempi** | [Players](docs/guides/PLAYERS.md) — qualsiasi browser; Android 8.0+ |
+| **ospitare un sito della community** | [Ospitare un server della community](docs/guides/HOSTING.md) |
+| **modificare il codice** | [Guida per sviluppatori](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+
+Ogni riga indica la guida da seguire dall'inizio alla fine. Compilare il server dal codice sorgente
+invece di usare un pacchetto di release è per gli sviluppatori: [Iniziare dal codice sorgente](docs/GETTING_STARTED.md).
+
+### Quale computer per quale percorso
+
+Ogni percorso ti dà lo stesso sito; cambiano il luogo in cui gira e chi può raggiungerlo.
+
+| Percorso | Per | Gira su | Stato |
+| --- | --- | --- | --- |
+| **A2** rete di casa o del club | La tua rete, niente internet dopo l'installazione, tessere di accesso per tutti | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Testato da capo a fondo su Windows 11; Linux in WSL 2; Mac compilato, non ancora testato su un Mac reale |
+| **A1** un computer | Provarlo sul computer a cui sei seduto | Windows 11 o Linux, x86-64, con Docker | Testato: installazione, aggiornamento, backup |
+| **A3** un computer senza Docker | Un PC Windows su cui Docker non è un'opzione | Windows 11 con XAMPP e Node.js | Testato: installazione, aggiornamento, backup |
+| **B1** sito pubblico | La tua community online, con il tuo dominio e la tua email | Un server Linux x86-64 (VPS) con Docker; documentato per Ubuntu 24.04 | Documentato, non ancora testato da capo a fondo |
+| **B2** hosting web | Online, senza un server tuo | Un piano di hosting con Node.js (Passenger), MariaDB/MySQL e SSH | Il sito della nostra community funziona così; il pacchetto pubblico non è ancora stato installato da zero su un nuovo account di hosting |
+
+Le app intorno:
+
+| App | Gira su | Perché |
+| --- | --- | --- |
+| Sito e scanner nel browser | Qualsiasi browser moderno; Chrome o Edge consigliati per la scansione | Lo scanner funziona interamente sul tuo dispositivo e ha bisogno di un browser che gli conceda più thread |
+| App Android | Android 8.0 o successivo, arm64 consigliato | Scansiona sul telefono stesso, anche senza connessione |
+| iPhone e iPad | Il sito nel browser; la scansione in Safari è ancora in fase di test | Non esiste un'app iOS: crearla e firmarla richiede un Mac e un account sviluppatore Apple |
+| LiveTrial e Tournament Live | Windows su x86-64 (testato su Windows 11), con una scheda di acquisizione HDMI USB per schermo | Le schede di acquisizione e il motore di riconoscimento incluso sono creati e testati per Windows; non esiste una versione per macOS o Linux |
+
+**Primo avvio dell'app Android:** ti chiede *Scegli la tua community*. A casa o al club scansioni la
+tessera **Prepare a device** che ti mostra l'amministratore; per una community online digiti l'indirizzo
+del suo sito. Poi accedi tramite il browser. Dettagli: [Players](docs/guides/PLAYERS.md#first-start).
+
+**Un'app, più community:** il selettore della community in alto passa con un tocco dal tuo club alla tua
+installazione di casa a una community online; ognuna conserva il proprio account e i tempi non ancora
+inviati. In **Tu** → **I miei tempi** vedi il tuo miglior tempo per percorso, anche senza internet, e con
+più di una community puoi portare i tuoi migliori tempi in un'altra — se quella community li accetta.
+
+**Perché non tutto ovunque?** Ogni pacchetto viene offerto solo dove è stato compilato e provato. Le
+immagini server A1 e B1 esistono solo per x86-64; A2 ha anche arm64. Per i Mac Intel la libreria di
+sicurezza di cui A2 ha bisogno (`cryptography`) non viene più pubblicata, quindi la release la compila dai
+sorgenti su un Mac Intel e la testa lì ([come](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3
+esiste per chi non può o non vuole usare Docker. La [guida all'hosting](docs/guides/HOSTING.md) e i
+[pacchetti di release](docs/RELEASE_PACKAGES.md) elencano ogni file e i suoi requisiti esatti.
+
+Una nuova installazione parte vuota: non eredita account né risultati di alcuna community. Porta con sé
+solo il catalogo del gioco e i set di riferimento dei fantasmi dello staff Nintendo e dei record mondiali.
+
+---
+
 ## 🏁 Serate di torneo LAN
 
 Ti ricordi i LAN party? Due giocatori per schermo, una sala piena di Switch, tutti a urlare contro la
@@ -168,6 +288,45 @@ altre lingue sono tradotte automaticamente e il riconoscimento in alcune di esse
 verifica su console reali. Giochi nella tua lingua? Il tuo aiuto per controllarla è il contributo più
 prezioso che ci sia.
 
+## 🛠️ Rendilo tuo
+
+MK8DX è open source, creato da giocatori per i giocatori. Usalo per il tuo club, la tua famiglia o la
+scena LAN della tua città; adattalo a come funzionano le *tue* serate; e costruisci sopra di esso:
+
+- **Traduci o revisiona** la tua lingua (il sito, le app e il riconoscimento nel gioco).
+- **Testa il riconoscimento** con la tua console, la tua lingua e la tua scheda di acquisizione, e segnala cosa gli sfugge.
+- **Aggiungi ciò che serve alla tua community** — nuovi formati di torneo, statistiche, modi per condividere i risultati.
+- **Migliora la documentazione** così il prossimo organizzatore partirà ancora più in fretta.
+
+Inizia da [Contributing](CONTRIBUTING.md) e dalla [guida per sviluppatori](docs/DEVELOPMENT.md).
+Ogni pull request, segnalazione di bug e correzione di traduzione rende la prossima serata LAN migliore
+per tutti.
+
+## Stato del progetto
+
+Le versioni stabili sono su [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
+la 0.2.0 ha aggiunto A2, a casa o al club; la 0.2.1 dà all'app Android una copia offline dei tuoi tempi e
+un layout più tranquillo. La 0.2.2 fa funzionare di nuovo l'analisi delle registrazioni e aggiunge la finestra Tournament Analysis. Vedi il [changelog](CHANGELOG.md), i [pacchetti di release](docs/RELEASE_PACKAGES.md)
+e la guida completa ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
+
+Il riconoscimento non rende mai ufficiale un risultato da solo: le tue Prove a tempo le controlli tu, e
+un organizzatore verifica le gare del torneo prima che contino.
+
+## Documentazione
+
+| Voglio… | Leggi |
+| --- | --- |
+| capire come funziona il riconoscimento | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
+| capire le parti e come viaggia un risultato | [Architettura](docs/architecture/COMPONENTS.md) |
+| compilare o modificare il codice | [Guida per sviluppatori](docs/DEVELOPMENT.md) e [Testing](docs/TESTING.md) |
+| compilare i client nativi | [Client builds](docs/CLIENT_BUILDS.md) |
+| gestire un'installazione (backup, aggiornamento, ripristino) | [Operations](docs/OPERATIONS.md) |
+| sapere perché qualcosa è com'è | [Indice delle decisioni](docs/decisions/README.md) |
+| contribuire | [Contributing](CONTRIBUTING.md), [Codice di condotta](CODE_OF_CONDUCT.md) |
+| ottenere aiuto | [Getting help](SUPPORT.md) |
+| segnalare un problema di sicurezza | [Politica di sicurezza](SECURITY.md) |
+| lavorare con un agente di programmazione | [AGENTS.md](AGENTS.md) |
+
 ## 💡 La storia dietro il progetto
 
 **Tutto è iniziato con un torneo locale di Mario Kart, qualche appassionato e un invito a dicembre 2023.**
@@ -235,98 +394,6 @@ E infine, un grande grazie a **Nintendo** per aver creato console e giochi così
 Dopotutto, è così che è iniziata tutta questa avventura.
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ Rendilo tuo
-
-MK8DX è open source, creato da giocatori per i giocatori. Usalo per il tuo club, la tua famiglia o la
-scena LAN della tua città; adattalo a come funzionano le *tue* serate; e costruisci sopra di esso:
-
-- **Traduci o revisiona** la tua lingua (il sito, le app e il riconoscimento nel gioco).
-- **Testa il riconoscimento** con la tua console, la tua lingua e la tua scheda di acquisizione, e segnala cosa gli sfugge.
-- **Aggiungi ciò che serve alla tua community** — nuovi formati di torneo, statistiche, modi per condividere i risultati.
-- **Migliora la documentazione** così il prossimo organizzatore partirà ancora più in fretta.
-
-Inizia da [Contributing](CONTRIBUTING.md) e dalla [guida per sviluppatori](docs/DEVELOPMENT.md).
-Ogni pull request, segnalazione di bug e correzione di traduzione rende la prossima serata LAN migliore
-per tutti.
-
----
-
-## Per iniziare
-
-| Voglio… | Inizia qui |
-| --- | --- |
-| **usare MK8DX a casa o nel mio club** | Il pacchetto A2 per il tuo computer da [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): estrai, avvia, fai clic su Avanti. Passo passo con immagini: [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **organizzare serate di torneo LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **registrare automaticamente le mie Prove a tempo** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + una scheda di acquisizione |
-| **pubblicare e confrontare i miei tempi** | [Players](docs/guides/PLAYERS.md) — qualsiasi browser; Android 8.0+ |
-| **ospitare un sito della community** | [Ospitare un server della community](docs/guides/HOSTING.md) |
-| **modificare il codice** | [Guida per sviluppatori](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
-
-### Quale computer per quale percorso
-
-Ogni percorso ti dà lo stesso sito; cambiano il luogo in cui gira e chi può raggiungerlo.
-
-| Percorso | Per | Gira su | Stato |
-| --- | --- | --- | --- |
-| **A2** rete di casa o del club | La tua rete, niente internet dopo l'installazione, tessere di accesso per tutti | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Testato da capo a fondo su Windows 11; Linux in WSL 2; Mac compilato, non ancora testato su un Mac reale |
-| **A1** un computer | Provarlo sul computer a cui sei seduto | Windows 11 o Linux, x86-64, con Docker | Testato: installazione, aggiornamento, backup |
-| **A3** un computer senza Docker | Un PC Windows su cui Docker non è un'opzione | Windows 11 con XAMPP e Node.js | Testato: installazione, aggiornamento, backup |
-| **B1** sito pubblico | La tua community online, con il tuo dominio e la tua email | Un server Linux x86-64 (VPS) con Docker; documentato per Ubuntu 24.04 | Documentato, non ancora testato da capo a fondo |
-| **B2** hosting web | Online, senza un server tuo | Un piano di hosting con Node.js (Passenger), MariaDB/MySQL e SSH | Il sito della nostra community funziona così; il pacchetto pubblico non è ancora stato installato da zero su un nuovo account di hosting |
-
-Le app intorno:
-
-| App | Gira su | Perché |
-| --- | --- | --- |
-| Sito e scanner nel browser | Qualsiasi browser moderno; Chrome o Edge consigliati per la scansione | Lo scanner funziona interamente sul tuo dispositivo e ha bisogno di un browser che gli conceda più thread |
-| App Android | Android 8.0 o successivo, arm64 consigliato | Scansiona sul telefono stesso, anche senza connessione |
-| iPhone e iPad | Il sito nel browser; la scansione in Safari è ancora in fase di test | Non esiste un'app iOS: crearla e firmarla richiede un Mac e un account sviluppatore Apple |
-| LiveTrial e Tournament Live | Windows su x86-64 (testato su Windows 11), con una scheda di acquisizione HDMI USB per schermo | Le schede di acquisizione e il motore di riconoscimento incluso sono creati e testati per Windows; non esiste una versione per macOS o Linux |
-
-**Primo avvio dell'app Android:** ti chiede *Scegli la tua community*. A casa o al club scansioni la
-tessera **Prepare a device** che ti mostra l'amministratore; per una community online digiti l'indirizzo
-del suo sito. Poi accedi tramite il browser. Dettagli: [Players](docs/guides/PLAYERS.md#first-start).
-
-**Un'app, più community:** il selettore della community in alto passa con un tocco dal tuo club alla tua
-installazione di casa a una community online; ognuna conserva il proprio account e i tempi non ancora
-inviati. In **Tu** → **I miei tempi** vedi il tuo miglior tempo per percorso, anche senza internet, e con
-più di una community puoi portare i tuoi migliori tempi in un'altra — se quella community li accetta.
-
-**Perché non tutto ovunque?** Ogni pacchetto viene offerto solo dove è stato compilato e provato. Le
-immagini server A1 e B1 esistono solo per x86-64; A2 ha anche arm64. Per i Mac Intel la libreria di
-sicurezza di cui A2 ha bisogno (`cryptography`) non viene più pubblicata, quindi la release la compila dai
-sorgenti su un Mac Intel e la testa lì ([come](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3
-esiste per chi non può o non vuole usare Docker. La [guida all'hosting](docs/guides/HOSTING.md) e i
-[pacchetti di release](docs/RELEASE_PACKAGES.md) elencano ogni file e i suoi requisiti esatti.
-
-Una nuova installazione parte vuota: non eredita account né risultati di alcuna community. Porta con sé
-solo il catalogo del gioco e i set di riferimento dei fantasmi dello staff Nintendo e dei record mondiali.
-
-## Stato del progetto
-
-Le versioni stabili sono su [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
-la 0.2.0 ha aggiunto A2, a casa o al club; la 0.2.1 dà all'app Android una copia offline dei tuoi tempi e
-un layout più tranquillo. Vedi il [changelog](CHANGELOG.md), i [pacchetti di release](docs/RELEASE_PACKAGES.md)
-e la guida completa ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
-
-Il riconoscimento non rende mai ufficiale un risultato da solo: le tue Prove a tempo le controlli tu, e
-un organizzatore verifica le gare del torneo prima che contino.
-
-## Documentazione
-
-| Voglio… | Leggi |
-| --- | --- |
-| capire come funziona il riconoscimento | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| capire le parti e come viaggia un risultato | [Architettura](docs/architecture/COMPONENTS.md) |
-| compilare o modificare il codice | [Guida per sviluppatori](docs/DEVELOPMENT.md) e [Testing](docs/TESTING.md) |
-| compilare i client nativi | [Client builds](docs/CLIENT_BUILDS.md) |
-| gestire un'installazione (backup, aggiornamento, ripristino) | [Operations](docs/OPERATIONS.md) |
-| sapere perché qualcosa è com'è | [Indice delle decisioni](docs/decisions/README.md) |
-| contribuire | [Contributing](CONTRIBUTING.md), [Codice di condotta](CODE_OF_CONDUCT.md) |
-| ottenere aiuto | [Getting help](SUPPORT.md) |
-| segnalare un problema di sicurezza | [Politica di sicurezza](SECURITY.md) |
-| lavorare con un agente di programmazione | [AGENTS.md](AGENTS.md) |
 
 ## Licenza e Nintendo
 

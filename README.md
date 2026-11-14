@@ -61,6 +61,124 @@ subscription, no ads.
 
 ---
 
+## How it fits together
+
+MK8DX is not one program but a small family around one **community server**. The server keeps
+everything that counts: accounts, times, tournaments and standings. The apps around it read the game screen on
+your own devices and send what they found to the community you chose.
+
+```mermaid
+flowchart TB
+  REC["Shared recognition<br/>built into every app"]
+
+  subgraph devices["Players' phones and browsers"]
+    WEB["Any browser<br/>website + scanner"]
+    APP["Android app<br/>with scanner"]
+  end
+
+  subgraph pcs["Windows PC + capture card"]
+    LT["LiveTrial<br/>automatic Time Trials"]
+    TL["Tournament Live<br/>races on the night"]
+    TA["Tournament Analysis<br/>recordings afterwards"]
+  end
+
+  subgraph server["Community server: at home, at the club or online"]
+    DIR{"Organiser checks<br/>every race"}
+    API["Website + API"]
+    DB[("Database")]
+  end
+
+  WR["World records<br/>refreshed daily"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"times, rankings, rivals"| API
+  APP <-->|"times, sent when online"| API
+  LT -->|"Time Trial runs"| API
+  TL -->|"race results, live"| DIR
+  TA -->|"import file"| DIR
+  DIR -->|"accepted = official"| API
+  API <--> DB
+  WR --> API
+```
+
+**Which pieces do I need?**
+
+- **One community server — the only part every community needs.** It is the website with its API and
+  database. Run it on your home or club network ([A2](docs/install/A2_HOME_GUIDE_EN.md), no internet needed after
+  setup) or online on a server or web hosting ([Host a community server](docs/guides/HOSTING.md)).
+- **Players need nothing more than a browser.** The website brings the browser scanner with it. The Android app
+  adds scanning on the phone, your times without internet, and one-tap switching between communities
+  ([Players](docs/guides/PLAYERS.md)).
+- **A Windows PC with a capture card is optional.** LiveTrial records every Time Trial run by itself; you send it
+  to your community with one click, or automatically ([LiveTrial](docs/guides/LIVETRIAL.md)).
+- **Tournament nights run on the website.** Tournament Live (during the night) and Tournament Analysis
+  (recordings afterwards) only propose race results; scores can also be typed in or imported from Excel/CSV.
+  Nothing changes the standings until the organiser accepts it
+  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
+- **Recognition is shared, not a service.** Every app carries its own copy and reads the screen on your device;
+  the server only checks the proposed result ([Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) ·
+  [Architecture](docs/architecture/COMPONENTS.md)).
+
+## Get started
+
+| I want to… | Start here |
+| --- | --- |
+| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step (the A2 package also contains an illustrated version): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card |
+| **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |
+| **host a community website** | [Host a community server](docs/guides/HOSTING.md) |
+| **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+
+Each row names the guide to follow from start to finish. Building the server from source instead of
+using a release package is for developers: [Getting started from source](docs/GETTING_STARTED.md).
+
+### Which computer for which route
+
+Every route gives you the same website; they differ in where it runs and who can reach it.
+
+| Route | For | Runs on | Status |
+| --- | --- | --- | --- |
+| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac (Apple silicon or Intel) | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested on a real Mac |
+| **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
+| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
+| **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
+| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account |
+
+The apps around it:
+
+| App | Runs on | Why |
+| --- | --- | --- |
+| Website and browser scanner | Any modern browser; Chrome or Edge recommended for scanning | The scanner runs entirely on your device and needs a browser that gives it several threads |
+| Android app | Android 8.0 or newer, arm64 recommended | Scans on the phone itself, also without a connection |
+| iPhone and iPad | The website in the browser; scanning in Safari is still being tested | There is no iOS app: building and signing one needs a Mac and an Apple developer account |
+| LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
+
+**First start of the Android app:** it asks *Choose your community*. At home or at the club you scan the
+**Prepare a device** card your administrator shows; for an online community you type its website address. Then you
+sign in through the browser. Details: [Players](docs/guides/PLAYERS.md#first-start).
+
+**One app, several communities:** the community chip at the top switches between your club, your home
+installation and an online community in one tap; each keeps its own account and unsent times. Under **You** →
+**My times** you see your best time per track, also without internet, and with more than one community you can
+carry your best times to another one — if that community accepts them.
+
+**Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
+B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
+(`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there
+([how](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 exists for people who cannot or do not
+want to run Docker. The [hosting guide](docs/guides/HOSTING.md) and the [release packages](docs/RELEASE_PACKAGES.md)
+list every file and its exact requirements.
+
+A fresh installation starts empty: no community accounts or results are inherited. It brings only the game
+catalog and the Nintendo staff ghost and world record reference sets.
+
+---
+
 ## 🏁 LAN tournament nights
 
 Remember LAN parties? Two players per screen, a room full of Switches, everybody yelling at
@@ -161,6 +279,45 @@ Chinese, Russian and more. English and Dutch are reviewed by people; the other l
 machine-translated and recognition in some of them is still being verified on real consoles.
 Playing in your language? Your help checking it is the most valuable contribution there is.
 
+## 🛠️ Make it your own
+
+MK8DX is open source, built by players for players. Run it for your club, your family or your
+city's LAN scene; adapt it to how *your* nights work; and build on it:
+
+- **Translate or review** your language (the website, the apps and the in-game recognition).
+- **Test recognition** with your own console, language and capture card, and report what it misses.
+- **Add what your community needs** — new tournament formats, statistics, ways to share results.
+- **Improve the docs** so the next organiser gets started even faster.
+
+Start with [Contributing](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
+Every pull request, bug report and translation fix makes the next LAN night better for everyone.
+
+## Project status
+
+Stable releases are on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 added A2,
+at home or at the club; 0.2.1 gives the Android app an offline copy of your times and a calmer layout. 0.2.2 makes recorded-video
+analysis work again and adds the Tournament Analysis window. See the
+[changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
+([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
+
+Recognition never makes a result official by itself: you review your own Time Trials, and an
+organiser checks tournament races before they count.
+
+## Documentation
+
+| I want to… | Read |
+| --- | --- |
+| understand how recognition works | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
+| understand the parts and how a result travels | [Architecture](docs/architecture/COMPONENTS.md) |
+| build or change the code | [Developer guide](docs/DEVELOPMENT.md) and [Testing](docs/TESTING.md) |
+| build the native clients | [Client builds](docs/CLIENT_BUILDS.md) |
+| run an installation (backup, upgrade, recovery) | [Operations](docs/OPERATIONS.md) |
+| know why something is the way it is | [Decision index](docs/decisions/README.md) |
+| contribute | [Contributing](CONTRIBUTING.md), [Code of conduct](CODE_OF_CONDUCT.md) |
+| get help | [Getting help](SUPPORT.md) |
+| report a security problem | [Security policy](SECURITY.md) |
+| work with a coding agent | [AGENTS.md](AGENTS.md) |
+
 ## 💡 The story behind it
 
 **It all started with a local Mario Kart tournament, a few enthusiastic people, and an invitation in December 2023.**
@@ -228,97 +385,6 @@ And finally, a big thank you to **Nintendo** for creating such fantastic console
 After all, that's how this whole adventure started.
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ Make it your own
-
-MK8DX is open source, built by players for players. Run it for your club, your family or your
-city's LAN scene; adapt it to how *your* nights work; and build on it:
-
-- **Translate or review** your language (the website, the apps and the in-game recognition).
-- **Test recognition** with your own console, language and capture card, and report what it misses.
-- **Add what your community needs** — new tournament formats, statistics, ways to share results.
-- **Improve the docs** so the next organiser gets started even faster.
-
-Start with [Contributing](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
-Every pull request, bug report and translation fix makes the next LAN night better for everyone.
-
----
-
-## Get started
-
-| I want to… | Start here |
-| --- | --- |
-| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step with pictures: [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card |
-| **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |
-| **host a community website** | [Host a community server](docs/guides/HOSTING.md) |
-| **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
-
-### Which computer for which route
-
-Every route gives you the same website; they differ in where it runs and who can reach it.
-
-| Route | For | Runs on | Status |
-| --- | --- | --- | --- |
-| **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac (Apple silicon or Intel) | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested on a real Mac |
-| **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
-| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
-| **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
-| **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account |
-
-The apps around it:
-
-| App | Runs on | Why |
-| --- | --- | --- |
-| Website and browser scanner | Any modern browser; Chrome or Edge recommended for scanning | The scanner runs entirely on your device and needs a browser that gives it several threads |
-| Android app | Android 8.0 or newer, arm64 recommended | Scans on the phone itself, also without a connection |
-| iPhone and iPad | The website in the browser; scanning in Safari is still being tested | There is no iOS app: building and signing one needs a Mac and an Apple developer account |
-| LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
-
-**First start of the Android app:** it asks *Choose your community*. At home or at the club you scan the
-**Prepare a device** card your administrator shows; for an online community you type its website address. Then you
-sign in through the browser. Details: [Players](docs/guides/PLAYERS.md#first-start).
-
-**One app, several communities:** the community chip at the top switches between your club, your home
-installation and an online community in one tap; each keeps its own account and unsent times. Under **You** →
-**My times** you see your best time per track, also without internet, and with more than one community you can
-carry your best times to another one — if that community accepts them.
-
-**Why not everything everywhere?** Each package is only offered where it has been built and tried. The A1 and
-B1 server images exist for x86-64 only; A2 also has arm64. For Intel Macs the security library A2 needs
-(`cryptography`) is no longer published, so the release builds it from source on an Intel Mac and tests it there
-([how](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 exists for people who cannot or do not
-want to run Docker. The [hosting guide](docs/guides/HOSTING.md) and the [release packages](docs/RELEASE_PACKAGES.md)
-list every file and its exact requirements.
-
-A fresh installation starts empty: no community accounts or results are inherited. It brings only the game
-catalog and the Nintendo staff ghost and world record reference sets.
-
-## Project status
-
-Stable releases are on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 added A2,
-at home or at the club; 0.2.1 gives the Android app an offline copy of your times and a calmer layout. See the
-[changelog](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md) and the complete guide
-([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
-
-Recognition never makes a result official by itself: you review your own Time Trials, and an
-organiser checks tournament races before they count.
-
-## Documentation
-
-| I want to… | Read |
-| --- | --- |
-| understand how recognition works | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| understand the parts and how a result travels | [Architecture](docs/architecture/COMPONENTS.md) |
-| build or change the code | [Developer guide](docs/DEVELOPMENT.md) and [Testing](docs/TESTING.md) |
-| build the native clients | [Client builds](docs/CLIENT_BUILDS.md) |
-| run an installation (backup, upgrade, recovery) | [Operations](docs/OPERATIONS.md) |
-| know why something is the way it is | [Decision index](docs/decisions/README.md) |
-| contribute | [Contributing](CONTRIBUTING.md), [Code of conduct](CODE_OF_CONDUCT.md) |
-| get help | [Getting help](SUPPORT.md) |
-| report a security problem | [Security policy](SECURITY.md) |
-| work with a coding agent | [AGENTS.md](AGENTS.md) |
 
 ## License and Nintendo
 
