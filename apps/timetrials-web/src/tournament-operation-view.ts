@@ -39,6 +39,7 @@ import {
   scoreConfidencePercent,
   scoreMatchLabel,
   suggestScoreMapping,
+  workbookNameKey,
 } from "./tournament-score-matching.js";
 import { TOURNAMENT_TIERS, tournamentTierLabel as tierNameLabel } from "./tournament-tiers.js";
 import { tournamentGroupLabel } from "./tournaments-view-labels.js";
@@ -833,8 +834,7 @@ function trackName(trackId: string): string {
 }
 
 function normalizedWorkbookName(value: string): string {
-  return value.trim().normalize("NFKD").replace(/[\u0300-\u036f]/gu, "")
-    .toLocaleLowerCase("nl").replace(/[^a-z0-9]/gu, "");
+  return workbookNameKey(value);
 }
 
 function withinWorkbookEditDistance(left: string, right: string, allowed = 2): boolean {
@@ -1164,8 +1164,7 @@ function base64Blob(value: string, mediaType: string): Blob {
 export const semicolonRecords = csvRecords;
 
 function historicalName(value: string): string {
-  return value.normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("nl").replace(/[^a-z0-9]/g, "");
+  return workbookNameKey(value);
 }
 
 // The WhatsApp export the Manager has always produced. This is a faithful port
