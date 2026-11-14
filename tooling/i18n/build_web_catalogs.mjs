@@ -6,7 +6,9 @@
 // apps/timetrials-web/i18n/translations/<language>.json ({ language, reviewed, messages: { english: text } }).
 // fr-CA and es-419 fall back to fr and es where they have no own translation; game names always come from the
 // region's own Clean Assets names. A translation may leave out a placeholder (an English plural suffix, say) but
-// never name one the English does not have. Output: apps/timetrials-web/styles/i18n-<language>-<hash>.json and
+// never name one the English does not have. The other products (Android, LiveTrial, Tournament Live and the A2
+// setup wizard / invitation page, PRODUCTS below) get the same catalog limited to their own texts.
+// Output: apps/timetrials-web/styles/i18n-<language>-<hash>.json and
 // apps/timetrials-web/src/i18n-catalog-index.generated.ts. Prints the coverage per language.
 // Every web source text needs an entry in each translation file, or that language shows it in English (the
 // catalog test fails). --fill-missing adds the English text as a stand-in for the missing ones, to be translated
@@ -50,10 +52,15 @@ const PRODUCTS = [
   ["android", "apps/timetrials-android/i18n/messages.source.json", "apps/timetrials-android/app/src/main/assets/i18n"],
   ["livetrial", "apps/timetrials-desktop/i18n/messages.source.json", "apps/timetrials-desktop/dashboard/i18n"],
   ["tournamentLive", "apps/tournament-live/i18n/messages.source.json", "apps/tournament-live/src/live_processor/i18n"],
-].map(([name, sourcePath, folder]) => ({
+  // The A2 offline pages (tooling/i18n/extract_a2_messages.py): setup wizard + /setup page, invitation page.
+  // They show no game names, so their catalogs leave them out.
+  ["a2Setup", "tooling/i18n/a2-setup/messages.source.json", "tooling/setup_wizard_static/i18n", { gameNames: false }],
+  ["a2Invite", "tooling/i18n/a2-invite/messages.source.json", "infrastructure/docker/offline-invite/i18n", { gameNames: false }],
+].map(([name, sourcePath, folder, settings = {}]) => ({
   name,
   keys: new Set(JSON.parse(readFileSync(join(repositoryRoot, sourcePath), "utf8")).messages.map((message) => message.key)),
   folder: join(repositoryRoot, folder),
+  gameNames: settings.gameNames !== false,
 }));
 // One translation pipeline for every product: a translation counts when its English is a key of any.
 const keys = new Set([...webKeys, ...PRODUCTS.flatMap((product) => [...product.keys])]);
@@ -142,8 +149,9 @@ for (const [language, settings] of Object.entries(LANGUAGES)) {
   const productCounts = {};
   for (const product of PRODUCTS) {
     const productMessages = sorted.filter(([english]) => product.keys.has(english));
-    writeFileSync(join(product.folder, `${language}.json`),
-      `${JSON.stringify({ ...catalog, messages: Object.fromEntries(productMessages) })}\n`, "utf8");
+    const productCatalog = { ...catalog, messages: Object.fromEntries(productMessages) };
+    if (!product.gameNames) { delete productCatalog.gameNames; }
+    writeFileSync(join(product.folder, `${language}.json`), `${JSON.stringify(productCatalog)}\n`, "utf8");
     productCounts[product.name] = `${productMessages.length}/${product.keys.size}`;
   }
   const text = `${JSON.stringify(catalog)}\n`;

@@ -1,0 +1,1275 @@
+{
+ "schemaVersion": "mk8dx.a2-setup-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_a2_messages.py",
+ "messages": [
+  {
+   "key": "A backup cannot be opened without this code. It is shown only once.",
+   "nl": "Zonder deze code is een back-up niet te openen. Hij wordt maar één keer getoond.",
+   "places": [
+    "wizard.js:recoveryText"
+   ]
+  },
+  {
+   "key": "A newer version of MK8DX",
+   "nl": "Een nieuwere versie van MK8DX",
+   "places": [
+    "wizard.js:updateTitle"
+   ]
+  },
+  {
+   "key": "Add",
+   "nl": "Toevoegen",
+   "places": [
+    "wizard.js:peopleAdd"
+   ]
+  },
+  {
+   "key": "Add people and make sign-in cards.",
+   "nl": "Mensen toevoegen en inlogkaarten maken.",
+   "places": [
+    "wizard.js:manageLead"
+   ]
+  },
+  {
+   "key": "Add the same certificate to your distribution's or browser's trusted root store.",
+   "nl": "Voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser.",
+   "places": [
+    "offline_lan_ca.py:linux[0]"
+   ]
+  },
+  {
+   "key": "Advanced",
+   "nl": "Geavanceerd",
+   "places": [
+    "wizard.js:advanced"
+   ]
+  },
+  {
+   "key": "Allowing the network (Windows asks for permission)",
+   "nl": "Netwerk toestaan (Windows vraagt toestemming)",
+   "places": [
+    "wizard.js:phase_network"
+   ]
+  },
+  {
+   "key": "An old-school LAN night with two players per screen: sign-up, attendance, consoles and seats, qualifier groups and then the finals are arranged for you automatically. Tournament Live reads the races from the capture card and prepares the results on the website.",
+   "nl": "Een ouderwetse LAN-avond met twee spelers per scherm: aanmelden, aanwezigheid, consoles en zitplaatsen, kwalificatiegroepen en daarna de finales worden automatisch voor je ingedeeld. Tournament Live leest de races via de capture card mee en zet de uitslagen klaar op de website.",
+   "places": [
+    "wizard.js:hiLan"
+   ]
+  },
+  {
+   "key": "Another folder (for example a USB stick):",
+   "nl": "Andere map (bijvoorbeeld een USB-stick):",
+   "places": [
+    "wizard.js:restoreFolder"
+   ]
+  },
+  {
+   "key": "Another kind of device?",
+   "nl": "Ander soort apparaat?",
+   "places": [
+    "offline_lan_ca.py:other"
+   ]
+  },
+  {
+   "key": "Back",
+   "nl": "Vorige",
+   "places": [
+    "wizard.js:back"
+   ]
+  },
+  {
+   "key": "Backup from just before the update:",
+   "nl": "Back-up van vlak voor de update:",
+   "places": [
+    "wizard.js:updatedBackup"
+   ]
+  },
+  {
+   "key": "Cannot scan? Send this link only to {name} themselves, for example in a private message. Whoever opens the link can sign in as {name}. It works once and until {until}.",
+   "nl": "Kan iemand niet scannen? Stuur deze link alleen naar {name} zelf, bijvoorbeeld in een privébericht. Wie de link opent, kan inloggen als {name}. Hij werkt één keer en tot {until}.",
+   "places": [
+    "wizard.js:linkWarn"
+   ]
+  },
+  {
+   "key": "Checking",
+   "nl": "Controleren",
+   "places": [
+    "wizard.js:phase_verify"
+   ]
+  },
+  {
+   "key": "Choose Install Certificate → Current User → Place all certificates in the following store → Trusted Root Certification Authorities. Do not choose Intermediate Certification Authorities.",
+   "nl": "Kies Certificaat installeren → Huidige gebruiker → Alle certificaten in het onderstaande archief plaatsen → Vertrouwde basiscertificeringsinstanties. Kies niet Tussenliggende certificeringsinstanties.",
+   "places": [
+    "offline_lan_ca.py:windows[1]"
+   ]
+  },
+  {
+   "key": "Choose another address of this computer:",
+   "nl": "Kies een ander adres van deze computer:",
+   "places": [
+    "wizard.js:netAdvanced"
+   ]
+  },
+  {
+   "key": "Choose the backup and enter the recovery code you wrote down during the first installation.",
+   "nl": "Kies de back-up en vul de herstelcode in die je bij de eerste installatie hebt opgeschreven.",
+   "places": [
+    "wizard.js:restoreLead"
+   ]
+  },
+  {
+   "key": "Choose the downloaded MK8DX file and confirm with your PIN.",
+   "nl": "Kies het gedownloade MK8DX-bestand en bevestig met je pincode.",
+   "places": [
+    "offline_lan_ca.py:android[2]"
+   ]
+  },
+  {
+   "key": "Click 'Make card' for the person who uses this device and scan that QR code with the same device. The device is then signed in as that person. A card works once and for 15 minutes; feel free to make a new one.",
+   "nl": "Klik bij de persoon die dit apparaat gebruikt op 'Kaart maken' en scan die QR-code met hetzelfde apparaat. Het apparaat is dan ingelogd als die persoon. Een kaart werkt één keer en 15 minuten lang; maak gerust een nieuwe.",
+   "places": [
+    "wizard.js:step2Text"
+   ]
+  },
+  {
+   "key": "Close",
+   "nl": "Sluiten",
+   "places": [
+    "wizard.js:close"
+   ]
+  },
+  {
+   "key": "Connect your Switch to your PC through a capture card and race. LiveTrial recognizes every run by itself and keeps your times, laps and clips — nothing to type.",
+   "nl": "Sluit je Switch via een capture card aan op je pc en race. LiveTrial herkent elke run vanzelf en bewaart je tijden, rondes en clips — je hoeft niets in te typen.",
+   "places": [
+    "wizard.js:hiLive"
+   ]
+  },
+  {
+   "key": "Copied",
+   "nl": "Gekopieerd",
+   "places": [
+    "wizard.js:copied"
+   ]
+  },
+  {
+   "key": "Copy address",
+   "nl": "Adres kopiëren",
+   "places": [
+    "wizard.js:copySetup"
+   ]
+  },
+  {
+   "key": "Copy link",
+   "nl": "Link kopiëren",
+   "places": [
+    "wizard.js:copyLink"
+   ]
+  },
+  {
+   "key": "Details",
+   "nl": "Details",
+   "places": [
+    "wizard.js:showLog"
+   ]
+  },
+  {
+   "key": "Did this computer get a different address? Phones and PCs still trust MK8DX; let them scan the 'Prepare a device' card and pair apps again.",
+   "nl": "Kreeg deze computer een ander adres? Telefoons en pc's vertrouwen MK8DX nog steeds; laat ze de kaart 'Apparaat voorbereiden' scannen en koppel apps opnieuw.",
+   "places": [
+    "wizard.js:restoreReconnect"
+   ]
+  },
+  {
+   "key": "Do this once per phone, tablet or PC. Afterwards, scan your personal sign-in card.",
+   "nl": "Doe dit één keer per telefoon, tablet of pc. Scan daarna je persoonlijke inlogkaart.",
+   "places": [
+    "offline_lan_ca.py:lead"
+   ]
+  },
+  {
+   "key": "Do you want to create accounts for others now — family, friends, club members or colleagues? Everyone gets a personal sign-in card.",
+   "nl": "Wil je nu al accounts maken voor anderen — familie, vrienden, clubleden of collega's? Iedereen krijgt een eigen persoonlijke inlogkaart.",
+   "places": [
+    "wizard.js:peopleLead"
+   ]
+  },
+  {
+   "key": "Docker Desktop is running",
+   "nl": "Docker Desktop draait",
+   "places": [
+    "wizard.js:check_docker"
+   ]
+  },
+  {
+   "key": "Docker Desktop starts when you sign in; MK8DX then comes online by itself.",
+   "nl": "Docker Desktop start mee bij het aanmelden; MK8DX komt daarna vanzelf online.",
+   "places": [
+    "wizard.js:autostartHint"
+   ]
+  },
+  {
+   "key": "Docker starts with it; MK8DX then comes online by itself.",
+   "nl": "Docker start mee; MK8DX komt daarna vanzelf online.",
+   "places": [
+    "wizard.js:autostartOtherHint"
+   ]
+  },
+  {
+   "key": "Done!",
+   "nl": "Klaar!",
+   "places": [
+    "wizard.js:phase_done"
+   ]
+  },
+  {
+   "key": "Done! Enjoy the races.",
+   "nl": "Klaar! Veel racegenot.",
+   "places": [
+    "wizard.js:doneTitle"
+   ]
+  },
+  {
+   "key": "Done? Scan your personal sign-in card, or open",
+   "nl": "Klaar? Scan je persoonlijke inlogkaart, of open",
+   "places": [
+    "offline_lan_ca.py:done"
+   ]
+  },
+  {
+   "key": "Download certificate",
+   "nl": "Certificaat downloaden",
+   "places": [
+    "offline_lan_ca.py:dl_crt"
+   ]
+  },
+  {
+   "key": "Download profile",
+   "nl": "Profiel downloaden",
+   "places": [
+    "offline_lan_ca.py:dl_ios"
+   ]
+  },
+  {
+   "key": "Download the certificate and open it.",
+   "nl": "Download het certificaat en open het.",
+   "places": [
+    "offline_lan_ca.py:windows[0]"
+   ]
+  },
+  {
+   "key": "Download the certificate and open it; Keychain Access opens.",
+   "nl": "Download het certificaat en open het; Sleutelhangertoegang opent.",
+   "places": [
+    "offline_lan_ca.py:mac[0]"
+   ]
+  },
+  {
+   "key": "Encrypted, in Documents\\MK8DX-backups. The newest 7 are kept.",
+   "nl": "Versleuteld, in Documenten\\MK8DX-backups. De laatste 7 blijven bewaard.",
+   "places": [
+    "wizard.js:backupsHint"
+   ]
+  },
+  {
+   "key": "Enough free disk space",
+   "nl": "Genoeg vrije schijfruimte",
+   "places": [
+    "wizard.js:check_disk"
+   ]
+  },
+  {
+   "key": "Everyone gets their own account, records and a ranking with family, friends or club.",
+   "nl": "Iedereen een eigen account, eigen records en een ranglijst met familie, vrienden of club.",
+   "places": [
+    "wizard.js:hiFamily"
+   ]
+  },
+  {
+   "key": "Everyone on the same Wi-Fi or wired network can join with a personal sign-in card — at home, at the club or during a LAN tournament night. Nothing goes to the internet.",
+   "nl": "Iedereen op hetzelfde wifi- of kabelnetwerk kan meedoen met een persoonlijke inlogkaart — thuis, op de club of tijdens een LAN-toernooiavond. Er gaat niets naar internet.",
+   "places": [
+    "wizard.js:kindHomeText"
+   ]
+  },
+  {
+   "key": "Everything stays on your own network. No internet, no subscription, no cloud.",
+   "nl": "Alles blijft op je eigen netwerk. Geen internet, geen abonnement, geen cloud.",
+   "places": [
+    "wizard.js:hiOwn"
+   ]
+  },
+  {
+   "key": "Fingerprint",
+   "nl": "Vingerafdruk",
+   "places": [
+    "wizard.js:fingerprint"
+   ]
+  },
+  {
+   "key": "Finish",
+   "nl": "Voltooien",
+   "places": [
+    "wizard.js:finish"
+   ]
+  },
+  {
+   "key": "First an encrypted backup is made and checked. Then MK8DX switches to the new version. All people, times, tournaments and sign-ins are kept; phones do not need to do anything again.",
+   "nl": "Eerst wordt een versleutelde back-up gemaakt en gecontroleerd. Daarna gaat MK8DX over op de nieuwe versie. Alle mensen, tijden, toernooien en inloggingen blijven bewaard; telefoons hoeven niets opnieuw te doen.",
+   "places": [
+    "wizard.js:updateSteps"
+   ]
+  },
+  {
+   "key": "First check this code. It must match the code on the 'Prepare a device' card or in MK8DX beheer on the host computer:",
+   "nl": "Controleer eerst deze code. Hij moet gelijk zijn aan de code op de kaart 'Apparaat voorbereiden' of in MK8DX beheer op de hostcomputer:",
+   "places": [
+    "offline_lan_ca.py:check"
+   ]
+  },
+  {
+   "key": "Five groups of four characters, for example ABCD-EFGH-…",
+   "nl": "Vijf groepjes van vier tekens, bijvoorbeeld ABCD-EFGH-…",
+   "places": [
+    "wizard.js:restoreCodeHint"
+   ]
+  },
+  {
+   "key": "For example 'Dad', 'Sam' or 'Club team'. This is only the account's label in MK8DX administration. Everyone picks their own player name on the website the first time they sign in.",
+   "nl": "Bijvoorbeeld 'Papa', 'Sanne' of 'Clubleiding'. Dit is alleen het label van het account in MK8DX beheer. Je spelersnaam op de website kies je zelf bij de eerste keer inloggen.",
+   "places": [
+    "wizard.js:adminHint"
+   ]
+  },
+  {
+   "key": "Free at least 6 GB on this drive.",
+   "nl": "Maak minstens 6 GB vrij op deze schijf.",
+   "places": [
+    "wizard.js:check_disk_fix"
+   ]
+  },
+  {
+   "key": "Full fingerprints",
+   "nl": "Volledige vingerafdrukken",
+   "places": [
+    "offline_lan_ca.py:full"
+   ]
+  },
+  {
+   "key": "Go to MK8DX beheer",
+   "nl": "Naar MK8DX beheer",
+   "places": [
+    "wizard.js:updatedManage"
+   ]
+  },
+  {
+   "key": "Home, club or LAN-night network, no internet needed",
+   "nl": "Thuis-, club- of LAN-avondnetwerk, geen internet nodig",
+   "places": [
+    "wizard.js:kindHome"
+   ]
+  },
+  {
+   "key": "In this installation:",
+   "nl": "In deze installatie:",
+   "places": [
+    "wizard.js:peopleNow"
+   ]
+  },
+  {
+   "key": "Install",
+   "nl": "Installeren",
+   "places": [
+    "wizard.js:install"
+   ]
+  },
+  {
+   "key": "Install MK8DX",
+   "nl": "MK8DX installeren",
+   "places": [
+    "wizard.js:pageTitle"
+   ]
+  },
+  {
+   "key": "Installing",
+   "nl": "Installeren",
+   "places": [
+    "wizard.js:installTitle"
+   ]
+  },
+  {
+   "key": "Installing and starting the new version",
+   "nl": "Nieuwe versie installeren en starten",
+   "places": [
+    "wizard.js:phase_update"
+   ]
+  },
+  {
+   "key": "Keep this folder: after the update MK8DX starts from this folder. You can delete the old folder afterwards.",
+   "nl": "Bewaar deze map: MK8DX start na het bijwerken vanuit deze map. De oude map kun je daarna verwijderen.",
+   "places": [
+    "wizard.js:updateFolder"
+   ]
+  },
+  {
+   "key": "Keep this recovery code safe (write it down or print it). You only need it to restore a backup on another computer.",
+   "nl": "Bewaar deze herstelcode goed (opschrijven of afdrukken). Je hebt hem alleen nodig om een back-up op een andere computer terug te zetten.",
+   "places": [
+    "wizard.js:recoveryLead"
+   ]
+  },
+  {
+   "key": "LAN tournament nights",
+   "nl": "LAN-toernooiavonden",
+   "places": [
+    "wizard.js:hiLanT"
+   ]
+  },
+  {
+   "key": "Language",
+   "nl": "Taal",
+   "places": [
+    "wizard.js:language",
+    "offline_lan_ca.py:language"
+   ]
+  },
+  {
+   "key": "Leaving this installation? Remove the certificate again in the same settings.",
+   "nl": "Stop je met deze installatie? Verwijder het certificaat weer via dezelfde instellingen.",
+   "places": [
+    "offline_lan_ca.py:remove"
+   ]
+  },
+  {
+   "key": "MK8DX administration",
+   "nl": "MK8DX beheer",
+   "places": [
+    "wizard.js:manageTitle"
+   ]
+  },
+  {
+   "key": "MK8DX is being set up. Keep this window open.",
+   "nl": "MK8DX wordt klaargezet. Laat dit venster open.",
+   "places": [
+    "wizard.js:installLead"
+   ]
+  },
+  {
+   "key": "MK8DX is running again, with everything from the backup.",
+   "nl": "MK8DX draait weer, met alles uit de back-up.",
+   "places": [
+    "wizard.js:restoreDone"
+   ]
+  },
+  {
+   "key": "MK8DX is running on your home network.",
+   "nl": "MK8DX draait op je thuisnetwerk.",
+   "places": [
+    "wizard.js:doneLead"
+   ]
+  },
+  {
+   "key": "MK8DX is running. Two short steps left.",
+   "nl": "MK8DX draait. Nog twee korte stappen.",
+   "places": [
+    "wizard.js:installDone"
+   ]
+  },
+  {
+   "key": "MK8DX is updated",
+   "nl": "MK8DX is bijgewerkt",
+   "places": [
+    "wizard.js:updatedTitle"
+   ]
+  },
+  {
+   "key": "MK8DX now runs {to} (was {from}). All people, times, tournaments and sign-ins are kept.",
+   "nl": "MK8DX draait nu {to} (was {from}). Alle mensen, tijden, toernooien en inloggingen zijn bewaard.",
+   "places": [
+    "wizard.js:updatedLead"
+   ]
+  },
+  {
+   "key": "MK8DX recovery code",
+   "nl": "MK8DX herstelcode",
+   "places": [
+    "wizard.js:recoveryTitle"
+   ]
+  },
+  {
+   "key": "MK8DX runs in Docker Desktop. Let's see whether everything is ready.",
+   "nl": "MK8DX draait in Docker Desktop. We kijken of alles klaarstaat.",
+   "places": [
+    "wizard.js:checkLead"
+   ]
+  },
+  {
+   "key": "MK8DX runs on the new address.",
+   "nl": "MK8DX draait op het nieuwe adres.",
+   "places": [
+    "wizard.js:moveDone"
+   ]
+  },
+  {
+   "key": "MK8DX runs the new version. Click Next and then Finish, so the automatic tasks and the shortcut use the new folder.",
+   "nl": "MK8DX draait de nieuwe versie. Klik op Volgende en daarna op Voltooien, zodat de automatische taken en de snelkoppeling de nieuwe map gebruiken.",
+   "places": [
+    "wizard.js:updateDone"
+   ]
+  },
+  {
+   "key": "MK8DX was on {old}, but this computer now uses another address (for example after a new router or another network). Move MK8DX to:",
+   "nl": "MK8DX stond op {old}, maar deze computer gebruikt nu een ander adres (bijvoorbeeld na een nieuwe router of een ander netwerk). Verhuis MK8DX naar:",
+   "places": [
+    "wizard.js:moveLead"
+   ]
+  },
+  {
+   "key": "Make Docker start after a restart too, with this command in a terminal:",
+   "nl": "Laat Docker ook na een herstart starten met dit commando in een terminal:",
+   "places": [
+    "wizard.js:autostartManual"
+   ]
+  },
+  {
+   "key": "Make a backup every night",
+   "nl": "Elke nacht een back-up maken",
+   "places": [
+    "wizard.js:backups"
+   ]
+  },
+  {
+   "key": "Make card",
+   "nl": "Kaart maken",
+   "places": [
+    "wizard.js:makeCard"
+   ]
+  },
+  {
+   "key": "Making and checking a backup",
+   "nl": "Back-up maken en controleren",
+   "places": [
+    "wizard.js:phase_backup"
+   ]
+  },
+  {
+   "key": "Manual",
+   "nl": "Handleiding",
+   "places": [
+    "wizard.js:help"
+   ]
+  },
+  {
+   "key": "Move",
+   "nl": "Verhuizen",
+   "places": [
+    "wizard.js:moveGo"
+   ]
+  },
+  {
+   "key": "Moving",
+   "nl": "Verhuizen",
+   "places": [
+    "wizard.js:moveTitleRun"
+   ]
+  },
+  {
+   "key": "Moving to the new address (Windows asks for permission)",
+   "nl": "Naar het nieuwe adres verhuizen (Windows vraagt toestemming)",
+   "places": [
+    "wizard.js:phase_move"
+   ]
+  },
+  {
+   "key": "Names (one per line)",
+   "nl": "Namen (één per regel)",
+   "places": [
+    "wizard.js:peopleField"
+   ]
+  },
+  {
+   "key": "New backups use the same recovery code as before.",
+   "nl": "Nieuwe back-ups gebruiken dezelfde herstelcode als voorheen.",
+   "places": [
+    "wizard.js:restoreSameCode"
+   ]
+  },
+  {
+   "key": "New card",
+   "nl": "Nieuwe kaart",
+   "places": [
+    "wizard.js:newCard"
+   ]
+  },
+  {
+   "key": "New computer? Bring MK8DX back with all your people, times and tournaments from a backup. You need the recovery code.",
+   "nl": "Nieuwe computer? Zet je MK8DX met al je mensen, tijden en toernooien terug uit een back-up. Je hebt de herstelcode nodig.",
+   "places": [
+    "wizard.js:restoreOfferHint"
+   ]
+  },
+  {
+   "key": "New device",
+   "nl": "Nieuw apparaat",
+   "places": [
+    "wizard.js:doneSetup"
+   ]
+  },
+  {
+   "key": "Next",
+   "nl": "Volgende",
+   "places": [
+    "wizard.js:next"
+   ]
+  },
+  {
+   "key": "No network address found. Connect this computer to your home network and click Try again.",
+   "nl": "Geen netwerkadres gevonden. Verbind deze computer met je thuisnetwerk en klik op Opnieuw proberen.",
+   "places": [
+    "wizard.js:netNone"
+   ]
+  },
+  {
+   "key": "Not now",
+   "nl": "Niet nu",
+   "places": [
+    "wizard.js:updateLater"
+   ]
+  },
+  {
+   "key": "Not trusted yet. Did you click No or close the window? Try again.",
+   "nl": "Nog niet vertrouwd. Klikte je op Nee of sloot je het venster? Probeer het opnieuw.",
+   "places": [
+    "wizard.js:hostNotYet"
+   ]
+  },
+  {
+   "key": "Once per device. Scan this QR code with the camera. The device then learns to trust this installation (a security certificate), so the website opens safely. This does not sign you in yet. If the device was prepared before, go straight to step 2.",
+   "nl": "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
+   "places": [
+    "wizard.js:step1Text"
+   ]
+  },
+  {
+   "key": "Open Settings and search for “certificate” (often: Security → More security settings → Encryption & credentials → Install a certificate → CA certificate).",
+   "nl": "Open Instellingen en zoek op “certificaat” (vaak: Beveiliging → Meer beveiligingsinstellingen → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat).",
+   "places": [
+    "offline_lan_ca.py:android[1]"
+   ]
+  },
+  {
+   "key": "Open Settings → Profile downloaded → Install.",
+   "nl": "Open Instellingen → Profiel gedownload → Installeer.",
+   "places": [
+    "offline_lan_ca.py:ios[1]"
+   ]
+  },
+  {
+   "key": "Open the MK8DX certificate → Trust → Always Trust. (macOS is not yet tested end to end.)",
+   "nl": "Open het MK8DX-certificaat → Vertrouw → Altijd vertrouwen. (macOS is nog niet volledig getest.)",
+   "places": [
+    "offline_lan_ca.py:mac[1]"
+   ]
+  },
+  {
+   "key": "Opening and restoring the backup",
+   "nl": "Back-up openen en terugzetten",
+   "places": [
+    "wizard.js:phase_restore"
+   ]
+  },
+  {
+   "key": "Other options (one computer, your own server, web hosting) are in the manual under 'Installation routes'.",
+   "nl": "Andere mogelijkheden (één computer, eigen server, webhosting) staan in de handleiding onder 'Installatieroutes'.",
+   "places": [
+    "wizard.js:kindOther"
+   ]
+  },
+  {
+   "key": "Phones and PCs keep trusting MK8DX. Let them scan the 'Prepare a device' card once and sign in again; pair apps again.",
+   "nl": "Telefoons en pc's blijven MK8DX vertrouwen. Laat ze één keer de kaart 'Apparaat voorbereiden' scannen en opnieuw inloggen; gekoppelde apps koppel je opnieuw.",
+   "places": [
+    "wizard.js:moveAfter"
+   ]
+  },
+  {
+   "key": "Phones, tablets and other PCs reach MK8DX at this address:",
+   "nl": "Telefoons, tablets en andere pc's bereiken MK8DX op dit adres:",
+   "places": [
+    "wizard.js:netLead"
+   ]
+  },
+  {
+   "key": "Prepare a device",
+   "nl": "Apparaat voorbereiden",
+   "places": [
+    "wizard.js:setupCard"
+   ]
+  },
+  {
+   "key": "Prepare this computer",
+   "nl": "Deze computer voorbereiden",
+   "places": [
+    "wizard.js:hostButton"
+   ]
+  },
+  {
+   "key": "Prepare this device",
+   "nl": "Dit apparaat voorbereiden",
+   "places": [
+    "offline_lan_ca.py:title"
+   ]
+  },
+  {
+   "key": "Preparing the installation",
+   "nl": "Installatie voorbereiden",
+   "places": [
+    "wizard.js:phase_prepare"
+   ]
+  },
+  {
+   "key": "Print cards",
+   "nl": "Kaarten afdrukken",
+   "places": [
+    "wizard.js:print"
+   ]
+  },
+  {
+   "key": "Put an 'MK8DX beheer' shortcut on the desktop",
+   "nl": "Snelkoppeling 'MK8DX beheer' op het bureaublad zetten",
+   "places": [
+    "wizard.js:shortcut"
+   ]
+  },
+  {
+   "key": "Quick check",
+   "nl": "Even controleren",
+   "places": [
+    "wizard.js:checkTitle"
+   ]
+  },
+  {
+   "key": "Recovery code",
+   "nl": "Herstelcode",
+   "places": [
+    "wizard.js:restoreCode"
+   ]
+  },
+  {
+   "key": "Restart the browser.",
+   "nl": "Herstart de browser.",
+   "places": [
+    "offline_lan_ca.py:windows[2]"
+   ]
+  },
+  {
+   "key": "Restore",
+   "nl": "Terugzetten",
+   "places": [
+    "wizard.js:restoreGo"
+   ]
+  },
+  {
+   "key": "Restore a backup",
+   "nl": "Een back-up terugzetten",
+   "places": [
+    "wizard.js:restoreOffer",
+    "wizard.js:restoreTitle"
+   ]
+  },
+  {
+   "key": "Restoring",
+   "nl": "Terugzetten",
+   "places": [
+    "wizard.js:restoreTitleRun"
+   ]
+  },
+  {
+   "key": "Revoke card",
+   "nl": "Kaart intrekken",
+   "places": [
+    "wizard.js:revokeCard"
+   ]
+  },
+  {
+   "key": "Revoked: this card no longer works.",
+   "nl": "Ingetrokken: deze kaart werkt niet meer.",
+   "places": [
+    "wizard.js:cardRevoked"
+   ]
+  },
+  {
+   "key": "Root certificate SHA-256:",
+   "nl": "SHA-256 van het basiscertificaat:",
+   "places": [
+    "offline_lan_ca.py:root_cert"
+   ]
+  },
+  {
+   "key": "Root public key SHA-256 (SPKI):",
+   "nl": "SHA-256 van de publieke sleutel (SPKI):",
+   "places": [
+    "offline_lan_ca.py:root_key"
+   ]
+  },
+  {
+   "key": "Scan from the couch",
+   "nl": "Scannen op de bank",
+   "places": [
+    "wizard.js:hiScanT"
+   ]
+  },
+  {
+   "key": "Search",
+   "nl": "Zoeken",
+   "places": [
+    "wizard.js:restoreLook"
+   ]
+  },
+  {
+   "key": "Sign in on phones and PCs",
+   "nl": "Inloggen op telefoons en pc's",
+   "places": [
+    "wizard.js:cardsTitle"
+   ]
+  },
+  {
+   "key": "Sign in on this computer",
+   "nl": "Op deze computer inloggen",
+   "places": [
+    "wizard.js:openHere"
+   ]
+  },
+  {
+   "key": "Sign out everywhere",
+   "nl": "Overal uitloggen",
+   "places": [
+    "wizard.js:signOut"
+   ]
+  },
+  {
+   "key": "Sign yourself out from the account menu on the website ('Sign out on all devices').",
+   "nl": "Jezelf log je uit via het accountmenu op de website ('Op alle apparaten afmelden').",
+   "places": [
+    "wizard.js:signOutSelf"
+   ]
+  },
+  {
+   "key": "Signed out on every device. A new card lets this person sign in again.",
+   "nl": "Uitgelogd op alle apparaten. Met een nieuwe kaart kan deze persoon weer inloggen.",
+   "places": [
+    "wizard.js:signedOut"
+   ]
+  },
+  {
+   "key": "Signing in on a phone, tablet or PC takes two steps: first prepare the device, then sign in as the right person.",
+   "nl": "Inloggen op een telefoon, tablet of pc gaat in twee stappen: eerst het apparaat voorbereiden, daarna inloggen als de juiste persoon.",
+   "places": [
+    "wizard.js:cardsLead"
+   ]
+  },
+  {
+   "key": "Skip",
+   "nl": "Overslaan",
+   "places": [
+    "wizard.js:skip"
+   ]
+  },
+  {
+   "key": "Start Docker Desktop, wait for 'Engine running' and click Try again.",
+   "nl": "Start Docker Desktop, wacht tot 'Engine running' en klik op Opnieuw proberen.",
+   "places": [
+    "wizard.js:check_docker_fix"
+   ]
+  },
+  {
+   "key": "Start MK8DX when the computer starts",
+   "nl": "MK8DX starten als de computer opstart",
+   "places": [
+    "wizard.js:autostartOther"
+   ]
+  },
+  {
+   "key": "Start MK8DX with Windows",
+   "nl": "MK8DX starten met Windows",
+   "places": [
+    "wizard.js:autostart"
+   ]
+  },
+  {
+   "key": "Starting the database and website",
+   "nl": "Database en website starten",
+   "places": [
+    "wizard.js:phase_install"
+   ]
+  },
+  {
+   "key": "Starting…",
+   "nl": "Starten…",
+   "places": [
+    "wizard.js:phase_idle"
+   ]
+  },
+  {
+   "key": "Step 1 · Prepare the device",
+   "nl": "Stap 1 · Apparaat voorbereiden",
+   "places": [
+    "wizard.js:step1Title"
+   ]
+  },
+  {
+   "key": "Step 2 · Sign in as the right person",
+   "nl": "Stap 2 · Inloggen als de juiste persoon",
+   "places": [
+    "wizard.js:step2Title"
+   ]
+  },
+  {
+   "key": "Steps",
+   "nl": "Stappen",
+   "places": [
+    "wizard.js:stepsLabel"
+   ]
+  },
+  {
+   "key": "Sure? Click again",
+   "nl": "Zeker? Klik nogmaals",
+   "places": [
+    "wizard.js:signOutConfirm"
+   ]
+  },
+  {
+   "key": "Tap the button to download the certificate.",
+   "nl": "Tik op de knop om het certificaat te downloaden.",
+   "places": [
+    "offline_lan_ca.py:android[0]"
+   ]
+  },
+  {
+   "key": "Tap the button to download the profile and allow it.",
+   "nl": "Tik op de knop om het profiel te downloaden en sta het toe.",
+   "places": [
+    "offline_lan_ca.py:ios[0]"
+   ]
+  },
+  {
+   "key": "The automatic backup, the certificate renewal and the 'MK8DX beheer' shortcut now use this folder. You may delete the old folder.",
+   "nl": "De automatische back-up, de certificaatvernieuwing en de snelkoppeling 'MK8DX beheer' gebruiken nu deze map. De oude map mag je verwijderen.",
+   "places": [
+    "wizard.js:updatedTasks"
+   ]
+  },
+  {
+   "key": "The exact steps differ by distribution; Linux is not yet tested end to end for this route.",
+   "nl": "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route.",
+   "places": [
+    "offline_lan_ca.py:linux[1]"
+   ]
+  },
+  {
+   "key": "Then Settings → General → About → Certificate Trust Settings → turn on MK8DX.",
+   "nl": "Daarna Instellingen → Algemeen → Info → Certificaatvertrouwen → zet MK8DX aan.",
+   "places": [
+    "offline_lan_ca.py:ios[2]"
+   ]
+  },
+  {
+   "key": "There is no MK8DX backup in this folder. Copy the backup folder (for example from a USB stick) to the MK8DX-backups folder in your Documents, or choose another folder below.",
+   "nl": "In deze map staat geen MK8DX-back-up. Kopieer de back-upmap (bijvoorbeeld vanaf een USB-stick) naar de map MK8DX-backups in je Documenten, of kies hieronder een andere map.",
+   "places": [
+    "wizard.js:restoreNone"
+   ]
+  },
+  {
+   "key": "This computer",
+   "nl": "Deze computer",
+   "places": [
+    "wizard.js:hostTitle"
+   ]
+  },
+  {
+   "key": "This computer already trusts MK8DX. The website opens here without a warning.",
+   "nl": "Deze computer vertrouwt MK8DX al. De website opent hier zonder waarschuwing.",
+   "places": [
+    "wizard.js:hostTrusted"
+   ]
+  },
+  {
+   "key": "This computer has a new network address",
+   "nl": "Deze computer heeft een nieuw netwerkadres",
+   "places": [
+    "wizard.js:moveTitle"
+   ]
+  },
+  {
+   "key": "This computer must trust MK8DX once too, otherwise the browser warns here about the website. Click the button. Windows then asks whether you want to install the certificate: check that the thumbprint (sha1) below matches and click Yes.",
+   "nl": "Ook deze computer moet MK8DX één keer vertrouwen, anders waarschuwt de browser hier bij de website. Klik op de knop. Windows vraagt dan of je het certificaat wilt installeren: controleer dat de vingerafdruk (sha1) hieronder overeenkomt en klik op Ja.",
+   "places": [
+    "wizard.js:hostNeeded"
+   ]
+  },
+  {
+   "key": "This computer must trust MK8DX once too. Open the address under 'Prepare a device' in this computer's browser and follow the steps for this computer.",
+   "nl": "Ook deze computer moet MK8DX één keer vertrouwen. Open hier in de browser het adres onder 'Apparaat voorbereiden' en volg de stappen voor deze computer.",
+   "places": [
+    "wizard.js:hostManual"
+   ]
+  },
+  {
+   "key": "This folder holds a newer version of MK8DX ({to}) than the one running now ({from}). Updating takes a few minutes; MK8DX is briefly unreachable meanwhile.",
+   "nl": "Deze map bevat een nieuwere versie van MK8DX ({to}) dan er nu draait ({from}). Bijwerken duurt een paar minuten; MK8DX is in die tijd even niet bereikbaar.",
+   "places": [
+    "wizard.js:updateLead"
+   ]
+  },
+  {
+   "key": "This installation runs on Windows, Linux and macOS.",
+   "nl": "Deze installatie werkt op Windows, Linux en macOS.",
+   "places": [
+    "wizard.js:check_platform_fix"
+   ]
+  },
+  {
+   "key": "This network is set up as a home (private) network.",
+   "nl": "Dit netwerk staat als thuisnetwerk (privé) ingesteld.",
+   "places": [
+    "wizard.js:netPrivate"
+   ]
+  },
+  {
+   "key": "This recovery code does not open the backup. Check the code and try again.",
+   "nl": "Deze herstelcode opent de back-up niet. Controleer de code en probeer het opnieuw.",
+   "places": [
+    "wizard.js:restoreWrongCode"
+   ]
+  },
+  {
+   "key": "This setup prepares MK8DX on this computer for everyone at home or at your club. It takes about 5 minutes. You mostly just click Next.",
+   "nl": "Deze installatie zet MK8DX op deze computer klaar voor iedereen in huis of op de club. Het duurt ongeveer 5 minuten. Je hoeft bijna alleen op Volgende te klikken.",
+   "places": [
+    "wizard.js:welcomeWhat"
+   ]
+  },
+  {
+   "key": "Thumbprint (sha1) in the Windows question",
+   "nl": "Vingerafdruk (sha1) in de Windows-vraag",
+   "places": [
+    "wizard.js:hostThumb"
+   ]
+  },
+  {
+   "key": "Time Trials with LiveTrial",
+   "nl": "Time Trials met LiveTrial",
+   "places": [
+    "wizard.js:hiLiveT"
+   ]
+  },
+  {
+   "key": "Time-trialling at a friend's place? Point your phone or tablet at the TV and MK8DX reads the result screen for you.",
+   "nl": "Bij vrienden aan het timetrialen? Richt je telefoon of tablet op de tv en MK8DX leest het resultaatscherm voor je uit.",
+   "places": [
+    "wizard.js:hiScan"
+   ]
+  },
+  {
+   "key": "To add people or make cards later: double-click 'MK8DX beheer' on the desktop.",
+   "nl": "Later mensen toevoegen of kaarten maken: dubbelklik 'MK8DX beheer' op het bureaublad.",
+   "places": [
+    "wizard.js:doneManage"
+   ]
+  },
+  {
+   "key": "Try again",
+   "nl": "Opnieuw proberen",
+   "places": [
+    "wizard.js:retry"
+   ]
+  },
+  {
+   "key": "Update",
+   "nl": "Bijwerken",
+   "places": [
+    "wizard.js:updateGo"
+   ]
+  },
+  {
+   "key": "Updating",
+   "nl": "Bijwerken",
+   "places": [
+    "wizard.js:updateTitleRun"
+   ]
+  },
+  {
+   "key": "Updating the automatic tasks and the shortcut",
+   "nl": "Automatische taken en snelkoppeling bijwerken",
+   "places": [
+    "wizard.js:phase_finish"
+   ]
+  },
+  {
+   "key": "Valid until",
+   "nl": "Geldig tot",
+   "places": [
+    "wizard.js:validUntil"
+   ]
+  },
+  {
+   "key": "Website",
+   "nl": "Website",
+   "places": [
+    "wizard.js:doneWebsite"
+   ]
+  },
+  {
+   "key": "Welcome to MK8DX",
+   "nl": "Welkom bij MK8DX",
+   "places": [
+    "wizard.js:welcomeTitle"
+   ]
+  },
+  {
+   "key": "What kind of installation?",
+   "nl": "Wat voor installatie?",
+   "places": [
+    "wizard.js:kindTitle"
+   ]
+  },
+  {
+   "key": "Who plays?",
+   "nl": "Wie spelen er mee?",
+   "places": [
+    "wizard.js:peopleTitle"
+   ]
+  },
+  {
+   "key": "Windows currently treats this network as public. When you click Install, MK8DX marks it private and allows only MK8DX. Windows asks for permission once — click Yes.",
+   "nl": "Windows ziet dit netwerk nu als openbaar. Bij Installeren zet MK8DX het op 'privé' en laat het alleen MK8DX door. Windows vraagt daarvoor één keer om toestemming — klik dan op Ja.",
+   "places": [
+    "wizard.js:netPublic"
+   ]
+  },
+  {
+   "key": "Windows, Linux or macOS",
+   "nl": "Windows, Linux of macOS",
+   "places": [
+    "wizard.js:check_platform"
+   ]
+  },
+  {
+   "key": "Working",
+   "nl": "Bezig",
+   "places": [
+    "wizard.js:working"
+   ]
+  },
+  {
+   "key": "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.",
+   "nl": "Dit kan ook later, precies zo: open 'MK8DX beheer' op het bureaublad en kies 'Mensen'.",
+   "places": [
+    "wizard.js:peopleLater"
+   ]
+  },
+  {
+   "key": "You can close this window now.",
+   "nl": "Je kunt dit venster nu sluiten.",
+   "places": [
+    "wizard.js:finished"
+   ]
+  },
+  {
+   "key": "You manage this installation. What's your name?",
+   "nl": "Jij beheert deze installatie. Hoe heet je?",
+   "places": [
+    "wizard.js:adminLead"
+   ]
+  },
+  {
+   "key": "Your administrator account",
+   "nl": "Jouw beheerdersaccount",
+   "places": [
+    "wizard.js:adminTitle"
+   ]
+  },
+  {
+   "key": "Your name",
+   "nl": "Je naam",
+   "places": [
+    "wizard.js:adminField"
+   ]
+  },
+  {
+   "key": "Your network",
+   "nl": "Je netwerk",
+   "places": [
+    "wizard.js:netTitle"
+   ]
+  },
+  {
+   "key": "Your own Mario Kart 8 Deluxe home base: scan Time Trials with your phone, compare times with family and friends, LiveTrial recordings and tournament nights — on your own network, without internet or a cloud account.",
+   "nl": "Je eigen Mario Kart 8 Deluxe-thuisbasis: Time Trials scannen met je telefoon, je tijden vergelijken met familie en vrienden, LiveTrial-opnames en toernooiavonden — op je eigen netwerk, zonder internet of cloudaccount.",
+   "places": [
+    "wizard.js:welcomeLead"
+   ]
+  },
+  {
+   "key": "Your own records and rivals",
+   "nl": "Eigen records en rivalen",
+   "places": [
+    "wizard.js:hiFamilyT"
+   ]
+  },
+  {
+   "key": "Yours",
+   "nl": "Van jou",
+   "places": [
+    "wizard.js:hiOwnT"
+   ]
+  },
+  {
+   "key": "administration",
+   "nl": "beheer",
+   "places": [
+    "wizard.js:brandAdmin"
+   ]
+  },
+  {
+   "key": "administrator",
+   "nl": "beheerder",
+   "places": [
+    "wizard.js:administrator"
+   ]
+  },
+  {
+   "key": "an earlier version",
+   "nl": "een eerdere versie",
+   "places": [
+    "wizard.js:updatePrevious"
+   ]
+  },
+  {
+   "key": "recommended",
+   "nl": "aanbevolen",
+   "places": [
+    "wizard.js:recommended"
+   ]
+  },
+  {
+   "key": "setup",
+   "nl": "installatie",
+   "places": [
+    "wizard.js:brandSub"
+   ]
+  },
+  {
+   "key": "still working, this can take a few minutes",
+   "nl": "nog bezig, dit kan een paar minuten duren",
+   "places": [
+    "wizard.js:stillWorking"
+   ]
+  }
+ ]
+}

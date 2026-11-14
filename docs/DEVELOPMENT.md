@@ -177,6 +177,20 @@ The other 13 game languages come from translation catalogs.
 `apps/timetrials-android/app/src/main/assets/i18n/`, `apps/timetrials-desktop/dashboard/i18n/` and
 `apps/tournament-live/src/live_processor/i18n/`.
 
+**The A2 setup wizard and join pages** (the setup and administration page "MK8DX beheer", the host's
+"Prepare this device" page at `/setup` and the invitation page `/offline-invite`) follow it too. English and Dutch
+are the `SOURCE = { nl: {...}, en: {...} }` tables in `tooling/setup_wizard_static/wizard.js` and
+`infrastructure/docker/offline-invite/app.js`, and `_SETUP_TEXT` in `tooling/offline_lan_ca.py`. After changing
+one, run `python tooling/i18n/extract_a2_messages.py` (it writes `tooling/i18n/a2-setup/` and
+`tooling/i18n/a2-invite/messages.source.json`; `--check` tells whether they are current), add the new English
+texts to the ten translation files, and rebuild the catalogs: they land in `tooling/setup_wizard_static/i18n/`
+and `infrastructure/docker/offline-invite/i18n/`, without game names. Placeholders there are named (`{name}`)
+and must stay the same. The pages choose the language with `language.js` (two identical copies, one per
+folder; the `/setup` page inlines it): a saved choice from the language menu (the website's own key on the
+invitation page), else the browser's languages matched exactly, then by region (es-MX → es-419,
+zh-Hant/TW/HK → zh-TW, other zh → zh-CN), then by base language, else English. `tooling/tests/test_a2_languages.py`
+checks the choice and that every catalog covers every text.
+
 To rebuild the Web catalogs after changing a text or a translation:
 
 ```sh

@@ -686,9 +686,14 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     file = GUIDE / path[len("/guide/"):]
                     if file.is_file():
                         return self.send(200, file.read_bytes(), TYPES[file.suffix])
-                if path in ("/wizard.js", "/wizard.css", "/icon.png"):
+                if path in ("/wizard.js", "/language.js", "/wizard.css", "/icon.png"):
                     file = STATIC / path[1:]
                     return self.send(200, file.read_bytes(), TYPES[file.suffix])
+                # The wizard's language catalogs (tooling/i18n/build_web_catalogs.mjs), one per game language.
+                if path.startswith("/i18n/") and path[len("/i18n/"):-len(".json")] in GUIDE_LOCALES                         and path.endswith(".json"):
+                    file = STATIC / "i18n" / path[len("/i18n/"):]
+                    if file.is_file():
+                        return self.send(200, file.read_bytes())
                 routes = {"/api/status": wizard.status, "/api/checks": wizard.checks,
                           "/api/network": wizard.addresses, "/api/job": wizard.job.snapshot,
                           "/api/people": wizard.people, "/api/setup": wizard.setup_info,

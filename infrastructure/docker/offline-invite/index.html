@@ -7,10 +7,12 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
     <title>MK8DX · Offline invitation</title>
     <link rel="stylesheet" href="/offline-invite/style.css">
+    <script src="/offline-invite/language.js" defer></script>
     <script src="/offline-invite/app.js" defer></script>
   </head>
   <body>
     <main>
+      <select id="language" class="language"></select>
       <h1 id="title">Join this MK8DX installation</h1>
       <p id="explanation">First check that this HTTPS address belongs to the host you trust. The invitation can be used once.</p>
       <p id="who" class="who" hidden><span id="who-label"></span> <strong id="who-name"></strong></p>
