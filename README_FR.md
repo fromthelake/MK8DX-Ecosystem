@@ -67,6 +67,130 @@ pas d'abonnement, pas de publicité.
 
 ---
 
+## Comment tout s'articule
+
+MK8DX n'est pas un seul programme mais une petite famille autour d'un **serveur communautaire**. Le
+serveur garde tout ce qui compte : comptes, temps, tournois et classements. Les applis autour lisent l'écran du
+jeu sur tes propres appareils et envoient ce qu'elles ont trouvé à la communauté que tu as choisie.
+
+```mermaid
+flowchart TB
+  REC["Reconnaissance partagée<br/>intégrée à chaque appli"]
+
+  subgraph devices["Téléphones et navigateurs des joueurs"]
+    WEB["N'importe quel navigateur<br/>site + scanner"]
+    APP["Appli Android<br/>avec scanner"]
+  end
+
+  subgraph pcs["PC Windows + carte d'acquisition"]
+    LT["LiveTrial<br/>contre-la-montre automatique"]
+    TL["Tournament Live<br/>courses de la soirée"]
+    TA["Tournament Analysis<br/>enregistrements après coup"]
+  end
+
+  subgraph server["Serveur communautaire : à la maison, au club ou en ligne"]
+    DIR{"L'organisateur vérifie<br/>chaque course"}
+    API["Site + API"]
+    DB[("Base de données")]
+  end
+
+  WR["Records du monde<br/>mis à jour chaque jour"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"temps, classements, rivaux"| API
+  APP <-->|"temps, envoyés une fois en ligne"| API
+  LT -->|"sessions de contre-la-montre"| API
+  TL -->|"résultats, en direct"| DIR
+  TA -->|"fichier d'import"| DIR
+  DIR -->|"accepté = officiel"| API
+  API <--> DB
+  WR --> API
+```
+
+**De quelles pièces ai-je besoin ?**
+
+- **Un serveur communautaire : la seule pièce dont chaque communauté a besoin.** C'est le site avec son
+  API et sa base de données. Fais-le tourner sur ton réseau à la maison ou au club
+  ([A2](docs/install/A2_HOME_GUIDE_EN.md), sans internet après l'installation) ou en ligne sur un serveur ou un
+  hébergement web ([Héberger un serveur communautaire](docs/guides/HOSTING.md)).
+- **Aux joueurs, un navigateur suffit.** Le site apporte avec lui le scanner dans le navigateur. L'appli Android
+  ajoute le scan sur le téléphone, tes temps sans internet et le changement de communauté d'une touche
+  ([Players](docs/guides/PLAYERS.md)).
+- **Un PC Windows avec une carte d'acquisition est facultatif.** LiveTrial enregistre tout seul chaque session de
+  contre-la-montre ; tu l'envoies à ta communauté d'un clic, ou automatiquement
+  ([LiveTrial](docs/guides/LIVETRIAL.md)).
+- **Les soirées tournoi se gèrent sur le site.** Tournament Live (pendant la soirée) et Tournament Analysis
+  (enregistrements après coup) ne font que proposer des résultats ; les scores peuvent aussi être saisis à la main
+  ou importés depuis Excel/CSV. Rien ne change le classement avant que l'organisateur ne l'accepte
+  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
+- **La reconnaissance est partagée, ce n'est pas un service.** Chaque appli en a sa propre copie et lit l'écran
+  sur ton appareil ; le serveur vérifie seulement le résultat proposé
+  ([Pipeline de reconnaissance](docs/architecture/RECOGNITION_PIPELINE.md) ·
+  [Architecture](docs/architecture/COMPONENTS.md)).
+
+## Pour commencer
+
+| Je veux… | Commence ici |
+| --- | --- |
+| **faire tourner MK8DX à la maison ou dans mon club** | Le paquet A2 pour ton ordinateur depuis les [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) : décompresse, lance, clique sur Suivant. Pas à pas (le paquet A2 contient aussi une version illustrée) : [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **organiser des soirées tournoi en LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **enregistrer mes contre-la-montre automatiquement** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + une carte d'acquisition |
+| **publier et comparer mes temps** | [Joueurs](docs/guides/PLAYERS.md) — n'importe quel navigateur ; Android 8.0+ |
+| **héberger un site communautaire** | [Héberger un serveur communautaire](docs/guides/HOSTING.md) |
+| **modifier le code** | [Guide du développeur](docs/DEVELOPMENT.md), [Tests](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+
+Chaque ligne indique le guide à suivre du début à la fin. Compiler le serveur depuis les sources au lieu
+d'utiliser un paquet de release s'adresse aux développeurs : [Démarrer depuis les sources](docs/GETTING_STARTED.md).
+
+### Quel ordinateur pour quelle voie
+
+Chaque voie te donne le même site ; elles diffèrent par l'endroit où il tourne et par qui peut y accéder.
+
+| Voie | Pour | Tourne sur | Statut |
+| --- | --- | --- | --- |
+| **A2** réseau domestique ou de club | Ton propre réseau, pas besoin d'internet après l'installation, des cartes de connexion pour tout le monde | Windows 11 (x86-64), Linux (x86-64 ou arm64), Mac (Apple silicon ou Intel) | Testé de bout en bout sous Windows 11 ; Linux sous WSL 2 ; Mac compilé, pas encore testé sur un vrai Mac |
+| **A1** un seul ordinateur | L'essayer sur l'ordinateur devant lequel tu es assis | Windows 11 ou Linux, x86-64, avec Docker | Testé : installation, mise à niveau, sauvegarde |
+| **A3** un seul ordinateur sans Docker | Un PC Windows sur lequel Docker n'est pas envisageable | Windows 11 avec XAMPP et Node.js | Testé : installation, mise à niveau, sauvegarde |
+| **B1** site web public | Ta communauté en ligne, ton propre domaine et ton propre e-mail | Un serveur Linux x86-64 (VPS) avec Docker ; Ubuntu 24.04 documenté | Documenté, pas encore testé de bout en bout |
+| **B2** hébergement web | En ligne, sans serveur à toi | Une offre d'hébergement avec Node.js (Passenger), MariaDB/MySQL et SSH | Notre propre site communautaire tourne ainsi ; le paquet public n'a pas encore été installé de zéro sur un nouveau compte d'hébergement |
+
+Les applications autour :
+
+| Application | Tourne sur | Pourquoi |
+| --- | --- | --- |
+| Site web et scanner du navigateur | N'importe quel navigateur moderne ; Chrome ou Edge recommandés pour scanner | Le scanner fonctionne entièrement sur ton appareil et a besoin d'un navigateur qui lui donne plusieurs threads |
+| Application Android | Android 8.0 ou plus récent, arm64 recommandé | Scanne sur le téléphone lui-même, même sans connexion |
+| iPhone et iPad | Le site dans le navigateur ; le scan dans Safari est encore en test | Il n'y a pas d'application iOS : en compiler et en signer une nécessite un Mac et un compte développeur Apple |
+| LiveTrial et Tournament Live | Windows sur x86-64 (testé sous Windows 11), avec une carte d'acquisition HDMI USB par écran | Les cartes d'acquisition et le moteur de reconnaissance fourni sont conçus et testés pour Windows ; il n'y a pas de version macOS ni Linux |
+
+**Premier lancement de l'application Android :** elle demande *Choisis ta communauté*. À la maison ou au
+club, tu scannes la carte **Prepare a device** que ton administrateur affiche ; pour une communauté en
+ligne, tu tapes l'adresse de son site. Ensuite, tu te connectes via le navigateur. Détails : [Joueurs](docs/guides/PLAYERS.md#first-start).
+
+**Une application, plusieurs communautés :** la pastille de communauté en haut bascule d'un geste entre
+ton club, ton installation à la maison et une communauté en ligne ; chacune garde son propre compte et
+ses temps non encore envoyés. Sous **Toi** → **Mes temps**, tu vois ton meilleur temps par circuit,
+même sans internet, et avec plus d'une communauté tu peux emporter tes meilleurs temps dans une autre —
+si cette communauté les accepte.
+
+**Pourquoi pas tout, partout ?** Chaque paquet n'est proposé que là où il a été compilé et essayé. Les
+images serveur A1 et B1 n'existent qu'en x86-64 ; A2 existe aussi en arm64. Pour les Mac Intel, la
+bibliothèque de sécurité dont A2 a besoin (`cryptography`) n'est plus publiée, donc la release la
+compile à partir des sources sur un Mac Intel et la teste là-bas
+([comment](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 existe pour ceux qui ne peuvent pas ou
+ne veulent pas utiliser Docker. Le [guide d'hébergement](docs/guides/HOSTING.md) et les [paquets de release](docs/RELEASE_PACKAGES.md)
+listent chaque fichier et ses exigences précises.
+
+Une nouvelle installation démarre vide : aucun compte ni résultat de communauté n'est repris. Elle
+n'apporte que le catalogue du jeu et les jeux de référence des fantômes du staff Nintendo et des
+records du monde.
+
+---
+
 ## 🏁 Soirées tournoi en LAN
 
 Tu te souviens des LAN parties ? Deux joueurs par écran, une salle pleine de Switch, tout le monde qui
@@ -173,6 +297,49 @@ sont relus par des humains ; les autres langues sont traduites automatiquement e
 dans certaines d'entre elles est encore en cours de vérification sur de vraies consoles. Tu joues dans
 ta langue ? Ton aide pour la vérifier est la contribution la plus précieuse qui soit.
 
+## 🛠️ Fais-en le tien
+
+MK8DX est open source, créé par des joueurs pour des joueurs. Fais-le tourner pour ton club, ta
+famille ou la scène LAN de ta ville ; adapte-le à la façon dont *tes* soirées se déroulent ; et
+construis dessus :
+
+- **Traduis ou relis** ta langue (le site, les applications et la reconnaissance en jeu).
+- **Teste la reconnaissance** avec ta propre console, ta langue et ta carte d'acquisition, et signale
+  ce qu'elle rate.
+- **Ajoute ce dont ta communauté a besoin** — nouveaux formats de tournoi, statistiques, façons de
+  partager les résultats.
+- **Améliore la documentation** pour que le prochain organisateur démarre encore plus vite.
+
+Commence par [Contributing](CONTRIBUTING.md) et le [guide du développeur](docs/DEVELOPMENT.md).
+Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
+pour tout le monde.
+
+## État du projet
+
+Les versions stables sont sur [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) ; la
+0.2.0 a ajouté A2, à la maison ou au club ; la 0.2.1 donne à l'application Android une copie hors ligne de tes
+temps et une mise en page plus calme. La 0.2.2 fait de nouveau fonctionner l'analyse des enregistrements et ajoute la fenêtre Tournament Analysis. La 0.2.3 fait tourner la passerelle web sans root et facilite la prise en main du dépôt. Consulte le [journal des modifications](CHANGELOG.md), les
+[paquets de release](docs/RELEASE_PACKAGES.md) et le guide complet
+([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
+
+La reconnaissance ne rend jamais un résultat officiel toute seule : tu vérifies tes propres
+contre-la-montre, et un organisateur contrôle les courses de tournoi avant qu'elles ne comptent.
+
+## Documentation
+
+| Je veux… | Lire |
+| --- | --- |
+| comprendre comment fonctionne la reconnaissance | [Chaîne de reconnaissance](docs/architecture/RECOGNITION_PIPELINE.md) |
+| comprendre les composants et le parcours d'un résultat | [Architecture](docs/architecture/COMPONENTS.md) |
+| compiler ou modifier le code | [Guide du développeur](docs/DEVELOPMENT.md) et [Tests](docs/TESTING.md) |
+| compiler les clients natifs | [Compilation des clients](docs/CLIENT_BUILDS.md) |
+| gérer une installation (sauvegarde, mise à niveau, récupération) | [Exploitation](docs/OPERATIONS.md) |
+| savoir pourquoi quelque chose est comme il est | [Index des décisions](docs/decisions/README.md) |
+| contribuer | [Contributing](CONTRIBUTING.md), [Code de conduite](CODE_OF_CONDUCT.md) |
+| obtenir de l'aide | [Obtenir de l'aide](SUPPORT.md) |
+| signaler un problème de sécurité | [Politique de sécurité](SECURITY.md) |
+| travailler avec un agent de programmation | [AGENTS.md](AGENTS.md) |
+
 ## 💡 L'histoire derrière le projet
 
 **Tout a commencé avec un tournoi Mario Kart local, quelques passionnés et une invitation en décembre 2023.**
@@ -217,17 +384,15 @@ Les techniques individuelles existaient déjà, mais les réunir en un écosyst�
 
 Aujourd'hui, en 2026, je peux enfin partager le résultat sous la forme d'un **écosystème open source**, pour que d'autres puissent l'utiliser, l'améliorer et, je l'espère, s'amuser autant que nous avec.
 
-### ❤️ Pour Volkert
+### Un hommage à Volkert
 
-Je veux aussi dédier une partie de ce projet à notre cher ami et rival, **Volkert**, qui nous a quittés bien trop tôt.
+Je tiens aussi à rendre hommage à **Volkert**, un rival respecté du contre-la-montre, qui nous a quittés récemment, bien trop jeune.
 
-Volkert faisait partie de ces personnes qui nous inspiraient sans cesse à pousser un peu plus fort, à trouver la trajectoire plus rapide et à tenter juste un contre-la-montre de plus. La rivalité amicale, surtout autour de Baby Parc et de Big Blue, rendait la compétition vraiment spéciale.
+Notre rivalité, surtout sur Parc Baby et Big Blue en 150 cc, a été une motivation constante pour progresser. Je suis sûr que nous avons tous les deux passé de nombreuses heures à grappiller ces dernières millisecondes, même si je soupçonne d'en avoir passé bien plus que lui. Il était tout simplement plus expérimenté et plus régulier.
 
-Mais plus que les temps au tour ou les classements, ce sont les moments passés ensemble qui comptent. Être assis dans un entrepôt avec des amis, rire, s'affronter, partager une pizza et profiter de quelque chose d'aussi simple qu'un jeu.
+Ce qui a commencé à trois, en notant nos temps dans un tableau Excel, est peu à peu devenu les fonctions de contre-la-montre qui font aujourd'hui partie de cet écosystème.
 
-Ce sont ces moments-là qui méritent qu'on s'en souvienne.
-
-Volkert, merci pour la compétition, l'inspiration et les souvenirs. Tu feras toujours partie de cette histoire.
+J'espère que ce projet donnera à d'autres l'occasion de vivre cette même rivalité amicale et cette envie de toujours progresser.
 
 ### Continuez à rouler, continuez à partager
 
@@ -242,105 +407,6 @@ Et enfin, un grand merci à **Nintendo** pour avoir créé des consoles et des j
 Après tout, c'est comme ça que toute cette aventure a commencé.
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ Fais-en le tien
-
-MK8DX est open source, créé par des joueurs pour des joueurs. Fais-le tourner pour ton club, ta
-famille ou la scène LAN de ta ville ; adapte-le à la façon dont *tes* soirées se déroulent ; et
-construis dessus :
-
-- **Traduis ou relis** ta langue (le site, les applications et la reconnaissance en jeu).
-- **Teste la reconnaissance** avec ta propre console, ta langue et ta carte d'acquisition, et signale
-  ce qu'elle rate.
-- **Ajoute ce dont ta communauté a besoin** — nouveaux formats de tournoi, statistiques, façons de
-  partager les résultats.
-- **Améliore la documentation** pour que le prochain organisateur démarre encore plus vite.
-
-Commence par [Contributing](CONTRIBUTING.md) et le [guide du développeur](docs/DEVELOPMENT.md).
-Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
-pour tout le monde.
-
----
-
-## Pour commencer
-
-| Je veux… | Commence ici |
-| --- | --- |
-| **faire tourner MK8DX à la maison ou dans mon club** | Le paquet A2 pour ton ordinateur depuis les [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) : décompresse, lance, clique sur Suivant. Pas à pas avec des images : [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **organiser des soirées tournoi en LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **enregistrer mes contre-la-montre automatiquement** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + une carte d'acquisition |
-| **publier et comparer mes temps** | [Joueurs](docs/guides/PLAYERS.md) — n'importe quel navigateur ; Android 8.0+ |
-| **héberger un site communautaire** | [Héberger un serveur communautaire](docs/guides/HOSTING.md) |
-| **modifier le code** | [Guide du développeur](docs/DEVELOPMENT.md), [Tests](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
-
-### Quel ordinateur pour quelle voie
-
-Chaque voie te donne le même site ; elles diffèrent par l'endroit où il tourne et par qui peut y accéder.
-
-| Voie | Pour | Tourne sur | Statut |
-| --- | --- | --- | --- |
-| **A2** réseau domestique ou de club | Ton propre réseau, pas besoin d'internet après l'installation, des cartes de connexion pour tout le monde | Windows 11 (x86-64), Linux (x86-64 ou arm64), Mac (Apple silicon ou Intel) | Testé de bout en bout sous Windows 11 ; Linux sous WSL 2 ; Mac compilé, pas encore testé sur un vrai Mac |
-| **A1** un seul ordinateur | L'essayer sur l'ordinateur devant lequel tu es assis | Windows 11 ou Linux, x86-64, avec Docker | Testé : installation, mise à niveau, sauvegarde |
-| **A3** un seul ordinateur sans Docker | Un PC Windows sur lequel Docker n'est pas envisageable | Windows 11 avec XAMPP et Node.js | Testé : installation, mise à niveau, sauvegarde |
-| **B1** site web public | Ta communauté en ligne, ton propre domaine et ton propre e-mail | Un serveur Linux x86-64 (VPS) avec Docker ; Ubuntu 24.04 documenté | Documenté, pas encore testé de bout en bout |
-| **B2** hébergement web | En ligne, sans serveur à toi | Une offre d'hébergement avec Node.js (Passenger), MariaDB/MySQL et SSH | Notre propre site communautaire tourne ainsi ; le paquet public n'a pas encore été installé de zéro sur un nouveau compte d'hébergement |
-
-Les applications autour :
-
-| Application | Tourne sur | Pourquoi |
-| --- | --- | --- |
-| Site web et scanner du navigateur | N'importe quel navigateur moderne ; Chrome ou Edge recommandés pour scanner | Le scanner fonctionne entièrement sur ton appareil et a besoin d'un navigateur qui lui donne plusieurs threads |
-| Application Android | Android 8.0 ou plus récent, arm64 recommandé | Scanne sur le téléphone lui-même, même sans connexion |
-| iPhone et iPad | Le site dans le navigateur ; le scan dans Safari est encore en test | Il n'y a pas d'application iOS : en compiler et en signer une nécessite un Mac et un compte développeur Apple |
-| LiveTrial et Tournament Live | Windows sur x86-64 (testé sous Windows 11), avec une carte d'acquisition HDMI USB par écran | Les cartes d'acquisition et le moteur de reconnaissance fourni sont conçus et testés pour Windows ; il n'y a pas de version macOS ni Linux |
-
-**Premier lancement de l'application Android :** elle demande *Choisis ta communauté*. À la maison ou au
-club, tu scannes la carte **Prepare a device** que ton administrateur affiche ; pour une communauté en
-ligne, tu tapes l'adresse de son site. Ensuite, tu te connectes via le navigateur. Détails : [Joueurs](docs/guides/PLAYERS.md#first-start).
-
-**Une application, plusieurs communautés :** la pastille de communauté en haut bascule d'un geste entre
-ton club, ton installation à la maison et une communauté en ligne ; chacune garde son propre compte et
-ses temps non encore envoyés. Sous **Toi** → **Mes temps**, tu vois ton meilleur temps par circuit,
-même sans internet, et avec plus d'une communauté tu peux emporter tes meilleurs temps dans une autre —
-si cette communauté les accepte.
-
-**Pourquoi pas tout, partout ?** Chaque paquet n'est proposé que là où il a été compilé et essayé. Les
-images serveur A1 et B1 n'existent qu'en x86-64 ; A2 existe aussi en arm64. Pour les Mac Intel, la
-bibliothèque de sécurité dont A2 a besoin (`cryptography`) n'est plus publiée, donc la release la
-compile à partir des sources sur un Mac Intel et la teste là-bas
-([comment](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 existe pour ceux qui ne peuvent pas ou
-ne veulent pas utiliser Docker. Le [guide d'hébergement](docs/guides/HOSTING.md) et les [paquets de release](docs/RELEASE_PACKAGES.md)
-listent chaque fichier et ses exigences précises.
-
-Une nouvelle installation démarre vide : aucun compte ni résultat de communauté n'est repris. Elle
-n'apporte que le catalogue du jeu et les jeux de référence des fantômes du staff Nintendo et des
-records du monde.
-
-## État du projet
-
-Les versions stables sont sur [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) ; la
-0.2.0 a ajouté A2, à la maison ou au club ; la 0.2.1 donne à l'application Android une copie hors ligne de tes
-temps et une mise en page plus calme. Consulte le [journal des modifications](CHANGELOG.md), les
-[paquets de release](docs/RELEASE_PACKAGES.md) et le guide complet
-([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
-
-La reconnaissance ne rend jamais un résultat officiel toute seule : tu vérifies tes propres
-contre-la-montre, et un organisateur contrôle les courses de tournoi avant qu'elles ne comptent.
-
-## Documentation
-
-| Je veux… | Lire |
-| --- | --- |
-| comprendre comment fonctionne la reconnaissance | [Chaîne de reconnaissance](docs/architecture/RECOGNITION_PIPELINE.md) |
-| comprendre les composants et le parcours d'un résultat | [Architecture](docs/architecture/COMPONENTS.md) |
-| compiler ou modifier le code | [Guide du développeur](docs/DEVELOPMENT.md) et [Tests](docs/TESTING.md) |
-| compiler les clients natifs | [Compilation des clients](docs/CLIENT_BUILDS.md) |
-| gérer une installation (sauvegarde, mise à niveau, récupération) | [Exploitation](docs/OPERATIONS.md) |
-| savoir pourquoi quelque chose est comme il est | [Index des décisions](docs/decisions/README.md) |
-| contribuer | [Contributing](CONTRIBUTING.md), [Code de conduite](CODE_OF_CONDUCT.md) |
-| obtenir de l'aide | [Obtenir de l'aide](SUPPORT.md) |
-| signaler un problème de sécurité | [Politique de sécurité](SECURITY.md) |
-| travailler avec un agent de programmation | [AGENTS.md](AGENTS.md) |
 
 ## Licence et Nintendo
 

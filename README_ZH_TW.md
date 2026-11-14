@@ -44,6 +44,100 @@ MK8DX Ecosystem 是一套由你自己架設的系統。它為你的社群提供�
 
 ---
 
+## 各部分如何協同運作
+
+MK8DX 不是單一程式，而是圍繞一台**社群伺服器**的一個小家族。伺服器保存所有重要的東西：帳號、成績、錦標賽和排名。周圍的應用程式在你自己的裝置上讀取遊戲畫面，並把辨識到的內容傳送到你選擇的社群。
+
+```mermaid
+flowchart TB
+  REC["共用辨識<br/>內建於每個應用程式"]
+
+  subgraph devices["玩家的手機和瀏覽器"]
+    WEB["任何瀏覽器<br/>網站 + 掃描器"]
+    APP["Android App<br/>附掃描器"]
+  end
+
+  subgraph pcs["Windows 電腦 + 擷取卡"]
+    LT["LiveTrial<br/>自動記錄計時賽"]
+    TL["Tournament Live<br/>當晚的比賽"]
+    TA["Tournament Analysis<br/>賽後分析錄影"]
+  end
+
+  subgraph server["社群伺服器：在家、在俱樂部或線上"]
+    DIR{"主辦人確認<br/>每場比賽"}
+    API["網站 + API"]
+    DB[("資料庫")]
+  end
+
+  WR["世界紀錄<br/>每天更新"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"成績、排行榜、對手"| API
+  APP <-->|"成績，連線時傳送"| API
+  LT -->|"計時賽成績"| API
+  TL -->|"比賽結果，即時"| DIR
+  TA -->|"匯入檔案"| DIR
+  DIR -->|"接受 = 正式"| API
+  API <--> DB
+  WR --> API
+```
+
+**我需要哪些部分？**
+
+- **一台社群伺服器——每個社群唯一必需的部分。** 它就是附有 API 和資料庫的網站。可以在家裡或俱樂部的網路上執行（[A2](docs/install/A2_HOME_GUIDE_EN.md)，安裝後不需連網），也可以在線上的伺服器或網站代管上架設（[架設社群伺服器](docs/guides/HOSTING.md)）。
+- **玩家只需要一個瀏覽器。** 網站本身就附有瀏覽器掃描器。Android App 還增加了手機掃描、離線查看自己的成績，以及一鍵切換社群（[Players](docs/guides/PLAYERS.md)）。
+- **附擷取卡的 Windows 電腦是選用的。** LiveTrial 會自動記錄每一次計時賽；你可以一鍵傳送到你的社群，也可以自動傳送（[LiveTrial](docs/guides/LIVETRIAL.md)）。
+- **錦標賽之夜在網站上進行。** Tournament Live（當晚）和 Tournament Analysis（賽後分析錄影）只會提出比賽結果；分數也可以手動輸入或從 Excel/CSV 匯入。在主辦人接受之前，排名不會改變（[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)）。
+- **辨識是共用元件，而不是一項服務。** 每個應用程式都帶有自己的一份副本，在你的裝置上讀取畫面；伺服器只檢查提交的結果（[Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) · [Architecture](docs/architecture/COMPONENTS.md)）。
+
+## 開始使用
+
+| 我想要… | 從這裡開始 |
+| --- | --- |
+| **在家裡或俱樂部執行 MK8DX** | 從 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下載適合你電腦的 A2 套件：解壓縮、啟動、點選「下一步」。逐步說明（A2 套件裡另有附插圖的版本）：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **舉辦 LAN 錦標賽之夜** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **自動記錄我的計時賽** | [LiveTrial](docs/guides/LIVETRIAL.md)——Windows + 一張擷取卡 |
+| **送出並比較我的成績** | [Players](docs/guides/PLAYERS.md)——任何瀏覽器；Android 8.0 以上 |
+| **架設社群網站** | [架設社群伺服器](docs/guides/HOSTING.md) |
+| **修改程式碼** | [開發者指南](docs/DEVELOPMENT.md)、[測試](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
+
+每一列列出需要從頭到尾照著做的指南。不使用發行套件、而是從原始碼建置伺服器，適合開發者：[從原始碼開始](docs/GETTING_STARTED.md)。
+
+### 哪種路線適合哪種電腦
+
+每種路線給你的都是同一個網站；差別在於它在哪裡執行，以及誰能連上它。
+
+| 路線 | 適用於 | 執行環境 | 狀態 |
+| --- | --- | --- | --- |
+| **A2** 家用或俱樂部網路 | 你自己的網路，設定完成後不需要網際網路，每人一張登入卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 晶片或 Intel） | 已在 Windows 11 上完成端對端測試；Linux 在 WSL 2 中測試；Mac 版已建置，尚未在實體 Mac 上測試 |
+| **A1** 單台電腦 | 在你眼前這台電腦上試用 | Windows 11 或 Linux，x86-64，需要 Docker | 已測試：安裝、升級、備份 |
+| **A3** 不使用 Docker 的單台電腦 | 無法使用 Docker 的 Windows 電腦 | Windows 11，搭配 XAMPP 和 Node.js | 已測試：安裝、升級、備份 |
+| **B1** 公開網站 | 你的線上社群，使用你自己的網域和電子郵件 | 裝有 Docker 的 Linux x86-64 伺服器（VPS）；文件以 Ubuntu 24.04 為例 | 已有文件，尚未進行端對端測試 |
+| **B2** 虛擬主機 | 線上執行，不需要自己的伺服器 | 支援 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主機方案 | 我們自己的社群網站就是這樣運作的；公開套件尚未在全新的主機帳號上從頭安裝過 |
+
+周邊的 App：
+
+| App | 執行環境 | 原因 |
+| --- | --- | --- |
+| 網站和瀏覽器掃描器 | 任何新式瀏覽器；掃描建議使用 Chrome 或 Edge | 掃描器完全在你的裝置上執行，需要能提供多個執行緒的瀏覽器 |
+| Android App | Android 8.0 或更新版本，建議使用 arm64 | 直接在手機上掃描，沒有連線也能用 |
+| iPhone 和 iPad | 在瀏覽器中使用網站；Safari 中的掃描功能仍在測試 | 沒有 iOS App：建置和簽署 iOS App 需要一台 Mac 和一個 Apple 開發者帳號 |
+| LiveTrial 和 Tournament Live | x86-64 的 Windows（已在 Windows 11 上測試），每個螢幕配一張 USB HDMI 擷取卡 | 擷取卡和內建的辨識引擎都是針對 Windows 建置和測試的；沒有 macOS 或 Linux 版本 |
+
+**第一次啟動 Android App**：它會詢問*選擇你的社群*。在家裡或俱樂部，掃描管理員出示的 **Prepare a device** 卡片；如果是線上社群，就輸入它的網址。接著透過瀏覽器登入。詳情：[Players](docs/guides/PLAYERS.md#first-start)。
+
+**一個 App，多個社群**：上方的社群標籤只要點一下，就能在你的俱樂部、你家裡的安裝和某個線上社群之間切換；每個社群都保有各自的帳號和尚未送出的成績。在 **你** → **我的成績** 裡，你可以看到自己在每條賽道上的最佳成績，沒有網路也能看；如果你加入了不只一個社群，還可以把最佳成績帶到另一個社群——前提是那個社群願意接受。
+
+**為什麼不是所有東西都能在所有地方執行？** 每個套件只在已經建置並試用過的平台上提供。A1 和 B1 的伺服器映像檔只有 x86-64 版本；A2 另外還有 arm64 版本。對於 Intel Mac，A2 需要的安全性程式庫（`cryptography`）已不再發布預先編譯的版本，因此發行流程會在 Intel Mac 上從原始碼建置，並在那裡測試（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 是為無法或不想執行 Docker 的人準備的。[架設指南](docs/guides/HOSTING.md)和[發行套件](docs/RELEASE_PACKAGES.md)列出了每個檔案和它確切的需求。
+
+全新安裝會從空白開始：不會沿用任何社群帳號或成績。它只附帶遊戲目錄，以及任天堂工作人員幽靈和世界紀錄的參考資料集。
+
+---
+
 ## 🏁 LAN 錦標賽之夜
 
 還記得 LAN 派對嗎？每個螢幕前兩位玩家，滿屋子的 Switch，所有人都對著彩虹之路大吼大叫。MK8DX 把那樣的夜晚帶了回來，並包辦比賽以外的一切：誰坐哪裡、下一輪輪到哪一組、分數、決賽和排名。
@@ -109,6 +203,38 @@ LiveTrial 會監看 HDMI 畫面，並自動辨識：
 
 瑪利歐賽車8 豪華版在世界各地都有人玩，所以 MK8DX 是為每一種遊戲語言打造的：網站、Android App、LiveTrial 和 Tournament 工具都提供 **15 種語言**，辨識功能也支援**全部 15 種遊戲語言版本**——從荷蘭語、英語到日語、韓語、中文、俄語等等。英語和荷蘭語經過人工審閱；其他語言是機器翻譯，其中部分語言的辨識仍在實體主機上驗證中。你是用自己的語言在玩嗎？幫忙檢查看看，就是最寶貴的貢獻。
 
+## 🛠️ 打造屬於你的版本
+
+MK8DX 是開源專案，由玩家為玩家打造。你可以為你的俱樂部、你的家人或你所在城市的 LAN 圈子執行它；依照*你們*比賽之夜的進行方式來調整它；並在它的基礎上繼續開發：
+
+- **翻譯或審閱**你的語言（網站、App 以及遊戲內辨識）。
+- **測試辨識效果**：用你自己的主機、語言和擷取卡來測試，並回報它漏掉了什麼。
+- **加入你的社群需要的功能**——新的錦標賽賽制、統計數據、分享成績的方式。
+- **改善文件**，讓下一位主辦人能更快上手。
+
+從 [Contributing](CONTRIBUTING.md) 和[開發者指南](docs/DEVELOPMENT.md)開始吧。每一個 pull request、每一份 bug 回報、每一處翻譯修正，都會讓下一個 LAN 之夜對所有人來說更美好。
+
+## 專案狀態
+
+穩定版本發布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可以在家裡或俱樂部使用；0.2.1 讓 Android App 擁有成績的離線副本，版面也更加清爽。0.2.2 讓錄影分析重新可用，並新增了 Tournament Analysis 視窗。0.2.3 讓 Web 閘道不需 root 即可執行，並讓這個儲存庫更容易上手。請參閱[變更紀錄](CHANGELOG.md)、[發行套件](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+
+辨識結果永遠不會自動成為正式成績：你自己的計時賽由你審核，錦標賽的比賽則要經過主辦人確認後才會計入。
+
+## 文件
+
+| 我想要… | 閱讀 |
+| --- | --- |
+| 了解辨識是怎麼運作的 | [辨識流程](docs/architecture/RECOGNITION_PIPELINE.md) |
+| 了解各個組成部分，以及一筆成績是怎麼傳遞的 | [架構](docs/architecture/COMPONENTS.md) |
+| 建置或修改程式碼 | [開發者指南](docs/DEVELOPMENT.md)和[測試](docs/TESTING.md) |
+| 建置原生用戶端 | [用戶端建置](docs/CLIENT_BUILDS.md) |
+| 維運一套安裝（備份、升級、復原） | [維運](docs/OPERATIONS.md) |
+| 了解某件事為什麼是現在這個樣子 | [決策索引](docs/decisions/README.md) |
+| 參與貢獻 | [Contributing](CONTRIBUTING.md)、[行為準則](CODE_OF_CONDUCT.md) |
+| 取得協助 | [取得協助](SUPPORT.md) |
+| 回報安全性問題 | [安全性政策](SECURITY.md) |
+| 和程式設計代理一起工作 | [AGENTS.md](AGENTS.md) |
+
 ## 💡 背後的故事
 
 **一切都從一場在地的瑪利歐賽車錦標賽、幾位熱情的夥伴，以及 2023 年 12 月的一份邀請開始。**
@@ -153,17 +279,15 @@ MK8DX Ecosystem 從 2024 年開始開發，過程中得到 AI 很大的幫助—
 
 現在，在 2026 年，我終於能把成果以**開源生態系**的形式分享出來，讓更多人可以使用它、改進它，也希望大家能和我們一樣，從中得到同樣多的樂趣。
 
-### ❤️ 獻給 Volkert
+### 向 Volkert 致敬
 
-我也想把這個專案的一部分，獻給我們親愛的朋友兼對手 **Volkert**，他實在走得太早了。
+我也想向 **Volkert** 致敬。他是一位令人尊敬的計時賽對手，不久前英年早逝。
 
-Volkert 就是那種總能激勵我們再多努力一點的人：再找一條更快的行車路線，再多跑一次計時賽。那份友好的較勁，尤其是在寶寶公園和碧海上，讓比賽變得格外特別。
+我們之間的較量，尤其是在寶寶公園和碧海的 150cc 上，一直激勵著我不斷進步。我相信我們兩個都花了很多時間去拚最後那幾毫秒，不過我猜我投入的時間比他多得多。他只是更有經驗，也更穩定。
 
-但比起圈速或排名，更重要的是我們在一起的那些時光。和朋友們坐在倉庫裡，一起歡笑、一起比賽、一起分享披薩，享受一款遊戲帶來的簡單快樂。
+一開始只是我們三個人在 Excel 表格裡記錄各自的成績，後來一點一點發展成如今這個生態系統中的計時賽功能。
 
-那些才是值得記住的時刻。
-
-Volkert，謝謝你帶給我們的競爭、啟發和回憶。你永遠是這個故事的一部分。
+希望這個專案能讓更多人體驗到同樣友善的較量，以及不斷進步的動力。
 
 ### 繼續比賽，繼續分享
 
@@ -178,80 +302,6 @@ Volkert，謝謝你帶給我們的競爭、啟發和回憶。你永遠是這個�
 畢竟，這整段冒險就是這樣開始的。
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ 打造屬於你的版本
-
-MK8DX 是開源專案，由玩家為玩家打造。你可以為你的俱樂部、你的家人或你所在城市的 LAN 圈子執行它；依照*你們*比賽之夜的進行方式來調整它；並在它的基礎上繼續開發：
-
-- **翻譯或審閱**你的語言（網站、App 以及遊戲內辨識）。
-- **測試辨識效果**：用你自己的主機、語言和擷取卡來測試，並回報它漏掉了什麼。
-- **加入你的社群需要的功能**——新的錦標賽賽制、統計數據、分享成績的方式。
-- **改善文件**，讓下一位主辦人能更快上手。
-
-從 [Contributing](CONTRIBUTING.md) 和[開發者指南](docs/DEVELOPMENT.md)開始吧。每一個 pull request、每一份 bug 回報、每一處翻譯修正，都會讓下一個 LAN 之夜對所有人來說更美好。
-
----
-
-## 開始使用
-
-| 我想要… | 從這裡開始 |
-| --- | --- |
-| **在家裡或俱樂部執行 MK8DX** | 從 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下載適合你電腦的 A2 套件：解壓縮、啟動、點選「下一步」。附圖的逐步說明：[English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **舉辦 LAN 錦標賽之夜** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **自動記錄我的計時賽** | [LiveTrial](docs/guides/LIVETRIAL.md)——Windows + 一張擷取卡 |
-| **送出並比較我的成績** | [Players](docs/guides/PLAYERS.md)——任何瀏覽器；Android 8.0 以上 |
-| **架設社群網站** | [架設社群伺服器](docs/guides/HOSTING.md) |
-| **修改程式碼** | [開發者指南](docs/DEVELOPMENT.md)、[測試](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
-
-### 哪種路線適合哪種電腦
-
-每種路線給你的都是同一個網站；差別在於它在哪裡執行，以及誰能連上它。
-
-| 路線 | 適用於 | 執行環境 | 狀態 |
-| --- | --- | --- | --- |
-| **A2** 家用或俱樂部網路 | 你自己的網路，設定完成後不需要網際網路，每人一張登入卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 晶片或 Intel） | 已在 Windows 11 上完成端對端測試；Linux 在 WSL 2 中測試；Mac 版已建置，尚未在實體 Mac 上測試 |
-| **A1** 單台電腦 | 在你眼前這台電腦上試用 | Windows 11 或 Linux，x86-64，需要 Docker | 已測試：安裝、升級、備份 |
-| **A3** 不使用 Docker 的單台電腦 | 無法使用 Docker 的 Windows 電腦 | Windows 11，搭配 XAMPP 和 Node.js | 已測試：安裝、升級、備份 |
-| **B1** 公開網站 | 你的線上社群，使用你自己的網域和電子郵件 | 裝有 Docker 的 Linux x86-64 伺服器（VPS）；文件以 Ubuntu 24.04 為例 | 已有文件，尚未進行端對端測試 |
-| **B2** 虛擬主機 | 線上執行，不需要自己的伺服器 | 支援 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主機方案 | 我們自己的社群網站就是這樣運作的；公開套件尚未在全新的主機帳號上從頭安裝過 |
-
-周邊的 App：
-
-| App | 執行環境 | 原因 |
-| --- | --- | --- |
-| 網站和瀏覽器掃描器 | 任何新式瀏覽器；掃描建議使用 Chrome 或 Edge | 掃描器完全在你的裝置上執行，需要能提供多個執行緒的瀏覽器 |
-| Android App | Android 8.0 或更新版本，建議使用 arm64 | 直接在手機上掃描，沒有連線也能用 |
-| iPhone 和 iPad | 在瀏覽器中使用網站；Safari 中的掃描功能仍在測試 | 沒有 iOS App：建置和簽署 iOS App 需要一台 Mac 和一個 Apple 開發者帳號 |
-| LiveTrial 和 Tournament Live | x86-64 的 Windows（已在 Windows 11 上測試），每個螢幕配一張 USB HDMI 擷取卡 | 擷取卡和內建的辨識引擎都是針對 Windows 建置和測試的；沒有 macOS 或 Linux 版本 |
-
-**第一次啟動 Android App**：它會詢問*選擇你的社群*。在家裡或俱樂部，掃描管理員出示的 **Prepare a device** 卡片；如果是線上社群，就輸入它的網址。接著透過瀏覽器登入。詳情：[Players](docs/guides/PLAYERS.md#first-start)。
-
-**一個 App，多個社群**：上方的社群標籤只要點一下，就能在你的俱樂部、你家裡的安裝和某個線上社群之間切換；每個社群都保有各自的帳號和尚未送出的成績。在 **你** → **我的成績** 裡，你可以看到自己在每條賽道上的最佳成績，沒有網路也能看；如果你加入了不只一個社群，還可以把最佳成績帶到另一個社群——前提是那個社群願意接受。
-
-**為什麼不是所有東西都能在所有地方執行？** 每個套件只在已經建置並試用過的平台上提供。A1 和 B1 的伺服器映像檔只有 x86-64 版本；A2 另外還有 arm64 版本。對於 Intel Mac，A2 需要的安全性程式庫（`cryptography`）已不再發布預先編譯的版本，因此發行流程會在 Intel Mac 上從原始碼建置，並在那裡測試（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 是為無法或不想執行 Docker 的人準備的。[架設指南](docs/guides/HOSTING.md)和[發行套件](docs/RELEASE_PACKAGES.md)列出了每個檔案和它確切的需求。
-
-全新安裝會從空白開始：不會沿用任何社群帳號或成績。它只附帶遊戲目錄，以及任天堂工作人員幽靈和世界紀錄的參考資料集。
-
-## 專案狀態
-
-穩定版本發布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可以在家裡或俱樂部使用；0.2.1 讓 Android App 擁有成績的離線副本，版面也更加清爽。請參閱[變更紀錄](CHANGELOG.md)、[發行套件](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
-
-辨識結果永遠不會自動成為正式成績：你自己的計時賽由你審核，錦標賽的比賽則要經過主辦人確認後才會計入。
-
-## 文件
-
-| 我想要… | 閱讀 |
-| --- | --- |
-| 了解辨識是怎麼運作的 | [辨識流程](docs/architecture/RECOGNITION_PIPELINE.md) |
-| 了解各個組成部分，以及一筆成績是怎麼傳遞的 | [架構](docs/architecture/COMPONENTS.md) |
-| 建置或修改程式碼 | [開發者指南](docs/DEVELOPMENT.md)和[測試](docs/TESTING.md) |
-| 建置原生用戶端 | [用戶端建置](docs/CLIENT_BUILDS.md) |
-| 維運一套安裝（備份、升級、復原） | [維運](docs/OPERATIONS.md) |
-| 了解某件事為什麼是現在這個樣子 | [決策索引](docs/decisions/README.md) |
-| 參與貢獻 | [Contributing](CONTRIBUTING.md)、[行為準則](CODE_OF_CONDUCT.md) |
-| 取得協助 | [取得協助](SUPPORT.md) |
-| 回報安全性問題 | [安全性政策](SECURITY.md) |
-| 和程式設計代理一起工作 | [AGENTS.md](AGENTS.md) |
 
 ## 授權與 Nintendo
 

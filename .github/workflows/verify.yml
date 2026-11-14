@@ -166,7 +166,7 @@ jobs:
         working-directory: apps/timetrials-android
         run: |
           export JAVA_HOME="$JAVA_HOME_21_X64"
-          # The public recognition pack for the icon-score parity replay (IconScoreParityTest).
+          # The public recognition pack for the Java parity replays (IconScore, Refinement, FrameGeometry, LapGrid).
           node ../../tooling/assets/materialize_collection.mjs recognition-pack "$RUNNER_TEMP/recognition-pack"
           export MK8DX_RECOGNITION_PACK="$RUNNER_TEMP/recognition-pack"
           bash ./gradlew --no-daemon :app:testDebugUnitTest :scan-runtime:testDebugUnitTest :app:assembleDebug
@@ -223,6 +223,52 @@ jobs:
         run: |
           python -m pip install --disable-pip-version-check build wheel
           python tooling/tournament/build_windows_package.py --output (Join-Path $env:RUNNER_TEMP 'tournament-package') --version ci --no-zip
+  tournament-tests:
+    # tests/tournament and a smoke of the recorded analysis after the text reading, on the Tools
+    # package's locked runtime closure (Windows x64, CPython 3.12) and its public recorded assets.
+    # A dependency bump that breaks that path fails here (issue #169: pandas 3).
+    runs-on: windows-2022
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.12.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tooling/tournament/requirements.lock.txt
+      - name: Locked Tournament Tools runtime (as the package installer does; CPU PyTorch, no Qt GUI)
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          $lock = 'tooling/tournament/requirements.lock.txt'
+          # 1. The package's own torch selector, CPU mode, installed without dependencies first.
+          $torch = python packages/tournament-extraction/python/src/mk8dx_tournament_extraction/setup_torch.py --mode cpu --format json | ConvertFrom-Json
+          python -m pip install --disable-pip-version-check --only-binary=:all: --no-deps @($torch.pip_args)
+          # 2. The product wheels, built from this checkout.
+          $wheels = Join-Path $env:RUNNER_TEMP 'tournament-wheels'
+          python -m pip wheel --disable-pip-version-check --no-deps -w $wheels packages/tournament-connected/python packages/tournament-extraction/python apps/tournament-processor apps/tournament-live packages/icon-matcher/python
+          # 3. The locked closure with the lock as constraints, without the Qt GUI (no test needs it).
+          $noGui = Join-Path $env:RUNNER_TEMP 'requirements-no-gui.txt'
+          Get-Content $lock | Where-Object { $_ -notmatch '^(PySide6|shiboken6)' } | Set-Content $noGui
+          $pytest = (Select-String -Path requirements-dev.txt -Pattern '^pytest==').Line
+          python -m pip install --disable-pip-version-check --only-binary=:all: --find-links $wheels -r $noGui -c $lock mk8dx-tournament-connected 'mk8dx-tournament-extraction[vision]' mk8dx-tournament-processor mk8dx-tournament-live mk8dx-icon-matcher $pytest
+          python -m pip check
+          python -c "import cv2, numpy, pandas, torch, easyocr, openpyxl, mk8dx_tournament_extraction, tournament_processor, live_processor; print('pandas', pandas.__version__, 'numpy', numpy.__version__, 'torch', torch.__version__)"
+      - name: Tournament tests and the recorded post-analysis smoke
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $PSNativeCommandUseErrorActionPreference = $true
+          # The package's runtime-assets/recorded: the reviewed public collection groups.
+          $assets = Join-Path $env:RUNNER_TEMP 'recorded-assets'
+          node tooling/assets/materialize_collection.mjs tournament $assets
+          node tooling/assets/materialize_collection.mjs tournament-text $assets
+          $env:MK8DX_RECORDED_ASSETS = $assets
+          python -m pytest -q -p no:cacheprovider -rs tests/tournament
   docker-images:
     runs-on: ubuntu-24.04
     timeout-minutes: 45

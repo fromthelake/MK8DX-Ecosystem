@@ -1,0 +1,4389 @@
+{
+ "cases": [
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#de-DE",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "Kometflitzer",
+   "query": "Kometflitzer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#de-DE",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "Kometflitzer",
+   "query": "KOMETFLITZER",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9166666666666666,
+   "key": "body.comet#de-DE",
+   "kind": "bodies",
+   "margin": 0.553030303030303,
+   "name": "Kometflitzer",
+   "query": "Kometflitze",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Comet Racer",
+   "query": "Comet Racer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.6,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.1454545454545454,
+   "name": "Comet Racer",
+   "query": "C0mct Roccr",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.0818181818181819,
+   "name": "Comet Racer",
+   "query": "omet Racer.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Comet Racer",
+   "query": "Comet Racer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.0818181818181819,
+   "name": "Comet Racer",
+   "query": "omet Racer.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#en-GB",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Comet Racer",
+   "query": "| Comet Racer ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#ja-JP",
+   "kind": "bodies",
+   "margin": 0.875,
+   "name": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "query": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "body.comet#ja-JP",
+   "kind": "bodies",
+   "margin": 0.7321428571428571,
+   "name": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "query": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#ja-JP",
+   "kind": "bodies",
+   "margin": 0.875,
+   "name": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "query": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#nl-NL",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Komeetracer",
+   "query": "Komeetracer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#nl-NL",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Komeetracer",
+   "query": "Komeetracer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9166666666666666,
+   "key": "body.comet#nl-NL",
+   "kind": "bodies",
+   "margin": 0.16666666666666663,
+   "name": "Komeetracer",
+   "query": "Komeettracer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#ru-RU",
+   "kind": "bodies",
+   "margin": 0.7142857142857143,
+   "name": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a",
+   "query": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#ru-RU",
+   "kind": "bodies",
+   "margin": 0.7142857142857143,
+   "name": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a",
+   "query": "| \u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#zh-CN",
+   "kind": "bodies",
+   "margin": 0.75,
+   "name": "\u5f57\u661f\u8d5b\u8f66",
+   "query": "\u5f57\u661f\u8d5b\u8f66",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#zh-CN",
+   "kind": "bodies",
+   "margin": 0.75,
+   "name": "\u5f57\u661f\u8d5b\u8f66",
+   "query": "\u5f57\u661f\u8d5b\u8f66",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "| ZX ~",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "X.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "| ZX ~",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "Z",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "Z X",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "X.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "Z X",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#de-DE",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Kieselkart",
+   "query": "Kieselkart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#de-DE",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Kieselkart",
+   "query": "KIESELKART",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.4,
+   "key": "body.pebble#de-DE",
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": "Kieselkart",
+   "query": "Klc5c1kort",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#en-GB",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Pebble Kart",
+   "query": "Pebble Kart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9,
+   "key": "body.pebble#en-GB",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Pebble Kart",
+   "query": "ebble Kart.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#en-US",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Pebble Cart",
+   "query": "Pebble Cart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#en-US",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Pebble Cart",
+   "query": "PebbleCart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#en-US",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Pebble Cart",
+   "query": "| Pebble Cart ~",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.pebble#ja-JP",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8",
+   "query": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8333333333333334,
+   "key": "body.pebble#ja-JP",
+   "kind": "bodies",
+   "margin": 0.20833333333333337,
+   "name": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8",
+   "query": "\u30da\u30d6\u30eb\u30ab\u30fc",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "body.pebble#ja-JP",
+   "kind": "bodies",
+   "margin": 0.2321428571428572,
+   "name": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8",
+   "query": "\u30da\u30d6\u30eb\u30ab\u30ab\u30fc\u30c8",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#nl-NL",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Kiezelkart",
+   "query": "Kiezelkart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#nl-NL",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Kiezelkart",
+   "query": "Kiezelkart",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#nl-NL",
+   "kind": "bodies",
+   "margin": 0.09999999999999998,
+   "name": "Kiezelkart",
+   "query": "| Kiezelkart ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#ru-RU",
+   "kind": "bodies",
+   "margin": 0.19999999999999996,
+   "name": "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442",
+   "query": "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66",
+   "query": "\u5375\u77f3\u8f66",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66",
+   "query": "\u5375\u77f3\u8f66",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66",
+   "query": "\u5375\u77f3\u8f66",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#de-DE",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kieselkart Pro",
+   "query": "Kieselkart Pro",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#de-DE",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kieselkart Pro",
+   "query": "KIESELKART PRO",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#de-DE",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kieselkart Pro",
+   "query": "| Kieselkart Pro ~",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#en-GB",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Pebble Kart Pro",
+   "query": "Pebble Kart Pro",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9230769230769231,
+   "key": "body.pebble_pro#en-GB",
+   "kind": "bodies",
+   "margin": 0.07692307692307698,
+   "name": "Pebble Kart Pro",
+   "query": "ebble Kart Pro.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#en-US",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Pebble Cart Pro",
+   "query": "Pebble Cart Pro",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#en-US",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Pebble Cart Pro",
+   "query": "PEBBLE CART PRO",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#en-US",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Pebble Cart Pro",
+   "query": "| Pebble Cart Pro ~",
+   "strong": false
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#ja-JP",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8\u30d7\u30ed",
+   "query": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8\u30d7\u30ed",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "body.pebble_pro#ja-JP",
+   "kind": "bodies",
+   "margin": 0.017857142857142794,
+   "name": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8\u30d7\u30ed",
+   "query": "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8\u30d7",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#nl-NL",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kiezelkart Pro",
+   "query": "Kiezelkart Pro",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5384615384615384,
+   "key": "body.pebble_pro#nl-NL",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kiezelkart Pro",
+   "query": "Klczc1kort Pr0",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#nl-NL",
+   "kind": "bodies",
+   "margin": 0.07692307692307687,
+   "name": "Kiezelkart Pro",
+   "query": "KiezelkartPro",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#ru-RU",
+   "kind": "bodies",
+   "margin": 0.19999999999999996,
+   "name": "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442 \u041f\u0440\u043e",
+   "query": "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442 \u041f\u0440\u043e",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9333333333333333,
+   "key": "body.pebble_pro#ru-RU",
+   "kind": "bodies",
+   "margin": 0.21904761904761905,
+   "name": "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442 \u041f\u0440\u043e",
+   "query": "\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442 \u041f\u0440\u043e.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248",
+   "query": "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248",
+   "query": "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.pebble_pro#zh-CN",
+   "kind": "bodies",
+   "margin": 0.5,
+   "name": "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248",
+   "query": "\u5375 \u77f3 \u8f66 \u4e13 \u4e1a \u7248",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#de-DE",
+   "kind": "bodies",
+   "margin": 0.2857142857142857,
+   "name": "Laterne",
+   "query": "Laterne",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#de-DE",
+   "kind": "bodies",
+   "margin": 0.2857142857142857,
+   "name": "Laterne",
+   "query": "LATERNE",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "body.lantern#de-DE",
+   "kind": "bodies",
+   "margin": 0.2857142857142858,
+   "name": "Laterne",
+   "query": "aterne.",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantern",
+   "query": "Lantern",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.2321428571428572,
+   "name": "Lantern",
+   "query": "antern.",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantern",
+   "query": "L a n t e r n",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantern",
+   "query": "Lantern",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.125,
+   "name": "Lantern",
+   "query": "Lanttern",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantern",
+   "query": "| Lantern ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#ja-JP",
+   "kind": "bodies",
+   "margin": 1.0,
+   "name": "\u30e9\u30f3\u30bf\u30f3",
+   "query": "\u30e9\u30f3\u30bf\u30f3",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.75,
+   "key": "body.lantern#ja-JP",
+   "kind": "bodies",
+   "margin": 0.75,
+   "name": "\u30e9\u30f3\u30bf\u30f3",
+   "query": "\u30e9\u30f3\u30bf",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#ja-JP",
+   "kind": "bodies",
+   "margin": 1.0,
+   "name": "\u30e9\u30f3\u30bf\u30f3",
+   "query": "| \u30e9\u30f3\u30bf\u30f3 ~",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#nl-NL",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantaarn",
+   "query": "Lantaarn",
+   "strong": true
+  },
+  {
+   "boundary": true,
+   "fuzzy": 1.0,
+   "key": "body.lantern#nl-NL",
+   "kind": "bodies",
+   "margin": 0.25,
+   "name": "Lantaarn",
+   "query": "Lantaarn",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#ru-RU",
+   "kind": "bodies",
+   "margin": 0.75,
+   "name": "\u0424\u043e\u043d\u0430\u0440\u044c",
+   "query": "\u0424\u043e\u043d\u0430\u0440\u044c",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.lantern#ru-RU",
+   "kind": "bodies",
+   "margin": 0.75,
+   "name": "\u0424\u043e\u043d\u0430\u0440\u044c",
+   "query": "\u0424\u041e\u041d\u0410\u0420\u042c",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u706f\u7b3c",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u706f",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u706f\u7b3c",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.3076923076923077,
+   "name": "Trommelreifen",
+   "query": "Trommelreifen",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.3076923076923077,
+   "name": "Trommelreifen",
+   "query": "TROMMELREIFEN",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#en-GB",
+   "kind": "tires",
+   "margin": 0.4,
+   "name": "Drum Wheels",
+   "query": "Drum Wheels",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9,
+   "key": "tire.drum#en-GB",
+   "kind": "tires",
+   "margin": 0.34444444444444444,
+   "name": "Drum Wheels",
+   "query": "Drum Wheel",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9,
+   "key": "tire.drum#en-GB",
+   "kind": "tires",
+   "margin": 0.4555555555555556,
+   "name": "Drum Wheels",
+   "query": "rum Wheels.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#en-US",
+   "kind": "tires",
+   "margin": 0.4,
+   "name": "Drum Tires",
+   "query": "Drum Tires",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.6666666666666667,
+   "key": "tire.drum#en-US",
+   "kind": "tires",
+   "margin": 0.2666666666666667,
+   "name": "Drum Tires",
+   "query": "Drum Tlrc5",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#en-US",
+   "kind": "tires",
+   "margin": 0.4,
+   "name": "Drum Tires",
+   "query": "| Drum Tires ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#ja-JP",
+   "kind": "tires",
+   "margin": 0.8333333333333334,
+   "name": "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4",
+   "query": "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8333333333333334,
+   "key": "tire.drum#ja-JP",
+   "kind": "tires",
+   "margin": 0.6333333333333334,
+   "name": "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4",
+   "query": "\u30c9\u30e9\u30e0\u30bf\u30a4",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8333333333333334,
+   "key": "tire.drum#ja-JP",
+   "kind": "tires",
+   "margin": 0.6666666666666667,
+   "name": "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4",
+   "query": "\u30e9\u30e0\u30bf\u30a4\u30e4.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#nl-NL",
+   "kind": "tires",
+   "margin": 0.3076923076923077,
+   "name": "Trommelbanden",
+   "query": "Trommelbanden",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#nl-NL",
+   "kind": "tires",
+   "margin": 0.3076923076923077,
+   "name": "Trommelbanden",
+   "query": "Trommelbanden",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#ru-RU",
+   "kind": "tires",
+   "margin": 0.8571428571428571,
+   "name": "\u0411\u0430\u0440\u0430\u0431\u0430\u043d\u043d\u044b\u0435 \u0448\u0438\u043d\u044b",
+   "query": "\u0411\u0430\u0440\u0430\u0431\u0430\u043d\u043d\u044b\u0435 \u0448\u0438\u043d\u044b",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9333333333333333,
+   "key": "tire.drum#ru-RU",
+   "kind": "tires",
+   "margin": 0.8,
+   "name": "\u0411\u0430\u0440\u0430\u0431\u0430\u043d\u043d\u044b\u0435 \u0448\u0438\u043d\u044b",
+   "query": "\u0411\u0430\u0440\u0430\u0431\u0430\u043d\u043d\u043d\u044b\u0435 \u0448\u0438\u043d\u044b",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#zh-CN",
+   "kind": "tires",
+   "margin": 0.6666666666666666,
+   "name": "\u9f13\u8f6e\u80ce",
+   "query": "\u9f13\u8f6e\u80ce",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#zh-CN",
+   "kind": "tires",
+   "margin": 0.6666666666666666,
+   "name": "\u9f13\u8f6e\u80ce",
+   "query": "\u9f13\u8f6e\u80ce",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.drum#zh-CN",
+   "kind": "tires",
+   "margin": 0.6666666666666666,
+   "name": "\u9f13\u8f6e\u80ce",
+   "query": "| \u9f13\u8f6e\u80ce ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#de-DE",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "D\u00fcnn",
+   "query": "D\u00fcnn",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#de-DE",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "D\u00fcnn",
+   "query": "D\u00dcNN",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin",
+   "query": "Thin",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.75,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.375,
+   "name": "Thin",
+   "query": "Thi",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.75,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.375,
+   "name": "Thin",
+   "query": "hin.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin",
+   "query": "Thin",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.125,
+   "name": "Thin",
+   "query": "Thlm",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin",
+   "query": "| Thin ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#ja-JP",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "\u30b9\u30ea\u30e0",
+   "query": "\u30b9\u30ea\u30e0",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u30b9\u30ea",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u30ea\u30e0.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#nl-NL",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Dun",
+   "query": "Dun",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#nl-NL",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Dun",
+   "query": "D u n",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin#ru-RU",
+   "kind": "tires",
+   "margin": 0.625,
+   "name": "\u0422\u043e\u043d\u043a\u0438\u0435",
+   "query": "\u0422\u043e\u043d\u043a\u0438\u0435",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "tire.thin#ru-RU",
+   "kind": "tires",
+   "margin": 0.4821428571428572,
+   "name": "\u0422\u043e\u043d\u043a\u0438\u0435",
+   "query": "\u0422\u043e\u043d\u043a\u043a\u0438\u0435",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u7ec6\u8f6e",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u7ec6\u8f6e",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "| \u7ec6\u8f6e ~",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#de-DE",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "D\u00fcnn Gl\u00fch",
+   "query": "D\u00fcnn Gl\u00fch",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#de-DE",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "D\u00fcnn Gl\u00fch",
+   "query": "D\u00dcNN GL\u00dcH",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#de-DE",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "D\u00fcnn Gl\u00fch",
+   "query": "D\u00fcnn  Gl\u00fch",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin Glow",
+   "query": "Thin Glow",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "tire.thin_glow#en-GB",
+   "kind": "tires",
+   "margin": 0.375,
+   "name": "Thin Glow",
+   "query": "hin Glow.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin Glow",
+   "query": "| Thin Glow ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin Glow",
+   "query": "Thin Glow",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#en-GB",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "Thin Glow",
+   "query": "| Thin Glow ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#ja-JP",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc",
+   "query": "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#ja-JP",
+   "kind": "tires",
+   "margin": 0.5,
+   "name": "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc",
+   "query": "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8333333333333334,
+   "key": "tire.thin_glow#ja-JP",
+   "kind": "tires",
+   "margin": 0.2333333333333334,
+   "name": "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc",
+   "query": "\u30b9\u30ea\u30e0\u30b0\u30ed",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#nl-NL",
+   "kind": "tires",
+   "margin": 0.625,
+   "name": "Dun Gloei",
+   "query": "Dun Gloei",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "tire.thin_glow#nl-NL",
+   "kind": "tires",
+   "margin": 0.375,
+   "name": "Dun Gloei",
+   "query": "Dun Gloe",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#nl-NL",
+   "kind": "tires",
+   "margin": 0.625,
+   "name": "Dun Gloei",
+   "query": "DunGloei",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#ru-RU",
+   "kind": "tires",
+   "margin": 0.625,
+   "name": "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0442\u044f\u0449\u0438\u0435\u0441\u044f",
+   "query": "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0442\u044f\u0449\u0438\u0435\u0441\u044f",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9375,
+   "key": "tire.thin_glow#ru-RU",
+   "kind": "tires",
+   "margin": 0.5625,
+   "name": "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0442\u044f\u0449\u0438\u0435\u0441\u044f",
+   "query": "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0433\u044f\u0449\u0438\u0435\u0441\u044f",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#zh-CN",
+   "kind": "tires",
+   "margin": 0.33333333333333326,
+   "name": "\u7ec6\u5149\u8f6e",
+   "query": "\u7ec6\u5149\u8f6e",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "tire.thin_glow#zh-CN",
+   "kind": "tires",
+   "margin": 0.33333333333333326,
+   "name": "\u7ec6\u5149\u8f6e",
+   "query": "\u7ec6\u5149\u8f6e",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u5149\u8f6e.",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#de-DE",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Papierdrachen",
+   "query": "Papierdrachen",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#de-DE",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Papierdrachen",
+   "query": "PAPIERDRACHEN",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5384615384615384,
+   "key": "glider.kite#de-DE",
+   "kind": "gliders",
+   "margin": 0.3076923076923077,
+   "name": "Papierdrachen",
+   "query": "Poplcrdrochcm",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#en-GB",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Paper Kite",
+   "query": "Paper Kite",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8888888888888888,
+   "key": "glider.kite#en-GB",
+   "kind": "gliders",
+   "margin": 0.4888888888888888,
+   "name": "Paper Kite",
+   "query": "aper Kite.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#en-GB",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Paper Kite",
+   "query": "Paper Kite",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#en-GB",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Paper Kite",
+   "query": "PaperKite",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#en-GB",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Paper Kite",
+   "query": "| Paper Kite ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#ja-JP",
+   "kind": "gliders",
+   "margin": 0.7142857142857143,
+   "name": "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4\u30c8",
+   "query": "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4\u30c8",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "glider.kite#ja-JP",
+   "kind": "gliders",
+   "margin": 0.6904761904761906,
+   "name": "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4\u30c8",
+   "query": "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "glider.kite#ja-JP",
+   "kind": "gliders",
+   "margin": 0.625,
+   "name": "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4\u30c8",
+   "query": "\u30da\u30fc\u30d1\u30fc\u30fc\u30ab\u30a4\u30c8",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Papieren vlieger",
+   "query": "Papieren vlieger",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Papieren vlieger",
+   "query": "Papierenvlieger",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5333333333333333,
+   "name": "Papieren vlieger",
+   "query": "| Papieren vlieger ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#ru-RU",
+   "kind": "gliders",
+   "margin": 0.8,
+   "name": "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439",
+   "query": "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#zh-CN",
+   "kind": "gliders",
+   "margin": 1.0,
+   "name": "\u7eb8\u98ce\u7b5d",
+   "query": "\u7eb8\u98ce\u7b5d",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#zh-CN",
+   "kind": "gliders",
+   "margin": 1.0,
+   "name": "\u7eb8\u98ce\u7b5d",
+   "query": "\u7eb8\u98ce\u7b5d",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.kite#zh-CN",
+   "kind": "gliders",
+   "margin": 1.0,
+   "name": "\u7eb8\u98ce\u7b5d",
+   "query": "\u7eb8\u98ce\u7b5d",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#de-DE",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Blattsegel",
+   "query": "Blattsegel",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#de-DE",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Blattsegel",
+   "query": "BLATTSEGEL",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.4,
+   "key": "glider.leaf#de-DE",
+   "kind": "gliders",
+   "margin": 0.30000000000000004,
+   "name": "Blattsegel",
+   "query": "B1ott5cgc1",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#en-GB",
+   "kind": "gliders",
+   "margin": 0.625,
+   "name": "Leaf Sail",
+   "query": "Leaf Sail",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.875,
+   "key": "glider.leaf#en-GB",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Leaf Sail",
+   "query": "eaf Sail.",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#en-GB",
+   "kind": "gliders",
+   "margin": 0.625,
+   "name": "Leaf Sail",
+   "query": "Leaf Sail",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#en-GB",
+   "kind": "gliders",
+   "margin": 0.625,
+   "name": "Leaf Sail",
+   "query": "LeafSail",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#en-GB",
+   "kind": "gliders",
+   "margin": 0.625,
+   "name": "Leaf Sail",
+   "query": "| Leaf Sail ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#ja-JP",
+   "kind": "gliders",
+   "margin": 0.7142857142857143,
+   "name": "\u30ea\u30fc\u30d5\u30bb\u30a4\u30eb",
+   "query": "\u30ea\u30fc\u30d5\u30bb\u30a4\u30eb",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8333333333333334,
+   "key": "glider.leaf#ja-JP",
+   "kind": "gliders",
+   "margin": 0.5476190476190477,
+   "name": "\u30ea\u30fc\u30d5\u30bb\u30a4\u30eb",
+   "query": "\u30ea\u30fc\u30d5\u30bb\u30a4",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "glider.leaf#ja-JP",
+   "kind": "gliders",
+   "margin": 0.5714285714285715,
+   "name": "\u30ea\u30fc\u30d5\u30bb\u30a4\u30eb",
+   "query": "\u30ea\u30fc\u30d5\u30bb\u30bb\u30a4\u30eb",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Bladzeil",
+   "query": "Bladzeil",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Bladzeil",
+   "query": "Bladzeil",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#nl-NL",
+   "kind": "gliders",
+   "margin": 0.5,
+   "name": "Bladzeil",
+   "query": "| Bladzeil ~",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "glider.leaf#ru-RU",
+   "kind": "gliders",
+   "margin": 0.8,
+   "name": "\u041b\u0438\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 \u043f\u0430\u0440\u0443\u0441",
+   "query": "\u041b\u0438\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 \u043f\u0430\u0440\u0443\u0441",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "gliders",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u53f6\u5e06",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "gliders",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u53f6\u5e06",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "gliders",
+   "margin": 0.0,
+   "name": null,
+   "query": "\u53f6\u5e06",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "ab",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "ab",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "  ",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "  ",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "body.comet#de-DE",
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": "Kometflitzer",
+   "query": "12345",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "Trommelreifen",
+   "query": "12345",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": null,
+   "query": "Zx",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": null,
+   "kind": "tires",
+   "margin": 0.0,
+   "name": null,
+   "query": "Zx",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.6,
+   "key": "body.pebble#en-GB",
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": "Pebble Kart",
+   "query": "Pebble",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.25,
+   "key": "tire.thin_glow#nl-NL",
+   "kind": "tires",
+   "margin": 0.019230769230769273,
+   "name": "Dun Gloei",
+   "query": "Pebble",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.9090909090909091,
+   "key": "body.pebble#en-GB",
+   "kind": "bodies",
+   "margin": 0.06293706293706292,
+   "name": "Pebble Kart",
+   "query": "Pebble Kart P",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.15384615384615385,
+   "key": "tire.drum#nl-NL",
+   "kind": "tires",
+   "margin": 0.06293706293706292,
+   "name": "Trommelbanden",
+   "query": "Pebble Kart P",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.2857142857142857,
+   "key": "body.lantern#de-DE",
+   "kind": "bodies",
+   "margin": 0.11904761904761907,
+   "name": "Laterne",
+   "query": "Thin G",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8,
+   "key": "tire.thin#en-GB",
+   "kind": "tires",
+   "margin": 0.17500000000000004,
+   "name": "Thin",
+   "query": "Thin G",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5,
+   "key": "body.comet#ja-JP",
+   "kind": "bodies",
+   "margin": 0.33333333333333337,
+   "name": "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc",
+   "query": "\u30b3\u30e1\u30c3\u30c8",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "Trommelreifen",
+   "query": "\u30b3\u30e1\u30c3\u30c8",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5,
+   "key": "body.zx#de-DE",
+   "kind": "bodies",
+   "margin": 0.4,
+   "name": "ZX",
+   "query": "ZXZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "Trommelreifen",
+   "query": "ZXZX",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.8571428571428572,
+   "key": "body.lantern#en-GB",
+   "kind": "bodies",
+   "margin": 0.1071428571428572,
+   "name": "Lantern",
+   "query": "Lant3rn",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.2857142857142857,
+   "key": "tire.thin#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "D\u00fcnn",
+   "query": "Lant3rn",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.5714285714285714,
+   "key": "body.comet#ru-RU",
+   "kind": "bodies",
+   "margin": 0.23809523809523803,
+   "name": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a",
+   "query": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.1875,
+   "key": "tire.thin_glow#ru-RU",
+   "kind": "tires",
+   "margin": 0.044642857142857095,
+   "name": "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0442\u044f\u0449\u0438\u0435\u0441\u044f",
+   "query": "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 1.0,
+   "key": "body.comet#nl-NL",
+   "kind": "bodies",
+   "margin": 0.18181818181818188,
+   "name": "Komeetracer",
+   "query": "Komeet racer",
+   "strong": true
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.3846153846153846,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "Trommelreifen",
+   "query": "Komeet racer",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "body.comet#de-DE",
+   "kind": "bodies",
+   "margin": 0.0,
+   "name": "Kometflitzer",
+   "query": "000000000000",
+   "strong": false
+  },
+  {
+   "boundary": false,
+   "fuzzy": 0.0,
+   "key": "tire.drum#de-DE",
+   "kind": "tires",
+   "margin": 0.0,
+   "name": "Trommelreifen",
+   "query": "000000000000",
+   "strong": false
+  }
+ ],
+ "generator": "packages/icon-matcher/tools/generate_rule_vectors.py",
+ "locales": [
+  "de-DE",
+  "en-GB",
+  "en-US",
+  "ja-JP",
+  "nl-NL",
+  "ru-RU",
+  "zh-CN"
+ ],
+ "note": "invented names in the product key grammar (<item>#<locale>); no game text, no people",
+ "sameNames": [
+  {
+   "key": "body.zx#en-GB",
+   "locales": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ],
+   "scripts": [
+    "ja",
+    "latin",
+    "ru",
+    "zh"
+   ]
+  },
+  {
+   "key": "body.zx#ja-JP",
+   "locales": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ],
+   "scripts": [
+    "ja",
+    "latin",
+    "ru",
+    "zh"
+   ]
+  },
+  {
+   "key": "body.comet#en-GB",
+   "locales": [
+    "en-GB",
+    "en-US"
+   ],
+   "scripts": [
+    "latin"
+   ]
+  },
+  {
+   "key": "body.pebble#en-US",
+   "locales": [
+    "en-US"
+   ],
+   "scripts": [
+    "latin"
+   ]
+  },
+  {
+   "key": "body.lantern#en-US",
+   "locales": [
+    "en-GB",
+    "en-US"
+   ],
+   "scripts": [
+    "latin"
+   ]
+  },
+  {
+   "key": "body.unknown#en-GB",
+   "locales": [],
+   "scripts": []
+  },
+  {
+   "key": "body.comet",
+   "locales": [],
+   "scripts": []
+  }
+ ],
+ "schema": "mk8dx.name-match-vectors.v1",
+ "source": "packages/icon-matcher/python/mk8dx_icon_matcher/name_match.py",
+ "titles": [
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "Sunny Dunes",
+   "query": "Sunny Dunes",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "Sunny Dunes",
+   "query": "Sunny Dunes",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "Sunny Dunes",
+   "query": "Dunes Sunny",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "Sunny Dunes",
+   "query": "Dunes Sunny",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.5833333333333333,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "GX Sunny",
+   "rule": "prefix",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.5833333333333333,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "GX Sunny",
+   "rule": "prefix",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.5,
+   "key": null,
+   "margin": 0.08333333333333337,
+   "name": "Sunny Dunes",
+   "query": "Sunny",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.5,
+   "key": null,
+   "margin": 0.08333333333333337,
+   "name": "Sunny Dunes",
+   "query": "Sunny",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "GX Sunny Dunes",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "GX Sunny Dunes",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "Dunes Sunny GX",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.gx_sunny_dunes#en-GB",
+   "margin": 1.0,
+   "name": "GX Sunny Dunes",
+   "query": "Dunes Sunny GX",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.6363636363636364,
+   "key": null,
+   "margin": 0.09790209790209792,
+   "name": "Crystal Cave",
+   "query": "Crystal",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.6363636363636364,
+   "key": null,
+   "margin": 0.09790209790209792,
+   "name": "Crystal Cave",
+   "query": "Crystal",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8181818181818181,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 0.12587412587412583,
+   "name": "Crystal Cave",
+   "query": "Crystal Ca",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.8181818181818181,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 0.12587412587412583,
+   "name": "Crystal Cave",
+   "query": "Crystal Ca",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 1.0,
+   "name": "Crystal Cave",
+   "query": "Crystal Cave",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 1.0,
+   "name": "Crystal Cave",
+   "query": "Crystal Cave",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8333333333333334,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 0.21794871794871795,
+   "name": "Crystal Cave",
+   "query": "Crysta1 Cavem",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.8333333333333334,
+   "key": "track.crystal_cave#en-GB",
+   "margin": 0.21794871794871795,
+   "name": "Crystal Cave",
+   "query": "Crysta1 Cavem",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.9230769230769231,
+   "key": "track.crystal_castle#en-GB",
+   "margin": 0.15384615384615397,
+   "name": "Crystal Castle",
+   "query": "Crystal Castie",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.9230769230769231,
+   "key": "track.crystal_castle#en-GB",
+   "margin": 0.15384615384615397,
+   "name": "Crystal Castle",
+   "query": "Crystal Castie",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Harbour Loop",
+   "rule": "ambiguous",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Harbour Loop",
+   "rule": "ambiguous",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8,
+   "key": "track.harbour_loop_night#en-US",
+   "margin": 0.08571428571428574,
+   "name": "Harbor Loop Night",
+   "query": "Harbor Loop Nite",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.8,
+   "key": "track.harbour_loop_night#en-US",
+   "margin": 0.08571428571428574,
+   "name": "Harbor Loop Night",
+   "query": "Harbor Loop Nite",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.9375,
+   "key": "track.harbour_loop_night#en-GB",
+   "margin": 0.3125,
+   "name": "Harbour Loop Night",
+   "query": "Harbour Lo0p Night",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.9375,
+   "key": "track.harbour_loop_night#en-GB",
+   "margin": 0.3125,
+   "name": "Harbour Loop Night",
+   "query": "Harbour Lo0p Night",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop#nl-NL",
+   "margin": 1.0,
+   "name": "Havenlus",
+   "query": "Havenlus",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop#nl-NL",
+   "margin": 1.0,
+   "name": "Havenlus",
+   "query": "Havenlus",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop_night#nl-NL",
+   "margin": 1.0,
+   "name": "Havenlus Nacht",
+   "query": "Havenlus Nacht",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop_night#nl-NL",
+   "margin": 1.0,
+   "name": "Havenlus Nacht",
+   "query": "Havenlus Nacht",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_cave#nl-NL",
+   "margin": 1.0,
+   "name": "Kristalgrot",
+   "query": "Kristalgrot",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_cave#nl-NL",
+   "margin": 1.0,
+   "name": "Kristalgrot",
+   "query": "Kristalgrot",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_castle#nl-NL",
+   "margin": 0.4285714285714286,
+   "name": "Kristalkasteel",
+   "query": "Kristal kasteel",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_castle#nl-NL",
+   "margin": 0.4285714285714286,
+   "name": "Kristalkasteel",
+   "query": "Kristal kasteel",
+   "rule": "fuzzy",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#nl-NL",
+   "margin": 1.0,
+   "name": "Zonnige Duinen",
+   "query": "Zonnige Duinen",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#nl-NL",
+   "margin": 1.0,
+   "name": "Zonnige Duinen",
+   "query": "Zonnige Duinen",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.11111111111111116,
+   "key": null,
+   "margin": 0.02020202020202022,
+   "name": "Hafenschleife Nacht",
+   "query": "150cc",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.09090909090909094,
+   "key": null,
+   "margin": 0.013986013986014068,
+   "name": "Crystal Cave",
+   "query": "150cc",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.23076923076923073,
+   "key": null,
+   "margin": 0.0,
+   "name": "Zonnige Duinen",
+   "query": "Time Trials",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.23076923076923073,
+   "key": null,
+   "margin": 0.0,
+   "name": "Zonnige Duinen",
+   "query": "Time Trials",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "OK",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "OK",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "xx",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "xx",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.sunny_dunes#ja-JP",
+   "margin": 1.0,
+   "name": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8571428571428572,
+   "key": "track.sunny_dunes#ja-JP",
+   "margin": 0.19047619047619047,
+   "name": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_cave#zh-CN",
+   "margin": 1.0,
+   "name": "\u6c34\u6676\u6d1e",
+   "query": "\u6c34\u6676\u6d1e",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6c34\u6676\u6d1e",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.75,
+   "key": "track.crystal_castle#zh-CN",
+   "margin": 0.08333333333333326,
+   "name": "\u6c34\u6676\u57ce\u5821",
+   "query": "\u6c34\u6676\u57ce",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6c34\u6676\u57ce",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop_night#zh-CN",
+   "margin": 1.0,
+   "name": "\u6e2f\u6e7e\u73af\u9053\u591c",
+   "query": "\u6e2f\u6e7e\u73af\u9053\u591c",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6e2f\u6e7e\u73af\u9053\u591c",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop#ru-RU",
+   "margin": 1.0,
+   "name": "\u041f\u043e\u0440\u0442\u043e\u0432\u0430\u044f \u043f\u0435\u0442\u043b\u044f",
+   "query": "\u041f\u043e\u0440\u0442\u043e\u0432\u0430\u044f \u043f\u0435\u0442\u043b\u044f",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u041f\u043e\u0440\u0442\u043e\u0432\u0430\u044f \u043f\u0435\u0442\u043b\u044f",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.crystal_castle#ru-RU",
+   "margin": 1.0,
+   "name": "\u0425\u0440\u0443\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0437\u0430\u043c\u043e\u043a",
+   "query": "\u0425\u0440\u0443\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0437\u0430\u043c\u043e\u043a",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u0425\u0440\u0443\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0437\u0430\u043c\u043e\u043a",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.gx_sunny_dunes#zh-CN",
+   "margin": 1.0,
+   "name": "GX \u9633\u5149\u6c99\u4e18",
+   "query": "GX \u9633\u5149\u6c99\u4e18",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.16666666666666663,
+   "key": null,
+   "margin": 0.08974358974358976,
+   "name": "GX Sunny Dunes",
+   "query": "GX \u9633\u5149\u6c99\u4e18",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Loop Harbour",
+   "rule": "ambiguous",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Loop Harbour",
+   "rule": "ambiguous",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop_night#en-GB",
+   "margin": 1.0,
+   "name": "Harbour Loop Night",
+   "query": "Night Loop Harbour",
+   "rule": "tokens",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 1.0,
+   "key": "track.harbour_loop_night#en-GB",
+   "margin": 1.0,
+   "name": "Harbour Loop Night",
+   "query": "Night Loop Harbour",
+   "rule": "tokens",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Harbour Loop!",
+   "rule": "ambiguous",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": null,
+   "query": "Harbour Loop!",
+   "rule": "ambiguous",
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.7,
+   "key": "track.harbour_loop_night#ja-JP",
+   "margin": 0.19999999999999996,
+   "name": "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7\u30ca\u30a4\u30c8",
+   "query": "\u30cf\u30d0\u30fc\u30eb\u30fc\u30d5\u30ca\u30a4",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30cf\u30d0\u30fc\u30eb\u30fc\u30d5\u30ca\u30a4",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8,
+   "key": "track.crystal_castle#ja-JP",
+   "margin": 0.30000000000000004,
+   "name": "\u30af\u30ea\u30b9\u30bf\u30eb\u30ad\u30e3\u30c3\u30b9\u30eb",
+   "query": "\u30af\u30ea\u30b9\u30bf\u30ad\u30e3\u30c3\u30b9",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30af\u30ea\u30b9\u30bf\u30ad\u30e3\u30c3\u30b9",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.7,
+   "key": "track.harbour_loop_night#ja-JP",
+   "margin": 0.19999999999999996,
+   "name": "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7\u30ca\u30a4\u30c8",
+   "query": "\u30cf\u30fc\u30d1\u30fc\u30eb\u30fc\u30d5\u30ca\u30a4\u535c",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30cf\u30fc\u30d1\u30fc\u30eb\u30fc\u30d5\u30ca\u30a4\u535c",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.5,
+   "key": null,
+   "margin": 0.16666666666666663,
+   "name": "\u6c34\u6676\u57ce\u5821",
+   "query": "\u6c34\u660c\u57ce",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6c34\u660c\u57ce",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.75,
+   "key": "track.harbour_loop#zh-CN",
+   "margin": 0.15000000000000002,
+   "name": "\u6e2f\u6e7e\u73af\u9053",
+   "query": "\u6e2f\u5f2f\u73af\u9053",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6e2f\u5f2f\u73af\u9053",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.8571428571428572,
+   "key": "track.sunny_dunes#ja-JP",
+   "margin": 0.19047619047619047,
+   "name": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u4e00\u30f3",
+   "rule": "fuzzy",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30b5\u30cb\u30fc\u30c7\u30e5\u4e00\u30f3",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.6,
+   "key": "track.harbour_loop_night#ja-JP",
+   "margin": 0.3142857142857143,
+   "name": "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7\u30ca\u30a4\u30c8",
+   "query": "\u30cf\u30d0\u30eb\u30fc\u30d5\u30ca\u30a4",
+   "rule": "fuzzy_cjk",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30cf\u30d0\u30eb\u30fc\u30d5\u30ca\u30a4",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.6,
+   "key": null,
+   "margin": 0.02857142857142858,
+   "name": "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7\u30ca\u30a4\u30c8",
+   "query": "\u30d1\u30fc\u30d0\u30fc\u30eb\u30d7\u30ca",
+   "rule": null,
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30d1\u30fc\u30d0\u30fc\u30eb\u30d7\u30ca",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.6,
+   "key": "track.crystal_castle#ja-JP",
+   "margin": 0.22499999999999998,
+   "name": "\u30af\u30ea\u30b9\u30bf\u30eb\u30ad\u30e3\u30c3\u30b9\u30eb",
+   "query": "\u30af\u30ea\u30b9\u30ad\u30e3\u30c3",
+   "rule": "fuzzy_cjk",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30af\u30ea\u30b9\u30ad\u30e3\u30c3",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.6,
+   "key": "track.harbour_loop_night#zh-CN",
+   "margin": 0.19999999999999996,
+   "name": "\u6e2f\u6e7e\u73af\u9053\u591c",
+   "query": "\u6e2f\u6e7e\u9053\u591cx",
+   "rule": "fuzzy_cjk",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u6e2f\u6e7e\u9053\u591cx",
+   "rule": null,
+   "subset": "en-nl"
+  },
+  {
+   "fuzzy": 0.5714285714285714,
+   "key": "track.sunny_dunes#ja-JP",
+   "margin": 0.12698412698412698,
+   "name": "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3",
+   "query": "\u30b5\u30cb\u30fc\u30c7",
+   "rule": "fuzzy_cjk",
+   "subset": "all"
+  },
+  {
+   "fuzzy": 0.0,
+   "key": null,
+   "margin": 0.0,
+   "name": "Sunny Dunes",
+   "query": "\u30b5\u30cb\u30fc\u30c7",
+   "rule": null,
+   "subset": "en-nl"
+  }
+ ],
+ "vocabs": {
+  "bodies": [
+   [
+    "body.comet#de-DE",
+    "Kometflitzer"
+   ],
+   [
+    "body.comet#en-GB",
+    "Comet Racer"
+   ],
+   [
+    "body.comet#en-US",
+    "Comet Racer"
+   ],
+   [
+    "body.comet#ja-JP",
+    "\u30b3\u30e1\u30c3\u30c8\u30ec\u30fc\u30b5\u30fc"
+   ],
+   [
+    "body.comet#nl-NL",
+    "Komeetracer"
+   ],
+   [
+    "body.comet#ru-RU",
+    "\u041a\u043e\u043c\u0435\u0442\u043d\u044b\u0439 \u0433\u043e\u043d\u0449\u0438\u043a"
+   ],
+   [
+    "body.comet#zh-CN",
+    "\u5f57\u661f\u8d5b\u8f66"
+   ],
+   [
+    "body.zx#de-DE",
+    "ZX"
+   ],
+   [
+    "body.zx#en-GB",
+    "ZX"
+   ],
+   [
+    "body.zx#en-US",
+    "ZX"
+   ],
+   [
+    "body.zx#ja-JP",
+    "ZX"
+   ],
+   [
+    "body.zx#nl-NL",
+    "ZX"
+   ],
+   [
+    "body.zx#ru-RU",
+    "ZX"
+   ],
+   [
+    "body.zx#zh-CN",
+    "ZX"
+   ],
+   [
+    "body.pebble#de-DE",
+    "Kieselkart"
+   ],
+   [
+    "body.pebble#en-GB",
+    "Pebble Kart"
+   ],
+   [
+    "body.pebble#en-US",
+    "Pebble Cart"
+   ],
+   [
+    "body.pebble#ja-JP",
+    "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8"
+   ],
+   [
+    "body.pebble#nl-NL",
+    "Kiezelkart"
+   ],
+   [
+    "body.pebble#ru-RU",
+    "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442"
+   ],
+   [
+    "body.pebble#zh-CN",
+    "\u5375\u77f3\u8f66"
+   ],
+   [
+    "body.pebble_pro#de-DE",
+    "Kieselkart Pro"
+   ],
+   [
+    "body.pebble_pro#en-GB",
+    "Pebble Kart Pro"
+   ],
+   [
+    "body.pebble_pro#en-US",
+    "Pebble Cart Pro"
+   ],
+   [
+    "body.pebble_pro#ja-JP",
+    "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8\u30d7\u30ed"
+   ],
+   [
+    "body.pebble_pro#nl-NL",
+    "Kiezelkart Pro"
+   ],
+   [
+    "body.pebble_pro#ru-RU",
+    "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442 \u041f\u0440\u043e"
+   ],
+   [
+    "body.pebble_pro#zh-CN",
+    "\u5375\u77f3\u8f66\u4e13\u4e1a\u7248"
+   ],
+   [
+    "body.lantern#de-DE",
+    "Laterne"
+   ],
+   [
+    "body.lantern#en-GB",
+    "Lantern"
+   ],
+   [
+    "body.lantern#en-US",
+    "Lantern"
+   ],
+   [
+    "body.lantern#ja-JP",
+    "\u30e9\u30f3\u30bf\u30f3"
+   ],
+   [
+    "body.lantern#nl-NL",
+    "Lantaarn"
+   ],
+   [
+    "body.lantern#ru-RU",
+    "\u0424\u043e\u043d\u0430\u0440\u044c"
+   ],
+   [
+    "body.lantern#zh-CN",
+    "\u706f\u7b3c"
+   ]
+  ],
+  "gliders": [
+   [
+    "glider.kite#de-DE",
+    "Papierdrachen"
+   ],
+   [
+    "glider.kite#en-GB",
+    "Paper Kite"
+   ],
+   [
+    "glider.kite#en-US",
+    "Paper Kite"
+   ],
+   [
+    "glider.kite#ja-JP",
+    "\u30da\u30fc\u30d1\u30fc\u30ab\u30a4\u30c8"
+   ],
+   [
+    "glider.kite#nl-NL",
+    "Papieren vlieger"
+   ],
+   [
+    "glider.kite#ru-RU",
+    "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439"
+   ],
+   [
+    "glider.kite#zh-CN",
+    "\u7eb8\u98ce\u7b5d"
+   ],
+   [
+    "glider.leaf#de-DE",
+    "Blattsegel"
+   ],
+   [
+    "glider.leaf#en-GB",
+    "Leaf Sail"
+   ],
+   [
+    "glider.leaf#en-US",
+    "Leaf Sail"
+   ],
+   [
+    "glider.leaf#ja-JP",
+    "\u30ea\u30fc\u30d5\u30bb\u30a4\u30eb"
+   ],
+   [
+    "glider.leaf#nl-NL",
+    "Bladzeil"
+   ],
+   [
+    "glider.leaf#ru-RU",
+    "\u041b\u0438\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u0439 \u043f\u0430\u0440\u0443\u0441"
+   ],
+   [
+    "glider.leaf#zh-CN",
+    "\u53f6\u5e06"
+   ]
+  ],
+  "tires": [
+   [
+    "tire.drum#de-DE",
+    "Trommelreifen"
+   ],
+   [
+    "tire.drum#en-GB",
+    "Drum Wheels"
+   ],
+   [
+    "tire.drum#en-US",
+    "Drum Tires"
+   ],
+   [
+    "tire.drum#ja-JP",
+    "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4"
+   ],
+   [
+    "tire.drum#nl-NL",
+    "Trommelbanden"
+   ],
+   [
+    "tire.drum#ru-RU",
+    "\u0411\u0430\u0440\u0430\u0431\u0430\u043d\u043d\u044b\u0435 \u0448\u0438\u043d\u044b"
+   ],
+   [
+    "tire.drum#zh-CN",
+    "\u9f13\u8f6e\u80ce"
+   ],
+   [
+    "tire.thin#de-DE",
+    "D\u00fcnn"
+   ],
+   [
+    "tire.thin#en-GB",
+    "Thin"
+   ],
+   [
+    "tire.thin#en-US",
+    "Thin"
+   ],
+   [
+    "tire.thin#ja-JP",
+    "\u30b9\u30ea\u30e0"
+   ],
+   [
+    "tire.thin#nl-NL",
+    "Dun"
+   ],
+   [
+    "tire.thin#ru-RU",
+    "\u0422\u043e\u043d\u043a\u0438\u0435"
+   ],
+   [
+    "tire.thin#zh-CN",
+    "\u7ec6\u8f6e"
+   ],
+   [
+    "tire.thin_glow#de-DE",
+    "D\u00fcnn Gl\u00fch"
+   ],
+   [
+    "tire.thin_glow#en-GB",
+    "Thin Glow"
+   ],
+   [
+    "tire.thin_glow#en-US",
+    "Thin Glow"
+   ],
+   [
+    "tire.thin_glow#ja-JP",
+    "\u30b9\u30ea\u30e0\u30b0\u30ed\u30fc"
+   ],
+   [
+    "tire.thin_glow#nl-NL",
+    "Dun Gloei"
+   ],
+   [
+    "tire.thin_glow#ru-RU",
+    "\u0422\u043e\u043d\u043a\u0438\u0435 \u0441\u0432\u0435\u0442\u044f\u0449\u0438\u0435\u0441\u044f"
+   ],
+   [
+    "tire.thin_glow#zh-CN",
+    "\u7ec6\u5149\u8f6e"
+   ]
+  ],
+  "tracks": [
+   [
+    "track.sunny_dunes#de-DE",
+    "Sonnige D\u00fcnen"
+   ],
+   [
+    "track.sunny_dunes#en-GB",
+    "Sunny Dunes"
+   ],
+   [
+    "track.sunny_dunes#en-US",
+    "Sunny Dunes"
+   ],
+   [
+    "track.sunny_dunes#ja-JP",
+    "\u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3"
+   ],
+   [
+    "track.sunny_dunes#nl-NL",
+    "Zonnige Duinen"
+   ],
+   [
+    "track.sunny_dunes#ru-RU",
+    "\u0421\u043e\u043b\u043d\u0435\u0447\u043d\u044b\u0435 \u0434\u044e\u043d\u044b"
+   ],
+   [
+    "track.sunny_dunes#zh-CN",
+    "\u9633\u5149\u6c99\u4e18"
+   ],
+   [
+    "track.gx_sunny_dunes#de-DE",
+    "GX Sonnige D\u00fcnen"
+   ],
+   [
+    "track.gx_sunny_dunes#en-GB",
+    "GX Sunny Dunes"
+   ],
+   [
+    "track.gx_sunny_dunes#en-US",
+    "GX Sunny Dunes"
+   ],
+   [
+    "track.gx_sunny_dunes#ja-JP",
+    "GX \u30b5\u30cb\u30fc\u30c7\u30e5\u30fc\u30f3"
+   ],
+   [
+    "track.gx_sunny_dunes#nl-NL",
+    "GX Zonnige Duinen"
+   ],
+   [
+    "track.gx_sunny_dunes#ru-RU",
+    "GX \u0421\u043e\u043b\u043d\u0435\u0447\u043d\u044b\u0435 \u0434\u044e\u043d\u044b"
+   ],
+   [
+    "track.gx_sunny_dunes#zh-CN",
+    "GX \u9633\u5149\u6c99\u4e18"
+   ],
+   [
+    "track.crystal_cave#de-DE",
+    "Kristallh\u00f6hle"
+   ],
+   [
+    "track.crystal_cave#en-GB",
+    "Crystal Cave"
+   ],
+   [
+    "track.crystal_cave#en-US",
+    "Crystal Cavern"
+   ],
+   [
+    "track.crystal_cave#ja-JP",
+    "\u30af\u30ea\u30b9\u30bf\u30eb\u30b1\u30a4\u30d6"
+   ],
+   [
+    "track.crystal_cave#nl-NL",
+    "Kristalgrot"
+   ],
+   [
+    "track.crystal_cave#ru-RU",
+    "\u0425\u0440\u0443\u0441\u0442\u0430\u043b\u044c\u043d\u0430\u044f \u043f\u0435\u0449\u0435\u0440\u0430"
+   ],
+   [
+    "track.crystal_cave#zh-CN",
+    "\u6c34\u6676\u6d1e"
+   ],
+   [
+    "track.crystal_castle#de-DE",
+    "Kristallburg"
+   ],
+   [
+    "track.crystal_castle#en-GB",
+    "Crystal Castle"
+   ],
+   [
+    "track.crystal_castle#en-US",
+    "Crystal Castle"
+   ],
+   [
+    "track.crystal_castle#ja-JP",
+    "\u30af\u30ea\u30b9\u30bf\u30eb\u30ad\u30e3\u30c3\u30b9\u30eb"
+   ],
+   [
+    "track.crystal_castle#nl-NL",
+    "Kristalkasteel"
+   ],
+   [
+    "track.crystal_castle#ru-RU",
+    "\u0425\u0440\u0443\u0441\u0442\u0430\u043b\u044c\u043d\u044b\u0439 \u0437\u0430\u043c\u043e\u043a"
+   ],
+   [
+    "track.crystal_castle#zh-CN",
+    "\u6c34\u6676\u57ce\u5821"
+   ],
+   [
+    "track.harbour_loop#de-DE",
+    "Hafenschleife"
+   ],
+   [
+    "track.harbour_loop#en-GB",
+    "Harbour Loop"
+   ],
+   [
+    "track.harbour_loop#en-US",
+    "Harbor Loop"
+   ],
+   [
+    "track.harbour_loop#ja-JP",
+    "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7"
+   ],
+   [
+    "track.harbour_loop#nl-NL",
+    "Havenlus"
+   ],
+   [
+    "track.harbour_loop#ru-RU",
+    "\u041f\u043e\u0440\u0442\u043e\u0432\u0430\u044f \u043f\u0435\u0442\u043b\u044f"
+   ],
+   [
+    "track.harbour_loop#zh-CN",
+    "\u6e2f\u6e7e\u73af\u9053"
+   ],
+   [
+    "track.harbour_loop_night#de-DE",
+    "Hafenschleife Nacht"
+   ],
+   [
+    "track.harbour_loop_night#en-GB",
+    "Harbour Loop Night"
+   ],
+   [
+    "track.harbour_loop_night#en-US",
+    "Harbor Loop Night"
+   ],
+   [
+    "track.harbour_loop_night#ja-JP",
+    "\u30cf\u30fc\u30d0\u30fc\u30eb\u30fc\u30d7\u30ca\u30a4\u30c8"
+   ],
+   [
+    "track.harbour_loop_night#nl-NL",
+    "Havenlus Nacht"
+   ],
+   [
+    "track.harbour_loop_night#ru-RU",
+    "\u041f\u043e\u0440\u0442\u043e\u0432\u0430\u044f \u043f\u0435\u0442\u043b\u044f \u043d\u043e\u0447\u044c\u044e"
+   ],
+   [
+    "track.harbour_loop_night#zh-CN",
+    "\u6e2f\u6e7e\u73af\u9053\u591c"
+   ],
+   [
+    "track.loop_harbour#en-GB",
+    "Loop Harbour"
+   ],
+   [
+    "track.loop_harbour#ja-JP",
+    "\u30eb\u30fc\u30d7\u30cf\u30fc\u30d0\u30fc"
+   ],
+   [
+    "track.loop_harbour#nl-NL",
+    "Lus van de haven"
+   ]
+  ]
+ },
+ "votes": [
+  {
+   "firstKey": "body.comet#nl-NL",
+   "locale": "nl-NL",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "Komeetracer"
+    ],
+    [
+     "tires",
+     "Trommelbanden"
+    ],
+    [
+     "gliders",
+     "Bladzeil"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "nl-NL"
+   ]
+  },
+  {
+   "firstKey": "body.comet#nl-NL",
+   "locale": "nl-NL",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Komeetracer"
+    ],
+    [
+     "tires",
+     "Trommelbanden"
+    ],
+    [
+     "gliders",
+     "Bladzeil"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "nl-NL"
+   ]
+  },
+  {
+   "firstKey": "body.comet#nl-NL",
+   "locale": "nl-NL",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Komeetracer"
+    ],
+    [
+     "tires",
+     "Trommelbanden"
+    ],
+    [
+     "gliders",
+     "Bladzeil"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "nl-NL"
+   ]
+  },
+  {
+   "firstKey": "body.comet#nl-NL",
+   "locale": "nl-NL",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Komeetracer"
+    ],
+    [
+     "tires",
+     "Trommelbanden"
+    ],
+    [
+     "gliders",
+     "Bladzeil"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "nl-NL"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ],
+    [
+     "gliders",
+     "Leaf Sail"
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ],
+    [
+     "gliders",
+     "Leaf Sail"
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ],
+    [
+     "gliders",
+     "Leaf Sail"
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ],
+    [
+     "gliders",
+     "Leaf Sail"
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ]
+   ],
+   "score": 1.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ]
+   ],
+   "score": 1.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ]
+   ],
+   "score": 1.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "en-GB",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ],
+    [
+     "tires",
+     "Thin"
+    ]
+   ],
+   "score": 1.0,
+   "tied": [
+    "en-GB",
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "de-DE",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "nl-NL",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "nl-NL",
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "ja-JP",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "ja-JP",
+    "en-GB",
+    "de-DE",
+    "en-US",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "de-DE",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "ZX"
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#en-US",
+   "locale": "en-US",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "Pebble Cart"
+    ],
+    [
+     "tires",
+     "Drum Tires"
+    ],
+    [
+     "gliders",
+     "Paper Kite"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#en-US",
+   "locale": "en-US",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Pebble Cart"
+    ],
+    [
+     "tires",
+     "Drum Tires"
+    ],
+    [
+     "gliders",
+     "Paper Kite"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#en-US",
+   "locale": "en-US",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Pebble Cart"
+    ],
+    [
+     "tires",
+     "Drum Tires"
+    ],
+    [
+     "gliders",
+     "Paper Kite"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#en-US",
+   "locale": "en-US",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Pebble Cart"
+    ],
+    [
+     "tires",
+     "Drum Tires"
+    ],
+    [
+     "gliders",
+     "Paper Kite"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "en-US"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ja-JP",
+   "locale": "ja-JP",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8"
+    ],
+    [
+     "tires",
+     "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4"
+    ],
+    [
+     "gliders",
+     ""
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "ja-JP"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ja-JP",
+   "locale": "ja-JP",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8"
+    ],
+    [
+     "tires",
+     "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4"
+    ],
+    [
+     "gliders",
+     ""
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "ja-JP"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ja-JP",
+   "locale": "ja-JP",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8"
+    ],
+    [
+     "tires",
+     "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4"
+    ],
+    [
+     "gliders",
+     ""
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "ja-JP"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ja-JP",
+   "locale": "ja-JP",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u30da\u30d6\u30eb\u30ab\u30fc\u30c8"
+    ],
+    [
+     "tires",
+     "\u30c9\u30e9\u30e0\u30bf\u30a4\u30e4"
+    ],
+    [
+     "gliders",
+     ""
+    ]
+   ],
+   "score": 2.0,
+   "tied": [
+    "ja-JP"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ru-RU",
+   "locale": "ru-RU",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442"
+    ],
+    [
+     "tires",
+     "\u0422\u043e\u043d\u043a\u0438\u0435"
+    ],
+    [
+     "gliders",
+     "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "ru-RU"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ru-RU",
+   "locale": "ru-RU",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442"
+    ],
+    [
+     "tires",
+     "\u0422\u043e\u043d\u043a\u0438\u0435"
+    ],
+    [
+     "gliders",
+     "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "ru-RU"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ru-RU",
+   "locale": "ru-RU",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442"
+    ],
+    [
+     "tires",
+     "\u0422\u043e\u043d\u043a\u0438\u0435"
+    ],
+    [
+     "gliders",
+     "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "ru-RU"
+   ]
+  },
+  {
+   "firstKey": "body.pebble#ru-RU",
+   "locale": "ru-RU",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "\u0413\u0430\u043b\u0435\u0447\u043d\u044b\u0439 \u043a\u0430\u0440\u0442"
+    ],
+    [
+     "tires",
+     "\u0422\u043e\u043d\u043a\u0438\u0435"
+    ],
+    [
+     "gliders",
+     "\u0411\u0443\u043c\u0430\u0436\u043d\u044b\u0439 \u0437\u043c\u0435\u0439"
+    ]
+   ],
+   "score": 3.0,
+   "tied": [
+    "ru-RU"
+   ]
+  },
+  {
+   "firstKey": "body.pebble_pro#de-DE",
+   "locale": "de-DE",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     "Kieselkart Pr0"
+    ],
+    [
+     "tires",
+     "D\u00fcnn Gl\u00fch"
+    ],
+    [
+     "gliders",
+     "Papierdrachen"
+    ]
+   ],
+   "score": 2.9230769230769234,
+   "tied": [
+    "de-DE"
+   ]
+  },
+  {
+   "firstKey": "body.pebble_pro#de-DE",
+   "locale": "de-DE",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Kieselkart Pr0"
+    ],
+    [
+     "tires",
+     "D\u00fcnn Gl\u00fch"
+    ],
+    [
+     "gliders",
+     "Papierdrachen"
+    ]
+   ],
+   "score": 2.9230769230769234,
+   "tied": [
+    "de-DE"
+   ]
+  },
+  {
+   "firstKey": "body.pebble_pro#de-DE",
+   "locale": "de-DE",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Kieselkart Pr0"
+    ],
+    [
+     "tires",
+     "D\u00fcnn Gl\u00fch"
+    ],
+    [
+     "gliders",
+     "Papierdrachen"
+    ]
+   ],
+   "score": 2.9230769230769234,
+   "tied": [
+    "de-DE"
+   ]
+  },
+  {
+   "firstKey": "body.pebble_pro#de-DE",
+   "locale": "de-DE",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     "Kieselkart Pr0"
+    ],
+    [
+     "tires",
+     "D\u00fcnn Gl\u00fch"
+    ],
+    [
+     "gliders",
+     "Papierdrachen"
+    ]
+   ],
+   "score": 2.9230769230769234,
+   "tied": [
+    "de-DE"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "de-DE",
+   "preferred": [],
+   "rows": [
+    [
+     "bodies",
+     ""
+    ],
+    [
+     "tires",
+     ""
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "nl-NL",
+   "preferred": [
+    "nl-NL"
+   ],
+   "rows": [
+    [
+     "bodies",
+     ""
+    ],
+    [
+     "tires",
+     ""
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "nl-NL",
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "ja-JP",
+   "preferred": [
+    "ja-JP",
+    "en-GB"
+   ],
+   "rows": [
+    [
+     "bodies",
+     ""
+    ],
+    [
+     "tires",
+     ""
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "ja-JP",
+    "en-GB",
+    "de-DE",
+    "en-US",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  },
+  {
+   "firstKey": null,
+   "locale": "de-DE",
+   "preferred": [
+    "xx-XX"
+   ],
+   "rows": [
+    [
+     "bodies",
+     ""
+    ],
+    [
+     "tires",
+     ""
+    ]
+   ],
+   "score": 0.0,
+   "tied": [
+    "de-DE",
+    "en-GB",
+    "en-US",
+    "ja-JP",
+    "nl-NL",
+    "ru-RU",
+    "zh-CN"
+   ]
+  }
+ ]
+}

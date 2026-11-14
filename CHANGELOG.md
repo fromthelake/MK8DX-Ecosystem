@@ -22,6 +22,53 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - `context-v1` parity vectors cover these cases and the OCR digit normalization; the Python, TypeScript and Java
   replays (new Android `ContextParityTest`) have no known exceptions any more.
 
+## 0.2.3 — 2026-11-14
+
+Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to
+start with: a "How it fits together" diagram and **Get started** near the top of every README, one entry point in
+the docs, and real screenshots in the A2 guide on GitHub. No database changes and no app changes since 0.2.2.
+
+### Security
+
+- **The gateway's Caddy no longer runs as root** (#34). The Web image's new entrypoint gives Caddy's storage
+  (`caddy_data`, `caddy_config`) to the user `caddy` (uid 10002) and then starts Caddy as that user. Existing
+  installations move over at their next start: the LAN certificate authority, the certificates and their 0600
+  modes stay as they are. On Linux, where the A2 certificate signer and setup page are the operator's own 0600
+  files, Caddy runs as the operator's uid instead. Caddy keeps running as root, with a log line, only when nothing
+  but root could read a mounted file. The Compose files are unchanged, so older and newer images keep working
+  with either. The installer now makes `public-client.json` (public content) readable inside the private
+  installation folder, like `operator.json`. The LAN gateway no longer tries to install its root certificate in
+  the container (`skip_install_trust`).
+- **MySQL, Mailpit and the CI MariaDB images are pinned by digest** (#34) as `name:tag@sha256:...`, and Dependabot
+  updates the Compose pins. Release builds fetch these images by digest, and `host_bundle.py` refuses a local copy
+  with another digest. The packaged Compose files still name the tag, because images loaded from the package's tar
+  keep only their tag.
+- better-auth 1.7.20 (patch). Mailpit 1.33.1 and MySQL 8.4.13 (same 8.4 LTS line), both pinned by digest.
+
+### Changed
+
+- **README, all twelve languages:** a new "How it fits together" section with a diagram of how the apps, the
+  community server and the shared recognition relate, followed directly by **Get started**. The product sections
+  follow, then the project status, the documentation table and the story. The tribute to Volkert has the owner's new
+  text.
+- **One entry point:** `docs/GETTING_STARTED.md` is now the developer route from source and sends players and
+  organisers to the README's Get started; `SUPPORT.md` presents the release's `.txt`/`.docx` guides as the
+  offline, printable copy. The amd64 Docker images are also public on GHCR, and `docs/GETTING_STARTED.md` now says
+  so. The arm64 images ship inside the arm64 A2 packages.
+- **A2 guides on GitHub** show the real screenshots instead of `(Image: …)` placeholders; missing screenshots are
+  hidden. `tooling/build_guide_html.py --check` now also checks the Markdown.
+- The B2 guides say that the `mk8dx-mijnhost-node` package works on any shared Node.js host with SSH; mijn.host is
+  the tested example and port 26 is its SSH port.
+- Developer docs: how to activate `.venv` in each shell, and PowerShell forms of the central-reader test commands.
+  The 0.2.2 user guides' file names and the APK size are corrected.
+- CI runs the Tournament tests on the Tools package's locked runtime, with a smoke of the recorded analysis
+  after the text reading on synthetic rows, so a dependency update that breaks that path (as pandas 3 did, #169)
+  fails before a release.
+- CI replays new recognition parity vectors in Python, TypeScript and Java: refinement, frame geometry, lap grid,
+  seven-segment digits and name matching (#99). No runtime disagrees.
+- Dependabot keeps MySQL on the 8.4 LTS line and leaves OpenCV alone: OpenCV is pinned to the same build in Python,
+  Web and Android and is upgraded together, never in one runtime (#99). Gradle wrapper 9.9.1.
+
 ## 0.2.2 — 2026-11-13
 
 Fixes recorded-video analysis in the Tournament Tools, which stopped with an error in 0.2.0 and 0.2.1, and adds the

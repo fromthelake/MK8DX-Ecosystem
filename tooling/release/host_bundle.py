@@ -17,8 +17,28 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-IMAGES = ("mk8dx/api:local-v010-node26-amd64", "mk8dx/web:local-v010-node26-amd64",
-          "mysql:8.4.11", "axllent/mailpit:v1.32.0")
+# The third-party images are pinned in Compose as `name:tag@sha256:<index digest>` (Dependabot keeps both
+# current). A host package loads them from its tar, where only the tag survives (`docker load` does not
+# restore registry digests), so the packaged Compose files name the tag alone and this script checks the
+# digest of the local image before it saves it (#34).
+BASE_IMAGE_FILES = {"mysql": "compose.yaml", "mailpit": "compose.local.yaml"}
+PINNED_IMAGE = re.compile(r"^    image: (?P<tag>[a-z0-9./-]+:[A-Za-z0-9._-]+)@(?P<digest>sha256:[0-9a-f]{64})$", re.M)
+
+
+def base_image_pins() -> dict:
+    """{tag: digest} of the MySQL and Mailpit images, read from their Compose files."""
+    pins = {}
+    for service, name in BASE_IMAGE_FILES.items():
+        source = (ROOT / name).read_text(encoding="utf-8")
+        block = re.search(rf"^  {service}:\n(?:    .*\n)*", source, re.M)
+        found = PINNED_IMAGE.findall(block.group(0)) if block else []
+        if len(found) != 1:
+            raise SystemExit(f"{name}: service {service} needs exactly one image pinned as name:tag@sha256:...")
+        pins[found[0][0]] = found[0][1]
+    return pins
+
+
+IMAGES = ("mk8dx/api:local-v010-node26-amd64", "mk8dx/web:local-v010-node26-amd64", *base_image_pins())
 VERSION = re.compile(r"^v\d+\.\d+\.\d+(?:-rc\.\d+)?$")
 PACKAGE_IMAGE_FILES = {"compose.yaml", "tooling/start-mk8dx.ps1", "tooling/start-mk8dx.sh"}
 FILES = (
@@ -138,22 +158,54 @@ START = {
 
 def package_bytes(name, images):
     payload = (ROOT / name).read_bytes()
-    if name not in PACKAGE_IMAGE_FILES or images == IMAGES:
+    if name not in PACKAGE_IMAGE_FILES | set(BASE_IMAGE_FILES.values()):
         return payload
     source = payload.decode("utf-8")
-    for old, new in zip(IMAGES[:2], images[:2]):
-        if source.count(old) != 1:
-            raise ValueError(f"Expected exactly one source image reference in {name}: {old}")
-        source = source.replace(old, new)
+    for tag, digest in base_image_pins().items():
+        # The tar-loaded image is found by its tag only; a digest reference would make Compose pull.
+        source = source.replace(f"{tag}@{digest}", tag)
+    if name in PACKAGE_IMAGE_FILES and images != IMAGES:
+        for old, new in zip(IMAGES[:2], images[:2]):
+            if source.count(old) != 1:
+                raise ValueError(f"Expected exactly one source image reference in {name}: {old}")
+            source = source.replace(old, new)
     return source.encode("utf-8")
+
+
+def repository(tag: str) -> str:
+    """`mysql:8.4.11` -> `mysql`, as `docker image inspect` lists it in RepoDigests."""
+    return tag.rsplit(":", 1)[0]
+
+
+def pull_base_images(arch: str) -> None:
+    """Fetch the pinned MySQL and Mailpit images by digest and give them their tag, so a release never
+    packages a tag that upstream has rebuilt since the pin."""
+    for tag, digest in base_image_pins().items():
+        pinned = f"{repository(tag)}@{digest}"
+        subprocess.run(["docker", "pull", "--platform", f"linux/{arch}", pinned], check=True)
+        subprocess.run(["docker", "tag", pinned, tag], check=True)
+
+
+def check_base_image_digests(repo_digests_of=None) -> None:
+    """Refuse to package a local MySQL or Mailpit image whose registry digest is not the pinned one."""
+    if repo_digests_of is None:
+        def repo_digests_of(tag):
+            listed = subprocess.check_output(["docker", "image", "inspect", "--format", "{{json .RepoDigests}}", tag],
+                                             text=True)
+            return json.loads(listed) or []
+    for tag, digest in base_image_pins().items():
+        expected = f"{repository(tag)}@{digest}"
+        if expected not in repo_digests_of(tag):
+            raise SystemExit(f"The local image {tag} is not the pinned {digest}; fetch it with "
+                             f"`python tooling/release/host_bundle.py --pull-base-images --arch <arch>`")
 
 
 def main():
     parser = argparse.ArgumentParser(
         description=__doc__,
         epilog="The four images must exist locally as linux/amd64 before packaging: build the API and Web images "
-               "with the tags --list-images prints and pull the MySQL and Mailpit images (docs/guides/HOSTING.md, "
-               "'Build the host package from a clone').")
+               "with the tags --list-images prints and fetch the pinned MySQL and Mailpit images with "
+               "--pull-base-images (docs/guides/HOSTING.md, 'Build the host package from a clone').")
     parser.add_argument("--output", type=Path,
                         help="the package to write: a new absolute path ending in .zip, outside this repository "
                              "(an existing file is refused); a .manifest.json is written next to it")
@@ -162,6 +214,8 @@ def main():
     parser.add_argument("--version", help="release tag for versioned GHCR image references; omitted for local clone builds")
     parser.add_argument("--list-images", action="store_true",
                         help="print the image tags the package contains, one per line, and exit")
+    parser.add_argument("--pull-base-images", action="store_true",
+                        help="pull the MySQL and Mailpit images by their pinned digest for --arch, tag them and exit")
     parser.add_argument("--offline-candidate", action="store_true",
                         help="A2 offline QA candidate: add the offline files, the setup wizard and the pinned wheels")
     parser.add_argument("--api-image", help="candidate API image tag (with --offline-candidate; default: the "
@@ -178,6 +232,9 @@ def main():
     if args.platform == "windows" and args.arch != "amd64":
         parser.error("Windows packages are amd64")
     images = image_tags(args.version, args.arch)
+    if args.pull_base_images:
+        pull_base_images(args.arch)
+        return
     if (args.api_image or args.web_image or args.wheels_dir) and not args.offline_candidate:
         parser.error("--api-image, --web-image and --wheels-dir apply only with --offline-candidate")
     if bool(args.api_image) != bool(args.web_image):
@@ -216,6 +273,7 @@ def main():
                                            text=True).strip()
         if platform != f"linux/{args.arch}":
             raise SystemExit(f"Wrong image architecture: {image} is {platform}")
+    check_base_image_digests()
     with tempfile.TemporaryDirectory(prefix="mk8dx-host-bundle-", dir=output.parent) as temporary:
         tar = Path(temporary) / f"docker-images-{args.arch}.tar"
         subprocess.run(["docker", "save", "--output", str(tar), *images], check=True)
@@ -250,9 +308,9 @@ def main():
         receipt = {"schemaVersion": "mk8dx.host-bundle.v1", "revision": args.revision,
                    "platform": args.platform, "arch": args.arch,
                    "sourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-                   "images": list(images), "files": {name: {"bytes": len(payload),
-                                                        "sha256": hashlib.sha256(payload).hexdigest()}
-                                                 for name, payload in file_bytes.items()}}
+                   "images": list(images), "baseImageDigests": base_image_pins(),
+                   "files": {name: {"bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()}
+                             for name, payload in file_bytes.items()}}
         receipt["files"][f"images/docker-images-{args.arch}.tar"] = {"bytes": tar.stat().st_size, "sha256": sha256(tar)}
         for wheel, digest in wheels.items():
             receipt["files"][f"wheels/{wheel}"] = {"bytes": (args.wheels_dir / wheel).stat().st_size, "sha256": digest}

@@ -39,6 +39,17 @@ class GuideHtmlTest(unittest.TestCase):
         with_one = build_guide_html.render("nl", images={"wizard-welkom-nl.png"})
         self.assertIn('<img src="img/wizard-welkom-nl.png"', with_one)
 
+    def test_markdown_shows_real_images_and_hides_missing_ones(self):
+        text = build_guide_html.markdown("en", images={"wizard-welcome-en.png"})
+        self.assertIn("![wizard welcome](guide/img/wizard-welcome-en.png)", text)
+        self.assertNotRegex(text, r"(?m)^\((?:Image|Afbeelding): ")
+        self.assertNotIn("guide/img/wizard-check-en.png", text)
+        self.assertIn("<!-- image: wizard-check -->", text)
+        # Every form of a screenshot line names the same screenshot for the HTML page.
+        for line in ("(Image: wizard-check)", "<!-- image: wizard-check -->", "![x](guide/img/wizard-check-en.png)"):
+            with self.subTest(line=line):
+                self.assertEqual(build_guide_html._picture(line), "wizard-check")
+
 
 if __name__ == "__main__":
     unittest.main()

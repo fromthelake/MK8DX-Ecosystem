@@ -32,4 +32,14 @@ COPY --from=build /build/apps/timetrials-web/dist /srv/dist
 COPY --from=build /build/web-assets /srv/assets
 COPY --from=scanner /build/apps/timetrials-scanner-web/dist /srv/scanner
 COPY infrastructure/docker/Caddyfile.local /etc/caddy/Caddyfile
+# Caddy runs without root (#34): the entrypoint picks the user, hands /data and /config to it and
+# drops to it with su-exec. Ports 80/443 stay bindable: Docker opens all ports to unprivileged
+# processes in a container's own network namespace (net.ipv4.ip_unprivileged_port_start=0).
+RUN apk add --no-cache su-exec \
+    && addgroup -S -g 10002 caddy \
+    && adduser -S -D -H -u 10002 -G caddy -h /nonexistent -s /sbin/nologin caddy \
+    && chown caddy:caddy /data /config
+COPY --chmod=0755 infrastructure/docker/gateway-entrypoint.sh /usr/local/bin/mk8dx-gateway-entrypoint
+ENTRYPOINT ["/usr/local/bin/mk8dx-gateway-entrypoint"]
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
 EXPOSE 80

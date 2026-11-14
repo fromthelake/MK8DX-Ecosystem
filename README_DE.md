@@ -66,6 +66,128 @@ Abo, keine Werbung.
 
 ---
 
+## Wie alles zusammenhängt
+
+MK8DX ist nicht ein einzelnes Programm, sondern eine kleine Familie rund um einen **Community-Server**.
+Der Server speichert alles, was zählt: Konten, Zeiten, Turniere und Wertungen. Die Apps drumherum lesen den
+Spielbildschirm auf deinen eigenen Geräten und schicken das Ergebnis an die Community, die du gewählt hast.
+
+```mermaid
+flowchart TB
+  REC["Gemeinsame Erkennung<br/>in jede App eingebaut"]
+
+  subgraph devices["Handys und Browser der Spieler"]
+    WEB["Jeder Browser<br/>Website + Scanner"]
+    APP["Android-App<br/>mit Scanner"]
+  end
+
+  subgraph pcs["Windows-PC + Capture-Karte"]
+    LT["LiveTrial<br/>automatisches Zeitfahren"]
+    TL["Tournament Live<br/>Rennen am Abend"]
+    TA["Tournament Analysis<br/>Aufnahmen danach"]
+  end
+
+  subgraph server["Community-Server: zu Hause, im Verein oder online"]
+    DIR{"Organisator prüft<br/>jedes Rennen"}
+    API["Website + API"]
+    DB[("Datenbank")]
+  end
+
+  WR["Weltrekorde<br/>täglich aktualisiert"]
+
+  REC -.-> WEB
+  REC -.-> APP
+  REC -.-> LT
+  REC -.-> TL
+  REC -.-> TA
+  WEB <--->|"Zeiten, Ranglisten, Rivalen"| API
+  APP <-->|"Zeiten, gesendet sobald online"| API
+  LT -->|"Zeitfahr-Läufe"| API
+  TL -->|"Rennergebnisse, live"| DIR
+  TA -->|"Importdatei"| DIR
+  DIR -->|"angenommen = offiziell"| API
+  API <--> DB
+  WR --> API
+```
+
+**Welche Teile brauche ich?**
+
+- **Ein Community-Server — der einzige Teil, den jede Community braucht.** Das ist die Website mit ihrer
+  API und Datenbank. Betreibe ihn in deinem Heim- oder Vereinsnetz ([A2](docs/install/A2_HOME_GUIDE_EN.md), nach
+  der Einrichtung ohne Internet) oder online auf einem Server oder Webhosting
+  ([Einen Community-Server betreiben](docs/guides/HOSTING.md)).
+- **Spieler brauchen nicht mehr als einen Browser.** Die Website bringt den Browser-Scanner mit. Die Android-App
+  ergänzt das Scannen auf dem Handy, deine Zeiten ohne Internet und den Wechsel zwischen Communities mit einem
+  Tipp ([Players](docs/guides/PLAYERS.md)).
+- **Ein Windows-PC mit Capture-Karte ist optional.** LiveTrial zeichnet jeden Zeitfahr-Lauf von selbst auf; du
+  schickst ihn mit einem Klick an deine Community oder automatisch ([LiveTrial](docs/guides/LIVETRIAL.md)).
+- **Turnierabende laufen auf der Website.** Tournament Live (während des Abends) und Tournament Analysis
+  (Aufnahmen danach) schlagen nur Rennergebnisse vor; Punkte kannst du auch eintippen oder aus Excel/CSV
+  importieren. Nichts ändert die Wertung, bevor der Organisator es annimmt
+  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
+- **Die Erkennung ist geteilt, kein Dienst.** Jede App hat ihre eigene Kopie und liest den Bildschirm auf deinem
+  Gerät; der Server prüft nur das vorgeschlagene Ergebnis
+  ([Erkennungs-Pipeline](docs/architecture/RECOGNITION_PIPELINE.md) ·
+  [Architektur](docs/architecture/COMPONENTS.md)).
+
+## Loslegen
+
+| Ich möchte… | Hier anfangen |
+| --- | --- |
+| **MK8DX zu Hause oder in meinem Verein betreiben** | Das A2-Paket für deinen Computer aus den [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): entpacken, starten, auf Weiter klicken. Schritt für Schritt (das A2-Paket enthält auch eine bebilderte Fassung): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **LAN-Turnierabende organisieren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
+| **mein Zeitfahren automatisch aufzeichnen** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + eine Capture-Karte |
+| **meine Zeiten eintragen und vergleichen** | [Spieler](docs/guides/PLAYERS.md) — jeder Browser; Android 8.0+ |
+| **eine Community-Website betreiben** | [Einen Community-Server betreiben](docs/guides/HOSTING.md) |
+| **den Code ändern** | [Entwicklerhandbuch](docs/DEVELOPMENT.md), [Testen](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+
+Jede Zeile nennt die Anleitung, der du von Anfang bis Ende folgst. Den Server aus dem Quellcode zu bauen,
+statt ein Release-Paket zu nutzen, ist für Entwickler: [Start aus dem Quellcode](docs/GETTING_STARTED.md).
+
+### Welcher Computer für welche Route
+
+Jede Route gibt dir dieselbe Website; sie unterscheiden sich darin, wo sie läuft und wer sie erreichen kann.
+
+| Route | Für | Läuft auf | Status |
+| --- | --- | --- | --- |
+| **A2** Heim- oder Vereinsnetzwerk | Dein eigenes Netzwerk, nach der Einrichtung kein Internet nötig, Anmeldekarten für alle | Windows 11 (x86-64), Linux (x86-64 oder arm64), Mac (Apple Silicon oder Intel) | Unter Windows 11 durchgehend getestet; Linux in WSL 2; Mac gebaut, noch nicht auf einem echten Mac getestet |
+| **A1** ein Computer | Ausprobieren auf dem Computer, an dem du sitzt | Windows 11 oder Linux, x86-64, mit Docker | Getestet: Installation, Upgrade, Backup |
+| **A3** ein Computer ohne Docker | Ein Windows-PC, auf dem Docker keine Option ist | Windows 11 mit XAMPP und Node.js | Getestet: Installation, Upgrade, Backup |
+| **B1** öffentliche Website | Deine Online-Community, deine eigene Domain und E-Mail | Ein Linux-x86-64-Server (VPS) mit Docker; Ubuntu 24.04 dokumentiert | Dokumentiert, noch nicht durchgehend getestet |
+| **B2** Webhosting | Online, ohne eigenen Server | Ein Hosting-Paket mit Node.js (Passenger), MariaDB/MySQL und SSH | Unsere eigene Community-Seite läuft so; das öffentliche Paket wurde noch nicht von Grund auf auf einem neuen Hosting-Konto installiert |
+
+Die Apps drumherum:
+
+| App | Läuft auf | Warum |
+| --- | --- | --- |
+| Website und Browser-Scanner | Jeder moderne Browser; Chrome oder Edge zum Scannen empfohlen | Der Scanner läuft komplett auf deinem Gerät und braucht einen Browser, der ihm mehrere Threads gibt |
+| Android-App | Android 8.0 oder neuer, arm64 empfohlen | Scannt auf dem Handy selbst, auch ohne Verbindung |
+| iPhone und iPad | Die Website im Browser; Scannen in Safari wird noch getestet | Es gibt keine iOS-App: Um eine zu bauen und zu signieren, braucht man einen Mac und ein Apple-Entwicklerkonto |
+| LiveTrial und Tournament Live | Windows auf x86-64 (getestet unter Windows 11), mit einer USB-HDMI-Capture-Karte pro Bildschirm | Die Capture-Karten und die mitgelieferte Erkennungs-Engine sind für Windows gebaut und getestet; es gibt keinen macOS- oder Linux-Build |
+
+**Erster Start der Android-App:** Sie fragt *Wähle deine Community*. Zu Hause oder im Verein scannst du die
+Karte **Prepare a device**, die dein Administrator dir zeigt; für eine Online-Community tippst du ihre
+Website-Adresse ein. Danach meldest du dich über den Browser an. Details: [Spieler](docs/guides/PLAYERS.md#first-start).
+
+**Eine App, mehrere Communitys:** Der Community-Chip oben wechselt mit einem Tipp zwischen deinem Verein,
+deiner Installation zu Hause und einer Online-Community; jede behält ihr eigenes Konto und ihre noch nicht
+gesendeten Zeiten. Unter **Du** → **Meine Zeiten** siehst du deine Bestzeit pro Strecke, auch ohne
+Internet, und mit mehr als einer Community kannst du deine Bestzeiten in eine andere mitnehmen — wenn
+diese Community sie annimmt.
+
+**Warum nicht alles überall?** Jedes Paket wird nur dort angeboten, wo es gebaut und ausprobiert wurde.
+Die Server-Images für A1 und B1 gibt es nur für x86-64; A2 gibt es auch für arm64. Für Intel-Macs wird die
+Sicherheitsbibliothek, die A2 braucht (`cryptography`), nicht mehr veröffentlicht, daher baut das Release
+sie auf einem Intel-Mac aus dem Quellcode und testet sie dort
+([wie](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 gibt es für Leute, die Docker nicht nutzen
+können oder wollen. Das [Hosting-Handbuch](docs/guides/HOSTING.md) und die [Release-Pakete](docs/RELEASE_PACKAGES.md)
+listen jede Datei und ihre genauen Anforderungen auf.
+
+Eine frische Installation beginnt leer: Es werden keine Community-Konten oder Ergebnisse übernommen. Sie
+bringt nur den Spielkatalog und die Referenzsätze für die Nintendo-Mitarbeiter-Geister und Weltrekorde mit.
+
+---
+
 ## 🏁 LAN-Turnierabende
 
 Erinnerst du dich an LAN-Partys? Zwei Spieler pro Bildschirm, ein Raum voller Switches, alle brüllen
@@ -171,6 +293,47 @@ geprüft; die anderen Sprachen sind maschinell übersetzt, und die Erkennung wir
 auf echten Konsolen überprüft. Spielst du in deiner Sprache? Deine Hilfe beim Prüfen ist der
 wertvollste Beitrag, den es gibt.
 
+## 🛠️ Mach es zu deinem eigenen
+
+MK8DX ist Open Source, von Spielern für Spieler gebaut. Betreibe es für deinen Verein, deine Familie
+oder die LAN-Szene deiner Stadt; pass es daran an, wie *deine* Abende funktionieren; und bau darauf auf:
+
+- **Übersetze oder prüfe** deine Sprache (die Website, die Apps und die Erkennung im Spiel).
+- **Teste die Erkennung** mit deiner eigenen Konsole, Sprache und Capture-Karte und melde, was sie
+  übersieht.
+- **Füge hinzu, was deine Community braucht** — neue Turnierformate, Statistiken, Wege, Ergebnisse zu
+  teilen.
+- **Verbessere die Dokumentation**, damit der nächste Organisator noch schneller loslegen kann.
+
+Fang mit [Contributing](CONTRIBUTING.md) und dem [Entwicklerhandbuch](docs/DEVELOPMENT.md) an.
+Jeder Pull Request, jeder Fehlerbericht und jede Übersetzungskorrektur macht den nächsten LAN-Abend für
+alle besser.
+
+## Projektstatus
+
+Stabile Releases gibt es auf [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0
+brachte A2, zu Hause oder im Verein; 0.2.1 gibt der Android-App eine Offline-Kopie deiner Zeiten und ein
+ruhigeres Layout. 0.2.2 bringt die Analyse von Aufnahmen wieder zum Laufen und ergänzt das Fenster Tournament Analysis. 0.2.3 betreibt das Web-Gateway ohne Root-Rechte und erleichtert den Einstieg in das Repository. Siehe das [Changelog](CHANGELOG.md), die [Release-Pakete](docs/RELEASE_PACKAGES.md) und das
+vollständige Handbuch ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
+
+Die Erkennung macht ein Ergebnis niemals von selbst offiziell: Deine eigenen Zeitfahren prüfst du selbst,
+und ein Organisator prüft Turnierrennen, bevor sie zählen.
+
+## Dokumentation
+
+| Ich möchte… | Lesen |
+| --- | --- |
+| verstehen, wie die Erkennung funktioniert | [Erkennungs-Pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
+| die Bestandteile verstehen und wie ein Ergebnis seinen Weg nimmt | [Architektur](docs/architecture/COMPONENTS.md) |
+| den Code bauen oder ändern | [Entwicklerhandbuch](docs/DEVELOPMENT.md) und [Testen](docs/TESTING.md) |
+| die nativen Clients bauen | [Client-Builds](docs/CLIENT_BUILDS.md) |
+| eine Installation betreiben (Backup, Upgrade, Wiederherstellung) | [Betrieb](docs/OPERATIONS.md) |
+| wissen, warum etwas so ist, wie es ist | [Entscheidungsverzeichnis](docs/decisions/README.md) |
+| beitragen | [Contributing](CONTRIBUTING.md), [Verhaltenskodex](CODE_OF_CONDUCT.md) |
+| Hilfe bekommen | [Hilfe bekommen](SUPPORT.md) |
+| ein Sicherheitsproblem melden | [Sicherheitsrichtlinie](SECURITY.md) |
+| mit einem Coding-Agenten arbeiten | [AGENTS.md](AGENTS.md) |
+
 ## 💡 Die Geschichte dahinter
 
 **Alles begann mit einem lokalen Mario-Kart-Turnier, ein paar begeisterten Leuten und einer Einladung im Dezember 2023.**
@@ -215,17 +378,15 @@ Es war eine unglaubliche Lernerfahrung, besonders rund um Bilderkennung, Automat
 
 Jetzt, im Jahr 2026, kann ich die Ergebnisse endlich als **Open-Source-Ökosystem** teilen, damit andere es nutzen, verbessern und hoffentlich genauso viel Spaß damit haben wie wir.
 
-### ❤️ Für Volkert
+### Eine Würdigung für Volkert
 
-Einen Teil dieses Projekts möchte ich auch unserem lieben Freund und Rivalen **Volkert** widmen, der viel zu früh von uns gegangen ist.
+Ich möchte auch **Volkert** würdigen, einen geschätzten Zeitfahren-Rivalen, der vor Kurzem viel zu jung verstorben ist.
 
-Volkert war einer dieser Menschen, die uns immer wieder dazu inspirierten, uns noch ein bisschen mehr anzustrengen, die schnellere Ideallinie zu finden und noch ein einziges Zeitfahren mehr zu versuchen. Die freundschaftliche Rivalität, besonders rund um Baby-Park und Big Blue, machte den Wettkampf zu etwas Besonderem.
+Unsere Rivalität, vor allem auf Baby-Park und Big Blue mit 150 ccm, war ein ständiger Ansporn, besser zu werden. Ich bin sicher, dass wir beide viele Stunden damit verbracht haben, die letzten Millisekunden herauszuholen, auch wenn ich vermute, dass ich deutlich mehr Stunden investiert habe als er. Er war einfach erfahrener und konstanter.
 
-Aber mehr als die Rundenzeiten oder Ranglisten zählen die gemeinsamen Momente. Mit Freunden in einer Lagerhalle sitzen, lachen, gegeneinander antreten, Pizza teilen und etwas so Einfaches wie ein Spiel genießen.
+Was damit begann, dass wir zu dritt unsere Zeiten in einer Excel-Tabelle festhielten, wuchs nach und nach zu den Zeitfahren-Funktionen, die heute Teil dieses Ökosystems sind.
 
-Das sind die Momente, an die es sich zu erinnern lohnt.
-
-Volkert, danke für den Wettkampf, die Inspiration und die Erinnerungen. Du wirst immer ein Teil dieser Geschichte sein.
+Ich hoffe, dass dieses Projekt anderen die Gelegenheit gibt, dieselbe freundschaftliche Rivalität und denselben Ansporn zu erleben, immer besser zu werden.
 
 ### Fahrt weiter, teilt weiter
 
@@ -240,102 +401,6 @@ Und zum Schluss ein großes Dankeschön an **Nintendo** dafür, so fantastische 
 Schließlich hat genau so dieses ganze Abenteuer begonnen.
 
 — [fromthelake](https://github.com/fromthelake)
-
-## 🛠️ Mach es zu deinem eigenen
-
-MK8DX ist Open Source, von Spielern für Spieler gebaut. Betreibe es für deinen Verein, deine Familie
-oder die LAN-Szene deiner Stadt; pass es daran an, wie *deine* Abende funktionieren; und bau darauf auf:
-
-- **Übersetze oder prüfe** deine Sprache (die Website, die Apps und die Erkennung im Spiel).
-- **Teste die Erkennung** mit deiner eigenen Konsole, Sprache und Capture-Karte und melde, was sie
-  übersieht.
-- **Füge hinzu, was deine Community braucht** — neue Turnierformate, Statistiken, Wege, Ergebnisse zu
-  teilen.
-- **Verbessere die Dokumentation**, damit der nächste Organisator noch schneller loslegen kann.
-
-Fang mit [Contributing](CONTRIBUTING.md) und dem [Entwicklerhandbuch](docs/DEVELOPMENT.md) an.
-Jeder Pull Request, jeder Fehlerbericht und jede Übersetzungskorrektur macht den nächsten LAN-Abend für
-alle besser.
-
----
-
-## Loslegen
-
-| Ich möchte… | Hier anfangen |
-| --- | --- |
-| **MK8DX zu Hause oder in meinem Verein betreiben** | Das A2-Paket für deinen Computer aus den [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): entpacken, starten, auf Weiter klicken. Schritt für Schritt mit Bildern: [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
-| **LAN-Turnierabende organisieren** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) |
-| **mein Zeitfahren automatisch aufzeichnen** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + eine Capture-Karte |
-| **meine Zeiten eintragen und vergleichen** | [Spieler](docs/guides/PLAYERS.md) — jeder Browser; Android 8.0+ |
-| **eine Community-Website betreiben** | [Einen Community-Server betreiben](docs/guides/HOSTING.md) |
-| **den Code ändern** | [Entwicklerhandbuch](docs/DEVELOPMENT.md), [Testen](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
-
-### Welcher Computer für welche Route
-
-Jede Route gibt dir dieselbe Website; sie unterscheiden sich darin, wo sie läuft und wer sie erreichen kann.
-
-| Route | Für | Läuft auf | Status |
-| --- | --- | --- | --- |
-| **A2** Heim- oder Vereinsnetzwerk | Dein eigenes Netzwerk, nach der Einrichtung kein Internet nötig, Anmeldekarten für alle | Windows 11 (x86-64), Linux (x86-64 oder arm64), Mac (Apple Silicon oder Intel) | Unter Windows 11 durchgehend getestet; Linux in WSL 2; Mac gebaut, noch nicht auf einem echten Mac getestet |
-| **A1** ein Computer | Ausprobieren auf dem Computer, an dem du sitzt | Windows 11 oder Linux, x86-64, mit Docker | Getestet: Installation, Upgrade, Backup |
-| **A3** ein Computer ohne Docker | Ein Windows-PC, auf dem Docker keine Option ist | Windows 11 mit XAMPP und Node.js | Getestet: Installation, Upgrade, Backup |
-| **B1** öffentliche Website | Deine Online-Community, deine eigene Domain und E-Mail | Ein Linux-x86-64-Server (VPS) mit Docker; Ubuntu 24.04 dokumentiert | Dokumentiert, noch nicht durchgehend getestet |
-| **B2** Webhosting | Online, ohne eigenen Server | Ein Hosting-Paket mit Node.js (Passenger), MariaDB/MySQL und SSH | Unsere eigene Community-Seite läuft so; das öffentliche Paket wurde noch nicht von Grund auf auf einem neuen Hosting-Konto installiert |
-
-Die Apps drumherum:
-
-| App | Läuft auf | Warum |
-| --- | --- | --- |
-| Website und Browser-Scanner | Jeder moderne Browser; Chrome oder Edge zum Scannen empfohlen | Der Scanner läuft komplett auf deinem Gerät und braucht einen Browser, der ihm mehrere Threads gibt |
-| Android-App | Android 8.0 oder neuer, arm64 empfohlen | Scannt auf dem Handy selbst, auch ohne Verbindung |
-| iPhone und iPad | Die Website im Browser; Scannen in Safari wird noch getestet | Es gibt keine iOS-App: Um eine zu bauen und zu signieren, braucht man einen Mac und ein Apple-Entwicklerkonto |
-| LiveTrial und Tournament Live | Windows auf x86-64 (getestet unter Windows 11), mit einer USB-HDMI-Capture-Karte pro Bildschirm | Die Capture-Karten und die mitgelieferte Erkennungs-Engine sind für Windows gebaut und getestet; es gibt keinen macOS- oder Linux-Build |
-
-**Erster Start der Android-App:** Sie fragt *Wähle deine Community*. Zu Hause oder im Verein scannst du die
-Karte **Prepare a device**, die dein Administrator dir zeigt; für eine Online-Community tippst du ihre
-Website-Adresse ein. Danach meldest du dich über den Browser an. Details: [Spieler](docs/guides/PLAYERS.md#first-start).
-
-**Eine App, mehrere Communitys:** Der Community-Chip oben wechselt mit einem Tipp zwischen deinem Verein,
-deiner Installation zu Hause und einer Online-Community; jede behält ihr eigenes Konto und ihre noch nicht
-gesendeten Zeiten. Unter **Du** → **Meine Zeiten** siehst du deine Bestzeit pro Strecke, auch ohne
-Internet, und mit mehr als einer Community kannst du deine Bestzeiten in eine andere mitnehmen — wenn
-diese Community sie annimmt.
-
-**Warum nicht alles überall?** Jedes Paket wird nur dort angeboten, wo es gebaut und ausprobiert wurde.
-Die Server-Images für A1 und B1 gibt es nur für x86-64; A2 gibt es auch für arm64. Für Intel-Macs wird die
-Sicherheitsbibliothek, die A2 braucht (`cryptography`), nicht mehr veröffentlicht, daher baut das Release
-sie auf einem Intel-Mac aus dem Quellcode und testet sie dort
-([wie](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 gibt es für Leute, die Docker nicht nutzen
-können oder wollen. Das [Hosting-Handbuch](docs/guides/HOSTING.md) und die [Release-Pakete](docs/RELEASE_PACKAGES.md)
-listen jede Datei und ihre genauen Anforderungen auf.
-
-Eine frische Installation beginnt leer: Es werden keine Community-Konten oder Ergebnisse übernommen. Sie
-bringt nur den Spielkatalog und die Referenzsätze für die Nintendo-Mitarbeiter-Geister und Weltrekorde mit.
-
-## Projektstatus
-
-Stabile Releases gibt es auf [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0
-brachte A2, zu Hause oder im Verein; 0.2.1 gibt der Android-App eine Offline-Kopie deiner Zeiten und ein
-ruhigeres Layout. Siehe das [Changelog](CHANGELOG.md), die [Release-Pakete](docs/RELEASE_PACKAGES.md) und das
-vollständige Handbuch ([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
-
-Die Erkennung macht ein Ergebnis niemals von selbst offiziell: Deine eigenen Zeitfahren prüfst du selbst,
-und ein Organisator prüft Turnierrennen, bevor sie zählen.
-
-## Dokumentation
-
-| Ich möchte… | Lesen |
-| --- | --- |
-| verstehen, wie die Erkennung funktioniert | [Erkennungs-Pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| die Bestandteile verstehen und wie ein Ergebnis seinen Weg nimmt | [Architektur](docs/architecture/COMPONENTS.md) |
-| den Code bauen oder ändern | [Entwicklerhandbuch](docs/DEVELOPMENT.md) und [Testen](docs/TESTING.md) |
-| die nativen Clients bauen | [Client-Builds](docs/CLIENT_BUILDS.md) |
-| eine Installation betreiben (Backup, Upgrade, Wiederherstellung) | [Betrieb](docs/OPERATIONS.md) |
-| wissen, warum etwas so ist, wie es ist | [Entscheidungsverzeichnis](docs/decisions/README.md) |
-| beitragen | [Contributing](CONTRIBUTING.md), [Verhaltenskodex](CODE_OF_CONDUCT.md) |
-| Hilfe bekommen | [Hilfe bekommen](SUPPORT.md) |
-| ein Sicherheitsproblem melden | [Sicherheitsrichtlinie](SECURITY.md) |
-| mit einem Coding-Agenten arbeiten | [AGENTS.md](AGENTS.md) |
 
 ## Lizenz und Nintendo
 

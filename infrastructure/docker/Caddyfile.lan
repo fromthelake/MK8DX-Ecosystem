@@ -1,3 +1,9 @@
+{
+  # The gateway runs without root (#34) and its local CA serves only this site: never try to add
+  # the root to the container's own trust store (that needs root and is never used).
+  skip_install_trust
+}
+
 https://{$MK8DX_DOMAIN} {
   tls internal
   encode zstd gzip

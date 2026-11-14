@@ -8,8 +8,10 @@ const fg = await import('./sharedFrameGeometry.ts');
 const defs = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const doc = JSON.parse(readFileSync(process.argv[3], 'utf8'));
 const KINDS = ['character_icon', 'kart_icon', 'wheel_icon', 'glider_icon', 'flag_icon'];
-const near = (a, b) => JSON.stringify(a, (_k, v) => (typeof v === 'number' ? Math.round(v * 1e9) / 1e9 : v))
-  === JSON.stringify(b, (_k, v) => (typeof v === 'number' ? Math.round(v * 1e9) / 1e9 : v));
+// numbers to 1e-9 and object keys sorted (the public vectors are written with sorted keys)
+const canon = (v) => JSON.stringify(v, (_k, x) => (typeof x === 'number' ? Math.round(x * 1e9) / 1e9
+  : x && typeof x === 'object' && !Array.isArray(x) ? Object.fromEntries(Object.keys(x).sort().map((k) => [k, x[k]])) : x));
+const near = (a, b) => canon(a) === canon(b);
 let differences = 0;
 for (const c of doc.cases) {
   const panel = fg.panelBox(defs, c.raceKey, c.owner, c.anchor);

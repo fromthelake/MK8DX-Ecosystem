@@ -15,14 +15,16 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 /**
- * The Java 7-segment matcher against Python's records (tooling/recognition/segment_digit_vectors.py).
- * The private vectors stay outside Git: MK8DX_SEGMENT_DIGIT_VECTORS.
+ * The Java 7-segment matcher against Python's records: the public synthetic vectors
+ * (packages/icon-matcher/vectors/segment-digits-v1.json, tools/generate_rule_vectors.py; issue #99), or
+ * private vectors outside Git (MK8DX_SEGMENT_DIGIT_VECTORS).
  */
 public class SegmentDigitsParityTest {
     @Test
     public void javaMatcherEqualsPython() throws Exception {
         String path = System.getenv("MK8DX_SEGMENT_DIGIT_VECTORS");
-        assumeTrue("private segment vectors not configured", path != null);
+        if (path == null) path = "../../../packages/icon-matcher/vectors/segment-digits-v1.json";
+        assumeTrue("segment vectors not found", Files.isRegularFile(Paths.get(path)));
         JSONObject doc = new JSONObject(new String(Files.readAllBytes(Paths.get(path)), "UTF-8"));
         Map<String, SegmentDigits.Template> templates = new HashMap<>();
         JSONObject raw = doc.getJSONObject("templates");

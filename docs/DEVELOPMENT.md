@@ -87,7 +87,10 @@ python -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 ```
 
-On Windows the interpreter is `.venv\Scripts\python.exe`. `.venv/` is ignored by Git. Node dependencies are per
+On Windows the interpreter is `.venv\Scripts\python.exe`. `.venv/` is ignored by Git. The `python` commands in
+these docs and in [Testing](TESTING.md) assume this environment is active: run `source .venv/bin/activate`
+(Linux, macOS, Git Bash: `source .venv/Scripts/activate`) or `.venv\Scripts\Activate.ps1` (PowerShell) in each new
+terminal, or type the interpreter path instead of `python`. Node dependencies are per
 component: `npm ci --prefix backend/api`, `npm ci --prefix apps/timetrials-web`, and
 `npm ci --ignore-scripts --prefix apps/timetrials-scanner-web`.
 

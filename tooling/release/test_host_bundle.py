@@ -24,8 +24,56 @@ class HostBundleImageReferencesTest(unittest.TestCase):
         images = host_bundle.image_tags(None)
         self.assertEqual(images, host_bundle.IMAGES)
         for name in host_bundle.PACKAGE_IMAGE_FILES:
-            self.assertEqual(host_bundle.package_bytes(name, images),
-                             (host_bundle.ROOT / name).read_bytes())
+            payload = host_bundle.package_bytes(name, images).decode("utf-8")
+            for image in images[:2]:
+                self.assertIn(image, payload)
+
+
+class HostBundleBaseImagePinsTest(unittest.TestCase):
+    """#34: MySQL and Mailpit are digest-pinned in Compose; a package starts its tar-loaded copies by tag."""
+
+    def test_compose_pins_every_third_party_image_by_index_digest(self):
+        pins = host_bundle.base_image_pins()
+        # The repositories are fixed; the tags move with Dependabot, which updates tag and digest together.
+        self.assertEqual(sorted(host_bundle.repository(tag) for tag in pins), ["axllent/mailpit", "mysql"])
+        self.assertEqual(host_bundle.IMAGES[2:], tuple(pins))
+        for tag, digest in pins.items():
+            self.assertRegex(digest, r"^sha256:[0-9a-f]{64}$")
+            name = host_bundle.BASE_IMAGE_FILES["mysql" if tag.startswith("mysql:") else "mailpit"]
+            self.assertIn(f"    image: {tag}@{digest}\n", (host_bundle.ROOT / name).read_text(encoding="utf-8"))
+
+    def test_packaged_compose_files_name_the_tag_without_the_digest(self):
+        for version in (None, "v0.2.3"):
+            images = host_bundle.image_tags(version)
+            for name in set(host_bundle.BASE_IMAGE_FILES.values()):
+                with self.subTest(version=version, name=name):
+                    source = (host_bundle.ROOT / name).read_text(encoding="utf-8")
+                    payload = host_bundle.package_bytes(name, images).decode("utf-8")
+                    self.assertNotIn("@sha256:", payload)
+                    for tag, digest in host_bundle.base_image_pins().items():
+                        if f"{tag}@{digest}" in source:
+                            self.assertIn(f"    image: {tag}\n", payload)
+                    self.assertEqual(payload.count("\n"), source.count("\n"))
+
+    def test_a_local_image_with_another_digest_is_refused(self):
+        pins = host_bundle.base_image_pins()
+        good = {tag: [f"{host_bundle.repository(tag)}@{digest}"] for tag, digest in pins.items()}
+        host_bundle.check_base_image_digests(good.get)
+        mysql = next(tag for tag in pins if host_bundle.repository(tag) == "mysql")
+        stale = dict(good, **{mysql: ["mysql@sha256:" + "0" * 64]})
+        with self.assertRaises(SystemExit):
+            host_bundle.check_base_image_digests(stale.get)
+        with self.assertRaises(SystemExit):
+            host_bundle.check_base_image_digests(lambda tag: [])
+
+    def test_pull_fetches_by_digest_and_tags(self):
+        with mock.patch.object(host_bundle.subprocess, "run") as run:
+            host_bundle.pull_base_images("arm64")
+        commands = [call.args[0] for call in run.call_args_list]
+        for tag, digest in host_bundle.base_image_pins().items():
+            pinned = f"{host_bundle.repository(tag)}@{digest}"
+            self.assertIn(["docker", "pull", "--platform", "linux/arm64", pinned], commands)
+            self.assertIn(["docker", "tag", pinned, tag], commands)
 
     def test_invalid_tag_cannot_be_used_as_image_name(self):
         for version in ("main", "v0.1.0;docker", "v0.1.0/evil", "v0.1.0-rc.1+dirty"):

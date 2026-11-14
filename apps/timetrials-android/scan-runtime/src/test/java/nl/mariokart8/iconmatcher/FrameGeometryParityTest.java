@@ -11,11 +11,24 @@ import org.json.JSONObject;
 import org.junit.Test;
 
 /**
- * The Java frame geometry against Python's records (tooling/recognition/frame_geometry_vectors.py);
- * MK8DX_FRAME_DEFINITIONS (frame-definitions-v1.json) and MK8DX_FRAME_GEOMETRY_VECTORS.
+ * The Java frame geometry against Python's records: the public vectors
+ * (packages/icon-matcher/vectors/frame-geometry-v1.json, tools/generate_rule_vectors.py; issue #99), or
+ * MK8DX_FRAME_GEOMETRY_VECTORS. Needs the pack's frame-definitions-v1.json (MK8DX_FRAME_DEFINITIONS or
+ * MK8DX_RECOGNITION_PACK); skips without it.
  */
 public class FrameGeometryParityTest {
     private static final String[] KINDS = {"character_icon", "kart_icon", "wheel_icon", "glider_icon", "flag_icon"};
+    static final String PUBLIC_VECTORS = "../../../packages/icon-matcher/vectors/frame-geometry-v1.json";
+
+    /** The pack's frame definitions: MK8DX_FRAME_DEFINITIONS, else MK8DX_RECOGNITION_PACK/frame-definitions-v1.json. */
+    static String frameDefinitions() {
+        String defs = System.getenv("MK8DX_FRAME_DEFINITIONS");
+        if (defs != null) return defs;
+        String pack = System.getenv("MK8DX_RECOGNITION_PACK");
+        if (pack == null) return null;
+        java.nio.file.Path path = Paths.get(pack, "frame-definitions-v1.json");
+        return Files.isRegularFile(path) ? path.toString() : null;
+    }
 
     private static JSONObject read(String path) throws Exception {
         return new JSONObject(new String(Files.readAllBytes(Paths.get(path)), "UTF-8"));
@@ -37,9 +50,10 @@ public class FrameGeometryParityTest {
 
     @Test
     public void javaFrameGeometryEqualsPython() throws Exception {
-        String defsPath = System.getenv("MK8DX_FRAME_DEFINITIONS");
+        String defsPath = frameDefinitions();
         String vectorsPath = System.getenv("MK8DX_FRAME_GEOMETRY_VECTORS");
-        assumeTrue("private frame definitions not configured", defsPath != null && vectorsPath != null);
+        if (vectorsPath == null) vectorsPath = PUBLIC_VECTORS;
+        assumeTrue("frame definitions not available (set MK8DX_RECOGNITION_PACK)", defsPath != null);
         FrameGeometry fg = new FrameGeometry(read(defsPath));
         JSONArray cases = read(vectorsPath).getJSONArray("cases");
         int differences = 0;

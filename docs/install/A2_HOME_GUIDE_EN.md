@@ -27,7 +27,7 @@ What you do not need:
 - **No account with another company**, no email address and no cloud.
 - **No subscription.** MK8DX and Python are free. Docker Desktop is free for personal use and small organizations; the terms are on Docker's website. On Linux you use the free Docker Engine.
 
-(Image: network-overview)
+<!-- image: network-overview -->
 
 ## 2. Preparing the computer
 
@@ -49,9 +49,9 @@ Do only the part for your computer (2A, 2B or 2C) and skip the other two.
 7. **Do:** click Start, type `PowerShell`, open **Windows PowerShell**, type `py install 3.15` and press Enter. This installs Python itself (the install manager is only the tool that fetches Python). → **You see:** the first time a few questions to check the settings; answer them with Enter (the suggested choice) or `y`. Then Python is downloaded and installed. A question about adding a folder to your PATH may be answered with `y`; it is not required. → **See something else?** Install exactly 3.15 as above; 3.12, 3.13 or 3.14 also work, a newer version (3.16 or later) does not yet.
 8. **Do:** close PowerShell, open it again, type `python --version` and press Enter. → **You see:** `Python 3.15` followed by a number, for example `Python 3.15.2`. → **See something else?** If the Microsoft Store opens, or it says python was not found: click Start, type **Manage app execution aliases** and open it. Turn on **Python (default)** and turn off **App Installer python.exe** and **python3.exe**. If you installed an old Python or the "Python launcher" in the past, remove it via **Settings → Apps → Installed apps** and try again.
 
-(Image: docker-engine-running)
+<!-- image: docker-engine-running -->
 
-(Image: python-install-manager)
+<!-- image: python-install-manager -->
 
 ## 2B. Preparing Linux (Ubuntu or Debian)
 
@@ -130,15 +130,15 @@ The setup is a page in your browser that only works on the MK8DX computer itself
 10. **Done! Enjoy the races.** **Do:** write down the two addresses: **Website** (for example `https://192.168.1.50`) and **New device** (for example `http://192.168.1.50/setup`). Leave the three ticks on: **Start MK8DX with Windows**, **Make a backup every night** and **Put an 'MK8DX beheer' shortcut on the desktop**. Click **Finish**. → **You see:** your recovery code (chapter 4). → **On Linux and macOS** the first tick is called "Start MK8DX when the computer starts". On macOS it then opens Docker Desktop when you sign in. On Linux, `sudo systemctl enable --now docker` from chapter 2B takes care of that; if you have not done that yet, setup shows exactly that command after Finish.
 11. **Closing.** **Do:** read chapter 4 and keep the recovery code. Then click **Close**. → **You see:** "You can close this window now." Close the browser tab. On Windows the black window asks for a key; press a key and it closes. If you do nothing, the setup page stops by itself after 10 minutes. MK8DX itself keeps running.
 
-(Image: wizard-welcome)
+![wizard welcome](guide/img/wizard-welcome-en.png)
 
-(Image: wizard-check)
+![wizard check](guide/img/wizard-check-en.png)
 
-(Image: wizard-network)
+![wizard network](guide/img/wizard-network-en.png)
 
-(Image: windows-permission)
+<!-- image: windows-permission -->
 
-(Image: wizard-done)
+![wizard done](guide/img/wizard-done-en.png)
 
 ## 4. The recovery code and the backup folder
 
@@ -160,7 +160,7 @@ Now and then copy the `MK8DX-backups` folder to a USB stick or another drive. Ot
 
 If you untick **Make a backup every night**, you get no recovery code and no backups are made. If you switch it on again later in MK8DX beheer and click **Finish**, you see your recovery code at that moment.
 
-(Image: recovery-code)
+![recovery code](guide/img/recovery-code-en.png)
 
 ## 5. People and sign-in cards (MK8DX beheer)
 
@@ -200,9 +200,9 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 
 1. **Do:** click **Next** until "Done! Enjoy the races.", leave the ticks on, click **Finish** and then **Close**. → **You see:** "You can close this window now." MK8DX keeps running.
 
-(Image: admin-people)
+![admin people](guide/img/admin-people-en.png)
 
-(Image: admin-cards)
+![admin cards](guide/img/admin-cards-en.png)
 
 ## 6. Preparing a device and signing in
 
@@ -262,9 +262,9 @@ The steps on the Prepare this device page:
 
 **Leaving this installation on a device:** remove the certificate again in the same settings you used to install it.
 
-(Image: phone-prepare-device)
+![phone prepare device](guide/img/phone-prepare-device-en.png)
 
-(Image: phone-accept-invitation)
+![phone accept invitation](guide/img/phone-accept-invitation-en.png)
 
 ## 7. The Android app and LiveTrial
 
@@ -294,9 +294,9 @@ LiveTrial is a Windows program that recognizes and keeps your Time Trials throug
 
 Good to know: without a Player, LiveTrial's sign-in ends with a message to set up your Player on the website first. After you change the address LiveTrial restarts; if it does not, quit it and open it again. Accounts and waiting runs for another server stay with that server. When you stop using this PC with the installation, remove the MK8DX certificate from **Trusted Root Certification Authorities** again (chapter 6).
 
-(Image: android-change-server)
+![android change server](guide/img/android-change-server-en.png)
 
-(Image: android-compare)
+![android compare](guide/img/android-compare-en.png)
 
 ## 8. Everyday use
 
@@ -322,7 +322,7 @@ Good to know: without a Player, LiveTrial's sign-in ends with a message to set u
 
 **Light or dark:** on a new device the website follows that device's **System** setting. After signing in, choose **Account** → **Settings** → **Appearance** → **Dark** for the dark look; that choice is saved with your account.
 
-(Image: website-switch-account)
+![website switch account](guide/img/website-switch-account-en.png)
 
 **A name for your community:** an administrator can give the installation a name, such as "Club Noord", on the website under **Administration** → **Installation settings** → **Community name**, and click **Save name**. The apps then show that name instead of the web address. Leave the field empty and save to remove the name again.
 
@@ -411,9 +411,9 @@ An address conflict happens when two devices use the same address. One of them (
 
 Other installation routes (one computer, your own server, web hosting) are in `docs/install/MK8DX_User_Guide_EN.txt`.
 
-(Image: wizard-restore)
+![wizard restore](guide/img/wizard-restore-en.png)
 
-(Image: wizard-move)
+![wizard move](guide/img/wizard-move-en.png)
 
 ## 11. Troubleshooting
 

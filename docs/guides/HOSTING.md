@@ -58,8 +58,9 @@ you extract into does not carry either one: this guide uses `/opt/mk8dx/host`.
 
 On Linux x86-64 with Git, Docker Engine and Python 3.12 or newer, from the root of a fresh clone. The package
 needs four images: the API and Web images built from this source with the tags the launchers expect, and the
-MySQL and Mailpit images that `compose.yaml` and `compose.local.yaml` name. `tooling/release/host_bundle.py
---list-images` prints exactly those four tags, so the commands read them from the script:
+MySQL and Mailpit images that `compose.yaml` and `compose.local.yaml` pin by tag and digest. `tooling/release/host_bundle.py
+--list-images` prints exactly those four tags, so the commands read them from the script; `--pull-base-images`
+fetches MySQL and Mailpit by their pinned digest and gives them their tag:
 
 ```sh
 git clone https://github.com/fromthelake/MK8DX-Ecosystem.git
@@ -68,8 +69,7 @@ python3 tooling/assets/shared_asset_source.py verify
 set -- $(python3 tooling/release/host_bundle.py --list-images)   # API, Web, MySQL, Mailpit
 docker build --platform linux/amd64 -f backend/api/Dockerfile -t "$1" .
 docker build --platform linux/amd64 -f apps/timetrials-web/Dockerfile -t "$2" .
-docker pull --platform linux/amd64 "$3"
-docker pull --platform linux/amd64 "$4"
+python3 tooling/release/host_bundle.py --pull-base-images --arch amd64
 mkdir -p "$HOME/mk8dx-packages"
 python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host-local-r0-local-amd64.zip" --revision r0-local
 ```
@@ -78,7 +78,10 @@ python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host
     writes a `.manifest.json` with the archive's SHA-256 next to it. `--revision` is your own label for the package.
     For a versioned release build, pass the same `--version vX.Y.Z` (or `vX.Y.Z-rc.N`) to `--list-images` and to
     the packaging invocation; this selects matching GHCR image names in the archive, launchers and Compose file.
-- The script runs `tooling/privacy_scan.py` first and stops on a finding, so build from a clean clone.
+- The script runs `tooling/privacy_scan.py` first and stops on a finding, so build from a clean clone. It also
+  refuses a local MySQL or Mailpit image whose registry digest is not the pinned one. The package's Compose files
+  name those two images by tag only, because `docker load` does not restore registry digests; the manifest records
+  the pinned digests under `baseImageDigests`.
 - The image builds replace any images with the same tags on this machine, including those of an installed host
   package. Build on a machine that does not run one, or accept that it will run your build from then on.
 - A package you built yourself has no `SHA256SUMS.txt`; compare the copy on the server with `archiveSha256` in
@@ -238,7 +241,9 @@ An installation built from source is removed the same way from the repository ro
   `sh tooling/start-mk8dx.sh`); the setup opens in your browser. Follow the [A2 guide](../install/A2_HOME_GUIDE_EN.md).
 - **Shared hosting (B2)**: chapter 4 of the user guide (upload over SSH, `python3 tooling/install.py wizard`,
   `setup`, `passenger-config`, then start the Node.js app in your hosting panel). Any hosting plan with Node.js
-  (Passenger), MariaDB/MySQL and SSH fits; the chapter uses mijn.host Starter as its worked example.
+  (Passenger), MariaDB/MySQL and SSH fits; the chapter uses mijn.host Starter as its worked example. Despite its
+  name, `mk8dx-mijnhost-node-….zip` is the package for any such Node.js host: mijn.host is the tested example,
+  and the port 26 in its `ssh -p 26`/`scp -P 26` commands is that provider's SSH port, so use your own host's.
 - **Building the A3 and B2 packages from a clone**: `tooling/release/non_docker_bundle.py` makes both ZIPs, on
   Windows (it calls `npm.cmd`). First build the API and website (`npm ci` and `npm run build` with
   `--prefix backend/api` and `--prefix apps/timetrials-web`) and the browser scanner as in
