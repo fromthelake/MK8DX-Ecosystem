@@ -52,7 +52,7 @@ The app offers a faster scan on the phone itself, your times and notifications. 
 
 ### Requirements
 
-- Android 8.0 or newer; an arm64 phone is recommended. The release APK is large (about 484 MB): keep about
+- Android 8.0 or newer; an arm64 phone is recommended. The release APK is large (about 530 MB): keep about
   1 GB free while installing.
 - A community the app can reach: an **online community** with a trusted HTTPS address, or a **home or club
   installation** (A2) on the same Wi-Fi. A computer-local address (`http://127.0.0.1:…`) does not work in the app.

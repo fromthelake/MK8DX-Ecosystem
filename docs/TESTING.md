@@ -68,6 +68,15 @@ node --experimental-strip-types --no-warnings \
 PYTHONPATH=packages/icon-matcher/python python -m pytest -q packages/icon-matcher/python/tests
 ```
 
+In PowerShell:
+
+```powershell
+node --experimental-strip-types --no-warnings --experimental-loader ./packages/icon-matcher/ts/ts_resolve_hook.mjs --test "packages/icon-matcher/ts/*.test.mjs"
+$env:PYTHONPATH = "packages/icon-matcher/python"
+python -m pytest -q packages/icon-matcher/python/tests
+Remove-Item Env:PYTHONPATH
+```
+
 The Python tests need the pinned packages in [requirements-dev.txt](../requirements-dev.txt). Tests that use
 private evaluation images skip when those are not configured.
 

@@ -38,7 +38,10 @@ python -m venv .venv
 .venv/bin/python -m pip install -r requirements-dev.txt
 ```
 
-Op Windows is de interpreter `.venv\Scripts\python.exe`. `.gitattributes` houdt elk bestand byte-gelijk aan de
+Op Windows is de interpreter `.venv\Scripts\python.exe`. De `python`-opdrachten in deze documenten en in
+[Testen](TESTING_NL.md) gaan uit van deze actieve omgeving: voer in elke nieuwe terminal
+`source .venv/bin/activate` uit (Linux, macOS; Git Bash: `source .venv/Scripts/activate`) of
+`.venv\Scripts\Activate.ps1` (PowerShell), of typ het pad van de interpreter in plaats van `python`. `.gitattributes` houdt elk bestand byte-gelijk aan de
 commit, ook met `core.autocrlf`: migraties, collectie en testset worden op hash gecontroleerd.
 
 Een installatie bewaart accounts, database, sleutels, backups en clientwachtrijen in een gegevensmap
