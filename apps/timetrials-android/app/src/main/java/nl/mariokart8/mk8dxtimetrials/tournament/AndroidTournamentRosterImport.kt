@@ -41,11 +41,22 @@ internal sealed interface AndroidRosterChoice {
 internal fun androidRosterNameKey(displayName: String): String =
     displayName.trim().lowercase(Locale.ROOT)
 
-private fun fold(value: String): String =
-    Normalizer.normalize(value, Normalizer.Form.NFKD)
-        .replace(Regex("\\p{M}"), "")
+/**
+ * Accents, case, spacing and punctuation folded; letters and digits of every
+ * script kept. The ASCII-only key turned every Cyrillic, Japanese, Korean or
+ * Chinese spelling into "", so such a spelling was never remembered as an
+ * alias. Kana keep their voicing marks (ガ is not カ); keys of names the old
+ * fold could read are unchanged.
+ */
+internal fun androidRosterFoldKey(value: String): String =
+    Normalizer.normalize(
+        Normalizer.normalize(value, Normalizer.Form.NFKD).replace(Regex("[\\p{M}&&[^\\u3099\\u309A]]"), ""),
+        Normalizer.Form.NFKC,
+    )
         .lowercase(Locale.ROOT)
-        .replace(Regex("[^a-z0-9]"), "")
+        .replace(Regex("[^\\p{L}\\p{N}]"), "")
+
+private fun fold(value: String): String = androidRosterFoldKey(value)
 
 /**
  * What an import row starts as, exactly as the website decides it: the one

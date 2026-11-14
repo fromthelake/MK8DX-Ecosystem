@@ -62,6 +62,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixed
 
+- **Android roster import remembers spellings in every script**: the phone's roster-import fold kept only
+  `a-z0-9`, so a Cyrillic, Japanese, Korean or Chinese spelling from the file folded to "" and was never kept as
+  the Director's alias. It now keeps letters and digits of every script, as the website's workbook key does
+  (accents and spacing still folded, kana keep their voicing marks); keys of names it could already read are unchanged.
 - **Step 5/9 and historical imports keep non-Latin names apart**: the workbook name key kept only `a-z0-9`, so
   every Cyrillic, Japanese, Korean or Chinese player name became the same empty key and the rows overwrote each
   other. The key now keeps letters and digits of every script (accents and spacing still folded, NFKC, so kana
