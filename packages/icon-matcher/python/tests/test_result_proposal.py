@@ -118,3 +118,23 @@ def test_a_card_without_a_clear_winner_offers_mii_beside_the_best_match():
     assert "openSet" not in compose_result_proposal({"character": {"shared_icon_qa": clear}})["fields"]["character"]
     accepted = read("characters", [("character.luigi", "character.luigi", .9)], "character.luigi")
     assert "openSet" not in compose_result_proposal({"character": {"shared_icon_qa": accepted}})["fields"]["character"]
+
+
+def test_a_glider_colour_that_follows_the_character_is_proposed_not_accepted():
+    # combine_part: an accepted character whose catalog colour clashes with the icon (#99).
+    glider = read("gliders", [("glider.super", "glider.super", .92),
+                              ("glider_variant.super.001_blue", "glider.super", .88)], "glider.super")
+    chosen = {"id": None, "familyId": "glider.super", "status": "conflict",
+              "evidence": ["visual_family", "character_colour_conflict_review"],
+              "visualTop1": "glider.super", "suggestedId": "glider_variant.super.002_red"}
+    field = compose_result_proposal({"glider": {"shared_icon_qa": glider,
+                                                "part_text_qa": {"chosen": chosen}}})["fields"]["glider"]
+    assert field["selectedId"] == "glider_variant.super.002_red" and field["acceptedId"] is None
+    assert field["reviewRequired"] and field["proposedFamilyId"] == "glider.super"
+    assert [c["id"] for c in field["top"]] == ["glider_variant.super.002_red", "glider.super",
+                                               "glider_variant.super.001_blue"]
+    assert field["top"][0]["basis"] == "context" and field["top"][0]["matchScore"] is None
+    # Without a suggestion the best visual match stays the proposal.
+    plain = compose_result_proposal({"glider": {"shared_icon_qa": glider, "part_text_qa": {
+        "chosen": {**chosen, "suggestedId": None}}}})["fields"]["glider"]
+    assert plain["selectedId"] == "glider.super" and plain["acceptedId"] is None

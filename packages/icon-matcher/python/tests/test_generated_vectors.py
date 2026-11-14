@@ -1,7 +1,8 @@
 """Replay the generated public vectors (tools/generate_vectors.py) through the Python reference (issue #99).
 
 A rule change that alters a decision shows here first; regenerate the vectors and replay them in the
-TypeScript (ts/contextVectors.test.mjs, ts/iconScoreVectors.test.mjs) and Java (IconScoreParityTest) runners.
+TypeScript (ts/contextVectors.test.mjs, ts/iconScoreVectors.test.mjs) and Java (ContextParityTest,
+IconScoreParityTest) runners.
 icon-score-v1 needs a materialized recognition pack (MK8DX_RECOGNITION_PACK or MK8DX_SHARED_ICON_PACK) and
 skips without one; context-v1 is self-contained.
 """
@@ -33,6 +34,13 @@ def test_context_vectors_replay_exactly():
     bank = gen.context_bank(doc["catalog"])
     differences = [case["id"] for case in doc["cases"] if gen.run_context_case(case, bank) != case["expected"]]
     assert differences == []
+
+
+def test_context_vectors_ocr_normalization_replays():
+    from mk8dx_icon_matcher.name_match import normalize
+
+    items = _load("context-v1.json")["ocrNormalization"]
+    assert items and [item["text"] for item in items if normalize(item["text"]) != item["normalized"]] == []
 
 
 def test_context_vectors_are_the_generators_output():

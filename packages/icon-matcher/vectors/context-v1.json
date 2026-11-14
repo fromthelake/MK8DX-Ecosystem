@@ -14,6 +14,7 @@
     "familyId": "character.alpha",
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.variant_conflict",
@@ -68,6 +69,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.002_blue",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.variant_exact_fuzzy1",
@@ -122,6 +124,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.same_id_exact_name",
@@ -176,6 +179,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.002_blue",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.unknown_variant_exact_name",
@@ -229,6 +233,7 @@
     "familyId": "character.alpha",
     "id": "character.alpha",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.base_close_visual",
@@ -283,6 +288,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.base_gap_0.015_edge",
@@ -337,6 +343,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.base_gap_0.0151",
@@ -391,6 +398,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.base_score_0.80_edge",
@@ -445,6 +453,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.base_not_in_top",
@@ -499,6 +508,7 @@
     "familyId": "character.alpha",
     "id": "character.alpha",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character.alpha"
    },
    "id": "char.base_name_on_base_top",
@@ -553,6 +563,7 @@
     "familyId": "character.gamma",
     "id": "character_variant.gamma.001_green",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character.beta"
    },
    "id": "char.cross_family_low_score",
@@ -602,6 +613,7 @@
     "familyId": "character.gamma",
     "id": "character.gamma",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character.beta"
    },
    "id": "char.cross_family_low_margin",
@@ -650,6 +662,7 @@
     "familyId": null,
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "character.beta"
    },
    "id": "char.cross_family_fuzzy_0.8999",
@@ -698,6 +711,7 @@
     "familyId": null,
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "character.beta"
    },
    "id": "char.cross_family_visual_strong",
@@ -747,6 +761,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.002_blue",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.strong_edge_0.85_0.08",
@@ -800,6 +815,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.weak_fuzzy_0.8499",
@@ -853,6 +869,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.weak_margin_0.0799",
@@ -906,6 +923,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.unknown_clue_id",
@@ -955,6 +973,7 @@
     "familyId": "character.alpha",
     "id": "character_variant.alpha.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.no_clue_accepted",
@@ -1004,6 +1023,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "character_variant.alpha.001_red"
    },
    "id": "char.no_clue_unknown",
@@ -1066,6 +1086,7 @@
     "familyId": "body.kart_a",
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_conflict",
@@ -1129,6 +1150,7 @@
     "familyId": "body.kart_a",
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_conflict_edge_0.65_0.15",
@@ -1187,11 +1209,13 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_below_0.6499",
@@ -1250,11 +1274,13 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_margin_0.1499",
@@ -1313,11 +1339,13 @@
    },
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_same_family",
@@ -1381,6 +1409,7 @@
     "familyId": "tire.round",
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_numeric_text_conflict",
@@ -1444,6 +1473,7 @@
     "familyId": "tire.wide",
     "id": "tire.wide",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_text_strong",
@@ -1507,6 +1537,7 @@
     "familyId": "tire.round",
     "id": null,
     "status": "conflict",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_text_guard_outside_top3",
@@ -1570,6 +1601,7 @@
     "familyId": "tire.knobby",
     "id": "tire.knobby",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_text_guard_inside_top3",
@@ -1633,6 +1665,7 @@
     "familyId": "tire.round",
     "id": "tire.round",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_text_unknown_index",
@@ -1696,6 +1729,7 @@
     "familyId": "tire.round",
     "id": "tire.round",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_medium_text",
@@ -1759,6 +1793,7 @@
     "familyId": "tire.round",
     "id": "tire.round",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_medium_text_edges",
@@ -1822,6 +1857,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_medium_text_fuzzy_0.6999",
@@ -1885,6 +1921,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_medium_text_visual_margin_0.0099",
@@ -1948,6 +1985,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_medium_text_visual_score_0.7999",
@@ -2006,14 +2044,210 @@
    },
    "expected": {
     "evidence": [
-     "tire_text"
+     "visual_family",
+     "unique_text_family"
     ],
-    "familyId": "tire.wide",
-    "id": "tire.wide",
+    "familyId": "tire.round",
+    "id": "tire.round",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.tire_unicode_digit",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "\u0661\u0662",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "unique_text_family"
+    ],
+    "familyId": "tire.round",
+    "id": "tire.round",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_arabic_indic_index_12",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "\uff11\uff12",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "unique_text_family"
+    ],
+    "familyId": "tire.round",
+    "id": "tire.round",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_fullwidth_index_12",
+   "kind": "tires",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "score": 0.79
+     }
+    ],
+    "kind": "tires",
+    "margin": 0.01,
+    "score": 0.8,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "tire.round",
+      "id": "tire.round",
+      "score": 0.8
+     },
+     {
+      "familyId": "tire.slick",
+      "id": "tire.slick",
+      "score": 0.79
+     },
+     {
+      "familyId": "tire.knobby",
+      "id": "tire.knobby",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": {
+    "fuzzy": 0.9,
+    "id": "12",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "tire_text"
+    ],
+    "familyId": "tire.offroad",
+    "id": "tire.offroad",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "tire.round"
+   },
+   "id": "part.tire_ascii_index_12",
    "kind": "tires",
    "rule": "part",
    "tireTextTop3Guard": false,
@@ -2070,11 +2304,13 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "text_family"
+     "text_family",
+     "name_supported_icon_colour"
     ],
     "familyId": "body.kart_a",
     "id": "body.kart_a",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_family_same",
@@ -2139,6 +2375,7 @@
     "familyId": "body.kart_c",
     "id": "body_variant.kart_c.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_other_family_relation",
@@ -2203,6 +2440,7 @@
     "familyId": "body.kart_b",
     "id": "body.kart_b",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_other_family_unique",
@@ -2266,6 +2504,7 @@
     "familyId": "body.kart_c",
     "id": null,
     "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_other_family_only",
@@ -2329,6 +2568,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.body_text_other_variant_unknown",
@@ -2389,6 +2629,7 @@
     "familyId": "body.kart_a",
     "id": "body_variant.kart_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_relation_unknown_visual",
@@ -2449,6 +2690,7 @@
     "familyId": "body.kart_a",
     "id": "body.kart_a",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_relation_base",
@@ -2503,11 +2745,13 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "character_colour_suggestion"
     ],
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": "body_variant.kart_a.001_red",
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_relation_score_below",
@@ -2562,14 +2806,16 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "character_part_top3_variant"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
+    "id": "body_variant.kart_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
-   "id": "part.body_relation_accepted_visual_kept",
+   "id": "part.body_accepted_character_top3_variant",
    "kind": "bodies",
    "rule": "part",
    "tireTextTop3Guard": false,
@@ -2622,11 +2868,13 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "weak_family_relation_review"
+     "weak_family_relation_review",
+     "character_colour_suggestion"
     ],
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": "glider_variant.wing_a.001_red",
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_relation_weak_family_review",
@@ -2687,6 +2935,7 @@
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_relation_family_margin_0.02_edge",
@@ -2747,6 +2996,7 @@
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_relation_wide_family",
@@ -2812,6 +3062,7 @@
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_relation_strong_text",
@@ -2872,6 +3123,7 @@
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_relation_single_family",
@@ -2933,6 +3185,7 @@
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_top3_variant",
@@ -2992,11 +3245,13 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "text_family"
+     "text_family",
+     "character_colour_conflict_review"
     ],
     "familyId": "glider.wing_a",
-    "id": "glider.wing_a",
-    "status": "accepted",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "glider_variant.wing_a.001_red",
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_top3_variant_missing",
@@ -3056,11 +3311,13 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "text_family"
+     "text_family",
+     "character_part_top3_variant"
     ],
     "familyId": "glider.wing_a",
-    "id": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_top3_variant_variant_clue",
@@ -3121,11 +3378,13 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "text_supported_visual_variant"
+     "text_supported_visual_variant",
+     "name_supported_icon_colour"
     ],
     "familyId": "body.kart_a",
     "id": "body_variant.kart_a.002_blue",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_text_supported_variant",
@@ -3190,6 +3449,7 @@
     "familyId": "body.kart_a",
     "id": null,
     "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_text_supported_variant_0.7499",
@@ -3254,6 +3514,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "body_variant.kart_a.002_blue"
    },
    "id": "part.body_family_only_variant_clue",
@@ -3300,6 +3561,1410 @@
     "evidence": [
      "visual"
     ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_colour_conflict_review"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "glider_variant.wing_a.001_red",
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_accepted_character_visual_clash",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_part_top3_variant"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_accepted_character_top3_no_clue",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.001_red",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "glider_variant.wing_a.001_red"
+   },
+   "id": "part.glider_accepted_character_same_colour",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.gamma",
+    "id": "character.gamma",
+    "status": "accepted",
+    "visualTop1": "character.gamma"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "glider.wing_a",
+    "id": "glider_variant.wing_a.002_blue",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_accepted_character_no_link",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "glider.wing_b",
+    "id": "glider.wing_b",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_b"
+   },
+   "id": "part.glider_single_colour_unaccepted_character",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.06,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.83
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "glider.wing_b",
+    "id": "glider.wing_b",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_b"
+   },
+   "id": "part.glider_single_colour_accepted_character",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.06,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.83
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "glider_colour_needs_character"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_suggested_character_no_clue",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character.beta"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "glider_colour_needs_character"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_suggested_character_base_colour",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "glider_colour_needs_character"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_conflict_character",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "glider_colour_needs_character"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_character_id_not_accepted",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": null
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "glider_colour_needs_character"
+    ],
+    "familyId": "glider.wing_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "glider.wing_a"
+   },
+   "id": "part.glider_no_character",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.001_red",
+      "score": 0.88
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "suggestedId": null,
+    "visualTop1": "glider_variant.wing_a.002_blue"
+   },
+   "id": "part.glider_unaccepted_character_unknown_visual",
+   "kind": "gliders",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "glider.wing_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "gliders",
+    "margin": 0.01,
+    "score": 0.84,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider_variant.wing_a.002_blue",
+      "score": 0.84
+     },
+     {
+      "familyId": "glider.wing_a",
+      "id": "glider.wing_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "glider.wing_b",
+      "id": "glider.wing_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "character_colour_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "body_variant.kart_a.001_red",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_visual_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "character_colour_conflict_review"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "conflict",
+    "suggestedId": "body_variant.kart_a.001_red",
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_visual_clash_text",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "accepted",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body_variant.kart_a.001_red",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body_variant.kart_a.001_red"
+   },
+   "id": "part.body_accepted_character_same_colour",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.6
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.86
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.gamma",
+    "id": "character.gamma",
+    "status": "accepted",
+    "visualTop1": "character.gamma"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_accepted_character_no_link",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_suggested_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_unknown_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.8
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.92,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.92
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.88
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.8
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "conflict",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_conflict_character_clash",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": "character.alpha",
+    "id": "character_variant.alpha.001_red",
+    "status": "unknown",
+    "visualTop1": "character_variant.alpha.001_red"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "body_colour_needs_character"
+    ],
+    "familyId": "body.kart_a",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_character_id_not_accepted",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": {
+    "fuzzy": 0.95,
+    "id": "body.kart_a",
+    "margin": 0.2
+   },
+   "expected": {
+    "evidence": [
+     "visual_family",
+     "text_family",
+     "name_supported_icon_colour"
+    ],
+    "familyId": "body.kart_a",
+    "id": "body.kart_a",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body.kart_a"
+   },
+   "id": "part.body_suggested_character_text",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_b",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.04,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.86
+     },
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.7
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": "body.kart_b",
+    "id": "body.kart_b",
+    "status": "accepted",
+    "suggestedId": null,
+    "visualTop1": "body.kart_b"
+   },
+   "id": "part.body_single_colour_unaccepted_character",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "score": 0.84
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.06,
+    "score": 0.9,
+    "status": "accepted",
+    "top": [
+     {
+      "familyId": "body.kart_b",
+      "id": "body.kart_b",
+      "score": 0.9
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.84
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.83
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "suggested",
+    "visualTop1": "character_variant.alpha.002_blue"
+   },
+   "clue": null,
+   "expected": {
+    "evidence": [
+     "visual_family"
+    ],
+    "familyId": null,
+    "id": null,
+    "status": "unknown",
+    "suggestedId": null,
+    "visualTop1": "body_variant.kart_a.002_blue"
+   },
+   "id": "part.body_unaccepted_character_unknown_visual",
+   "kind": "bodies",
+   "rule": "part",
+   "tireTextTop3Guard": false,
+   "visual": {
+    "familyTop": [
+     {
+      "familyId": "body.kart_a",
+      "score": 0.83
+     },
+     {
+      "familyId": "family.other",
+      "score": 0.7
+     }
+    ],
+    "kind": "bodies",
+    "margin": 0.01,
+    "score": 0.83,
+    "status": "unknown",
+    "top": [
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.002_blue",
+      "score": 0.83
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body_variant.kart_a.001_red",
+      "score": 0.82
+     },
+     {
+      "familyId": "body.kart_a",
+      "id": "body.kart_a",
+      "score": 0.81
+     }
+    ]
+   }
+  },
+  {
+   "boundary": false,
+   "character": {
+    "evidence": [
+     "visual"
+    ],
     "familyId": null,
     "id": null,
     "status": "unknown",
@@ -3314,11 +4979,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "unaccepted_character_colour_conflict_review"
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
-    "id": null,
-    "status": "conflict",
+    "id": "glider.wing_a",
+    "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_unaccepted_character_conflict",
@@ -3379,11 +5045,12 @@
     "evidence": [
      "visual_family",
      "text_family",
-     "unaccepted_character_colour_conflict_review"
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
-    "id": null,
-    "status": "conflict",
+    "id": "glider.wing_a",
+    "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider.wing_a"
    },
    "id": "part.glider_suggested_character_conflict",
@@ -3443,11 +5110,13 @@
    "expected": {
     "evidence": [
      "visual_family",
-     "text_family"
+     "text_family",
+     "name_supported_icon_colour"
     ],
     "familyId": "glider.wing_a",
     "id": "glider_variant.wing_a.002_blue",
     "status": "accepted",
+    "suggestedId": null,
     "visualTop1": "glider_variant.wing_a.002_blue"
    },
    "id": "part.glider_unaccepted_character_same_colour",
@@ -3502,11 +5171,13 @@
    "clue": null,
    "expected": {
     "evidence": [
-     "visual_family"
+     "visual_family",
+     "body_colour_needs_character"
     ],
     "familyId": "body.kart_a",
-    "id": "body.kart_a",
-    "status": "accepted",
+    "id": null,
+    "status": "family_only",
+    "suggestedId": null,
     "visualTop1": "body.kart_a"
    },
    "id": "part.no_clue_accepted",
@@ -3566,6 +5237,7 @@
     "familyId": null,
     "id": null,
     "status": "unknown",
+    "suggestedId": null,
     "visualTop1": "tire.round"
    },
    "id": "part.no_clue_unknown_tire",
@@ -3626,6 +5298,7 @@
    "glider_variant.wing_a.001_red": "glider.wing_a",
    "glider_variant.wing_a.002_blue": "glider.wing_a",
    "tire.knobby": "tire.knobby",
+   "tire.offroad": "tire.offroad",
    "tire.round": "tire.round",
    "tire.slick": "tire.slick",
    "tire.wide": "tire.wide"
@@ -3642,6 +5315,12 @@
     "body.kart_a",
     "character_variant.alpha.001_red",
     "body_variant.kart_a.001_red"
+   ],
+   [
+    "bodies",
+    "body.kart_a",
+    "character_variant.alpha.002_blue",
+    "body_variant.kart_a.002_blue"
    ],
    [
     "bodies",
@@ -3729,6 +5408,10 @@
     {
      "familyId": "tire.wide",
      "id": "tire.wide"
+    },
+    {
+     "familyId": "tire.offroad",
+     "id": "tire.offroad"
     }
    ]
   },
@@ -3748,10 +5431,40 @@
    [
     3,
     "tire.wide"
+   ],
+   [
+    12,
+    "tire.offroad"
    ]
   ]
  },
  "generator": "packages/icon-matcher/tools/generate_vectors.py",
+ "ocrNormalization": [
+  {
+   "normalized": "12",
+   "text": "\uff11\uff12"
+  },
+  {
+   "normalized": "\uff52\uff4f\uff5712",
+   "text": "\uff32\uff4f\uff57\u3000\uff11\uff12"
+  },
+  {
+   "normalized": "\u0661\u0662",
+   "text": "\u0661\u0662"
+  },
+  {
+   "normalized": "\u0663",
+   "text": "\u0663"
+  },
+  {
+   "normalized": "12",
+   "text": "12"
+  },
+  {
+   "normalized": "\uff42dash0",
+   "text": "\uff22-Dash \uff10"
+  }
+ ],
  "schema": "mk8dx.context-vectors.v1",
  "source": "packages/icon-matcher/python/mk8dx_icon_matcher/context.py"
 }

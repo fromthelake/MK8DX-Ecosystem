@@ -17,9 +17,18 @@ Capture → ROI search → match → frame/sequence decision → result → revi
 **One rule** means a Python reference, a TypeScript implementation and a Java
 implementation checked against the same versioned parity vectors. It does not
 mean that Java executes Python, or that every app currently performs identical
-pixel processing. The field-semantics version on current `main` is **0.4.2**
+pixel processing. The field-semantics version on current `main` is **0.4.3**
 in all three languages. The published `v0.1.0` tag contains **0.4.1**; source
 on `main` is not automatically a new release.
+
+Field semantics 0.4.3 adds one context rule for kart (body) and glider colour:
+an accepted character fixes the part colour from the catalog; a clear visual
+clash (catalog colour outside the visual top three) keeps the catalog colour as
+a `?` proposal and asks for review. Without an accepted character the icon's
+colour is accepted when the printed name reads the same family; otherwise only
+the family is accepted and the icon's colour is the proposal. With no catalog
+relation the icon decides. Tyres are unchanged. Details:
+[`packages/icon-matcher/README.md`](../../packages/icon-matcher/README.md).
 
 ## Stages and current boundaries
 

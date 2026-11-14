@@ -5,6 +5,23 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- **Kart and glider colour follow the character** (field semantics 0.4.3, #99). Python, TypeScript and Java now
+  share one rule for bodies and gliders, so a scanned result never pairs a character with a kart or glider colour
+  that character cannot have. With an accepted character the catalog colour is the part; when the icon clearly
+  shows another colour (outside the visual top three), the catalog colour is proposed with a `?` and the field
+  needs review (`character_colour_conflict_review`). Without an accepted character the colour comes from the icon
+  only: it is accepted when the printed name reads the same part family (`name_supported_icon_colour`, owner
+  option 2 in #173), otherwise only the family is accepted and the icon's colour is the proposal. An unconfirmed or
+  suggested character never supplies or vetoes a colour. Single-colour parts, and characters without a catalog link for that part, are
+  decided by the icon as before; tyres are unchanged. Android's context rules now run on the shared Java code (`ContextRules`) instead of an
+  app-local copy, and pass their evidence to the result proposal as Web and Python do.
+- A tyre row number counts only as ASCII digits `0`-`9` in every runtime; full-width digits are turned into ASCII
+  where OCR text is normalized, before the context rules (#99). Other digit scripts are no row number.
+- `context-v1` parity vectors cover these cases and the OCR digit normalization; the Python, TypeScript and Java
+  replays (new Android `ContextParityTest`) have no known exceptions any more.
+
 ## 0.2.3 — 2026-11-14
 
 Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to

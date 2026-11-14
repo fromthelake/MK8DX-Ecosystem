@@ -130,6 +130,10 @@ def _compose_field(field: str, entry: dict | None) -> dict:
 
     context_accepted = (chosen["id"] if visual and chosen and chosen.get("status") == "accepted"
                         and chosen.get("id") else None)
+    # A colour the context proposes for review (the body or glider catalog colour of
+    # an accepted character); it leads the proposal but is never accepted by itself.
+    suggested = chosen.get("suggestedId") if visual and chosen and not context_accepted else None
+    context_suggested = suggested if isinstance(suggested, str) and suggested else None
     colour_rank = _colour_rank(visual, raw_top) if field == "character" and visual else None
     colour_top = colour_rank if visual and visual.get("status") == "unknown" and not context_accepted else None
     # A colour variant settled by the icon (or by a name that names only the
@@ -194,7 +198,8 @@ def _compose_field(field: str, entry: dict | None) -> dict:
     exposed_top = exposure[0] if exposure and visual and visual.get("kind") == "flags" else None
     proposed_id = _coalesce(accepted_id, "country.lu" if lu_shape
                             else _coalesce((exposed_top or {}).get("id"),
-                                           ranked_top[0]["id"] if ranked_top else None))
+                                           _coalesce(context_suggested,
+                                                     ranked_top[0]["id"] if ranked_top else None)))
 
     top: list[dict] = []
 
@@ -213,7 +218,7 @@ def _compose_field(field: str, entry: dict | None) -> dict:
     if exposure:
         del top[3:]
     fuzzy = ((context or {}).get("clue") or {}).get("fuzzy")
-    if proposed_id and context_accepted:
+    if proposed_id and (context_accepted or proposed_id == context_suggested):
         top.append(cand(proposed_id, next((i["score"] for i in raw_top if i["id"] == proposed_id), None),
                         fuzzy, None, "context"))
     for item in ranked_top:

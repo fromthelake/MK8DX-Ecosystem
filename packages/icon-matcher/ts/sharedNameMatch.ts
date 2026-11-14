@@ -11,10 +11,15 @@ export const WEAK_MARGIN_MIN = 0.25;
 
 const isLetterOrDigit = (ch: string): boolean => /[\p{L}\p{Nd}]/u.test(ch);
 
+/** Full-width digits (U+FF10-FF19) become ASCII before any context rule sees the text; numeric
+ * clue IDs are ASCII 0-9 only (sharedPartContext.asciiIndex). Other digit scripts stay as they are. */
+const asciiDigits = (text: string): string =>
+  text.replace(/[\uFF10-\uFF19]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xFF10 + 0x30));
+
 export function normalizeName(text: string | null | undefined): string {
   if (!text) return '';
   let out = '';
-  for (const ch of text.toLowerCase()) if (isLetterOrDigit(ch)) out += ch;
+  for (const ch of asciiDigits(text).toLowerCase()) if (isLetterOrDigit(ch)) out += ch;
   return out;
 }
 

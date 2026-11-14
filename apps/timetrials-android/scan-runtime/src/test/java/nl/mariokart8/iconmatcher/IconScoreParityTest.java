@@ -24,8 +24,7 @@ import org.junit.Test;
  * <p>IconScorer implements center_shortlist only, so that mode is replayed. Decisions (status, top-1,
  * accepted ID, ordered top 3, offset) must be identical and scores within 1e-6. Cases flagged boundary or
  * nearTie are reported, not failed, until the arithmetic is unified. The Android context rules
- * (SharedFieldReader.combineCharacter/combinePart) are app-local and not covered here; context-v1.json is
- * replayed by Python and TypeScript only.
+ * (ContextRules, which SharedFieldReader delegates to) replay context-v1.json in ContextParityTest.
  *
  * <p>Needs a materialized recognition pack: MK8DX_SHARED_ICON_PACK (its tensor-pack/) or
  * MK8DX_RECOGNITION_PACK (the pack root); skips without one.

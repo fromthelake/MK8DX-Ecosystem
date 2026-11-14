@@ -2,7 +2,7 @@
 
 One specification in Python (this reference), TypeScript (``ts/sharedNameMatch.ts``) and Java
 (``NameMatch.java``): the vocabulary matcher the Web scanner and Android each carried (Android
-``TextEvidence.matchVocab``). An OCR line is normalized (lower case, letters and decimal digits
+``TextEvidence.matchVocab``). An OCR line is normalized (full-width digits to ASCII, lower case, letters and decimal digits
 only), compared with every name by ``1 - Levenshtein / longer length`` on UTF-16 code units, the
 first best name wins, and the margin is measured against the best name **spelled differently**
 (the same part in another language is no rival). A match is strong at fuzzy >= 0.85 with margin
@@ -28,10 +28,15 @@ def _letter_or_digit(ch: str) -> bool:
     return category.startswith("L") or category == "Nd"
 
 
+# Full-width digits (U+FF10-FF19) become ASCII here, before any context rule sees the text; numeric
+# clue IDs are ASCII 0-9 only (context.ascii_index). Other digit scripts stay as they are.
+_FULLWIDTH_DIGITS = {code: ord("0") + code - 0xFF10 for code in range(0xFF10, 0xFF1A)}
+
+
 def normalize(text: str | None) -> str:
     if not text:
         return ""
-    return "".join(ch for ch in text.lower() if _letter_or_digit(ch))
+    return "".join(ch for ch in text.translate(_FULLWIDTH_DIGITS).lower() if _letter_or_digit(ch))
 
 
 def _units(text: str) -> list[int]:

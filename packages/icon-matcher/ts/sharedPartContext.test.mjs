@@ -59,6 +59,7 @@ test('a character relation cannot accept an unnamed near-tied glider family', ()
   assert.equal(combinePart('gliders', { ...visual, familyMargin: 0.055 },
     character, null, refs).id, 'glider.parasol');
   refs.partForCharacter.set(partRelationKey('bodies', 'body.kart', 'character.baby'), 'body.kart');
+  refs.familyById.set('body.kart', 'body.kart').set('body.bike', 'body.bike');
   refs.resultMembers.set('bodies', [
     { id: 'body.kart', familyId: 'body.kart' }, { id: 'body.bike', familyId: 'body.bike' }]);
   assert.equal(combinePart('bodies', { ...visual, kind: 'bodies', top1Id: 'body.kart',
@@ -67,7 +68,7 @@ test('a character relation cannot accept an unnamed near-tied glider family', ()
   'body.kart');
 });
 
-test('accepted glider colour follows a named family and accepted character only inside top three', () => {
+test('glider colour follows the character (issue #99 rules 1-3)', () => {
   const ids = ['glider.blue', 'glider.toad', 'glider.other', 'glider.fourth'];
   const refs = {
     familyById: new Map(ids.map((id) => [id, 'glider.super'])),
@@ -85,19 +86,73 @@ test('accepted glider colour follows a named family and accepted character only 
   assert.equal(refined.id, 'glider.toad');
   assert.equal(refined.visualTop1, 'glider.blue');
   assert.ok(refined.evidence.includes('character_part_top3_variant'));
-  assert.equal(combinePart('gliders', visual, character, null, refs).id, 'glider.blue');
-  assert.equal(combinePart('gliders', visual, { ...character, status: 'unknown' }, clue, refs).id, 'glider.blue');
+  // rule 2: the catalog colour decides without a printed name too
+  assert.equal(combinePart('gliders', visual, character, null, refs).id, 'glider.toad');
+  // rule 1: an unaccepted character settles the family only; the icon's colour stays the proposal
   const unacceptedCharacter = { ...character, id: null, familyId: null, status: 'unknown' };
-  const reviewed = combinePart('gliders', visual, unacceptedCharacter, clue, refs);
-  assert.equal(reviewed.id, null);
-  assert.equal(reviewed.status, 'conflict');
-  assert.equal(reviewed.visualTop1, 'glider.blue');
-  assert.ok(reviewed.evidence.includes('unaccepted_character_colour_conflict_review'));
+  for (const unsettled of [{ ...character, status: 'unknown' }, unacceptedCharacter]) {
+    for (const text of [clue, null]) {
+      const proposed = combinePart('gliders', visual, unsettled, text, refs);
+      assert.equal(proposed.id, null);
+      assert.equal(proposed.status, 'family_only');
+      assert.equal(proposed.familyId, 'glider.super');
+      assert.equal(proposed.suggestedId, null);
+      assert.ok(proposed.evidence.includes('glider_colour_needs_character'));
+      assert.ok(!proposed.evidence.includes('character_colour_suggestion'));
+    }
+  }
   assert.equal(combinePart('gliders', { ...visual, status: 'unknown', acceptedId: null,
     score: .858, margin: .019 }, unacceptedCharacter, clue, refs).id, null);
-  assert.equal(combinePart('gliders', visual, unacceptedCharacter, null, refs).id, 'glider.blue');
-  assert.equal(combinePart('gliders', visual,
-    { ...unacceptedCharacter, visualTop1: '' }, clue, refs).id, 'glider.blue');
+  const nobody = combinePart('gliders', visual, { ...unacceptedCharacter, visualTop1: '' }, clue, refs);
+  assert.equal(nobody.status, 'family_only');
+  assert.equal(nobody.suggestedId, null);
+  // a clearly seen colour the character cannot have: catalog colour proposed, review required
   refs.partForCharacter.set(partRelationKey('gliders', 'glider.super', 'character.toad'), 'glider.fourth');
+  const clash = combinePart('gliders', visual, character, clue, refs);
+  assert.equal(clash.id, null);
+  assert.equal(clash.status, 'conflict');
+  assert.equal(clash.suggestedId, 'glider.fourth');
+  assert.ok(clash.evidence.includes('character_colour_conflict_review'));
+  // rule 3: no catalog link, the icon decides
+  refs.partForCharacter.clear();
   assert.equal(combinePart('gliders', visual, character, clue, refs).id, 'glider.blue');
+});
+
+test('body colour follows an accepted character too (issue #99 amendment)', () => {
+  const ids = ['body.std_red', 'body.std_blue', 'body.std', 'body.std_green'];
+  const refs = {
+    familyById: new Map([...ids.map((id) => [id, 'body.std']), ['body.mono', 'body.mono']]),
+    resultMembers: new Map([['bodies', [...ids.map((id) => ({ id, familyId: 'body.std' })),
+      { id: 'body.mono', familyId: 'body.mono' }]]]),
+    partForCharacter: new Map([[partRelationKey('bodies', 'body.std', 'character.toad'), 'body.std_blue']]),
+    tireByIndex: new Map(),
+  };
+  const visual = { kind: 'bodies', status: 'accepted', top1Id: 'body.std_red', acceptedId: 'body.std_red',
+    score: .9, margin: .02, familyMargin: .2,
+    top: ids.map((id, rank) => ({ id, familyId: 'body.std', score: [.9, .88, .86, .85][rank] })) };
+  const toad = { id: 'character.toad', familyId: 'character.toad', status: 'accepted',
+    evidence: [], visualTop1: 'character.toad' };
+  const close = combinePart('bodies', visual, toad, null, refs);
+  assert.equal(close.id, 'body.std_blue');
+  assert.ok(close.evidence.includes('character_part_top3_variant'));
+  for (const status of ['suggested', 'conflict', 'unknown']) {
+    const unsettled = { ...toad, id: null, familyId: null, status };
+    const familyOnly = combinePart('bodies', visual, unsettled, null, refs);
+    assert.equal(familyOnly.id, null);
+    assert.equal(familyOnly.status, 'family_only');
+    assert.equal(familyOnly.familyId, 'body.std');
+    assert.equal(familyOnly.suggestedId, null);
+    assert.ok(familyOnly.evidence.includes('body_colour_needs_character'));
+  }
+  refs.partForCharacter.set(partRelationKey('bodies', 'body.std', 'character.toad'), 'body.std_green');
+  const clash = combinePart('bodies', visual, toad, null, refs);
+  assert.equal(clash.status, 'conflict');
+  assert.equal(clash.suggestedId, 'body.std_green');
+  assert.ok(clash.evidence.includes('character_colour_conflict_review'));
+  refs.partForCharacter.clear();
+  assert.equal(combinePart('bodies', visual, toad, null, refs).id, 'body.std_red');
+  const mono = { kind: 'bodies', status: 'accepted', top1Id: 'body.mono', acceptedId: 'body.mono',
+    score: .9, margin: .05, top: [{ id: 'body.mono', familyId: 'body.mono', score: .9 }] };
+  assert.equal(combinePart('bodies', mono, { ...toad, id: null, status: 'unknown' }, null, refs).id,
+    'body.mono');
 });

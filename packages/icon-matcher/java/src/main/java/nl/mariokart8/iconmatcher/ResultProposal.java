@@ -149,6 +149,11 @@ public final class ResultProposal {
 
         String contextAccepted = vis != null && chosen != null && "accepted".equals(str(chosen, "status"))
                 && str(chosen, "id") != null && !str(chosen, "id").isEmpty() ? str(chosen, "id") : null;
+        // A colour the context proposes for review (the body or glider catalog colour of
+        // an accepted character); it leads the proposal but is never accepted by itself.
+        String contextSuggested = vis != null && chosen != null && contextAccepted == null
+                && str(chosen, "suggestedId") != null && !str(chosen, "suggestedId").isEmpty()
+                ? str(chosen, "suggestedId") : null;
         JSONObject colour = "character".equals(field) && vis != null ? obj(vis, "family_colour_qa") : null;
         JSONArray colourRank = null;
         if (colour != null && "mk8dx.family-colour-rank.v1".equals(str(colour, "schema"))
@@ -271,6 +276,7 @@ public final class ResultProposal {
         String proposedId = acceptedId != null ? acceptedId
                 : luShape != null ? "country.lu"
                 : exposedTop != null ? exposedTop.optString("id")
+                : contextSuggested != null ? contextSuggested
                 : rankedTop.isEmpty() ? null : rankedTop.get(0).optString("id");
 
         List<JSONObject> top = new ArrayList<>();
@@ -288,7 +294,7 @@ public final class ResultProposal {
         }
         JSONObject clue = context == null ? null : obj(context, "clue");
         Object fuzzy = clue == null ? null : (clue.isNull("fuzzy") ? null : clue.opt("fuzzy"));
-        if (proposedId != null && contextAccepted != null) {
+        if (proposedId != null && (contextAccepted != null || proposedId.equals(contextSuggested))) {
             Object score = null;
             for (JSONObject item : rawTop) {
                 if (item.optString("id").equals(proposedId)) {

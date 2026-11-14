@@ -17,8 +17,18 @@ Opname → ROI zoeken → matchen → frame-/sequentiebesluit → resultaat → 
 **Dezelfde regel** betekent een Python-referentie, een TypeScript- en een
 Java-implementatie met dezelfde geversioneerde pariteitsvectoren. Java voert
 geen Python uit. Ook is de pixelbewerking nog niet overal gelijk. De huidige
-`main` heeft veldsemantiekversie **0.4.2** in alle drie talen; de gepubliceerde
+`main` heeft veldsemantiekversie **0.4.3** in alle drie talen; de gepubliceerde
 `v0.1.0` bevat **0.4.1**. Nieuwe broncode is nog geen nieuwe release.
+
+Veldsemantiek 0.4.3 voegt één contextregel toe voor de kleur van kart (body)
+en zweefvlieger: een geaccepteerd personage legt de kleur vast uit de catalogus;
+bij een duidelijke visuele botsing (cataloguskleur buiten de visuele top 3)
+blijft de cataloguskleur het voorstel met `?` en moet het veld worden nagekeken.
+Zonder geaccepteerd personage wordt de kleur van het icoon geaccepteerd als de
+gelezen naam dezelfde familie geeft; anders wordt alleen de familie geaccepteerd
+en is de kleur van het icoon het voorstel. Zonder catalogusrelatie beslist het icoon. Banden
+blijven ongewijzigd. Details:
+[`packages/icon-matcher/README.md`](../../packages/icon-matcher/README.md).
 
 ## Wat is centraal en wat blijft lokaal?
 

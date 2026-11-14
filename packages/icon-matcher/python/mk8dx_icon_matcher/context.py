@@ -25,6 +25,40 @@ class Decision:
     status: str
     evidence: tuple[str, ...]
     visual_top1: str | None
+    # A colour to propose for review when ``id`` is None (the body or glider
+    # catalog colour of an accepted character, issue #99); never an accepted
+    # value on its own.
+    suggested_id: str | None = None
+
+
+def ascii_index(text: str) -> bool:
+    """A numeric clue ID (tyre row index): ASCII ``0``-``9`` only, in every runtime.
+
+    OCR text is folded to ASCII digits where it is normalized (``name_match.normalize``);
+    other digit scripts are not numeric IDs.
+    """
+    return bool(text) and all("0" <= ch <= "9" for ch in text)
+
+
+def _colour_family(refs: ReferenceBank, kind: str, family: str) -> bool:
+    """The family has more than one colour in the result catalog."""
+    group = refs.groups[(kind, "result")]
+    return sum(1 for base in group.families if base == family) > 1
+
+
+def _catalog_colour(refs: ReferenceBank, kind: str, family: str, character_id: str | None) -> str | None:
+    """The catalog colour of this body or glider family for this character, if the catalog links them."""
+    relation = refs.part_for_character.get((kind, family, character_id)) if character_id else None
+    return relation if relation and refs.family.get(relation) == family else None
+
+
+def _name_supported_icon_colour(refs: ReferenceBank, family: str, chosen: str,
+                                top_id: str, clue: TextClue | None) -> bool:
+    """The icon's own colour with its family read in the printed name (issue #99, option 2).
+
+    An unaccepted character plays no part: it neither supplies nor vetoes a colour.
+    """
+    return chosen == top_id and bool(clue and clue.strong) and refs.family.get(clue.id) == family
 
 
 def combine_character(visual: MatchResult, clue: TextClue | None, refs: ReferenceBank) -> Decision:
@@ -70,7 +104,7 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
     evidence = ["visual_family"]
     if clue and not clue.strong and clue.fuzzy >= 0.65 and clue.margin >= 0.15:
         text_id = (refs.tire_by_index.get(int(clue.id))
-                   if kind == "tires" and clue.id.isdecimal() else clue.id)
+                   if kind == "tires" and ascii_index(clue.id) else clue.id)
         text_family = refs.family.get(text_id)
         if text_family and text_family != family:
             # A moderately legible in-game row contradicts this icon family.
@@ -78,14 +112,14 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
             # relation or a narrow visual rank into automatic acceptance.
             return Decision(None, family, "conflict", ("visual_text_conflict_review",), top.id)
     if kind == "tires" and clue and clue.strong:
-        tire = refs.tire_by_index.get(int(clue.id)) if clue.id.isdecimal() else None
+        tire = refs.tire_by_index.get(int(clue.id)) if ascii_index(clue.id) else None
         if tire:
             if (tire_text_top3_guard
                     and all(candidate.id != tire for candidate in visual.top[:3])):
                 return Decision(None, family, "conflict",
                                 ("tire_text_outside_visual_top3",), top.id)
             return Decision(tire, tire, "accepted", ("tire_text",), top.id)
-    if kind == "tires" and clue and clue.id.isdecimal():
+    if kind == "tires" and clue and ascii_index(clue.id):
         tire = refs.tire_by_index.get(int(clue.id))
         if tire == top.id and clue.fuzzy >= 0.70 and clue.margin >= 0.30 and (
                 visual.score >= 0.80 and visual.margin >= 0.01):
@@ -98,20 +132,27 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
     else:
         chosen = None
     strong_visual_variant = visual.status == "accepted" and family == top.family_id
-    if (kind == "gliders" and strong_visual_variant and chosen == top.id
-            and character.id and character.status == "accepted"
-            and clue and clue.strong and clue.id == family):
-        relation = refs.part_for_character.get((kind, family, character.id))
-        if (relation and relation != chosen and refs.family.get(relation) == family
-                and any(candidate.id == relation for candidate in visual.top[:3])):
-            # The game catalog determines this character's colour inside a
-            # readable glider family. Require that colour to be visible in the
-            # original top three before refining an accepted visual variant.
-            chosen = relation
+    coloured_part = kind in ("bodies", "gliders")
+    character_accepted = bool(character.id) and character.status == "accepted"
+    # Body and glider colour follow the character (issue #99): only an accepted
+    # character supplies a catalog colour. An unknown, suggested or conflicting
+    # character never does, not even as a review proposal.
+    colour = (_catalog_colour(refs, kind, family, character.id)
+              if coloured_part and character_accepted else None)
+    if colour and strong_visual_variant and colour != chosen:
+        if any(candidate.id == colour for candidate in visual.top[:3]):
+            # A close colour in the visual top three: the catalog decides.
+            chosen = colour
             evidence.append("character_part_top3_variant")
-    if kind in ("bodies", "gliders") and character.id and not strong_visual_variant and (
+        else:
+            # The icon clearly shows a colour this character cannot have. Keep
+            # the catalog colour as the proposal; the clash usually means the
+            # character is wrong, so the field needs review.
+            return Decision(None, family, "conflict",
+                            (*evidence, "character_colour_conflict_review"), top.id, colour)
+    if coloured_part and character.id and not strong_visual_variant and (
             visual.score >= 0.80 or (clue and clue.strong)):
-        relation = refs.part_for_character.get((kind, family, character.id))
+        relation = colour
         if relation:
             family_margin = (visual.family_top[0].score - visual.family_top[1].score
                              if len(visual.family_top) > 1 else None)
@@ -133,19 +174,26 @@ def combine_part(kind: str, visual: MatchResult, character: Decision, clue: Text
         elif family == top.family_id and visual.score >= 0.75 and visual.margin >= 0.01:
             chosen = top.id
             evidence.append("text_supported_visual_variant")
+    suggestion = colour if chosen is None else None
+    if (coloured_part and chosen is not None and not character_accepted
+            and _colour_family(refs, kind, family)
+            and _name_supported_icon_colour(refs, family, chosen, top.id, clue)):
+        # Owner option 2 (#173): without an accepted character, a colour the
+        # icon itself shows is kept when the printed name reads this family.
+        # The character still supplies nothing.
+        evidence.append("name_supported_icon_colour")
+    elif (coloured_part and chosen is not None and not character_accepted
+            and _colour_family(refs, kind, family)):
+        # The family is readable and carries the stats, but an unaccepted
+        # character cannot settle its colour: accept the family only. The
+        # colour proposal is the icon's own (no suggestedId).
+        return Decision(None, family, "family_only",
+                        (*evidence, f"{'glider' if kind == 'gliders' else 'body'}_colour_needs_character"),
+                        top.id)
+    if suggestion:
+        evidence.append("character_colour_suggestion")
     if chosen is None and clue and clue.strong and clue.id == family:
         # The family is observed, but the exact recolour is still unknown.
-        return Decision(None, family, "family_only", tuple(evidence), top.id)
-    if (kind == "gliders" and chosen == top.id
-            and clue and clue.strong and clue.id == family
-            and character.id is None and character.status in ("unknown", "suggested")
-            and character.visual_top1):
-        relation = refs.part_for_character.get((kind, family, character.visual_top1))
-        if relation and relation != chosen and refs.family.get(relation) == family:
-            # A generic row name supports the glider family, not its colour.
-            # An unaccepted character cannot choose the alternative, but its
-            # conflicting catalog colour can require review of this exact ID.
-            return Decision(None, family, "conflict",
-                            (*evidence, "unaccepted_character_colour_conflict_review"), top.id)
+        return Decision(None, family, "family_only", tuple(evidence), top.id, suggestion)
     return Decision(chosen, family if chosen else None,
-                    "accepted" if chosen else "unknown", tuple(evidence), top.id)
+                    "accepted" if chosen else "unknown", tuple(evidence), top.id, suggestion)

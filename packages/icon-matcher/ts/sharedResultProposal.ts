@@ -11,7 +11,7 @@ import { miiSuggestion, type OpenSetMode } from './sharedOpenSet';
 
 export type ResultField = 'character' | 'kart' | 'wheel' | 'glider' | 'flag';
 type Decision = { id: string | null; familyId?: string | null;
-  status: string; evidence?: string[] };
+  status: string; evidence?: string[]; suggestedId?: string | null };
 type Context = { chosen?: Decision | null; clue?: { fuzzy?: number } | null;
   chosenBasis?: string; cropPixelSha256?: string };
 type ReadWithDistinctive = VisualFieldRead & { flag_distinctive_qa?: {
@@ -177,6 +177,10 @@ function composeField(field: ResultField, entry: Entry | undefined): ResultField
     : rawTop.map((item) => ({ ...item, distinctiveDistance: null }));
   let contextAccepted = visual && chosen?.status === 'accepted' && chosen.id
     ? chosen.id : null;
+  // A colour the context proposes for review (the body or glider catalog colour of
+  // an accepted character); it leads the proposal but is never accepted by itself.
+  const contextSuggested = visual && !contextAccepted && typeof chosen?.suggestedId === 'string'
+    && chosen.suggestedId ? chosen.suggestedId : null;
   const colour = field === 'character' ? visual?.family_colour_qa : null;
   const colourRank = colour?.schema === 'mk8dx.family-colour-rank.v1'
     && colour.method === 'oklab' && colour.status === 'measured'
@@ -249,7 +253,7 @@ function composeField(field: ResultField, entry: Entry | undefined): ResultField
   const exposedTop = exposure?.[0] && visual?.kind === 'flags'
     ? exposure[0] : null;
   const proposedId = acceptedId ?? (luShape ? 'country.lu'
-    : exposedTop?.id ?? rankedTop[0]?.id ?? null);
+    : exposedTop?.id ?? contextSuggested ?? rankedTop[0]?.id ?? null);
   const top: ResultProposalCandidate[] = [];
   if (luShape) top.push({ id: 'country.lu', matchScore: null, textFuzzy: null,
     distinctiveDistance: null, basis: 'shape_ncc', shapeScore: luShape.score });
@@ -261,7 +265,7 @@ function composeField(field: ResultField, entry: Entry | undefined): ResultField
       distinctiveDistance: null, basis: 'exposure', exposureScore: item.score });
   }
   if (exposure) top.splice(3);
-  if (proposedId && contextAccepted) {
+  if (proposedId && (contextAccepted || proposedId === contextSuggested)) {
     top.push({ id: proposedId,
       matchScore: rawTop.find((item) => item.id === proposedId)?.score ?? null,
       textFuzzy: context?.clue?.fuzzy ?? null, distinctiveDistance: null,

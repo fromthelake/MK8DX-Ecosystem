@@ -264,20 +264,37 @@ def read_field(crop_bgr: np.ndarray | None, kind: Kind, profile: Profile,
     if decision.id is None:
         # A match always has a strongest visual choice. Keep the acceptance
         # gate independent of this review proposal, including clipped cells.
+        catalog_first = bool(decision.suggested_id) and decision.suggested_id != proposal_ranked[0]["id"]
+        if catalog_first:
+            # The catalog colour of an accepted character (combine_part) leads
+            # the proposal; the visual order stays as the alternatives.
+            sid = decision.suggested_id
+            score = next((candidate.score for candidate in visual.top if candidate.id == sid), None)
+            sfamily = decision.family_id or ranked_families[0]["familyId"]
+            proposal_ranked = [{"rank": 1, "id": sid, "label": label(sid, sfamily),
+                                "familyId": sfamily, "familyLabel": label(sfamily, sfamily),
+                                "relationToFirst": ("same_family" if sfamily == first_family
+                                                    else "different_family"),
+                                "score": score},
+                               *({**item, "rank": rank} for rank, item in enumerate(
+                                   (item for item in proposal_ranked if item["id"] != sid), 2))][:3]
         suggestion = {"id": proposal_ranked[0]["id"],
                       "label": proposal_ranked[0]["label"] + "?",
                       "score": proposal_ranked[0]["score"],
                       "alternatives": proposal_ranked[1:],
                       "family": ranked_families[0],
                       "familyAlternatives": ranked_families[1:]}
-        if proposal_ranked is not ranked:
+        if catalog_first:
+            suggestion["basis"] = "character_catalog_colour"
+        elif proposal_ranked is not ranked:
             suggestion["basis"] = "variant_colour_review"
         if len(proposal_ranked) > 1:
             suggestion["alternative"] = {"id": proposal_ranked[1]["id"],
                                           "label": proposal_ranked[1]["label"],
                                           "score": proposal_ranked[1]["score"]}
         decision = Decision(None, decision.family_id, "suggested",
-                            (*decision.evidence, "visual_suggestion"), visual.top[0].id)
+                            (*decision.evidence, "visual_suggestion"), visual.top[0].id,
+                            decision.suggested_id)
         if kind == "characters":
             suggestion, decision = _open_set_step(profile, visual, suggestion, decision)
     result.update(visualRead=visual_field_result(

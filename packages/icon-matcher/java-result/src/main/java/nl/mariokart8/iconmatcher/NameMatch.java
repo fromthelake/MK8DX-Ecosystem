@@ -34,6 +34,9 @@ public final class NameMatch {
         String lower = text.toLowerCase(Locale.ROOT);
         for (int i = 0; i < lower.length(); ) {
             int cp = lower.codePointAt(i);
+            // Full-width digits (U+FF10-FF19) become ASCII before any context rule sees the text;
+            // numeric clue IDs are ASCII 0-9 only. Other digit scripts stay as they are.
+            if (cp >= 0xFF10 && cp <= 0xFF19) cp = '0' + (cp - 0xFF10);
             int type = Character.getType(cp);
             if (Character.isLetter(cp) || type == Character.DECIMAL_DIGIT_NUMBER) sb.appendCodePoint(cp);
             i += Character.charCount(cp);

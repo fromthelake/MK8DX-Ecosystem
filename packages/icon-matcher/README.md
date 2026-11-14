@@ -10,7 +10,7 @@ the lap rows and the Select-a-Ghost panel are. It exists three times, kept equal
 | TypeScript | `ts/` | the browser scanner (`apps/timetrials-scanner-web`) |
 | Java | `java/`, `java-result/` | the Android scan runtime |
 
-The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, source candidate `0.4.2`). The Python,
+The reader declares one **field-semantics version** (`FIELD_SEMANTICS_VERSION`, source candidate `0.4.3`). The Python,
 TypeScript and Java declarations must be equal; `python/tests/test_version.py` checks this.
 
 Ghost Select picker version 2 can use an independently accepted top icon to
@@ -48,6 +48,36 @@ for the same-source qualification.
 Icon matching compares a normalized crop with the reference images of the game catalog (masked colour
 shortlist, then shape and colour refinement within a character family). When no catalog character fits
 well, the open-set step suggests a Mii instead of the closest look-alike.
+
+### Kart and glider colour follow the character
+
+Body (kart) and glider families with more than one colour give each character one catalog colour (the
+catalog holds 1,148 body and 164 glider colour relations; tyres have none). The context rule
+(`context.combine_part`, `sharedPartContext.ts`, `ContextRules.java`) uses that link so that a stored result never
+pairs a character with a kart or glider colour that character cannot have (field semantics 0.4.3, issue #99):
+
+- **Character accepted** and the catalog links it to this family: the catalog colour is the part. A close
+  colour in the visual top three is replaced silently (`character_part_top3_variant`). When the icon clearly
+  showed another colour, the field becomes `conflict` with the catalog colour as `suggestedId` and
+  `character_colour_conflict_review`: a clear clash usually means the character is wrong.
+- **Character not accepted** (unknown, suggested or conflict): the colour can only come from the icon. When the
+  icon's own top colour stands and the printed name reads the same family, it is accepted
+  (`name_supported_icon_colour`, owner option 2 in #173). Otherwise a readable part family is still settled (it
+  carries the stats) but not its colour: the decision is `family_only` (`body_colour_needs_character` /
+  `glider_colour_needs_character`) without `suggestedId`, and the colour proposal is the colour the icon shows.
+  An unconfirmed or suggested character never supplies or vetoes a colour.
+- **No catalog link** (a single-colour part, or no link for an accepted character): the icon decides.
+- Existing gates stay: a weak visual read needs score 0.80 or a readable name before a relation applies, and a
+  near-tied glider family without a readable name stays in review (`weak_family_relation_review`). When a gate
+  blocks, the field is `unknown` with the catalog colour as `suggestedId` (`character_colour_suggestion`).
+
+`suggestedId` is only a review proposal: the result proposal shows it first with a `?` and never accepts it.
+
+### Numeric clue IDs
+
+A tyre row number is a numeric clue ID only when it consists of ASCII `0`-`9`. OCR text is normalized before
+the context rules run (`name_match.normalize`, `normalizeName`, `NameMatch.normalize`); that step turns
+full-width digits (U+FF10-FF19) into ASCII. Other digit scripts are no numeric IDs.
 
 ## Inputs it needs
 
@@ -94,7 +124,7 @@ export MK8DX_FRAME_DEFINITIONS="$PWD/.cache/recognition-pack/frame-definitions-v
 
 | Vector | What it pins | Replayed by |
 | --- | --- | --- |
-| `vectors/context-v1.json` | `combine_character` / `combine_part` over a synthetic catalog and synthetic text clues, one case per branch and on every threshold edge | `python/tests/test_generated_vectors.py`, `ts/contextVectors.test.mjs` |
+| `vectors/context-v1.json` | `combine_character` / `combine_part` over a synthetic catalog and synthetic text clues, one case per branch and on every threshold edge, plus the OCR digit normalization | `python/tests/test_generated_vectors.py`, `ts/contextVectors.test.mjs`, Android `ContextParityTest` |
 | `vectors/icon-score-v1.json` | masked RGB rank (`center_shortlist`, `center_then_shortlist`) on box-sized uint8 queries built from the public recognition pack's own references | `python/tests/test_generated_vectors.py`, `ts/iconScoreVectors.test.mjs`, Android `IconScoreParityTest` |
 
 ```sh
@@ -107,8 +137,8 @@ MK8DX_RECOGNITION_PACK="$PWD/.pack" ...                                         
 The output is deterministic (no random numbers, sorted keys, LF). `--check` is byte-exact under the pinned
 `requirements-dev.txt` (numpy 2.5.4, OpenCV 5.0); another numpy can change float32 sums in the last bit, which the
 replays tolerate (scores within 1e-6, decisions identical). Cases within 1e-5 of the 0.80 score or 0.02 margin gate
-carry `"boundary": true` and are reported rather than failed. Known rule differences between the runtimes are listed in
-the replay tests themselves. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
+carry `"boundary": true` and are reported rather than failed. The context replays have no known exceptions: Python,
+TypeScript and Java must give identical decisions for every `context-v1` case. `python/tests/test_reference_bank_matches_pack.py` checks that the PNG-built Python
 reference bank equals the pack's tensors.
 
 `tools/generate_rule_vectors.py` (same options) writes the remaining rule vectors, also without private inputs:
