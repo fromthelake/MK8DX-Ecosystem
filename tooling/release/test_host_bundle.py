@@ -34,7 +34,8 @@ class HostBundleBaseImagePinsTest(unittest.TestCase):
 
     def test_compose_pins_every_third_party_image_by_index_digest(self):
         pins = host_bundle.base_image_pins()
-        self.assertEqual(sorted(pins), ["axllent/mailpit:v1.32.0", "mysql:8.4.11"])
+        # The repositories are fixed; the tags move with Dependabot, which updates tag and digest together.
+        self.assertEqual(sorted(host_bundle.repository(tag) for tag in pins), ["axllent/mailpit", "mysql"])
         self.assertEqual(host_bundle.IMAGES[2:], tuple(pins))
         for tag, digest in pins.items():
             self.assertRegex(digest, r"^sha256:[0-9a-f]{64}$")
