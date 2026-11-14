@@ -852,3 +852,38 @@ body.viewctl-awake .viewctl__gear,
   border: 1px solid var(--line); border-radius: 8px;
   background: var(--bg-elev); color: var(--text); font: inherit;
 }
+
+/* Phone widths. The 740px board shrinks to the viewport here, so the fixed
+   columns used to leave the driver name a letter or two: narrow the position,
+   +/-, points and total columns and the avatar so the name gets the room. The
+   fixed grid stacks its cards and scrolls instead of squeezing 12 rows into a
+   third of the screen. Wider layouts (OBS 1920x1080) are untouched. */
+@media (max-width: 600px) {
+  .cols,
+  .row { grid-template-columns: 26px 22px minmax(0, 1fr) 48px 40px; gap: 6px; }
+  .cols { padding: 10px 14px 6px; letter-spacing: .06em; }
+  .rows { padding: 4px 8px 12px; }
+  .row { padding: 8px 6px; }
+  .row__rank { font-size: 16px; }
+  .row.rank-1 .row__rank, .row.rank-2 .row__rank, .row.rank-3 .row__rank { font-size: 18px; }
+  .row__delta { font-size: 12px; }
+  .row__driver { gap: 8px; }
+  .row__icon { width: 32px; height: 32px; }
+  .row__name { font-size: 15px; }
+  .row__total { font-size: 16px; }
+
+  body.fixed-grid-view .stage { overflow-y: auto; align-items: flex-start; padding: 10px; }
+  .gridboard { height: auto; grid-template-columns: minmax(0, 1fr); grid-auto-rows: auto; gap: 12px; }
+  .gridrows { flex: none; }
+  .gridrow { flex: none; height: 40px; }
+  .gridcols,
+  .gridrow { grid-template-columns: 24px 16px minmax(0, 1fr) 46px 34px 40px; gap: 5px; }
+  .gridcols { padding: 8px 12px 6px; }
+  .gridrows { padding: 0 8px 10px; }
+  .gridrow { padding: 4px 8px; }
+  .gridrow__rank, .gridrow__total { font-size: 18px; }
+  .gridrow.rank-1 .gridrow__rank { font-size: 21px; }
+  .gridrow__delta, .gridrow__gap { font-size: 12px; }
+  .gridrow__driver b { font-size: 16px; }
+  .gridrow__race .racepill { font-size: 12px; }
+}
