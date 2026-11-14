@@ -112,6 +112,8 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 預期結果是「MariaDB 11.4.13」和「ready」（就緒）。網站、掃描器、資料庫和測試收件匣都繫結在這台電腦上。不要在路由器上轉送連接埠，也不要把 phpMyAdmin 或測試收件匣開放給其他人。
 
+Apache 沒有變綠？未修改的 XAMPP Apache 除了 18090 之外，還要使用連接埠 80 和 443。如果這台電腦上的 A2 安裝、IIS 或其他網頁伺服器已經占用其中一個連接埠，Apache 就無法啟動，XAMPP Control Panel（XAMPP 控制面板）的記錄會顯示被占用的連接埠。請在預先安排的時段內停止那個程式，或在另一台電腦上使用 A3。不要移除另一個網站。
+
 7. 在網站上點選「登入」，一字不差地使用第 5 步中的管理員地址。在 Mailpit 中開啟最新的郵件，並點選其中的登入連結。你仍然只是一般使用者。現在按兩下套件資料夾中的 Manage-MK8DX-No-Docker.cmd（保持 MK8DX 視窗開啟），輸入 2 並按 Enter。它在背後執行的是：python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"。
 
 它只對已經驗證過電子郵件的帳號有效。預期結果是「created」（已建立），重複操作時是「unchanged」（未變更）。重新整理網站。其他第一個註冊的人不會自動成為管理員。
@@ -480,11 +482,13 @@ LiveTrial 會儲存網址並自動重新啟動。重新啟動期間請保持視�
 
 你也可以在沒有擷取卡的情況下，用現有影片試用 Tournament Live。開啟 TournamentLive.cmd，選擇「新增影片檔案」，選擇一個 .mp4 或 .mkv 檔案，然後選擇「全部開始」。等待影片和分析完成。查看「已確認的排名」，並選擇「開啟匯出」找到成績檔案。這種一般的影片方式所使用的比分選擇會等到積分動畫和最終排名穩定下來。請自己檢查名稱、名次和積分；OCR 可能會出錯。影片重播並不能測試實體擷取卡。另外的 TournamentLiveCli.cmd 重播指令用於診斷，不能取代這種方式。
 
+要把這次執行交給你的網站，請在 Tournament Live 中選擇「連線到 Tournament Manager」（連線後為「變更錦標賽」），完成瀏覽器登入，並從清單中選擇錦標賽。這個選擇只是一個建議。在網站上開啟該錦標賽，前往步驟 5（決賽組別為步驟 9），在「可用的 Tournament Live 錄影」下找到這次執行。在「連結至組別」中選擇它的組別，然後選擇「連結已檢查的錄影」。在你接受之前，這些比賽會作為待處理的證據等待。Tournament Live 可能會自動加入它記得的擷取卡，作為「組別 1」上的額外來源。如果「組別 1」上還有一部影片，「全部開始」會停下來，並要求你把每路畫面指派到不同的組別：選取額外的來源並選擇「移除所選項目」，或為它指派自己的組別，然後重新開始。
+
 如需選用的網站連線，在套件資料夾中開啟 PowerShell 並執行：
 
 .\TournamentConnect.cmd sign-in
 
-第一次請輸入你的安裝的確切網址，並完成瀏覽器登入。下面這些指令用於顯示或變更網址；變更時會要求確認：
+第一次請輸入你的安裝的確切網址，並完成瀏覽器登入。在 A1 或 A3 上，這就是 MK8DX 視窗顯示的 http://127.0.0.1 網址，例如 http://127.0.0.1:18080；未加密的 HTTP 只接受這台電腦上的這類網址。下面這些指令用於顯示或變更網址；變更時會要求確認：
 
 .\TournamentConnect.cmd server
 .\TournamentConnect.cmd server https://www.example.org
@@ -586,6 +590,8 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 疑難排解與自行建置
 
 如果網站是空的，請先使用選單 3，並檢查 Docker 是否在執行中。在 A1 上，登入郵件會寄到 Mailpit；在 A2 和 B1 上，它應該寄到真實的收件匣。請一律確認你使用的是同一個安裝、網址和電子郵件。在公開方式中收不到登入郵件時，需要檢查真實的 SMTP 設定值以及業者是否可以連線。/health/ready 回報的是 API 和資料庫是否就緒，而不是收件匣的寄送情況。
+
+如果 Start-MK8DX.cmd 在 A1 上因「all predefined address pools have been fully subnetted」而停止，表示舊的 Docker 網路已經用完 Docker 的位址範圍。在 PowerShell 中執行 docker network ls 查看它們。只移除你確定沒有在使用的網路，例如使用 docker network prune，它只會移除沒有任何容器使用的網路。然後重新開啟 Start-MK8DX.cmd。
 
 在 A2 上，請先檢查兩台電腦上的 hosts 項目、私人網路、防火牆連接埠和憑證指紋。在 B1 上，檢查 DNS A 記錄、業者連接埠 80/443、有效的 HTTPS，然後再檢查郵件。不要忽視憑證警告。求助時絕不要分享 secrets.json、備份、登入連結、SSH 金鑰或包含密碼的記錄行。
 

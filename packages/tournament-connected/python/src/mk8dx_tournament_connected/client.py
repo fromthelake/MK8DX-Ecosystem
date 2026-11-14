@@ -36,18 +36,17 @@ def session_identity_key(token: str) -> str:
 
 
 def api_origin() -> str:
+    """The exact website origin: HTTPS, or plain HTTP only for this PC (A1/A3 loopback).
+
+    exact_origin() accepts ``http://`` only for ``127.0.0.1``/``localhost`` with an explicit port,
+    so loopback traffic never leaves the PC; every other address still needs HTTPS. The former
+    MK8DX_TOURNAMENT_ALLOW_INSECURE_LOOPBACK opt-in is no longer needed and is ignored."""
     value = os.environ.get("MK8DX_TOURNAMENT_API_ORIGIN") or selected_origin() or DEFAULT_BASE_URL
-    loopback_development = (
-        os.environ.get("MK8DX_TOURNAMENT_ALLOW_INSECURE_LOOPBACK") == "1"
-        and (value.startswith("http://127.0.0.1:") or value.startswith("http://localhost:"))
-    )
     try:
-        exact_origin(value)
+        return exact_origin(value)
     except ValueError:
-        raise ConnectedError("Tournament Manager needs an exact HTTPS origin, or HTTP on this PC only") from None
-    if value.startswith("http://") and not loopback_development:
-        raise ConnectedError("Tournament Manager connection requires HTTPS")
-    return value
+        raise ConnectedError("Tournament Manager connection requires HTTPS, or HTTP on this PC only "
+                             "(http://127.0.0.1:<port> or http://localhost:<port>)") from None
 
 
 def _tls_context() -> ssl.SSLContext | None:

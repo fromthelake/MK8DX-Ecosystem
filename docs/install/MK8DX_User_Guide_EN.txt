@@ -110,6 +110,8 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Expect “MariaDB 11.4.13” and “ready”. The website, scanner, database, and test inbox are bound to this computer. Do not forward a router port or expose phpMyAdmin or the test inbox to other people.
 
+Apache does not turn green? Stock XAMPP Apache also wants ports 80 and 443 besides 18090. If an A2 installation, IIS, or another web server on this computer already uses one of them, Apache does not start and the log in XAMPP Control Panel names the busy port. Stop that other program during a planned period, or use A3 on another computer. Do not remove the other website.
+
 7. On the site, click Sign in and use exactly the administrator address from step 5. Open the newest message in Mailpit and follow its sign-in link. You are still an ordinary user. Now double-click Manage-MK8DX-No-Docker.cmd in the package folder (leave the MK8DX window open), type 2 and press Enter. Behind it runs: python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
 
 It works only for an account that has already verified its email. Expect “created”, or “unchanged” if repeated. Refresh the site. Another first registrant does not automatically become administrator.
@@ -480,11 +482,13 @@ Drag an .mp4 or .mkv recording onto TournamentProcessor.cmd. The program creates
 
 You can also try Tournament Live with an existing video and no capture card. Open TournamentLive.cmd, choose Add video file, select an .mp4 or .mkv file, then choose Start all. Wait for the video and analysis to finish. Check Confirmed standings and choose Open exports for the result file. This normal video route uses the score selection that waits for the points animation and final standings to settle. Check names, places, and points yourself; OCR can be wrong. A video replay does not test a physical capture card. The separate TournamentLiveCli.cmd replay command is diagnostic and does not replace this route.
 
+To give the run to your website, choose Connect to Tournament Manager in Tournament Live (Change Tournament once connected), complete the browser sign-in, and choose the tournament from the list. That choice is only a suggestion. On the website, open the tournament, go to Step 5 (Step 9 for the final groups), and find the run under Available Tournament Live recordings. Choose its group under Link to group, then choose Link reviewed recording. The races wait as pending evidence until you accept them. Tournament Live may add a capture card it remembers by itself, as an extra source on Group 1. With a video on Group 1 as well, Start all stops and asks you to assign every feed to a different group: select the extra source and choose Remove selected, or give it its own group, then start again.
+
 For the optional website connection, open PowerShell in the package folder and run:
 
 .\TournamentConnect.cmd sign-in
 
-Enter the exact address of your installation the first time and complete browser sign-in. These commands display or change the address; changing it asks for confirmation:
+Enter the exact address of your installation the first time and complete browser sign-in. On A1 or A3, that is the http://127.0.0.1 address shown by the MK8DX window, for example http://127.0.0.1:18080; plain HTTP is accepted only for such addresses on this PC. These commands display or change the address; changing it asks for confirmation:
 
 .\TournamentConnect.cmd server
 .\TournamentConnect.cmd server https://www.example.org
@@ -586,6 +590,8 @@ The update to 0.2.3 moves the Docker database from MySQL 8.4 to MySQL 9.7 LTS. M
 Troubleshooting and building it yourself
 
 For an empty website, begin with menu 3 and check that Docker is running. On A1, sign-in mail goes to Mailpit; on A2 and B1 it should go to a real inbox. Always check that you use the same installation, address, and email. Missing sign-in mail on a public route calls for checking the real SMTP values and provider reachability. /health/ready reports API and database readiness, not inbox delivery.
+
+If Start-MK8DX.cmd stops on A1 with “all predefined address pools have been fully subnetted”, old Docker networks have used up Docker's address ranges. Run docker network ls in PowerShell to see them. Remove only networks you know are unused, for example with docker network prune, which removes only networks that no container uses. Then open Start-MK8DX.cmd again.
 
 On A2, check the hosts entry on both PCs, the private network, firewall port, and certificate fingerprint first. On B1, check the DNS A record, provider ports 80/443, valid HTTPS, and then mail. Do not ignore a certificate warning. Never share secrets.json, a backup, sign-in links, SSH keys, or log lines containing passwords when asking for help.
 

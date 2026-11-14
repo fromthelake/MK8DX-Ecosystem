@@ -79,7 +79,9 @@ def test_installer_and_readme_name_every_launcher(tmp_path):
         assert any(line.startswith(f'call :say " {name}') for line in builder.INSTALLER_CMD.splitlines()), name
         assert f"     {name}" in builder.README_FIRST, name
     assert "ocr-models" in builder.README_FIRST
-    assert "first OCR run" not in builder.README_FIRST
+    # Only detection + Latin recognition are in the collection; the English-only reader's
+    # english_g2.pth is still a one-time EasyOCR download, so README-FIRST must say so.
+    assert "english_g2.pth" in builder.README_FIRST
 
 
 def test_package_installs_the_qt_window_and_offers_the_background_setting(tmp_path):
