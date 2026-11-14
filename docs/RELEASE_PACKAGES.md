@@ -16,7 +16,7 @@ same packages yourself; see [Building the packages](#building-the-packages).
 | `mk8dx-android-release-….apk` | App signed locally by the maintainer's release key | Phones; the stable release requires this file |
 | `mk8dx-android-notices-….zip` | License and source notices that belong next to the APK | Distributing the APK |
 | `desktop-client-….zip` | LiveTrial for Windows, with its engine and an embedded Python | Capture-card and video recognition |
-| `tournament-tools-….zip` | Tournament Processor, Live and Connect for Windows, with an installer | Tournament nights |
+| `tournament-tools-….zip` | Tournament Processor, Live and Connect for Windows, with an installer and every OCR model (about 450 MB) | Tournament nights |
 | `mk8dx-full-local-….zip` | The complete source with the hydrated asset collection and build recipes, without Git history | Building everything yourself |
 | `SBOM.spdx.json` | SPDX inventory of the twelve primary CI-built packages (the debug APK and eleven ZIPs) and full-source manifest sidecar, with SHA-256 and Syft's discovered package records | Package audit; ancillary notices/guides and nested dependencies are checked separately by checksums and Verify's dependency audits |
 
