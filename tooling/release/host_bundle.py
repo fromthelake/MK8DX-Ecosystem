@@ -58,7 +58,11 @@ OFFLINE_FILES = (
     "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/host_platform.py",
     "tooling/setup_wizard_static/index.html",
     "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
+    "tooling/setup_wizard_static/language.js",
     "tooling/setup_wizard_static/icon.png", "tooling/mk8dx.ico",
+    # The wizard's and the /setup page's language catalogs (tooling/i18n/build_web_catalogs.mjs).
+    *(f"tooling/setup_wizard_static/i18n/{language}.json" for language in (
+        "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW")),
 )
 
 

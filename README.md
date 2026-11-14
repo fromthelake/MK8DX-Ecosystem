@@ -273,7 +273,7 @@ time, and **23 mastery levels** measured against the current world records.
 ## 🌍 Speaks your language — all 15 of them
 
 Mario Kart 8 Deluxe is played everywhere, so MK8DX is built for every game language: the website,
-the Android app, LiveTrial and the Tournament tools come in **15 languages**, and recognition is
+the Android app, LiveTrial, the Tournament tools and the A2 home setup come in **15 languages**, and recognition is
 built for **all 15 game language variants** — from Dutch and English to Japanese, Korean,
 Chinese, Russian and more. English and Dutch are reviewed by people; the other languages are
 machine-translated and recognition in some of them is still being verified on real consoles.

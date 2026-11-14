@@ -195,7 +195,9 @@ _SETUP_STYLE = (
     "text-decoration:none;border-radius:12px;padding:14px 16px;margin:12px 0}"
     ".code{font:600 24px/1.3 Consolas,monospace;letter-spacing:1px;color:#f7c948;overflow-wrap:anywhere}"
     "code,.mono{font-family:Consolas,monospace;overflow-wrap:anywhere;font-size:14px;color:#c9cfe8}"
-    ".muted{color:#a9b1cf;font-size:15px}[hidden]{display:none!important}")
+    ".muted{color:#a9b1cf;font-size:15px}[hidden]{display:none!important}"
+    ".lang-select{float:right;margin:4px 0 0 12px;max-width:50%;font:15px system-ui,sans-serif;color:#eef1fb;"
+    "background:#111833;border:1px solid #26305a;border-radius:8px;padding:6px 8px}")
 
 _SETUP_TEXT = {
     "en": {
@@ -220,6 +222,7 @@ _SETUP_TEXT = {
         "linux": ["Add the same certificate to your distribution's or browser's trusted root store.",
                   "The exact steps differ by distribution; Linux is not yet tested end to end for this route."],
         "dl_crt": "Download certificate", "dl_ios": "Download profile",
+        "root_cert": "Root certificate SHA-256:", "root_key": "Root public key SHA-256 (SPKI):", "language": "Language",
         "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
     },
     "nl": {
@@ -244,28 +247,59 @@ _SETUP_TEXT = {
         "linux": ["Voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser.",
                   "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route."],
         "dl_crt": "Certificaat downloaden", "dl_ios": "Profiel downloaden",
+        "root_cert": "SHA-256 van het basiscertificaat:", "root_key": "SHA-256 van de publieke sleutel (SPKI):",
+        "language": "Taal",
         "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
     },
 }
 
 
-def setup_page(origin: str, fp: dict) -> str:
+# The other 13 game languages: the setup wizard's catalogs (tooling/i18n/build_web_catalogs.mjs), English text ->
+# translation; a text a catalog lacks stays English. The language choice is the wizard's language.js, inlined.
+_STATIC = Path(__file__).resolve().parent / "setup_wizard_static"
+SETUP_LANGUAGES = ("en", "nl", "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko",
+                   "zh-CN", "zh-TW")
+
+
+def setup_texts(code: str, catalog_dir: Path | None = None) -> dict:
+    """The /setup page texts of one language: English and Dutch as written, the others over the catalog."""
+    if code in _SETUP_TEXT:
+        return _SETUP_TEXT[code]
+    english = _SETUP_TEXT["en"]
+    path = (catalog_dir or _STATIC / "i18n") / f"{code}.json"
+    messages = json.loads(path.read_text(encoding="utf-8")).get("messages", {}) if path.is_file() else {}
+
+    def tr(value):
+        if isinstance(value, list):
+            return [tr(item) for item in value]
+        if isinstance(value, dict):
+            return dict(value)
+        found = messages.get(value)
+        return found if isinstance(found, str) and found.strip() else value
+    return {key: tr(value) for key, value in english.items()}
+
+
+def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None) -> str:
     """Mobile-first /setup page: the visitor's own platform first, in the device language.
 
     Static and self-contained (served over plain HTTP before trust exists); readable without
-    JavaScript, which only selects the language and opens the matching platform."""
+    JavaScript (in English), which only selects the language and opens the matching platform."""
     short = " ".join(fp["certificateSha256"][i:i + 4].upper() for i in range(0, 16, 4))
     parts = ["<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
              "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
-             "<title>MK8DX</title><style>", _SETUP_STYLE, "</style></head><body><main>"]
-    for lang, text in _SETUP_TEXT.items():
-        parts.append(f"<div class=\"lang\" lang=\"{lang}\" data-lang=\"{lang}\">")
+             "<title>MK8DX</title><style>", _SETUP_STYLE, "</style></head><body><main>"
+             "<select id=\"lang\" class=\"lang-select\" aria-label=\"Language\" hidden></select>"]
+    for lang in SETUP_LANGUAGES:
+        text = setup_texts(lang, catalog_dir)
+        hidden = "" if lang == "en" else " hidden"
+        parts.append(f"<div class=\"lang\" lang=\"{lang}\" data-lang=\"{lang}\" "
+                     f"data-label=\"{html.escape(text['language'])}\"{hidden}>")
         parts.append(f"<div class=\"brand\">MK8DX</div><h1>{html.escape(text['title'])}</h1>"
                      f"<p class=\"lead\">{html.escape(text['lead'])}</p>")
         parts.append(f"<section><p>{html.escape(text['check'])}</p><p class=\"code\">{short}</p>"
                      f"<details><summary>{html.escape(text['full'])}</summary>"
-                     f"<p class=\"mono\">Root certificate SHA-256: {fp['certificateSha256']}</p>"
-                     f"<p class=\"mono\">Root public key SHA-256 (SPKI): {fp['spkiSha256']}</p></details></section>")
+                     f"<p class=\"mono\">{html.escape(text['root_cert'])} {fp['certificateSha256']}</p>"
+                     f"<p class=\"mono\">{html.escape(text['root_key'])} {fp['spkiSha256']}</p></details></section>")
         for platform in ("android", "ios", "windows", "mac", "linux"):
             link = "/setup/root.mobileconfig" if platform == "ios" else "/setup/root.crt"
             label = text["dl_ios"] if platform == "ios" else text["dl_crt"]
@@ -276,16 +310,25 @@ def setup_page(origin: str, fp: dict) -> str:
         parts.append(f"<p class=\"other muted\" hidden>{html.escape(text['other'])}</p>")
         parts.append(f"<section><p>{html.escape(text['done'])} <code>{html.escape(origin)}</code></p>"
                      f"<p class=\"muted\">{html.escape(text['remove'])}</p></section></div>")
+    language_js = (_STATIC / "language.js").read_text(encoding="utf-8")
+    parts.append("<script>" + language_js.replace("</", "<\\/") + "</script>")
     parts.append(
-        "<script>(function(){var nl=(navigator.language||'').toLowerCase().indexOf('nl')===0;"
+        "<script>(function(){var L=window.MK8DXLanguage;var lang=L.choose(L.saved(),L.browser());"
         "var ua=navigator.userAgent||'';var p=/android/i.test(ua)?'android':/iphone|ipad|ipod/i.test(ua)||"
         "(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1)?'ios':/windows/i.test(ua)?'windows':"
         "/Macintosh/.test(ua)?'mac':/linux/i.test(ua)?'linux':null;"
-        "document.querySelectorAll('.lang').forEach(function(b){var mine=b.dataset.lang===(nl?'nl':'en');"
-        "b.hidden=!mine;if(!mine)return;document.documentElement.lang=b.dataset.lang;"
+        "var s=document.getElementById('lang');"
+        "L.LANGUAGES.forEach(function(e){var o=document.createElement('option');o.value=e[0];o.lang=e[0];"
+        "o.textContent=e[1];s.appendChild(o);});"
+        "function show(code){document.querySelectorAll('.lang').forEach(function(b){var mine=b.dataset.lang===code;"
+        "b.hidden=!mine;if(!mine)return;document.documentElement.lang=code;s.value=code;"
+        "s.setAttribute('aria-label',b.dataset.label);s.title=b.dataset.label;});}"
+        "document.querySelectorAll('.lang').forEach(function(b){"
         "var first=b.querySelector('details.platform[data-platform=\"'+p+'\"]');"
         "if(first){first.open=true;b.insertBefore(first,b.querySelector('details.platform'));"
-        "var o=b.querySelector('.other');o.hidden=false;first.after(o);}});})();</script>")
+        "var o=b.querySelector('.other');o.hidden=false;first.after(o);}});"
+        "s.addEventListener('change',function(){L.save(s.value);show(s.value);});"
+        "s.hidden=false;show(lang);})();</script>")
     parts.append("</main></body></html>\n")
     return "".join(parts)
 
