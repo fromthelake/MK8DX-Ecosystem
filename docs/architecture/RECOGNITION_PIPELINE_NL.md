@@ -18,7 +18,7 @@ Opname → ROI zoeken → matchen → frame-/sequentiebesluit → resultaat → 
 Java-implementatie met dezelfde geversioneerde pariteitsvectoren. Java voert
 geen Python uit. Ook is de pixelbewerking nog niet overal gelijk. De huidige
 `main` heeft veldsemantiekversie **0.4.3** in alle drie talen; release
-`v0.2.3` bevat **0.4.3** (`v0.2.2` had 0.4.2). Nieuwe broncode is nog geen nieuwe release.
+`v0.2.4` bevat **0.4.3**, net als `v0.2.3` (`v0.2.2` had 0.4.2). Nieuwe broncode is nog geen nieuwe release.
 
 Veldsemantiek 0.4.3 voegt één contextregel toe voor de kleur van kart (body)
 en zweefvlieger: een geaccepteerd personage legt de kleur vast uit de catalogus;

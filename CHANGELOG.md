@@ -3,7 +3,18 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.4 — 2026-11-15
+
+Speaks every language of the game: the user, A2, LiveTrial and Tournament Directors guides, the A2 setup wizard and
+join pages, the launcher windows and the Tournament Live and Analysis windows are now in all 15 languages (machine
+translations except EN/NL). Tournament reads player names in every script a Switch profile can use, and Tournament
+Connect and Live work with A1 and A3 over plain loopback HTTP. The Tournament Live dashboard gains an Overall-only
+mode and track names in your language. Tournament Tools and LiveTrial include every OCR model, so recognition works
+offline from the start, and use less memory. On Android the buttons read **Change Player** and **Change community**.
+App downloads work on shared hosting that limits application responses. The #99 recognition work continues
+(phases 3–5: one crop search and card geometry for Web, Android and LiveTrial, behaviour unchanged). In a newer A1/B1
+package folder, 2 (start) now refuses until 7 (update) has run (#197). The database is unchanged since 0.2.3 (MySQL
+9.7 LTS, no new migration). Android app 2.99.4 (173).
 
 ### Added
 
@@ -81,7 +92,6 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   unguessable link inside the document root that the web server serves itself, resumable. Expired link folders are
   removed at every download and at startup; an unsafe setting stops the start. Without it the route streams as
   before, now typed `application/vnd.android.package-archive` for an APK.
-
 - **Android roster import remembers spellings in every script**: the phone's roster-import fold kept only
   `a-z0-9`, so a Cyrillic, Japanese, Korean or Chinese spelling from the file folded to "" and was never kept as
   the Director's alias. It now keeps letters and digits of every script, as the website's workbook key does
@@ -90,9 +100,6 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   every Cyrillic, Japanese, Korean or Chinese player name became the same empty key and the rows overwrote each
   other. The key now keeps letters and digits of every script (accents and spacing still folded, NFKC, so kana
   keep their voicing marks); keys of names it could already read are unchanged.
-- **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
-  new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
-  0.2.3 package 2 would skip the backup.
 - **Tournament Tools and LiveTrial ship every EasyOCR model, so OCR works offline from the start.** The packages
   had only the detection and Latin-script models (`ocr-models` collection group). The English-only reader
   (`english_g2.pth`) therefore downloaded its model on the first run and failed offline. So did the track and
@@ -109,9 +116,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   in a new package's folder would run the new version on the existing installation without the checked backup and
   the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
   and apply now compare the database and API images of the installation's containers with this package's images
-  and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
+  and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself. The A1,
+  administration and hosting guides and all 15 user guides say so: in the new package folder choose 7 (update)
+  first; with a 0.2.3 package, 2 would skip the backup.
 - **Android: Change Player and Change community** instead of a bare **Switch** (#201). In es, es-419, it, ko,
-  pt and ru the account and community buttons showed the console's name untranslated.
+  pt and ru the account and community buttons showed the console's name untranslated. Android app 2.99.4 (173).
+- **Tournament Tools README-FIRST and installer list `TournamentConnect.cmd`** and no longer say the first OCR run
+  downloads models (#183); the tooling tests run quietly (#185); `segmentScores` returns 0.0 for an empty patch in
+  Python, TypeScript and Java instead of failing or reading a false 1.0 (#186).
 - **Tournament Connect and Tournament Live work with A1 and A3.** Both refused `http://127.0.0.1:<port>` and
   `http://localhost:<port>` with "Tournament Manager connection requires HTTPS" unless
   `MK8DX_TOURNAMENT_ALLOW_INSECURE_LOOPBACK=1` was set. Plain HTTP is now accepted for exactly these loopback
