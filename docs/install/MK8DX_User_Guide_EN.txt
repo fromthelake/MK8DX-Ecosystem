@@ -10,7 +10,7 @@ Release packages are attached to the project's GitHub Releases. Open the release
 
 Choose one way to use the website. On one Windows computer, use either Docker or XAMPP, Node.js, and the included current MariaDB. The documented Docker network route reaches a second Windows PC on your trusted network. For a public domain, choose either shared web hosting with Node.js (the chapter uses mijn.host Starter as its example) or your own Docker VPS. These chapters are alternatives, not a course you must complete in order. Phone and Windows clients come after the website routes.
 
-A1 (Docker on one computer) and A3 (XAMPP/Node.js on Windows) are supported after fresh installation and upgrade tests with retained data. A2 (home or club network, new in 0.2.0) has its own package with a guided setup in the browser and was tested end to end on Windows 11. B1 (Docker VPS) and B2 (shared Node.js hosting) are documented but have not been tested end to end. The local A1 and A3 installations were tested on Windows 11 x86-64, including accounts and LiveTrial and Tournament Processor/Connect results in the database and website. Physical Tournament Live capture passed a complete 1× acceptance run with the 0.2.2 package. If you only have Linux or macOS, with no Windows computer or other server, the choices are narrower. The two chapters at the end explain what you can try locally on that same computer and which products do not yet exist for your operating system.
+A1 (Docker on one computer) and A3 (XAMPP/Node.js on Windows) are supported after fresh installation and upgrade tests with retained data. A2 (home or club network, new in 0.2.0) has its own package with a guided setup in the browser and was tested end to end on Windows 11. B1 (Docker VPS) is documented but has not been tested end to end. B2 (shared Node.js hosting): our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The local A1 and A3 installations were tested on Windows 11 x86-64, including accounts and LiveTrial and Tournament Processor/Connect results in the database and website. Physical Tournament Live capture passed a complete 1× acceptance run with the 0.2.2 package. If you only have Linux or macOS, with no Windows computer or other server, the choices are narrower. The two chapters at the end explain what you can try locally on that same computer and which products do not yet exist for your operating system.
 
 What is in this guide
 
@@ -40,13 +40,13 @@ docker compose version
 
 If Docker does not start, follow its WSL or virtualization message first. MK8DX cannot start while Docker Desktop is closed.
 
-2. Install Python 3.12 or later for Windows x86-64 from the official page. In the installer, tick “Add python.exe to PATH” and choose “Install Now”. Close and reopen PowerShell. Check the version:
+2. Install Python 3.12 to 3.15 for Windows x86-64 from the official page. In the installer, tick “Add python.exe to PATH” and choose “Install Now”. Close and reopen PowerShell. Check the version:
 
 Python for Windows: https://www.python.org/downloads/windows/
 
 python --version
 
-If you do not see 3.12 or later, repair Python with the same installer. Also check whether Windows opened a Microsoft Store alias instead of the installed Python. Python only runs the setup helper here; you do not have to build software.
+If you do not see a version from 3.12 to 3.15, repair Python with the same installer. Also check whether Windows opened a Microsoft Store alias instead of the installed Python. Python only runs the setup helper here; you do not have to build software.
 
 3. Put mk8dx-host-local-v0.2.3-amd64.zip and SHA256SUMS.txt in the same download folder. Open PowerShell in that folder and check the host package:
 
@@ -101,7 +101,7 @@ The helper first saves apache\conf\httpd.conf into %LOCALAPPDATA%\MK8DX\ApacheBa
 
 5. Double-click Start-MK8DX-No-Docker.cmd. Choose route A3 and enter the email address you will later use as administrator. The window creates one private installation at %LOCALAPPDATA%\MK8DX\NoDocker. On first start it extracts MariaDB 11.4.13 only into that folder, creates a dedicated database and limited user, applies the migrations and Nintendo Staff and World Records, and starts Node.js and Mailpit. This may take several minutes. Leave this MK8DX window open. A restart keeps the keys, accounts, results, and database.
 
-At every start, this window also shows “origin” and “localMailInbox”. “origin” is the full address for your browser and LiveTrial: http://127.0.0.1:18090. “localMailInbox” is the local test inbox: http://127.0.0.1:18227. Open Mailpit only in your browser. The digits after the colon are the ports. “127.0.0.1” means this computer, so these addresses do not work on another device. If you forget them, look near the top of the same MK8DX window when you next start it.
+At every start, this window also shows “Website:” and “Sign-in mail - a test inbox:”. “Website” is the full address for your browser and LiveTrial: http://127.0.0.1:18090. “Sign-in mail - a test inbox” is the local test inbox: http://127.0.0.1:18227. Open Mailpit only in your browser. The digits after the colon are the ports. “127.0.0.1” means this computer, so these addresses do not work on another device. If you forget them, look near the top of the same MK8DX window when you next start it.
 
 6. Open XAMPP Control Panel. If Apache is already green, click Stop only for Apache, wait until its row is no longer green, then click Start again. This loads the new site setting from step 4. If Apache was stopped, click Start straight away. Open http://127.0.0.1:18090 in your browser. The local test inbox is http://127.0.0.1:18227. If the site is unavailable, first inspect the MK8DX window, then confirm Apache is green. In a second PowerShell window opened in the package folder, check the database and API:
 
@@ -150,7 +150,7 @@ Expect “Backup verified” and then a passing check of all migrations. Press C
 
 Use it on your home network
 
-For a home or club network, use the A2 package. Download mk8dx-a2-windows-amd64-v0.2.3.zip (Linux: mk8dx-a2-linux-amd64 or mk8dx-a2-linux-arm64; macOS with Apple silicon: mk8dx-a2-macos-arm64; there is no package for Macs with an Intel processor) and SHA256SUMS.txt, check the checksum as in “Try it on one computer”, unpack the package and double-click Start-MK8DX-LAN.cmd (Linux and macOS: sh tooling/start-mk8dx.sh). A setup opens in your browser and takes you through everything with Next: the network address, your administrator account, a paper recovery code for the nightly backups, and the people with a sign-in card each for their phone or PC. No internet, no mail server and no hosts file are needed.
+For a home or club network, use the A2 package. Download mk8dx-a2-windows-amd64-v0.2.3.zip (Linux: mk8dx-a2-linux-amd64 or mk8dx-a2-linux-arm64; macOS with Apple silicon: mk8dx-a2-macos-arm64; macOS with an Intel processor: mk8dx-a2-macos-amd64) and SHA256SUMS.txt, check the checksum as in “Try it on one computer”, unpack the package and double-click Start-MK8DX-LAN.cmd (Linux and macOS: sh tooling/start-mk8dx.sh). A setup opens in your browser and takes you through everything with Next: the network address, your administrator account, a paper recovery code for the nightly backups, and the people with a sign-in card each for their phone or PC. No internet, no mail server and no hosts file are needed.
 
 The complete step-by-step guide, with pictures, is docs/install/A2_HOME_GUIDE_EN.md; inside the package it is also docs/install/guide/en.html, and the setup opens it from its Manual link. It covers preparing Windows, Linux or macOS, phones and PCs, the Android app, LiveTrial, tournament nights, backups, moving to a new computer, a fixed address, a new network address and updates.
 
@@ -374,7 +374,7 @@ free -h
 df -h /
 python3 --version
 
-You expect Ubuntu 24.04, x86_64, and Python 3.12 or later. If Python is missing on a fresh Ubuntu 24.04 server, run:
+You expect Ubuntu 24.04, x86_64, and Python 3.12 to 3.15. If Python is missing on a fresh Ubuntu 24.04 server, run:
 
 apt update
 apt install python3
@@ -454,9 +454,9 @@ The answer is created or, on a repeat, unchanged. Refresh the site. Also check a
 
 Use Android, LiveTrial, the scanner, and Tournament
 
-These tools use the address of an existing community. Install the website first. On the same Windows computer, LiveTrial and Tournament may use http://127.0.0.1:18080 (A1) or http://127.0.0.1:18090 (A3). For a public website, use its trusted HTTPS address. Android needs trusted HTTPS; a local Windows check does not prove an Android connection. The generic Android app and Windows clients let you choose the community address; a different domain does not require a source code change. Public client settings never contain server passwords. Never enter the internal mysql name, an API container address, or an SSH IP in a client.
+To send results, these tools use the address of an existing community. LiveTrial and the Tournament Tools also work on their own, without a website; the Android app and the browser scanner need one. On the same Windows computer, LiveTrial and Tournament may use http://127.0.0.1:18080 (A1) or http://127.0.0.1:18090 (A3). For a public website, use its trusted HTTPS address. Android needs trusted HTTPS; a local Windows check does not prove an Android connection. The generic Android app and Windows clients let you choose the community address; a different domain does not require a source code change. Public client settings never contain server passwords. Never enter the internal mysql name, an API container address, or an SSH IP in a client.
 
-Always copy the full website address from “origin” or “Web origin” for your own installation, including the port when one is shown. Never enter “localMailInbox” in LiveTrial: it opens only the local test inbox. On a second device, use the HTTPS network name or your public domain, not the server's 127.0.0.1 address.
+Always copy the full website address shown as “Website” (or “origin” or “Web origin”) for your own installation, including the port when one is shown. Never enter the test inbox address (“Sign-in mail” or “localMailInbox”) in LiveTrial: it opens only the local test inbox. On a second device, use the HTTPS network name or your public domain, not the server's 127.0.0.1 address.
 
 For Android you need Android 8.0 or later; arm64 is recommended. The locally release-signed APK is about 530 MB. Keep at least 1 GB free as an installation margin. Check mk8dx-android-release-v0.2.3.apk against SHA256SUMS.txt on your PC, copy it to your phone, and open it from Files or Downloads. If Android asks to allow installations from this file app, allow it only for the checked package. You may turn that permission off afterward.
 
@@ -472,7 +472,7 @@ If the field is still empty with the https://www.example.org example, or sign-in
 
 The browser scanner is already part of the website. Open /scanner/ on your trusted HTTPS address and begin with “image upload” or “afbeelding uploaden”. Select your own results image, review the recognized details, and confirm only after checking them. Live camera use needs browser permission and trusted HTTPS outside localhost. Recognition also depends on the recording. A2's described second Windows browser route is documented but has not been tested end to end.
 
-For Tournament on Windows x86-64, check tournament-tools-v0.2.3.zip and extract the complete ZIP. Open Install-MK8DX-TournamentTools.cmd. Allow several GB of free space: the ZIP of about 160 MB and about 1 GB for extraction do not cover every dependency and your own media. The installer may fetch Python 3.12, public packages, and an OCR model on first use. No exact minimum for all dependencies and media has been measured. No GPU setting is needed: with a recent NVIDIA driver the installer picks the CUDA version by itself, and the graphics card then speeds up the reading of names, points and times (OCR). The first scan of a recording always runs on the processor, because the OpenCV build in the package has no CUDA support; USING_MK8DX_TOURNAMENT_TOOLS.md in the package explains both steps. Wait for SUCCESS and keep runtime-assets intact. If it fails, read install.log in the package folder.
+For Tournament on Windows x86-64, check tournament-tools-v0.2.3.zip and extract the complete ZIP. Open Install-MK8DX-TournamentTools.cmd. Allow several GB of free space: the ZIP of about 160 MB and about 1 GB for extraction do not cover every dependency and your own media. The installer needs internet once, to download Python 3.12 and public packages; the OCR models are included, and after that processing works offline. No exact minimum for all dependencies and media has been measured. No GPU setting is needed: with a recent NVIDIA driver the installer picks the CUDA version by itself, and the graphics card then speeds up the reading of names, points and times (OCR). The first scan of a recording always runs on the processor, because the OpenCV build in the package has no CUDA support; USING_MK8DX_TOURNAMENT_TOOLS.md in the package explains both steps. Wait for SUCCESS and keep runtime-assets intact. If it fails, read install.log in the package folder.
 
 Drag an .mp4 or .mkv recording onto TournamentProcessor.cmd. The program creates a session folder beside the video with Excel, CSV, and a file ending in _TournamentRaceResultsV1.json. TournamentLive.cmd requires suitable capture hardware and a driver for live input.
 
@@ -579,6 +579,8 @@ Replace the example IP and allow TCP 443 on the new host only for the Private pr
 
 For a software update, first check the SHA-256 of the new host package. Extract it beside the old software folder. Use the same private data folder and choose menu 7 in the new package. The helper first creates and verifies a backup, runs missing migrations, and replaces only the supplied server programs. Afterward check the same project identity, website, sign-in, and data. If it fails, keep the backup and do not blindly run an older image after a database schema change.
 
+The update to 0.2.3 moves the Docker database from MySQL 8.4 to MySQL 9.7 LTS. MySQL upgrades the data files once, at the first start on the new version; only restoring a backup can undo that. So in the new package folder choose 7 before 2: choosing 2 first starts the new version without the backup and without the database updates. Menu 3 (check) is harmless. In the A2 package, Update in the browser makes the backup first by itself; the first update just takes a little longer, and the backup is in Documents\MK8DX-backups. A3 and B2 use their own MariaDB or MySQL and are not affected.
+
 Troubleshooting and building it yourself
 
 For an empty website, begin with menu 3 and check that Docker is running. On A1, sign-in mail goes to Mailpit; on A2 and B1 it should go to a real inbox. Always check that you use the same installation, address, and email. Missing sign-in mail on a public route calls for checking the real SMTP values and provider reachability. /health/ready reports API and database readiness, not inbox delivery.
@@ -591,7 +593,7 @@ Use Linux
 
 What you can try locally now
 
-You need only your own Linux computer, with no Windows computer. If it runs Ubuntu 24.04 on x86-64, the included Docker host package is the local server route. First run uname -m and check that it says x86_64. Install Docker Engine with the Compose plugin, Python 3.12 or later, and unzip. The Ubuntu Docker installation is explained step by step in “Make a public website on a VPS”; for this local trial, skip DNS, opening internet firewall ports, and real SMTP. Download mk8dx-host-local-v0.2.3-amd64.zip and its SHA256SUMS.txt from the same release. Open Terminal in the download folder and check the ZIP. Compare the result with its line in SHA256SUMS.txt. Stop if they differ:
+You need only your own Linux computer, with no Windows computer. If it runs Ubuntu 24.04 on x86-64, the included Docker host package is the local server route. First run uname -m and check that it says x86_64. Install Docker Engine with the Compose plugin, Python 3.12 to 3.15, and unzip. The Ubuntu Docker installation is explained step by step in “Make a public website on a VPS”; for this local trial, skip DNS, opening internet firewall ports, and real SMTP. Download mk8dx-host-local-v0.2.3-amd64.zip and its SHA256SUMS.txt from the same release. Open Terminal in the download folder and check the ZIP. Compare the result with its line in SHA256SUMS.txt. Stop if they differ:
 
 sha256sum mk8dx-host-local-v0.2.3-amd64.zip
 
@@ -609,7 +611,7 @@ Type A1; the first setup starts by itself. The starter shows the full website ad
 
 What still needs development
 
-The included LiveTrial and Tournament programs are Windows programs. They do not launch directly as Linux applications. The XAMPP ZIP and its Windows Apache helper are not a Linux installer either. There is no prebuilt native Linux client or Linux capture acceptance. To use the entire ecosystem without Windows, a developer familiar with Linux must port and package the desktop clients, their OCR dependencies, and any capture interface, then test sign-in and delivery through the database to the website. The Android APK installs on Android, not on Linux. Linux ARM has no native MK8DX images yet; the current images are amd64.
+The included LiveTrial and Tournament programs are Windows programs. They do not launch directly as Linux applications. The XAMPP ZIP and its Windows Apache helper are not a Linux installer either. There is no prebuilt native Linux client or Linux capture acceptance. To use the entire ecosystem without Windows, a developer familiar with Linux must port and package the desktop clients, their OCR dependencies, and any capture interface, then test sign-in and delivery through the database to the website. The Android APK installs on Android, not on Linux. The A1/B1 host package is amd64 only; on Linux ARM (arm64) use the A2 package mk8dx-a2-linux-arm64.
 
 Use macOS
 
@@ -617,7 +619,7 @@ What you can try locally now
 
 You need only your own Mac, with no Windows computer or other server. On an Intel Mac, a developer can try to run the included Linux/amd64 Docker images locally. If the website, API, and database actually start, open the displayed A1 website and Mailpit addresses in the browser on that same Mac. The scanner is part of the website. No Mac trial has yet shown a new account, submission, database record, and visible website result. A working homepage alone does not prove a complete installation.
 
-On an Intel Mac, install Docker Desktop for Mac and Python 3.12 or later. Download the same host ZIP and SHA256SUMS.txt. Open Terminal in the download folder, run shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip, and compare the result with SHA256SUMS.txt. Stop if they differ. Then use the mkdir, unzip, and cd commands in the Linux chapter. Start the same shell starter and choose A1. This is a developer trial, not an accepted Mac user route. On Apple Silicon, the same package needs emulation for its amd64 images; there is no native arm64 package. Function and speed under emulation have not been proven here. A dependable local Apple Silicon package needs arm64 images and a separate Mac acceptance trial.
+On an Intel Mac, install Docker Desktop for Mac and Python 3.12 to 3.15. Download the same host ZIP and SHA256SUMS.txt. Open Terminal in the download folder, run shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip, and compare the result with SHA256SUMS.txt. Stop if they differ. Then use the mkdir, unzip, and cd commands in the Linux chapter. Start the same shell starter and choose A1. This is a developer trial, not an accepted Mac user route. On Apple Silicon, this A1 host package needs emulation for its amd64 images; there is no native arm64 A1 package, and function and speed under emulation have not been proven. On a Mac with Apple Silicon, use the A2 package mk8dx-a2-macos-arm64 instead (see “Use it on your home network”).
 
 Docker Desktop for Mac: https://docs.docker.com/desktop/setup/install/mac-install/
 

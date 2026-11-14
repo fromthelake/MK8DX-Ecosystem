@@ -21,9 +21,9 @@ it prints a version.
 
 ## 3. Install Python
 
-**Where:** in the browser. **Do:** download Python 3.12 or newer (3.15 is fine) for Windows from
+**Where:** in the browser. **Do:** download Python 3.12 to 3.15 (3.15 is fine) for Windows from
 [python.org](https://www.python.org/downloads/windows/). Run it, tick **Add python.exe to PATH** and choose
-**Install Now**. Close PowerShell and open a new window. **You see:** `python --version` shows 3.12 or higher.
+**Install Now**. Close PowerShell and open a new window. **You see:** `python --version` shows a version from 3.12 to 3.15.
 **If it differs:** Windows may start the Microsoft Store alias; run the python.org installer again with the PATH
 option and open a new PowerShell window.
 
@@ -40,18 +40,18 @@ open the folder where `Start-MK8DX.cmd` really is.
 ## 5. Let MK8DX set itself up
 
 **Where:** in the extracted folder. **Do:** double-click `Start-MK8DX.cmd`. A window opens with a short race intro
-(the MK8DX logo and a 3-2-1-GO countdown with beeps; [options](../guides/HOSTING.md#the-launcher-window-look-and-options)) and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
+(the MK8DX logo and a 3-2-1-GO countdown with beeps; `Start-MK8DX.cmd -SkipCountdown` leaves it out, all options are in [BEHEER.md](BEHEER.md#het-startvenster-weergave-en-opties), in Dutch) and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
 takes a few minutes; a clock keeps counting. Then it asks **Where will MK8DX run?**: type `A1` and press Enter.
 Next it asks the email address that **you** will sign in with and become administrator with. **You see:** the first
-setup starts by itself and ends with `OK  Done.`, the **Web origin** (for example `http://127.0.0.1:18080`) and the
-**Local mail inbox** (for example `http://127.0.0.1:18025`). The ports can differ: use the ones shown.
+setup starts by itself and ends with `OK  Done.`, then **Website:** (for example `http://127.0.0.1:18080`) and
+**Sign-in mail arrives in the local test inbox:** (for example `http://127.0.0.1:18025`). The ports can differ: use the ones shown.
 **If it differs:** the window says which step did not finish and why; fix it (for example start Docker Desktop)
 and type **1** in the menu to finish the setup.
 
 ## 6. Sign in
 
-**Where:** in the browser **on the same PC**. **Do:** type **8** in the menu (or open the Web origin yourself),
-click **Sign in** and enter exactly the address from step 5. Open the Local mail inbox in a second tab, open the
+**Where:** in the browser **on the same PC**. **Do:** type **8** in the menu (or open the Website address yourself),
+click **Sign in** and enter exactly the address from step 5. Open the test inbox address in a second tab, open the
 newest mail and click its sign-in link. **You see:** the website shows that you are signed in; **Tracks** shows
 the tracks with Nintendo Staff ghosts and world records. **If it differs:** check that you use the inbox and the
 address of this installation and that the link is still valid.
@@ -86,5 +86,11 @@ Start Docker Desktop, open the same folder and double-click `Start-MK8DX.cmd`. T
 | 8 | open the website |
 | 0 | close the window |
 
+**Updating to 0.2.3:** this version moves the database from MySQL 8.4 to 9.7 LTS. MySQL upgrades the data files
+once, at the first start on the new version; only a backup can undo that. So in the new package folder type **7**
+before **2**: 2 would start the new version without the backup and without the database updates. **3** (check) is
+harmless.
+
 Your data stays in `%LOCALAPPDATA%\MK8DX\Server` and in Docker; a newer package replaces only the program folder.
-Never run `docker compose down -v`. Restoring a backup on another computer: [Operations](../OPERATIONS.md).
+Never run `docker compose down -v`. Restoring a backup on another computer: the chapter *Back up, restore, and update* in the
+[user guide](MK8DX_User_Guide_EN.txt), or [BEHEER.md](BEHEER.md#herstellen-zonder-de-huidige-installatie-te-wissen) in Dutch.

@@ -6,7 +6,7 @@ In deze handleiding is `www.mijneigenwebsite.nl` een **voorbeeld**, geen bestaan
 
 ## 1. Bewaar de vijf soorten gegevens afzonderlijk
 
-**Waar:** in het providerportaal of de ontvangen welkomstmail. **Doe:** noteer op een private plek (niet in dit document): providerlogin, VPS IPv4, VPS-beheeraccount en SSH-poort, domein/DNS-beheer, en later de SMTP-mailboxgegevens. De MK8DX-adminmail is jouw eigen te verifiëren identiteit en kan een ander adres zijn. **Je ziet:** een VPS met Ubuntu 24.04 x86-64, voldoende capaciteit en een bereikbaar IPv4-adres. **Als het afwijkt:** vraag de provider schriftelijk welke optie ontbreekt; onderaan [B2](B2_WEBHOSTING.md) staat een bericht zonder wachtwoorden. Een providerlogin is geen databasewachtwoord en hoort niet in MK8DX.
+**Waar:** in het providerportaal of de ontvangen welkomstmail. **Doe:** noteer op een private plek (niet in dit document): providerlogin, VPS IPv4, VPS-beheeraccount en SSH-poort, domein/DNS-beheer, en later de SMTP-mailboxgegevens. De MK8DX-adminmail is jouw eigen te verifiëren identiteit en kan een ander adres zijn. **Je ziet:** een VPS met Ubuntu 24.04 x86-64, voldoende capaciteit en een bereikbaar IPv4-adres. **Als het afwijkt:** vraag de provider schriftelijk welke optie ontbreekt. Een providerlogin is geen databasewachtwoord en hoort niet in MK8DX.
 
 ## 2. Download, controleer en upload het hostpakket
 
@@ -73,7 +73,7 @@ apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-co
 
 ## 6. Regel een echte uitgaande mailbox
 
-**Waar:** bij je mailprovider. Voor een mijn.host-mailbox staat in de [publieke mailhulp](https://mijn.host/kb/email/e-mail-account-instellen-in-gmail) een SMTP-voorbeeld met host `mail.<jouwdomein>`, **poort 465 met SSL/TLS**, volledige mailbox als gebruikersnaam en het mailboxwachtwoord. Het [algemene artikel](https://mail.mijn.host/kb/email/standaard-email-poorten-voor-imap-pop-smtp) noemt ook 587; de huidige MK8DX-wizard ondersteunt voor deze route **465 met impliciete TLS**. Controleer de exacte hostnaam en afzenderautorisatie in jouw mailpakket, plus eventuele verzendlimiet en uitgaande VPS-poortblokkade. Maak geen verzonnen SPF/DKIM-record; volg de daadwerkelijke providerinstructies. **Je ziet:** een bestaande mailbox en de vijf SMTP-gegevens uit stap A2-2. **Als het afwijkt:** vraag de mailprovider of 465/TLS en geauthenticeerd verzenden vanaf jouw VPS zijn toegestaan. Een website die opent maar geen mail verstuurt is geen afgeronde publieke installatie.
+**Waar:** bij je mailprovider. Voor een mijn.host-mailbox staat in de [publieke mailhulp](https://mijn.host/kb/email/e-mail-account-instellen-in-gmail) een SMTP-voorbeeld met host `mail.<jouwdomein>`, **poort 465 met SSL/TLS**, volledige mailbox als gebruikersnaam en het mailboxwachtwoord. Het [algemene artikel](https://mail.mijn.host/kb/email/standaard-email-poorten-voor-imap-pop-smtp) noemt ook 587; de huidige MK8DX-wizard ondersteunt voor deze route **465 met impliciete TLS**. Controleer de exacte hostnaam en afzenderautorisatie in jouw mailpakket, plus eventuele verzendlimiet en uitgaande VPS-poortblokkade. Maak geen verzonnen SPF/DKIM-record; volg de daadwerkelijke providerinstructies. **Je ziet:** een bestaande mailbox en de vijf SMTP-gegevens uit stap 3 van [A2](A2_EIGEN_NETWERK.md). **Als het afwijkt:** vraag de mailprovider of 465/TLS en geauthenticeerd verzenden vanaf jouw VPS zijn toegestaan. Een website die opent maar geen mail verstuurt is geen afgeronde publieke installatie.
 
 ## 7. Pak uit en start de wizard
 

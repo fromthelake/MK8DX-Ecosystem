@@ -7,6 +7,9 @@ scores, finals and the published report. The Windows **Tournament Tools** can re
 recordings or live capture, so you do not have to type every place by hand. They are optional: scores can also
 be entered by hand or imported from Excel/CSV.
 
+**Without a website:** the Windows Tournament Tools in [section 3](#3-the-windows-tournament-tools) (Processor,
+Analysis and Live) work on their own. They write Excel, CSV and JSON files on your PC; Connect is optional.
+
 Recognition never makes a result official. You review every race before it counts, and you decide publication.
 
 ## 1. Get Director rights on your community's website
@@ -46,7 +49,8 @@ Publication and the community rating are separate decisions in the final step.
 ### Requirements
 
 - Windows on x86-64 (tested on Windows 11) and several GB of free space. The ZIP is about 160 MB and about 1 GB extracted; the
-  installer may download Python 3.12, public packages and OCR models on first use, more with GPU/CUDA. An NVIDIA
+  installer needs internet once, to download Python 3.12 and public packages (more with GPU/CUDA); the OCR models are
+  included. After that, processing works offline. An NVIDIA
   card speeds up the OCR step only; the first scan of a recording always runs on the CPU (see
   [which steps use the graphics card](../product/USING_MK8DX_TOURNAMENT_TOOLS.md#which-steps-use-the-graphics-card)).
 - For live capture: a capture card with a working Windows (DirectShow) driver. For recordings: nothing extra.
