@@ -19,6 +19,8 @@ publicatie.
 
 1. Meld je aan op de website (zie [Spelers](PLAYERS.md)).
 2. Kies op de pagina **Toernooien** **Verzoek om te hosten**. Een beheerder keurt het verzoek goed of af.
+   Beheerders, en Directors na goedkeuring, zien die knop niet: zij zien op dezelfde pagina **Nieuw toernooi
+   maken** (in de balk **Wedstrijdleiding**) en beginnen de avond daar.
 3. Om herkende races vanuit de Windows-tools naar de website te sturen, geeft een beheerder je aangemelde speler
    ook toegang onder **Beheer → Toernooien → Directeuren**. Dat geeft toegang tot toernooien, geen algemeen
    beheer.
@@ -32,13 +34,18 @@ reeks stappen; de pagina laat zien waar je bent:
 | --- | --- |
 | 0 | Kies de Director |
 | 1 | Start het toernooi |
-| 2 | Kies de deelnemers, markeer wie aanwezig is en welke Switches beschikbaar zijn |
+| 2 | Kies de deelnemers, markeer wie aanwezig is en welke Switches zij meenemen (de vinkjes **NS1**/**NS2** naast elke naam) |
 | 3-4 | Maak en exporteer de indeling van de voorronde (groepen en plaatsen) |
 | 5 | Voer de scores van de voorronde in: met de hand, uit een Excel/CSV-bestand of uit **Binnenkomende uitslagen** |
 | 6 | Exporteer de uitslagen van de voorronde |
 | 7-8 | Controleer en exporteer de finalegroepen |
 | 9 | Voer de scores van de finalegroepen in; een import werkt per groep en weigert een groep zolang er nog een naam niet gekoppeld is |
 | 10 | Afronden en delen: eindstand, verslag en de WordPress-export |
+
+Stap 2 gaat pas verder als er genoeg Switches zijn: op elke Switch spelen twee spelers, dus de avond heeft
+minstens de helft van de Aanwezige deelnemers, naar boven afgerond, aan aangevinkte Switches nodig (9 Aanwezigen
+hebben er 5 nodig). Het overzicht onder de lijst toont hoeveel er ontbreken; vink de Switches aan die mensen
+meenemen, of zet deelnemers op Wachtlijst of Afwezig.
 
 Voor races die uit de Tournament Tools komen: open **Binnenkomende uitslagen** bij de groep, koppel elke
 herkende naam aan de juiste speler, controleer het circuit en de finishplaatsen en bevestig de feed van de groep.
@@ -77,7 +84,7 @@ De installer maakt deze starters:
 | --- | --- |
 | `TournamentProcessor.cmd` | Sleep er een `.mp4`- of `.mkv`-opname op. Hij schrijft naast de video een sessiemap (`<name>_TournamentSession\Output_Results\`) met Excel, CSV en `<name>_TournamentRaceResultsV1.json`. |
 | `TournamentAnalysis.cmd` | Een venster voor dezelfde analyse van opgenomen video's, met meerdere video's of een map per toernooi ([hieronder](#opnames-achteraf-analyseren)). |
-| `TournamentLive.cmd` | Live capture tijdens de avond, of een video afspelen: **Videobestand toevoegen** (of voeg een opnameapparaat toe), **Alles starten**, controleer **Bevestigde stand** en kies daarna **Exports openen**. |
+| `TournamentLive.cmd` | Live capture tijdens de avond, of een video afspelen: **Videobestand toevoegen** (of voeg een opnameapparaat toe), **Alles starten**, controleer **Bevestigde stand** en kies daarna **Exports openen**. Afleveren aan de website: zie [Tournament Live naar de website](#tournament-live-naar-de-website). |
 | `TournamentConnect.cmd` | Optionele verbinding met de website (hieronder). |
 | `TournamentLiveCli.cmd` | Diagnose: apparaten zoeken, replay en uitslagopdrachten. Geen vervanging voor het livevenster. |
 
@@ -125,9 +132,25 @@ In PowerShell, in de pakketmap:
 .\TournamentConnect.cmd sign-out
 ```
 
-Gebruik `http://127.0.0.1:<port>` alleen als de website op dezelfde Windows-computer draait; anders het
-vertrouwde HTTPS-adres. Uploads die op een server wachten, blijven bij die server. Een afgeleverde race komt in
-**Binnenkomende uitslagen** terecht; hij wordt nooit automatisch gepubliceerd.
+Gebruik `http://127.0.0.1:<port>` (of `http://localhost:<port>`) alleen als de website op dezelfde
+Windows-computer draait, zoals bij A1 en A3: gewoon HTTP wordt alleen voor deze adressen op deze pc geaccepteerd;
+elk ander adres heeft zijn vertrouwde HTTPS-adres nodig. Zonder terminal (bijvoorbeeld vanuit een script) vraagt
+`sign-in` niets: stel het adres dan eerst in met `TournamentConnect.cmd server <adres>`. Uploads die op een server
+wachten, blijven bij die server. Een afgeleverde race komt in **Binnenkomende uitslagen** terecht; hij wordt nooit
+automatisch gepubliceerd.
+
+### Tournament Live naar de website
+
+1. Kies in Tournament Live **Verbinden met Tournament Manager** (later **Toernooi wijzigen**), rond de aanmelding
+   in de browser af en kies de avond in **Toernooi kiezen**. Die keuze is alleen een voorstel; je kunt hem voor of
+   na de run maken.
+2. Start de feeds (**Videobestand toevoegen** of een capturekaart, daarna **Alles starten**). Tournament Live kan
+   een bekende capturekaart zelf toevoegen, als extra bron op Groep 1. Staat er ook een video op Groep 1, dan
+   stopt **Alles starten** met *Koppel iedere feed aan precies één verschillende groep*: selecteer de extra bron
+   en kies **Selectie verwijderen**, of geef hem een eigen groep, en start opnieuw.
+3. Open op de website de avond, ga naar Stap 5 (Stap 9 voor de finalegroepen) en zoek de run onder **Beschikbare
+   Tournament Live-opnamen**. Kies de groep bij **Koppelen aan groep** en daarna **Gecontroleerde opname
+   koppelen**. De races wachten als bewijs in afwachting tot je ze accepteert.
 
 ### Later koppelen
 

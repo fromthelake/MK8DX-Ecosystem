@@ -18,6 +18,8 @@ Recognition never makes a result official. You review every race before it count
 
 1. Sign in on the website (see [Players](PLAYERS.md)).
 2. On the **Tournaments** page choose **Request to host**. An administrator approves or declines the request.
+   Administrators, and Directors once approved, do not see that button: they see **Create new tournament** on
+   the same page (in the **Race direction** bar) and start the night from there.
 3. To send recognized races from the Windows tools to the website, an administrator also grants your signed-in
    Player access under **Administration → Tournaments → Directors**. This gives Tournament access,
    not general administration.
@@ -31,13 +33,17 @@ The night is a sequence of steps; the page shows where you are:
 | --- | --- |
 | 0 | Choose the Director |
 | 1 | Start the tournament |
-| 2 | Select the participants, mark who is present and which Switches are available |
+| 2 | Select the participants, mark who is present and which Switches they bring (the **NS1**/**NS2** ticks next to each name) |
 | 3-4 | Create and export the qualifier layout (groups and seating) |
 | 5 | Enter the qualifier scores: by hand, from an Excel/CSV file, or from **Incoming results** |
 | 6 | Export the qualifier results |
 | 7-8 | Check and export the final groups |
 | 9 | Enter the final-group scores; an import works per group and refuses a group while a name is still unmatched |
 | 10 | Finalize and share: final table, report and the WordPress export |
+
+Step 2 only continues when there are enough Switches: every Switch seats two Players, so the night needs at least
+half the Present participants, rounded up, in ticked Switches (9 Present Players need 5). The readiness box under
+the list shows how many are missing; tick the Switches people bring, or move participants to Waiting list or Absent.
 
 For races that came from the Tournament Tools: open **Incoming results** for the group, match each recognized
 name to the right Player, check the track and the finishing places, and choose **Confirm**. A provisional live
@@ -75,7 +81,7 @@ The installer writes these launchers:
 | --- | --- |
 | `TournamentProcessor.cmd` | Drag an `.mp4` or `.mkv` recording onto it. It writes a session folder next to the video (`<name>_TournamentSession\Output_Results\`) with Excel, CSV and `<name>_TournamentRaceResultsV1.json`. |
 | `TournamentAnalysis.cmd` | A window for the same recorded-video analysis with several videos or a folder per tournament ([below](#analyse-recordings-afterwards)). |
-| `TournamentLive.cmd` | Live capture during the night, or replay a video: **Add video file** (or add a capture device), **Start all**, check **Confirmed standings**, then **Open exports**. |
+| `TournamentLive.cmd` | Live capture during the night, or replay a video: **Add video file** (or add a capture device), **Start all**, check **Confirmed standings**, then **Open exports**. To deliver the run, see [Tournament Live to the website](#tournament-live-to-the-website). |
 | `TournamentConnect.cmd` | Optional connection to the website (below). |
 | `TournamentLiveCli.cmd` | Diagnostics: device discovery, replay and result commands. Not a replacement for the live window. |
 
@@ -121,9 +127,24 @@ In PowerShell, in the package folder:
 .\TournamentConnect.cmd sign-out
 ```
 
-Use `http://127.0.0.1:<port>` only when the website runs on the same Windows computer; otherwise its trusted HTTPS
-address. Uploads waiting for one server stay with that server. A delivered race lands in **Incoming results**;
-it is never published automatically.
+Use `http://127.0.0.1:<port>` (or `http://localhost:<port>`) only when the website runs on the same Windows
+computer, as A1 and A3 do: plain HTTP is accepted for these addresses on this PC and for nothing else; every other
+address needs its trusted HTTPS address. Without a terminal (for example from a script) `sign-in` does not ask:
+set the address first with `TournamentConnect.cmd server <address>`. Uploads waiting for one server stay with that
+server. A delivered race lands in **Incoming results**; it is never published automatically.
+
+### Tournament Live to the website
+
+1. In Tournament Live choose **Connect to Tournament Manager** (later **Change Tournament**), finish the browser
+   sign-in and pick the night in **Choose Tournament**. That choice is only a suggestion; you can make it before
+   or after the run.
+2. Run the feeds (**Add video file** or a capture card, then **Start all**). Tournament Live may add a capture
+   card it remembers by itself, as an extra source on Group 1. With a video on Group 1 as well, **Start all**
+   stops with *Assign every feed to exactly one different group*: select the extra source and choose **Remove
+   selected**, or give it its own group, and start again.
+3. On the website, open the night, go to Step 5 (Step 9 for the final groups) and find the run under **Available Tournament Live recordings**.
+   Choose its group in **Link to group**, then **Link reviewed recording**. The races wait as pending evidence
+   until you accept them.
 
 ### Connect later
 

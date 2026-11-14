@@ -28,6 +28,22 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
 - **Android: Change Player and Change community** instead of a bare **Switch** (#201). In es, es-419, it, ko,
   pt and ru the account and community buttons showed the console's name untranslated.
+- **Tournament Connect and Tournament Live work with A1 and A3.** Both refused `http://127.0.0.1:<port>` and
+  `http://localhost:<port>` with "Tournament Manager connection requires HTTPS" unless
+  `MK8DX_TOURNAMENT_ALLOW_INSECURE_LOOPBACK=1` was set. Plain HTTP is now accepted for exactly these loopback
+  addresses (with a port), which never leave the PC; every other address still needs HTTPS. The old variable is
+  ignored.
+- **`TournamentConnect.cmd sign-in` asks for the website address** when none is set, validates it like
+  `server <address>` and stores it; without a terminal it stops and names `TournamentConnect.cmd server <address>`.
+  It used to try the placeholder `https://example.invalid` and fail with a DNS error.
+- **Tournament Live's OCR warm-up says what happens to the recognition models**: "Loading recognition models"
+  when they are on disk, otherwise that EasyOCR downloads the named model once. The English-only reader's
+  `english_g2.pth` is not in the collection, so EasyOCR's "Downloading recognition model" on a first run is a real
+  one-time download; the Tools package README and the Processor message no longer claim the first run is offline.
+- **Guides** (EN, NL and the 13 translated user guides): Tournament Live to the website (choose the tournament,
+  then Step 5 → Available Tournament Live recordings → Link to group), a remembered capture card that blocks
+  Start all, XAMPP Apache also wanting ports 80/443 (A3), the Docker "address pools fully subnetted" error (A1),
+  Create new tournament for administrators and the NS1/NS2 Switch ticks in Step 2 (Tournament Directors).
 
 ### Recognition
 

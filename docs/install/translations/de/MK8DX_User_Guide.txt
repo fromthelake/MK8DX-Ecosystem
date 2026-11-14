@@ -112,6 +112,8 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Erwarte „MariaDB 11.4.13“ und „ready“ (bereit). Website, Scanner, Datenbank und Test-Posteingang sind an diesen Computer gebunden. Leite keinen Router-Port weiter und mach phpMyAdmin oder den Test-Posteingang nicht für andere Leute zugänglich.
 
+Wird Apache nicht grün? Ein unverändertes XAMPP-Apache will neben 18090 auch die Ports 80 und 443. Belegt eine A2-Installation, IIS oder ein anderer Webserver auf diesem Computer schon einen davon, startet Apache nicht, und das Protokoll im XAMPP Control Panel nennt den belegten Port. Stoppe das andere Programm während eines geplanten Zeitraums oder nimm für A3 einen anderen Computer. Entferne die andere Website nicht.
+
 7. Klicke auf der Website auf Anmelden und benutze genau die Administratoradresse aus Schritt 5. Öffne die neueste Nachricht in Mailpit und folge ihrem Anmeldelink. Du bist noch ein normaler Benutzer. Doppelklicke jetzt im Paketordner auf Manage-MK8DX-No-Docker.cmd (lass das MK8DX-Fenster offen), tippe 2 und drücke die Eingabetaste. Dahinter läuft: python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
 
 Es funktioniert nur für ein Konto, das seine E-Mail-Adresse bereits bestätigt hat. Erwarte „created“ (angelegt) oder bei einer Wiederholung „unchanged“ (unverändert). Lade die Website neu. Ein anderer erster Registrierter wird nicht automatisch Administrator.
@@ -480,11 +482,13 @@ Zieh eine .mp4- oder .mkv-Aufnahme auf TournamentProcessor.cmd. Das Programm ers
 
 Du kannst Tournament Live auch mit einem vorhandenen Video und ohne Capture-Karte ausprobieren. Öffne TournamentLive.cmd, wähle Videodatei hinzufügen, wähle eine .mp4- oder .mkv-Datei und dann Alle starten. Warte, bis Video und Analyse fertig sind. Prüfe Bestätigter Stand und wähle Exporte öffnen für die Ergebnisdatei. Dieser normale Videoweg benutzt die Punkteauswahl, die wartet, bis sich die Punkteanimation und der Endstand gesetzt haben. Prüfe Namen, Platzierungen und Punkte selbst; OCR kann sich irren. Eine Videowiedergabe testet keine physische Capture-Karte. Der separate Wiedergabebefehl TournamentLiveCli.cmd dient der Diagnose und ersetzt diesen Weg nicht.
 
+Um den Lauf an deine Website zu geben, wähle in Tournament Live Mit Tournament Manager verbinden (nach dem Verbinden Turnier wechseln), schließ die Anmeldung im Browser ab und wähle das Turnier aus der Liste. Diese Wahl ist nur ein Vorschlag. Öffne auf der Website das Turnier, geh zu Schritt 5 (Schritt 9 für die Finalgruppen) und suche den Lauf unter Verfügbare Tournament-Live-Aufnahmen. Wähle seine Gruppe bei Mit Gruppe verknüpfen und dann Geprüfte Aufnahme verknüpfen. Die Rennen warten als ausstehende Nachweise, bis du sie annimmst. Tournament Live kann eine Capture-Karte, die es schon kennt, selbst als zusätzliche Quelle auf Gruppe 1 hinzufügen. Liegt auch ein Video auf Gruppe 1, hält Alle starten an und bittet dich, jeden Feed einer anderen Gruppe zuzuordnen: Markiere die zusätzliche Quelle und wähle Auswahl entfernen, oder gib ihr eine eigene Gruppe, und starte dann erneut.
+
 Für die optionale Verbindung zur Website öffnest du PowerShell im Paketordner und führst aus:
 
 .\TournamentConnect.cmd sign-in
 
-Gib beim ersten Mal die genaue Adresse deiner Installation ein und schließ die Anmeldung im Browser ab. Diese Befehle zeigen die Adresse an oder ändern sie; eine Änderung fragt nach einer Bestätigung:
+Gib beim ersten Mal die genaue Adresse deiner Installation ein und schließ die Anmeldung im Browser ab. Bei A1 oder A3 ist das die http://127.0.0.1-Adresse, die das MK8DX-Fenster anzeigt, zum Beispiel http://127.0.0.1:18080; einfaches HTTP wird nur für solche Adressen auf diesem PC akzeptiert. Diese Befehle zeigen die Adresse an oder ändern sie; eine Änderung fragt nach einer Bestätigung:
 
 .\TournamentConnect.cmd server
 .\TournamentConnect.cmd server https://www.example.org
@@ -586,6 +590,8 @@ Das Update auf 0.2.3 verschiebt die Docker-Datenbank von MySQL 8.4 auf MySQL 9.7
 Fehlerbehebung und selbst bauen
 
 Bei einer leeren Website beginnst du mit Menüpunkt 3 und prüfst, ob Docker läuft. Bei A1 gehen Anmelde-Mails an Mailpit; bei A2 und B1 sollten sie in einem echten Posteingang ankommen. Prüfe immer, dass du dieselbe Installation, Adresse und E-Mail-Adresse benutzt. Fehlende Anmelde-Mails auf einem öffentlichen Weg erfordern eine Prüfung der echten SMTP-Werte und der Erreichbarkeit des Anbieters. /health/ready meldet die Bereitschaft von API und Datenbank, nicht die Zustellung in den Posteingang.
+
+Bricht Start-MK8DX.cmd bei A1 mit „all predefined address pools have been fully subnetted“ ab, haben alte Docker-Netzwerke die Adressbereiche von Docker aufgebraucht. Zeige sie mit docker network ls in PowerShell an. Entferne nur Netzwerke, von denen du sicher weißt, dass sie unbenutzt sind, zum Beispiel mit docker network prune; das entfernt nur Netzwerke, die kein Container benutzt. Öffne danach Start-MK8DX.cmd erneut.
 
 Bei A2 prüfst du zuerst den hosts-Eintrag auf beiden PCs, das private Netzwerk, den Firewall-Port und den Fingerabdruck des Zertifikats. Bei B1 prüfst du den DNS-A-Eintrag, die Anbieter-Ports 80/443, gültiges HTTPS und dann die Mail. Ignoriere keine Zertifikatswarnung. Teile niemals secrets.json, ein Backup, Anmeldelinks, SSH-Schlüssel oder Logzeilen mit Passwörtern, wenn du um Hilfe bittest.
 

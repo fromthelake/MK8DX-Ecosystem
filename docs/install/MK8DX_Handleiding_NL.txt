@@ -110,6 +110,8 @@ python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 ‘MariaDB 11.4.13’ en ‘ready’ zijn de verwachte uitkomsten. De website, scanner, database en testmail luisteren alleen op deze computer. Zet geen routerpoort open en maak phpMyAdmin of de testbrievenbus niet voor anderen bereikbaar.
 
+Wordt Apache niet groen? Een standaard-XAMPP-Apache wil naast 18090 ook de poorten 80 en 443. Gebruikt een A2-installatie, IIS of een andere webserver op deze computer er al een van, dan start Apache niet en noemt het logboek in het XAMPP Control Panel de bezette poort. Stop dat andere programma tijdens een geplande periode, of gebruik A3 op een andere computer. Verwijder de andere website niet.
+
 7. Klik op de website op Aanmelden en gebruik precies het beheeradres uit stap 5. Open de nieuwste brief in Mailpit en volg de aanmeldlink. Je bent daarna nog een gewone gebruiker. Dubbelklik nu in de pakketmap op Manage-MK8DX-No-Docker.cmd (laat het MK8DX-venster open), typ 2 en druk op Enter. Daarachter draait: python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker".
 
 De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, bij herhaling, ‘unchanged’. Ververs de website. Een andere eerste aanmelder wordt niet automatisch beheerder.
@@ -480,11 +482,13 @@ Sleep een .mp4- of .mkv-opname op TournamentProcessor.cmd. Het programma maakt n
 
 Je kunt Tournament Live ook zonder capturekaart met een bestaande video proberen. Open TournamentLive.cmd, kies Videobestand toevoegen, selecteer een .mp4- of .mkv-bestand en kies Alles starten. Wacht tot de video en analyse zijn afgelopen. Bekijk de Bevestigde stand en kies Exports openen voor het resultaatbestand. Deze normale videoroute gebruikt de scoreselectie die wacht tot de puntenanimatie en eindstand stabiel zijn. Controleer namen, plaatsen en punten zelf; OCR kan afwijken. Een videoreplay is geen proef met een fysieke capturekaart. De aparte opdracht TournamentLiveCli.cmd replay is alleen diagnostiek en vervangt deze bediening niet.
 
+Wil je de run aan je website geven, kies dan in Tournament Live Verbinden met Tournament Manager (na het verbinden Toernooi wijzigen), rond de aanmelding in de browser af en kies het toernooi in de lijst. Die keuze is alleen een voorstel. Open op de website het toernooi, ga naar Stap 5 (Stap 9 voor de finalegroepen) en zoek de run onder Beschikbare Tournament Live-opnamen. Kies de groep bij Koppelen aan groep en daarna Gecontroleerde opname koppelen. De races wachten als bewijs in afwachting tot je ze accepteert. Tournament Live kan een bekende capturekaart zelf toevoegen, als extra bron op Groep 1. Staat er ook een video op Groep 1, dan stopt Alles starten en vraagt het om iedere feed aan een andere groep te koppelen: selecteer de extra bron en kies Selectie verwijderen, of geef hem een eigen groep, en start opnieuw.
+
 Voor de optionele websitekoppeling open je PowerShell in de pakketmap en start je:
 
 .\TournamentConnect.cmd sign-in
 
-Vul bij de eerste keer het exacte adres van jouw installatie in en rond de browseraanmelding af. Deze opdrachten tonen of veranderen het adres; een wijziging vraagt bevestiging:
+Vul bij de eerste keer het exacte adres van jouw installatie in en rond de browseraanmelding af. Bij A1 of A3 is dat het http://127.0.0.1-adres dat het MK8DX-venster toont, bijvoorbeeld http://127.0.0.1:18080; gewoon HTTP wordt alleen voor zulke adressen op deze pc geaccepteerd. Deze opdrachten tonen of veranderen het adres; een wijziging vraagt bevestiging:
 
 .\TournamentConnect.cmd server
 .\TournamentConnect.cmd server https://www.example.org
@@ -586,6 +590,8 @@ De update naar 0.2.3 zet de Docker-database over van MySQL 8.4 naar MySQL 9.7 LT
 Als het niet lukt en zelf bouwen
 
 Bij een lege website begin je met menu 3 en controleer je of Docker draait. Bij A1 staat de aanmeldmail in Mailpit, bij A2 en B1 hoort hij in een echte inbox. Controleer altijd of je dezelfde installatie, hetzelfde adres en hetzelfde e-mailadres gebruikt. Een ontbrekende aanmeldmail op een publieke route vraagt controle van de echte SMTP-gegevens en providerbereik. /health/ready zegt iets over de API en database, niet over bezorging in een inbox.
+
+Stopt Start-MK8DX.cmd bij A1 met “all predefined address pools have been fully subnetted”, dan hebben oude Docker-netwerken de adresreeksen van Docker opgebruikt. Bekijk ze met docker network ls in PowerShell. Verwijder alleen netwerken waarvan je zeker weet dat ze ongebruikt zijn, bijvoorbeeld met docker network prune; dat verwijdert alleen netwerken die geen container gebruikt. Open daarna Start-MK8DX.cmd opnieuw.
 
 Bij A2 controleer je eerst de hosts-regel op beide pc's, het privé-netwerk, de firewallpoort en de vingerafdruk van het certificaat. Bij B1 controleer je DNS-A-record, providerpoort 80/443, geldig HTTPS en daarna mail. Negeer geen certificaatwaarschuwing. Deel bij hulpvragen nooit secrets.json, een backup, aanmeldlinks, SSH-sleutels of logregels met wachtwoorden.
 

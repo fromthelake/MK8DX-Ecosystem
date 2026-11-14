@@ -172,6 +172,46 @@ def _asset_warmup_loaders() -> list[tuple[str, Any]]:
     return loaders
 
 
+def _easyocr_model_dir() -> Path:
+    """Where EasyOCR looks for its models (the package points EASYOCR_MODULE_PATH at runtime-assets)."""
+    root = os.environ.get("EASYOCR_MODULE_PATH") or os.environ.get("MODULE_PATH") or str(Path.home() / ".EasyOCR")
+    return Path(root) / "model"
+
+
+def easyocr_recognition_model_file(languages: list[str] | tuple[str, ...]) -> str | None:
+    """The recognition model file EasyOCR picks for a language set: ``english_g2.pth`` for exactly
+    ``["en"]``, ``latin_g2.pth`` for other Latin-script sets, None for sets this check does not know."""
+    langs = [str(lang) for lang in languages]
+    if langs == ["en"]:
+        return "english_g2.pth"
+    latin = {"en", "nl", "de", "fr", "es", "it", "pt", "pl", "sv", "da", "no", "fi", "cs", "hu", "ro", "tr"}
+    return "latin_g2.pth" if langs and set(langs) <= latin else None
+
+
+def missing_easyocr_models(language_sets: list[list[str]]) -> list[str]:
+    """Recognition model files the given readers need that are not on disk yet (EasyOCR would download them)."""
+    folder = _easyocr_model_dir()
+    missing: list[str] = []
+    for langs in language_sets:
+        name = easyocr_recognition_model_file(langs)
+        if name and name not in missing and not (folder / name).is_file():
+            missing.append(name)
+    return missing
+
+
+def announce_easyocr_models(language_sets: list[list[str]]) -> str:
+    """Say what happens to the recognition models before EasyOCR prints its own download warning:
+    "Loading" when every model is on disk, a one-time download with its folder otherwise."""
+    missing = missing_easyocr_models(language_sets)
+    if missing:
+        message = (f"Downloading EasyOCR recognition model {', '.join(missing)} once (needs internet) into "
+                   f"{_easyocr_model_dir()}; later starts load it from there.")
+    else:
+        message = "Loading recognition models (no download needed)."
+    print(message, flush=True)
+    return message
+
+
 def warm_up_ocr_engine(language_sets: list[list[str]] | None = None) -> dict[str, Any]:
     """Pre-build every EasyOCR reader the pipeline uses and pre-load the static
     asset bundles, so the first race/track pays no torch/EasyOCR import,
@@ -197,6 +237,7 @@ def warm_up_ocr_engine(language_sets: list[list[str]] | None = None) -> dict[str
 
         gpu = bool(torch.cuda.is_available())
         sets = language_sets if language_sets is not None else _warmup_language_sets()
+        announce_easyocr_models(sets)
         for langs in sets:
             try:
                 write_ocr_runtime_report("engine_warmup", gpu_requested=gpu, languages=langs)
