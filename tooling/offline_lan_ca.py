@@ -333,6 +333,28 @@ def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None) -> str:
     return "".join(parts)
 
 
+def refresh_setup_page(state_dir: Path) -> bool:
+    """Rewrite the /setup page of an existing installation with this package's texts and languages.
+
+    The page is a pure function of the root certificate, the address and the catalogs, so a package update
+    regenerates it (an installation made before the 15-language page otherwise keeps its EN/NL page until an
+    address move). The root, its downloads and every key stay untouched. True when the page changed."""
+    target = safe_private_path(state_dir) / "offline-ca"
+    metadata = json.loads((target / "metadata.json").read_text(encoding="utf-8"))
+    root = x509.load_pem_x509_certificate((target / "serving" / "root.pem").read_bytes())
+    page = setup_page(metadata["origin"], _fingerprints(root)).encode("utf-8")
+    current = target / "setup" / "index.html"
+    if current.is_file() and current.read_bytes() == page:
+        return False
+    staged = current.with_name(f".index.html.{uuid.uuid4().hex}.new")
+    try:
+        _write_new(staged, page)
+        os.replace(staged, current)
+    finally:
+        staged.unlink(missing_ok=True)
+    return True
+
+
 def _setup_files(directory: Path, cert: x509.Certificate, address: ipaddress.IPv4Address) -> None:
     der = cert.public_bytes(serialization.Encoding.DER)
     fp = _fingerprints(cert)

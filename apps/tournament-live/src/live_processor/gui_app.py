@@ -27,6 +27,7 @@ from .gui_virtual_pipeline import (
     write_gui_preflight_report,
 )
 from .paths import DIAGNOSTICS_ROOT, LIVE_ROOT
+from .product_languages import say as product_say
 
 
 PLAYBACK_SPEED_OPTIONS = {
@@ -138,32 +139,32 @@ def format_analysis_progress(
     done = min(detected, max(0, int(confirmed)))
     active = min(max(0, detected - done), max(0, int(running)))
     waiting = max(0, detected - done - active)
-    dutch = language == "nl"
+
+    def say(english: str, dutch: str, *values: object) -> str:
+        return product_say(language, english, dutch, *values)
+
     if detected == 0:
-        return "OCR & stand: wacht op de eerste race" if dutch else (
-            "OCR & standings: waiting for the first race"
-        )
+        return say("OCR & standings: waiting for the first race", "OCR & stand: wacht op de eerste race")
     prefix = ""
     if source_finished:
         if is_capture:
-            prefix = "Feed gestopt · " if dutch else "Feed stopped · "
+            prefix = say("Feed stopped", "Feed gestopt") + " · "
         else:
-            prefix = "Video ingelezen · " if dutch else "Video loaded · "
+            prefix = say("Video loaded", "Video ingelezen") + " · "
     if done >= detected:
-        return prefix + (
-            f"OCR & stand bij: {done}/{detected} races bevestigd"
-            if dutch
-            else f"OCR & standings up to date: {done}/{detected} races confirmed"
+        return prefix + say(
+            "OCR & standings up to date: {0}/{1} races confirmed",
+            "OCR & stand bij: {0}/{1} races bevestigd",
+            done, detected,
         )
-    state = "OCR & stand loopt achter" if source_finished and dutch else (
-        "OCR & standings catching up" if source_finished else (
-            "OCR & stand" if dutch else "OCR & standings"
-        )
+    state = (
+        say("OCR & standings catching up", "OCR & stand loopt achter") if source_finished else
+        say("OCR & standings", "OCR & stand")
     )
-    labels = (
-        f"{done}/{detected} bevestigd · {active} bezig · {waiting} wachtend"
-        if dutch
-        else f"{done}/{detected} confirmed · {active} active · {waiting} waiting"
+    labels = say(
+        "{0}/{1} confirmed · {2} active · {3} waiting",
+        "{0}/{1} bevestigd · {2} bezig · {3} wachtend",
+        done, detected, active, waiting,
     )
     return f"{prefix}{state}: {labels}"
 

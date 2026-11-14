@@ -24,5 +24,6 @@ gui = ["PySide6==6.12.0"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-# Banner artwork of the analysis window (docs/THIRD_PARTY_MATERIALS.md).
-tournament_processor = ["qt/assets/*.jpg"]
+# Banner artwork of the analysis window (docs/THIRD_PARTY_MATERIALS.md) and the catalogs of its 13 catalog
+# languages (tournament_processor/languages.py).
+tournament_processor = ["qt/assets/*.jpg", "i18n/*.json"]

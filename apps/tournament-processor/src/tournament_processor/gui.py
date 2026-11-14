@@ -11,15 +11,16 @@ runs), staging, texts and the front-end choice. ``main`` opens the Qt window (``
 of the MK8DX Live Video Processor post-analysis GUI) and falls back to the classic Tkinter window (``gui_classic``) with
 ``--classic-gui`` or when PySide6 is missing, as Tournament Live's run_gui does.
 
-Texts are English and Dutch, like the Tournament Tools launchers: ``MK8DX_TOURNAMENT_LANGUAGE`` (en, nl or auto)
-chooses, and auto follows the Windows display language.
+Texts are written in English and Dutch here (``TEXTS``); the other 13 game languages come from catalogs keyed by
+the English text (``languages.py``, the catalog approach of Tournament Live). ``--language``, ``MK8DX_LANGUAGE``
+or ``MK8DX_TOURNAMENT_LANGUAGE`` (a language code or auto) chooses; otherwise Tournament Live's saved language
+choice, then the Windows display language.
 """
 
 from __future__ import annotations
 
 import argparse
 import datetime as _dt
-import locale
 import os
 import queue
 import re
@@ -31,6 +32,8 @@ import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable, Mapping, Sequence
+
+from . import languages
 
 # The same list as vision_cli.VIDEO_SUFFIXES (a test keeps them equal); repeated here so this module imports
 # without the recognition stack.
@@ -201,40 +204,25 @@ TEXTS: dict[str, tuple[str, str]] = {
 }
 
 
-def _windows_language() -> str:
-    try:
-        import ctypes
-
-        buffer = ctypes.create_unicode_buffer(85)
-        if ctypes.windll.kernel32.GetUserDefaultLocaleName(buffer, len(buffer)):
-            return buffer.value
-    except (AttributeError, OSError, ImportError):
-        pass
-    return ""
-
-
 def detect_language(environ: Mapping[str, str] | None = None) -> str:
-    """``en`` or ``nl``: the configured MK8DX_TOURNAMENT_LANGUAGE, else the system language."""
-    environ = os.environ if environ is None else environ
-    configured = str(environ.get("MK8DX_TOURNAMENT_LANGUAGE", "auto")).strip().lower()
-    if configured in {"en", "nl"}:
-        return configured
-    candidates = [_windows_language()] if sys.platform == "win32" else []
-    candidates += [environ.get("LANG", ""), (locale.getlocale()[0] or "")]
-    for value in candidates:
-        lowered = (value or "").lower()
-        if lowered.startswith("nl") or lowered.startswith("dutch"):
-            return "nl"
-    return "en"
+    """One of the 15 language codes: MK8DX_LANGUAGE or MK8DX_TOURNAMENT_LANGUAGE, else Tournament Live's saved
+    choice, else the system language (see ``languages.choose_language``)."""
+    return languages.choose_language(environ=environ)
 
 
 class Texts:
     def __init__(self, language: str) -> None:
-        self.language = "nl" if language == "nl" else "en"
+        self.language = languages.parse_language(language) or "en"
 
     def __call__(self, key: str, **values: object) -> str:
         english, dutch = TEXTS[key]
-        return (dutch if self.language == "nl" else english).format(**values)
+        if self.language == "nl":
+            return dutch.format(**values)
+        template = languages.translate(self.language, english)
+        try:
+            return template.format(**values)
+        except (KeyError, IndexError, ValueError):  # a translation with a damaged placeholder
+            return english.format(**values)
 
 
 # --------------------------------------------------------------------------- #
@@ -543,6 +531,13 @@ class AnalysisRun:
             self._emit("error", PlanError("err_stage", path=self.plan.runtime_root, error=error))
 
 
+def _language_argument(value: str) -> str:
+    code = languages.parse_language(value)
+    if code is None:
+        raise argparse.ArgumentTypeError(f"unknown language {value!r}")
+    return code
+
+
 def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="mk8dx-tournament-analysis",
@@ -551,7 +546,9 @@ def _arguments(argv: Sequence[str] | None) -> argparse.Namespace:
     parser.add_argument("paths", nargs="*", type=Path, help="Videos or folders to list at the start")
     parser.add_argument("--results-folder", type=Path, help="Session folder; default <first name>_TournamentSession")
     parser.add_argument("--session-id", help="Session id; default from the first name and today's date")
-    parser.add_argument("--language", choices=("en", "nl"), help="Override MK8DX_TOURNAMENT_LANGUAGE")
+    parser.add_argument("--language", type=_language_argument, metavar="CODE",
+                        help="Language code (" + ", ".join(code for code, _ in languages.LANGUAGES) +
+                        "); overrides MK8DX_LANGUAGE and MK8DX_TOURNAMENT_LANGUAGE")
     parser.add_argument("--classic-gui", action="store_true",
                         help="Use the classic Tkinter window instead of the Qt (PySide6) window")
     return parser.parse_args(argv)

@@ -12,8 +12,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   from a sign-in card. They follow the browser's language like the website and the guide (exact, then regional:
   es-MX → es-419, zh-Hant/TW/HK → zh-TW, then the base language, else English) and have a language menu; the
   invitation page also follows the language chosen on the website. The A2 guides now quote the labels as the
-  wizard shows them in that language. The launcher window stays English. An existing installation shows the new
-  `/setup` page once its certificate files are made again (a new installation or address).
+  wizard shows them in that language. A package update writes the `/setup` page of an existing installation
+  again, so it gets the 15-language page too.
+- **Launcher windows, Tournament Live and Tournament Analysis in all 15 languages of the game** (machine
+  translations except EN/NL): the start and manage windows (`Start-MK8DX*.cmd`, `Manage-MK8DX-No-Docker.cmd`,
+  `tooling/start-mk8dx.ps1`/`.sh`) with their menu, steps and messages, and the questions of the guided setup in
+  `tooling/install.py`; the Tournament Live window's remaining English/Dutch-only texts; the Tournament Analysis
+  window. The launchers follow `MK8DX_LANGUAGE` or the system language (exact, regional, base, else English) and
+  keep the race-style look and `-Plain`/`--plain`/`NO_COLOR`; Chinese, Japanese, Korean and Russian also show
+  correctly when the output is redirected. The translated guides quote the launcher lines as the window shows them.
 - **User guides in all 15 languages of the game** (machine translations except EN/NL, marked as such;
   corrections welcome via the Translation correction form): the A2 guide, the user guide (TXT and DOCX) and the
   players guide in `docs/install/translations/<locale>/` and `docs/guides/translations/<locale>/`, the
