@@ -153,30 +153,7 @@ capture shell retains its own lifecycle; this change does not switch it to a
 recorded-video scheduler. Source and target hashes are recorded alongside the
 engine in `engine-provenance-v1.json`.
 
-The process/revision/failure gates need no private media:
-
-```powershell
-.venv\Scripts\python.exe -m pytest tests/tournament/test_video_orchestration.py `
-  tests/tournament/test_recorded_video_cli.py tests/tournament/test_recorded_overlap_comparison.py
-```
-
-`tooling/tournament/compare_recorded_overlap.py` compares private result CSVs,
-standings and complete canonical JSON, and checks actual worker completions
-against extraction completion in the JSONL trace. Its report contains hashes,
-counts and mismatching field names, never participant rows. TN12 is the wall-clock
-reference; a small golden fixture alone is not a performance gate.
-
-TN12's six recordings are pinned in `tooling/tournament/golden-corpus-v1.json`
-in filename order. Use its session, producer version and timestamp when making
-canonical output. For a source CSV reference, call the existing
-`recorded_export.write_recorded_results` with the same context and its default
-per-video media IDs, as the video CLI does. The CSV-import CLI's explicit/input-
-stem media identity is a different provenance context and must not be mixed
-into that comparison.
-
-Run its focused product and contract gate from the repository root:
-
-```powershell
-.venv\Scripts\python.exe -m pytest tests\tournament `
-  tests\contracts\test_tournament_race_result_contract.py
-```
+Its public gate is the Tournament test suite (`tests/tournament`), which runs on the Tools package's
+locked runtime and needs no recording or private data; see [Testing](../../docs/TESTING.md) for the
+command. Performance and overlap comparisons against real tournament recordings are run by the maintainer
+on private recordings with tooling that is not part of this repository.

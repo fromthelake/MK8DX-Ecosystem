@@ -134,7 +134,7 @@ tekst als probleem. Hij meldt `"problemCount": 0` als elke catalogus elke tekst 
 - Hetzelfde met de meegeleverde assetcollectie en de browserscanner: [Local preview](LOCAL_PREVIEW.md).
 - Android-, LiveTrial- en toernooipakketten: [Client builds](CLIENT_BUILDS.md).
 
-De kant-en-klare Docker-images zijn Linux/amd64. De native clientpakketten zijn voor Windows; een macOS- of
+De kant-en-klare Docker-images zijn Linux/amd64 (de arm64-A2-pakketten hebben eigen arm64-images). De native clientpakketten zijn voor Windows; een macOS- of
 Linux-build van de clients bestaat nog niet.
 
 ## Problemen oplossen

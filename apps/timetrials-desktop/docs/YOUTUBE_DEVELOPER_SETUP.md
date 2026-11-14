@@ -97,7 +97,7 @@ the per-account tokens and the upload code stay the same.
 
 ## 8. Testing without Google
 
-`tests/integration/test_livetrial_youtube.py` runs the whole flow against a fake transport: client
+The maintainer's integration test (not part of this repository) runs the whole flow against a fake transport: client
 file lookup, consent with state and PKCE, per-Player connections, refresh and *Connect again*, the
 resumable upload with resume after errors, duplicate prevention and log hygiene. No test contacts
 Google or uploads a video.

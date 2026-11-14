@@ -5,8 +5,8 @@
 > entry (migration 0086) and an entry unused there for 14 days is forgotten. Statements below that
 > administrators are never remembered describe the earlier rule; the native app keeps it.
 
-Status: reviewed 2026-11-10, judged safe with the design below; implemented on
-`feat/a2-setup-experience-20261110`. Owner decisions of 2026-11-10 are binding:
+Status: reviewed 2026-11-10, judged safe with the design below; implemented and
+released in 0.2.0. Owner decisions of 2026-11-10 are binding:
 a shared device remembers the accounts that signed in on it, "Switch account"
 picks one with one tap, a Player account may turn on a 4-digit PIN that the
 server checks with a rate limit, administrators are never in the list, the

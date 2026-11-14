@@ -126,8 +126,10 @@ you confirm it. One known limitation: Tournament Live can export a correct race 
 cumulative total, and the website review cannot edit the observed name or total (see
 [Tournament Live on a local laptop](../product/README_TOURNAMENT_LIVE_LAPTOP.md)).
 
-The tools read the game in its 15 console languages. Physical capture with Tournament Live has not had a
-complete acceptance test; video replays do not test a capture card.
+The tools read the game in its 15 console languages. Tournament Live passed a physical 1× acceptance run with the
+v0.2.2 package: three source PCs played recorded qualification videos into their own capture cards
+([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). A video replay without a capture card
+does not test the capture path.
 
 ## Build the tools yourself
 

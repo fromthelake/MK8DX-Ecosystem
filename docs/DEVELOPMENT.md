@@ -62,7 +62,8 @@ Follow the printed `node@24` instructions to put it on your `PATH`, and use `pyt
 3.12) where the docs say `python`. `sha256sum` is `shasum -a 256` on macOS. The website, API, scanner and the
 Python and TypeScript checks are plain Node/Python and are expected to work. The Docker base images used by the
 Dockerfiles are multi-architecture, so a source build on Apple Silicon should produce native arm64 images, but
-this has not been tried; the prebuilt release images are amd64 only. LiveTrial and the Tournament tools are
+this has not been tried; the prebuilt release images are amd64, except the arm64 images inside the arm64 A2
+packages. LiveTrial and the Tournament tools are
 Windows programs: on macOS you can edit and compile-check their Python sources, not run them.
 
 ## Clone and verify
@@ -200,7 +201,7 @@ lists every missing text as a problem. It prints `"problemCount": 0` when every 
 - The same with the bundled asset collection and the browser scanner: [Local preview](LOCAL_PREVIEW.md).
 - Android, LiveTrial and Tournament packages: [Client builds](CLIENT_BUILDS.md).
 
-The prebuilt Docker images are Linux/amd64. The native client packages target Windows; a macOS or Linux client
+The prebuilt Docker images are Linux/amd64 (the arm64 A2 packages carry their own arm64 images). The native client packages target Windows; a macOS or Linux client
 build has not been made yet.
 
 ## Troubleshooting
