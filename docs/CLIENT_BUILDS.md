@@ -136,5 +136,21 @@ the pinned public Python dependencies into its own folder. See the
 [operator guide](product/USING_MK8DX_TOURNAMENT_TOOLS.md). Recognition output
 requires human review before import or publication.
 
+## Build-time OCR models
+
+Six EasyOCR recognition models (`english_g2`, `cyrillic_g2`, `japanese_g2`, `korean_g2`, `zh_sim_g2`, and
+`chinese` for traditional Chinese) are not in Git. `packages/assets/downloaded-models-v1.json` pins each file:
+size, SHA-256, upstream MD5 and license, plus the official EasyOCR release archive with its own size and SHA-256.
+The LiveTrial and Tournament builders (and `tooling/tournament/prepare_runtime.py`) call
+`tooling/assets/downloaded_models.py stage`. It downloads each archive once into a cache, checks the archive and the
+extracted file against every pin, and stops the build on any mismatch. It then places the files beside the
+collection's `craft_mlt_25k.pth` and `latin_g2.pth` in `ocr-models/model/`. The packages therefore contain all
+OCR models and work offline after the install.
+
+The cache is `MK8DX_MODEL_CACHE`, or by default `%LOCALAPPDATA%\MK8DX\model-cache` on Windows and
+`~/.cache/mk8dx/model-cache` elsewhere. The first build needs internet (about 276 MiB); later builds reuse the
+verified cache. `python tooling/assets/downloaded_models.py fetch` fills the cache ahead of time, for example
+before working offline.
+
 Built packages contain game material from the asset collection; see
 [Third-party materials](THIRD_PARTY_MATERIALS.md) before you share them.
