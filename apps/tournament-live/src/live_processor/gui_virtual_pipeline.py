@@ -858,7 +858,10 @@ class GuiVirtualCaptureController:
         warmed: list[str] = []
         # Provisional RaceScore reader = the exact extractor instance the live path uses.
         try:
-            self._get_provisional_extractor()._get_reader().readtext(dummy)
+            extractor = self._get_provisional_extractor()
+            reader = extractor._get_reader()
+            with extractor.run_lock:
+                reader.readtext(dummy)
             warmed.append("provisional_row_ocr")
         except Exception:
             pass

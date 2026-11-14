@@ -27,6 +27,7 @@ try:
 except Exception:
     torch = None
 
+from .. import ocr_readers
 from .app_runtime import easyocr_gpu_enabled as runtime_easyocr_gpu_enabled, load_app_config
 from .data_paths import resolve_asset_file, resolve_game_catalog_file
 from .extract_common import EXPORT_IMAGE_FORMAT
@@ -46,6 +47,7 @@ APP_CONFIG = load_app_config()
 LOGGER = logging.getLogger(__name__)
 _DIGIT_EASYOCR_READER = None
 _DIGIT_EASYOCR_LOCK = threading.Lock()
+_DIGIT_EASYOCR_RUN_LOCK = threading.Lock()  # replaced by the shared reader's run lock on first use
 PLAYER_NAME_COORDS = get_score_layout(DEFAULT_SCORE_LAYOUT_ID).player_name_coords
 BASE_POSITION_STRIP_ROI = get_score_layout(DEFAULT_SCORE_LAYOUT_ID).base_position_strip_roi
 POSITION_STRIP_OFFSET_X = -2
@@ -2626,7 +2628,8 @@ def ocr_digit_row_fallback(
     if reader is None:
         return ''
     start_time = time.perf_counter()
-    result = reader.readtext(crop_np, detail=0, paragraph=False, allowlist='0123456789')
+    with _DIGIT_EASYOCR_RUN_LOCK:
+        result = reader.readtext(crop_np, detail=0, paragraph=False, allowlist='0123456789')
     record_call_matrix(bundle_kind, field_name, "ocr_fallback", time.perf_counter() - start_time)
     text = ' '.join(str(item).strip() for item in result if str(item).strip())
     digits_only = re.sub(r'[^0-9]', '', text)
@@ -2642,14 +2645,17 @@ def ocr_digit_row_fallback(
 
 
 def _get_digit_easyocr_reader():
-    global _DIGIT_EASYOCR_READER
+    global _DIGIT_EASYOCR_READER, _DIGIT_EASYOCR_RUN_LOCK
     if _DIGIT_EASYOCR_READER is not None:
         return _DIGIT_EASYOCR_READER
     if easyocr is None:
         return None
     with _DIGIT_EASYOCR_LOCK:
         if _DIGIT_EASYOCR_READER is None:
-            _DIGIT_EASYOCR_READER = easyocr.Reader(['en'], gpu=easyocr_gpu_enabled(), verbose=False)
+            # the process-wide 'en' reader (ocr_readers), shared with Tournament Live's row reader
+            gpu = easyocr_gpu_enabled()
+            _DIGIT_EASYOCR_RUN_LOCK = ocr_readers.run_lock(['en'], gpu=gpu)
+            _DIGIT_EASYOCR_READER = ocr_readers.shared_reader(['en'], gpu=gpu)
         return _DIGIT_EASYOCR_READER
 
 

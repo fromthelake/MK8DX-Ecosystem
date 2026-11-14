@@ -69,57 +69,16 @@ def write_ocr_runtime_report(context: str, *, gpu_requested: bool, languages: li
 
 
 def optimize_easyocr_reader(reader: Any) -> dict[str, Any]:
-    """Apply safe runtime optimizations to an EasyOCR reader.
+    """Apply safe runtime optimizations to an EasyOCR reader (``ocr_readers.optimize_reader``).
 
     PyTorch can warn that RNN/LSTM weights are not contiguous, which causes it to
-    compact weights at every call. EasyOCR does not expose a public hook for this,
-    so we walk the reader object and call ``flatten_parameters`` on RNN-like
-    modules when the method exists. This changes runtime layout only; it does not
-    alter OCR model weights or recognition behavior.
+    compact weights at every call; ``flatten_parameters`` on the RNN-like modules
+    compacts them once. This changes runtime layout only; it does not alter OCR
+    model weights or recognition behavior. Shared readers are optimized when created.
     """
+    from mk8dx_tournament_extraction.ocr_readers import optimize_reader  # type: ignore
 
-    optimized = 0
-    errors: list[str] = []
-    seen: set[int] = set()
-
-    def visit(obj: Any, depth: int = 0) -> None:
-        nonlocal optimized
-        if obj is None or depth > 5:
-            return
-        obj_id = id(obj)
-        if obj_id in seen:
-            return
-        seen.add(obj_id)
-
-        flatten = getattr(obj, "flatten_parameters", None)
-        if callable(flatten):
-            try:
-                flatten()
-                optimized += 1
-            except Exception as exc:  # pragma: no cover - best-effort runtime tuning
-                errors.append(f"{type(obj).__name__}: {exc}")
-
-        modules = getattr(obj, "modules", None)
-        if callable(modules):
-            try:
-                for module in modules():
-                    if id(module) != obj_id:
-                        visit(module, depth + 1)
-            except Exception as exc:  # pragma: no cover
-                errors.append(f"{type(obj).__name__}.modules: {exc}")
-
-        if depth >= 2:
-            return
-        for attr in ("recognizer", "detector", "model", "module", "net", "converter"):
-            try:
-                child = getattr(obj, attr, None)
-            except Exception:  # pragma: no cover
-                continue
-            if child is not None:
-                visit(child, depth + 1)
-
-    visit(reader)
-    return {"flattened_rnn_modules": optimized, "errors": errors[:10]}
+    return optimize_reader(reader)
 
 
 def _warmup_language_sets() -> list[list[str]]:
@@ -225,13 +184,12 @@ def warm_up_ocr_engine(language_sets: list[list[str]] | None = None) -> dict[str
     asset bundles, so the first race/track pays no torch/EasyOCR import,
     CUDA-init, model-load, or asset-read cost on its critical path.
 
-    This is a pure latency warm-up: it imports torch + easyocr, builds a reader
-    for each language set (matching the live GPU selection), applies the same
-    RNN optimization, runs a tiny dummy inference to prime CUDA kernels, then
-    discards the reader; it also reads the catalog/character/scan-template
-    assets. It does NOT change OCR behaviour or results — the live pipeline
-    still builds and uses its own readers; this only warms shared process/GPU
-    state and the OS file cache. Safe on a background thread; never raises.
+    It imports torch + easyocr, loads the process's shared reader for each
+    language set (``ocr_readers``, matching the live GPU selection), runs a tiny
+    dummy inference to prime CUDA kernels, and keeps the reader: the live
+    pipeline's row and track readers are the same instances. It also reads the
+    catalog/character/scan-template assets. It does NOT change OCR behaviour or
+    results. Safe on a background thread; never raises.
     """
 
     started = time.perf_counter()
@@ -239,9 +197,10 @@ def warm_up_ocr_engine(language_sets: list[list[str]] | None = None) -> dict[str
     assets_loaded: list[str] = []
     gpu = False
     try:
-        import easyocr  # type: ignore
+        import easyocr  # type: ignore  # noqa: F401 - a missing EasyOCR ends the warm-up here
         import numpy as _np  # type: ignore
         import torch  # type: ignore
+        from mk8dx_tournament_extraction import ocr_readers  # type: ignore
 
         gpu = bool(torch.cuda.is_available())
         sets = language_sets if language_sets is not None else _warmup_language_sets()
@@ -249,14 +208,13 @@ def warm_up_ocr_engine(language_sets: list[list[str]] | None = None) -> dict[str
         for langs in sets:
             try:
                 write_ocr_runtime_report("engine_warmup", gpu_requested=gpu, languages=langs)
-                reader = easyocr.Reader(list(langs), gpu=gpu, verbose=False)
-                optimize_easyocr_reader(reader)
+                reader = ocr_readers.shared_reader(list(langs), gpu=gpu)
                 try:  # prime the forward pass; the result is irrelevant
-                    reader.readtext(_np.zeros((32, 64, 3), dtype=_np.uint8))
+                    with ocr_readers.run_lock(list(langs), gpu=gpu):
+                        reader.readtext(_np.zeros((32, 64, 3), dtype=_np.uint8))
                 except Exception:
                     pass
                 warmed_readers.append(list(langs))
-                del reader
             except Exception:  # pragma: no cover - one reader failing must not abort the rest
                 pass
     except Exception as exc:  # pragma: no cover - depends on optional torch/easyocr

@@ -68,6 +68,14 @@ spanning at least 0.3 s, excludes it with no supporting evidence in between;
 a chosen language never is. After the decision the templates are still
 observed for exactly this check: four times a second, and on every check while
 a contradiction is pending (a banner is on screen for about a second only).
+The menu-text OCR keeps verifying a detected language every 10 s, but only with
+the decided language's own reader and the Latin one (a language change shows on
+the templates and nameplates); the other scripts' readers are released.
+
+Readers. Every EasyOCR reader of the engine comes from one cache (READERS): one
+reader per language set, created under its own lock, so a slow load never
+holds up a read with another reader (the capture loop's track-name read never
+waits for the background probe loading a script).
 """
 
 from __future__ import annotations
@@ -282,9 +290,16 @@ class ConsoleLanguage:
             return
         self._ocr_ms = self.ms
         with self._lock:
-            # a verification read scores every language, else only the open ones
-            candidates = list(self.candidates) if self.code is None else list(self.all)
+            # the open candidates while detecting; a verification read only the
+            # languages of the decided script and the Latin ones
+            candidates = list(self.candidates) if self.code is None else self.verification_languages()
         self.ocr_probe.submit(crops, candidates, self.ms, self._observe_ocr)
+
+    def verification_languages(self) -> list[str]:
+        """The languages a detected language's verification read scores: those
+        the decided language's own reader and the Latin reader read."""
+        scripts = {reader_key(self.code), "latin"} if self.code else set()
+        return [code for code in self.all if reader_key(code) in scripts]
 
     def state(self) -> dict:
         with self._lock:
@@ -354,6 +369,8 @@ class ConsoleLanguage:
                 reopened = self._contradict(group, event)
                 if reopened and len(self.candidates) == 1:
                     decide = self.candidates[0]
+        if reopened and self.ocr_probe is not None:
+            self.ocr_probe.keep_all()   # detecting again: every open candidate's reader may be needed
         if decide:
             self._decide(decide, "detected")
             return
@@ -412,8 +429,10 @@ class ConsoleLanguage:
             self.tdb.observer = None
             self.tdb.observed = frozenset()
         self._apply()
-        if self.ocr_probe is not None and status != "detected":
-            self.ocr_probe.keep_only(code)
+        if self.ocr_probe is not None:
+            # a chosen language needs only its own reader; a detected one keeps the
+            # Latin reader for its verification reads
+            self.ocr_probe.keep_only(code, *(("latin",) if status == "detected" else ()))
         if self.on_change is not None:
             try:
                 self.on_change(self.state())
@@ -453,14 +472,14 @@ class OcrProbe:
     """Reads track-name strips with each script's reader in a background thread.
 
     One job at a time: a new strip replaces one still waiting. Readers load on
-    first use (2–20 s each, from the EasyOCR model folder) and are dropped once
-    the language is decided, except the decided language's own reader."""
+    first use (1–20 s each, from the EasyOCR model folder) from the shared cache
+    (READERS; a test passes its own factory and gets a cache of its own) and are
+    released once the language is decided, except the readers it still needs."""
 
     def __init__(self, db: dict, reader_factory=None):
         self.db = db
-        self._factory = reader_factory or _easyocr_reader
-        self._readers: dict[str, object] = {}
-        self._reader_lock = threading.Lock()
+        self._cache = READERS if reader_factory is None else ReaderCache(reader_factory)
+        self._keep: set | None = None   # the scripts still needed once the language is decided
         self._job = None
         self._wake = threading.Condition()
         self._stopped = False
@@ -491,18 +510,26 @@ class OcrProbe:
             self._stopped = True
             self._wake.notify()
 
-    def keep_only(self, code: str) -> None:
-        with self._reader_lock:
-            keep = reader_key(code)
-            for key in [k for k in self._readers if k != keep]:
-                del self._readers[key]
+    def keep_only(self, code: str, *also: str) -> None:
+        """Release the script readers other than ``code``'s and ``also`` (again after
+        each job: one submitted before the decision may still load readers)."""
+        self._keep = {reader_key(code), *also}
+        self._release()
+
+    def keep_all(self) -> None:
+        """Detecting again (a re-opened language): release nothing."""
+        self._keep = None
+
+    def _release(self) -> None:
+        if self._keep is not None:
+            self._cache.release([OCR_READERS[key] for key in OCR_READERS if key not in self._keep])
+
+    def resident(self) -> list[str]:
+        """The script readers loaded now (diagnostics)."""
+        return sorted(key for key, languages in OCR_READERS.items() if self._cache.loaded(languages))
 
     def reader_for(self, code: str):
-        key = reader_key(code)
-        with self._reader_lock:
-            if key not in self._readers:
-                self._readers[key] = self._factory(OCR_READERS[key])
-            return _Locked(self._readers[key], self._reader_lock)
+        return self._cache.get(OCR_READERS[reader_key(code)])
 
     def score(self, crops, candidates) -> tuple[dict, dict]:
         """{language: mean name-match ratio over the crops that read as text},
@@ -515,12 +542,11 @@ class OcrProbe:
                 key = reader_key(code)
                 if key not in OCR_READERS or code not in self._names:
                     continue
+                if self._keep is not None and key not in self._keep:
+                    continue   # a job from before the decision: a released script stays unloaded
                 if key not in texts:
-                    with self._reader_lock:
-                        reader = self._readers.get(key)
-                        if reader is None:
-                            reader = self._readers[key] = self._factory(OCR_READERS[key])
-                        texts[key] = " ".join(r[1] for r in reader.readtext(crop))
+                    reader = self._cache.get(OCR_READERS[key])
+                    texts[key] = " ".join(r[1] for r in reader.readtext(crop))
                 raw = texts[key]
                 if len(normalize_name(raw)) < 2:
                     continue
@@ -546,20 +572,64 @@ class OcrProbe:
             try:
                 scores, raws = self.score(crop, candidates)
                 deliver(scores, ms, raws)
+                self._release()
             except Exception as error:  # a reader that cannot load is no evidence
                 print(f"[livetrial] console-language OCR unavailable ({type(error).__name__})", flush=True)
                 time.sleep(5)
 
 
-class _Locked:
-    """A reader whose readtext holds the probe's lock (the probe thread shares it)."""
+class SharedReader:
+    """One cached EasyOCR reader; its reads hold the reader's own lock, as the
+    capture loop and the background probe can read with the same reader."""
 
-    def __init__(self, reader, lock):
-        self._reader, self._lock = reader, lock
+    def __init__(self, reader):
+        self.reader = reader
+        self._lock = threading.Lock()
 
     def readtext(self, *args, **kwargs):
         with self._lock:
-            return self._reader.readtext(*args, **kwargs)
+            return self.reader.readtext(*args, **kwargs)
+
+
+class ReaderCache:
+    """One reader per (language set, gpu), created on first use under a lock of
+    its own: loading one reader never blocks a read or a load of another."""
+
+    def __init__(self, factory):
+        self._factory = factory
+        self._lock = threading.Lock()
+        self._readers: dict[tuple, SharedReader] = {}
+        self._creating: dict[tuple, threading.Lock] = {}
+        self.created: list[tuple] = []   # every creation, in order (diagnostics and tests)
+
+    @staticmethod
+    def key(languages, gpu: bool = False) -> tuple:
+        return tuple(languages), bool(gpu)
+
+    def get(self, languages, gpu: bool = False) -> SharedReader:
+        key = self.key(languages, gpu)
+        reader = self._readers.get(key)
+        if reader is not None:
+            return reader
+        with self._lock:
+            creating = self._creating.setdefault(key, threading.Lock())
+        with creating:
+            reader = self._readers.get(key)
+            if reader is None:
+                reader = SharedReader(self._factory(list(key[0]), key[1]))
+                with self._lock:
+                    self._readers[key] = reader
+                    self.created.append(key)
+        return reader
+
+    def loaded(self, languages, gpu: bool = False) -> bool:
+        return self.key(languages, gpu) in self._readers
+
+    def release(self, language_sets, gpu: bool = False) -> None:
+        """Drop these readers from the cache (a holder keeps its own until it lets go)."""
+        with self._lock:
+            for languages in language_sets:
+                self._readers.pop(self.key(languages, gpu), None)
 
 
 GLYPH_WHITE = 200   # banner names are white glyphs with a dark outline on a blue gradient
@@ -592,6 +662,15 @@ def match_ratio(raw: str, names: dict[str, str]) -> float:
     return round(best, 3)
 
 
-def _easyocr_reader(languages):
+def _easyocr_reader(languages, gpu=False):
     import easyocr
-    return easyocr.Reader(languages, gpu=False, verbose=False)
+    return easyocr.Reader(languages, gpu=gpu, verbose=False)
+
+
+# The engine's readers: the capture loop's, the console-language probe's, the
+# Select-a-Ghost panel's and the name strips' (one reader per language set).
+READERS = ReaderCache(_easyocr_reader)
+
+
+def shared_reader(languages, gpu: bool = False) -> SharedReader:
+    return READERS.get(languages, gpu)

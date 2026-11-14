@@ -21,7 +21,7 @@ from . import hudcounters, hudtimes
 from .ghostmenu import (GhostMenuScreens, GhostPanelReader, GhostRecords, mark_staff_ghost,
                         mark_world_record, merge_panel, replay_finish_ms, replay_hud_lap_times,
                         same_ghost)
-from .consolelang import AUTO, CONFIRM_ROWS, ConsoleLanguage, OcrProbe, glyph_image, reader_key
+from .consolelang import AUTO, CONFIRM_ROWS, ConsoleLanguage, OcrProbe, glyph_image, reader_key, shared_reader
 from .templates import Template, TemplateDb
 
 T = "hud_template."
@@ -284,8 +284,8 @@ class Analyzer:
         self._reader = None
         if use_easyocr:
             try:
-                import easyocr
-                self._reader = easyocr.Reader(["en", "nl"], gpu=False, verbose=False)
+                import easyocr  # noqa: F401 - no EasyOCR, no reader
+                self._reader = shared_reader(["en", "nl"])
             except Exception:
                 self._reader = None
         # Console language (consolelang.py): chosen, or detected once at the

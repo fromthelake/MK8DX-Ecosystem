@@ -46,7 +46,7 @@ from .extract_common import (
     race_class_selected,
 )
 from .console_logging import LOGGER
-from .. import track_names
+from .. import ocr_readers, track_names
 from .ocr_export import build_completion_payload, build_player_count_summary_lines
 from .ocr_name_matching import (
     append_identity_ambiguity_review_notes,
@@ -1051,7 +1051,8 @@ def _get_easyocr_reader(languages: list[str] | tuple[str, ...]):
         return None
     with _EASYOCR_READER_LOCK:
         if cache_key not in _EASYOCR_READERS:
-            _EASYOCR_READERS[cache_key] = easyocr.Reader(list(cache_key), gpu=easyocr_gpu_enabled(), verbose=False)
+            # the process-wide reader (ocr_readers): Tournament Live's readers of the same set reuse it
+            _EASYOCR_READERS[cache_key] = ocr_readers.shared_reader(cache_key, gpu=easyocr_gpu_enabled())
     return _EASYOCR_READERS[cache_key]
 
 
@@ -1063,7 +1064,7 @@ def _get_easyocr_reader_run_lock(languages: list[str] | tuple[str, ...]) -> thre
     with _EASYOCR_READER_LOCK:
         lock = _EASYOCR_READER_RUN_LOCKS.get(cache_key)
         if lock is None:
-            lock = threading.Lock()
+            lock = ocr_readers.run_lock(cache_key, gpu=easyocr_gpu_enabled())
             _EASYOCR_READER_RUN_LOCKS[cache_key] = lock
     return lock
 
