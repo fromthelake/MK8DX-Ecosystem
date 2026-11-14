@@ -12,4 +12,17 @@ De route vereist geen Docker, VPS-root, PHP-applicatie, extra PM2-service of mob
 
 Beheer via dezelfde `tooling/install.py`-ingang: `wizard`, `check-database`, `setup`, `check`, `passenger-config`, `admin`, `backup`, `verify-backup`, `restore-wizard` en `upgrade`. Backups bevatten DB-dump plus profiel, sleutels en private runtimeconfig. `upgrade` vereist en verifieert eerst een nieuwe backup. Herstel gaat naar een nieuwe lege database op dezelfde engine/versieserie en een aparte private installatiemap; een latere echte domeinomschakeling is geen lokale testactie. Een bestaande admin wordt bij herhaling of herstel nooit automatisch vervangen.
 
+## App-downloads op hosts die app-antwoorden begrenzen
+
+De pagina **Download de app** van de website levert de bestanden uit `downloads.json` in de map die `MK8DX_HOSTED_APP_DOWNLOAD_ROOT` noemt (buiten `public_html`), alleen aan aangemelde accounts. Standaard streamt de API elk bestand zelf. Gedeelde LiteSpeed/Passenger-hosting kan zo'n groot app-antwoord (een APK van 500 MB) weigeren en toont dan een eigen korte foutpagina. Zet voor zulke hosts kortlevende statische links aan: de aangemelde aanvraag krijgt dan een doorverwijzing naar een link die de webserver zelf serveert, met hervatbare downloads. Zet deze sleutels in `operator.json` in de private installatiemap, voer `python3 tooling/install.py passenger-config` uit en herstart de app in DirectAdmin:
+
+| Sleutel | Waarde |
+| --- | --- |
+| `MK8DX_HOSTED_APP_DOWNLOAD_LINK_DOCUMENT_ROOT` | de absolute document root, bijv. `/home/<gebruiker>/domains/<domein>/public_html` |
+| `MK8DX_HOSTED_APP_DOWNLOAD_LINK_DIRECTORY` | een absolute map daarbinnen voor de links, bijv. `…/public_html/dl` (wordt aangemaakt als hij ontbreekt; nooit een symlink) |
+| `MK8DX_HOSTED_APP_DOWNLOAD_LINK_URL_PATH` | optioneel: het publieke pad van die map; standaard daarvan afgeleid, bijv. `/dl` |
+| `MK8DX_HOSTED_APP_DOWNLOAD_LINK_TTL_SECONDS` | optioneel: levensduur van een link, 60–86400 seconden; standaard `600` |
+
+Elke download maakt `<map>/<64 willekeurige hex>/<bestandsnaam>` als symbolische link (een harde link waar symlinks geweigerd worden) naar het opgeslagen bestand. Mappen met precies zo'n naam worden na de levensduur verwijderd, bij elke download en bij het starten; verder wordt niets in de map aangeraakt. Mapweergave moet uit staan voor de document root (`Options -Indexes` in `.htaccess`), en de webserver moet bestaande bestanden in die map zelf serveren (symlinks van dezelfde eigenaar volgen). Een onvolledige of onveilige instelling stopt de start met de reden. Zonder deze sleutels verandert er niets.
+
 Bronnen voor actuele paneelbenamingen en leveranciersmogelijkheden: [Node.js-app in DirectAdmin](https://mijn.host/kb/web-apps/node-js-applicatie-draaien-op-je-hostingpakket), [Starter-overzicht](https://mijn.host/webhosting), [SSH](https://mijn.host/kb/webhosting/verbinden-met-ssh), [Let's Encrypt](https://mijn.host/kb/webhosting/lets-encrypt-ssl-certificaat-aanvragen).

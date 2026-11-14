@@ -301,6 +301,9 @@ ook de eigenschappen openen en ` -SkipCountdown` aan het eind van het doel toevo
   Windows-clients op dezelfde computer.
 - De pagina **Download de app** van de website toont alleen downloads van apps als de serverbeheerder een
   downloadmap heeft ingesteld; de installer stelt er geen in. Verwijs spelers in plaats daarvan naar de GitHub-release.
+  Op gedeelde hosting die grote app-antwoorden weigert zet je kortlevende statische downloadlinks aan
+  (`MK8DX_HOSTED_APP_DOWNLOAD_LINK_*`, zie
+  [B2 technische naslag](../../../install/B2_WEBHOSTING.md#app-downloads-op-hosts-die-app-antwoorden-begrenzen)).
 - Toernooidirecteuren: een beheerder keurt hun **Verzoek om te hosten** goed of voegt ze toe onder
   Beheer → Toernooien → Directeuren. Zie [Tournament Directors](TOURNAMENT_DIRECTORS.md).
 - Beheer → **Installatie-instellingen** begint met de **Communitynaam** ("Club Noord"), die de apps

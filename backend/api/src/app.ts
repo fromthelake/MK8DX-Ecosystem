@@ -102,6 +102,7 @@ import {
 import { registerAppDownloadRoutes } from
   "./runtime/app-download-routes.js";
 import type { AppDownloadStore } from "./runtime/app-downloads.js";
+import type { AppDownloadLinks } from "./runtime/app-download-links.js";
 import { registerClientSupportRoutes } from "./runtime/client-support-routes.js";
 import { registerClientInstallationRoutes } from
   "./runtime/client-installation-routes.js";
@@ -343,7 +344,7 @@ export type AppDependencies = Readonly<{
     }>;
   }>;
   gameAssets?: Readonly<{ rootDirectory: string }>;
-  appDownloads?: Readonly<{ store: AppDownloadStore }>;
+  appDownloads?: Readonly<{ store: AppDownloadStore; staticLinks?: AppDownloadLinks }>;
   clientInstallations?: Readonly<{ service: ClientInstallationService }>;
   playerInsights?: Readonly<{
     service: Pick<PlayerInsightsService, "loadMine">;
@@ -928,6 +929,9 @@ export async function buildApp(
     await registerAppDownloadRoutes(app, {
       resolveActor: dependencies.resolveActor ?? anonymousActor,
       store: dependencies.appDownloads.store,
+      ...(dependencies.appDownloads.staticLinks === undefined
+        ? {}
+        : { staticLinks: dependencies.appDownloads.staticLinks }),
     });
     // Public on purpose: a Player whose build has been turned off must be able
     // to learn that without signing in first.

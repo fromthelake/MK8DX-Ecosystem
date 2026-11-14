@@ -299,7 +299,10 @@ can also open its properties and add ` -SkipCountdown` at the end of the target.
   address (B1, B2, or A2 after the phone has trusted the installation once); a local A1 address works only for
   Windows clients on the same computer.
 - The website's **Get the app** page lists app downloads only when the server operator has configured a
-  download folder; the installer does not set one up. Point players to the GitHub release instead.
+  download folder; the installer does not set one up. Point players to the GitHub release instead. On shared
+  hosting that refuses large application responses, switch on short-lived static download links
+  (`MK8DX_HOSTED_APP_DOWNLOAD_LINK_*`, see
+  [B2 technical reference](../install/B2_WEBHOSTING_EN.md#app-downloads-on-hosts-that-limit-application-responses)).
 - Tournament Directors: an administrator approves their **Request to host** or adds them under
   Administration → Tournaments → Directors. See [Tournament Directors](TOURNAMENT_DIRECTORS.md).
 - Administration → **Installation settings** starts with the **Community name** ("Club Noord"), which the apps
