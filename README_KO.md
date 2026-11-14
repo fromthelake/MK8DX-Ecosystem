@@ -99,8 +99,8 @@ flowchart TB
 | 하고 싶은 일 | 여기서 시작하세요 |
 | --- | --- |
 | **집이나 클럽에서 MK8DX 실행하기** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에서 내 컴퓨터용 A2 패키지를 받으세요: 압축을 풀고, 실행하고, '다음'을 클릭. 단계별 안내(A2 패키지에는 그림이 들어간 버전도 있습니다): [한국어](docs/install/translations/ko/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX 설치와 사용](docs/install/translations/ko/MK8DX_User_Guide_ko.docx) ([TXT](docs/install/translations/ko/MK8DX_User_Guide.txt)) |
-| **LAN 대회의 밤 운영하기** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md). Tournament Tools는 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
-| **타임 어택을 자동으로 기록하기** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + 캡처 카드. 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
+| **LAN 대회의 밤 운영하기** | [Tournament Directors](docs/guides/translations/ko/TOURNAMENT_DIRECTORS.md). Tournament Tools는 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
+| **타임 어택을 자동으로 기록하기** | [LiveTrial](docs/guides/translations/ko/LIVETRIAL.md) — Windows + 캡처 카드. 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
 | **내 기록을 올리고 비교하기** | [Players](docs/guides/translations/ko/PLAYERS.md) — 어떤 브라우저든 OK, Android 8.0 이상 |
 | **커뮤니티 웹사이트 호스팅하기** | [Host a community server](docs/guides/HOSTING.md) |
 | **코드 수정하기** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |

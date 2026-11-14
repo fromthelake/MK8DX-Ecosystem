@@ -2,6 +2,8 @@
 
 Nederlands: [translations/nl/TOURNAMENT_DIRECTORS.md](translations/nl/TOURNAMENT_DIRECTORS.md)
 
+Other languages (machine translations): [English (US)](translations/en-US/TOURNAMENT_DIRECTORS.md) · [Deutsch](translations/de/TOURNAMENT_DIRECTORS.md) · [Español](translations/es/TOURNAMENT_DIRECTORS.md) · [Español (Latinoamérica)](translations/es-419/TOURNAMENT_DIRECTORS.md) · [Français](translations/fr/TOURNAMENT_DIRECTORS.md) · [Français (Canada)](translations/fr-CA/TOURNAMENT_DIRECTORS.md) · [Italiano](translations/it/TOURNAMENT_DIRECTORS.md) · [Português](translations/pt/TOURNAMENT_DIRECTORS.md) · [Русский](translations/ru/TOURNAMENT_DIRECTORS.md) · [日本語](translations/ja/TOURNAMENT_DIRECTORS.md) · [한국어](translations/ko/TOURNAMENT_DIRECTORS.md) · [简体中文](translations/zh-CN/TOURNAMENT_DIRECTORS.md) · [繁體中文](translations/zh-TW/TOURNAMENT_DIRECTORS.md)
+
 [All guides](../../README.md#get-started) · [Tournament Tools reference](../product/USING_MK8DX_TOURNAMENT_TOOLS.md)
 
 A Tournament Director runs a tournament night on the community website: participants, consoles, groups,
