@@ -21,6 +21,11 @@ The object store is the single authoritative copy; generated views are ignored
 build outputs. The schema-9 catalogue, database migrations and reference seeds
 retain their distinct domain ownership.
 
+The six EasyOCR recognition models beyond `craft_mlt_25k.pth` and `latin_g2.pth` are not in the collection.
+`downloaded-models-v1.json` pins them (size, SHA-256, upstream MD5, license, official archive URL and archive hash).
+The LiveTrial and Tournament builds download, verify and stage them into `ocr-models/model/` with
+`tooling/assets/downloaded_models.py`; see [Client builds](../../docs/CLIENT_BUILDS.md#build-time-ocr-models).
+
 No Git LFS is used. The one object above GitHub's 100 MiB file limit (the
 121,579,098-byte scanner ONNX model) is stored as `<sha>.part1` and `<sha>.part2`;
 `shared_asset_source.py` (`verify`, `resolve`) and `materialize_collection.mjs`

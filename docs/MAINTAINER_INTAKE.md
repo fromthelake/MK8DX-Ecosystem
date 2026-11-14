@@ -74,3 +74,20 @@ python tooling/assets/shared_asset_source.py verify
 It updates the object store, the collection version, the consumer selections and `compatibility.json`, verifies
 the whole collection and rolls back on failure. New kinds of resources, models and catalog changes go through
 the software import above instead.
+
+## Admitting a downloadable upstream model
+
+Some public upstream models are not stored in Git. Builds download them, verify them and stage them (see
+[Client builds](CLIENT_BUILDS.md#build-time-ocr-models)). To admit one, record it in
+`packages/assets/downloaded-models-v1.json`:
+
+```sh
+python tooling/assets/downloaded_models.py admit --group ocr-models --path model/<name>.pth \
+  --url https://github.com/JaidedAI/EasyOCR/releases/download/<tag>/<name>.zip --member <name>.pth \
+  --md5 <md5 from the upstream project's config> --license Apache-2.0
+```
+
+The command accepts only https URLs and a license whose text is in `packages/assets/licenses/`. It downloads the
+archive and refuses the model when the extracted file's MD5 differs from the upstream value. It pins the file's
+size and SHA-256 and the archive's size and SHA-256. Review the JSON diff and add the file to
+[Third-party materials](THIRD_PARTY_MATERIALS.md). The EasyOCR recognition models were admitted this way.
