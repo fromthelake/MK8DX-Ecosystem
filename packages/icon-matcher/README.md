@@ -36,7 +36,7 @@ for the same-source qualification.
 | Select-a-Ghost panel registration | `panel_registration` | `sharedPanelRegistration.ts` | `PanelRegistration.java` |
 | Canonical card geometry (warp bounds, target box, alignment, anti-alias; OpenCV solve and warps in the products) | `canonical_warp` | `sharedCanonicalWarp.ts` | `CanonicalWarp.java` |
 | Detector post-processing | `detections` | `sharedDetections.ts` | `Detections.java` |
-| Icon crop position (decision steps and constants shared; pixel work in the products, see below; LiveTrial's engine search too) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
+| Icon crop position (decision steps and constants shared; pixel work in the products, see below) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
 | Lap-row grid (digit slots) | `lap_grid` | `sharedLapGrid.ts` | `LapGrid.java` |
 | Seven-segment digits | `segment_digits` | `sharedSegmentDigits.ts` | `SegmentDigits.java` |
 | Time decision (lap sum, repair) | `time_decision` | `sharedTimeDecision.ts` | `TimeDecision.java` |
@@ -202,12 +202,9 @@ place and measured it: with Android's float32 arithmetic emulated on the 50 real
 differ by at most 5e-8. One of them rounds differently at four digits, but it is not a winner. No score, margin,
 top three, shift or scale of any search changes.
 
-LiveTrial's engine has its own search (`identify_crop_search` in `identity_matcher.py`, the Select-a-Ghost fallback
-when the central reader is not loaded). Since phase 5 it takes its decision steps and constants from `crop_search`
-too: `search_window`, `window_gain`, `votes`, `pick_position`, `picked_shift`, `accept_shift`, `look_box` and
-`better_look`. What stays its own is deliberate and unchanged: its references and `identify_crop`, Python `round`
-for the box, only the nominal top three vote for a position, and a second round after a shift. Old and new give
-identical results on 1,860 searches over 31 real frames.
+LiveTrial has no icon crop search of its own: it reads fixed HDMI positions with this reader. Its engine's former
+matcher and search (`identify_crop`, `identify_crop_search`) were only a Select-a-Ghost fallback when the reader was
+not loaded and were removed in phase 5; without the reader those fields stay unknown.
 
 ### Canonical card geometry before the crop
 
