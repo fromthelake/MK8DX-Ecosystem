@@ -40,7 +40,7 @@ A typical result follows **recording or image → recognition → human review �
 - `tooling/install.py` is the one per-installation operator profile. It derives API, Compose, gateway and public client settings while keeping secrets private. Do not add a second configuration authority or put server secrets in client data. Repeat setup and updates must retain keys, project/volume, accounts and results.
 - Fresh installs include reviewed Nintendo Ghost Staff and World Records reference sets, not inherited community accounts or ordinary submissions. Grant the first administrator only through the installer after the intended account verifies its email; the first random registrant is never admin.
 - The API owns authentication, validation, acceptance and publication. Keep database migrations append-only. Change reference data through its explicit versioned seed path; startup must not refresh it opportunistically.
-- The prebuilt Docker images are Linux/amd64. Do not claim complete macOS, ARM, physical Android or capture support without new tests. Do not silently replace user-visible branding or route behavior while changing internals.
+- The public prebuilt Docker images are Linux/amd64; arm64 images exist only inside the arm64 A2 packages. Do not claim complete macOS, ARM, physical Android or capture support without new tests. Do not silently replace user-visible branding or route behavior while changing internals.
 
 ## Work safely and verify the impact
 

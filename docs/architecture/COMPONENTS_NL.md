@@ -25,7 +25,7 @@ Het schema toont de logische verbindingen. Mailpit vangt aanmeldmail alleen op v
 3. De API controleert de afzender en het contract en schrijft de inzending in de MySQL-database van die installatie. `UserAccount`, `Player`, claim en herkende alias hebben ieder een andere betekenis; een herkende naam bewijst geen eigendom.
 4. De productregels voor beoordeling en acceptatie bepalen wanneer een Time Trial of toernooirace officieel wordt. Een voorlopige Tournament Live-stand is geen gepubliceerde uitslag. De website leest de geaccepteerde of gepubliceerde toestand via de API.
 
-De lokale eind-tot-eindproeven bewezen deze keten voor LiveTrial en Tournament Processor/Connect op verse Docker- en XAMPP/Node-installaties, inclusief database en niet aangemelde websiteweergave. Een Tournament Live-replay doorliep het verwerkingspad maar leverde geen verzendbare canonical race op. Fysieke capture staat nog open.
+De lokale eind-tot-eindproeven bewezen deze keten voor LiveTrial en Tournament Processor/Connect op verse Docker- en XAMPP/Node-installaties, inclusief database en niet aangemelde websiteweergave. Een Tournament Live-replay doorliep het verwerkingspad maar leverde geen verzendbare canonical race op. Een fysieke capture-proef volgde later; zie [Wat is meegeleverd en getest?](#wat-is-meegeleverd-en-getest).
 
 ## Vind de broncode
 
@@ -59,6 +59,6 @@ commentaar naar verwijst. Vraag het in een issue als de redenering van een comme
 
 ## Wat is meegeleverd en getest?
 
-Het volledige bronarchief bevat de gevolgde bronbestanden en de volledige interne assetcollectie. Het voorgebouwde hostpakket bevat amd64-API/Web-images, MySQL en lokale Mailpit-images, Compose en de installer. Android, LiveTrial en Tournament hebben afzonderlijke clientpakketten; zie [Release packages](../RELEASE_PACKAGES.md). De Docker- (A1) en XAMPP/Node.js-route (A3) zijn op Windows 11 getest met nieuwe accounts en lege databases. Een VPS, macOS, ARM, fysieke Android-toestellen en fysieke capture hebben nog geen gelijkwaardige eind-tot-eindproef.
+Het volledige bronarchief bevat de gevolgde bronbestanden en de volledige interne assetcollectie. Het voorgebouwde hostpakket bevat amd64-API/Web-images, MySQL en lokale Mailpit-images, Compose en de installer. Android, LiveTrial en Tournament hebben afzonderlijke clientpakketten; zie [Release packages](../RELEASE_PACKAGES.md). De Docker- (A1) en XAMPP/Node.js-route (A3) zijn op Windows 11 getest met nieuwe accounts en lege databases, en de A2-route van begin tot eind op Windows 11, ook met een Android-telefoon op het netwerk. Een fysieke 1×-capture-proef van Tournament Live met het Tournament Tools-pakket van v0.2.2 leverde zijn resultaten af bij een lokale wegwerpserver ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Een VPS, macOS, ARM en native Linux hebben nog geen gelijkwaardige eind-tot-eindproef (A2 op die platforms: [issue #181](https://github.com/fromthelake/MK8DX-Ecosystem/issues/181)).
 
 Een nieuwe installatie krijgt als bestaande resultaten uitsluitend de twee beoordeelde referentiesets Nintendo Ghost Staff en World Records. Gewone communityaccounts en resultaten ontstaan per installatie. [Third-party materials](../THIRD_PARTY_MATERIALS.md) noemt het materiaal dat de projectlicentie niet dekt.

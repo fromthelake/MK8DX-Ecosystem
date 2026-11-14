@@ -304,19 +304,18 @@ invitations activate accounts without automatically claiming a Player. Existing
 online authentication, routes and link grammar remain unchanged. Root trust
 constraints are not assumed to work until tested on each platform; protected
 CA backup, renewal, trust removal and an offline restart are required before
-the route is described as supported. This is an approved design direction,
-not an implemented or qualified installation mode; see [issue #90](https://github.com/fromthelake/MK8DX-Ecosystem/issues/90).
+the route is described as supported. The route has been released as A2 since
+0.2.0; the [A2 guide](../install/A2_HOME_GUIDE_EN.md) says which platforms are tested.
 
 The host access foundation uses a five-minute local unlock code, a loopback-only
 listener and a session that checks the administrator grant again on each use.
 The next source slice creates the first local account and grant in one database
 transaction, and lets the host administrator create accounts and issue/revoke
 one-use invitations. It creates no Player claim. These host actions passed
-focused MySQL/MariaDB and disposable-host checks; the complete A2 installation
-remains closed until the device and offline gates pass. A2 also includes
+focused MySQL/MariaDB and disposable-host checks. A2 also includes
 LiveTrial on another Windows PC: its saved result must reach the same local
-API after trusted HTTPS setup and browser device approval. That LiveTrial path
-is not yet qualified.
+API after trusted HTTPS setup and browser device approval; the A2 guide names
+the LiveTrial version this path was tested with.
 
 Amendment (2026-11-11), Linux and macOS hosts: the installation's CA root key and
 the stored backup recovery code are protected per platform, always for the

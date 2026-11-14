@@ -25,7 +25,7 @@ The diagram shows logical traffic. Mailpit captures sign-in mail only for the on
 3. The API authenticates the sender, validates the contract and records the submission in that installation's MySQL database. A `UserAccount`, `Player`, claim and observed alias have different meanings; recognizing a name alone does not establish ownership.
 4. The product's review and acceptance rules determine when a Time Trial or Tournament race becomes official. A provisional Tournament Live table is not a published result. The website reads the accepted or published state through the API.
 
-The local end-to-end checks proved this chain for LiveTrial and Tournament Processor/Connect on fresh Docker and XAMPP/Node installations, including database rows and signed-out website views. Tournament Live replay exercised its processing path but did not yield a canonical race suitable for delivery. A physical capture test remains open.
+The local end-to-end checks proved this chain for LiveTrial and Tournament Processor/Connect on fresh Docker and XAMPP/Node installations, including database rows and signed-out website views. Tournament Live replay exercised its processing path but did not yield a canonical race suitable for delivery. A physical capture run followed later; see [What is included and what was verified](#what-is-included-and-what-was-verified).
 
 ## Find the source
 
@@ -59,6 +59,6 @@ reasoning is unclear.
 
 ## What is included and what was verified
 
-The full source archive contains the tracked source and the hydrated internal asset collection. The prebuilt host package contains the amd64 API/Web images, MySQL and local Mailpit images, Compose files and the installer. Android, LiveTrial and Tournament have separate client packages; see [Release packages](../RELEASE_PACKAGES.md). The Docker (A1) and XAMPP/Node.js (A3) routes were tested on Windows 11 with new accounts and empty databases. A VPS, macOS, ARM, physical Android devices and physical capture have no equivalent end-to-end test yet.
+The full source archive contains the tracked source and the hydrated internal asset collection. The prebuilt host package contains the amd64 API/Web images, MySQL and local Mailpit images, Compose files and the installer. Android, LiveTrial and Tournament have separate client packages; see [Release packages](../RELEASE_PACKAGES.md). The Docker (A1) and XAMPP/Node.js (A3) routes were tested on Windows 11 with new accounts and empty databases, and the A2 route end to end on Windows 11, including an Android phone on the network. A physical 1× Tournament Live capture run with the v0.2.2 Tournament Tools package delivered its results to a disposable local server ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). A VPS, macOS, ARM and native Linux have no equivalent end-to-end test yet (A2 on those platforms: [issue #181](https://github.com/fromthelake/MK8DX-Ecosystem/issues/181)).
 
 The server owns only the two reviewed reference-result sets on a fresh install: Nintendo Ghost Staff and World Records. Ordinary community accounts and results are created by that installation. [Third-party materials](../THIRD_PARTY_MATERIALS.md) lists the material that the project's license does not cover.

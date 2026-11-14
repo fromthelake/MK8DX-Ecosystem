@@ -18,7 +18,7 @@ Capture → ROI search → match → frame/sequence decision → result → revi
 implementation checked against the same versioned parity vectors. It does not
 mean that Java executes Python, or that every app currently performs identical
 pixel processing. The field-semantics version on current `main` is **0.4.3**
-in all three languages. The published `v0.1.0` tag contains **0.4.1**; source
+in all three languages. The latest published release, `v0.2.2`, contains **0.4.2**; source
 on `main` is not automatically a new release.
 
 Field semantics 0.4.3 adds one context rule for kart (body) and glider colour:
