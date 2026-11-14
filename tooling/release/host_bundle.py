@@ -62,6 +62,20 @@ OFFLINE_FILES = (
 )
 
 
+def guide_paths() -> list[str]:
+    """The guides every host package carries: docs/install (EN/NL), the illustrated guide pages of all
+    languages (docs/install/guide) and each translation folder docs/install/translations/<language>/
+    (A2 guide, user guide TXT and DOCX)."""
+    install = ROOT / "docs/install"
+    paths = [p for p in sorted(install.iterdir()) if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")]
+    paths += [p for p in sorted((install / "guide").rglob("*"))
+              if p.is_file() and p.suffix.lower() in (".html", ".css", ".js", ".png")]
+    if (install / "translations").is_dir():
+        paths += [p for p in sorted((install / "translations").rglob("*"))
+                  if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")]
+    return [p.relative_to(ROOT).as_posix() for p in paths]
+
+
 def sha256(path):
     with path.open("rb") as stream:
         return hashlib.file_digest(stream, "sha256").hexdigest()
@@ -260,11 +274,7 @@ def main():
         raise SystemExit("Choose a new absolute ZIP path outside repository")
     output.parent.mkdir(parents=True, exist_ok=True)
     subprocess.run([sys.executable, str(ROOT / "tooling/privacy_scan.py")], cwd=ROOT, check=True)
-    paths = list(FILES) + (list(OFFLINE_FILES) if args.offline_candidate else []) + \
-        [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install").iterdir())
-         if p.is_file() and p.suffix.lower() in (".md", ".txt", ".docx")] + \
-        [p.relative_to(ROOT).as_posix() for p in sorted((ROOT / "docs/install/guide").rglob("*"))
-         if p.is_file() and p.suffix.lower() in (".html", ".css", ".js", ".png")]
+    paths = list(FILES) + (list(OFFLINE_FILES) if args.offline_candidate else []) + guide_paths()
     for name in paths:
         path = ROOT / name
         if not path.is_file() or path.is_symlink():
@@ -294,14 +304,19 @@ def main():
         if args.offline_candidate:
             first = (f"MK8DX at home or at the club (A2), package {args.revision}\n\n"
                      + START[args.platform] + "\n"
-                     "Step by step, with pictures: docs/install/guide/en.html (English) or\n"
-                     "docs/install/guide/nl.html (Nederlands). The wizard's Manual link opens the same guide.\n"
+                     "Step by step, with pictures: docs/install/guide/en.html (English),\n"
+                     "docs/install/guide/nl.html (Nederlands) or docs/install/guide/<language>.html for the other\n"
+                     "languages of the game (de, es, es-419, fr, fr-CA, it, ja, ko, pt, ru, zh-CN, zh-TW, en-US);\n"
+                     "every page has a language menu. The wizard's Manual link opens the guide in your\n"
+                     "browser's language. The same guides as text: docs/install/translations/<language>/.\n"
                      "Updating later: unpack a newer package in a new folder and start it the same way.\n\n"
                      "Your installation data is created outside this package. Never publish it or a backup.\n")
         else:
             first = (f"MK8DX host package {args.revision}\n\n"
                      "Open docs/install/MK8DX_Handleiding_NL.docx or .txt (Nederlands),\n"
                      "or docs/install/MK8DX_User_Guide_EN.docx or .txt (English).\n"
+                     "Other languages: docs/install/translations/<language>/MK8DX_User_Guide_<language>.docx\n"
+                     "or MK8DX_User_Guide.txt (machine translations; the English guide is authoritative).\n"
                      "Windows: double-click Start-MK8DX.cmd. Ubuntu: sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance.\n"
                      "For home or club use without internet, download the mk8dx-a2-... package instead.\n"
                      "Your installation data is created outside this package. Never publish it or a backup.\n")

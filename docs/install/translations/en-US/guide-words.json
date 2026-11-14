@@ -1,0 +1,9 @@
+{"locale": "en-US", "language": "English (United States)",
+ "steps": {"where": "Where:", "do": "Do:", "see": "You see:", "else": "See something else?"},
+ "slot": "image",
+ "html": {"title": "MK8DX at home or at your club — manual", "computer": "My computer", "device": "My device", "all": "All", "search": "Search the guide",
+          "contents": "Contents", "print": "Print", "open": "Open all", "close": "Close all", "none": "Nothing found.",
+          "do": "Do", "see": "You see", "else": "See something else?", "filtered": "Only the steps for your choice are shown."},
+ "userGuide": {"chapters": ["Welcome", "Try it on one computer", "On one computer without Docker: XAMPP and Node.js", "Use it on your home network", "Public shared hosting with Node.js, without Docker", "Make a public website on a VPS", "Use Android, LiveTrial, the scanner, and Tournament", "Change settings and manage the site", "Back up, restore, and update", "Troubleshooting and building it yourself", "Use Linux", "Use macOS"],
+               "subheadings": ["What is in this guide", "Restore a backup", "What you can try locally now", "What still needs development"]},
+ "machineTranslationNote": "This is the US English edition, adapted from the UK English guide; the UK English version is authoritative. Corrections are welcome through the \"Translation correction\" issue form."}

@@ -1,0 +1,50 @@
+{
+ "locale": "zh-CN",
+ "language": "简体中文",
+ "steps": {
+  "where": "位置：",
+  "do": "操作：",
+  "see": "你会看到：",
+  "else": "看到的不一样？"
+ },
+ "slot": "图片",
+ "html": {
+  "title": "在家或在俱乐部使用 MK8DX — 使用手册",
+  "computer": "我的电脑",
+  "device": "我的设备",
+  "all": "全部",
+  "search": "搜索本手册",
+  "contents": "目录",
+  "print": "打印",
+  "open": "全部展开",
+  "close": "全部收起",
+  "none": "未找到任何内容。",
+  "do": "操作",
+  "see": "你会看到",
+  "else": "看到的不一样？",
+  "filtered": "仅显示与你的选择对应的步骤。"
+ },
+ "userGuide": {
+  "chapters": [
+   "欢迎",
+   "在一台电脑上试用",
+   "在一台不用 Docker 的电脑上：XAMPP 和 Node.js",
+   "在你的家庭网络中使用",
+   "使用 Node.js 的公共共享托管，不用 Docker",
+   "在 VPS 上建立公共网站",
+   "使用 Android、LiveTrial、扫描器和锦标赛工具",
+   "更改设置和管理网站",
+   "备份、恢复和更新",
+   "故障排除和自行构建",
+   "使用 Linux",
+   "使用 macOS"
+  ],
+  "subheadings": [
+   "本指南的内容",
+   "恢复备份",
+   "现在可以在本地尝试的内容",
+   "仍需开发的内容"
+  ]
+ },
+ "machineTranslationNote": "本文是英文版的机器翻译，以英文版为准。欢迎通过“Translation correction”问题表单提交更正。"
+}

@@ -1,5 +1,7 @@
 # Tournament Directors: running a night
 
+Nederlands: [translations/nl/TOURNAMENT_DIRECTORS.md](translations/nl/TOURNAMENT_DIRECTORS.md)
+
 [All guides](../../README.md#get-started) · [Tournament Tools reference](../product/USING_MK8DX_TOURNAMENT_TOOLS.md)
 
 A Tournament Director runs a tournament night on the community website: participants, consoles, groups,
@@ -17,7 +19,7 @@ Recognition never makes a result official. You review every race before it count
 1. Sign in on the website (see [Players](PLAYERS.md)).
 2. On the **Tournaments** page choose **Request to host**. An administrator approves or declines the request.
 3. To send recognized races from the Windows tools to the website, an administrator also grants your signed-in
-   Player access under **Administration → Tournaments → Tournament operators**. This gives Tournament access,
+   Player access under **Administration → Tournaments → Directors**. This gives Tournament access,
    not general administration.
 
 ## 2. Run the night on the website
@@ -39,8 +41,8 @@ The night is a sequence of steps; the page shows where you are:
 
 For races that came from the Tournament Tools: open **Incoming results** for the group, match each recognized
 name to the right Player, check the track and the finishing places, and choose **Confirm**. A provisional live
-table is not an official result. You can also import a result file directly with **Import races from a
-Processor / Live file** inside a group, or **Administration → Tournaments → Import canonical race results**.
+table is not an official result. You can also import a result file directly with **Offline fallback: import a
+saved Live / Processor result file** inside a group, or **Administration → Tournaments → Import canonical race results**.
 
 Publication and the community rating are separate decisions in the final step.
 
@@ -122,6 +124,34 @@ In PowerShell, in the package folder:
 Use `http://127.0.0.1:<port>` only when the website runs on the same Windows computer; otherwise its trusted HTTPS
 address. Uploads waiting for one server stay with that server. A delivered race lands in **Incoming results**;
 it is never published automatically.
+
+### Connect later
+
+A night processed without a connection is complete on your PC: `Output_Results\` holds the Excel workbook, the CSV
+and `*_TournamentRaceResultsV1.json`. Tournament Live without a connection writes its Excel workbook too: when you
+stop the feeds, when the analysis finishes, or when you close the window while feeds still run (it stops them
+first). The files stay in `Live_Output\exports` (**Open exports**) after you close it. If Live is killed before
+the feeds stop, that final workbook is missing; the recordings remain and Tournament Analysis or the Processor
+makes the same workbook from them. Nothing is sent by itself afterwards; bring it to the website in one of
+these ways:
+
+- In the group on the website: **Offline fallback: import a saved Live / Processor result file** with the JSON,
+  or the group's Excel import. Every recognized name must be matched to a Player first; an import refuses a group
+  while a name is unmatched.
+- An administrator: **Administration → Tournaments → Import canonical race results**. Imported races stay private
+  until they are published.
+- With TournamentConnect: `.\TournamentConnect.cmd sign-in`, then
+  `.\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json`. It asks for the night, the group and the
+  first race number; the races arrive in **Incoming results**. If the website cannot be reached, the file stays
+  where it is; send it again later.
+- In Tournament Live: choosing the night with **Connect to Tournament Manager** after a session has finished offers
+  that finished session to the night. Uploads that failed while Live was connected are kept and sent again,
+  automatically or with **Retry upload**, only for the same signed-in account. A session run with **Work offline**
+  is not kept for upload; use one of the routes above for its file.
+
+Signing in adds two things: the list of nights you may deliver to, and the live feed during the night (`target`),
+which sends each race to the chosen group as Tournament Live recognizes it. Either way a race counts only after
+you confirm it in **Incoming results**.
 
 ### Check what was read
 

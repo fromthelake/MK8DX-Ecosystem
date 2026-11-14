@@ -5,6 +5,20 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **User guides in all 15 languages of the game** (machine translations except EN/NL, marked as such;
+  corrections welcome via the Translation correction form): the A2 guide, the user guide (TXT and DOCX) and the
+  players guide in `docs/install/translations/<locale>/` and `docs/guides/translations/<locale>/`, the
+  illustrated A2 guide as `docs/install/guide/<locale>.html` with a language menu on every page, and
+  `README_EN_US.md`. The setup wizard's Manual link opens the guide in the browser's language; the release
+  attaches `MK8DX_User_Guide_<locale>.txt`/`.docx`, and every package that carried the EN/NL guides carries all
+  of them.
+- **Connect later** in the LiveTrial and Tournament Directors guides (EN/NL): what is sent when you sign in or
+  send later, what stays on the PC, and that Tournament Live's Excel stays in `Live_Output\exports` after closing.
+  English versions of the Dutch-only install docs and Dutch versions of the player, LiveTrial, Tournament and
+  hosting guides.
+
 ### Fixed
 
 - **A1 and B1: Start from a newer package folder is refused until the update has run** (#197). Choosing 2 (start)
@@ -12,6 +26,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   the database updates that 7 (update) makes first; since 0.2.3 that also upgrades MySQL 8.4 to 9.7 for good. Start
   and apply now compare the database and API images of the installation's containers with this package's images
   and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
+- **Android: Change Player and Change community** instead of a bare **Switch** (#201). In es, es-419, it, ko,
+  pt and ru the account and community buttons showed the console's name untranslated.
 
 ### Recognition
 

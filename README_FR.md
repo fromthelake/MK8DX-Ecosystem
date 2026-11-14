@@ -2,7 +2,7 @@
 
 **Héberge ton propre site communautaire Mario Kart 8 Deluxe — pour le contre-la-montre *et* les soirées tournoi.**
 
-Langue : [English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · Français · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Langue : [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · Français · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *Cette traduction a été réalisée automatiquement à partir du README anglais ; les corrections sont les bienvenues.*
 
@@ -136,10 +136,10 @@ flowchart TB
 
 | Je veux… | Commence ici |
 | --- | --- |
-| **faire tourner MK8DX à la maison ou dans mon club** | Le paquet A2 pour ton ordinateur depuis les [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) : décompresse, lance, clique sur Suivant. Pas à pas (le paquet A2 contient aussi une version illustrée) : [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **faire tourner MK8DX à la maison ou dans mon club** | Le paquet A2 pour ton ordinateur depuis les [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) : décompresse, lance, clique sur Suivant. Pas à pas (le paquet A2 contient aussi une version illustrée) : [Français](docs/install/translations/fr/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Installer et utiliser MK8DX](docs/install/translations/fr/MK8DX_User_Guide_fr.docx) ([TXT](docs/install/translations/fr/MK8DX_User_Guide.txt)) |
 | **organiser des soirées tournoi en LAN** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md) ; les Tournament Tools fonctionnent aussi sans site communautaire |
 | **enregistrer mes contre-la-montre automatiquement** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + une carte d'acquisition ; fonctionne aussi sans site communautaire |
-| **publier et comparer mes temps** | [Joueurs](docs/guides/PLAYERS.md) — n'importe quel navigateur ; Android 8.0+ |
+| **publier et comparer mes temps** | [Joueurs](docs/guides/translations/fr/PLAYERS.md) — n'importe quel navigateur ; Android 8.0+ |
 | **héberger un site communautaire** | [Héberger un serveur communautaire](docs/guides/HOSTING.md) |
 | **modifier le code** | [Guide du développeur](docs/DEVELOPMENT.md), [Tests](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 

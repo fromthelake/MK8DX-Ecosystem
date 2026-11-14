@@ -2,7 +2,7 @@
 
 **Разместите собственный сайт сообщества Mario Kart 8 Deluxe — для гонок на время *и* турнирных вечеров.**
 
-Язык: [English](README.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · Русский · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Язык: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · Русский · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *Этот перевод сделан машинным способом с английского README; исправления приветствуются.*
 
@@ -134,10 +134,10 @@ flowchart TB
 
 | Я хочу… | Начните здесь |
 | --- | --- |
-| **запустить MK8DX дома или в своём клубе** | Пакет A2 для вашего компьютера из [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): распакуйте, запустите, нажимайте «Далее». Пошагово (в пакете A2 есть и иллюстрированная версия): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **запустить MK8DX дома или в своём клубе** | Пакет A2 для вашего компьютера из [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): распакуйте, запустите, нажимайте «Далее». Пошагово (в пакете A2 есть и иллюстрированная версия): [Русский](docs/install/translations/ru/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Установка и использование MK8DX](docs/install/translations/ru/MK8DX_User_Guide_ru.docx) ([TXT](docs/install/translations/ru/MK8DX_User_Guide.txt)) |
 | **организовывать турнирные LAN-вечера** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); Tournament Tools работают и без сайта сообщества |
 | **автоматически записывать свои гонки на время** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + карта захвата; работает и без сайта сообщества |
-| **публиковать и сравнивать своё время** | [Игроки](docs/guides/PLAYERS.md) — любой браузер; Android 8.0+ |
+| **публиковать и сравнивать своё время** | [Игроки](docs/guides/translations/ru/PLAYERS.md) — любой браузер; Android 8.0+ |
 | **разместить сайт сообщества** | [Разместить сервер сообщества](docs/guides/HOSTING.md) |
 | **изменять код** | [Руководство разработчика](docs/DEVELOPMENT.md), [Тестирование](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
 

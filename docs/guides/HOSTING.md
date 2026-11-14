@@ -1,5 +1,7 @@
 # Host a community server
 
+Nederlands: [translations/nl/HOSTING.md](translations/nl/HOSTING.md)
+
 [All guides](../../README.md#get-started) · [Operations](../OPERATIONS.md) · [User guide (complete)](../install/MK8DX_User_Guide_EN.txt)
 
 This guide is for the person who runs the MK8DX website for a community: the website, the browser scanner,
@@ -299,7 +301,7 @@ can also open its properties and add ` -SkipCountdown` at the end of the target.
 - The website's **Get the app** page lists app downloads only when the server operator has configured a
   download folder; the installer does not set one up. Point players to the GitHub release instead.
 - Tournament Directors: an administrator approves their **Request to host** or adds them under
-  Administration → Tournaments → Tournament operators. See [Tournament Directors](TOURNAMENT_DIRECTORS.md).
+  Administration → Tournaments → Directors. See [Tournament Directors](TOURNAMENT_DIRECTORS.md).
 - Administration → **Installation settings** starts with the **Community name** ("Club Noord"), which the apps
   show instead of the web address (empty = no name). Below it are three site-wide choices; every change is
   recorded with the administrator's name: who creates Players, who counts for the rating, and **times from other

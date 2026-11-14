@@ -1,0 +1,630 @@
+安裝與使用 MK8DX
+
+MK8DX 0.2.3 指南 · 2026 年 11 月 14 日
+
+本文是英文指南 MK8DX_User_Guide_EN.txt 的機器翻譯，以英文版為準。歡迎透過「Translation correction」問題表單提交更正。
+
+歡迎
+
+MK8DX 是一個為《瑪利歐賽車8 豪華版》（Mario Kart 8 Deluxe）計時賽和錦標賽打造的網站。你可以瀏覽賽道和參考成績，透過電子郵件連結登入，並提交你自己的成績。管理員可以審核提交的內容。掃描器、Android App 和 Windows 程式是各自獨立的工具。
+
+發布套件附在專案的 GitHub Releases 中。開啟發布頁面 https://github.com/fromthelake/MK8DX-Ecosystem/releases，選擇最新的版本。在 Assets 下，下載與你的安裝方式相符的套件以及 SHA256SUMS.txt。GitHub 的 Source code (zip) 按鈕並不是安裝套件。如果你改用原始碼的複製（clone），可以自行建置套件；請見「疑難排解與自行建置」。套件檔名中的 v0.2.3 代表這個版本；主機套件內的 Docker 映像檔附有相應的版本標籤。請保留同一個版本的所有檔案。
+
+選擇一種使用網站的方式。在一台 Windows 電腦上，可以使用 Docker，或使用 XAMPP、Node.js 和隨附的最新版 MariaDB。文件中的 Docker 網路方式可以讓你可信任網路中的第二台 Windows 電腦連線。如果要使用公開網域，可以選擇搭配 Node.js 的共享主機（本章以 mijn.host Starter 為例），或你自己的 Docker VPS。這些章節是可以互相替代的方案，而不是必須依序完成的課程。手機和 Windows 用戶端放在網站安裝方式之後介紹。
+
+A1（一台電腦上的 Docker）和 A3（Windows 上的 XAMPP/Node.js）在全新安裝測試和保留資料的升級測試之後獲得支援。A2（家用或俱樂部網路，0.2.0 新增）有自己的套件，並在瀏覽器中提供引導式安裝，已在 Windows 11 上經過端對端測試。B1（Docker VPS）已有文件，但尚未經過端對端測試。B2（共享 Node.js 主機）：我們自己的社群網站就是這樣執行的；公開套件尚未在新的主機帳號上從零開始安裝過。本機的 A1 和 A3 安裝已在 Windows 11 x86-64 上測試，包括帳號，以及 LiveTrial 和 Tournament Processor/Connect 的成績在資料庫和網站中的顯示。實體 Tournament Live 擷取已用 0.2.2 套件通過一次完整的 1× 驗收執行。如果你只有 Linux 或 macOS，沒有 Windows 電腦或其他伺服器，可選的方案會比較少。最後兩章說明你可以在同一台電腦上於本機嘗試什麼，以及哪些產品尚未支援你的作業系統。
+
+本指南的內容
+
+1. 在一台電腦上試用
+2. 在一台不用 Docker 的電腦上：XAMPP 與 Node.js
+3. 在你的家用網路中使用
+4. 使用 Node.js 的公用共享主機，不用 Docker
+5. 在 VPS 上架設公開網站
+6. 使用 Android、LiveTrial、掃描器與錦標賽工具
+7. 變更設定與管理網站
+8. 備份、還原與更新
+9. 疑難排解與自行建置
+10. 使用 Linux
+11. 使用 macOS
+
+在一台電腦上試用
+
+這是在一台使用 x86-64 處理器的 Windows 11 電腦上進行的試用。建議預留 8 GB 記憶體和大約 15 GB 可用工作空間作為餘裕。這些並不是實測的硬性最低需求。在 Windows 中，可以在 Settings → System → About（設定 → 系統 → 關於）中查看處理器和記憶體。可用空間在 File Explorer → This PC（檔案總管 → 本機）中查看。你不需要網域，也不需要付費的電子郵件服務。
+
+1. 從官方 Windows 頁面安裝 Docker Desktop。選擇 WSL2 和 Linux 容器。如果安裝程式要求，請重新啟動 Windows。開啟 Docker Desktop，等到顯示「Engine running」（引擎執行中）。
+
+適用於 Windows 的 Docker Desktop：https://docs.docker.com/desktop/setup/install/windows-install/
+
+從開始功能表開啟 PowerShell。下面這道指令應該會顯示一個版本：
+
+docker compose version
+
+如果 Docker 無法啟動，請先依照它關於 WSL 或虛擬化的提示操作。Docker Desktop 關閉時，MK8DX 無法啟動。
+
+2. 從官方頁面安裝適用於 Windows x86-64 的 Python 3.12 到 3.15。在安裝程式中，勾選「Add python.exe to PATH」（將 python.exe 加入 PATH），並選擇「Install Now」（立即安裝）。關閉並重新開啟 PowerShell。檢查版本：
+
+適用於 Windows 的 Python：https://www.python.org/downloads/windows/
+
+python --version
+
+如果你沒有看到 3.12 到 3.15 之間的版本，請用同一個安裝程式修復 Python。也要檢查 Windows 是否開啟了 Microsoft Store 的別名，而不是已安裝的 Python。在這裡，Python 只用來執行安裝小幫手；你不需要建置軟體。
+
+3. 把 mk8dx-host-local-v0.2.3-amd64.zip 和 SHA256SUMS.txt 放在同一個下載資料夾中。在該資料夾中開啟 PowerShell，檢查主機套件：
+
+Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
+
+將完整的值與 SHA256SUMS.txt 中該檔案對應的那一行比較。如果不一致，請停止並索取正確的複本。在 ZIP 檔上按右鍵，選擇「Extract All」（解壓縮全部）。合適的目的地是 Documents\MK8DX\host。開啟解壓縮後包含 Start-MK8DX.cmd 和 compose.yaml 的資料夾。
+
+4. 按兩下 Start-MK8DX.cmd。視窗開啟時會有一段簡短的賽車開場：MK8DX 標誌和帶有提示音的 3-2-1-GO 倒數（Start-MK8DX.cmd -SkipCountdown 可以省略倒數；主機指南列出了所有選項）。接著它會詢問「Where will MK8DX run?」（MK8DX 要在哪裡執行？），並列出 A1、A2 和 B1。輸入 A1 並按 Enter。輸入你之後用來登入並成為管理員的電子郵件地址。首次設定接著會自動開始。MK8DX 會載入隨附的程式，並建立自己的金鑰、一個資料庫和標準參考資料。第一次啟動可能需要一段時間。
+
+記下顯示為「Web origin」（網站網址）的網址和顯示為「Local mail inbox」（本機郵件收件匣）的網址。網站網址可能類似 http://127.0.0.1:18080，測試收件匣可能類似 http://127.0.0.1:18025。你最後的數字可能不同。請一律使用實際顯示的網址。
+
+之後忘了這些網址？再次開啟 Start-MK8DX.cmd，選擇 3 查看狀態。「origin」是供瀏覽器和 LiveTrial 使用的完整網站網址。「localMailInbox」是 Mailpit 的網址。第二個網址只在瀏覽器中開啟，用來閱讀本機登入郵件。冒號後面的數字是連接埠。「127.0.0.1」代表這台電腦，所以這些 A1 網址在另一台電腦或手機上無法使用。
+
+個人安裝資料保存在解壓縮後的套件之外的 %LOCALAPPDATA%\MK8DX\Server 中。當你收到較新的軟體套件時，請保留這個資料夾和 Docker 資料庫磁碟區。
+
+5. 在同一台電腦的瀏覽器中開啟顯示的網站網址。點選「登入」，然後一字不差地輸入第 4 步中的地址。在另一個瀏覽器分頁中開啟「Local mail inbox」（本機郵件收件匣）。這就是 Mailpit，你電腦上的一個測試收件匣。在那裡開啟你最新的登入郵件，並點選其中的連結。不要在你平常的收件匣中尋找這封試用郵件。
+
+你已經登入了，但還沒有管理員權限。再次開啟 Start-MK8DX.cmd 並選擇 5。第一次授權會顯示「created」（已建立）；重複操作會顯示「unchanged」（未變更）。重新整理網站或重新登入。管理檢視應該會出現。隨便哪個第一個註冊的人都不會自動獲得管理員權限。
+
+6. 開啟「賽道」，選擇一條賽道，查看「任天堂工作人員」和「世界紀錄」。你可以透過「提交計時賽成績」提交你自己的試用成績。傳送前請檢查詳細資料。提交並不等於公開核准。
+
+Mailpit 中包含登入連結。不要和他人共用這個測試收件匣。如果要架設公開網站，請選擇附有真實外寄郵件的共享主機或 VPS 方式。
+
+在一台不用 Docker 的電腦上：XAMPP 與 Node.js
+
+這是在一台 Windows 11 電腦上進行的另一種試用。不需要 Docker。XAMPP 提供 Apache 以及用來啟動本機網站的控制視窗。MK8DX 本身在 Node.js 上執行。目前的 XAMPP 下載內含 MariaDB 10.4.32；這種方式不使用這個版本。MK8DX 套件隨附一個獨立、仍在維護的 MariaDB 11.4.13 執行個體，只繫結到 127.0.0.1:18306。現有的 XAMPP 資料庫和其他網站不會被變更。請為套件、資料庫、掃描器和備份預留 8 GB 記憶體和數 GB 可用空間。
+
+1. 從官方網站下載適用於 Windows 的 XAMPP，並把它安裝到你找得到的位置，例如 C:\xampp。在 XAMPP Control Panel（XAMPP 控制面板）中只使用 Apache。不要為 MK8DX 啟動 MySQL、FileZilla、Mercury 或 Tomcat。如果你已經在其他專案中使用 XAMPP，請保留它們的資料庫和設定。
+
+適用於 Windows 的 XAMPP：https://www.apachefriends.org/download.html
+
+2. 從 Node.js 官方網站安裝適用於 Windows 的 Node.js 24。從官方 Windows 下載頁面安裝 Python 3.12 或更新版本，並勾選「Add python.exe to PATH」（將 python.exe 加入 PATH）。關閉並重新開啟 PowerShell。檢查：
+
+Node.js: https://nodejs.org/en/download
+Python: https://www.python.org/downloads/windows/
+node --version
+python --version
+
+你應該會看到 Node 24 和 Python 3.12 或更新版本。它們執行預先建置好的 MK8DX 檔案；你不需要建置應用程式。如果某道指令無法辨識，請重新開啟 PowerShell，必要時修復那個安裝。
+
+3. 把 mk8dx-xampp-node-windows-v0.2.3.zip 和 SHA256SUMS.txt 放在同一個下載資料夾中。在 PowerShell 中，將完整的 SHA-256 值與此 ZIP 對應的那一行比較：
+
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.3.zip' -Algorithm SHA256
+
+如果一致，在 ZIP 檔上按右鍵並選擇「Extract All」（解壓縮全部）。合適的資料夾是 Documents\MK8DX\nodocker-v0.2.3。開啟解壓縮後包含 Start-MK8DX-No-Docker.cmd 的資料夾。其中已經包含 bin\mailpit.exe 和 bin\mariadb-11.4.13-winx64.zip。你不需要編譯原始碼，也不需要取代舊的 XAMPP 資料庫。不要把這個套件放到 htdocs 中。
+
+4. 只為這個本機網站準備 Apache。在解壓縮後的 MK8DX 資料夾中開啟 PowerShell。把 -XamppRoot 設為你實際的 XAMPP 位置：
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp'
+
+這個小幫手會先把 apache\conf\httpd.conf 保存到 %LOCALAPPDATA%\MK8DX\ApacheBackup。它只加入「Include conf/extra/mk8dx-local.conf」和一個獨立的連接埠 18090，然後檢查 Apache 語法。預期結果是「Apache syntax OK」。如果連接埠 18090 已被占用或設定不同，請停下來閱讀錯誤訊息；不要移除其他 XAMPP 網站。如果 XAMPP 位於其他位置（包括含有空格的路徑），只要替換這道指令中的 C:\xampp。
+
+5. 按兩下 Start-MK8DX-No-Docker.cmd。選擇 A3 方式，並輸入你之後用作管理員的電子郵件地址。視窗會在 %LOCALAPPDATA%\MK8DX\NoDocker 建立一個私人安裝。首次啟動時，它只把 MariaDB 11.4.13 解壓縮到那個資料夾，建立一個專用資料庫和一個受限的使用者，套用資料庫遷移以及「任天堂工作人員」和「世界紀錄」資料，並啟動 Node.js 和 Mailpit。這可能需要幾分鐘。請保持這個 MK8DX 視窗開啟。重新啟動會保留金鑰、帳號、成績和資料庫。
+
+每次啟動時，這個視窗也會顯示「Website:」（網站：）和「Sign-in mail - a test inbox:」（登入郵件 - 測試收件匣：）。「Website」是供瀏覽器和 LiveTrial 使用的完整網址：http://127.0.0.1:18090。「Sign-in mail - a test inbox」是本機測試收件匣：http://127.0.0.1:18227。Mailpit 只在瀏覽器中開啟。冒號後面的數字是連接埠。「127.0.0.1」代表這台電腦，所以這些網址在其他裝置上無法使用。如果你忘了它們，下次啟動時請查看同一個 MK8DX 視窗的上方附近。
+
+6. 開啟 XAMPP Control Panel（XAMPP 控制面板）。如果 Apache 已經是綠色，只對 Apache 點選 Stop（停止），等到它那一列不再是綠色，然後再點選 Start（啟動）。這會載入第 4 步中的新網站設定。如果 Apache 原本是停止的，直接點選 Start。在瀏覽器中開啟 http://127.0.0.1:18090。本機測試收件匣是 http://127.0.0.1:18227。如果網站無法連線，請先查看 MK8DX 視窗，再確認 Apache 是綠色的。在套件資料夾中開啟第二個 PowerShell 視窗，檢查資料庫和 API：
+
+python tooling/install.py check-database --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+python tooling/install.py check --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+預期結果是「MariaDB 11.4.13」和「ready」（就緒）。網站、掃描器、資料庫和測試收件匣都繫結在這台電腦上。不要在路由器上轉送連接埠，也不要把 phpMyAdmin 或測試收件匣開放給其他人。
+
+7. 在網站上點選「登入」，一字不差地使用第 5 步中的管理員地址。在 Mailpit 中開啟最新的郵件，並點選其中的登入連結。你仍然只是一般使用者。現在按兩下套件資料夾中的 Manage-MK8DX-No-Docker.cmd（保持 MK8DX 視窗開啟），輸入 2 並按 Enter。它在背後執行的是：python tooling/install.py admin --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"。
+
+它只對已經驗證過電子郵件的帳號有效。預期結果是「created」（已建立），重複操作時是「unchanged」（未變更）。重新整理網站。其他第一個註冊的人不會自動成為管理員。
+
+8. 開啟一條賽道，檢查「任天堂工作人員」和「世界紀錄」，包括「總計」。提交一筆試用的計時賽成績，並在同一台電腦上開啟 /scanner/。選擇一張圖片來試用上傳流程。掃描結果可能需要審核；上傳並不會讓它自動公開。
+
+9. 日常使用時，先啟動 MK8DX 視窗，再在 XAMPP Control Panel 中啟動 Apache。使用網站期間請保持 MK8DX 視窗開啟。Windows 重新開機後，再做一次這兩個啟動步驟。用面板中的 Stop 停止 Apache，然後在 MK8DX 視窗中按 Ctrl+C。只有這個安裝的 Node、Mailpit 和 MariaDB 處理程序會停止。不要結束所有 node.exe 處理程序，也不要變更現有的 XAMPP 服務。
+
+10. 進行備份時，保持 MK8DX 視窗及其資料庫執行。在最後複製期間，你可以暫時停止 Apache，以免出現新的網頁提交。按兩下 Manage-MK8DX-No-Docker.cmd，輸入 3 並按 Enter。它會把備份寫入 Documents\MK8DX-backups\a3-<日期和時間>，並立即檢查。
+
+「Backup verified」（備份已驗證）代表資料庫複本、設定檔和金鑰都沒有問題。請把整個資料夾也保存在這台電腦之外受保護的儲存空間中。要再次檢查這份備份，請執行：
+
+python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
+
+11. 進行軟體更新時，先停止 Apache，並在舊的 MK8DX 視窗仍在執行時建立並驗證備份。然後在那個視窗中按 Ctrl+C。檢查新的 A3 ZIP，並把它解壓縮到舊套件旁邊。繼續使用同一個 %LOCALAPPDATA%\MK8DX\NoDocker 資料資料夾。在新套件內的 PowerShell 中，暫時只啟動它自己的資料庫：
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+保持那個視窗開啟。在新套件中開啟第二個 PowerShell 視窗，用另一個新的備份資料夾進行更新：
+
+python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
+
+等待兩組參考資料都顯示「unchanged」（未變更），並顯示「Backup verified」（備份已驗證）。在維護視窗中按 Ctrl+C。從新套件啟動 Start-MK8DX-No-Docker.cmd，並再次啟動 Apache。小幫手會重新整理從套件衍生的路徑，而不會重設帳號、金鑰或資料。檢查同樣的登入、參考資料和試用成績。不要把資料庫引擎的更換當作一般的 MK8DX 更新。
+
+12. 要在另一台 Windows 電腦上試用還原，請依照第 1 步和第 2 步在那裡安裝 XAMPP Apache、Node 24 和 Python。解壓縮同一個 A3 套件，並依照第 4 步用 configure_xampp.ps1 設定 Apache。把整個已驗證的備份資料夾以私密方式複製到 Documents\MK8DX-backups。不要使用那台電腦上既有的資料資料夾。在新套件中開啟 PowerShell，只建立新的設定檔：
+
+python tooling/install.py wizard --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+選擇 A3，暫時輸入你自己的管理員地址；還原作業會把原來的帳號設定檔放回去。在同一個套件中開啟第二個 PowerShell。在第一個視窗中只啟動新的空白 MariaDB：
+
+python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+保持這個視窗開啟。在第二個視窗中使用你實際的備份資料夾名稱，不要加尖括號：
+
+python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+預期結果是「Backup verified」（備份已驗證），接著所有遷移都通過檢查。在維護視窗中按 Ctrl+C。開啟 Start-MK8DX-No-Docker.cmd，並在 XAMPP Control Panel 中啟動 Apache。用備份中既有的帳號登入，檢查管理員權限和一筆已知的成績。第一個管理員不會被再次授予。如果目標電腦上已經有 MK8DX 安裝，或有其他處理程序占用連接埠 18306，就不要把它當作這次還原的目標；小幫手不會清除既有的資料庫。請保持原始備份完整無缺。
+
+在你的家用網路中使用
+
+對於家用或俱樂部網路，請使用 A2 套件。下載 mk8dx-a2-windows-amd64-v0.2.3.zip（Linux：mk8dx-a2-linux-amd64 或 mk8dx-a2-linux-arm64；使用 Apple 晶片的 macOS：mk8dx-a2-macos-arm64；使用 Intel 處理器的 macOS：mk8dx-a2-macos-amd64）和 SHA256SUMS.txt，依照「在一台電腦上試用」中的方式檢查總和檢查碼，解壓縮套件，然後按兩下 Start-MK8DX-LAN.cmd（Linux 和 macOS：sh tooling/start-mk8dx.sh）。瀏覽器中會開啟一個安裝程式，用 Next（下一步）帶你完成所有步驟：網路位址、你的管理員帳號、用於夜間備份的紙本復原碼，以及每個人在手機或電腦上使用的登入卡。不需要網際網路、郵件伺服器或 hosts 檔案。
+
+附有圖片的完整逐步指南是 docs/install/A2_HOME_GUIDE_EN.md；在套件中它也是 docs/install/guide/en.html，安裝程式會透過它的 Manual（手冊）連結開啟它。指南涵蓋準備 Windows、Linux 或 macOS，手機和電腦，Android App，LiveTrial，錦標賽之夜，備份，搬到新電腦，固定位址，新的網路位址以及更新。
+
+進階：使用你自己的郵件伺服器
+
+本章其餘部分介紹一種較舊的進階變化方式，它使用私人主機名稱，並透過你自己的郵件伺服器以電子郵件傳送登入連結。大多數人都不需要它。它使用 mk8dx-host-local 套件，並在安裝問題中選擇 A2。
+
+這種方式會在一台 Windows 主機上建立第二個獨立的 MK8DX 安裝。你在一台電腦上的試用安裝保持不變。文件中第一種用戶端方式是使用 Chrome 或 Edge 的第二台 Windows 電腦，包括掃描器圖片上傳。實體的第二台電腦或手機尚未經過真實使用者的驗收測試。通用版 Android App 不會自動信任本機憑證；請為它使用共享主機或 VPS 上的公開 HTTPS 社群網址。
+
+網路網站使用主機上的連接埠 443。如果同一台電腦上執行著 XAMPP Apache，它可能已經占用了這個連接埠。這樣 A2 和那個 Apache 網站就無法在這台主機上同時啟動。請為 A2 使用另一台 Windows 主機，或在預先安排的時段內於 XAMPP Control Panel（XAMPP 控制面板）中停止 Apache。停止期間，其他 XAMPP 網站將無法連線。
+
+先依照「在一台電腦上試用」的前三步，在主機上準備好 Docker Desktop、Python 以及已檢查並解壓縮的主機套件。你不必建立 A1 安裝。兩台電腦必須位於同一個可信任的私人網路中。不要使用訪客 Wi-Fi，也不要在路由器上把連接埠轉送到網際網路。讓主機保持喚醒。
+
+1. 在主機上，在 Settings → Network & internet → Ethernet 或 Wi-Fi → Properties（設定 → 網路和網際網路 → 乙太網路或 Wi-Fi → 內容）中找出它的 IPv4 位址。在本指南中，192.168.0.50 只是一個範例。請記下你實際的位址。只有在這確實是你可信任的網路時，才把 Windows 網路設定檔設為 Private（私人）。如果位址之後改變，請更新兩台電腦；路由器中的 DHCP 保留可以避免位址改變。
+
+2. 在兩台 Windows 電腦上使用相同的私人名稱。用「Run as administrator」（以系統管理員身分執行）啟動記事本。選擇 File → Open（檔案 → 開啟），前往下面這個資料夾，並把篩選條件改為「All Files」（所有檔案）：
+
+C:\Windows\System32\drivers\etc\
+
+開啟 hosts。加入一行，寫上你真實的主機 IP 和私人名稱，例如：
+
+192.168.0.50 mk8dx.home.arpa
+
+把它儲存為 hosts，不要加 .txt。在主機和第二台電腦上做同樣的操作。在兩台電腦的 PowerShell 中檢查：
+
+ping -n 1 mk8dx.home.arpa
+
+你的主機 IP 應該會出現在 ping 結果之前。防火牆可能會封鎖 ping 本身。每台裝置都需要自己的 hosts 項目，因為這個私人名稱沒有公開的 DNS 記錄。
+
+3. 傳送登入連結給其他使用者需要真正的電子郵件服務。從你的郵件服務業者取得外寄 SMTP 伺服器名稱、使用隱含式 TLS 的連接埠 465、登入名稱、密碼以及授權的寄件者地址。只在連接埠 587 上提供 STARTTLS 的服務不適用於目前的精靈。你將來的 MK8DX 管理員地址是另一個獨立的值。不要把 Mailpit 當作共用的登入收件匣。
+
+4. 在主機上按兩下 Start-MK8DX-LAN.cmd。選擇 A2 並確認 mk8dx.home.arpa，或一字不差地輸入你在 hosts 檔案中寫的名稱。另外單獨輸入主機真實的 IPv4 位址。精靈接著會詢問郵件設定值以及你自己將來的管理員地址。輸入郵件密碼時不會顯示。首次設定會自動開始。獨立的資料資料夾是 %LOCALAPPDATA%\MK8DX\LAN。顯示的網站網址應該是 https://mk8dx.home.arpa。
+
+在主機和第二台電腦上的 LiveTrial 中也使用這個 HTTPS 網址。名稱後面不需要寫標準連接埠 443。你找到的 IPv4 位址用於 hosts 項目和網路設定，而不是作為 LiveTrial 中的社群網址。這種網路方式使用你真實的郵件服務業者：登入郵件會寄到你所輸入地址的一般收件匣。這裡使用者沒有本機 Mailpit 網址。
+
+5. 在主機上開啟 Windows Security → Firewall & network protection → Advanced settings → Inbound Rules → New Rule（Windows 安全性 → 防火牆與網路保護 → 進階設定 → 輸入規則 → 新增規則）。選擇 Port（連接埠）、TCP、特定本機連接埠 443、「Allow the connection」（允許連線），並且只選擇 Private（私人）設定檔。為規則命名，例如「MK8DX LAN HTTPS」。如果你知道自己網路的子網路，在 Scope（範圍）下把遠端位址限制為你自己的網路。不要對公用網路開放資料庫或 Mailpit。
+
+6. 第二台 Windows 電腦必須信任這個特定安裝的本機憑證。只在你自己管理的電腦上這樣做。在主機上解壓縮後的套件資料夾中開啟 PowerShell，逐行執行下面三行指令：
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose cp web:/data/caddy/pki/authorities/local/root.crt (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt')
+
+在主機上檢查憑證指紋：
+
+Get-FileHash (Join-Path $env:USERPROFILE 'Downloads\mk8dx-lan-root.crt') -Algorithm SHA256
+
+只把 mk8dx-lan-root.crt 透過可信任的方式傳到第二台電腦。另外單獨記錄指紋。絕不要複製 root.key、整個 Caddy 資料夾或 MK8DX 的機密資訊。在第二台電腦上，檢查下載資料夾中的這個檔案：
+
+Get-FileHash '.\mk8dx-lan-root.crt' -Algorithm SHA256
+
+當兩個值完全一致時，按兩下憑證。選擇 Install Certificate → Current User → Place all certificates in the following store → Browse → Trusted Root Certification Authorities → Finish（安裝憑證 → 目前使用者 → 將所有憑證放入以下的存放區 → 瀏覽 → 受信任的根憑證授權單位 → 完成）。重新啟動瀏覽器。不要安裝指紋不同的憑證。不要略過瀏覽器警告。
+
+7. 在第二台電腦上開啟 https://mk8dx.home.arpa。不應該出現憑證警告。也用你自己的測試圖片試試 https://mk8dx.home.arpa/scanner/。用你的地址登入，並點選你真實收件匣中的連結。登入之後，你可以在主機上重新開啟 Start-MK8DX-LAN.cmd，選擇選單 5，為儲存的地址授予一次管理員權限。A1 的使用者和管理員不會自動轉移到 A2。
+
+如果主機 IP 之後改變，請先更新兩台電腦上的 hosts。在主機上，於套件資料夾中開啟 PowerShell，並把下面的範例 IP 換成新的真實位址：
+
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN') --lan-bind-address '192.168.0.51'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+再次檢查位址、網站和登入郵件。只要這仍是同一個 A2 安裝，第二台電腦就會繼續信任憑證。還原到一個新專案中會建立新的本機憑證授權單位；請見「還原備份」。
+
+使用 Node.js 的公用共享主機，不用 Docker
+
+這種方式使用 Node.js 搭配 Passenger 和 MariaDB，這是 mijn.host Starter 等共享主機所提供的。它不需要 VPS、Docker、root 存取權，也不需要你自己的 Caddy 伺服器。套件已在本機的 Linux 和 MariaDB 環境中測試過。你仍然需要在你自己的 DirectAdmin 帳號中驗證這些步驟以及實際的郵件寄送。請使用獨立的（子）網域和一個空白資料庫。不要變更既有的網站或資料庫。Starter 目前標示 2 GB 記憶體和 5 GB 儲存空間；請在你自己的面板中確認有足夠的空間用於上傳、npm 相依套件、資料和備份。
+
+1. 從「歡迎」一章中提供的發布頁面下載 mk8dx-mijnhost-node-v0.2.3.zip 和 SHA256SUMS.txt。這個 ZIP 就是上傳套件。Docker 主機 ZIP 和完整原始碼 ZIP 是不同的檔案。把這兩個檔案放在你 Windows 電腦上的同一個資料夾中。在那裡開啟 PowerShell，將完整的 SHA-256 值與 SHA256SUMS.txt 中的那一行比較：
+
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.3.zip' -Algorithm SHA256
+
+如果值不一致，請停止。
+
+2. 在你的電腦上登入 mijn.host 客戶面板。開啟你的主機方案，然後開啟 DirectAdmin。在右上角選擇用於這個新 MK8DX 網站的網域或子網域。www.mijneigenwebsite.nl 只是一個範例；請使用你真實的主機名稱。在 Account Manager → SSL Certificates 下，確認「Get automatic certificate from ACME Provider」正好包含那個名稱。你的瀏覽器之後必須不顯示憑證警告。如果你在別處管理 DNS，請先把那個主機名稱指向這個主機方案。不要只為了網站而變更既有的郵件記錄。
+
+DirectAdmin Node.js 指南：https://mijn.host/kb/web-apps/node-js-applicatie-draaien-op-je-hostingpakket
+在 DirectAdmin 中使用 Let's Encrypt：https://mijn.host/kb/webhosting/lets-encrypt-ssl-certificaat-aanvragen
+
+3. 在 DirectAdmin 中，於 Account Manager → MySQL Management 或 Databases 下，建立一個新的空白資料庫和一個僅限該資料庫的使用者。記下面板顯示的完整名稱，包括任何帳號前綴，例如 account_mk8dx 和 account_mk8dxuser。對產生的密碼保密。不要使用 root 帳號。在面板或帳號詳細資料中找出資料庫主機。它可能是 localhost，但只輸入實際顯示的值。連接埠 3306 是常見的範例。MK8DX 在遷移之前會檢查實際的資料庫引擎和版本。本版本需要 MariaDB 11.4 或更新版本，或 MySQL 8.4 或更新版本；面板上寫著「MySQL」並不能證明版本。
+
+4. 開啟 DirectAdmin → E-mail Manager → E-mail Accounts。建立或選擇一個你可以用於這個網站的信箱。記下它的完整地址、密碼和外寄伺服器名稱。常見的形式是 mail.mijneigenwebsite.nl，連接埠 465，使用 SSL/TLS；請從你的帳號取得實際的伺服器名稱。SMTP 登入名稱、顯示的寄件者和將來的 MK8DX 管理員地址各有不同的用途。如果你的帳號允許寄信，方案內附的信箱就足夠了。
+
+mijn.host 的郵件設定：https://mijn.host/kb/email/e-mail-account-instellen-in-gmail
+
+5. 在 DirectAdmin 中，開啟 Extra Features → Setup Node.js App → Create Application。如果面板提供 Node.js 24，就選擇它。正式網站請選擇 Production，Application root 設為 public_html 之外的 apps/mk8dx，Application URL 設為所選網域的根目錄，Application startup file 設為 api/dist/composition/passenger-hosted-main.js。面板可能會先顯示預設的 app.js；在重新啟動 MK8DX 之前，請把啟動設定改為指定的檔案。一字不差地複製面板上方顯示的 Node 環境啟用指令行。如果沒有 Node 24 或啟動設定，不要隨便用較舊的 Node 版本湊合；這需要專門檢查你的帳號。
+
+6. 在 mijn.host 面板中找出你自己的伺服器名稱和 SSH 使用者名稱。在你的 Windows 電腦上開啟 PowerShell，透過文件中的 SSH 連接埠 26 連線。在接受之前，把 SSH 主機金鑰指紋與 mijn.host 另外獨立提供的值比較。B2 適用於任何提供 SSH 的共享 Node.js 主機；mijn.host 是經過測試的範例，連接埠 26 是該業者的 SSH 連接埠，所以在其他地方請使用你自己主機的連接埠（通常是 22）。套件保留 mk8dx-mijnhost-node 這個名稱。把尖括號範例換成你自己的值，並去掉尖括號：
+
+ssh -p 26 <your-username>@<your-server-name>
+
+你應該會看到 Linux 命令提示字元。把帳號密碼保存在你的密碼管理工具中。這不是 VPS 的 root 存取權。同一條 SSH 管道也用來傳輸已檢查的 ZIP。在你電腦的下載資料夾中開啟第二個 PowerShell 視窗：
+
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.3.zip' <your-username>@<your-server-name>:
+
+ZIP 會出現在你自己的主機家目錄中。另外的 SFTP 選項可能有不同的設定；這種方式只使用文件中的 SSH/SCP 存取。
+
+mijn.host 的 SSH：https://mijn.host/kb/webhosting/verbinden-met-ssh
+
+7. 回到 SSH 視窗。檢查是否有 Python 3.9 或更新版本、unzip 以及 MariaDB 傾印用戶端。應用程式已經建置好；Python 只執行現有的安裝小幫手：
+
+python3 --version
+command -v unzip
+command -v mariadb-dump || command -v mysqldump
+
+如果缺少某道指令，請用你的主機面板或 mijn.host 說明核對那個缺少的工具。不要建立不安全的公開安裝網址。把 ZIP 解壓縮到你的私人應用程式資料夾中，而不是 public_html：
+
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+cd "$HOME/apps/mk8dx"
+
+你應該會看到 api、web、scanner、assets、mysql 和 tooling。應用程式資料夾是私人的。安裝程式也會把設定檔、機密資訊和備份保存在 public_html 之外。
+
+8. 在那個 SSH 視窗中，一字不差地貼上 Setup Node.js App 面板顯示的那一行 Node 啟用指令。它通常以 source 開頭，以 cd 進入你的 Application root 結尾。接著執行：
+
+node --version
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+預期結果是 Node 24，以及鎖定的正式環境相依套件安裝完成。這一步不會編譯 TypeScript。api/node_modules 屬於你的 Linux 主機；不要上傳 Windows 的 node_modules。如果儲存空間用完了，請停止並檢查可用空間，而不是刪除帳號中的其他資料。
+
+9. 在應用程式資料夾中啟動引導式輸入：
+
+python3 tooling/install.py wizard --state-dir "$HOME/mk8dx-private"
+
+選擇 B2。輸入你確切的 HTTPS 網站主機名稱，不加 https://，接著輸入第 3 步中的資料庫主機、連接埠、完整的資料庫名稱和使用者名稱，以及隱藏輸入的資料庫密碼。輸入第 4 步中的 SMTP 主機、連接埠 465、完整的信箱登入名稱、隱藏輸入的信箱密碼以及允許的寄件者。管理員地址請輸入你將用來接收登入連結的個人電子郵件地址。它可以與 SMTP 登入名稱不同。小幫手會在 $HOME/mk8dx-private 下以受限權限寫入 operator-profile.json、secrets.json 和 operator.json。不要在另一個 .env 檔案中重複相同的值。
+
+10. 檢查資料庫版本，然後只在你自己的新空白資料庫中套用所有遷移和兩組參考資料：
+
+python3 tooling/install.py check-database --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py setup --state-dir "$HOME/mk8dx-private"
+python3 tooling/install.py check --state-dir "$HOME/mk8dx-private"
+
+第一行應該顯示測得的 MariaDB 或 MySQL 版本以及 tableCount 0。如果引擎太舊，或資料庫中有意外的資料表，請停止。setup 之後，預期每個遷移都已套用，「任天堂工作人員」和「世界紀錄」都標示為已套用，接著顯示 ready（就緒）。安裝程式絕不會重設一個不明、已有資料的資料庫結構。
+
+11. 產生 Passenger 設定，並透過面板啟動：
+
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+這會在私人的 Application root 中建立 mk8dx-hosted.env.json，位於 public_html 之外。絕不要把那個資料夾或 $HOME/mk8dx-private 移到公開的檔案目錄中。在 DirectAdmin → Extra Features → Setup Node.js App 中，選擇你的 MK8DX 應用程式並點選 Restart。業者負責管理它的處理程序和 HTTPS；不要額外執行 nohup 或 PM2 伺服器。用你自己真實的主機名稱檢查 /health/ready、首頁、/scanner/、/client-config.json 和 /.well-known/assetlinks.json。不明的 JSON 或 API 網址不得傳回 HTML 首頁。對 /secrets.json、/.env 或備份的要求不得洩漏任何內容。
+
+12. 在網站上點選「登入」，使用第 9 步中的管理員地址。開啟你真實收件匣中的連結並登入。之後才回到 SSH，必要時重新啟用面板的 Node 環境，前往應用程式資料夾，然後執行：
+
+cd "$HOME/apps/mk8dx"
+python3 tooling/install.py admin --state-dir "$HOME/mk8dx-private"
+
+預期結果是 created（已建立），重複操作時是 unchanged（未變更）。重新整理網站。單憑第一個註冊絕不會授予管理權限。檢查一條賽道、「任天堂工作人員」和「世界紀錄」的「總計」、你自己的計時賽成績以及一次掃描器上傳。如果真實的登入郵件寄送失敗，請檢查信箱登入名稱、寄件者和 TLS；ready 並不能證明郵件已寄達外部收件匣。
+
+13. 進行備份時，用 DirectAdmin 中這個 Node 應用程式的 Stop 按鈕暫時停止訪客流量。MariaDB 資料庫保持可用。在 SSH 中，於應用程式資料夾裡選擇一個新的私人資料夾名稱：
+
+python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
+
+小幫手會回報 Backup verified（備份已驗證）。請在這個主機帳號之外也保存一份受保護的複本。在 DirectAdmin 中重新啟動 Node 應用程式並檢查 ready。備份包括帳號、管理員授權和金鑰；絕不要把它上傳到 public_html 或公開連結。
+
+14. 進行更新時，先在你的電腦上檢查新的 B2 ZIP。在 DirectAdmin 中停止 Node 應用程式，並用舊的應用程式建立一份已驗證的備份。透過同樣的 SSH/SCP 管道上傳新的 ZIP。在 SSH 中，重新命名舊的應用程式資料夾，然後建立一個新的空白資料夾。只有當新的 ZIP 位於你的家目錄中，而且還不存在 mk8dx-before-update 資料夾時，才使用下面這些指令：
+
+cd "$HOME"
+mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-before-update"
+mkdir -p "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.3.zip" -d "$HOME/apps/mk8dx"
+
+再次貼上 DirectAdmin 中的 Node 24 啟用指令行。在新的 api 資料夾中安裝鎖定的 Linux 相依套件，然後回到應用程式根目錄：
+
+cd "$HOME/apps/mk8dx/api"
+npm ci --omit=dev --ignore-scripts --no-audit --no-fund
+cd "$HOME/apps/mk8dx"
+
+保留同一個私人資料資料夾。使用另一個新的備份資料夾：
+
+python3 tooling/install.py upgrade --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-update-2026-10-01"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private"
+
+接著在 DirectAdmin 中只重新啟動這個應用程式。檢查網站、登入、管理和已知的成績。在資料庫結構遷移之後，不要盲目地只回復舊的網頁檔案。MariaDB 版本的更換不是一般的 MK8DX 更新。
+
+15. 進行復原時，請在相同、經過測試的資料庫引擎和版本系列上，使用一個新的空白資料庫和獨立的測試子網域。把已檢查的 B2 套件和完整的私人備份放到那個獨立的安裝中。在 DirectAdmin 中為還原試用建立一個獨立的 Node 應用程式，Application root 設為 apps/mk8dx-restore，Application URL 設為測試子網域。把 B2 ZIP 解壓縮到那個新的私人資料夾中。用這個新應用程式畫面上的指令行啟用 Node 24，在 apps/mk8dx-restore/api 中執行 npm ci --omit=dev --ignore-scripts --no-audit --no-fund，然後前往 apps/mk8dx-restore。引導式還原會詢問新的資料庫詳細資料而不顯示密碼，並沿用舊的帳號和金鑰：
+
+python3 tooling/install.py restore-wizard --backup-input "$HOME/mk8dx-backups/b2-2026-10-01" --state-dir "$HOME/mk8dx-private-restore"
+python3 tooling/install.py passenger-config --state-dir "$HOME/mk8dx-private-restore"
+
+在 DirectAdmin 中，把這個獨立的 Passenger 應用程式連接到測試子網域和私人的 Application root。啟動它並檢查 ready、一個既有的登入、管理和成績。不要再建立第一個管理員。真正的網域切換和業者備份是你需要自己完成的獨立步驟。
+
+在 VPS 上架設公開網站
+
+VPS 是你在網際網路上擁有的一台電腦。這種方式使用 x86-64 上的 Ubuntu 24.04 LTS。建議配置為 2 個 CPU 核心、8 GB 記憶體和 40 GB SSD，再加上供之後的資料和備份使用的空間。Mijn.host 的非代管 VPS M 在其 VPS 頁面上標示了這樣的配置以及 root/SSH 存取，但 MK8DX 尚未在這個具體方案上測試過。Ubuntu、Docker、郵件、安全性更新和備份仍由你負責。
+
+Mijn.host VPS 概覽：https://mijn.host/vps
+
+Mijn.host Starter 使用上面獨立的 Node/Passenger 方式。本 VPS 章節使用 Docker，不適用於一般的 Starter 方案。
+
+Mijn.host 共享主機概覽：https://mijn.host/webhosting
+
+在首次設定之前，你需要自己的網域、一個合適且附有 IPv4 和 Ubuntu 的 VPS 帳號、DNS 管理的存取權，以及一個使用 SMTP 465 和隱含式 TLS 的郵件服務。請在所有地方把範例 www.mijneigenwebsite.nl 換成你自己的主機名稱。範例 IP 203.0.113.10 不是真實的伺服器。你的業者登入資訊、SSH 金鑰、MK8DX 管理員地址和 SMTP 登入名稱各有不同的用途。請對密碼和金鑰保密。
+
+1. 如果你的 VPS 使用 SSH 金鑰，請在你的 Windows 電腦上建立一把存取金鑰。開啟 PowerShell 並執行：
+
+New-Item -ItemType Directory -Force (Join-Path $env:USERPROFILE '.ssh')
+ssh-keygen -t ed25519 -f (Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519')
+
+詢問時請選擇一個高強度的密碼片語。不含 .pub 的檔案是私密金鑰。在記事本中開啟 .pub 檔案，只透過 VPS 管理入口網站中的 SSH 金鑰功能加入這把公開金鑰。確切的按鈕因業者而異；如果找不到，請詢問業者它在哪裡。絕不要把私密金鑰放到網頁資料夾或伺服器上。
+
+2. 從官方網站安裝 WinSCP。開啟 WinSCP → New Site。選擇 SFTP。在 Host name 下輸入真實的 VPS IP，在 Port number 下輸入實際的 SSH 連接埠，在 User name 下輸入 VPS 帳號。只有當業者提供 root 時，才為文中所述的 root 方式使用 root。使用金鑰登入時，開啟 Advanced → SSH → Authentication → Private key file，並選擇第 1 步中的私密金鑰。WinSCP 會提議把 OpenSSH 金鑰轉換成 .ppk 檔案；把它儲存在私密金鑰旁邊，並在 WinSCP 中使用它。你仍然需要輸入密碼片語。
+
+WinSCP: https://winscp.net/eng/download.php
+WinSCP 金鑰格式：https://winscp.net/eng/docs/ui_login_authentication
+
+透過業者獨立的 VPS 主控台或技術支援取得 SSH 主機金鑰指紋。把它與 WinSCP 首次連線時的訊息比較。只接受完全一致的結果。把已檢查的 mk8dx-host-local-v0.2.3-amd64.zip 從左側（你的電腦）拖到右側（伺服器）的 /root/。不要把備份或機密資訊上傳到 public_html。
+
+3. 在你的電腦上為伺服器終端機開啟 PowerShell。使用你真實的 IP、連接埠和金鑰路徑。這是第 1 步中的同一把 OpenSSH 金鑰，而不是轉換後的 .ppk 檔案：
+
+$serverIp = '203.0.113.10'
+$sshPort = 22
+$key = Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519'
+ssh -i $key -p $sshPort "root@$serverIp"
+
+在這裡也要把主機金鑰指紋與另外獨立取得的值比較。之後才輸入金鑰的密碼片語。如果業者指定了其他 VPS 使用者或 SSH 連接埠，請替換 root 或 22。共享主機的連接埠不是 VPS 的設定。
+
+在 Ubuntu 終端機中檢查這台機器：
+
+cat /etc/os-release
+uname -m
+free -h
+df -h /
+python3 --version
+
+預期結果是 Ubuntu 24.04、x86_64 和 Python 3.12 到 3.15。如果在全新的 Ubuntu 24.04 伺服器上缺少 Python，請執行：
+
+apt update
+apt install python3
+python3 --version
+
+如果這台機器不是 Linux x86-64，請不要繼續；隨附的映像檔套件是 amd64 的。
+
+4. 檢查 Docker 是否已經可以使用：
+
+command -v docker
+docker compose version
+
+如果沒有，請在這台伺服器上使用 Docker 官方的 Ubuntu apt 安裝方式。在同一個伺服器終端機中執行每一組指令，如果某道指令失敗就停止：
+
+適用於 Ubuntu 的 Docker：https://docs.docker.com/engine/install/ubuntu/
+
+apt update
+apt install ca-certificates curl unzip
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
+
+加入官方套件來源。把下面這些行一起複製，包括最後的 EOF：
+
+cat > /etc/apt/sources.list.d/docker.sources <<EOF
+Types: deb
+URIs: https://download.docker.com/linux/ubuntu
+Suites: $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}")
+Components: stable
+Architectures: $(dpkg --print-architecture)
+Signed-By: /etc/apt/keyrings/docker.asc
+EOF
+apt update
+apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+檢查：
+
+systemctl is-active docker
+docker compose version
+
+第一個結果應該是 active。如果出現錯誤，不要隨意安裝第二種 Docker 版本；請閱讀錯誤訊息和官方頁面。
+
+5. 在管理你網域的業者的 DNS 面板中，開啟該網域的記錄。對於像 www.mijneigenwebsite.nl 這樣的名稱，建立一筆 A 記錄，名稱為 www，值為你 VPS 的真實 IPv4 位址。保留既有的郵件記錄。使用預設 TTL 或 300 秒。變更生效後，在你的電腦上檢查：
+
+Resolve-DnsName www.mijneigenwebsite.nl -Type A
+
+結果應該是你的 VPS IP。檢查同一名稱是否已有 AAAA 記錄：只有當它指向一個可運作的 IPv6 網站時才保留它。在 VPS 業者的面板中，允許連入的 TCP 80 和 443。保持你的 SSH 連接埠可以連線，不要公開 MySQL 連接埠 3306。除非你知道如何重新取得伺服器存取權，否則不要大範圍變更防火牆。
+
+6. 從你的郵件服務業者取得外寄 SMTP 主機、使用隱含式 TLS 的連接埠 465、登入名稱、密碼以及授權的寄件者地址。確認允許從你的 VPS 寄信。這與你的 MK8DX 管理員地址不同。本指南尚未測試透過真實業者的寄送；只有當你自己的登入連結送達你真實的收件匣時，安裝才算成功。
+
+7. 在 Ubuntu 終端機中，透過 WinSCP 傳輸的 ZIP 位於 /root/ 下。檢查並解壓縮它：
+
+pwd
+ls -lh /root/mk8dx-host-local-v0.2.3-amd64.zip
+mkdir -p /opt/mk8dx/host /var/lib/mk8dx
+unzip -q /root/mk8dx-host-local-v0.2.3-amd64.zip -d /opt/mk8dx/host
+cd /opt/mk8dx/host
+ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
+
+如果缺少某個名稱，請檢查你解壓縮的是否是正確而完整的 ZIP。啟動現有的安裝小幫手：
+
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+選擇 B1。輸入你確切的主機名稱，不加 https://。輸入五個郵件設定值以及你自己將來的 MK8DX 管理員地址。SMTP 密碼不會顯示。選擇選單 1。小幫手會建立內部資料庫、金鑰和連線。重複操作時，請使用同一個 /var/lib/mk8dx/instance 資料夾；不要為了繞過 DNS 或郵件問題而建立另一個設定檔。
+
+8. 在你的電腦上，開啟就緒檢查網址，然後開啟網站，用你自己的主機名稱代替範例：
+
+https://www.mijneigenwebsite.nl/health/ready
+https://www.mijneigenwebsite.nl
+
+瀏覽器不應該顯示憑證警告。點選「登入」，使用你儲存的管理員地址，並開啟你真實收件匣中的連結。只有在這次已驗證的登入之後，才回到伺服器終端機中的套件資料夾並選擇選單 5：
+
+cd /opt/mk8dx/host
+sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
+
+結果是 created（已建立），重複操作時是 unchanged（未變更）。重新整理網站。也要檢查一條賽道以及你自己提交的計時賽成績。光是容器在執行，並不能證明 DNS、憑證或郵件寄送沒有問題。
+
+使用 Android、LiveTrial、掃描器與錦標賽工具
+
+為了傳送成績，這些工具使用一個既有社群的網址。LiveTrial 和 Tournament Tools 也可以在沒有網站的情況下獨立運作；Android App 和瀏覽器掃描器則需要網站。在同一台 Windows 電腦上，LiveTrial 和 Tournament 可以使用 http://127.0.0.1:18080（A1）或 http://127.0.0.1:18090（A3）。對於公開網站，請使用它受信任的 HTTPS 網址。Android 需要受信任的 HTTPS；本機 Windows 檢查並不能證明 Android 連線正常。通用版 Android App 和 Windows 用戶端都允許你選擇社群網址；使用不同的網域不需要修改原始碼。公開的用戶端設定中絕不包含伺服器密碼。絕不要在用戶端中輸入內部的 mysql 名稱、API 容器位址或 SSH IP。
+
+請一律複製你自己的安裝顯示為「Website」（網站）（或「origin」、「Web origin」）的完整網站網址，如果顯示了連接埠，也要包含連接埠。絕不要在 LiveTrial 中輸入測試收件匣網址（「Sign-in mail」或「localMailInbox」）：它只會開啟本機測試收件匣。在第二台裝置上，請使用 HTTPS 網路名稱或你的公開網域，而不是伺服器的 127.0.0.1 位址。
+
+Android 需要 Android 8.0 或更新版本；建議使用 arm64。在本機以正式金鑰簽署的 APK 大約 530 MB。請至少保留 1 GB 可用空間作為安裝餘裕。在你的電腦上用 SHA256SUMS.txt 檢查 mk8dx-android-release-v0.2.3.apk，把它複製到手機上，然後從「檔案」或「下載」中開啟它。如果 Android 詢問是否允許從這個檔案 App 安裝，只為已檢查的套件允許。之後你可以關閉這個權限。
+
+首次啟動時，「選擇你的社群」會詢問你的社群怎麼玩。對於線上社群，在「網站位址」下輸入完整、受信任的 HTTPS 社群網址，例如 https://www.mijneigenwebsite.nl，不加路徑，也不加結尾的斜線，然後點一下「儲存」。對於家用或俱樂部安裝（A2），點一下「掃描 QR 碼」，掃描 Prepare a device（準備裝置）卡片；A2 指南會一步步說明這個步驟。之後，點一下 App 頂端的社群名稱即可切換社群，或用「新增社群」加入一個。每個社群都保留各自的帳號和待傳送的成績；它們之間不會自動轉移任何內容。你自己的成績在你的名稱 →「我的成績」下，離線時也能查看。如果失敗，請在手機瀏覽器中開啟同一個網址。接著用你自己的帳號透過瀏覽器代碼登入。早期的公開 APK 使用除錯簽署。請先保存任何尚未傳送的成績，解除安裝一次那個除錯版 App，然後安裝這個以正式金鑰簽署的 APK。之後用同一把正式金鑰簽署的 APK 可以直接覆蓋更新；這不是 Play 商店版本。
+
+APK 由製作者簽署，而不是為每個網域另外簽署。自動的 Android 應用程式連結（App Links）確實需要在真實的 App 身分、它實際的簽署憑證和你的網域之間建立公開的關聯。因此預設的 /.well-known/assetlinks.json 以 JSON 形式包含 []。手動選擇伺服器和登入在沒有這種自動關聯的情況下也能運作。另外簽署的自訂版本屬於開發者方式。
+
+對於 Windows x86-64 上的 LiveTrial，用 SHA256SUMS.txt 檢查 desktop-client-v0.2.3.zip，並解壓縮整個 ZIP，例如解壓縮到「文件」下。請為解壓縮和你自己的錄影預留大約 2 GB；這是餘裕，不是實測的最低需求。開啟 LiveTrial.exe。從擷取卡進行即時擷取還需要 FFmpeg，基於授權的原因它沒有隨附：在 PowerShell 中執行一次 winget install Gyan.FFmpeg，然後重新啟動 LiveTrial（分析影片不需要它）。前往「設定」→「社群網站地址」，輸入你的安裝的確切網址，然後選擇「儲存伺服器」。確認切換。
+
+LiveTrial 會儲存網址並自動重新啟動。重新啟動期間請保持視窗開啟。重新啟動後，檢查「設定」中顯示的是否正是你的網址。之後才登入；登入應該會開啟你的社群。當你開啟「成績記錄」時，如有需要，該區段會稍等它的本機伺服器，然後自動載入。你應該不需要按 F5。如果 LiveTrial 提示自動重新啟動失敗，請在 App 內選擇「結束 LiveTrial」，等到它完全關閉，然後再次開啟 LiveTrial.exe。只關閉瀏覽器視窗是不夠的：LiveTrial 可能仍在背景執行。
+
+如果欄位仍然是空的，顯示的是 https://www.example.org 範例，或是登入開啟了錯誤的網站，請停止。透過「結束 LiveTrial」結束現有的 LiveTrial 執行個體。同一台電腦上的另一個 Windows 帳號可能已經啟動了它。重新開啟它並檢查網址。不要手動編輯 server.json，也不要把成績傳送到錯誤的網站。處理影片檔案不需要擷取卡。即時擷取需要相容的擷取卡和驅動程式。本機成績和佇列對每台伺服器都是分開的。
+
+瀏覽器掃描器已經是網站的一部分。在你受信任的 HTTPS 網址上開啟 /scanner/，從「圖片上傳」開始。選擇你自己的成績圖片，檢查辨識出的詳細資料，核對無誤後再確認。使用即時相機需要瀏覽器權限，而且在 localhost 以外需要受信任的 HTTPS。辨識效果也取決於錄影品質。文件中描述了 A2 的第二台 Windows 瀏覽器方式，但尚未經過端對端測試。
+
+對於 Windows x86-64 上的錦標賽工具，檢查 tournament-tools-v0.2.3.zip 並解壓縮完整的 ZIP。開啟 Install-MK8DX-TournamentTools.cmd。請預留數 GB 的可用空間：大約 160 MB 的 ZIP 和大約 1 GB 的解壓縮空間並不能涵蓋所有相依套件和你自己的媒體檔案。安裝程式需要連上網際網路一次，用來下載 Python 3.12 和公開套件；OCR 模型已經隨附，之後處理可以離線進行。尚未測量所有相依套件和媒體的確切最低空間需求。不需要設定 GPU：使用較新的 NVIDIA 驅動程式時，安裝程式會自動選擇 CUDA 版本，接著顯示卡會加快名稱、積分和時間的讀取（OCR）。錄影的第一次掃描一律在處理器上執行，因為套件中的 OpenCV 版本不支援 CUDA；套件中的 USING_MK8DX_TOURNAMENT_TOOLS.md 說明了這兩個步驟。等待顯示 SUCCESS，並保持 runtime-assets 完整。如果失敗，請閱讀套件資料夾中的 install.log。
+
+把 .mp4 或 .mkv 錄影拖到 TournamentProcessor.cmd 上。程式會在影片旁邊建立一個工作階段資料夾，其中包含 Excel、CSV 以及一個以 _TournamentRaceResultsV1.json 結尾的檔案。TournamentLive.cmd 需要合適的擷取硬體和用於即時輸入的驅動程式。
+
+你也可以在沒有擷取卡的情況下，用現有影片試用 Tournament Live。開啟 TournamentLive.cmd，選擇「新增影片檔案」，選擇一個 .mp4 或 .mkv 檔案，然後選擇「全部開始」。等待影片和分析完成。查看「已確認的排名」，並選擇「開啟匯出」找到成績檔案。這種一般的影片方式所使用的比分選擇會等到積分動畫和最終排名穩定下來。請自己檢查名稱、名次和積分；OCR 可能會出錯。影片重播並不能測試實體擷取卡。另外的 TournamentLiveCli.cmd 重播指令用於診斷，不能取代這種方式。
+
+如需選用的網站連線，在套件資料夾中開啟 PowerShell 並執行：
+
+.\TournamentConnect.cmd sign-in
+
+第一次請輸入你的安裝的確切網址，並完成瀏覽器登入。下面這些指令用於顯示或變更網址；變更時會要求確認：
+
+.\TournamentConnect.cmd server
+.\TournamentConnect.cmd server https://www.example.org
+
+把 example.org 換成你真實的社群。要傳到舊伺服器的待上傳內容會留在舊伺服器上。要用 TournamentConnect.cmd send 傳送檔案，管理員需要先開啟「管理」→「錦標賽」→「主辦人」，搜尋已登入的玩家並選擇該名稱。這授予的是錦標賽存取權，而不是一般的管理權限。再傳送一次；在審核之前，這場比賽會一直留在「收到的成績」中。在網站上，管理員透過「管理」→「錦標賽」→「匯入正式比賽成績」匯入已檢查的成績，或在某個群組中透過「離線備援：匯入已儲存的 Live／Processor 成績檔案」匯入。上傳並不等於自動發布。
+
+對於新的錦標賽，管理員開啟「管理」→「錦標賽」並在那裡建立錦標賽。新增玩家，標示誰已到場，分配可用的 Switch，並確認分組安排。接著開啟該群組的「收到的成績」。把辨識出的名稱與正確的玩家對應起來，檢查賽道和完賽名次，然後對已審核的比賽選擇「確認」。暫定的即時排名表還不是正式成績。在網站上完成最後的群組步驟。在「檢查定案」之前，選擇上方的「設定屆數」，輸入本屆的編號，例如 1。檢查最終排名表，然後選擇「檢查定案」→「將錦標賽定案」。在新的瀏覽器視窗中開啟公開的錦標賽頁面，查看已發布的成績。
+
+變更設定與管理網站
+
+安裝小幫手對每個邏輯值只會詢問一次。它把設定檔保存在 operator-profile.json 中，把密碼和金鑰另外保存在 secrets.json 中，兩者都位於你的私人資料資料夾內。它會自行推導出 Web、API、Docker 和公開用戶端的設定。不要另外編輯 api.env、compose.env、operator.json 或 public-client.json。公開的 /client-config.json 只包含網站網址。重複啟動不會建立新的帳號、管理員、金鑰或資料庫。
+
+在 Windows 上，A1 預設使用 %LOCALAPPDATA%\MK8DX\Server，A2 預設使用 %LOCALAPPDATA%\MK8DX\LAN。在 VPS 上，B1 使用 /var/lib/mk8dx/instance。這些是資料資料夾，而不是軟體更新時要取代的資料夾。你的業者登入資訊和 VPS SSH 金鑰都在 MK8DX 之外。每台 Android 或 Windows 裝置都保存它自己的社群選擇和工作階段。
+
+在 Windows 上進行啟動、狀態、停止、管理員和備份操作時，請重新開啟相應的 Start-MK8DX.cmd 或 Start-MK8DX-LAN.cmd（加上 -SkipCountdown 可以省略倒數，設定 MK8DX_SOUND=0 可以關閉提示音；在 Ubuntu 上用 --skip-countdown）。在 Ubuntu 上，前往 /opt/mk8dx/host 並執行 sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance。選單中 2 代表啟動，3 代表狀態，4 代表停止，5 代表授予已驗證的第一個管理員，6 代表備份，7 代表先建立已驗證的備份再進行更新。選項 1 可以繼續中斷的首次設定。絕不要在你想保留的安裝上使用 docker compose down -v：-v 會移除資料庫磁碟區。要完全移除一個試用安裝（這會刪除它的資料庫、帳號和金鑰；如果你之後可能還想要回它們，請先選擇 6 進行備份）：選擇 4 停止，然後在套件資料夾中開啟 PowerShell，執行 docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v，並刪除資料夾 %LOCALAPPDATA%\MK8DX\Server（家用網路方式請使用 compose.lan.yaml）。在 Ubuntu 上，用 --env-file /var/lib/mk8dx/instance/compose.env 執行同樣的指令（VPS 用 compose.production.yaml），然後刪除 /var/lib/mk8dx/instance。
+
+要在 A2 或 B1 上變更郵件服務或密碼，請先用選單 6 建立備份。在 A2 上，於解壓縮後的主機資料夾中開啟 PowerShell 並執行：
+
+python tooling/install.py change-smtp --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN')
+
+在 Ubuntu 上，在 /opt/mk8dx/host 中用 python3 和 --state-dir /var/lib/mk8dx/instance 執行同樣的操作。提示中會列出 smtp.host、smtp.port、smtp.username 和 smtp.fromAddress，並要求輸入隱藏的密碼。按 Enter 會保留既有的值。之後請在你真實的收件匣中檢查一封新的登入郵件；光憑 check 並不能證明郵件已寄達。管理員地址、寄件者地址和 SMTP 登入名稱不必相同。
+
+只有在新的 DNS 位址和 HTTPS 都準備就緒之後，才變更公開網站網址。請先建立備份。這個 A1 範例展示了確切的變更操作；請把範例連接埠換成你想用的空閒連接埠：
+
+python tooling/install.py change-origin --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server') --origin 'http://127.0.0.1:18090'
+python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Server')
+
+對於 B1，請使用 python3、/var/lib/mk8dx/instance 以及你完整的新 https:// 網址。檢查狀態、/client-config.json 和一個新的登入連結。同時也要讓每台裝置指向新網址。在第一次授權之前，你可以在安裝小幫手中更正錯誤的管理員地址；但這不會重新開放已經用過的第一次授權。現有的管理員只能透過受限的復原程序，並經擁有者明確決定，才能新增另一位已驗證的管理員。
+
+在網站上，「管理」→「站台設定」中保存著整個網站範圍的選項。「社群名稱」（例如「北區俱樂部」）會在 App 中取代網址顯示；留空則不顯示名稱。「來自其他社群的成績」決定玩家從另一個社群帶來的成績是被拒絕（「關閉」，預設值）、等到管理員在「管理」→「計時賽」中點選它旁邊的「發布」（「需審核」），還是遵循一般的發布規則（「允許」）。當仍有帶來的成績在等待時，如果你從「需審核」切換到其他選項，網頁會詢問如何處理它們。每一次變更都會記錄管理員的名稱。
+
+備份、還原與更新
+
+在相應的主機上選擇選單 6。在 Windows 上，備份保存在 Documents\MK8DX-backups\<timestamp> 下。在 Ubuntu 上，如果你以 root 身分工作，備份保存在 /root/mk8dx-backups/<timestamp> 下。備份包含資料庫、帳號、管理員權限、設定和金鑰。請對整個資料夾保密，並把它也複製到主機之外受保護的儲存空間中。只在同一台出故障的 VPS 上保存一份複本是不夠的。
+
+驗證實際建立的資料夾。把下面的 <ACTUAL_FOLDER> 換成小幫手顯示的資料夾名稱。在 Windows 上，於主機套件中的 PowerShell 裡執行：
+
+python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>"
+
+在 Ubuntu 上，於主機套件資料夾中執行：
+
+python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>'
+
+預期的結果是「Backup verified」（備份已驗證）。絕不要在問題回報、電子郵件或公開雲端連結中分享備份。
+
+還原備份
+
+還原試用使用一個新的資料資料夾和一個新的 Docker 專案。它不會動到既有的安裝。還原作業一開始只啟動一個新的資料庫。之後再依照你的安裝方式啟動還原後的網站。試用結束後請保留原始備份。
+
+對於 A1，在主機套件中開啟 PowerShell。選擇一個尚不存在的目標資料夾並執行：
+
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\Herstelproef')
+
+還原後的 A1 網站會取得它自己的空閒本機連接埠。從 status 中開啟它新的 Web origin（網站網址）。檢查一個已知的帳號、管理檢視和你的成績。原來的網站可以繼續執行。不要為還原試用授予新的第一個管理員。
+
+對於公開 B1 的替換，請使用一台新的 Ubuntu 24.04 VPS，配備已檢查的主機套件、Docker、Python，並開放連接埠 80/443。暫時保留舊的 VPS。安排一個短暫的維護時段。在舊的 VPS 上，先只停止 Web 和 API，這樣在最後一次備份之後就不會再有新的成績進來。在舊的主機套件資料夾中執行：
+
+docker compose --env-file /var/lib/mk8dx/instance/compose.env -f compose.yaml -f compose.production.yaml -f compose.images.yaml stop web api
+
+網站現在暫時無法連線。在舊的 VPS 上，趁 MySQL 仍在執行時選擇選單 6 建立新的備份。用上面的 verify 指令驗證這份新備份。如果驗證失敗，用選單 2 恢復舊網站並進行調查。透過已驗證的 WinSCP 連線，把整個已驗證的備份資料夾傳輸到新 VPS 上的一個私人資料夾中，絕不要放到網頁資料夾中。例如放在 /root/mk8dx-backups/ 下。在新伺服器上，於 /opt/mk8dx/host 中用你真實的備份資料夾名稱執行：
+
+docker load --input images/docker-images-amd64.tar
+python3 tooling/lifecycle.py restore-new --backup '/root/mk8dx-backups/<ACTUAL_FOLDER>' --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py status --state-dir /var/lib/mk8dx/herstelproef
+
+新的資料庫現在已在它自己的專案中準備就緒。對照你既有的私人備份和狀態檢查還原的資料。規劃一次簡短的切換。在 DNS 面板中，只把你 MK8DX 主機名稱的 A 記錄改為新 VPS 的 IPv4 位址。保留郵件記錄。等到你電腦上的 Resolve-DnsName 顯示新的 IP。接著在新 VPS 上啟動還原後的服務：
+
+python3 tooling/install.py start --state-dir /var/lib/mk8dx/herstelproef
+python3 tooling/install.py check --state-dir /var/lib/mk8dx/herstelproef
+
+在你的電腦上，開啟 https://<your-real-host-name>/health/ready 和網站。檢查憑證是否有效、你自己的登入郵件是否送達真實收件匣、一個已知的帳號、管理檢視和成績。新的 Docker 安裝會申請自己的公開憑證；連接埠 80/443 和新的 DNS 目的地必須可以連線。讓舊的 VPS 脫離訪客的連線路徑，並保留它用於調查或回復。如果某項檢查失敗，請保持備份完整，調查 DNS、連接埠、憑證和 SMTP，並規劃有意識地把 A 記錄改回舊的 IP。不要把移除磁碟區當作快速修復的手段。對於這個本機候選版本，尚未進行過涉及外部服務的實際切換。
+
+對於 A2，請在同一個可信任網路中的另一台 Windows 主機上進行還原。準備好 Docker、Python 和主機套件。在一個短暫的維護時段內，只停止舊主機上的 Web 和 API。資料庫保持執行，用於最後一次備份。在舊的套件資料夾中開啟 PowerShell：
+
+$state = Join-Path $env:LOCALAPPDATA 'MK8DX\LAN'
+$compose = @('--env-file', (Join-Path $state 'compose.env'), '-f', 'compose.yaml', '-f', 'compose.lan.yaml', '-f', 'compose.images.yaml')
+docker compose @compose stop web api
+
+接著在舊主機上選擇選單 6 並驗證新的備份。如果失敗，用選單 2 恢復舊的安裝。把已驗證的備份資料夾以私密方式傳輸到新主機。把它放在 Documents\MK8DX-backups\ 下並使用相同的資料夾名稱，或在下一道指令中調整備份路徑。在那裡，執行 restore-new，還原到一個尚不存在的 LAN 還原資料夾中。在啟動之前，把儲存的繫結位址改為新主機真實的 IPv4：
+
+docker load --input images/docker-images-amd64.tar
+python tooling/lifecycle.py restore-new --backup "$env:USERPROFILE\Documents\MK8DX-backups\<ACTUAL_FOLDER>" --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py change-lan-address --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel') --lan-bind-address '192.168.0.51'
+python tooling/install.py start --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\LAN-Herstel')
+
+替換範例 IP，並在新主機上只為 Private（私人）設定檔允許 TCP 443。在主機和第二台電腦上，把 mk8dx.home.arpa 的 hosts 項目改為新的 IP。這個新的 Docker 專案有一個新的本機憑證授權單位。使用家用網路一章中的憑證指令，從這個還原專案取得新的 root.crt，但把 $state 設為 LAN-Herstel。再次比較 SHA-256，並在第二台電腦上安裝新憑證。透過 certmgr.msc 在 Trusted Root Certification Authorities → Certificates（受信任的根憑證授權單位 → 憑證）下移除舊憑證，用舊的指紋來辨識它。之後才開啟網站，確認沒有警告，並檢查登入和既有的成績。實體的 A2 切換尚未測試過；請保留原來的主機和備份。
+
+進行軟體更新時，先檢查新主機套件的 SHA-256。把它解壓縮到舊軟體資料夾旁邊。使用同一個私人資料資料夾，並在新套件中選擇選單 7。小幫手會先建立並驗證備份，執行缺少的遷移，並只替換隨附的伺服器程式。之後檢查專案身分是否相同，以及網站、登入和資料。如果失敗，請保留備份，並且在資料庫結構變更之後不要盲目執行舊的映像檔。
+
+更新到 0.2.3 會把 Docker 資料庫從 MySQL 8.4 遷移到 MySQL 9.7 LTS。MySQL 會在新版本首次啟動時對資料檔案進行一次升級；只有還原備份才能復原這項操作。所以在新的套件資料夾中，請先選 7 再選 2：如果先選 2，就會在沒有備份、也沒有資料庫更新的情況下啟動新版本。選單 3（檢查）不會造成影響。在 A2 套件中，瀏覽器裡的 Update（更新）會自行先建立備份；第一次更新只是會稍微久一點，備份位於 Documents\MK8DX-backups 中。A3 和 B2 使用它們自己的 MariaDB 或 MySQL，不受影響。
+
+疑難排解與自行建置
+
+如果網站是空的，請先使用選單 3，並檢查 Docker 是否在執行中。在 A1 上，登入郵件會寄到 Mailpit；在 A2 和 B1 上，它應該寄到真實的收件匣。請一律確認你使用的是同一個安裝、網址和電子郵件。在公開方式中收不到登入郵件時，需要檢查真實的 SMTP 設定值以及業者是否可以連線。/health/ready 回報的是 API 和資料庫是否就緒，而不是收件匣的寄送情況。
+
+在 A2 上，請先檢查兩台電腦上的 hosts 項目、私人網路、防火牆連接埠和憑證指紋。在 B1 上，檢查 DNS A 記錄、業者連接埠 80/443、有效的 HTTPS，然後再檢查郵件。不要忽視憑證警告。求助時絕不要分享 secrets.json、備份、登入連結、SSH 金鑰或包含密碼的記錄行。
+
+要建置你自己的程式碼、品牌識別或最終簽署的 APK，請從同一個發布頁面下載 mk8dx-full-local 套件。它包含原始碼、內部素材集和建置方法。開發者說明請見 docs/DEVELOPMENT.md 和 docs/CLIENT_BUILDS.md。從程式碼儲存庫的複製（git clone https://github.com/fromthelake/MK8DX-Ecosystem.git）或那個套件出發，docs/guides/HOSTING.md（「Build the host package from a clone」）用於建置 Docker 主機套件以及共享主機和 XAMPP 套件，docs/CLIENT_BUILDS.md 用於建置 Android、LiveTrial 和錦標賽套件。一般的安裝和伺服器選擇不需要 Android Studio、修改原始碼或自行建置 Docker 映像檔。套件中的遊戲素材遵循它們自己的條款；請見 docs/THIRD_PARTY_MATERIALS.md。
+
+使用 Linux
+
+現在可以在本機嘗試的內容
+
+你只需要自己的 Linux 電腦，不需要 Windows 電腦。如果它在 x86-64 上執行 Ubuntu 24.04，隨附的 Docker 主機套件就是本機伺服器方式。先執行 uname -m，確認它顯示 x86_64。安裝附有 Compose 外掛程式的 Docker Engine、Python 3.12 到 3.15 以及 unzip。Ubuntu 上的 Docker 安裝在「在 VPS 上架設公開網站」中有逐步說明；對於這次本機試用，請略過 DNS、開放網際網路防火牆連接埠和真實的 SMTP。從同一個發布版本下載 mk8dx-host-local-v0.2.3-amd64.zip 及其 SHA256SUMS.txt。在下載資料夾中開啟終端機並檢查 ZIP。將結果與 SHA256SUMS.txt 中對應的那一行比較。如果不一致，請停止：
+
+sha256sum mk8dx-host-local-v0.2.3-amd64.zip
+
+解壓縮套件並進入它的資料夾：
+
+mkdir -p "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.3-amd64.zip -d "$HOME/MK8DX/host"
+cd "$HOME/MK8DX/host"
+
+現有的 Linux 啟動指令碼是：
+
+sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
+
+輸入 A1；首次設定會自動開始。啟動指令碼會把完整的網站網址顯示為「Web origin」（網站網址），把 Mailpit 顯示為「Local mail inbox」（本機郵件收件匣）。這兩個 127.0.0.1 網址都可以在這台 Linux 電腦上使用。在瀏覽器中開啟網站，並在第二個分頁中開啟 Mailpit 以取得登入連結。如果網站啟動成功，你就可以在本機使用那裡的網站和瀏覽器掃描器。請自己檢查登入、提交以及它在網站上的顯示是否真的正常。這條完整的本機流程尚未針對本版本在 Linux 上執行過；光是容器在執行並不能證明這一點。
+
+仍需開發的內容
+
+隨附的 LiveTrial 和錦標賽程式是 Windows 程式。它們無法直接作為 Linux 應用程式啟動。XAMPP ZIP 及其 Windows Apache 小幫手也不是 Linux 安裝程式。沒有預先建置的原生 Linux 用戶端，也沒有 Linux 擷取驗收。要在沒有 Windows 的情況下使用整個生態系統，需要一位熟悉 Linux 的開發者移植並封裝桌面用戶端、它們的 OCR 相依套件以及任何擷取介面，然後測試登入以及透過資料庫到網站的傳遞。Android APK 安裝在 Android 上，而不是 Linux 上。A1/B1 主機套件只有 amd64 版本；在 Linux ARM（arm64）上請使用 A2 套件 mk8dx-a2-linux-arm64。
+
+使用 macOS
+
+現在可以在本機嘗試的內容
+
+你只需要自己的 Mac，不需要 Windows 電腦或其他伺服器。在 Intel Mac 上，開發者可以嘗試在本機執行隨附的 Linux/amd64 Docker 映像檔。如果網站、API 和資料庫確實啟動了，請在同一台 Mac 的瀏覽器中開啟顯示的 A1 網站網址和 Mailpit 網址。掃描器是網站的一部分。目前還沒有任何 Mac 試用展示過新帳號、提交、資料庫記錄和網站上可見的成績。光是首頁能開啟並不能證明安裝完整。
+
+在 Intel Mac 上，安裝 Docker Desktop for Mac 和 Python 3.12 到 3.15。下載同一個主機 ZIP 和 SHA256SUMS.txt。在下載資料夾中開啟終端機，執行 shasum -a 256 mk8dx-host-local-v0.2.3-amd64.zip，並將結果與 SHA256SUMS.txt 比較。如果不一致，請停止。接著使用 Linux 一章中的 mkdir、unzip 和 cd 指令。啟動同一個 shell 啟動指令碼並選擇 A1。這是開發者試用，而不是經過驗收的 Mac 使用者方式。在 Apple 晶片上，這個 A1 主機套件需要透過模擬來執行它的 amd64 映像檔；沒有原生的 arm64 A1 套件，模擬下的功能和速度也尚未得到驗證。在使用 Apple 晶片的 Mac 上，請改用 A2 套件 mk8dx-a2-macos-arm64（請見「在你的家用網路中使用」）。
+
+適用於 Mac 的 Docker Desktop：https://docs.docker.com/desktop/setup/install/mac-install/
+
+仍需開發的內容
+
+XAMPP/Node ZIP 以及預先建置的 LiveTrial 和錦標賽用戶端都是 Windows 套件；它們不提供 Mac 應用程式。需要一位熟悉 macOS 的開發者移植並建置這些用戶端，包括它們的 OCR 相依套件和任何擷取卡整合，然後測試整條傳遞流程。Windows 虛擬機器或相容層尚未被認可為替代的用戶端方式。Android APK 仍然只適用於 Android 裝置。

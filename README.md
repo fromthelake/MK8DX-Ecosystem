@@ -2,7 +2,7 @@
 
 **Host your own Mario Kart 8 Deluxe community website — for Time Trials *and* tournament nights.**
 
-Language: English · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Français](README_FR.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Language: English · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 ![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 
@@ -127,7 +127,7 @@ flowchart TB
 
 | I want to… | Start here |
 | --- | --- |
-| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step (the A2 package also contains an illustrated version): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) |
+| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step (the A2 package also contains an illustrated version): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Installing and using MK8DX](docs/install/MK8DX_User_Guide_EN.docx) ([TXT](docs/install/MK8DX_User_Guide_EN.txt)) |
 | **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); the Tournament Tools also work without a community website |
 | **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card; also works without a community website |
 | **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |

@@ -40,7 +40,7 @@ open the folder where `Start-MK8DX.cmd` really is.
 ## 5. Let MK8DX set itself up
 
 **Where:** in the extracted folder. **Do:** double-click `Start-MK8DX.cmd`. A window opens with a short race intro
-(the MK8DX logo and a 3-2-1-GO countdown with beeps; `Start-MK8DX.cmd -SkipCountdown` leaves it out, all options are in [BEHEER.md](BEHEER.md#het-startvenster-weergave-en-opties), in Dutch) and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
+(the MK8DX logo and a 3-2-1-GO countdown with beeps; `Start-MK8DX.cmd -SkipCountdown` leaves it out, all options are in [ADMINISTRATION_EN.md](ADMINISTRATION_EN.md#the-start-window-display-and-options)) and checks Python and Docker (steps 1/4 to 3/4). The first time it loads the included programs, which
 takes a few minutes; a clock keeps counting. Then it asks **Where will MK8DX run?**: type `A1` and press Enter.
 Next it asks the email address that **you** will sign in with and become administrator with. **You see:** the first
 setup starts by itself and ends with `OK  Done.`, then **Website:** (for example `http://127.0.0.1:18080`) and
@@ -93,4 +93,4 @@ harmless.
 
 Your data stays in `%LOCALAPPDATA%\MK8DX\Server` and in Docker; a newer package replaces only the program folder.
 Never run `docker compose down -v`. Restoring a backup on another computer: the chapter *Back up, restore, and update* in the
-[user guide](MK8DX_User_Guide_EN.txt), or [BEHEER.md](BEHEER.md#herstellen-zonder-de-huidige-installatie-te-wissen) in Dutch.
+[user guide](MK8DX_User_Guide_EN.txt), or [ADMINISTRATION_EN.md](ADMINISTRATION_EN.md#restoring-without-wiping-the-current-installation).

@@ -530,16 +530,74 @@ class Wizard:
 
 # The illustrated guide (tooling/build_guide_html.py); the plain manual below is the fallback.
 GUIDE = ROOT / "docs" / "install" / "guide"
-GUIDE_FILE = re.compile(r"(nl|en)\.html|guide\.(css|js)|img/[a-z0-9-]+\.png")
+GUIDE_FILE = re.compile(r"[a-z]{2}(?:-[A-Z]{2}|-[0-9]{3})?\.html|guide\.(css|js)|img/[A-Za-z0-9-]+\.png")
+# The 15 languages of the game; a guide page or Markdown manual exists for each translated one.
+GUIDE_LOCALES = ("en", "en-US", "nl", "de", "es", "es-419", "fr", "fr-CA", "it", "ja", "ko", "pt", "ru",
+                 "zh-CN", "zh-TW")
 
 MANUALS = {"nl": ROOT / "docs" / "install" / "A2_THUIS_HANDLEIDING_NL.md",
-           "en": ROOT / "docs" / "install" / "A2_HOME_GUIDE_EN.md"}
+           "en": ROOT / "docs" / "install" / "A2_HOME_GUIDE_EN.md",
+           **{locale: ROOT / "docs" / "install" / "translations" / locale / "A2_HOME_GUIDE.md"
+              for locale in GUIDE_LOCALES if locale not in ("en", "nl")}}
+
+
+def guide_languages() -> set[str]:
+    """The locales whose guide is bundled: the illustrated page or at least the Markdown manual."""
+    return {locale for locale in GUIDE_LOCALES if (GUIDE / f"{locale}.html").is_file() or MANUALS[locale].is_file()}
+
+
+def _guide_match(tag: str, available: set[str]) -> str | None:
+    """One language tag to a bundled guide: the exact locale, a regional variant, then the base language."""
+    parts = tag.strip().replace("_", "-").lower().split("-")
+    if not parts[0] or parts[0] == "*":
+        return None
+    by_lower = {locale.lower(): locale for locale in available}
+    exact = by_lower.get("-".join(parts))
+    if exact:
+        return exact
+    regional = None
+    if parts[0] == "zh":  # Traditional script or a Traditional region, else Simplified
+        regional = "zh-TW" if any(part in ("hant", "tw", "hk", "mo") for part in parts[1:]) else "zh-CN"
+    elif parts[0] == "es" and len(parts) > 1 and parts[1] != "es":  # Spanish of the Americas (es-MX, es-AR, ...)
+        regional = "es-419"
+    if regional in available:
+        return regional
+    return by_lower.get(parts[0])
+
+
+def guide_language(query_lang: str | None, accept_language: str | None, available: set[str] | None = None) -> str:
+    """The guide language: an explicit ?lang= first, then the browser's Accept-Language in order of
+    preference (exact locale, then base language), then English."""
+    available = guide_languages() if available is None else available
+    if query_lang:
+        found = _guide_match(query_lang, available)
+        if found:
+            return found
+    preferences = []
+    for position, item in enumerate((accept_language or "").split(",")):
+        tag, _, parameters = item.strip().partition(";")
+        weight = 1.0
+        match = re.search(r"q=([0-9.]+)", parameters)
+        if match:
+            try:
+                weight = float(match.group(1))
+            except ValueError:
+                weight = 0.0
+        if tag and weight > 0:
+            preferences.append((-weight, position, tag))
+    for _, _, tag in sorted(preferences):
+        found = _guide_match(tag, available)
+        if found:
+            return found
+    return "en"
 
 
 def manual_html(lang: str) -> bytes:
     """The bundled manual as a small, fully escaped HTML page (works offline)."""
     import html
-    source = MANUALS.get(lang, MANUALS["en"]).read_text(encoding="utf-8")
+    if lang not in MANUALS or not MANUALS[lang].is_file():
+        lang = "en"
+    source = MANUALS[lang].read_text(encoding="utf-8")
     parts, in_list = [], None
 
     def inline(text):
@@ -572,7 +630,7 @@ def manual_html(lang: str) -> bytes:
             parts.append(f"<p>{inline(line)}</p>")
     if in_list:
         parts.append(f"</{in_list}>")
-    page = ("<!doctype html><html lang=\"" + ("nl" if lang == "nl" else "en") + "\"><head><meta charset=\"utf-8\">"
+    page = ("<!doctype html><html lang=\"" + lang + "\"><head><meta charset=\"utf-8\">"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>MK8DX</title>"
             "<link rel=\"stylesheet\" href=\"/wizard.css\"></head><body><div class=\"frame\"><main class=\"card manual\">"
             + "".join(parts) + "</main></div></body></html>")
@@ -614,7 +672,9 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                 if path == "/":
                     return self.send(200, page.encode(), TYPES[".html"])
                 if path == "/help":
-                    lang = "nl" if "lang=nl" in self.path else "en"
+                    from urllib.parse import parse_qs, urlsplit
+                    query = (parse_qs(urlsplit(self.path).query).get("lang") or [""])[0]
+                    lang = guide_language(query, self.headers.get("Accept-Language"))
                     if (GUIDE / f"{lang}.html").is_file():
                         self.send_response(302)
                         self.send_header("Location", f"/guide/{lang}.html")

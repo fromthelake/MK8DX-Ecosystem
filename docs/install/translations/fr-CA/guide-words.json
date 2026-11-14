@@ -1,0 +1,50 @@
+{
+ "locale": "fr-CA",
+ "language": "Français (Canada)",
+ "steps": {
+  "where": "Où :",
+  "do": "À faire :",
+  "see": "Tu vois :",
+  "else": "Tu vois autre chose?"
+ },
+ "slot": "image",
+ "html": {
+  "title": "MK8DX à la maison ou dans ton club — manuel",
+  "computer": "Mon ordinateur",
+  "device": "Mon appareil",
+  "all": "Tout",
+  "search": "Rechercher dans le guide",
+  "contents": "Table des matières",
+  "print": "Imprimer",
+  "open": "Tout ouvrir",
+  "close": "Tout fermer",
+  "none": "Aucun résultat.",
+  "do": "À faire",
+  "see": "Tu vois",
+  "else": "Tu vois autre chose?",
+  "filtered": "Seules les étapes correspondant à ton choix sont affichées."
+ },
+ "userGuide": {
+  "chapters": [
+   "Bienvenue",
+   "L'essayer sur un seul ordinateur",
+   "Sur un seul ordinateur sans Docker : XAMPP et Node.js",
+   "L'utiliser sur ton réseau domestique",
+   "Hébergement mutualisé public avec Node.js, sans Docker",
+   "Créer un site web public sur un VPS",
+   "Utiliser Android, LiveTrial, le scanner et Tournament",
+   "Modifier les paramètres et gérer le site",
+   "Sauvegarder, restaurer et mettre à jour",
+   "Résolution des problèmes et compilation par toi-même",
+   "Utiliser Linux",
+   "Utiliser macOS"
+  ],
+  "subheadings": [
+   "Ce que contient ce guide",
+   "Restaurer une sauvegarde",
+   "Ce que tu peux essayer en local dès maintenant",
+   "Ce qui doit encore être développé"
+  ]
+ },
+ "machineTranslationNote": "Ceci est une traduction automatique du guide anglais; la version anglaise fait foi. Les corrections sont les bienvenues via le formulaire de billet « Translation correction »."
+}

@@ -271,9 +271,54 @@ class WizardServerTest(unittest.TestCase):
             with self.subTest(path=path):
                 self.assertEqual(self.request("GET", path, headers)[0], 404)
 
+    def test_help_follows_the_browser_language_unless_the_link_names_one(self):
+        cases = ((None, "de-CH,de;q=0.9,en;q=0.5"), ("nl", "de-DE,de"), (None, "xx-YY, *"))
+        for query, accept in cases:
+            expected = setup_wizard.guide_language(query, accept)
+            headers = {"Host": self.host, "Accept-Language": accept}
+            connection = http.client.HTTPConnection("127.0.0.1", self.server.server_port, timeout=5)
+            try:
+                connection.request("GET", "/help" + (f"?lang={query}" if query else ""), headers=headers)
+                response = connection.getresponse()
+                body = response.read()
+                with self.subTest(query=query, accept=accept):
+                    if response.status == 302:
+                        self.assertEqual(response.getheader("Location"), f"/guide/{expected}.html")
+                    else:
+                        self.assertEqual(response.status, 200)
+                        self.assertIn(f'<html lang="{expected}"'.encode(), body)
+            finally:
+                connection.close()
+        self.assertEqual(setup_wizard.guide_language("nl", "de-DE,de"), "nl")
+
+    def test_guide_language_exact_then_regional_then_base_then_english(self):
+        every = set(setup_wizard.GUIDE_LOCALES)
+        choose = setup_wizard.guide_language
+        self.assertEqual(len(every), 15)
+        self.assertEqual(choose(None, "fr-CA,fr;q=0.8", every), "fr-CA")
+        self.assertEqual(choose(None, "fr-BE", every), "fr")
+        self.assertEqual(choose(None, "en-us", every), "en-US")
+        self.assertEqual(choose(None, "en-GB,en;q=0.9", every), "en")
+        self.assertEqual(choose(None, "es-MX", every), "es-419")
+        self.assertEqual(choose(None, "es-ES", every), "es")
+        self.assertEqual(choose(None, "zh-Hant-HK", every), "zh-TW")
+        self.assertEqual(choose(None, "zh", every), "zh-CN")
+        self.assertEqual(choose(None, "pt-BR", every), "pt")
+        self.assertEqual(choose(None, "ja;q=0.2, ko;q=0.9", every), "ko")
+        self.assertEqual(choose(None, "ru;q=0, sv, *", every), "en")
+        self.assertEqual(choose(None, None, every), "en")
+        # An explicit ?lang= wins; an unknown one falls back to the browser, then English.
+        self.assertEqual(choose("nl", "de", every), "nl")
+        self.assertEqual(choose("zh_TW", None, every), "zh-TW")
+        self.assertEqual(choose("xx", "it-IT", every), "it")
+        # A language whose guide is not bundled falls back to its base language or English.
+        self.assertEqual(choose(None, "fr-CA", {"en", "nl", "fr"}), "fr")
+        self.assertEqual(choose(None, "ja", {"en", "nl"}), "en")
+
     def test_manual_is_escaped_and_both_languages_exist(self):
-        for lang in ("nl", "en"):
+        for lang in {"nl", "en"} | setup_wizard.guide_languages():
             page = setup_wizard.manual_html(lang).decode()
+            self.assertIn(f'<html lang="{lang}">', page)
             self.assertIn("<h1>", page)
             self.assertNotIn("<script", page)
         with patch.object(setup_wizard.Path, "read_text", return_value="# <img src=x onerror=alert(1)>\n- **a** `b`"):
