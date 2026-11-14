@@ -75,6 +75,12 @@ class HostBundleBaseImagePinsTest(unittest.TestCase):
             self.assertIn(["docker", "pull", "--platform", "linux/arm64", pinned], commands)
             self.assertIn(["docker", "tag", pinned, tag], commands)
 
+    def test_pull_arm64_needs_no_platform(self):
+        # The release workflow's arm64 A2 jobs call --pull-base-images --arch arm64 without --platform.
+        with mock.patch.object(host_bundle, "pull_base_images") as pull,                 mock.patch.object(host_bundle.sys, "argv", ["host_bundle.py", "--pull-base-images", "--arch", "arm64"]):
+            host_bundle.main()
+        pull.assert_called_once_with("arm64")
+
     def test_invalid_tag_cannot_be_used_as_image_name(self):
         for version in ("main", "v0.1.0;docker", "v0.1.0/evil", "v0.1.0-rc.1+dirty"):
             with self.subTest(version=version), self.assertRaises(SystemExit):

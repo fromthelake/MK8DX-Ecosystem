@@ -99,11 +99,12 @@ een installatie.
   dat nog niemand gebruikte. Het eenvoudigst en betrouwbaarst is één vers schema per suite.
 - `reference-seed.integration.test.ts` vraagt ook `MK8DX_REFERENCE_TEST_CONFIG` en wordt anders overgeslagen.
 
-Deze werkwijze draaide op 2026-11-02 alle 34 suites (alles behalve `reference-seed`) groen op MySQL 8.4.11, in
+Deze werkwijze draaide op 2026-11-02 alle 34 suites (alles behalve `reference-seed`) groen op MySQL 8.4.11; CI draait ze nu op 9.7
+(hieronder), 8.4 en MariaDB 11.4. Dit werkt in
 een POSIX-shell (Git Bash werkt op Windows); het wachtwoord is een weggooiwaarde voor de wegwerpcontainer.
 
 ```sh
-docker run -d --name mk8dx-test-mysql -e MYSQL_ROOT_PASSWORD=throwaway-test-pw -p 127.0.0.1:33406:3306 mysql:8.4.11
+docker run -d --name mk8dx-test-mysql -e MYSQL_ROOT_PASSWORD=throwaway-test-pw -p 127.0.0.1:33406:3306 mysql:9.7.4
 until docker exec mk8dx-test-mysql mysqladmin ping -uroot -pthrowaway-test-pw --silent; do sleep 2; done
 npm ci --prefix backend/api && npm run build --prefix backend/api
 cd backend/api
