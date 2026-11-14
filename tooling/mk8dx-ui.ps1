@@ -1,5 +1,6 @@
 param([switch]$Demo, [switch]$Plain, [string]$Show = '', [string]$ShowNumber = '', [string]$ShowText = '',
-  [string]$ShowSubtitle = '', [string]$ShowItems = '', [string]$ShowColour = 'Gray', [switch]$SkipCountdown)
+  [string]$ShowSubtitle = '', [string]$ShowItems = '', [string]$ShowValues = '', [string]$ShowColour = 'Gray',
+  [switch]$SkipCountdown)
 # Presentation helpers for tooling/start-mk8dx.ps1: a racing-style intro, laps for the steps and a spinner for
 # quiet waits. Presentation only: no function here decides anything, every one writes text and returns.
 # ASCII source on purpose (Windows PowerShell 5.1 reads a BOM-less file as ANSI); the few round glyphs are made
@@ -23,6 +24,58 @@ $script:MK8DXUiDot = if ($env:MK8DX_ASCII -eq '1') { 'O' } else { [string][char]
 $script:MK8DXUiTick = if ($env:MK8DX_ASCII -eq '1') { '+' } else { [string][char]0x2713 }
 
 function Set-MK8DXUiPlain([bool]$Value) { $script:MK8DXUiForcePlain = $Value }
+
+# ---- Language --------------------------------------------------------------------------------------------------
+# The launcher texts in the 15 game languages (tooling/launcher_text.py has the same rules for Python and sh):
+# MK8DX_LANGUAGE when set, else the Windows display language; matched exactly, then by region (es-MX -> es-419,
+# zh-Hant/TW/HK/MO -> zh-TW, other zh -> zh-CN), then by base language; English otherwise. English is the key:
+# (Tr 'Website: {0}' $origin). Catalogs: tooling/launcher_i18n/<language>.json (UTF-8, read as such in 5.1 too).
+$script:MK8DXLanguages = @('en', 'nl', 'en-US', 'fr', 'fr-CA', 'de', 'es', 'es-419', 'it', 'pt', 'ru', 'ja', 'ko',
+  'zh-CN', 'zh-TW')
+function Get-MK8DXLanguageMatch([string]$Tag) {
+  if (-not $Tag) { return $null }
+  $parts = @(($Tag.Trim() -split '[.@]')[0].Replace('_', '-').ToLowerInvariant() -split '-')
+  if (-not $parts[0] -or $parts[0] -in @('*', 'c', 'posix')) { return $null }
+  $whole = $parts -join '-'
+  foreach ($code in $script:MK8DXLanguages) { if ($code.ToLowerInvariant() -eq $whole) { return $code } }
+  if ($parts[0] -eq 'zh') {
+    if (@($parts | Select-Object -Skip 1 | Where-Object { $_ -in @('hant', 'tw', 'hk', 'mo') }).Count -gt 0) { return 'zh-TW' }
+    return 'zh-CN'
+  }
+  if ($parts[0] -eq 'es' -and $parts.Count -gt 1 -and $parts[1] -ne 'es') { return 'es-419' }
+  foreach ($code in $script:MK8DXLanguages) { if ($code -eq $parts[0]) { return $code } }
+  return $null
+}
+function Get-MK8DXLanguage {
+  $explicit = Get-MK8DXLanguageMatch $env:MK8DX_LANGUAGE
+  if ($explicit) { return $explicit }
+  $ui = $null
+  try { $ui = Get-MK8DXLanguageMatch (Get-UICulture).Name } catch { }
+  if ($ui) { return $ui }
+  return 'en'
+}
+$script:MK8DXLanguage = Get-MK8DXLanguage
+$script:MK8DXMessages = New-Object System.Collections.Hashtable ([StringComparer]::Ordinal)
+& {
+  if ($script:MK8DXLanguage -eq 'en') { return }
+  $catalog = Join-Path $PSScriptRoot ('launcher_i18n\' + $script:MK8DXLanguage + '.json')
+  try {
+    $document = [IO.File]::ReadAllText($catalog, [Text.Encoding]::UTF8) | ConvertFrom-Json
+    foreach ($entry in $document.messages.PSObject.Properties) {
+      if ($entry.Value -is [string] -and $entry.Value.Trim()) { $script:MK8DXMessages[$entry.Name] = $entry.Value }
+    }
+  } catch { }
+  # CJK and Cyrillic in redirected output (a log, the Python and Docker lines read through Out-Host) need UTF-8;
+  # Write-Host to the console itself hands over UTF-16 either way.
+  try { [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding $false } catch { }
+  $env:PYTHONIOENCODING = 'utf-8'
+}
+function Tr([string]$English) {
+  $text = $English
+  if ($script:MK8DXMessages.ContainsKey($English)) { $text = $script:MK8DXMessages[$English] }
+  for ($i = 0; $i -lt $args.Count; $i++) { $text = $text.Replace('{' + $i + '}', [string]$args[$i]) }
+  return $text
+}
 
 # ---- Rich mode -------------------------------------------------------------------------------------------------
 # Truecolor block-letter logo, gradient laps and a small car on the track. Only in a terminal that renders 24-bit
@@ -305,7 +358,7 @@ function Write-MK8DXChecker([int]$Width = 46) {
 
 function Write-Header([string]$Subtitle = '', [string]$Revision = '') {
   # MK8DX in block letters; the 8 in the logo's ribbon colours.
-  $tail = '   ' + $Subtitle + $(if ($Revision) { "   package $Revision" } else { '' })
+  $tail = '   ' + $Subtitle + $(if ($Revision) { '   ' + (Tr 'package {0}' $Revision) } else { '' })
   if (Test-MK8DXUiRich) {
     $script:MK8DXKartPos = 0
     Write-Host ''
@@ -437,7 +490,8 @@ function Write-Info([string]$Text, [string]$Colour = 'Gray') {
   Write-Host $Text -ForegroundColor $Colour
 }
 
-function Write-Ok([string]$Text = 'Done.') {
+function Write-Ok([string]$Text = '') {
+  if (-not $Text) { $Text = Tr 'Done.' }
   # The words stay "OK  <text>" in every mode: the guides quote them.
   if (Test-MK8DXUiPlain) { Write-Host ('OK  ' + $Text); return }
   if (Test-MK8DXUiRich) {
@@ -571,9 +625,21 @@ if ($Show) {
   #   -Show Ok / Fail -ShowText <text>
   #   -Show Menu   -ShowText <title> -ShowItems '1=First;2=Second;0=Close'
   #   -Show Finish -ShowText <text>              finish line and, with a race clock, the lap results
+  #   -Show Prompt -ShowText <text>              a question without a line break (cmd `set /p` reads the answer)
+  # The texts are English and shown in the launcher language (Tr); -ShowValues 'a|b' fills {0}, {1} in each.
   # Every call is a new process, so the race clock and the laps live in the file named by MK8DX_RACE_FILE
   # (start ticks, then one line per lap); Finish removes it. Without that variable there is no clock.
   $raceFile = $env:MK8DX_RACE_FILE
+  # @(...) around the whole: a one-element result of `if` would unroll to a string, and splatting a string
+  # hands over its characters.
+  [object[]]$values = @(if ($ShowValues) { $ShowValues -split '\|' })
+  function Get-MK8DXShown([string]$English) { Tr $English @values }
+  $ShowText = (@($ShowText -split '\|') | ForEach-Object { Get-MK8DXShown $_ }) -join '|'
+  $ShowSubtitle = Get-MK8DXShown $ShowSubtitle
+  $ShowItems = (@($ShowItems -split ';') | ForEach-Object {
+    $pair = $_ -split '=', 2
+    if ($pair.Count -eq 2) { $pair[0] + '=' + (Get-MK8DXShown $pair[1].Trim()) } else { $_ } }) -join ';'
+  $utf8 = New-Object System.Text.UTF8Encoding $false
   function New-MK8DXRaceClock([long]$StartTicks) {
     $clock = [pscustomobject]@{ StartTicks = $StartTicks }
     $clock | Add-Member -MemberType ScriptProperty -Name Elapsed -Value {
@@ -582,7 +648,7 @@ if ($Show) {
   }
   if ($raceFile -and $Show -ne 'Intro' -and (Test-Path -LiteralPath $raceFile)) {
     try {
-      $lines = @(Get-Content -LiteralPath $raceFile -ErrorAction Stop)
+      $lines = @([IO.File]::ReadAllLines($raceFile, $utf8))
       $script:MK8DXRace = New-MK8DXRaceClock ([long]$lines[0])
       foreach ($line in $lines | Select-Object -Skip 1) {
         $part = $line -split '\|', 3
@@ -606,7 +672,7 @@ if ($Show) {
       Write-Lap $ShowNumber $ShowText
       if ($raceFile -and $script:MK8DXLaps.Count -gt $before -and (Test-Path -LiteralPath $raceFile)) {
         $lap = $script:MK8DXLaps[$script:MK8DXLaps.Count - 1]
-        try { Add-Content -LiteralPath $raceFile -Value ('{0}|{1}|{2}' -f $lap.Number, [long]$lap.Start, $lap.Text) -Encoding ascii -ErrorAction Stop } catch { }
+        try { [IO.File]::AppendAllText($raceFile, ('{0}|{1}|{2}' -f $lap.Number, [long]$lap.Start, $lap.Text) + "`r`n", $utf8) } catch { }
       }
     }
     'Info' { foreach ($line in $ShowText -split '\|') { Write-Info $line $ShowColour } }
@@ -620,6 +686,7 @@ if ($Show) {
         if ($pair.Count -eq 2) { Write-MenuItem $pair[0].Trim() $pair[1].Trim() }
       }
     }
+    'Prompt' { Write-Host $ShowText -NoNewline }
     'Finish' {
       Write-Finish $ShowText
       if ($raceFile) { Remove-Item -LiteralPath $raceFile -ErrorAction SilentlyContinue }
@@ -630,17 +697,17 @@ if ($Show) {
 
 if ($Demo) {
   # Shows every element without touching Docker, Python or an installation.
-  Write-Header 'home & club LAN' 'demo'
+  Write-Header (Tr 'home & club LAN') 'demo'
   Show-StartLights
-  Write-Lap '1/4' 'Checking Python'
-  Write-Info 'MK8DX package: C:\MK8DX\demo'
-  Write-Lap '2/4' 'Checking Docker'
-  $answer = Invoke-WithSpinner 'Waiting for the Docker engine' { Start-Sleep -Milliseconds 1500; 42 }
+  Write-Lap '1/4' (Tr 'Checking Python')
+  Write-Info (Tr 'MK8DX package: {0}' 'C:\MK8DX\demo')
+  Write-Lap '2/4' (Tr 'Checking Docker')
+  $answer = Invoke-WithSpinner (Tr 'Waiting for the Docker engine') { Start-Sleep -Milliseconds 1500; 42 }
   Write-Info "The spinner returned $answer."
-  Write-Lap '3/4' 'Preparing the MK8DX programs'
+  Write-Lap '3/4' (Tr 'Preparing the MK8DX programs')
   Write-Ok
-  Write-Lap '..' 'An example step'
-  Write-Fail 'That step did not finish. Read the message above; your data is kept.'
-  Write-Lap '4/4' 'Opening MK8DX beheer in your browser'
-  Write-Finish 'Ready. The setup opens in your browser.'
+  Write-Lap '..' (Tr 'An example step')
+  Write-Fail (Tr 'That step did not finish. Read the message above; your data is kept.')
+  Write-Lap '4/4' (Tr 'Opening MK8DX beheer in your browser')
+  Write-Finish (Tr 'Ready. The setup opens in your browser.')
 }

@@ -87,14 +87,14 @@ Een **firewall** is een beveiliging die bepaalt welke verbindingen een computer 
 
 **Starten op Windows**
 
-1. **Doe:** dubbelklik in de uitgepakte map op **Start-MK8DX-LAN.cmd**. → **Je ziet:** een venster met het MK8DX-logo en aftellen 3-2-1-GO met piepjes ([overslaan kan](BEHEER.md#het-startvenster-weergave-en-opties)), daarna regels als "MK8DX package:" en "Private installation:". De eerste keer staan er ook "Preparing the included Python packages (once, without internet)." en "Loading the included Docker images. This can take several minutes." Dat duurt enkele minuten. Daarna staat er "MK8DX setup is open in your browser:" en opent de installatie in je browser. → **Zie je iets anders?** Zie de meldingen hieronder.
+1. **Doe:** dubbelklik in de uitgepakte map op **Start-MK8DX-LAN.cmd**. → **Je ziet:** een venster met het MK8DX-logo en aftellen 3-2-1-GO met piepjes ([overslaan kan](BEHEER.md#het-startvenster-weergave-en-opties)), daarna regels als "MK8DX-pakket:" en "Private installatie:". De eerste keer staan er ook "De meegeleverde Python-pakketten voorbereiden (eenmalig, zonder internet)." en "De meegeleverde Docker-images laden. Dit kan enkele minuten duren." Dat duurt enkele minuten. Daarna staat er "MK8DX setup is open in your browser:" en opent de installatie in je browser. → **Zie je iets anders?** Zie de meldingen hieronder.
 2. **Doe:** laat het zwarte venster open tot je in de installatie op **Voltooien** hebt geklikt. Het venster zegt dat ook: "Keep this window open until you click Finish."
 
 Meldingen in het zwarte venster op Windows:
 
-- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
+- **"Python 3.12 tot en met 3.15 ontbreekt. Installeer de Python install manager van python.org (of uit de Microsoft Store), voer uit: py install 3.15, open PowerShell opnieuw en probeer het nog eens."** Doe hoofdstuk 2A stap 6 tot en met 8 en dubbelklik daarna opnieuw op Start-MK8DX-LAN.cmd.
 - **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** Start Docker Desktop, wacht op Engine running en dubbelklik opnieuw.
-- Onder een fout staat **"The selected step stopped. Read the message above before retrying."** Lees de regel erboven, los dat op en druk op een toets om het venster te sluiten.
+- Onder een fout staat **"De gekozen stap is gestopt. Lees de melding hierboven voordat je het opnieuw probeert."** Lees de regel erboven, los dat op en druk op een toets om het venster te sluiten.
 
 <!-- /os -->
 
@@ -103,14 +103,14 @@ Meldingen in het zwarte venster op Windows:
 **Starten op Linux en macOS**
 
 1. **Doe:** open een terminal in de uitgepakte map. Linux: klik in de map met rechts en kies "Openen in terminal" als je bestandsbeheer dat aanbiedt. macOS en Linux kan ook zo: open Terminal, typ `cd ` (met een spatie erachter), sleep de map in het venster en druk op Enter. → **Je ziet:** de terminal staat in de map van het pakket.
-2. **Doe:** typ `sh tooling/start-mk8dx.sh` en druk op Enter. → **Je ziet:** het MK8DX-logo en aftellen 3-2-1-GO, daarna "MK8DX package:", het Python-nummer, "Docker Compose version". De eerste keer ook "Loading the included Docker images. This can take several minutes." en "Preparing the included Python packages (once, without internet)." Daarna "Private installation:" en "MK8DX setup is open in your browser:", en de installatie opent in je browser. → **Zie je iets anders?** Opent er geen browser, kopieer dan het adres dat met `http://127.0.0.1:` begint uit de terminal naar je browser.
+2. **Doe:** typ `sh tooling/start-mk8dx.sh` en druk op Enter. → **Je ziet:** het MK8DX-logo en aftellen 3-2-1-GO, daarna "MK8DX-pakket:", het Python-nummer, "Docker Compose version". De eerste keer ook "De meegeleverde Docker-images laden. Dit kan enkele minuten duren." en "De meegeleverde Python-pakketten voorbereiden (eenmalig, zonder internet)." Daarna "Private installatie:" en "MK8DX setup is open in your browser:", en de installatie opent in je browser. → **Zie je iets anders?** Opent er geen browser, kopieer dan het adres dat met `http://127.0.0.1:` begint uit de terminal naar je browser.
 3. **Doe:** laat de terminal open tot je op **Voltooien** hebt geklikt.
 
 Meldingen in de terminal op Linux en macOS:
 
-- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** Doe hoofdstuk 2B of 2C opnieuw.
-- **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** Linux: doe hoofdstuk 2B stap 3 en 4. macOS: start Docker Desktop.
-- **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** Installeer python3-venv zoals in hoofdstuk 2B stap 2.
+- **"Python 3.12 tot en met 3.15 ontbreekt. Installeer het (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) en probeer het opnieuw."** Doe hoofdstuk 2B of 2C opnieuw.
+- **"Docker draait niet of deze gebruiker mag het niet gebruiken (Linux: sudo systemctl start docker en word lid van de groep docker; macOS: start Docker Desktop)."** Linux: doe hoofdstuk 2B stap 3 en 4. macOS: start Docker Desktop.
+- **"De private Python-omgeving kon niet worden gemaakt (Ubuntu/Debian: sudo apt install python3-venv)."** Installeer python3-venv zoals in hoofdstuk 2B stap 2.
 
 <!-- /os -->
 
@@ -424,7 +424,7 @@ Andere installatieroutes (één computer, eigen server, webhosting) staan in `do
 - **"MK8DX is already installed on this computer; restore needs a computer without it".** Terugzetten kan alleen op een computer zonder MK8DX. Vraag een IT'er om hulp (hoofdstuk 12).
 - **Docker draait niet.** Windows en macOS: start Docker Desktop, wacht op **Engine running** en klik op **Opnieuw proberen**, of start MK8DX opnieuw. Linux: `sudo systemctl start docker`.
 - **De computer heeft een nieuw adres.** Open MK8DX beheer en kies **Verhuizen** (hoofdstuk 10).
-- **Windows: "The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443".** De computer zit in een bedrijfsnetwerk dat MK8DX niet zelf mag wijzigen. Vraag de beheerder van dat netwerk om binnenkomende verbindingen op TCP-poort 80 en 443 toe te staan.
+- **Windows: "Het netwerk is 'DomainAuthenticated'; vraag de beheerder ervan om TCP 80/443 toe te staan".** De computer zit in een bedrijfsnetwerk dat MK8DX niet zelf mag wijzigen. Vraag de beheerder van dat netwerk om binnenkomende verbindingen op TCP-poort 80 en 443 toe te staan.
 - **Windows: "Windows did not allow the change (the permission prompt was declined or failed)".** Klik op **Opnieuw proberen** en daarna in het Windows-venster op **Ja**.
 - **Linux: telefoons komen er niet in en de firewall staat aan.** Klik bij Installeren op **Details** en voer de opdracht na "manual:" uit, bijvoorbeeld `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`. Met firewalld is dat `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`.
 - **De Android-app zegt "Dit is niet de QR-code van een kaart Apparaat voorbereiden."** Scan de kaart **Apparaat voorbereiden**, niet een persoonlijke kaart.

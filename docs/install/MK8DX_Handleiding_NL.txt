@@ -54,15 +54,15 @@ Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
 
 Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\host. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
 
-4. Dubbelklik op Start-MK8DX.cmd. Het venster opent met een korte race-intro: het MK8DX-logo en aftellen 3-2-1-GO met piepjes (Start-MK8DX.cmd -SkipCountdown laat het aftellen weg; de beheerpagina noemt alle opties). Daarna vraagt het venster “Where will MK8DX run?” en noemt A1, A2 en B1. Typ A1 en druk op Enter. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. De eerste installatie start daarna vanzelf. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
+4. Dubbelklik op Start-MK8DX.cmd. Het venster opent met een korte race-intro: het MK8DX-logo en aftellen 3-2-1-GO met piepjes (Start-MK8DX.cmd -SkipCountdown laat het aftellen weg; de beheerpagina noemt alle opties). Daarna vraagt het venster “Waar gaat MK8DX draaien?” en noemt A1, A2 en B1. Typ A1 en druk op Enter. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. De eerste installatie start daarna vanzelf. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
 
-Schrijf het getoonde adres bij ‘Web origin’ en het adres bij ‘Local mail inbox’ op. Het webadres lijkt op http://127.0.0.1:18080 en de testbrievenbus op http://127.0.0.1:18025. De laatste cijfers kunnen bij jou anders zijn. Gebruik altijd de werkelijk getoonde adressen.
+Schrijf het getoonde adres bij ‘Web-origin’ en het adres bij ‘Lokale mailinbox’ op. Het webadres lijkt op http://127.0.0.1:18080 en de testbrievenbus op http://127.0.0.1:18025. De laatste cijfers kunnen bij jou anders zijn. Gebruik altijd de werkelijk getoonde adressen.
 
 Ben je de adressen later kwijt? Open Start-MK8DX.cmd opnieuw en kies 3 voor status. Bij ‘origin’ staat het volledige websiteadres voor je browser en voor LiveTrial. Bij ‘localMailInbox’ staat het adres van Mailpit. Open dat tweede adres alleen in je browser om lokale aanmeldmail te lezen. Het deel na de dubbele punt is de poort. ‘127.0.0.1’ betekent deze computer; deze A1-adressen werken dus niet op een andere pc of telefoon.
 
 De persoonlijke installatiegegevens staan buiten het uitgepakte pakket in %LOCALAPPDATA%\MK8DX\Server. Laat deze map en het Docker-databasevolume staan, ook als je later een nieuw softwarepakket krijgt.
 
-5. Open het getoonde webadres in de browser op dezelfde computer. Klik ‘Sign in’ of ‘Aanmelden’ en vul precies het e-mailadres uit stap 4 in. Open in een tweede tab het adres bij ‘Local mail inbox’. Dat is Mailpit, een testbrievenbus op deze computer. Open daar je nieuwste aanmeldmail en volg de link. Zoek deze proefmail niet in je gewone inbox.
+5. Open het getoonde webadres in de browser op dezelfde computer. Klik ‘Sign in’ of ‘Aanmelden’ en vul precies het e-mailadres uit stap 4 in. Open in een tweede tab het adres bij ‘Lokale mailinbox’. Dat is Mailpit, een testbrievenbus op deze computer. Open daar je nieuwste aanmeldmail en volg de link. Zoek deze proefmail niet in je gewone inbox.
 
 Je bent nu aangemeld, maar nog geen beheerder. Open Start-MK8DX.cmd opnieuw en kies 5. Bij de eerste toekenning verschijnt ‘created’; bij een herhaling ‘unchanged’. Ververs de website of meld je opnieuw aan. De beheerweergave hoort nu beschikbaar te zijn. Een willekeurige eerste registratie krijgt nooit automatisch beheerrechten.
 
@@ -101,7 +101,7 @@ De hulp bewaart eerst een kopie van apache\conf\httpd.conf in %LOCALAPPDATA%\MK8
 
 5. Dubbelklik in de MK8DX-map op Start-MK8DX-No-Docker.cmd. Kies de getoonde route A3 en typ het e-mailadres waarmee je later beheerder wilt worden. Het venster maakt één private installatie in %LOCALAPPDATA%\MK8DX\NoDocker. Bij de eerste start pakt het alleen daar MariaDB 11.4.13 uit, maakt een eigen database en beperkte gebruiker aan, voert de migraties en Nintendo Staff- en World Records-referenties uit, en start Node.js en Mailpit. Dit kan enkele minuten duren. Laat dit MK8DX-venster open. Bij een herstart blijven sleutels, accounts, resultaten en de database staan.
 
-In dit venster zie je bij iedere start ook ‘Website:’ en ‘Sign-in mail - a test inbox:’. Bij ‘Website’ staat het volledige adres voor je browser en LiveTrial: http://127.0.0.1:18090. Bij ‘Sign-in mail - a test inbox’ staat de lokale testbrievenbus: http://127.0.0.1:18227. Open Mailpit alleen in je browser. De cijfers na de dubbele punt zijn de poorten. ‘127.0.0.1’ betekent deze computer, dus deze adressen werken niet op een ander apparaat. Ben je ze vergeten, kijk dan bovenaan hetzelfde MK8DX-venster wanneer je het de volgende keer start.
+In dit venster zie je bij iedere start ook ‘Website:’ en ‘Inlogmail - een testinbox:’. Bij ‘Website’ staat het volledige adres voor je browser en LiveTrial: http://127.0.0.1:18090. Bij ‘Inlogmail - een testinbox’ staat de lokale testbrievenbus: http://127.0.0.1:18227. Open Mailpit alleen in je browser. De cijfers na de dubbele punt zijn de poorten. ‘127.0.0.1’ betekent deze computer, dus deze adressen werken niet op een ander apparaat. Ben je ze vergeten, kijk dan bovenaan hetzelfde MK8DX-venster wanneer je het de volgende keer start.
 
 6. Open het XAMPP Control Panel. Is Apache al groen, klik dan alleen bij Apache op Stop, wacht tot de regel niet meer groen is en klik weer op Start. Zo leest Apache de nieuwe site-instelling uit stap 4. Was Apache nog uit, klik dan meteen op Start. Open in je browser http://127.0.0.1:18090. De testbrievenbus staat op http://127.0.0.1:18227. Zie je geen site, controleer eerst het MK8DX-venster, dan in XAMPP of Apache groen is. In een nieuw PowerShell-venster, in de MK8DX-pakketmap, controleer je de database en API:
 
@@ -122,7 +122,7 @@ De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, 
 
 10. Voor een backup laat je het MK8DX-venster en zijn database draaien. Stop Apache kort als je tijdens de laatste kopie geen nieuwe website-inzendingen wilt. Dubbelklik op Manage-MK8DX-No-Docker.cmd, typ 3 en druk op Enter. De back-up komt in Documenten\MK8DX-backups\a3-<datum en tijd> en wordt meteen gecontroleerd.
 
-‘Backup verified’ bevestigt de databasekopie, het profiel en de sleutels. Bewaar die hele map ook op een beschermd medium buiten deze computer. In dezelfde map controleer je later opnieuw met:
+‘Back-up gecontroleerd’ bevestigt de databasekopie, het profiel en de sleutels. Bewaar die hele map ook op een beschermd medium buiten deze computer. In dezelfde map controleer je later opnieuw met:
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
@@ -134,7 +134,7 @@ Laat dat venster open. Open een tweede PowerShell in dezelfde nieuwe pakketmap e
 
 python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
 
-Wacht op ‘unchanged’ voor de twee referentiesets en ‘Backup verified’. Druk Ctrl+C in het onderhoudsvenster. Start daarna Start-MK8DX-No-Docker.cmd uit het nieuwe pakket en Apache opnieuw. De hulp leidt pakketpaden opnieuw af zonder accounts, sleutels of data te resetten. Controleer dezelfde aanmelding, referenties en jouw proefresultaat. Een database-enginewissel voer je niet als gewone MK8DX-update uit.
+Wacht op ‘unchanged’ voor de twee referentiesets en ‘Back-up gecontroleerd’. Druk Ctrl+C in het onderhoudsvenster. Start daarna Start-MK8DX-No-Docker.cmd uit het nieuwe pakket en Apache opnieuw. De hulp leidt pakketpaden opnieuw af zonder accounts, sleutels of data te resetten. Controleer dezelfde aanmelding, referenties en jouw proefresultaat. Een database-enginewissel voer je niet als gewone MK8DX-update uit.
 
 12. Voor een herstelproef op een andere Windows-computer installeer je daar eerst XAMPP Apache, Node 24 en Python zoals in stappen 1 en 2. Pak hetzelfde A3-pakket daar uit en stel Apache met configure_xampp.ps1 in zoals in stap 4. Kopieer de hele geverifieerde backupmap privé naar Documenten\MK8DX-backups. Gebruik geen bestaande gegevensmap op die computer. Open PowerShell in de nieuwe pakketmap en maak alleen het nieuwe profiel aan:
 
@@ -148,7 +148,7 @@ Laat dit venster open. Gebruik in het tweede venster de echte naam van jouw back
 
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
-Verwacht ‘Backup verified’ en daarna een geslaagde controle van alle migraties. Druk Ctrl+C in het onderhoudsvenster. Open nu Start-MK8DX-No-Docker.cmd en start Apache in het XAMPP Control Panel. Meld je aan met een bestaand account uit de backup en controleer beheer en een bekend resultaat. De eerste beheerder wordt niet opnieuw toegekend. Als de doelcomputer al een MK8DX-installatie of een proces op poort 18306 heeft, gebruik haar niet als hersteldoel; de hulp wist geen bestaande database. Houd de originele backup intact.
+Verwacht ‘Back-up gecontroleerd’ en daarna een geslaagde controle van alle migraties. Druk Ctrl+C in het onderhoudsvenster. Open nu Start-MK8DX-No-Docker.cmd en start Apache in het XAMPP Control Panel. Meld je aan met een bestaand account uit de backup en controleer beheer en een bekend resultaat. De eerste beheerder wordt niet opnieuw toegekend. Als de doelcomputer al een MK8DX-installatie of een proces op poort 18306 heeft, gebruik haar niet als hersteldoel; de hulp wist geen bestaande database. Houd de originele backup intact.
 
 Op je eigen netwerk gebruiken
 
@@ -615,7 +615,7 @@ De bestaande Linux-starter is:
 
 sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
-Typ A1; de eerste installatie start vanzelf. De starter toont het volledige websiteadres bij ‘Web origin’ en Mailpit bij ‘Local mail inbox’. Beide adressen met 127.0.0.1 werken op deze Linux-computer. Open het websiteadres in de browser en Mailpit in een tweede tab voor de aanmeldlink. Als de site start, kun je de website en browserscanner daar lokaal gebruiken. Controleer zelf of aanmelden, een inzending en de websiteweergave echt werken. Deze volledige lokale proef is voor Linux nog niet uitgevoerd; een geslaagde Docker-start alleen bewijst die keten niet.
+Typ A1; de eerste installatie start vanzelf. De starter toont het volledige websiteadres bij ‘Web-origin’ en Mailpit bij ‘Lokale mailinbox’. Beide adressen met 127.0.0.1 werken op deze Linux-computer. Open het websiteadres in de browser en Mailpit in een tweede tab voor de aanmeldlink. Als de site start, kun je de website en browserscanner daar lokaal gebruiken. Controleer zelf of aanmelden, een inzending en de websiteweergave echt werken. Deze volledige lokale proef is voor Linux nog niet uitgevoerd; een geslaagde Docker-start alleen bewijst die keten niet.
 
 Wat nog ontwikkeling vraagt
 

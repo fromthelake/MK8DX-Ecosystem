@@ -56,15 +56,15 @@ Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
 
 Compara el valor completo con la línea de ese archivo en SHA256SUMS.txt. Si no coinciden, detente y pide una copia correcta. Haz clic derecho en el ZIP y elige “Extraer todo”. Un destino adecuado es Documents\MK8DX\host. Abre la carpeta extraída que contiene Start-MK8DX.cmd y compose.yaml.
 
-4. Haz doble clic en Start-MK8DX.cmd. La ventana se abre con una breve intro de carrera: el logotipo de MK8DX y una cuenta regresiva 3-2-1-GO con pitidos (Start-MK8DX.cmd -SkipCountdown quita la cuenta regresiva; la guía de hosting enumera todas las opciones). Después pregunta “Where will MK8DX run?” (¿dónde funcionará MK8DX?) y muestra A1, A2 y B1. Escribe A1 y presiona Enter. Introduce la dirección de correo electrónico con la que iniciarás sesión más tarde y con la que serás administrador. La primera configuración empieza entonces sola. MK8DX carga los programas suministrados y crea sus propias claves, una base de datos y los datos de referencia estándar. El primer inicio puede tardar un rato.
+4. Haz doble clic en Start-MK8DX.cmd. La ventana se abre con una breve intro de carrera: el logotipo de MK8DX y una cuenta regresiva 3-2-1-GO con pitidos (Start-MK8DX.cmd -SkipCountdown quita la cuenta regresiva; la guía de hosting enumera todas las opciones). Después pregunta “¿Dónde se ejecutará MK8DX?” y muestra A1, A2 y B1. Escribe A1 y presiona Enter. Introduce la dirección de correo electrónico con la que iniciarás sesión más tarde y con la que serás administrador. La primera configuración empieza entonces sola. MK8DX carga los programas suministrados y crea sus propias claves, una base de datos y los datos de referencia estándar. El primer inicio puede tardar un rato.
 
-Anota la dirección que aparece como “Web origin” (la web) y la que aparece como “Local mail inbox” (el buzón de correo local). La dirección de la web puede ser como http://127.0.0.1:18080 y el buzón de prueba como http://127.0.0.1:18025. Tus últimas cifras pueden ser distintas. Usa siempre las direcciones que se muestran de verdad.
+Anota la dirección que aparece como “Origen web” y la que aparece como “Bandeja de entrada de correo local”. La dirección de la web puede ser como http://127.0.0.1:18080 y el buzón de prueba como http://127.0.0.1:18025. Tus últimas cifras pueden ser distintas. Usa siempre las direcciones que se muestran de verdad.
 
 ¿Has perdido las direcciones más tarde? Vuelve a abrir Start-MK8DX.cmd y elige 3 para el estado. “origin” es la dirección completa de la web para tu navegador y para LiveTrial. “localMailInbox” es la dirección de Mailpit. Abre esa segunda dirección solo en tu navegador para leer el correo de inicio de sesión local. Las cifras tras los dos puntos son el puerto. “127.0.0.1” significa esta computadora, así que estas direcciones A1 no funcionan en otra PC ni en un celular.
 
 Los datos personales de la instalación se guardan fuera del paquete extraído, en %LOCALAPPDATA%\MK8DX\Server. Conserva esta carpeta y el volumen de base de datos de Docker cuando recibas un paquete de software más nuevo.
 
-5. Abre la dirección de la web que se muestra en un navegador de la misma computadora. Haz clic en “Iniciar sesión” (o “Sign in” / “Aanmelden”) e introduce exactamente la dirección del paso 4. En otra pestaña del navegador, abre “Local mail inbox”. Es Mailpit, un buzón de prueba en tu computadora. Abre allí tu correo de inicio de sesión más reciente y sigue su enlace. No busques este correo de prueba en tu buzón normal.
+5. Abre la dirección de la web que se muestra en un navegador de la misma computadora. Haz clic en “Iniciar sesión” (o “Sign in” / “Aanmelden”) e introduce exactamente la dirección del paso 4. En otra pestaña del navegador, abre “Bandeja de entrada de correo local”. Es Mailpit, un buzón de prueba en tu computadora. Abre allí tu correo de inicio de sesión más reciente y sigue su enlace. No busques este correo de prueba en tu buzón normal.
 
 Has iniciado sesión, pero todavía no tienes derechos de administrador. Vuelve a abrir Start-MK8DX.cmd y elige 5. La primera concesión dice “created”; una repetición dice “unchanged”. Actualiza la web o vuelve a iniciar sesión. Debería aparecer la vista de administración. Quien se registre primero nunca recibe derechos de administrador automáticamente.
 
@@ -103,7 +103,7 @@ El asistente guarda primero apache\conf\httpd.conf en %LOCALAPPDATA%\MK8DX\Apach
 
 5. Haz doble clic en Start-MK8DX-No-Docker.cmd. Elige la vía A3 e introduce la dirección de correo electrónico que usarás más tarde como administrador. La ventana crea una instalación privada en %LOCALAPPDATA%\MK8DX\NoDocker. En el primer inicio extrae MariaDB 11.4.13 solo en esa carpeta, crea una base de datos dedicada y un usuario limitado, aplica las migraciones y el Personal de Nintendo y los Récords mundiales, e inicia Node.js y Mailpit. Esto puede tardar varios minutos. Deja abierta esta ventana de MK8DX. Un reinicio conserva las claves, las cuentas, los resultados y la base de datos.
 
-En cada inicio, esta ventana también muestra “Website:” (web) y “Sign-in mail - a test inbox:” (correo de inicio de sesión, un buzón de prueba). “Website” es la dirección completa para tu navegador y para LiveTrial: http://127.0.0.1:18090. “Sign-in mail - a test inbox” es el buzón de prueba local: http://127.0.0.1:18227. Abre Mailpit solo en tu navegador. Las cifras tras los dos puntos son los puertos. “127.0.0.1” significa esta computadora, así que estas direcciones no funcionan en otro dispositivo. Si las olvidas, míralas cerca de la parte superior de la misma ventana de MK8DX la próxima vez que la inicies.
+En cada inicio, esta ventana también muestra “Sitio web:” y “Correo de inicio de sesión - una bandeja de prueba:”. “Sitio web” es la dirección completa para tu navegador y para LiveTrial: http://127.0.0.1:18090. “Correo de inicio de sesión - una bandeja de prueba” es el buzón de prueba local: http://127.0.0.1:18227. Abre Mailpit solo en tu navegador. Las cifras tras los dos puntos son los puertos. “127.0.0.1” significa esta computadora, así que estas direcciones no funcionan en otro dispositivo. Si las olvidas, míralas cerca de la parte superior de la misma ventana de MK8DX la próxima vez que la inicies.
 
 6. Abre el XAMPP Control Panel. Si Apache ya está en verde, haz clic en Stop solo para Apache, espera a que su fila ya no esté en verde y vuelve a hacer clic en Start. Así se carga el nuevo ajuste de la web del paso 4. Si Apache estaba detenido, haz clic en Start directamente. Abre http://127.0.0.1:18090 en tu navegador. El buzón de prueba local es http://127.0.0.1:18227. Si la web no está disponible, mira primero la ventana de MK8DX y después confirma que Apache está en verde. En una segunda ventana de PowerShell abierta en la carpeta del paquete, comprueba la base de datos y la API:
 
@@ -124,7 +124,7 @@ Solo funciona para una cuenta que ya haya verificado su correo. Espera “create
 
 10. Para una copia de seguridad, deja en marcha la ventana de MK8DX y su base de datos. Puedes detener Apache un momento para evitar nuevos envíos por la web durante la copia final. Haz doble clic en Manage-MK8DX-No-Docker.cmd, escribe 3 y presiona Enter. Escribe la copia de seguridad en Documents\MK8DX-backups\a3-<date and time> y la comprueba al instante.
 
-“Backup verified” confirma la copia de la base de datos, el perfil y las claves. Guarda también la carpeta completa en un almacenamiento protegido fuera de esta computadora. Para volver a comprobar exactamente esta copia de seguridad, ejecuta:
+“Copia de seguridad verificada” confirma la copia de la base de datos, el perfil y las claves. Guarda también la carpeta completa en un almacenamiento protegido fuera de esta computadora. Para volver a comprobar exactamente esta copia de seguridad, ejecuta:
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
@@ -136,7 +136,7 @@ Deja esa ventana abierta. Abre una segunda ventana de PowerShell en el paquete n
 
 python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
 
-Espera “unchanged” en los dos conjuntos de referencia y “Backup verified”. Presiona Ctrl+C en la ventana de mantenimiento. Inicia Start-MK8DX-No-Docker.cmd desde el paquete nuevo y vuelve a iniciar Apache. El asistente actualiza las rutas derivadas del paquete sin restablecer cuentas, claves ni datos. Comprueba el mismo inicio de sesión, las referencias y el resultado de prueba. No trates un cambio de motor de base de datos como una actualización normal de MK8DX.
+Espera “unchanged” en los dos conjuntos de referencia y “Copia de seguridad verificada”. Presiona Ctrl+C en la ventana de mantenimiento. Inicia Start-MK8DX-No-Docker.cmd desde el paquete nuevo y vuelve a iniciar Apache. El asistente actualiza las rutas derivadas del paquete sin restablecer cuentas, claves ni datos. Comprueba el mismo inicio de sesión, las referencias y el resultado de prueba. No trates un cambio de motor de base de datos como una actualización normal de MK8DX.
 
 12. Para probar una restauración en otra computadora con Windows, instala allí XAMPP Apache, Node 24 y Python como en los pasos 1 y 2. Extrae el mismo paquete A3 y configura Apache con configure_xampp.ps1 como en el paso 4. Copia de forma privada la carpeta completa de la copia de seguridad verificada a Documents\MK8DX-backups. No uses una carpeta de datos existente en esa computadora. Abre PowerShell en el paquete nuevo y crea solo el perfil nuevo:
 
@@ -150,7 +150,7 @@ Deja esta ventana abierta. En la segunda ventana usa el nombre real de tu carpet
 
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
-Espera “Backup verified” y después una comprobación correcta de todas las migraciones. Presiona Ctrl+C en la ventana de mantenimiento. Abre Start-MK8DX-No-Docker.cmd e inicia Apache en el XAMPP Control Panel. Inicia sesión con una cuenta existente de la copia de seguridad y comprueba el acceso de administrador y un resultado conocido. El primer administrador no se vuelve a conceder. Si la computadora de destino ya tiene una instalación de MK8DX u otro proceso en el puerto 18306, no lo uses como destino de esta restauración; el asistente no borra una base de datos existente. Conserva intacta la copia de seguridad original.
+Espera “Copia de seguridad verificada” y después una comprobación correcta de todas las migraciones. Presiona Ctrl+C en la ventana de mantenimiento. Abre Start-MK8DX-No-Docker.cmd e inicia Apache en el XAMPP Control Panel. Inicia sesión con una cuenta existente de la copia de seguridad y comprueba el acceso de administrador y un resultado conocido. El primer administrador no se vuelve a conceder. Si la computadora de destino ya tiene una instalación de MK8DX u otro proceso en el puerto 18306, no lo uses como destino de esta restauración; el asistente no borra una base de datos existente. Conserva intacta la copia de seguridad original.
 
 Usarlo en tu red doméstica
 
@@ -306,7 +306,7 @@ Espera created, o unchanged si se repite. Actualiza la web. Registrarse primero 
 
 python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
 
-El asistente informa Backup verified. Guarda también una copia protegida fuera de esta cuenta de hosting. Reinicia la app Node en DirectAdmin y comprueba ready. La copia de seguridad incluye cuentas, concesiones de administrador y claves; nunca la subas a public_html ni a un enlace público.
+El asistente informa Copia de seguridad verificada. Guarda también una copia protegida fuera de esta cuenta de hosting. Reinicia la app Node en DirectAdmin y comprueba ready. La copia de seguridad incluye cuentas, concesiones de administrador y claves; nunca la subas a public_html ni a un enlace público.
 
 14. Para una actualización, comprueba el nuevo ZIP B2 en tu PC. Detén la app Node en DirectAdmin y haz una copia de seguridad verificada con la aplicación antigua. Sube el ZIP nuevo por la misma vía SSH/SCP. En SSH, cambia el nombre de la carpeta antigua de la aplicación y después crea una nueva vacía. Usa estas órdenes solo cuando el ZIP nuevo esté en tu carpeta personal y todavía no exista una carpeta mk8dx-before-update:
 
@@ -615,7 +615,7 @@ El iniciador de Linux existente es:
 
 sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
-Escribe A1; la primera configuración empieza sola. El iniciador muestra la dirección completa de la web como “Web origin” y Mailpit como “Local mail inbox”. Las dos direcciones 127.0.0.1 funcionan en esta computadora con Linux. Abre la web en tu navegador y Mailpit en una segunda pestaña para el enlace de inicio de sesión. Si la web se inicia, puedes usar allí en local la web y el escáner del navegador. Comprueba tú mismo que el inicio de sesión, un envío y su vista en la web funcionan de verdad. Esa cadena local completa no se ha ejecutado en Linux para esta release; que los contenedores estén en marcha no lo demuestra por sí solo.
+Escribe A1; la primera configuración empieza sola. El iniciador muestra la dirección completa de la web como “Origen web” y Mailpit como “Bandeja de entrada de correo local”. Las dos direcciones 127.0.0.1 funcionan en esta computadora con Linux. Abre la web en tu navegador y Mailpit en una segunda pestaña para el enlace de inicio de sesión. Si la web se inicia, puedes usar allí en local la web y el escáner del navegador. Comprueba tú mismo que el inicio de sesión, un envío y su vista en la web funcionan de verdad. Esa cadena local completa no se ha ejecutado en Linux para esta release; que los contenedores estén en marcha no lo demuestra por sí solo.
 
 Qué falta por desarrollar
 

@@ -56,15 +56,15 @@ Get-FileHash '.\mk8dx-host-local-v0.2.3-amd64.zip' -Algorithm SHA256
 
 将完整的值与 SHA256SUMS.txt 中该文件对应的那一行进行比较。如果不一致，请停止并索取正确的副本。右键单击 ZIP 文件，选择 “Extract All”（全部解压缩）。合适的目标位置是 Documents\MK8DX\host。打开解压后包含 Start-MK8DX.cmd 和 compose.yaml 的文件夹。
 
-4. 双击 Start-MK8DX.cmd。窗口打开时会有一段简短的赛车开场：MK8DX 标志和带提示音的 3-2-1-GO 倒计时（Start-MK8DX.cmd -SkipCountdown 可以省略倒计时；托管指南列出了所有选项）。然后它会询问 “Where will MK8DX run?”（MK8DX 将在哪里运行？），并列出 A1、A2 和 B1。输入 A1 并按 Enter。输入你以后用来登录并成为管理员的电子邮件地址。首次设置随后会自动开始。MK8DX 会加载附带的程序，并创建自己的密钥、一个数据库和标准参考数据。第一次启动可能需要一段时间。
+4. 双击 Start-MK8DX.cmd。窗口打开时会有一段简短的赛车开场：MK8DX 标志和带提示音的 3-2-1-GO 倒计时（Start-MK8DX.cmd -SkipCountdown 可以省略倒计时；托管指南列出了所有选项）。然后它会询问 “MK8DX 将在哪里运行？”，并列出 A1、A2 和 B1。输入 A1 并按 Enter。输入你以后用来登录并成为管理员的电子邮件地址。首次设置随后会自动开始。MK8DX 会加载附带的程序，并创建自己的密钥、一个数据库和标准参考数据。第一次启动可能需要一段时间。
 
-记下显示为 “Web origin”（网站地址）的地址和显示为 “Local mail inbox”（本地邮件收件箱）的地址。网站地址可能类似 http://127.0.0.1:18080，测试收件箱可能类似 http://127.0.0.1:18025。你最后的数字可能不同。请始终使用实际显示的地址。
+记下显示为 “Web 源”的地址和显示为 “本地邮件收件箱”的地址。网站地址可能类似 http://127.0.0.1:18080，测试收件箱可能类似 http://127.0.0.1:18025。你最后的数字可能不同。请始终使用实际显示的地址。
 
 以后忘了这些地址？再次打开 Start-MK8DX.cmd，选择 3 查看状态。“origin” 是供浏览器和 LiveTrial 使用的完整网站地址。“localMailInbox” 是 Mailpit 的地址。第二个地址只在浏览器中打开，用来阅读本地登录邮件。冒号后面的数字是端口。“127.0.0.1” 表示这台电脑，所以这些 A1 地址在另一台电脑或手机上无法使用。
 
 个人安装数据保存在解压后的软件包之外的 %LOCALAPPDATA%\MK8DX\Server 中。当你收到更新的软件包时，请保留这个文件夹和 Docker 数据库卷。
 
-5. 在同一台电脑的浏览器中打开显示的网站地址。点击“登录”，然后准确输入第 4 步中的地址。在另一个浏览器标签页中打开 “Local mail inbox”（本地邮件收件箱）。这就是 Mailpit，你电脑上的一个测试收件箱。在那里打开你最新的登录邮件，并点击其中的链接。不要在你平时的收件箱中查找这封试用邮件。
+5. 在同一台电脑的浏览器中打开显示的网站地址。点击“登录”，然后准确输入第 4 步中的地址。在另一个浏览器标签页中打开 “本地邮件收件箱”。这就是 Mailpit，你电脑上的一个测试收件箱。在那里打开你最新的登录邮件，并点击其中的链接。不要在你平时的收件箱中查找这封试用邮件。
 
 你已经登录了，但还没有管理员权限。再次打开 Start-MK8DX.cmd 并选择 5。第一次授权会显示 “created”（已创建）；重复操作会显示 “unchanged”（未更改）。刷新网站或重新登录。管理视图应当出现。随便哪个第一个注册的人都不会自动获得管理员权限。
 
@@ -103,7 +103,7 @@ powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoo
 
 5. 双击 Start-MK8DX-No-Docker.cmd。选择 A3 方式，并输入你以后用作管理员的电子邮件地址。窗口会在 %LOCALAPPDATA%\MK8DX\NoDocker 创建一个私有安装。首次启动时，它只把 MariaDB 11.4.13 解压到那个文件夹，创建一个专用数据库和一个受限用户，应用数据库迁移以及“任天堂工作人员”和“世界纪录”数据，并启动 Node.js 和 Mailpit。这可能需要几分钟。请保持这个 MK8DX 窗口打开。重启会保留密钥、账户、成绩和数据库。
 
-每次启动时，这个窗口还会显示 “Website:”（网站：）和 “Sign-in mail - a test inbox:”（登录邮件 - 测试收件箱：）。“Website” 是供浏览器和 LiveTrial 使用的完整地址：http://127.0.0.1:18090。“Sign-in mail - a test inbox” 是本地测试收件箱：http://127.0.0.1:18227。Mailpit 只在浏览器中打开。冒号后面的数字是端口。“127.0.0.1” 表示这台电脑，所以这些地址在其他设备上无法使用。如果你忘了它们，下次启动时请查看同一个 MK8DX 窗口的顶部附近。
+每次启动时，这个窗口还会显示 “网站:”和 “登录邮件 - 测试收件箱:”。“网站” 是供浏览器和 LiveTrial 使用的完整地址：http://127.0.0.1:18090。“登录邮件 - 测试收件箱” 是本地测试收件箱：http://127.0.0.1:18227。Mailpit 只在浏览器中打开。冒号后面的数字是端口。“127.0.0.1” 表示这台电脑，所以这些地址在其他设备上无法使用。如果你忘了它们，下次启动时请查看同一个 MK8DX 窗口的顶部附近。
 
 6. 打开 XAMPP Control Panel（XAMPP 控制面板）。如果 Apache 已经是绿色，只对 Apache 点击 Stop（停止），等到它那一行不再是绿色，然后再点击 Start（启动）。这会加载第 4 步中的新网站设置。如果 Apache 原本是停止的，直接点击 Start。在浏览器中打开 http://127.0.0.1:18090。本地测试收件箱是 http://127.0.0.1:18227。如果网站无法访问，请先查看 MK8DX 窗口，然后确认 Apache 是绿色的。在软件包文件夹中打开第二个 PowerShell 窗口，检查数据库和 API：
 
@@ -124,7 +124,7 @@ Apache 没有变绿？未改动的 XAMPP Apache 除了 18090 之外，还要使�
 
 10. 进行备份时，保持 MK8DX 窗口及其数据库运行。在最终复制期间，你可以暂时停止 Apache，以防出现新的网页提交。双击 Manage-MK8DX-No-Docker.cmd，输入 3 并按 Enter。它会把备份写入 Documents\MK8DX-backups\a3-<日期和时间>，并立即检查。
 
-“Backup verified”（备份已验证）确认数据库副本、配置文件和密钥都没有问题。请把整个文件夹也保存在这台电脑之外受保护的存储中。要再次检查这份备份，运行：
+“备份已验证”确认数据库副本、配置文件和密钥都没有问题。请把整个文件夹也保存在这台电脑之外受保护的存储中。要再次检查这份备份，运行：
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
@@ -136,7 +136,7 @@ python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDoc
 
 python tooling/install.py upgrade --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-update-2026-10-01"
 
-等待两组参考数据都显示 “unchanged”（未更改），并显示 “Backup verified”（备份已验证）。在维护窗口中按 Ctrl+C。从新软件包启动 Start-MK8DX-No-Docker.cmd，并再次启动 Apache。助手会刷新从软件包派生的路径，而不会重置账户、密钥或数据。检查同样的登录、参考数据和试用成绩。不要把数据库引擎的更换当作普通的 MK8DX 更新。
+等待两组参考数据都显示 “unchanged”（未更改），并显示 “备份已验证”。在维护窗口中按 Ctrl+C。从新软件包启动 Start-MK8DX-No-Docker.cmd，并再次启动 Apache。助手会刷新从软件包派生的路径，而不会重置账户、密钥或数据。检查同样的登录、参考数据和试用成绩。不要把数据库引擎的更换当作普通的 MK8DX 更新。
 
 12. 要在另一台 Windows 电脑上试用恢复，请按照第 1 步和第 2 步在那里安装 XAMPP Apache、Node 24 和 Python。解压同一个 A3 软件包，并按照第 4 步用 configure_xampp.ps1 设置 Apache。把整个已验证的备份文件夹以私密方式复制到 Documents\MK8DX-backups。不要使用那台电脑上已有的数据文件夹。在新软件包中打开 PowerShell，只创建新的配置文件：
 
@@ -150,7 +150,7 @@ python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDoc
 
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
-预期结果是 “Backup verified”（备份已验证），然后所有迁移都通过检查。在维护窗口中按 Ctrl+C。打开 Start-MK8DX-No-Docker.cmd，并在 XAMPP Control Panel 中启动 Apache。用备份中已有的账户登录，检查管理员权限和一个已知的成绩。第一个管理员不会被再次授予。如果目标电脑上已经有 MK8DX 安装，或者有其他进程占用端口 18306，就不要把它用作这次恢复的目标；助手不会删除已有的数据库。请保持原始备份完好无损。
+预期结果是 “备份已验证”，然后所有迁移都通过检查。在维护窗口中按 Ctrl+C。打开 Start-MK8DX-No-Docker.cmd，并在 XAMPP Control Panel 中启动 Apache。用备份中已有的账户登录，检查管理员权限和一个已知的成绩。第一个管理员不会被再次授予。如果目标电脑上已经有 MK8DX 安装，或者有其他进程占用端口 18306，就不要把它用作这次恢复的目标；助手不会删除已有的数据库。请保持原始备份完好无损。
 
 在你的家庭网络中使用
 
@@ -306,7 +306,7 @@ python3 tooling/install.py admin --state-dir "$HOME/mk8dx-private"
 
 python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-output "$HOME/mk8dx-backups/b2-2026-10-01"
 
-助手会报告 Backup verified（备份已验证）。请在这个托管账户之外也保存一份受保护的副本。在 DirectAdmin 中重启 Node 应用并检查 ready。备份包括账户、管理员授权和密钥；绝不要把它上传到 public_html 或公共链接中。
+助手会报告 备份已验证。请在这个托管账户之外也保存一份受保护的副本。在 DirectAdmin 中重启 Node 应用并检查 ready。备份包括账户、管理员授权和密钥；绝不要把它上传到 public_html 或公共链接中。
 
 14. 进行更新时，先在你的电脑上检查新的 B2 ZIP。在 DirectAdmin 中停止 Node 应用，并用旧的应用程序创建一份已验证的备份。通过同样的 SSH/SCP 通道上传新的 ZIP。在 SSH 中，重命名旧的应用程序文件夹，然后新建一个空文件夹。只有当新的 ZIP 位于你的主文件夹中，且还不存在 mk8dx-before-update 文件夹时，才使用下面这些命令：
 
@@ -615,7 +615,7 @@ cd "$HOME/MK8DX/host"
 
 sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
-输入 A1；首次设置会自动开始。启动脚本会把完整的网站地址显示为 “Web origin”（网站地址），把 Mailpit 显示为 “Local mail inbox”（本地邮件收件箱）。这两个 127.0.0.1 地址都可以在这台 Linux 电脑上使用。在浏览器中打开网站，并在第二个标签页中打开 Mailpit 以获取登录链接。如果网站启动成功，你就可以在本地使用那里的网站和浏览器扫描器。请自己检查登录、提交以及它在网站上的显示是否真的正常。这条完整的本地链路尚未在 Linux 上针对本版本运行过；仅仅容器在运行并不能证明这一点。
+输入 A1；首次设置会自动开始。启动脚本会把完整的网站地址显示为 “Web 源”，把 Mailpit 显示为 “本地邮件收件箱”。这两个 127.0.0.1 地址都可以在这台 Linux 电脑上使用。在浏览器中打开网站，并在第二个标签页中打开 Mailpit 以获取登录链接。如果网站启动成功，你就可以在本地使用那里的网站和浏览器扫描器。请自己检查登录、提交以及它在网站上的显示是否真的正常。这条完整的本地链路尚未在 Linux 上针对本版本运行过；仅仅容器在运行并不能证明这一点。
 
 仍需开发的内容
 

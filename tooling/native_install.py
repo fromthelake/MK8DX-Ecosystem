@@ -16,7 +16,7 @@ import zipfile
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from install import PROFILE, SECRET, PUBLIC, SECRET_KEYS, key, public_client, safe_state_dir, valid_origin, write_json, replace_group
+from install import PROFILE, SECRET, PUBLIC, SECRET_KEYS, key, public_client, safe_state_dir, valid_origin, write_json, replace_group, t
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -113,8 +113,10 @@ def create(state, route, origin, admin_email, db_host, db_port, db_name, db_user
                                            if k.startswith("MK8DX_HOSTED_") or k == "MK8DX_LOCAL_DEMO"})
     write_json(state / PUBLIC, public_client(origin))
     for name in (PROFILE, SECRET, "operator.json", PUBLIC): os.chmod(state / name, 0o600)
-    print(f"Private installation: {state}\nWebsite: {origin}\nDatabase: {db_name} on {db_host}:{db_port}")
-    if route == "A3": print("Local test mailbox: http://127.0.0.1:18227")
+    print(t("Private installation: {0}", state))
+    print(t("Website: {0}", origin))
+    print(t("Database: {0} on {1}", db_name, f"{db_host}:{db_port}"))
+    if route == "A3": print(t("Local test mailbox: {0}", "http://127.0.0.1:18227"))
 
 
 def wizard(state, route):
@@ -122,30 +124,30 @@ def wizard(state, route):
         origin = "http://127.0.0.1:18090"
         host, port = "127.0.0.1", 18306
         db_name, db_user, db_password = "mk8dx", "mk8dx_app", secrets.token_urlsafe(36)
-        print("MK8DX will create its own MariaDB 11.4 database inside the private installation folder.")
+        print(t("MK8DX will create its own MariaDB 11.4 database inside the private installation folder."))
     else:
-        print("Create an empty database and its limited user in DirectAdmin first. No existing database is erased.")
-        origin = "https://" + input("Website host name, without https://: ").strip()
-        host = input("Database host from DirectAdmin: ").strip()
-        port = int(input("Database port [3306]: ").strip() or "3306")
-        db_name = input("Full database name (including provider prefix if shown): ").strip()
-        db_user = input("Limited database user (full name): ").strip()
-        db_password = getpass.getpass("Database user's password (hidden): ")
+        print(t("Create an empty database and its limited user in DirectAdmin first. No existing database is erased."))
+        origin = "https://" + input(t("Website host name, without https://: ")).strip()
+        host = input(t("Database host from DirectAdmin: ")).strip()
+        port = int(input(t("Database port [3306]: ")).strip() or "3306")
+        db_name = input(t("Full database name (including provider prefix if shown): ")).strip()
+        db_user = input(t("Limited database user (full name): ")).strip()
+        db_password = getpass.getpass(t("Database user's password (hidden): "))
     if route == "A3":
         smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = "", 0, "", "", ""
     else:
-        print("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
-              "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.")
-        smtp_host = input("Mailbox SMTP server name: ").strip()
-        smtp_port = int(input("SMTP implicit-TLS port [465]: ").strip() or "465")
-        smtp_user = input("Mailbox SMTP login: ").strip()
-        smtp_password = getpass.getpass("Mailbox SMTP password (hidden): ")
-        smtp_from = input("Authorized sender address: ").strip()
+        print(t("Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). "
+                "A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type."))
+        smtp_host = input(t("Mailbox SMTP server name: ")).strip()
+        smtp_port = int(input(t("SMTP implicit-TLS port [465]: ")).strip() or "465")
+        smtp_user = input(t("Mailbox SMTP login: ")).strip()
+        smtp_password = getpass.getpass(t("Mailbox SMTP password (hidden): "))
+        smtp_from = input(t("Authorized sender address: ")).strip()
     admin_email = ""
     while "@" not in admin_email or " " in admin_email or admin_email.startswith("@"):
         if admin_email:
-            print("That does not look like one email address; try again.")
-        admin_email = input("Your own future MK8DX administrator email: ").strip()
+            print(t("That does not look like one email address; try again."))
+        admin_email = input(t("Your own future MK8DX administrator email: ")).strip()
     create(state, route, origin, admin_email, host, port, db_name, db_user,
            db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from)
 
@@ -270,8 +272,8 @@ def serve(state):
             operate(state, "check")
         server = subprocess.Popen(["node", str(ROOT / "api/dist/composition/passwordless-hosted-main.js")],
                                   cwd=ROOT / "api", env=environment)
-        print("MK8DX is starting. Leave this window open. Open http://127.0.0.1:18090")
-        print("Press Ctrl+C here to stop this MK8DX Node process and its local test mailbox.")
+        print(t("MK8DX is starting. Leave this window open. Open {0}", "http://127.0.0.1:18090"))
+        print(t("Press Ctrl+C here to stop this MK8DX Node process and its local test mailbox."))
         while server.poll() is None and mail.poll() is None and database.poll() is None:
             try: server.wait(timeout=0.5)
             except subprocess.TimeoutExpired: pass
@@ -279,7 +281,7 @@ def serve(state):
         if mail.poll() is not None: raise RuntimeError("Local mail capture stopped; inspect the error above")
         raise RuntimeError("Local MariaDB stopped; inspect the error above")
     except KeyboardInterrupt:
-        print("Stopping this MK8DX installation")
+        print(t("Stopping this MK8DX installation"))
     finally:
         for child in (server, mail):
             if child is not None and child.poll() is None:
@@ -404,7 +406,7 @@ def backup(state, output):
                                                      "files": manifest, "database": profile["database"]["name"],
                                                      "engine": observed["engine"], "version": observed["version"]})
         os.chmod(output / "BACKUP_MANIFEST.json", 0o600)
-        print(f"Private backup complete: {output}")
+        print(t("Private backup complete: {0}", output))
     except Exception:
         shutil.rmtree(output)
         raise
@@ -418,7 +420,7 @@ def verify_backup(output):
             raise ValueError(f"Backup file differs: {name}")
     with gzip.open(output / "database.sql.gz", "rb") as stream:
         while stream.read(1024 * 1024): pass
-    print("Backup verified")
+    print(t("Backup verified"))
 
 
 def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_password, origin=None):

@@ -5,7 +5,9 @@ cd /d "%~dp0"
 set "empty=0"
 set "MK8DX_A3_STATE=%LOCALAPPDATA%\MK8DX\NoDocker"
 if not exist "%MK8DX_A3_STATE%\operator-profile.json" (
-    echo MK8DX is not installed yet. Start Start-MK8DX-No-Docker.cmd first.
+    if exist "%~dp0tooling\mk8dx-ui.ps1" (
+        <nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tooling\mk8dx-ui.ps1" -Show Fail -ShowText "MK8DX is not installed yet. Start {0} first." -ShowValues "Start-MK8DX-No-Docker.cmd"
+    ) else echo MK8DX is not installed yet. Start Start-MK8DX-No-Docker.cmd first.
     pause
     exit /b 1
 )
@@ -23,7 +25,8 @@ if not exist "%~dp0tooling\mk8dx-ui.ps1" set "UI=rem"
 if !empty! geq 3 exit /b 0
 %UI% -Show Menu -ShowText "What do you want to do?" -ShowItems "1=Check that everything works;2=Make me administrator - after you signed in once;3=Make a backup - it is checked right away;4=Show the addresses;0=Close"
 set "choice="
-set /p "choice=Type a number and press Enter: "
+%UI% -Show Prompt -ShowText "Type a number and press Enter: "
+set /p "choice="
 if not defined choice (set /a empty+=1 & goto menu)
 set "empty=0"
 if "%choice%"=="1" (
@@ -40,16 +43,16 @@ if "%choice%"=="3" (
     for /f %%t in ('powershell -NoProfile -Command "Get-Date -Format yyyyMMdd-HHmmss"') do set "stamp=%%t"
     set "out=%USERPROFILE%\Documents\MK8DX-backups\a3-!stamp!"
     python tooling\install.py backup --state-dir "%MK8DX_A3_STATE%" --backup-output "!out!" <nul
-    if not errorlevel 1 echo Private backup - keep it safe, never share it: !out!
+    if not errorlevel 1 %UI% -Show Info -ShowText "Private backup - keep it safe, never share it: {0}" -ShowValues "!out!"
     call :result
     goto menu
 )
 if "%choice%"=="4" (
-    %UI% -Show Info -ShowColour Cyan -ShowText "Website:                     http://127.0.0.1:18090|Sign-in mail - a test inbox: http://127.0.0.1:18227"
+    %UI% -Show Info -ShowColour Cyan -ShowText "Website: {0}|Sign-in mail - a test inbox: {1}" -ShowValues "http://127.0.0.1:18090|http://127.0.0.1:18227"
     goto menu
 )
 if "%choice%"=="0" exit /b 0
-echo '%choice%' is not one of the numbers above.
+%UI% -Show Info -ShowText "'{0}' is not one of the numbers above." -ShowValues "%choice%"
 goto menu
 :result
 if errorlevel 1 (

@@ -4,7 +4,8 @@
 
 * LiveTrial dashboard (apps/timetrials-desktop/dashboard/app.js): `tr("<English>", "<Dutch>")` calls with string
   or template literals; `${...}` becomes `{0}`, `{1}`, ... in reading order, the key form of the web extraction.
-* Tournament Live (apps/tournament-live/src/live_processor/qt_app.py): the `_DUTCH_UI` English -> Dutch table.
+* Tournament Live (apps/tournament-live/src/live_processor/qt_app.py): the `_DUTCH_UI` English -> Dutch table,
+  the `dynamic_patterns` status lines and the `_say("<English>", "<Dutch>", ...)` calls (also `say` in gui_app.py).
 Writes apps/timetrials-desktop/i18n/messages.source.json and apps/tournament-live/i18n/messages.source.json.
 """
 from __future__ import annotations
@@ -87,6 +88,21 @@ def dashboard() -> int:
                  "mk8dx.livetrial-dashboard-message-source.v1", messages)
 
 
+def say_calls(path: Path) -> list[tuple[str, str, int]]:
+    """(English, Dutch, line) of every `say`/`_say` call whose first two text arguments are string literals."""
+    found = []
+    for node in ast.walk(ast.parse(path.read_text(encoding="utf-8"))):
+        if not isinstance(node, ast.Call):
+            continue
+        name = node.func.attr if isinstance(node.func, ast.Attribute) else getattr(node.func, "id", "")
+        if name not in {"say", "_say"}:
+            continue
+        texts = [arg.value for arg in node.args if isinstance(arg, ast.Constant) and isinstance(arg.value, str)]
+        if len(texts) >= 2 and re.search(r"[A-Za-z]{2,}", texts[0]):
+            found.append((texts[0], texts[1], node.lineno))
+    return found
+
+
 def tournament_live() -> int:
     path = ROOT / "apps" / "tournament-live" / "src" / "live_processor" / "qt_app.py"
     tree = ast.parse(path.read_text(encoding="utf-8"))
@@ -105,6 +121,15 @@ def tournament_live() -> int:
                 template = re.sub(r"\((?!\?)(?:[^()\\]|\\.)*\)", lambda _: "{%d}" % next(counter), pattern)
                 template = re.sub(r"\\(.)", lambda m: "\n" if m.group(1) == "n" else m.group(1), template)
                 messages.setdefault(template, {"key": template, "places": [f"qt_app.py:{entry.lineno}"]})
+    # The texts the code writes as English and Dutch templates: `self._say("<English>", "<Dutch>", values...)` in
+    # qt_app.py and `say(...)` in gui_app.py (product_languages.say), `{0}`, `{1}` already in the key form.
+    for name in ("qt_app.py", "gui_app.py"):
+        for english, dutch, line in say_calls(path.with_name(name)):
+            entry = messages.get(english)
+            if entry is None:
+                messages[english] = {"key": english, "nl": dutch, "places": [f"{name}:{line}"]}
+            elif entry.get("nl", english) == english and dutch != english:
+                entry["nl"] = dutch
     return write(ROOT / "apps" / "tournament-live" / "i18n" / "messages.source.json",
                  "mk8dx.tournament-live-message-source.v1", messages)
 

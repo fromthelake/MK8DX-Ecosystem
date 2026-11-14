@@ -123,12 +123,12 @@ hem aan met modus 0700. Bewaar hem als je een nieuwer pakket installeert.
 
 Bij de eerste start laadt het startscript de images uit `images/docker-images-amd64.tar` en start de wizard:
 
-1. `Where will MK8DX run?` (Waar gaat MK8DX draaien?) noemt A1, A2 en B1 in gewone woorden. Typ **B1** voor een openbare website of **A1** voor een
+1. `Waar gaat MK8DX draaien?` noemt A1, A2 en B1 in gewone woorden. Typ **B1** voor een openbare website of **A1** voor een
    lokale proef. (Gebruik voor een netwerk thuis of op de club het pakket `mk8dx-a2-…`; A3 en B2 horen bij het
    pakket zonder Docker.)
 2. Voor B1: je hostnaam zonder `https://`, de SMTP-server, de poort (Enter voor 465), de login, het geautoriseerde
    afzenderadres en het SMTP-wachtwoord (verborgen terwijl je typt).
-3. `Your own future MK8DX administrator email:` (je eigen toekomstige beheerdersadres): het adres waarmee je je gaat aanmelden.
+3. `Je eigen e-mailadres als toekomstige MK8DX-beheerder:` het adres waarmee je je gaat aanmelden.
 4. De eerste installatie start daarna vanzelf. Die start de database, voert elke migratie van de catalogus uit,
    voegt de twee referentiesets toe en start de website en de API. De eerste keer duurt een paar minuten.
 

@@ -89,14 +89,14 @@ Linux では、MK8DX をまだ最初から最後までテストしていませ�
 
 **Windows での起動**
 
-1. **操作：** 展開したフォルダーで **Start-MK8DX-LAN.cmd** をダブルクリックします。→ **表示：** MK8DX のロゴと、ビープ音付きの 3-2-1-GO のカウントダウンがあるウィンドウ（[省略するには](../../../guides/HOSTING.md#the-launcher-window-look-and-options)）。続いて「MK8DX package:」や「Private installation:」などの行が表示されます。初回は「Preparing the included Python packages (once, without internet).」（同梱の Python パッケージを準備しています（初回のみ、インターネット不要））と「Loading the included Docker images. This can take several minutes.」（同梱の Docker イメージを読み込んでいます。数分かかることがあります）も表示されます。これには数分かかります。その後「MK8DX setup is open in your browser:」（MK8DX のセットアップがブラウザーで開いています）と表示され、ブラウザーでセットアップが開きます。→ **違う表示が出たら？** 下のメッセージを参照してください。
+1. **操作：** 展開したフォルダーで **Start-MK8DX-LAN.cmd** をダブルクリックします。→ **表示：** MK8DX のロゴと、ビープ音付きの 3-2-1-GO のカウントダウンがあるウィンドウ（[省略するには](../../../guides/HOSTING.md#the-launcher-window-look-and-options)）。続いて「MK8DXパッケージ:」や「プライベートインストール:」などの行が表示されます。初回は「同梱のPythonパッケージを準備しています（初回のみ、インターネット不要）。」と「同梱のDockerイメージを読み込んでいます。数分かかることがあります。」も表示されます。これには数分かかります。その後「MK8DX setup is open in your browser:」（MK8DX のセットアップがブラウザーで開いています）と表示され、ブラウザーでセットアップが開きます。→ **違う表示が出たら？** 下のメッセージを参照してください。
 2. **操作：** セットアップで **Finish**（完了）をクリックするまで、黒いウィンドウは開いたままにしておきます。ウィンドウにもそう書いてあります：「Keep this window open until you click Finish.」（Finish をクリックするまでこのウィンドウを開いたままにしてください）
 
 Windows の黒いウィンドウに出るメッセージ：
 
-- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."**（Python 3.12〜3.15 がありません。python.org（または Microsoft Store）から Python install manager をインストールし、py install 3.15 を実行して、PowerShell を開き直してから再試行してください。）第 2A 章の手順 6〜8 を行い、もう一度 Start-MK8DX-LAN.cmd をダブルクリックします。
-- **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."**（Docker Desktop がないか、動いていません。Docker Desktop を Linux コンテナーモードで起動し、「Engine running」と表示されるまで待ってから再試行してください。）Docker Desktop を起動し、Engine running になるまで待って、もう一度ダブルクリックします。
-- エラーの下に **"The selected step stopped. Read the message above before retrying."**（選択した手順が停止しました。再試行する前に上のメッセージを読んでください。）と表示されます。その上の行を読んで原因を直し、キーを押してウィンドウを閉じます。
+- **"Python 3.12〜3.15がありません。python.org（またはMicrosoft Store）からPython install managerをインストールし、py install 3.15 を実行して、PowerShellを開き直してから、もう一度お試しください。"**第 2A 章の手順 6〜8 を行い、もう一度 Start-MK8DX-LAN.cmd をダブルクリックします。
+- **"Docker Desktopがないか、起動していません。Docker DesktopをLinuxコンテナーモードで起動し、"Engine running" と表示されるまで待ってから、もう一度お試しください。"**Docker Desktop を起動し、Engine running になるまで待って、もう一度ダブルクリックします。
+- エラーの下に **"選択したステップが停止しました。上のメッセージを読んでから、もう一度お試しください。"**と表示されます。その上の行を読んで原因を直し、キーを押してウィンドウを閉じます。
 
 <!-- /os -->
 
@@ -105,14 +105,14 @@ Windows の黒いウィンドウに出るメッセージ：
 **Linux と macOS での起動**
 
 1. **操作：** 展開したフォルダーでターミナルを開きます。Linux：ファイルマネージャーにあれば、フォルダー内で右クリックして「Open in Terminal」（端末で開く）を選びます。macOS と Linux では次の方法も使えます：ターミナルを開いて `cd ` と入力し（後ろに半角スペースを入れます）、フォルダーをウィンドウにドラッグして Enter キーを押します。→ **表示：** ターミナルがパッケージフォルダーに移動しています。
-2. **操作：** `sh tooling/start-mk8dx.sh` と入力して Enter キーを押します。→ **表示：** MK8DX のロゴと 3-2-1-GO のカウントダウン、続いて「MK8DX package:」、Python のバージョン番号、「Docker Compose version」。初回は「Loading the included Docker images. This can take several minutes.」（同梱の Docker イメージを読み込んでいます。数分かかることがあります）と「Preparing the included Python packages (once, without internet).」（同梱の Python パッケージを準備しています（初回のみ、インターネット不要））も表示されます。その後「Private installation:」と「MK8DX setup is open in your browser:」と表示され、ブラウザーでセットアップが開きます。→ **違う表示が出たら？** ブラウザーが開かない場合は、ターミナルにある `http://127.0.0.1:` で始まるアドレスをブラウザーにコピーします。
+2. **操作：** `sh tooling/start-mk8dx.sh` と入力して Enter キーを押します。→ **表示：** MK8DX のロゴと 3-2-1-GO のカウントダウン、続いて「MK8DXパッケージ:」、Python のバージョン番号、「Docker Compose version」。初回は「同梱のDockerイメージを読み込んでいます。数分かかることがあります。」と「同梱のPythonパッケージを準備しています（初回のみ、インターネット不要）。」も表示されます。その後「プライベートインストール:」と「MK8DX setup is open in your browser:」と表示され、ブラウザーでセットアップが開きます。→ **違う表示が出たら？** ブラウザーが開かない場合は、ターミナルにある `http://127.0.0.1:` で始まるアドレスをブラウザーにコピーします。
 3. **操作：** **Finish**（完了）をクリックするまで、ターミナルは開いたままにしておきます。
 
 Linux と macOS のターミナルに出るメッセージ：
 
-- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."**（Python 3.12〜3.15 がありません。インストールしてから再試行してください（Ubuntu/Debian：sudo apt install python3 python3-venv、macOS：python.org）。）第 2B 章または第 2C 章をもう一度行います。
-- **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."**（Docker が動いていないか、このユーザーは Docker を使えません（Linux：sudo systemctl start docker を実行し、docker グループに参加してください。macOS：Docker Desktop を起動してください）。）Linux：第 2B 章の手順 3 と 4 を行います。macOS：Docker Desktop を起動します。
-- **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."**（専用の Python 環境を作成できませんでした（Ubuntu/Debian：sudo apt install python3-venv）。）第 2B 章の手順 2 のとおり python3-venv をインストールします。
+- **"Python 3.12〜3.15がありません。インストールしてから（Ubuntu/Debian: sudo apt install python3 python3-venv、macOS: python.org）、もう一度お試しください。"**第 2B 章または第 2C 章をもう一度行います。
+- **"Dockerが起動していないか、このユーザーには使用権限がありません（Linux: sudo systemctl start docker を実行し、docker グループに参加してください。macOS: Docker Desktopを起動してください）。"**Linux：第 2B 章の手順 3 と 4 を行います。macOS：Docker Desktop を起動します。
+- **"プライベートなPython環境を作成できませんでした（Ubuntu/Debian: sudo apt install python3-venv）。"**第 2B 章の手順 2 のとおり python3-venv をインストールします。
 
 <!-- /os -->
 
@@ -426,7 +426,7 @@ MK8DX コンピューターのアドレスはルーターが割り当てます�
 - **"MK8DX is already installed on this computer; restore needs a computer without it".**（このコンピューターにはすでに MK8DX がインストールされています。復元には MK8DX のないコンピューターが必要です。）復元は MK8DX のないコンピューターでしか使えません。IT に詳しい人に相談してください（第 12 章）。
 - **Docker が動いていない。** Windows と macOS：Docker Desktop を起動し、**Engine running**（エンジン稼働中）になるまで待って **もう一度試す** をクリックするか、MK8DX をもう一度起動します。Linux：`sudo systemctl start docker`。
 - **コンピューターのアドレスが変わった。** MK8DX beheer を開き、**移動**を選びます（第 10 章）。
-- **Windows："The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443".**（このネットワークは「DomainAuthenticated」です。管理者に TCP 80/443 の許可を依頼してください。）コンピューターが、MK8DX が自分で変更してはいけない会社のネットワークにつながっています。そのネットワークの管理者に、TCP ポート 80 と 443 への着信接続を許可するよう依頼してください。
+- **Windows："ネットワークは 'DomainAuthenticated' です。そのネットワークの管理者に TCP 80/443 の許可を依頼してください".**コンピューターが、MK8DX が自分で変更してはいけない会社のネットワークにつながっています。そのネットワークの管理者に、TCP ポート 80 と 443 への着信接続を許可するよう依頼してください。
 - **Windows："Windows did not allow the change (the permission prompt was declined or failed)".**（Windows が変更を許可しませんでした（許可の確認が拒否されたか失敗しました）。）**もう一度試す** をクリックし、Windows のウィンドウで **Yes**（はい）をクリックします。
 - **Linux：スマートフォンからつながらず、ファイアウォールが有効になっている。** **インストール** の途中で **詳細** をクリックし、「manual:」の後のコマンドを実行します。たとえば `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。firewalld の場合は `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload` です。
 - **Android アプリに「これは「デバイスを準備」カードの QR コードではありません。」と表示される。** 個人のカードではなく、**デバイスを準備** カードを読み取ってください。

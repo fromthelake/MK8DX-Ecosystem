@@ -89,14 +89,14 @@ Un **firewall** è una protezione che decide quali connessioni un computer lasci
 
 **Avviare su Windows**
 
-1. **Cosa fare:** nella cartella estratta, fai doppio clic su **Start-MK8DX-LAN.cmd**. → **Cosa vedi:** una finestra con il logo MK8DX e un conto alla rovescia 3-2-1-GO con segnali acustici ([per toglierlo](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), poi righe come "MK8DX package:" (pacchetto MK8DX) e "Private installation:" (installazione privata). La prima volta mostra anche "Preparing the included Python packages (once, without internet)." (preparazione dei pacchetti Python inclusi, una volta, senza internet) e "Loading the included Docker images. This can take several minutes." (caricamento delle immagini Docker incluse, può richiedere diversi minuti). Ci vogliono alcuni minuti. Poi mostra "MK8DX setup is open in your browser:" (la configurazione di MK8DX è aperta nel browser) e la configurazione si apre nel browser. → **Vedi qualcos'altro?** Vedi i messaggi qui sotto.
+1. **Cosa fare:** nella cartella estratta, fai doppio clic su **Start-MK8DX-LAN.cmd**. → **Cosa vedi:** una finestra con il logo MK8DX e un conto alla rovescia 3-2-1-GO con segnali acustici ([per toglierlo](../../../guides/HOSTING.md#the-launcher-window-look-and-options)), poi righe come "Pacchetto MK8DX:" e "Installazione privata:". La prima volta mostra anche "Preparazione dei pacchetti Python inclusi (una sola volta, senza internet)." e "Caricamento delle immagini Docker incluse. Può richiedere diversi minuti." Ci vogliono alcuni minuti. Poi mostra "MK8DX setup is open in your browser:" (la configurazione di MK8DX è aperta nel browser) e la configurazione si apre nel browser. → **Vedi qualcos'altro?** Vedi i messaggi qui sotto.
 2. **Cosa fare:** tieni aperta la finestra nera finché non hai fatto clic su **Fine** nella configurazione. Lo dice anche la finestra: "Keep this window open until you click Finish." (tieni aperta questa finestra finché non fai clic su Finish).
 
 Messaggi nella finestra nera su Windows:
 
-- **"Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry."** (Manca Python dalla 3.12 alla 3.15: installa il Python install manager, esegui py install 3.15, riapri PowerShell e riprova.) Fai i passaggi da 6 a 8 del capitolo 2A e poi fai di nuovo doppio clic su Start-MK8DX-LAN.cmd.
-- **"Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry."** (Docker Desktop manca o non è in esecuzione.) Avvia Docker Desktop, attendi Engine running e fai di nuovo doppio clic.
-- Sotto un errore compare **"The selected step stopped. Read the message above before retrying."** (Il passaggio selezionato si è fermato: leggi il messaggio sopra prima di riprovare.) Leggi la riga sopra, risolvi il problema e premi un tasto per chiudere la finestra.
+- **"Manca Python da 3.12 a 3.15. Installa il Python install manager da python.org (o dal Microsoft Store), esegui: py install 3.15, riapri PowerShell e riprova."** Fai i passaggi da 6 a 8 del capitolo 2A e poi fai di nuovo doppio clic su Start-MK8DX-LAN.cmd.
+- **"Docker Desktop manca o non è in esecuzione. Avvia Docker Desktop in modalità container Linux, attendi che mostri "Engine running" e riprova."** Avvia Docker Desktop, attendi Engine running e fai di nuovo doppio clic.
+- Sotto un errore compare **"Il passaggio selezionato si è interrotto. Leggi il messaggio qui sopra prima di riprovare."** Leggi la riga sopra, risolvi il problema e premi un tasto per chiudere la finestra.
 
 <!-- /os -->
 
@@ -105,14 +105,14 @@ Messaggi nella finestra nera su Windows:
 **Avviare su Linux e macOS**
 
 1. **Cosa fare:** apri un terminale nella cartella estratta. Linux: fai clic con il tasto destro nella cartella e scegli "Open in Terminal" (Apri nel terminale) se il tuo file manager lo offre. Su macOS e Linux funziona anche così: apri il Terminale, digita `cd ` (con uno spazio dopo), trascina la cartella nella finestra e premi Invio. → **Cosa vedi:** il terminale si trova nella cartella del pacchetto.
-2. **Cosa fare:** digita `sh tooling/start-mk8dx.sh` e premi Invio. → **Cosa vedi:** il logo MK8DX e un conto alla rovescia 3-2-1-GO, poi "MK8DX package:" (pacchetto MK8DX), il numero di Python, "Docker Compose version". La prima volta anche "Loading the included Docker images. This can take several minutes." (caricamento delle immagini Docker incluse) e "Preparing the included Python packages (once, without internet)." (preparazione dei pacchetti Python inclusi). Poi "Private installation:" (installazione privata) e "MK8DX setup is open in your browser:" (la configurazione di MK8DX è aperta nel browser), e la configurazione si apre nel browser. → **Vedi qualcos'altro?** Se non si apre nessun browser, copia dal terminale nel browser l'indirizzo che inizia con `http://127.0.0.1:`.
+2. **Cosa fare:** digita `sh tooling/start-mk8dx.sh` e premi Invio. → **Cosa vedi:** il logo MK8DX e un conto alla rovescia 3-2-1-GO, poi "Pacchetto MK8DX:", il numero di Python, "Docker Compose version". La prima volta anche "Caricamento delle immagini Docker incluse. Può richiedere diversi minuti." e "Preparazione dei pacchetti Python inclusi (una sola volta, senza internet)." Poi "Installazione privata:" e "MK8DX setup is open in your browser:" (la configurazione di MK8DX è aperta nel browser), e la configurazione si apre nel browser. → **Vedi qualcos'altro?** Se non si apre nessun browser, copia dal terminale nel browser l'indirizzo che inizia con `http://127.0.0.1:`.
 3. **Cosa fare:** tieni aperto il terminale finché non hai fatto clic su **Fine**.
 
 Messaggi nel terminale su Linux e macOS:
 
-- **"Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry."** (Manca Python dalla 3.12 alla 3.15: installalo e riprova.) Ripeti il capitolo 2B o 2C.
-- **"Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop)."** (Docker non è in esecuzione o questo utente non può usarlo.) Linux: fai i passaggi 3 e 4 del capitolo 2B. macOS: avvia Docker Desktop.
-- **"Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv)."** (Impossibile creare l'ambiente Python privato.) Installa python3-venv come al passaggio 2 del capitolo 2B.
+- **"Manca Python da 3.12 a 3.15. Installalo (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) e riprova."** Ripeti il capitolo 2B o 2C.
+- **"Docker non è in esecuzione o questo utente non può usarlo (Linux: sudo systemctl start docker ed entra nel gruppo docker; macOS: avvia Docker Desktop)."** Linux: fai i passaggi 3 e 4 del capitolo 2B. macOS: avvia Docker Desktop.
+- **"Impossibile creare l'ambiente Python privato (Ubuntu/Debian: sudo apt install python3-venv)."** Installa python3-venv come al passaggio 2 del capitolo 2B.
 
 <!-- /os -->
 
@@ -426,7 +426,7 @@ Le altre vie di installazione (un computer, il tuo server, hosting web) sono in 
 - **"MK8DX is already installed on this computer; restore needs a computer without it".** (MK8DX è già installato su questo computer; il ripristino richiede un computer senza MK8DX.) Il ripristino funziona solo su un computer senza MK8DX. Chiedi aiuto a un informatico (capitolo 12).
 - **Docker non è in esecuzione.** Windows e macOS: avvia Docker Desktop, attendi **Engine running** e fai clic su **Riprova**, oppure avvia di nuovo MK8DX. Linux: `sudo systemctl start docker`.
 - **Il computer ha un nuovo indirizzo.** Apri MK8DX beheer e scegli **Sposta** (capitolo 10).
-- **Windows: "The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443".** (La rete è 'DomainAuthenticated'; chiedi al suo amministratore di consentire TCP 80/443.) Il computer è su una rete aziendale che MK8DX non può modificare da solo. Chiedi all'amministratore di quella rete di consentire le connessioni in entrata sulle porte TCP 80 e 443.
+- **Windows: "La rete è 'DomainAuthenticated'; chiedi al suo amministratore di consentire TCP 80/443".** Il computer è su una rete aziendale che MK8DX non può modificare da solo. Chiedi all'amministratore di quella rete di consentire le connessioni in entrata sulle porte TCP 80 e 443.
 - **Windows: "Windows did not allow the change (the permission prompt was declined or failed)".** (Windows non ha consentito la modifica: la richiesta di autorizzazione è stata rifiutata o non è riuscita.) Fai clic su **Riprova** e poi su **Yes** (Sì) nella finestra di Windows.
 - **Linux: i telefoni non riescono a entrare e il firewall è attivo.** Durante il passaggio **Installazione** fai clic su **Dettagli** ed esegui il comando dopo "manual:", per esempio `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`. Con firewalld è `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`.
 - **L'app Android dice "Questo non è il codice QR di una scheda «Prepara un dispositivo»."** Scansiona la scheda **Prepara un dispositivo**, non una scheda personale.
