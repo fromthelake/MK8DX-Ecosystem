@@ -7,6 +7,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **Tournament reads player names in every script a Switch profile name can use**: the Latin name reader also
+  covers Italian and Portuguese, and a name box whose Latin reading leaves room is also read by Cyrillic,
+  Japanese, Korean, simplified and traditional Chinese readers (loaded on first use). A clearly more confident
+  reading in its own script is passed on; otherwise the Latin reading, exactly as before. Same in Tournament Live
+  and the Processor/Analysis; the cross-race linking and the Director's workflow are unchanged.
+  `tooling/tournament/evaluate_player_name_scripts.py` measures it per script.
 - **Tournament Live scoreboard: Overall only and track names in your language.** A small gear on the spectator
   dashboard (hidden in OBS) chooses *Automatic* (default: latest race result and overall standings alternate) or
   *Overall only* (the confirmed overall standings stay on screen, with the race they include and a race still

@@ -176,3 +176,23 @@ launcher uses `runtime-assets/live`; the recorded launcher uses
 Back up session/output folders before replacing the package. No original MK8DX
 source or private asset folder is needed. Publication and third-party rights
 remain covered by [Third-party materials](../THIRD_PARTY_MATERIALS.md).
+
+### Player names in every script
+
+Tournament Live and the Processor/Analysis read player names with a Latin EasyOCR reader
+(`MK8_PLAYER_NAME_EASYOCR_LANGS`, default `en,es,fr,de,nl,pl,it,pt`). A Switch profile name can also be
+Cyrillic, Japanese, Korean or Chinese, which that reader turns into garbage that changes from race to race, or
+into a plausible word at full confidence ("Onbra" for Ольга). So the name box is also read by the `ru`, `ja`,
+`ko`, `ch_sim` and `ch_tra` readers (each with `en`): every time while the Latin reading is 85% confident or less
+(until it stayed Latin twice), and once for every new confident Latin reading. A script reading is passed on
+instead only when its own script is at least half of it and every character is one a Switch name can hold, and
+either it is at least 50% and 15 points more confident than a weak Latin reading, or, against a confident one,
+at least 90% confident and (for Cyrillic) shows a letter that cannot pass for a Latin one ("Menno" is not "Меппо").
+No reading in another script may come within 15 points. A script reading that contradicts the text the same Latin
+reading resolved to earlier ("さくろ" where it was "さくら") is a doubt: that frame keeps the Latin reading.
+Otherwise the Latin reading goes on unchanged. Everything after the reading - the consensus over the frames, the
+linking of a player across the races of a group, the canonical name, the Director's matching - is unchanged.
+The readers load on first use and stay cached; the memory of what each Latin reading resolved to is keyed by the
+reading, never by a result position. No setting is involved; the models ship with the package.
+`tooling/tournament/evaluate_player_name_scripts.py` measures the reading per script on frames you
+supply (frames and game-font material stay out of the repository).
