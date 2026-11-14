@@ -13,8 +13,8 @@ corrected v5.1 database (`e67e2e2c…`), v3 v5.3 (`e67316fe…`), v4 v5.5
 (`95be2cf3…`), v5 v5.6 (`fee9d3dc…`), v6 v5.7 (`0fab082b…`, nameplates). After a new release: write the next
 baseline from `verify_schema9_release.py` on the extracted zip, move the
 baseline references and hash pins, and regenerate with the exporters here plus
-`tooling/web/generate_benchmark_manifest.mjs` (staff countries from
-`packages/assets/nintendo-staff-switch-walk-v1.json`),
+`tooling/reference/generate_benchmark_manifest.py` (from the reference seeds in
+`infrastructure/mysql/reference/`),
 `tooling/web/generate_api_staff_references.mjs` and
 `export_android_product_catalogs.mjs`.
 
