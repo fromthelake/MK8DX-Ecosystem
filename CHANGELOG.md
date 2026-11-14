@@ -13,6 +13,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   and apply now compare the database and API images of the installation's containers with this package's images
   and stop with "Choose 7 (update) first" when they differ. A2 is unchanged: its setup offers Update itself.
 
+### Recognition
+
+- **A Python reference for the Web/Android icon crop search** (#99, phase 3). `crop_search.py` in the central reader
+  reproduces how the browser scanner and Android cut the character, kart and glider crops (nominal score, masked
+  position pass, shift, ghost-card saturation boost, seven character scales, crop box). On the 12 public test-set
+  frames it equals the browser scanner on all 154 searches of 50 fields. The new vector
+  `crop-search-v1.json` (26 synthetic cases, 50 real crops, numbers only) is replayed in Python, TypeScript and
+  Java. The scanners' behaviour does not change: they still run their own search until phase 4.
+
 ## 0.2.3 — 2026-11-14
 
 Runs the web gateway without root, pins the database and mail images by digest, and makes the repository easier to
