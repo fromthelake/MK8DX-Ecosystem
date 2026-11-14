@@ -50,6 +50,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixed
 
+- **Step 5/9 and historical imports keep non-Latin names apart**: the workbook name key kept only `a-z0-9`, so
+  every Cyrillic, Japanese, Korean or Chinese player name became the same empty key and the rows overwrote each
+  other. The key now keeps letters and digits of every script (accents and spacing still folded, NFKC, so kana
+  keep their voicing marks); keys of names it could already read are unchanged.
 - **Update wording for A1/B1 (#197)** in the A1, administration and hosting guides and all 15 user guides: in the
   new package folder choose 7 (update) first; from 0.2.4 on, 2 (start) refuses until the update has run, and with a
   0.2.3 package 2 would skip the backup.
