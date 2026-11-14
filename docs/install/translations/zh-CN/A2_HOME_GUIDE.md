@@ -89,14 +89,14 @@ Linux 尚未与 MK8DX 一起经过端到端测试。以下步骤针对 Ubuntu 24
 
 **在 Windows 上启动**
 
-1. **操作：** 在解压后的文件夹中，双击 **Start-MK8DX-LAN.cmd**。→ **你会看到：** 一个显示 MK8DX 标志和带提示音的 3-2-1-GO 倒计时的窗口（[如何关闭它](../../../guides/HOSTING.md#the-launcher-window-look-and-options)），随后是 “MK8DX package:”（MK8DX 软件包：）和 “Private installation:”（私有安装：）等行。第一次还会显示 “Preparing the included Python packages (once, without internet).”（正在准备附带的 Python 软件包（仅一次，无需互联网）。）和 “Loading the included Docker images. This can take several minutes.”（正在加载附带的 Docker 镜像。这可能需要几分钟。）。这需要几分钟。然后显示 “MK8DX setup is open in your browser:”（MK8DX 安装程序已在浏览器中打开：），安装程序在你的浏览器中打开。→ **看到的不一样？** 请看下面的消息说明。
+1. **操作：** 在解压后的文件夹中，双击 **Start-MK8DX-LAN.cmd**。→ **你会看到：** 一个显示 MK8DX 标志和带提示音的 3-2-1-GO 倒计时的窗口（[如何关闭它](../../../guides/HOSTING.md#the-launcher-window-look-and-options)），随后是 “MK8DX 软件包:”和 “私有安装:”等行。第一次还会显示 “正在准备附带的 Python 软件包（仅一次，无需互联网）。”和 “正在加载附带的 Docker 镜像。这可能需要几分钟。”这需要几分钟。然后显示 “MK8DX setup is open in your browser:”（MK8DX 安装程序已在浏览器中打开：），安装程序在你的浏览器中打开。→ **看到的不一样？** 请看下面的消息说明。
 2. **操作：** 在安装程序中点击 **完成**之前，一直保持黑色窗口打开。窗口中也这样写着：“Keep this window open until you click Finish.”（在点击 Finish 之前请保持此窗口打开。）
 
 Windows 黑色窗口中的消息：
 
-- **“Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.”**（缺少 Python 3.12 到 3.15。请从 python.org（或 Microsoft Store）安装 Python 安装管理器，运行 py install 3.15，重新打开 PowerShell 后重试。）请做第 2A 章第 6 到 8 步，然后再次双击 Start-MK8DX-LAN.cmd。
-- **“Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry.”**（Docker Desktop 未安装或未运行。请以 Linux 容器模式启动 Docker Desktop，等到显示 "Engine running" 后重试。）启动 Docker Desktop，等到显示 Engine running，然后再次双击。
-- 错误信息下方显示 **“The selected step stopped. Read the message above before retrying.”**（所选步骤已停止。重试前请阅读上面的消息。）阅读它上面的那一行，解决问题，然后按任意键关闭窗口。
+- **“缺少 Python 3.12 至 3.15。请从 python.org（或 Microsoft Store）安装 Python install manager，运行: py install 3.15，重新打开 PowerShell 后重试。”**请做第 2A 章第 6 到 8 步，然后再次双击 Start-MK8DX-LAN.cmd。
+- **“Docker Desktop 未安装或未运行。请以 Linux 容器模式启动 Docker Desktop，等到它显示 "Engine running" 后重试。”**启动 Docker Desktop，等到显示 Engine running，然后再次双击。
+- 错误信息下方显示 **“所选步骤已停止。重试前请阅读上面的消息。”**阅读它上面的那一行，解决问题，然后按任意键关闭窗口。
 
 <!-- /os -->
 
@@ -105,14 +105,14 @@ Windows 黑色窗口中的消息：
 **在 Linux 和 macOS 上启动**
 
 1. **操作：** 在解压后的文件夹中打开终端。Linux：如果你的文件管理器提供该选项，在文件夹中右键单击并选择 “Open in Terminal”（在终端中打开）。在 macOS 和 Linux 上也可以这样做：打开终端，输入 `cd `（后面带一个空格），把文件夹拖进窗口，然后按 Enter。→ **你会看到：** 终端位于软件包文件夹中。
-2. **操作：** 输入 `sh tooling/start-mk8dx.sh` 并按 Enter。→ **你会看到：** MK8DX 标志和 3-2-1-GO 倒计时，然后是 “MK8DX package:”（MK8DX 软件包：）、Python 版本号和 “Docker Compose version”。第一次还会显示 “Loading the included Docker images. This can take several minutes.”（正在加载附带的 Docker 镜像。这可能需要几分钟。）和 “Preparing the included Python packages (once, without internet).”（正在准备附带的 Python 软件包（仅一次，无需互联网）。）。然后是 “Private installation:”（私有安装：）和 “MK8DX setup is open in your browser:”（MK8DX 安装程序已在浏览器中打开：），安装程序在你的浏览器中打开。→ **看到的不一样？** 如果没有打开浏览器，请把终端中以 `http://127.0.0.1:` 开头的地址复制到浏览器中。
+2. **操作：** 输入 `sh tooling/start-mk8dx.sh` 并按 Enter。→ **你会看到：** MK8DX 标志和 3-2-1-GO 倒计时，然后是 “MK8DX 软件包:”、Python 版本号和 “Docker Compose version”。第一次还会显示 “正在加载附带的 Docker 镜像。这可能需要几分钟。”和 “正在准备附带的 Python 软件包（仅一次，无需互联网）。”然后是 “私有安装:”和 “MK8DX setup is open in your browser:”（MK8DX 安装程序已在浏览器中打开：），安装程序在你的浏览器中打开。→ **看到的不一样？** 如果没有打开浏览器，请把终端中以 `http://127.0.0.1:` 开头的地址复制到浏览器中。
 3. **操作：** 在点击 **完成**之前，一直保持终端打开。
 
 Linux 和 macOS 终端中的消息：
 
-- **“Python 3.12 to 3.15 is missing. Install it (Ubuntu/Debian: sudo apt install python3 python3-venv; macOS: python.org) and retry.”**（缺少 Python 3.12 到 3.15。请安装它（Ubuntu/Debian：sudo apt install python3 python3-venv；macOS：python.org）后重试。）请再做一遍第 2B 或 2C 章。
-- **“Docker is not running or this user may not use it (Linux: sudo systemctl start docker, and join the docker group; macOS: start Docker Desktop).”**（Docker 未运行，或此用户无权使用它（Linux：sudo systemctl start docker，并加入 docker 组；macOS：启动 Docker Desktop）。）Linux：做第 2B 章第 3 和第 4 步。macOS：启动 Docker Desktop。
-- **“Could not create the private Python environment (Ubuntu/Debian: sudo apt install python3-venv).”**（无法创建私有 Python 环境（Ubuntu/Debian：sudo apt install python3-venv）。）按照第 2B 章第 2 步安装 python3-venv。
+- **“缺少 Python 3.12 至 3.15。请安装它（Ubuntu/Debian: sudo apt install python3 python3-venv；macOS: python.org）后重试。”**请再做一遍第 2B 或 2C 章。
+- **“Docker 未运行，或此用户无权使用它（Linux: sudo systemctl start docker，并加入 docker 组；macOS: 启动 Docker Desktop）。”**Linux：做第 2B 章第 3 和第 4 步。macOS：启动 Docker Desktop。
+- **“无法创建私有 Python 环境（Ubuntu/Debian: sudo apt install python3-venv）。”**按照第 2B 章第 2 步安装 python3-venv。
 
 <!-- /os -->
 
@@ -426,7 +426,7 @@ LiveTrial 是一个 Windows 程序，它通过采集卡（一个把 Switch 画�
 - **“MK8DX is already installed on this computer; restore needs a computer without it”.**（这台电脑上已经安装了 MK8DX；恢复需要一台没有安装它的电脑。）恢复只能在没有 MK8DX 的电脑上进行。请找懂 IT 的人帮忙（第 12 章）。
 - **Docker 没有运行。** Windows 和 macOS：启动 Docker Desktop，等到显示 **Engine running**（引擎正在运行），然后点击 **重试**，或者重新启动 MK8DX。Linux：`sudo systemctl start docker`。
 - **电脑有了新地址。** 打开 MK8DX beheer 并选择 **移动**（第 10 章）。
-- **Windows：“The network is 'DomainAuthenticated'; ask its administrator to allow TCP 80/443”.**（该网络为 'DomainAuthenticated'（域网络）；请让它的管理员放行 TCP 80/443。）这台电脑位于公司网络中，MK8DX 不能自行更改它。请让该网络的管理员允许 TCP 端口 80 和 443 上的传入连接。
+- **Windows：“网络为 'DomainAuthenticated'；请让该网络的管理员允许 TCP 80/443”.**这台电脑位于公司网络中，MK8DX 不能自行更改它。请让该网络的管理员允许 TCP 端口 80 和 443 上的传入连接。
 - **Windows：“Windows did not allow the change (the permission prompt was declined or failed)”.**（Windows 不允许此更改（权限提示被拒绝或失败）。）点击 **重试**，然后在 Windows 窗口中点击 **Yes**（是）。
 - **Linux：手机进不来，并且防火墙已启用。** 在安装过程中点击 **详情**，运行 “manual:” 后面的命令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。使用 firewalld 时命令是 `sudo firewall-cmd --permanent --add-service=http --add-service=https && sudo firewall-cmd --reload`。
 - **Android 应用显示 “这不是“准备设备”卡片的二维码。”**请扫描 **准备设备**卡片，而不是个人卡片。
