@@ -34,6 +34,7 @@ for the same-source qualification.
 | Card corners (deskew) | `card_quad` | `sharedCardQuad.ts` | `CardQuad.java` |
 | Frame geometry and card registration | `frame_geometry` | `sharedFrameGeometry.ts` | `FrameGeometry.java` |
 | Select-a-Ghost panel registration | `panel_registration` | `sharedPanelRegistration.ts` | `PanelRegistration.java` |
+| Canonical card geometry (warp bounds, target box, alignment, anti-alias; OpenCV solve and warps in the products) | `canonical_warp` | `sharedCanonicalWarp.ts` | `CanonicalWarp.java` |
 | Detector post-processing | `detections` | `sharedDetections.ts` | `Detections.java` |
 | Icon crop position (decision steps and constants shared; pixel work in the products, see below) | `crop_search` | `sharedCropSearch.ts` (decision) | `CropSearch.java` (decision) |
 | Lap-row grid (digit slots) | `lap_grid` | `sharedLapGrid.ts` | `LapGrid.java` |
@@ -200,6 +201,36 @@ converts bytes with `convertTo`; the Web and the reference use double and `v / 2
 place and measured it: with Android's float32 arithmetic emulated on the 50 real fields, the 21,607 reference scores
 differ by at most 5e-8. One of them rounds differently at four digits, but it is not a winner. No score, margin,
 top three, shift or scale of any search changes.
+
+LiveTrial has no icon crop search of its own: it reads fixed HDMI positions with this reader. Its engine's former
+matcher and search (`identify_crop`, `identify_crop_search`) were only a Select-a-Ghost fallback when the reader was
+not loaded and were removed in phase 5; without the reader those fields stay unknown.
+
+### Canonical card geometry before the crop
+
+Between the card quad and the crop search the Web scanner and Android (stages 17 and 18) warp the frame onto the
+1280x720 canonical card. `canonical_warp` (`sharedCanonicalWarp.ts`, `CanonicalWarp.java`) holds that geometry, and
+both products call it: the warp's bounding rectangle (`bounding_rect`, `shifted_quad` for the ghost_detail deskew
+seed), its destination corners (`quad_from_rect`), the canonical target box (`target_box`: fixed race-7 boxes, the
+race-3 box from the relative grid's `content_extent`, the ghost_detail panel boxes), the alignment
+(`canonical_align`, composed onto the homography with `compose` in OpenCV `gemm` order) and the reduction before a
+strongly shrinking warp (`antialias_plan`). OpenCV's perspective solve and panel registration are pixel work: their
+matrices are inputs.
+
+| Vector | What it pins | Replayed by |
+| --- | --- | --- |
+| `vectors/canonical-warp-v1.json` | the constants, 35 helper cases, 11 synthetic cards (seeds, every target rule, clipping, the anti-alias reduction, a registered panel) and 12 **real cards** of the public test set: the quad, frame size and OpenCV homography the Web scanner used, and its destination corners, alignment, composed and final matrix and warp source size. | `python/tests/test_canonical_warp_vectors.py`, `ts/canonical_warp_parity.mjs` (`sharedCanonicalWarp.ts`), Android `CanonicalWarpParityTest` (`CanonicalWarp.java`) |
+
+The real cards equal the Web scanner double for double. Two deskew-seed attempts of the capture are left out
+because the ROI's fractional origin is not recorded; the synthetic deskew card covers that branch. To regenerate
+(the capture holds numbers only, but keep it outside the repository like the other captures):
+
+```sh
+node packages/icon-matcher/tools/capture_canonical_warp_web.mjs /tmp/canonical-warp-capture.json
+PYTHONPATH=packages/icon-matcher/python python packages/icon-matcher/tools/generate_canonical_warp_vectors.py \
+  --capture /tmp/canonical-warp-capture.json --grid apps/timetrials-scanner-web/public/assets/grid
+python packages/icon-matcher/tools/generate_canonical_warp_vectors.py --check
+```
 
 ## Changing the reader
 
