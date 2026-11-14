@@ -89,6 +89,7 @@ def test_package_stages_every_ocr_model_a_reader_can_request():
 
     from live_processor import ocr_runtime
     from mk8dx_tournament_extraction import track_names
+    from mk8dx_tournament_extraction.engine import player_name_scripts
 
     builder_source = BUILDER.read_text(encoding="utf-8")
     assert '("ocr-models", "ocr-models")' in builder_source
@@ -108,7 +109,8 @@ def test_package_stages_every_ocr_model_a_reader_can_request():
     readers = next(ast.literal_eval(node.value) for node in ast.parse(consolelang.read_text(encoding="utf-8")).body
                    if isinstance(node, ast.Assign) and getattr(node.targets[0], "id", "") == "OCR_READERS")
     sets = [["en"], ["en", "nl"], *(list(langs) for langs in track_names.OCR_LANGUAGES.values()),
-            *readers.values()]
+            *readers.values(), ["en", "es", "fr", "de", "nl", "pl", "it", "pt"],
+            *(list(langs) for langs in player_name_scripts.SCRIPT_READERS.values())]
     needed = {ocr_runtime.easyocr_recognition_model_file(langs) for langs in sets}
     assert None not in needed
     assert needed | {"craft_mlt_25k.pth"} <= staged
