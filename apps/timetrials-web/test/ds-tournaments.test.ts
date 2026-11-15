@@ -241,8 +241,9 @@ describe("W17 the tournaments list", () => {
       stage: "qualifiers",
       workflowStep: 5,
       groups: [
-        { ...event.groups[0]!, stage: "qualifier", name: "Groep 1", races: [] },
-        { ...event.groups[0]!, groupId: "group.two", stage: "qualifier", name: "Groep 3" },
+        // Qualifier groups carry no final tier (the spread group is the champions' final).
+        { ...event.groups[0]!, stage: "qualifier", name: "Groep 1", tierKey: undefined, races: [] },
+        { ...event.groups[0]!, groupId: "group.two", stage: "qualifier", name: "Groep 3", tierKey: undefined },
       ],
     } as unknown as typeof event;
     const mounted = mountTournamentsList(
@@ -270,8 +271,10 @@ describe("W17 the tournaments list", () => {
       .toContain("Qualifier scores");
     // And which group is holding the night up.
     expect(page).toContain("1 of 2 groups scored");
-    expect(page).toContain("Groep 1: no races yet");
-    expect(page.some((text) => /^Groep 3: \d+ races?$/u.test(text))).toBe(true);
+    // An English page names the stored "Groep 1" in English, like the rest of the night page.
+    expect(page).toContain("Group 1: no races yet");
+    expect(page.some((text) => /^Group 3: \d+ races?$/u.test(text))).toBe(true);
+    expect(page.some((text) => text.startsWith("Groep "))).toBe(false);
     mounted.unmount();
   });
 

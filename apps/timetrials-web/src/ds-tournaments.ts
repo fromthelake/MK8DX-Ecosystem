@@ -251,7 +251,7 @@ function seatLine(
   };
   if (standing.groupName !== undefined) {
     separator();
-    line.append(el("span", "", {}, standing.groupName));
+    line.append(el("span", "", {}, displayTournamentGroupLabel(standing.groupName)));
   }
   if (standing.station !== undefined) {
     separator();
@@ -299,9 +299,10 @@ function resultLine(
     `${result.points} points from ${result.races} race${result.races === 1 ? "" : "s"}${result.wins > 0 ? `, ${result.wins} win${result.wins === 1 ? "" : "s"}` : ""}`,
     `${result.points} punten uit ${result.races} race${result.races === 1 ? "" : "s"}${result.wins > 0 ? `, ${result.wins} overwinning${result.wins === 1 ? "" : "en"}` : ""}`,
   );
+  const group = standing.groupName === undefined ? undefined : displayTournamentGroupLabel(standing.groupName);
   const inGroup = localized(
-    `${result.groupRank} of ${result.groupSize} in ${standing.groupName ?? "your group"}`,
-    `${result.groupRank}e van ${result.groupSize} in ${standing.groupName ?? "je groep"}`,
+    `${result.groupRank} of ${result.groupSize} in ${group ?? "your group"}`,
+    `${result.groupRank}e van ${result.groupSize} in ${group ?? "je groep"}`,
   );
   return [inGroup, sofar].join(" · ");
 }
