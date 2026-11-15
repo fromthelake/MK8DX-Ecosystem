@@ -28,6 +28,10 @@ from typing import Any
 from .baseline_assets import IMPORTED_ASSETS_ROOT
 
 WEB_ROOT = Path(__file__).resolve().parent / "broadcast_web"
+# The dashboard's own texts per language (tooling/i18n/build_web_catalogs.mjs), served at /api/messages/<language>.
+MESSAGES_ROOT = WEB_ROOT / "i18n"
+UI_LANGUAGES = frozenset({"en-US", "nl", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko",
+                          "zh-CN", "zh-TW"})
 
 _ASSET_KINDS = {"character", "track", "cup", "gui"}
 _ASSET_NAME_RE = re.compile(r"^[A-Za-z0-9_-]+\.(png|webp|jpg|jpeg)$")
@@ -290,6 +294,8 @@ class BroadcastServer:
                     from .display_assets import display_name_catalog
 
                     self._send_json(display_name_catalog())
+                elif path.startswith("/api/messages/"):
+                    self._send_messages(path[len("/api/messages/"):])
                 elif path == "/events":
                     self._stream_events()
                 else:
@@ -328,6 +334,19 @@ class BroadcastServer:
                     self.send_error(404)
                     return
                 if not candidate.is_relative_to(static_root) or not candidate.is_file():
+                    self.send_error(404)
+                    return
+                self._send_file(candidate)
+
+            def _send_messages(self, language: str) -> None:
+                # Only the known language names, and only as a file inside the catalog folder (safe_paths).
+                if language not in UI_LANGUAGES:
+                    self.send_error(404)
+                    return
+                from .safe_paths import file_within
+
+                candidate = file_within(MESSAGES_ROOT, f"{language}.json")
+                if candidate is None:
                     self.send_error(404)
                     return
                 self._send_file(candidate)

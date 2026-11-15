@@ -77,6 +77,7 @@ TCLTK_URL = f"https://www.python.org/ftp/python/{PYTHON_EMBED_VERSION}/amd64/tcl
 TCLTK_SHA256 = "55c96ffad69b1c834aa52e11b9ce41637a178ba6ad6607e83956044834276e2a"
 
 MANIFEST_KIND = "mk8dx.tournament-tools-windows-package.v1"
+LAUNCHER_TEXT_FILES = ("launcher_text.py", "mk8dx-text.cmd")
 
 
 class BuildError(RuntimeError):
@@ -117,18 +118,14 @@ set "GET_PIP_URL=@@GET_PIP_URL@@"
 set "TCLTK_URL=@@TCLTK_URL@@"
 set "TCLTK_SHA256=@@TCLTK_SHA256@@"
 set "TCLTK_MSI=%RUNTIME%\tcltk.msi"
-set "INSTALL_LANG=en"
-set "WINDOWS_LOCALE="
-for /f "tokens=3" %%L in ('reg query "HKCU\Control Panel\International" /v LocaleName 2^>nul') do set "WINDOWS_LOCALE=%%L"
-if /I "%WINDOWS_LOCALE:~0,2%"=="nl" set "INSTALL_LANG=nl"
-if /I "%MK8DX_TOURNAMENT_LANGUAGE%"=="en" set "INSTALL_LANG=en"
-if /I "%MK8DX_TOURNAMENT_LANGUAGE%"=="nl" set "INSTALL_LANG=nl"
+call :language
+call :title "MK8DX Tournament Tools - installer"
 
 echo ============================================================
-call :say " MK8DX Tournament Tools - installer (package version @@VERSION@@)" " MK8DX Tournament Tools - installatie (pakketversie @@VERSION@@)"
+call :say " MK8DX Tournament Tools - installer (package version {0})" "@@VERSION@@"
 echo ============================================================
-call :say " Package folder : %PKG_ROOT%" " Pakketmap       : %PKG_ROOT%"
-call :say " Log file       : %LOG%" " Logbestand      : %LOG%"
+call :say " Package folder : {0}" "%PKG_ROOT%"
+call :say " Log file       : {0}" "%LOG%"
 echo.
 echo [%date% %time%] installer started >> "%LOG%"
 
@@ -143,13 +140,13 @@ set "PYTHON_KIND="
 if exist "%RUNTIME%\python.exe" (
     set "PYTHON=%RUNTIME%\python.exe"
     set "PYTHON_KIND=embedded"
-    call :say "Existing package runtime found (embedded Python). It will be updated in place." "Bestaande pakket-runtime gevonden (ingesloten Python). Deze wordt bijgewerkt."
+    call :say "Existing package runtime found (embedded Python). It will be updated in place."
     goto :have_python
 )
 if exist "%RUNTIME%\Scripts\python.exe" (
     set "PYTHON=%RUNTIME%\Scripts\python.exe"
     set "PYTHON_KIND=venv"
-    call :say "Existing package runtime found (virtual environment). It will be updated in place." "Bestaande pakket-runtime gevonden (virtuele omgeving). Deze wordt bijgewerkt."
+    call :say "Existing package runtime found (virtual environment). It will be updated in place."
     goto :have_python
 )
 
@@ -166,9 +163,9 @@ if defined SYSTEM_PYTHON goto :create_venv
 goto :download_embedded
 
 :create_venv
-call :say "Using the 64-bit Python 3.12 already on this computer:" "De bestaande 64-bits Python 3.12 op deze computer wordt gebruikt:"
+call :say "Using the 64-bit Python 3.12 already on this computer:"
 echo   %SYSTEM_PYTHON%
-call :say "Creating a private runtime inside the package ..." "Er wordt een eigen runtime in het pakket gemaakt ..."
+call :say "Creating a private runtime inside the package ..."
 echo [%date% %time%] creating venv with %SYSTEM_PYTHON% >> "%LOG%"
 "%SYSTEM_PYTHON%" -m venv "%RUNTIME%" >> "%LOG%" 2>&1
 if errorlevel 1 goto :fail_venv
@@ -178,29 +175,29 @@ set "PYTHON_KIND=venv"
 goto :have_python
 
 :download_embedded
-call :say "No 64-bit Python 3.12 was found on this computer." "Er is geen 64-bits Python 3.12 op deze computer gevonden."
-call :say "Downloading the official python.org runtime (about 11 MB) ..." "De officiele python.org-runtime wordt gedownload (ongeveer 11 MB) ..."
+call :say "No 64-bit Python 3.12 was found on this computer."
+call :say "Downloading the official python.org runtime (about 11 MB) ..."
 echo   %PY_EMBED_URL%
 echo [%date% %time%] downloading %PY_EMBED_URL% >> "%LOG%"
 if not exist "%RUNTIME%" mkdir "%RUNTIME%"
 call :download "%PY_EMBED_URL%" "%PY_EMBED_ZIP%"
 if errorlevel 1 goto :fail_download
 if not exist "%PY_EMBED_ZIP%" goto :fail_download
-call :say "Verifying the downloaded runtime ..." "De gedownloade runtime wordt gecontroleerd ..."
+call :say "Verifying the downloaded runtime ..."
 set "ACTUAL_SHA256="
 for /f "skip=1 delims=" %%H in ('certutil -hashfile "%PY_EMBED_ZIP%" SHA256') do if not defined ACTUAL_SHA256 set "ACTUAL_SHA256=%%H"
 if defined ACTUAL_SHA256 set "ACTUAL_SHA256=%ACTUAL_SHA256: =%"
-call :say "  expected %PY_EMBED_SHA256%" "  verwacht %PY_EMBED_SHA256%"
-call :say "  actual   %ACTUAL_SHA256%" "  gevonden %ACTUAL_SHA256%"
+call :say "  expected {0}" "%PY_EMBED_SHA256%"
+call :say "  actual   {0}" "%ACTUAL_SHA256%"
 if /I not "%ACTUAL_SHA256%"=="%PY_EMBED_SHA256%" goto :fail_hash
-call :say "SHA-256 verified. Extracting the runtime ..." "SHA-256 klopt. De runtime wordt uitgepakt ..."
+call :say "SHA-256 verified. Extracting the runtime ..."
 call :unzip "%PY_EMBED_ZIP%" "%RUNTIME%"
 if errorlevel 1 goto :fail_extract
 if not exist "%RUNTIME%\python.exe" goto :fail_extract
 del /q "%PY_EMBED_ZIP%" >nul 2>&1
 if not exist "%RUNTIME%\python312._pth" goto :fail_extract
 call :write_pth
-call :say "Preparing the Python package installer ..." "De Python-pakketinstallatie wordt voorbereid ..."
+call :say "Preparing the Python package installer ..."
 echo [%date% %time%] downloading %GET_PIP_URL% >> "%LOG%"
 call :download "%GET_PIP_URL%" "%RUNTIME%\get-pip.py"
 if errorlevel 1 goto :fail_download_pip
@@ -214,15 +211,15 @@ goto :have_python
 
 :have_python
 echo.
-call :say "Python runtime: %PYTHON% [%PYTHON_KIND%]" "Python-runtime: %PYTHON% [%PYTHON_KIND%]"
+call :say "Python runtime: {0} [{1}]" "%PYTHON%" "%PYTHON_KIND%"
 echo.
 set "TCLTK_RESULT=0"
 if /I "%PYTHON_KIND%"=="embedded" call :write_pth
 if /I "%PYTHON_KIND%"=="embedded" if not exist "%RUNTIME%\_tkinter.pyd" call :add_tcltk
 if not "%TCLTK_RESULT%"=="0" goto :fail_tcltk
-call :say "---- Step 2: installing the Tournament tools and their dependencies ----" "---- Stap 2: Tournament-tools en onderdelen installeren ----"
-call :say "This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA)." "PyTorch, EasyOCR, OpenCV en Qt worden gedownload (meerdere GB bij NVIDIA CUDA)."
-call :say "This can take 5 to 30 minutes. Please wait ..." "Dit kan 5 tot 30 minuten duren. Even geduld ..."
+call :say "---- Step 2: installing the Tournament tools and their dependencies ----"
+call :say "This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA)."
+call :say "This can take 5 to 30 minutes. Please wait ..."
 echo.
 echo [%date% %time%] running setup helper (%PYTHON_KIND%) >> "%LOG%"
 "%PYTHON%" "%TOOLS%\mk8dx_tools_setup.py" install --package-root "%PKG_ROOT%." --python-kind %PYTHON_KIND% --log "%LOG%"
@@ -230,51 +227,51 @@ if errorlevel 1 goto :fail_setup
 
 echo.
 echo ============================================================
-call :say " SUCCESS - MK8DX Tournament Tools are installed in this folder." " GELUKT - MK8DX Tournament Tools zijn in deze map geinstalleerd."
+call :say " SUCCESS - MK8DX Tournament Tools are installed in this folder."
 echo ============================================================
-call :say " TournamentProcessor.cmd  - process a recorded video (drag it onto the file)" " TournamentProcessor.cmd  - verwerk een opname (sleep de video naar het bestand)"
-call :say " TournamentAnalysis.cmd   - window to analyse recordings afterwards" " TournamentAnalysis.cmd   - venster om opnames achteraf te analyseren"
-call :say " TournamentLive.cmd       - live capture-card tournament app" " TournamentLive.cmd       - live toernooi-app voor een capturekaart"
-call :say " TournamentLiveCli.cmd    - advanced command line" " TournamentLiveCli.cmd    - geavanceerde opdrachtregel"
-call :say " TournamentConnect.cmd    - optional connection to the website" " TournamentConnect.cmd    - optionele verbinding met de website"
-call :say " TournamentTools.config.cmd - local settings and bundled assets" " TournamentTools.config.cmd - lokale instellingen en meegeleverde assets"
+call :say " TournamentProcessor.cmd  - process a recorded video (drag it onto the file)"
+call :say " TournamentAnalysis.cmd   - window to analyse recordings afterwards"
+call :say " TournamentLive.cmd       - live capture-card tournament app"
+call :say " TournamentLiveCli.cmd    - advanced command line"
+call :say " TournamentConnect.cmd    - optional connection to the website"
+call :say " TournamentTools.config.cmd - local settings and bundled assets"
 echo.
-call :say " Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow." " Lees README-FIRST.txt en USING_MK8DX_TOURNAMENT_TOOLS.md voor de werkwijze."
+call :say " Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow."
 echo [%date% %time%] installer finished: SUCCESS >> "%LOG%"
 goto :end
 
 :fail_package
-call :say "FAILED: this folder is not a complete package." "MISLUKT: deze map bevat geen compleet pakket."
-call :say "Extract the whole zip again and run the installer from that folder." "Pak het volledige zipbestand opnieuw uit en start de installatie vanuit die map."
+call :say "FAILED: this folder is not a complete package."
+call :say "Extract the whole zip again and run the installer from that folder."
 goto :failed
 :fail_venv
-call :say "FAILED: the private runtime could not be created. See %LOG%." "MISLUKT: de eigen runtime kon niet worden gemaakt. Zie %LOG%."
+call :say "FAILED: the private runtime could not be created. See {0}." "%LOG%"
 goto :failed
 :fail_download
-call :say "FAILED: the Python runtime could not be downloaded. Check your connection and retry." "MISLUKT: de Python-runtime kon niet worden gedownload. Controleer de verbinding en probeer opnieuw."
+call :say "FAILED: the Python runtime could not be downloaded. Check your connection and retry."
 goto :failed
 :fail_hash
-call :say "FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later." "MISLUKT: de veiligheidscontrole van de Python-runtime mislukte. Het bestand is verwijderd. Probeer later opnieuw."
+call :say "FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later."
 del /q "%PY_EMBED_ZIP%" >nul 2>&1
 goto :failed
 :fail_extract
-call :say "FAILED: the Python runtime could not be prepared. See %LOG%." "MISLUKT: de Python-runtime kon niet worden voorbereid. Zie %LOG%."
+call :say "FAILED: the Python runtime could not be prepared. See {0}." "%LOG%"
 goto :failed
 :fail_download_pip
-call :say "FAILED: the package installer could not be downloaded. Check your connection and retry." "MISLUKT: de pakketinstallatie kon niet worden gedownload. Controleer de verbinding en probeer opnieuw."
+call :say "FAILED: the package installer could not be downloaded. Check your connection and retry."
 goto :failed
 :fail_pip
-call :say "FAILED: the package installer could not be prepared. See %LOG%." "MISLUKT: de pakketinstallatie kon niet worden voorbereid. Zie %LOG%."
+call :say "FAILED: the package installer could not be prepared. See {0}." "%LOG%"
 goto :failed
 :fail_tcltk
-call :say "FAILED: Tournament Live interface support could not be added (step %TCLTK_RESULT%)." "MISLUKT: ondersteuning voor de Tournament Live-interface kon niet worden toegevoegd (stap %TCLTK_RESULT%)."
-call :say "Check your connection and run the installer again." "Controleer de verbinding en start de installatie opnieuw."
+call :say "FAILED: Tournament Live interface support could not be added (step {0})." "%TCLTK_RESULT%"
+call :say "Check your connection and run the installer again."
 goto :failed
 :fail_setup
 echo.
 echo ============================================================
-call :say " FAILED - the tools were NOT installed completely. See %LOG%." " MISLUKT - de tools zijn NIET volledig geinstalleerd. Zie %LOG%."
-call :say " Run this installer again; completed downloads are reused." " Start deze installatie opnieuw; voltooide downloads worden hergebruikt."
+call :say " FAILED - the tools were NOT installed completely. See {0}." "%LOG%"
+call :say " Run this installer again; completed downloads are reused."
 echo ============================================================
 goto :failed
 
@@ -287,12 +284,27 @@ exit /b 1
 if not defined MK8DX_INSTALL_NO_PAUSE pause
 exit /b 0
 
-:say
-if /I "%INSTALL_LANG%"=="nl" goto :say_nl
-echo %~1
+:language
+rem The text language: MK8DX_TOURNAMENT_LANGUAGE (TournamentTools.config.cmd) unless auto, else MK8DX_LANGUAGE,
+rem else the Windows display language; tools\mk8dx-text.cmd matches it to one of the 15 game languages and reads
+rem the texts from tools\launcher_i18n without starting PowerShell. MK8DX_LANGUAGE itself stays as it was.
+if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LAUNCHER_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
+if exist "%PKG_ROOT%tools\mk8dx-text.cmd" call "%PKG_ROOT%tools\mk8dx-text.cmd" language
 exit /b 0
-:say_nl
-echo %~2
+
+:say
+rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4.
+if not exist "%PKG_ROOT%tools\mk8dx-text.cmd" goto :say_plain
+call "%PKG_ROOT%tools\mk8dx-text.cmd" say %*
+exit /b 0
+:say_plain
+echo(%~1
+exit /b 0
+
+:title
+rem %1 = the English window title.
+title %~1
+if exist "%PKG_ROOT%tools\mk8dx-text.cmd" call "%PKG_ROOT%tools\mk8dx-text.cmd" title %1
 exit /b 0
 
 rem ---- helpers: Windows 10/11 ship curl.exe and tar.exe; PowerShell is the fallback ----
@@ -331,7 +343,7 @@ exit /b 0
 rem The python.org embeddable runtime has no Tcl/Tk. The Tournament Live GUI imports tkinter,
 rem so the official tcltk.msi of the same Python release is downloaded, SHA-256 verified and
 rem unpacked (administrative install, no elevation) into the runtime folder.
-call :say "Adding Tournament Live interface support (about 3.5 MB) ..." "Ondersteuning voor de Tournament Live-interface wordt toegevoegd (ongeveer 3,5 MB) ..."
+call :say "Adding Tournament Live interface support (about 3.5 MB) ..."
 echo [%date% %time%] downloading %TCLTK_URL% >> "%LOG%"
 call :download "%TCLTK_URL%" "%TCLTK_MSI%"
 if errorlevel 1 (set "TCLTK_RESULT=1" & exit /b 1)
@@ -339,8 +351,8 @@ if not exist "%TCLTK_MSI%" (set "TCLTK_RESULT=1" & exit /b 1)
 set "TCLTK_ACTUAL="
 for /f "skip=1 delims=" %%H in ('certutil -hashfile "%TCLTK_MSI%" SHA256') do if not defined TCLTK_ACTUAL set "TCLTK_ACTUAL=%%H"
 if defined TCLTK_ACTUAL set "TCLTK_ACTUAL=%TCLTK_ACTUAL: =%"
-call :say "  expected %TCLTK_SHA256%" "  verwacht %TCLTK_SHA256%"
-call :say "  actual   %TCLTK_ACTUAL%" "  gevonden %TCLTK_ACTUAL%"
+call :say "  expected {0}" "%TCLTK_SHA256%"
+call :say "  actual   {0}" "%TCLTK_ACTUAL%"
 if /I not "%TCLTK_ACTUAL%"=="%TCLTK_SHA256%" (del /q "%TCLTK_MSI%" & set "TCLTK_RESULT=2" & exit /b 1)
 if exist "%RUNTIME%\tcltk-extract" rmdir /s /q "%RUNTIME%\tcltk-extract"
 start /wait "" msiexec /a "%TCLTK_MSI%" /qn TARGETDIR="%RUNTIME%\tcltk-extract"
@@ -351,7 +363,7 @@ xcopy /E /I /Q /Y "%RUNTIME%\tcltk-extract\Lib\tkinter" "%RUNTIME%\Lib\tkinter" 
 rmdir /s /q "%RUNTIME%\tcltk-extract"
 del /q "%TCLTK_MSI%" >nul 2>&1
 if not exist "%RUNTIME%\_tkinter.pyd" (set "TCLTK_RESULT=3" & exit /b 1)
-call :say "Tournament Live interface support added." "Ondersteuning voor de Tournament Live-interface is toegevoegd."
+call :say "Tournament Live interface support added."
 exit /b 0
 """
 
@@ -376,7 +388,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import locale
 import os
 import re
 import shutil
@@ -414,7 +425,8 @@ set "MK8_CLEAN_ASSETS_ROOT=%~dp0runtime-assets\\clean-assets"
 set "EASYOCR_MODULE_PATH=%~dp0runtime-assets\\ocr-models"
 rem Tournament Live keeps its sessions here (Live_Output\\exports, diagnostics, ...).
 set "MK8DX_TOURNAMENT_LIVE_ROOT=%~dp0TournamentLive"
-rem Interface language: auto follows Windows. Set to en or nl to override.
+rem Interface language: auto follows Windows. Set to one of en, nl, en-US, fr, fr-CA, de, es, es-419, it, pt,
+rem ru, ja, ko, zh-CN or zh-TW to override (the launcher windows follow it too).
 set "MK8DX_TOURNAMENT_LANGUAGE=auto"
 rem Optional: another image for the Tournament Analysis window banner instead of the packaged one.
 rem set "MK8DX_ANALYSIS_BACKGROUND=C:\\path\\to\\banner.jpg"
@@ -433,16 +445,41 @@ if exist "%PKG_ROOT%runtime\\python.exe" set "PYTHON=%PKG_ROOT%runtime\\python.e
 if not defined PYTHON if exist "%PKG_ROOT%runtime\\Scripts\\python.exe" set "PYTHON=%PKG_ROOT%runtime\\Scripts\\python.exe"
 if not defined PYTHON goto :no_runtime
 if exist "%PKG_ROOT%TournamentTools.config.cmd" call "%PKG_ROOT%TournamentTools.config.cmd"
+call :language
 """
 
 LAUNCHER_FOOTER = """goto :eof
 :no_runtime
-echo The package runtime is missing. Run Install-MK8DX-TournamentTools.cmd first.
+call :language
+call :say "The package runtime is missing. Run {0} first." "Install-MK8DX-TournamentTools.cmd"
 pause
 exit /b 1
+
+:language
+rem The text language: MK8DX_TOURNAMENT_LANGUAGE (TournamentTools.config.cmd) unless auto, else MK8DX_LANGUAGE,
+rem else the Windows display language; tools\\mk8dx-text.cmd matches it to one of the 15 game languages and reads
+rem the texts from tools\\launcher_i18n without starting PowerShell. MK8DX_LANGUAGE itself stays as it was.
+if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LAUNCHER_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
+if exist "%PKG_ROOT%tools\\mk8dx-text.cmd" call "%PKG_ROOT%tools\\mk8dx-text.cmd" language
+exit /b 0
+
+:say
+rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4.
+if not exist "%PKG_ROOT%tools\\mk8dx-text.cmd" goto :say_plain
+call "%PKG_ROOT%tools\\mk8dx-text.cmd" say %*
+exit /b 0
+:say_plain
+echo(%~1
+exit /b 0
+
+:title
+rem %1 = the English window title.
+title %~1
+if exist "%PKG_ROOT%tools\\mk8dx-text.cmd" call "%PKG_ROOT%tools\\mk8dx-text.cmd" title %1
+exit /b 0
 """
 
-PROCESSOR_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Processor
+PROCESSOR_CMD = LAUNCHER_HEADER + """call :title "MK8DX Tournament Processor"
 if "%~1"=="" goto :usage
 "%PYTHON%" "%PKG_ROOT%tools\\mk8dx_tools_setup.py" process-video --package-root "%PKG_ROOT%." "%~1"
 set "RESULT=%ERRORLEVEL%"
@@ -458,72 +495,72 @@ exit /b 0
 
 # The analysis window runs the same recorded-video processing as TournamentProcessor.cmd, so it selects the
 # same recorded recognition variant (process_video below sets these for the drag-and-drop launcher).
-ANALYSIS_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Analysis
+ANALYSIS_CMD = LAUNCHER_HEADER + """call :title "MK8DX Tournament Analysis"
 set "MK8DX_TOURNAMENT_ASSETS_ROOT=%PKG_ROOT%runtime-assets\\recorded\\assets"
 set "MK8DX_TOURNAMENT_REFERENCE_ROOT=%PKG_ROOT%runtime-assets\\recorded"
 set "MK8DX_TOURNAMENT_ENGINE_DATA_ROOT=%PKG_ROOT%runtime-assets\\recorded"
 set "MK8_CLEAN_ASSETS_ROOT=%PKG_ROOT%runtime-assets\\clean-assets"
 set "EASYOCR_MODULE_PATH=%PKG_ROOT%runtime-assets\\ocr-models"
-echo Starting the Tournament Analysis window ... (this window shows startup errors)
+call :say "Starting the Tournament Analysis window ... (this window shows startup errors)"
 "%PYTHON%" -m tournament_processor.gui %*
 set "RESULT=%ERRORLEVEL%"
 if not "%RESULT%"=="0" (
     echo.
-    echo Tournament Analysis exited with code %RESULT%.
+    call :say "Tournament Analysis exited with code {0}." "%RESULT%"
     pause
 )
 exit /b %RESULT%
 """ + LAUNCHER_FOOTER
 
-LIVE_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Live
+LIVE_CMD = LAUNCHER_HEADER + """call :title "MK8DX Tournament Live"
 if not exist "%MK8DX_TOURNAMENT_LIVE_ROOT%" mkdir "%MK8DX_TOURNAMENT_LIVE_ROOT%"
 cd /d "%MK8DX_TOURNAMENT_LIVE_ROOT%"
-echo Starting the Tournament Live GUI ... (this window shows startup progress and errors)
+call :say "Starting the Tournament Live GUI ... (this window shows startup progress and errors)"
 "%PYTHON%" -m live_processor.run_gui %*
 set "RESULT=%ERRORLEVEL%"
 if not "%RESULT%"=="0" (
     echo.
-    echo Tournament Live exited with code %RESULT%.
+    call :say "Tournament Live exited with code {0}." "%RESULT%"
     pause
 )
 exit /b %RESULT%
 """ + LAUNCHER_FOOTER
 
-LIVE_CLI_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Live - command line
+LIVE_CLI_CMD = LAUNCHER_HEADER + """call :title "MK8DX Tournament Live - command line"
 if not exist "%MK8DX_TOURNAMENT_LIVE_ROOT%" mkdir "%MK8DX_TOURNAMENT_LIVE_ROOT%"
 cd /d "%MK8DX_TOURNAMENT_LIVE_ROOT%"
 if "%~1"=="" goto :usage
 "%PYTHON%" -m live_processor.cli %*
 exit /b %ERRORLEVEL%
 :usage
-echo MK8DX Tournament Live - command line. Sub-commands:
+call :say "MK8DX Tournament Live - command line. Sub-commands:"
 "%PYTHON%" -m live_processor.cli --help
 echo.
-echo Examples (type them in this window):
+call :say "Examples (type them in this window):"
 echo   "%PYTHON%" -m live_processor.cli dry-run
 echo   "%PYTHON%" -m live_processor.cli capture-devices
 echo   "%PYTHON%" -m live_processor.cli discover-fixtures
 echo   "%PYTHON%" -m live_processor.cli replay --streams one
 echo   "%PYTHON%" -m tournament_live.cli Current_Tournament_Results.csv --output Current_TournamentRaceResultsV1.json --session-id live-session-001
 echo.
-echo Running dry-run now to show where Tournament Live stores its files:
+call :say "Running dry-run now to show where Tournament Live stores its files:"
 "%PYTHON%" -m live_processor.cli dry-run
 echo.
 cmd /k
 """ + LAUNCHER_FOOTER
 
-CONNECT_CMD = LAUNCHER_HEADER + """title MK8DX Tournament Connect - optional
-echo Optional browser sign-in uploads an existing JSON result as PENDING evidence.
-echo Local processing and file exports never require sign-in or internet.
+CONNECT_CMD = LAUNCHER_HEADER + """call :title "MK8DX Tournament Connect - optional"
+call :say "Optional browser sign-in uploads an existing JSON result as PENDING evidence."
+call :say "Local processing and file exports never require sign-in or internet."
 echo.
 if "%~1"=="" goto :usage
 "%PYTHON%" -m mk8dx_tournament_connected.cli %*
 pause
 exit /b %ERRORLEVEL%
 :usage
-echo First use: TournamentConnect.cmd sign-in
-echo Send a result: TournamentConnect.cmd send path\\to\\TournamentRaceResultsV1.json
-echo Sign out: TournamentConnect.cmd sign-out
+call :say "First use: {0}" "TournamentConnect.cmd sign-in"
+call :say "Send a result: {0}" "TournamentConnect.cmd send path\\to\\TournamentRaceResultsV1.json"
+call :say "Sign out: {0}" "TournamentConnect.cmd sign-out"
 echo.
 cmd /k
 """ + LAUNCHER_FOOTER
@@ -583,16 +620,39 @@ def _python() -> str:
     return sys.executable
 
 
+def _launcher_text():
+    """tools\\launcher_text.py and its catalogs tools\\launcher_i18n (the launcher windows' texts), or None."""
+    tools = str(Path(__file__).resolve().parent)
+    if tools not in sys.path:
+        sys.path.insert(0, tools)
+    try:
+        import launcher_text
+    except ImportError:
+        return None
+    return launcher_text
+
+
 def _language() -> str:
-    configured = os.environ.get("MK8DX_TOURNAMENT_LANGUAGE", "auto").strip().lower()
-    if configured in {"en", "nl"}:
-        return configured
-    windows_locale = locale.getlocale()[0] or ""
-    return "nl" if windows_locale.lower().startswith("nl") else "en"
+    """The cmd launcher's choice (MK8DX_LAUNCHER_LANGUAGE), else MK8DX_TOURNAMENT_LANGUAGE unless auto, else the
+    launcher rules (MK8DX_LANGUAGE, then the Windows display language)."""
+    module = _launcher_text()
+    if module is None:
+        return "en"
+    for name in ("MK8DX_LAUNCHER_LANGUAGE", "MK8DX_TOURNAMENT_LANGUAGE"):
+        found = module.match(os.environ.get(name, ""))
+        if found:
+            return found
+    return module.choose()
 
 
-def _text(english: str, dutch: str) -> str:
-    return dutch if _language() == "nl" else english
+def _text(english: str, *values) -> str:
+    """English is the key, as in the launcher windows; {0}, {1} are filled after the lookup."""
+    module = _launcher_text()
+    if module is not None:
+        return module.t(english, *values, language=_language())
+    for index, value in enumerate(values):
+        english = english.replace("{%d}" % index, str(value))
+    return english
 
 
 def _relative_python(package_root: Path) -> str:
@@ -664,7 +724,7 @@ def install(package_root: Path, python_kind: str, log_path: Path, torch_mode: st
         json.dumps({"packageVersion": PACKAGE_VERSION, "torchSelection": selection, "ok": False}, indent=2) + "\n",
         encoding="utf-8",
     )
-    _log(log_path, _text(f"PyTorch backend: {decision.selected_mode}", f"PyTorch-rekenmodus: {decision.selected_mode}"))
+    _log(log_path, _text("PyTorch backend: {0}", decision.selected_mode))
     _log(log_path, decision.reason)
     for warning in decision.warnings:
         _log(log_path, warning)
@@ -795,27 +855,23 @@ def _stage_video(video: Path) -> tuple[Path, str]:
         return session_root, video.name
     try:
         os.link(video, staged)  # hard link: instant, no extra disk, same volume only
-        print(_text(f"Linked the video into {input_dir}", f"De video is gekoppeld aan {input_dir}"))
+        print(_text("Linked the video into {0}", input_dir))
     except OSError:
-        print(_text(
-            f"Copying the video into {input_dir} (different drive; this can take a while) ...",
-            f"De video wordt gekopieerd naar {input_dir} (andere schijf; dit kan even duren) ...",
-        ))
+        print(_text("Copying the video into {0} (different drive; this can take a while) ...",
+                    input_dir))
         shutil.copy2(video, staged)
     return session_root, video.name
 
 
 def process_video(package_root: Path, target: Path) -> int:
     if not target.exists():
-        print(_text(f"Not found: {target}", f"Niet gevonden: {target}"))
+        print(_text("Not found: {0}", target))
         return 2
     if target.is_dir():
         runtime_root = target.parent if target.name.lower() == "input_videos" else target
         if not (runtime_root / "Input_Videos").is_dir():
-            print(_text(
-                f"{runtime_root} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.",
-                f"{runtime_root} heeft geen map Input_Videos. Sleep een videobestand of een sessiemap met Input_Videos naar de launcher.",
-            ))
+            print(_text("{0} has no Input_Videos folder. Drop a video file or a session folder that contains "
+                        "Input_Videos.", runtime_root))
             return 2
         video_name = None
         session_stem = runtime_root.name
@@ -829,86 +885,52 @@ def process_video(package_root: Path, target: Path) -> int:
     os.environ["MK8_CLEAN_ASSETS_ROOT"] = str(package_root / "runtime-assets/clean-assets")
     os.environ["EASYOCR_MODULE_PATH"] = str(package_root / "runtime-assets/ocr-models")
     missing = []
-    for english_label, dutch_label, key in (
-        ("recognition images", "herkenningsafbeeldingen", "MK8DX_TOURNAMENT_ASSETS_ROOT"),
-        ("game data", "spelgegevens", "MK8DX_TOURNAMENT_REFERENCE_ROOT"),
+    for label, key in (
+        (_text("recognition images"), "MK8DX_TOURNAMENT_ASSETS_ROOT"),
+        (_text("game data"), "MK8DX_TOURNAMENT_REFERENCE_ROOT"),
     ):
         value = os.environ.get(key)
         if not value or not Path(value).is_dir():
-            label = _text(english_label, dutch_label)
-            absent = _text("not set", "niet ingesteld")
+            absent = _text("not set")
             missing.append(f"  {label}: {key}={value or f'({absent})'}")
     if missing:
-        print(_text(
-            "The bundled recognition assets are missing:",
-            "De meegeleverde herkenningsbestanden ontbreken:",
-        ))
+        print(_text("The bundled recognition assets are missing:"))
         print("\n".join(missing))
-        print(_text(
-            "Re-extract the complete package and verify PACKAGE_MANIFEST.json.",
-            "Pak het volledige pakket opnieuw uit en controleer PACKAGE_MANIFEST.json.",
-        ))
-        print(_text(
-            "Then drop the video again.",
-            "Sleep de video daarna opnieuw naar de launcher.",
-        ))
+        print(_text("Re-extract the complete package and verify PACKAGE_MANIFEST.json."))
+        print(_text("Then drop the video again."))
         return 3
     session_id = _session_id(session_stem)
     arguments = ["all", "--runtime-root", str(runtime_root), "--session-id", session_id]
     if video_name:
         arguments += ["--video", video_name]
-    print(_text(f"Session folder : {runtime_root}", f"Sessiemap      : {runtime_root}"))
-    print(_text(f"Session id     : {session_id}", f"Sessie-id      : {session_id}"))
-    print(_text(f"Output folder  : {runtime_root / 'Output_Results'}", f"Uitvoermap     : {runtime_root / 'Output_Results'}"))
-    print(_text("Processing the recording ...", "De opname wordt verwerkt ..."))
-    print(_text(
-        "(all EasyOCR models are included; no download needed, this works offline)",
-        "(alle EasyOCR-modellen zitten erbij; er wordt niets gedownload, dit werkt offline)",
-    ))
+    print(_text("Session folder : {0}", runtime_root))
+    print(_text("Session id     : {0}", session_id))
+    print(_text("Output folder  : {0}", runtime_root / 'Output_Results'))
+    print(_text("Processing the recording ..."))
+    print(_text("(all EasyOCR models are included; no download needed, this works offline)"))
     from tournament_processor.vision_cli import run
 
     code = run(arguments)
     if code == 0:
         print()
-        print(_text(f"Results: {runtime_root / 'Output_Results'}", f"Uitslagen: {runtime_root / 'Output_Results'}"))
-        print(_text(
-            "  Excel, CSV and *_TournamentRaceResultsV1.json for website import",
-            "  Excel, CSV en *_TournamentRaceResultsV1.json voor import in de website",
-        ))
+        print(_text("Results: {0}", runtime_root / 'Output_Results'))
+        print(_text("  Excel, CSV and *_TournamentRaceResultsV1.json for website import"))
     return int(code or 0)
 
 
 def usage(package_root: Path) -> int:
-    print(_text(
-        "MK8DX Tournament Processor - recorded tournament video",
-        "MK8DX Tournament Processor - opgenomen toernooivideo",
-    ))
+    print(_text("MK8DX Tournament Processor - recorded tournament video"))
     print()
-    print(_text(
-        "Easiest use: drag a recorded tournament video (.mp4/.mkv) onto TournamentProcessor.cmd.",
-        "Snelste werkwijze: sleep een opgenomen toernooivideo (.mp4/.mkv) naar TournamentProcessor.cmd.",
-    ))
-    print(_text(
-        "A <video name>_TournamentSession folder is created next to the video.",
-        "Naast de video wordt een map <videonaam>_TournamentSession gemaakt.",
-    ))
-    print(_text(
-        "Results are written to Output_Results as Excel, CSV and a website import file.",
-        "De uitslagen komen in Output_Results als Excel, CSV en een importbestand voor de website.",
-    ))
-    print(_text(
-        "You can also drop a session folder that already has an Input_Videos sub-folder.",
-        "Je kunt ook een sessiemap met een bestaande submap Input_Videos naar de launcher slepen.",
-    ))
+    print(_text("Easiest use: drag a recorded tournament video (.mp4/.mkv) onto TournamentProcessor.cmd."))
+    print(_text("A <video name>_TournamentSession folder is created next to the video."))
+    print(_text("Results are written to Output_Results as Excel, CSV and a website import file."))
+    print(_text("You can also drop a session folder that already has an Input_Videos sub-folder."))
     print()
     state_path = package_root / "INSTALL_STATE.json"
     if state_path.is_file():
         try:
             state = json.loads(state_path.read_text(encoding="utf-8"))
-            print(_text(
-                f"Installed version: {state.get('packageVersion')}",
-                f"Geïnstalleerde versie: {state.get('packageVersion')}",
-            ))
+            print(_text("Installed version: {0}", state.get('packageVersion')))
         except ValueError:
             pass
     return 0
@@ -1168,6 +1190,13 @@ def main() -> int:
         (tools / "check_python.py").write_text(CHECK_PYTHON_PY, encoding="utf-8")
         shutil.copy2(TORCH_SELECTOR, tools / "select_torch.py")
         (tools / "mk8dx_tools_setup.py").write_text(render(SETUP_HELPER_PY), encoding="utf-8")
+        # The texts of the installer, the launchers and the setup helper in the 15 game languages: the launcher
+        # windows' mechanism (tooling/launcher_text.py, tooling/mk8dx-text.cmd, tooling/launcher_i18n).
+        for name in LAUNCHER_TEXT_FILES:
+            shutil.copy2(REPOSITORY_ROOT / "tooling" / name, tools / name)
+        (tools / "launcher_i18n").mkdir()
+        for catalog in sorted((REPOSITORY_ROOT / "tooling" / "launcher_i18n").glob("*.*")):
+            shutil.copy2(catalog, tools / "launcher_i18n" / catalog.name)
         # Batch files must be CRLF and plain ASCII-safe for cmd.exe.
         installer = render(INSTALLER_CMD).replace("\r\n", "\n").replace("\n", "\r\n")
         (output / "Install-MK8DX-TournamentTools.cmd").write_bytes(installer.encode("ascii"))

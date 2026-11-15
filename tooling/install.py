@@ -42,17 +42,17 @@ def safe_state_dir(value, *, existing):
         if part.exists() and (part.is_symlink() or
                               getattr(part.lstat(), "st_file_attributes", 0) &
                               getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)) and not system_link(part):
-            raise ValueError("Installation path contains a link or junction")
+            raise ValueError(t("Installation path contains a link or junction"))
     if path.is_relative_to(ROOT):
-        raise ValueError("Private installation must be outside the software package")
+        raise ValueError(t("Private installation must be outside the software package"))
     if existing and not path.is_dir():
-        raise ValueError("Installation directory is missing")
+        raise ValueError(t("Installation directory is missing"))
     for name in (PROFILE, SECRET, PUBLIC, "api.env", "operator.json", "compose.env", accounts.MIGRATION_FILE):
         item = path / name
         if item.exists() and (item.is_symlink() or
                               getattr(item.lstat(), "st_file_attributes", 0) &
                               getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
-            raise ValueError("Installation file is a link or junction")
+            raise ValueError(t("Installation file is a link or junction"))
     return path
 
 
@@ -74,7 +74,7 @@ def free_port(start):
                 return port
             except OSError:
                 continue
-    raise RuntimeError("No loopback port available")
+    raise RuntimeError(t("No loopback port available"))
 
 
 def container_readable(state):
@@ -101,7 +101,7 @@ def write_new(path, content):
 def dotenv(values):
     for name, value in values.items():
         if "\n" in value or "'" in value:
-            raise ValueError("Unsafe environment value")
+            raise ValueError(t("Unsafe environment value"))
         yield f"{name}='{value}'\n"
 
 
@@ -112,7 +112,7 @@ def read_dotenv(path):
             continue
         name, equal, value = line.partition("=")
         if not equal or len(value) < 2 or value[0] != "'" or value[-1] != "'":
-            raise ValueError("Unexpected generated environment format")
+            raise ValueError(t("Unexpected generated environment format"))
         values[name] = value[1:-1]
     return values
 
@@ -122,15 +122,15 @@ def valid_origin(value):
     try:
         port = parsed.port
     except ValueError:
-        raise ValueError("Website port is invalid") from None
+        raise ValueError(t("Website port is invalid")) from None
     if (parsed.scheme not in ("http", "https") or not parsed.hostname or parsed.username or
             parsed.password or parsed.path not in ("", "/") or parsed.query or parsed.fragment or
             value.endswith("/") or not value.isascii()):
-        raise ValueError("Use one absolute origin such as https://www.example.org (no path or final slash)")
+        raise ValueError(t("Use one absolute origin such as https://www.example.org (no path or final slash)"))
     if parsed.scheme == "http" and parsed.hostname not in ("127.0.0.1", "localhost"):
-        raise ValueError("Remote and LAN addresses require trusted HTTPS")
+        raise ValueError(t("Remote and LAN addresses require trusted HTTPS"))
     if parsed.scheme == "http" and port is None:
-        raise ValueError("Local URL needs its selected port")
+        raise ValueError(t("Local URL needs its selected port"))
     return value
 
 
@@ -166,12 +166,12 @@ def adopt(state):
     """Record existing installation values without rewriting its runtime or volumes."""
     state = safe_state_dir(state, existing=True)
     if any((state / name).exists() for name in (PROFILE, SECRET, PUBLIC)):
-        raise ValueError("Already adopted; existing profile and secrets stay in place")
+        raise ValueError(t("Already adopted; existing profile and secrets stay in place"))
     api = read_dotenv(state / "api.env")
     compose = read_dotenv(state / "compose.env")
     operator = json.loads((state / "operator.json").read_text(encoding="utf-8"))
     if operator.get("MK8DX_HOSTED_AUTH_BASE_URL") != api.get("MK8DX_HOSTED_AUTH_BASE_URL"):
-        raise ValueError("Existing operator and API origins differ")
+        raise ValueError(t("Existing operator and API origins differ"))
     origin = valid_origin(api["MK8DX_HOSTED_AUTH_BASE_URL"])
     profile = {"schemaVersion": "mk8dx.operator.v1", "route": "A1" if api.get("MK8DX_LOCAL_DEMO") == "true" else "B1",
                "origin": origin, "project": compose["MK8DX_PROJECT_NAME"],
@@ -188,7 +188,7 @@ def adopt(state):
     write_json(state / PROFILE, profile)
     write_json(state / SECRET, secrets_data)
     write_json(state / PUBLIC, public_client(origin))
-    print("Existing installation adopted without changing runtime files, keys, accounts or volumes")
+    print(t("Existing installation adopted without changing runtime files, keys, accounts or volumes"))
 
 
 def separate_accounts(state):
@@ -217,9 +217,9 @@ def status(state, *, allow_expired_signer=False):
     secret_values = json.loads((state / SECRET).read_text(encoding="utf-8"))
     compose = read_dotenv(state / "compose.env")
     if profile["project"] != compose["MK8DX_PROJECT_NAME"]:
-        raise ValueError("Profile and Compose project differ; refusing ambiguous installation")
+        raise ValueError(t("Profile and Compose project differ; refusing ambiguous installation"))
     if profile["bindAddress"] != compose["MK8DX_BIND_ADDRESS"]:
-        raise ValueError("Profile and gateway bind address differ")
+        raise ValueError(t("Profile and gateway bind address differ"))
     if profile["route"] == "A2_OFFLINE":
         from tooling.offline_lan_ca_lifecycle import validate_signer
         signer = validate_signer(state, allow_expired=allow_expired_signer)
@@ -227,21 +227,21 @@ def status(state, *, allow_expired_signer=False):
         if (expected_ip != profile["bindAddress"] or
                 profile["origin"] != f"https://{expected_ip}" or
                 signer["rootCertificateSha256"] != profile.get("rootCertificateSha256")):
-            raise ValueError("Offline CA, selected IP and installation profile disagree")
+            raise ValueError(t("Offline CA, selected IP and installation profile disagree"))
     api = read_dotenv(state / "api.env")
     operator = json.loads((state / "operator.json").read_text(encoding="utf-8"))
     public = json.loads((state / PUBLIC).read_text(encoding="utf-8"))
     if (profile["origin"] != api["MK8DX_HOSTED_AUTH_BASE_URL"] or
             profile["origin"] != public["websiteOrigin"] or
             (profile["route"] != "A1" and urlsplit(profile["origin"]).hostname != compose.get("MK8DX_DOMAIN"))):
-        raise ValueError("Profile, API, public client and gateway origins disagree")
+        raise ValueError(t("Profile, API, public client and gateway origins disagree"))
     smtp = profile["smtp"]
     if (smtp["host"] != api["MK8DX_HOSTED_SMTP_HOST"] or
             str(smtp["port"]) != api["MK8DX_HOSTED_SMTP_PORT"] or
             str(smtp["secure"]).lower() != api["MK8DX_HOSTED_SMTP_SECURE"] or
             smtp["username"] != api["MK8DX_HOSTED_SMTP_USERNAME"] or
             smtp["fromAddress"] != api["MK8DX_HOSTED_SMTP_FROM_ADDRESS"]):
-        raise ValueError("Profile and API mail settings disagree")
+        raise ValueError(t("Profile and API mail settings disagree"))
     saved_password = secret_values.get("MK8DX_HOSTED_SMTP_PASSWORD")
     encoded_password = api.get("MK8DX_HOSTED_SMTP_PASSWORD_BASE64")
     runtime_password = (base64.b64decode(encoded_password, validate=True).decode("utf-8")
@@ -252,7 +252,7 @@ def status(state, *, allow_expired_signer=False):
             not database_accounts_agree(state, profile, secret_values, compose, api) or
             any(api.get(name) != value for name, value in operator.items()
                 if name.startswith("MK8DX_HOSTED_") and name != "MK8DX_HOSTED_SMTP_PASSWORD")):
-        raise ValueError("Private secrets or generated runtime disagree; do not reset keys")
+        raise ValueError(t("Private secrets or generated runtime disagree; do not reset keys"))
     displayed = {"route": profile["route"], "origin": profile["origin"],
                  "stateDir": str(state), "project": profile["project"],
                  "adminEmailConfigured": bool(profile.get("adminEmail")),
@@ -262,7 +262,7 @@ def status(state, *, allow_expired_signer=False):
     if profile["route"] == "A1":
         mail_port = int(compose["MK8DX_MAILPIT_PORT"])
         if not 1 <= mail_port <= 65535:
-            raise ValueError("Local mail port is invalid")
+            raise ValueError(t("Local mail port is invalid"))
         displayed["localMailInbox"] = f"http://127.0.0.1:{mail_port}"
     if profile["route"] != "A2_OFFLINE":
         from tooling import scheduled_backup
@@ -276,12 +276,12 @@ def change_origin(state, origin):
     origin = valid_origin(origin)
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
     if profile["route"] == "A2_OFFLINE":
-        raise ValueError("Offline LAN origin changes require CA signer and setup-QR rotation")
+        raise ValueError(t("Offline LAN origin changes require CA signer and setup-QR rotation"))
     if profile["origin"] == origin:
         print("unchanged")
         return
     if profile["route"] == "A1" and urlsplit(origin).hostname not in ("localhost", "127.0.0.1"):
-        raise ValueError("A1 is loopback only; use a separate A2 or B1 installation")
+        raise ValueError(t("A1 is loopback only; use a separate A2 or B1 installation"))
     paths = [state / name for name in (PROFILE, "api.env", "operator.json", PUBLIC, "compose.env")]
     old = [p.read_bytes() for p in paths]
     api = read_dotenv(paths[1])
@@ -296,14 +296,14 @@ def change_origin(state, origin):
         profile["httpPort"] = urlsplit(origin).port
     else:
         if urlsplit(origin).port is not None:
-            raise ValueError("LAN and public gateway currently use standard HTTPS port 443")
+            raise ValueError(t("LAN and public gateway currently use standard HTTPS port 443"))
         compose_values["MK8DX_DOMAIN"] = urlsplit(origin).hostname
     new = [json.dumps(profile, indent=2).encode() + b"\n",
            "".join(dotenv(api)).encode(), json.dumps(operator, indent=2).encode() + b"\n",
            json.dumps(public_client(origin), indent=2).encode() + b"\n",
            "".join(dotenv(compose_values)).encode()]
     replace_group(paths, new)
-    print("Origin saved. Restart API/Web through the installation command and reconnect clients.")
+    print(t("Origin saved. Restart API/Web through the installation command and reconnect clients."))
 
 
 def change_smtp(state):
@@ -311,12 +311,12 @@ def change_smtp(state):
     paths = [state / name for name in (PROFILE, SECRET, "api.env", "operator.json")]
     profile = json.loads(paths[0].read_text(encoding="utf-8"))
     if profile["route"] == "A1":
-        raise ValueError("A1 uses local Mailpit; choose A2/B1 with a separate profile for real users")
+        raise ValueError(t("A1 uses local Mailpit; choose A2/B1 with a separate profile for real users"))
     secrets_data = json.loads(paths[1].read_text(encoding="utf-8"))
     api = read_dotenv(paths[2])
     operator = json.loads(paths[3].read_text(encoding="utf-8"))
     smtp = profile["smtp"]
-    print("Press Enter to keep each existing public value. Password stays hidden and is never printed.")
+    print(t("Press Enter to keep each existing public value. Password stays hidden and is never printed."))
     host = input(f"SMTP host [{smtp['host']}]: ").strip() or smtp["host"]
     port = int(input(f"SMTP implicit-TLS port [{smtp['port']}]: ").strip() or smtp["port"])
     username = input(f"SMTP login [{smtp['username']}]: ").strip() or smtp["username"]
@@ -324,7 +324,7 @@ def change_smtp(state):
     entered_password = getpass.getpass("New SMTP password (Enter keeps current): ")
     password = entered_password or secrets_data["MK8DX_HOSTED_SMTP_PASSWORD"]
     if port != 465 or not host or " " in host or not username or " " in username or "@" not in from_address or not password:
-        raise ValueError("SMTP needs host, port 465 implicit TLS, login, authorized sender and password")
+        raise ValueError(t("SMTP needs host, port 465 implicit TLS, login, authorized sender and password"))
     smtp.update({"host": host, "port": port, "secure": True, "username": username, "fromAddress": from_address})
     updates = {"MK8DX_HOSTED_SMTP_HOST": host, "MK8DX_HOSTED_SMTP_PORT": str(port),
                "MK8DX_HOSTED_SMTP_SECURE": "true", "MK8DX_HOSTED_SMTP_USERNAME": username,
@@ -339,23 +339,23 @@ def change_smtp(state):
     replace_group(paths, [json.dumps(profile, indent=2).encode() + b"\n",
                           json.dumps(secrets_data, indent=2).encode() + b"\n",
                           "".join(dotenv(api)).encode(), json.dumps(operator, indent=2).encode() + b"\n"])
-    print("SMTP configuration saved privately. Run apply to recreate API/Web without resetting data.")
+    print(t("SMTP configuration saved privately. Run apply to recreate API/Web without resetting data."))
 
 
 def change_admin_email(state, email):
     if not email or "@" not in email or " " in email or "\n" in email:
-        raise ValueError("Enter one valid-looking admin email")
+        raise ValueError(t("Enter one valid-looking admin email"))
     path = safe_state_dir(state, existing=True) / PROFILE
     profile = json.loads(path.read_text(encoding="utf-8"))
     profile["adminEmail"] = email
     replace_group([path], [json.dumps(profile, indent=2).encode() + b"\n"])
-    print("Target email saved. First sign in and verify it, then run the separate admin action.")
+    print(t("Target email saved. First sign in and verify it, then run the separate admin action."))
 
 
 def lan_address(value):
     address = ipaddress.IPv4Address(value)
     if not address.is_private or address.is_loopback or address.is_unspecified:
-        raise ValueError("Use the host's actual private IPv4 address")
+        raise ValueError(t("Use the host's actual private IPv4 address"))
     return str(address)
 
 
@@ -365,12 +365,12 @@ def change_lan_address(state, value):
     paths = [state / PROFILE, state / "compose.env"]
     profile = json.loads(paths[0].read_text(encoding="utf-8"))
     if profile["route"] != "A2":
-        raise ValueError("This action applies only to A2")
+        raise ValueError(t("This action applies only to A2"))
     compose_values = read_dotenv(paths[1])
     profile["bindAddress"] = address
     compose_values["MK8DX_BIND_ADDRESS"] = address
     replace_group(paths, [json.dumps(profile, indent=2).encode() + b"\n", "".join(dotenv(compose_values)).encode()])
-    print("LAN bind address saved; run apply to restart the gateway on that interface. Update client name mappings too.")
+    print(t("LAN bind address saved; run apply to restart the gateway on that interface. Update client name mappings too."))
 
 
 def move_offline_address(state, value):
@@ -384,7 +384,7 @@ def move_offline_address(state, value):
     paths = [state / name for name in names]
     profile = json.loads(paths[0].read_text(encoding="utf-8"))
     if profile["route"] != "A2_OFFLINE":
-        raise ValueError("This action applies only to A2 offline")
+        raise ValueError(t("This action applies only to A2 offline"))
     if profile["bindAddress"] == address:
         return False
     origin = f"https://{address}"
@@ -415,7 +415,7 @@ def move_offline_address(state, value):
 def move_offline_installation(state, value, qa_offline_candidate=False):
     """Stop the gateway, move to the new address, allow it on the network and start again."""
     if not qa_offline_candidate:
-        raise ValueError("A2 offline is not yet qualified for general use; a QA host passes --qa-offline-candidate")
+        raise ValueError(t("A2 offline is not yet qualified for general use; a QA host passes --qa-offline-candidate"))
     state = safe_state_dir(state, existing=True)
     run_compose(state, "stop", "web")
     try:
@@ -470,7 +470,7 @@ def compose_command(state):
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
     values = read_dotenv(state / "compose.env")
     if values["MK8DX_PROJECT_NAME"] != profile["project"] or values["MK8DX_STATE_DIR"] != state.as_posix():
-        raise ValueError("Saved profile and Compose path/project disagree")
+        raise ValueError(t("Saved profile and Compose path/project disagree"))
     route = profile["route"]
     suffix = {"A1": "compose.local.yaml", "A2": "compose.lan.yaml",
               "A2_OFFLINE": "compose.offline-lan.yaml", "B1": "compose.production.yaml"}[route]
@@ -547,7 +547,7 @@ fi'''
 def leaf_storage(state, script, ip, token):
     from tooling.offline_lan_ca import private_lan_ip
     if str(private_lan_ip(ip)) != ip or not re.fullmatch(r"[0-9a-f]{16}", token):
-        raise ValueError("Invalid offline leaf maintenance target")
+        raise ValueError(t("Invalid offline leaf maintenance target"))
     run_compose(state, "run", "-T", "--rm", "--no-deps", "--entrypoint", "sh", "web",
                 "-ec", script, "sh", ip, token)
 
@@ -568,7 +568,7 @@ def verify_rotated_leaf(state, ip):
     response = opener.open(f"https://{ip}/health/ready", timeout=15)
     with response:
         if response.status != 200:
-            raise RuntimeError("Offline gateway readiness did not return 200")
+            raise RuntimeError(t("Offline gateway readiness did not return 200"))
     with socket.create_connection((ip, 443), timeout=15) as connection:
         with context.wrap_socket(connection, server_hostname=ip) as tls:
             served = x509.load_der_x509_certificate(tls.getpeercert(binary_form=True))
@@ -578,7 +578,7 @@ def verify_rotated_leaf(state, ip):
     chains = [x509.load_pem_x509_certificate(item) for item in
               re.findall(rb"-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----", stored, re.S)]
     if len(chains) != 2 or chains[0] != served or chains[1] != signer:
-        raise RuntimeError("Offline gateway still serves an old or unexpected certificate chain")
+        raise RuntimeError(t("Offline gateway still serves an old or unexpected certificate chain"))
     signer.public_key().verify(served.signature, served.tbs_certificate_bytes,
                                ec.ECDSA(served.signature_hash_algorithm))
 
@@ -663,10 +663,10 @@ def use_package_images(state):
     """Point the installation at this package's images; returns the previous compose values for a rollback."""
     shipped = package_images()
     if shipped is None:
-        raise ValueError("Only a host package can update an installation")
+        raise ValueError(t("Only a host package can update an installation"))
     for image in (shipped["api"], shipped["web"]):
         if subprocess.run(["docker", "image", "inspect", image], capture_output=True, check=False).returncode != 0:
-            raise RuntimeError(f"This package's image {image} is not loaded; start the package with its start file")
+            raise RuntimeError(t("This package's image {0} is not loaded; start the package with its start file", image))
     path = Path(state) / "compose.env"
     before = path.read_bytes()
     values = read_dotenv(path)
@@ -741,7 +741,7 @@ def prepare_offline_network(state):
                    "-Profile Private | Out-Null")
     result = _powershell("$ErrorActionPreference='Stop';" + script, elevated=True)
     if result.returncode != 0:
-        raise ValueError("Windows did not allow the change (the permission prompt was declined or failed)")
+        raise ValueError(t("Windows did not allow the change (the permission prompt was declined or failed)"))
     return "created"
 
 
@@ -769,8 +769,8 @@ def ensure_offline_firewall(state):
         f"New-NetFirewallRule -Name '{rule}' -DisplayName 'MK8DX A2 offline (HTTP/HTTPS {ip})' -Direction Inbound "
         f"-Action Allow -Protocol TCP -LocalPort 80,443 -LocalAddress '{ip}' -Profile Private | Out-Null", elevated=True)
     if created.returncode != 0:
-        raise ValueError("The firewall rule was not created (the Windows permission prompt was declined or failed). "
-                         "Phones and other PCs cannot reach this host until this step succeeds")
+        raise ValueError(t("The firewall rule was not created (the Windows permission prompt was declined or failed). "
+                           "Phones and other PCs cannot reach this host until this step succeeds"))
     return "created"
 
 
@@ -867,7 +867,7 @@ def separate_database_accounts(state):
             api.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password or
             operator.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password or
             secret_values.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password):
-        raise ValueError("The saved database logins disagree; nothing was changed")
+        raise ValueError(t("The saved database logins disagree; nothing was changed"))
     runtime_password = accounts.new_password()
     accounts.docker_root_sql(command, ROOT, accounts.docker_runtime_sql(runtime_password), runtime_password)
     connection = {"MK8DX_HOSTED_MYSQL_HOST": "mysql", "MK8DX_HOSTED_MYSQL_PORT": "3306",
@@ -928,10 +928,10 @@ def step_up_address(profile, email=None):
     in the app; the command then prints a new single-use link for that one pending request, which is confirmed
     exactly like the e-mailed link and audited (backend/api/src/security/step-up-operator-main.ts)."""
     if profile.get("route") == "A2_OFFLINE":
-        raise ValueError("An offline LAN installation sends no e-mail and asks for no e-mail confirmation")
+        raise ValueError(t("An offline LAN installation sends no e-mail and asks for no e-mail confirmation"))
     address = (email or profile.get("adminEmail") or "").strip()
     if not address or "@" not in address or any(c.isspace() for c in address):
-        raise ValueError("Name the account with --admin-email <sign-in address>")
+        raise ValueError(t("Name the account with --admin-email <sign-in address>"))
     return address
 
 
@@ -939,8 +939,8 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             qa_offline_candidate=False, email=None):
     route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
     if route == "A2_OFFLINE" and action in OFFLINE_GATED and not qa_offline_candidate:
-        raise ValueError("A2 offline is not yet qualified for general use (fail-closed until its acceptance passes). "
-                         "Only a disposable QA host may continue with --qa-offline-candidate")
+        raise ValueError(t("A2 offline is not yet qualified for general use (fail-closed until its acceptance passes). "
+                           "Only a disposable QA host may continue with --qa-offline-candidate"))
     if action in ("start", "apply") and route != "A2_OFFLINE":
         behind = images_behind_package(state)
         if behind:
@@ -951,15 +951,15 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
     recreated = tuple(s for s in services if s not in ("mysql", "mailpit"))
     if action == "maintain-ca":
         if route != "A2_OFFLINE":
-            raise ValueError("CA maintenance applies only to offline LAN")
+            raise ValueError(t("CA maintenance applies only to offline LAN"))
         status(state, allow_expired_signer=True)
         from tooling.offline_lan_ca_lifecycle import validate_signer, rotate_intermediate
         signer = validate_signer(state, allow_expired=True)
         due = datetime.fromisoformat(signer["rotationDueAt"])
         if due.tzinfo is None:
-            raise ValueError("Offline CA rotation date lacks a timezone")
+            raise ValueError(t("Offline CA rotation date lacks a timezone"))
         if not force_ca_rotation and datetime.now(timezone.utc) < due:
-            print("Offline CA signer is not due for rotation")
+            print(t("Offline CA signer is not due for rotation"))
             return
         run_compose(state, "stop", "web")
         ip = json.loads((Path(state) / PROFILE).read_text(encoding="utf-8"))["bindAddress"]
@@ -980,15 +980,15 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             raise
         leaf_storage(state, _LEAF_CLEANUP, ip, token)
         status(state)
-        print("Offline CA signer and served leaf rotated; HTTPS verified")
+        print(t("Offline CA signer and served leaf rotated; HTTPS verified"))
         return
     if action == "host-unlock":
         if route != "A2_OFFLINE":
-            raise ValueError("Host unlock applies only to the offline LAN route")
+            raise ValueError(t("Host unlock applies only to the offline LAN route"))
         if user_account_id is not None and not re.fullmatch(
                 r"user_account\.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
                 user_account_id):
-            raise ValueError("Use one canonical UserAccount ID")
+            raise ValueError(t("Use one canonical UserAccount ID"))
         run_compose(state, "run", "-T", "--rm", "--no-deps", "host-admin", "node",
                     "dist/administration/offline-host-unlock-main.js",
                     *(["--bootstrap"] if user_account_id is None else ["--user-account-id", user_account_id]))
@@ -1005,7 +1005,7 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         run_compose(state, "up", "-d", "--no-build", "--force-recreate", *recreated)
     elif action == "upgrade":
         if backup_output is None:
-            raise ValueError("Upgrade requires --backup-output in a new private directory")
+            raise ValueError(t("Upgrade requires --backup-output in a new private directory"))
         from lifecycle import backup, verify_backup
         if route == "A2_OFFLINE":
             # The encrypted offline backup uses the recovery code the setup wizard stored.
@@ -1026,9 +1026,9 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         # A2 offline: this (newer) package takes over an installation. The caller made and verified the
         # encrypted backup first (the setup wizard, phase "backup"); nothing has changed before this point.
         if route != "A2_OFFLINE":
-            raise ValueError("Package update applies to A2 offline; other routes use upgrade")
+            raise ValueError(t("Package update applies to A2 offline; other routes use upgrade"))
         if backup_output is None or not Path(backup_output).is_dir():
-            raise ValueError("Package update requires --backup-output naming the verified backup made just before")
+            raise ValueError(t("Package update requires --backup-output naming the verified backup made just before"))
         from lifecycle import verify_backup
         verify_backup(backup_output)
         offer = update_offer(state)
@@ -1094,13 +1094,13 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
         address = profile.get("adminEmail")
         if not address:
-            raise ValueError("No admin email recorded; use --admin-email when initializing or configure it first")
+            raise ValueError(t("No admin email recorded; use --admin-email when initializing or configure it first"))
         clean_env = {k: v for k, v in os.environ.items() if not k.startswith(("COMPOSE_", "MK8DX_"))}
         subprocess.run(compose_command(state) + ["run", "-T", "--rm", "--no-deps", "api", "sh",
                        "/app/operator-command.sh", "dist/administration/installer-administrator-main.js",
                        "--email-stdin"], input=address + "\n", text=True, cwd=ROOT, env=clean_env, check=True)
     else:
-        raise ValueError("Unknown installation action")
+        raise ValueError(t("Unknown installation action"))
 
 
 def main():
@@ -1155,7 +1155,7 @@ def main():
         from tooling import scheduled_backup
         raise SystemExit(scheduled_backup.command(args.action, args))
     if args.force_ca_rotation and args.action != "maintain-ca":
-        raise ValueError("--force-ca-rotation applies only to maintain-ca")
+        raise ValueError(t("--force-ca-rotation applies only to maintain-ca"))
     if args.action == "restore-local":
         from native_install import restore_local
         if not args.backup_input: raise SystemExit("Restore needs --backup-input")

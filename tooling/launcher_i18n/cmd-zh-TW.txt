@@ -1,0 +1,59 @@
+  actual   {0}|  實際值   {0}
+  expected {0}|  預期值   {0}
+ FAILED - the tools were NOT installed completely. See {0}.| 失敗 - 工具未完整安裝。請查看 {0}。
+ Log file       : {0}| 記錄檔     : {0}
+ MK8DX Tournament Tools - installer (package version {0})| MK8DX Tournament Tools - 安裝程式（套件版本 {0}）
+ Package folder : {0}| 套件資料夾 : {0}
+ Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.| 工作流程請閱讀 README-FIRST.txt 和 USING_MK8DX_TOURNAMENT_TOOLS.md。
+ Run this installer again; completed downloads are reused.| 請再次執行此安裝程式；已完成的下載會重複使用。
+ SUCCESS - MK8DX Tournament Tools are installed in this folder.| 成功 - MK8DX Tournament Tools 已安裝在此資料夾中。
+ TournamentAnalysis.cmd   - window to analyse recordings afterwards| TournamentAnalysis.cmd   - 事後分析錄影的視窗
+ TournamentConnect.cmd    - optional connection to the website| TournamentConnect.cmd    - 選用的網站連線
+ TournamentLive.cmd       - live capture-card tournament app| TournamentLive.cmd       - 擷取卡即時錦標賽 App
+ TournamentLiveCli.cmd    - advanced command line| TournamentLiveCli.cmd    - 進階命令列
+ TournamentProcessor.cmd  - process a recorded video (drag it onto the file)| TournamentProcessor.cmd  - 處理已錄製的影片（把影片拖曳到此檔案上）
+ TournamentTools.config.cmd - local settings and bundled assets| TournamentTools.config.cmd - 本機設定和隨附的資源
+---- Step 2: installing the Tournament tools and their dependencies ----|---- 步驟 2：正在安裝 Tournament Tools 及其相依套件 ----
+Adding Tournament Live interface support (about 3.5 MB) ...|正在加入 Tournament Live 介面支援（約 3.5 MB）...
+Check your connection and run the installer again.|請檢查你的網路連線，然後再次執行安裝程式。
+Creating a private runtime inside the package ...|正在套件內建立私人執行環境 ...
+Downloading the official python.org runtime (about 11 MB) ...|正在下載 python.org 官方執行環境（約 11 MB）...
+Examples (type them in this window):|範例（請在此視窗中輸入）：
+Existing package runtime found (embedded Python). It will be updated in place.|找到現有的套件執行環境（內嵌式 Python）。將就地更新。
+Existing package runtime found (virtual environment). It will be updated in place.|找到現有的套件執行環境（虛擬環境）。將就地更新。
+Extract the whole zip again and run the installer from that folder.|請重新解壓縮整個 zip，並從該資料夾執行安裝程式。
+FAILED: Tournament Live interface support could not be added (step {0}).|失敗：無法加入 Tournament Live 介面支援（步驟 {0}）。
+FAILED: the Python runtime could not be downloaded. Check your connection and retry.|失敗：無法下載 Python 執行環境。請檢查網路連線後再試一次。
+FAILED: the Python runtime could not be prepared. See {0}.|失敗：無法準備 Python 執行環境。請查看 {0}。
+FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.|失敗：下載的 Python 執行環境未通過安全檢查，已被移除。請稍後再試。
+FAILED: the package installer could not be downloaded. Check your connection and retry.|失敗：無法下載套件安裝程式。請檢查網路連線後再試一次。
+FAILED: the package installer could not be prepared. See {0}.|失敗：無法準備套件安裝程式。請查看 {0}。
+FAILED: the private runtime could not be created. See {0}.|失敗：無法建立私人執行環境。請查看 {0}。
+FAILED: this folder is not a complete package.|失敗：此資料夾不是完整的套件。
+First use: {0}|首次使用: {0}
+Local processing and file exports never require sign-in or internet.|本機處理和檔案匯出永遠不需要登入或網際網路。
+MK8DX Tournament Analysis|MK8DX Tournament Analysis
+MK8DX Tournament Connect - optional|MK8DX Tournament Connect - 選用
+MK8DX Tournament Live|MK8DX Tournament Live
+MK8DX Tournament Live - command line|MK8DX Tournament Live - 命令列
+MK8DX Tournament Live - command line. Sub-commands:|MK8DX Tournament Live - 命令列。子命令：
+MK8DX Tournament Processor|MK8DX Tournament Processor
+MK8DX Tournament Tools - installer|MK8DX Tournament Tools - 安裝程式
+No 64-bit Python 3.12 was found on this computer.|在這台電腦上找不到 64 位元 Python 3.12。
+Optional browser sign-in uploads an existing JSON result as PENDING evidence.|選用的瀏覽器登入會將現有的 JSON 成績以 PENDING 證據上傳。
+Preparing the Python package installer ...|正在準備 Python 套件安裝程式 ...
+Python runtime: {0} [{1}]|Python 執行環境: {0} [{1}]
+Running dry-run now to show where Tournament Live stores its files:|現在執行 dry-run，以顯示 Tournament Live 存放檔案的位置：
+SHA-256 verified. Extracting the runtime ...|SHA-256 已驗證。正在解壓縮執行環境 ...
+Send a result: {0}|傳送成績: {0}
+Sign out: {0}|登出: {0}
+Starting the Tournament Analysis window ... (this window shows startup errors)|正在啟動 Tournament Analysis 視窗 ...（此視窗會顯示啟動錯誤）
+Starting the Tournament Live GUI ... (this window shows startup progress and errors)|正在啟動 Tournament Live 圖形介面 ...（此視窗會顯示啟動進度和錯誤）
+The package runtime is missing. Run {0} first.|缺少套件執行環境。請先執行 {0}。
+This can take 5 to 30 minutes. Please wait ...|這可能需要 5 到 30 分鐘。請稍候 ...
+This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA).|這會下載 PyTorch、EasyOCR、OpenCV 和 Qt（使用 NVIDIA CUDA 時為數 GB）。
+Tournament Analysis exited with code {0}.|Tournament Analysis 已結束，結束代碼 {0}。
+Tournament Live exited with code {0}.|Tournament Live 已結束，結束代碼 {0}。
+Tournament Live interface support added.|已加入 Tournament Live 介面支援。
+Using the 64-bit Python 3.12 already on this computer:|使用這台電腦上已有的 64 位元 Python 3.12：
+Verifying the downloaded runtime ...|正在驗證下載的執行環境 ...

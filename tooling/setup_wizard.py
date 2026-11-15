@@ -27,6 +27,7 @@ import webbrowser
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from tooling import install  # noqa: E402
+from tooling.launcher_text import t, utf8_output  # noqa: E402
 
 STATIC = ROOT / "tooling" / "setup_wizard_static"
 TYPES = {".html": "text/html; charset=utf-8", ".js": "application/javascript; charset=utf-8",
@@ -252,7 +253,8 @@ class Wizard:
         def work():
             job = self.job
             started = time.monotonic()
-            console(f"MK8DX update started: {offer.get('from') or 'earlier version'} -> {offer.get('to') or 'this folder'}")
+            before, after = offer.get("from") or t("earlier version"), offer.get("to") or t("this folder")
+            console(t("MK8DX update started: {0} -> {1}", before, after))
             try:
                 from tooling import auto_backup
                 from lifecycle import verify_backup
@@ -277,13 +279,12 @@ class Wizard:
                                "tasks": bool(result.get("task")) and bool(result.get("certificateRenewal"))}
                 job.phase = "done"
                 job.done = True
-                console(f"MK8DX update completed: {offer.get('from') or 'earlier version'} -> "
-                        f"{offer.get('to') or 'this folder'} in {round(time.monotonic() - started)} s. "
-                        f"Backup from just before: {output}", ok=True)
+                console(t("MK8DX update completed: {0} -> {1} in {2} s. Backup from just before: {3}",
+                          before, after, round(time.monotonic() - started), output), ok=True)
             except Exception as error:  # surfaced in the page, never a stack trace
                 job.error = str(error)
-                console(f"MK8DX update FAILED: {error}. Nothing after the failed step was changed; "
-                        "see the details in the browser.", ok=False)
+                console(t("MK8DX update FAILED: {0}. Nothing after the failed step was changed; "
+                          "see the details in the browser.", error), ok=False)
         self.job = Job()
         threading.Thread(target=work, daemon=True).start()
 
@@ -775,8 +776,9 @@ def main(argv=None):
     token = secrets.token_urlsafe(24)
     server.RequestHandlerClass = make_handler(wizard, token, host_header)
     url = f"http://{host_header}/"
-    print(f"MK8DX setup is open in your browser: {url}", flush=True)
-    print("Keep this window open until you click Finish.", flush=True)
+    utf8_output()
+    print(t("MK8DX setup is open in your browser: {0}", url), flush=True)
+    print(t("Keep this window open until you click Finish."), flush=True)
     if not args.no_browser:
         threading.Timer(0.5, webbrowser.open, args=(url,)).start()
     try:

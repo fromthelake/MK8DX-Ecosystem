@@ -1,5 +1,7 @@
 @echo off
 title MK8DX - Time Trials LAN
+rem The window title in the launcher language: tooling\mk8dx-ui.ps1 sets it when the launcher starts.
+set "MK8DX_WINDOW_TITLE=MK8DX - Time Trials LAN"
 cd /d "%~dp0"
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%~dp0tooling\start-mk8dx.ps1" -StateDir "%LOCALAPPDATA%\MK8DX\LAN" %*
 echo.

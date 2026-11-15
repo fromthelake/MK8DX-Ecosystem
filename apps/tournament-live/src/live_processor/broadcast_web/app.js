@@ -18,11 +18,13 @@ if ((params.get("density") || "").toLowerCase() === "tv") {
   document.body.classList.add("density-tv");
 }
 
-// Viewer settings: the scoreboard mode and the language of the track/cup names.
-// A URL parameter (?scoreboard=overall, ?trackLang=ja) sets them for an
-// unattended OBS source; otherwise the viewer's last choice is kept in this
-// browser. Display only: neither setting changes scoring or which language the
-// recognition reads the console in.
+// Viewer settings: the language of the dashboard's own texts, the scoreboard
+// mode and the language of the track/cup names. A URL parameter (?lang=de,
+// ?scoreboard=overall, ?trackLang=ja) sets them for an unattended OBS source;
+// otherwise the viewer's last choice is kept in this browser, and the texts
+// follow the browser's language (English when it is none of the 15). Display
+// only: no setting changes scoring or which language the recognition reads the
+// console in, and the text language is independent of the track-name language.
 const SETTINGS_KEY = "mk8dx.broadcast.viewSettings.v1";
 // The 15 game locales of the Clean Assets track/cup names (track-names-v1.json).
 const TRACK_LOCALES = [
@@ -34,6 +36,38 @@ const TRACK_LANG_SHORT = {
   en: "en-GB", nl: "nl-NL", fr: "fr-FR", de: "de-DE", es: "es-ES", it: "it-IT",
   pt: "pt-PT", ru: "ru-RU", ja: "ja-JP", ko: "ko-KR", zh: "zh-CN",
 };
+
+// The dashboard texts' languages: the 15 game languages (English = the source).
+const UI_LANGUAGES = [
+  "en", "en-US", "nl", "fr", "fr-CA", "de", "es", "es-419",
+  "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW",
+];
+
+// One language tag (de-DE, es-MX, zh-Hant-TW, ...) as a dashboard language, else
+// "": exact, then by region (es-MX -> es-419, zh-Hant/TW/HK/MO -> zh-TW, other
+// zh -> zh-CN), then by base language, as the launchers choose theirs.
+function matchUiLanguage(value) {
+  const tag = String(value || "").trim().replace(/_/g, "-").toLowerCase();
+  const parts = tag.split("-");
+  if (!parts[0]) return "";
+  const exact = UI_LANGUAGES.find((code) => code.toLowerCase() === tag);
+  if (exact) return exact;
+  if (parts[0] === "zh") {
+    return parts.slice(1).some((part) => ["hant", "tw", "hk", "mo"].includes(part)) ? "zh-TW" : "zh-CN";
+  }
+  if (parts[0] === "es" && parts.length > 1 && parts[1] !== "es") return "es-419";
+  return UI_LANGUAGES.find((code) => code === parts[0]) || "";
+}
+
+function browserLanguages() {
+  try {
+    const nav = typeof navigator === "undefined" ? null : navigator;
+    if (!nav) return [];
+    return (nav.languages && nav.languages.length ? [...nav.languages] : [nav.language]).filter(Boolean);
+  } catch (_) {
+    return [];
+  }
+}
 
 function normalizeScoreboardMode(value) {
   return String(value || "").trim().toLowerCase() === "overall" ? "overall" : "auto";
@@ -65,12 +99,81 @@ function storeSettings(value) {
 const viewSettings = (() => {
   const stored = readStoredSettings();
   return {
+    // "" = follow the browser's language.
+    lang: matchUiLanguage(params.has("lang") ? params.get("lang") : stored.lang),
     scoreboard: normalizeScoreboardMode(params.has("scoreboard") ? params.get("scoreboard") : stored.scoreboard),
     trackLang: normalizeTrackLang(params.has("trackLang") ? params.get("trackLang") : stored.trackLang),
   };
 })();
 function overallOnly() {
   return viewSettings.scoreboard === "overall";
+}
+
+// The language the dashboard texts are shown in.
+function uiLanguage() {
+  if (viewSettings.lang) return viewSettings.lang;
+  for (const tag of browserLanguages()) {
+    const code = matchUiLanguage(tag);
+    if (code) return code;
+  }
+  return "en";
+}
+
+// The dashboard's own texts, English as the key (the shared catalog pipeline:
+// tooling/i18n/extract_broadcast_messages.py + build_web_catalogs.mjs), loaded
+// from the server (/api/messages/<language>) for the chosen language. A missing
+// catalog or text stays English; {0}, {1} are filled after the lookup. A key may
+// carry a context before a bar ("column header|Gap": the short form for a narrow
+// column, its own translation); without a translation the English after the bar
+// is shown.
+let uiMessages = {};
+let uiMessagesFor = "en";
+let uiMessagesLoading = "";
+
+function t(english, ...values) {
+  const own = Object.prototype.hasOwnProperty.call(uiMessages, english) ? uiMessages[english] : null;
+  const template = typeof own === "string" && own.trim() ? own : english.slice(english.indexOf("|") + 1);
+  return template.replace(/\{(\d+)\}/g, (match, index) => (index < values.length ? String(values[index]) : match));
+}
+
+function ensureUiMessages() {
+  const code = uiLanguage();
+  if (code === uiMessagesFor || code === uiMessagesLoading) return;
+  if (/^en(-|$)/.test(code)) {
+    uiMessages = {};
+    uiMessagesFor = code;
+    uiMessagesLoading = "";
+    applyStaticTexts();
+    return;
+  }
+  uiMessagesLoading = code;
+  fetch(`/api/messages/${encodeURIComponent(code)}`, { cache: "no-store" })
+    .then((res) => (res.ok ? res.json() : null))
+    .catch(() => null)
+    .then((data) => {
+      if (uiMessagesLoading !== code) return;  // another language was chosen meanwhile
+      uiMessagesLoading = "";
+      uiMessages = data && data.messages && typeof data.messages === "object" ? data.messages : {};
+      uiMessagesFor = code;
+      applyStaticTexts();
+      render();
+    });
+}
+
+// The page's fixed texts (index.html, the settings panel) carry their English in
+// data-i18n (text) / data-i18n-title (title + aria-label).
+function applyStaticTexts() {
+  const root = typeof document !== "undefined" ? document.documentElement : null;
+  if (root) root.setAttribute("lang", uiMessagesFor === "en" ? "en" : uiMessagesFor);
+  if (typeof document !== "undefined") document.title = t("MK8DX Live Scoreboard");
+  for (const node of document.querySelectorAll("[data-i18n]")) {
+    node.textContent = t(node.getAttribute("data-i18n"));
+  }
+  for (const node of document.querySelectorAll("[data-i18n-title]")) {
+    const text = t(node.getAttribute("data-i18n-title"));
+    node.setAttribute("title", text);
+    if (node.hasAttribute("aria-label")) node.setAttribute("aria-label", text);
+  }
 }
 
 // Inline flag SVGs (Windows/Chrome won't render flag emoji as flags). EU next to
@@ -252,27 +355,31 @@ function pickView(payload) {
 // server's ``_describe_view`` so the header reads the same either way.
 function describeView(payload, kind) {
   const completed = payload.races_completed || 0;
-  const plural = completed === 1 ? "" : "s";
   const n = payload.display_race;
   // Canonical vocabulary (see docs/broadcast_dashboard_redesign.md), kept in
   // lockstep with the server's ``_describe_view``: exactly two nouns —
   // "Race result" (one race) and "Overall standings" (cumulative).
-  if (payload.phase === "standby") return { eyebrow: "Standby", caption: "Waiting for the first race" };
+  if (payload.phase === "standby") return { eyebrow: t("Standby"), caption: t("Waiting for the first race") };
   if (overallOnly() && kind === "total" && (payload.phase !== "racing" || completed)) {
     // Overall only spells out which confirmed race the standings include.
-    const eyebrow = payload.phase === "racing" ? `Race ${n} in progress` : "Overall standings";
-    return { eyebrow, caption: `Overall standings · ${overallProgressText(payload)}` };
+    const eyebrow = payload.phase === "racing" ? t("Race {0} in progress", n) : t("Overall standings");
+    return { eyebrow, caption: `${t("Overall standings")} · ${overallProgressText(payload)}` };
   }
   if (payload.phase === "racing") {
     return {
-      eyebrow: `Race ${n} in progress`,
-      caption: completed ? `Overall standings · after ${completed} race${plural}` : `Race ${n} · in progress`,
+      eyebrow: t("Race {0} in progress", n),
+      caption: completed ? `${t("Overall standings")} · ${afterRacesText(completed)}` : t("Race {0} · in progress", n),
     };
   }
   if (payload.phase === "review" && kind === "race") {
-    return { eyebrow: "Race result", caption: `Race ${n} result` };
+    return { eyebrow: t("Race result"), caption: t("Race {0} result", n) };
   }
-  return { eyebrow: "Overall standings", caption: `Overall standings · after ${completed} race${plural}` };
+  return { eyebrow: t("Overall standings"), caption: `${t("Overall standings")} · ${afterRacesText(completed)}` };
+}
+
+// "after 1 race" / "after 7 races".
+function afterRacesText(completed) {
+  return completed === 1 ? t("after 1 race") : t("after {0} races", completed);
 }
 
 // Sub-line under the "Overall standings" banner/card — the only place race
@@ -280,7 +387,7 @@ function describeView(payload, kind) {
 function totalsSubText(payload) {
   if (overallOnly()) return overallProgressText(payload);
   const completed = payload.races_completed || 0;
-  return completed ? `after ${completed} race${completed === 1 ? "" : "s"}` : "overall points";
+  return completed ? afterRacesText(completed) : t("overall points");
 }
 
 // The race a finished-but-unconfirmed result belongs to: its points are not in
@@ -293,7 +400,7 @@ function pendingConfirmationRace(payload) {
 // Overall only, before the first race is confirmed: an honest empty table.
 function overallWaitingText(payload) {
   const pending = pendingConfirmationRace(payload);
-  return `Overall standings appear once race ${pending != null ? pending : 1} is confirmed`;
+  return t("Overall standings appear once race {0} is confirmed", pending != null ? pending : 1);
 }
 
 // "after race 7 of 12" (+ "· race 8 awaiting confirmation") — which confirmed
@@ -302,15 +409,17 @@ function overallProgressText(payload) {
   const completed = payload.races_completed || 0;
   const total = Number(payload.races_total || 0);
   const pending = pendingConfirmationRace(payload);
-  const base = completed ? `after race ${completed}${total ? ` of ${total}` : ""}` : "no race confirmed yet";
-  return pending != null ? `${base} · race ${pending} awaiting confirmation` : base;
+  const base = completed
+    ? (total ? t("after race {0} of {1}", completed, total) : t("after race {0}", completed))
+    : t("no race confirmed yet");
+  return pending != null ? `${base} · ${t("race {0} awaiting confirmation", pending)}` : base;
 }
 
 // "of Y" suffix for the Race counter when the operator has set a group size.
 function raceCounterSuffix(payload) {
   const total = Number(payload.races_total || 0);
   if (!total || payload.display_race == null) return "";
-  return ` of ${total}`;
+  return ` ${t("of {0}", total)}`;
 }
 
 // Plain "X" or "X of Y" race label for the compact grid cards.
@@ -366,6 +475,18 @@ function localizedTrack(track) {
 function shortCupName(name, lang) {
   const text = String(name || "");
   return /^en(-|$)/.test(lang || "en") ? text.replace(/\s*cup\s*$/i, "").trim() : text.trim();
+}
+
+// A narrow column header: the short form ("column header|This race"), the full text as its title. The
+// keys are spelled out so the extractor finds them.
+const COLUMN_HEADERS = {
+  "This race": () => [t("column header|This race"), t("This race")],
+  "Last race": () => [t("column header|Last race"), t("Last race")],
+};
+function setColumnHeader(node, english) {
+  const [label, full] = COLUMN_HEADERS[english]();
+  node.textContent = label;
+  node.title = full;
 }
 
 function setLang(node, lang) {
@@ -467,6 +588,7 @@ function updateRotationRing() {
 }
 
 function render() {
+  ensureUiMessages();
   ensureDisplayNames();
   if (fixedGridView) {
     renderGrid();
@@ -478,8 +600,8 @@ function render() {
 
   el.empty.hidden = true;
   if (!payload) {
-    el.title.textContent = "Waiting for feed…";
-    el.eyebrow.textContent = "Tournament standings";
+    el.title.textContent = t("Waiting for feed…");
+    el.eyebrow.textContent = t("Tournament standings");
     el.raceSeq.textContent = "–";
     el.raceTotal.textContent = "";
     el.boardCaption.textContent = "";
@@ -496,7 +618,7 @@ function render() {
   const view = pickView(payload);
   const isRaceView = view.kind === "race";
   const desc = describeView(payload, view.kind);
-  el.title.textContent = payload.title || "Live standings";
+  el.title.textContent = payload.title || t("Live standings");
   // The eyebrow names the on-screen list ("Race result" / "Overall standings")
   // so the auto-switch between the two is never ambiguous.
   el.eyebrow.textContent = desc.eyebrow;
@@ -511,7 +633,7 @@ function render() {
   if (isRacing) {
     el.trackbar.hidden = true;
     el.totalsbar.hidden = true;
-    el.colRace.textContent = "Last race";
+    setColumnHeader(el.colRace, "Last race");
     el.board.classList.remove("view-race");
     el.board.classList.add("view-total");
     renderRacingHero(payload);
@@ -519,7 +641,7 @@ function render() {
   } else {
     // The points column means different things per view, so label it honestly
     // and emphasise whichever column the rows are actually sorted by.
-    el.colRace.textContent = isRaceView ? "This race" : "Last race";
+    setColumnHeader(el.colRace, isRaceView ? "This race" : "Last race");
     el.board.classList.toggle("view-race", isRaceView);
     el.board.classList.toggle("view-total", !isRaceView);
     renderTrackOrTotals(payload, view.kind);
@@ -550,8 +672,8 @@ function renderGrid() {
   if (!payloads.length) {
     grid.innerHTML = `
       <section class="gridempty">
-        <div class="gridempty__title">Waiting for live feeds…</div>
-        <div class="gridempty__sub">Load videos and start the virtual capture to fill the tournament tables.</div>
+        <div class="gridempty__title">${escapeHtml(t("Waiting for live feeds…"))}</div>
+        <div class="gridempty__sub">${escapeHtml(t("Load videos and start the virtual capture to fill the tournament tables."))}</div>
       </section>`;
     renderStatus();
     return;
@@ -575,7 +697,7 @@ function buildGridCard(payload) {
   const track = payload.track || {};
   const waitingText = overallOnly() && payload.phase === "review"
     ? overallWaitingText(payload)
-    : track.name_uk || track.track_icon ? "Waiting for first race…" : "Detecting track…";
+    : track.name_uk || track.track_icon ? t("Waiting for first race…") : t("Detecting track…");
   const caption = desc.caption;
   const raceLabel = raceCounterLabel(payload);
   // Finished = the group has completed all its configured races (races per group).
@@ -585,7 +707,7 @@ function buildGridCard(payload) {
   // The mode pill makes "single race vs whole series" readable at a glance —
   // the most important fact on the card. Coloured by the view-race/view-total
   // class on the section (gold = latest race, green = overall standings).
-  const modeLabel = finished ? "Finished" : payload.phase === "standby" ? "Standby" : isRaceView ? "Latest race" : "Overall";
+  const modeLabel = finished ? t("Finished") : payload.phase === "standby" ? t("Standby") : isRaceView ? t("Latest race") : t("Overall");
   // Gap-to-leader column: deficit in total points behind P1 (every row carries a
   // running total, so this is meaningful in both views).
   const totalRows = payload.total_rows || [];
@@ -594,7 +716,7 @@ function buildGridCard(payload) {
   // bottom-left ring counting down to that swap so it never feels abrupt.
   // Overall only never swaps, so it has no countdown ring.
   const showRing = payload.phase === "review" && payload.totals_ready && !overallOnly();
-  const nextLabel = view.kind === "race" ? "Overall standings" : "Race result";
+  const nextLabel = view.kind === "race" ? t("Overall standings") : t("Race result");
   // Fade the list only when the shown view actually flips, not on every refresh.
   const prevKind = lastGridKind.get(payload.feed);
   const swap = prevKind !== undefined && prevKind !== view.kind;
@@ -634,26 +756,26 @@ function buildGridCard(payload) {
   const trackNameHtml = named
     ? (named.name
       ? `<b lang="${escapeAttr(named.nameLang)}" title="${escapeAttr(named.name)}">${escapeHtml(named.name)}</b><span>&nbsp;</span>`
-      : `<b>Track pending</b><span>Detecting track…</span>`)
-    : `<b>${track.name_uk ? FLAG_EU + escapeHtml(track.name_uk) : "Track pending"}</b>
-          <span>${track.name_nl ? FLAG_NL + escapeHtml(track.name_nl) : (track.name_uk ? "" : "Detecting track…")}</span>`;
+      : `<b>${escapeHtml(t("Track pending"))}</b><span>${escapeHtml(t("Detecting track…"))}</span>`)
+    : `<b>${track.name_uk ? FLAG_EU + escapeHtml(track.name_uk) : escapeHtml(t("Track pending"))}</b>
+          <span>${track.name_nl ? FLAG_NL + escapeHtml(track.name_nl) : (track.name_uk ? "" : escapeHtml(t("Detecting track…")))}</span>`;
   // Connection-error / temporary-player-drop banner. Suspected = a drop just
   // happened and totals may be corrected once the next race confirms the field.
   const ce = payload.connection_error;
   const cr = payload.connection_reset;
   const connErrHtml = cr
-    ? `<div class="gridcard__connerr is-reset">↺ Connection reset — totals continued from prior standings</div>`
+    ? `<div class="gridcard__connerr is-reset">↺ ${escapeHtml(t("Connection reset — totals continued from prior standings"))}</div>`
     : ce
     ? `<div class="gridcard__connerr ${ce.suspected ? "is-suspected" : "is-adjusted"}">${
         ce.suspected
-          ? "⚠ Connection error — scores may adjust after the next race"
-          : `Scores adjusted — player drop (race ${(ce.excluded_races || []).join(", ")} discounted)`
+          ? `⚠ ${escapeHtml(t("Connection error — scores may adjust after the next race"))}`
+          : escapeHtml(t("Scores adjusted — player drop (race {0} discounted)", (ce.excluded_races || []).join(", ")))
       }</div>`
     : "";
   const trackHtml = showTotalsBar
     ? `<div class="gridcard__track gridcard__track--totals">
         <div class="gridcard__trophy">${trophySvg}</div>
-        <div class="gridcard__tracktext"><b>Overall standings</b><span>${escapeHtml(totalsSubText(payload))}</span></div>
+        <div class="gridcard__tracktext"><b>${escapeHtml(t("Overall standings"))}</b><span>${escapeHtml(totalsSubText(payload))}</span></div>
       </div>`
     : `<div class="gridcard__track${isRacing ? " gridcard__track--live" : ""}">
         <div class="gridcard__cupwrap">
@@ -673,14 +795,17 @@ function buildGridCard(payload) {
         <div class="gridcard__title">
           <span class="gridcard__mode${finished ? " gridcard__mode--finished" : ""}">${finished ? FLAG_FINISH : ""}${escapeHtml(modeLabel)}</span>
         </div>
-        <div class="gridcard__race"><span>Race</span><b>${escapeHtml(raceLabel)}</b></div>
+        <div class="gridcard__race"><span>${escapeHtml(t("Race"))}</span><b>${escapeHtml(raceLabel)}</b></div>
       </header>
       ${trackHtml}
       ${connErrHtml}
       ${debugView ? `<div class="gridcard__debug">${escapeHtml(gridDebugText(payload))}</div>` : ""}
       <div class="gridcard__tablecap">${escapeHtml(caption)}</div>
       <div class="gridcols">
-        <span>Pos</span><span class="gridcols__delta">+/–</span><span>Driver</span><span>Race</span><span>Gap</span><span>Total</span>
+        ${[[t("column header|Pos"), t("Pos")], ["+/–", "+/–"], [t("Driver"), t("Driver")],
+          [t("column header|Race"), t("Race")], [t("column header|Gap"), t("Gap")],
+          [t("column header|Total"), t("Total")]].map(([label, full], index) =>
+          `<span${index === 1 ? ' class="gridcols__delta"' : ""} title="${escapeAttr(full)}">${escapeHtml(label)}</span>`).join("")}
       </div>
       <div class="gridrows-wrap${isEmpty ? " is-empty" : ""}">
         <ol class="gridrows${swap ? " swap" : ""}">${rowsHtml}</ol>
@@ -691,7 +816,7 @@ function buildGridCard(payload) {
           <circle class="rotmini__t" cx="18" cy="18" r="15"></circle>
           <circle class="rotmini__b" cx="18" cy="18" r="15" style="stroke-dashoffset:${(94.25 * (1 - reviewFracFor(payload.feed))).toFixed(2)}"></circle>
         </svg>
-        <span>Next: ${escapeHtml(nextLabel)}</span>
+        <span>${escapeHtml(t("Next: {0}", nextLabel))}</span>
       </div>` : ""}
     </section>`;
 }
@@ -740,10 +865,10 @@ function buildGridRow(item, leaderTotal, hlClass, podium) {
   // Qualifier band (precomputed, handles boundary ties) or the end-round podium.
   const hl = hlClass || (podium && item.position <= 3 ? `rank-${item.position}` : "");
   // Dropped this race (suspected connection error) — flag the row with a ⚠.
-  const dropMark = item.dropped ? `<span class="gridrow__drop" title="No result this race — possible connection error">⚠</span>` : "";
+  const dropMark = item.dropped ? `<span class="gridrow__drop" title="${escapeAttr(t("No result this race — possible connection error"))}">⚠</span>` : "";
   // Disconnected (absent this race) — carried over with last total. The no-wifi mark
   // sits after the full name so the name is never clipped by it.
-  const dcMark = item.disconnected ? `<span class="gridrow__dcwrap" title="Disconnected — last total kept">${ICON_NO_WIFI}</span>` : "";
+  const dcMark = item.disconnected ? `<span class="gridrow__dcwrap" title="${escapeAttr(t("Disconnected — last total kept"))}">${ICON_NO_WIFI}</span>` : "";
   const rowCls = `${hl}${item.dropped ? " is-dropped" : ""}${item.disconnected ? " is-disconnected" : ""}`;
   return `<li class="gridrow ${rowCls}">
     <span class="gridrow__rank">${item.position}</span>
@@ -765,14 +890,14 @@ function deltaText(delta) {
 // countdown or a plain "waiting for results" message. Recomputed on the tick.
 function liveboxBodyHtml(state) {
   if (!state) return "";
-  const tag = `<span class="gridcard__livetag"><i class="gridcard__livedot${state.cls === "waiting" ? " waiting" : ""}"></i>LIVE</span>`;
+  const tag = `<span class="gridcard__livetag"><i class="gridcard__livedot${state.cls === "waiting" ? " waiting" : ""}"></i>${escapeHtml(t("LIVE"))}</span>`;
   if (state.cls === "waiting") {
-    return tag + `<span class="gridcard__livewait">Waiting for race results to come in</span>`;
+    return tag + `<span class="gridcard__livewait">${escapeHtml(t("Waiting for race results to come in"))}</span>`;
   }
   if (state.clock) {
-    return tag + `<span class="gridcard__livenext">Next result</span><span class="gridcard__liveclock">${escapeHtml(state.clock)}</span>`;
+    return tag + `<span class="gridcard__livenext">${escapeHtml(t("Next result"))}</span><span class="gridcard__liveclock">${escapeHtml(state.clock)}</span>`;
   }
-  return tag + `<span class="gridcard__livewait">Tracking race…</span>`;
+  return tag + `<span class="gridcard__livewait">${escapeHtml(t("Tracking race…"))}</span>`;
 }
 
 // Raw engine telemetry — operators only, shown when ?debug=1.
@@ -789,30 +914,33 @@ function confirmedStatusText(payload) {
   const confirmed = payload.confirmed || {};
   const status = confirmed.status || "idle";
   if (status === "idle" || status === "updated") return "";
-  const race = confirmed.pending_race ? ` race ${confirmed.pending_race}` : "";
+  const pending = confirmed.pending_race;
+  const race = pending ? ` race ${pending}` : "";
   if (status === "running" && confirmed.started_at && payload.server_time) {
     const startedOffset = payload.server_time - confirmed.started_at;
     const elapsed = Math.max(0, startedOffset + (now() - (feedSeen.get(payload.feed) || now())));
-    return `confirmed ${status}${race} ${formatClock(elapsed)}`;
+    return pending
+      ? t("confirmed running race {0} {1}", pending, formatClock(elapsed))
+      : t("confirmed running {0}", formatClock(elapsed));
   }
   if (status === "completed" && confirmed.duration_seconds != null) {
-    return `confirmed in ${Math.round(Number(confirmed.duration_seconds))}s`;
+    return t("confirmed in {0}s", Math.round(Number(confirmed.duration_seconds)));
   }
   if (status === "queued") {
-    return `confirmed queued${race}`;
+    return pending ? t("confirmed queued race {0}", pending) : t("confirmed queued");
   }
   if (status === "failed") {
-    return `confirmed failed${race}`;
+    return pending ? t("confirmed failed race {0}", pending) : t("confirmed failed");
   }
-  return `confirmed ${status}${race}`;
+  return `confirmed ${status}${race}`;  // an unexpected engine state: shown as it is
 }
 
 function feedStatusState(feed, payload) {
   const sync = feed ? feedSync.get(feed) : null;
   let cls = "offline";
-  let label = "OFFLINE";
+  let label = t("OFFLINE");
   let countdownText = "";
-  let detail = "Waiting for feed";
+  let detail = t("Waiting for feed");
   let clock = "";   // bare m:ss when a live countdown is running
 
   if (payload) {
@@ -820,25 +948,25 @@ function feedStatusState(feed, payload) {
     const recent = seen !== undefined && now() - seen < LIVENESS_WINDOW;
     if (sync && sync.synced) {
       cls = "insync";
-      label = "UP TO DATE";
-      detail = "Standings current";
+      label = t("UP TO DATE");
+      detail = t("Standings current");
     } else if (sync && sync.hasCountdown) {
       const remaining = sync.deadline - now();
       if (remaining > 0) {
         cls = "live";
-        label = "LIVE";
+        label = t("LIVE");
         clock = formatClock(remaining);
-        countdownText = "Next result in " + clock;
+        countdownText = t("Next result in {0}", clock);
         detail = countdownText;
       } else {
         cls = "waiting";
-        label = "DUE";
-        detail = "Waiting for race results to come in";
+        label = t("DUE");
+        detail = t("Waiting for race results to come in");
       }
     } else if (recent) {
       cls = "live";
-      label = "LIVE";
-      detail = "Tracking race";
+      label = t("LIVE");
+      detail = t("Tracking race");
     }
   }
 
@@ -914,13 +1042,13 @@ function renderStatus() {
   if (racing) {
     if (state.clock) {
       el.heroCountdown.textContent = state.clock;
-      el.heroStatus.textContent = "Race in progress";
+      el.heroStatus.textContent = t("Race in progress");
     } else if (state.cls === "waiting") {
-      el.heroCountdown.textContent = "any moment";
-      el.heroStatus.textContent = "Awaiting results";
+      el.heroCountdown.textContent = t("any moment");
+      el.heroStatus.textContent = t("Awaiting results");
     } else {
       el.heroCountdown.textContent = "—";
-      el.heroStatus.textContent = "Race in progress";
+      el.heroStatus.textContent = t("Race in progress");
     }
   }
 }
@@ -950,12 +1078,12 @@ function renderRacingHero(payload) {
   const track = payload.track || {};
   const named = localizedTrack(track);
   if (named) {
-    el.heroTrackName.textContent = named.name || "Track pending";
-    el.heroTrackSub.textContent = named.cup || "waiting for track detection";
+    el.heroTrackName.textContent = named.name || t("Track pending");
+    el.heroTrackSub.textContent = named.cup || t("waiting for track detection");
   } else {
-    el.heroTrackName.textContent = track.name_uk || "Track pending";
+    el.heroTrackName.textContent = track.name_uk || t("Track pending");
     el.heroTrackSub.textContent =
-      [track.cup_uk, track.name_nl].filter(Boolean).join(" · ") || "waiting for track detection";
+      [track.cup_uk, track.name_nl].filter(Boolean).join(" · ") || t("waiting for track detection");
   }
   setLang(el.heroTrackName, named && named.name ? named.nameLang : "");
   setLang(el.heroTrackSub, named && named.cup ? named.cupLang : "");
@@ -982,7 +1110,7 @@ function renderTrackOrTotals(payload, kind) {
   el.trackbar.hidden = !hasTrack;
   if (!hasTrack) return;
   const named = localizedTrack(track);
-  el.trackName.textContent = (named ? named.name : track.name_uk) || "Unknown track";
+  el.trackName.textContent = (named ? named.name : track.name_uk) || t("Unknown track");
   el.trackSub.textContent = named ? named.cup : [track.cup_uk, track.name_nl].filter(Boolean).join(" · ");
   setLang(el.trackName, named && named.name ? named.nameLang : "");
   setLang(el.trackSub, named && named.cup ? named.cupLang : "");
@@ -994,7 +1122,7 @@ function renderTrackOrTotals(payload, kind) {
   if (status === "ongoing" || status === "finished") {
     el.trackStatus.hidden = false;
     el.trackStatus.className = "racechip " + status;
-    el.trackStatus.textContent = status === "ongoing" ? "On going" : "Finished";
+    el.trackStatus.textContent = status === "ongoing" ? t("On going") : t("Finished");
   } else {
     el.trackStatus.hidden = true;
   }
@@ -1021,9 +1149,9 @@ function statusText(payload) {
   const completed = payload.races_completed || 0;
   const confirmed = confirmedStatusText(payload);
   if (confirmed) return confirmed;
-  if (payload.status === "provisional") return "latest race · awaiting confirmation";
-  if (completed) return `${completed} race${completed === 1 ? "" : "s"} confirmed`;
-  return "standing by";
+  if (payload.status === "provisional") return t("latest race · awaiting confirmation");
+  if (completed) return completed === 1 ? t("1 race confirmed") : t("{0} races confirmed", completed);
+  return t("standing by");
 }
 
 function reconcileRows(rows) {
@@ -1165,9 +1293,10 @@ function rotateFeeds() {
 
 // Apply a changed viewer setting: keep it for this browser and redraw.
 function applyViewSettings(next) {
+  if (next.lang !== undefined) viewSettings.lang = matchUiLanguage(next.lang);
   if (next.scoreboard !== undefined) viewSettings.scoreboard = normalizeScoreboardMode(next.scoreboard);
   if (next.trackLang !== undefined) viewSettings.trackLang = normalizeTrackLang(next.trackLang);
-  storeSettings({ scoreboard: viewSettings.scoreboard, trackLang: viewSettings.trackLang });
+  storeSettings({ lang: viewSettings.lang, scoreboard: viewSettings.scoreboard, trackLang: viewSettings.trackLang });
   lastGridKind.clear();
   render();
 }
@@ -1189,17 +1318,21 @@ function mountViewControls() {
   const wrap = document.createElement("div");
   wrap.className = "viewctl";
   wrap.innerHTML =
-    `<button type="button" class="viewctl__gear" aria-expanded="false" aria-controls="viewctl-panel" title="Display settings">` +
+    `<button type="button" class="viewctl__gear" aria-expanded="false" aria-controls="viewctl-panel" data-i18n-title="Display settings" title="${escapeAttr(t("Display settings"))}">` +
       `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.6 7.6 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.4 7.4 0 0 0-1.7-1L15 3.5h-4l-.4 2.5a7.4 7.4 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 2l-2 1.6 2 3.4 2.4-1a7.4 7.4 0 0 0 1.7 1l.4 2.5h4l.4-2.5a7.4 7.4 0 0 0 1.7-1l2.4 1 2-3.4-2-1.6zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>` +
-      `<span class="viewctl__sr">Display settings</span>` +
+      `<span class="viewctl__sr" data-i18n="Display settings">${escapeHtml(t("Display settings"))}</span>` +
     `</button>` +
     `<div class="viewctl__panel" id="viewctl-panel" hidden>` +
-      `<label class="viewctl__field"><span>Scoreboard</span><select data-setting="scoreboard">` +
-        `<option value="auto">Automatic (race result ↔ overall)</option>` +
-        `<option value="overall">Overall only</option>` +
+      `<label class="viewctl__field"><span data-i18n="Language">${escapeHtml(t("Language"))}</span><select data-setting="lang">` +
+        `<option value="" data-i18n="Browser language (default)">${escapeHtml(t("Browser language (default)"))}</option>` +
+        UI_LANGUAGES.map((code) => `<option value="${code}" lang="${code}">${escapeHtml(localeLabel(code))}</option>`).join("") +
       `</select></label>` +
-      `<label class="viewctl__field"><span>Track names</span><select data-setting="trackLang">` +
-        `<option value="">English + Dutch (default)</option>` +
+      `<label class="viewctl__field"><span data-i18n="Scoreboard">${escapeHtml(t("Scoreboard"))}</span><select data-setting="scoreboard">` +
+        `<option value="auto" data-i18n="Automatic (race result ↔ overall)">${escapeHtml(t("Automatic (race result ↔ overall)"))}</option>` +
+        `<option value="overall" data-i18n="Overall only">${escapeHtml(t("Overall only"))}</option>` +
+      `</select></label>` +
+      `<label class="viewctl__field"><span data-i18n="Track names">${escapeHtml(t("Track names"))}</span><select data-setting="trackLang">` +
+        `<option value="" data-i18n="English + Dutch (default)">${escapeHtml(t("English + Dutch (default)"))}</option>` +
         TRACK_LOCALES.map((locale) => `<option value="${locale}" lang="${locale}">${escapeHtml(localeLabel(locale))}</option>`).join("") +
       `</select></label>` +
     `</div>`;

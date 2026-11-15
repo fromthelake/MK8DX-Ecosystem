@@ -24,4 +24,4 @@ gui = ["PySide6==6.12.0"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-live_processor = ["broadcast_web/*.html", "broadcast_web/*.css", "broadcast_web/*.js", "schema9-track-presentation.json", "i18n/*.json"]
+live_processor = ["broadcast_web/*.html", "broadcast_web/*.css", "broadcast_web/*.js", "broadcast_web/i18n/*.json", "schema9-track-presentation.json", "i18n/*.json"]
