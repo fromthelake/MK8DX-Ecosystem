@@ -302,17 +302,7 @@ Inizia da [Contributing](../../.github/CONTRIBUTING.md) e dalla [guida per svilu
 Ogni pull request, segnalazione di bug e correzione di traduzione rende la prossima serata LAN migliore
 per tutti.
 
-## Sostieni lo sviluppo
-
-Sono Bas, lo sviluppatore di MK8DX Ecosystem. Il mio prossimo obiettivo è una workstation di IA locale per
-sperimentare con modelli più grandi, visione artificiale e automazione.
-
-Il primo traguardo di finanziamento è di 5.000 €, verso una configurazione completa oggi stimata in circa
-23.000 €. È attrezzatura per il mio lavoro di sviluppo; non ti serve per usare MK8DX Ecosystem. La
-[roadmap del Local AI Lab](../LOCAL_AI_LAB.md) (in inglese) spiega il piano ed è l'unico posto che riporta i progressi.
-
-Il sostegno è del tutto volontario. Le versioni open source restano liberamente disponibili, senza funzioni
-riservate ai donatori né priorità nello sviluppo: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+Vuoi sapere di più sullo sviluppatore? Vedi [github.com/fromthelake](https://github.com/fromthelake).
 
 ## Stato del progetto
 
@@ -409,11 +399,9 @@ Dopotutto, è così che è iniziata tutta questa avventura.
 
 ## Licenza e Nintendo
 
-Questo è un progetto indipendente realizzato da un fan e reso disponibile gratuitamente. Il sostegno economico
-allo sviluppatore è del tutto facoltativo e non acquista funzioni, priorità nello sviluppo o altri vantaggi. Il
-progetto non è affiliato né approvato da Nintendo. Nintendo
-detiene i propri marchi e i contenuti dei suoi giochi; sostieni Nintendo acquistando le sue console e i
-suoi giochi.
+MK8DX Ecosystem è un progetto di fan indipendente e non commerciale, reso disponibile gratuitamente. **Non è
+affiliato né approvato da Nintendo.** Nintendo detiene i propri marchi e i contenuti dei suoi giochi; sostieni
+Nintendo acquistando le sue console e i suoi giochi.
 
 Il codice e la documentazione originali del progetto sono distribuiti con licenza
 [Mozilla Public License 2.0](../../LICENSE). L'[ambito della licenza](../../LICENSE_SCOPE.md) spiega cosa copre:

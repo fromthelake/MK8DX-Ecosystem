@@ -214,13 +214,7 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 [Contributing](../../.github/CONTRIBUTING.md)과 [개발자 가이드](../DEVELOPMENT.md)부터 시작하세요. 풀 리퀘스트, 버그 리포트, 번역 수정 하나하나가 다음 LAN의 밤을 모두에게 더 좋게 만듭니다.
 
-## 개발 후원
-
-MK8DX Ecosystem을 개발하는 Bas입니다. 다음 목표는 더 큰 모델, 컴퓨터 비전, 자동화를 실험할 수 있는 로컬 AI 워크스테이션입니다.
-
-첫 번째 모금 목표는 5,000유로이며, 현재 약 23,000유로로 예상하는 완전한 구성을 향한 첫걸음입니다. 이것은 제 개발 작업을 위한 장비이며, MK8DX Ecosystem을 사용하는 데에는 필요하지 않습니다. 계획과 유일한 진행 현황은 [Local AI Lab 로드맵](../LOCAL_AI_LAB.md)(영어)에 있습니다.
-
-후원은 전적으로 자발적입니다. 오픈 소스 릴리스는 계속 자유롭게 제공되며, 후원자 전용 기능이나 개발 우선권은 없습니다: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+개발자에 대해 더 알고 싶다면 [github.com/fromthelake](https://github.com/fromthelake)를 참고하세요.
 
 ## 프로젝트 현황
 
@@ -313,6 +307,6 @@ MK8DX Ecosystem은 2024년부터 개발되어 왔습니다. AI의 도움을 정�
 
 ## 라이선스와 Nintendo
 
-이것은 무료로 제공되는 독립적인 팬 제작 프로젝트입니다. 개발자에 대한 금전적 후원은 전적으로 선택 사항이며, 기능이나 개발 우선권, 그 밖의 혜택을 구매하는 것이 아닙니다. 이 프로젝트는 Nintendo와 제휴하거나 Nintendo의 승인을 받은 프로젝트가 아닙니다. Nintendo는 자사의 상표와 게임 콘텐츠에 대한 권리를 가지고 있습니다. 게임기와 게임을 구입해 Nintendo를 응원해 주세요.
+MK8DX Ecosystem은 독립적인 비상업 팬 프로젝트이며 무료로 제공됩니다. **Nintendo와 제휴하거나 Nintendo의 승인을 받은 프로젝트가 아닙니다.** Nintendo는 자사의 상표와 게임 콘텐츠에 대한 권리를 가지고 있습니다. 게임기와 게임을 구입해 Nintendo를 응원해 주세요.
 
 이 프로젝트의 오리지널 코드와 문서는 [Mozilla Public License 2.0](../../LICENSE)에 따라 라이선스됩니다. [라이선스 적용 범위](../../LICENSE_SCOPE.md)에서 그 범위를 설명합니다. Nintendo 자료, 게임 이미지, 인식 템플릿, 모델, 글꼴, 기타 제3자 자료는 적용 대상이 **아니며**, 각자의 조건을 따릅니다. [Third-party materials](../THIRD_PARTY_MATERIALS.md)를 참고하세요. 이 소프트웨어는 있는 그대로 제공됩니다.

@@ -314,18 +314,7 @@ Commence par [Contributing](../../.github/CONTRIBUTING.md) et le [guide du déve
 Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
 pour tout le monde.
 
-## Soutenir le développement
-
-Je suis Bas, le développeur de MK8DX Ecosystem. Ma prochaine ambition est une station de travail d'IA locale
-pour expérimenter avec des modèles plus grands, la vision par ordinateur et l'automatisation.
-
-Le premier palier de financement est de 5 000 €, en vue d'une configuration complète estimée aujourd'hui à
-environ 23 000 €. C'est du matériel pour mon propre travail de développement ; tu n'en as pas besoin pour
-utiliser MK8DX Ecosystem. La [feuille de route du Local AI Lab](../LOCAL_AI_LAB.md) (en anglais) explique le plan et est
-le seul endroit qui suit la progression.
-
-Le soutien est entièrement volontaire. Les versions open source restent librement disponibles, sans
-fonctions réservées aux donateurs ni priorité de développement : [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+Envie d'en savoir plus sur le développeur ? Consulte [github.com/fromthelake](https://github.com/fromthelake).
 
 ## État du projet
 
@@ -423,11 +412,9 @@ Après tout, c'est comme ça que toute cette aventure a commencé.
 
 ## Licence et Nintendo
 
-Ceci est un projet indépendant créé par un fan et mis à disposition gratuitement. Le soutien financier au
-développeur est entièrement facultatif et n'achète ni fonctionnalités, ni priorité de développement, ni autres
-avantages. Le projet n'est ni affilié à Nintendo ni approuvé par Nintendo.
-Nintendo détient ses marques et le contenu de ses jeux ; soutiens Nintendo en achetant ses consoles et
-ses jeux.
+MK8DX Ecosystem est un projet de fans indépendant et non commercial, mis à disposition gratuitement. Il n'est
+**ni affilié à Nintendo ni approuvé par Nintendo**. Nintendo détient ses marques et le contenu de ses jeux ;
+soutiens Nintendo en achetant ses consoles et ses jeux.
 
 Le code original et la documentation du projet sont distribués sous la [Mozilla Public License 2.0](../../LICENSE).
 La [portée de la licence](../../LICENSE_SCOPE.md) explique ce qu'elle couvre : elle ne couvre **pas** le

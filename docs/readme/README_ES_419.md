@@ -307,17 +307,7 @@ Empieza por [Contributing](../../.github/CONTRIBUTING.md) y la [guía para desar
 Cada pull request, informe de error y corrección de traducción hace que la próxima noche LAN sea mejor
 para todos.
 
-## Apoyar el desarrollo
-
-Soy Bas, el desarrollador de MK8DX Ecosystem. Mi próxima meta es una estación de trabajo de IA local para
-experimentar con modelos más grandes, visión por computadora y automatización.
-
-El primer hito de financiamiento es de 5,000 €, para un equipo completo que hoy se estima en unos 23,000 €.
-Es equipo para mi propio trabajo de desarrollo; no lo necesitas para usar MK8DX Ecosystem. La
-[hoja de ruta del Local AI Lab](../LOCAL_AI_LAB.md) (en inglés) explica el plan y es el único lugar con el progreso.
-
-El apoyo es totalmente voluntario. Las versiones de código abierto siguen disponibles libremente, sin
-funciones solo para donantes ni prioridad en el desarrollo: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+¿Quieres saber más sobre el desarrollador? Consulta [github.com/fromthelake](https://github.com/fromthelake).
 
 ## Estado del proyecto
 
@@ -415,10 +405,9 @@ Al fin y al cabo, así es como empezó toda esta aventura.
 
 ## Licencia y Nintendo
 
-Este es un proyecto independiente hecho por fans y disponible de forma gratuita. El apoyo económico al
-desarrollador es totalmente opcional y no compra funciones, prioridad en el desarrollo ni otros beneficios. El
-proyecto no está afiliado a Nintendo ni cuenta con su respaldo. Nintendo es
-propietaria de sus marcas y del contenido de sus juegos; apoya a Nintendo comprando sus consolas y juegos.
+MK8DX Ecosystem es un proyecto de fans independiente y no comercial, disponible de forma gratuita. **No está
+afiliado a Nintendo ni cuenta con su respaldo.** Nintendo es propietaria de sus marcas y del contenido de sus
+juegos; apoya a Nintendo comprando sus consolas y juegos.
 
 El código y la documentación originales del proyecto tienen licencia [Mozilla Public License 2.0](../../LICENSE).
 El [alcance de la licencia](../../LICENSE_SCOPE.md) explica lo que cubre: **no** cubre material de Nintendo,

@@ -292,17 +292,7 @@ city's LAN scene; adapt it to how *your* nights work; and build on it:
 Start with [Contributing](.github/CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
 Every pull request, bug report and translation fix makes the next LAN night better for everyone.
 
-## Support development
-
-I'm Bas, the developer behind MK8DX Ecosystem. My next ambition is a local AI workstation for experimenting
-with larger models, computer vision and automation.
-
-The first funding milestone is €5,000, towards a complete setup currently estimated at approximately €23,000.
-This is equipment for my own development work; you do not need it to use MK8DX Ecosystem. The
-[Local AI Lab roadmap](docs/LOCAL_AI_LAB.md) explains the plan and keeps the only progress summary.
-
-Support is entirely voluntary. Open-source releases remain freely available, without donor-only features or
-development priority: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+Want to know more about the developer? See [github.com/fromthelake](https://github.com/fromthelake).
 
 ## Project status
 
@@ -400,10 +390,9 @@ After all, that's how this whole adventure started.
 
 ## License and Nintendo
 
-This is an independent fan-made project, made available free of charge. Financial support for the developer
-is entirely optional and does not purchase features, development priority or other benefits. The project is
-not affiliated with or endorsed by Nintendo. Nintendo owns its trademarks and game
-content; please support Nintendo by buying its consoles and games.
+MK8DX Ecosystem is an independent, non-commercial fan project, made available free of charge. It is **not
+affiliated with or endorsed by Nintendo**. Nintendo owns its trademarks and game content; please support
+Nintendo by buying its consoles and games.
 
 The project's original code and documentation are licensed under the [Mozilla Public License 2.0](LICENSE).
 The [license scope](LICENSE_SCOPE.md) explains what that covers: it does **not** cover Nintendo material,

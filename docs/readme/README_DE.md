@@ -309,18 +309,7 @@ Fang mit [Contributing](../../.github/CONTRIBUTING.md) und dem [Entwicklerhandbu
 Jeder Pull Request, jeder Fehlerbericht und jede Übersetzungskorrektur macht den nächsten LAN-Abend für
 alle besser.
 
-## Entwicklung unterstützen
-
-Ich bin Bas, der Entwickler von MK8DX Ecosystem. Mein nächstes Ziel ist eine lokale KI-Workstation, um mit
-größeren Modellen, Computer Vision und Automatisierung zu experimentieren.
-
-Der erste Finanzierungsmeilenstein liegt bei 5.000 €, auf dem Weg zu einem kompletten Aufbau, der derzeit auf
-etwa 23.000 € geschätzt wird. Diese Ausrüstung ist für meine eigene Entwicklungsarbeit; um MK8DX Ecosystem zu
-nutzen, brauchst du sie nicht. Die [Local-AI-Lab-Roadmap](../LOCAL_AI_LAB.md) (Englisch) erklärt den Plan und führt als
-einzige Seite den Fortschritt.
-
-Unterstützung ist völlig freiwillig. Open-Source-Releases bleiben frei verfügbar, ohne Funktionen nur für
-Unterstützer und ohne Vorrang bei der Entwicklung: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+Mehr über den Entwickler erfahren? Siehe [github.com/fromthelake](https://github.com/fromthelake).
 
 ## Projektstatus
 
@@ -417,11 +406,9 @@ Schließlich hat genau so dieses ganze Abenteuer begonnen.
 
 ## Lizenz und Nintendo
 
-Dies ist ein unabhängiges Fanprojekt, das kostenlos zur Verfügung gestellt wird. Finanzielle Unterstützung für den
-Entwickler ist völlig freiwillig und erkauft keine Funktionen, keinen Vorrang bei der Entwicklung und keine anderen
-Vorteile. Das Projekt ist weder mit Nintendo verbunden noch von Nintendo unterstützt.
-Nintendo besitzt seine Marken und Spielinhalte; bitte unterstütze Nintendo, indem du seine Konsolen und
-Spiele kaufst.
+MK8DX Ecosystem ist ein unabhängiges, nicht kommerzielles Fanprojekt und wird kostenlos zur Verfügung
+gestellt. Es ist **weder mit Nintendo verbunden noch von Nintendo unterstützt**. Nintendo besitzt seine Marken
+und Spielinhalte; bitte unterstütze Nintendo, indem du seine Konsolen und Spiele kaufst.
 
 Der ursprüngliche Code und die Dokumentation des Projekts stehen unter der [Mozilla Public License 2.0](../../LICENSE).
 Der [Lizenzumfang](../../LICENSE_SCOPE.md) erklärt, was das abdeckt: Er umfasst **nicht** Nintendo-Material,

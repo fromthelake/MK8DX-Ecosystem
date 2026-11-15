@@ -6,14 +6,15 @@ material below, and the repository as a whole is not one unrestricted work.
 
 ## Project statement
 
-MK8DX Ecosystem is an independent, non-commercial hobby project to practise programming and to add to the
-enjoyment of Mario Kart 8 Deluxe. It is not affiliated with, endorsed, sponsored or approved by Nintendo.
+MK8DX Ecosystem is an independent, non-commercial fan project, made available free of charge. It is not
+affiliated with, endorsed, sponsored or approved by Nintendo.
 Nintendo owns its trademarks, game content and other intellectual property; the project claims no rights in
 that material. Please support Nintendo by buying its consoles, games and merchandise.
 
 The source is shared as is. MPL 2.0 lets anyone use and adapt the project's own code and keeps changes to
-covered files under MPL when they are distributed. "Non-commercial" describes the project, not a restriction
-on how others use the code.
+covered files under MPL when they are distributed. "Non-commercial" describes how the project itself is run;
+it does not restrict how others use the project's own code under MPL 2.0. The material listed below keeps its
+own terms.
 
 ## Material in this repository that the MPL does not cover
 
