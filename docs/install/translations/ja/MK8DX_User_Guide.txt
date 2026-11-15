@@ -156,7 +156,7 @@ python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documen
 
 家庭やクラブのネットワークには、A2 パッケージを使います。mk8dx-a2-windows-amd64-v0.2.6.zip（Linux：mk8dx-a2-linux-amd64 または mk8dx-a2-linux-arm64、Apple シリコンの macOS：mk8dx-a2-macos-arm64、Intel プロセッサーの macOS：mk8dx-a2-macos-amd64）と SHA256SUMS.txt をダウンロードし、「1 台のコンピューターで試す」のとおりチェックサムを確認してから、パッケージを展開して Start-MK8DX-LAN.cmd をダブルクリックします（Linux と macOS：sh tooling/start-mk8dx.sh）。ブラウザーでセットアップが開き、Next（次へ）ですべてを案内してくれます：ネットワークアドレス、管理者アカウント、毎晩のバックアップ用の紙の復元コード、そしてスマートフォンや PC 用にそれぞれサインインカードを持つ人たちです。インターネット、メールサーバー、hosts ファイルは必要ありません。
 
-写真付きの詳しい手順のガイドは docs/install/A2_HOME_GUIDE_EN.md です。パッケージ内では docs/install/guide/en.html にもあり、セットアップの Manual（マニュアル）リンクからも開けます。Windows、Linux、macOS の準備、スマートフォンと PC、Android アプリ、LiveTrial、大会の夜、バックアップ、新しいコンピューターへの移行、固定アドレス、新しいネットワークアドレス、アップデートを扱っています。
+写真付きの詳しい手順のガイドは docs/install/A2_HOME_GUIDE_EN.md です。パッケージ内では docs/install/guide/en.html にもあり、セットアップの Manual（マニュアル）リンクからも開けます。Windows、Linux、macOS の準備、スマートフォンと PC、Android アプリ、LiveTrial、大会の夜、バックアップ、新しいコンピューターへの移行、固定アドレス、新しいネットワークアドレス、アップデート、コンピューターからの MK8DX の削除を扱っています。
 
 上級：独自のメールサーバーを使う
 

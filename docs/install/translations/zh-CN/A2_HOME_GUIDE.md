@@ -60,7 +60,7 @@ MK8DX 需要两个免费的辅助程序：
 Linux 尚未与 MK8DX 一起经过端到端测试。以下步骤针对 Ubuntu 24.04 或更新版本编写。你需要在 **终端** 中输入这些命令：终端是一个通过文字命令操作的窗口（在 Ubuntu 中按 Ctrl+Alt+T 打开）。每条命令都以 Enter 结束。命令前面的 **sudo** 表示“以这台电脑的管理员身份”：Linux 随后会要求输入你的密码，输入时你看不到任何字符。这是正常的。
 
 1. **操作：** 输入 `python3 --version`。→ **你会看到：** `Python 3.12`、`3.13`、`3.14` 或 `3.15`。→ **看到的不一样？** 更低的版本号（例如 Debian 12 自带 3.11）太旧；3.16 或更高版本暂不支持。这时你需要更新版本的 Linux；Ubuntu 24.04 自带 Python 3.12。
-2. **操作：** 输入 `sudo apt update`，然后输入 `sudo apt install docker.io docker-compose-v2 python3-venv`。当询问是否继续时，输入 Y 并按 Enter。→ **你会看到：** 软件包被下载并安装。→ **看到的不一样？** 如果 apt 找不到某个软件包，说明它在你的 Linux 上叫别的名字（在 Debian 上可能会这样）。继续操作，并在第 5 步中检查 Docker Compose 是否可用。
+2. **操作：** 输入 `sudo apt update`，然后输入 `sudo apt install docker.io docker-compose-v2 python3-venv unzip`。当询问是否继续时，输入 Y 并按 Enter。→ **你会看到：** 软件包被下载并安装。→ **看到的不一样？** 如果 apt 找不到某个软件包，说明它在你的 Linux 上叫别的名字（在 Debian 上可能会这样）。继续操作，并在第 5 步中检查 Docker Compose 是否可用。
 3. **操作：** 输入 `sudo systemctl enable --now docker`。这会立即启动 Docker，并在每次电脑启动时启动它。→ **你会看到：** 没有错误（有时会出现一行以 “Created symlink” 开头的信息）。
 4. **操作：** 输入 `sudo usermod -aG docker $USER`。这会赋予你的用户使用 Docker 的权限。然后注销并重新登录（或者重启）：这个权限只有在重新登录后才生效。→ **你会看到：** 没有错误。→ **注意：** docker 组中的任何人实际上都拥有这台电脑的管理员权限。只把你自己加进去。
 5. **操作：** 用 `docker info` 和 `docker compose version` 进行检查。→ **你会看到：** 一列没有错误的详细信息，以及带版本号的 “Docker Compose version”。→ **看到的不一样？** 出现 “permission denied”（权限被拒绝）：做第 4 步，别忘了注销。出现 “Cannot connect to the Docker daemon”（无法连接到 Docker 守护进程）：做第 3 步。
@@ -83,7 +83,7 @@ Linux 尚未与 MK8DX 一起经过端到端测试。以下步骤针对 Ubuntu 24
 **解压软件包**
 
 1. **操作：** 下载适用于你的系统的家庭或俱乐部版 MK8DX 软件包：Windows、Linux 或 macOS；对于 Linux 和 macOS，还要选择你的处理器（amd64 或 arm64）。要检查下载是否正确，请将它的 SHA-256 与同一版本中 `SHA256SUMS.txt` 里对应的那一行进行比较（Windows：`Get-FileHash <file> -Algorithm SHA256`；Linux：`sha256sum <file>`；macOS：`shasum -a 256 <file>`）；另见 `docs/RELEASE_PACKAGES.md#check-a-download`。→ **你会看到：** 你的“下载”文件夹中有一个 zip 文件。→ **看到的不一样？** 如果浏览器警告该文件不安全或很少被下载：选择 **Keep**（保留）。Windows：然后右键单击 zip 文件 → **Properties**（属性），勾选底部的 **Unblock**（解除锁定），点击 **OK**（确定）。请在解压之前做这一步；否则 Windows（智能应用控制，Smart App Control）以后可能会阻止 `Start-MK8DX-LAN.cmd`。不要关闭智能应用控制：关闭后只有重新安装 Windows 才能再次打开它。
-2. **操作：** 把 zip 文件解压到一个固定的文件夹，例如“文档”中的一个 MK8DX 文件夹。Windows：右键单击 zip 文件 → **Extract All**（全部解压缩）。请选择一个会一直保留的文件夹：以后 MK8DX 总是从这个文件夹启动，所以不要移动或删除它。→ **你会看到：** 一个文件夹，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 文件夹。→ **看到的不一样？** 如果你只是在文件资源管理器中打开了 zip 文件，请真正解压它：从 zip 文件内部启动是行不通的。
+2. **操作：** 把 zip 文件解压到一个固定的文件夹，例如“文档”中的一个 MK8DX 文件夹。Windows：右键单击 zip 文件 → **Extract All**（全部解压缩）。请选择一个会一直保留的文件夹：以后 MK8DX 总是从这个文件夹启动，所以不要移动或删除它。→ **你会看到：** 一个文件夹，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 文件夹。→ **看到的不一样？** 如果你只是在文件资源管理器中打开了 zip 文件，请真正解压它：从 zip 文件内部启动是行不通的。没有文件管理器的 Linux（服务器或 WSL）：`unzip ~/Downloads/mk8dx-a2-linux-amd64-<version>.zip -d ~/Documents/MK8DX`（换成你的文件名；`unzip` 来自第 2B 章第 2 步）。
 
 <!-- os: windows -->
 
@@ -124,7 +124,7 @@ Linux 和 macOS 终端中的消息：
 2. **快速检查。** **操作：** 稍等片刻。→ **你会看到：** **Docker Desktop 正在运行**、**磁盘可用空间充足**（显示 GB 数）和 **Windows, Linux or macOS** 旁边出现三个绿色对勾。点击 **下一步**。→ **看到的不一样？** 一个感叹号和一段说明，例如 “启动 Docker Desktop，等待显示“Engine running”，然后点击“重试”。”或 “请在此驱动器上至少释放 6 GB 空间。”。解决问题后点击 **重试**。在 Linux 上，第一项检查也叫 “Docker Desktop is running”；在那里它指的是 Docker Engine。
 3. **哪种安装？** **操作：** 保持选中 **家庭、俱乐部或局域网之夜的网络，无需互联网**（推荐），然后点击 **下一步**。→ **你会看到：** “你的网络”。
 4. **你的网络。** **网络地址**（IP 地址）是网络中各设备找到这台电脑所用的号码，就像门牌号一样。**操作：** 阅读 “手机、平板和其他电脑可通过此地址访问 MK8DX：”下方的地址并把它记下来，例如 `https://192.168.1.50`。点击 **安装**。→ **你会看到：** 在 Windows 上显示 “此网络已设置为家庭（专用）网络。”或 “Windows 目前将此网络视为公用网络。点击“安装”后，MK8DX 会将其设为专用网络，并且只放行 MK8DX。”。在 Linux 和 macOS 上，这里不会显示关于网络的句子。→ **看到的不一样？** 如果电脑有多个连接（网线和 Wi-Fi），请点击 **高级**，在 “选择此电脑的另一个地址：”处选择手机所在网络的地址。如果显示 “未找到网络地址。”，请把电脑连接到你的家庭网络，然后点击 **重试**。
-5. **正在安装。** **操作：** 等待并保持窗口打开。→ **你会看到：** “正在设置 MK8DX。请保持此窗口打开。”，然后依次显示 “正在准备安装”、“允许网络访问（Windows 会请求许可）”、“正在启动数据库和网站”、“正在检查”，最后是 “MK8DX 正在运行。只剩两个简短步骤。”。点击 **下一步**。在 Windows 上，会有一个 Windows 窗口询问一次是否允许 Windows PowerShell 进行更改：点击 **Yes**（是）。这样 MK8DX 会把你的家庭网络标记为专用网络，并且只让 MK8DX 通过防火墙（Windows 的保护机制）。→ **看到的不一样？** 出现红色错误：点击 **详情**查看出了什么问题，解决后点击 **重试**。如果你在 Windows 窗口中点击了“否”，会显示 Windows 不允许此更改；点击 **重试**，然后点击 **Yes**（是）。
+5. **正在安装。** **操作：** 等待并保持窗口打开。→ **你会看到：** “正在设置 MK8DX。请保持此窗口打开。”，然后依次显示 “正在准备安装”、“允许网络访问（Windows 会请求许可）”、“正在启动数据库和网站”、“正在检查”，最后是 “MK8DX 正在运行。只剩两个简短步骤。”。点击 **下一步**。在 Windows 上，会有一个 Windows 窗口询问一次是否允许 Windows PowerShell 进行更改：点击 **Yes**（是）。这样 MK8DX 会把你的家庭网络标记为专用网络，并且只让 MK8DX 通过防火墙（Windows 的保护机制）。如果以前已在这台电脑和这个地址上安装过 MK8DX，该许可仍然存在，Windows 不会再次询问。→ **看到的不一样？** 出现红色错误：点击 **详情**查看出了什么问题，解决后点击 **重试**。如果你在 Windows 窗口中点击了“否”，会显示 Windows 不允许此更改；点击 **重试**，然后点击 **Yes**（是）。
 6. **仅限 Linux：防火墙。** **操作：** 在安装过程中或安装之后，点击 **详情**，找到以 “Network:” 开头的那一行。→ **你会看到：** “not-needed”（无需操作），或者 “manual:” 后面跟着一条命令，例如 `sudo ufw allow from 192.168.1.0/24 to 192.168.1.50 port 80,443 proto tcp`。→ **然后操作：** 在终端中准确输入那条命令（使用那里显示的你自己的地址）。没有这条命令，手机就打不开网站。
 7. **你的管理员账户。** **管理员** 是添加人员和制作登录卡的人；也就是你。**操作：** 在 **你的名称**处输入一个名字，例如“爸爸”或“俱乐部团队”，然后点击 **下一步**。这个名字只在本安装中可见。→ **你会看到：** “谁来玩？”
 8. **谁来玩？** **操作：** 在 **名称（每行一个）** 处输入玩家的名字，每个名字占一行，然后点击 **添加**。或者直接点击 **跳过**：以后你可以在 MK8DX beheer 中用完全相同的方式完成（第 5 章）。→ **你会看到：** 名字出现在 “此安装中：”下方，你自己的名字后面带有 “(管理员)”。点击 **下一步**。
@@ -196,7 +196,7 @@ Linux 和 macOS 终端中的消息：
 **让某人在所有地方退出登录**
 
 1. **操作：** 打开 MK8DX beheer。在第一个屏幕上，每个人都有一个 **在所有地方退出登录**按钮。点击它。→ **你会看到：** 按钮变为 **确定吗？再点击一次**。
-2. **操作：** 再点击一次。→ **你会看到：** “已在所有设备上退出登录。使用新卡片即可让此人重新登录。”。此人现在已在网站和应用中退出登录，一键切换到该账户的功能消失，此人尚未使用的卡片也会失效。→ **看到的不一样？** 在你自己的名字旁边显示 “你自己可以通过网站上的账户菜单退出登录（“在所有设备上退出登录”）。”
+2. **操作：** 再点击一次。→ **你会看到：** “已在所有设备上退出登录。使用新卡片即可让此人重新登录。”。此人现在已在网站和应用中退出登录，一键切换到该账户的功能消失，此人尚未使用的卡片也会失效。→ **看到的不一样？** 在你自己的名字旁边，第二次点击会显示 “你自己可以通过网站上的账户菜单退出登录（“在所有设备上退出登录”）。”，并且不会让任何人退出登录。
 
 **关闭 MK8DX beheer**
 
@@ -245,7 +245,7 @@ Linux 和 macOS 终端中的消息：
 - **iPhone 和 iPad（尚未用此安装测试）：** 点按按钮下载描述文件并允许。打开 设置 → 已下载描述文件 → 安装。然后打开 设置 → 通用 → 关于本机 → 证书信任设置 → 打开 MK8DX。
 - **Windows：** 下载证书并打开它。选择 Install Certificate（安装证书）→ Current User（当前用户）→ Place all certificates in the following store（将所有的证书都放入下列存储）→ Trusted Root Certification Authorities（受信任的根证书颁发机构）。不要选择 Intermediate Certification Authorities（中级证书颁发机构）。重启浏览器。
 - **Mac（macOS 尚未经过端到端测试）：** 下载证书并打开它；“钥匙串访问”会打开。打开 MK8DX 证书 → 信任 → 始终信任。
-- **Linux（此方式尚未经过端到端测试）：** 把同一张证书添加到你的发行版或浏览器的受信任根证书存储中。具体步骤因发行版而异。
+- **Linux（此方式尚未经过端到端测试）：** 把同一张证书添加到你的发行版或浏览器的受信任根证书存储中。具体步骤因发行版而异。在 Ubuntu 和 Debian 上（已在 WSL 2 中测试）：下载的 `root.crt` 是 DER 格式，所以请在安装时转换它：`sudo openssl x509 -inform DER -in ~/Downloads/root.crt -out /usr/local/share/ca-certificates/mk8dx.crt`，然后运行 `sudo update-ca-certificates`。Linux 上的 Firefox 和 Chrome 可能使用自己的证书存储；如果浏览器仍然警告，请在其证书设置（Authorities，证书颁发机构）中导入同一个文件。
 
 <!-- /filter -->
 
@@ -275,9 +275,9 @@ Linux 和 macOS 终端中的消息：
 这需要 2.95.0 或更新版本的应用。应用不需要在 Android 设置中安装证书，但登录要通过手机的浏览器进行。所以请先在这部手机上完成第 6 章：“准备设备”，并在浏览器中用你的卡片登录。
 
 1. **操作：** 打开应用。全新安装时，它会从 **选择你的社区** 开始；否则，点按应用顶部的社区名称，然后点按 **添加社区**。→ **你会看到：** **选择你的社区**，其中有 **在家或在俱乐部** 和 **在线社区** 两个面板。在 **在家或在俱乐部** 下点按 **扫描二维码**。
-2. **操作：** 如有需要，点按 **使用相机** 并允许使用相机。扫描 **准备设备**卡片上的二维码。→ **你会看到：** **确认这是你的安装**，其中有 **地址** 和 **密钥指纹 (SHA-256)**。→ **看到的不一样？** “这不是“准备设备”卡片的二维码。”：你扫描的是个人卡片。请扫描“准备设备”卡片。如果扫描失败，在 **或粘贴设置链接** 处输入 New device 地址（例如 `http://192.168.1.50/setup`），然后点按 **下一步**。
+2. **操作：** 如有需要，点按 **使用相机** 并允许使用相机。扫描 **准备设备**卡片上的二维码。→ **你会看到：** **确认这是你的安装**，其中有 **地址** 和 **密钥指纹 (SHA-256)**。→ **看到的不一样？** “这不是“准备设备”卡片的二维码。”：你扫描的是个人卡片。请扫描“准备设备”卡片。如果扫描失败：在 MK8DX 电脑上，点击 MK8DX beheer 中 **准备设备**卡片上的 **复制地址**，把该链接发送到手机（它不是机密），粘贴到 **或粘贴设置链接** 处，然后点按 **下一步**。只输入简短的 New device 地址（例如 `http://192.168.1.50/setup`）是不够的：应用还需要二维码和复制的链接中包含的密钥指纹，否则会显示 “这不是“准备设备”卡片的二维码。”。在 0.2.6 版中，**复制地址** 仍然只复制简短地址；在该版本中请扫描卡片。
 3. **操作：** 把地址与网站地址进行比较，把那串长密钥与“准备此设备”页面进行比较：在那里展开 **完整指纹**，查看 “根公钥 SHA-256 (SPKI)”。你可以在另一台设备上打开那个页面，也可以在 MK8DX 电脑本机上通过 New device 地址打开。→ **你会看到：** 两者完全相同。点按 **连接**（如果应用之前设置的是另一台服务器，请确认更改）。→ **看到的不一样？** 如果不同，点按 **返回**，不要连接。“Could not get a matching certificate from”（无法从以下地址获取匹配的证书）：检查网络并确认 MK8DX 电脑已开机，然后重试。
-4. **操作：** 在 **设置** 中的 **此手机上的玩家** 处，点按 **登录**。应用会提醒你：在家或在俱乐部时，你用个人登录卡登录，而不是用电子邮件。点按 **登录以同步**。→ **你会看到：** 浏览器打开批准页面。确认网站显示的代码与应用中的相同，然后批准此设备。返回应用。→ **看到的不一样？** 如果浏览器要求你登录，请先用你的卡片登录（第 6 章）。
+4. **操作：** 在 **设置** 中的 **此手机上的玩家** 处，点按 **登录**。应用会提醒你：在家或在俱乐部时，你用个人登录卡登录，而不是用电子邮件。点按 **登录以同步**。→ **你会看到：** 浏览器打开批准页面，显示 “MK8DX Time Trials for Android 请求访问你的账户。” 以及 **设备代码**。确认它与应用显示的 **设备代码** 相同（0.2.6 版尚未在此页面上显示该代码），只有在你刚刚在自己手机上发起此操作时才批准，然后点按 **批准设备**。页面显示 “设备已批准。返回应用以完成登录。”。返回应用；应用会显示 “已登录为” 和你的名字。→ **看到的不一样？** 如果浏览器要求你登录，请先用你的卡片登录（第 6 章）。
 5. **操作：** 在应用中提交一个成绩。→ **你会看到：** 该成绩出现在本安装的网站上。
 
 取消配对：点按顶部的社区名称 → **添加社区** → **忘记此安装**。
@@ -411,7 +411,7 @@ LiveTrial 是一个 Windows 程序，它通过采集卡（一个把 Switch 画�
 4. **操作：** 点击 **关闭**。如果你之后还想设置别的东西，请先点击 **前往 MK8DX beheer**。→ **你会看到：** 浏览器窗口关闭；在启动窗口中按任意键将其关闭。
 5. **操作：** 然后删除旧文件夹。→ **你会看到：** MK8DX 继续正常工作。
 
-其他安装方式（单台电脑、你自己的服务器、网站托管）见 `docs/install/MK8DX_User_Guide_EN.txt`。
+其他安装方式（单台电脑、你自己的服务器、网站托管）见 `docs/install/MK8DX_User_Guide_EN.txt`。要从这台电脑上移除 MK8DX，请参阅第 12 章中的 **从这台电脑上移除 MK8DX**。
 
 ![安装向导恢复页](../../guide/img/wizard-restore-en.png)
 
@@ -458,9 +458,21 @@ LiveTrial 是一个 Windows 程序，它通过采集卡（一个把 Switch 画�
 **计划任务和网络**
 
 - **Windows（任务计划程序）：** “MK8DX backup”（03:00）、“MK8DX certificate renewal”（03:30）和 “MK8DX start”（登录时），三者都以已登录用户的身份运行，无需管理员权限。
-- **Linux：** systemd 用户定时器 `mk8dx-mk8dx-backup.timer` 和 `mk8dx-mk8dx-certificate-renewal.timer`（带 Persistent=true）。
+- **Linux：** systemd 用户定时器 `mk8dx-mk8dx-backup.timer` 和 `mk8dx-mk8dx-certificate-renewal.timer`（带 Persistent=true）。**MK8DX beheer** 是应用菜单中的一个条目（`~/.local/share/applications/mk8dx-beheer.desktop`），如果 `~/Desktop` 文件夹存在，桌面上还会有一个图标。
 - **macOS：** `~/Library/LaunchAgents` 中名称以 `nl.mariokart8.mk8dx-` 开头的 LaunchAgents。
 - 网站在所选地址的 TCP 80 和 443 端口上监听。管理页面只在 MK8DX 电脑本机的 `127.0.0.1` 上监听。
 - **Windows：** 防火墙规则 `MK8DX-A2-offline-<address>` 允许该地址上的 TCP 80 和 443，仅限专用配置文件。公用网络会被标记为专用网络；域网络永远不会被更改。
 - **Linux：** MK8DX 自己从不请求 sudo。启用了 ufw 或 firewalld 时，安装程序会显示相应命令；没有启用防火墙时则无需任何操作。**macOS：** Docker Desktop 会自行打开端口。
 - 如果恢复中途失败，未完成的安装会被移到私有数据旁边的一个文件夹中，名称里带有 `.failed-` 和一个时间，这样你就可以重试。
+
+**从这台电脑上移除 MK8DX**
+
+目前还没有移除按钮。这些步骤会删除数据库、每个账户和成绩，以及此安装的密钥。如果你以后可能还想找回任何内容，请先创建一份备份（`tooling/auto_backup.py run`，见上文），并把它和写有其恢复码的那张纸保存在一起：备份只能用该安装的恢复码打开。已在 Windows 11 和 WSL 2 中的 Linux 上测试（均为 0.2.6）；macOS 的命令尚未测试。请在软件包文件夹中操作，使用上文中的 Python，`<folder>` 为私有数据文件夹。
+
+- 停止计划任务。在 Windows 上，在 PowerShell 中：`Unregister-ScheduledTask -TaskName 'MK8DX backup','MK8DX certificate renewal','MK8DX start' -Confirm:$false`。在 Linux 上：`systemctl --user disable --now mk8dx-mk8dx-backup.timer mk8dx-mk8dx-certificate-renewal.timer`，然后 `rm -f ~/.config/systemd/user/mk8dx-mk8dx-*.service ~/.config/systemd/user/mk8dx-mk8dx-*.timer` 和 `systemctl --user daemon-reload`。在 macOS 上，对每个文件 `~/Library/LaunchAgents/nl.mariokart8.mk8dx-<name>.plist`：`launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/nl.mariokart8.mk8dx-<name>.plist`，然后删除该文件。（`install.py backup-unschedule` 用于其他安装方式，不会影响这些任务。）
+- 停止 MK8DX：`tooling/install.py stop --state-dir <folder>`。然后移除容器、网络和卷（数据库和证书）：`docker compose --env-file <folder>/compose.env -f compose.yaml -f compose.offline-lan.yaml -f compose.images.yaml down -v`。Docker 会把容器、网络和四个卷报告为 “Removed”。
+- 删除私有数据文件夹（在上一步完成之前请保留它）以及它旁边的 `python-offline-<code>` 文件夹。然后删除 **MK8DX beheer** 快捷方式：在 Windows 上是桌面上的那个；在 Linux 上是 `~/.local/share/applications/mk8dx-beheer.desktop` 和 `~/Desktop/mk8dx-beheer.desktop`。
+- 如果没有其他安装使用这些镜像，就移除它们。软件包文件夹中的 `PACKAGE_MANIFEST.json` 在 `images` 下列出了它们，例如 `docker image rm ghcr.io/fromthelake/mk8dx-api:v0.2.6-amd64 ghcr.io/fromthelake/mk8dx-web:v0.2.6-amd64`。如果这台电脑上的其他程序仍在使用 `mysql` 和 `mailpit`，请保留它们。然后删除软件包文件夹。
+- 在每台设备上移除 “MK8DX offline LAN root” 证书（第 6 章），并在 Android 应用中忘记此安装（第 7 章）。
+- Windows 上的防火墙规则 `MK8DX-A2-offline-<address>` 只让 MK8DX 通过 TCP 80 和 443。如果你要在同一个地址上重新安装 MK8DX，请保留它：这样 Windows 不会再次请求许可。要移除它，请在 **Windows PowerShell (Admin)**（Windows PowerShell（管理员））中运行：`Remove-NetFirewallRule -Name 'MK8DX-A2-offline-<address>'`。你在 Linux 上添加的 ufw 或 firewalld 规则（第 3 章）请用同一个工具移除。
+- “文档”中的 `MK8DX-backups` 文件夹会保留；不再需要时请自行删除。
