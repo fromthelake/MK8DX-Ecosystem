@@ -1,0 +1,59 @@
+  actual   {0}|  gevonden {0}
+  expected {0}|  verwacht {0}
+ FAILED - the tools were NOT installed completely. See {0}.| MISLUKT - de tools zijn NIET volledig geinstalleerd. Zie {0}.
+ Log file       : {0}| Logbestand      : {0}
+ MK8DX Tournament Tools - installer (package version {0})| MK8DX Tournament Tools - installatie (pakketversie {0})
+ Package folder : {0}| Pakketmap       : {0}
+ Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.| Lees README-FIRST.txt en USING_MK8DX_TOURNAMENT_TOOLS.md voor de werkwijze.
+ Run this installer again; completed downloads are reused.| Start deze installatie opnieuw; voltooide downloads worden hergebruikt.
+ SUCCESS - MK8DX Tournament Tools are installed in this folder.| GELUKT - MK8DX Tournament Tools zijn in deze map geinstalleerd.
+ TournamentAnalysis.cmd   - window to analyse recordings afterwards| TournamentAnalysis.cmd   - venster om opnames achteraf te analyseren
+ TournamentConnect.cmd    - optional connection to the website| TournamentConnect.cmd    - optionele verbinding met de website
+ TournamentLive.cmd       - live capture-card tournament app| TournamentLive.cmd       - live toernooi-app voor een capturekaart
+ TournamentLiveCli.cmd    - advanced command line| TournamentLiveCli.cmd    - geavanceerde opdrachtregel
+ TournamentProcessor.cmd  - process a recorded video (drag it onto the file)| TournamentProcessor.cmd  - verwerk een opname (sleep de video naar het bestand)
+ TournamentTools.config.cmd - local settings and bundled assets| TournamentTools.config.cmd - lokale instellingen en meegeleverde assets
+---- Step 2: installing the Tournament tools and their dependencies ----|---- Stap 2: Tournament-tools en onderdelen installeren ----
+Adding Tournament Live interface support (about 3.5 MB) ...|Ondersteuning voor de Tournament Live-interface wordt toegevoegd (ongeveer 3,5 MB) ...
+Check your connection and run the installer again.|Controleer de verbinding en start de installatie opnieuw.
+Creating a private runtime inside the package ...|Er wordt een eigen runtime in het pakket gemaakt ...
+Downloading the official python.org runtime (about 11 MB) ...|De officiele python.org-runtime wordt gedownload (ongeveer 11 MB) ...
+Examples (type them in this window):|Voorbeelden (typ ze in dit venster):
+Existing package runtime found (embedded Python). It will be updated in place.|Bestaande pakket-runtime gevonden (ingesloten Python). Deze wordt bijgewerkt.
+Existing package runtime found (virtual environment). It will be updated in place.|Bestaande pakket-runtime gevonden (virtuele omgeving). Deze wordt bijgewerkt.
+Extract the whole zip again and run the installer from that folder.|Pak het volledige zipbestand opnieuw uit en start de installatie vanuit die map.
+FAILED: Tournament Live interface support could not be added (step {0}).|MISLUKT: ondersteuning voor de Tournament Live-interface kon niet worden toegevoegd (stap {0}).
+FAILED: the Python runtime could not be downloaded. Check your connection and retry.|MISLUKT: de Python-runtime kon niet worden gedownload. Controleer de verbinding en probeer opnieuw.
+FAILED: the Python runtime could not be prepared. See {0}.|MISLUKT: de Python-runtime kon niet worden voorbereid. Zie {0}.
+FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.|MISLUKT: de veiligheidscontrole van de Python-runtime mislukte. Het bestand is verwijderd. Probeer later opnieuw.
+FAILED: the package installer could not be downloaded. Check your connection and retry.|MISLUKT: de pakketinstallatie kon niet worden gedownload. Controleer de verbinding en probeer opnieuw.
+FAILED: the package installer could not be prepared. See {0}.|MISLUKT: de pakketinstallatie kon niet worden voorbereid. Zie {0}.
+FAILED: the private runtime could not be created. See {0}.|MISLUKT: de eigen runtime kon niet worden gemaakt. Zie {0}.
+FAILED: this folder is not a complete package.|MISLUKT: deze map bevat geen compleet pakket.
+First use: {0}|Eerste gebruik: {0}
+Local processing and file exports never require sign-in or internet.|Lokaal verwerken en bestanden exporteren vragen nooit om inloggen of internet.
+MK8DX Tournament Analysis|MK8DX Tournament Analysis
+MK8DX Tournament Connect - optional|MK8DX Tournament Connect - optioneel
+MK8DX Tournament Live|MK8DX Tournament Live
+MK8DX Tournament Live - command line|MK8DX Tournament Live - opdrachtregel
+MK8DX Tournament Live - command line. Sub-commands:|MK8DX Tournament Live - opdrachtregel. Subopdrachten:
+MK8DX Tournament Processor|MK8DX Tournament Processor
+MK8DX Tournament Tools - installer|MK8DX Tournament Tools - installatie
+No 64-bit Python 3.12 was found on this computer.|Er is geen 64-bits Python 3.12 op deze computer gevonden.
+Optional browser sign-in uploads an existing JSON result as PENDING evidence.|Met optioneel inloggen in de browser upload je een bestaande JSON-uitslag als PENDING-bewijs.
+Preparing the Python package installer ...|De Python-pakketinstallatie wordt voorbereid ...
+Python runtime: {0} [{1}]|Python-runtime: {0} [{1}]
+Running dry-run now to show where Tournament Live stores its files:|Nu volgt een proefrun die laat zien waar Tournament Live zijn bestanden opslaat:
+SHA-256 verified. Extracting the runtime ...|SHA-256 klopt. De runtime wordt uitgepakt ...
+Send a result: {0}|Een uitslag versturen: {0}
+Sign out: {0}|Uitloggen: {0}
+Starting the Tournament Analysis window ... (this window shows startup errors)|Het Tournament Analysis-venster wordt gestart ... (dit venster toont opstartfouten)
+Starting the Tournament Live GUI ... (this window shows startup progress and errors)|De Tournament Live-interface wordt gestart ... (dit venster toont de opstartvoortgang en fouten)
+The package runtime is missing. Run {0} first.|De pakket-runtime ontbreekt. Voer eerst {0} uit.
+This can take 5 to 30 minutes. Please wait ...|Dit kan 5 tot 30 minuten duren. Even geduld ...
+This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA).|PyTorch, EasyOCR, OpenCV en Qt worden gedownload (meerdere GB bij NVIDIA CUDA).
+Tournament Analysis exited with code {0}.|Tournament Analysis is gestopt met code {0}.
+Tournament Live exited with code {0}.|Tournament Live is gestopt met code {0}.
+Tournament Live interface support added.|Ondersteuning voor de Tournament Live-interface is toegevoegd.
+Using the 64-bit Python 3.12 already on this computer:|De bestaande 64-bits Python 3.12 op deze computer wordt gebruikt:
+Verifying the downloaded runtime ...|De gedownloade runtime wordt gecontroleerd ...

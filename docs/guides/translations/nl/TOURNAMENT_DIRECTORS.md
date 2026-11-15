@@ -133,18 +133,22 @@ geïnstalleerd zijn; het heeft PySide6 nodig (de `gui`-extra van de processor) e
 ### Het live scorebord voor publiek en OBS
 
 **Live scorebord openen** (één groep tegelijk) en **Vast scorebord met alle feeds openen** in Tournament Live
-openen het scorebord voor het publiek; voeg dezelfde URL toe als OBS-browserbron. Twee weergave-instellingen
+openen het scorebord voor het publiek; voeg dezelfde URL toe als OBS-browserbron. Drie weergave-instellingen
 staan onder het kleine tandwiel rechtsonder (het verschijnt als je de muis beweegt; OBS toont het niet):
 
-- **Scoreboard**: *Automatic* (standaard) wisselt na elke race tussen de uitslag van de laatste race en de totaalstand.
-  *Overall only* houdt de totaalstand in beeld; die bevat alleen bevestigde races en het onderschrift zegt tot en
-  met welke race, bijvoorbeeld *after race 7 of 12 · race 8 awaiting confirmation*.
-- **Track names**: *English + Dutch* (standaard) of een van de 15 talen van het spel, alleen voor baan- en
+- **Taal**: de eigen teksten van het scorebord (koppen, onderschriften, status, dit paneel) in een van de 15 talen
+  van het spel. *Browsertaal* (standaard) volgt de browser en valt terug op Engels. Baannamen en de consoletaal die
+  Tournament Live leest staan daar los van.
+- **Scorebord**: *Automatisch* (standaard) wisselt na elke race tussen de uitslag van de laatste race en de
+  totaalstand. *Alleen totaalstand* houdt de totaalstand in beeld; die bevat alleen bevestigde races en het
+  onderschrift zegt tot en met welke race, bijvoorbeeld *na race 7 van 12 · race 8 wacht op bevestiging*.
+- **Baannamen**: *Engels + Nederlands* (standaard) of een van de 15 talen van het spel, alleen voor baan- en
   cupnamen. Het verandert niet in welke consoletaal Tournament Live leest.
 
-De browser onthoudt de keuze. Voor OBS zet je hem in de URL: `?scoreboard=overall`, `?trackLang=ja` (of een volledige
-locale zoals `zh-TW`, `es-419`), samen bijvoorbeeld `http://127.0.0.1:8800/?view=grid&scoreboard=overall&trackLang=ja`.
-`?controls=0` verbergt het tandwiel ook in een gewone browser. De eigen teksten van het scorebord blijven Engels.
+De browser onthoudt de keuze. Voor OBS zet je hem in de URL: `?lang=nl` (teksten van het scorebord),
+`?scoreboard=overall`, `?trackLang=ja` (of een volledige locale zoals `zh-TW`, `es-419`), samen bijvoorbeeld
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` verbergt het tandwiel ook
+in een gewone browser.
 
 ### Verbinden met de website (optioneel)
 

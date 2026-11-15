@@ -85,6 +85,10 @@ import {
   type MountedAdministratorOverviewSection,
 } from "./administrator-overview-section.js";
 import {
+  mountAdministratorRequestBudgetsSection,
+  type MountedAdministratorRequestBudgetsSection,
+} from "./administrator-request-budgets-section.js";
+import {
   mountAdministratorIdentityLinkSection,
   type MountedAdministratorIdentityLinkSection,
 } from "./administrator-identity-link-section.js";
@@ -829,6 +833,7 @@ export function mountAuthenticationProductPage(
     "ready" | "unmount"
   > | null = null;
   let administratorOverview: MountedAdministratorOverviewSection | null = null;
+  let administratorRequestBudgets: MountedAdministratorRequestBudgetsSection | null = null;
   let administratorInstallations:
     ReturnType<typeof mountAdministratorClientInstallationSection> | null = null;
   let administratorIdentityLinks:
@@ -2647,6 +2652,7 @@ export function mountAuthenticationProductPage(
     const timeTrialsRoot = document.createElement("div");
     const ratingRoot = document.createElement("div");
     const installationRoot = document.createElement("div");
+    const requestBudgetsRoot = document.createElement("div");
     const sections: readonly Readonly<{ slug: string; label: string; root: HTMLElement }>[] = [
       { slug: "overview", label: localized("Overview", "Overzicht"), root: overviewRoot },
       { slug: "claims", label: localized("Claims", "Claims"), root: claimsRoot },
@@ -2655,6 +2661,8 @@ export function mountAuthenticationProductPage(
       { slug: "rating", label: localized("Rating", "Rating"), root: ratingRoot },
       // ADR-0221: who creates Players and who counts for the rating.
       { slug: "installation", label: localized("Installation settings", "Installatie-instellingen"), root: installationRoot },
+      // What the request budgets and quotas refused lately; read only, loaded when opened.
+      { slug: "request-budgets", label: localized("Request limits", "Verzoeklimieten"), root: requestBudgetsRoot },
     ];
     for (const section of sections) {
       section.root.className = "ds-admin__section ds-stack";
@@ -2666,6 +2674,9 @@ export function mountAuthenticationProductPage(
     const show = (slug: string, writeAddress = false): void => {
       selected = sections.some((section) => section.slug === slug) ? slug : "overview";
       for (const section of sections) { section.root.hidden = section.slug !== selected; }
+      if (selected === "request-budgets" && administratorRequestBudgets === null) {
+        administratorRequestBudgets = mountAdministratorRequestBudgetsSection(requestBudgetsRoot);
+      }
       for (const link of Array.from(subnav.querySelectorAll(".ds-tab"))) {
         const current = link.getAttribute("href") === `/?admin=${selected}`;
         if (current) { link.setAttribute("aria-current", "page"); }
@@ -2690,6 +2701,8 @@ export function mountAuthenticationProductPage(
     page.append(title, intro, subnav, ...sections.map((section) => section.root));
     content.append(page);
     // The numbers first: who is here, who was around lately, what waits.
+    administratorRequestBudgets?.unmount();
+    administratorRequestBudgets = null;
     administratorOverview?.unmount();
     administratorOverview = mountAdministratorOverviewSection(overviewRoot, {
       onOpenClaims: () => show("claims", true),

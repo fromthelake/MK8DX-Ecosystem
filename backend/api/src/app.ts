@@ -20,6 +20,10 @@ import { registerPublicBundleRoutes } from "./runtime/public-bundle.js";
 
 import { registerAdministratorGrantRoutes } from
   "./administration/administrator-grant-routes.js";
+import { registerAdministratorRequestBudgetRoutes } from
+  "./administration/administrator-request-budgets-routes.js";
+import type { AdministratorRequestBudgetsService } from
+  "./administration/administrator-request-budgets.js";
 import { registerAdministratorOverviewRoutes } from
   "./administration/administrator-overview-routes.js";
 import type { AdministratorOverviewService } from
@@ -147,7 +151,7 @@ import {
   MutationRateLimitExceeded,
   type MutationRateLimiter,
 } from "./security/mysql-mutation-rate-limiter.js";
-import { budgetRefusal, type AbuseBudgets } from "./security/abuse-budgets.js";
+import { budgetRefusal, quotaRefusalCode, type AbuseBudgets } from "./security/abuse-budgets.js";
 import { mutationBackstopCovers, recordRegisteredRoutes } from "./security/request-budget-coverage.js";
 import type { AuthEmailBudgets } from "./authentication/auth-email-budgets.js";
 import type { EphemeralAndroidScanTestService } from
@@ -309,6 +313,15 @@ export type AppDependencies = Readonly<{
   administratorOverview?: Readonly<{
     service: Pick<AdministratorOverviewService, "overview">;
   }>;
+  /** What the request budgets and quotas refused lately (administrators, read only). */
+  administratorRequestBudgets?: Readonly<{
+    service: Pick<AdministratorRequestBudgetsService, "report">;
+  }>;
+  /**
+   * Counts refusals that do not pass through the durable limiter (a full quota, a missing fresh
+   * confirmation) in the refusal ledger, by their fixed response code only.
+   */
+  quotaRefusals?: Readonly<{ recordQuotaRefusal(code: string): void }>;
   administratorGrants?: Readonly<{
     service: Pick<
       AdministratorGrantService,
@@ -743,6 +756,18 @@ export async function buildApp(
     return payload;
   });
 
+  if (dependencies.quotaRefusals !== undefined) {
+    const ledger = dependencies.quotaRefusals;
+    // The refusal ledger for quotas: only the fixed code of a refused response is counted (no
+    // subject, no path), and a failure to count never changes the response.
+    app.addHook("onSend", async (_request, reply, payload) => {
+      const code = quotaRefusalCode(reply.statusCode, payload);
+      // Memory only (security/refusal-ledger.ts): a refused response costs no database write.
+      if (code !== null) { ledger.recordQuotaRefusal(code); }
+      return payload;
+    });
+  }
+
   if (operationalLog !== undefined) {
     app.addHook("onResponse", async (request, reply) => {
       if (reply.statusCode >= 500) {
@@ -941,6 +966,12 @@ export async function buildApp(
       : { claimCsrfVerifier: dependencies.claimCsrfVerifier }),
     ...(dependencies.abuseBudgets === undefined ? {} : { claimBudgets: dependencies.abuseBudgets }),
   });
+  if (dependencies.administratorRequestBudgets !== undefined) {
+    await registerAdministratorRequestBudgetRoutes(app, {
+      resolveActor,
+      service: dependencies.administratorRequestBudgets.service,
+    });
+  }
   if (dependencies.administratorOverview !== undefined) {
     await registerAdministratorOverviewRoutes(app, {
       resolveActor,

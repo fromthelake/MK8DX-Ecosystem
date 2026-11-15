@@ -14,10 +14,17 @@ const SCHEMA_VERSION = "mk8dx.step-up.v1";
 const tokenPattern = /^[A-Za-z0-9_-]{43}$/u;
 
 export type StepUpClientErrorCode =
-  | "rate_limited" | "unavailable" | "expired_or_used" | "signed_out" | "invalid_response";
+  | "rate_limited" | "unavailable" | "expired_or_used" | "signed_out" | "invalid_response"
+  // The link was created but the e-mail failed; the operator's `install.py step-up-link` hands it over.
+  | "mail_unavailable";
 
 export class StepUpClientError extends Error {
-  public constructor(public readonly code: StepUpClientErrorCode, public readonly retryAfterSeconds: number | null = null) {
+  public constructor(
+    public readonly code: StepUpClientErrorCode,
+    public readonly retryAfterSeconds: number | null = null,
+    /** For `mail_unavailable`: until when the created link can still be confirmed. */
+    public readonly linkExpiresAtMs: number | null = null,
+  ) {
     super("The confirmation could not be completed.");
     this.name = "StepUpClientError";
   }
@@ -103,6 +110,13 @@ export async function requestStepUp(fetcher: Fetch = defaultFetch()): Promise<St
     throw new StepUpClientError("rate_limited", Number.isFinite(retry) && retry > 0 ? retry : null);
   }
   if (response.status === 401) { throw new StepUpClientError("signed_out"); }
+  if (response.status === 503) {
+    const failed = await body(response) as Record<string, unknown> | null;
+    const until = failed?.["linkExpiresAtMs"];
+    if (failed?.["code"] === "step_up_mail_unavailable" && typeof until === "number" && Number.isSafeInteger(until) && until > 0) {
+      throw new StepUpClientError("mail_unavailable", null, until);
+    }
+  }
   if (response.status !== 202) { throw new StepUpClientError("unavailable"); }
   return parseStepUpSent(await body(response));
 }

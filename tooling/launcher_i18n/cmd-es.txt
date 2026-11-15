@@ -1,0 +1,59 @@
+  actual   {0}|  obtenido {0}
+  expected {0}|  esperado {0}
+ FAILED - the tools were NOT installed completely. See {0}.| ERROR: las herramientas NO se han instalado por completo. Consulta {0}.
+ Log file       : {0}| Archivo de registro : {0}
+ MK8DX Tournament Tools - installer (package version {0})| MK8DX Tournament Tools - instalador (versión del paquete {0})
+ Package folder : {0}| Carpeta del paquete : {0}
+ Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.| Lee README-FIRST.txt y USING_MK8DX_TOURNAMENT_TOOLS.md para conocer el flujo de trabajo.
+ Run this installer again; completed downloads are reused.| Vuelve a ejecutar este instalador; las descargas completadas se reutilizan.
+ SUCCESS - MK8DX Tournament Tools are installed in this folder.| ÉXITO: MK8DX Tournament Tools se ha instalado en esta carpeta.
+ TournamentAnalysis.cmd   - window to analyse recordings afterwards| TournamentAnalysis.cmd   - ventana para analizar grabaciones después
+ TournamentConnect.cmd    - optional connection to the website| TournamentConnect.cmd    - conexión opcional con el sitio web
+ TournamentLive.cmd       - live capture-card tournament app| TournamentLive.cmd       - aplicación de torneo en directo con tarjeta de captura
+ TournamentLiveCli.cmd    - advanced command line| TournamentLiveCli.cmd    - línea de comandos avanzada
+ TournamentProcessor.cmd  - process a recorded video (drag it onto the file)| TournamentProcessor.cmd  - procesar un vídeo grabado (arrástralo sobre el archivo)
+ TournamentTools.config.cmd - local settings and bundled assets| TournamentTools.config.cmd - ajustes locales y recursos incluidos
+---- Step 2: installing the Tournament tools and their dependencies ----|---- Paso 2: instalando las herramientas de torneo y sus dependencias ----
+Adding Tournament Live interface support (about 3.5 MB) ...|Añadiendo la compatibilidad con la interfaz de Tournament Live (unos 3,5 MB) ...
+Check your connection and run the installer again.|Comprueba tu conexión y vuelve a ejecutar el instalador.
+Creating a private runtime inside the package ...|Creando un entorno de ejecución privado dentro del paquete ...
+Downloading the official python.org runtime (about 11 MB) ...|Descargando el entorno oficial de python.org (unos 11 MB) ...
+Examples (type them in this window):|Ejemplos (escríbelos en esta ventana):
+Existing package runtime found (embedded Python). It will be updated in place.|Se ha encontrado un entorno de ejecución del paquete (Python integrado). Se actualizará en su sitio.
+Existing package runtime found (virtual environment). It will be updated in place.|Se ha encontrado un entorno de ejecución del paquete (entorno virtual). Se actualizará en su sitio.
+Extract the whole zip again and run the installer from that folder.|Vuelve a extraer todo el zip y ejecuta el instalador desde esa carpeta.
+FAILED: Tournament Live interface support could not be added (step {0}).|ERROR: no se ha podido añadir la compatibilidad con la interfaz de Tournament Live (paso {0}).
+FAILED: the Python runtime could not be downloaded. Check your connection and retry.|ERROR: no se ha podido descargar el entorno de Python. Comprueba tu conexión y vuelve a intentarlo.
+FAILED: the Python runtime could not be prepared. See {0}.|ERROR: no se ha podido preparar el entorno de Python. Consulta {0}.
+FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.|ERROR: el entorno de Python descargado no ha superado la comprobación de seguridad. Se ha eliminado. Vuelve a intentarlo más tarde.
+FAILED: the package installer could not be downloaded. Check your connection and retry.|ERROR: no se ha podido descargar el instalador de paquetes. Comprueba tu conexión y vuelve a intentarlo.
+FAILED: the package installer could not be prepared. See {0}.|ERROR: no se ha podido preparar el instalador de paquetes. Consulta {0}.
+FAILED: the private runtime could not be created. See {0}.|ERROR: no se ha podido crear el entorno de ejecución privado. Consulta {0}.
+FAILED: this folder is not a complete package.|ERROR: esta carpeta no es un paquete completo.
+First use: {0}|Primer uso: {0}
+Local processing and file exports never require sign-in or internet.|El procesamiento local y la exportación de archivos nunca requieren iniciar sesión ni Internet.
+MK8DX Tournament Analysis|MK8DX Tournament Analysis
+MK8DX Tournament Connect - optional|MK8DX Tournament Connect - opcional
+MK8DX Tournament Live|MK8DX Tournament Live
+MK8DX Tournament Live - command line|MK8DX Tournament Live - línea de comandos
+MK8DX Tournament Live - command line. Sub-commands:|MK8DX Tournament Live - línea de comandos. Subcomandos:
+MK8DX Tournament Processor|MK8DX Tournament Processor
+MK8DX Tournament Tools - installer|MK8DX Tournament Tools - instalador
+No 64-bit Python 3.12 was found on this computer.|No se ha encontrado Python 3.12 de 64 bits en este ordenador.
+Optional browser sign-in uploads an existing JSON result as PENDING evidence.|El inicio de sesión opcional en el navegador sube un resultado JSON existente como prueba PENDING.
+Preparing the Python package installer ...|Preparando el instalador de paquetes de Python ...
+Python runtime: {0} [{1}]|Entorno de Python: {0} [{1}]
+Running dry-run now to show where Tournament Live stores its files:|Ejecutando ahora dry-run para mostrar dónde guarda Tournament Live sus archivos:
+SHA-256 verified. Extracting the runtime ...|SHA-256 verificado. Extrayendo el entorno ...
+Send a result: {0}|Enviar un resultado: {0}
+Sign out: {0}|Cerrar sesión: {0}
+Starting the Tournament Analysis window ... (this window shows startup errors)|Iniciando la ventana de Tournament Analysis ... (esta ventana muestra los errores de inicio)
+Starting the Tournament Live GUI ... (this window shows startup progress and errors)|Iniciando la interfaz de Tournament Live ... (esta ventana muestra el progreso y los errores de inicio)
+The package runtime is missing. Run {0} first.|Falta el entorno de ejecución del paquete. Ejecuta primero {0}.
+This can take 5 to 30 minutes. Please wait ...|Esto puede tardar entre 5 y 30 minutos. Espera, por favor ...
+This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA).|Esto descarga PyTorch, EasyOCR, OpenCV y Qt (varios GB con NVIDIA CUDA).
+Tournament Analysis exited with code {0}.|Tournament Analysis ha terminado con el código {0}.
+Tournament Live exited with code {0}.|Tournament Live ha terminado con el código {0}.
+Tournament Live interface support added.|Compatibilidad con la interfaz de Tournament Live añadida.
+Using the 64-bit Python 3.12 already on this computer:|Usando el Python 3.12 de 64 bits que ya está en este ordenador:
+Verifying the downloaded runtime ...|Verificando el entorno descargado ...

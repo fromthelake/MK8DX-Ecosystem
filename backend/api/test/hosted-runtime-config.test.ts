@@ -105,6 +105,16 @@ describe("passwordless hosted runtime configuration", () => {
     expect(config.webPush).toMatchObject({ subject: "mailto:operator@example.test" });
   });
 
+  it("reads the optional SMTP timeout within its bounds", () => {
+    expect(loadPasswordlessHostedRuntimeConfig(environment()).smtp?.timeoutMs).toBeUndefined();
+    expect(loadPasswordlessHostedRuntimeConfig(environment({ MK8DX_HOSTED_SMTP_TIMEOUT_MS: "8000" })).smtp)
+      .toMatchObject({ timeoutMs: 8_000 });
+    for (const value of ["999", "60001", "5s"]) {
+      expect(() => loadPasswordlessHostedRuntimeConfig(environment({ MK8DX_HOSTED_SMTP_TIMEOUT_MS: value })))
+        .toThrow(HostedRuntimeConfigurationError);
+    }
+  });
+
   it("keeps offline LAN on one private HTTPS IP without SMTP or Web Push", () => {
     const offline = environment({
       MK8DX_OFFLINE_LAN: "true",

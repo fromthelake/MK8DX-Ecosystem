@@ -16,6 +16,8 @@ from pathlib import Path
 if __package__ in (None, ""):
     sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from tooling.launcher_text import t, utf8_output  # noqa: E402
+
 
 ROOT = Path(__file__).resolve().parent.parent
 FILES = ("api.env", "operator.json", "compose.env")
@@ -35,9 +37,9 @@ def safe_path(value):
         if part.exists() and (part.is_symlink() or
                               getattr(part.lstat(), "st_file_attributes", 0) &
                               getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)) and not system_link(part):
-            raise RuntimeError("Private path contains a link or junction")
+            raise RuntimeError(t("Private path contains a link or junction"))
     if path.is_relative_to(ROOT):
-        raise RuntimeError("Private data must be outside the software package")
+        raise RuntimeError(t("Private data must be outside the software package"))
     return path
 
 
@@ -56,11 +58,11 @@ def compose(state):
         suffix = {"A1": "compose.local.yaml", "A2": "compose.lan.yaml",
                   "A2_OFFLINE": "compose.offline-lan.yaml", "B1": "compose.production.yaml"}.get(route)
         if suffix is None:
-            raise RuntimeError("Unknown installation route")
+            raise RuntimeError(t("Unknown installation route"))
     elif "MK8DX_LOCAL_DEMO='true'" in (state / "api.env").read_text(encoding="utf-8").splitlines():
         suffix = "compose.local.yaml"
     else:
-        raise RuntimeError("Production backup needs an adopted operator profile")
+        raise RuntimeError(t("Production backup needs an adopted operator profile"))
     return ["docker", "compose", "--env-file", str(state / "compose.env"),
             "-f", str(ROOT / "compose.yaml"), "-f", str(ROOT / suffix), "-f", str(ROOT / "compose.images.yaml")]
 
@@ -77,7 +79,7 @@ def free_port(start):
                 return port
             except OSError:
                 pass
-    raise RuntimeError("No loopback port available")
+    raise RuntimeError(t("No loopback port available"))
 
 
 def write_private(path, content):
@@ -88,13 +90,13 @@ def write_private(path, content):
 
 def recovery_phrase(path):
     if path is None:
-        raise RuntimeError("Offline LAN backup and restore require --recovery-phrase-file")
+        raise RuntimeError(t("Offline LAN backup and restore require --recovery-phrase-file"))
     path = safe_path(path)
     if not path.is_file() or path.is_symlink():
-        raise RuntimeError("Recovery phrase file must be an unlinked private file outside Git")
+        raise RuntimeError(t("Recovery phrase file must be an unlinked private file outside Git"))
     phrase = path.read_text(encoding="utf-8").rstrip("\r\n")
     if "\n" in phrase or "\r" in phrase or len(phrase) < 16:
-        raise RuntimeError("Recovery phrase file must contain one phrase of at least 16 characters")
+        raise RuntimeError(t("Recovery phrase file must contain one phrase of at least 16 characters"))
     return phrase
 
 
@@ -119,9 +121,9 @@ def backup(state, output, recovery_phrase_file=None):
                 compose_values.get("MK8DX_LAN_IP") != selected_ip or
                 compose_values.get("MK8DX_BIND_ADDRESS") != selected_ip or
                 api_values.get("MK8DX_HOSTED_AUTH_BASE_URL") != profile.get("origin")):
-            raise RuntimeError("Offline CA, selected IP and installation profile disagree")
+            raise RuntimeError(t("Offline CA, selected IP and installation profile disagree"))
     if output.exists():
-        raise RuntimeError("Backup destination already exists")
+        raise RuntimeError(t("Backup destination already exists"))
     output.mkdir(mode=0o700, parents=True)
     os.chmod(output, 0o700)
     names = V2_FILES if (state / "operator-profile.json").exists() else FILES
@@ -131,7 +133,7 @@ def backup(state, output, recovery_phrase_file=None):
         source = state / name
         if not source.is_file() or source.is_symlink() or (getattr(source.lstat(), "st_file_attributes", 0) &
                                                           getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
-            raise RuntimeError("Installation file is missing or linked")
+            raise RuntimeError(t("Installation file is missing or linked"))
         shutil.copyfile(state / name, output / name)
         os.chmod(output / name, 0o600)
     if route == "A2_OFFLINE":
@@ -148,7 +150,7 @@ def backup(state, output, recovery_phrase_file=None):
                 compressed.write(block)
             error = process.stderr.read() if process.stderr else b""
             if process.wait() != 0:
-                raise RuntimeError("Database dump failed: " + error.decode(errors="replace")[:500])
+                raise RuntimeError(t("Database dump failed: {0}", error.decode(errors="replace")[:500]))
     os.chmod(output / "database.sql.gz", 0o600)
     backup_files = (*names, "database.sql.gz", *((OFFLINE_CA_BACKUP,) if route == "A2_OFFLINE" else ()))
     manifest = {"schemaVersion": "mk8dx.install-backup.v2" if names == V2_FILES else "mk8dx.local-backup.v1",
@@ -156,7 +158,7 @@ def backup(state, output, recovery_phrase_file=None):
                 "route": route,
                 "files": {name: digest(output / name) for name in backup_files}}
     write_private(output / "manifest.json", json.dumps(manifest, indent=2) + "\n")
-    print("Backup complete; keep this directory private and offline when possible")
+    print(t("Backup complete; keep this directory private and offline when possible"))
 
 
 SEALED_BACKUP = "backup.sealed"
@@ -168,7 +170,7 @@ def _installation_file(state, name):
     source = state / name
     if not source.is_file() or source.is_symlink() or (getattr(source.lstat(), "st_file_attributes", 0) &
                                                       getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0)):
-        raise RuntimeError("Installation file is missing or linked")
+        raise RuntimeError(t("Installation file is missing or linked"))
     return source.read_bytes()
 
 
@@ -195,7 +197,7 @@ def _sealed_backup(state, output, names, phrase, command):
                 compressed.write(block)
             error = process.stderr.read() if process.stderr else b""
             if process.wait() != 0:
-                raise RuntimeError("Database dump failed: " + error.decode(errors="replace")[:500])
+                raise RuntimeError(t("Database dump failed: {0}", error.decode(errors="replace")[:500]))
         bundle.writestr("database.sql.gz", dump.getvalue())
     salt, nonce = os.urandom(16), os.urandom(12)
     sealed = AESGCM(_derive(phrase, salt)).encrypt(nonce, archive.getvalue(), SEALED_ASSOCIATED_DATA)
@@ -213,7 +215,7 @@ def _sealed_backup(state, output, names, phrase, command):
                            "cipher": {"name": "AES-256-GCM", "nonce": base64.b64encode(nonce).decode()}},
                 "files": {name: digest(output / name) for name in (SEALED_BACKUP, OFFLINE_CA_BACKUP)}}
     write_private(output / "manifest.json", json.dumps(manifest, indent=2) + "\n")
-    print("Backup complete and sealed with the recovery code")
+    print(t("Backup complete and sealed with the recovery code"))
 
 
 def _open_sealed_backup(backup_dir, phrase, into):
@@ -228,18 +230,18 @@ def _open_sealed_backup(backup_dir, phrase, into):
     sealed = manifest["sealed"]
     if {k: sealed["kdf"].get(k) for k in ("name", "n", "r", "p")} != {"name": "scrypt", "n": KDF_N, "r": KDF_R, "p": KDF_P} \
             or sealed["cipher"].get("name") != "AES-256-GCM":
-        raise RuntimeError("Sealed backup uses an unknown protection")
+        raise RuntimeError(t("Sealed backup uses an unknown protection"))
     salt = base64.b64decode(sealed["kdf"]["salt"], validate=True)
     nonce = base64.b64decode(sealed["cipher"]["nonce"], validate=True)
     try:
         archive = AESGCM(_derive(phrase, salt)).decrypt(nonce, (backup_dir / SEALED_BACKUP).read_bytes(),
                                                          SEALED_ASSOCIATED_DATA)
     except InvalidTag:
-        raise RuntimeError("The recovery code does not open this backup") from None
+        raise RuntimeError(t("The recovery code does not open this backup")) from None
     expected = set(sealed["names"])
     with zipfile.ZipFile(io.BytesIO(archive)) as bundle:
         if set(bundle.namelist()) != expected or set(V2_FILES) | {"database.sql.gz"} != expected:
-            raise RuntimeError("Sealed backup contents are invalid")
+            raise RuntimeError(t("Sealed backup contents are invalid"))
         for name in sorted(expected):
             fd = os.open(into / name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
             with os.fdopen(fd, "wb") as stream:
@@ -255,7 +257,7 @@ def set_value(text, name, value):
     lines = text.splitlines(keepends=True)
     matching = [index for index, line in enumerate(lines) if line.startswith(name + "=")]
     if len(matching) != 1 or "'" in value or "\n" in value:
-        raise RuntimeError("Backup setting is invalid")
+        raise RuntimeError(t("Backup setting is invalid"))
     lines[matching[0]] = f"{name}='{value}'\n"
     return "".join(lines)
 
@@ -267,15 +269,15 @@ def verify_backup(backup_dir):
     if version == SEALED_SCHEMA:
         # Contents stay sealed until restore; check what can be checked without the code.
         if manifest.get("route") != "A2_OFFLINE" or set(manifest.get("files", {})) != {SEALED_BACKUP, OFFLINE_CA_BACKUP}:
-            raise RuntimeError("Backup manifest is invalid")
+            raise RuntimeError(t("Backup manifest is invalid"))
         for name, expected in manifest["files"].items():
             path = backup_dir / name
             if path.is_symlink() or not path.is_file() or digest(path) != expected:
-                raise RuntimeError("Backup checksum mismatch")
+                raise RuntimeError(t("Backup checksum mismatch"))
         envelope = json.loads((backup_dir / OFFLINE_CA_BACKUP).read_text(encoding="utf-8"))
         if envelope.get("schema") != "mk8dx.offline-lan-ca-recovery.v1" or \
                 envelope.get("rootCertificateSha256") != manifest.get("rootCertificateSha256"):
-            raise RuntimeError("Offline CA recovery envelope and manifest disagree")
+            raise RuntimeError(t("Offline CA recovery envelope and manifest disagree"))
         return manifest
     names = V2_FILES if version == "mk8dx.install-backup.v2" else FILES
     route = manifest.get("route", "A1")
@@ -283,20 +285,20 @@ def verify_backup(backup_dir):
     if version not in ("mk8dx.install-backup.v2", "mk8dx.local-backup.v1") or \
             (route == "A2_OFFLINE" and version != "mk8dx.install-backup.v2") or \
             set(manifest.get("files", {})) != expected:
-        raise RuntimeError("Backup manifest is invalid")
+        raise RuntimeError(t("Backup manifest is invalid"))
     for name, expected in manifest["files"].items():
         path = backup_dir / name
         if path.is_symlink() or not path.is_file() or digest(path) != expected:
-            raise RuntimeError("Backup checksum mismatch")
+            raise RuntimeError(t("Backup checksum mismatch"))
     if version == "mk8dx.install-backup.v2":
         profile = json.loads((backup_dir / "operator-profile.json").read_text(encoding="utf-8"))
         if profile.get("route") != route:
-            raise RuntimeError("Backup route and installation profile disagree")
+            raise RuntimeError(t("Backup route and installation profile disagree"))
     if route == "A2_OFFLINE":
         envelope = json.loads((backup_dir / OFFLINE_CA_BACKUP).read_text(encoding="utf-8"))
         if envelope.get("schema") != "mk8dx.offline-lan-ca-recovery.v1" or \
                 envelope.get("rootCertificateSha256") != profile.get("rootCertificateSha256"):
-            raise RuntimeError("Offline CA recovery envelope and profile disagree")
+            raise RuntimeError(t("Offline CA recovery envelope and profile disagree"))
     return manifest
 
 
@@ -309,7 +311,7 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
         import tempfile
         phrase = recovery_phrase(recovery_phrase_file)
         if target.exists():
-            raise RuntimeError("Restore target already exists")
+            raise RuntimeError(t("Restore target already exists"))
         with tempfile.TemporaryDirectory(prefix="mk8dx-restore-") as opened:
             opened = Path(opened)
             os.chmod(opened, 0o700)
@@ -332,7 +334,7 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
                 saved_compose.get("MK8DX_LAN_IP") != selected_ip or
                 saved_compose.get("MK8DX_BIND_ADDRESS") != selected_ip or
                 saved_api.get("MK8DX_HOSTED_AUTH_BASE_URL") != profile.get("origin")):
-            raise RuntimeError("Offline backup origin and selected IP disagree")
+            raise RuntimeError(t("Offline backup origin and selected IP disagree"))
         if lan_ip is not None and str(private_lan_ip(lan_ip)) != selected_ip:
             selected_ip = str(private_lan_ip(lan_ip))
             moved = f"https://{selected_ip}"
@@ -340,9 +342,9 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
             runtime["MK8DX_HOSTED_AUTH_TRUSTED_ORIGINS_JSON"] = json.dumps([moved])
             profile["origin"], profile["bindAddress"] = moved, selected_ip
     elif lan_ip is not None:
-        raise RuntimeError("Only an A2 offline backup can move to another LAN address")
+        raise RuntimeError(t("Only an A2 offline backup can move to another LAN address"))
     if target.exists():
-        raise RuntimeError("Restore target already exists")
+        raise RuntimeError(t("Restore target already exists"))
     target.mkdir(mode=0o700, parents=True)
     os.chmod(target, 0o700)
     if route == "A2_OFFLINE":
@@ -350,7 +352,7 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
         restored = restore_recovery(backup_dir / OFFLINE_CA_BACKUP, target, selected_ip, phrase)
         if restored["root"]["certificateSha256"] != profile["rootCertificateSha256"] or \
                 validate_signer(target)["rootCertificateSha256"] != profile["rootCertificateSha256"]:
-            raise RuntimeError("Restored offline CA and installation profile disagree")
+            raise RuntimeError(t("Restored offline CA and installation profile disagree"))
     if route == "A1":
         http_port, mail_port = free_port(18080), free_port(18025)
         if http_port == mail_port:
@@ -404,7 +406,7 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
         import time
         time.sleep(1)
     else:
-        raise RuntimeError("Restored database did not become ready")
+        raise RuntimeError(t("Restored database did not become ready"))
     with gzip.open(backup_dir / "database.sql.gz", "rb") as sql:
         process = subprocess.Popen(command + ["exec", "-T", "mysql", "sh", "-c",
             'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql -h 127.0.0.1 -u root mk8dx'],
@@ -415,9 +417,9 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
         process.stdin.close()
         error = process.stderr.read() if process.stderr else b""
         if process.wait() != 0:
-            raise RuntimeError("Database restore failed: " + error.decode(errors="replace")[:500])
+            raise RuntimeError(t("Database restore failed: {0}", error.decode(errors="replace")[:500]))
     restore_runtime_account(target, command)
-    print(f"Database and private configuration restored to a new isolated project. Web origin: {origin}")
+    print(t("Database and private configuration restored to a new isolated project. Web origin: {0}", origin))
 
 
 def restore_runtime_account(target, command):
@@ -430,7 +432,7 @@ def restore_runtime_account(target, command):
     if user in (None, environment.get("MK8DX_DATABASE_USER")):
         return  # one shared login (an installation from before the accounts were separated)
     if user != accounts.RUNTIME_USER:
-        raise RuntimeError("Backup names an unexpected runtime database account")
+        raise RuntimeError(t("Backup names an unexpected runtime database account"))
     connection = {"MK8DX_HOSTED_MYSQL_HOST": "mysql", "MK8DX_HOSTED_MYSQL_PORT": "3306",
                   "MK8DX_HOSTED_MYSQL_DATABASE": environment.get("MK8DX_DATABASE", "mk8dx"),
                   "MK8DX_HOSTED_MYSQL_USER": user, "MK8DX_HOSTED_MYSQL_PASSWORD": password}
@@ -442,6 +444,7 @@ def restore_runtime_account(target, command):
 
 
 def main():
+    utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     actions = parser.add_subparsers(dest="action", required=True)
     b = actions.add_parser("backup")
@@ -461,11 +464,11 @@ def main():
             backup(args.state_dir, args.output, args.recovery_phrase_file)
         elif args.action == "verify":
             manifest = verify_backup(args.backup)
-            print(f"Backup verified: {manifest['schemaVersion']}, route {manifest.get('route', 'A1')}")
+            print(t("Backup verified: {0}, route {1}", manifest['schemaVersion'], manifest.get('route', 'A1')))
         else:
             restore_new(args.backup, args.state_dir, args.recovery_phrase_file, args.lan_ip)
     except (OSError, subprocess.CalledProcessError, RuntimeError, ValueError) as error:
-        raise SystemExit(f"Lifecycle operation refused or failed: {error}") from None
+        raise SystemExit(t("Lifecycle operation refused or failed: {0}", error)) from None
 
 
 if __name__ == "__main__":

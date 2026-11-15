@@ -12,6 +12,7 @@ import {
   stepUpRequiredBody,
 } from "./step-up-policy.js";
 import {
+  StepUpMailUnavailable,
   StepUpRateLimited,
   StepUpUnavailable,
   type StepUpClientKind,
@@ -113,6 +114,16 @@ export async function registerStepUpRoutes(app: FastifyInstance, options: StepUp
           },
         },
         401: errorSchema, 403: errorSchema, 409: errorSchema, 429: errorSchema,
+        503: {
+          type: "object",
+          additionalProperties: false,
+          required: ["code", "message", "linkExpiresAtMs"],
+          properties: {
+            code: { type: "string", const: "step_up_mail_unavailable" },
+            message: { type: "string" },
+            linkExpiresAtMs: { type: "integer", minimum: 0 },
+          },
+        },
       },
     },
   }, async (request, reply) => {
@@ -140,6 +151,16 @@ export async function registerStepUpRoutes(app: FastifyInstance, options: StepUp
       if (error instanceof StepUpRateLimited) {
         void reply.header("retry-after", String(error.retryAfterSeconds));
         return failure(reply, 429, "step_up_rate_limited", "Too many emails were requested. Try again later.");
+      }
+      if (error instanceof StepUpMailUnavailable) {
+        // The link exists; only the e-mail failed. The server operator can hand it over with
+        // `python tooling/install.py step-up-link` (docs/OPERATIONS.md).
+        return reply.code(503).send({
+          code: "step_up_mail_unavailable",
+          message: "The confirmation link was created, but the email could not be sent. Ask the server operator " +
+            "to run install.py step-up-link.",
+          linkExpiresAtMs: error.linkExpiresAtMs,
+        });
       }
       if (error instanceof StepUpUnavailable) {
         return failure(reply, 409, "step_up_unavailable", "This account has no verified email address.");

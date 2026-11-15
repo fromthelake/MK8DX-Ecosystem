@@ -6,9 +6,9 @@
 // apps/timetrials-web/i18n/translations/<language>.json ({ language, reviewed, messages: { english: text } }).
 // fr-CA and es-419 fall back to fr and es where they have no own translation; game names always come from the
 // region's own Clean Assets names. A translation may leave out a placeholder (an English plural suffix, say) but
-// never name one the English does not have. The other products (Android, LiveTrial, Tournament Live and the A2
-// setup wizard / invitation page, Tournament Analysis, the launcher windows; PRODUCTS below) get the same catalog
-// limited to their own texts.
+// never name one the English does not have. The other products (Android, LiveTrial, Tournament Live and its
+// spectator dashboard, the A2 setup wizard / invitation page, Tournament Analysis, the launcher windows; PRODUCTS
+// below) get the same catalog limited to their own texts.
 // Output: apps/timetrials-web/styles/i18n-<language>-<hash>.json and
 // apps/timetrials-web/src/i18n-catalog-index.generated.ts. Prints the coverage per language.
 // Every web source text needs an entry in each translation file, or that language shows it in English (the
@@ -53,6 +53,9 @@ const PRODUCTS = [
   ["android", "apps/timetrials-android/i18n/messages.source.json", "apps/timetrials-android/app/src/main/assets/i18n"],
   ["livetrial", "apps/timetrials-desktop/i18n/messages.source.json", "apps/timetrials-desktop/dashboard/i18n"],
   ["tournamentLive", "apps/tournament-live/i18n/messages.source.json", "apps/tournament-live/src/live_processor/i18n"],
+  // The Live spectator dashboard (tooling/i18n/extract_broadcast_messages.py), served by broadcast_server.py.
+  ["tournamentLiveBroadcast", "apps/tournament-live/i18n/broadcast/messages.source.json",
+    "apps/tournament-live/src/live_processor/broadcast_web/i18n", { gameNames: false, dutch: true }],
   // The A2 offline pages (tooling/i18n/extract_a2_messages.py): setup wizard + /setup page, invitation page.
   // They show no game names, so their catalogs leave them out.
   ["a2Setup", "tooling/i18n/a2-setup/messages.source.json", "tooling/setup_wizard_static/i18n", { gameNames: false }],
@@ -61,8 +64,10 @@ const PRODUCTS = [
   ["tournamentProcessor", "apps/tournament-processor/i18n/messages.source.json",
     "apps/tournament-processor/src/tournament_processor/i18n", { gameNames: false }],
   // The launcher windows (tooling/i18n/extract_launcher_messages.py). Their English has no Dutch in the code, so
-  // the Dutch of the message source becomes nl.json too.
-  ["launcher", "tooling/i18n/launcher/messages.source.json", "tooling/launcher_i18n", { gameNames: false, dutch: true }],
+  // the Dutch of the message source becomes nl.json too. The texts cmd files show themselves (marked "cmd") also go
+  // to cmd-<language>.txt, "English|text" lines that tooling/mk8dx-text.cmd reads without PowerShell.
+  ["launcher", "tooling/i18n/launcher/messages.source.json", "tooling/launcher_i18n",
+    { gameNames: false, dutch: true, cmdTexts: true }],
 ].map(([name, sourcePath, folder, settings = {}]) => {
   const messages = JSON.parse(readFileSync(join(repositoryRoot, sourcePath), "utf8")).messages;
   return {
@@ -73,6 +78,9 @@ const PRODUCTS = [
       : null,
     folder: join(repositoryRoot, folder),
     gameNames: settings.gameNames !== false,
+    cmdKeys: settings.cmdTexts === true
+      ? new Set(messages.filter((message) => message.cmd === true).map((message) => message.key))
+      : null,
   };
 });
 // One translation pipeline for every product: a translation counts when its English is a key of any.
@@ -112,6 +120,17 @@ for (const stale of readdirSync(outputDir).filter((name) => /^i18n-.+\.json$/.te
 for (const product of PRODUCTS) {
   mkdirSync(product.folder, { recursive: true });
   for (const stale of readdirSync(product.folder)) { rmSync(join(product.folder, stale)); }
+}
+// "English|text" lines for cmd (tooling/mk8dx-text.cmd): no bar, quote, percent sign or line break in either part.
+function writeCmdTexts(product, language, entries) {
+  if (!product.cmdKeys) { return; }
+  const lines = [];
+  for (const [english, text] of entries) {
+    if (!product.cmdKeys.has(english)) { continue; }
+    if (/[|"%\r\n]/.test(english + text)) { problems.push(`${language}: ${JSON.stringify(english)} cannot be a cmd text`); continue; }
+    lines.push(`${english}|${text}\n`);
+  }
+  if (lines.length > 0) { writeFileSync(join(product.folder, `cmd-${language}.txt`), lines.join(""), "utf8"); }
 }
 const files = {};
 const report = {};
@@ -165,6 +184,7 @@ for (const [language, settings] of Object.entries(LANGUAGES)) {
     const productCatalog = { ...catalog, messages: Object.fromEntries(productMessages) };
     if (!product.gameNames) { delete productCatalog.gameNames; }
     writeFileSync(join(product.folder, `${language}.json`), `${JSON.stringify(productCatalog)}\n`, "utf8");
+    writeCmdTexts(product, language, productMessages);
     productCounts[product.name] = `${productMessages.length}/${product.keys.size}`;
   }
   const text = `${JSON.stringify(catalog)}\n`;
@@ -188,6 +208,7 @@ for (const product of PRODUCTS.filter((candidate) => candidate.dutch)) {
   const catalog = { schemaVersion: "mk8dx.web-message-catalog.v1", language: "nl", reviewed: true,
     messages: Object.fromEntries(sorted) };
   writeFileSync(join(product.folder, "nl.json"), `${JSON.stringify(catalog)}\n`, "utf8");
+  writeCmdTexts(product, "nl", sorted);
   report.nl = { ...(report.nl ?? {}), [product.name]: `${sorted.length}/${product.keys.size}` };
 }
 

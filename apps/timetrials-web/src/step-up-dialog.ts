@@ -88,6 +88,15 @@ export function confirmWithEmailLink(options: StepUpDialogOptions): Promise<bool
         if (settled) { return; }
         send.setLoading(null);
         const code = error instanceof StepUpClientError ? error.code : "unavailable";
+        if (code === "mail_unavailable" && error instanceof StepUpClientError && error.linkExpiresAtMs !== null) {
+          // The link exists; only the e-mail failed. The server operator can hand it over, and this
+          // window keeps waiting for the confirmation.
+          say("error", localized(
+            "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+            "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder."));
+          void watch(error.linkExpiresAtMs);
+          return;
+        }
         say("error", code === "rate_limited"
           ? localized("Too many links were requested. Wait a few minutes and try again.",
             "Er zijn te veel links aangevraagd. Wacht een paar minuten en probeer het opnieuw.")

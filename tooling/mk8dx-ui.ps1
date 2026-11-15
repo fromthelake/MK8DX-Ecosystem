@@ -76,6 +76,12 @@ function Tr([string]$English) {
   for ($i = 0; $i -lt $args.Count; $i++) { $text = $text.Replace('{' + $i + '}', [string]$args[$i]) }
   return $text
 }
+# The cmd launchers name their window in English (`title`) and hand the same text over in MK8DX_WINDOW_TITLE: the
+# PowerShell they start anyway shows it in the launcher language, so the title costs no extra process (cmd keeps a
+# title a child set after the child ends).
+if ($env:MK8DX_WINDOW_TITLE -and $script:MK8DXLanguage -ne 'en') {
+  try { $Host.UI.RawUI.WindowTitle = Tr $env:MK8DX_WINDOW_TITLE } catch { }
+}
 
 # ---- Rich mode -------------------------------------------------------------------------------------------------
 # Truecolor block-letter logo, gradient laps and a small car on the track. Only in a terminal that renders 24-bit

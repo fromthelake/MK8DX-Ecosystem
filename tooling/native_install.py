@@ -46,14 +46,14 @@ def separate(profile):
 
 def package_paths():
     if "public_html" in (part.lower() for part in ROOT.parts):
-        raise ValueError("Keep the Node application root outside public_html")
+        raise ValueError(t("Keep the Node application root outside public_html"))
     needed = ("api/dist/composition/passwordless-hosted-main.js", "api/package-lock.json",
               "web/index.html", "scanner/index.html", "assets", "mysql/migration-catalog-v1.json",
               "packages/assets/schema9-asset-catalog-v1.json")
     for name in needed:
         path = ROOT / name
         if not path.exists() or path.is_symlink():
-            raise ValueError(f"Incomplete non-Docker package: {name}")
+            raise ValueError(t("Incomplete non-Docker package: {0}", name))
     return ROOT
 
 
@@ -69,32 +69,32 @@ def create(state, route, origin, admin_email, db_host, db_port, db_name, db_user
     if runtime_user is not None:
         if (not runtime_user or not runtime_password or runtime_user.lower() == "root" or
                 runtime_user == db_user):
-            raise ValueError("The website's database user must be a second, limited user (not root, not the same user)")
+            raise ValueError(t("The website's database user must be a second, limited user (not root, not the same user)"))
     state = safe_state_dir(state, existing=False)
     if any(part.lower() in ("public_html", "htdocs") for part in state.parts):
-        raise ValueError("Private installation data must stay outside public web folders")
+        raise ValueError(t("Private installation data must stay outside public web folders"))
     if state.exists():
-        raise ValueError("Installation already exists; keys and data stay in place")
+        raise ValueError(t("Installation already exists; keys and data stay in place"))
     valid_origin(origin)
     if route == "A3" and origin != "http://127.0.0.1:18090":
-        raise ValueError("A3 uses the local Apache address http://127.0.0.1:18090")
+        raise ValueError(t("A3 uses the local Apache address http://127.0.0.1:18090"))
     if route == "B2" and (urlsplit(origin).scheme != "https" or urlsplit(origin).port):
-        raise ValueError("B2 needs a standard HTTPS domain origin")
+        raise ValueError(t("B2 needs a standard HTTPS domain origin"))
     if not db_host or not db_host.isascii() or any(c.isspace() for c in db_host):
-        raise ValueError("Invalid database host")
+        raise ValueError(t("Invalid database host"))
     if not 1 <= db_port <= 65535 or not db_name.replace("_", "").isalnum() or not db_user:
-        raise ValueError("Invalid database connection")
+        raise ValueError(t("Invalid database connection"))
     if db_user.lower() == "root" or not db_password:
-        raise ValueError("Use a limited database user, not root")
+        raise ValueError(t("Use a limited database user, not root"))
     if route == "A3":
         if db_host not in ("127.0.0.1", "localhost"):
-            raise ValueError("A3 database must stay on this computer")
+            raise ValueError(t("A3 database must stay on this computer"))
         smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = (
             "127.0.0.1", 18225, "", "", "demo@mk8dx.example")
     elif not (smtp_host and smtp_port == 465 and smtp_user and smtp_password and "@" in smtp_from):
-        raise ValueError("B2 needs the mailbox SMTP login and implicit TLS on port 465")
+        raise ValueError(t("B2 needs the mailbox SMTP login and implicit TLS on port 465"))
     if not admin_email or "@" not in admin_email or any(c.isspace() for c in admin_email):
-        raise ValueError("Enter the email address you will verify for the administrator")
+        raise ValueError(t("Enter the email address you will verify for the administrator"))
     state.mkdir(parents=True, mode=0o700)
     os.chmod(state, 0o700)
     website_user, website_password = (runtime_user, runtime_password) if runtime_user else (db_user, db_password)
@@ -211,9 +211,9 @@ def wizard(state, route, auto_backup=True):
 def loaded(state):
     state = safe_state_dir(state, existing=True)
     if any(part.lower() in ("public_html", "htdocs") for part in state.parts):
-        raise ValueError("Private installation data is inside a public web folder")
+        raise ValueError(t("Private installation data is inside a public web folder"))
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
-    if profile.get("route") not in ("A3", "B2"): raise ValueError("This is not a non-Docker installation")
+    if profile.get("route") not in ("A3", "B2"): raise ValueError(t("This is not a non-Docker installation"))
     secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
     runtime = json.loads((state / "operator.json").read_text(encoding="utf-8"))
     public = json.loads((state / PUBLIC).read_text(encoding="utf-8"))
@@ -225,16 +225,16 @@ def loaded(state):
                         "MK8DX_HOSTED_MYSQL_PASSWORD": secret["MK8DX_HOSTED_MYSQL_PASSWORD"],
                         "MK8DX_HOSTED_AUTH_BASE_URL": profile["origin"],
                         "MK8DX_HOSTED_SMTP_PASSWORD": secret["MK8DX_HOSTED_SMTP_PASSWORD"]}.items():
-        if runtime.get(name) != value: raise ValueError("Saved profile and generated runtime disagree")
+        if runtime.get(name) != value: raise ValueError(t("Saved profile and generated runtime disagree"))
     if any(runtime.get(name) != secret.get(name) for name in SECRET_KEYS):
-        raise ValueError("Saved secret keys and runtime disagree")
-    if public != public_client(profile["origin"]): raise ValueError("Public client origin disagrees")
+        raise ValueError(t("Saved secret keys and runtime disagree"))
+    if public != public_client(profile["origin"]): raise ValueError(t("Public client origin disagrees"))
     if separate(profile):
         user, password = database_logins(profile, secret)["migration"]
         if user == db["user"] or not accounts.migration_file_matches(state, runtime, user, password):
-            raise ValueError("Saved database accounts and migration settings disagree")
+            raise ValueError(t("Saved database accounts and migration settings disagree"))
     elif (state / accounts.MIGRATION_FILE).exists():
-        raise ValueError("Saved database accounts and migration settings disagree")
+        raise ValueError(t("Saved database accounts and migration settings disagree"))
     return state, profile, runtime
 
 
@@ -251,7 +251,7 @@ def sync_package_paths(state, runtime):
     if all(runtime.get(name) == value for name, value in expected.items()): return runtime
     runtime.update(expected)
     replace_group([state / "operator.json"], [json.dumps(runtime, indent=2).encode() + b"\n"])
-    print("Derived package paths refreshed; profile, database and keys retained")
+    print(t("Derived package paths refreshed; profile, database and keys retained"))
     return runtime
 
 
@@ -281,7 +281,7 @@ def change_origin(state, origin):
     state, profile, runtime = loaded(state)
     valid_origin(origin)
     if profile["route"] != "B2" or urlsplit(origin).scheme != "https" or urlsplit(origin).port:
-        raise ValueError("Only B2 may change to another standard HTTPS origin")
+        raise ValueError(t("Only B2 may change to another standard HTTPS origin"))
     if profile["origin"] == origin: print("unchanged"); return
     profile["origin"] = origin
     runtime["MK8DX_HOSTED_AUTH_BASE_URL"] = origin
@@ -290,12 +290,12 @@ def change_origin(state, origin):
     replace_group(paths, [json.dumps(profile, indent=2).encode() + b"\n",
                           json.dumps(runtime, indent=2).encode() + b"\n",
                           json.dumps(public_client(origin), indent=2).encode() + b"\n"])
-    print("Origin saved; refresh Passenger configuration and restart the app. Clients must reconnect.")
+    print(t("Origin saved; refresh Passenger configuration and restart the app. Clients must reconnect."))
 
 
 def change_smtp(state):
     state, profile, runtime = loaded(state)
-    if profile["route"] != "B2": raise ValueError("A3 uses local Mailpit")
+    if profile["route"] != "B2": raise ValueError(t("A3 uses local Mailpit"))
     smtp = profile["smtp"]
     host = input(f"SMTP host [{smtp['host']}]: ").strip() or smtp["host"]
     user = input(f"SMTP login [{smtp['username']}]: ").strip() or smtp["username"]
@@ -304,21 +304,21 @@ def change_smtp(state):
     secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
     if not password: password = secret["MK8DX_HOSTED_SMTP_PASSWORD"]
     if not host or any(c.isspace() for c in host) or not user or not password or "@" not in sender:
-        raise ValueError("SMTP needs a host, login, password and sender")
+        raise ValueError(t("SMTP needs a host, login, password and sender"))
     smtp.update({"host": host, "username": user, "fromAddress": sender})
     runtime.update({"MK8DX_HOSTED_SMTP_HOST": host, "MK8DX_HOSTED_SMTP_USERNAME": user,
                     "MK8DX_HOSTED_SMTP_FROM_ADDRESS": sender, "MK8DX_HOSTED_SMTP_PASSWORD": password})
     secret["MK8DX_HOSTED_SMTP_PASSWORD"] = password
     replace_group([state / PROFILE, state / SECRET, state / "operator.json"],
                   [json.dumps(value, indent=2).encode() + b"\n" for value in (profile, secret, runtime)])
-    print("SMTP saved; refresh Passenger configuration and restart the app")
+    print(t("SMTP saved; refresh Passenger configuration and restart the app"))
 
 
 def serve(state):
     state, profile, runtime = loaded(state)
-    if profile["route"] != "A3": raise ValueError("B2 is started and restarted in DirectAdmin")
+    if profile["route"] != "A3": raise ValueError(t("B2 is started and restarted in DirectAdmin"))
     tool = ROOT / "bin/mailpit.exe"
-    if not tool.is_file(): raise ValueError("The Windows package is missing its local mail tool")
+    if not tool.is_file(): raise ValueError(t("The Windows package is missing its local mail tool"))
     database = start_local_database(state, profile, runtime)
     # Starting the database may have given the website its own runtime-only account: read the settings again.
     state, profile, runtime = loaded(state)
@@ -344,9 +344,9 @@ def serve(state):
         while server.poll() is None and mail.poll() is None and database.poll() is None:
             try: server.wait(timeout=0.5)
             except subprocess.TimeoutExpired: pass
-        if server.poll() is not None: raise RuntimeError("MK8DX Node process stopped; inspect the error above")
-        if mail.poll() is not None: raise RuntimeError("Local mail capture stopped; inspect the error above")
-        raise RuntimeError("Local MariaDB stopped; inspect the error above")
+        if server.poll() is not None: raise RuntimeError(t("MK8DX Node process stopped; inspect the error above"))
+        if mail.poll() is not None: raise RuntimeError(t("Local mail capture stopped; inspect the error above"))
+        raise RuntimeError(t("Local MariaDB stopped; inspect the error above"))
     except KeyboardInterrupt:
         print(t("Stopping this MK8DX installation"))
     finally:
@@ -371,11 +371,11 @@ def stop_local_database(state, database):
 
 
 def maintenance(state, profile, runtime):
-    if profile["route"] != "A3": raise ValueError("B2 database lifecycle belongs to DirectAdmin")
+    if profile["route"] != "A3": raise ValueError(t("B2 database lifecycle belongs to DirectAdmin"))
     database = start_local_database(state, profile, runtime)
     try:
-        print("Only this MK8DX database is running. Run the update or restore in another PowerShell window.")
-        print("Press Ctrl+C here when the operation is complete.")
+        print(t("Only this MK8DX database is running. Run the update or restore in another PowerShell window."))
+        print(t("Press Ctrl+C here when the operation is complete."))
         while database.poll() is None:
             try: database.wait(timeout=0.5)
             except subprocess.TimeoutExpired: pass
@@ -388,33 +388,33 @@ def start_local_database(state, profile, runtime):
     archive = ROOT / "bin/mariadb-11.4.13-winx64.zip"
     runtime_dir = state / "db-runtime"
     data_dir = state / "db-data"
-    if not archive.is_file(): raise ValueError("The A3 package lacks MariaDB 11.4.13")
+    if not archive.is_file(): raise ValueError(t("The A3 package lacks MariaDB 11.4.13"))
     if not runtime_dir.exists():
         runtime_dir.mkdir()
         with zipfile.ZipFile(archive) as source:
             for entry in source.infolist():
                 relative = Path(entry.filename)
                 if relative.is_absolute() or ".." in relative.parts:
-                    raise ValueError("Unsafe MariaDB archive path")
+                    raise ValueError(t("Unsafe MariaDB archive path"))
                 source.extract(entry, runtime_dir)
     executable = runtime_dir / "mariadb-11.4.13-winx64/bin"
-    if not (executable / "mariadbd.exe").is_file(): raise ValueError("MariaDB binary missing")
+    if not (executable / "mariadbd.exe").is_file(): raise ValueError(t("MariaDB binary missing"))
     if not data_dir.exists():
         subprocess.run([str(executable / "mariadb-install-db.exe"), f"--datadir={data_dir}", "--port=18306", "--silent"],
                        cwd=runtime_dir, check=True)
     with socket.socket() as probe:
         if probe.connect_ex(("127.0.0.1", 18306)) == 0:
-            raise ValueError("Port 18306 already belongs to a database; this installer will not use it")
+            raise ValueError(t("Port 18306 already belongs to a database; this installer will not use it"))
     database = subprocess.Popen([str(executable / "mariadbd.exe"),
                                  f"--defaults-file={data_dir / 'my.ini'}", f"--datadir={data_dir}",
                                  "--bind-address=127.0.0.1", "--port=18306", "--console"], cwd=runtime_dir)
     for _ in range(60):
-        if database.poll() is not None: raise RuntimeError("This installation's MariaDB did not start")
+        if database.poll() is not None: raise RuntimeError(t("This installation's MariaDB did not start"))
         with socket.socket() as probe:
             if probe.connect_ex(("127.0.0.1", 18306)) == 0: break
         time.sleep(0.25)
     else:
-        database.terminate(); raise RuntimeError("MariaDB did not become ready")
+        database.terminate(); raise RuntimeError(t("MariaDB did not become ready"))
     try:
         provision_local_accounts(state, executable / "mariadb.exe")
     except BaseException:
@@ -431,8 +431,8 @@ def _local_root_sql(client, sql, root_password, *hidden):
     result = subprocess.run([str(client), "--host=127.0.0.1", "--port=18306", "--user=root"], input=sql, text=True,
                             stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, env=environment, check=False)
     if result.returncode != 0:
-        raise RuntimeError("Local database accounts could not be set up: " +
-                           accounts.redact(result.stderr, root_password or "", *hidden))
+        raise RuntimeError(t("Local database accounts could not be set up: {0}",
+                             accounts.redact(result.stderr, root_password or "", *hidden)))
 
 
 def provision_local_accounts(state, client):
@@ -483,7 +483,7 @@ def switch_to_runtime_account(state, user, password, backup=None):
     runtime = json.loads((state / RUNTIME).read_text(encoding="utf-8"))
     old_user, old_password = profile["database"]["user"], secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
     if separate(profile) or runtime.get("MK8DX_HOSTED_MYSQL_USER") != old_user or user == old_user:
-        raise ValueError("Saved database accounts disagree; nothing was changed")
+        raise ValueError(t("Saved database accounts disagree; nothing was changed"))
     profile["database"].update({"user": user, "migrationUser": old_user,
                                 **({"backupUser": backup[0]} if backup else {})})
     secret.update({"MK8DX_HOSTED_MYSQL_PASSWORD": password, accounts.MIGRATION_PASSWORD: old_password,
@@ -568,7 +568,7 @@ def database_accounts(state, user=None, password=None, undo=False):
         user = input(t("Second database user for the website (full name): ")).strip()
         password = getpass.getpass(t("Second database user's password (hidden): "))
     if not user or not password or user.lower() == "root" or user == profile["database"]["user"]:
-        raise ValueError("The website's database user must be a second, limited user (not root, not the same user)")
+        raise ValueError(t("The website's database user must be a second, limited user (not root, not the same user)"))
     probe = state / "database-account-check.json"
     probe.unlink(missing_ok=True)
     write_json(probe, accounts.migration_settings(runtime, user, password))
@@ -576,15 +576,15 @@ def database_accounts(state, user=None, password=None, undo=False):
     try:
         report = check_runtime_account(state, probe)
     except subprocess.CalledProcessError:
-        raise ValueError("MK8DX could not sign in with that database user; check its name, password and database") from None
+        raise ValueError(t("MK8DX could not sign in with that database user; check its name, password and database")) from None
     finally:
         probe.unlink(missing_ok=True)
     if not report.get("dataAccess"):
-        raise ValueError("That database user cannot read and write the MK8DX tables; give it SELECT, INSERT, "
-                         "UPDATE and DELETE on this database")
+        raise ValueError(t("That database user cannot read and write the MK8DX tables; give it SELECT, INSERT, "
+                           "UPDATE and DELETE on this database"))
     if report.get("canChangeSchema"):
-        raise ValueError("That database user can still change the database structure (" +
-                         ", ".join(report.get("extraPrivileges", [])) + "); give it only SELECT, INSERT, UPDATE and DELETE")
+        raise ValueError(t("That database user can still change the database structure ({0}); give it only SELECT, "
+                           "INSERT, UPDATE and DELETE", ", ".join(report.get("extraPrivileges", []))))
     switch_to_runtime_account(state, user, password)
     print(t("Saved. The previous database user stays for database updates and backups. Now refresh the Passenger "
             "configuration (passenger-config) and restart the app in your hosting panel. Undo: database-accounts --undo"))
@@ -617,11 +617,11 @@ def _tail(stream):
 def backup(state, output):
     state, profile, runtime = loaded(state)
     output = safe_state_dir(output, existing=False)
-    if output.exists(): raise ValueError("Choose a new backup folder")
+    if output.exists(): raise ValueError(t("Choose a new backup folder"))
     local_dump = state / "db-runtime/mariadb-11.4.13-winx64/bin/mariadb-dump.exe"
     dump = str(local_dump) if profile["route"] == "A3" and local_dump.is_file() else \
         (shutil.which("mariadb-dump") or shutil.which("mysqldump"))
-    if not dump: raise ValueError("Install the MariaDB command-line client; mariadb-dump is required")
+    if not dump: raise ValueError(t("Install the MariaDB command-line client; mariadb-dump is required"))
     output.mkdir(parents=True, mode=0o700)
     # The backup login (A3: read and export only; B2: the migration login), never the website's own account.
     user, password = database_logins(profile, json.loads((state / SECRET).read_text(encoding="utf-8")))["backup"]
@@ -642,7 +642,7 @@ def backup(state, output):
                 process.stderr.close()
                 process.wait()
                 if process.returncode != 0:
-                    raise RuntimeError(f"Database export failed with exit code {process.returncode}: {detail}")
+                    raise RuntimeError(t("Database export failed with exit code {0}: {1}", process.returncode, detail))
         for name in (PROFILE, SECRET, "operator.json", PUBLIC):
             shutil.copyfile(state / name, output / name)
             os.chmod(output / name, 0o600)
@@ -663,7 +663,7 @@ def verify_backup(output):
     receipt = json.loads((output / "BACKUP_MANIFEST.json").read_text(encoding="utf-8"))
     for name, expected in receipt["files"].items():
         if hashlib.sha256((output / name).read_bytes()).hexdigest() != expected:
-            raise ValueError(f"Backup file differs: {name}")
+            raise ValueError(t("Backup file differs: {0}", name))
     with gzip.open(output / "database.sql.gz", "rb") as stream:
         while stream.read(1024 * 1024): pass
     print(t("Backup verified"))
@@ -674,17 +674,17 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
     verify_backup(backup_dir)
     backup_dir = safe_state_dir(backup_dir, existing=True)
     state = safe_state_dir(state, existing=False)
-    if state.exists(): raise ValueError("Restore destination already exists")
+    if state.exists(): raise ValueError(t("Restore destination already exists"))
     receipt = json.loads((backup_dir / "BACKUP_MANIFEST.json").read_text(encoding="utf-8"))
     profile = json.loads((backup_dir / PROFILE).read_text(encoding="utf-8"))
     secret = json.loads((backup_dir / SECRET).read_text(encoding="utf-8"))
     runtime = json.loads((backup_dir / "operator.json").read_text(encoding="utf-8"))
     if profile["route"] != "B2" or db_user.lower() == "root":
-        raise ValueError("This restore uses a B2 backup and a limited new database user; use restore-local for A3")
+        raise ValueError(t("This restore uses a B2 backup and a limited new database user; use restore-local for A3"))
     new_origin = origin or profile["origin"]
     valid_origin(new_origin)
     if profile["route"] == "B2" and urlsplit(new_origin).scheme != "https":
-        raise ValueError("B2 restore needs an HTTPS address")
+        raise ValueError(t("B2 restore needs an HTTPS address"))
     profile["origin"] = new_origin
     profile["database"] = {"host": db_host, "port": db_port, "name": db_name, "user": db_user}
     runtime.update({"MK8DX_HOSTED_MYSQL_HOST": db_host, "MK8DX_HOSTED_MYSQL_PORT": str(db_port),
@@ -701,7 +701,7 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
     for name in (accounts.MIGRATION_PASSWORD, accounts.BACKUP_PASSWORD):
         secret.pop(name, None)
     if not db_host or not db_name or not db_user or not db_password or not 1 <= db_port <= 65535:
-        raise ValueError("Complete target database settings are required")
+        raise ValueError(t("Complete target database settings are required"))
     state.mkdir(parents=True, mode=0o700)
     for name, value in ((PROFILE, profile), (SECRET, secret), ("operator.json", runtime),
                         (PUBLIC, public_client(new_origin))):
@@ -710,9 +710,9 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
     observed = observe_database(state)
     if observed["tableCount"] != 0 or observed["engine"] != receipt.get("engine") or \
             observed["version"].split(".")[:2] != receipt.get("version", "").split(".")[:2]:
-        raise ValueError("Target database must be empty and on the same tested engine/version series")
+        raise ValueError(t("Target database must be empty and on the same tested engine/version series"))
     client = shutil.which("mariadb") or shutil.which("mysql")
-    if not client: raise ValueError("MariaDB command-line client is required to restore")
+    if not client: raise ValueError(t("MariaDB command-line client is required to restore"))
     env = os.environ.copy(); env["MYSQL_PWD"] = db_password
     with gzip.open(backup_dir / "database.sql.gz", "rb") as sql:
         process = subprocess.Popen([client, "--host", db_host, "--port", str(db_port), "--user", db_user,
@@ -723,9 +723,9 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
         assert process.stderr is not None
         detail = _tail(process.stderr); process.stderr.close()
         process.wait()
-        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}: {detail}")
+        if process.returncode != 0: raise RuntimeError(t("Database restore failed with exit code {0}: {1}", process.returncode, detail))
     operate(state, "check")
-    print("Restored into a separate installation; start it, sign in, and check existing results. Bootstrap stays closed.")
+    print(t("Restored into a separate installation; start it, sign in, and check existing results. Bootstrap stays closed."))
 
 
 def restore_local(backup_dir, state):
@@ -745,15 +745,15 @@ def restore_local(backup_dir, state):
     source_runtime = json.loads((backup_dir / "operator.json").read_text(encoding="utf-8"))
     target_secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
     if source_profile["route"] != "A3" or target_profile["route"] != "A3":
-        raise ValueError("Local restore requires an A3 backup and an A3 target")
+        raise ValueError(t("Local restore requires an A3 backup and an A3 target"))
     if source_profile["origin"] != target_profile["origin"]:
-        raise ValueError("Local restore addresses disagree")
+        raise ValueError(t("Local restore addresses disagree"))
     observed = observe_database(state)
     if observed["tableCount"] != 0 or observed["engine"] != receipt.get("engine") or \
             observed["version"].split(".")[:2] != receipt.get("version", "").split(".")[:2]:
-        raise ValueError("Target database must be empty and on the same tested engine/version series")
+        raise ValueError(t("Target database must be empty and on the same tested engine/version series"))
     client = state / "db-runtime/mariadb-11.4.13-winx64/bin/mariadb.exe"
-    if not client.is_file(): raise ValueError("The target's MariaDB client is missing")
+    if not client.is_file(): raise ValueError(t("The target's MariaDB client is missing"))
     # The import creates tables: the target's migration login, never its runtime-only one.
     import_user, import_password = database_logins(target_profile, target_secret)["migration"]
     with gzip.open(backup_dir / "database.sql.gz", "rb") as sql:
@@ -768,7 +768,7 @@ def restore_local(backup_dir, state):
         assert process.stderr is not None
         detail = _tail(process.stderr); process.stderr.close()
         process.wait()
-        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}: {detail}")
+        if process.returncode != 0: raise RuntimeError(t("Database restore failed with exit code {0}: {1}", process.returncode, detail))
     source_profile["database"] = target_profile["database"]
     source_secret["MK8DX_HOSTED_MYSQL_PASSWORD"] = target_secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
     source_secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"] = target_secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"]
@@ -785,15 +785,15 @@ def restore_local(backup_dir, state):
                   [json.dumps(value, indent=2).encode() + b"\n" for value in
                    (source_profile, source_secret, source_runtime, public_client(source_profile["origin"]))])
     operate(state, "check")
-    print("A3 backup restored. Stop maintenance, start the site, and verify existing accounts and results.")
+    print(t("A3 backup restored. Stop maintenance, start the site, and verify existing accounts and results."))
 
 
 def restore_wizard(backup_dir, state):
     verify_backup(backup_dir)
     source = json.loads((safe_state_dir(backup_dir, existing=True) / PROFILE).read_text(encoding="utf-8"))
     if source["route"] != "B2":
-        raise ValueError("A3 restore uses a fresh local database installation; see the A3 guide")
-    print("Use a new empty database and a new private installation folder. No existing database is cleared.")
+        raise ValueError(t("A3 restore uses a fresh local database installation; see the A3 guide"))
+    print(t("Use a new empty database and a new private installation folder. No existing database is cleared."))
     origin = "https://" + input("New HTTPS website host name: ").strip()
     host = input("New database host from DirectAdmin: ").strip()
     port = int(input("New database port [3306]: ").strip() or "3306")
@@ -823,7 +823,7 @@ def operate(state, action, backup_output=None, email=None):
         node_command(state, "composition/external-database-check-main.js")
     elif action in ("setup", "upgrade"):
         if action == "upgrade":
-            if backup_output is None: raise ValueError("Upgrade requires --backup-output in a new private folder")
+            if backup_output is None: raise ValueError(t("Upgrade requires --backup-output in a new private folder"))
             backup(state, backup_output)
             verify_backup(backup_output)
         # Database updates and reference data run with the migration login (migration.json).
@@ -859,29 +859,29 @@ def operate(state, action, backup_output=None, email=None):
     elif action == "maintenance":
         maintenance(state, profile, runtime)
     elif action == "backup":
-        if backup_output is None: raise ValueError("Choose --backup-output outside the package")
+        if backup_output is None: raise ValueError(t("Choose --backup-output outside the package"))
         backup(state, backup_output)
         verify_backup(backup_output)
     elif action == "verify-backup":
-        if backup_output is None: raise ValueError("Choose --backup-output")
+        if backup_output is None: raise ValueError(t("Choose --backup-output"))
         verify_backup(backup_output)
     elif action == "passenger-config":
-        if profile["route"] != "B2": raise ValueError("Passenger is only for B2")
+        if profile["route"] != "B2": raise ValueError(t("Passenger is only for B2"))
         output = ROOT / "mk8dx-hosted.env.json"
         if output.exists():
             previous = json.loads(output.read_text(encoding="utf-8"))
             receipt = state / "passenger-config.sha256"
             if previous == runtime:
-                print("Passenger configuration unchanged")
+                print(t("Passenger configuration unchanged"))
             elif not receipt.is_file() or hashlib.sha256(output.read_bytes()).hexdigest() != receipt.read_text(encoding="ascii").strip():
-                raise ValueError("Passenger configuration was edited outside the installer")
+                raise ValueError(t("Passenger configuration was edited outside the installer"))
             else:
                 replace_group([output], [json.dumps(runtime, indent=2).encode() + b"\n"])
                 receipt.write_text(hashlib.sha256(output.read_bytes()).hexdigest() + "\n", encoding="ascii")
-                print("Passenger configuration refreshed; restart via DirectAdmin")
+                print(t("Passenger configuration refreshed; restart via DirectAdmin"))
         else:
             write_json(output, runtime)
             os.chmod(output, 0o600)
             (state / "passenger-config.sha256").write_text(hashlib.sha256(output.read_bytes()).hexdigest() + "\n", encoding="ascii")
-            print("Private Passenger configuration written outside public_html")
-    else: raise ValueError("Unknown non-Docker action")
+            print(t("Private Passenger configuration written outside public_html"))
+    else: raise ValueError(t("Unknown non-Docker action"))

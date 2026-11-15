@@ -266,6 +266,9 @@ body.transparent::before { display: none; }
   color: var(--muted-2);
 }
 .cols__race { text-align: center; }
+/* A longer header in another language stays inside its own column (ellipsis) instead of running into the next. */
+.cols span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.cols__pos, .cols__total { white-space: nowrap; }
 .cols__total { text-align: right; }
 /* Emphasise the column the rows are sorted by for the current view, and mute
    the other, so "this race points" vs "running total" can't be confused. */
@@ -626,6 +629,9 @@ body.fixed-grid-view .stage {
 .gridcols span:nth-child(5),
 .gridcols span:last-child { text-align: right; }
 .gridcols__delta { text-align: center; }
+/* A longer header in another language (RU "ОТСТАВАНИЕ") ends in an ellipsis inside its own column instead of
+   running into the next one; the full word is the header's title. */
+.gridcols span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 /* Emphasise the column the rows are sorted by for the current view; mute the
    other so "this race points" and "running total" can never be confused. */
 .gridcard.view-race .gridcols span:nth-child(4),
@@ -878,7 +884,10 @@ body.viewctl-awake .viewctl__gear,
   .gridrow { flex: none; height: 40px; }
   .gridcols,
   .gridrow { grid-template-columns: 24px 16px minmax(0, 1fr) 46px 34px 40px; gap: 5px; }
-  .gridcols { padding: 8px 12px 6px; }
+  /* Phone-width headers: smaller and without letter spacing so the short headers fit their narrow columns;
+     the +/- glyph may reach into the gap beside its 16px column. */
+  .gridcols { padding: 8px 12px 6px; font-size: 10px; letter-spacing: 0; }
+  .gridcols span.gridcols__delta { overflow: visible; }
   .gridrows { padding: 0 8px 10px; }
   .gridrow { padding: 4px 8px; }
   .gridrow__rank, .gridrow__total { font-size: 18px; }

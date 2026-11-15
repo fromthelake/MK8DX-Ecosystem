@@ -127,6 +127,26 @@ in `TournamentTools.config.cmd` su quel file. Da un clone, `python -m tournament
 il Tournament Processor e le sue risorse di riconoscimento sono installati; richiede PySide6 (l'extra `gui` del processor) e
 altrimenti, o con `--classic-gui`, apre una finestra Tkinter più semplice.
 
+### Il tabellone live per il pubblico e OBS
+
+**Apri il tabellone live** (un gruppo alla volta) e **Apri il tabellone fisso di tutti i feed** in Tournament Live aprono
+la dashboard per il pubblico; aggiungi lo stesso URL come sorgente Browser in OBS. Tre impostazioni di visualizzazione si
+trovano sotto il piccolo ingranaggio in basso a destra (compare quando muovi il mouse; OBS non lo mostra):
+
+- **Lingua**: i testi propri della dashboard (intestazioni, didascalie, stato, questo pannello) in una delle 15 lingue del
+  gioco. *Lingua del browser* (predefinita) segue il browser e ripiega sull'inglese. I nomi dei percorsi e la lingua della
+  console letta da Tournament Live sono separati.
+- **Tabellone**: *Automatico* (predefinito) alterna dopo ogni gara il risultato dell'ultima gara e la classifica generale.
+  *Solo classifica generale* tiene la classifica generale sullo schermo; contiene solo gare confermate e la didascalia dice
+  fino a quale gara, per esempio *dopo la gara 7 di 12 · gara 8 in attesa di conferma*.
+- **Nomi dei percorsi**: *Inglese + olandese* (predefinito) o una delle 15 lingue del gioco, solo per i nomi di percorsi e
+  coppe. Non cambia la lingua della console letta da Tournament Live.
+
+Il browser ricorda la scelta. Per OBS aggiungila all'URL: `?lang=de` (testi della dashboard), `?scoreboard=overall`,
+`?trackLang=ja` (o una locale completa come `zh-TW`, `es-419`), insieme per esempio
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` nasconde l'ingranaggio anche in
+un normale browser.
+
 ### Collegarsi al sito (facoltativo)
 
 In PowerShell, nella cartella del pacchetto:
