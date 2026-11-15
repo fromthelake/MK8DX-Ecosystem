@@ -160,7 +160,14 @@ function evidenceRecordCard(
     card.append(block);
   }
   const uploaderDelegation = activeLiveCaptureDelegation(delegations, evidence.uploadedBy.userAccountId, nowMs);
-  if (evidence.live?.status === "requested") {
+  const withdrawnAtMs = evidence.live?.withdrawnAtMs ?? null;
+  if (evidence.live?.status === "requested" && withdrawnAtMs !== null) {
+    // The server refuses every roster match on a withdrawn feed, delegated or not, until the Director reopens it.
+    status.textContent = localized(
+      `You withdrew this live feed on ${delegationMoment(withdrawnAtMs)}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.`,
+      `Je hebt deze live-feed op ${delegationMoment(withdrawnAtMs)} teruggetrokken. Hij blijft van de openbare weergave: geen rostermatch of capturedelegatie opent hem opnieuw. Bevestig hieronder de live-koppeling om hem terug te zetten.`,
+    );
+  } else if (evidence.live?.status === "requested") {
     status.textContent = uploaderDelegation === null
       ? localized(
         "Waiting for the Director. Nothing is public yet: a roster match alone never opens a live feed. Confirm the live routing below, or delegate live capture for this night to this account.",
@@ -224,7 +231,7 @@ function evidenceRecordCard(
     card.append(liveButton);
   }
   // F05: the Director's shortcut for the capture operator whose feed waits here.
-  if (evidence.live?.status === "requested" && delegations !== null && uploaderDelegation === null) {
+  if (evidence.live?.status === "requested" && withdrawnAtMs === null && delegations !== null && uploaderDelegation === null) {
     const delegateButton = document.createElement("button");
     delegateButton.type = "button";
     delegateButton.className = "tt-auth__button";

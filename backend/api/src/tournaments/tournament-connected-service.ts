@@ -165,6 +165,11 @@ export interface TournamentLiveAssociation {
   approvedAtMs: number | null;
   stoppedAtMs: number | null;
   completedAtMs: number | null;
+  /**
+   * When the Director took this feed off the public view, until the Director
+   * opens it again. While set, no roster match or capture delegation reopens it.
+   */
+  withdrawnAtMs: number | null;
 }
 
 export interface PublicTournamentLiveGroup {

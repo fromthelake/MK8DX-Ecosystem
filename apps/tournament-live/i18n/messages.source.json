@@ -164,8 +164,8 @@
    ]
   },
   {
-   "key": "Check card → group before Start. After race 1 a strong name match may open View; scores count only after Player matching and group review after Stop.",
-   "nl": "Controleer kaart → groep vóór START. Na race 1 kan een sterke naammatch View openen; scores tellen pas na Player-koppeling en groepscontrole na STOP.",
+   "key": "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.",
+   "nl": "Controleer kaart → groep vóór START. Na race 1 opent een sterke naammatch View alleen als de toernooileider de live-capture aan dit account heeft gedelegeerd (of het is van de toernooileider of een beheerder); anders wacht de feed op de toernooileider. Scores tellen pas na Player-koppeling en groepscontrole na STOP.",
    "places": [
     "qt_app.py:924"
    ]

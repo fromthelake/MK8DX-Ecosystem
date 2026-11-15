@@ -81,6 +81,7 @@ interface EvidenceRow extends RowDataPacket {
   live_approved_at_ms: number | null;
   live_stopped_at_ms: number | null;
   live_completed_at_ms: number | null;
+  live_withdrawn_at_ms: number | null;
   created_at_ms: number;
   updated_at_ms: number;
 }
@@ -122,6 +123,7 @@ function mapEvidence(row: EvidenceRow): TournamentEvidenceRecord {
     approvedAtMs: row.live_approved_at_ms,
     stoppedAtMs: row.live_stopped_at_ms,
     completedAtMs: row.live_completed_at_ms,
+    withdrawnAtMs: row.live_withdrawn_at_ms === null ? null : Number(row.live_withdrawn_at_ms),
   };
   return {
     recordId: row.public_id,
@@ -240,7 +242,7 @@ const evidenceProjection = `
          linked.public_id AS linked_tournament_public_id,
          evidence.live_status, evidence.live_mappings_json,
          evidence.live_approved_at_ms, evidence.live_stopped_at_ms,
-         evidence.live_completed_at_ms,
+         evidence.live_completed_at_ms, evidence.live_withdrawn_at_ms,
          evidence.created_at_ms, evidence.updated_at_ms
     FROM tournament_evidence_records evidence
     JOIN user_accounts uploader

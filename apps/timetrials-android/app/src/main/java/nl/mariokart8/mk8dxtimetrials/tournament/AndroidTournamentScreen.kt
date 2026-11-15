@@ -3479,7 +3479,12 @@ private fun EvidenceRecordsCard(
     Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         SectionTitle("Available Tournament Live recordings (${records.size})")
         Text(
-            "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
+            // The web's wording (tournament-incoming-section.ts): a roster match alone opens nothing (F05).
+            androidText(
+                LocalAndroidProductLanguage.current,
+                "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 opens the public View automatically only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores still wait for your Player and full group review after Stop.",
+                "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 opent de openbare View alleen automatisch voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
+            ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
         )
@@ -3519,11 +3524,12 @@ private fun EvidenceRecordCard(
     var localError by remember(record.recordId, record.revision) { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
     val timeFormat = remember { java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT) }
+    val cardLanguage = LocalAndroidProductLanguage.current
     Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(15.dp)) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
             Text("Tournament Live · ${record.uploadedBy.displayName}", fontWeight = FontWeight.Black)
             Text(
-                "Recording ${record.startedAtMs?.let { timeFormat.format(Date(it)) } ?: "start unknown"} – ${record.stoppedAtMs?.let { timeFormat.format(Date(it)) } ?: "stop unknown"} · ${record.resultCount} races",
+                "Recording ${record.startedAtMs?.let { timeFormat.format(Date(it)) } ?: androidText(cardLanguage, "start unknown", "start onbekend")} – ${record.stoppedAtMs?.let { timeFormat.format(Date(it)) } ?: androidText(cardLanguage, "stop unknown", "stop onbekend")} · ${record.resultCount} races",
                 style = MaterialTheme.typography.bodySmall,
             )
             Text(
@@ -3561,14 +3567,33 @@ private fun EvidenceRecordCard(
             when (record.live?.status) {
                 "requested" -> Text(
                     androidRequestedLiveFeedText(
-                        LocalAndroidProductLanguage.current,
+                        cardLanguage,
                         androidActiveLiveCaptureDelegation(delegations, record.uploadedBy.userAccountId, nowMs),
+                        withdrawnAtMs = record.live.withdrawnAtMs,
                     ),
                     color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold,
                 )
-                "active" -> Text("Live now · public viewers see in-game names and Total. Player linking follows after Stop.", color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold)
-                "stopping" -> Text("Stop received · waiting for the final upload.", color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold)
-                "complete" -> Text("Live feed complete · check final totals, then link the observed names to Players.", color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold)
+                // The web's wording (tournament-incoming-section.ts), so every catalog translates it.
+                "active" -> Text(
+                    androidText(
+                        cardLanguage,
+                        "Live now: public viewers see in-game names and Total. Player linking follows after Stop.",
+                        "Nu live: openbare kijkers zien ingamenamen en Total. Player-koppeling volgt na Stop.",
+                    ),
+                    color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold,
+                )
+                "stopping" -> Text(
+                    androidText(cardLanguage, "Stop received; waiting for the final upload.", "Stop ontvangen; de laatste upload wordt afgewacht."),
+                    color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold,
+                )
+                "complete" -> Text(
+                    androidText(
+                        cardLanguage,
+                        "Live feed complete. Check the final totals, then link the observed names to Players.",
+                        "Live-feed voltooid. Controleer de eindtotalen en koppel daarna de waargenomen namen aan Players.",
+                    ),
+                    color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold,
+                )
             }
             if (record.live != null && record.live.status != "invalidated") {
                 Button(
@@ -3579,12 +3604,19 @@ private fun EvidenceRecordCard(
                         scope.launch {
                             runCatching { withContext(Dispatchers.IO) {
                                 client.approveLiveAssociation(document.summary.tournamentId, record, mappings, phase)
-                            } }.onSuccess { onChanged() }.onFailure { localError = "The live group routing could not be saved." }
+                            } }.onSuccess { onChanged() }.onFailure {
+                                localError = androidText(cardLanguage, "The live routing could not be saved.", "De live-routering kon niet worden opgeslagen.")
+                            }
                             linking = false
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text(if (record.live.status == "requested") "Confirm live routing manually" else "Repair live group links") }
+                ) {
+                    Text(
+                        if (record.live.status == "requested") androidText(cardLanguage, "Confirm live routing manually", "Live-koppeling handmatig bevestigen")
+                        else androidText(cardLanguage, "Repair live group links", "Live-groepskoppelingen herstellen"),
+                    )
+                }
             }
             if (record.status != "uploading" && record.status != "blocked") {
                 Button(

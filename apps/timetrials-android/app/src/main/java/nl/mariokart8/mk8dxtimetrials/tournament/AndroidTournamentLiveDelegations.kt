@@ -116,12 +116,26 @@ internal fun androidLiveDelegationState(
     else androidText(language, "active until $until", "actief tot $until")
 }
 
-/** The "requested" line of a waiting live feed: waiting for the Director, or already delegated. */
+/**
+ * The "requested" line of a waiting live feed: withdrawn by the Director (the
+ * server then refuses every roster match, delegated or not, until the Director
+ * reopens it), waiting for the Director, or already delegated.
+ */
 internal fun androidRequestedLiveFeedText(
     language: AndroidProductLanguage,
     uploaderDelegation: AndroidLiveCaptureDelegation?,
     moment: (Long) -> String = ::androidDelegationMoment,
+    withdrawnAtMs: Long? = null,
 ): String {
+    if (withdrawnAtMs != null) {
+        val at = moment(withdrawnAtMs)
+        // The web's wording (tournament-incoming-section.ts), so every catalog translates it.
+        return androidText(
+            language,
+            "You withdrew this live feed on $at. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.",
+            "Je hebt deze live-feed op $at teruggetrokken. Hij blijft van de openbare weergave: geen rostermatch of capturedelegatie opent hem opnieuw. Bevestig hieronder de live-koppeling om hem terug te zetten.",
+        )
+    }
     if (uploaderDelegation == null) {
         return androidText(
             language,
@@ -155,7 +169,10 @@ internal fun LiveFeedDelegationActions(
     var status by remember(record.recordId, record.revision) { mutableStateOf<String?>(null) }
     var failed by remember(record.recordId, record.revision) { mutableStateOf(false) }
     val uploaderDelegation = androidActiveLiveCaptureDelegation(delegations, record.uploadedBy.userAccountId, nowMs)
-    if (record.live?.status == "requested" && delegations != null && uploaderDelegation == null) {
+    // A withdrawn feed stays private whatever the delegation says, so the shortcut would not open it.
+    if (record.live?.status == "requested" && record.live.withdrawnAtMs == null && delegations != null &&
+        uploaderDelegation == null
+    ) {
         OutlinedButton(
             enabled = !busy && !acting,
             onClick = {

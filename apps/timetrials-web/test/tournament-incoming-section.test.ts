@@ -68,7 +68,7 @@ function liveRecord(recordId: string, status: "requested" | "active" | "stopping
     suggestedTournamentId: "tournament.synthetic_live", suggestedTournamentName: "Live night",
     linkedTournamentId: null, groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: 2,
     live: {
-      status, approvedAtMs, stoppedAtMs: null, completedAtMs: null,
+      status, approvedAtMs, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null,
       mappings: [{ observedGroupLabel: "Capture Card A", groupId: "tournament_group.live_a", phase: "qualifier" }],
     },
   };
@@ -117,7 +117,7 @@ describe("stale Tournament Live requests", () => {
       liveRecord("evidence.stopping_approved", "stopping", 5),
       liveRecord("evidence.stopping_unapproved", "stopping", null),
     ], () => Response.json({ record: { ...liveRecord("evidence.requested", "requested", null), revision: 4,
-      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null } } }));
+      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null } } }));
     const buttons = dismissButtons(container);
     expect(buttons).toHaveLength(2);
     const first = buttons[0]!;
