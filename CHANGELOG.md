@@ -7,6 +7,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
+- **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
+  runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no
+  reasoned allowlist entry (see Mutating routes, "Checked by a test"). CodeQL's `js/missing-rate-limiting` rule,
+  which could not see the database-backed limiter and raised only false alerts, is the one rule now excluded; all
+  other CodeQL queries still run.
+
 - **One central safe-path check in Python**: Tournament Live, the LiveTrial desktop app and the LiveTrial engine
   now resolve every page-supplied file name through one small helper per product (`safe_paths`), which follows
   links and refuses anything outside its folder. The same names are accepted and refused as before; code scanning

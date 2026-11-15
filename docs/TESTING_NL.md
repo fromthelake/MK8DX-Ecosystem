@@ -28,6 +28,11 @@ git diff --check
 | Openbare herkenningstestset | `node tooling/test-set/score_test_set.mjs` na `npm ci`, `sync-assets` en `npx --prefix apps/timetrials-scanner-web playwright install chromium` voor de scanner ([testset](../packages/assets/test-set/README.md)) |
 | Centrale lezer (`packages/icon-matcher`) | zie hieronder |
 | Databasemigraties en seeds | `python tooling/reference/generate_benchmark_manifest.py --check`, plus de [MySQL-integratietests](#database-integratietests) van de API |
+
+`npm test` van de API bevat `test/request-budget-coverage.test.ts`: die stelt de echte gehoste runtime samen (zonder
+database) en faalt zodra een wijzigende route, of een met verse bevestiging beveiligde leesroute, geen
+verzoekbudget en geen allowlist-regel met reden heeft ([wijzigende routes](architecture/MUTATING_ROUTES.md#checked-by-a-test)).
+Hij vervangt CodeQL-regel `js/missing-rate-limiting`, de enige regel die `.github/codeql/codeql-config.yml` uitsluit.
 | Design tokens (Web en Android) | `node packages/design-tokens/generate.mjs --check` |
 | Installer, privacyscan (`tooling/`) | `python -m unittest discover -s tooling/tests` |
 | Intaketool | `MK8DX_INTAKE_TEST_ROOT=<tijdelijke map buiten de repository> python tooling/test_intake.py -v` |

@@ -192,6 +192,7 @@ export async function registerStepUpRoutes(app: FastifyInstance, options: StepUp
   });
 
   app.post<{ Body: { token: string } }>(STEP_UP_LINK_PATH, {
+    config: { requestBudget: "pre-auth" },
     schema: {
       body: {
         type: "object", additionalProperties: false, required: ["token"],
