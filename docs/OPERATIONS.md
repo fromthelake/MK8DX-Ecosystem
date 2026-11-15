@@ -116,6 +116,13 @@ that folder. On shared hosting the code can only be kept next to the backups, so
 off the host, not the host itself; there the protection is owner-only permissions outside `public_html`. Without
 the code a sealed backup cannot be restored by anyone, including you.
 
+**A new recovery code.** When the code may have been seen by someone else, run
+`python3 tooling/install.py backup-new-code --state-dir <installation>` (on Windows `python`). It prints a new code
+once, stores it the same protected way and the next backups are sealed with it. Backups made before are not
+re-encrypted: they still open only with the old code, so keep that one with them until you delete them. The same
+command works for an A2 home and club installation (its code is the one MK8DX beheer shows; there **Make a new
+recovery code** in MK8DX beheer does the same). An installation without encrypted backups has no code to replace.
+
 **Restore drill.** `tooling/tests/test_backup_restore_drill.py` (opt-in, `MK8DX_BACKUP_DRILL=1`) makes data in a
 disposable MariaDB 11.4 and MySQL 9.7 (B2 code path) and in a real A1 Compose project, runs the scheduled backup,
 wipes the data, restores with the normal restore command and compares every row.

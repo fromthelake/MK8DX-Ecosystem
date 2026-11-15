@@ -543,6 +543,13 @@
    ]
   },
   {
+   "key": "Make a new recovery code",
+   "nl": "Een nieuwe herstelcode maken",
+   "places": [
+    "wizard.js:newCode"
+   ]
+  },
+  {
    "key": "Make card",
    "nl": "Kaart maken",
    "places": [
@@ -599,6 +606,13 @@
    ]
   },
   {
+   "key": "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.",
+   "nl": "Nieuwe back-ups gebruiken vanaf nu deze nieuwe code. Eerder gemaakte back-ups gaan alleen open met de oude code: bewaar dat papier bij die back-ups.",
+   "places": [
+    "wizard.js:newCodeOld"
+   ]
+  },
+  {
    "key": "New card",
    "nl": "Nieuwe kaart",
    "places": [
@@ -652,6 +666,13 @@
    "nl": "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
    "places": [
     "wizard.js:step1Text"
+   ]
+  },
+  {
+   "key": "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.",
+   "nl": "Alleen nodig als iemand anders je code heeft gezien. Je krijgt na Voltooien een nieuwe code; oudere back-ups blijven de oude code nodig hebben.",
+   "places": [
+    "wizard.js:newCodeHint"
    ]
   },
   {

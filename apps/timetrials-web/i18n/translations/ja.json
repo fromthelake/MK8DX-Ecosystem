@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "先にすべてのグループで{0}をすべて入力して保存してください。",
   "Enter another result": "別の記録を入力",
   "Enter coins gained or lost per lap.": "ラップごとに獲得または失ったコインを入力してください。",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "各プレイヤーの合計スコアを入力してください。入力欄を離れるかEnterを押すと表が自動で更新されます。",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "各プレイヤーの合計スコアを入力してください。リストの下のボタンを選ぶと、スコアが保存され表が更新されます。",
   "Enter lap {0} as six digits.": "ラップ{0}を6桁の数字で入力してください。",
   "Enter scores first before exporting.": "エクスポートする前にスコアを入力してください。",
   "Enter the code your app is showing, then decide whether it may use this account.": "アプリに表示されているコードを入力し、そのアプリがこのアカウントを使ってよいか決めてください。",
@@ -6052,6 +6052,11 @@
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "このライブフィードは {0} に取り下げました。公開ビューには表示されません。名簿一致やキャプチャ委任で再び公開されることはありません。戻すには下のライブ割り当てを確認してください。",
   "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前にカード → グループを確認してください。レース 1 の後、強い名前一致で View が開くのは、ディレクターがこのアカウントにライブキャプチャを委任した場合(またはディレクターか管理者のアカウントの場合)だけです。それ以外はフィードがディレクターを待ちます。スコアは STOP 後の Player 照合とグループ確認の後にのみ反映されます。",
   "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "あとで同じ方法で行うこともできます。デスクトップの「MK8DX beheer」をダブルクリックすると、この画面が開きます。",
-  "Check that your app shows the same code.": "アプリに同じコードが表示されていることを確認してください。"
+  "Check that your app shows the same code.": "アプリに同じコードが表示されていることを確認してください。",
+  "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}": "バックアップの新しい復元コード（一度だけ表示されます。書き留めて、このコンピューターから離れた場所に保管してください）: {0}",
+  "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.": "これから作成されるバックアップには、この新しいコードが必要です。以前のバックアップは古いコードでしか開けません。その紙はそれらのバックアップと一緒に保管してください。",
+  "Make a new recovery code": "新しい復元コードを作成する",
+  "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.": "ほかの人にコードを見られた場合にだけ必要です。「完了」の後に新しいコードが表示されます。以前のバックアップには引き続き古いコードが必要です。",
+  "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.": "これからの新しいバックアップには、この新しいコードが使われます。以前のバックアップは古いコードでしか開けません。その紙はそれらのバックアップと一緒に保管してください。"
  }
 }

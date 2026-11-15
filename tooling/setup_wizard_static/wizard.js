@@ -75,6 +75,8 @@ const SOURCE = {
     backups: "Elke nacht een back-up maken", backupsHint: "Versleuteld, in Documenten\\MK8DX-backups. De laatste 7 blijven bewaard.",
     recoveryLead: "Bewaar deze herstelcode goed (opschrijven of afdrukken). Je hebt hem alleen nodig om een back-up op een andere computer terug te zetten.",
     recoveryTitle: "MK8DX herstelcode", recoveryText: "Zonder deze code is een back-up niet te openen. Hij wordt maar één keer getoond.",
+    newCode: "Een nieuwe herstelcode maken", newCodeHint: "Alleen nodig als iemand anders je code heeft gezien. Je krijgt na Voltooien een nieuwe code; oudere back-ups blijven de oude code nodig hebben.",
+    newCodeOld: "Nieuwe back-ups gebruiken vanaf nu deze nieuwe code. Eerder gemaakte back-ups gaan alleen open met de oude code: bewaar dat papier bij die back-ups.",
     manageTitle: "MK8DX beheer", manageLead: "Mensen toevoegen en inlogkaarten maken.",
     finished: "Je kunt dit venster nu sluiten.",
     restoreOffer: "Een back-up terugzetten", restoreOfferHint: "Nieuwe computer? Zet je MK8DX met al je mensen, tijden en toernooien terug uit een back-up. Je hebt de herstelcode nodig.",
@@ -170,6 +172,8 @@ const SOURCE = {
     backups: "Make a backup every night", backupsHint: "Encrypted, in Documents\\MK8DX-backups. The newest 7 are kept.",
     recoveryLead: "Keep this recovery code safe (write it down or print it). You only need it to restore a backup on another computer.",
     recoveryTitle: "MK8DX recovery code", recoveryText: "A backup cannot be opened without this code. It is shown only once.",
+    newCode: "Make a new recovery code", newCodeHint: "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.",
+    newCodeOld: "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.",
     manageTitle: "MK8DX administration", manageLead: "Add people and make sign-in cards.",
     finished: "You can close this window now.",
     restoreOffer: "Restore a backup", restoreOfferHint: "New computer? Bring MK8DX back with all your people, times and tournaments from a backup. You need the recovery code.",
@@ -589,9 +593,17 @@ const views = {
     };
     const options = el("div", "list");
     const windows = (status.platform || "windows") === "windows";
+    // The texts name the Windows folder (Documents\MK8DX-backups, with the localized folder name). Linux and macOS
+    // keep the backups in ~/Documents/MK8DX-backups, whatever the language (auto_backup.default_backup_root).
+    const backupsHint = windows ? T.backupsHint : T.backupsHint.replace(/[^\s、，,。（(「“]*\\MK8DX-backups/u,"~/Documents/MK8DX-backups");
     options.append(option("autostart", windows ? T.autostart : T.autostartOther, windows ? T.autostartHint : T.autostartOtherHint),
-      option("backups", T.backups, T.backupsHint),
+      option("backups", T.backups, backupsHint),
       option("shortcut", T.shortcut));
+    if (status.recoveryCode && !state.restoring) {
+      // Off by default: a new code is for when the old one was seen by someone else (see the manual, chapter 4).
+      const fresh = option("newcode", T.newCode, T.newCodeHint); fresh.querySelector("input").checked = false;
+      options.append(fresh);
+    }
     main.replaceChildren(el("h1", "", T.doneTitle), el("p", "lead", T.doneLead), list, options, el("p", "muted", T.doneManage));
     if (state.restoring) main.append(el("p", "muted", T.restoreReconnect));
     setButtons({ next: T.finish });
@@ -633,7 +645,8 @@ const actions = {
     let result = {};
     try {
       result = await api("/api/finish", { shortcut: $("shortcut")?.checked !== false,
-        autostart: $("autostart")?.checked !== false, backups: $("backups")?.checked !== false });
+        autostart: $("autostart")?.checked !== false, backups: $("backups")?.checked !== false,
+        newCode: $("newcode")?.checked === true });
     } catch (error) { main.append(errorBox(error.message)); }
     main.replaceChildren(el("h1", "", T.doneTitle));
     if (typeof result.autostart === "string" && result.autostart.startsWith("manual: ")) {
@@ -644,6 +657,7 @@ const actions = {
       const card = el("div", "person recovery");
       card.append(el("h3", "", T.recoveryTitle), el("div", "short-code", result.recoveryCode),
         el("div", "muted", T.recoveryText), el("div", "muted mono", result.folder || ""));
+      if (result.recoveryCodeRotated) card.append(el("div", "muted", T.newCodeOld));
       const printBtn = el("button", "secondary small no-print", T.print); printBtn.type = "button";
       printBtn.addEventListener("click", () => window.print()); card.append(printBtn);
       main.append(el("p", "lead", T.recoveryLead), card);

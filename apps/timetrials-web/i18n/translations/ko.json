@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "먼저 모든 그룹의 {0}을(를) 입력하고 저장하세요.",
   "Enter another result": "다른 결과 입력",
   "Enter coins gained or lost per lap.": "랩별로 얻거나 잃은 코인을 입력하세요.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "각 플레이어의 총점을 입력하세요. 입력란을 벗어나거나 Enter를 누르면 표가 자동으로 업데이트돼요.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "각 플레이어의 총점을 입력하세요. 목록 아래의 버튼을 선택하면 점수가 저장되고 표가 업데이트돼요.",
   "Enter lap {0} as six digits.": "{0}랩을 숫자 6자리로 입력하세요.",
   "Enter scores first before exporting.": "내보내기 전에 먼저 점수를 입력하세요.",
   "Enter the code your app is showing, then decide whether it may use this account.": "앱에 표시된 코드를 입력한 다음 이 계정 사용을 허용할지 결정하세요.",
@@ -6052,6 +6052,11 @@
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "{0}에 이 라이브 피드를 철회했습니다. 공개 보기에서 계속 제외됩니다. 명단 일치나 캡처 위임으로 다시 열리지 않습니다. 되돌리려면 아래에서 라이브 연결을 확인하세요.",
   "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 전에 카드 → 그룹을 확인하세요. 레이스 1 이후 강한 이름 일치는 디렉터가 이 계정에 라이브 캡처를 위임한 경우(또는 디렉터나 관리자의 계정인 경우)에만 View를 엽니다. 그렇지 않으면 피드가 디렉터를 기다립니다. 점수는 STOP 후 Player 매칭과 그룹 검토가 끝나야 반영됩니다.",
   "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "나중에 똑같은 방법으로 할 수도 있어요. 바탕 화면의 'MK8DX beheer'를 두 번 클릭하면 이 화면이 열려요.",
-  "Check that your app shows the same code.": "앱에 같은 코드가 표시되는지 확인하세요."
+  "Check that your app shows the same code.": "앱에 같은 코드가 표시되는지 확인하세요.",
+  "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}": "백업의 새 복구 코드(한 번만 표시됩니다. 적어 두고 이 컴퓨터와 떨어진 곳에 보관하세요): {0}",
+  "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.": "지금부터 만드는 백업에는 이 새 코드가 필요해요. 이전 백업은 예전 코드로만 열려요. 그 종이는 해당 백업과 함께 보관하세요.",
+  "Make a new recovery code": "새 복구 코드 만들기",
+  "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.": "다른 사람이 코드를 본 경우에만 필요해요. 마침을 누르면 새 코드를 받아요. 이전 백업에는 계속 예전 코드가 필요해요.",
+  "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.": "이제부터 새 백업은 이 새 코드를 사용해요. 이전 백업은 예전 코드로만 열려요. 그 종이는 해당 백업과 함께 보관하세요."
  }
 }

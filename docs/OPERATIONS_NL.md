@@ -122,6 +122,14 @@ staan; verzegelen beschermt daar kopieën buiten de host, niet de host zelf. Daa
 alleen-eigenaar-rechten buiten `public_html`. Zonder de code kan niemand een verzegelde back-up herstellen, jij ook
 niet.
 
+**Een nieuwe herstelcode.** Kan iemand anders de code gezien hebben, voer dan
+`python3 tooling/install.py backup-new-code --state-dir <installatie>` uit (op Windows `python`). Dat toont één keer
+een nieuwe code, bewaart hem op dezelfde beschermde manier, en de volgende back-ups worden ermee verzegeld. Eerder
+gemaakte back-ups worden niet opnieuw versleuteld: die gaan alleen open met de oude code, dus bewaar die erbij tot je
+ze weggooit. Dezelfde opdracht werkt voor een A2-installatie voor thuis en de club (de code die MK8DX beheer toont;
+daar doet **Een nieuwe herstelcode maken** in MK8DX beheer hetzelfde). Een installatie zonder versleutelde back-ups
+heeft geen code om te vervangen.
+
 **Hersteloefening.** `tooling/tests/test_backup_restore_drill.py` (vrijwillig, `MK8DX_BACKUP_DRILL=1`) maakt
 gegevens in een wegwerp-MariaDB 11.4 en -MySQL 9.7 (B2-codepad) en in een echt A1-Compose-project, draait de
 geplande back-up, wist de gegevens, herstelt met de gewone herstelopdracht en vergelijkt elke rij.

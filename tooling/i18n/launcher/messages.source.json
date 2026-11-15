@@ -419,6 +419,13 @@
    ]
   },
   {
+   "key": "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.",
+   "nl": "Back-ups die vanaf nu worden gemaakt hebben deze nieuwe code nodig. Eerder gemaakte back-ups gaan alleen open met de oude code: bewaar dat papier bij die back-ups.",
+   "places": [
+    "scheduled_backup.py:937"
+   ]
+  },
+  {
    "key": "CA maintenance applies only to offline LAN",
    "nl": "CA-onderhoud geldt alleen voor offline LAN",
    "places": [
@@ -682,7 +689,7 @@
    "key": "Does your host already make daily account backups (for example DirectAdmin or JetBackup)? Then you may say no. An own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support.",
    "nl": "Maakt je hostingpartij al dagelijks back-ups van je account (bijvoorbeeld DirectAdmin of JetBackup)? Dan mag je nee zeggen. Met een eigen back-up zet je gisteren nog steeds zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten.",
    "places": [
-    "scheduled_backup.py:842"
+    "scheduled_backup.py:880"
    ]
   },
   {
@@ -1045,7 +1052,7 @@
    "key": "Keep this window open until you click Finish.",
    "nl": "Laat dit venster open tot je op Voltooien klikt.",
    "places": [
-    "setup_wizard.py:784"
+    "setup_wizard.py:795"
    ]
   },
   {
@@ -1277,7 +1284,7 @@
    "key": "MK8DX can make its own checked backup of the database and the site's keys every night: about 3 MB a day compressed, 14 days and 4 weeks are kept, at most 1 GB, outside public_html.",
    "nl": "MK8DX kan elke nacht zelf een gecontroleerde back-up maken van de database en de sleutels van de site: ongeveer 3 MB per dag gecomprimeerd, 14 dagen en 4 weken worden bewaard, hooguit 1 GB, buiten public_html.",
    "places": [
-    "scheduled_backup.py:840"
+    "scheduled_backup.py:878"
    ]
   },
   {
@@ -1315,7 +1322,7 @@
    "key": "MK8DX setup is open in your browser: {0}",
    "nl": "De MK8DX-installatie staat open in je browser: {0}",
    "places": [
-    "setup_wizard.py:783"
+    "setup_wizard.py:794"
    ]
   },
   {
@@ -1336,21 +1343,21 @@
    "key": "MK8DX update FAILED: {0}. Nothing after the failed step was changed; see the details in the browser.",
    "nl": "MK8DX-update MISLUKT: {0}. Na de mislukte stap is niets gewijzigd; bekijk de details in de browser.",
    "places": [
-    "setup_wizard.py:286"
+    "setup_wizard.py:289"
    ]
   },
   {
    "key": "MK8DX update completed: {0} -> {1} in {2} s. Backup from just before: {3}",
    "nl": "MK8DX-update voltooid: {0} -> {1} in {2} s. Back-up van vlak ervoor: {3}",
    "places": [
-    "setup_wizard.py:282"
+    "setup_wizard.py:285"
    ]
   },
   {
    "key": "MK8DX update started: {0} -> {1}",
    "nl": "MK8DX-update gestart: {0} -> {1}",
    "places": [
-    "setup_wizard.py:257"
+    "setup_wizard.py:260"
    ]
   },
   {
@@ -1400,7 +1407,7 @@
    "key": "Make and check a backup automatically every night? [Y/n]: ",
    "nl": "Elke nacht automatisch een gecontroleerde back-up maken? [J/n]: ",
    "places": [
-    "scheduled_backup.py:846"
+    "scheduled_backup.py:884"
    ]
   },
   {
@@ -1477,6 +1484,13 @@
    ]
   },
   {
+   "key": "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}",
+   "nl": "Nieuwe herstelcode voor de back-ups (wordt maar één keer getoond; schrijf hem op en bewaar hem niet bij deze computer): {0}",
+   "places": [
+    "scheduled_backup.py:935"
+   ]
+  },
+  {
    "key": "Next: open XAMPP Control Panel and click Start next to Apache.",
    "nl": "Volgende stap: open XAMPP Control Panel en klik op Start naast Apache.",
    "places": [
@@ -1494,15 +1508,15 @@
    "key": "Nightly automatic backup could not be switched on: {0}. Your installation is fine; see the backup chapter of the guide.",
    "nl": "De nachtelijke automatische back-up kon niet worden aangezet: {0}. Je installatie is in orde; zie het hoofdstuk over back-ups in de handleiding.",
    "places": [
-    "scheduled_backup.py:860",
-    "scheduled_backup.py:872"
+    "scheduled_backup.py:898",
+    "scheduled_backup.py:910"
    ]
   },
   {
    "key": "Nightly automatic backup is on: {0}. Turn it off with: {1}",
    "nl": "Nachtelijke automatische back-up staat aan: {0}. Uitzetten met: {1}",
    "places": [
-    "scheduled_backup.py:831"
+    "scheduled_backup.py:869"
    ]
   },
   {
@@ -3038,7 +3052,7 @@
    "key": "Write down this backup recovery code and keep it away from this computer: {0}",
    "nl": "Schrijf deze herstelcode voor de back-ups op en bewaar hem niet op deze computer: {0}",
    "places": [
-    "scheduled_backup.py:834"
+    "scheduled_backup.py:872"
    ]
   },
   {
@@ -3089,7 +3103,7 @@
    "key": "earlier version",
    "nl": "eerdere versie",
    "places": [
-    "setup_wizard.py:256"
+    "setup_wizard.py:259"
    ]
   },
   {
@@ -3149,7 +3163,7 @@
    "key": "this folder",
    "nl": "deze map",
    "places": [
-    "setup_wizard.py:256"
+    "setup_wizard.py:259"
    ]
   },
   {
