@@ -603,6 +603,19 @@ function pendingCard(
   };
 }
 
+/** How often the visible Step 5/9 view re-reads the capture delegations. */
+export const LIVE_DELEGATION_REFRESH_MS = 30_000;
+
+/** What the delegation panel shows: each delegation, and whether it is still in force. */
+export function liveCaptureDelegationSignature(
+  delegations: readonly TournamentLiveCaptureDelegation[] | null,
+  nowMs: number,
+): string {
+  if (delegations === null) return "unavailable";
+  return delegations.map((delegation) => `${delegation.delegationId}:${delegation.status}:` +
+    `${delegation.status === "active" && delegation.expiresAtMs > nowMs ? "in-force" : "ended"}`).join("|");
+}
+
 export async function mountTournamentIncomingSection(options: MountOptions): Promise<void> {
   const { document, container, tournament } = options;
   const section = document.createElement("section");
@@ -790,6 +803,12 @@ export async function mountTournamentIncomingSection(options: MountOptions): Pro
     const slowPeriodMs = 20_000;
     const quietPollsBeforeBackOff = 6;
     let quietPolls = 0;
+    // The delegation panel refreshes on the same visible-only loop, but at most
+    // every 30 s: a delegation that expires or is issued or revoked elsewhere
+    // (another Director tab, the app) shows up without a reload. A failed read
+    // keeps what the panel shows.
+    let delegationSignature = liveCaptureDelegationSignature(delegations, nowMs);
+    let delegationsReadAtMs = nowMs;
     let timer: ReturnType<typeof globalThis.setTimeout> | undefined;
     let stopped = false;
     const periodMs = (): number =>
@@ -802,10 +821,25 @@ export async function mountTournamentIncomingSection(options: MountOptions): Pro
       if (stopped) { return; }
       if (globalThis.document?.visibilityState === "hidden") { schedule(); return; }
       try {
-        const [latest, latestRecords] = await Promise.all([
+        const readDelegations = Date.now() - delegationsReadAtMs >= LIVE_DELEGATION_REFRESH_MS;
+        const [latest, latestRecords, latestDelegations] = await Promise.all([
           client.list(tournament.summary.tournamentId, options.signal),
           client.listEvidenceRecords(tournament.summary.tournamentId, options.signal),
+          readDelegations
+            ? client.listLiveCaptureDelegations(tournament.summary.tournamentId, options.signal).catch(() => undefined)
+            : Promise.resolve(undefined),
         ]);
+        if (readDelegations) {
+          delegationsReadAtMs = Date.now();
+          const nextDelegations = latestDelegations === undefined ? delegationSignature
+            : liveCaptureDelegationSignature(latestDelegations, delegationsReadAtMs);
+          if (nextDelegations !== delegationSignature) {
+            delegationSignature = nextDelegations;
+            quietPolls = 0;
+            await options.onChanged();
+            return;
+          }
+        }
         const next = [
           ...latest.filter((result) => result.status === "pending" &&
             (result.suggestedPhase === null || result.suggestedPhase === activeStage))

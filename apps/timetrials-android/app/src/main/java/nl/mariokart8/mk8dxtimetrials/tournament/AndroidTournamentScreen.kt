@@ -3442,8 +3442,27 @@ private fun EvidenceRecordsCard(
 ) {
     var records by remember(document.summary.tournamentId) { mutableStateOf<List<AndroidTournamentEvidenceRecord>>(emptyList()) }
     var error by remember(document.summary.tournamentId) { mutableStateOf<String?>(null) }
+    // F05: the night's capture delegations, re-read every 30 s while resumed and
+    // at once after a write here. null with delegationsRead = the read failed.
+    var delegations by remember(document.summary.tournamentId) { mutableStateOf<List<AndroidLiveCaptureDelegation>?>(null) }
+    var delegationsRead by remember(document.summary.tournamentId) { mutableStateOf(false) }
+    var nowMs by remember(document.summary.tournamentId) { mutableStateOf(System.currentTimeMillis()) }
+    var refresh by remember(document.summary.tournamentId) { mutableIntStateOf(0) }
+    val changed: () -> Unit = { refresh += 1; onChanged() }
     val recordingsLifecycle = LocalLifecycleOwner.current.lifecycle
-    LaunchedEffect(document.summary.tournamentId) {
+    LaunchedEffect(document.summary.tournamentId, refresh) {
+        recordingsLifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            while (true) {
+                runCatching { withContext(Dispatchers.IO) { client.liveCaptureDelegations(document.summary.tournamentId) } }
+                    // A failed re-read keeps what the panel shows; only a failed first read says so.
+                    .onSuccess { delegations = it }
+                delegationsRead = true
+                nowMs = System.currentTimeMillis()
+                delay(ANDROID_LIVE_DELEGATION_REFRESH_MS)
+            }
+        }
+    }
+    LaunchedEffect(document.summary.tournamentId, refresh) {
         recordingsLifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
             var quietPolls = 0
             while (true) {
@@ -3467,7 +3486,10 @@ private fun EvidenceRecordsCard(
         if (records.isEmpty() && error == null) EmptyCard("No completed recording is available yet.")
         error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         records.forEach { record ->
-            EvidenceRecordCard(document, record, busy, client, onChanged)
+            EvidenceRecordCard(document, record, delegations, nowMs, busy, client, changed)
+        }
+        if (delegationsRead) {
+            LiveCaptureDelegationsPanel(document.summary.tournamentId, records, delegations, nowMs, busy, client, changed)
         }
     }
 }
@@ -3476,6 +3498,8 @@ private fun EvidenceRecordsCard(
 private fun EvidenceRecordCard(
     document: AndroidTournamentDocument,
     record: AndroidTournamentEvidenceRecord,
+    delegations: List<AndroidLiveCaptureDelegation>?,
+    nowMs: Long,
     busy: Boolean,
     client: AndroidTournamentClient,
     onChanged: () -> Unit,
@@ -3535,7 +3559,13 @@ private fun EvidenceRecordCard(
                 Text("Linked · races remain available. Update these group links after changing the layout.", color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold)
             }
             when (record.live?.status) {
-                "requested" -> Text("Waiting for race names to verify every sticker-to-group link. Nothing is public yet; confirm manually only as a fallback.", color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold)
+                "requested" -> Text(
+                    androidRequestedLiveFeedText(
+                        LocalAndroidProductLanguage.current,
+                        androidActiveLiveCaptureDelegation(delegations, record.uploadedBy.userAccountId, nowMs),
+                    ),
+                    color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold,
+                )
                 "active" -> Text("Live now · public viewers see in-game names and Total. Player linking follows after Stop.", color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold)
                 "stopping" -> Text("Stop received · waiting for the final upload.", color = Mk8dxDesignTheme.colors.statusWarning, fontWeight = FontWeight.Bold)
                 "complete" -> Text("Live feed complete · check final totals, then link the observed names to Players.", color = Mk8dxDesignTheme.colors.statusSuccess, fontWeight = FontWeight.Bold)
@@ -3572,6 +3602,7 @@ private fun EvidenceRecordCard(
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text(if (record.status == "linked") "Update reviewed group links" else "Link reviewed recording") }
             }
+            LiveFeedDelegationActions(document.summary.tournamentId, record, delegations, nowMs, busy, client, onChanged)
             localError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
         }
     }

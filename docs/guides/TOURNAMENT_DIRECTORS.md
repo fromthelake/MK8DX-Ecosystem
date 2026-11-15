@@ -200,6 +200,8 @@ then the website shows *Waiting for the Director* on the run, and Tournament Liv
   stay for your review.
 - **Withdraw a feed:** choose **Withdraw this live feed** on a public run and click again to confirm. Its races stay;
   only you can open it again with **Confirm live routing manually**, a roster match cannot.
+- **In the app:** the MK8DX Android app shows the same **Live capture delegations** panel, waiting-run shortcut and
+  withdrawal (tap twice) in the night's Step 5/9 view.
 
 ### Connect later
 

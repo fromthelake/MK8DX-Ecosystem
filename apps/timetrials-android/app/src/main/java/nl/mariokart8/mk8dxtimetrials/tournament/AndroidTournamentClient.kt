@@ -526,6 +526,45 @@ private data class AndroidTournamentEvidenceResponse(
     val records: List<AndroidTournamentEvidenceRecord>,
 )
 
+/**
+ * F05: one capture delegation for one night, exactly as the native routes
+ * serve it (nativeLiveCaptureDelegationListSchema in the API). An active
+ * delegation whose expiry has passed no longer opens a feed.
+ */
+@Serializable
+internal data class AndroidLiveCaptureDelegation(
+    val delegationId: String,
+    val tournamentId: String,
+    val delegateUserAccountId: String,
+    val delegateDisplayName: String,
+    val status: String,
+    val reason: String,
+    val grantedByUserAccountId: String,
+    val grantedAtMs: Long,
+    val expiresAtMs: Long,
+    val revokedByUserAccountId: String? = null,
+    val revokeReason: String? = null,
+    val revokedAtMs: Long? = null,
+) {
+    fun inForce(nowMs: Long): Boolean = status == "active" && expiresAtMs > nowMs
+}
+
+@Serializable
+private data class AndroidLiveCaptureDelegationsResponse(
+    val schemaVersion: String,
+    val delegations: List<AndroidLiveCaptureDelegation>,
+)
+
+@Serializable
+private data class AndroidLiveCaptureDelegationResponse(
+    val schemaVersion: String,
+    val delegation: AndroidLiveCaptureDelegation,
+)
+
+/** The web's default and maximum (tournament-incoming-client.ts): 12 hours, at most 7 days. */
+internal const val ANDROID_LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES = 720
+internal const val ANDROID_LIVE_CAPTURE_DELEGATION_MAX_MINUTES = 10_080
+
 @Serializable
 internal data class AndroidPublicLiveParticipantReference(val namespace: String, val value: String)
 
@@ -1269,6 +1308,61 @@ internal class AndroidTournamentClient(
                 }
             }.toString(),
         )
+    }
+
+    /** F05: the night's capture delegations, newest first as the server orders them. */
+    fun liveCaptureDelegations(tournamentId: String): List<AndroidLiveCaptureDelegation> {
+        val response = json.decodeFromString<AndroidLiveCaptureDelegationsResponse>(
+            request("GET", "/v1/native/tournaments/${pathSegment(tournamentId)}/live-capture-delegations"),
+        )
+        if (response.schemaVersion != "mk8dx.native-tournament-live-capture-delegations.v1") malformedResponse()
+        return response.delegations.onEach(::requireKnownDelegation)
+    }
+
+    fun grantLiveCaptureDelegation(
+        tournamentId: String,
+        delegateUserAccountId: String,
+        expiresInMinutes: Int = ANDROID_LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES,
+    ): AndroidLiveCaptureDelegation {
+        require(expiresInMinutes in 5..ANDROID_LIVE_CAPTURE_DELEGATION_MAX_MINUTES)
+        require(Regex("""^user_account\.[A-Za-z0-9._-]{1,140}$""").matches(delegateUserAccountId))
+        return decodeDelegation(request(
+            "POST", "/v1/native/tournaments/${pathSegment(tournamentId)}/live-capture-delegations",
+            buildJsonObject {
+                put("delegateUserAccountId", delegateUserAccountId)
+                put("reason", "Live capture delegated by Tournament director")
+                put("expiresInMinutes", expiresInMinutes)
+            }.toString(),
+        ))
+    }
+
+    fun revokeLiveCaptureDelegation(tournamentId: String, delegationId: String): AndroidLiveCaptureDelegation =
+        decodeDelegation(request(
+            "POST",
+            "/v1/native/tournaments/${pathSegment(tournamentId)}/live-capture-delegations/${pathSegment(delegationId)}/actions/revoke",
+            buildJsonObject { put("reason", "Capture delegation revoked by Tournament director") }.toString(),
+        ))
+
+    /** F05: takes a public feed off the public view; its races stay for review. */
+    fun withdrawLiveAssociation(tournamentId: String, record: AndroidTournamentEvidenceRecord) {
+        request(
+            "POST",
+            "/v1/native/tournaments/${pathSegment(tournamentId)}/evidence-records/${pathSegment(record.recordId)}/actions/withdraw-live",
+            buildJsonObject {
+                put("expectedRevision", record.revision)
+                put("reason", "Live feed withdrawn by Tournament director")
+            }.toString(),
+        )
+    }
+
+    private fun decodeDelegation(body: String): AndroidLiveCaptureDelegation {
+        val response = json.decodeFromString<AndroidLiveCaptureDelegationResponse>(body)
+        if (response.schemaVersion != "mk8dx.native-tournament-live-capture-delegation.v1") malformedResponse()
+        return response.delegation.also(::requireKnownDelegation)
+    }
+
+    private fun requireKnownDelegation(delegation: AndroidLiveCaptureDelegation) {
+        if (delegation.status != "active" && delegation.status != "revoked") malformedResponse()
     }
 
     fun linkEvidenceRecord(

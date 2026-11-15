@@ -207,6 +207,8 @@ toernooileider wacht.
   weergave; de races blijven voor jouw controle.
 - **Feed terugtrekken:** kies bij een openbare run **Deze live-feed terugtrekken** en klik nogmaals om te bevestigen.
   De races blijven; alleen jij kunt hem weer openen met **Live-koppeling handmatig bevestigen**, een rostermatch niet.
+- **In de app:** de MK8DX Android-app toont in Stap 5/9 van de avond hetzelfde paneel **Live-capturedelegaties**,
+  dezelfde snelkoppeling bij een wachtende run en hetzelfde terugtrekken (twee keer tikken).
 
 ### Later koppelen
 

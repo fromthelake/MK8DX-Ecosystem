@@ -5,7 +5,19 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **Live capture delegations in the Android app**: a Director's Step 5/9 view in the app now has the web's panel:
+  the night's delegations with their state, **Delegate live capture** for an account whose Tournament Live
+  connected to the night (2 hours to 7 days, 12 hours by default), **Revoke**, the *Waiting for the Director*
+  wording and a per-run delegation shortcut on a waiting feed, and **Withdraw this live feed** (tap twice) on a
+  public one. The native delegation routes now have strict response schemas, like the administrator routes.
+
 ### Changed
+
+- **The web delegation panel refreshes by itself**: while the Step 5/9 view is visible it re-reads the night's
+  capture delegations about every 30 seconds (paused while the tab is hidden), so a delegation issued, revoked or
+  expired elsewhere shows without a reload.
 
 - **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
   runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no
@@ -17,6 +29,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   now resolve every page-supplied file name through one small helper per product (`safe_paths`), which follows
   links and refuses anything outside its folder. The same names are accepted and refused as before; code scanning
   now recognises the check, so it no longer reports these places as possible path injection.
+
+### Fixed
+
+- **Tournament Live names the real sign-out label**: its offline and unconfirmed sign-out messages (and the
+  Tournament Connect command line) now point to **Sign out on all devices** in the website's account menu instead
+  of a "Sign out everywhere" button on an account page, in every language.
 
 ## 0.2.5 — 2026-11-16
 

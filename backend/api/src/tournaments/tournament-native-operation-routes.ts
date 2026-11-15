@@ -3,6 +3,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
 import { PlayerOnboardingError } from "../identity/player-onboarding-service.js";
 import type { TournamentConnectedService } from "./tournament-connected-service.js";
+import { liveCaptureDelegationSchema } from "./tournament-connected-routes.js";
 import {
   TournamentOperationError,
   type TournamentOperationService,
@@ -64,6 +65,31 @@ function failure(error: unknown): { status: number; body: { code: string; messag
  * explicit tournament.operation capability replace browser-only CSRF;
  * canonical scoring and optimistic revisions remain server-owned.
  */
+/**
+ * F05: the native capture-delegation answers, bound like the administrator
+ * routes so the Android Director view parses exactly these keys
+ * (AndroidTournamentClient.kt).
+ */
+export const nativeLiveCaptureDelegationListSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "delegations"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.native-tournament-live-capture-delegations.v1" },
+    delegations: { type: "array", maxItems: 200, items: liveCaptureDelegationSchema },
+  },
+} as const;
+
+export const nativeLiveCaptureDelegationDocumentSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["schemaVersion", "delegation"],
+  properties: {
+    schemaVersion: { type: "string", const: "mk8dx.native-tournament-live-capture-delegation.v1" },
+    delegation: liveCaptureDelegationSchema,
+  },
+} as const;
+
 export async function registerTournamentNativeOperationRoutes(
   app: FastifyInstance,
   dependencies: Readonly<{
@@ -697,7 +723,7 @@ export async function registerTournamentNativeOperationRoutes(
 
   app.get<{ Params: { tournamentId: string } }>(
     "/v1/native/tournaments/:tournamentId/live-capture-delegations",
-    { schema: { params: idParams } },
+    { schema: { params: idParams, response: { 200: nativeLiveCaptureDelegationListSchema } } },
     async (request, reply) => handle(reply, async () => ({
       schemaVersion: "mk8dx.native-tournament-live-capture-delegations.v1",
       delegations: await dependencies.connected.listLiveCaptureDelegations(await actor(request), request.params.tournamentId),
@@ -706,7 +732,7 @@ export async function registerTournamentNativeOperationRoutes(
 
   app.post<{ Params: { tournamentId: string }; Body: { delegateUserAccountId: string; reason: string; expiresInMinutes?: number } }>(
     "/v1/native/tournaments/:tournamentId/live-capture-delegations",
-    { schema: { params: idParams, body: {
+    { schema: { params: idParams, response: { 200: nativeLiveCaptureDelegationDocumentSchema }, body: {
       type: "object", additionalProperties: false, required: ["delegateUserAccountId", "reason"],
       properties: {
         delegateUserAccountId: { type: "string", minLength: 14, maxLength: 160 },
@@ -733,7 +759,7 @@ export async function registerTournamentNativeOperationRoutes(
     }, body: {
       type: "object", additionalProperties: false, required: ["reason"],
       properties: { reason: { type: "string", minLength: 1, maxLength: 255 } },
-    } } },
+    }, response: { 200: nativeLiveCaptureDelegationDocumentSchema } } },
     async (request, reply) => handle(reply, async () => ({
       schemaVersion: "mk8dx.native-tournament-live-capture-delegation.v1",
       delegation: await dependencies.connected.revokeLiveCaptureDelegation(await actor(request), {
