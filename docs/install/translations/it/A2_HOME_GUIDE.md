@@ -171,6 +171,8 @@ Crea un nuovo codice se qualcun altro potrebbe aver visto il tuo o se hai perso 
 
 ![codice di ripristino](../../guide/img/recovery-code-en.png)
 
+![nuovo codice di ripristino](../../guide/img/admin-new-code-en.png)
+
 ## 5. Persone e schede di accesso (MK8DX beheer)
 
 **MK8DX beheer** (in olandese: amministrazione di MK8DX) è la stessa pagina della configurazione, ma per dopo: aggiungere persone e creare schede di accesso. Funziona solo sul computer MK8DX stesso. Il collegamento sul desktop si chiama "MK8DX beheer" in ogni lingua; il titolo della pagina è **Amministrazione MK8DX**.

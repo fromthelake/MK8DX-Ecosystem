@@ -171,6 +171,8 @@ Make a new code when someone else may have seen yours, or when you lost the pape
 
 ![recovery code](../../guide/img/recovery-code-en.png)
 
+![new recovery code](../../guide/img/admin-new-code-en.png)
+
 ## 5. People and sign-in cards (MK8DX beheer)
 
 **MK8DX beheer** (Dutch for "MK8DX administration") is the same page as the setup, but for later: adding people and making sign-in cards. It only works on the MK8DX computer itself. The desktop shortcut is called "MK8DX beheer" in every language; the page title in English is **MK8DX administration**.

@@ -169,6 +169,8 @@ Maak een nieuwe code als iemand anders de jouwe gezien kan hebben, of als je het
 
 ![herstelcode](guide/img/herstelcode-nl.png)
 
+![nieuwe herstelcode](guide/img/beheer-nieuwe-code-nl.png)
+
 **Databaseaccounts:** de website meldt zich bij de database aan met een eigen account dat alleen gegevens kan lezen en schrijven, zodat een fout in de website geen tabellen kan verwijderen; database-updates gebruiken een tweede account. De installatie maakt ze allebei; een oudere installatie krijgt ze bij de volgende update, en start de website niet met het nieuwe account, dan gaat de update terug naar het oude. Je hoeft er niets voor te doen.
 
 ## 5. Mensen en inlogkaarten (MK8DX beheer)
