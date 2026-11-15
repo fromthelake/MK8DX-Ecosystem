@@ -6,8 +6,16 @@ Sources, each read the way it marks a text:
 * PowerShell (tooling/start-mk8dx.ps1, tooling/mk8dx-ui.ps1): `Tr '<English>'` (values: `Tr 'Website: {0}' $x`).
 * POSIX sh (tooling/start-mk8dx.sh, tooling/mk8dx-ui.sh): `ui_t '<English>'`.
 * cmd (Start-MK8DX*.cmd, Manage-MK8DX-No-Docker.cmd): the `-ShowText`, `-ShowSubtitle` and `-ShowItems` texts they
-  hand to tooling/mk8dx-ui.ps1 ('|' separates lines, ';' menu items, '=' the item key).
-* Python (tooling/install.py, tooling/native_install.py, tooling/scheduled_backup.py): `t("<English>", ...)` calls and the ROUTE_CHOICES menu.
+  hand to tooling/mk8dx-ui.ps1 ('|' separates lines, ';' menu items, '=' the item key), and their window title
+  (`set "MK8DX_WINDOW_TITLE=<English>"`, shown translated by tooling/mk8dx-ui.ps1).
+* The Tournament Tools package's cmd files (`call :say` / `call :title`) and setup helper (`_text`)
+  (tooling/tournament/build_windows_package.py).
+
+Texts a cmd file shows itself through tooling/mk8dx-text.cmd (the package's titles and lines) are marked
+`"cmd": true`; the catalog builder also writes them to tooling/launcher_i18n/cmd-<language>.txt, which cmd reads
+without starting PowerShell.
+* Python (tooling/install.py, tooling/native_install.py, tooling/scheduled_backup.py, tooling/lifecycle.py,
+  tooling/setup_wizard.py): `t("<English>", ...)` calls and the ROUTE_CHOICES menu.
 
 The Dutch is kept in tooling/i18n/launcher/dutch.json (English -> Dutch; every text needs one). Writes
 tooling/i18n/launcher/messages.source.json; tooling/i18n/build_web_catalogs.mjs turns it and the shared translations
@@ -29,7 +37,13 @@ DUTCH = FOLDER / "dutch.json"
 POWERSHELL = ("tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1")
 SHELL = ("tooling/start-mk8dx.sh", "tooling/mk8dx-ui.sh")
 CMD = ("Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "Start-MK8DX-No-Docker.cmd", "Manage-MK8DX-No-Docker.cmd")
-PYTHON = ("tooling/install.py", "tooling/native_install.py", "tooling/scheduled_backup.py")
+PYTHON = ("tooling/install.py", "tooling/native_install.py", "tooling/scheduled_backup.py", "tooling/lifecycle.py",
+          "tooling/setup_wizard.py")
+# The Tournament Tools package (tooling/tournament/build_windows_package.py) ships these catalogs: its cmd files'
+# `call :say "<English>"` / `call :title "<English>"` and its setup helper's `_text("<English>", ...)`.
+PACKAGE = "tooling/tournament/build_windows_package.py"
+PACKAGE_CALL = re.compile(r'call :(?:say|title) "([^"]*)"')
+CMD_TITLE = re.compile(r'set "MK8DX_WINDOW_TITLE=([^"]*)"')
 PS_CALL = re.compile(r"(?<![\w-])Tr\s+(?:'((?:[^']|'')*)'|\"([^\"$`]*)\")")
 SH_CALL = re.compile(r"\bui_t\s+(?:'([^']*)'|\"([^\"$`\\]*)\")")
 CMD_ARG = re.compile(r"-Show(Text|Subtitle|Items)\s+\"([^\"]*)\"")
@@ -39,12 +53,15 @@ def line_of(text: str, index: int) -> int:
     return text.count("\n", 0, index) + 1
 
 
-def collect() -> dict[str, list[str]]:
+def collect() -> tuple[dict[str, list[str]], set[str]]:
     found: dict[str, list[str]] = {}
+    cmd_texts: set[str] = set()
 
-    def add(english: str, place: str) -> None:
+    def add(english: str, place: str, cmd: bool = False) -> None:
         if not re.search(r"[A-Za-z]{2,}", english):
             return
+        if cmd:
+            cmd_texts.add(english)
         places = found.setdefault(english, [])
         if place not in places and len(places) < 4:
             places.append(place)
@@ -71,6 +88,8 @@ def collect() -> dict[str, list[str]]:
             else:
                 for part in value.split("|"):
                     add(part, place)
+        for match in CMD_TITLE.finditer(text):
+            add(match.group(1), f"{name}:{line_of(text, match.start())}")
     for name in PYTHON:
         text = (ROOT / name).read_text(encoding="utf-8")
         for node in ast.walk(ast.parse(text)):
@@ -81,14 +100,25 @@ def collect() -> dict[str, list[str]]:
                                                     for target in node.targets):
                 for value in node.value.values:
                     add(ast.literal_eval(value), f"{Path(name).name}:{value.lineno}")
-    return found
+    text = (ROOT / PACKAGE).read_text(encoding="utf-8")
+    for match in PACKAGE_CALL.finditer(text):
+        add(match.group(1), f"{Path(PACKAGE).name}:{line_of(text, match.start())}", cmd=True)
+    helper = next(ast.literal_eval(node.value) for node in ast.parse(text).body if isinstance(node, ast.Assign)
+                  and getattr(node.targets[0], "id", "") == "SETUP_HELPER_PY")
+    offset = line_of(text, text.index("SETUP_HELPER_PY = ")) - 1
+    for node in ast.walk(ast.parse(helper)):
+        if (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "_text"
+                and node.args and isinstance(node.args[0], ast.Constant) and isinstance(node.args[0].value, str)):
+            add(node.args[0].value, f"{Path(PACKAGE).name}:{offset + node.lineno}")
+    return found, cmd_texts
 
 
 def build() -> tuple[str, list[str]]:
     dutch = json.loads(DUTCH.read_text(encoding="utf-8")) if DUTCH.is_file() else {}
-    found = collect()
+    found, cmd_texts = collect()
     missing = sorted(english for english in found if not isinstance(dutch.get(english), str))
-    entries = [{"key": english, "nl": dutch.get(english, english), "places": found[english]}
+    entries = [{"key": english, "nl": dutch.get(english, english), "places": found[english],
+                **({"cmd": True} if english in cmd_texts else {})}
                for english in sorted(found)]
     text = json.dumps({"schemaVersion": "mk8dx.launcher-message-source.v1",
                        "generatedBy": "tooling/i18n/extract_launcher_messages.py", "messages": entries},

@@ -1,0 +1,59 @@
+  actual   {0}|  実際の値 {0}
+  expected {0}|  期待値   {0}
+ FAILED - the tools were NOT installed completely. See {0}.| 失敗 - ツールは完全にはインストールされませんでした。{0} を参照してください。
+ Log file       : {0}| ログファイル         : {0}
+ MK8DX Tournament Tools - installer (package version {0})| MK8DX Tournament Tools - インストーラー（パッケージバージョン {0}）
+ Package folder : {0}| パッケージフォルダー : {0}
+ Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.| 作業の流れについては README-FIRST.txt と USING_MK8DX_TOURNAMENT_TOOLS.md を読んでください。
+ Run this installer again; completed downloads are reused.| このインストーラーをもう一度実行してください。完了したダウンロードは再利用されます。
+ SUCCESS - MK8DX Tournament Tools are installed in this folder.| 成功 - MK8DX Tournament Tools はこのフォルダーにインストールされました。
+ TournamentAnalysis.cmd   - window to analyse recordings afterwards| TournamentAnalysis.cmd   - 録画を後から解析するウィンドウ
+ TournamentConnect.cmd    - optional connection to the website| TournamentConnect.cmd    - Webサイトへの任意の接続
+ TournamentLive.cmd       - live capture-card tournament app| TournamentLive.cmd       - キャプチャーカードを使うライブ大会アプリ
+ TournamentLiveCli.cmd    - advanced command line| TournamentLiveCli.cmd    - 上級者向けコマンドライン
+ TournamentProcessor.cmd  - process a recorded video (drag it onto the file)| TournamentProcessor.cmd  - 録画した動画を処理（動画をこのファイルにドラッグ）
+ TournamentTools.config.cmd - local settings and bundled assets| TournamentTools.config.cmd - ローカル設定と同梱アセット
+---- Step 2: installing the Tournament tools and their dependencies ----|---- ステップ 2: Tournament ツールとその依存関係をインストールしています ----
+Adding Tournament Live interface support (about 3.5 MB) ...|Tournament Live のインターフェースサポートを追加しています（約 3.5 MB）...
+Check your connection and run the installer again.|接続を確認して、インストーラーをもう一度実行してください。
+Creating a private runtime inside the package ...|パッケージ内にプライベートな実行環境を作成しています ...
+Downloading the official python.org runtime (about 11 MB) ...|python.org の公式ランタイム（約 11 MB）をダウンロードしています ...
+Examples (type them in this window):|例（このウィンドウに入力してください）:
+Existing package runtime found (embedded Python). It will be updated in place.|既存のパッケージ実行環境（組み込み Python）が見つかりました。その場で更新します。
+Existing package runtime found (virtual environment). It will be updated in place.|既存のパッケージ実行環境（仮想環境）が見つかりました。その場で更新します。
+Extract the whole zip again and run the installer from that folder.|zip 全体をもう一度展開し、そのフォルダーからインストーラーを実行してください。
+FAILED: Tournament Live interface support could not be added (step {0}).|失敗: Tournament Live のインターフェースサポートを追加できませんでした（ステップ {0}）。
+FAILED: the Python runtime could not be downloaded. Check your connection and retry.|失敗: Python ランタイムをダウンロードできませんでした。接続を確認して再試行してください。
+FAILED: the Python runtime could not be prepared. See {0}.|失敗: Python ランタイムを準備できませんでした。{0} を参照してください。
+FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.|失敗: ダウンロードした Python ランタイムが安全チェックに合格しなかったため、削除しました。後で再試行してください。
+FAILED: the package installer could not be downloaded. Check your connection and retry.|失敗: パッケージインストーラーをダウンロードできませんでした。接続を確認して再試行してください。
+FAILED: the package installer could not be prepared. See {0}.|失敗: パッケージインストーラーを準備できませんでした。{0} を参照してください。
+FAILED: the private runtime could not be created. See {0}.|失敗: プライベートな実行環境を作成できませんでした。{0} を参照してください。
+FAILED: this folder is not a complete package.|失敗: このフォルダーは完全なパッケージではありません。
+First use: {0}|初めての使用: {0}
+Local processing and file exports never require sign-in or internet.|ローカルでの処理とファイルのエクスポートには、サインインもインターネットも必要ありません。
+MK8DX Tournament Analysis|MK8DX Tournament Analysis
+MK8DX Tournament Connect - optional|MK8DX Tournament Connect - 任意
+MK8DX Tournament Live|MK8DX Tournament Live
+MK8DX Tournament Live - command line|MK8DX Tournament Live - コマンドライン
+MK8DX Tournament Live - command line. Sub-commands:|MK8DX Tournament Live - コマンドライン。サブコマンド:
+MK8DX Tournament Processor|MK8DX Tournament Processor
+MK8DX Tournament Tools - installer|MK8DX Tournament Tools - インストーラー
+No 64-bit Python 3.12 was found on this computer.|このコンピューターに 64 ビットの Python 3.12 が見つかりませんでした。
+Optional browser sign-in uploads an existing JSON result as PENDING evidence.|任意のブラウザーサインインで、既存の JSON 結果を PENDING の証拠としてアップロードします。
+Preparing the Python package installer ...|Python パッケージインストーラーを準備しています ...
+Python runtime: {0} [{1}]|Python ランタイム: {0} [{1}]
+Running dry-run now to show where Tournament Live stores its files:|Tournament Live がファイルを保存する場所を示すため、ドライランを実行しています:
+SHA-256 verified. Extracting the runtime ...|SHA-256 を確認しました。ランタイムを展開しています ...
+Send a result: {0}|結果を送信: {0}
+Sign out: {0}|サインアウト: {0}
+Starting the Tournament Analysis window ... (this window shows startup errors)|Tournament Analysis ウィンドウを起動しています ...（このウィンドウには起動時のエラーが表示されます）
+Starting the Tournament Live GUI ... (this window shows startup progress and errors)|Tournament Live の GUI を起動しています ...（このウィンドウには起動の進行状況とエラーが表示されます）
+The package runtime is missing. Run {0} first.|パッケージの実行環境がありません。先に {0} を実行してください。
+This can take 5 to 30 minutes. Please wait ...|5〜30 分かかることがあります。しばらくお待ちください ...
+This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA).|PyTorch、EasyOCR、OpenCV、Qt をダウンロードします（NVIDIA CUDA を含めると数 GB）。
+Tournament Analysis exited with code {0}.|Tournament Analysis は終了コード {0} で終了しました。
+Tournament Live exited with code {0}.|Tournament Live は終了コード {0} で終了しました。
+Tournament Live interface support added.|Tournament Live のインターフェースサポートを追加しました。
+Using the 64-bit Python 3.12 already on this computer:|このコンピューターにすでにある 64 ビットの Python 3.12 を使います:
+Verifying the downloaded runtime ...|ダウンロードしたランタイムを確認しています ...

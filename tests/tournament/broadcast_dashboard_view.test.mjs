@@ -1,7 +1,7 @@
-// The Live spectator dashboard's viewer settings (scoreboard mode, track/cup name language), run on
-// the real broadcast_web/app.js in a minimal fake DOM. Run: node --test tests/tournament/broadcast_dashboard_view.test.mjs
+// The Live spectator dashboard's viewer settings (text language, scoreboard mode, track/cup name language),
+// run on the real broadcast_web/app.js in a minimal fake DOM. Run: node --test tests/tournament/broadcast_dashboard_view.test.mjs
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import test from "node:test";
@@ -17,6 +17,12 @@ const DISPLAY_NAMES = {
   tracks: Object.fromEntries(CATALOG.tracks.map((t) => [t.id, t.names])),
   cups: Object.fromEntries(CATALOG.cups.map((c) => [c.id, c.names])),
 };
+
+const WEB = join(ROOT, "apps/tournament-live/src/live_processor/broadcast_web");
+const SOURCE = JSON.parse(readFileSync(join(ROOT, "apps/tournament-live/i18n/broadcast/messages.source.json"), "utf8"));
+const catalog = (language) => JSON.parse(readFileSync(join(WEB, "i18n", `${language}.json`), "utf8"));
+// The 14 catalogs besides English (en-US is English too; its catalog is empty).
+const LANGUAGES = ["nl", "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW"];
 
 const escapeText = (text) => String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -66,7 +72,8 @@ class FakeElement {
 }
 
 // Loads app.js as a static snapshot (?nolive=1: no SSE, timers or rotation) with the given feeds.
-async function loadDashboard({ search = "", feeds = [], storage = {}, storageThrows = false } = {}) {
+async function loadDashboard({ search = "", feeds = [], storage = {}, storageThrows = false, languages = null,
+  catalogs = true } = {}) {
   const elements = new Map();
   FakeElement.registry = elements;
   const store = { ...storage };
@@ -103,10 +110,13 @@ async function loadDashboard({ search = "", feeds = [], storage = {}, storageThr
       fetched.push(url);
       if (url === "/api/handshake") return json({ session_id: "test", latest_event_id: 1, feeds });
       if (url === "/api/display-names") return json(DISPLAY_NAMES);
+      const language = /^\/api\/messages\/(.+)$/.exec(url);
+      if (language && catalogs && existsSync(join(WEB, "i18n", `${language[1]}.json`))) return json(catalog(language[1]));
       return Promise.reject(new Error("offline"));
     },
   };
   context.window = { localStorage, innerWidth: 1920, innerHeight: 1080, addEventListener() {} };
+  if (languages) context.navigator = { languages, language: languages[0] };
   vm.createContext(context);
   vm.runInContext(APP, context);
   for (let i = 0; i < 10; i++) await new Promise((resolve) => setImmediate(resolve));
@@ -225,7 +235,8 @@ test("the choice is kept per viewer and the URL parameter wins", async () => {
   assert.equal(overridden.app.localizedTrack(TRACK).nameLang, "ja-JP");
   const chooser = await loadDashboard();
   chooser.app.applyViewSettings({ scoreboard: "overall", trackLang: "ko-KR" });
-  assert.deepEqual(JSON.parse(chooser.store["mk8dx.broadcast.viewSettings.v1"]), { scoreboard: "overall", trackLang: "ko-KR" });
+  assert.deepEqual(JSON.parse(chooser.store["mk8dx.broadcast.viewSettings.v1"]),
+    { lang: "", scoreboard: "overall", trackLang: "ko-KR" });
 });
 
 test("blocked storage falls back to the defaults without breaking the page", async () => {
@@ -271,4 +282,101 @@ test("a missing localized name falls back to English", async () => {
     { name: "Mario Kart Stadium", nameLang: "en-GB", cup: "Mushroom Cup", cupLang: "en-GB" });
   assert.equal(app.normalizeTrackLang("xx"), "");
   assert.equal(app.normalizeTrackLang("zh-tw"), "zh-TW");
+});
+
+test("the dashboard texts stay English by default and need no catalog", async () => {
+  const { el, fetched } = await loadDashboard({ feeds: [feed()] });
+  assert.ok(!fetched.some((url) => url.startsWith("/api/messages/")));
+  assert.equal(el("eyebrow").textContent, "Race result");
+  const english = await loadDashboard({ feeds: [feed()], languages: ["en-GB", "ja"] });
+  assert.ok(!english.fetched.some((url) => url.startsWith("/api/messages/")));
+});
+
+for (const [language, search, languages] of [
+  ["ja", "lang=ja", null],
+  ["ru", "lang=ru-RU", null],
+  ["de", "", ["de-DE", "en"]],
+  ["es-419", "", ["es-MX"]],
+  ["zh-TW", "lang=zh-Hant", null],
+]) {
+  test(`dashboard texts in ${language} (${search || "browser " + languages[0]})`, async () => {
+    const messages = catalog(language).messages;
+    const { el, grid, fetched } = await loadDashboard({ search: search ? `view=grid&${search}` : "view=grid", languages,
+      feeds: [feed({ ...PENDING })] });
+    assert.ok(fetched.includes(`/api/messages/${language}`), fetched.join());
+    const html = grid().innerHTML;
+    assert.ok(html.includes(escapeText(messages["Latest race"])), html);
+    assert.ok(html.includes(escapeText(messages["Driver"])));
+    assert.ok(html.includes(escapeText(messages["Race {0} result"].replace("{0}", "8"))));
+    assert.ok(!html.includes(">Driver<") && !html.includes("Race 8 result"), "no English left on the card");
+    const normal = await loadDashboard({ search, languages, feeds: [feed()] });
+    assert.equal(normal.el("eyebrow").textContent, messages["Race result"]);
+    assert.equal(normal.el("board-caption").textContent, messages["Race {0} result"].replace("{0}", "7"));
+    assert.equal(el("stage").children.length, 1);
+  });
+}
+
+test("Overall only captions in the chosen language", async () => {
+  const messages = catalog("ja").messages;
+  const { el } = await loadDashboard({ search: "lang=ja&scoreboard=overall", feeds: [feed(PENDING)] });
+  assert.equal(el("board-caption").textContent, `${messages["Overall standings"]} · ` +
+    `${messages["after race {0} of {1}"].replace("{0}", "7").replace("{1}", "12")} · ` +
+    messages["race {0} awaiting confirmation"].replace("{0}", "8"));
+});
+
+test("the text language is its own setting: saved, overridden by the URL, independent of the track names", async () => {
+  const saved = { "mk8dx.broadcast.viewSettings.v1": '{"lang":"ko","trackLang":"ja-JP"}' };
+  const stored = await loadDashboard({ storage: saved, languages: ["de-DE"] });
+  assert.equal(stored.app.uiLanguage(), "ko");
+  assert.equal(stored.app.localizedTrack(TRACK).nameLang, "ja-JP");
+  const overridden = await loadDashboard({ search: "lang=fr-CA", storage: saved });
+  assert.equal(overridden.app.uiLanguage(), "fr-CA");
+  assert.equal(overridden.app.localizedTrack(TRACK).nameLang, "ja-JP");
+  const chooser = await loadDashboard();
+  chooser.app.applyViewSettings({ lang: "pt" });
+  assert.deepEqual(JSON.parse(chooser.store["mk8dx.broadcast.viewSettings.v1"]), { lang: "pt", scoreboard: "auto", trackLang: "" });
+  assert.equal(chooser.app.matchUiLanguage("xx"), "");
+  assert.equal(chooser.app.matchUiLanguage("es-AR"), "es-419");
+  assert.equal(chooser.app.matchUiLanguage("zh-SG"), "zh-CN");
+  assert.equal(chooser.app.matchUiLanguage("pt-BR"), "pt");
+});
+
+test("a missing catalog keeps the page English", async () => {
+  const { el, fetched } = await loadDashboard({ search: "lang=ja", feeds: [feed()], catalogs: false });
+  assert.ok(fetched.includes("/api/messages/ja"));
+  assert.equal(el("eyebrow").textContent, "Race result");
+  const { app } = await loadDashboard();
+  assert.equal(app.t("Next: {0}", "x"), "Next: x");
+  assert.equal(app.t("Not a dashboard text"), "Not a dashboard text");
+});
+
+test("every catalog has every dashboard text with its placeholders", () => {
+  const keys = SOURCE.messages.map((message) => message.key).sort();
+  const numbered = (text) => [...new Set(text.match(/\{\d+\}/g) ?? [])].sort().join();
+  for (const language of LANGUAGES) {
+    const messages = catalog(language).messages;
+    if (language === "en-US") { assert.deepEqual(messages, {}); continue; }
+    assert.deepEqual(Object.keys(messages).sort(), keys, language);
+    for (const [english, text] of Object.entries(messages)) {
+      assert.equal(numbered(text), numbered(english), `${language}: ${english} -> ${text}`);
+    }
+    // Translated, not English stand-ins (a few words such as LIVE or Total may read the same).
+    const same = Object.entries(messages).filter(([english, text]) => text === english).map(([english]) => english);
+    assert.ok(same.length <= 8, `${language} keeps ${same.length} texts English: ${same.join(" | ")}`);
+  }
+});
+
+test("narrow column headers use their own short forms, the full text as the title", async () => {
+  const english = await loadDashboard({ search: "view=grid", feeds: [feed()] });
+  assert.match(english.grid().innerHTML, /<span title="Gap">Gap<\/span><span title="Total">Total<\/span>/);
+  const messages = catalog("ru").messages;
+  const { grid } = await loadDashboard({ search: "view=grid&lang=ru", feeds: [feed()] });
+  for (const key of ["Pos", "Race", "Gap", "Total"]) {
+    const short = messages[`column header|${key}`];
+    assert.ok(short && short.length <= 5, `${key}: ${short}`);
+    assert.ok(grid().innerHTML.includes(`<span title="${messages[key]}">${short}</span>`), key);
+  }
+  const normal = await loadDashboard({ search: "lang=ru", feeds: [feed()] });
+  assert.equal(normal.el("col-race").textContent, messages["column header|This race"]);
+  assert.equal(normal.el("col-race").title, messages["This race"]);
 });

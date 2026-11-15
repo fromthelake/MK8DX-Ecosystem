@@ -92,3 +92,34 @@ def test_display_names_route_serves_the_catalog_slice_by_canonical_id():
         assert len(data["tracks"]) == 96 and len(data["cups"]) == 24
     finally:
         server.stop()
+
+
+def test_messages_route_serves_only_the_known_language_catalogs(tmp_path, monkeypatch):
+    import json
+
+    messages = tmp_path / "i18n"
+    messages.mkdir()
+    (messages / "ja.json").write_text(json.dumps({"messages": {"Race result": "レース結果"}}), encoding="utf-8")
+    (tmp_path / "secret.json").write_bytes(b"private-file")
+    monkeypatch.setattr(broadcast_server, "MESSAGES_ROOT", messages)
+    server = BroadcastServer(port=0)
+    try:
+        server.start()
+        base = f"http://127.0.0.1:{server._httpd.server_port}/api/messages/"
+        with urllib.request.urlopen(base + "ja", timeout=2) as response:
+            assert json.loads(response.read().decode("utf-8"))["messages"]["Race result"] == "レース結果"
+        for name in ("de", "xx", "..%2Fsecret", "../secret", "ja.json", ""):
+            with pytest.raises(urllib.error.HTTPError) as error:
+                urllib.request.urlopen(base + name, timeout=2)
+            assert error.value.code == 404, name
+    finally:
+        server.stop()
+
+
+def test_messages_route_serves_the_packaged_dashboard_catalogs():
+    import json
+
+    assert broadcast_server.MESSAGES_ROOT == broadcast_server.WEB_ROOT / "i18n"
+    for language in sorted(broadcast_server.UI_LANGUAGES):
+        document = json.loads((broadcast_server.MESSAGES_ROOT / f"{language}.json").read_text(encoding="utf-8"))
+        assert document["language"] == language

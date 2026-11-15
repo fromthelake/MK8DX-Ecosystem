@@ -128,6 +128,26 @@ em `TournamentTools.config.cmd` com esse ficheiro. A partir de um clone, `python
 o Tournament Processor e os seus recursos de reconhecimento estão instalados; precisa do PySide6 (o extra `gui` do processor) e,
 caso contrário, ou com `--classic-gui`, abre uma janela Tkinter mais simples.
 
+### O quadro de pontuação em direto para o público e o OBS
+
+**Abrir quadro de pontuação em direto** (um grupo de cada vez) e **Abrir quadro de pontuação fixo de todas as transmissões**
+no Tournament Live abrem o painel para o público; adiciona o mesmo URL como fonte de navegador no OBS. Há três definições
+de visualização sob a pequena roda dentada no canto inferior direito (aparece quando mexes o rato; o OBS não a mostra):
+
+- **Idioma**: os textos próprios do painel (cabeçalhos, legendas, estado, este painel) num dos 15 idiomas do jogo.
+  *Idioma do navegador* (predefinido) segue o navegador e, em alternativa, usa o inglês. Os nomes das pistas e o idioma da
+  consola que o Tournament Live lê são independentes.
+- **Quadro de pontuação**: *Automático* (predefinido) alterna, após cada corrida, entre o resultado da última corrida e a
+  classificação geral. *Só classificação geral* mantém a classificação geral no ecrã; esta só inclui corridas confirmadas e
+  a legenda indica até que corrida, por exemplo *após a corrida 7 de 12 · corrida 8 a aguardar confirmação*.
+- **Nomes das pistas**: *Inglês + neerlandês* (predefinido) ou um dos 15 idiomas do jogo, só para os nomes de pistas e
+  taças. Não muda o idioma da consola que o Tournament Live lê.
+
+O navegador lembra-se da escolha. Para o OBS, junta-a ao URL: `?lang=de` (textos do painel), `?scoreboard=overall`,
+`?trackLang=ja` (ou uma locale completa como `zh-TW`, `es-419`), em conjunto por exemplo
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` também esconde a roda dentada
+num navegador normal.
+
 ### Ligar ao site (opcional)
 
 No PowerShell, na pasta do pacote:

@@ -1,6 +1,8 @@
 @echo off
 setlocal
 title MK8DX - community server without Docker
+rem The window title in the launcher language: tooling\mk8dx-ui.ps1 sets it when the launcher starts.
+set "MK8DX_WINDOW_TITLE=MK8DX - community server without Docker"
 cd /d "%~dp0"
 set "MK8DX_A3_STATE=%LOCALAPPDATA%\MK8DX\NoDocker"
 rem Options: -SkipCountdown (no countdown), -Plain (plain text).
