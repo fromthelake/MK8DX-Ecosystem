@@ -126,6 +126,12 @@ De stap slaagt pas voor een al geverifieerd account. Verwacht ‘created’ of, 
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+Nachtelijke back-up: de eerste start zet ook elke nacht om 03:15 een gecontroleerde back-up aan. Windows Taakplanner maakt die onder je eigen account, zonder beheerdersrechten, in Documenten\MK8DX-backups\automatic; staat de computer dan uit, dan gebeurt het zo snel mogelijk daarna. Is het MK8DX-venster dicht, dan start en stopt de back-up zijn eigen database zelf. Controleer het in PowerShell in de pakketmap:
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Je hoort "enabled": true en "scheduler": "windows-task" te zien; na de eerste nacht ook "lastResult": "ok". Staat er "enabled": false terwijl je hem nooit hebt uitgezet (het pakket v0.2.6 kon hem niet aanzetten), voer dan dezelfde opdracht één keer uit met backup-schedule in plaats van backup-status; de volgende update met stap 11 zet hem ook aan. Uitzetten doe je met backup-unschedule.
+
 11. Voor een software-update stop je Apache en maak en controleer je eerst een backup terwijl het oude MK8DX-venster nog draait. Druk daarna Ctrl+C in dat venster. Controleer en pak de nieuwe A3-ZIP uit naast de oude pakketmap. Gebruik dezelfde map %LOCALAPPDATA%\MK8DX\NoDocker; verwijder haar niet. Open PowerShell in het nieuwe pakket en start tijdelijk alleen de eigen database:
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -149,6 +155,16 @@ Laat dit venster open. Gebruik in het tweede venster de echte naam van jouw back
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Verwacht ‘Back-up gecontroleerd’ en daarna een geslaagde controle van alle migraties. Druk Ctrl+C in het onderhoudsvenster. Open nu Start-MK8DX-No-Docker.cmd en start Apache in het XAMPP Control Panel. Meld je aan met een bestaand account uit de backup en controleer beheer en een bekend resultaat. De eerste beheerder wordt niet opnieuw toegekend. Als de doelcomputer al een MK8DX-installatie of een proces op poort 18306 heeft, gebruik haar niet als hersteldoel; de hulp wist geen bestaande database. Houd de originele backup intact.
+
+13. Wil je deze A3-installatie van de computer halen, maak dan eerst een back-up zoals in stap 10 als je je accounts en resultaten later misschien terug wilt. Back-ups in Documenten\MK8DX-backups blijven staan tot je ze zelf verwijdert. Zet in PowerShell in de pakketmap de nachtelijke back-up uit:
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Stop Apache in het XAMPP Control Panel en druk op Ctrl+C in het MK8DX-venster. Haal daarna de MK8DX-site uit Apache:
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+Je hoort ‘MK8DX Apache site removed’ en ‘Syntax OK’ te zien. Alleen de Include-regel en mk8dx-local.conf uit stap 4 verdwijnen; andere XAMPP-websites en databases blijven zoals ze zijn. Verwijder daarna de mappen %LOCALAPPDATA%\MK8DX\NoDocker (database, accounts en sleutels) en %LOCALAPPDATA%\MK8DX\ApacheBackup, en tot slot de pakketmap. XAMPP, Node.js en Python blijven geïnstalleerd; verwijder ze via Windows-instellingen → Apps alleen als niets anders ze gebruikt. Gebruik je XAMPP voor andere websites, start Apache dan weer.
 
 Op je eigen netwerk gebruiken
 
@@ -527,7 +543,7 @@ Gevaarlijke acties bevestigen: beheerders-, directeurs- of verslagrechten wijzig
 
 Backup, herstel en updates
 
-Automatische back-up: MK8DX maakt daarnaast elke nacht zelf een gecontroleerde back-up. A1, A3 en B1 zetten hem aan bij de eerste setup; B2 vraagt het één keer (Enter is ja); A2 heeft een eigen back-up in MK8DX beheer. Hij komt in Documents\MK8DX-backups\automatic op Windows en in ~/mk8dx-backups/automatic op Linux en gedeelde hosting, bewaart 14 dagen en 4 weken, en een mislukte nacht verwijdert nooit oudere back-ups. Menu 3 (controleren) toont onder automaticBackup de leeftijd en het resultaat van de laatste. Bewaar toch een kopie buiten de computer of server: voeg op Windows een tweede map op een andere schijf of een NAS toe met python tooling/install.py backup-schedule --state-dir <installatiemap> --copy-to <map>; op een server noemt python3 tooling/install.py backup-latest --state-dir <installatiemap> --print-path de nieuwste gecontroleerde map om met scp op te halen. Uitzetten met backup-unschedule in plaats van backup-schedule. Maakt je hostingpartij al dagelijks back-ups van je account (DirectAdmin, JetBackup), dan kan dat genoeg zijn; met een eigen back-up zet je gisteren toch zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten. Herstellen gaat met de nieuwste map in automatic, precies zoals met een back-up uit menu 6 in de opdrachten hieronder.
+Automatische back-up: MK8DX maakt daarnaast elke nacht zelf een gecontroleerde back-up. A1, A3 en B1 zetten hem aan bij de eerste setup; B2 vraagt het één keer (Enter is ja); A2 heeft een eigen back-up in MK8DX beheer. Hij komt in Documents\MK8DX-backups\automatic op Windows en in ~/mk8dx-backups/automatic op Linux en gedeelde hosting, bewaart 14 dagen en 4 weken, en een mislukte nacht verwijdert nooit oudere back-ups. Menu 3 (controleren) toont onder automaticBackup (A3: backup-status) de leeftijd en het resultaat van de laatste. Bewaar toch een kopie buiten de computer of server: voeg op Windows een tweede map op een andere schijf of een NAS toe met python tooling/install.py backup-schedule --state-dir <installatiemap> --copy-to <map>; op een server noemt python3 tooling/install.py backup-latest --state-dir <installatiemap> --print-path de nieuwste gecontroleerde map om met scp op te halen. Uitzetten met backup-unschedule in plaats van backup-schedule. Maakt je hostingpartij al dagelijks back-ups van je account (DirectAdmin, JetBackup), dan kan dat genoeg zijn; met een eigen back-up zet je gisteren toch zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten. Herstellen gaat met de nieuwste map in automatic, precies zoals met een back-up uit menu 6 in de opdrachten hieronder.
 
 Databaseaccounts: de website meldt zich bij de database aan met een account dat alleen gegevens kan lezen en schrijven, zodat een fout in de website nooit de tabellen kan verwijderen; database-updates en back-ups gebruiken een tweede account. A1, A2, A3 en B1 regelen dit zelf, een bestaande installatie bij de volgende update (menu 7); start de website niet met het nieuwe account, dan gaat de update terug naar het oude en gaat er niets verloren. Maak bij B2 in DirectAdmin of cPanel een tweede databasegebruiker met alleen SELECT, INSERT, UPDATE en DELETE en vul die in de wizard in, of later met python3 tooling/install.py database-accounts --state-dir <installatiemap>; met één gebruiker blijft B2 werken maar toont het een waarschuwing.
 

@@ -128,6 +128,12 @@ Funziona solo per un account che ha già verificato la propria email. Aspettati 
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+Backup notturno: il primo avvio attiva anche un backup verificato ogni notte alle 03:15. L'Utilità di pianificazione di Windows lo crea con il tuo account, senza diritti di amministratore, in Documents\MK8DX-backups\automatic; se a quell'ora il computer è spento, viene eseguito appena possibile dopo. Se la finestra MK8DX è chiusa, il backup avvia e ferma da solo il proprio database. Controllalo in PowerShell nella cartella del pacchetto:
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Dovresti vedere "enabled": true e "scheduler": "windows-task"; dopo la prima notte anche "lastResult": "ok". Se compare "enabled": false anche se non l'hai mai disattivato (il pacchetto v0.2.6 non poteva attivarlo), esegui una volta lo stesso comando con backup-schedule al posto di backup-status; anche il prossimo aggiornamento con il passaggio 11 lo attiva. Per disattivarlo usa backup-unschedule.
+
 11. Per un aggiornamento del software, ferma Apache e crea e verifica un backup mentre la vecchia finestra MK8DX è ancora in esecuzione. Poi premi Ctrl+C in quella finestra. Verifica ed estrai il nuovo ZIP A3 accanto al vecchio pacchetto. Continua a usare la stessa cartella dati %LOCALAPPDATA%\MK8DX\NoDocker. In PowerShell all'interno del nuovo pacchetto, avvia temporaneamente solo il suo database:
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -151,6 +157,16 @@ Tieni aperta questa finestra. Nella seconda finestra usa il nome effettivo della
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Aspettati “Backup verificato” e poi un controllo superato di tutte le migrazioni. Premi Ctrl+C nella finestra di manutenzione. Apri Start-MK8DX-No-Docker.cmd e avvia Apache nel XAMPP Control Panel. Accedi con un account esistente del backup e controlla l'accesso da amministratore e un risultato noto. Il primo amministratore non viene assegnato di nuovo. Se il computer di destinazione ha già un'installazione MK8DX o un altro processo sulla porta 18306, non usarlo come destinazione di questo ripristino; l'assistente non cancella un database esistente. Conserva intatto il backup originale.
+
+13. Per rimuovere questa installazione A3 dal computer, fai prima un backup come nel passaggio 10 se forse vorrai riavere in seguito account e risultati. I backup in Documents\MK8DX-backups restano finché non li elimini tu. In PowerShell nella cartella del pacchetto, disattiva il backup notturno:
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Ferma Apache in XAMPP Control Panel e premi Ctrl+C nella finestra MK8DX. Poi togli il sito MK8DX da Apache:
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+Dovresti vedere “MK8DX Apache site removed” e “Syntax OK”. Vengono rimossi solo la riga Include e mk8dx-local.conf del passaggio 4; gli altri siti web e database di XAMPP restano come sono. Poi elimina le cartelle %LOCALAPPDATA%\MK8DX\NoDocker (database, account e chiavi) e %LOCALAPPDATA%\MK8DX\ApacheBackup e infine la cartella del pacchetto. XAMPP, Node.js e Python restano installati; rimuovili da Impostazioni di Windows → App solo se nient'altro li usa. Se usi XAMPP per altri siti web, avvia di nuovo Apache.
 
 Usalo sulla tua rete domestica
 
@@ -527,7 +543,7 @@ Confermare le azioni pericolose: modificare i diritti di amministratore, di dire
 
 Backup, ripristino e aggiornamento
 
-Backup automatico: MK8DX fa anche da sé ogni notte un backup verificato (A1, A3 e B1 lo attivano alla prima configurazione; B2 lo chiede una volta, Invio è sì; A2 ha il proprio in MK8DX beheer). Finisce in Documents\MK8DX-backups\automatic su Windows e in ~/mk8dx-backups/automatic su Linux e sull'hosting condiviso, conserva 14 giorni e 4 settimane, e una notte fallita non cancella mai i backup più vecchi. Il menu 3 (controlla) mostra sotto automaticBackup età e risultato dell'ultimo. Tieni comunque una copia fuori dal computer o dal server: su Windows con python tooling/install.py backup-schedule --state-dir <cartella di installazione> --copy-to <cartella> (un altro disco o un NAS); da un server, python3 tooling/install.py backup-latest --state-dir <cartella di installazione> --print-path indica la cartella verificata più recente da prendere con scp. Si disattiva con backup-unschedule al posto di backup-schedule. Se il tuo hosting fa già backup giornalieri dell'account (DirectAdmin, JetBackup), può bastare; con un backup tuo torni comunque da solo a ieri, chiavi del sito comprese.
+Backup automatico: MK8DX fa anche da sé ogni notte un backup verificato (A1, A3 e B1 lo attivano alla prima configurazione; B2 lo chiede una volta, Invio è sì; A2 ha il proprio in MK8DX beheer). Finisce in Documents\MK8DX-backups\automatic su Windows e in ~/mk8dx-backups/automatic su Linux e sull'hosting condiviso, conserva 14 giorni e 4 settimane, e una notte fallita non cancella mai i backup più vecchi. Il menu 3 (controlla) mostra sotto automaticBackup (A3: backup-status) età e risultato dell'ultimo. Tieni comunque una copia fuori dal computer o dal server: su Windows con python tooling/install.py backup-schedule --state-dir <cartella di installazione> --copy-to <cartella> (un altro disco o un NAS); da un server, python3 tooling/install.py backup-latest --state-dir <cartella di installazione> --print-path indica la cartella verificata più recente da prendere con scp. Si disattiva con backup-unschedule al posto di backup-schedule. Se il tuo hosting fa già backup giornalieri dell'account (DirectAdmin, JetBackup), può bastare; con un backup tuo torni comunque da solo a ieri, chiavi del sito comprese.
 
 Account del database: il sito accede al proprio database con un account che può solo leggere e scrivere dati, così un errore del sito non può mai eliminare le tabelle; gli aggiornamenti del database e i backup usano un secondo account. A1, A2, A3 e B1 lo configurano da soli, un'installazione esistente al prossimo aggiornamento (menu 7); se il sito non si avvia con il nuovo account, l'aggiornamento torna a quello vecchio e non si perde nulla. Su B2, crea in DirectAdmin o cPanel un secondo utente del database con solo SELECT, INSERT, UPDATE e DELETE e inseriscilo nella procedura guidata, oppure più tardi con python3 tooling/install.py database-accounts --state-dir <cartella di installazione>; con un solo utente B2 continua a funzionare ma mostra un avviso.
 

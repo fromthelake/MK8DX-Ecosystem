@@ -128,6 +128,12 @@ Apache 没有变绿？未改动的 XAMPP Apache 除了 18090 之外，还要使�
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+夜间备份：首次启动还会开启每晚 03:15 的已检查备份。Windows 任务计划程序会以你自己的账户、无需管理员权限，在 Documents\MK8DX-backups\automatic 中创建它；如果那时电脑关机，会在之后尽快运行。MK8DX 窗口关闭时，备份会自行启动并停止它自己的数据库。在包文件夹的 PowerShell 中检查：
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+应看到 "enabled": true 和 "scheduler": "windows-task"；第一晚之后还会看到 "lastResult": "ok"。如果你从未关闭它却显示 "enabled": false（v0.2.6 包无法开启它），请用 backup-schedule 代替 backup-status 运行一次同样的命令；按第 11 步进行的下一次更新也会开启它。要关闭它，请使用 backup-unschedule。
+
 11. 进行软件更新时，先停止 Apache，并在旧的 MK8DX 窗口仍在运行时创建并验证备份。然后在那个窗口中按 Ctrl+C。检查新的 A3 ZIP，并把它解压到旧软件包旁边。继续使用同一个 %LOCALAPPDATA%\MK8DX\NoDocker 数据文件夹。在新软件包内的 PowerShell 中，临时只启动它自己的数据库：
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -151,6 +157,16 @@ python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDoc
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 预期结果是 “备份已验证”，然后所有迁移都通过检查。在维护窗口中按 Ctrl+C。打开 Start-MK8DX-No-Docker.cmd，并在 XAMPP Control Panel 中启动 Apache。用备份中已有的账户登录，检查管理员权限和一个已知的成绩。第一个管理员不会被再次授予。如果目标电脑上已经有 MK8DX 安装，或者有其他进程占用端口 18306，就不要把它用作这次恢复的目标；助手不会删除已有的数据库。请保持原始备份完好无损。
+
+13. 要从电脑上移除这个 A3 安装，如果以后可能还想找回账户和结果，请先按第 10 步做一次备份。Documents\MK8DX-backups 中的备份会一直保留，直到你自己删除。在包文件夹的 PowerShell 中关闭夜间备份：
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+在 XAMPP Control Panel 中停止 Apache，并在 MK8DX 窗口中按 Ctrl+C。然后把 MK8DX 网站从 Apache 中移除：
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+应看到“MK8DX Apache site removed”和“Syntax OK”。只会移除第 4 步添加的 Include 行和 mk8dx-local.conf；XAMPP 的其他网站和数据库保持不变。然后删除 %LOCALAPPDATA%\MK8DX\NoDocker（数据库、账户和密钥）和 %LOCALAPPDATA%\MK8DX\ApacheBackup 文件夹，最后删除包文件夹。XAMPP、Node.js 和 Python 仍保持安装；只有在没有其他用途时，才在 Windows 设置 → 应用中卸载它们。如果你还用 XAMPP 运行其他网站，请重新启动 Apache。
 
 在你的家庭网络中使用
 
@@ -527,7 +543,7 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 备份、恢复和更新
 
-自动备份：MK8DX 每晚还会自行创建一份经过校验的备份（A1、A3 和 B1 在首次设置时开启；B2 只询问一次，回车即为是；A2 在 MK8DX beheer 中有自己的备份）。在 Windows 上保存在 Documents\MK8DX-backups\automatic，在 Linux 和共享主机上保存在 ~/mk8dx-backups/automatic，保留 14 天和 4 周，某一晚失败也绝不会删除较早的备份。菜单 3（检查）会在 automaticBackup 下显示最近一次备份的时长和结果。仍请在电脑或服务器之外保留一份副本：在 Windows 上使用 python tooling/install.py backup-schedule --state-dir <安装文件夹> --copy-to <文件夹>（另一块硬盘或 NAS）；在服务器上，python3 tooling/install.py backup-latest --state-dir <安装文件夹> --print-path 会给出可用 scp 取回的最新已校验文件夹。关闭时把 backup-schedule 换成 backup-unschedule。如果主机商已每天备份账户（DirectAdmin、JetBackup），这可能已经足够；有自己的备份，你仍能亲自恢复到昨天，包括网站密钥。
+自动备份：MK8DX 每晚还会自行创建一份经过校验的备份（A1、A3 和 B1 在首次设置时开启；B2 只询问一次，回车即为是；A2 在 MK8DX beheer 中有自己的备份）。在 Windows 上保存在 Documents\MK8DX-backups\automatic，在 Linux 和共享主机上保存在 ~/mk8dx-backups/automatic，保留 14 天和 4 周，某一晚失败也绝不会删除较早的备份。菜单 3（检查）会在 automaticBackup (A3: backup-status) 下显示最近一次备份的时长和结果。仍请在电脑或服务器之外保留一份副本：在 Windows 上使用 python tooling/install.py backup-schedule --state-dir <安装文件夹> --copy-to <文件夹>（另一块硬盘或 NAS）；在服务器上，python3 tooling/install.py backup-latest --state-dir <安装文件夹> --print-path 会给出可用 scp 取回的最新已校验文件夹。关闭时把 backup-schedule 换成 backup-unschedule。如果主机商已每天备份账户（DirectAdmin、JetBackup），这可能已经足够；有自己的备份，你仍能亲自恢复到昨天，包括网站密钥。
 
 数据库账户：网站使用一个只能读写数据的账户登录数据库，因此网站中的错误永远无法删除数据表；数据库更新和备份使用第二个账户。A1、A2、A3 和 B1 会自动设置，现有安装会在下次更新（菜单 7）时设置；如果网站无法使用新账户启动，更新会回到旧账户，不会丢失任何数据。在 B2 上，请在 DirectAdmin 或 cPanel 中创建第二个只有 SELECT、INSERT、UPDATE 和 DELETE 的数据库用户，并在向导中填写，或稍后使用 python3 tooling/install.py database-accounts --state-dir <安装文件夹>；只有一个用户时 B2 仍可运行，但会显示警告。
 

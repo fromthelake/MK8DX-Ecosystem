@@ -115,7 +115,7 @@ flowchart TB
 | --- | --- | --- | --- |
 | **A2** 家庭或俱乐部网络 | 你自己的网络，设置完成后无需联网，每人一张登录卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 芯片或 Intel） | 已在 Windows 11 上完成端到端测试；Linux 在 WSL 2 中测试；Mac 版已构建，尚未在真实 Mac 上测试 |
 | **A1** 单台电脑 | 在你面前的这台电脑上试用 | Windows 11 或 Linux，x86-64，需要 Docker | 已测试：安装、升级、备份 |
-| **A3** 不使用 Docker 的单台电脑 | 无法使用 Docker 的 Windows 电脑 | Windows 11，配合 XAMPP 和 Node.js | 已测试：安装、升级、备份 |
+| **A3** 不使用 Docker 的单台电脑 | 无法使用 Docker 的 Windows 电脑 | Windows 11，配合 XAMPP 和 Node.js | 已在 Windows 11 上完整测试：安装、登录、扫描器、锦标赛、备份、夜间备份、更新、移除 |
 | **B1** 公开网站 | 你的在线社区，使用你自己的域名和邮箱 | 装有 Docker 的 Linux x86-64 服务器（VPS）；文档以 Ubuntu 24.04 为例 | 已有文档，尚未进行端到端测试 |
 | **B2** 虚拟主机 | 在线运行，无需自己的服务器 | 支持 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主机方案 | 我们自己的社区网站就是这样运行的；公开软件包尚未在全新的主机账户上从零安装过 |
 
