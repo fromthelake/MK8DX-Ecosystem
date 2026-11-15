@@ -21,23 +21,23 @@ git diff --check
 
 | Component | Opdrachten (vanuit de root van de repository) |
 | --- | --- |
-| API (`backend/api`) | `npm ci --prefix backend/api`, daarna `npm run typecheck`, `npm test` en `npm run build` met `--prefix backend/api` |
-| Website (`apps/timetrials-web`) | dezelfde vier opdrachten met `--prefix apps/timetrials-web` |
+| API (`backend/api`) | `npm ci --prefix backend/api`, daarna `npm run typecheck`, `npm test`, `npm run build` en `npm run check:links` met `--prefix backend/api` |
+| Website (`apps/timetrials-web`) | `npm ci`, `npm run typecheck`, `npm test` en `npm run build` met `--prefix apps/timetrials-web`; na een tekstwijziging ook `npm ci --prefix tooling/i18n` en `node tooling/i18n/extract_web_messages.mjs --check` |
 | Gedeelde CSS | `node tooling/design-system/css-metrics.mjs --check` |
 | Browserscanner (`apps/timetrials-scanner-web`) | `npm ci --ignore-scripts`, `npm run sync-assets`, `npm run typecheck`, `npm run build` in die map |
 | Openbare herkenningstestset | `node tooling/test-set/score_test_set.mjs` na `npm ci`, `sync-assets` en `npx --prefix apps/timetrials-scanner-web playwright install chromium` voor de scanner ([testset](../packages/assets/test-set/README.md)) |
 | Centrale lezer (`packages/icon-matcher`) | zie hieronder |
 | Databasemigraties en seeds | `python tooling/reference/generate_benchmark_manifest.py --check`, plus de [MySQL-integratietests](#database-integratietests) van de API |
-
-`npm test` van de API bevat `test/request-budget-coverage.test.ts`: die stelt de echte gehoste runtime samen (zonder
-database) en faalt zodra een wijzigende route, of een met verse bevestiging beveiligde leesroute, geen
-verzoekbudget en geen allowlist-regel met reden heeft ([wijzigende routes](architecture/MUTATING_ROUTES.md#checked-by-a-test)).
-Hij vervangt CodeQL-regel `js/missing-rate-limiting`, de enige regel die `.github/codeql/codeql-config.yml` uitsluit.
 | Design tokens (Web en Android) | `node packages/design-tokens/generate.mjs --check` |
 | Installer, privacyscan (`tooling/`) | `python -m unittest discover -s tooling/tests` |
 | Intaketool | `MK8DX_INTAKE_TEST_ROOT=<tijdelijke map buiten de repository> python tooling/test_intake.py -v` |
 | LiveTrial (`apps/timetrials-desktop`) | zie hieronder |
 | Android, Tournament | de bouw- en teststappen in [Client builds](CLIENT_BUILDS.md) |
+
+`npm test` van de API bevat `test/request-budget-coverage.test.ts`: die stelt de echte gehoste runtime samen (zonder
+database) en faalt zodra een wijzigende route, of een met verse bevestiging beveiligde leesroute, geen
+verzoekbudget en geen allowlist-regel met reden heeft ([wijzigende routes](architecture/MUTATING_ROUTES.md#checked-by-a-test)).
+Hij vervangt CodeQL-regel `js/missing-rate-limiting`, de enige regel die `.github/codeql/codeql-config.yml` uitsluit.
 
 Centrale lezer, TypeScript en Python:
 
@@ -58,7 +58,18 @@ Remove-Item Env:PYTHONPATH
 ```
 
 De Python-tests vragen de vastgepinde pakketten uit [requirements-dev.txt](../requirements-dev.txt). Tests met
-private evaluatiebeelden worden overgeslagen als die niet zijn ingesteld.
+private evaluatiebeelden worden overgeslagen als die niet zijn ingesteld. Nog vijftien tests (en de
+`scan-runtime`-pariteitstests van Android) worden overgeslagen tot je ze het openbare herkenningspakket geeft, zoals
+CI doet. Zet het eenmaal klaar in een nieuwe map buiten de repository (een absoluut pad) en zet vóór de opdrachten
+hierboven twee variabelen:
+
+```powershell
+node tooling/assets/materialize_collection.mjs recognition-pack C:\pad\naar\recognition-pack
+$env:MK8DX_RECOGNITION_PACK = "C:\pad\naar\recognition-pack"
+$env:MK8DX_FRAME_DEFINITIONS = "C:\pad\naar\recognition-pack\frame-definitions-v1.json"
+```
+
+In een POSIX-shell gebruik je op dezelfde manier `export MK8DX_RECOGNITION_PACK=...` en `export MK8DX_FRAME_DEFINITIONS=...`.
 
 LiveTrial-desktoptests (Windows; één test verwacht Windows-paden):
 
@@ -73,6 +84,13 @@ en zijn Clean Assets-database, die niet in deze repository staan.
 `apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py` faalt zodra een bestand in `engine-overlay` en de
 `vision-runtime`-kopie die het pakket meeneemt niet meer dezelfde tekst hebben.
 
+De grenstests van de Windows-clients gebruiken verzonnen scoreregels en een lokale outbox; ze vragen geen privé-opname,
+account of server. Verify draait ze op Windows:
+
+```powershell
+python -m pytest -q -p no:cacheprovider tests/windows_clients
+```
+
 Toernooitests (`tests/tournament`) draaien op de vergrendelde runtime van het Tools-pakket
 ([requirements.lock.txt](../tooling/tournament/requirements.lock.txt)). Ze bevatten een rooktest van de analyse
 van een opname na het tekstlezen: synthetische OCR-rijen en scoreschermen, via naamkoppeling en de
@@ -85,6 +103,13 @@ afhankelijkheidsupdate die dit pad breekt, faalt daar:
 ```powershell
 python -m pytest -q -p no:cacheprovider -rs tests/tournament
 ```
+
+De omgeving van `requirements-dev.txt` heeft deze runtime niet: daar faalt het verzamelen met
+`No module named 'mk8dx_tournament_extraction'`. Maak een tweede virtuele omgeving met Python 3.12 (bijvoorbeeld
+`py -3.12 -m venv C:\venvs\mk8dx-tournament`, buiten de repository) en voer de twee PowerShell-stappen van de
+job `tournament-tests` in [verify.yml](../.github/workflows/verify.yml) uit met die interpreter, met een eigen map
+in plaats van `$env:RUNNER_TEMP`. Ze installeren CPU-PyTorch, de productwheels en de vergrendelde set (ongeveer
+1 GB), zetten de opname-assets klaar en draaien de tests.
 
 ## Database-integratietests
 
@@ -181,5 +206,6 @@ de CSS-controle, de intakeproef en de toolingtests; gitleaks over de geschiedeni
 Android-unittests en debug-APK; de LiveTrial-desktoptests (Windows) en een compileercontrole van de LiveTrial- en
 toernooibronnen; de bouw van het toernooipakket en de toernooitests op zijn vergrendelde runtime (Windows); en de
 Docker-images.
-[CodeQL](../.github/workflows/codeql.yml) analyseert JavaScript/TypeScript, Python en Java. De
-database-integratietests draaien nog niet in CI.
+[CodeQL](../.github/workflows/codeql.yml) analyseert JavaScript/TypeScript, Python en Java. De job
+`database-integration` draait de [database-integratietests](#database-integratietests) op MySQL 9.7, MySQL 8.4 en
+MariaDB 11.4.

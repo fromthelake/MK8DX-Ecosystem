@@ -17,7 +17,7 @@ It takes you through step by step. The pages in this folder are technical refere
 | **B2** — web hosting with Node.js and MariaDB | A public website without a server of your own | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account | [B2_WEBHOSTING_EN.md](B2_WEBHOSTING_EN.md) |
 
 After that: [connecting the apps](CLIENTS_EN.md), [settings](SETTINGS_EN.md), [administration, updates and restoring](ADMINISTRATION_EN.md)
-and [building it yourself](ONTWIKKELEN.md) (Dutch).
+and [building it yourself](../DEVELOPMENT.md) (the developer guide).
 
 For A1 you use the **host package** (`mk8dx-host-local-…`) from the release, for A3 the package `mk8dx-xampp-node-windows-…`. You do not need to
 edit source code, install Python packages with `pip` or build a Docker
@@ -57,7 +57,7 @@ together with `SHA256SUMS.txt`:
 Check every package before extracting it. In PowerShell, in the folder with both files:
 
 ```powershell
-Get-FileHash '.\<pakketnaam>.zip' -Algorithm SHA256
+Get-FileHash '.\<package-name>.zip' -Algorithm SHA256
 ```
 
 Compare the whole value with the line for that file in `SHA256SUMS.txt`. If it differs, extract nothing

@@ -46,8 +46,8 @@ test environment.
 
 | Component | Commands (from the repository root) |
 | --- | --- |
-| API (`backend/api`) | `npm ci --prefix backend/api`, then `npm run typecheck`, `npm test` and `npm run build` with `--prefix backend/api` |
-| Website (`apps/timetrials-web`) | the same four commands with `--prefix apps/timetrials-web` |
+| API (`backend/api`) | `npm ci --prefix backend/api`, then `npm run typecheck`, `npm test`, `npm run build` and `npm run check:links` with `--prefix backend/api` |
+| Website (`apps/timetrials-web`) | `npm ci`, `npm run typecheck`, `npm test` and `npm run build` with `--prefix apps/timetrials-web`; after a text change also `npm ci --prefix tooling/i18n` and `node tooling/i18n/extract_web_messages.mjs --check` |
 | Shared CSS | `node tooling/design-system/css-metrics.mjs --check` |
 | Browser scanner (`apps/timetrials-scanner-web`) | `npm ci --ignore-scripts`, `npm run sync-assets`, `npm run typecheck`, `npm run build` in that folder |
 | Public recognition test set | `node tooling/test-set/score_test_set.mjs` after the scanner's `npm ci` and `sync-assets` and `npx --prefix apps/timetrials-scanner-web playwright install chromium` ([test set](../packages/assets/test-set/README.md)) |
@@ -83,7 +83,17 @@ Remove-Item Env:PYTHONPATH
 ```
 
 The Python tests need the pinned packages in [requirements-dev.txt](../requirements-dev.txt). Tests that use
-private evaluation images skip when those are not configured.
+private evaluation images skip when those are not configured. Fifteen more tests (and the Android
+`scan-runtime` parity tests) also skip until you give them the public recognition pack, as CI does. Materialize it
+once into a new folder outside the repository (an absolute path) and set two variables before the commands above:
+
+```powershell
+node tooling/assets/materialize_collection.mjs recognition-pack C:\path\to\recognition-pack
+$env:MK8DX_RECOGNITION_PACK = "C:\path\to\recognition-pack"
+$env:MK8DX_FRAME_DEFINITIONS = "C:\path\to\recognition-pack\frame-definitions-v1.json"
+```
+
+In a POSIX shell use `export MK8DX_RECOGNITION_PACK=...` and `export MK8DX_FRAME_DEFINITIONS=...` the same way.
 
 LiveTrial desktop tests (Windows; one test asserts Windows paths):
 
@@ -120,6 +130,13 @@ fails there:
 ```powershell
 python -m pytest -q -p no:cacheprovider -rs tests/tournament
 ```
+
+The `requirements-dev.txt` environment does not have this runtime: there the collection fails with
+`No module named 'mk8dx_tournament_extraction'`. Make a second virtual environment with Python 3.12 (for example
+`py -3.12 -m venv C:\venvs\mk8dx-tournament`, outside the repository) and run the two PowerShell steps of the
+`tournament-tests` job in [verify.yml](../.github/workflows/verify.yml) with its interpreter, replacing
+`$env:RUNNER_TEMP` with a folder of your own. They install CPU PyTorch, the product wheels and the locked
+closure (about 1 GB), materialize the recorded assets and run the tests.
 
 ## Database integration tests
 
@@ -232,5 +249,6 @@ CSS check, the intake rehearsal and the tooling tests; gitleaks over the history
 test set; the Android unit tests and debug APK; the LiveTrial desktop tests (Windows) and a compile check of the
 LiveTrial and Tournament sources; the Tournament package build and the Tournament tests on its locked runtime
 (Windows); and the Docker image builds.
-[CodeQL](../.github/workflows/codeql.yml) analyses JavaScript/TypeScript, Python and Java. The database
-integration tests do not run in CI yet.
+[CodeQL](../.github/workflows/codeql.yml) analyses JavaScript/TypeScript, Python and Java. The
+`database-integration` job runs the [database integration tests](#database-integration-tests) on MySQL 9.7,
+MySQL 8.4 and MariaDB 11.4.

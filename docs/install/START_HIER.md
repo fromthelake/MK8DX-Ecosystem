@@ -17,7 +17,8 @@ Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag 
 | **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
 
 Daarna: [apps koppelen](CLIENTS.md), [instellingen](INSTELLINGEN.md), [beheer, updates en herstel](BEHEER.md)
-en [zelf bouwen](ONTWIKKELEN.md).
+en [zelf bouwen](../DEVELOPMENT_NL.md) (de ontwikkelaarsgids; eigen app-identiteit en ondertekening:
+[ONTWIKKELEN.md](ONTWIKKELEN.md)).
 
 Voor A1 gebruik je het **hostpakket** (`mk8dx-host-local-…`) uit de release, voor A3 het pakket `mk8dx-xampp-node-windows-…`. Je hoeft geen broncode te
 bewerken, geen Python-pakketten met `pip` te installeren en geen Docker-image

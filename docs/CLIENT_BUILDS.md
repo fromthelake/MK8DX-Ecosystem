@@ -36,12 +36,15 @@ untracked `local.properties` containing `sdk.dir`). From
 `apps/timetrials-android`, on Windows:
 
 ```powershell
-$env:ANDROID_HOME = 'C:\path\to\Android\Sdk'
-./gradlew.bat :app:testDebugUnitTest :app:assembleDebug
+$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"   # Android Studio's default; adjust if yours differs
+./gradlew.bat :app:testDebugUnitTest :scan-runtime:testDebugUnitTest :app:assembleDebug
 ```
 
-On Linux or macOS, set `ANDROID_HOME` the same way and run `bash ./gradlew :app:testDebugUnitTest :app:assembleDebug`
-(the wrapper is stored without its executable bit). CI builds this way on Ubuntu with JDK 21.
+On Linux or macOS, set `ANDROID_HOME` the same way and run
+`bash ./gradlew :app:testDebugUnitTest :scan-runtime:testDebugUnitTest :app:assembleDebug`
+(the wrapper is stored without its executable bit). CI builds this way on Ubuntu with JDK 21. The `scan-runtime`
+parity tests skip until `MK8DX_RECOGNITION_PACK` points at the public recognition pack
+([how](TESTING.md#per-component), under the central reader).
 
 The default build includes the scanner and materializes its model/assets from
 the collection. The resulting `app/build/outputs/apk/debug/app-debug.apk` is

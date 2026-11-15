@@ -1,6 +1,9 @@
 # C — zelf bouwen of aanpassen
 
-Dit is een aparte ontwikkelaarsroute. Voor A1/A2/B1 installeer je **voorgebouwde** images uit het hostpakket; voor Android, LiveTrial en Tournament gebruik je de gecontroleerde clientpakketten. Een serveradres verandert voor gewone gebruikers in de wizard of clientinstellingen, zonder Android Studio, Gradle, Pythonbron of Dockerbuild.
+Ontwikkelomgeving, tests en een wijziging indienen: zie de [ontwikkelaarsgids](../DEVELOPMENT_NL.md) en
+[Testen](../TESTING_NL.md). Deze pagina gaat over een eigen build, app-identiteit en ondertekening.
+
+Dit is een aparte ontwikkelaarsroute. Voor A1/B1 installeer je **voorgebouwde** images uit het hostpakket, voor A2 uit het A2-pakket; voor Android, LiveTrial en Tournament gebruik je de gecontroleerde clientpakketten. Een serveradres verandert voor gewone gebruikers in de wizard of clientinstellingen, zonder Android Studio, Gradle, Pythonbron of Dockerbuild.
 
 Kies voor eigen code, afwijkende app-identiteit/branding of een zelf ondertekende APK het volledige `mk8dx-full-local-<versie>.zip` met `repository/` en de interne collectie. Controleer de release-SHA en het bestandmanifest; ook de automatisch gegenereerde GitHub-source-ZIP bevat de volledige collectie. [Client builds](../CLIENT_BUILDS.md) beschrijft Node 24, Android SDK/JDK, Python 3.12 en buildvolgorde. De Web/API-imagebouw staat in `compose.yaml` en de Dockerfiles binnen de repository. Gebruik een nieuwe buildmap en eigen configuratie, nooit de oorspronkelijke read-only bronlocaties.
 
