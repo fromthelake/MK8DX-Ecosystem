@@ -1,0 +1,13 @@
+# CodeQL configuration for .github/workflows/codeql.yml (all languages).
+paths-ignore:
+  - packages/assets/collection
+  - '**/node_modules'
+# js/missing-rate-limiting is replaced by a stricter repository test: it cannot see the API's own
+# durable, database-backed request budgets, and every alert it raised here was a false positive.
+# backend/api/test/request-budget-coverage.test.ts composes the real hosted runtime and fails when a
+# mutating route (or a step-up protected read) has no budget and no reasoned allowlist entry; the
+# budgets themselves are listed in docs/architecture/MUTATING_ROUTES.md. Only this one rule is
+# excluded; every other query of the default suite still runs.
+query-filters:
+  - exclude:
+      id: js/missing-rate-limiting

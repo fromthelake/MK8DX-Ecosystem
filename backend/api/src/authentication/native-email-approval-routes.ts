@@ -54,6 +54,8 @@ export async function registerNativeEmailApprovalRoutes(
   app.post<{ Body: { userCode: string; email: string } }>(
     "/v1/native/device-authorization/email",
     {
+      // Per address slot (auth-email-budgets.ts), per recipient and installation-wide mail budgets.
+      config: { requestBudget: "pre-auth" },
       schema: {
         body: {
           type: "object",
@@ -103,6 +105,8 @@ export async function registerNativeEmailApprovalRoutes(
   app.post<{ Body: { userCode: string; code: string } }>(
     "/v1/native/device-authorization/email/verify",
     {
+      // The durable attempt budget of the pending device challenge (native-email-approval.ts).
+      config: { requestBudget: "route" },
       schema: {
         body: {
           type: "object",

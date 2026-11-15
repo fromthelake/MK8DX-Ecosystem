@@ -286,6 +286,7 @@ export async function registerAccountSwitchRoutes(
 
   app.post<{ Reply: Readonly<{ schemaVersion: typeof NATIVE_REMEMBER_SCHEMA_VERSION; remembered: boolean }> | ErrorResponse }>(
     NATIVE_REMEMBER_PATH, {
+      config: { requestBudget: "pre-auth" },
       schema: { response: { 200: nativeRememberResponseSchema, ...errorResponses } },
     }, async (request, reply) => {
       reply.header("Cache-Control", "no-store");
@@ -334,6 +335,7 @@ export async function registerAccountSwitchRoutes(
 
   app.post<{ Reply: Readonly<{ schemaVersion: "mk8dx.native-account-forget.v1"; forgotten: boolean }> | ErrorResponse }>(
     NATIVE_FORGET_PATH, {
+      config: { requestBudget: "pre-auth" },
       schema: { response: { 200: nativeForgetResponseSchema, ...errorResponses } },
     }, async (request, reply) => {
       reply.header("Cache-Control", "no-store");
@@ -385,6 +387,7 @@ export async function registerAccountSwitchRoutes(
 
   app.post<{ Reply: Readonly<{ schemaVersion: typeof NATIVE_ACCOUNT_SWITCH_SCHEMA_VERSION; token: string; expiresIn: number }> | ErrorResponse }>(
     NATIVE_ACCOUNT_SWITCH_PATH, {
+      config: { requestBudget: "pre-auth" },
       schema: { response: { 200: nativeAccountSwitchResponseSchema, ...errorResponses } },
     }, async (request, reply) => {
       reply.header("Cache-Control", "no-store");
@@ -442,6 +445,7 @@ export async function registerAccountSwitchRoutes(
   });
 
   app.post<{ Reply: AccountSwitchDocument | ErrorResponse }>(ACCOUNT_SWITCH_PATH, {
+    config: { requestBudget: "pre-auth" },
     schema: { response: { 200: accountSwitchResponseSchema, ...errorResponses } },
   }, async (request, reply) => {
     reply.header("Cache-Control", "no-store");
