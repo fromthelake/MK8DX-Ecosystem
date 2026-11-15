@@ -98,7 +98,12 @@ Maintainers and other users can build the same packages from a clean clone with
 `tooling/release/full_archive.py`, `tooling/release/host_bundle.py`, `tooling/release/non_docker_bundle.py` and
 the [client recipes](CLIENT_BUILDS.md). The [hosting guide](guides/HOSTING.md#build-the-host-package-from-a-clone)
 has the manual image commands. Use `host_bundle.py --version <release-tag>` to select versioned GHCR image names;
-without it, local clone builds continue to use the current local image tags.
+without it, local clone builds continue to use the current local image tags. Inside a package the API and Web images carry
+that tag plus the first 12 hex digits of their image ID (`…:v0.2.7-amd64-3f2a9c1d0b4e`), so two packages never load
+different bytes under one tag; `PACKAGE_MANIFEST.json` lists those under `images` and the build tags under
+`builtImages`. The release builds the API and Web images once per processor (job `container-images`) and the host
+package and every A2 package load that build, so A1, B1 and A2 of one release share their images. Removing an
+installation uses `tooling/remove_images.py`, which keeps every image another container still uses.
 
 ### Intel Mac A2 package
 

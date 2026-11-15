@@ -206,15 +206,9 @@ maak eerst een back-up (keuze 6) als er iets is wat je misschien terug wilt.
 
 3. Verwijder de installatiemap: `rm -rf "$state"` (de map bevat sleutels en wachtwoorden; wis hem pas
    na stap 2, die zijn `compose.env` nodig heeft).
-4. Verwijder de images als geen andere installatie op deze machine ze gebruikt. `PACKAGE_MANIFEST.json` in de pakketmap
-   noemt ze:
-
-   ```sh
-   docker image rm $(python3 -c 'import json; print(" ".join(json.load(open("PACKAGE_MANIFEST.json"))["images"]))')
-   ```
-
-   Docker weigert een image te verwijderen dat een container nog gebruikt; `mysql` en `axllent/mailpit` kunnen ook bij
-   andere projecten horen.
+4. Verwijder de images die niets anders op deze machine gebruikt: `python3 tooling/remove_images.py` (`--dry-run`
+   laat het alleen zien). Het leest ze uit `PACKAGE_MANIFEST.json` en laat elk image staan dat een andere container,
+   draaiend of gestopt, nog gebruikt: een andere MK8DX-installatie, of de `mysql` of `axllent/mailpit` van een ander project.
 5. Wis de pakketmap (`/opt/mk8dx/host`) en de back-ups die je niet meer nodig hebt.
 
 **Op Windows** (A1 of A2 met Docker Desktop) zijn de stappen hetzelfde in PowerShell. De installatiemap
@@ -224,7 +218,7 @@ is `%LOCALAPPDATA%\MK8DX\Server`, tenzij je een andere koos; open PowerShell in 
 $state = Join-Path $env:LOCALAPPDATA 'MK8DX\Server'
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v
 Remove-Item -LiteralPath $state -Recurse -Force
-docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).images
+python tooling/remove_images.py
 ```
 
 Gebruik voor A2 `compose.lan.yaml` in plaats van `compose.local.yaml`. Wis daarna de pakketmap en de back-ups

@@ -12,8 +12,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   time names the real buttons (**Post your time**, **Publish**, **Confirm and publish**) and the scanner's **GALLERY**;
   menu 7 says to start the newer package; the nightly backup says how to check it and how to switch it on when the
   0.2.6 first setup could not (the 0.2.6 host package lacked its backup modules, fixed since); and the A1 guides got
-  their own removal section, which warns to keep the images while an A2 installation runs on the same computer. The
-  README route table now says what was tested on A1 and with which version.
+  their own removal section. The README route table now says what was tested on A1 and with which version.
+
+### Fixed
+
+- **A1 and A2 on one computer no longer share an image tag with different bytes.** In 0.2.6 the host package and the
+  A2 packages built their API and Web images separately under the same tag, so starting A1 re-pointed the tag an A2
+  installation starts from, and removing A1's images could take it away. The release now builds these images once per
+  processor for every package, and each package names them by content (`<tag>-<12 hex digits of the image ID>`).
+  Removing an installation uses the new `tooling/remove_images.py`, which keeps every image another container on the
+  computer still uses (another MK8DX installation, a QA database, another program).
 
 ## 0.2.6 — 2026-11-15
 

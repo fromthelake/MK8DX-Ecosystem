@@ -54,7 +54,7 @@ Dit wist de database, de accounts en de sleutels van deze installatie; maak eers
 2. Dubbelklik `Start-MK8DX.cmd` en typ **4** (stoppen), daarna **0**.
 3. `docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v` verwijdert de containers en de database.
 4. `Remove-Item -LiteralPath "$env:LOCALAPPDATA\MK8DX\Server" -Recurse -Force` verwijdert de sleutels en instellingen.
-5. `docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).images` verwijdert de programma's. **Sla deze stap over als er op deze computer een A2-installatie draait:** beide pakketten gebruiken dezelfde imagenamen.
+5. `python tooling/remove_images.py` verwijdert de programma's. Het laat elk image staan dat een andere installatie of een ander programma op deze computer nog gebruikt (bijvoorbeeld een A2-installatie) en zegt welke.
 6. Verwijder de pakketmap, en in `Documenten\MK8DX-backups` de back-ups die je niet meer nodig hebt.
 
 **Je ziet:** de website en de testinbox antwoorden niet meer, en `docker ps -a` toont geen `mk8dx-os-…`-containers van deze installatie meer. Meer: [Een communityserver hosten](../guides/translations/nl/HOSTING.md#een-installatie-verwijderen).

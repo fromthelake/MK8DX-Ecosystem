@@ -47,6 +47,8 @@ FILES = (
     "tooling/database_accounts.py", "tooling/scheduled_backup.py",
     # The daily backup schedule (scheduled_backup.schedule) needs these on every route, not only A2.
     "tooling/auto_backup.py", "tooling/host_platform.py",
+    # Removing an installation: only the images no other container on this computer still uses.
+    "tooling/remove_images.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",
     "tooling/mk8dx-ui.sh", "tooling/launcher_text.py",
     # The launcher texts in the 15 game languages (tooling/i18n/build_web_catalogs.mjs, product "launcher").
@@ -196,6 +198,28 @@ def package_bytes(name, images):
     return source.encode("utf-8")
 
 
+def image_id(tag: str) -> str:
+    return subprocess.check_output(["docker", "image", "inspect", "--format", "{{.Id}}", tag], text=True).strip()
+
+
+def content_tags(images, id_of=image_id):
+    """The tags a package gives its API and Web images: the build tag plus the first 12 hex digits of the
+    image ID, for example `ghcr.io/fromthelake/mk8dx-api:v0.2.7-amd64-3f2a9c1d0b4e`.
+
+    `docker load` replaces whatever image a tag named before. Two packages of one version that were built
+    apart (A1 and A2 of 0.2.6) carried different bytes under the same tag, so starting one re-pointed the
+    tag the other installation starts from. A tag that names its content can never do that: equal bytes
+    get the same tag and load once, different bytes get different tags. MySQL and Mailpit are already
+    pinned by digest (`check_base_image_digests`) and keep their tag."""
+    tagged = []
+    for tag in images[:2]:
+        digest = id_of(tag).strip().split(":", 1)[-1]
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise SystemExit(f"Cannot read the image ID of {tag}")
+        tagged.append(f"{tag}-{digest[:12]}")
+    return (*tagged, *images[2:])
+
+
 def repository(tag: str) -> str:
     """`mysql:8.4.11` -> `mysql`, as `docker image inspect` lists it in RepoDigests."""
     return tag.rsplit(":", 1)[0]
@@ -295,9 +319,20 @@ def main():
         if platform != f"linux/{args.arch}":
             raise SystemExit(f"Wrong image architecture: {image} is {platform}")
     check_base_image_digests()
+    built, images = images, content_tags(images)
     with tempfile.TemporaryDirectory(prefix="mk8dx-host-bundle-", dir=output.parent) as temporary:
         tar = Path(temporary) / f"docker-images-{args.arch}.tar"
-        subprocess.run(["docker", "save", "--output", str(tar), *images], check=True)
+        # A content tag already on this machine names exactly these bytes (an installed package of this build):
+        # keep it. Only the names added here are taken away again; the build tags stay as they were.
+        added = [packaged for packaged in images[:2]
+                 if subprocess.run(["docker", "image", "inspect", packaged], capture_output=True).returncode != 0]
+        for source, packaged in zip(built[:2], images[:2]):
+            subprocess.run(["docker", "tag", source, packaged], check=True)
+        try:
+            subprocess.run(["docker", "save", "--output", str(tar), *images], check=True)
+        finally:
+            if added:
+                subprocess.run(["docker", "image", "rm", *added], check=False, capture_output=True)
         file_bytes = {name: package_bytes(name, images) for name in paths}
         if args.offline_candidate:
             # The launcher and installer read the exact images from here and start the setup wizard.
@@ -334,7 +369,7 @@ def main():
         receipt = {"schemaVersion": "mk8dx.host-bundle.v1", "revision": args.revision,
                    "platform": args.platform, "arch": args.arch,
                    "sourceCommit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
-                   "images": list(images), "baseImageDigests": base_image_pins(),
+                   "images": list(images), "builtImages": list(built[:2]), "baseImageDigests": base_image_pins(),
                    "files": {name: {"bytes": len(payload), "sha256": hashlib.sha256(payload).hexdigest()}
                              for name, payload in file_bytes.items()}}
         receipt["files"][f"images/docker-images-{args.arch}.tar"] = {"bytes": tar.stat().st_size, "sha256": sha256(tar)}

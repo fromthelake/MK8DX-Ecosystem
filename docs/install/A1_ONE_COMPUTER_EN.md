@@ -119,8 +119,8 @@ want anything back. In PowerShell in the package folder:
 3. `docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v`
    removes the containers and the database.
 4. `Remove-Item -LiteralPath "$env:LOCALAPPDATA\MK8DX\Server" -Recurse -Force` removes the keys and settings.
-5. `docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).images` removes the programs.
-   **Skip this step when an A2 installation runs on this computer:** both packages use the same image names.
+5. `python tooling/remove_images.py` removes the programs. It keeps every image another installation or program
+   on this computer still uses (an A2 installation, for example) and says which.
 6. Delete the package folder, and in `Documents\MK8DX-backups` the backups you no longer need.
 
 **You see:** the website and the test inbox no longer answer, and `docker ps -a` shows no `mk8dx-os-…` containers
