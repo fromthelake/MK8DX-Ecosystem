@@ -526,7 +526,7 @@ const views = {
       const s = el("div", "person"); const img = el("img"); img.src = setup.qr; img.alt = T.setupCard;
       // The same short code the /setup page shows, in the same grouping, so comparing is easy.
       const code = setup.fingerprint.slice(0, 16).toUpperCase().match(/.{4}/g).join(" ");
-      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), copyButton(T.copySetup, setup.setupUrl),
+      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), copyButton(T.copySetup, setup.pairingUrl || setup.setupUrl),
         el("div", "muted", T.fingerprint), el("div", "short-code", code));
       deviceCards.append(s);
     } catch (error) { main.append(errorBox(error.message)); }
