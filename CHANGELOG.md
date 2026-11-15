@@ -28,6 +28,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   setting `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 seconds) instead of waiting minutes on a mail server that is down.
   When **Send the link** cannot mail, the link is still created and the page says so within that time, names
   `install.py step-up-link` and keeps waiting for the confirmation (`503 step_up_mail_unavailable` instead of 500).
+  The Android app's confirmation window does the same: it shows the web's message (in every language) instead of
+  "The link could not be sent" and keeps waiting until the created link expires.
 
 - **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
   runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no

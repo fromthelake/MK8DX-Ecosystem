@@ -1415,8 +1415,8 @@
   {
    "key": "Cancel",
    "places": [
-    "AndroidStepUp.kt:237",
-    "AndroidStepUp.kt:245",
+    "AndroidStepUp.kt:275",
+    "AndroidStepUp.kt:283",
     "AndroidAccountEcosystemScreens.kt:424",
     "AndroidIdentityLinkScreen.kt:245"
    ],
@@ -1613,7 +1613,7 @@
   {
    "key": "Check your inbox and open the link. This window waits for your confirmation.",
    "places": [
-    "AndroidStepUp.kt:198"
+    "AndroidStepUp.kt:226"
    ],
    "nl": "Kijk in je inbox en open de link. Dit venster wacht op je bevestiging."
   },
@@ -2275,7 +2275,7 @@
   {
    "key": "Confirm with a new email link",
    "places": [
-    "AndroidStepUp.kt:236",
+    "AndroidStepUp.kt:274",
     "AndroidIdentityLinkScreen.kt:138"
    ],
    "nl": "Bevestig met een nieuwe e-maillink"
@@ -8680,14 +8680,14 @@
   {
    "key": "Send the link",
    "places": [
-    "AndroidStepUp.kt:250"
+    "AndroidStepUp.kt:288"
    ],
    "nl": "Stuur de link"
   },
   {
    "key": "Sending…",
    "places": [
-    "AndroidStepUp.kt:274",
+    "AndroidStepUp.kt:323",
     "AndroidPlayerInteractions.kt:276",
     "AndroidDirectorHostRequest.kt:182"
    ],
@@ -10123,6 +10123,13 @@
    "nl": "De communityrecords kunnen nu niet worden geladen."
   },
   {
+   "key": "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+   "places": [
+    "AndroidStepUp.kt:237"
+   ],
+   "nl": "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder."
+  },
+  {
    "key": "The device code expired.",
    "places": [
     "AndroidDutchUiCopy.kt:449"
@@ -10223,21 +10230,21 @@
   {
    "key": "The link could not be sent. Please retry.",
    "places": [
-    "AndroidStepUp.kt:207"
+    "AndroidStepUp.kt:235"
    ],
    "nl": "De link kon niet worden verstuurd. Probeer het opnieuw."
   },
   {
    "key": "The link has expired. Send a new one to continue.",
    "places": [
-    "AndroidStepUp.kt:208"
+    "AndroidStepUp.kt:241"
    ],
    "nl": "De link is verlopen. Stuur een nieuwe om verder te gaan."
   },
   {
    "key": "The link was sent.",
    "places": [
-    "AndroidStepUp.kt:273"
+    "AndroidStepUp.kt:322"
    ],
    "nl": "De link is verstuurd."
   },
@@ -10604,7 +10611,7 @@
   {
    "key": "This action needs a fresh confirmation. We send a one-time link to your account's email address. Open it, on this device or another one, and press Confirm. Then this action continues by itself.",
    "places": [
-    "AndroidStepUp.kt:192"
+    "AndroidStepUp.kt:220"
    ],
    "nl": "Voor deze actie is een nieuwe bevestiging nodig. We sturen een eenmalige link naar het e-mailadres van je account. Open die, op dit apparaat of een ander, en druk op Bevestigen. Daarna gaat deze actie vanzelf verder."
   },
@@ -10937,7 +10944,7 @@
   {
    "key": "Too many links were requested. Wait a few minutes and try again.",
    "places": [
-    "AndroidStepUp.kt:202"
+    "AndroidStepUp.kt:230"
    ],
    "nl": "Er zijn te veel links aangevraagd. Wacht een paar minuten en probeer het opnieuw."
   },
@@ -12122,7 +12129,7 @@
   {
    "key": "You are signed out. Sign in again first.",
    "places": [
-    "AndroidStepUp.kt:206"
+    "AndroidStepUp.kt:234"
    ],
    "nl": "Je bent afgemeld. Meld je eerst opnieuw aan."
   },

@@ -92,6 +92,40 @@ class AndroidStepUpTest {
     }
 
     @Test
+    fun stepUpClientReportsAFailedMailWithTheCreatedLinksExpiry() {
+        val mailFailed = """{"code":"step_up_mail_unavailable","message":"The confirmation link was created, but the email could not be sent.","linkExpiresAtMs":1800000600000}"""
+        val client = AndroidStepUpClient("https://example.invalid", session, AndroidTournamentConnectionOpener { url ->
+            StepUpFakeConnection(url, 503, errorBody = mailFailed)
+        })
+        val failure = assertThrows(AndroidStepUpException::class.java) { client.request() }
+        assertEquals(AndroidStepUpException.Kind.MailUnavailable, failure.kind)
+        assertEquals(1_800_000_600_000L, failure.linkExpiresAtMs)
+
+        // Strict: anything but exactly that document stays the generic "could not be sent".
+        listOf(
+            """{"code":"step_up_mail_unavailable","message":"x","linkExpiresAtMs":5,"extra":1}""",
+            """{"code":"step_up_mail_unavailable","message":"x"}""",
+            """{"code":"step_up_mail_unavailable","message":"x","linkExpiresAtMs":"5"}""",
+            """{"code":"step_up_mail_unavailable","message":"x","linkExpiresAtMs":0}""",
+            """{"code":"step_up_mail_unavailable","message":"x","linkExpiresAtMs":1.5}""",
+            """{"code":"step_up_mail_unavailable","message":7,"linkExpiresAtMs":5}""",
+            """{"code":"service_unavailable","message":"x","linkExpiresAtMs":5}""",
+            "not json",
+        ).forEach { body -> assertEquals(body, null, parseAndroidStepUpMailUnavailable(body)) }
+        val plain = AndroidStepUpClient("https://example.invalid", session, AndroidTournamentConnectionOpener { url ->
+            StepUpFakeConnection(url, 503, errorBody = """{"code":"service_unavailable","message":"down"}""")
+        })
+        val generic = assertThrows(AndroidStepUpException::class.java) { plain.request() }
+        assertEquals(AndroidStepUpException.Kind.Unavailable, generic.kind)
+        assertEquals(null, generic.linkExpiresAtMs)
+        // The document only counts on a 503.
+        val wrongStatus = AndroidStepUpClient("https://example.invalid", session, AndroidTournamentConnectionOpener { url ->
+            StepUpFakeConnection(url, 500, errorBody = mailFailed)
+        })
+        assertEquals(AndroidStepUpException.Kind.Unavailable, assertThrows(AndroidStepUpException::class.java) { wrongStatus.request() }.kind)
+    }
+
+    @Test
     fun controllerRepeatsTheActionOnceAfterConfirmationAndNotAfterCancel() = runBlocking {
         val controller = AndroidStepUpController()
         var attempts = 0
