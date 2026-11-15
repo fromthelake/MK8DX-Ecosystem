@@ -227,11 +227,25 @@
    "nl": "1. Controleer de namen:"
   },
   {
+   "key": "12 hours (default)",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:60"
+   ],
+   "nl": "12 uur (standaard)"
+  },
+  {
    "key": "150cc and 200cc",
    "places": [
     "AndroidClaimCandidates.kt:78"
    ],
    "nl": "150cc en 200cc"
+  },
+  {
+   "key": "2 hours",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:58"
+   ],
+   "nl": "2 uur"
   },
   {
    "key": "2. Choose the right status for each person:",
@@ -248,11 +262,25 @@
    "nl": "23 niveaus · gereden circuits per niveau · langere balken betekenen meer circuits"
   },
   {
+   "key": "24 hours",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:61"
+   ],
+   "nl": "24 uur"
+  },
+  {
    "key": "2nd/3rd",
    "places": [
     "AndroidTournamentStandingSection.kt:798"
    ],
    "nl": "2e/3e"
+  },
+  {
+   "key": "3 days",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:62"
+   ],
+   "nl": "3 dagen"
   },
   {
    "key": "3. Tick for each participant which Switches they can bring to the tournament:",
@@ -274,6 +302,20 @@
     "AndroidTournamentParticipantsStep.kt:485"
    ],
    "nl": "5. Gereed?"
+  },
+  {
+   "key": "6 hours",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:59"
+   ],
+   "nl": "6 uur"
+  },
+  {
+   "key": "7 days (maximum)",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:63"
+   ],
+   "nl": "7 dagen (maximaal)"
   },
   {
    "key": "96 TRACKS",
@@ -299,7 +341,7 @@
   {
    "key": "A Player name is ambiguous or unknown. Map this feed in the web manager.",
    "places": [
-    "AndroidTournamentScreen.kt:3600"
+    "AndroidTournamentScreen.kt:3631"
    ]
   },
   {
@@ -315,6 +357,13 @@
     "AndroidNotificationPresentation.kt:197"
    ],
    "nl": "Een beoordelaar heeft een vraag over je koppelverzoek"
+  },
+  {
+   "key": "A roster match alone never opens a public live feed. A feed goes public when you confirm it, or when it comes from an account you delegated live capture to for this night. A delegation lasts 12 hours unless you choose otherwise (at most 7 days); revoking it takes that account's feeds off the public view at once.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:263"
+   ],
+   "nl": "Een rostermatch alleen opent nooit een openbare live-feed. Een feed wordt openbaar als jij hem bevestigt, of als hij komt van een account waaraan jij de live-capture voor deze avond hebt gedelegeerd. Een delegatie geldt 12 uur, tenzij je iets anders kiest (maximaal 7 dagen); intrekken haalt de feeds van dat account direct van de openbare weergave."
   },
   {
    "key": "A short note for the administrators (optional)",
@@ -413,6 +462,7 @@
   {
    "key": "Account",
    "places": [
+    "AndroidTournamentLiveDelegations.kt:318",
     "AndroidDutchUiCopy.kt:14"
    ],
    "nl": "Account"
@@ -598,7 +648,7 @@
   {
    "key": "Affects TrueSkill",
    "places": [
-    "AndroidTournamentScreen.kt:3778",
+    "AndroidTournamentScreen.kt:3809",
     "AndroidDutchUiCopy.kt:196"
    ],
    "nl": "Telt mee voor TrueSkill"
@@ -753,6 +803,13 @@
     "AndroidDutchUiCopy.kt:19"
    ],
    "nl": "Onder rivalen"
+  },
+  {
+   "key": "An account appears here once its Tournament Live has connected to this night and pressed Start. Its feed then waits for you.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:368"
+   ],
+   "nl": "Een account verschijnt hier zodra zijn Tournament Live met deze avond is verbonden en op START heeft gedrukt. De feed wacht dan op jou."
   },
   {
    "key": "An administrator of {0} approves it first.",
@@ -1205,7 +1262,7 @@
   {
    "key": "Blocked: more than 3 connection resets. Correct the desktop session; no segments were discarded.",
    "places": [
-    "AndroidTournamentScreen.kt:3651"
+    "AndroidTournamentScreen.kt:3682"
    ]
   },
   {
@@ -1358,8 +1415,8 @@
   {
    "key": "Cancel",
    "places": [
-    "AndroidStepUp.kt:237",
-    "AndroidStepUp.kt:245",
+    "AndroidStepUp.kt:275",
+    "AndroidStepUp.kt:283",
     "AndroidAccountEcosystemScreens.kt:424",
     "AndroidIdentityLinkScreen.kt:245"
    ],
@@ -1371,6 +1428,13 @@
     "AndroidDutchUiCopy.kt:56"
    ],
    "nl": "Nieuw toernooi annuleren"
+  },
+  {
+   "key": "Capture delegations could not be loaded. Live feeds still wait for your confirmation.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:273"
+   ],
+   "nl": "Capturedelegaties konden niet worden geladen. Live-feeds wachten nog steeds op jouw bevestiging."
   },
   {
    "key": "Carry my best times",
@@ -1549,7 +1613,7 @@
   {
    "key": "Check your inbox and open the link. This window waits for your confirmation.",
    "places": [
-    "AndroidStepUp.kt:198"
+    "AndroidStepUp.kt:226"
    ],
    "nl": "Kijk in je inbox en open de link. Dit venster wacht op je bevestiging."
   },
@@ -1659,6 +1723,20 @@
     "AndroidPostTimeMessages.kt:33"
    ],
    "nl": "Kies eerst een circuit."
+  },
+  {
+   "key": "Choose an account",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:324"
+   ],
+   "nl": "Kies een account"
+  },
+  {
+   "key": "Choose an account to delegate live capture to.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:356"
+   ],
+   "nl": "Kies een account om de live-capture aan te delegeren."
   },
   {
    "key": "Choose another track",
@@ -2103,7 +2181,7 @@
   {
    "key": "Complete the current guided step first.",
    "places": [
-    "AndroidTournamentScreen.kt:3786",
+    "AndroidTournamentScreen.kt:3817",
     "AndroidDutchUiCopy.kt:434"
    ],
    "nl": "Voltooi eerst de huidige begeleide stap."
@@ -2162,7 +2240,7 @@
   {
    "key": "Confirm group feed ({0})",
    "places": [
-    "AndroidTournamentScreen.kt:3614"
+    "AndroidTournamentScreen.kt:3645"
    ]
   },
   {
@@ -2197,7 +2275,7 @@
   {
    "key": "Confirm with a new email link",
    "places": [
-    "AndroidStepUp.kt:236",
+    "AndroidStepUp.kt:274",
     "AndroidIdentityLinkScreen.kt:138"
    ],
    "nl": "Bevestig met een nieuwe e-maillink"
@@ -2235,7 +2313,7 @@
   {
    "key": "Connection errors",
    "places": [
-    "AndroidTournamentScreen.kt:3721",
+    "AndroidTournamentScreen.kt:3752",
     "AndroidDutchUiCopy.kt:429"
    ],
    "nl": "Verbindingsfouten"
@@ -2651,6 +2729,20 @@
    "nl": "Deity: 1:30.000 × 1,021225… = 1:31.910…, afgerond op {0}. Dus {1} of sneller is Deity."
   },
   {
+   "key": "Delegate live capture",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:366"
+   ],
+   "nl": "Live-capture delegeren"
+  },
+  {
+   "key": "Delegate live capture to {0} (12 hours)",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:177"
+   ],
+   "nl": "Live-capture delegeren aan {0} (12 uur)"
+  },
+  {
    "key": "Delete draft",
    "places": [
     "AndroidTournamentScreen.kt:3183",
@@ -3027,7 +3119,7 @@
   {
    "key": "Enter the total per Player, or let Tournament Live / Tournament Processor deliver race results. Excel workbooks can be imported in the web app.",
    "places": [
-    "AndroidTournamentScreen.kt:3684",
+    "AndroidTournamentScreen.kt:3715",
     "AndroidDutchUiCopy.kt:431"
    ],
    "nl": "Voer per speler het totaal in, of laat Tournament Live / Tournament Processor de raceresultaten aanleveren. Excel-werkmappen kun je in de webapp importeren."
@@ -3382,7 +3474,7 @@
   {
    "key": "Finalization pins the current results. Public visibility and rating inclusion are independent choices.",
    "places": [
-    "AndroidTournamentScreen.kt:3781",
+    "AndroidTournamentScreen.kt:3812",
     "AndroidDutchUiCopy.kt:207"
    ],
    "nl": "Bij afronden worden de huidige resultaten vastgezet. Openbare zichtbaarheid en meetellen voor de rating zijn afzonderlijke keuzes."
@@ -3390,7 +3482,7 @@
   {
    "key": "Finalize Tournament",
    "places": [
-    "AndroidTournamentScreen.kt:3782",
+    "AndroidTournamentScreen.kt:3813",
     "AndroidDutchUiCopy.kt:79"
    ],
    "nl": "Toernooi afronden"
@@ -4395,7 +4487,7 @@
   {
    "key": "Linked · races remain available. Update these group links after changing the layout.",
    "places": [
-    "AndroidTournamentScreen.kt:3535",
+    "AndroidTournamentScreen.kt:3559",
     "AndroidDutchUiCopy.kt:470"
    ],
    "nl": "Gekoppeld · races blijven beschikbaar. Werk deze groepskoppelingen bij nadat je de indeling wijzigt."
@@ -4417,22 +4509,29 @@
    "nl": "Bezig"
   },
   {
+   "key": "Live capture delegations",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:261"
+   ],
+   "nl": "Live-capturedelegaties"
+  },
+  {
    "key": "Live feed complete · check final totals, then link the observed names to Players.",
    "places": [
-    "AndroidTournamentScreen.kt:3541"
+    "AndroidTournamentScreen.kt:3571"
    ]
   },
   {
    "key": "Live now · public viewers see in-game names and Total. Player linking follows after Stop.",
    "places": [
-    "AndroidTournamentScreen.kt:3539"
+    "AndroidTournamentScreen.kt:3569"
    ]
   },
   {
    "key": "Live standings",
    "places": [
     "AndroidTournamentNightScreen.kt:758",
-    "AndroidTournamentScreen.kt:3744",
+    "AndroidTournamentScreen.kt:3775",
     "AndroidDutchUiCopy.kt:432"
    ],
    "nl": "Live-tussenstanden"
@@ -4701,7 +4800,7 @@
   {
    "key": "Manual totals follow the original score sheet. Only confirmed desktop race results can affect TrueSkill.",
    "places": [
-    "AndroidTournamentScreen.kt:3760",
+    "AndroidTournamentScreen.kt:3791",
     "AndroidDutchUiCopy.kt:433"
    ],
    "nl": "Handmatige totalen volgen het originele scoreblad. Alleen bevestigde raceresultaten uit de desktopapps kunnen TrueSkill beinvloeden."
@@ -4856,7 +4955,7 @@
   {
    "key": "More than 3 connection resets: correct the desktop session; nothing is truncated.",
    "places": [
-    "AndroidTournamentScreen.kt:3601"
+    "AndroidTournamentScreen.kt:3632"
    ]
   },
   {
@@ -5318,6 +5417,13 @@
     "AndroidMyTimes.kt:289"
    ],
    "nl": "Geen beste tijden bekend."
+  },
+  {
+   "key": "No capture delegations for this night.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:283"
+   ],
+   "nl": "Geen capturedelegaties voor deze avond."
   },
   {
    "key": "No completed recording is available yet.",
@@ -6092,6 +6198,13 @@
    "nl": "Alleen een concept zonder vastgelegde races kan worden verwijderd."
   },
   {
+   "key": "Only accounts whose Tournament Live connected to this night are offered. The delegation is for this night only.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:372"
+   ],
+   "nl": "Alleen accounts waarvan Tournament Live met deze avond is verbonden, worden aangeboden. De delegatie geldt alleen voor deze avond."
+  },
+  {
    "key": "Only an administrator can swap between final groups.",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:696",
@@ -6847,7 +6960,7 @@
   {
    "key": "Possible duplicate — compare before accepting",
    "places": [
-    "AndroidTournamentScreen.kt:3650",
+    "AndroidTournamentScreen.kt:3681",
     "AndroidDutchUiCopy.kt:231"
    ],
    "nl": "Mogelijk duplicaat — vergelijk vóór accepteren"
@@ -7017,7 +7130,7 @@
   {
    "key": "Public results",
    "places": [
-    "AndroidTournamentScreen.kt:3777",
+    "AndroidTournamentScreen.kt:3808",
     "AndroidDutchUiCopy.kt:141"
    ],
    "nl": "Openbare resultaten"
@@ -7495,7 +7608,7 @@
   {
    "key": "Record incident",
    "places": [
-    "AndroidTournamentScreen.kt:3802",
+    "AndroidTournamentScreen.kt:3833",
     "AndroidDutchUiCopy.kt:235"
    ],
    "nl": "Incident vastleggen"
@@ -7517,7 +7630,7 @@
   {
    "key": "Recording {0} – {1} · {2} races",
    "places": [
-    "AndroidTournamentScreen.kt:3501"
+    "AndroidTournamentScreen.kt:3525"
    ]
   },
   {
@@ -7597,7 +7710,7 @@
   {
    "key": "Reject result",
    "places": [
-    "AndroidTournamentScreen.kt:3666"
+    "AndroidTournamentScreen.kt:3697"
    ]
   },
   {
@@ -7885,7 +7998,7 @@
   {
    "key": "Review finalization",
    "places": [
-    "AndroidTournamentScreen.kt:3779",
+    "AndroidTournamentScreen.kt:3810",
     "AndroidDutchUiCopy.kt:238"
    ],
    "nl": "Afronding controleren"
@@ -7903,6 +8016,27 @@
     "AndroidPostTimeTask.kt:796"
    ],
    "nl": "Controleer de samenvatting en bevestig · er is nog niets gepubliceerd"
+  },
+  {
+   "key": "Revoke",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:310"
+   ],
+   "nl": "Intrekken"
+  },
+  {
+   "key": "Revoke the capture delegation of {0}",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:297"
+   ],
+   "nl": "Capturedelegatie van {0} intrekken"
+  },
+  {
+   "key": "Revoking the capture delegation…",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:304"
+   ],
+   "nl": "Capturedelegatie wordt ingetrokken…"
   },
   {
    "key": "Rivals",
@@ -8110,7 +8244,7 @@
   {
    "key": "Save incident",
    "places": [
-    "AndroidTournamentScreen.kt:3813",
+    "AndroidTournamentScreen.kt:3844",
     "AndroidDutchUiCopy.kt:240"
    ],
    "nl": "Incident opslaan"
@@ -8139,7 +8273,7 @@
   {
    "key": "Save {0} scores",
    "places": [
-    "AndroidTournamentScreen.kt:3759"
+    "AndroidTournamentScreen.kt:3790"
    ]
   },
   {
@@ -8218,6 +8352,14 @@
     "AndroidDutchUiCopy.kt:338"
    ],
    "nl": "Veilig opslaan op deze telefoon…"
+  },
+  {
+   "key": "Saving the capture delegation…",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:163",
+    "AndroidTournamentLiveDelegations.kt:361"
+   ],
+   "nl": "Capturedelegatie wordt opgeslagen…"
   },
   {
    "key": "Saving your time…",
@@ -8352,7 +8494,7 @@
   {
    "key": "Score entry",
    "places": [
-    "AndroidTournamentScreen.kt:3683",
+    "AndroidTournamentScreen.kt:3714",
     "AndroidDutchUiCopy.kt:430"
    ],
    "nl": "Score-invoer"
@@ -8538,14 +8680,14 @@
   {
    "key": "Send the link",
    "places": [
-    "AndroidStepUp.kt:250"
+    "AndroidStepUp.kt:288"
    ],
    "nl": "Stuur de link"
   },
   {
    "key": "Sending…",
    "places": [
-    "AndroidStepUp.kt:274",
+    "AndroidStepUp.kt:323",
     "AndroidPlayerInteractions.kt:276",
     "AndroidDirectorHostRequest.kt:182"
    ],
@@ -9294,7 +9436,7 @@
   {
    "key": "Stop received · waiting for the final upload.",
    "places": [
-    "AndroidTournamentScreen.kt:3540"
+    "AndroidTournamentScreen.kt:3570"
    ]
   },
   {
@@ -9342,7 +9484,7 @@
   {
    "key": "Suggested: {0}{1}",
    "places": [
-    "AndroidTournamentScreen.kt:3652"
+    "AndroidTournamentScreen.kt:3683"
    ]
   },
   {
@@ -9701,6 +9843,13 @@
    "nl": "Tik op een niveau om die circuits in het recordboek te zien."
   },
   {
+   "key": "Tap again to withdraw",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:209"
+   ],
+   "nl": "Tik nogmaals om terug te trekken"
+  },
+  {
    "key": "Tap the line to inspect a race.",
    "places": [
     "AndroidMyStatsScreen.kt:757"
@@ -9937,9 +10086,24 @@
    "nl": "Het account kan zich blijven aanmelden, maar ziet de geschiedenis van deze speler niet meer tot het opnieuw gekoppeld is. Er wordt niets verwijderd."
   },
   {
+   "key": "The capture delegation could not be revoked.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:305"
+   ],
+   "nl": "De capturedelegatie kon niet worden ingetrokken."
+  },
+  {
+   "key": "The capture delegation could not be saved.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:169",
+    "AndroidTournamentLiveDelegations.kt:362"
+   ],
+   "nl": "De capturedelegatie kon niet worden opgeslagen."
+  },
+  {
    "key": "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
    "places": [
-    "AndroidTournamentScreen.kt:3462",
+    "AndroidTournamentScreen.kt:3481",
     "AndroidDutchUiCopy.kt:436"
    ],
    "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole."
@@ -9957,6 +10121,13 @@
     "AndroidAccountEcosystemScreens.kt:169"
    ],
    "nl": "De communityrecords kunnen nu niet worden geladen."
+  },
+  {
+   "key": "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+   "places": [
+    "AndroidStepUp.kt:237"
+   ],
+   "nl": "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder."
   },
   {
    "key": "The device code expired.",
@@ -10059,21 +10230,21 @@
   {
    "key": "The link could not be sent. Please retry.",
    "places": [
-    "AndroidStepUp.kt:207"
+    "AndroidStepUp.kt:235"
    ],
    "nl": "De link kon niet worden verstuurd. Probeer het opnieuw."
   },
   {
    "key": "The link has expired. Send a new one to continue.",
    "places": [
-    "AndroidStepUp.kt:208"
+    "AndroidStepUp.kt:241"
    ],
    "nl": "De link is verlopen. Stuur een nieuwe om verder te gaan."
   },
   {
    "key": "The link was sent.",
    "places": [
-    "AndroidStepUp.kt:273"
+    "AndroidStepUp.kt:322"
    ],
    "nl": "De link is verstuurd."
   },
@@ -10083,6 +10254,13 @@
     "AndroidTournamentScreen.kt:651"
    ],
    "nl": "De lijst met toernooi directeuren kon niet worden geladen."
+  },
+  {
+   "key": "The live feed could not be withdrawn.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:200"
+   ],
+   "nl": "De live-feed kon niet worden teruggetrokken."
   },
   {
    "key": "The new Players could not be created.",
@@ -10389,6 +10567,13 @@
    "nl": "Dit account mag geen toernooi bedienen."
   },
   {
+   "key": "This account holds your capture delegation until {0}. The next race whose names match the group list opens the public view; you can also confirm it now.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:133"
+   ],
+   "nl": "Dit account heeft jouw capturedelegatie tot {0}. De volgende race waarvan de namen bij de groepslijst passen, opent de openbare weergave; je kunt hem ook nu bevestigen."
+  },
+  {
    "key": "This account is no longer remembered here. Sign in instead.",
    "places": [
     "AndroidDutchUiCopy.kt:102"
@@ -10426,7 +10611,7 @@
   {
    "key": "This action needs a fresh confirmation. We send a one-time link to your account's email address. Open it, on this device or another one, and press Confirm. Then this action continues by itself.",
    "places": [
-    "AndroidStepUp.kt:192"
+    "AndroidStepUp.kt:220"
    ],
    "nl": "Voor deze actie is een nieuwe bevestiging nodig. We sturen een eenmalige link naar het e-mailadres van je account. Open die, op dit apparaat of een ander, en druk op Bevestigen. Daarna gaat deze actie vanzelf verder."
   },
@@ -10759,7 +10944,7 @@
   {
    "key": "Too many links were requested. Wait a few minutes and try again.",
    "places": [
-    "AndroidStepUp.kt:202"
+    "AndroidStepUp.kt:230"
    ],
    "nl": "Er zijn te veel links aangevraagd. Wacht een paar minuten en probeer het opnieuw."
   },
@@ -10884,7 +11069,7 @@
   {
    "key": "Tournament Live · {0}",
    "places": [
-    "AndroidTournamentScreen.kt:3500"
+    "AndroidTournamentScreen.kt:3524"
    ]
   },
   {
@@ -10911,7 +11096,7 @@
   {
    "key": "Tournament finalized",
    "places": [
-    "AndroidTournamentScreen.kt:3785",
+    "AndroidTournamentScreen.kt:3816",
     "AndroidDutchUiCopy.kt:254"
    ],
    "nl": "Toernooi afgerond"
@@ -11007,7 +11192,7 @@
   {
    "key": "Tournament workflow",
    "places": [
-    "AndroidTournamentScreen.kt:3775",
+    "AndroidTournamentScreen.kt:3806",
     "AndroidDutchUiCopy.kt:257"
    ],
    "nl": "Toernooiworkflow"
@@ -11291,6 +11476,13 @@
    "nl": "VERSIES"
   },
   {
+   "key": "Valid for",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:334"
+   ],
+   "nl": "Geldig voor"
+  },
+  {
    "key": "Version",
    "places": [
     "AndroidAccountEcosystemScreens.kt:1304"
@@ -11397,10 +11589,11 @@
    "nl": "Wacht"
   },
   {
-   "key": "Waiting for race names to verify every sticker-to-group link. Nothing is public yet; confirm manually only as a fallback.",
+   "key": "Waiting for the Director. Nothing is public yet: a roster match alone never opens a live feed. Confirm the live routing below, or delegate live capture for this night to this account.",
    "places": [
-    "AndroidTournamentScreen.kt:3538"
-   ]
+    "AndroidTournamentLiveDelegations.kt:126"
+   ],
+   "nl": "Wacht op de toernooileider. Er is nog niets openbaar: een rostermatch alleen opent nooit een live-feed. Bevestig hieronder de live-koppeling, of delegeer de live-capture voor deze avond aan dit account."
   },
   {
    "key": "Waiting for the draw",
@@ -11521,7 +11714,7 @@
   {
    "key": "What happened?",
    "places": [
-    "AndroidTournamentScreen.kt:3808",
+    "AndroidTournamentScreen.kt:3839",
     "AndroidDutchUiCopy.kt:264"
    ],
    "nl": "Wat is er gebeurd?"
@@ -11651,11 +11844,32 @@
    "nl": "Resultaat intrekken"
   },
   {
+   "key": "Withdraw this live feed",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:210"
+   ],
+   "nl": "Deze live-feed terugtrekken"
+  },
+  {
    "key": "Withdraw this result?",
    "places": [
     "AndroidPostTimeTask.kt:961"
    ],
    "nl": "Dit resultaat intrekken?"
+  },
+  {
+   "key": "Withdrawing takes this feed off the public view at once. Its races stay here for review, and only you can open it again; a roster match cannot.",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:186"
+   ],
+   "nl": "Terugtrekken haalt deze feed direct van de openbare weergave. De races blijven hier voor controle en alleen jij kunt hem weer openen; een rostermatch niet."
+  },
+  {
+   "key": "Withdrawing the live feed…",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:194"
+   ],
+   "nl": "Live-feed wordt teruggetrokken…"
   },
   {
    "key": "Withdrawing…",
@@ -11915,7 +12129,7 @@
   {
    "key": "You are signed out. Sign in again first.",
    "places": [
-    "AndroidStepUp.kt:206"
+    "AndroidStepUp.kt:234"
    ],
    "nl": "Je bent afgemeld. Meld je eerst opnieuw aan."
   },
@@ -12418,6 +12632,13 @@
    "nl": "een regel met een console heeft ook de Switcheigenaar nodig."
   },
   {
+   "key": "active until {0}",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:116"
+   ],
+   "nl": "actief tot {0}"
+  },
+  {
    "key": "ahead",
    "places": [
     "AndroidPostTimeTask.kt:1687"
@@ -12545,6 +12766,13 @@
     "AndroidTournamentGroupDraftStep.kt:1408"
    ],
    "nl": "Bijv. Nieuwe Deelnemer"
+  },
+  {
+   "key": "expired {0}",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:115"
+   ],
+   "nl": "verlopen {0}"
   },
   {
    "key": "fill in Maximum places if there is a limit (leave empty = no limit).",
@@ -12808,6 +13036,20 @@
     "AndroidTournamentStandingSection.kt:799"
    ],
    "nl": "rest"
+  },
+  {
+   "key": "revoked",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:110"
+   ],
+   "nl": "ingetrokken"
+  },
+  {
+   "key": "revoked {0}",
+   "places": [
+    "AndroidTournamentLiveDelegations.kt:112"
+   ],
+   "nl": "ingetrokken {0}"
   },
   {
    "key": "row {0} \"{1}\": {2}",
@@ -13121,7 +13363,7 @@
   {
    "key": "{0} desktop result{1} waiting under Incoming.",
    "places": [
-    "AndroidTournamentScreen.kt:3686"
+    "AndroidTournamentScreen.kt:3717"
    ]
   },
   {
@@ -13510,7 +13752,7 @@
   {
    "key": "{0} race(s). Exact name matches are suggestions only; this confirmation applies the complete group feed once.",
    "places": [
-    "AndroidTournamentScreen.kt:3599"
+    "AndroidTournamentScreen.kt:3630"
    ]
   },
   {
@@ -13796,7 +14038,7 @@
   {
    "key": "{0} · provisional feed",
    "places": [
-    "AndroidTournamentScreen.kt:3598"
+    "AndroidTournamentScreen.kt:3629"
    ]
   },
   {
@@ -13823,7 +14065,7 @@
   {
    "key": "{0} · {1} races · {2} connection errors",
    "places": [
-    "AndroidTournamentScreen.kt:3515"
+    "AndroidTournamentScreen.kt:3539"
    ]
   },
   {

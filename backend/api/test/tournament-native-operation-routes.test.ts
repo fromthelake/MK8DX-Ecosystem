@@ -16,6 +16,14 @@ const playerId = "player.synthetic_native_01";
 const bearer = "nativeBearerToken1234567890.signedPart_abc";
 const authorization = { authorization: `Bearer ${bearer}` };
 
+const delegation = {
+  delegationId: "live_capture_delegation.synthetic_native", tournamentId,
+  delegateUserAccountId: "user_account.synthetic_capture", delegateDisplayName: "Capture operator",
+  status: "active", reason: "Live capture delegated by Tournament director",
+  grantedByUserAccountId: "user_account.native_admin", grantedAtMs: 1_000, expiresAtMs: 2_000,
+  revokedByUserAccountId: null, revokeReason: null, revokedAtMs: null,
+};
+
 const apps: FastifyInstance[] = [];
 afterEach(async () => Promise.all(apps.splice(0).map((app) => app.close())));
 
@@ -50,6 +58,12 @@ async function setup(role: "administrator" | "account" = "administrator", grante
     listIncoming: vi.fn(async () => []),
     accept: vi.fn(async () => ({ raceResultId: "tournament_race_result.native", tournamentRevision: 5 })),
     reject: vi.fn(async () => undefined),
+    listLiveCaptureDelegations: vi.fn(async () => [{ ...delegation, internalRowId: 7 }]),
+    grantLiveCaptureDelegation: vi.fn(async () => ({ ...delegation, internalRowId: 7 })),
+    revokeLiveCaptureDelegation: vi.fn(async () => ({
+      ...delegation, status: "revoked", revokedByUserAccountId: "user_account.native_admin",
+      revokeReason: "Capture delegation revoked by Tournament director", revokedAtMs: 3_000, internalRowId: 7,
+    })),
   };
   const resolveActor: ActorResolver = async () => ({ role, userAccountId: "user_account.native_admin" });
   const app = Fastify();
@@ -334,6 +348,36 @@ describe("native Tournament operation routes", () => {
     expect(Object.keys(response.json().summary)).toEqual(
       expect.arrayContaining(["seedingSource", "placementStrategy"]),
     );
+  });
+
+  it("serves capture delegations with exactly the keys the Android Director view parses", async () => {
+    const { app, connected } = await setup();
+    const listed = await app.inject({
+      method: "GET", url: `/v1/native/tournaments/${tournamentId}/live-capture-delegations`, headers: authorization,
+    });
+    expect(listed.statusCode).toBe(200);
+    expect(listed.json()).toEqual({
+      schemaVersion: "mk8dx.native-tournament-live-capture-delegations.v1", delegations: [delegation],
+    });
+
+    const granted = await app.inject({
+      method: "POST", url: `/v1/native/tournaments/${tournamentId}/live-capture-delegations`, headers: authorization,
+      payload: { delegateUserAccountId: "user_account.synthetic_capture", reason: "Live capture delegated by Tournament director", expiresInMinutes: 720 },
+    });
+    expect(granted.statusCode).toBe(200);
+    expect(granted.json()).toEqual({ schemaVersion: "mk8dx.native-tournament-live-capture-delegation.v1", delegation });
+    expect(connected.grantLiveCaptureDelegation).toHaveBeenCalledWith(expect.anything(), expect.objectContaining({
+      tournamentId, delegateUserAccountId: "user_account.synthetic_capture", expiresInMinutes: 720,
+    }));
+
+    const revoked = await app.inject({
+      method: "POST",
+      url: `/v1/native/tournaments/${tournamentId}/live-capture-delegations/${delegation.delegationId}/actions/revoke`,
+      headers: authorization, payload: { reason: "Capture delegation revoked by Tournament director" },
+    });
+    expect(revoked.statusCode).toBe(200);
+    expect(Object.keys(revoked.json().delegation)).toEqual(Object.keys(delegation));
+    expect(revoked.json().delegation.status).toBe("revoked");
   });
 
   it("surfaces the service conflict once groups exist", async () => {

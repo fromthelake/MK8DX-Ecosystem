@@ -193,3 +193,62 @@ describe("Director live-capture delegation view", () => {
     expect(panel.textContent).toContain("Capture delegations could not be loaded.");
   });
 });
+
+describe("Director live-capture delegation refresh", () => {
+  afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
+
+  it("re-reads the delegations about every 30 s while visible, pauses while hidden, and re-renders on a change", async () => {
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "Date"] });
+    let served: readonly unknown[] = [];
+    let delegationReads = 0;
+    let visibility: "visible" | "hidden" = "visible";
+    const listeners: (() => void)[] = [];
+    vi.stubGlobal("document", {
+      get visibilityState() { return visibility; },
+      addEventListener: (_name: string, listener: () => void) => { listeners.push(listener); },
+      removeEventListener: () => undefined,
+    });
+    vi.stubGlobal("fetch", vi.fn(async (url: string) => {
+      if (url.endsWith("/evidence-records")) return Response.json({ records: [] });
+      if (url.endsWith("/incoming-results")) return Response.json({ results: [] });
+      if (url.endsWith("/live-capture-delegations")) { delegationReads += 1; return Response.json({ delegations: served }); }
+      throw new Error(`unexpected ${url}`);
+    }));
+    const fake = new FakeDocument();
+    const onChanged = vi.fn(async () => undefined);
+    const controller = new AbortController();
+    await mountTournamentIncomingSection({
+      document: fake as never, container: fake.createElement("div") as never, signal: controller.signal,
+      tournament: { summary: { tournamentId: TOURNAMENT, workflowStep: 5 }, groups: [], participants: [] } as never,
+      onChanged,
+    });
+    expect(delegationReads).toBe(1);
+    // The 5 s feed polls in between do not re-read the delegations.
+    await vi.advanceTimersByTimeAsync(25_000);
+    expect(delegationReads).toBe(1);
+    await vi.advanceTimersByTimeAsync(10_000);
+    expect(delegationReads).toBe(2);
+    expect(onChanged).not.toHaveBeenCalled();
+
+    // Hidden: nothing is read at all.
+    visibility = "hidden";
+    await vi.advanceTimersByTimeAsync(120_000);
+    expect(delegationReads).toBe(2);
+
+    // Back on the tab with a delegation issued elsewhere: the view re-renders.
+    served = [delegation({ grantedAtMs: Date.now(), expiresAtMs: Date.now() + 3_600_000 })];
+    visibility = "visible";
+    listeners.forEach((listener) => { listener(); });
+    await vi.advanceTimersByTimeAsync(0);
+    expect(delegationReads).toBe(3);
+    expect(onChanged).toHaveBeenCalledTimes(1);
+    controller.abort();
+  });
+
+  it("treats an expiry as a change, and a failed read as none", async () => {
+    const { liveCaptureDelegationSignature } = await import("../src/tournament-incoming-section.js");
+    const active = delegation() as never;
+    expect(liveCaptureDelegationSignature([active], NOW)).not.toBe(liveCaptureDelegationSignature([active], NOW + 3_600_001));
+    expect(liveCaptureDelegationSignature(null, NOW)).toBe("unavailable");
+  });
+});

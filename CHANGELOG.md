@@ -7,6 +7,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **Live capture delegations in the Android app**: a Director's Step 5/9 view in the app now has the web's panel:
+  the night's delegations with their state, **Delegate live capture** for an account whose Tournament Live
+  connected to the night (2 hours to 7 days, 12 hours by default), **Revoke**, the *Waiting for the Director*
+  wording and a per-run delegation shortcut on a waiting feed, and **Withdraw this live feed** (tap twice) on a
+  public one. The native delegation routes now have strict response schemas, like the administrator routes.
 - **Administrator view of request limits**: a new **Request limits** section on the administration page (loaded when
   opened) shows which request budgets and quotas refused requests in about the last hour and day, per scope, how many
   were affected, the most refused accounts (only accounts are named; targets, recipients and addresses are counted),
@@ -16,10 +21,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
+- **The web delegation panel refreshes by itself**: while the Step 5/9 view is visible it re-reads the night's
+  capture delegations about every 30 seconds (paused while the tab is hidden), so a delegation issued, revoked or
+  expired elsewhere shows without a reload.
 - **A failed step-up e-mail answers quickly and points to the break-glass**: one mail attempt is bounded (new optional
   setting `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 seconds) instead of waiting minutes on a mail server that is down.
   When **Send the link** cannot mail, the link is still created and the page says so within that time, names
   `install.py step-up-link` and keeps waiting for the confirmation (`503 step_up_mail_unavailable` instead of 500).
+  The Android app's confirmation window does the same: it shows the web's message (in every language) instead of
+  "The link could not be sent" and keeps waiting until the created link expires.
 
 - **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
   runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no
@@ -35,6 +45,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   `?trackLang`; launcher window titles, the error messages of install, restore and backup steps, the setup wizard's
   console lines and the Tournament Tools installer and launchers use the launcher languages. The translated
   Tournament Directors guides now describe the live scoreboard too.
+
+### Fixed
+
+- **Tournament Live names the real sign-out label**: its offline and unconfirmed sign-out messages (and the
+  Tournament Connect command line) now point to **Sign out on all devices** in the website's account menu instead
+  of a "Sign out everywhere" button on an account page, in every language.
 
 ## 0.2.5 — 2026-11-16
 

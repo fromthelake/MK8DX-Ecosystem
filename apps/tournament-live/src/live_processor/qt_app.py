@@ -1214,8 +1214,8 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         self._forget_connection_locally()
         if had_session:
             self.connection_detail.setText(self._say(
-                "Working offline. The sign-in was removed from this PC only; it was not ended on the website. Use Sign out to end it there, or Sign out everywhere on the website's account page.",
-                "Offline aan het werk. De aanmelding is alleen van deze pc verwijderd; op de website is ze niet beëindigd. Gebruik Afmelden om haar daar te beëindigen, of Overal afmelden op de accountpagina van de website.",
+                "Working offline. The sign-in was removed from this PC only; it was not ended on the website. Use Sign out to end it there, or Sign out on all devices in the website's account menu.",
+                "Offline aan het werk. De aanmelding is alleen van deze pc verwijderd; op de website is ze niet beëindigd. Gebruik Afmelden om haar daar te beëindigen, of Op alle apparaten afmelden in het accountmenu van de website.",
             ))
 
     def sign_out(self) -> None:
@@ -1415,8 +1415,8 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                         self,
                         self._say("Tournament connection", "Tournament-koppeling"),
                         self._say(
-                            "Sign-out on {0} was not confirmed; the sign-in is still on this PC. Try again when online, or choose Work offline and use Sign out everywhere on the website's account page.",
-                            "Afmelden op {0} is niet bevestigd; de aanmelding staat nog op deze pc. Probeer het opnieuw als je online bent, of kies Offline werken en gebruik Overal afmelden op de accountpagina van de website.",
+                            "Sign-out on {0} was not confirmed; the sign-in is still on this PC. Try again when online, or choose Work offline and use Sign out on all devices in the website's account menu.",
+                            "Afmelden op {0} is niet bevestigd; de aanmelding staat nog op deze pc. Probeer het opnieuw als je online bent, of kies Offline werken en gebruik Op alle apparaten afmelden in het accountmenu van de website.",
                             payload.host,
                         ),
                     )

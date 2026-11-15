@@ -420,6 +420,97 @@ class AndroidTournamentClientTest {
         assertTrue(connection.disconnected)
     }
 
+    private val delegationJson = """{"delegationId":"live_capture_delegation.one","tournamentId":"tournament.demo","delegateUserAccountId":"user_account.capture","delegateDisplayName":"Capture operator","status":"active","reason":"Live capture delegated by Tournament director","grantedByUserAccountId":"user_account.director","grantedAtMs":1000,"expiresAtMs":2000,"revokedByUserAccountId":null,"revokeReason":null,"revokedAtMs":null}"""
+
+    @Test
+    fun liveCaptureDelegationsUseTheNativeRouteAndRefuseAnUnknownStatusOrEnvelope() {
+        var opened: URL? = null
+        val connection = TournamentFakeHttpsConnection(
+            URL("https://example.invalid/v1/native/tournaments/tournament.demo/live-capture-delegations"),
+            responseBody = """{"schemaVersion":"mk8dx.native-tournament-live-capture-delegations.v1","delegations":[$delegationJson]}""",
+        )
+        val client = AndroidTournamentClient(
+            "https://example.invalid", session,
+            AndroidTournamentConnectionOpener { url -> opened = url; connection },
+        )
+
+        val delegation = client.liveCaptureDelegations("tournament.demo").single()
+
+        assertEquals("https://example.invalid/v1/native/tournaments/tournament.demo/live-capture-delegations", opened.toString())
+        assertEquals("GET", connection.requestMethod)
+        assertEquals("Capture operator", delegation.delegateDisplayName)
+        assertTrue(delegation.inForce(1_999))
+        assertFalse(delegation.inForce(2_000))
+
+        fun answering(body: String) = AndroidTournamentClient(
+            "https://example.invalid", session,
+            AndroidTournamentConnectionOpener { TournamentFakeHttpsConnection(it, responseBody = body) },
+        )
+        val expired = delegationJson.replace("\"status\":\"active\"", "\"status\":\"expired\"")
+        assertThrows(AndroidTournamentClientException::class.java) {
+            answering("""{"schemaVersion":"mk8dx.native-tournament-live-capture-delegations.v1","delegations":[$expired]}""")
+                .liveCaptureDelegations("tournament.demo")
+        }
+        assertThrows(AndroidTournamentClientException::class.java) {
+            answering("""{"schemaVersion":"mk8dx.native-tournament-incoming.v1","delegations":[]}""")
+                .liveCaptureDelegations("tournament.demo")
+        }
+    }
+
+    @Test
+    fun grantRevokeAndWithdrawSendTheWebReasons() {
+        val connections = mutableListOf<TournamentFakeHttpsConnection>()
+        val client = AndroidTournamentClient(
+            "https://example.invalid", session,
+            AndroidTournamentConnectionOpener { url ->
+                TournamentFakeHttpsConnection(
+                    url,
+                    responseBody = if (url.path.endsWith("/withdraw-live")) {
+                        """{"schemaVersion":"mk8dx.native-tournament-live-association.v1","record":{}}"""
+                    } else {
+                        """{"schemaVersion":"mk8dx.native-tournament-live-capture-delegation.v1","delegation":$delegationJson}"""
+                    },
+                ).also(connections::add)
+            },
+        )
+
+        client.grantLiveCaptureDelegation("tournament.demo", "user_account.capture", 10_080)
+        client.revokeLiveCaptureDelegation("tournament.demo", "live_capture_delegation.one")
+        client.withdrawLiveAssociation("tournament.demo", AndroidTournamentEvidenceRecord(
+            recordId = "evidence.live", clientRecordId = "run-1", revision = 3, status = "uploading",
+            sourceKind = "tournament_live_capture",
+            uploadedBy = AndroidTournamentEvidenceUploader("user_account.capture", "Capture operator"),
+            complete = false, resultCount = 0, createdAtMs = 1, updatedAtMs = 2,
+        ))
+
+        assertEquals(listOf(
+            "/v1/native/tournaments/tournament.demo/live-capture-delegations",
+            "/v1/native/tournaments/tournament.demo/live-capture-delegations/live_capture_delegation.one/actions/revoke",
+            "/v1/native/tournaments/tournament.demo/evidence-records/evidence.live/actions/withdraw-live",
+        ), connections.map { it.url.path })
+        assertEquals(listOf("POST", "POST", "POST"), connections.map { it.requestMethod })
+        assertEquals(
+            """{"delegateUserAccountId":"user_account.capture","reason":"Live capture delegated by Tournament director","expiresInMinutes":10080}""",
+            connections[0].writtenBody(),
+        )
+        assertEquals("""{"reason":"Capture delegation revoked by Tournament director"}""", connections[1].writtenBody())
+        assertEquals("""{"expectedRevision":3,"reason":"Live feed withdrawn by Tournament director"}""", connections[2].writtenBody())
+    }
+
+    @Test
+    fun grantRefusesADurationBeyondSevenDaysAndANameInsteadOfAnAccountBeforeAnyRequest() {
+        val client = AndroidTournamentClient(
+            "https://example.invalid", session,
+            AndroidTournamentConnectionOpener { error("must not open") },
+        )
+        assertThrows(IllegalArgumentException::class.java) {
+            client.grantLiveCaptureDelegation("tournament.demo", "user_account.capture", 10_081)
+        }
+        assertThrows(IllegalArgumentException::class.java) {
+            client.grantLiveCaptureDelegation("tournament.demo", "Capture operator")
+        }
+    }
+
     @Test
     fun publicLiveGroupsKeepObservedNamesAndTotalWithoutPlayerResolution() {
         var opened: URL? = null

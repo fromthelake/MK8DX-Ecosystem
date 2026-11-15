@@ -60,9 +60,14 @@ internal fun Throwable.isStepUpRequired(): Boolean =
 
 internal data class AndroidStepUpStatus(val active: Boolean, val pending: Boolean, val windowSeconds: Int)
 
-internal class AndroidStepUpException(val kind: Kind, val retryAfterSeconds: Int? = null) :
-    RuntimeException("The confirmation email could not be requested.") {
-    enum class Kind { RateLimited, SignedOut, Unavailable }
+internal class AndroidStepUpException(
+    val kind: Kind,
+    val retryAfterSeconds: Int? = null,
+    /** For [Kind.MailUnavailable]: until when the link the server created can still be confirmed. */
+    val linkExpiresAtMs: Long? = null,
+) : RuntimeException("The confirmation email could not be requested.") {
+    /** MailUnavailable: the link was created but the e-mail failed; the operator can hand it over. */
+    enum class Kind { RateLimited, SignedOut, Unavailable, MailUnavailable }
 }
 
 private val stepUpJson = Json { ignoreUnknownKeys = false }
@@ -83,6 +88,24 @@ internal fun parseAndroidStepUpStatus(body: String): AndroidStepUpStatus {
     return AndroidStepUpStatus(active, pending, window.toInt())
 }
 
+/**
+ * The server's 503 answer when it created the link but could not e-mail it
+ * (`step_up_mail_unavailable`, with the link's expiry). Exactly that document,
+ * or null: any other 503 stays a plain "could not be sent".
+ */
+internal fun parseAndroidStepUpMailUnavailable(body: String): Long? {
+    val root = runCatching { stepUpJson.parseToJsonElement(body).jsonObject }.getOrNull() ?: return null
+    if (root.keys != setOf("code", "message", "linkExpiresAtMs")) return null
+    val code = root["code"]?.let { runCatching { it.jsonPrimitive }.getOrNull() }
+    val message = root["message"]?.let { runCatching { it.jsonPrimitive }.getOrNull() }
+    val until = root["linkExpiresAtMs"]?.let { runCatching { it.jsonPrimitive }.getOrNull() }
+    if (code == null || !code.isString || code.content != "step_up_mail_unavailable") return null
+    if (message == null || !message.isString) return null
+    if (until == null || until.isString) return null
+    val expiresAtMs = until.longOrNull ?: return null
+    return expiresAtMs.takeIf { it > 0 }
+}
+
 internal class AndroidStepUpClient(
     origin: String,
     private val session: AndroidAuthenticatedNativeSession,
@@ -92,9 +115,14 @@ internal class AndroidStepUpClient(
 
     /** Asks the server to email a new confirmation link for this app session. */
     fun request() {
-        val (status, _, retryAfter) = call("POST", "{}")
+        val (status, body, retryAfter) = call("POST", "{}")
+        val mailFailedLinkExpiresAtMs = if (status == 503) parseAndroidStepUpMailUnavailable(body) else null
         when {
             status == 202 -> Unit
+            mailFailedLinkExpiresAtMs != null -> throw AndroidStepUpException(
+                AndroidStepUpException.Kind.MailUnavailable,
+                linkExpiresAtMs = mailFailedLinkExpiresAtMs,
+            )
             status == 429 -> throw AndroidStepUpException(AndroidStepUpException.Kind.RateLimited, retryAfter)
             status == 401 -> throw AndroidStepUpException(AndroidStepUpException.Kind.SignedOut)
             else -> throw AndroidStepUpException(AndroidStepUpException.Kind.Unavailable)
@@ -205,17 +233,26 @@ internal fun AndroidStepUpDialog(
         ),
         signedOut = androidText("You are signed out. Sign in again first.", "Je bent afgemeld. Meld je eerst opnieuw aan."),
         failed = androidText("The link could not be sent. Please retry.", "De link kon niet worden verstuurd. Probeer het opnieuw."),
+        // The web's wording (step-up-dialog.ts), so every catalog already has it.
+        mailUnavailable = androidText(
+            "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+            "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder.",
+        ),
         expired = androidText(
             "The link has expired. Send a new one to continue.",
             "De link is verlopen. Stuur een nieuwe om verder te gaan.",
         ),
     )
 
+    // Until when the waiting below lasts: ten minutes after a sent mail, or the
+    // created link's own expiry when only the e-mail failed.
+    var waitUntilMs by remember(prompt) { mutableStateOf<Long?>(null) }
+
     // Waits for the confirmation made in the browser; ends when the dialog does.
-    LaunchedEffect(prompt, sent) {
-        if (!sent) return@LaunchedEffect
+    LaunchedEffect(prompt, sent, waitUntilMs) {
+        if (!sent && waitUntilMs == null) return@LaunchedEffect
         val stepUp = client() ?: return@LaunchedEffect
-        val deadline = System.currentTimeMillis() + 10 * 60_000L
+        val deadline = waitUntilMs ?: (System.currentTimeMillis() + 10 * 60_000L)
         while (!prompt.isCompleted) {
             delay(pollIntervalMs)
             val status = runCatching { withContext(Dispatchers.IO) { stepUp.status() } }.getOrNull() ?: continue
@@ -225,6 +262,7 @@ internal fun AndroidStepUpDialog(
             }
             if (!status.pending && System.currentTimeMillis() > deadline) {
                 sent = false
+                waitUntilMs = null
                 message = Mk8dxStatusTone.Warning to texts.expired
                 return@LaunchedEffect
             }
@@ -254,11 +292,22 @@ internal fun AndroidStepUpDialog(
                     scope.launch {
                         runCatching { withContext(Dispatchers.IO) { stepUp.request() } }
                             .onSuccess {
+                                waitUntilMs = null
                                 sent = true
                                 message = Mk8dxStatusTone.Info to texts.waiting
                             }
                             .onFailure { failure ->
-                                val kind = (failure as? AndroidStepUpException)?.kind
+                                val stepUpFailure = failure as? AndroidStepUpException
+                                val kind = stepUpFailure?.kind
+                                val linkExpiresAtMs = stepUpFailure?.linkExpiresAtMs
+                                if (kind == AndroidStepUpException.Kind.MailUnavailable && linkExpiresAtMs != null) {
+                                    // The link exists; only the e-mail failed. The operator hands it over,
+                                    // and this window keeps waiting for the confirmation. Like the web,
+                                    // the button stays available for a new attempt.
+                                    waitUntilMs = linkExpiresAtMs
+                                    message = Mk8dxStatusTone.Error to texts.mailUnavailable
+                                    return@onFailure
+                                }
                                 message = Mk8dxStatusTone.Error to when (kind) {
                                     AndroidStepUpException.Kind.RateLimited -> texts.rateLimited
                                     AndroidStepUpException.Kind.SignedOut -> texts.signedOut
@@ -286,5 +335,6 @@ private data class AndroidStepUpTexts(
     val rateLimited: String,
     val signedOut: String,
     val failed: String,
+    val mailUnavailable: String,
     val expired: String,
 )

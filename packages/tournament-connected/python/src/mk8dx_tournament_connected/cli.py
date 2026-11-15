@@ -80,7 +80,7 @@ def main(argv: list[str] | None = None) -> int:
         elif args.command == "sign-out" and args.this_pc_only:
             forget_local_session(store)
             print("Removed the sign-in from this PC only. The session was NOT ended on the website; "
-                  "use 'Sign out everywhere' on the website's account page to end it there. "
+                  "use 'Sign out on all devices' in the website's account menu to end it there. "
                   "Local processing is unchanged.")
         elif args.command == "sign-out":
             result = sign_out(store)
@@ -92,8 +92,8 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 print(f"Sign-out on {result.host} was not confirmed ({result.reason}). "
                       "The sign-in is still stored on this PC. Try again when online, or run "
-                      "'sign-out --this-pc-only' and end the session with 'Sign out everywhere' "
-                      "on the website's account page.")
+                      "'sign-out --this-pc-only' and end the session with 'Sign out on all devices' "
+                      "in the website's account menu.")
                 return 2
         elif args.command == "tournaments":
             for tournament in ConnectedClient(store).tournaments():
