@@ -173,7 +173,7 @@ werkt maar één keer per installatie. Zie [Operations](../../../OPERATIONS.md) 
   dat ongedaan. Kies dus eerst 7 (bijwerken): die maakt een gecontroleerde back-up en voert de database-updates uit.
   Vanaf 0.2.4 weigert 2 (starten) tot de update gedraaid heeft; met een 0.2.3-pakket zou 2 de back-up overslaan
   (3, controleren, kan geen kwaad).
-- **De eerste update na 0.2.4** past de database-updates 0092 en 0095 toe en geeft de website een eigen
+- **De update naar 0.2.5** past de database-updates 0092 en 0095 toe en geeft de website een eigen
   databaseaccount dat alleen rijen kan lezen en schrijven (`status` toont `"databaseAccounts": "separate"`; start de
   website daarmee niet, dan gaat de update vanzelf terug naar het vorige account). Controleer daarna dat
   aanmeldmail aankomt: gevaarlijke beheeracties vragen nu om een nieuwe e-maillink (hieronder). Ingebouwde grenzen

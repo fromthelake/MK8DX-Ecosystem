@@ -3,7 +3,14 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
-## Unreleased
+## 0.2.5 — 2026-11-16
+
+A security release; updating is recommended for every community. Permission checks are stronger on every route,
+every change counts against request limits and quotas, Tournament Connect and Tournament Live stay on the chosen
+community website, LiveTrial's engine is controlled only from its own computer, spreadsheet exports keep names as
+text and app download links expire. Dangerous administrator actions ask for a fresh email confirmation. The website
+uses its own database account that can only read and write rows, and every route makes an automatic, verified daily
+backup. The update applies database migrations 0092 and 0095; MySQL stays 9.7 LTS. Android app 2.99.6 (175).
 
 ### Security
 
@@ -35,14 +42,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   submission route. A refused revision is answered with 403 and changes nothing; an offline client re-sending its
   own revision still gets the same 409 as before. Administrator corrections keep using the separate, logged
   correction action, which never changes the owner. No migration or setting.
-- **Tournament review is checked per Tournament on every route**: the phone's operator routes no longer treat a
-  Director as an administrator. Reading or rejecting incoming results and evidence records requires an active
-  administrator grant, or being that night's Director with an active Tournament operator grant; the review writes
-  re-check this in their own transaction. A revoked operator grant also ends review of the Director's own nights.
-- **A roster match no longer opens a Tournament Live feed by itself**: only a feed from an administrator, the night's
-  Director, or an account the Director delegated live capture to may open the public live view automatically. Other
-  feeds wait for the Director's confirmation and reserve no group. Directors can delegate (time-limited, revocable)
-  and withdraw a public feed; every change is audited with its authority. Migration 0092.
+- **Tournament review is checked per Tournament on every route**, the phone's operator routes included: reading or
+  rejecting incoming results and evidence records requires an active administrator grant, or being that night's
+  Director with an active Tournament operator grant; the review writes re-check this in their own transaction. A
+  revoked operator grant also ends review of the Director's own nights.
+- **Only trusted feeds open a Tournament Live view by themselves**: only a feed from an administrator, the night's
+  Director, or an account the Director delegated live capture to may open the public live view automatically; a roster
+  match alone is not enough. Other feeds wait for the Director's confirmation and reserve no group. Directors can
+  delegate (time-limited, revocable) and withdraw a public feed; every change is audited with its authority. Migration
+  0092.
 - **Limits on uploaded Tournament evidence**: per-account and installation upload rates, quotas on unlinked records
   and bytes, bounded lists with paging, and a retention job for stale evidence that was never linked. Refusals answer
   429 with `Retry-After`, 409 or 413 and store nothing; linked evidence is never removed. See `backend/api/README.md`.
@@ -80,19 +88,17 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   **Sign out** end this PC's session on the website and report success only when the website confirms it; other
   devices stay signed in. `sign-out --this-pc-only` and **Work offline** only forget the sign-in on this PC and
   say so; **Sign out everywhere** on the website ends the other sessions.
-- **LiveTrial engine control is limited to this computer**: the engine's dashboard on port 8777 now changes
-  recording, Stop capture, storage settings, clean-up, pins, categories, archive and calibration grids only
-  through a POST from its own local page or the desktop app, with a per-launch action proof and bounded
-  requests; a plain GET only reads. With `--lan`, other devices can watch but no longer control.
+- **LiveTrial engine control is limited to this computer**: the engine's dashboard on port 8777 now changes recording,
+  Stop capture, storage settings, clean-up, pins, categories, archive and calibration grids only from its own local
+  page or the desktop app, with a per-launch action proof and bounded requests; opening a page only reads. With
+  `--lan`, other devices can watch; control stays on this computer.
 - **Spreadsheet exports keep names as text**: a Player, group or OCR name that starts like a formula stays text when
   a CSV or XLSX export is opened in a spreadsheet program (Web, Android, API score workbook, Tournament Processor,
   Live and Analysis, including their debug exports). Workbooks use string cells; CSV cells get one leading
   apostrophe where needed, which every import of these files removes again. Names are unchanged in the database.
   The rule is in `packages/domain/policies/spreadsheet-text-v1.json`. The Android score workbook also no longer
   writes a name such as `007` or `Infinity` as a number.
-- Every route now has an automatic, verified, restorable daily backup, so a community can return to yesterday
-  after its database or site was damaged on purpose. A failed or unverified night never removes an older backup.
-- **Many accounts can no longer flood a community**: every signed-in change counts against the account's own durable
+- **Fair budgets keep a community responsive**: every signed-in change counts against the account's own durable
   budget (administrators higher, never unlimited) and a shared per-minute budget for the whole installation.
   Expensive and fan-out paths (sign-in and sign-up mail, app sign-in codes, Player claims and their messages, Time
   Trial submissions, notifications, app downloads, aliases, Web Push subscriptions and engagements) also have an
@@ -109,13 +115,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   **Send the link**; it prints a new single-use link for that one waiting request, which is confirmed on the normal
   link page. Server access only (no web route), refused when more than one session is waiting, and audited. See
   Operations, "When e-mail fails".
-- Automatic daily backup for A1, A2 (online LAN), B1, A3 and B2 (`install.py backup-run`): Windows Task Scheduler,
-  systemd/launchd or one marked line in the user's crontab (other cron lines, and the notices DirectAdmin prints,
-  are left alone). On by default for A1, A3 and B1; B2 setup asks, with an explanation for hosts that already back
-  up the account. 14 daily + 4 weekly backups, bounded by size (10 GiB, B2 1 GiB), owner-only, the newest verified
-  one always kept. `backup-status` (also under `automaticBackup` in `status`), `backup-latest --print-path` for an
-  off-host copy, `--copy-to` for a second drive or NAS, optional sealing with a recovery code (`--encrypt-backups`,
-  `backup-open`), `backup-unschedule`. An update keeps the schedule. A2 offline keeps its own nightly backup.
+- **Automatic, verified, restorable daily backup on every route**, so a community can return to yesterday's state: A1,
+  A2 (online LAN), B1, A3 and B2 (`install.py backup-run`): Windows Task Scheduler, systemd/launchd or one marked line
+  in the user's crontab (other cron lines, and the notices DirectAdmin prints, are left alone). On by default for A1,
+  A3 and B1; B2 setup asks, with an explanation for hosts that already back up the account. 14 daily + 4 weekly
+  backups, bounded by size (10 GiB, B2 1 GiB), owner-only, the newest verified one always kept. `backup-status` (also
+  under `automaticBackup` in `status`), `backup-latest --print-path` for an off-host copy, `--copy-to` for a second
+  drive or NAS, optional sealing with a recovery code (`--encrypt-backups`, `backup-open`), `backup-unschedule`. An
+  update keeps the schedule. A2 offline keeps its own nightly backup. A failed or unverified night never removes an
+  older backup.
 - **Directors manage live capture on the website**: Step 5 (and 9) lists the night's capture delegations with
   their expiry and status, delegates live capture to an account whose Tournament Live connected to the night
   (12 hours by default, at most 7 days), revokes a delegation and withdraws a public live feed. A waiting feed says it

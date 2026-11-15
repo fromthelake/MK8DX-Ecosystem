@@ -8,10 +8,10 @@ same packages yourself; see [Building the packages](#building-the-packages).
 
 | Package | Contents | Use it for |
 | --- | --- | --- |
-| `mk8dx-host-local-…-amd64.zip` | Prebuilt Linux/amd64 images for website and API, MySQL and Mailpit images, Compose files, the installer and launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) | Routes A1 (one computer) and B1 (VPS) |
+| `mk8dx-host-local-…-amd64.zip` | Prebuilt Linux/amd64 images for website and API, MySQL and Mailpit images, Compose files, the installer (with the separate database accounts and the automatic daily backup) and launchers (`Start-MK8DX.cmd`, `tooling/start-mk8dx.sh`) | Routes A1 (one computer) and B1 (VPS) |
 | `mk8dx-a2-<platform>-<arch>-….zip` | Everything for A2 on that platform: website and API images, the guided setup, pinned Python wheels, launchers and the A2 guides | Route A2: home or club network without internet (`windows-amd64`, `linux-amd64`, `linux-arm64`, `macos-arm64`, `macos-amd64` for Intel Macs) |
-| `mk8dx-xampp-node-windows-….zip` | Built website and API for Node.js, a private MariaDB, Mailpit and the Apache configuration helper | Route A3: Windows without Docker |
-| `mk8dx-mijnhost-node-….zip` | Built website and API for Node.js/Passenger hosting with MariaDB | Route B2: shared hosting |
+| `mk8dx-xampp-node-windows-….zip` | Built website and API for Node.js, a private MariaDB, Mailpit, the Apache configuration helper and the automatic daily backup | Route A3: Windows without Docker |
+| `mk8dx-mijnhost-node-….zip` | Built website and API for Node.js/Passenger hosting with MariaDB and the automatic daily backup | Route B2: shared hosting |
 | `mk8dx-android-debug-….apk` | CI-built debug-signed Android app for testing; remove before publishing a stable release | Test phones |
 | `mk8dx-android-release-….apk` | App signed locally by the maintainer's release key | Phones; the stable release requires this file |
 | `mk8dx-android-notices-….zip` | License and source notices that belong next to the APK | Distributing the APK |

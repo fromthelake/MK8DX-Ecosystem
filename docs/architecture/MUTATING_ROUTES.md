@@ -6,7 +6,7 @@ applies to it. It exists so that a change to a route, or a new route, can be che
 be, how often an account may call it, how much it may store, how a retry behaves and when stored data goes away.**
 The protection lives in the receiving server; a modified client gains nothing by skipping its own checks.
 
-Recorded from the source of 0.2.4 plus the Unreleased security changes in the [changelog](../../CHANGELOG.md).
+Recorded from the source of 0.2.5 (see the [changelog](../../CHANGELOG.md)).
 When you add or change a mutating route, update its row in the same change.
 
 ## Shared mechanisms
