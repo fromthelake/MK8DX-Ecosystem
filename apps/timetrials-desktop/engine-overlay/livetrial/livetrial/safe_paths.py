@@ -27,7 +27,8 @@ def resolve_within(base: str | os.PathLike[str], relative: str | os.PathLike[str
     - a symlink or junction that points outside ``base`` is refused (the resolved target is what is compared);
     - ``base`` itself is not "inside" ``base`` and is refused;
     - ``strict``: a missing file (or folder) is refused instead of resolved as far as possible;
-    - ``refuse_symlink``: the named entry may not itself be a symlink, even one that stays inside ``base``.
+    - ``refuse_symlink``: the named entry may not itself be a symlink, even one that stays inside ``base``; the
+      name must then also stay inside ``base`` before links are followed (``a/../b`` is fine, ``../x`` is not).
 
     Raises ``UnsafePathError`` for every refusal.
     """
@@ -36,13 +37,19 @@ def resolve_within(base: str | os.PathLike[str], relative: str | os.PathLike[str
         joined = os.path.join(root, relative)
     except (OSError, ValueError, TypeError):
         raise UnsafePathError("the name does not resolve") from None
-    if refuse_symlink and os.path.islink(joined):
-        raise UnsafePathError("the name is a link")
+    prefix = root if root.endswith(os.sep) else root + os.sep
+    if refuse_symlink:
+        # the entry as named (not followed) is looked at only once it is known to be inside ``base``
+        named = os.path.normpath(joined)
+        if named.startswith(prefix):
+            if os.path.islink(named):
+                raise UnsafePathError("the name is a link")
+        else:
+            raise UnsafePathError("the name leads outside its folder")
     try:
         candidate = os.path.realpath(joined, strict=strict)
     except (OSError, ValueError):
         raise UnsafePathError("the name does not resolve") from None
-    prefix = root if root.endswith(os.sep) else root + os.sep
     if candidate.startswith(prefix):
         return Path(candidate)
     raise UnsafePathError("the name leads outside its folder")

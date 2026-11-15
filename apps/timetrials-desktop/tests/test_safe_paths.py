@@ -147,3 +147,11 @@ def test_windows_backslash_traversal_is_refused_and_nesting_allowed(safe, tree: 
 
 def test_a_nul_byte_is_never_a_file(safe, tree: Path) -> None:
     assert safe.file_within(tree, "session/clip.mp4\x00.png") is None
+
+
+def test_refusing_links_also_refuses_a_name_that_leaves_the_folder_before_links_are_followed(safe, tree: Path) -> None:
+    assert safe.resolve_within(tree, "other/../session/clip.mp4", refuse_symlink=True).name == "clip.mp4"
+    _link(tree.parent / "way-back", tree)  # outside the folder by name, inside once followed
+    assert safe.resolve_within(tree, "../way-back/session/clip.mp4").name == "clip.mp4"
+    with pytest.raises(safe.UnsafePathError):
+        safe.resolve_within(tree, "../way-back/session/clip.mp4", refuse_symlink=True)
