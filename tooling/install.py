@@ -22,6 +22,7 @@ if __package__ in (None, ""):
 
 # The texts the launcher window shows come in the launcher language (tooling/launcher_text.py, English is the key).
 from tooling.launcher_text import t, utf8_output  # noqa: E402
+from tooling import database_accounts as accounts  # noqa: E402
 
 PROFILE = "operator-profile.json"
 SECRET = "secrets.json"
@@ -46,7 +47,7 @@ def safe_state_dir(value, *, existing):
         raise ValueError("Private installation must be outside the software package")
     if existing and not path.is_dir():
         raise ValueError("Installation directory is missing")
-    for name in (PROFILE, SECRET, PUBLIC, "api.env", "operator.json", "compose.env"):
+    for name in (PROFILE, SECRET, PUBLIC, "api.env", "operator.json", "compose.env", accounts.MIGRATION_FILE):
         item = path / name
         if item.exists() and (item.is_symlink() or
                               getattr(item.lstat(), "st_file_attributes", 0) &
@@ -78,14 +79,15 @@ def free_port(start):
 
 def container_readable(state):
     """Allow the containers' own users to read their bind-mounted files inside a private state directory:
-    operator.json for the API's uid 10001, and public-client.json (public content, served to every browser) for
-    the gateway's Caddy, which runs as uid 10002 (#34). Every other file there stays 0600."""
+    operator.json (and migration.json for the migrate service) for the API image's uid 10001, and
+    public-client.json (public content, served to every browser) for the gateway's Caddy, which runs as uid 10002
+    (#34). Every other file there stays 0600."""
     if os.name != "posix":
         return
     state = Path(state)
     if stat.S_IMODE(state.stat().st_mode) & 0o077 != 0:
         return
-    for name in ("operator.json", PUBLIC):
+    for name in ("operator.json", accounts.MIGRATION_FILE, PUBLIC):
         if (state / name).is_file():
             os.chmod(state / name, 0o644)
 
@@ -189,6 +191,26 @@ def adopt(state):
     print("Existing installation adopted without changing runtime files, keys, accounts or volumes")
 
 
+def separate_accounts(state):
+    """True once this Docker installation runs the API with the runtime-only database account."""
+    return (Path(state) / accounts.MIGRATION_FILE).is_file()
+
+
+def database_accounts_agree(state, profile, secret_values, compose, api):
+    """The API's login, the migration login and the stored secrets belong together (both layouts)."""
+    if not separate_accounts(state):
+        # Before the update that separates them, the API and migrations share the image's `mk8dx_app` login.
+        return compose.get("MK8DX_DATABASE_PASSWORD") == api.get("MK8DX_HOSTED_MYSQL_PASSWORD")
+    names = profile.get("databaseAccounts") or {}
+    migration = secret_values.get(accounts.MIGRATION_PASSWORD)
+    return (names.get("runtime") == api.get("MK8DX_HOSTED_MYSQL_USER") and
+            names.get("migration") == compose.get("MK8DX_DATABASE_USER") and
+            api.get("MK8DX_HOSTED_MYSQL_USER") != compose.get("MK8DX_DATABASE_USER") and
+            migration is not None and compose.get("MK8DX_DATABASE_PASSWORD") == migration and
+            migration != api.get("MK8DX_HOSTED_MYSQL_PASSWORD") and
+            accounts.migration_file_matches(Path(state), api, compose["MK8DX_DATABASE_USER"], migration))
+
+
 def status(state, *, allow_expired_signer=False):
     state = safe_state_dir(state, existing=True)
     profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
@@ -227,19 +249,24 @@ def status(state, *, allow_expired_signer=False):
     if (runtime_password != saved_password or operator.get("MK8DX_HOSTED_SMTP_PASSWORD") != saved_password or
             any(api.get(name) != secret_values.get(name) for name in SECRET_KEYS) or
             compose.get("MK8DX_DATABASE_ROOT_PASSWORD") != secret_values.get("MK8DX_DATABASE_ROOT_PASSWORD") or
-            compose.get("MK8DX_DATABASE_PASSWORD") != api.get("MK8DX_HOSTED_MYSQL_PASSWORD") or
+            not database_accounts_agree(state, profile, secret_values, compose, api) or
             any(api.get(name) != value for name, value in operator.items()
                 if name.startswith("MK8DX_HOSTED_") and name != "MK8DX_HOSTED_SMTP_PASSWORD")):
         raise ValueError("Private secrets or generated runtime disagree; do not reset keys")
     displayed = {"route": profile["route"], "origin": profile["origin"],
                  "stateDir": str(state), "project": profile["project"],
                  "adminEmailConfigured": bool(profile.get("adminEmail")),
-                 "smtpHost": profile["smtp"]["host"]}
+                 "smtpHost": profile["smtp"]["host"],
+                 # "separate": the website's own account can only read and write rows.
+                 "databaseAccounts": "separate" if separate_accounts(state) else "single (the next update separates them)"}
     if profile["route"] == "A1":
         mail_port = int(compose["MK8DX_MAILPIT_PORT"])
         if not 1 <= mail_port <= 65535:
             raise ValueError("Local mail port is invalid")
         displayed["localMailInbox"] = f"http://127.0.0.1:{mail_port}"
+    if profile["route"] != "A2_OFFLINE":
+        from tooling import scheduled_backup
+        displayed["automaticBackup"] = scheduled_backup.summary(state)
     print(json.dumps(displayed, indent=2))
 
 
@@ -800,8 +827,116 @@ def images_behind_package(state):
     return sorted(behind)
 
 
+def run_migrations(state, *, fresh):
+    """Database updates and reference data with the migration login: the `migrate` service alone mounts it."""
+    service = "migrate" if separate_accounts(state) else "api"
+    run_compose(state, "run", "--rm", "--no-deps", service, "sh", "/app/operator-command.sh",
+                "dist/composition/migration-apply-main.js", "--migration-catalog",
+                "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx",
+                "--fresh-empty-database" if fresh else "--backup-verified")
+    run_compose(state, "run", "--rm", "--no-deps", service, "sh", "/app/operator-command.sh",
+                "dist/composition/reference-seed-main.js", "--staff-seed",
+                "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
+                "/app/infrastructure/mysql/reference/world-records-v1.json")
+
+
+ACCOUNT_FILES = (PROFILE, SECRET, "api.env", "operator.json")
+
+
+def separate_database_accounts(state):
+    """Give the API its runtime-only database login (MySQL must be running).
+
+    A new installation already has both logins: this creates (or repairs) the `mk8dx_runtime` account. An
+    installation made before this release ran the API with `mk8dx_app`; that login stays exactly as it is
+    and becomes the migration login, so access is never lost. Returns the previous files for a rollback
+    when it moved the API to the new login, else None. No password is printed."""
+    state = Path(state)
+    command = compose_command(state)
+    if separate_accounts(state):
+        password = json.loads((state / SECRET).read_text(encoding="utf-8"))["MK8DX_HOSTED_MYSQL_PASSWORD"]
+        accounts.docker_root_sql(command, ROOT, accounts.docker_runtime_sql(password), password)
+        return None
+    paths = [state / name for name in ACCOUNT_FILES]
+    previous = [path.read_bytes() for path in paths]
+    profile, secret_values = json.loads(previous[0]), json.loads(previous[1])
+    api_text, operator = previous[2].decode("utf-8"), json.loads(previous[3])
+    compose = read_dotenv(state / "compose.env")
+    api = read_dotenv(state / "api.env")
+    migration_user, migration_password = compose["MK8DX_DATABASE_USER"], compose["MK8DX_DATABASE_PASSWORD"]
+    if (api.get("MK8DX_HOSTED_MYSQL_USER") != migration_user or
+            api.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password or
+            operator.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password or
+            secret_values.get("MK8DX_HOSTED_MYSQL_PASSWORD") != migration_password):
+        raise ValueError("The saved database logins disagree; nothing was changed")
+    runtime_password = accounts.new_password()
+    accounts.docker_root_sql(command, ROOT, accounts.docker_runtime_sql(runtime_password), runtime_password)
+    connection = {"MK8DX_HOSTED_MYSQL_HOST": "mysql", "MK8DX_HOSTED_MYSQL_PORT": "3306",
+                  "MK8DX_HOSTED_MYSQL_DATABASE": compose.get("MK8DX_DATABASE", "mk8dx"),
+                  "MK8DX_HOSTED_MYSQL_USER": migration_user, "MK8DX_HOSTED_MYSQL_PASSWORD": migration_password}
+    for name, value in (("MK8DX_HOSTED_MYSQL_USER", accounts.RUNTIME_USER),
+                        ("MK8DX_HOSTED_MYSQL_PASSWORD", runtime_password)):
+        api_text = accounts.set_dotenv_value(api_text, name, value)
+        operator[name] = value
+    secret_values["MK8DX_HOSTED_MYSQL_PASSWORD"] = runtime_password
+    secret_values[accounts.MIGRATION_PASSWORD] = migration_password
+    profile["databaseAccounts"] = {"runtime": accounts.RUNTIME_USER, "migration": migration_user}
+    write_json(state / accounts.MIGRATION_FILE,
+               accounts.migration_settings(connection, migration_user, migration_password))
+    try:
+        replace_group(paths, [json.dumps(profile, indent=2, ensure_ascii=False).encode() + b"\n",
+                              json.dumps(secret_values, indent=2, ensure_ascii=False).encode() + b"\n",
+                              api_text.encode("utf-8"), json.dumps(operator, indent=2).encode() + b"\n"])
+    except Exception:
+        (state / accounts.MIGRATION_FILE).unlink(missing_ok=True)
+        raise
+    container_readable(state)
+    print(t("The website now uses its own database account, which can only read and write data; database "
+            "updates keep the existing account."))
+    return previous
+
+
+def restore_single_account(state, previous):
+    """Rollback of separate_database_accounts: the API's previous login and files, byte for byte."""
+    state = Path(state)
+    replace_group([state / name for name in ACCOUNT_FILES], previous)
+    (state / accounts.MIGRATION_FILE).unlink(missing_ok=True)
+    container_readable(state)
+
+
+def start_with_accounts(state, previous, *arguments):
+    """Start the new containers; when this update moved the API to its new login and it does not become
+    healthy, go back to the previous login (which still works) and start again."""
+    if previous is None:
+        run_compose(state, *arguments)
+        return
+    waited = [arguments[0], *(() if "--wait" in arguments else ("--wait",)), *arguments[1:]]
+    try:
+        run_compose(state, *waited)
+    except (subprocess.CalledProcessError, OSError) as error:
+        restore_single_account(state, previous)
+        run_compose(state, *arguments)
+        raise RuntimeError(t("The website did not start with its new database account ({0}); it uses the "
+                             "previous account again and your data is unchanged.", error)) from error
+
+
+def step_up_address(profile, email=None):
+    """The account for step-up-link: --admin-email, else the installation's administrator address.
+
+    step-up-link is the break-glass for the fresh e-mail confirmation (step-up) when this installation cannot
+    send e-mail. It runs on the server only, with the private operator settings; access to this host is the
+    authentication and there is no HTTP route for it. The person first presses Send the link on the website or
+    in the app; the command then prints a new single-use link for that one pending request, which is confirmed
+    exactly like the e-mailed link and audited (backend/api/src/security/step-up-operator-main.ts)."""
+    if profile.get("route") == "A2_OFFLINE":
+        raise ValueError("An offline LAN installation sends no e-mail and asks for no e-mail confirmation")
+    address = (email or profile.get("adminEmail") or "").strip()
+    if not address or "@" not in address or any(c.isspace() for c in address):
+        raise ValueError("Name the account with --admin-email <sign-in address>")
+    return address
+
+
 def operate(state, action, backup_output=None, user_account_id=None, force_ca_rotation=False,
-            qa_offline_candidate=False):
+            qa_offline_candidate=False, email=None):
     route = json.loads((safe_state_dir(state, existing=True) / PROFILE).read_text(encoding="utf-8"))["route"]
     if route == "A2_OFFLINE" and action in OFFLINE_GATED and not qa_offline_candidate:
         raise ValueError("A2 offline is not yet qualified for general use (fail-closed until its acceptance passes). "
@@ -880,15 +1015,13 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             backup(state, backup_output)
         verify_backup(backup_output)
         run_compose(state, "up", "-d", "--wait", "--no-build", "mysql")
-        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                    "dist/composition/migration-apply-main.js", "--migration-catalog",
-                    "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx", "--backup-verified")
-        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                    "dist/composition/reference-seed-main.js", "--staff-seed",
-                    "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
-                    "/app/infrastructure/mysql/reference/world-records-v1.json")
-        run_compose(state, "up", "-d", "--no-build", "--force-recreate", *recreated)
+        previous = separate_database_accounts(state)
+        run_migrations(state, fresh=False)
+        start_with_accounts(state, previous, "up", "-d", "--no-build", "--force-recreate", *recreated)
         status(state)
+        if route != "A2_OFFLINE":
+            from tooling import scheduled_backup
+            scheduled_backup.after_upgrade(state)
     elif action == "update-package":
         # A2 offline: this (newer) package takes over an installation. The caller made and verified the
         # encrypted backup first (the setup wizard, phase "backup"); nothing has changed before this point.
@@ -913,15 +1046,10 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             raise RuntimeError(t("{0}. The previous version is selected again. If it does not start, restore the "
                                  "backup made just before: {1}", error, backup_output)) from error
         print(t("Applying database updates of the new version"))
-        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                    "dist/composition/migration-apply-main.js", "--migration-catalog",
-                    "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx", "--backup-verified")
-        run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                    "dist/composition/reference-seed-main.js", "--staff-seed",
-                    "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
-                    "/app/infrastructure/mysql/reference/world-records-v1.json")
+        previous = separate_database_accounts(state)
+        run_migrations(state, fresh=False)
         print(t("Starting the new version"))
-        run_compose(state, "up", "-d", "--wait", "--no-build", "--force-recreate", *recreated)
+        start_with_accounts(state, previous, "up", "-d", "--wait", "--no-build", "--force-recreate", *recreated)
         status(state)
         record_package(state)
         # An installation made before this package keeps its old /setup page until it is written again.
@@ -931,13 +1059,8 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
         run_compose(state, "config", "--quiet")
         if action == "setup":
             run_compose(state, "up", "-d", "--wait", "--no-build", "mysql", *("mailpit",) if route == "A1" else ())
-            run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                        "dist/composition/migration-apply-main.js", "--migration-catalog",
-                        "/app/infrastructure/mysql/migration-catalog-v1.json", "--confirm-database", "mk8dx", "--fresh-empty-database")
-            run_compose(state, "run", "--rm", "--no-deps", "api", "sh", "/app/operator-command.sh",
-                        "dist/composition/reference-seed-main.js", "--staff-seed",
-                        "/app/infrastructure/mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
-                        "/app/infrastructure/mysql/reference/world-records-v1.json")
+            separate_database_accounts(state)
+            run_migrations(state, fresh=True)
         if route == "A2_OFFLINE":
             run_compose(state, "up", "-d", "--wait", "--no-build", *services)
             status(state)
@@ -951,6 +1074,9 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             return
         run_compose(state, "up", "-d", "--no-build", *services)
         status(state)
+        if action == "setup":
+            from tooling import scheduled_backup
+            scheduled_backup.after_setup(state)
     elif action == "admin" and route == "A2_OFFLINE":
         # No email in A2 offline: the administrator is created on the loopback host page,
         # which the one-time host unlock opens for this computer only.
@@ -958,6 +1084,12 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
                     "dist/administration/offline-host-unlock-main.js",
                     *(["--bootstrap"] if user_account_id is None else ["--user-account-id", user_account_id]))
         print(t("Open on this computer: {0}", offline_addresses(state)['hostPage']))
+    elif action == "step-up-link":
+        address = step_up_address(json.loads((Path(state) / PROFILE).read_text(encoding="utf-8")), email)
+        clean_env = {k: v for k, v in os.environ.items() if not k.startswith(("COMPOSE_", "MK8DX_"))}
+        subprocess.run(compose_command(state) + ["run", "-T", "--rm", "--no-deps", "api", "sh",
+                       "/app/operator-command.sh", "dist/security/step-up-operator-main.js",
+                       "--email-stdin"], input=address + "\n", text=True, cwd=ROOT, env=clean_env, check=True)
     elif action == "admin":
         profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
         address = profile.get("adminEmail")
@@ -974,7 +1106,9 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
 def main():
     utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "host-unlock", "upgrade", "update-package", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config"])
+    parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "step-up-link", "host-unlock", "upgrade", "update-package", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config", "database-accounts",
+                                           "backup-run", "backup-schedule", "backup-unschedule", "backup-status",
+                                           "backup-latest", "backup-open"])
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=["local", "lan", "offline-lan", "production", "xampp", "shared"], default="local")
     parser.add_argument("--domain", help="Production DNS name; HTTPS must reach this host")
@@ -984,7 +1118,8 @@ def main():
     parser.add_argument("--smtp-password-file", type=Path)
     parser.add_argument("--smtp-from")
     parser.add_argument("--origin", help="New exact external origin for change-origin")
-    parser.add_argument("--admin-email", help="Email you will verify before the one-time administrator step")
+    parser.add_argument("--admin-email", help="Email you will verify before the one-time administrator step; "
+                        "step-up-link: the account to confirm (default: the installation's administrator)")
     parser.add_argument("--user-account-id", help="Existing offline administrator for host-unlock; omit during first bootstrap")
     parser.add_argument("--qa-offline-candidate", action="store_true",
                         help="Allow A2 offline setup/start on a disposable QA host before its acceptance (ADR-0223)")
@@ -997,8 +1132,28 @@ def main():
     parser.add_argument("--db-name")
     parser.add_argument("--db-user")
     parser.add_argument("--db-password-file", type=Path)
+    # B2: the website's own database user with only SELECT, INSERT, UPDATE and DELETE (tooling/database_accounts.py).
+    parser.add_argument("--runtime-db-user", help="B2 init/database-accounts: second, limited database user for the website")
+    parser.add_argument("--runtime-db-password-file", type=Path, help="File holding that user's password")
+    parser.add_argument("--undo", action="store_true", help="database-accounts (B2): use the single database user again")
     parser.add_argument("--backup-input", type=Path)
+    # Automatic daily backups (tooling/scheduled_backup.py; A2 offline keeps tooling/auto_backup.py).
+    parser.add_argument("--no-auto-backup", action="store_true",
+                        help="wizard/init/setup: do not switch on the nightly automatic backup")
+    parser.add_argument("--backup-root", type=Path, help="backup-schedule: folder for the automatic backups")
+    parser.add_argument("--copy-to", help="backup-schedule: second folder (other drive, NAS) for a verified copy; '' clears it")
+    parser.add_argument("--backup-time", help="backup-schedule: daily time HH:MM (default 03:15)")
+    parser.add_argument("--keep-daily", type=int, help="backup-schedule: days to keep (default 14)")
+    parser.add_argument("--keep-weekly", type=int, help="backup-schedule: weeks to keep after those (default 4)")
+    parser.add_argument("--max-backup-mb", type=int, help="backup-schedule: total size bound (default 10240, B2 1024)")
+    parser.add_argument("--encrypt-backups", action="store_true", help="backup-schedule: seal backups with a recovery code")
+    parser.add_argument("--recovery-phrase-file", type=Path, help="backup-open: file holding the recovery code")
+    parser.add_argument("--print-path", action="store_true", help="backup-latest: print only the folder path")
+    parser.add_argument("--quiet", action="store_true", help="backup-run: print only failures")
     args = parser.parse_args()
+    if args.action.startswith("backup-"):
+        from tooling import scheduled_backup
+        raise SystemExit(scheduled_backup.command(args.action, args))
     if args.force_ca_rotation and args.action != "maintain-ca":
         raise ValueError("--force-ca-rotation applies only to maintain-ca")
     if args.action == "restore-local":
@@ -1018,6 +1173,19 @@ def main():
         restore_new(args.backup_input, args.state_dir, args.db_host, args.db_port, args.db_name,
                     args.db_user, args.db_password_file.read_text(encoding="utf-8").strip(), args.origin)
         return
+    if args.action == "database-accounts":
+        candidate = safe_state_dir(args.state_dir, existing=True) / PROFILE
+        if json.loads(candidate.read_text(encoding="utf-8")).get("route") in ("A3", "B2"):
+            from native_install import database_accounts
+            database_accounts(args.state_dir, args.runtime_db_user,
+                              args.runtime_db_password_file.read_text(encoding="utf-8").strip()
+                              if args.runtime_db_password_file else None, undo=args.undo)
+        else:
+            # Docker routes: create (or repair) the website's runtime-only account now; MySQL must be running.
+            # setup, upgrade and update-package do this themselves.
+            separate_database_accounts(args.state_dir)
+            status(args.state_dir)
+        return
     native_route = None
     if args.action == "wizard":
         offered = package_routes()
@@ -1034,7 +1202,7 @@ def main():
                 print(t("'{0}' is not one of the choices above.", selected))
         if selected in ("A3", "B2"):
             from native_install import wizard as native_wizard
-            native_wizard(args.state_dir, selected)
+            native_wizard(args.state_dir, selected, not args.no_auto_backup)
             return
         if selected not in ("A1", "A2", "A2O", "B1"):
             raise SystemExit("Choose exactly A1, A2, A2O, A3, B1 or B2")
@@ -1053,9 +1221,13 @@ def main():
                       args.db_password_file.read_text(encoding="utf-8").strip(),
                       args.smtp_host, args.smtp_port, args.smtp_user,
                       (args.smtp_password_file.read_text(encoding="utf-8").strip() if args.smtp_password_file else None),
-                      args.smtp_from)
+                      args.smtp_from, runtime_user=args.runtime_db_user,
+                      runtime_password=(args.runtime_db_password_file.read_text(encoding="utf-8").strip()
+                                        if args.runtime_db_password_file else None))
+        from tooling import scheduled_backup
+        scheduled_backup.record_choice(args.state_dir, not args.no_auto_backup)
         return
-    if args.action in ("status", "check", "check-database", "setup", "start", "serve", "maintenance", "admin", "upgrade", "backup", "verify-backup", "passenger-config", "change-origin", "change-smtp", "set-admin-email", "stop"):
+    if args.action in ("status", "check", "check-database", "setup", "start", "serve", "maintenance", "admin", "step-up-link", "upgrade", "backup", "verify-backup", "passenger-config", "change-origin", "change-smtp", "set-admin-email", "stop"):
         candidate = safe_state_dir(args.state_dir, existing=True) / PROFILE
         if candidate.is_file() and json.loads(candidate.read_text(encoding="utf-8")).get("route") in ("A3", "B2"):
             from native_install import operate as native_operate, change_origin as native_origin, change_smtp as native_smtp
@@ -1066,7 +1238,11 @@ def main():
             if args.action == "change-origin": native_origin(args.state_dir, args.origin)
             elif args.action == "change-smtp": native_smtp(args.state_dir)
             elif args.action == "set-admin-email": change_admin_email(args.state_dir, args.admin_email)
-            else: native_operate(args.state_dir, args.action, args.backup_output)
+            else:
+                if args.action == "setup" and args.no_auto_backup:
+                    from tooling import scheduled_backup
+                    scheduled_backup.record_choice(args.state_dir, False)
+                native_operate(args.state_dir, args.action, args.backup_output, args.admin_email)
             return
     if args.action == "change-smtp":
         change_smtp(args.state_dir)
@@ -1083,10 +1259,13 @@ def main():
             return
         change_lan_address(args.state_dir, args.lan_bind_address)
         return
-    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "host-unlock", "upgrade", "update-package",
-                       "maintain-ca"):
+    if args.action in ("setup", "start", "stop", "check", "apply", "admin", "step-up-link", "host-unlock", "upgrade",
+                       "update-package", "maintain-ca"):
+        if args.action == "setup" and args.no_auto_backup:
+            from tooling import scheduled_backup
+            scheduled_backup.record_choice(args.state_dir, False)
         operate(args.state_dir, args.action, args.backup_output, args.user_account_id,
-                args.force_ca_rotation, args.qa_offline_candidate)
+                args.force_ca_rotation, args.qa_offline_candidate, args.admin_email)
         return
     if args.action == "wizard":
         route = native_route
@@ -1165,12 +1344,15 @@ def main():
     mailpit_port = free_port(18025) if local else None
     origin = f"http://127.0.0.1:{http_port}" if local else f"https://{args.domain}"
     valid_origin(origin)
-    db_password = secrets.token_urlsafe(36)
+    # Two database logins: the MySQL image's own `mk8dx_app` owns the schema and runs the migrations; the API
+    # gets `mk8dx_runtime`, which may only read and write rows (created at setup, tooling/database_accounts.py).
+    db_password = accounts.new_password()
+    runtime_password = accounts.new_password()
     runtime = {
         "MK8DX_HOSTED_MYSQL_HOST": "mysql",
         "MK8DX_HOSTED_MYSQL_PORT": "3306",
-        "MK8DX_HOSTED_MYSQL_USER": "mk8dx_app",
-        "MK8DX_HOSTED_MYSQL_PASSWORD": db_password,
+        "MK8DX_HOSTED_MYSQL_USER": accounts.RUNTIME_USER,
+        "MK8DX_HOSTED_MYSQL_PASSWORD": runtime_password,
         "MK8DX_HOSTED_MYSQL_DATABASE": "mk8dx",
         "MK8DX_HOSTED_MYSQL_CONNECTION_LIMIT": "8",
         "MK8DX_HOSTED_SCHEMA9_CATALOG_PATH": "/app/packages/assets/schema9-asset-catalog-v1.json",
@@ -1212,12 +1394,14 @@ def main():
     write_new(target / "operator.json", json.dumps({k: v for k, v in runtime.items()
                                                     if k.startswith("MK8DX_HOSTED_") and k != "MK8DX_HOSTED_SMTP_PASSWORD_BASE64"} |
                                                     {"MK8DX_HOSTED_SMTP_PASSWORD": smtp_password}, indent=2) + "\n")
+    write_json(target / accounts.MIGRATION_FILE,
+               accounts.migration_settings(runtime, accounts.MIGRATION_USER, db_password))
     container_readable(target)
     compose = {
         "MK8DX_PROJECT_NAME": "mk8dx-os-" + secrets.token_hex(5),
         "MK8DX_STATE_DIR": target.as_posix(),
         "MK8DX_DATABASE": "mk8dx",
-        "MK8DX_DATABASE_USER": "mk8dx_app",
+        "MK8DX_DATABASE_USER": accounts.MIGRATION_USER,
         "MK8DX_DATABASE_PASSWORD": db_password,
         "MK8DX_DATABASE_ROOT_PASSWORD": secrets.token_urlsafe(36),
         "MK8DX_BIND_ADDRESS": "127.0.0.1" if local else (lan_address(args.lan_bind_address) if lan else "0.0.0.0"),
@@ -1247,6 +1431,8 @@ def main():
                                   "origin": origin, "project": compose["MK8DX_PROJECT_NAME"],
                                   "httpPort": http_port, "bindAddress": compose["MK8DX_BIND_ADDRESS"],
                                   "adminEmail": None if offline else args.admin_email,
+                                  "databaseAccounts": {"runtime": accounts.RUNTIME_USER,
+                                                       "migration": accounts.MIGRATION_USER},
                                   **({"rootCertificateSha256": ca_metadata["root"]["certificateSha256"]} if ca_metadata else {}),
                                   "smtp": {"host": runtime["MK8DX_HOSTED_SMTP_HOST"],
                                            "port": int(runtime["MK8DX_HOSTED_SMTP_PORT"]),
@@ -1254,9 +1440,14 @@ def main():
                                            "username": runtime["MK8DX_HOSTED_SMTP_USERNAME"],
                                            "fromAddress": runtime["MK8DX_HOSTED_SMTP_FROM_ADDRESS"]}})
     write_json(target / SECRET, {**{k: runtime[k] for k in SECRET_KEYS},
+                                 accounts.MIGRATION_PASSWORD: db_password,
                                  "MK8DX_HOSTED_SMTP_PASSWORD": smtp_password,
                                  "MK8DX_DATABASE_ROOT_PASSWORD": compose["MK8DX_DATABASE_ROOT_PASSWORD"]})
     write_json(target / PUBLIC, public_client(origin, offline))
+    if not offline:
+        # The answer to the setup question (or --no-auto-backup); `setup` switches the nightly backup on.
+        from tooling import scheduled_backup
+        scheduled_backup.record_choice(target, not args.no_auto_backup)
     print(t("Private installation: {0}", target))
     print(t("Web origin: {0}", origin))
     if local:

@@ -143,7 +143,12 @@ import type { TimeTrialRevisionReadService } from
   "./timetrials/revision-read-service.js";
 import type { TimeTrialSubmissionService } from
   "./timetrials/submission-service.js";
-import type { MutationRateLimiter } from "./security/mysql-mutation-rate-limiter.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "./security/mysql-mutation-rate-limiter.js";
+import { budgetRefusal, type AbuseBudgets } from "./security/abuse-budgets.js";
+import type { AuthEmailBudgets } from "./authentication/auth-email-budgets.js";
 import type { EphemeralAndroidScanTestService } from
   "./timetrials/ephemeral-scan-test-service.js";
 import type { ActivityStoryService } from "./home/activity-story-service.js";
@@ -255,6 +260,11 @@ import { registerInstallationSettingsRoutes } from "./administration/installatio
 import type { InstallationSettingsService } from "./administration/installation-settings-service.js";
 import type { DirectorHostRequestService } from "./tournaments/director-host-request-service.js";
 import { registerTournamentSignupRoutes } from "./tournaments/tournament-signup-routes.js";
+import {
+  registerStepUpGuard,
+  registerStepUpRoutes,
+  type StepUpRouteOptions,
+} from "./security/step-up-routes.js";
 import type { TournamentSignupService } from "./tournaments/tournament-signup-service.js";
 
 export type AppDependencies = Readonly<{
@@ -275,7 +285,19 @@ export type AppDependencies = Readonly<{
   nativeEmailApproval?: Readonly<{
     service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
   }>;
+  /**
+   * Fresh e-mail confirmation before dangerous actions (security/step-up-policy.ts). Present where
+   * the installation sends e-mail; without it no route asks for one.
+   */
+  stepUp?: Omit<StepUpRouteOptions, "resolveActor">;
   resolveActor?: ActorResolver;
+  /**
+   * H1: the general per-account and installation backstop for every signed-in mutation under /v1,
+   * plus the installation and per-target budgets the routes use. Without it no backstop applies.
+   */
+  abuseBudgets?: AbuseBudgets;
+  /** H1: per-address, per-recipient and installation budgets for sign-in mail and device codes. */
+  authEmailBudgets?: AuthEmailBudgets;
   claimLifecycle?: Pick<
     ClaimLifecycleService,
     "requestClaim" | "administratorAction" | "openDispute" | "releaseOwnClaim" | "replyToClaim"
@@ -298,6 +320,10 @@ export type AppDependencies = Readonly<{
   }>;
   aliasRepository?: AliasReadRepository;
   aliasService?: Pick<AliasService, "createAlias" | "updateAlias">;
+  aliasProtection?: Readonly<{
+    rateLimiter: MutationRateLimiter;
+    csrfVerifier?: Readonly<{ verify(actor: ActorContext, proof: string): boolean | Promise<boolean> }>;
+  }>;
   playerActivity?: Readonly<{
     service: Pick<PlayerActivityService, "loadMine">;
   }>;
@@ -344,7 +370,7 @@ export type AppDependencies = Readonly<{
     }>;
   }>;
   gameAssets?: Readonly<{ rootDirectory: string }>;
-  appDownloads?: Readonly<{ store: AppDownloadStore; staticLinks?: AppDownloadLinks }>;
+  appDownloads?: Readonly<{ store: AppDownloadStore; staticLinks?: AppDownloadLinks; rateLimiter?: MutationRateLimiter }>;
   clientInstallations?: Readonly<{ service: ClientInstallationService }>;
   playerInsights?: Readonly<{
     service: Pick<PlayerInsightsService, "loadMine">;
@@ -494,6 +520,7 @@ export type AppDependencies = Readonly<{
   }>;
   notificationChannels?: Readonly<{
     service: NotificationChannelService;
+    rateLimiter: MutationRateLimiter;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
   }>;
   accountTimeTrialPreferences?: Readonly<{
@@ -648,6 +675,61 @@ export async function buildApp(
     app.addHook("onRequestAbort", async (request) => { release(request); });
   }
 
+  // The actor is resolved once per mutation: the backstop below resolves it and hands the result to
+  // the route's first resolution. A later resolution in the same request asks again, so a route that
+  // changes the session (account switching) never sees a stale actor.
+  const baseResolveActor = dependencies.resolveActor ?? anonymousActor;
+  const prefetchedActors = new WeakMap<object, Promise<ActorContext>>();
+  const resolveActor: ActorResolver = (request) => {
+    const prefetched = prefetchedActors.get(request);
+    if (prefetched !== undefined) {
+      prefetchedActors.delete(request);
+      return prefetched;
+    }
+    return baseResolveActor(request);
+  };
+  // Order of the request hooks (H1 + H3): actor lookup, then the step-up guard, then the mutation
+  // backstop. The guard is registered before every route, so no dangerous route can be added without
+  // passing through it, and before the backstop, so a dangerous request refused for a missing fresh
+  // confirmation spends no account or installation budget. Sending a step-up link
+  // (POST /v1/session/step-up) is not a guarded route: it passes the backstop and its own budget.
+  // The guard and the backstop share one actor resolution with the route.
+  const sharedActor = (request: Parameters<ActorResolver>[0]): Promise<ActorContext> => {
+    const prefetched = prefetchedActors.get(request);
+    if (prefetched !== undefined) return prefetched;
+    const actor = baseResolveActor(request);
+    prefetchedActors.set(request, actor);
+    return actor;
+  };
+  if (dependencies.stepUp !== undefined) {
+    registerStepUpGuard(app, { ...dependencies.stepUp, resolveActor: sharedActor });
+  }
+  if (dependencies.abuseBudgets !== undefined) {
+    const budgets = dependencies.abuseBudgets;
+    const mutatingMethods = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+    // H1 backstop: every signed-in mutation under /v1 counts against the caller's own durable budget
+    // (administrators higher, never unlimited) and one installation-wide per-minute budget, before
+    // the body is read. Route-specific budgets and quotas still apply on top.
+    app.addHook("onRequest", async (request, reply) => {
+      if (!mutatingMethods.has(request.method)) return;
+      const path = request.url.split("?", 1)[0] ?? "";
+      if (!path.startsWith("/v1/")) return;
+      const actor = sharedActor(request);
+      let resolved: ActorContext;
+      try { resolved = await actor; } catch { return; }
+      try {
+        await budgets.mutation(resolved);
+      } catch (error) {
+        const refusal = budgetRefusal(error, "mutation_rate_limited",
+          "Too many changes were received. Wait before retrying.");
+        if (refusal === null) throw error;
+        prefetchedActors.delete(request);
+        void reply.header("retry-after", String(refusal.retryAfterSeconds));
+        return reply.code(429).send(refusal.body);
+      }
+    });
+  }
+
   // How long the application itself took, so a slow page can be attributed
   // to the app or to everything around it (spawn, queueing, network) without
   // guessing. Timing only; it carries no request or user data.
@@ -683,6 +765,16 @@ export async function buildApp(
       Number.isSafeInteger(raised.statusCode)
       ? raised.statusCode
       : 500;
+    // A durable budget a route did not translate itself is still a proper 429 with Retry-After.
+    if (error instanceof MutationRateLimitExceeded) {
+      void reply.header("retry-after", String(error.retryAfterSeconds));
+      return reply.status(429).send({
+        statusCode: 429,
+        code: "rate_limited",
+        error: "Too Many Requests",
+        message: "Too many requests were received. Wait before retrying.",
+      });
+    }
     if (raised !== undefined && statusCode >= 400 && statusCode < 500) {
       // Preserve the default bounded client-error shape (schema-validation
       // messages are structural, never private values).
@@ -817,7 +909,14 @@ export async function buildApp(
       dependencies.embeddedAuth.auth,
       dependencies.embeddedAuth.baseUrl,
       dependencies.embeddedAuth.offlineLan === true,
+      dependencies.authEmailBudgets,
     );
+  }
+  if (dependencies.stepUp !== undefined) {
+    await registerStepUpRoutes(app, {
+      ...dependencies.stepUp,
+      resolveActor: dependencies.resolveActor ?? anonymousActor,
+    });
   }
   if (dependencies.nativeEmailApproval !== undefined) {
     await registerNativeEmailApprovalRoutes(app, {
@@ -825,28 +924,30 @@ export async function buildApp(
       ...(dependencies.embeddedAuth === undefined
         ? {}
         : { clientAddress: dependencies.embeddedAuth.auth.clientAddress }),
+      ...(dependencies.authEmailBudgets === undefined ? {} : { budgets: dependencies.authEmailBudgets }),
     });
   }
 
   await registerIdentityRoutes(app, {
     repository: dependencies.identityRepository,
-    resolveActor: dependencies.resolveActor ?? anonymousActor,
+    resolveActor,
     ...(dependencies.claimLifecycle === undefined
       ? {}
       : { claimLifecycle: dependencies.claimLifecycle }),
     ...(dependencies.claimCsrfVerifier === undefined
       ? {}
       : { claimCsrfVerifier: dependencies.claimCsrfVerifier }),
+    ...(dependencies.abuseBudgets === undefined ? {} : { claimBudgets: dependencies.abuseBudgets }),
   });
   if (dependencies.administratorOverview !== undefined) {
     await registerAdministratorOverviewRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.administratorOverview.service,
     });
   }
   if (dependencies.administratorGrants !== undefined) {
     await registerAdministratorGrantRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.administratorGrants.service,
       csrfVerifier: dependencies.administratorGrants.csrfVerifier,
       rateLimiter: dependencies.administratorGrants.rateLimiter,
@@ -857,57 +958,65 @@ export async function buildApp(
     dependencies.aliasService !== undefined
   ) {
     await registerAliasRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       ...(dependencies.aliasRepository === undefined
         ? {}
         : { repository: dependencies.aliasRepository }),
       ...(dependencies.aliasService === undefined
         ? {}
         : { service: dependencies.aliasService }),
+      ...(dependencies.aliasProtection === undefined
+        ? {}
+        : { rateLimiter: dependencies.aliasProtection.rateLimiter,
+            ...(dependencies.aliasProtection.csrfVerifier === undefined
+              ? {} : { csrfVerifier: dependencies.aliasProtection.csrfVerifier }) }),
+      ...(dependencies.abuseBudgets === undefined
+        ? {}
+        : { installationBudget: dependencies.abuseBudgets.forInstallation("aliases", "aliasesPerHour", "aliasesPerDay") }),
     });
   }
   if (dependencies.playerActivity !== undefined) {
     await registerPlayerActivityRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerActivity.service,
     });
   }
   if (dependencies.identityLinkAdmin !== undefined) {
     await registerIdentityLinkAdminRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.identityLinkAdmin.service,
       csrfVerifier: dependencies.identityLinkAdmin.csrfVerifier,
     });
   }
   if (dependencies.observedIdentityAdmin !== undefined) {
     await registerObservedIdentityAdminRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.observedIdentityAdmin.service,
       csrfVerifier: dependencies.observedIdentityAdmin.csrfVerifier,
     });
   }
   if (dependencies.claimReviews !== undefined) {
     await registerClaimReviewRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.claimReviews.service,
     });
   }
   if (dependencies.claimCandidates !== undefined) {
     await registerClaimCandidateRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.claimCandidates.service,
       csrfVerifier: dependencies.claimCandidates.csrfVerifier,
     });
   }
   if (dependencies.playerClaimProduct !== undefined) {
     await registerPlayerClaimProductRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerClaimProduct.service,
     });
   }
   if (dependencies.playerOnboarding !== undefined) {
     await registerPlayerOnboardingRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerOnboarding.service,
       ...(dependencies.playerOnboarding.csrfVerifier === undefined
         ? {}
@@ -927,11 +1036,17 @@ export async function buildApp(
   }
   if (dependencies.appDownloads !== undefined) {
     await registerAppDownloadRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       store: dependencies.appDownloads.store,
       ...(dependencies.appDownloads.staticLinks === undefined
         ? {}
         : { staticLinks: dependencies.appDownloads.staticLinks }),
+      ...(dependencies.appDownloads.rateLimiter === undefined
+        ? {}
+        : { rateLimiter: dependencies.appDownloads.rateLimiter }),
+      ...(dependencies.abuseBudgets === undefined
+        ? {}
+        : { installationBudget: dependencies.abuseBudgets.forInstallation("app-downloads", "downloadsPerHour", "downloadsPerDay") }),
     });
     // Public on purpose: a Player whose build has been turned off must be able
     // to learn that without signing in first.
@@ -939,7 +1054,7 @@ export async function buildApp(
   }
   if (dependencies.clientInstallations !== undefined) {
     await registerClientInstallationRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.clientInstallations.service,
     });
   }
@@ -950,7 +1065,7 @@ export async function buildApp(
   }
   if (dependencies.playerInsights !== undefined) {
     await registerPlayerInsightsRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerInsights.service,
     });
   }
@@ -971,7 +1086,7 @@ export async function buildApp(
   }
   if (dependencies.playerAvatar !== undefined) {
     await registerPlayerAvatarRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerAvatar.service,
       rateLimiter: dependencies.playerAvatar.rateLimiter,
       ...(dependencies.playerAvatar.csrfVerifier === undefined
@@ -981,7 +1096,7 @@ export async function buildApp(
   }
   if (dependencies.playerCountry !== undefined) {
     await registerPlayerCountryRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerCountry.service,
       rateLimiter: dependencies.playerCountry.rateLimiter,
       ...(dependencies.playerCountry.csrfVerifier === undefined
@@ -991,25 +1106,27 @@ export async function buildApp(
   }
   if (dependencies.playerVisibility !== undefined) {
     await registerPlayerVisibilityRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerVisibility.service,
       ...(dependencies.playerVisibility.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.playerVisibility.csrfVerifier }),
+      ...(dependencies.abuseBudgets === undefined ? {} : { rateLimiter: dependencies.abuseBudgets.limiter }),
     });
   }
   if (dependencies.timeTrialLifecycle !== undefined) {
     await registerTimeTrialLifecycleRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.timeTrialLifecycle.service,
       ...(dependencies.timeTrialLifecycle.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.timeTrialLifecycle.csrfVerifier }),
+      ...(dependencies.abuseBudgets === undefined ? {} : { rateLimiter: dependencies.abuseBudgets.limiter }),
     });
   }
   if (dependencies.timeTrialCompletion !== undefined) {
     await registerTimeTrialCompletionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.timeTrialCompletion.service,
       ...(dependencies.timeTrialCompletion.rateLimiter === undefined
         ? {}
@@ -1018,7 +1135,7 @@ export async function buildApp(
   }
   if (dependencies.referenceGhosts !== undefined) {
     await registerReferenceGhostRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.referenceGhosts.service,
       ...(dependencies.referenceGhosts.rateLimiter === undefined
         ? {}
@@ -1027,7 +1144,7 @@ export async function buildApp(
   }
   if (dependencies.timeTrialSubmission !== undefined) {
     await registerTimeTrialSubmissionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.timeTrialSubmission.service,
       ...(dependencies.timeTrialSubmission.testService === undefined
         ? {}
@@ -1039,6 +1156,9 @@ export async function buildApp(
       ...(dependencies.timeTrialSubmission.rateLimiter === undefined
         ? {}
         : { rateLimiter: dependencies.timeTrialSubmission.rateLimiter }),
+      ...(dependencies.abuseBudgets === undefined
+        ? {}
+        : { installationBudget: dependencies.abuseBudgets.forInstallation("time-trial-submit", "submissionsPerHour", "submissionsPerDay") }),
       ...(dependencies.timeTrialSubmission.feedback === undefined
         ? {}
         : { feedback: dependencies.timeTrialSubmission.feedback }),
@@ -1052,7 +1172,7 @@ export async function buildApp(
   }
   if (dependencies.reactions !== undefined) {
     await registerReactionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.reactions.service,
       ...(dependencies.reactions.csrfVerifier === undefined
         ? {}
@@ -1064,7 +1184,7 @@ export async function buildApp(
   }
   if (dependencies.home !== undefined) {
     await registerHomeRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       comeback: dependencies.home.comeback,
       rivals: dependencies.home.rivals,
       follows: dependencies.home.follows,
@@ -1085,7 +1205,7 @@ export async function buildApp(
         dependencies.publicTimeTrials !== undefined &&
         dependencies.reactions !== undefined) {
       await registerHomeBootstrapRoutes(app, {
-        resolveActor: dependencies.resolveActor ?? anonymousActor,
+        resolveActor,
         identity: dependencies.identityRepository,
         notifications: dependencies.notifications.service,
         claims: dependencies.playerClaimProduct.service,
@@ -1115,7 +1235,7 @@ export async function buildApp(
   }
   if (dependencies.notifications !== undefined) {
     await registerNotificationRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.notifications.service,
       rateLimiter: dependencies.notifications.rateLimiter,
       ...(dependencies.notifications.csrfVerifier === undefined
@@ -1125,38 +1245,38 @@ export async function buildApp(
   }
   if (dependencies.webManualSession !== undefined) {
     await registerWebManualSessionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.webManualSession.service,
     });
   }
   if (dependencies.nativeTimeTrialSession !== undefined) {
     await registerNativeTimeTrialSessionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.nativeTimeTrialSession.service,
     });
   }
   if (dependencies.webCsrf !== undefined) {
     await registerWebCsrfRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.webCsrf.service,
     });
   }
   if (dependencies.accountSwitch !== undefined) {
     await registerAccountSwitchRoutes(app, {
       ...dependencies.accountSwitch,
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
     });
   }
   if (dependencies.deviceInvitations !== undefined) {
     await registerDeviceInvitationRoutes(app, {
       ...dependencies.deviceInvitations,
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
     });
   }
   if (dependencies.resolveActor !== undefined) {
     await registerSessionCapabilityRoutes(
       app,
-      dependencies.resolveActor,
+      resolveActor,
       dependencies.tournamentOperatorCapabilities === undefined
         ? async () => false
         : (userAccountId) => dependencies.tournamentOperatorCapabilities!.service.has(userAccountId),
@@ -1164,13 +1284,13 @@ export async function buildApp(
   }
   if (dependencies.timeTrialRevisionRead !== undefined) {
     await registerTimeTrialRevisionReadRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.timeTrialRevisionRead.service,
     });
   }
   if (dependencies.tournamentSubmission !== undefined) {
     await registerTournamentSubmissionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentSubmission.service,
       authorizer: dependencies.tournamentSubmission.authorizer,
       rateLimiter: dependencies.tournamentSubmission.rateLimiter,
@@ -1181,13 +1301,13 @@ export async function buildApp(
   }
   if (dependencies.tournamentRevisionRead !== undefined) {
     await registerTournamentRevisionReadRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentRevisionRead.service,
     });
   }
   if (dependencies.tournamentPublications !== undefined) {
     await registerTournamentPublicationRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentPublications.service,
       csrfVerifier: dependencies.tournamentPublications.csrfVerifier,
       rateLimiter: dependencies.tournamentPublications.rateLimiter,
@@ -1216,21 +1336,22 @@ export async function buildApp(
   }
   if (dependencies.ratingAdministration !== undefined) {
     await registerRatingAdministrationRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.ratingAdministration.service,
       readRepository: dependencies.ratingAdministration.readRepository,
       csrfVerifier: dependencies.ratingAdministration.csrfVerifier,
+      ...(dependencies.abuseBudgets === undefined ? {} : { rateLimiter: dependencies.abuseBudgets.limiter }),
     });
   }
   if (dependencies.tournamentOperations !== undefined) {
     await registerTournamentOperationRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentOperations.service,
       csrfVerifier: dependencies.tournamentOperations.csrfVerifier,
       ...(dependencies.playerOnboarding === undefined ? {} : {
         // A delegated director (tournament.operation capability, plain
         // account role) may also create roster Players, exactly as on the
-        // native surface where the bearer gate upgrades that capability.
+        // native surface.
         createRosterPlayers: (
           actor: ActorContext,
           requests: readonly Readonly<{ row: number; displayName: string; confirmSameName?: boolean }>[],
@@ -1247,7 +1368,7 @@ export async function buildApp(
       }),
     });
     await registerPublicTournamentEventRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentOperations.service,
       ...(dependencies.tournamentOperations.statistics === undefined
         ? {}
@@ -1256,16 +1377,20 @@ export async function buildApp(
   }
   if (dependencies.notificationChannels !== undefined) {
     await registerNotificationChannelRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.notificationChannels.service,
+      rateLimiter: dependencies.notificationChannels.rateLimiter,
       ...(dependencies.notificationChannels.csrfVerifier === undefined
         ? {}
         : { csrfVerifier: dependencies.notificationChannels.csrfVerifier }),
+      ...(dependencies.abuseBudgets === undefined
+        ? {}
+        : { installationBudget: dependencies.abuseBudgets.forInstallation("web-push-subscriptions", "pushSubscriptionsPerHour", "pushSubscriptionsPerDay") }),
     });
   }
   if (dependencies.accountTimeTrialPreferences !== undefined) {
     await registerAccountTimeTrialPreferenceRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.accountTimeTrialPreferences.service,
       rateLimiter: dependencies.accountTimeTrialPreferences.rateLimiter,
       ...(dependencies.accountTimeTrialPreferences.csrfVerifier === undefined
@@ -1275,7 +1400,7 @@ export async function buildApp(
   }
   if (dependencies.accountAppearancePreference !== undefined) {
     await registerAccountAppearancePreferenceRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.accountAppearancePreference.service,
       rateLimiter: dependencies.accountAppearancePreference.rateLimiter,
       ...(dependencies.accountAppearancePreference.csrfVerifier === undefined
@@ -1285,7 +1410,7 @@ export async function buildApp(
   }
   if (dependencies.playerProfilePreferences !== undefined) {
     await registerPlayerProfilePreferenceRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerProfilePreferences.service,
       rateLimiter: dependencies.playerProfilePreferences.rateLimiter,
       ...(dependencies.playerProfilePreferences.csrfVerifier === undefined
@@ -1295,7 +1420,7 @@ export async function buildApp(
   }
   if (dependencies.socialGroups !== undefined) {
     await registerSocialGroupRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.socialGroups.service,
       ...(dependencies.socialGroups.csrfVerifier === undefined ? {} : { csrfVerifier: dependencies.socialGroups.csrfVerifier }),
       ...(dependencies.socialGroups.rateLimiter === undefined ? {} : { rateLimiter: dependencies.socialGroups.rateLimiter }),
@@ -1303,7 +1428,7 @@ export async function buildApp(
   }
   if (dependencies.playerEngagements !== undefined) {
     await registerPlayerEngagementRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.playerEngagements.service,
       ...(dependencies.playerEngagements.csrfVerifier === undefined
         ? {}
@@ -1311,6 +1436,9 @@ export async function buildApp(
       ...(dependencies.playerEngagements.rateLimiter === undefined
         ? {}
         : { rateLimiter: dependencies.playerEngagements.rateLimiter }),
+      ...(dependencies.abuseBudgets === undefined
+        ? {}
+        : { installationBudget: dependencies.abuseBudgets.forInstallation("player-engagements", "engagementsPerHour", "engagementsPerDay") }),
     });
   }
   if (dependencies.worldRecords !== undefined) {
@@ -1318,13 +1446,13 @@ export async function buildApp(
   }
   if (dependencies.tournamentConnected !== undefined) {
     registerTournamentConnectedRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       tournamentConnected: dependencies.tournamentConnected.service,
       csrfVerifier: dependencies.tournamentConnected.csrfVerifier,
     });
     if (dependencies.tournamentOperations !== undefined) {
       await registerTournamentNativeOperationRoutes(app, {
-        resolveActor: dependencies.resolveActor ?? anonymousActor,
+        resolveActor,
         operations: dependencies.tournamentOperations.service,
         connected: dependencies.tournamentConnected.service,
         ...(dependencies.tournamentOperatorCapabilities === undefined ? {} : {
@@ -1332,17 +1460,23 @@ export async function buildApp(
             dependencies.tournamentOperatorCapabilities!.service.has(userAccountId),
         }),
         ...(dependencies.tournamentRetraction === undefined ? {} : {
-          // Removal hides a Tournament and its own director may do it, so the
-          // service authorizes on the real actor rather than the upgraded one.
+          // Removal hides a Tournament and its own director may do it; the
+          // service authorizes on the actor as resolved.
           removeTournament: (actor, input) =>
             dependencies.tournamentRetraction!.service.remove(actor as never, input),
         }),
         ...(dependencies.playerOnboarding === undefined ? {} : {
-          // ADR-0177: roster Player creation reuses the identity boundary; the
-          // native route gate above is what authorizes it.
+          // ADR-0177: roster Player creation reuses the identity boundary with
+          // the same audited capability check as the web surface; the native
+          // actor is never upgraded to an administrator.
           createRosterPlayers: (actor, requests, options) =>
             dependencies.playerOnboarding!.service.createRosterPlayers(
-              actor as never, requests, undefined, options ?? {},
+              actor, requests,
+              dependencies.tournamentOperatorCapabilities === undefined
+                ? undefined
+                : (userAccountId: string) =>
+                  dependencies.tournamentOperatorCapabilities!.service.has(userAccountId),
+              options ?? {},
             ),
         }),
       });
@@ -1350,42 +1484,43 @@ export async function buildApp(
   }
   if (dependencies.tournamentRetraction !== undefined) {
     registerTournamentRetractionRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       tournamentRetraction: dependencies.tournamentRetraction.service,
       csrfVerifier: dependencies.tournamentRetraction.csrfVerifier,
     });
   }
   if (dependencies.tournamentReports !== undefined) {
     await registerTournamentReportRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentReports.service,
       csrfVerifier: dependencies.tournamentReports.csrfVerifier,
     });
   }
   if (dependencies.tournamentOperatorCapabilities !== undefined) {
     await registerTournamentOperatorCapabilityRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentOperatorCapabilities.service,
       csrfVerifier: dependencies.tournamentOperatorCapabilities.csrfVerifier,
     });
   }
   if (dependencies.installationSettings !== undefined) {
     await registerInstallationSettingsRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.installationSettings.service,
       csrfVerifier: dependencies.installationSettings.csrfVerifier,
+      ...(dependencies.abuseBudgets === undefined ? {} : { rateLimiter: dependencies.abuseBudgets.limiter }),
     });
   }
   if (dependencies.directorHostRequests !== undefined) {
     await registerDirectorHostRequestRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.directorHostRequests.service,
       csrfVerifier: dependencies.directorHostRequests.csrfVerifier,
     });
   }
   if (dependencies.tournamentSignups !== undefined) {
     await registerTournamentSignupRoutes(app, {
-      resolveActor: dependencies.resolveActor ?? anonymousActor,
+      resolveActor,
       service: dependencies.tournamentSignups.service,
       csrfVerifier: dependencies.tournamentSignups.csrfVerifier,
     });

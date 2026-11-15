@@ -6,7 +6,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from .client import ConnectionTarget, ConnectionTargetStore, ConnectedClient, ConnectedError, queue_upload, sign_in
+from .client import (
+    NO_SESSION, SIGNED_OUT, ConnectionTarget, ConnectionTargetStore, ConnectedClient, ConnectedError,
+    forget_local_session, queue_upload, sign_in, sign_out,
+)
 from .session import SessionStore
 from .server import exact_origin, selected_origin, save_origin
 
@@ -49,7 +52,9 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("sign-in")
     server = sub.add_parser("server")
     server.add_argument("address", nargs="?")
-    sub.add_parser("sign-out")
+    signout = sub.add_parser("sign-out", help="End this PC's session on the community website, then remove it here")
+    signout.add_argument("--this-pc-only", action="store_true",
+                         help="Only remove the session from this PC; the website session is not ended")
     sub.add_parser("tournaments")
     sub.add_parser("target")
     sub.add_parser("clear-target")
@@ -72,9 +77,24 @@ def main(argv: list[str] | None = None) -> int:
         store = SessionStore()
         if args.command == "sign-in":
             sign_in(store)
+        elif args.command == "sign-out" and args.this_pc_only:
+            forget_local_session(store)
+            print("Removed the sign-in from this PC only. The session was NOT ended on the website; "
+                  "use 'Sign out everywhere' on the website's account page to end it there. "
+                  "Local processing is unchanged.")
         elif args.command == "sign-out":
-            store.clear()
-            print("Signed out. Local processing is unchanged.")
+            result = sign_out(store)
+            if result.state == SIGNED_OUT:
+                print(f"Signed out on {result.host}: this session no longer works. "
+                      "Other devices stay signed in. Local processing is unchanged.")
+            elif result.state == NO_SESSION:
+                print("No sign-in is stored on this PC. Local processing is unchanged.")
+            else:
+                print(f"Sign-out on {result.host} was not confirmed ({result.reason}). "
+                      "The sign-in is still stored on this PC. Try again when online, or run "
+                      "'sign-out --this-pc-only' and end the session with 'Sign out everywhere' "
+                      "on the website's account page.")
+                return 2
         elif args.command == "tournaments":
             for tournament in ConnectedClient(store).tournaments():
                 when = "date/time unknown" if tournament.start_at_ms is None else datetime.fromtimestamp(tournament.start_at_ms / 1000).astimezone().strftime("%d %b %Y %H:%M")

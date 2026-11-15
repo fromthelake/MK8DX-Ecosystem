@@ -1,5 +1,7 @@
 import { createDecipheriv, createECDH, createPublicKey, hkdfSync, randomBytes, verify } from "node:crypto";
 
+import { createServer } from "node:net";
+
 import { describe, expect, it } from "vitest";
 import * as webPush from "web-push";
 
@@ -85,7 +87,7 @@ describe("web-push package (real module)", () => {
     expect(body.exp).toBeGreaterThan(Date.now() / 1000);
   });
 
-  it("lets the real delivery worker send and record a transport failure", async () => {
+  it("lets the real delivery worker refuse a loopback endpoint without connecting", async () => {
     // The worker module itself, linked against the real package: a wrong import shape fails here, not in production.
     const { WebPushDeliveryWorker } = await import("../src/notifications/web-push-delivery.js");
     const { subscription } = subscriber();
@@ -99,15 +101,60 @@ describe("web-push package (real module)", () => {
         kind: "overtaken", actorDisplayName: "Floyd", trackId: "track.mario_circuit", mode: 150,
         actorTimeMs: 116_200, recipientTimeMs: 116_942, recipientRank: 4, unreadCount: 1,
       }],
-      delivered: async () => { throw new Error("nothing listens on port 1"); },
+      delivered: async () => { throw new Error("a loopback endpoint must never be delivered"); },
       failed: async (outcome: unknown) => { failed.push(outcome); },
+      release: async () => undefined,
     };
     await new WebPushDeliveryWorker(target as never, {
       subject: subjectUrl, publicKey: vapid.publicKey, privateKey: vapid.privateKey,
     }, () => 1_900_000_000_000).tick();
     expect(failed).toEqual([expect.objectContaining({
-      deliveryId: 9, subscriptionId: 4, permanent: false, expiredSubscription: false, errorCode: "transport_error",
+      deliveryId: 9, subscriptionId: 4, permanent: true, expiredSubscription: true, errorCode: "invalid_endpoint",
     })]);
+  });
+
+  it("lets the real worker and transport finish a round although an endpoint never answers", async () => {
+    const { WebPushDeliveryWorker } = await import("../src/notifications/web-push-delivery.js");
+    const { GuardedHttpsWebPushTransport } = await import("../src/notifications/web-push-transport.js");
+    const { WebPushEgressPolicy } = await import("../src/notifications/web-push-egress.js");
+    // A loopback fixture that accepts the TLS connection and never answers.
+    const server = createServer((socket) => { socket.resume(); });
+    await new Promise<void>((resolve) => server.listen(0, "127.0.0.1", () => resolve()));
+    const port = (server.address() as { port: number }).port;
+    try {
+      const vapid = webPush.generateVAPIDKeys();
+      const failed: Array<Record<string, unknown>> = [];
+      const target = {
+        materialize: async () => undefined,
+        claim: async () => [{
+          deliveryId: 9, subscriptionId: 4, notificationId: "41", eventRevision: 2,
+          subscription: { ...subscriber().subscription, endpoint: "https://push.fixture.example/push/1" },
+          kind: "poke", unreadCount: 1,
+        }],
+        delivered: async () => { throw new Error("must not be delivered"); },
+        failed: async (outcome: Record<string, unknown>) => { failed.push(outcome); },
+        release: async () => undefined,
+      };
+      const worker = new WebPushDeliveryWorker(target as never, {
+        subject: subjectUrl, publicKey: vapid.publicKey, privateKey: vapid.privateKey,
+      }, Date.now, {
+        transport: new GuardedHttpsWebPushTransport({
+          policy: new WebPushEgressPolicy(["push.fixture.example"]),
+          resolve: async () => [{ address: "127.0.0.1", family: 4 }],
+          isAllowedAddress: (address) => address === "127.0.0.1",
+          port,
+          deadlineMs: 250,
+        }),
+      });
+      const started = Date.now();
+      await worker.tick();
+      expect(Date.now() - started).toBeLessThan(3_000);
+      expect(failed).toEqual([expect.objectContaining({ permanent: false, errorCode: "transport_timeout" })]);
+      // The round is over: a second tick runs instead of being skipped.
+      await expect(worker.tick()).resolves.not.toBeNull();
+    } finally {
+      server.close();
+    }
   });
 
   it("reports a push service refusal with its status code", async () => {

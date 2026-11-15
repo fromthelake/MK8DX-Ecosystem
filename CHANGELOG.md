@@ -3,6 +3,136 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Security
+
+- **Separate database accounts on every route**: the website's API now connects with an account that may only
+  read and write rows (`SELECT`, `INSERT`, `UPDATE`, `DELETE`), so SQL that reached the database through some
+  future fault cannot drop, alter or empty tables or hand out rights. Database updates and reference data use the
+  separate migration account; backups use the migration account (B2), a read-and-export-only account (A3) or the
+  database container's own root login (Docker routes). New Docker installations and A3 create the accounts
+  themselves; an existing Docker installation is switched by its next `upgrade` (A2 offline: package update), A3 at
+  the next start of its database, keeping the previous login as the migration login and returning to it when the
+  website does not start with the new one. B2 asks for a second, limited database user (DirectAdmin/cPanel) and
+  warns while only one is configured; `install.py database-accounts` adds it to an existing installation (`--undo`
+  reverses it). Docker Compose has a new `migrate` service, the only one that receives the migration login. No
+  migration. See Operations, "Database accounts".
+- **Dangerous administrator actions need a fresh email confirmation**: changing administrator, Director or report
+  rights, linking accounts to Players directly, approving a request to host, installation settings, bulk rating and
+  carried-time actions, removing, reopening, restoring or retracting a night, and a Director deleting or removing a
+  Tournament now ask the browser or app session to confirm a new single-use link sent to the account's own address.
+  The confirmation lasts 10 minutes for that session only (`MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS`), sending is rate
+  limited and every step is audited. Website and Android show **Confirm with a new email link** and continue the
+  action after confirmation. The administrators' list of every account with its email address is loaded only when
+  its section is opened and asks for the same confirmation. Ordinary use, other reads and running a night are
+  unchanged; an offline LAN installation
+  without email does not ask. Migration 0095. See [Mutating routes](docs/architecture/MUTATING_ROUTES.md#fresh-confirmation-step-up).
+- **A Time Trial revision stays with the Player who owns the result**: the server now checks, inside the locked
+  write, that a new revision of an existing result comes from an account that currently holds the verified claim
+  on the stored owner, names that same Player and keeps the result's source class (website, Android, LiveTrial)
+  and carried state. Results without a central Player owner (older imports) are not revised through the
+  submission route. A refused revision is answered with 403 and changes nothing; an offline client re-sending its
+  own revision still gets the same 409 as before. Administrator corrections keep using the separate, logged
+  correction action, which never changes the owner. No migration or setting.
+- **Tournament review is checked per Tournament on every route**: the phone's operator routes no longer treat a
+  Director as an administrator. Reading or rejecting incoming results and evidence records requires an active
+  administrator grant, or being that night's Director with an active Tournament operator grant; the review writes
+  re-check this in their own transaction. A revoked operator grant also ends review of the Director's own nights.
+- **A roster match no longer opens a Tournament Live feed by itself**: only a feed from an administrator, the night's
+  Director, or an account the Director delegated live capture to may open the public live view automatically. Other
+  feeds wait for the Director's confirmation and reserve no group. Directors can delegate (time-limited, revocable)
+  and withdraw a public feed; every change is audited with its authority. Migration 0092.
+- **Limits on uploaded Tournament evidence**: per-account and installation upload rates, quotas on unlinked records
+  and bytes, bounded lists with paging, and a retention job for stale evidence that was never linked. Refusals answer
+  429 with `Retry-After`, 409 or 413 and store nothing; linked evidence is never removed. See `backend/api/README.md`.
+- Session routes (remembered app sign-in, account switching) verify the sign-in before anything is stored, have a
+  bounded per-address budget before sign-in, combine the account and the device in their budgets after sign-in, and
+  limit how many accounts one remembered device can switch between.
+- The shared rate limiter now counts concurrent requests exactly, cleans up on its own schedule in bounded steps, and
+  logs cleanup and refusal counts without account details.
+- Aliases: per-Player limits, a per-account write budget, the browser's same-origin proof on every write, and
+  optional paging of public alias lists.
+- App downloads with short-lived static links: the web server itself now refuses a link after its lifetime, links
+  are reused per account, the number of live links is capped, cleanup runs on its own timer, and a startup
+  self-check logs whether the host enforces the lifetime. New optional settings
+  `MK8DX_HOSTED_APP_DOWNLOAD_LINK_MAX_LINKS` and `MK8DX_HOSTED_APP_DOWNLOAD_LINK_PROBE`.
+- Client check-in keeps at most 100 rows per account and records at most 120 check-ins per hour (more are
+  acknowledged, not stored). Check-ins are now stored on a strict MySQL/MariaDB database (they were refused there).
+- New: [mutating route inventory](docs/architecture/MUTATING_ROUTES.md) with the protection of every API route that
+  changes data.
+- Browser notifications are delivered only to the browsers' own push services (plus push services the operator
+  adds with `MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS`), on port 443, to public addresses the server checked
+  itself, with strict TLS and without following redirects. A subscription to another destination is refused.
+- Each browser notification request has a hard time limit and a bounded response size, and deliveries run
+  several at a time, so one slow push service no longer holds up everyone else's notifications.
+- An account keeps at most 10 active notification browsers (a new one replaces the oldest), registering and
+  removing them is limited to 30 per hour per account, and stale or long-removed subscriptions are cleaned up.
+- **Tournament Connect and Tournament Live keep the sign-in on the chosen community website**: every request goes
+  to the one address chosen for the community, redirects are no longer followed (so the sign-in and the device
+  code are never sent to another host, port or scheme and a request is never repeated), and answers are bounded
+  in size and must be JSON. Plain HTTP stays allowed only for a website on this PC (`http://127.0.0.1:<port>`,
+  `http://localhost:<port>`); HTTPS keeps the normal certificate checks.
+- **The browser sign-in link is checked before a browser opens**: it must be the chosen website's own `/device`
+  page with exactly the shown code, otherwise nothing is opened. The chosen website's address is shown with the
+  code.
+- **Signing out ends the session on the website**: `TournamentConnect.cmd sign-out` and Tournament Live's new
+  **Sign out** end this PC's session on the website and report success only when the website confirms it; other
+  devices stay signed in. `sign-out --this-pc-only` and **Work offline** only forget the sign-in on this PC and
+  say so; **Sign out everywhere** on the website ends the other sessions.
+- **LiveTrial engine control is limited to this computer**: the engine's dashboard on port 8777 now changes
+  recording, Stop capture, storage settings, clean-up, pins, categories, archive and calibration grids only
+  through a POST from its own local page or the desktop app, with a per-launch action proof and bounded
+  requests; a plain GET only reads. With `--lan`, other devices can watch but no longer control.
+- **Spreadsheet exports keep names as text**: a Player, group or OCR name that starts like a formula stays text when
+  a CSV or XLSX export is opened in a spreadsheet program (Web, Android, API score workbook, Tournament Processor,
+  Live and Analysis, including their debug exports). Workbooks use string cells; CSV cells get one leading
+  apostrophe where needed, which every import of these files removes again. Names are unchanged in the database.
+  The rule is in `packages/domain/policies/spreadsheet-text-v1.json`. The Android score workbook also no longer
+  writes a name such as `007` or `Infinity` as a number.
+- Every route now has an automatic, verified, restorable daily backup, so a community can return to yesterday
+  after its database or site was damaged on purpose. A failed or unverified night never removes an older backup.
+- **Many accounts can no longer flood a community**: every signed-in change counts against the account's own durable
+  budget (administrators higher, never unlimited) and a shared per-minute budget for the whole installation.
+  Expensive and fan-out paths (sign-in and sign-up mail, app sign-in codes, Player claims and their messages, Time
+  Trial submissions, notifications, app downloads, aliases, Web Push subscriptions and engagements) also have an
+  installation-wide budget, and actions that notify somebody else have a budget per target (per Player, per claim,
+  per e-mail recipient). Claims have hard quotas on waiting requests per account and per Player and on notes per
+  claim. Refusals answer 429 with `Retry-After` (quotas 409) and store nothing; offline queues retry. Defaults suit a
+  community of a few hundred Players including launch day and a busy Tournament night, and each can be changed with
+  an `MK8DX_HOSTED_BUDGET_*` setting; see `docs/architecture/MUTATING_ROUTES.md`. No migration.
+
+### Added
+
+- **A server-side fallback for the fresh e-mail confirmation**: when an installation cannot send e-mail, the
+  operator runs `install.py step-up-link --state-dir <installation>` on the server after the administrator pressed
+  **Send the link**; it prints a new single-use link for that one waiting request, which is confirmed on the normal
+  link page. Server access only (no web route), refused when more than one session is waiting, and audited. See
+  Operations, "When e-mail fails".
+- Automatic daily backup for A1, A2 (online LAN), B1, A3 and B2 (`install.py backup-run`): Windows Task Scheduler,
+  systemd/launchd or one marked line in the user's crontab (other cron lines, and the notices DirectAdmin prints,
+  are left alone). On by default for A1, A3 and B1; B2 setup asks, with an explanation for hosts that already back
+  up the account. 14 daily + 4 weekly backups, bounded by size (10 GiB, B2 1 GiB), owner-only, the newest verified
+  one always kept. `backup-status` (also under `automaticBackup` in `status`), `backup-latest --print-path` for an
+  off-host copy, `--copy-to` for a second drive or NAS, optional sealing with a recovery code (`--encrypt-backups`,
+  `backup-open`), `backup-unschedule`. An update keeps the schedule. A2 offline keeps its own nightly backup.
+- **Directors manage live capture on the website**: Step 5 (and 9) lists the night's capture delegations with
+  their expiry and status, delegates live capture to an account whose Tournament Live connected to the night
+  (12 hours by default, at most 7 days), revokes a delegation and withdraws a public live feed. A waiting feed says it
+  waits for the Director; a roster match alone never opens it. Tournament Live says the same after registering a
+  live run. The delegation list now carries the delegate's name. See the Tournament Directors guide.
+
+### Fixed
+
+- B2 backups on MySQL 8.4 or newer with a limited hosting user no longer fail; export and restore errors now say why.
+- The host package and the non-Docker package now carry `tooling/scheduled_backup.py` (and the non-Docker package
+  `tooling/lifecycle.py`), which the installer imports for the automatic backup.
+- Administration → Aliases: the "where you saw it" field turns plain words into the source identifier the server
+  expects (for example `source.tn13-workbook`) and shows what will be saved, instead of failing with a technical error.
+- LiveTrial: the engine copy that the package ships now has the same dashboard language handling and field-reader
+  module as the engine working copy (every app language other than Dutch shows the dashboard in English instead of
+  Dutch), and a CI test fails when the two copies differ again.
+
 ## 0.2.4 — 2026-11-15
 
 Speaks every language of the game: the user, A2, LiveTrial and Tournament Directors guides, the A2 setup wizard and

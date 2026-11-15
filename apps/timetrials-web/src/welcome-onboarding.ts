@@ -14,6 +14,7 @@
 // Everything else - aliases, screen name, kart parts, rivals, notifications -
 // belongs in Settings, where a person goes when they want to tune something.
 
+import { claimLimitMessage } from "./claim-limit-message.js";
 import {
   createPlayerClaimClient,
   PlayerClaimClientError,
@@ -599,7 +600,7 @@ export function mountWelcomeOnboarding(
           sent.push(player);
         } catch (error) {
           if (disposed || current !== operation) { return; }
-          const reason = error instanceof PlayerClaimClientError && error.code === "conflict"
+          const reason = claimLimitMessage(error) ?? (error instanceof PlayerClaimClientError && error.code === "conflict"
             ? localized(
               `${player.displayName} is already linked to an account. If that account is yours, sign in with its email address; otherwise ask an administrator to help.`,
               `${player.displayName} is al aan een account gekoppeld. Is dat jouw account, meld je dan aan met dat e-mailadres; vraag anders een beheerder om hulp.`,
@@ -607,7 +608,7 @@ export function mountWelcomeOnboarding(
             : localized(
               "That request could not be sent. Please try again.",
               "Dat verzoek kon niet worden verstuurd. Probeer het opnieuw.",
-            );
+            ));
           if (sent.length > 0) {
             // The first request stands; say plainly which one did not go.
             renderClaimRequested(sent, reason);
@@ -1126,6 +1127,8 @@ export function mountWelcomeOnboarding(
           if (disposed || current !== operation) { return; }
           submit.disabled = false;
           switchPath.disabled = false;
+          const limit = claimLimitMessage(error);
+          if (limit !== null) { status.textContent = limit; return; }
           if (!(error instanceof PlayerClaimClientError)) {
             status.textContent = localized(
               "Your Player could not be created. Please try again.",

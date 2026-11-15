@@ -4,7 +4,15 @@ import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorResolver } from "../identity/types.js";
 import { APP_DOWNLOAD_LANGUAGES, isAppDownloadLanguage } from "./app-downloads.js";
 import type { AppDownloadStore } from "./app-downloads.js";
-import type { AppDownloadLinks } from "./app-download-links.js";
+import { AppDownloadLinkCapacityError, type AppDownloadLinks } from "./app-download-links.js";
+import type { InstallationBudget } from "../security/abuse-budgets.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
+
+/** File requests per account and hour: many retries of a slow phone download, not a loop. */
+export const APP_DOWNLOAD_FILE_REQUESTS_PER_ACCOUNT_HOUR = 60;
 
 // Downloads are for the owner's known community, so both routes require a
 // signed-in account. Nothing here reveals a filesystem path.
@@ -15,6 +23,10 @@ export type AppDownloadRouteOptions = Readonly<{
   // Opt-in for hosts whose proxy cannot deliver a large file streamed through
   // the application: redirect to a short-lived link the web server serves.
   staticLinks?: AppDownloadLinks;
+  // Durable per-account budget for file requests, shared by API processes.
+  rateLimiter?: MutationRateLimiter;
+  /** H1: the installation-wide budget for this path, consumed after the caller's own budget. */
+  installationBudget?: InstallationBudget;
 }>;
 
 const APK_CONTENT_TYPE = "application/vnd.android.package-archive";
@@ -120,6 +132,26 @@ export async function registerAppDownloadRoutes(
           message: "Sign in to download the MK8DX apps.",
         });
       }
+      if (options.rateLimiter !== undefined &&
+          (actor.role === "account" || actor.role === "administrator")) {
+        try {
+          await options.rateLimiter.consume(actor.userAccountId, "app-download-file-hour", 3_600,
+            APP_DOWNLOAD_FILE_REQUESTS_PER_ACCOUNT_HOUR);
+          await options.installationBudget?.consume();
+        } catch (error) {
+          if (error instanceof MutationRateLimitExceeded) {
+            void reply.header("retry-after", String(error.retryAfterSeconds));
+            return reply.code(429).send({
+              code: "download_rate_limited",
+              message: "Too many downloads were started. Wait before trying again.",
+            });
+          }
+          return reply.code(503).send({
+            code: "download_unavailable",
+            message: "That download cannot be prepared right now.",
+          });
+        }
+      }
       if (options.staticLinks !== undefined) {
         const located = options.store.locate(request.params.downloadId);
         if (located === null) {
@@ -130,10 +162,22 @@ export async function registerAppDownloadRoutes(
         }
         let location: string;
         try {
-          location = await options.staticLinks.create(
+          // One reusable link per account and download: repeated clicks do
+          // not create new folders.
+          const subject = actor.role === "account" || actor.role === "administrator"
+            ? actor.userAccountId : actor.role;
+          ({ location } = await options.staticLinks.create(
             located.filePath, located.entry.fileName,
-          );
-        } catch {
+            { subject, downloadId: located.entry.id },
+          ));
+        } catch (error) {
+          if (error instanceof AppDownloadLinkCapacityError) {
+            void reply.header("retry-after", String(error.retryAfterSeconds));
+            return reply.code(503).send({
+              code: "download_busy",
+              message: "Many downloads are running. Try again in a few minutes.",
+            });
+          }
           request.log.error({ event: "app_download_link_failed" });
           return reply.code(503).send({
             code: "download_unavailable",

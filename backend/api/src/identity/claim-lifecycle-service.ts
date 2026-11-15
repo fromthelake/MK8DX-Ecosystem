@@ -17,7 +17,8 @@ export type ClaimLifecycleErrorCode =
   | "not_found"
   | "conflict"
   | "invalid_command"
-  | "invalid_transition";
+  | "invalid_transition"
+  | "quota_exceeded";
 
 export class ClaimLifecycleError extends Error {
   public constructor(
@@ -95,7 +96,34 @@ export type AppendClaimEventInput = Readonly<{
   event: ClaimLifecycleEventInput;
 }>;
 
+/**
+ * Hard limits on what claims may store (H1), counted inside the transaction that holds the Player,
+ * account or claim row lock, so concurrent requests cannot pass them together. A real person claims
+ * one to three Players and writes a handful of notes; these are far above that and far below what
+ * would fill a reviewer's inbox or the database.
+ */
+export const CLAIM_QUOTAS = Object.freeze({
+  /** Requests still waiting for a decision (requested or under review), per account. */
+  openRequestsPerAccount: 5,
+  /** Claims an account has ever asked for, whatever became of them. */
+  requestsPerAccount: 50,
+  /** Requests still waiting for a decision, per Player, from all accounts together. */
+  openRequestsPerPlayer: 5,
+  /** Notes on one claim, from the person asking and the reviewers together. */
+  notesPerClaim: 60,
+});
+
+export type ClaimQuotaUsage = Readonly<{
+  accountOpenRequests: number;
+  accountRequests: number;
+  playerOpenRequests: number;
+}>;
+
 export interface ClaimWriteTransaction {
+  /** Call after the Player and account rows are locked (`findHumanPlayerStatus`, `findUserAccountStatus`). */
+  countClaimQuotaUsage(userAccountId: string, playerId: string): Promise<ClaimQuotaUsage>;
+  /** Call after the claim row is locked (`findClaimForUpdate`). */
+  countClaimNotes(playerClaimId: string): Promise<number>;
   findHumanPlayerStatus(playerId: string): Promise<"active" | "archived" | null>;
   findUserAccountStatus(userAccountId: string): Promise<AccountStatus | null>;
   findClaimForUpdate(playerClaimId: string): Promise<ClaimSnapshot | null>;
@@ -290,6 +318,12 @@ async function refuseOccupiedOrSharedTournament(
   }
 }
 
+async function refuseFullNotes(transaction: ClaimWriteTransaction, playerClaimId: string): Promise<void> {
+  if (await transaction.countClaimNotes(playerClaimId) >= CLAIM_QUOTAS.notesPerClaim) {
+    throw new ClaimLifecycleError("quota_exceeded", "this claim has reached its note limit");
+  }
+}
+
 function validateReasonCode(value: string | undefined): string | undefined {
   if (value !== undefined && !reasonCodePattern.test(value)) {
     throw new ClaimLifecycleError("invalid_command", "reasonCode is invalid");
@@ -384,6 +418,12 @@ export class ClaimLifecycleService {
         throw new ClaimLifecycleError("conflict", "claim target is not active");
       }
       await refuseOccupiedOrSharedTournament(transaction, userAccountId, command.playerId);
+      const usage = await transaction.countClaimQuotaUsage(userAccountId, command.playerId);
+      if (usage.accountOpenRequests >= CLAIM_QUOTAS.openRequestsPerAccount ||
+          usage.accountRequests >= CLAIM_QUOTAS.requestsPerAccount ||
+          usage.playerOpenRequests >= CLAIM_QUOTAS.openRequestsPerPlayer) {
+        throw new ClaimLifecycleError("quota_exceeded", "the claim limit was reached");
+      }
 
       const snapshot: ClaimSnapshot = {
         playerClaimId,
@@ -622,6 +662,7 @@ export class ClaimLifecycleService {
         });
       }
       if (note !== undefined) {
+        await refuseFullNotes(transaction, current.playerClaimId);
         await transaction.addClaimNote({
           playerClaimId: current.playerClaimId,
           authorUserAccountId: reviewerAccountId,
@@ -680,6 +721,7 @@ export class ClaimLifecycleService {
         },
       });
       if (note !== undefined) {
+        await refuseFullNotes(transaction, current.playerClaimId);
         await transaction.addClaimNote({
           playerClaimId: current.playerClaimId,
           authorUserAccountId: actor.userAccountId,
@@ -713,6 +755,7 @@ export class ClaimLifecycleService {
       if (current.claimStatus !== "requested" && current.claimStatus !== "under_review") {
         throw new ClaimLifecycleError("invalid_transition", "this claim is no longer open");
       }
+      await refuseFullNotes(transaction, current.playerClaimId);
       await transaction.addClaimNote({
         playerClaimId: current.playerClaimId,
         authorUserAccountId: actor.userAccountId,

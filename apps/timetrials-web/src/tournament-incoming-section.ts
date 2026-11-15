@@ -1,11 +1,18 @@
 import {
+  LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES,
   TournamentIncomingClient,
   type IncomingTournamentResult,
   type TournamentEvidenceRecord,
+  type TournamentLiveCaptureDelegation,
 } from "./tournament-incoming-client.js";
 import type { TournamentDocument } from "./tournament-operation-client.js";
 import { localized } from "./product-language.js";
 import { displayTournamentGroupLabel } from "./tournaments-view-labels.js";
+import {
+  activeLiveCaptureDelegation,
+  delegationMoment,
+  liveCaptureDelegationPanel,
+} from "./tournament-live-delegation-section.js";
 
 type MountOptions = Readonly<{
   document: Document;
@@ -89,6 +96,8 @@ function evidenceRecordCard(
   options: MountOptions,
   client: TournamentIncomingClient,
   evidence: TournamentEvidenceRecord,
+  delegations: readonly TournamentLiveCaptureDelegation[] | null = null,
+  nowMs: number = Date.now(),
 ): HTMLElement {
   const { document, tournament } = options;
   const card = document.createElement("article");
@@ -150,11 +159,17 @@ function evidenceRecordCard(
     block.append(summary, topThree, label(document, localized("Link to group", "Koppelen aan groep"), select));
     card.append(block);
   }
+  const uploaderDelegation = activeLiveCaptureDelegation(delegations, evidence.uploadedBy.userAccountId, nowMs);
   if (evidence.live?.status === "requested") {
-    status.textContent = localized(
-      "Waiting for race names to verify the sticker-to-group links. Nothing is public yet; the director can confirm manually as a fallback.",
-      "Wacht op racenamen om de sticker-naar-groepkoppelingen te controleren. Er is nog niets openbaar; de toernooileider kan als terugval handmatig bevestigen.",
-    );
+    status.textContent = uploaderDelegation === null
+      ? localized(
+        "Waiting for the Director. Nothing is public yet: a roster match alone never opens a live feed. Confirm the live routing below, or delegate live capture for this night to this account.",
+        "Wacht op de toernooileider. Er is nog niets openbaar: een rostermatch alleen opent nooit een live-feed. Bevestig hieronder de live-koppeling, of delegeer de live-capture voor deze avond aan dit account.",
+      )
+      : localized(
+        `This account holds your capture delegation until ${delegationMoment(uploaderDelegation.expiresAtMs)}. The next race whose names match the group list opens the public view; you can also confirm it now.`,
+        `Dit account heeft jouw capturedelegatie tot ${delegationMoment(uploaderDelegation.expiresAtMs)}. De volgende race waarvan de namen bij de groepslijst passen, opent de openbare weergave; je kunt hem ook nu bevestigen.`,
+      );
   } else if (evidence.live?.status === "active") {
     status.textContent = localized(
       "Live now: public viewers see in-game names and Total. Player linking follows after Stop.",
@@ -207,6 +222,60 @@ function evidenceRecordCard(
       });
     });
     card.append(liveButton);
+  }
+  // F05: the Director's shortcut for the capture operator whose feed waits here.
+  if (evidence.live?.status === "requested" && delegations !== null && uploaderDelegation === null) {
+    const delegateButton = document.createElement("button");
+    delegateButton.type = "button";
+    delegateButton.className = "tt-auth__button";
+    delegateButton.textContent = localized(
+      `Delegate live capture to ${evidence.uploadedBy.displayName} (12 hours)`,
+      `Live-capture delegeren aan ${evidence.uploadedBy.displayName} (12 uur)`,
+    );
+    delegateButton.addEventListener("click", () => {
+      delegateButton.disabled = true;
+      status.textContent = localized("Saving the capture delegation…", "Capturedelegatie wordt opgeslagen…");
+      void client.grantLiveCaptureDelegation(tournament.summary.tournamentId, {
+        delegateUserAccountId: evidence.uploadedBy.userAccountId,
+        expiresInMinutes: LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES,
+      }, options.signal).then(options.onChanged).catch((error: unknown) => {
+        status.textContent = error instanceof Error ? error.message
+          : localized("The capture delegation could not be saved.", "De capturedelegatie kon niet worden opgeslagen.");
+        delegateButton.disabled = false;
+      });
+    });
+    card.append(delegateButton);
+  }
+  // F05: a feed on the public view can be taken off it; its evidence stays here.
+  if (evidence.live !== undefined && ["active", "stopping", "complete"].includes(evidence.live.status) &&
+      !(evidence.live.status === "stopping" && evidence.live.approvedAtMs === null)) {
+    const withdrawButton = document.createElement("button");
+    withdrawButton.type = "button";
+    withdrawButton.className = "tt-auth__button";
+    withdrawButton.textContent = localized("Withdraw this live feed", "Deze live-feed terugtrekken");
+    let withdrawArmed = false;
+    withdrawButton.addEventListener("click", () => {
+      if (!withdrawArmed) {
+        withdrawArmed = true;
+        withdrawButton.textContent = localized("Click again to withdraw", "Klik nogmaals om terug te trekken");
+        status.textContent = localized(
+          "Withdrawing takes this feed off the public view at once. Its races stay here for review, and only you can open it again; a roster match cannot.",
+          "Terugtrekken haalt deze feed direct van de openbare weergave. De races blijven hier voor controle en alleen jij kunt hem weer openen; een rostermatch niet.",
+        );
+        return;
+      }
+      withdrawButton.disabled = true;
+      status.textContent = localized("Withdrawing the live feed…", "Live-feed wordt teruggetrokken…");
+      void client.withdrawLiveAssociation(tournament.summary.tournamentId, evidence, options.signal)
+        .then(options.onChanged).catch((error: unknown) => {
+          status.textContent = error instanceof Error ? error.message
+            : localized("The live feed could not be withdrawn.", "De live-feed kon niet worden teruggetrokken.");
+          withdrawArmed = false;
+          withdrawButton.textContent = localized("Withdraw this live feed", "Deze live-feed terugtrekken");
+          withdrawButton.disabled = false;
+        });
+    });
+    card.append(withdrawButton);
   }
   // A request that never went public (no approval was ever recorded) can be
   // retired; aborted runs otherwise stay here forever.
@@ -550,13 +619,20 @@ export async function mountTournamentIncomingSection(options: MountOptions): Pro
   );
   const intro = document.createElement("p");
   intro.textContent = localized(
-    "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
-    "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
+    "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 opens the public View automatically only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores still wait for your Player and full group review after Stop.",
+    "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 opent de openbare View alleen automatisch voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
   );
   container.append(section);
   try {
     const client = new TournamentIncomingClient();
     const evidenceRecords = await client.listEvidenceRecords(tournament.summary.tournamentId, options.signal);
+    // A failed delegation read must not hide the recordings: the panel says so and feeds keep waiting.
+    const delegations = await client.listLiveCaptureDelegations(tournament.summary.tournamentId, options.signal)
+      .catch((error: unknown) => {
+        if (options.signal?.aborted === true) throw error;
+        return null;
+      });
+    const nowMs = Date.now();
     const evidenceHeading = document.createElement("h4");
     evidenceHeading.textContent = localized(
       `Available Tournament Live recordings (${evidenceRecords.length})`,
@@ -572,8 +648,15 @@ export async function mountTournamentIncomingSection(options: MountOptions): Pro
       );
       section.append(evidenceEmpty);
     } else {
-      for (const evidenceRecord of evidenceRecords) section.append(evidenceRecordCard(options, client, evidenceRecord));
+      for (const evidenceRecord of evidenceRecords) {
+        section.append(evidenceRecordCard(options, client, evidenceRecord, delegations, nowMs));
+      }
     }
+    section.append(liveCaptureDelegationPanel({
+      document, client, tournamentId: tournament.summary.tournamentId, delegations, evidenceRecords, nowMs,
+      onChanged: options.onChanged,
+      ...(options.signal === undefined ? {} : { signal: options.signal }),
+    }));
     section.append(heading);
     const incoming = await client.list(tournament.summary.tournamentId, options.signal);
     const activeStage = phaseForStep(tournament.summary.workflowStep);

@@ -7,7 +7,7 @@ Sources, each read the way it marks a text:
 * POSIX sh (tooling/start-mk8dx.sh, tooling/mk8dx-ui.sh): `ui_t '<English>'`.
 * cmd (Start-MK8DX*.cmd, Manage-MK8DX-No-Docker.cmd): the `-ShowText`, `-ShowSubtitle` and `-ShowItems` texts they
   hand to tooling/mk8dx-ui.ps1 ('|' separates lines, ';' menu items, '=' the item key).
-* Python (tooling/install.py, tooling/native_install.py): `t("<English>", ...)` calls and the ROUTE_CHOICES menu.
+* Python (tooling/install.py, tooling/native_install.py, tooling/scheduled_backup.py): `t("<English>", ...)` calls and the ROUTE_CHOICES menu.
 
 The Dutch is kept in tooling/i18n/launcher/dutch.json (English -> Dutch; every text needs one). Writes
 tooling/i18n/launcher/messages.source.json; tooling/i18n/build_web_catalogs.mjs turns it and the shared translations
@@ -29,7 +29,7 @@ DUTCH = FOLDER / "dutch.json"
 POWERSHELL = ("tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1")
 SHELL = ("tooling/start-mk8dx.sh", "tooling/mk8dx-ui.sh")
 CMD = ("Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "Start-MK8DX-No-Docker.cmd", "Manage-MK8DX-No-Docker.cmd")
-PYTHON = ("tooling/install.py", "tooling/native_install.py")
+PYTHON = ("tooling/install.py", "tooling/native_install.py", "tooling/scheduled_backup.py")
 PS_CALL = re.compile(r"(?<![\w-])Tr\s+(?:'((?:[^']|'')*)'|\"([^\"$`]*)\")")
 SH_CALL = re.compile(r"\bui_t\s+(?:'([^']*)'|\"([^\"$`\\]*)\")")
 CMD_ARG = re.compile(r"-Show(Text|Subtitle|Items)\s+\"([^\"]*)\"")

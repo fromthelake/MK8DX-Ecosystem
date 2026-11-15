@@ -137,12 +137,8 @@ internal fun androidGroupBoardCsv(
     return builder.toString()
 }
 
-private fun csvValue(value: String): String =
-    if (value.any { it == ';' || it == '"' || it == '\n' || it == '\r' }) {
-        "\"" + value.replace("\"", "\"\"") + "\""
-    } else {
-        value
-    }
+// Formula-like names get the apostrophe of AndroidSpreadsheetText.kt; the layout import takes it off.
+private fun csvValue(value: String): String = androidCsvCell(value)
 
 /**
  * A tier's on-screen name in the operator's language. The tier constants keep

@@ -339,6 +339,10 @@ export class FirebaseTimeTrialImportService {
           );
         } else if (candidate.revision !== current.latestRevision + 1) {
           throw new FirebaseImportAbort("failed_revision_conflict");
+        } else if (current.owner.playerId !== playerId) {
+          // A later revision continues the stored owner; it never moves a submission to another
+          // Player (nor gives an unowned one an owner) on the way in.
+          throw new FirebaseImportAbort("failed_legacy_owner_conflict");
         }
         const {
           playerReference: _playerReference,

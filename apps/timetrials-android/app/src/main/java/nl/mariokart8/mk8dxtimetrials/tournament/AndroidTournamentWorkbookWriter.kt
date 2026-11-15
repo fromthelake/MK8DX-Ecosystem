@@ -47,6 +47,10 @@ private fun columnName(index: Int): String {
     return name.toString()
 }
 
+// Only a plain decimal becomes a number cell. Every other value - a name like
+// "=1+1", "Infinity" or "007" included - is an inline string, never a formula.
+private val WORKBOOK_NUMBER = Regex("^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$")
+
 private fun sheetXml(rows: List<List<String>>): String = buildString {
     append("""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>""")
     append("""<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData>""")
@@ -54,8 +58,7 @@ private fun sheetXml(rows: List<List<String>>): String = buildString {
         append("""<row r="${rowIndex + 1}">""")
         cells.forEachIndexed { cellIndex, value ->
             val reference = "${columnName(cellIndex)}${rowIndex + 1}"
-            val numeric = value.toDoubleOrNull()
-            if (numeric != null && value.isNotBlank()) {
+            if (WORKBOOK_NUMBER.matches(value)) {
                 append("""<c r="$reference"><v>${xmlEscape(value)}</v></c>""")
             } else {
                 append("""<c r="$reference" t="inlineStr"><is><t xml:space="preserve">""")

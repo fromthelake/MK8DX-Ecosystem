@@ -162,6 +162,8 @@ Zette je het vinkje **Elke nacht een back-up maken** uit, dan krijg je geen hers
 
 ![herstelcode](guide/img/herstelcode-nl.png)
 
+**Databaseaccounts:** de website meldt zich bij de database aan met een eigen account dat alleen gegevens kan lezen en schrijven, zodat een fout in de website geen tabellen kan verwijderen; database-updates gebruiken een tweede account. De installatie maakt ze allebei; een oudere installatie krijgt ze bij de volgende update, en start de website niet met het nieuwe account, dan gaat de update terug naar het oude. Je hoeft er niets voor te doen.
+
 ## 5. Mensen en inlogkaarten (MK8DX beheer)
 
 **MK8DX beheer** is dezelfde pagina als de installatie, maar dan voor later: mensen toevoegen en inlogkaarten maken. Het werkt alleen op de MK8DX-computer zelf.

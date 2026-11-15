@@ -1,6 +1,7 @@
 import type { Pool, RowDataPacket } from "mysql2/promise";
 
 import {
+  CLIENT_INSTALLATION_ROWS_PER_ACCOUNT,
   isClientName,
   type ClientCheckin,
   type ClientInstallationRepository,
@@ -8,6 +9,9 @@ import {
 } from "./client-installations.js";
 
 type PreparedQueryExecutor = Pick<Pool, "execute">;
+
+type AccountIdRow = RowDataPacket & { internalId: number | string | null };
+type BoundaryRow = RowDataPacket & { lastSeenAtMs: unknown };
 
 type InstallationRow = RowDataPacket & {
   userAccountId: string;
@@ -40,6 +44,15 @@ export class MysqlClientInstallationRepository implements ClientInstallationRepo
     nowMs: number,
     forgetBeforeMs: number,
   ): Promise<void> {
+    // The account is named by its public id; the table keys on the internal
+    // one. An unknown or inactive account records nothing.
+    const [accounts] = await this.executor.execute<AccountIdRow[]>(
+      `SELECT user_account_id AS internalId FROM user_accounts
+        WHERE public_id = ? AND account_status = 'active' LIMIT 1`,
+      [userAccountId],
+    );
+    const internalId = accounts[0]?.internalId;
+    if (internalId === undefined || internalId === null) { return; }
     // The same version on the same installation is one row: only its last-seen
     // moves and its count goes up. A new version is a new row beside the old
     // one, which is the history.
@@ -54,7 +67,7 @@ export class MysqlClientInstallationRepository implements ClientInstallationRepo
          client_build = COALESCE(VALUES(client_build), client_build),
          device_model = COALESCE(VALUES(device_model), device_model)`,
       [
-        userAccountId,
+        internalId,
         checkin.installationId,
         checkin.client,
         checkin.version,
@@ -69,8 +82,25 @@ export class MysqlClientInstallationRepository implements ClientInstallationRepo
     await this.executor.execute(
       `DELETE FROM client_installations
         WHERE user_account_id = ? AND last_seen_at_ms < ?`,
-      [userAccountId, forgetBeforeMs],
+      [internalId, forgetBeforeMs],
     );
+    // The per-account cap: installation ids are chosen by the client, so only
+    // the most recently seen rows of one account are kept.
+    const [boundary] = await this.executor.execute<BoundaryRow[]>(
+      `SELECT last_seen_at_ms AS lastSeenAtMs FROM client_installations
+        WHERE user_account_id = ?
+        ORDER BY last_seen_at_ms DESC
+        LIMIT 1 OFFSET ${String(CLIENT_INSTALLATION_ROWS_PER_ACCOUNT - 1)}`,
+      [internalId],
+    );
+    const oldestKept = Number(boundary[0]?.lastSeenAtMs);
+    if (Number.isSafeInteger(oldestKept)) {
+      await this.executor.execute(
+        `DELETE FROM client_installations
+          WHERE user_account_id = ? AND last_seen_at_ms < ?`,
+        [internalId, oldestKept],
+      );
+    }
   }
 
   public async list(limit: number): Promise<readonly ClientInstallationRow[]> {

@@ -8,6 +8,8 @@ from pathlib import Path
 from typing import Any
 
 from .baseline_row_ocr import RowExtraction, RowOcrAttempt
+from mk8dx_tournament_extraction.spreadsheet_text import LiteralCsvWriter
+
 from .paths import DIAGNOSTICS_ROOT, assert_write_allowed
 from .run_context import attach_run_id
 
@@ -751,7 +753,7 @@ def write_review_pack(observation: LiveConsensusObservation) -> None:
         "total_row_crop",
     ]
     with index_path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=fieldnames))  # OCR text stays text
         writer.writeheader()
         for row in observation.joined_rows:
             writer.writerow(

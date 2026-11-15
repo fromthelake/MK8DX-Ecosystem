@@ -2176,8 +2176,8 @@ export function mountTournamentOperation(
       );
       const route = document.createElement("p");
       route.textContent = localized(
-        `Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different ${qualifier ? "qualifier" : "final"} group. After race 1, a strong exact roster match may open the public View. Scores count only after Stop, Player matching and complete group approval here.`,
-        `Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere ${qualifier ? "kwalificatiegroep" : "finalegroep"}. Na race 1 kan een sterke exacte rostermatch de openbare View openen. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier.`,
+        `Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different ${qualifier ? "qualifier" : "final"} group. After race 1, a strong exact roster match opens the public View only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores count only after Stop, Player matching and complete group approval here.`,
+        `Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere ${qualifier ? "kwalificatiegroep" : "finalegroep"}. Na race 1 opent een sterke exacte rostermatch de openbare View alleen voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier.`,
       );
       const alternatives = document.createElement("p");
       alternatives.className = "tournament-op__hint";

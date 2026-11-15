@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Sequence
 
 from mk8dx_tournament_extraction import TRACK_PLACEHOLDER, races_with_missing_track
+from mk8dx_tournament_extraction.spreadsheet_text import csv_imported_rows
 
 from .canonical_export import write_final_live_results
 
@@ -27,7 +28,8 @@ def _parser() -> argparse.ArgumentParser:
 def run(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     with args.input.open("r", encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        # Formula-like names carry the export's protecting apostrophe; read the real names.
+        rows = csv_imported_rows(csv.DictReader(handle))
     missing = races_with_missing_track(rows)
     if missing:
         # The extractor leaves the placeholder where the recording had no track

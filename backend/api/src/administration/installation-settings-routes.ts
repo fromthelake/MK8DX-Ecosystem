@@ -2,6 +2,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
+import { MutationRateLimitExceeded, type MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 import {
   InstallationSettingsError,
   type InstallationSettingsService,
@@ -111,7 +112,12 @@ const statuses = {
   unavailable: 503,
 } as const;
 
+/** H1: administrators change settings rarely; a rating recompute is expensive. Never unlimited. */
+export const INSTALLATION_SETTINGS_BUDGETS = Object.freeze({ updatesPerHour: 60, recomputesPerHour: 10 });
+
 function send(reply: FastifyReply, error: unknown) {
+  // A spent durable budget becomes 429 with Retry-After in the application's error handler.
+  if (error instanceof MutationRateLimitExceeded) { throw error; }
   if (error instanceof InstallationSettingsError) {
     return reply.code(statuses[error.code]).send({ code: `installation_settings_${error.code}`, message: error.message });
   }
@@ -127,14 +133,21 @@ export async function registerInstallationSettingsRoutes(
     resolveActor: ActorResolver;
     service: Pick<InstallationSettingsService, "current" | "administration" | "update" | "recomputeRatings">;
     csrfVerifier: Readonly<{ verify(actor: ActorContext, token: string): boolean }>;
+    rateLimiter?: MutationRateLimiter;
   }>,
 ): Promise<void> {
+  const consume = async (actor: ActorContext, scope: string, maximum: number): Promise<void> => {
+    if (options.rateLimiter !== undefined && (actor.role === "account" || actor.role === "administrator")) {
+      await options.rateLimiter.consume(actor.userAccountId, scope, 3_600, maximum);
+    }
+  };
   const browserWriter = async (request: FastifyRequest): Promise<ActorContext> => {
     const actor = await options.resolveActor(request);
     const token = request.headers["x-mk8dx-csrf"];
     if (typeof token !== "string" || !options.csrfVerifier.verify(actor, token)) {
       throw new InstallationSettingsError("forbidden", "A fresh request proof is required.");
     }
+    await consume(actor, "installation-settings.hour", INSTALLATION_SETTINGS_BUDGETS.updatesPerHour);
     return actor;
   };
 
@@ -187,7 +200,11 @@ export async function registerInstallationSettingsRoutes(
       try {
         return {
           schemaVersion: "mk8dx.installation-rating-recompute.v1" as const,
-          ...await options.service.recomputeRatings(await browserWriter(request)),
+          ...await options.service.recomputeRatings(await (async () => {
+            const actor = await browserWriter(request);
+            await consume(actor, "installation-settings.recompute.hour", INSTALLATION_SETTINGS_BUDGETS.recomputesPerHour);
+            return actor;
+          })()),
         };
       } catch (error) {
         return send(reply, error);

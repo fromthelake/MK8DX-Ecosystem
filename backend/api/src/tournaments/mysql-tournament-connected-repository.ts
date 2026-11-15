@@ -7,8 +7,13 @@ import type {
 import type { TournamentRaceResultV1 } from "./race-result-validation.js";
 
 import { TournamentOperationError } from "./tournament-operation-service.js";
+import {
+  TournamentEvidenceLimitError,
+  type TournamentEvidenceStorageLimits,
+} from "./tournament-connected-service.js";
 import type {
   ConnectedTournamentSummary,
+  TournamentLiveCaptureDelegation,
   IncomingTournamentResult,
   StoredTournamentEvidenceRecord,
   TournamentEvidenceGroupSummary,
@@ -155,6 +160,71 @@ export function liveStatusAfterStop(
  */
 export function liveRequestIsDismissible(liveStatus: string, liveApprovedAtMs: number | null): boolean {
   return liveStatus === "requested" || (liveStatus === "stopping" && liveApprovedAtMs === null);
+}
+
+/**
+ * ADR-0177 and security finding F02: who may review a Tournament is decided
+ * here, from the database, every time - an account with an active
+ * administrator grant, or the Tournament's own director while that director
+ * holds an active tournament.operation capability. The caller's actor role is
+ * never taken as proof.
+ */
+const reviewerAuthorityColumns = `
+  account.user_account_id AS reviewer_internal_id,
+  EXISTS (SELECT 1 FROM administrator_grants admin_grant
+           WHERE admin_grant.user_account_id = account.user_account_id
+             AND admin_grant.grant_status = 'active') AS is_administrator,
+  EXISTS (SELECT 1 FROM account_capability_grants capability
+           WHERE capability.user_account_id = account.user_account_id
+             AND capability.capability_code = 'tournament.operation'
+             AND capability.grant_status = 'active') AS has_operation_capability`;
+
+interface ReviewerAuthority {
+  reviewerInternalId: number;
+  isAdministrator: boolean;
+  hasOperationCapability: boolean;
+}
+
+function flag(value: unknown): boolean {
+  return value === true || Number(value) === 1;
+}
+
+function reviewerAuthority(row: RowDataPacket): ReviewerAuthority {
+  return {
+    reviewerInternalId: Number(row["reviewer_internal_id"]),
+    isAdministrator: flag(row["is_administrator"]),
+    hasOperationCapability: flag(row["has_operation_capability"]),
+  };
+}
+
+/** The basis on which `reviewer` may act on a Tournament directed by `directorInternalId`, or null. */
+function reviewBasis(reviewer: ReviewerAuthority, directorInternalId: unknown): "administrator" | "director" | null {
+  if (reviewer.isAdministrator) return "administrator";
+  if (reviewer.hasOperationCapability && Number(directorInternalId) === reviewer.reviewerInternalId) return "director";
+  return null;
+}
+
+/**
+ * Reads the reviewing account's current authority inside a transaction. With
+ * `lock` the account row stays locked to the end of it (the live-feed writes,
+ * which lock the account before the Tournament); the review writes read
+ * without that lock because their transaction already holds the Tournament.
+ */
+async function lockReviewer(connection: PoolConnection, reviewerPublicId: string, lock = true): Promise<ReviewerAuthority> {
+  const [rows] = await connection.execute<RowDataPacket[]>(`
+    SELECT ${reviewerAuthorityColumns}
+      FROM user_accounts account
+     WHERE account.public_id = ? AND account.account_status = 'active'
+     LIMIT 1${lock ? " FOR UPDATE" : ""}
+  `, [reviewerPublicId]);
+  const row = rows[0];
+  if (row === undefined) throw new TournamentOperationError("forbidden", "The reviewing account is not active.");
+  return reviewerAuthority(row);
+}
+
+/** Byte length the quotas count for a record's entries, as stored. */
+export function evidenceEntriesByteLength(entries: unknown): number {
+  return Buffer.byteLength(JSON.stringify(entries), "utf8");
 }
 
 const evidenceProjection = `
@@ -316,21 +386,18 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
     return rows.length === 0 ? null : Number(rows[0]?.id);
   }
 
-  public async canReviewTournament(tournamentId: string, userAccountId: string, administrator: boolean): Promise<boolean> {
+  public async canReviewTournament(tournamentId: string, userAccountId: string): Promise<boolean> {
     const [rows] = await this.reader.execute<RowDataPacket[]>(`
-      SELECT 1
+      SELECT ${reviewerAuthorityColumns}, tournament.director_user_account_id AS director
         FROM tournaments tournament
         JOIN user_accounts account
           ON account.public_id = ? AND account.account_status = 'active'
        WHERE tournament.public_id = ?
          AND tournament.lifecycle_status = 'active'
-         AND (
-           ? = TRUE
-           OR tournament.director_user_account_id = account.user_account_id
-         )
        LIMIT 1
-    `, [userAccountId, tournamentId, administrator]);
-    return rows.length === 1;
+    `, [userAccountId, tournamentId]);
+    const row = rows[0];
+    return row !== undefined && reviewBasis(reviewerAuthority(row), row["director"]) !== null;
   }
 
   public async upsertEvidenceRecord(input: Parameters<TournamentConnectedRepository["upsertEvidenceRecord"]>[0]): Promise<TournamentEvidenceRecord> {
@@ -363,20 +430,38 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
          LIMIT 1 FOR UPDATE
       `, [uploaderInternalId, input.clientRecordId]);
       const existing = existingRows[0];
+      const entriesJson = JSON.stringify(input.entries);
+      const entriesByteLength = Buffer.byteLength(entriesJson, "utf8");
+      const writes = existing === undefined || (
+        existing["record_status"] !== "linked" && existing["record_status"] !== "blocked" &&
+        !(existing["completed_at_ms"] !== null && !input.complete));
+      // F04: hard storage quotas, checked under the uploader's row lock taken
+      // above, so two concurrent uploads by one account cannot both pass. A
+      // retry of a record that is already stored writes nothing and is never
+      // refused by a quota.
+      if (writes) {
+        await this.assertEvidenceQuota(connection, {
+          uploaderInternalId,
+          existingInternalId: existing === undefined ? null : Number(existing["id"]),
+          entriesByteLength,
+          nowMs: input.nowMs,
+          limits: input.limits,
+        });
+      }
       if (existing === undefined) {
         await connection.execute<ResultSetHeader>(`
           INSERT INTO tournament_evidence_records (
             public_id, client_record_id, revision, record_status, source_kind,
-            result_entries_json, summary_payload_json, content_sha256,
+            result_entries_json, summary_payload_json, content_sha256, entries_byte_length,
             suggested_tournament_id, linked_tournament_id,
             uploaded_by_user_account_id, linked_by_user_account_id,
             started_at_ms, stopped_at_ms, analysis_completed_at_ms,
             completed_at_ms, linked_at_ms, created_at_ms, updated_at_ms
             , live_status, live_mappings_json
-          ) VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, NULL, ?, NULL, ?, ?, ?, ?, NULL, ?, ?, ?, ?)
+          ) VALUES (?, ?, 1, ?, ?, ?, ?, ?, ?, ?, NULL, ?, NULL, ?, ?, ?, ?, NULL, ?, ?, ?, ?)
         `, [
           input.recordId, input.clientRecordId, input.complete ? "available" : "uploading", input.sourceKind,
-          JSON.stringify(input.entries), JSON.stringify(input.summary), input.contentSha256,
+          entriesJson, JSON.stringify(input.summary), input.contentSha256, entriesByteLength,
           suggestedTournamentInternalId, uploaderInternalId,
           input.startedAtMs, input.stoppedAtMs, input.analysisCompletedAtMs,
           input.complete ? input.nowMs : null, input.nowMs, input.nowMs,
@@ -388,11 +473,12 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
           if (String(existing["content_sha256"]) !== input.contentSha256) {
             throw new TournamentOperationError("conflict", "A linked evidence record cannot be rewritten.");
           }
-        } else if (!(existing["completed_at_ms"] !== null && !input.complete)) {
+        } else if (writes) {
           await connection.execute(`
             UPDATE tournament_evidence_records
                SET revision = revision + 1, record_status = ?, source_kind = ?,
                    result_entries_json = ?, summary_payload_json = ?, content_sha256 = ?,
+                   entries_byte_length = ?,
                    suggested_tournament_id = ?, started_at_ms = ?, stopped_at_ms = ?,
                    analysis_completed_at_ms = ?, completed_at_ms = ?, updated_at_ms = ?,
                    live_mappings_json = CASE
@@ -406,7 +492,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
              WHERE tournament_evidence_record_id = ?
           `, [
             input.complete ? "available" : "uploading", input.sourceKind,
-            JSON.stringify(input.entries), JSON.stringify(input.summary), input.contentSha256,
+            entriesJson, JSON.stringify(input.summary), input.contentSha256, entriesByteLength,
             suggestedTournamentInternalId, input.startedAtMs, input.stoppedAtMs,
             input.analysisCompletedAtMs, input.complete ? input.nowMs : null, input.nowMs,
             input.liveRegistration !== null,
@@ -425,17 +511,95 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
     });
   }
 
-  public async listOwnEvidenceRecords(userAccountId: string): Promise<readonly TournamentEvidenceRecord[]> {
-    const [rows] = await this.reader.execute<EvidenceRow[]>(`
+  /**
+   * F04: the open (unlinked, not blocked, not purged) evidence an account may
+   * keep, and the installation's total. Runs inside the upload transaction
+   * after the uploader's account row was locked, which serialises one
+   * account's uploads; the installation byte total is a shared budget whose
+   * concurrent overshoot is bounded by the request concurrency limit times one
+   * request body.
+   */
+  private async assertEvidenceQuota(connection: PoolConnection, input: Readonly<{
+    uploaderInternalId: number;
+    existingInternalId: number | null;
+    entriesByteLength: number;
+    nowMs: number;
+    limits: TournamentEvidenceStorageLimits;
+  }>): Promise<void> {
+    const { limits } = input;
+    if (input.entriesByteLength > limits.maxRecordBytes) {
+      throw new TournamentEvidenceLimitError("record_bytes", "This evidence record is larger than this installation accepts.");
+    }
+    const [accountRows] = await connection.execute<RowDataPacket[]>(`
+      SELECT COUNT(*) AS open_records,
+             COALESCE(SUM(entries_byte_length), 0) AS open_bytes,
+             COALESCE(SUM(CASE WHEN tournament_evidence_record_id = ? THEN entries_byte_length ELSE 0 END), 0) AS own_bytes
+        FROM tournament_evidence_records
+       WHERE uploaded_by_user_account_id = ?
+         AND linked_tournament_id IS NULL
+         AND record_status IN ('uploading', 'available')
+    `, [input.existingInternalId ?? 0, input.uploaderInternalId]);
+    const openRecords = Number(accountRows[0]?.["open_records"] ?? 0);
+    const openBytes = Number(accountRows[0]?.["open_bytes"] ?? 0);
+    const replacedBytes = Number(accountRows[0]?.["own_bytes"] ?? 0);
+    const growth = input.entriesByteLength - replacedBytes;
+    if (input.existingInternalId === null) {
+      if (openRecords + 1 > limits.maxOpenRecordsPerAccount) {
+        throw new TournamentEvidenceLimitError("open_records",
+          "This account has too many unlinked evidence records. Ask the Director to link or dismiss them first.");
+      }
+      const dayStart = Math.max(0, input.nowMs - 86_400_000);
+      const [createdRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT COUNT(*) AS created, MIN(created_at_ms) AS oldest
+          FROM tournament_evidence_records
+         WHERE uploaded_by_user_account_id = ? AND created_at_ms >= ?
+      `, [input.uploaderInternalId, dayStart]);
+      const created = Number(createdRows[0]?.["created"] ?? 0);
+      if (created + 1 > limits.maxNewRecordsPerAccountPerDay) {
+        const oldest = Number(createdRows[0]?.["oldest"] ?? input.nowMs);
+        throw new TournamentEvidenceLimitError("new_records_per_day",
+          "This account created too many evidence records in the last 24 hours.",
+          Math.max(1, Math.ceil((oldest + 86_400_000 - input.nowMs) / 1_000)));
+      }
+    }
+    if (growth > 0 && openBytes + growth > limits.maxOpenBytesPerAccount) {
+      throw new TournamentEvidenceLimitError("open_bytes",
+        "This account's unlinked evidence takes too much space. Ask the Director to link or dismiss it first.");
+    }
+    if (growth > 0) {
+      const [installationRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT COALESCE(SUM(entries_byte_length), 0) AS open_bytes
+          FROM tournament_evidence_records
+         WHERE record_status IN ('uploading', 'available') AND linked_tournament_id IS NULL
+      `);
+      if (Number(installationRows[0]?.["open_bytes"] ?? 0) + growth > limits.maxInstallationOpenBytes) {
+        throw new TournamentEvidenceLimitError("installation_open_bytes",
+          "This installation's storage for unlinked evidence is full. An administrator can review it.");
+      }
+    }
+  }
+
+  public async listOwnEvidenceRecords(
+    userAccountId: string,
+    page: Readonly<{ limit: number; before?: Readonly<{ updatedAtMs: number; recordId: string }> }> = { limit: 200 },
+  ): Promise<readonly TournamentEvidenceRecord[]> {
+    const limit = Math.max(1, Math.min(500, Math.trunc(page.limit)));
+    const before = page.before;
+    // Most recently written first, so a record that was just uploaded or
+    // re-uploaded is always on the first page a client checks.
+    const [rows] = await this.reader.query<EvidenceRow[]>(`
       ${evidenceProjection}
        WHERE uploader.public_id = ?
-       ORDER BY evidence.created_at_ms DESC, evidence.tournament_evidence_record_id DESC
-    `, [userAccountId]);
+         ${before === undefined ? "" : "AND (evidence.updated_at_ms < ? OR (evidence.updated_at_ms = ? AND evidence.public_id < ?))"}
+       ORDER BY evidence.updated_at_ms DESC, evidence.public_id DESC
+       LIMIT ${limit}
+    `, before === undefined ? [userAccountId] : [userAccountId, before.updatedAtMs, before.updatedAtMs, before.recordId]);
     return rows.map(mapEvidence);
   }
 
-  public async listEvidenceRecordsForTournament(tournamentId: string): Promise<readonly TournamentEvidenceRecord[]> {
-    const [rows] = await this.reader.execute<EvidenceRow[]>(`
+  public async listEvidenceRecordsForTournament(tournamentId: string, limit = 500): Promise<readonly TournamentEvidenceRecord[]> {
+    const bounded = Math.max(1, Math.min(2_000, Math.trunc(limit)));
+    const [rows] = await this.reader.query<EvidenceRow[]>(`
       ${evidenceProjection}
        WHERE (
          (evidence.live_status = 'none' AND evidence.completed_at_ms IS NOT NULL
@@ -446,6 +610,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
          AND (evidence.linked_tournament_id IS NULL OR linked.public_id = ?)
        ORDER BY (suggested.public_id = ?) DESC,
                 evidence.started_at_ms DESC, evidence.created_at_ms DESC
+       LIMIT ${bounded}
     `, [tournamentId, tournamentId, tournamentId]);
     return rows.map(mapEvidence);
   }
@@ -467,17 +632,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
 
   public async approveLiveAssociation(input: Parameters<TournamentConnectedRepository["approveLiveAssociation"]>[0]): Promise<TournamentEvidenceRecord> {
     return this.unit(async (connection) => {
-      const [reviewerRows] = await connection.execute<RowDataPacket[]>(`
-        SELECT account.user_account_id AS id,
-               EXISTS (SELECT 1 FROM administrator_grants grant_row
-                         WHERE grant_row.user_account_id = account.user_account_id
-                           AND grant_row.grant_status = 'active') AS is_administrator
-          FROM user_accounts account
-         WHERE account.public_id = ? AND account.account_status = 'active'
-         LIMIT 1 FOR UPDATE
-      `, [input.reviewedByUserAccountId]);
-      const reviewer = reviewerRows[0];
-      if (reviewer === undefined) throw new TournamentOperationError("forbidden", "The reviewing account is not active.");
+      const reviewer = await lockReviewer(connection, input.reviewedByUserAccountId);
       const [tournamentRows] = await connection.execute<RowDataPacket[]>(`
         SELECT tournament_id AS id, director_user_account_id AS director
           FROM tournaments
@@ -486,21 +641,42 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
       `, [input.tournamentId]);
       const tournament = tournamentRows[0];
       if (tournament === undefined) throw new TournamentOperationError("not_found", "The active Tournament was not found.");
-      const reviewerInternalId = Number(reviewer["id"]);
+      const reviewerInternalId = reviewer.reviewerInternalId;
       const tournamentInternalId = Number(tournament["id"]);
       const [recordRows] = await connection.execute<RowDataPacket[]>(`
         SELECT tournament_evidence_record_id AS id, revision, live_status,
                live_mappings_json, suggested_tournament_id, completed_at_ms,
-               uploaded_by_user_account_id
+               uploaded_by_user_account_id, live_withdrawn_at_ms
           FROM tournament_evidence_records WHERE public_id = ? LIMIT 1 FOR UPDATE
       `, [input.recordId]);
       const record = recordRows[0];
       if (record === undefined) throw new TournamentOperationError("not_found", "The live evidence record was not found.");
+      // F05: a roster match is a quality check, never an authorization. It
+      // may open the public view only for a feed whose own uploader is an
+      // administrator, this Tournament's director, or holds an active
+      // capture delegation the director gave for this Tournament - and never
+      // again once the director withdrew that feed.
+      let basis: "administrator" | "director" | "capture_delegation" | null = reviewBasis(reviewer, tournament["director"]);
       if (input.authorization === "roster_match") {
         if (Number(record["uploaded_by_user_account_id"]) !== reviewerInternalId) {
           throw new TournamentOperationError("forbidden", "Only this live run's uploader may use its roster match.");
         }
-      } else if (Number(reviewer["is_administrator"]) !== 1 && Number(tournament["director"]) !== reviewerInternalId) {
+        if (record["live_withdrawn_at_ms"] !== null) {
+          throw new TournamentOperationError("forbidden", "The director withdrew this live feed; only the director can open it again.");
+        }
+        if (basis === null) {
+          const [delegationRows] = await connection.execute<RowDataPacket[]>(`
+            SELECT 1 FROM tournament_live_capture_delegations
+             WHERE tournament_id = ? AND delegate_user_account_id = ?
+               AND delegation_status = 'active' AND expires_at_ms > ?
+             LIMIT 1 FOR UPDATE
+          `, [tournamentInternalId, reviewerInternalId, input.nowMs]);
+          if (delegationRows.length === 1) basis = "capture_delegation";
+        }
+        if (basis === null) {
+          throw new TournamentOperationError("forbidden", "A roster match does not authorize a live feed; the director must confirm it.");
+        }
+      } else if (basis === null) {
         throw new TournamentOperationError("forbidden", "Only this Tournament's director may confirm live feeds.");
       }
       if (Number(record["revision"]) !== input.expectedRevision) {
@@ -548,16 +724,17 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
                live_completed_at_ms = CASE
                  WHEN completed_at_ms IS NOT NULL THEN COALESCE(live_completed_at_ms, completed_at_ms)
                  ELSE live_completed_at_ms END,
+               live_withdrawn_at_ms = NULL,
                updated_at_ms = ?
          WHERE tournament_evidence_record_id = ?
       `, [nextStatus, JSON.stringify(input.mappings), reviewerInternalId, input.nowMs, input.nowMs, Number(record["id"])]);
       await connection.execute(`
         INSERT INTO tournament_live_mapping_audit (
           tournament_evidence_record_id, tournament_id, changed_by_user_account_id,
-          previous_mappings_json, next_mappings_json, reason, changed_at_ms
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          previous_mappings_json, next_mappings_json, reason, authorization_basis, changed_at_ms
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `, [Number(record["id"]), tournamentInternalId, reviewerInternalId, JSON.stringify(oldMappings),
-        JSON.stringify(input.mappings), input.reason, input.nowMs]);
+        JSON.stringify(input.mappings), input.reason.slice(0, 512), basis, input.nowMs]);
       const updated = await this.findEvidenceRecord(input.recordId, connection);
       if (updated === null) throw new Error("Confirmed live evidence record could not be loaded.");
       const { entries: _entries, ...summary } = updated;
@@ -567,17 +744,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
 
   public async dismissLiveRequest(input: Parameters<TournamentConnectedRepository["dismissLiveRequest"]>[0]): Promise<TournamentEvidenceRecord> {
     return this.unit(async (connection) => {
-      const [reviewerRows] = await connection.execute<RowDataPacket[]>(`
-        SELECT account.user_account_id AS id,
-               EXISTS (SELECT 1 FROM administrator_grants grant_row
-                         WHERE grant_row.user_account_id = account.user_account_id
-                           AND grant_row.grant_status = 'active') AS is_administrator
-          FROM user_accounts account
-         WHERE account.public_id = ? AND account.account_status = 'active'
-         LIMIT 1 FOR UPDATE
-      `, [input.reviewedByUserAccountId]);
-      const reviewer = reviewerRows[0];
-      if (reviewer === undefined) throw new TournamentOperationError("forbidden", "The reviewing account is not active.");
+      const reviewer = await lockReviewer(connection, input.reviewedByUserAccountId);
       const [tournamentRows] = await connection.execute<RowDataPacket[]>(`
         SELECT tournament_id AS id, director_user_account_id AS director
           FROM tournaments
@@ -586,9 +753,10 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
       `, [input.tournamentId]);
       const tournament = tournamentRows[0];
       if (tournament === undefined) throw new TournamentOperationError("not_found", "The active Tournament was not found.");
-      const reviewerInternalId = Number(reviewer["id"]);
+      const reviewerInternalId = reviewer.reviewerInternalId;
       const tournamentInternalId = Number(tournament["id"]);
-      if (Number(reviewer["is_administrator"]) !== 1 && Number(tournament["director"]) !== reviewerInternalId) {
+      const basis = reviewBasis(reviewer, tournament["director"]);
+      if (basis === null) {
         throw new TournamentOperationError("forbidden", "Only this Tournament's director may dismiss live requests.");
       }
       const [recordRows] = await connection.execute<RowDataPacket[]>(`
@@ -620,10 +788,10 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
       await connection.execute(`
         INSERT INTO tournament_live_mapping_audit (
           tournament_evidence_record_id, tournament_id, changed_by_user_account_id,
-          previous_mappings_json, next_mappings_json, reason, changed_at_ms
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          previous_mappings_json, next_mappings_json, reason, authorization_basis, changed_at_ms
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `, [Number(record["id"]), tournamentInternalId, reviewerInternalId, JSON.stringify(oldMappings),
-        JSON.stringify([]), input.reason, input.nowMs]);
+        JSON.stringify([]), input.reason, basis, input.nowMs]);
       const updated = await this.findEvidenceRecord(input.recordId, connection);
       if (updated === null) throw new Error("Dismissed live evidence record could not be loaded.");
       const { entries: _entries, ...summary } = updated;
@@ -676,20 +844,8 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
 
   public async materializeEvidenceRecord(input: Parameters<TournamentConnectedRepository["materializeEvidenceRecord"]>[0]): Promise<readonly IncomingTournamentResult[]> {
     return this.unit(async (connection) => {
-      const [reviewerRows] = await connection.execute<RowDataPacket[]>(`
-        SELECT account.user_account_id AS id,
-               EXISTS (
-                 SELECT 1 FROM administrator_grants administrator
-                  WHERE administrator.user_account_id = account.user_account_id
-                    AND administrator.grant_status = 'active'
-               ) AS is_administrator
-          FROM user_accounts account
-         WHERE account.public_id = ? AND account.account_status = 'active'
-         LIMIT 1 FOR UPDATE
-      `, [input.reviewedByUserAccountId]);
-      const reviewer = reviewerRows[0];
-      if (reviewer === undefined) throw new TournamentOperationError("forbidden", "The reviewing account is not active.");
-      const reviewerInternalId = Number(reviewer["id"]);
+      const reviewer = await lockReviewer(connection, input.reviewedByUserAccountId);
+      const reviewerInternalId = reviewer.reviewerInternalId;
       const [tournamentRows] = await connection.execute<RowDataPacket[]>(`
         SELECT tournament_id AS id, director_user_account_id AS director, workflow_step
           FROM tournaments
@@ -698,7 +854,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
       `, [input.tournamentId]);
       const tournament = tournamentRows[0];
       if (tournament === undefined) throw new TournamentOperationError("not_found", "The active Tournament was not found.");
-      if (Number(reviewer["is_administrator"]) !== 1 && Number(tournament["director"]) !== reviewerInternalId) {
+      if (reviewBasis(reviewer, tournament["director"]) === null) {
         throw new TournamentOperationError("forbidden", "Only this Tournament's director may link evidence.");
       }
       const [recordRows] = await connection.execute<RowDataPacket[]>(`
@@ -938,19 +1094,43 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
     }));
   }
 
+  /**
+   * F02: the review write itself re-checks, in its own transaction, that the
+   * reviewer is an active administrator or the director (with an active
+   * capability) of the Tournament this pending result belongs to. A service
+   * mistake or an upgraded actor upstream can no longer reach another
+   * director's results.
+   */
+  private async assertIncomingReviewer(
+    connection: PoolConnection,
+    incomingResultId: string,
+    reviewerPublicId: string,
+  ): Promise<number> {
+    const reviewer = await lockReviewer(connection, reviewerPublicId, false);
+    const [rows] = await connection.execute<RowDataPacket[]>(`
+      SELECT tournament.director_user_account_id AS director
+        FROM tournament_incoming_results ir
+        JOIN tournaments tournament ON tournament.tournament_id = ir.tournament_id
+       WHERE ir.public_id = ? AND tournament.lifecycle_status = 'active'
+       LIMIT 1 FOR UPDATE
+    `, [incomingResultId]);
+    const row = rows[0];
+    if (row === undefined) throw new TournamentOperationError("not_found", "The pending result was not found.");
+    if (reviewBasis(reviewer, row["director"]) === null) {
+      throw new TournamentOperationError("forbidden", "This account cannot review the selected Tournament.");
+    }
+    return reviewer.reviewerInternalId;
+  }
+
   public async markAccepted(input: Parameters<TournamentConnectedRepository["markAccepted"]>[0]): Promise<void> {
     return this.unit(async (connection) => {
       const [raceRows] = await connection.execute<RowDataPacket[]>(
         "SELECT tournament_race_result_id AS id FROM tournament_race_results WHERE public_id = ? LIMIT 1",
         [input.raceResultId],
       );
-      const [reviewerRows] = await connection.execute<RowDataPacket[]>(
-        "SELECT user_account_id AS id FROM user_accounts WHERE public_id = ? AND account_status = 'active' LIMIT 1",
-        [input.reviewedByUserAccountId],
-      );
-      if (raceRows.length === 0 || reviewerRows.length === 0) throw new Error("Accepted Tournament result audit references were not found.");
+      if (raceRows.length === 0) throw new Error("Accepted Tournament result audit references were not found.");
       const raceInternalId = Number(raceRows[0]?.["id"]);
-      const reviewerInternalId = Number(reviewerRows[0]?.["id"]);
+      const reviewerInternalId = await this.assertIncomingReviewer(connection, input.incomingResultId, input.reviewedByUserAccountId);
       const [result] = await connection.execute<ResultSetHeader>(`
         UPDATE tournament_incoming_results
            SET status = 'accepted', revision = revision + 1,
@@ -973,12 +1153,7 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
 
   public async markRejected(input: Parameters<TournamentConnectedRepository["markRejected"]>[0]): Promise<void> {
     return this.unit(async (connection) => {
-      const [reviewerRows] = await connection.execute<RowDataPacket[]>(
-        "SELECT user_account_id AS id FROM user_accounts WHERE public_id = ? AND account_status = 'active' LIMIT 1",
-        [input.reviewedByUserAccountId],
-      );
-      if (reviewerRows.length !== 1) throw new Error("Rejected Tournament result reviewer was not found.");
-      const reviewerInternalId = Number(reviewerRows[0]?.["id"]);
+      const reviewerInternalId = await this.assertIncomingReviewer(connection, input.incomingResultId, input.reviewedByUserAccountId);
       const [result] = await connection.execute<ResultSetHeader>(`
         UPDATE tournament_incoming_results
            SET status = 'rejected', revision = revision + 1,
@@ -996,5 +1171,282 @@ export class MysqlTournamentConnectedRepository implements TournamentConnectedRe
             FROM tournament_incoming_results WHERE public_id = ?
       `, [reviewerInternalId, input.reviewReason, input.nowMs, input.incomingResultId]);
     });
+  }
+
+  /** Locks an active, unfinished Tournament and checks the reviewer may direct it. */
+  private async lockDirectedTournament(
+    connection: PoolConnection,
+    reviewerPublicId: string,
+    tournamentId: string,
+    refusal: string,
+  ): Promise<Readonly<{ reviewer: ReviewerAuthority; tournamentInternalId: number; basis: "administrator" | "director" }>> {
+    const reviewer = await lockReviewer(connection, reviewerPublicId);
+    const [tournamentRows] = await connection.execute<RowDataPacket[]>(`
+      SELECT tournament_id AS id, director_user_account_id AS director
+        FROM tournaments
+       WHERE public_id = ? AND lifecycle_status = 'active' AND stage <> 'finalized'
+       LIMIT 1 FOR UPDATE
+    `, [tournamentId]);
+    const tournament = tournamentRows[0];
+    if (tournament === undefined) throw new TournamentOperationError("not_found", "The active Tournament was not found.");
+    const basis = reviewBasis(reviewer, tournament["director"]);
+    if (basis === null) throw new TournamentOperationError("forbidden", refusal);
+    return { reviewer, tournamentInternalId: Number(tournament["id"]), basis };
+  }
+
+  /** Puts public live feeds back to `requested` and records who did it and why. */
+  private async withdrawLiveRows(connection: PoolConnection, input: Readonly<{
+    rows: readonly RowDataPacket[];
+    tournamentInternalId: number;
+    actorInternalId: number;
+    reason: string;
+    basis: "administrator" | "director" | "delegation_revoked";
+    nowMs: number;
+  }>): Promise<void> {
+    for (const row of input.rows) {
+      const mappings = row["live_mappings_json"] === null ? [] : parseJson(row["live_mappings_json"] as string);
+      await connection.execute(`
+        UPDATE tournament_evidence_records
+           SET revision = revision + 1, live_status = 'requested',
+               live_withdrawn_at_ms = ?, updated_at_ms = ?
+         WHERE tournament_evidence_record_id = ?
+      `, [input.nowMs, input.nowMs, Number(row["id"])]);
+      await connection.execute(`
+        INSERT INTO tournament_live_mapping_audit (
+          tournament_evidence_record_id, tournament_id, changed_by_user_account_id,
+          previous_mappings_json, next_mappings_json, reason, authorization_basis, changed_at_ms
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      `, [Number(row["id"]), input.tournamentInternalId, input.actorInternalId, JSON.stringify(mappings),
+        JSON.stringify(mappings), input.reason.slice(0, 512), input.basis, input.nowMs]);
+    }
+  }
+
+  public async withdrawLiveAssociation(input: Parameters<NonNullable<TournamentConnectedRepository["withdrawLiveAssociation"]>>[0]): Promise<TournamentEvidenceRecord> {
+    return this.unit(async (connection) => {
+      const directed = await this.lockDirectedTournament(connection, input.reviewedByUserAccountId, input.tournamentId,
+        "Only this Tournament's director may withdraw a live feed.");
+      const [recordRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT tournament_evidence_record_id AS id, revision, live_status, live_mappings_json, suggested_tournament_id
+          FROM tournament_evidence_records WHERE public_id = ? LIMIT 1 FOR UPDATE
+      `, [input.recordId]);
+      const record = recordRows[0];
+      if (record === undefined) throw new TournamentOperationError("not_found", "The live evidence record was not found.");
+      if (Number(record["revision"]) !== input.expectedRevision) {
+        throw new TournamentOperationError("conflict", "The live feed changed; reload it before withdrawing it.");
+      }
+      if (Number(record["suggested_tournament_id"]) !== directed.tournamentInternalId) {
+        throw new TournamentOperationError("conflict", "This live run belongs to another Tournament.");
+      }
+      if (!["active", "stopping", "complete"].includes(String(record["live_status"]))) {
+        throw new TournamentOperationError("conflict", "Only a live feed on the public view can be withdrawn.");
+      }
+      await this.withdrawLiveRows(connection, {
+        rows: [record], tournamentInternalId: directed.tournamentInternalId,
+        actorInternalId: directed.reviewer.reviewerInternalId, reason: input.reason,
+        basis: directed.basis, nowMs: input.nowMs,
+      });
+      const updated = await this.findEvidenceRecord(input.recordId, connection);
+      if (updated === null) throw new Error("Withdrawn live evidence record could not be loaded.");
+      const { entries: _entries, ...summary } = updated;
+      return summary;
+    });
+  }
+
+  public async grantLiveCaptureDelegation(
+    input: Parameters<NonNullable<TournamentConnectedRepository["grantLiveCaptureDelegation"]>>[0],
+  ): Promise<TournamentLiveCaptureDelegation> {
+    return this.unit(async (connection) => {
+      const directed = await this.lockDirectedTournament(connection, input.grantedByUserAccountId, input.tournamentId,
+        "Only this Tournament's director may delegate its live capture.");
+      const [delegateRows] = await connection.execute<RowDataPacket[]>(
+        "SELECT user_account_id AS id FROM user_accounts WHERE public_id = ? AND account_status = 'active' LIMIT 1",
+        [input.delegateUserAccountId],
+      );
+      if (delegateRows.length !== 1) throw new TournamentOperationError("not_found", "The delegate account was not found.");
+      const delegateInternalId = Number(delegateRows[0]?.["id"]);
+      // One active delegation per delegate: a new grant replaces (revokes) the previous one.
+      await connection.execute(`
+        UPDATE tournament_live_capture_delegations
+           SET delegation_status = 'revoked', revoked_by_user_account_id = ?, revoke_reason = 'replaced by a new delegation',
+               revoked_at_ms = ?, updated_at_ms = ?
+         WHERE tournament_id = ? AND delegate_user_account_id = ? AND delegation_status = 'active'
+      `, [directed.reviewer.reviewerInternalId, input.nowMs, input.nowMs, directed.tournamentInternalId, delegateInternalId]);
+      const [activeRows] = await connection.execute<RowDataPacket[]>(`
+        SELECT COUNT(*) AS total FROM tournament_live_capture_delegations
+         WHERE tournament_id = ? AND delegation_status = 'active' AND expires_at_ms > ?
+      `, [directed.tournamentInternalId, input.nowMs]);
+      // A night has a handful of capture PCs; the bound keeps the table from growing without limit.
+      if (Number(activeRows[0]?.["total"] ?? 0) >= 32) {
+        throw new TournamentOperationError("conflict", "This Tournament already has the maximum number of capture delegations.");
+      }
+      await connection.execute(`
+        INSERT INTO tournament_live_capture_delegations (
+          public_id, tournament_id, delegate_user_account_id, delegation_status,
+          granted_by_user_account_id, grant_reason, granted_at_ms, expires_at_ms, updated_at_ms
+        ) VALUES (?, ?, ?, 'active', ?, ?, ?, ?, ?)
+      `, [input.delegationId, directed.tournamentInternalId, delegateInternalId, directed.reviewer.reviewerInternalId,
+        input.reason, input.nowMs, input.expiresAtMs, input.nowMs]);
+      const created = (await this.delegations(connection, input.tournamentId, input.delegationId))[0];
+      if (created === undefined) throw new Error("Created live capture delegation could not be loaded.");
+      return created;
+    });
+  }
+
+  public async revokeLiveCaptureDelegation(
+    input: Parameters<NonNullable<TournamentConnectedRepository["revokeLiveCaptureDelegation"]>>[0],
+  ): Promise<TournamentLiveCaptureDelegation> {
+    return this.unit(async (connection) => {
+      const directed = await this.lockDirectedTournament(connection, input.revokedByUserAccountId, input.tournamentId,
+        "Only this Tournament's director may revoke a capture delegation.");
+      const [rows] = await connection.execute<RowDataPacket[]>(`
+        SELECT tournament_live_capture_delegation_id AS id, delegate_user_account_id AS delegate, delegation_status
+          FROM tournament_live_capture_delegations
+         WHERE public_id = ? AND tournament_id = ? LIMIT 1 FOR UPDATE
+      `, [input.delegationId, directed.tournamentInternalId]);
+      const delegation = rows[0];
+      if (delegation === undefined) throw new TournamentOperationError("not_found", "The capture delegation was not found.");
+      if (delegation["delegation_status"] !== "active") {
+        throw new TournamentOperationError("conflict", "This capture delegation was already revoked.");
+      }
+      await connection.execute(`
+        UPDATE tournament_live_capture_delegations
+           SET delegation_status = 'revoked', revoked_by_user_account_id = ?, revoke_reason = ?,
+               revoked_at_ms = ?, updated_at_ms = ?
+         WHERE tournament_live_capture_delegation_id = ?
+      `, [directed.reviewer.reviewerInternalId, input.reason, input.nowMs, input.nowMs, Number(delegation["id"])]);
+      // Revoking the permission also takes down what it opened: every feed of
+      // this delegate that went public on its roster match alone returns to
+      // the director's list, unpublished, with its evidence kept.
+      const [feeds] = await connection.execute<RowDataPacket[]>(`
+        SELECT tournament_evidence_record_id AS id, live_mappings_json
+          FROM tournament_evidence_records
+         WHERE suggested_tournament_id = ? AND uploaded_by_user_account_id = ?
+           AND live_approved_by_user_account_id = ?
+           AND live_status IN ('active', 'stopping', 'complete')
+         FOR UPDATE
+      `, [directed.tournamentInternalId, Number(delegation["delegate"]), Number(delegation["delegate"])]);
+      await this.withdrawLiveRows(connection, {
+        rows: feeds, tournamentInternalId: directed.tournamentInternalId,
+        actorInternalId: directed.reviewer.reviewerInternalId,
+        reason: `Capture delegation revoked: ${input.reason}`, basis: "delegation_revoked", nowMs: input.nowMs,
+      });
+      const revoked = (await this.delegations(connection, input.tournamentId, input.delegationId))[0];
+      if (revoked === undefined) throw new Error("Revoked live capture delegation could not be loaded.");
+      return revoked;
+    });
+  }
+
+  public async listLiveCaptureDelegations(
+    input: Parameters<NonNullable<TournamentConnectedRepository["listLiveCaptureDelegations"]>>[0],
+  ): Promise<readonly TournamentLiveCaptureDelegation[]> {
+    return this.unit(async (connection) => {
+      await this.lockDirectedTournament(connection, input.reviewedByUserAccountId, input.tournamentId,
+        "Only this Tournament's director may see its capture delegations.");
+      return this.delegations(connection, input.tournamentId);
+    });
+  }
+
+  private async delegations(
+    executor: Pool | PoolConnection,
+    tournamentId: string,
+    delegationId?: string,
+  ): Promise<readonly TournamentLiveCaptureDelegation[]> {
+    const [rows] = await executor.query<RowDataPacket[]>(`
+      SELECT delegation.public_id, delegation.delegation_status, delegation.grant_reason,
+             delegation.granted_at_ms, delegation.expires_at_ms, delegation.revoke_reason, delegation.revoked_at_ms,
+             delegate.public_id AS delegate_public_id, granter.public_id AS granter_public_id,
+             revoker.public_id AS revoker_public_id,
+             COALESCE(delegate_player.display_name, 'Signed-in Tournament Live user') AS delegate_display_name
+        FROM tournament_live_capture_delegations delegation
+        JOIN tournaments tournament ON tournament.tournament_id = delegation.tournament_id
+        JOIN user_accounts delegate ON delegate.user_account_id = delegation.delegate_user_account_id
+        LEFT JOIN (
+          SELECT claim.user_account_id, MIN(player.display_name) AS display_name
+            FROM player_claims claim
+            JOIN players player ON player.player_id = claim.player_id
+           WHERE claim.claim_status = 'verified'
+           GROUP BY claim.user_account_id
+        ) delegate_player ON delegate_player.user_account_id = delegate.user_account_id
+        JOIN user_accounts granter ON granter.user_account_id = delegation.granted_by_user_account_id
+        LEFT JOIN user_accounts revoker ON revoker.user_account_id = delegation.revoked_by_user_account_id
+       WHERE tournament.public_id = ? ${delegationId === undefined ? "" : "AND delegation.public_id = ?"}
+       ORDER BY delegation.granted_at_ms DESC, delegation.tournament_live_capture_delegation_id DESC
+       LIMIT 200
+    `, delegationId === undefined ? [tournamentId] : [tournamentId, delegationId]);
+    return rows.map((row) => ({
+      delegationId: String(row["public_id"]),
+      tournamentId,
+      delegateUserAccountId: String(row["delegate_public_id"]),
+      delegateDisplayName: String(row["delegate_display_name"]),
+      status: row["delegation_status"] === "active" ? "active" as const : "revoked" as const,
+      reason: String(row["grant_reason"]),
+      grantedByUserAccountId: String(row["granter_public_id"]),
+      grantedAtMs: Number(row["granted_at_ms"]),
+      expiresAtMs: Number(row["expires_at_ms"]),
+      revokedByUserAccountId: row["revoker_public_id"] === null ? null : String(row["revoker_public_id"]),
+      revokeReason: row["revoke_reason"] === null ? null : String(row["revoke_reason"]),
+      revokedAtMs: row["revoked_at_ms"] === null ? null : Number(row["revoked_at_ms"]),
+    }));
+  }
+
+  /**
+   * F04 retention, in bounded batches. Only evidence nobody can still need is
+   * touched: never linked, never materialized into pending results, not a
+   * running live feed, untouched since `cutoffMs`, and not suggested for a
+   * Tournament that is still being run. Such a record is deleted; one that
+   * has a live-mapping audit trail keeps its row and audit but loses its
+   * entries and is blocked from linking. The uploader's own PC still holds the
+   * original files.
+   */
+  public async applyEvidenceRetention(input: Readonly<{ cutoffMs: number; nowMs: number; batchSize: number }>): Promise<Readonly<{ deleted: number; purged: number }>> {
+    const candidateFilter = `
+           evidence.linked_tournament_id IS NULL
+       AND evidence.payload_purged_at_ms IS NULL
+       AND evidence.updated_at_ms < ?
+       AND evidence.live_status NOT IN ('active', 'stopping')
+       AND NOT EXISTS (SELECT 1 FROM tournament_incoming_results incoming
+                        WHERE incoming.evidence_record_id = evidence.tournament_evidence_record_id)
+       AND NOT EXISTS (SELECT 1 FROM tournaments suggested
+                        WHERE suggested.tournament_id = evidence.suggested_tournament_id
+                          AND suggested.lifecycle_status = 'active' AND suggested.stage <> 'finalized')`;
+    const batch = Math.max(1, Math.min(1_000, Math.trunc(input.batchSize)));
+    const [candidates] = await this.reader.query<RowDataPacket[]>(`
+      SELECT evidence.tournament_evidence_record_id AS id
+        FROM tournament_evidence_records evidence
+       WHERE ${candidateFilter}
+       ORDER BY evidence.updated_at_ms, evidence.tournament_evidence_record_id
+       LIMIT ${batch}
+    `, [input.cutoffMs]);
+    let deleted = 0;
+    let purged = 0;
+    for (const candidate of candidates) {
+      await this.unit(async (connection) => {
+        const [rows] = await connection.query<RowDataPacket[]>(`
+          SELECT evidence.tournament_evidence_record_id AS id,
+                 EXISTS (SELECT 1 FROM tournament_live_mapping_audit audit
+                          WHERE audit.tournament_evidence_record_id = evidence.tournament_evidence_record_id) AS audited
+            FROM tournament_evidence_records evidence
+           WHERE evidence.tournament_evidence_record_id = ? AND ${candidateFilter}
+           LIMIT 1 FOR UPDATE
+        `, [Number(candidate["id"]), input.cutoffMs]);
+        const row = rows[0];
+        if (row === undefined) return;
+        if (flag(row["audited"])) {
+          await connection.execute(`
+            UPDATE tournament_evidence_records
+               SET result_entries_json = JSON_ARRAY(), entries_byte_length = 0, record_status = 'blocked',
+                   live_status = CASE WHEN live_status = 'none' THEN 'none' ELSE 'invalidated' END,
+                   payload_purged_at_ms = ?, revision = revision + 1, updated_at_ms = ?
+             WHERE tournament_evidence_record_id = ?
+          `, [input.nowMs, input.nowMs, Number(row["id"])]);
+          purged += 1;
+        } else {
+          await connection.execute(
+            "DELETE FROM tournament_evidence_records WHERE tournament_evidence_record_id = ?", [Number(row["id"])]);
+          deleted += 1;
+        }
+      });
+    }
+    return { deleted, purged };
   }
 }

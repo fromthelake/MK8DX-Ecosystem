@@ -501,6 +501,7 @@ describe("Time Trial submission HTTP boundary", () => {
       ["invalid_assets", 400, "invalid_time_trial_submission"],
       ["player_not_found", 404, "time_trial_player_not_found"],
       ["revision_conflict", 409, "time_trial_revision_conflict"],
+      ["submission_forbidden", 403, "time_trial_submission_forbidden"],
       ["protection_failed", 500, "time_trial_submission_failed"],
     ] as const;
     for (const [code, status, responseCode] of cases) {

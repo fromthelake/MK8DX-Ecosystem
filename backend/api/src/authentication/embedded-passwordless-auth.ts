@@ -2,6 +2,9 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import { betterAuth, type BetterAuthOptions } from "better-auth";
 import { fromNodeHeaders } from "better-auth/node";
 import { bearer, deviceAuthorization, magicLink } from "better-auth/plugins";
+
+import { budgetRecipient, type AuthEmailBudgets } from "./auth-email-budgets.js";
+import { MutationRateLimitExceeded } from "../security/mysql-mutation-rate-limiter.js";
 import {
   offlineInvitationAuthPlugin,
   type OfflineInvitationAuthPluginOptions,
@@ -90,6 +93,8 @@ export interface PasswordlessEmailDelivery {
   sendChangeEmailConfirmation?(message: PasswordlessAccountEmail): Promise<void>;
   /** A native client's sign-in link and code (ADR-0209); absent disables the route. */
   sendNativeSignIn?(message: import("./native-email-approval.js").NativeEmailSignIn): Promise<void>;
+  /** A fresh confirmation link before a dangerous action; absent disables step-up. */
+  sendStepUp?(message: import("../security/step-up-service.js").StepUpEmail): Promise<void>;
 }
 
 export type EmbeddedAuthAuditEvent = Readonly<{
@@ -475,11 +480,19 @@ const excludedResponseHeaders = new Set([
   "upgrade",
 ]);
 
+/** Auth paths that send mail, with the body field that names the recipient. */
+const mailSendingPaths: ReadonlyMap<string, string> = new Map([
+  [`${MK8DX_AUTH_BASE_PATH}/sign-in/magic-link`, "email"],
+  [`${MK8DX_AUTH_BASE_PATH}/change-email`, "newEmail"],
+  [`${MK8DX_AUTH_BASE_PATH}/send-verification-email`, "email"],
+]);
+
 export async function registerEmbeddedAuthRoutes(
   app: FastifyInstance,
   auth: EmbeddedPasswordlessAuth,
   baseUrl: string,
   offlineLan = false,
+  budgets?: AuthEmailBudgets,
 ): Promise<void> {
   const origin = exactOrigin(baseUrl, "auth route base URL");
   app.route({
@@ -499,6 +512,25 @@ export async function registerEmbeddedAuthRoutes(
       ].some((path) => offlinePath === path || offlinePath.startsWith(`${path}/`)))) {
         return reply.code(404).send({ code: "offline_email_auth_unavailable",
           message: "Use a local invitation from the host administrator." });
+      }
+      if (budgets !== undefined && request.method === "POST") {
+        // H1: durable per-address, installation and per-recipient budgets for every request that
+        // sends mail or starts an app sign-in, before Better Auth does any work.
+        const body = (typeof request.body === "object" && request.body !== null
+          ? request.body : {}) as Record<string, unknown>;
+        const mailPath = mailSendingPaths.get(offlinePath);
+        try {
+          if (mailPath !== undefined) {
+            await budgets.email(request, budgetRecipient(body[mailPath]));
+          } else if (offlinePath === `${MK8DX_AUTH_BASE_PATH}/device/code`) {
+            await budgets.deviceCode(request);
+          }
+        } catch (error) {
+          if (!(error instanceof MutationRateLimitExceeded)) { throw error; }
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "auth_rate_limited",
+            message: "Too many sign-in requests were received. Wait before retrying." });
+        }
       }
       const headers = fromNodeHeaders(request.headers);
       // Only the address this API resolved reaches Better Auth's rate limiter:

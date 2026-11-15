@@ -15,6 +15,8 @@ import cv2  # type: ignore
 import numpy as np  # type: ignore
 from PIL import Image  # type: ignore
 
+from mk8dx_tournament_extraction.spreadsheet_text import LiteralCsvWriter
+
 from .baseline_assets import imported_character_template_paths, load_imported_game_catalog
 from .baseline_vision import (
     SCORE_LAYOUTS,
@@ -1197,6 +1199,7 @@ def write_review_pack(attempt: RowOcrAttempt) -> None:
                 "failure_reason",
             ],
         )
+        writer = LiteralCsvWriter(writer)  # OCR text stays text in a spreadsheet
         writer.writeheader()
         for row in attempt.rows:
             writer.writerow(

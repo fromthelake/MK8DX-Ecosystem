@@ -131,6 +131,7 @@ export const publicPlayerAliasesSchema = {
       maxItems: 100,
       items: publicAliasProfileSchema,
     },
+    nextAfter: aliasIdParamsSchema.properties.aliasId,
   },
 } as const;
 

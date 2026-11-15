@@ -6,6 +6,7 @@ import type {
   PasswordlessMagicLink,
 } from "./embedded-passwordless-auth.js";
 import type { NativeEmailApprovalDelivery, NativeEmailSignIn } from "./native-email-approval.js";
+import type { StepUpEmail } from "../security/step-up-service.js";
 
 const hostnamePattern = /^(?=.{1,253}$)[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?$/;
 const mailboxPattern = /^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?$/;
@@ -331,6 +332,43 @@ export class SmtpMagicLinkDelivery implements PasswordlessEmailDelivery, NativeE
         disableFileAccess: true, disableUrlAccess: true,
       });
     } catch { throw new SmtpMagicLinkDeliveryError("native sign-in delivery failed"); }
+  }
+
+  /** A fresh confirmation before a dangerous action; the link opens a page with a Confirm button. */
+  public async sendStepUp(message: StepUpEmail): Promise<void> {
+    let link: URL;
+    try { link = new URL(message.url); } catch {
+      throw new SmtpMagicLinkDeliveryError("step-up message is invalid");
+    }
+    const token = link.searchParams.get("step-up");
+    if (!mailboxPattern.test(message.email) || message.email.length > 320 ||
+        link.origin !== this.allowedLinkOrigin || link.pathname !== "/" ||
+        token === null || !/^[A-Za-z0-9_-]{43}$/.test(token) ||
+        !Number.isSafeInteger(message.expiresInMinutes) || message.expiresInMinutes < 1) {
+      throw new SmtpMagicLinkDeliveryError("step-up message is invalid");
+    }
+    const where = message.clientKind === "native" ? "in the MK8DX app" : `on ${link.host}`;
+    const parts = {
+      preheader: "Confirm an administrator action. The link works once.",
+      heading: "Confirm an administrator action",
+      intro: `Someone signed in to your account ${where} asked to perform an action that needs a fresh ` +
+        "confirmation, such as changing who may administer or removing results.",
+      action: "Confirm this action",
+      url: link.toString(),
+      afterAction: `The button works once and expires in ${message.expiresInMinutes} minutes. Confirm only ` +
+        "if you just asked for this yourself.",
+      footer: "If that was not you, ignore this email — nothing happens without the button — and " +
+        "sign out your other sessions from your account settings.",
+    };
+    try {
+      await this.transport.sendMail({
+        from: this.fromAddress, to: message.email,
+        subject: "Confirm your MK8DX administrator action",
+        text: emailPlainText(parts),
+        html: emailShell(parts),
+        disableFileAccess: true, disableUrlAccess: true,
+      });
+    } catch { throw new SmtpMagicLinkDeliveryError("step-up delivery failed"); }
   }
 
   public async sendEmailVerification(message: PasswordlessAccountEmail): Promise<void> {

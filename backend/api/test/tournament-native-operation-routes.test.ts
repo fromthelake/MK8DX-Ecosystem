@@ -269,6 +269,11 @@ describe("native Tournament operation routes", () => {
       },
     });
     expect(stale.statusCode).toBe(409);
+    // F02: the capability only opens the gate; the service sees the account
+    // as resolved and decides per Tournament itself.
+    expect(granted.operations.setManualScores).toHaveBeenCalledWith(
+      { role: "account", userAccountId: "user_account.native_admin" }, tournamentId, expect.anything(),
+    );
   });
 
   // ADR-0177 decision 7.

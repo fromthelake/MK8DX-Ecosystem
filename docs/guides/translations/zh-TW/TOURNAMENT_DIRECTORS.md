@@ -52,6 +52,8 @@ Analysis 和 Live）可以單獨使用。它們會在你的電腦上寫出 Excel
 
 公開和社群積分是最後一個步驟中兩個獨立的決定。
 
+在 CSV 和 Excel 匯出中，以 `=`、`+`、`-` 或 `@` 開頭的名稱在試算表程式中開啟時仍保持為文字；在 CSV 中，它會為此在開頭加上一個撇號，網站和工具的匯入會再把它移除。
+
 ## 3. Windows Tournament Tools
 
 ### 需求
@@ -126,7 +128,8 @@ Analysis 和 Live）可以單獨使用。它們會在你的電腦上寫出 Excel
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 只有當網站在同一台 Windows 電腦上執行時（像 A1 和 A3 那樣），才使用 `http://127.0.0.1:<port>`（或 `http://localhost:<port>`）：
@@ -134,6 +137,8 @@ Analysis 和 Live）可以單獨使用。它們會在你的電腦上寫出 Excel
 網址都需要它受信任的 HTTPS 網址。沒有終端機時（例如從指令碼執行），`sign-in` 不會詢問：
 請先用 `TournamentConnect.cmd server <address>` 設定網址。等待送往某個伺服器的上傳會留在那個
 伺服器底下。提交的比賽會進入 **收到的成績**；它絕不會被自動公開。
+
+登入只會在你選擇的位址上開啟瀏覽器：TournamentConnect 和 Tournament Live 會把該位址與代碼一起顯示，並拒絕指向其他地方的登入連結。只有當瀏覽器顯示相同的位址和相同的代碼時才核准。`sign-out` 會結束此電腦在網站上的工作階段，然後在本機刪除它；只有當網站確認該工作階段已失效時，它才會顯示 *Signed out*。其他裝置仍保持登入。如果無法連線到網站，登入會保留在此電腦上：請稍後再試，或使用 `sign-out --this-pc-only`，然後在網站的帳號選單中用 **在所有裝置上登出** 結束工作階段（用 **在所有地方登出** 確認後，該帳號的所有裝置都會登出）。在 Tournament Live 中，**登出** 與 `sign-out` 作用相同；**離線工作** 只會忘記此電腦上的連線，並會說明這一點。
 
 ### 把 Tournament Live 的成績送到網站
 
@@ -147,6 +152,18 @@ Analysis 和 Live）可以單獨使用。它們會在你的電腦上寫出 Excel
 3. 在網站上開啟當晚的比賽，前往步驟 5（決賽組別為步驟 9），在 **可用的 Tournament Live 錄影** 底下找到這次執行。
    在 **連結至組別** 中選擇它的組別，然後選擇 **連結已檢查的錄影**。這些比賽會作為待處理的證據等待，
    直到你接受它們。
+
+### 擷取委派與撤下直播來源
+
+僅憑名單比對永遠不會自行開放公開直播檢視。Tournament Live 的直播來源只有在你（或管理員）確認後，或來自你已為今晚委派直播
+擷取的帳號時，才會公開。在此之前，網站會在該場次上顯示 *正在等待主辦人*，Tournament Live 也會提示它正在等待主辦人。
+
+- **委派：** 在第 5 步（決賽組別為第 9 步）的 **直播擷取委派** 下，選擇擷取操作員的帳號和 **有效期間**（預設 12 小時，最長
+  7 天），然後按 **委派直播擷取**。等待中的場次也會提供 **將直播擷取委派給 …（12 小時）**。帳號的 Tournament Live
+  連線到今晚並按下 **START** 後，就會出現在那裡。之後，下一場名字與組別名單相符的比賽會開放公開檢視。
+- **撤銷：** 按委派旁的 **撤銷**。該帳號的直播來源會立即離開公開檢視；其比賽保留供你審核。
+- **撤下直播來源：** 在公開的場次上按 **撤下此直播來源**，再按一次確認。比賽會保留；只有你能透過 **手動確認直播對應**
+  再次開放它，名單比對不行。
 
 ### 稍後再連線
 
@@ -187,6 +204,10 @@ OCR 可能會讀錯名稱、名次或累計分數。在確認之前，請把每�
 v0.2.2 套件通過了一次實體 1× 驗收執行：三台訊號來源電腦把錄好的預賽影片播放到各自的擷取卡中
 （[issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)）。沒有擷取卡的影片重播
 不能測試擷取路徑。
+
+## 刪除或移除比賽需要電子郵件連結
+
+在網站或 Android 應用程式中刪除草稿或移除比賽時，會先要求重新確認。**透過新的電子郵件連結確認** 視窗會說明原因；點按 **傳送連結** 會向你帳號自己的地址傳送一次性連結。該連結只能使用一次，有效期 10 分鐘。在任何裝置上開啟它並點按 **確認此操作**，刪除隨後會自動繼續。確認僅對該瀏覽器或應用程式有效，持續 10 分鐘。進行比賽（參賽者、分組、分數、完成）時從不需要它，沒有電子郵件的家庭或俱樂部離線安裝也完全不會要求。收不到郵件？請檢查垃圾郵件並傳送新連結；如果社群的電子郵件無法使用，伺服器的營運者可以在伺服器上核發連結（請見 [Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)）。
 
 ## 自己建置這些工具
 

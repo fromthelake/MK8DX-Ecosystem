@@ -54,6 +54,10 @@ saved Live / Processor result file** inside a group, or **Administration → Tou
 
 Publication and the community rating are separate decisions in the final step.
 
+In CSV and Excel exports a name that starts with `=`, `+`, `-` or `@` stays text when you open the file in a
+spreadsheet program; in a CSV it gets one leading apostrophe for this, which the imports of the website and the tools
+remove again.
+
 ## 3. The Windows Tournament Tools
 
 ### Requirements
@@ -150,7 +154,8 @@ In PowerShell, in the package folder:
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 Use `http://127.0.0.1:<port>` (or `http://localhost:<port>`) only when the website runs on the same Windows
@@ -158,6 +163,15 @@ computer, as A1 and A3 do: plain HTTP is accepted for these addresses on this PC
 address needs its trusted HTTPS address. Without a terminal (for example from a script) `sign-in` does not ask:
 set the address first with `TournamentConnect.cmd server <address>`. Uploads waiting for one server stay with that
 server. A delivered race lands in **Incoming results**; it is never published automatically.
+
+Sign-in opens the browser only on the address you chose: TournamentConnect and Tournament Live show that address with
+the code, and refuse a sign-in link that points anywhere else. Approve only when the browser shows the same address
+and code. `sign-out` ends this PC's session on the website and then removes it here; it says *Signed out* only when
+the website confirms that the session no longer works. Other devices stay signed in. When the website cannot be
+reached the sign-in stays on this PC: try again later, or use `sign-out --this-pc-only` and end the session with
+**Sign out on all devices** in the website's account menu (confirm with **Sign out everywhere**; this signs out every
+device of the account). In Tournament Live, **Sign out** does the same as `sign-out`; **Work offline** only forgets
+the connection on this PC and says so.
 
 ### Tournament Live to the website
 
@@ -171,6 +185,21 @@ server. A delivered race lands in **Incoming results**; it is never published au
 3. On the website, open the night, go to Step 5 (Step 9 for the final groups) and find the run under **Available Tournament Live recordings**.
    Choose its group in **Link to group**, then **Link reviewed recording**. The races wait as pending evidence
    until you accept them.
+
+### Capture delegations and withdrawing a feed
+
+A roster match never opens the public live view by itself. A Tournament Live feed goes public only when you (or an
+administrator) confirm it, or when it comes from an account you delegated live capture to for this night. Until
+then the website shows *Waiting for the Director* on the run, and Tournament Live says it is waiting for the Director.
+
+- **Delegate:** in Step 5 (Step 9 for the final groups), under **Live capture delegations**, choose the capture
+  operator's account and **Valid for** (12 hours by default, at most 7 days), then **Delegate live capture**. A waiting
+  run also offers **Delegate live capture to … (12 hours)**. An account appears there once its Tournament Live has
+  connected to the night and pressed **Start**. Its next race whose names match the group list then opens the public view.
+- **Revoke:** choose **Revoke** next to the delegation. That account's feeds leave the public view at once; their races
+  stay for your review.
+- **Withdraw a feed:** choose **Withdraw this live feed** on a public run and click again to confirm. Its races stay;
+  only you can open it again with **Confirm live routing manually**, a roster match cannot.
 
 ### Connect later
 
@@ -211,6 +240,17 @@ The tools read the game in its 15 console languages. Tournament Live passed a ph
 v0.2.2 package: three source PCs played recorded qualification videos into their own capture cards
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). A video replay without a capture card
 does not test the capture path.
+
+## Deleting or removing a Tournament asks for an email link
+
+Deleting a draft or removing a Tournament, on the website or in the Android app, first asks for a fresh confirmation.
+The window **Confirm with a new email link** explains why; **Send the link** sends a one-time link to your account's
+own address. The link works once, for 10 minutes. Open it on any device and press **Confirm this action**; the
+deletion then continues by itself. The confirmation lasts 10 minutes for that browser or app only. Running the night
+(participants, groups, scores, finalizing) never asks for it, and an offline home or club installation without email
+does not ask at all. No email? Check spam and send a new link; when the community's email does not work, the person
+who runs the server can issue the link there instead (see
+[Operations](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)).
 
 ## Build the tools yourself
 

@@ -254,9 +254,27 @@ export type TimeTrialCarriedOriginal = Readonly<{
   originalSubmissionId: string | null;
 }>;
 
+/**
+ * Who a stored submission belongs to, as the store recorded it. A revision continues the same
+ * result, so it must keep this owner and source class; the client's message is never the evidence.
+ */
+export type TimeTrialSubmissionOwner = Readonly<{
+  /**
+   * The one central Player every stored revision names. Null when there is none (a legacy, import
+   * or restricted participant) or when stored revisions disagree; such a submission is not revised
+   * through the ordinary submission path.
+   */
+  playerId: string | null;
+  /** The source kind of the first revision; its source class must not change. */
+  sourceKind: string;
+  /** Whether the first revision was carried from another community (ADR-0225). */
+  carried: boolean;
+}>;
+
 export type TimeTrialSubmissionState = Readonly<{
   firstCreatedAtMs: number;
   latestRevision: number;
+  owner: TimeTrialSubmissionOwner;
 }>;
 
 export interface TimeTrialWriteTransaction {
@@ -264,6 +282,11 @@ export interface TimeTrialWriteTransaction {
     submissionId: string,
   ): Promise<TimeTrialSubmissionState | null>;
   findActiveHumanPlayerForUpdate(playerId: string): Promise<boolean>;
+  /**
+   * Whether the account currently holds a verified claim on the Player, locking that claim for the
+   * rest of the transaction. A store without it cannot accept a revision of an existing submission.
+   */
+  accountHoldsVerifiedClaimForUpdate?(userAccountId: string, playerId: string): Promise<boolean>;
   insertSubmission(submissionId: string, firstCreatedAtMs: number): Promise<void>;
   insertRevision(input: TimeTrialRevisionPersistenceInput): Promise<void>;
   // ADR-0225 amendment. Optional so stores without carried originals (tests, the scan-test path)
@@ -302,6 +325,7 @@ export type TimeTrialSubmissionErrorCode =
   | "invalid_submission"
   | "invalid_assets"
   | "player_not_found"
+  | "submission_forbidden"
   | "revision_conflict"
   | "protection_failed"
   | "implausible_time"
@@ -719,6 +743,10 @@ export class TimeTrialSubmissionService {
 
     return this.repository.transaction(async (transaction) => {
       const current = await transaction.findSubmissionForUpdate(input.submissionId);
+      if (current !== null) {
+        // Decided before the revision number, so a stranger learns nothing from guessing it.
+        await requireRevisionOwner(current, input, context, transaction);
+      }
       if (current === null) {
         if (input.revision !== 1) {
           throw new TimeTrialSubmissionError(
@@ -824,6 +852,57 @@ export class TimeTrialSubmissionService {
     }
     return policy;
   }
+}
+
+/** The source classes a revision may not cross; android_manual and android_scan are one app. */
+export function timeTrialSourceClass(sourceKind: string): string {
+  switch (sourceKind) {
+    case "web_manual":
+    case "web_scan":
+      return "web";
+    case "android_manual":
+    case "android_scan":
+    case "android_scan_test":
+      return "android";
+    case "livetrial_capture":
+    case "livetrial_recorded_video":
+      return "livetrial";
+    default:
+      return `other:${sourceKind}`;
+  }
+}
+
+/**
+ * A revision of an existing submission is the stored owner's own: the same central Player, the same
+ * source class and carried state, sent by an account that holds a verified claim on that Player now
+ * (checked under lock, inside the write transaction). A submission without a central Player owner
+ * fails closed. An owner is never changed here; the authorized, logged administrator correction
+ * (lifecycle-service.ts) keeps the owner as well.
+ */
+async function requireRevisionOwner(
+  current: TimeTrialSubmissionState,
+  input: TimeTrialSubmissionV1,
+  context: TimeTrialSubmissionContext,
+  transaction: TimeTrialWriteTransaction,
+): Promise<void> {
+  const forbidden = (): never => {
+    throw new TimeTrialSubmissionError(
+      "submission_forbidden",
+      "the revision is not the stored owner's",
+    );
+  };
+  const owner = current.owner as TimeTrialSubmissionOwner | undefined;
+  if (owner === undefined || owner.playerId === null) forbidden();
+  if (input.playerReference.namespace !== "player" ||
+    input.playerReference.value !== owner!.playerId) forbidden();
+  if (timeTrialSourceClass(input.source.kind) !== timeTrialSourceClass(owner!.sourceKind) ||
+    (input.carriedFrom !== undefined) !== owner!.carried) forbidden();
+  if (context.actorUserAccountId === undefined ||
+    transaction.accountHoldsVerifiedClaimForUpdate === undefined ||
+    !(await transaction.accountHoldsVerifiedClaimForUpdate(
+      context.actorUserAccountId,
+      owner!.playerId!,
+    ))) forbidden();
 }
 
 const fillableParts: readonly (readonly [keyof TimeTrialLoadout, (keyof TimeTrialLoadout) | null])[] = [

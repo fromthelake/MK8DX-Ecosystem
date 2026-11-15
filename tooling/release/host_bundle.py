@@ -44,6 +44,7 @@ PACKAGE_IMAGE_FILES = {"compose.yaml", "tooling/start-mk8dx.ps1", "tooling/start
 FILES = (
     "Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "compose.yaml", "compose.local.yaml", "compose.lan.yaml",
     "compose.production.yaml", "compose.images.yaml", "tooling/install.py", "tooling/lifecycle.py",
+    "tooling/database_accounts.py", "tooling/scheduled_backup.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",
     "tooling/mk8dx-ui.sh", "tooling/launcher_text.py",
     # The launcher texts in the 15 game languages (tooling/i18n/build_web_catalogs.mjs, product "launcher").

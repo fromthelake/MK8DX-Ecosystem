@@ -54,6 +54,10 @@ importar um ficheiro de resultados guardado do Live / Processor** dentro de um g
 
 A publicação e o rating da comunidade são decisões separadas no último passo.
 
+Nas exportações CSV e Excel, um nome que comece por `=`, `+`, `-` ou `@` continua a ser texto quando abres o ficheiro
+numa folha de cálculo; num CSV recebe para isso um apóstrofo inicial, que as importações do site e das ferramentas
+voltam a retirar.
+
 ## 3. As Tournament Tools para Windows
 
 ### Requisitos
@@ -135,7 +139,8 @@ No PowerShell, na pasta do pacote:
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 Usa `http://127.0.0.1:<port>` (ou `http://localhost:<port>`) só quando o site corre no mesmo computador com
@@ -144,6 +149,16 @@ outro endereço precisa do seu endereço HTTPS de confiança. Sem terminal (por 
 `sign-in` não pergunta: define primeiro o endereço com `TournamentConnect.cmd server <address>`. Os carregamentos
 à espera de um servidor ficam com esse servidor. Uma corrida entregue chega a **Resultados recebidos**; nunca é
 publicada automaticamente.
+
+O início de sessão só abre o navegador no endereço que escolheste: o TournamentConnect e o Tournament Live mostram
+esse endereço junto com o código e recusam uma ligação de início de sessão que aponte para outro lado. Aprova apenas
+quando o navegador mostrar o mesmo endereço e o mesmo código. `sign-out` termina a sessão deste PC no site e depois
+remove-a aqui; só diz *Signed out* quando o site confirma que a sessão já não funciona. Os outros dispositivos
+continuam com sessão iniciada. Se o site não estiver acessível, o início de sessão fica neste PC: tenta mais tarde, ou
+usa `sign-out --this-pc-only` e termina a sessão com **Terminar sessão em todos os dispositivos** no menu da conta do
+site (confirma com **Terminar sessão em todo o lado**; isto termina a sessão em todos os dispositivos da conta). No
+Tournament Live, **Terminar sessão** faz o mesmo que `sign-out`; **Trabalhar offline** só esquece a ligação neste PC e
+indica-o.
 
 ### Tournament Live para o site
 
@@ -157,6 +172,24 @@ publicada automaticamente.
 3. No site, abre a noite, vai ao Passo 5 (Passo 9 para os grupos finais) e procura a sessão em **Gravações do Tournament Live disponíveis**.
    Escolhe o grupo dela em **Associar ao grupo** e depois **Associar gravação revista**. As corridas ficam à espera como
    provas pendentes até as aceitares.
+
+### Delegações de captura e retirar um feed
+
+Uma correspondência com a lista nunca abre sozinha a vista pública em direto. Um feed do Tournament Live só se torna
+público quando tu (ou um administrador) o confirmas, ou quando vem de uma conta a quem delegaste a captura em direto
+para esta noite. Até lá, o site mostra *À espera do diretor* na execução, e o Tournament Live indica que espera pelo
+diretor.
+
+- **Delegar:** no passo 5 (passo 9 para os grupos finais), em **Delegações de captura em direto**, escolhe a conta do
+  operador de captura e **Válida durante** (12 horas por predefinição, no máximo 7 dias) e depois **Delegar a captura
+  em direto**. Uma execução em espera também oferece **Delegar a captura em direto a … (12 horas)**. Uma conta
+  aparece aí quando o respetivo Tournament Live se ligou à noite e carregou em **START**. A corrida seguinte cujos
+  nomes correspondam à lista do grupo abre então a vista pública.
+- **Revogar:** escolhe **Revogar** junto à delegação. Os feeds dessa conta saem de imediato da vista pública; as
+  corridas ficam para a tua revisão.
+- **Retirar um feed:** numa execução pública escolhe **Retirar este feed em direto** e clica novamente para confirmar.
+  As corridas ficam; só tu o podes voltar a abrir com **Confirmar manualmente o encaminhamento em direto**, uma
+  correspondência com a lista não.
 
 ### Ligar mais tarde
 
@@ -197,6 +230,17 @@ As ferramentas leem o jogo nos seus 15 idiomas de consola. O Tournament Live pas
 1× com o pacote v0.2.2: três PC de origem reproduziram vídeos de qualificação gravados nas suas próprias placas de
 captura ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Uma reprodução de vídeo sem placa
 de captura não testa a via de captura.
+
+## Eliminar ou remover um torneio pede uma ligação por e-mail
+
+Eliminar um rascunho ou remover um torneio, no site ou na app Android, pede primeiro uma nova confirmação. A janela
+**Confirmar com uma nova ligação por e-mail** explica porquê; **Enviar a ligação** envia uma ligação de utilização
+única para o endereço da tua conta. A ligação funciona uma vez, durante 10 minutos. Abre-a em qualquer dispositivo e
+prime **Confirmar esta ação**; a eliminação continua sozinha. A confirmação vale 10 minutos, só para esse navegador ou
+essa app. Conduzir a noite (participantes, grupos, pontuações, finalizar) nunca a pede, e uma instalação offline em
+casa ou no clube sem e-mail não a pede de todo. Não chegou o e-mail? Verifica o spam e envia uma nova ligação; se o
+e-mail da comunidade não funcionar, quem gere o servidor pode emitir a ligação lá (vê
+[Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)).
 
 ## Compilar as ferramentas tu próprio
 

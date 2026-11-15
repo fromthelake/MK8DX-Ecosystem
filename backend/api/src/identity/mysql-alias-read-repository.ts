@@ -98,7 +98,13 @@ export class MysqlAliasReadRepository implements AliasReadRepository {
 
   public async listPublicAliasesByPlayerId(
     playerId: string,
+    page: Readonly<{ limit: number; after?: string }> = { limit: 100 },
   ): Promise<readonly PublicAliasProfile[]> {
+    const limit = Number.isSafeInteger(page.limit) && page.limit >= 1 && page.limit <= 101 ? page.limit : 100;
+    const after = page.after === undefined ? "" :
+      `AND (alias_record.alias_text, alias_record.public_id) > (
+         SELECT cursor_alias.alias_text, cursor_alias.public_id FROM aliases AS cursor_alias
+         WHERE cursor_alias.public_id = ? LIMIT 1)`;
     const [rows] = await this.executor.execute<PublicAliasRow[]>(
       `SELECT
          alias_record.public_id AS aliasId,
@@ -112,9 +118,10 @@ export class MysqlAliasReadRepository implements AliasReadRepository {
          AND alias_record.record_status = 'active'
          AND player.record_status = 'active'
          AND player.visibility = 'public'
+         ${after}
        ORDER BY alias_record.alias_text, alias_record.public_id
-       LIMIT 100`,
-      [playerId],
+       LIMIT ${String(limit)}`,
+      page.after === undefined ? [playerId] : [playerId, page.after],
     );
     return rows.map(publicAlias);
   }

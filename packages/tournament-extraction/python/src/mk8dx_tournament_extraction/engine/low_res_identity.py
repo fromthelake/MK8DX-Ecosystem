@@ -12,6 +12,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
+from ..spreadsheet_text import LiteralCsvWriter
 from .app_runtime import load_app_config
 from .extract_common import (
     debug_low_res_assignment_path,
@@ -651,12 +652,12 @@ def _write_debug_outputs(debug_dir: Path, race_class: str, assignment_rows: List
     assignment_path = debug_low_res_assignment_path(race_class)
     assignment_path.parent.mkdir(parents=True, exist_ok=True)
     with assignment_path.open('w', encoding='utf-8-sig', newline='') as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(assignment_rows[0].keys()) if assignment_rows else ['Race'])
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=list(assignment_rows[0].keys()) if assignment_rows else ['Race']))
         writer.writeheader()
         writer.writerows(assignment_rows)
     resolution_path = debug_low_res_resolution_path(race_class)
     with resolution_path.open('w', encoding='utf-8-sig', newline='') as handle:
-        writer = csv.DictWriter(handle, fieldnames=['Placeholder', 'TopCandidate', 'TopScore', 'SecondScore', 'EvidenceCount', 'ResolvedName', 'Reason'])
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=['Placeholder', 'TopCandidate', 'TopScore', 'SecondScore', 'EvidenceCount', 'ResolvedName', 'Reason']))
         writer.writeheader()
         writer.writerows(resolution_rows)
 
@@ -804,7 +805,7 @@ def _write_identity_link_grid(
     output_dir.mkdir(parents=True, exist_ok=True)
     cv2.imwrite(str(output_dir / "identity_link_grid.png"), canvas)
     with (output_dir / "identity_link_grid_manifest.csv").open("w", encoding="utf-8-sig", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["Placeholder", "Race", "CellLabel", "RacePosition", "FramePath"])
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=["Placeholder", "Race", "CellLabel", "RacePosition", "FramePath"]))
         writer.writeheader()
         writer.writerows(manifest_rows)
 
@@ -856,6 +857,7 @@ def _write_identity_points_audit(
                 "CellLabel",
             ],
         )
+        writer = LiteralCsvWriter(writer)
         writer.writeheader()
         writer.writerows(audit_rows)
 

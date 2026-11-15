@@ -17,8 +17,31 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from install import PROFILE, SECRET, PUBLIC, SECRET_KEYS, key, public_client, safe_state_dir, valid_origin, write_json, replace_group, t
+from tooling import database_accounts as accounts
 
 ROOT = Path(__file__).resolve().parent.parent
+RUNTIME = "operator.json"  # the running website's settings (B2: copied into mk8dx-hosted.env.json)
+
+
+def single_account_warning():
+    return t("Warning: the website uses the same database account as the database updates. It keeps working, but "
+             "a fault that lets someone run SQL could then also delete tables. Create a second database user with "
+             "only SELECT, INSERT, UPDATE and DELETE on this database in your hosting panel and run: "
+             "install.py database-accounts --state-dir <folder> (guide: B2 webhosting, separate database accounts).")
+
+
+def database_logins(profile, secret):
+    """The installation's database logins: runtime (the website), migration (updates, restore) and backup.
+    An installation from before the split has one login for everything."""
+    db = profile["database"]
+    runtime = (db["user"], secret["MK8DX_HOSTED_MYSQL_PASSWORD"])
+    migration = ((db["migrationUser"], secret[accounts.MIGRATION_PASSWORD]) if db.get("migrationUser") else runtime)
+    backup = ((db["backupUser"], secret[accounts.BACKUP_PASSWORD]) if db.get("backupUser") else migration)
+    return {"runtime": runtime, "migration": migration, "backup": backup}
+
+
+def separate(profile):
+    return bool(profile["database"].get("migrationUser"))
 
 
 def package_paths():
@@ -35,8 +58,18 @@ def package_paths():
 
 
 def create(state, route, origin, admin_email, db_host, db_port, db_name, db_user,
-           db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from):
+           db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from,
+           runtime_user=None, runtime_password=None):
+    """`db_user` owns the database (migrations, restore); `runtime_user` is the website's own account that may
+    only read and write rows. A3 creates both (and a backup account) on its own MariaDB. B2 takes them from the
+    hosting panel; without a runtime user the website shares `db_user` and the installer warns."""
     package_paths()
+    if route == "A3":
+        runtime_user, runtime_password = accounts.RUNTIME_USER, accounts.new_password()
+    if runtime_user is not None:
+        if (not runtime_user or not runtime_password or runtime_user.lower() == "root" or
+                runtime_user == db_user):
+            raise ValueError("The website's database user must be a second, limited user (not root, not the same user)")
     state = safe_state_dir(state, existing=False)
     if any(part.lower() in ("public_html", "htdocs") for part in state.parts):
         raise ValueError("Private installation data must stay outside public web folders")
@@ -64,9 +97,10 @@ def create(state, route, origin, admin_email, db_host, db_port, db_name, db_user
         raise ValueError("Enter the email address you will verify for the administrator")
     state.mkdir(parents=True, mode=0o700)
     os.chmod(state, 0o700)
+    website_user, website_password = (runtime_user, runtime_password) if runtime_user else (db_user, db_password)
     runtime = {
         "MK8DX_HOSTED_MYSQL_HOST": db_host, "MK8DX_HOSTED_MYSQL_PORT": str(db_port),
-        "MK8DX_HOSTED_MYSQL_USER": db_user, "MK8DX_HOSTED_MYSQL_PASSWORD": db_password,
+        "MK8DX_HOSTED_MYSQL_USER": website_user, "MK8DX_HOSTED_MYSQL_PASSWORD": website_password,
         "MK8DX_HOSTED_MYSQL_DATABASE": db_name, "MK8DX_HOSTED_MYSQL_CONNECTION_LIMIT": "8",
         "MK8DX_HOSTED_SCHEMA9_CATALOG_PATH": str(ROOT / "packages/assets/schema9-asset-catalog-v1.json"),
         "MK8DX_HOSTED_STATIC_WEB_ROOT": str(ROOT / "web"),
@@ -100,39 +134,55 @@ def create(state, route, origin, admin_email, db_host, db_port, db_name, db_user
     profile = {"schemaVersion": "mk8dx.operator.v1", "route": route, "origin": origin,
                "project": "mk8dx-native-" + secrets.token_hex(5),
                "adminEmail": admin_email,
-               "database": {"host": db_host, "port": db_port, "name": db_name, "user": db_user},
+               "database": {"host": db_host, "port": db_port, "name": db_name, "user": website_user,
+                            **({"migrationUser": db_user} if runtime_user else {}),
+                            **({"backupUser": accounts.BACKUP_USER} if route == "A3" else {})},
                "smtp": {"host": smtp_host, "port": smtp_port, "secure": route == "B2",
                         "username": smtp_user, "fromAddress": smtp_from}}
     write_json(state / PROFILE, profile)
     write_json(state / SECRET, {**{name: runtime[name] for name in SECRET_KEYS},
-                                "MK8DX_HOSTED_MYSQL_PASSWORD": db_password,
+                                "MK8DX_HOSTED_MYSQL_PASSWORD": website_password,
+                                **({accounts.MIGRATION_PASSWORD: db_password} if runtime_user else {}),
                                 "MK8DX_HOSTED_SMTP_PASSWORD": smtp_password,
-                                **({"MK8DX_NATIVE_DATABASE_ROOT_PASSWORD": secrets.token_urlsafe(36)}
+                                **({"MK8DX_NATIVE_DATABASE_ROOT_PASSWORD": secrets.token_urlsafe(36),
+                                    accounts.BACKUP_PASSWORD: accounts.new_password()}
                                    if route == "A3" else {})})
-    write_json(state / "operator.json", {k: v for k, v in runtime.items()
-                                           if k.startswith("MK8DX_HOSTED_") or k == "MK8DX_LOCAL_DEMO"})
+    write_json(state / RUNTIME, {k: v for k, v in runtime.items()
+                                 if k.startswith("MK8DX_HOSTED_") or k == "MK8DX_LOCAL_DEMO"})
+    names = [PROFILE, SECRET, RUNTIME, PUBLIC]
+    if runtime_user:
+        write_json(state / accounts.MIGRATION_FILE, accounts.migration_settings(runtime, db_user, db_password))
+        names.append(accounts.MIGRATION_FILE)
     write_json(state / PUBLIC, public_client(origin))
-    for name in (PROFILE, SECRET, "operator.json", PUBLIC): os.chmod(state / name, 0o600)
+    for name in names: os.chmod(state / name, 0o600)
     print(t("Private installation: {0}", state))
     print(t("Website: {0}", origin))
     print(t("Database: {0} on {1}", db_name, f"{db_host}:{db_port}"))
     if route == "A3": print(t("Local test mailbox: {0}", "http://127.0.0.1:18227"))
+    if not runtime_user: print(single_account_warning())
 
 
-def wizard(state, route):
+def wizard(state, route, auto_backup=True):
+    runtime_user = runtime_password = None
     if route == "A3":
         origin = "http://127.0.0.1:18090"
         host, port = "127.0.0.1", 18306
-        db_name, db_user, db_password = "mk8dx", "mk8dx_app", secrets.token_urlsafe(36)
+        db_name, db_user, db_password = "mk8dx", accounts.MIGRATION_USER, accounts.new_password()
         print(t("MK8DX will create its own MariaDB 11.4 database inside the private installation folder."))
     else:
-        print(t("Create an empty database and its limited user in DirectAdmin first. No existing database is erased."))
+        print(t("Create an empty database in DirectAdmin (or cPanel) first, with two database users: one with all "
+                "privileges on it (for updates and backups) and one with only SELECT, INSERT, UPDATE and DELETE "
+                "(for the website). No existing database is erased."))
         origin = "https://" + input(t("Website host name, without https://: ")).strip()
         host = input(t("Database host from DirectAdmin: ")).strip()
         port = int(input(t("Database port [3306]: ")).strip() or "3306")
         db_name = input(t("Full database name (including provider prefix if shown): ")).strip()
-        db_user = input(t("Limited database user (full name): ")).strip()
+        db_user = input(t("Database user with all privileges on this database (full name): ")).strip()
         db_password = getpass.getpass(t("Database user's password (hidden): "))
+        runtime_user = input(t("Second database user for the website, with only SELECT, INSERT, UPDATE and DELETE "
+                               "(full name; Enter uses the first user, not recommended): ")).strip() or None
+        if runtime_user:
+            runtime_password = getpass.getpass(t("Second database user's password (hidden): "))
     if route == "A3":
         smtp_host, smtp_port, smtp_user, smtp_password, smtp_from = "", 0, "", "", ""
     else:
@@ -148,8 +198,14 @@ def wizard(state, route):
         if admin_email:
             print(t("That does not look like one email address; try again."))
         admin_email = input(t("Your own future MK8DX administrator email: ")).strip()
+    from tooling import scheduled_backup
+    # A3: on by default (owner decision). B2: a clear choice, because many hosts back up the account already.
+    nightly = auto_backup and (route != "B2" or scheduled_backup.ask_choice())
     create(state, route, origin, admin_email, host, port, db_name, db_user,
-           db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from)
+           db_password, smtp_host, smtp_port, smtp_user, smtp_password, smtp_from,
+           runtime_user=runtime_user, runtime_password=runtime_password)
+    # `setup` (B2) or the first start (A3) switches the nightly backup on unless the answer was no.
+    scheduled_backup.record_choice(state, nightly)
 
 
 def loaded(state):
@@ -173,7 +229,18 @@ def loaded(state):
     if any(runtime.get(name) != secret.get(name) for name in SECRET_KEYS):
         raise ValueError("Saved secret keys and runtime disagree")
     if public != public_client(profile["origin"]): raise ValueError("Public client origin disagrees")
+    if separate(profile):
+        user, password = database_logins(profile, secret)["migration"]
+        if user == db["user"] or not accounts.migration_file_matches(state, runtime, user, password):
+            raise ValueError("Saved database accounts and migration settings disagree")
+    elif (state / accounts.MIGRATION_FILE).exists():
+        raise ValueError("Saved database accounts and migration settings disagree")
     return state, profile, runtime
+
+
+def migration_environment(state, profile):
+    """The settings file for database updates, reference data and restores: the migration login."""
+    return state / (accounts.MIGRATION_FILE if separate(profile) else RUNTIME)
 
 
 def sync_package_paths(state, runtime):
@@ -188,9 +255,9 @@ def sync_package_paths(state, runtime):
     return runtime
 
 
-def node_command(state, script, *arguments, input_text=None, summarize_migrations=False):
+def node_command(state, script, *arguments, input_text=None, summarize_migrations=False, settings=None):
     command = ["node", str(ROOT / "api/dist" / script), "--private-environment-file",
-               str(state / "operator.json"), *map(str, arguments)]
+               str(settings or state / RUNTIME), *map(str, arguments)]
     if not summarize_migrations:
         subprocess.run(command, cwd=ROOT / "api", text=True, input=input_text, check=True)
         return
@@ -252,20 +319,20 @@ def serve(state):
     if profile["route"] != "A3": raise ValueError("B2 is started and restarted in DirectAdmin")
     tool = ROOT / "bin/mailpit.exe"
     if not tool.is_file(): raise ValueError("The Windows package is missing its local mail tool")
+    database = start_local_database(state, profile, runtime)
+    # Starting the database may have given the website its own runtime-only account: read the settings again.
+    state, profile, runtime = loaded(state)
     environment = {k: v for k, v in os.environ.items() if not k.startswith("MK8DX_")}
     environment.update(runtime)
     environment["MK8DX_LOCAL_DEMO"] = "true"
     environment["PORT"] = "18190"
     environment["MK8DX_HOSTED_API_HOST"] = "127.0.0.1"
-    database = start_local_database(state, profile, runtime)
     mail = None
     server = None
     try:
         mail = subprocess.Popen([str(tool), "--smtp", "127.0.0.1:18225", "--listen",
                                  "127.0.0.1:18227", "--database", str(state / "mailpit.db")], cwd=state)
-        observed = json.loads(subprocess.check_output(
-            ["node", str(ROOT / "api/dist/composition/external-database-check-main.js"),
-             "--private-environment-file", str(state / "operator.json")], cwd=ROOT / "api", text=True))
+        observed = observe_database(state)
         if observed["tableCount"] == 0:
             operate(state, "setup")
         else:
@@ -348,23 +415,203 @@ def start_local_database(state, profile, runtime):
         time.sleep(0.25)
     else:
         database.terminate(); raise RuntimeError("MariaDB did not become ready")
-    marker = state / "db-provisioned.json"
-    if not marker.exists():
-        secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
-        root_password = secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"]
-        app_password = secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
-        if not all(set(value) <= set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-")
-                   for value in (root_password, app_password)):
-            raise ValueError("Generated database password has unexpected characters")
-        sql = ("CREATE DATABASE mk8dx CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci; "
-               f"CREATE USER 'mk8dx_app'@'127.0.0.1' IDENTIFIED BY '{app_password}'; "
-               "GRANT ALL PRIVILEGES ON mk8dx.* TO 'mk8dx_app'@'127.0.0.1'; "
-               f"ALTER USER 'root'@'localhost' IDENTIFIED BY '{root_password}'; FLUSH PRIVILEGES;")
-        subprocess.run([str(executable / "mariadb.exe"), "--host=127.0.0.1", "--port=18306", "--user=root"],
-                       input=sql, text=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, check=True)
-        write_json(marker, {"schemaVersion": "mk8dx.native-database.v1", "database": "mk8dx",
-                            "port": 18306, "engine": "MariaDB", "version": "11.4.13"})
+    try:
+        provision_local_accounts(state, executable / "mariadb.exe")
+    except BaseException:
+        stop_local_database(state, database)
+        raise
     return database
+
+
+def _local_root_sql(client, sql, root_password, *hidden):
+    environment = os.environ.copy()
+    environment.pop("MYSQL_PWD", None)
+    if root_password is not None:
+        environment["MYSQL_PWD"] = root_password
+    result = subprocess.run([str(client), "--host=127.0.0.1", "--port=18306", "--user=root"], input=sql, text=True,
+                            stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, env=environment, check=False)
+    if result.returncode != 0:
+        raise RuntimeError("Local database accounts could not be set up: " +
+                           accounts.redact(result.stderr, root_password or "", *hidden))
+
+
+def provision_local_accounts(state, client):
+    """A3's own MariaDB: the database, the migration account (all privileges on it), the website's runtime
+    account (rows only) and the backup account (read and export only). An A3 installation from before the
+    split keeps `mk8dx_app` as its migration account and gets the other two now."""
+    marker = state / "db-provisioned.json"
+    secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
+    profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
+    root_password = accounts.plain(secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"], "password")
+    name = profile["database"]["name"]
+    logins = database_logins(profile, secret)
+    if not marker.exists():
+        sql = (f"CREATE DATABASE {accounts.plain(name, 'database')} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n" +
+               accounts.account_sql(logins["migration"][0], "127.0.0.1", logins["migration"][1],
+                                    "ALL PRIVILEGES", name))
+        if separate(profile):
+            sql += accounts.account_sql(logins["runtime"][0], "127.0.0.1", logins["runtime"][1],
+                                        accounts.RUNTIME_PRIVILEGES, name)
+        if profile["database"].get("backupUser"):
+            sql += accounts.account_sql(logins["backup"][0], "127.0.0.1", logins["backup"][1],
+                                        accounts.BACKUP_PRIVILEGES, name)
+        sql += f"ALTER USER 'root'@'localhost' IDENTIFIED BY '{root_password}';\nFLUSH PRIVILEGES;\n"
+        _local_root_sql(client, sql, None, *(password for _, password in logins.values()))
+        write_json(marker, {"schemaVersion": "mk8dx.native-database.v1", "database": "mk8dx",
+                            "port": 18306, "engine": "MariaDB", "version": "11.4.13",
+                            "accounts": "separate-v1" if separate(profile) else "single"})
+        return
+    if separate(profile):
+        return
+    runtime_password, backup_password = accounts.new_password(), accounts.new_password()
+    _local_root_sql(client, accounts.account_sql(accounts.RUNTIME_USER, "127.0.0.1", runtime_password,
+                                                 accounts.RUNTIME_PRIVILEGES, name) +
+                    accounts.account_sql(accounts.BACKUP_USER, "127.0.0.1", backup_password,
+                                         accounts.BACKUP_PRIVILEGES, name),
+                    root_password, runtime_password, backup_password)
+    switch_to_runtime_account(state, accounts.RUNTIME_USER, runtime_password,
+                              backup=(accounts.BACKUP_USER, backup_password))
+    print(t("The website now uses its own database account, which can only read and write data; database "
+            "updates keep the existing account."))
+
+
+def switch_to_runtime_account(state, user, password, backup=None):
+    """Move the website to `user`; the login it used so far becomes the migration login (it keeps working,
+    so access is never lost). Profile, secrets and settings change together or not at all."""
+    profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
+    secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
+    runtime = json.loads((state / RUNTIME).read_text(encoding="utf-8"))
+    old_user, old_password = profile["database"]["user"], secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
+    if separate(profile) or runtime.get("MK8DX_HOSTED_MYSQL_USER") != old_user or user == old_user:
+        raise ValueError("Saved database accounts disagree; nothing was changed")
+    profile["database"].update({"user": user, "migrationUser": old_user,
+                                **({"backupUser": backup[0]} if backup else {})})
+    secret.update({"MK8DX_HOSTED_MYSQL_PASSWORD": password, accounts.MIGRATION_PASSWORD: old_password,
+                   **({accounts.BACKUP_PASSWORD: backup[1]} if backup else {})})
+    runtime.update({"MK8DX_HOSTED_MYSQL_USER": user, "MK8DX_HOSTED_MYSQL_PASSWORD": password})
+    migration = state / accounts.MIGRATION_FILE
+    migration.unlink(missing_ok=True)  # a leftover of an interrupted earlier attempt; loaded() refused it
+    write_json(migration, accounts.migration_settings(runtime, old_user, old_password))
+    os.chmod(migration, 0o600)
+    try:
+        replace_group([state / PROFILE, state / SECRET, state / RUNTIME],
+                      [json.dumps(value, indent=2).encode() + b"\n" for value in (profile, secret, runtime)])
+    except Exception:
+        migration.unlink(missing_ok=True)
+        raise
+
+
+def use_single_account(state):
+    """Undo of switch_to_runtime_account (B2): the website uses the migration login again."""
+    profile = json.loads((state / PROFILE).read_text(encoding="utf-8"))
+    secret = json.loads((state / SECRET).read_text(encoding="utf-8"))
+    runtime = json.loads((state / RUNTIME).read_text(encoding="utf-8"))
+    user, password = database_logins(profile, secret)["migration"]
+    profile["database"]["user"] = user
+    for name in ("migrationUser", "backupUser"):
+        profile["database"].pop(name, None)
+    secret["MK8DX_HOSTED_MYSQL_PASSWORD"] = password
+    for name in (accounts.MIGRATION_PASSWORD, accounts.BACKUP_PASSWORD):
+        secret.pop(name, None)
+    runtime.update({"MK8DX_HOSTED_MYSQL_USER": user, "MK8DX_HOSTED_MYSQL_PASSWORD": password})
+    replace_group([state / PROFILE, state / SECRET, state / RUNTIME],
+                  [json.dumps(value, indent=2).encode() + b"\n" for value in (profile, secret, runtime)])
+    (state / accounts.MIGRATION_FILE).unlink(missing_ok=True)
+
+
+def check_runtime_account(state, settings=None):
+    """What the website's database account may do (the API's own SHOW GRANTS check; nothing secret)."""
+    return json.loads(subprocess.check_output(
+        ["node", str(ROOT / "api/dist/composition/database-account-check-main.js"),
+         "--private-environment-file", str(settings or state / RUNTIME)], cwd=ROOT / "api", text=True))
+
+
+def report_accounts(state, profile):
+    """B2: say clearly when the website's account could change or remove tables."""
+    if profile["route"] != "B2":
+        return
+    if not separate(profile):
+        print(single_account_warning())
+        return
+    try:
+        report = check_runtime_account(state)
+    except (OSError, ValueError, subprocess.CalledProcessError):
+        print(t("The website's database account could not be checked; see the message above."))
+        return
+    if report.get("canChangeSchema"):
+        print(t("Warning: the website's database account can still change the database structure ({0}). Give it "
+                "only SELECT, INSERT, UPDATE and DELETE in your hosting panel.",
+                ", ".join(report.get("extraPrivileges", []))))
+
+
+def database_accounts(state, user=None, password=None, undo=False):
+    """`install.py database-accounts`: give a B2 website its own limited database user (or undo that)."""
+    state, profile, runtime = loaded(state)
+    if profile["route"] != "B2":
+        print(t("This installation creates and manages its own database accounts."))
+        return
+    if undo:
+        if not separate(profile):
+            print(t("The website already uses the single database account."))
+            return
+        use_single_account(state)
+        print(t("The website uses the first database account again. Refresh the Passenger configuration "
+                "(passenger-config) and restart the app in your hosting panel."))
+        return
+    if separate(profile):
+        print(t("The website already has its own database account. To change it, run this with --undo first."))
+        report_accounts(state, profile)
+        return
+    if user is None:
+        print(t("Create a second database user in your hosting panel with only SELECT, INSERT, UPDATE and DELETE "
+                "on database {0}.", profile["database"]["name"]))
+        user = input(t("Second database user for the website (full name): ")).strip()
+        password = getpass.getpass(t("Second database user's password (hidden): "))
+    if not user or not password or user.lower() == "root" or user == profile["database"]["user"]:
+        raise ValueError("The website's database user must be a second, limited user (not root, not the same user)")
+    probe = state / "database-account-check.json"
+    probe.unlink(missing_ok=True)
+    write_json(probe, accounts.migration_settings(runtime, user, password))
+    os.chmod(probe, 0o600)
+    try:
+        report = check_runtime_account(state, probe)
+    except subprocess.CalledProcessError:
+        raise ValueError("MK8DX could not sign in with that database user; check its name, password and database") from None
+    finally:
+        probe.unlink(missing_ok=True)
+    if not report.get("dataAccess"):
+        raise ValueError("That database user cannot read and write the MK8DX tables; give it SELECT, INSERT, "
+                         "UPDATE and DELETE on this database")
+    if report.get("canChangeSchema"):
+        raise ValueError("That database user can still change the database structure (" +
+                         ", ".join(report.get("extraPrivileges", [])) + "); give it only SELECT, INSERT, UPDATE and DELETE")
+    switch_to_runtime_account(state, user, password)
+    print(t("Saved. The previous database user stays for database updates and backups. Now refresh the Passenger "
+            "configuration (passenger-config) and restart the app in your hosting panel. Undo: database-accounts --undo"))
+
+
+def observe_database(state):
+    """The engine, version and table count of the installation's database (the API's own check)."""
+    return json.loads(subprocess.check_output(
+        ["node", str(ROOT / "api/dist/composition/external-database-check-main.js"),
+         "--private-environment-file", str(state / "operator.json")], cwd=ROOT / "api", text=True))
+
+
+def dump_options(dump):
+    """Options only MySQL's own mysqldump knows: without them a limited hosting user cannot export
+    (GTID servers need FLUSH privileges, MySQL 9 adds masking policies from the mysql schema). MariaDB's
+    mariadb-dump has neither option and needs neither."""
+    try:
+        listed = subprocess.run([dump, "--help"], capture_output=True, text=True, timeout=60, check=False).stdout
+    except (OSError, subprocess.SubprocessError):
+        listed = ""
+    return [option for flag, option in (("--set-gtid-purged", "--set-gtid-purged=OFF"),
+                                        ("--masking-policies", "--skip-masking-policies")) if flag in listed]
+
+
+def _tail(stream):
+    text = stream.read().decode("utf-8", "replace") if stream is not None else ""
+    return " ".join(text.split())[-300:]
 
 
 def backup(state, output):
@@ -376,11 +623,13 @@ def backup(state, output):
         (shutil.which("mariadb-dump") or shutil.which("mysqldump"))
     if not dump: raise ValueError("Install the MariaDB command-line client; mariadb-dump is required")
     output.mkdir(parents=True, mode=0o700)
+    # The backup login (A3: read and export only; B2: the migration login), never the website's own account.
+    user, password = database_logins(profile, json.loads((state / SECRET).read_text(encoding="utf-8")))["backup"]
     env = os.environ.copy()
-    env["MYSQL_PWD"] = runtime["MK8DX_HOSTED_MYSQL_PASSWORD"]
+    env["MYSQL_PWD"] = password
     command = [dump, "--host", runtime["MK8DX_HOSTED_MYSQL_HOST"], "--port", runtime["MK8DX_HOSTED_MYSQL_PORT"],
-               "--user", runtime["MK8DX_HOSTED_MYSQL_USER"], "--single-transaction", "--routines",
-               "--triggers", "--events", "--no-tablespaces", runtime["MK8DX_HOSTED_MYSQL_DATABASE"]]
+               "--user", user, "--single-transaction", "--routines",
+               "--triggers", "--events", "--no-tablespaces", *dump_options(dump), runtime["MK8DX_HOSTED_MYSQL_DATABASE"]]
     try:
         with (output / "database.sql.gz").open("xb") as raw:
             with gzip.GzipFile(fileobj=raw, mode="wb", mtime=0) as compressed:
@@ -389,19 +638,16 @@ def backup(state, output):
                 shutil.copyfileobj(process.stdout, compressed, length=1024 * 1024)
                 process.stdout.close()
                 assert process.stderr is not None
-                process.stderr.read()
+                detail = _tail(process.stderr)
                 process.stderr.close()
                 process.wait()
                 if process.returncode != 0:
-                    raise RuntimeError(f"Database export failed with exit code {process.returncode}")
+                    raise RuntimeError(f"Database export failed with exit code {process.returncode}: {detail}")
         for name in (PROFILE, SECRET, "operator.json", PUBLIC):
             shutil.copyfile(state / name, output / name)
             os.chmod(output / name, 0o600)
         manifest = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in output.iterdir() if p.is_file()}
-        observed = json.loads(subprocess.check_output(
-            ["node", str(ROOT / "api/dist/composition/external-database-check-main.js"),
-             "--private-environment-file", str(state / "operator.json")],
-            cwd=ROOT / "api", text=True))
+        observed = observe_database(state)
         write_json(output / "BACKUP_MANIFEST.json", {"schemaVersion": "mk8dx.native-backup.v1",
                                                      "files": manifest, "database": profile["database"]["name"],
                                                      "engine": observed["engine"], "version": observed["version"]})
@@ -450,6 +696,10 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
                     "MK8DX_HOSTED_STATIC_WEB_ROOT": str(ROOT / "web"),
                     "MK8DX_HOSTED_PUBLIC_BUNDLE_ROOT": str(ROOT)})
     secret["MK8DX_HOSTED_MYSQL_PASSWORD"] = db_password
+    # The restore runs with the one new login, which must own the new database; `database-accounts` gives the
+    # website its own limited user again afterwards.
+    for name in (accounts.MIGRATION_PASSWORD, accounts.BACKUP_PASSWORD):
+        secret.pop(name, None)
     if not db_host or not db_name or not db_user or not db_password or not 1 <= db_port <= 65535:
         raise ValueError("Complete target database settings are required")
     state.mkdir(parents=True, mode=0o700)
@@ -457,9 +707,7 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
                         (PUBLIC, public_client(new_origin))):
         write_json(state / name, value)
         os.chmod(state / name, 0o600)
-    observed = json.loads(subprocess.check_output(
-        ["node", str(ROOT / "api/dist/composition/external-database-check-main.js"),
-         "--private-environment-file", str(state / "operator.json")], cwd=ROOT / "api", text=True))
+    observed = observe_database(state)
     if observed["tableCount"] != 0 or observed["engine"] != receipt.get("engine") or \
             observed["version"].split(".")[:2] != receipt.get("version", "").split(".")[:2]:
         raise ValueError("Target database must be empty and on the same tested engine/version series")
@@ -473,9 +721,9 @@ def restore_new(backup_dir, state, db_host, db_port, db_name, db_user, db_passwo
         shutil.copyfileobj(sql, process.stdin, length=1024 * 1024)
         process.stdin.close()
         assert process.stderr is not None
-        process.stderr.read(); process.stderr.close()
+        detail = _tail(process.stderr); process.stderr.close()
         process.wait()
-        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}")
+        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}: {detail}")
     operate(state, "check")
     print("Restored into a separate installation; start it, sign in, and check existing results. Bootstrap stays closed.")
 
@@ -500,30 +748,34 @@ def restore_local(backup_dir, state):
         raise ValueError("Local restore requires an A3 backup and an A3 target")
     if source_profile["origin"] != target_profile["origin"]:
         raise ValueError("Local restore addresses disagree")
-    observed = json.loads(subprocess.check_output(
-        ["node", str(ROOT / "api/dist/composition/external-database-check-main.js"),
-         "--private-environment-file", str(state / "operator.json")], cwd=ROOT / "api", text=True))
+    observed = observe_database(state)
     if observed["tableCount"] != 0 or observed["engine"] != receipt.get("engine") or \
             observed["version"].split(".")[:2] != receipt.get("version", "").split(".")[:2]:
         raise ValueError("Target database must be empty and on the same tested engine/version series")
     client = state / "db-runtime/mariadb-11.4.13-winx64/bin/mariadb.exe"
     if not client.is_file(): raise ValueError("The target's MariaDB client is missing")
+    # The import creates tables: the target's migration login, never its runtime-only one.
+    import_user, import_password = database_logins(target_profile, target_secret)["migration"]
     with gzip.open(backup_dir / "database.sql.gz", "rb") as sql:
         environment = os.environ.copy()
-        environment["MYSQL_PWD"] = target_secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
+        environment["MYSQL_PWD"] = import_password
         process = subprocess.Popen(
-            [str(client), "--host=127.0.0.1", "--port=18306", "--user=mk8dx_app", "--database=mk8dx"],
+            [str(client), "--host=127.0.0.1", "--port=18306", f"--user={import_user}", "--database=mk8dx"],
             stdin=subprocess.PIPE, stderr=subprocess.PIPE, env=environment)
         assert process.stdin is not None
         shutil.copyfileobj(sql, process.stdin, length=1024 * 1024)
         process.stdin.close()
         assert process.stderr is not None
-        process.stderr.read(); process.stderr.close()
+        detail = _tail(process.stderr); process.stderr.close()
         process.wait()
-        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}")
+        if process.returncode != 0: raise RuntimeError(f"Database restore failed with exit code {process.returncode}: {detail}")
     source_profile["database"] = target_profile["database"]
     source_secret["MK8DX_HOSTED_MYSQL_PASSWORD"] = target_secret["MK8DX_HOSTED_MYSQL_PASSWORD"]
     source_secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"] = target_secret["MK8DX_NATIVE_DATABASE_ROOT_PASSWORD"]
+    for name in (accounts.MIGRATION_PASSWORD, accounts.BACKUP_PASSWORD):
+        source_secret.pop(name, None)
+        if name in target_secret:
+            source_secret[name] = target_secret[name]
     source_runtime.update({name: target_runtime[name] for name in (
         "MK8DX_HOSTED_MYSQL_HOST", "MK8DX_HOSTED_MYSQL_PORT", "MK8DX_HOSTED_MYSQL_DATABASE",
         "MK8DX_HOSTED_MYSQL_USER", "MK8DX_HOSTED_MYSQL_PASSWORD",
@@ -551,7 +803,7 @@ def restore_wizard(backup_dir, state):
     restore_new(backup_dir, state, host, port, name, user, password, origin)
 
 
-def operate(state, action, backup_output=None):
+def operate(state, action, backup_output=None, email=None):
     package_paths()
     state, profile, runtime = loaded(state)
     if action in ("start", "serve", "maintenance", "setup", "upgrade", "check", "passenger-config"):
@@ -559,9 +811,13 @@ def operate(state, action, backup_output=None):
     if action == "status":
         displayed = {"route": profile["route"], "origin": profile["origin"],
                      "database": profile["database"]["name"], "stateDir": str(state),
-                     "adminEmailConfigured": bool(profile["adminEmail"])}
+                     "adminEmailConfigured": bool(profile["adminEmail"]),
+                     # "separate": the website's own database account can only read and write rows.
+                     "databaseAccounts": "separate" if separate(profile) else "single"}
         if profile["route"] == "A3":
             displayed["localMailInbox"] = "http://127.0.0.1:18227"
+        from tooling import scheduled_backup
+        displayed["automaticBackup"] = scheduled_backup.summary(state)
         print(json.dumps(displayed, indent=2))
     elif action == "check-database":
         node_command(state, "composition/external-database-check-main.js")
@@ -570,20 +826,34 @@ def operate(state, action, backup_output=None):
             if backup_output is None: raise ValueError("Upgrade requires --backup-output in a new private folder")
             backup(state, backup_output)
             verify_backup(backup_output)
-        node_command(state, "composition/external-database-check-main.js")
+        # Database updates and reference data run with the migration login (migration.json).
+        settings = migration_environment(state, profile)
+        node_command(state, "composition/external-database-check-main.js", settings=settings)
         node_command(state, "composition/migration-apply-main.js", "--migration-catalog",
                      ROOT / "mysql/migration-catalog-v1.json", "--confirm-database",
                      profile["database"]["name"], "--fresh-empty-database" if action == "setup" else "--backup-verified",
-                     summarize_migrations=True)
+                     summarize_migrations=True, settings=settings)
         node_command(state, "composition/reference-seed-main.js", "--staff-seed",
                      ROOT / "mysql/reference/nintendo-staff-v1.json", "--world-record-seed",
-                     ROOT / "mysql/reference/world-records-v1.json")
+                     ROOT / "mysql/reference/world-records-v1.json", settings=settings)
+        report_accounts(state, profile)
+        from tooling import scheduled_backup
+        if action == "setup":
+            scheduled_backup.after_setup(state)
+        else:
+            scheduled_backup.after_upgrade(state)
     elif action == "check":
         node_command(state, "composition/hosted-preflight-main.js", "--migration-catalog",
                      ROOT / "mysql/migration-catalog-v1.json")
+        report_accounts(state, profile)
     elif action == "admin":
         node_command(state, "administration/installer-administrator-main.js", "--email-stdin",
                      input_text=profile["adminEmail"] + "\n")
+    elif action == "step-up-link":
+        # Break-glass when e-mail fails; runs on this server only (see install.step_up_address).
+        from install import step_up_address
+        node_command(state, "security/step-up-operator-main.js", "--email-stdin",
+                     input_text=step_up_address(profile, email) + "\n")
     elif action in ("start", "serve"):
         serve(state)
     elif action == "maintenance":

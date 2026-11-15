@@ -112,3 +112,14 @@ Kies **5**. De bestaande beheer-CLI gebruikt het eenmaal opgeslagen doeladres vi
 ## 9. Blijf beheren
 
 **Waar:** op de VPS in `/opt/mk8dx/host`, via dezelfde SSH-route. `sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance` biedt **2 start**, **3 status**, **4 stop**, **6 backup**. Met `--skip-countdown` voor de map laat het venster het aftellen weg ([opties](BEHEER.md#het-startvenster-weergave-en-opties)). Download een private backup buiten de VPS via WinSCP; een serverstoring mag niet ook alle backups wissen. Plan Ubuntu-/Docker-/MK8DX-updates en bewaak vrije schijfruimte. [Beheer en herstel](BEHEER.md) legt een aparte herstelinstallatie en updatevolgorde uit. Een nieuwe versie van het ZIP vervangt de softwaremap; `/var/lib/mk8dx/instance` en het named databasevolume blijven staan. Publiceer het private profiel, aanmeldlinks en backup nooit als webbestand.
+
+**Automatische back-up:** `setup` zet één gemarkeerde regel in de crontab van het account dat MK8DX draait: elke
+nacht om 03:15 een gecontroleerde back-up in `~/mk8dx-backups/automatic` (als root: `/root/mk8dx-backups/automatic`),
+14 dagen en 4 weken, samen hooguit 10 GB. `crontab -l` toont de regel; **3 status** toont onder `automaticBackup` de
+leeftijd en het resultaat van de laatste run. Haal geregeld de nieuwste naar je pc met `backup-latest --print-path`
+en `scp` ([opdrachten](../OPERATIONS_NL.md#automatische-dagelijkse-back-up-a1-a2-b1-a3-b2)). Uit: `python3
+tooling/install.py backup-unschedule --state-dir /var/lib/mk8dx/instance`.
+
+**Databaseaccounts:** de website meldt zich bij de database aan met een eigen account (`mk8dx_runtime`) dat alleen gegevens kan lezen en schrijven; database-updates gebruiken het eigen account van de database (`mk8dx_app`). De installatie maakt ze allebei; een oudere installatie krijgt ze bij de volgende update (`upgrade`), en start de website niet met het nieuwe account, dan gaat de update terug naar het oude. `status` toont `"databaseAccounts": "separate"`. Meer: [Operations](../OPERATIONS_NL.md#databaseaccounts).
+
+**Gevaarlijke acties bevestigen:** rechten wijzigen, de installatie-instellingen, ratings herberekenen, een avond weghalen of heropenen en de lijst met alle accounts vragen een nieuwe link naar je eigen adres (**Bevestig met een nieuwe e-maillink**). Houd de SMTP-instellingen werkend (`python3 tooling/install.py change-smtp --state-dir /var/lib/mk8dx/instance`). Werkt de mail niet, druk dan toch op **Stuur de link** en draai binnen 10 minuten `python3 tooling/install.py step-up-link --state-dir /var/lib/mk8dx/instance` in het SSH-venster; dat toont een eenmalige link voor die aanvraag ([details](../OPERATIONS_NL.md#als-e-mail-niet-werkt-een-gevaarlijke-actie-bevestigen-vanaf-de-server)).

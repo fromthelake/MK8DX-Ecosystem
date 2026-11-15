@@ -137,6 +137,10 @@ eigen schakelaar van de app moeten allebei aan staan.
 
 - Geen aanmeldmail: kijk in je spammap, controleer het exacte adres en vraag een nieuwe link aan. Bij een lokale proefinstallatie komt de
   e-mail in de lokale testbrievenbus, niet in je eigen mailbox.
+- Een claim wordt geweigerd met *Te veel claimacties op dit moment…*: wacht de genoemde tijd en probeer het opnieuw.
+  Een account kan tegelijk hoogstens 5 claims hebben die op een beslissing wachten (een speler hoogstens 5 van alle
+  accounts samen). Is die grens bereikt, wacht dan tot een openstaande claim is afgehandeld, of trek er een in met
+  **Dit verzoek intrekken**, en probeer het opnieuw.
 - Ziet iets er verkeerd uit op de site van je community: vraag het eerst aan de mensen die hem runnen. Fouten in de software zelf
   kun je melden in de issues van het project; zie [SUPPORT.md](../../../../SUPPORT.md). Plaats nooit aanmeldlinks of de namen van
   andere mensen.

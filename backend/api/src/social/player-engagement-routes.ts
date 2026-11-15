@@ -1,7 +1,8 @@
 import type { FastifyInstance } from "fastify";
 
 import type { ActorResolver } from "../identity/types.js";
-import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import type { InstallationBudget } from "../security/abuse-budgets.js";
+import { MutationRateLimitExceeded, type MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 import type { TimeTrialWebCsrfVerifier } from "../timetrials/submission-routes.js";
 import {
   ENGAGEMENT_KINDS,
@@ -163,6 +164,8 @@ export async function registerPlayerEngagementRoutes(
     service: Pick<PlayerEngagementService, "send" | "list" | "answer" | "conversation">;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
     rateLimiter?: MutationRateLimiter;
+    /** H1: the installation-wide budget for engagements and replies, after the caller's own budget. */
+    installationBudget?: InstallationBudget;
   }>,
 ): Promise<void> {
   app.post<{ Params: { playerId: string }; Body: { kind: string; detail?: unknown } }>(
@@ -204,6 +207,7 @@ export async function registerPlayerEngagementRoutes(
           await options.rateLimiter.consume(
             actor.userAccountId, "player-engagements-hour", 3_600, 60,
           );
+          await options.installationBudget?.consume();
         }
         const engagement = await options.service.send(actor, {
           kind: request.body.kind as never,
@@ -220,6 +224,11 @@ export async function registerPlayerEngagementRoutes(
           ...(engagement.detail === undefined ? {} : { detail: engagement.detail }),
         });
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "engagement_rate_limited",
+            message: "Too many engagements were sent. Wait before retrying." });
+        }
         if (error instanceof PlayerEngagementError) {
           const refusal = refusals[error.failure];
           return reply.code(refusal.status)
@@ -294,10 +303,16 @@ export async function registerPlayerEngagementRoutes(
         if (options.rateLimiter !== undefined &&
             (actor.role === "account" || actor.role === "administrator")) {
           await options.rateLimiter.consume(actor.userAccountId, "player-engagement-replies-hour", 3_600, 60);
+          await options.installationBudget?.consume();
         }
         const engagement = await options.service.answer(actor, request.params.engagementId, request.body?.hand);
         return reply.send({ schemaVersion: "mk8dx.player-engagement-result.v1", engagement });
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "engagement_rate_limited",
+            message: "Too many engagements were sent. Wait before retrying." });
+        }
         if (error instanceof PlayerEngagementError) {
           const refusal = refusals[error.failure];
           return reply.code(refusal.status).send({ code: refusal.code, message: refusal.message });

@@ -81,7 +81,7 @@ export async function registerTournamentNativeOperationRoutes(
     input: { tournamentId: string; reason: string },
   ) => Promise<unknown>;
   createRosterPlayers?: (
-      actor: { role: string; userAccountId: string },
+      actor: ActorContext,
       requests: readonly Readonly<{ row: number; displayName: string; confirmSameName?: boolean }>[],
       options?: Readonly<{ tournamentId?: string }>,
     ) => Promise<readonly Readonly<{
@@ -95,14 +95,17 @@ export async function registerTournamentNativeOperationRoutes(
       return reply.code(mapped.status).send(mapped.body) as T;
     }
   };
-  const actor = async (request: FastifyRequest) => {
+  // The entry gate only: an administrator or a holder of the audited
+  // tournament.operation capability gets past it. The actor is passed on
+  // exactly as resolved - never upgraded - so every service below still
+  // decides per Tournament from the database whether this account is an
+  // active administrator or that Tournament's own director.
+  const actor = async (request: FastifyRequest): Promise<ActorContext> => {
     requireNativeBearer(request);
     const resolved = await dependencies.resolveActor(request);
     if (resolved.role === "administrator") return resolved;
     if (resolved.role === "account" && await dependencies.hasOperationCapability?.(resolved.userAccountId) === true) {
-      // Downstream operation services retain their administrator-shaped actor
-      // port; the audited capability check above is the native authorization.
-      return { ...resolved, role: "administrator" as const };
+      return resolved;
     }
     throw new TournamentOperationError("forbidden", "Tournament operator capability required");
   };
@@ -179,9 +182,7 @@ export async function registerTournamentNativeOperationRoutes(
       if (dependencies.removeTournament === undefined) {
         throw new TournamentOperationError("unavailable");
       }
-      // Deliberately not the upgraded administrator shape used elsewhere on
-      // this surface: removal authorizes on the Tournament's own director, so
-      // the real actor has to reach the service.
+      // Removal authorizes on the Tournament's own director in its service.
       const actor = await dependencies.resolveActor(request);
       return dependencies.removeTournament(actor, {
         tournamentId: request.params.tournamentId,
@@ -667,6 +668,78 @@ export async function registerTournamentNativeOperationRoutes(
         tournamentId: request.params.tournamentId,
         recordId: request.params.recordId,
         ...request.body,
+      }),
+    })),
+  );
+
+  app.post<{ Params: { tournamentId: string; recordId: string }; Body: { expectedRevision: number; reason?: string } }>(
+    "/v1/native/tournaments/:tournamentId/evidence-records/:recordId/actions/withdraw-live",
+    { schema: { params: {
+      type: "object", additionalProperties: false, required: ["tournamentId", "recordId"],
+      properties: { tournamentId: idParams.properties.tournamentId, recordId: { type: "string", minLength: 1, maxLength: 160 } },
+    }, body: {
+      type: "object", additionalProperties: false, required: ["expectedRevision"],
+      properties: {
+        expectedRevision: { type: "integer", minimum: 1 },
+        reason: { type: "string", maxLength: 512 },
+      },
+    } } },
+    async (request, reply) => handle(reply, async () => ({
+      schemaVersion: "mk8dx.native-tournament-live-association.v1",
+      record: await dependencies.connected.withdrawLiveAssociation(await actor(request), {
+        tournamentId: request.params.tournamentId,
+        recordId: request.params.recordId,
+        expectedRevision: request.body.expectedRevision,
+        ...(request.body.reason === undefined ? {} : { reason: request.body.reason }),
+      }),
+    })),
+  );
+
+  app.get<{ Params: { tournamentId: string } }>(
+    "/v1/native/tournaments/:tournamentId/live-capture-delegations",
+    { schema: { params: idParams } },
+    async (request, reply) => handle(reply, async () => ({
+      schemaVersion: "mk8dx.native-tournament-live-capture-delegations.v1",
+      delegations: await dependencies.connected.listLiveCaptureDelegations(await actor(request), request.params.tournamentId),
+    })),
+  );
+
+  app.post<{ Params: { tournamentId: string }; Body: { delegateUserAccountId: string; reason: string; expiresInMinutes?: number } }>(
+    "/v1/native/tournaments/:tournamentId/live-capture-delegations",
+    { schema: { params: idParams, body: {
+      type: "object", additionalProperties: false, required: ["delegateUserAccountId", "reason"],
+      properties: {
+        delegateUserAccountId: { type: "string", minLength: 14, maxLength: 160 },
+        reason: { type: "string", minLength: 1, maxLength: 255 },
+        expiresInMinutes: { type: "integer", minimum: 5, maximum: 10_080 },
+      },
+    } } },
+    async (request, reply) => handle(reply, async () => ({
+      schemaVersion: "mk8dx.native-tournament-live-capture-delegation.v1",
+      delegation: await dependencies.connected.grantLiveCaptureDelegation(await actor(request), {
+        tournamentId: request.params.tournamentId,
+        delegateUserAccountId: request.body.delegateUserAccountId,
+        reason: request.body.reason,
+        ...(request.body.expiresInMinutes === undefined ? {} : { expiresInMinutes: request.body.expiresInMinutes }),
+      }),
+    })),
+  );
+
+  app.post<{ Params: { tournamentId: string; delegationId: string }; Body: { reason: string } }>(
+    "/v1/native/tournaments/:tournamentId/live-capture-delegations/:delegationId/actions/revoke",
+    { schema: { params: {
+      type: "object", additionalProperties: false, required: ["tournamentId", "delegationId"],
+      properties: { tournamentId: idParams.properties.tournamentId, delegationId: { type: "string", minLength: 1, maxLength: 80 } },
+    }, body: {
+      type: "object", additionalProperties: false, required: ["reason"],
+      properties: { reason: { type: "string", minLength: 1, maxLength: 255 } },
+    } } },
+    async (request, reply) => handle(reply, async () => ({
+      schemaVersion: "mk8dx.native-tournament-live-capture-delegation.v1",
+      delegation: await dependencies.connected.revokeLiveCaptureDelegation(await actor(request), {
+        tournamentId: request.params.tournamentId,
+        delegationId: request.params.delegationId,
+        reason: request.body.reason,
       }),
     })),
   );

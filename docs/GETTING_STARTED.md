@@ -43,10 +43,16 @@ docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.
 
 Expected: the command returns once `mysql` reports healthy and Mailpit runs (`--wait` waits for the health check; every Docker Compose v2 release since 2022 has it). The migrations in step 5 need a healthy database, so do not continue while this command is still waiting or if it reports a failure. Use the same files with `docker compose ... ps` to inspect state. The database has no host port; Mailpit is bound to the loopback address.
 
-## 5. Apply the empty-database migrations
+## 5. Create the website's database account and apply the empty-database migrations
+
+The API gets its own database login that may only read and write rows; the migrations below run in the `migrate` service with the MySQL image's `mk8dx_app` login, which owns the schema ([Operations](OPERATIONS.md#database-accounts)). Create the API's account first:
 
 ```powershell
-docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps api sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --fresh-empty-database
+python tooling/install.py database-accounts --state-dir $state
+```
+
+```powershell
+docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps migrate sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --fresh-empty-database
 ```
 
 Expected: every migration in the catalog applies in order (one per entry of `infrastructure/mysql/migration-catalog-v1.json`; the last number matches `databaseMigration` in `compatibility.json`). This mode refuses a non-empty unrecognized database. If an interrupted migration reports partial DDL, inspect it and restore a verified backup or repair forward; do not wipe an existing install. Later upgrades use `--backup-verified` as described in [Operations](OPERATIONS.md).
@@ -54,7 +60,7 @@ Expected: every migration in the catalog applies in order (one per entry of `inf
 ## 6. Add the two reviewed reference sets
 
 ```powershell
-docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps api sh /app/operator-command.sh dist/composition/reference-seed-main.js --staff-seed /app/infrastructure/mysql/reference/nintendo-staff-v1.json --world-record-seed /app/infrastructure/mysql/reference/world-records-v1.json
+docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps migrate sh /app/operator-command.sh dist/composition/reference-seed-main.js --staff-seed /app/infrastructure/mysql/reference/nintendo-staff-v1.json --world-record-seed /app/infrastructure/mysql/reference/world-records-v1.json
 ```
 
 Expected: `{"staff":"applied","worldRecords":"applied"}` (192 staff times and 192 World Records). A repeat reports `unchanged`. These are reference times only. No players, accounts, claims, submissions or Tournament results are imported. See [Third-party materials](THIRD_PARTY_MATERIALS.md) about these reference sets.
@@ -101,8 +107,9 @@ compose() { docker compose --env-file "$state/compose.env" -f compose.yaml -f co
 compose config --quiet
 compose build api web
 compose up -d --wait mysql mailpit   # returns once MySQL is healthy
-compose run --rm --no-deps api sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --fresh-empty-database
-compose run --rm --no-deps api sh /app/operator-command.sh dist/composition/reference-seed-main.js --staff-seed /app/infrastructure/mysql/reference/nintendo-staff-v1.json --world-record-seed /app/infrastructure/mysql/reference/world-records-v1.json
+python3 tooling/install.py database-accounts --state-dir "$state"   # the API's rows-only login
+compose run --rm --no-deps migrate sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --fresh-empty-database
+compose run --rm --no-deps migrate sh /app/operator-command.sh dist/composition/reference-seed-main.js --staff-seed /app/infrastructure/mysql/reference/nintendo-staff-v1.json --world-record-seed /app/infrastructure/mysql/reference/world-records-v1.json
 compose up -d --wait api web   # returns once the API and website are healthy
 curl '<web-origin>/health/ready'
 ```

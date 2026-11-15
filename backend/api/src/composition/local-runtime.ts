@@ -213,6 +213,13 @@ import {
   MysqlAccountAppearancePreferenceRepository,
 } from "../profiles/account-appearance-preference.js";
 import { MysqlMutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import { PreAuthBudget, derivePreAuthBudgetKey } from "../security/pre-auth-budget.js";
+import { AbuseBudgets, defaultAbuseBudgetSettings, type AbuseBudgetSettings } from "../security/abuse-budgets.js";
+import { AuthEmailBudgets } from "../authentication/auth-email-budgets.js";
+import { withNotificationFanOutBudget } from "../notifications/notification-fan-out-budget.js";
+import { MysqlStepUpStore } from "../security/mysql-step-up-store.js";
+import { StepUpService } from "../security/step-up-service.js";
+import { fromNodeHeaders } from "better-auth/node";
 import { MysqlNativeEmailAttemptLimiter } from "../authentication/mysql-native-email-attempt-limiter.js";
 import { MysqlActivityStoryRepository } from
   "../home/mysql-activity-story-repository.js";
@@ -242,7 +249,8 @@ import {
   MysqlNotificationProducerJobRepository,
   NotificationProducerWorker,
 } from "../notifications/notification-producer-jobs.js";
-import { NotificationChannelService } from
+import { WebPushEgressPolicy } from "../notifications/web-push-egress.js";
+import { NotificationChannelService, WEB_PUSH_SUBSCRIPTIONS_PER_ACCOUNT } from
   "../notifications/notification-channel-service.js";
 import { MysqlNotificationChannelRepository } from
   "../notifications/mysql-notification-channel-repository.js";
@@ -616,12 +624,16 @@ export type LocalApiRuntimeRoutePolicies = Readonly<{
   // The owner's native app builds offered to signed-in members (Apps page).
   appDownloads?: Readonly<{ store: AppDownloadStore; staticLinks?: AppDownloadLinks }>;
   webPush?: WebPushConfiguration;
+  /** H1: installation and per-target budgets; the defaults apply without it. */
+  abuseBudgets?: AbuseBudgetSettings;
 }>;
 
 export type EmbeddedAuthenticationRuntimePolicy = Readonly<{
   config: EmbeddedAuthConfig;
   emailDelivery: PasswordlessEmailDelivery;
   offlineLan?: boolean;
+  /** How long a confirmed step-up lasts (default 600 seconds, 60 to 3600). */
+  stepUpWindowSeconds?: number;
 }>;
 
 function ensureWebCsrfKeySeparation(
@@ -741,9 +753,10 @@ async function createMysqlApiRuntime(
             return null;
           },
         };
+        const limiter = new MysqlMutationRateLimiter(pool, clock.nowMs);
         const pins = new AccountSwitchPins(new MysqlAccountSwitchPinStore(pool),
-          new AccountSwitchPinHasher(keys), new MysqlMutationRateLimiter(pool, clock.nowMs));
-        return { keys, store, directory, pins, nowMs: clock.nowMs };
+          new AccountSwitchPinHasher(keys), limiter);
+        return { keys, store, directory, pins, limiter, nowMs: clock.nowMs };
       })()
     : undefined;
   const embeddedAuth = authentication.kind === "embedded"
@@ -1025,7 +1038,25 @@ async function createMysqlApiRuntime(
       catalog,
       clock.nowMs,
     );
-    const mutationRateLimiter = new MysqlMutationRateLimiter(pool, clock.nowMs);
+    // Cleanup and refusal counts are reported as fixed event names and numbers only.
+    const mutationRateLimiter = new MysqlMutationRateLimiter(pool, clock.nowMs, {
+      cleanupCompleted(deletedRows, complete) {
+        routePolicies.operationalLog?.log({ event: "rate_limit_cleanup_completed", category: "lifecycle",
+          detail: `deleted:${String(deletedRows)} complete:${String(complete)}` });
+      },
+      cleanupFailed(errorName) {
+        routePolicies.operationalLog?.log({ event: "rate_limit_cleanup_failed", category: "lifecycle", errorName });
+      },
+      refusalsSinceLastReport(refusals) {
+        const detail = Object.entries(refusals).map(([scope, count]) => `${scope}:${String(count)}`)
+          .join(" ").slice(0, 160);
+        routePolicies.operationalLog?.log({ event: "rate_limit_refusals", category: "lifecycle", detail });
+      },
+    });
+    const stopRateLimitCleanup = mutationRateLimiter.startCleanupTimer();
+    // H1: installation-wide and per-target budgets on the same durable limiter (MK8DX_HOSTED_BUDGET_*).
+    const abuseBudgets = new AbuseBudgets(mutationRateLimiter,
+      routePolicies.abuseBudgets ?? defaultAbuseBudgetSettings());
     const activityStoryService = new ActivityStoryService(
       new MysqlActivityStoryRepository(pool),
     );
@@ -1035,8 +1066,9 @@ async function createMysqlApiRuntime(
     const clientInstallationService = new ClientInstallationService(
       new MysqlClientInstallationRepository(pool),
       clock.nowMs,
+      mutationRateLimiter,
     );
-    const notificationRepository = new MysqlNotificationRepository(pool);
+    const notificationRepository = withNotificationFanOutBudget(new MysqlNotificationRepository(pool), abuseBudgets);
     const notificationService = new NotificationService({
       repository: notificationRepository,
       onProducerError: (context, error) => {
@@ -1109,16 +1141,19 @@ async function createMysqlApiRuntime(
         return timeTrialLifecycleService.restore(...args);
       },
     };
+    const notificationChannelRepository = new MysqlNotificationChannelRepository(pool);
     const notificationChannelService = new NotificationChannelService(
-      new MysqlNotificationChannelRepository(pool),
+      notificationChannelRepository,
       webPushProtector,
       routePolicies.webPush?.publicKey ?? null,
       clock.nowMs,
+      new WebPushEgressPolicy(routePolicies.webPush?.extraProviderHosts ?? []),
     );
+    const webPushDeliveryRepository = new MysqlWebPushDeliveryRepository(pool, webPushReader);
     const webPushWorker = routePolicies.webPush === undefined
       ? null
       : new WebPushDeliveryWorker(
-          new MysqlWebPushDeliveryRepository(pool, webPushReader),
+          webPushDeliveryRepository,
           routePolicies.webPush,
           clock.nowMs,
         );
@@ -1198,6 +1233,9 @@ async function createMysqlApiRuntime(
       undefined,
       tournamentAcceptUnitOfWork,
       (userAccountId) => tournamentOperatorCapabilityService.has(userAccountId),
+      // F04: evidence uploads share the durable limiter, so several API
+      // processes of one installation spend one budget.
+      { rateLimiter: new MysqlMutationRateLimiter(pool, clock.nowMs) },
     );
     const tournamentRetractionService = new TournamentRetractionService(
       new MysqlTournamentRetractionRepository(pool),
@@ -1213,9 +1251,60 @@ async function createMysqlApiRuntime(
       clock,
       new MysqlPublicRatingRepository(pool),
     );
+    // Owner decision 2026-11-15 (audit 4B): dangerous actions need a fresh e-mail confirmation of
+    // the session that asks. Only where this installation sends e-mail; an offline LAN has none.
+    const stepUp = embeddedAuth === null || authentication.kind !== "embedded" ||
+        authentication.policy.offlineLan === true ||
+        typeof authentication.policy.emailDelivery.sendStepUp !== "function"
+      ? null
+      : (() => {
+          const delivery = authentication.policy.emailDelivery;
+          const store = new MysqlStepUpStore(pool);
+          return {
+            service: new StepUpService(
+              store,
+              { sendStepUp: (message) => delivery.sendStepUp!(message) },
+              mutationRateLimiter,
+              {
+                linkOrigin: authentication.policy.config.baseUrl,
+                ...(authentication.policy.stepUpWindowSeconds === undefined
+                  ? {}
+                  : { windowSeconds: authentication.policy.stepUpWindowSeconds }),
+              },
+            ),
+            store,
+            resolveSession: async (request: FastifyRequest) => {
+              const found = await embeddedAuth.api.getSession({ headers: fromNodeHeaders(request.headers) });
+              if (found === null || found.user.emailVerified !== true) { return null; }
+              return {
+                sessionId: found.session.id,
+                authUserId: found.user.id,
+                email: found.user.email,
+                emailVerified: true,
+              };
+            },
+            trustedOrigins: authentication.policy.config.trustedOrigins,
+            preAuthBudget: new PreAuthBudget(mutationRateLimiter,
+              derivePreAuthBudgetKey(authentication.policy.config.secrets[0]!.value),
+              embeddedAuth.clientAddress),
+          };
+        })();
     const app = await buildApp({
       identityRepository,
       resolveActor,
+      abuseBudgets,
+      ...(embeddedAuth === null || authentication.kind !== "embedded"
+        ? {}
+        : {
+            authEmailBudgets: new AuthEmailBudgets(
+              abuseBudgets,
+              new PreAuthBudget(mutationRateLimiter,
+                derivePreAuthBudgetKey(authentication.policy.config.secrets[0]!.value),
+                embeddedAuth.clientAddress),
+              createHmac("sha256", Buffer.from(authentication.policy.config.secrets[0]!.value, "base64"))
+                .update("mk8dx.auth-email-recipient-budget.v1", "ascii").digest(),
+            ),
+          }),
       // Bound request memory and database waiters under botnet/viral bursts.
       // Health routes remain outside this gate for operator diagnosis.
       requestConcurrencyLimit: 100,
@@ -1251,8 +1340,9 @@ async function createMysqlApiRuntime(
         : { gameAssets: routePolicies.gameAssets }),
       ...(routePolicies.appDownloads === undefined
         ? {}
-        : { appDownloads: routePolicies.appDownloads }),
+        : { appDownloads: { ...routePolicies.appDownloads, rateLimiter: mutationRateLimiter } }),
       clientInstallations: { service: clientInstallationService },
+      ...(stepUp === null ? {} : { stepUp }),
       ...(embeddedAuth === null
         ? {}
         : {
@@ -1323,6 +1413,10 @@ async function createMysqlApiRuntime(
           }),
       aliasRepository: new MysqlAliasReadRepository(pool),
       aliasService,
+      aliasProtection: {
+        rateLimiter: mutationRateLimiter,
+        ...(webCsrfService === null ? {} : { csrfVerifier: webCsrfService }),
+      },
       playerActivity: { service: playerActivityService },
       // Linking is a write from the administrator's own browser, so it is
       // offered only where the same-origin proof exists to protect it.
@@ -1444,6 +1538,7 @@ async function createMysqlApiRuntime(
       },
       notificationChannels: {
         service: notificationChannelService,
+        rateLimiter: mutationRateLimiter,
         ...(webCsrfService === null
           ? {}
           : { csrfVerifier: webCsrfService }),
@@ -1463,6 +1558,10 @@ async function createMysqlApiRuntime(
               pins: accountSwitch.pins,
               store: accountSwitch.store,
               rateLimiter: mutationRateLimiter,
+              keys: accountSwitch.keys,
+              preAuthBudget: new PreAuthBudget(mutationRateLimiter,
+                derivePreAuthBudgetKey(authentication.policy.config.secrets[0]!.value),
+                embeddedAuth.clientAddress),
               trustedOrigins: authentication.policy.config.trustedOrigins
                 .map((origin) => new URL(origin).origin),
               ...(webCsrfService === null ? {} : { csrfVerifier: webCsrfService }),
@@ -1703,8 +1802,51 @@ async function createMysqlApiRuntime(
     };
     const signupCloseTimer = setInterval(closeDueSignups, 60_000);
     signupCloseTimer.unref();
+    // F04: never-linked Tournament evidence past its retention, in bounded
+    // batches; evidence that is linked, pending review or belongs to a night
+    // still being run is never touched.
+    const applyEvidenceRetention = (): void => {
+      void tournamentConnectedService.applyEvidenceRetention(200).then((outcome) => {
+        if (outcome.deleted > 0 || outcome.purged > 0) {
+          routePolicies.operationalLog?.log({
+            event: "tournament_evidence_retention",
+            category: "lifecycle",
+            detail: `deleted:${outcome.deleted} purged:${outcome.purged}`,
+          });
+        }
+      }).catch((error: unknown) => {
+        routePolicies.operationalLog?.log({
+          event: "tournament_evidence_retention_failed",
+          category: "lifecycle",
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
+      });
+    };
+    const evidenceRetentionTimer = setInterval(applyEvidenceRetention, 60 * 60 * 1_000);
+    evidenceRetentionTimer.unref();
+    // Used or expired step-up links and old step-up audit rows, in bounded batches.
+    const stepUpRetentionTimer = stepUp === null ? null : setInterval(() => {
+      void stepUp.store.purge(clock.nowMs()).catch((error: unknown) => {
+        routePolicies.operationalLog?.log({
+          event: "step_up_retention_failed",
+          category: "lifecycle",
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
+      });
+    }, 60 * 60 * 1_000);
+    stepUpRetentionTimer?.unref();
     const deliverWebPush = (): void => {
-      void webPushWorker?.tick().catch((error: unknown) => {
+      void webPushWorker?.tick().then((round) => {
+        // Compact, identifier-free signal when a round met slow or refused endpoints.
+        if (round !== null && (round.timeouts > 0 || round.refused > 0 || round.released > 0)) {
+          routePolicies.operationalLog?.log({
+            event: "web_push_delivery_degraded",
+            category: "lifecycle",
+            durationMs: round.durationMs,
+            detail: `claimed:${round.claimed} delivered:${round.delivered} retry:${round.retried} dead:${round.dead} timeout:${round.timeouts} refused:${round.refused} released:${round.released}`,
+          });
+        }
+      }).catch((error: unknown) => {
         routePolicies.operationalLog?.log({
           event: "web_push_delivery_failed",
           category: "lifecycle",
@@ -1741,10 +1883,45 @@ async function createMysqlApiRuntime(
         });
       });
     };
-    const notificationProducerInspectionTimer = setInterval(
-      inspectNotificationProducer, 15 * 60 * 1_000);
+    const inspectWebPush = (): void => {
+      if (webPushWorker === null) return;
+      void webPushDeliveryRepository.backlog(clock.nowMs()).then((backlog) => {
+        const totals = webPushWorker.metrics();
+        if (backlog.dueCount >= 100 || backlog.oldestDueAgeMs >= 5 * 60_000 ||
+            totals.skippedTicks > 0 || totals.timeouts > 0) {
+          routePolicies.operationalLog?.log({
+            event: "web_push_delivery_backlog",
+            category: "readiness",
+            detail: `due:${backlog.dueCount} processing:${backlog.processingCount} oldestMs:${backlog.oldestDueAgeMs} ticks:${totals.ticks} skipped:${totals.skippedTicks} timeouts:${totals.timeouts} refused:${totals.refused} lastMs:${totals.lastTickDurationMs}`,
+          });
+        }
+      }).catch((error: unknown) => {
+        routePolicies.operationalLog?.log({
+          event: "web_push_inspection_failed",
+          category: "lifecycle",
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
+      });
+    };
+    const notificationProducerInspectionTimer = setInterval(() => {
+      inspectNotificationProducer();
+      inspectWebPush();
+    }, 15 * 60 * 1_000);
     notificationProducerInspectionTimer.unref();
     const purgeNotificationProducerJobs = (): void => {
+      // Push subscription retention: excess over the per-account quota is
+      // retired, and subscriptions revoked over 30 days ago are deleted.
+      void notificationChannelRepository.purgeStaleSubscriptions({
+        nowMs: clock.nowMs(),
+        maximumActive: WEB_PUSH_SUBSCRIPTIONS_PER_ACCOUNT,
+        revokedRetentionMs: 30 * 24 * 60 * 60 * 1_000,
+      }).catch((error: unknown) => {
+        routePolicies.operationalLog?.log({
+          event: "web_push_retention_failed",
+          category: "lifecycle",
+          errorName: error instanceof Error ? error.name : "UnknownError",
+        });
+      });
       void notificationProducerJobs.purgeTerminal(clock.nowMs()).catch(
         (error: unknown) => {
           routePolicies.operationalLog?.log({
@@ -1765,6 +1942,7 @@ async function createMysqlApiRuntime(
       produceNotifications();
       inspectNotificationProducer();
       purgeNotificationProducerJobs();
+      applyEvidenceRetention();
       if (webPushWorker !== null) { deliverWebPush(); }
     }, 5_000);
     notificationStartupTimer.unref();
@@ -1785,6 +1963,9 @@ async function createMysqlApiRuntime(
         clearInterval(ephemeralScanTestCleanup);
         clearTimeout(notificationStartupTimer);
         clearInterval(signupCloseTimer);
+        clearInterval(evidenceRetentionTimer);
+        if (stepUpRetentionTimer !== null) { clearInterval(stepUpRetentionTimer); }
+        stopRateLimitCleanup();
         if (webPushTimer !== null) { clearInterval(webPushTimer); }
         clearInterval(notificationProducerTimer);
         clearInterval(notificationProducerInspectionTimer);

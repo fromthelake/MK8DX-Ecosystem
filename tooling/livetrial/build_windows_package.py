@@ -55,44 +55,16 @@ def _arguments() -> argparse.Namespace:
     return parser.parse_args()
 
 
-# The preserved engine snapshot is never edited; bounded product fixes to it
-# live as a working copy under apps/timetrials-desktop/engine-overlay with the
-# engine's own layout, and are laid over the copied snapshot at package time.
-# An overlay file normally replaces an existing engine file (tests/integration
-# checks that). A new engine module is allowed only when it is named here: the
-# engine stays ONE engine (the owner's rule, 2026-09-28), and a feature that
-# needs its own module gets it inside the engine instead of swelling engine.py.
-ENGINE_OVERLAY = REPOSITORY_ROOT / "apps" / "timetrials-desktop" / "engine-overlay"
-ENGINE_OVERLAY_ADDITIONS = frozenset({
-    # the Select-a-Ghost panel and ghost replays (2026-09-28)
-    "livetrial/livetrial/ghostmenu.py",
-})
+# The package ships the engine from apps/timetrials-desktop/vision-runtime (via prepare_engine.py).
+# apps/timetrials-desktop/engine-overlay is the working copy where engine fixes are made; every overlay file must
+# have the same text as its vision-runtime counterpart, which
+# apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py checks in CI. The package is therefore
+# built from vision-runtime alone and no overlay step runs here.
 # A Clean Assets RELEASE is exactly these root entries (the schema-9 release
 # baseline's `rootEntries`). The owner's working folder also holds input videos,
 # label sets, cut-outs, backups and dist zips — tens of GB that must never ship
 # (a first 3.25.0 build copied the whole folder: 28.6 GB). Copy the allow-list.
 CLEAN_ASSETS_RELEASE_ENTRIES = ("database.json", "README.md", "images")
-
-
-def _apply_engine_overlay(engine_target: Path) -> list[str]:
-    applied: list[str] = []
-    if not ENGINE_OVERLAY.is_dir():
-        return applied
-    for source in sorted(ENGINE_OVERLAY.rglob("*")):
-        if not source.is_file() or "__pycache__" in source.parts:
-            continue
-        relative = source.relative_to(ENGINE_OVERLAY)
-        target = engine_target / relative
-        if relative.as_posix() in ENGINE_OVERLAY_ADDITIONS:
-            if target.exists():
-                raise BuildError(f"engine overlay addition already exists in the engine: {relative}")
-            target.parent.mkdir(parents=True, exist_ok=True)
-        elif not target.is_file():
-            raise BuildError(f"engine overlay file has no engine counterpart: {relative}")
-        shutil.copy2(source, target)
-        applied.append(relative.as_posix())
-    print(f"engine overlay applied: {len(applied)} file(s)")
-    return applied
 
 
 def _copy_tree(source: Path, target: Path) -> None:

@@ -20,26 +20,37 @@ class NativeWizardTest(unittest.TestCase):
     def test_a3_asks_only_the_administrator_email_and_asks_again_after_a_typo(self):
         out = io.StringIO()
         with mock.patch("builtins.input", side_effect=["not an email", "me@example.test"]), \
-                mock.patch.object(native_install, "create") as create, redirect_stdout(out):
+                mock.patch.object(native_install, "create") as create, \
+                mock.patch("tooling.scheduled_backup.record_choice") as nightly, redirect_stdout(out):
             native_install.wizard(Path("state"), "A3")
+        nightly.assert_called_once_with(Path("state"), True)  # A3: on by default, no question
         args = create.call_args.args
         self.assertEqual(args[1:5], ("A3", "http://127.0.0.1:18090", "me@example.test", "127.0.0.1"))
         self.assertIn("try again", out.getvalue())
         self.assertIn("its own MariaDB", out.getvalue())
 
     def test_b2_explains_the_mail_rule_and_hides_passwords(self):
-        answers = ["mk8dx.example.org", "localhost", "", "acct_mk8dx", "acct_user",
-                   "mail.example.org", "", "login@example.org", "noreply@example.org", "admin@example.org"]
+        answers = ["mk8dx.example.org", "localhost", "", "acct_mk8dx", "acct_user", "acct_site",
+                   "mail.example.org", "", "login@example.org", "noreply@example.org", "admin@example.org", "n"]
         out = io.StringIO()
         with mock.patch("builtins.input", side_effect=answers), \
-                mock.patch.object(native_install.getpass, "getpass", side_effect=["db-secret", "smtp-secret"]) as hidden, \
-                mock.patch.object(native_install, "create") as create, redirect_stdout(out):
+                mock.patch.object(native_install.getpass, "getpass",
+                                  side_effect=["db-secret", "site-secret", "smtp-secret"]) as hidden, \
+                mock.patch.object(native_install, "create") as create, \
+                mock.patch("tooling.scheduled_backup.record_choice") as nightly, redirect_stdout(out):
             native_install.wizard(Path("state"), "B2")
+        # B2: a clear, explained choice (many hosts already back up the account); here the person says no.
+        nightly.assert_called_once_with(Path("state"), False)
+        self.assertIn("JetBackup", out.getvalue())
         args = create.call_args.args
         self.assertEqual(args[2], "https://mk8dx.example.org")
         self.assertEqual(args[5], 3306)
         self.assertEqual(args[10], 465)
-        self.assertEqual(hidden.call_count, 2)
+        self.assertEqual(hidden.call_count, 3)
+        # The second, limited database user becomes the website's own account.
+        self.assertEqual((create.call_args.kwargs["runtime_user"], create.call_args.kwargs["runtime_password"]),
+                         ("acct_site", "site-secret"))
+        self.assertNotIn("site-secret", out.getvalue())
         self.assertIn("port 465", out.getvalue())
 
 

@@ -6,6 +6,7 @@
 
 import { createPlayerClaimClient, type PlayerClaimClient } from "./player-claim-client.js";
 import { createPlayerAliasClient, type PlayerAliasClient } from "./player-alias-client.js";
+import { localized } from "./product-language.js";
 
 type FetchPort = (input: string, init: RequestInit) => Promise<Response>;
 export type AliasType = "declared" | "legacy_handle" | "tournament_name" | "ocr_observation" | "other_observation";
@@ -34,6 +35,27 @@ export interface AliasAdministrationClient {
   create(input: Readonly<{ playerId: string; aliasText: string; aliasType: AliasType; visibility: "public" | "restricted"; sourceType: AliasSourceType; sourceReference: string }>, signal?: AbortSignal): Promise<AliasSnapshot>;
   setVisibility(aliasId: string, visibility: "public" | "restricted", signal?: AbortSignal): Promise<AliasSnapshot>;
   retire(aliasId: string, signal?: AbortSignal): Promise<AliasSnapshot>;
+}
+
+/** The API's provenance identifier form (alias-schemas.ts): `source.` and lowercase words joined by `.`, `_` or `-`. */
+const SOURCE_REFERENCE_PATTERN = /^source\.[a-z0-9]+(?:[._-][a-z0-9]+)*$/u;
+const SOURCE_REFERENCE_MAXIMUM = 255;
+
+/**
+ * The provenance identifier for what an administrator typed as "where you saw it":
+ * a valid identifier is kept; free text such as "TN13 workbook" becomes
+ * `source.tn13-workbook` (accents dropped, other characters as one dash).
+ * Null when nothing usable remains, for example text without Latin letters or digits.
+ */
+export function aliasSourceReference(text: string): string | null {
+  const trimmed = text.trim();
+  if (trimmed.length <= SOURCE_REFERENCE_MAXIMUM && SOURCE_REFERENCE_PATTERN.test(trimmed)) { return trimmed; }
+  const words = trimmed.replace(/^source\./iu, "").normalize("NFKD").replace(/[\u0300-\u036f]/gu, "")
+    .toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-+|-+$/gu, "");
+  if (words.length === 0) { return null; }
+  const bounded = words.slice(0, SOURCE_REFERENCE_MAXIMUM - "source.".length).replace(/-+$/u, "");
+  const reference = `source.${bounded}`;
+  return SOURCE_REFERENCE_PATTERN.test(reference) ? reference : null;
 }
 
 function object(value: unknown): Record<string, unknown> {
@@ -75,11 +97,29 @@ export function createAliasAdministrationClient(
   fetchPort: FetchPort = globalThis.fetch.bind(globalThis),
   nowMs: () => number = () => new Date().getTime(),
 ): AliasAdministrationClient {
+  // Every write carries this session's same-origin proof (the API refuses a cookie write without it).
+  const csrfHeader = async (signal?: AbortSignal): Promise<Record<string, string>> => {
+    const response = await fetchPort("/v1/session/csrf", {
+      method: "GET", credentials: "same-origin", mode: "same-origin", redirect: "error",
+      referrerPolicy: "same-origin", cache: "no-store", headers: { Accept: "application/json" },
+      ...(signal === undefined ? {} : { signal }),
+    });
+    if (response.status === 401 || response.status === 403) { throw new AliasAdministrationClientError("not_authorized"); }
+    // An installation without same-origin proofs does not ask for one.
+    if (response.status === 404) { return {}; }
+    if (response.status !== 200) { throw new AliasAdministrationClientError("unavailable"); }
+    const proof = object(await response.json());
+    if (proof["headerName"] !== "X-MK8DX-CSRF" || typeof proof["value"] !== "string" || proof["value"].length === 0) {
+      throw new AliasAdministrationClientError("invalid_response");
+    }
+    return { "X-MK8DX-CSRF": proof["value"] };
+  };
   const post = async (path: string, body: unknown, signal?: AbortSignal): Promise<AliasSnapshot> => {
+    const proof = await csrfHeader(signal);
     const response = await fetchPort(path, {
       method: "POST", credentials: "same-origin", mode: "same-origin", redirect: "error",
       referrerPolicy: "same-origin", cache: "no-store",
-      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      headers: { Accept: "application/json", "Content-Type": "application/json", ...proof },
       body: JSON.stringify(body), ...(signal === undefined ? {} : { signal }),
     });
     if (response.status !== 200 && response.status !== 201) { await failure(response); }
@@ -89,10 +129,13 @@ export function createAliasAdministrationClient(
     async create(input, signal) {
       const aliasText = input.aliasText.trim();
       if (aliasText.length < 1 || aliasText.length > 64) { throw new AliasAdministrationClientError("invalid_input", "aliasText"); }
-      if (input.sourceReference.trim().length < 1) { throw new AliasAdministrationClientError("invalid_input", "sourceReference"); }
+      const sourceReference = input.sourceReference.trim();
+      if (sourceReference.length > SOURCE_REFERENCE_MAXIMUM || !SOURCE_REFERENCE_PATTERN.test(sourceReference)) {
+        throw new AliasAdministrationClientError("invalid_input", "sourceReference");
+      }
       return post("/v1/aliases", {
         playerId: input.playerId, aliasText, aliasType: input.aliasType, visibility: input.visibility,
-        provenance: [{ sourceType: input.sourceType, sourceReference: input.sourceReference.trim(), observedAtMs: nowMs() }],
+        provenance: [{ sourceType: input.sourceType, sourceReference, observedAtMs: nowMs() }],
       }, signal);
     },
     setVisibility: (aliasId, visibility, signal) =>
@@ -225,19 +268,48 @@ export function mountAdministratorAliasSection(
     }
     const sourceReference = document.createElement("input");
     sourceReference.placeholder = "Where you saw it (tournament, workbook, message…)";
+    sourceReference.setAttribute("aria-label", localized("Where you saw it", "Waar je het zag"));
     sourceReference.maxLength = 200;
     sourceReference.required = true;
+    // The API stores the source as an identifier (source.<words>); the field takes plain words and shows what is saved.
+    const sourceHint = document.createElement("p");
+    sourceHint.className = "alias-admin__hint";
+    const describeSource = (): void => {
+      const derived = aliasSourceReference(sourceReference.value);
+      sourceHint.textContent = sourceReference.value.trim().length === 0
+        ? localized(
+          "Describe the source in a few words, for example \u201cTN13 workbook\u201d. It is saved as a source identifier such as source.tn13-workbook.",
+          "Beschrijf de bron in een paar woorden, bijvoorbeeld \u201cTN13 workbook\u201d. Het wordt opgeslagen als bron-ID, zoals source.tn13-workbook.",
+        )
+        : derived === null
+          ? localized(
+            "Use Latin letters or digits (a\u2013z, 0\u20139) for the source, for example tn13-workbook.",
+            "Gebruik Latijnse letters of cijfers (a\u2013z, 0\u20139) voor de bron, bijvoorbeeld tn13-workbook.",
+          )
+          : localized(`Saved as ${derived}`, `Opgeslagen als ${derived}`);
+    };
+    sourceReference.addEventListener("input", describeSource);
+    describeSource();
     const add = document.createElement("button");
     add.type = "submit";
     add.className = "tt-auth__button tt-auth__button--primary";
     add.textContent = "Add reviewed alias";
-    form.append(aliasText, aliasType, visibility, sourceReference, add);
+    form.append(aliasText, aliasType, visibility, sourceReference, sourceHint, add);
     form.addEventListener("submit", (event) => {
       event.preventDefault();
+      const derivedSource = aliasSourceReference(sourceReference.value);
+      if (derivedSource === null) {
+        describeSource();
+        say(localized(
+          "Describe the source with Latin letters or digits, for example tn13-workbook.",
+          "Beschrijf de bron met Latijnse letters of cijfers, bijvoorbeeld tn13-workbook.",
+        ));
+        return;
+      }
       void administration.create({
         playerId: player.playerId, aliasText: aliasText.value, aliasType: aliasType.value as AliasType,
         visibility: visibility.value === "restricted" ? "restricted" : "public",
-        sourceType: "administrator", sourceReference: sourceReference.value,
+        sourceType: "administrator", sourceReference: derivedSource,
       }, controller.signal)
         .then(() => { say("Alias added."); return renderDetail(); })
         .catch((error: unknown) => { say(error instanceof AliasAdministrationClientError && error.detail.length > 0 ? error.detail : "The alias could not be added."); });

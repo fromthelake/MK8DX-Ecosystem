@@ -43,6 +43,23 @@ python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-ba
 
 Vervang `<ECHTE_MAPNAAM>` door de werkelijk aangemaakte mapnaam; gebruik de complete map, niet alleen het `.gz`-bestand. Op Ubuntu is het equivalent `python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ECHTE_MAPNAAM>'`. **Je ziet:** `Backup verified` met route A1/A2/B1. **Als het afwijkt:** bewaar de mislukte kopie privé, maak een nieuwe backup en onderzoek de fout voordat je bijwerkt. Bewaar daarnaast een kopie op een ander, beschermd medium; een backup op dezelfde kapotte VPS is geen herstelplan. De backup bevat accounts, database, adminstatus en alle sleutels; deel hem nooit in een issue, e-mail of openbare cloudlink. De Caddy-certificaatvolume blijft bij normale updates op dezelfde host bestaan; een apart hersteld B1-project vraagt bij het uiteindelijke DNS-cutover een nieuw certificaat aan.
 
+## Automatische dagelijkse back-up
+
+**Wat:** elke nacht (03:15, ingehaald na een gemiste nacht) maakt MK8DX vanzelf dezelfde back-up als menu 6,
+controleert hem en bewaart de nieuwste van elk van 14 dagen en 4 weken, samen hooguit 10 GB (B2: 1 GB). Hij staat
+aan voor A1, A3 en B1 na de eerste setup; B2 vraagt het. Windows gebruikt een taak in Taakplanner voor jouw account
+("MK8DX automatic backup …"), Ubuntu/B2 één gemarkeerde regel in je crontab. **Waar:**
+`Documents\MK8DX-backups\automatic` op Windows, `~/mk8dx-backups/automatic` op Linux. **Je ziet:** **3**
+(controleren) of `python tooling/install.py backup-status --state-dir <installatie>` toont `lastResult`,
+`lastSuccessAgeHours` en de nieuwste map; `stale: true` betekent 36 uur niets gelukt. **Wijkt het af:** een
+mislukte nacht laat elke oudere back-up staan; lees `lastMessage` (bijvoorbeeld "database is not running"), los het
+op en draai één keer met de hand `backup-run`.
+
+**Buiten de host:** voeg een tweede map op een andere schijf of NAS toe met `backup-schedule --copy-to <map>`, of
+haal de nieuwste vanaf je pc op met `backup-latest --print-path` en `scp`. Herstellen gaat met de gewone
+herstelopdrachten hieronder op die map. Uitzetten met `backup-unschedule`; een installatie verwijderen begint
+daarmee. Alle opties, afsluitcodes en versleuteling: [Beheer en updates](../OPERATIONS_NL.md#automatische-dagelijkse-back-up-a1-a2-b1-a3-b2).
+
 ## Herstellen zonder de huidige installatie te wissen
 
 **Doel:** controleer een backup in een **nieuwe** gegevensmap en met een **nieuw** Docker-project. De helper weigert een bestaande doelmap. Op Windows, in PowerShell vanuit het hostpakket:
@@ -60,10 +77,14 @@ python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX
 
 **Update naar 0.2.3:** deze versie zet de Docker-database over van MySQL 8.4 naar MySQL 9.7 LTS. MySQL zet de gegevensbestanden één keer om bij de eerste start op de nieuwe versie; dat maak je alleen ongedaan met een backup. Kies in de nieuwe pakketmap daarom eerst **7** (update): die maakt een gecontroleerde backup en voert de database-updates uit. Vanaf 0.2.4 weigert **2** (starten) tot de update gedraaid heeft; met een 0.2.3-pakket zou 2 de backup overslaan. Menu **3** (controleren) kan geen kwaad. Bij het A2-pakket maakt **Bijwerken** in de browser vanzelf eerst de backup.
 
+**Update naar de volgende release (na 0.2.4):** menu **7** past de database-updates 0092 en 0095 toe en geeft de website een eigen databaseaccount dat alleen rijen kan lezen en schrijven; start de website daarmee niet, dan gaat de update vanzelf terug naar het vorige account ([databaseaccounts](../OPERATIONS_NL.md#databaseaccounts)). Controleer daarna dat aanmeldmail aankomt: gevaarlijke beheeracties en de accountlijst vragen nu om een nieuwe e-maillink (zie *Admin en problemen* hieronder). De automatische dagelijkse back-up blijft zoals hij was. Nieuwe ingebouwde grenzen tegen overspoeling vragen geen instelling; een `MK8DX_HOSTED_BUDGET_*`-waarde die je toevoegt moet een bekende naam hebben ([instellingengids](INSTELLINGEN.md)).
+
 ## Admin en problemen
 
 Onder Beheer → **Installatie-instellingen** staat bovenaan de **Communitynaam** (bijvoorbeeld "Club Noord"), die de apps tonen in plaats van het webadres (leeg = geen naam). Daaronder staan drie keuzes voor de hele site, elke wijziging vastgelegd met de naam van de beheerder: wie spelers aanmaakt, wie meetelt voor de rating en **tijden uit andere community's**. Die laatste staat standaard uit: een speler die bij meerdere community's hoort, kan dan geen elders gezette tijd meenemen. Bij *Met goedkeuring* blijft elke meegenomen tijd buiten de openbare overzichten tot een beheerder hem openbaar maakt; zulke tijden staan onder Beheer → Tijdritten als niet openbaar, met een knop **Publiceren**. Zet je *Met goedkeuring* uit terwijl er nog meegenomen tijden wachten, dan vraagt de pagina of je ze allemaal publiceert (of bij *Uit*: weigert) of laat wachten. Bij *Toegestaan* volgt een meegenomen tijd de gewone publicatieregels. Een meegenomen tijd laat altijd zien waar hij vandaan komt (ADR-0225).
 
 De adminactie (menu **5**) werkt pas na aanmelding via de geverifieerde magic link voor het opgeslagen eigen doeladres. De gewone eerste registratie geeft nooit een rol. Als het adminadres vóór de eerste toekenning fout was, stel de doelidentiteit veilig bij met `python tooling/install.py set-admin-email --state-dir '<jouw gegevensmap>' --admin-email 'eigenadres@example.org'`, meld met precies dat adres aan en kies daarna menu 5. Een al gebruikte bootstrap wordt niet heropend; de bestaande begrensde administrator-recovery uit [Operations NL](../OPERATIONS_NL.md) vereist een expliciet geverifieerd doelaccount en eigenaarbesluit.
+
+**Gevaarlijke acties bevestigen per e-mail.** Beheerders-, directeurs- of verslagrechten wijzigen, een account rechtstreeks aan een speler koppelen, de installatie-instellingen, ratings herberekenen, een avond weghalen, heropenen of terugzetten, en de lijst met alle accounts openen vragen eerst **Bevestig met een nieuwe e-maillink** → **Stuur de link**. De link gaat naar je eigen adres (A1: de Mailpit-inbox) en bevestigt deze browser of app voor 10 minuten. Komt de mail niet aan omdat e-mail niet werkt, druk dan toch op **Stuur de link** en draai binnen 10 minuten op de host `python tooling/install.py step-up-link --state-dir '<jouw gegevensmap>'`; open de link die het toont en druk op **Deze actie bevestigen** ([details](../OPERATIONS_NL.md#als-e-mail-niet-werkt-een-gevaarlijke-actie-bevestigen-vanaf-de-server)). A2 offline verstuurt geen mail en vraagt er niet om.
 
 Een homepage zonder aanmeldmail is meestal een SMTP-probleem; A1 heeft alleen Mailpit op de host, A2/B1 echte mail. `/.well-known/assetlinks.json` moet `application/json` met `[]` (of later een correct eigen association-document) leveren, geen HTML. `/client-config.json` moet alleen het publieke serveradres tonen. `/health/ready` controleert API/database, maar bewijst geen inboxbezorging of fysieke clientverbinding. Kijk bij een fout eerst in de veilige menu-status en de toepasselijke routegids. Deel nooit private env/config/logregels met tokens of wachtwoorden.

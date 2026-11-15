@@ -92,7 +92,8 @@ internal fun androidParseLayoutCsv(
     val seats = mutableListOf<AndroidLayoutCsvSeat>()
     val seen = mutableSetOf<String>()
     lines.drop(1).forEachIndexed { offset, line ->
-        val cells = line.split(delimiter).map { it.replace("\"", "").trim() }
+        // A formula-like name our export protected (AndroidSpreadsheetText.kt) reads back as the real name.
+        val cells = line.split(delimiter).map { androidCsvImportedText(it.replace("\"", "").trim()).trim() }
         val rowNumber = offset + 2
         val groupName = cells.getOrNull(groupIndex).orEmpty()
         if (groupName.isEmpty()) return@forEachIndexed

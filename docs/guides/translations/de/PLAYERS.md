@@ -148,6 +148,10 @@ Benachrichtigungsberechtigung von Android und der eigene Schalter der App müsse
 
 - Keine Anmelde-E-Mail: Prüfe den Spam-Ordner und die genaue Adresse und fordere einen neuen Link an. Bei einer lokalen
   Testinstallation kommt die E-Mail im lokalen Test-Posteingang an, nicht in deinem Postfach.
+- Ein Claim wird mit *Gerade zu viele Claim-Aktionen…* abgelehnt: Warte die genannte Zeit und versuche es erneut. Ein
+  Konto kann höchstens 5 Claims gleichzeitig haben, die auf eine Entscheidung warten (ein Spieler höchstens 5 von
+  allen Konten zusammen). Ist diese Grenze erreicht, warte, bis ein offener Claim bearbeitet wurde, oder ziehe einen
+  mit **Diese Anfrage zurückziehen** zurück, und versuche es dann erneut.
 - Etwas sieht auf der Website deiner Community falsch aus: Frag zuerst die Leute, die sie betreiben. Fehler in der
   Software selbst kannst du in den Issues des Projekts melden; siehe [SUPPORT.md](../../../../SUPPORT.md). Poste
   niemals Anmeldelinks oder die Namen anderer Leute.

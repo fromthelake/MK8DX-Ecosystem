@@ -47,6 +47,7 @@ from .extract_common import (
 )
 from .console_logging import LOGGER
 from .. import ocr_readers, track_names
+from ..spreadsheet_text import csv_literal_frame
 from .ocr_export import build_completion_payload, build_player_count_summary_lines
 from .ocr_name_matching import (
     append_identity_ambiguity_review_notes,
@@ -787,7 +788,7 @@ def write_identity_trace_stage(stage_name: str, df: pd.DataFrame) -> None:
         video_dir = _sanitize_trace_part(race_class)
         trace_path = ocr_trace_root() / "identity_stages" / video_dir / f"{stage_name}.csv"
         trace_path.parent.mkdir(parents=True, exist_ok=True)
-        race_group.to_csv(trace_path, index=False, encoding="utf-8-sig")
+        csv_literal_frame(race_group).to_csv(trace_path, index=False, encoding="utf-8-sig")
 
 
 def reset_player_name_fallback_stats() -> None:

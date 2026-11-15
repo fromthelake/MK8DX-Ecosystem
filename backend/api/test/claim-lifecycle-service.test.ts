@@ -128,6 +128,20 @@ class InMemoryClaimStore implements ClaimWriteRepository, ClaimWriteTransaction 
     this.notes.push(input);
   }
 
+  async countClaimQuotaUsage(account: string, player: string) {
+    const all = [...this.claims.values()];
+    const open = (claim: ClaimSnapshot) => claim.claimStatus === "requested" || claim.claimStatus === "under_review";
+    return {
+      accountOpenRequests: all.filter((claim) => claim.userAccountId === account && open(claim)).length,
+      accountRequests: all.filter((claim) => claim.userAccountId === account).length,
+      playerOpenRequests: all.filter((claim) => claim.playerId === player && open(claim)).length,
+    };
+  }
+
+  async countClaimNotes(claimId: string): Promise<number> {
+    return this.notes.filter((note) => note.playerClaimId === claimId).length;
+  }
+
   async canUseEvidenceReferences(
     actor: EvidenceAccessActor,
     _evidenceIds: readonly string[],

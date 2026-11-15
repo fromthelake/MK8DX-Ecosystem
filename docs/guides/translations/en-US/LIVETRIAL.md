@@ -84,6 +84,11 @@ You can record first and join a community later. What happens to the runs alread
 
 Set **Language of your Switch** in Settings when the console language differs from the dashboard language.
 
+The dashboard can only be controlled from this computer: in the LiveTrial window or on the dashboard page opened on
+this PC. When the engine is started with `--lan` (see the
+[LiveTrial component README](../../../../apps/timetrials-desktop/README.md)), phones and tablets on the network can
+watch the live view and the runs but cannot change anything.
+
 ## Problems
 
 - Wrong website, or sign-in opens the wrong site: quit LiveTrial with **Quit LiveTrial**, start it again and check

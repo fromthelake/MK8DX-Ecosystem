@@ -3,11 +3,9 @@ from __future__ import annotations
 import hashlib
 import json
 import os
-import ssl
+import re
 import time
-import urllib.error
 import urllib.parse
-import urllib.request
 import unicodedata
 import webbrowser
 from dataclasses import dataclass, field
@@ -16,15 +14,33 @@ from typing import Any, Callable, Mapping
 
 from .session import SessionStore, data_dir
 from .server import OWNER_ORIGIN, exact_origin, selected_origin
+from .transport import (
+    DEVICE_CODE_PATH,
+    DEVICE_TOKEN_PATH,
+    MAX_AUTH_RESPONSE_BYTES,
+    MAX_LIST_RESPONSE_BYTES,
+    MAX_RESPONSE_BYTES,
+    SIGN_OUT_PATH,
+    Origin,
+    TransportError,
+    request_json,
+)
 
 
 DEFAULT_BASE_URL = OWNER_ORIGIN
 CLIENT_ID = "mk8dx.tournament.desktop.v1"
 DEVICE_GRANT = "urn:ietf:params:oauth:grant-type:device_code"
+SESSION_CHECK_PATH = "/v1/time-trial-submissions/native-bootstrap-v2"
+_DEVICE_CODE = re.compile(r"[A-Za-z0-9_-]{20,255}")
+_USER_CODE = re.compile(r"[A-Za-z0-9-]{4,32}")
+_ACCESS_TOKEN = re.compile(r"[A-Za-z0-9_-]{20,255}")
+_LIST_PATHS = re.compile(r"/v1/(?:administrator/tournaments/[^/]+/incoming-results|tournament-evidence-records/own)")
 
 
 class ConnectedError(RuntimeError):
-    pass
+    def __init__(self, message: str = "", *, status: int | None = None) -> None:
+        super().__init__(message)
+        self.status = status
 
 
 def session_identity_key(token: str) -> str:
@@ -49,14 +65,34 @@ def api_origin() -> str:
                              "(http://127.0.0.1:<port> or http://localhost:<port>)") from None
 
 
-def _tls_context() -> ssl.SSLContext | None:
-    certificate = os.environ.get("MK8DX_TOURNAMENT_CA_CERTIFICATE")
-    if not certificate:
-        return None
-    path = Path(certificate)
-    if not path.is_file():
-        raise ConnectedError("Configured Tournament Manager CA certificate was not found")
-    return ssl.create_default_context(cafile=str(path))
+def _bound_origin(value: str | None = None) -> Origin:
+    """Validate one community origin once; every request of a flow uses this value."""
+    try:
+        return Origin.parse(value if value is not None else api_origin())
+    except ValueError:
+        raise ConnectedError("Tournament Manager connection requires HTTPS, or HTTP on this PC only "
+                             "(http://127.0.0.1:<port> or http://localhost:<port>)") from None
+
+
+def _check_store_origin(store: Any, origin: Origin) -> None:
+    """A stored session belongs to the community it was created for."""
+    stored = getattr(store, "_origin", None)
+    if stored is None:
+        return
+    try:
+        same = Origin.parse(stored) == origin
+    except ValueError:
+        same = False
+    if not same:
+        raise ConnectedError("Community server changed; reopen the Tournament tool")
+
+
+def _response_bound(path: str) -> int:
+    if path in {DEVICE_CODE_PATH, DEVICE_TOKEN_PATH, SIGN_OUT_PATH, SESSION_CHECK_PATH}:
+        return MAX_AUTH_RESPONSE_BYTES
+    if _LIST_PATHS.fullmatch(path):
+        return MAX_LIST_RESPONSE_BYTES
+    return MAX_RESPONSE_BYTES
 
 
 def _request(
@@ -65,32 +101,91 @@ def _request(
     body: object | None = None,
     token: str | None = None,
     accept_error_status: int | None = None,
+    origin: Origin | None = None,
 ) -> Any:
-    headers = {"Accept": "application/json"}
-    data = None
-    if body is not None:
-        headers["Content-Type"] = "application/json"
-        data = json.dumps(body, separators=(",", ":")).encode()
-    if token is not None:
-        headers["Authorization"] = f"Bearer {token}"
-    request = urllib.request.Request(f"{api_origin()}{path}", data=data, headers=headers,
-                                     method="POST" if body is not None else "GET")
+    """One request to one exact origin; redirects are refused and bodies are bounded."""
+    target = origin if origin is not None else _bound_origin()
     try:
-        with urllib.request.urlopen(request, timeout=20, context=_tls_context()) as response:
-            return json.loads(response.read().decode())
-    except urllib.error.HTTPError as error:
-        if error.code == 429 and path == "/api/auth/device/token":
+        return request_json(target, path, body=body, token=token, max_bytes=_response_bound(path))
+    except TransportError as error:
+        if error.status == 429 and path == DEVICE_TOKEN_PATH:
             return {"error": "slow_down"}
-        try:
-            document = json.loads(error.read().decode())
-        except (ValueError, AttributeError):
-            document = {}
-        if error.code == accept_error_status and isinstance(document, dict):
-            return document
-        detail = document.get("message", "") if isinstance(document, dict) else ""
-        raise ConnectedError(detail or f"Server returned HTTP {error.code}") from None
-    except OSError as error:
-        raise ConnectedError(f"Connection unavailable: {error}") from None
+        if error.status is not None and error.status == accept_error_status and error.document:
+            return error.document
+        raise ConnectedError(str(error), status=error.status) from None
+
+
+def _integer(document: dict[str, Any], name: str, minimum: int, maximum: int) -> int:
+    value = document.get(name)
+    if not isinstance(value, int) or isinstance(value, bool) or not minimum <= value <= maximum:
+        raise ConnectedError("The community website sent an invalid sign-in answer")
+    return value
+
+
+@dataclass(frozen=True)
+class DeviceAuthorization:
+    device_code: str
+    user_code: str
+    verification_url: str
+    expires_in: int
+    interval: int
+
+
+def _verification_url(value: object, origin: Origin, user_code: str | None) -> str:
+    """The browser address must be the chosen community's own /device page."""
+    invalid = ConnectedError("The community website sent a sign-in address for another website; "
+                             "nothing was opened")
+    if not isinstance(value, str) or not value.isascii() or len(value) > 2048 or any(
+            character.isspace() or ord(character) < 0x20 for character in value):
+        raise invalid
+    try:
+        parsed = urllib.parse.urlsplit(value)
+        query = urllib.parse.parse_qs(parsed.query, keep_blank_values=True, strict_parsing=bool(parsed.query))
+    except ValueError:
+        raise invalid from None
+    expected = {} if user_code is None else {"user_code": [user_code]}
+    if (not origin.same_origin(value) or parsed.username is not None or parsed.password is not None
+            or "@" in parsed.netloc or parsed.path != "/device" or parsed.fragment
+            or "#" in value or query != expected):
+        raise invalid
+    return value
+
+
+def validate_device_authorization(document: object, origin: Origin) -> DeviceAuthorization:
+    """Check the whole device-code answer before anything is shown or opened (fail closed)."""
+    if not isinstance(document, dict) or set(document) != {
+        "device_code", "user_code", "verification_uri", "verification_uri_complete", "expires_in", "interval",
+    }:
+        raise ConnectedError("The community website sent an invalid sign-in answer")
+    device_code = document["device_code"]
+    user_code = document["user_code"]
+    if (not isinstance(device_code, str) or _DEVICE_CODE.fullmatch(device_code) is None
+            or not isinstance(user_code, str) or _USER_CODE.fullmatch(user_code) is None):
+        raise ConnectedError("The community website sent an invalid sign-in answer")
+    _verification_url(document["verification_uri"], origin, None)
+    complete = _verification_url(document["verification_uri_complete"], origin, user_code)
+    return DeviceAuthorization(
+        device_code=device_code,
+        user_code=user_code,
+        verification_url=complete,
+        expires_in=_integer(document, "expires_in", 60, 1800),
+        interval=_integer(document, "interval", 1, 60),
+    )
+
+
+def _access_token(document: object) -> str:
+    if (not isinstance(document, dict)
+            or not {"access_token", "token_type"} <= set(document)
+            or not set(document) <= {"access_token", "token_type", "expires_in", "scope"}):
+        raise ConnectedError("The server returned no valid access token")
+    token = document.get("access_token")
+    if (not isinstance(token, str) or _ACCESS_TOKEN.fullmatch(token) is None
+            or document.get("token_type") != "Bearer"
+            or ("scope" in document and not isinstance(document["scope"], str))):
+        raise ConnectedError("The server returned no valid access token")
+    if "expires_in" in document:
+        _integer(document, "expires_in", 1, 31_536_000)
+    return token
 
 
 def sign_in(
@@ -98,27 +193,41 @@ def sign_in(
     *,
     on_authorization: Callable[[str, str], None] | None = None,
     open_browser: bool = True,
+    browser: Callable[[str], object] | None = None,
+    sleep: Callable[[float], None] | None = None,
+    monotonic: Callable[[], float] | None = None,
 ) -> None:
-    authorization = _request("/api/auth/device/code", body={"client_id": CLIENT_ID})
-    device_code = authorization["device_code"]
-    user_code = authorization["user_code"]
-    verification_url = authorization.get("verification_uri_complete") or authorization["verification_uri"]
+    """Browser device sign-in on the chosen community website only.
+
+    The origin is fixed before the first request. The device-code answer is
+    validated completely (same scheme/host/port, ``/device``, no userinfo or
+    fragment, exactly ``?user_code=<the user code>``, bounded expiry and
+    interval) before the code is shown or a browser is opened.
+    """
+    browser = browser or webbrowser.open
+    sleep = sleep or time.sleep
+    monotonic = monotonic or time.monotonic
+    origin = _bound_origin()
+    _check_store_origin(store, origin)
+    authorization = validate_device_authorization(
+        _request(DEVICE_CODE_PATH, body={"client_id": CLIENT_ID}, origin=origin), origin,
+    )
     if on_authorization is not None:
-        on_authorization(str(user_code), str(verification_url))
-    print(f"Browser sign-in code: {user_code}")
-    print("A browser window will open. This application never asks for your password.")
+        on_authorization(authorization.user_code, authorization.verification_url)
+    print(f"Community website: {origin.display_host}")
+    print(f"Browser sign-in code: {authorization.user_code}")
+    print(f"A browser window will open on {origin.display_host}. Approve only if the browser shows "
+          "that address and this code. This application never asks for your password.")
     if open_browser:
-        webbrowser.open(verification_url)
-    interval = max(2, int(authorization.get("interval", 5)))
-    deadline = time.monotonic() + int(authorization.get("expires_in", 600))
-    while time.monotonic() < deadline:
-        time.sleep(interval)
-        try:
-            token = _request("/api/auth/device/token", body={
-                "grant_type": DEVICE_GRANT, "device_code": device_code, "client_id": CLIENT_ID,
-            }, accept_error_status=400)
-        except ConnectedError:
-            raise
+        browser(authorization.verification_url)
+    interval = max(2, authorization.interval)
+    started = monotonic()
+    deadline = started + authorization.expires_in
+    while monotonic() + interval <= deadline:
+        sleep(interval)
+        token = _request(DEVICE_TOKEN_PATH, body={
+            "grant_type": DEVICE_GRANT, "device_code": authorization.device_code, "client_id": CLIENT_ID,
+        }, accept_error_status=400, origin=origin)
         error_code = token.get("error") if isinstance(token, dict) else None
         if error_code is not None:
             if error_code == "authorization_pending":
@@ -129,13 +238,71 @@ def sign_in(
             if error_code in {"access_denied", "expired_token", "invalid_grant"}:
                 raise ConnectedError("The browser authorization was denied or expired")
             raise ConnectedError("The authorization server rejected the device request")
-        access_token = token.get("access_token")
-        if not isinstance(access_token, str) or not access_token:
-            raise ConnectedError("The server returned no access token")
-        store.save(access_token)
+        store.save(_access_token(token))
         print("Signed in. Local processing and file export still work without this session.")
         return
     raise ConnectedError("The browser authorization expired")
+
+
+SIGNED_OUT = "signed_out"
+NO_SESSION = "no_session"
+NOT_CONFIRMED = "not_confirmed"
+
+
+@dataclass(frozen=True)
+class SignOutResult:
+    """``signed_out``: the server ended this session and it was removed here.
+    ``no_session``: nothing was stored on this PC. ``not_confirmed``: the server
+    did not confirm; the session is still stored here (``reason`` says why)."""
+
+    state: str
+    host: str
+    reason: str = ""
+
+
+def sign_out(store: SessionStore) -> SignOutResult:
+    """End this PC's session on the community server, then forget it locally.
+
+    Only the stored session is ended (Better Auth ``POST /api/auth/sign-out``
+    with its own bearer), never other devices of the account. The result is
+    confirmed only when the server then refuses the old bearer (HTTP 401). A
+    failure keeps the local session so the person can retry, or choose to
+    forget it on this PC only.
+    """
+    origin = _bound_origin()
+    _check_store_origin(store, origin)
+    token = store.load()
+    if token is None:
+        return SignOutResult(NO_SESSION, origin.display_host)
+    try:
+        answer = _request(SIGN_OUT_PATH, body={}, token=token, origin=origin)
+        if (not isinstance(answer, dict) or answer.get("success") is not True
+                or not set(answer) <= {"success", "url", "redirect"}):
+            raise ConnectedError("The server did not confirm the sign-out")
+        try:
+            _request(SESSION_CHECK_PATH, token=token, origin=origin)
+        except ConnectedError as error:
+            if error.status == 403:
+                # Authenticated without a Player: the session is still valid.
+                raise ConnectedError("The server still accepts this session") from None
+            if error.status != 401:
+                raise
+        else:
+            raise ConnectedError("The server still accepts this session")
+    except ConnectedError as error:
+        return SignOutResult(NOT_CONFIRMED, origin.display_host, str(error) or "Connection unavailable")
+    store.clear()
+    return SignOutResult(SIGNED_OUT, origin.display_host)
+
+
+def forget_local_session(store: SessionStore) -> bool:
+    """Remove the stored session from this PC only; the server session is not ended."""
+    try:
+        had = store.load() is not None
+    except (OSError, ValueError):
+        had = True
+    store.clear()
+    return had
 
 
 @dataclass(frozen=True)
@@ -266,6 +433,14 @@ class EvidenceRecordReceipt:
     result_count: int
     complete: bool
     visible: bool
+    # The live feed's state online ("requested" until the Director or an authorized capture opens it), if any.
+    live_status: str | None = None
+
+
+def _live_status(record: Mapping[str, Any]) -> str | None:
+    live = record.get("live")
+    status = live.get("status") if isinstance(live, Mapping) else None
+    return status if status in {"requested", "active", "stopping", "complete", "invalidated"} else None
 
 
 class ConnectionContextStore:
@@ -350,15 +525,31 @@ class ConnectionTargetStore:
 class ConnectedClient:
     def __init__(self, store: SessionStore | None = None) -> None:
         self.store = store or SessionStore()
+        # One validated origin for the lifetime of this client; the bearer is
+        # only ever sent there. An invalid configuration fails at first use so
+        # offline callers that only construct a client keep working.
+        try:
+            self._origin: Origin | None = _bound_origin()
+            self._origin_error: ConnectedError | None = None
+        except ConnectedError as error:
+            self._origin, self._origin_error = None, error
+
+    @property
+    def origin(self) -> Origin:
+        if self._origin is None:
+            raise self._origin_error or ConnectedError("No community website address")
+        return self._origin
 
     def _token(self) -> str:
+        origin = self.origin
+        _check_store_origin(self.store, origin)
         token = self.store.load()
         if token is None:
             raise ConnectedError("Not signed in. Run: mk8dx-tournament-connect sign-in")
         return token
 
     def tournaments(self) -> tuple[TournamentChoice, ...]:
-        response = _request("/v1/tournament-connections", token=self._token())
+        response = _request("/v1/tournament-connections", token=self._token(), origin=self.origin)
         return tuple(TournamentChoice(
             tournament_id=item["tournamentId"], name=item["name"],
             start_at_ms=item.get("startAtMs"), stage=item["stage"],
@@ -375,7 +566,7 @@ class ConnectedClient:
         account without a verified Player can still capture and upload.
         """
         token = self._token()
-        response = _request("/v1/time-trial-submissions/native-bootstrap-v2", token=token)
+        response = _request(SESSION_CHECK_PATH, token=token, origin=self.origin)
         name = response.get("displayName") if isinstance(response, dict) else None
         if (not isinstance(response, dict)
                 or response.get("schemaVersion") != "mk8dx.native-time-trial-bootstrap.v2"
@@ -396,7 +587,7 @@ class ConnectedClient:
         } for index, document in enumerate(documents)]
         _request("/v1/tournament-incoming-results", body={
             "tournamentId": tournament.tournament_id, "entries": entries,
-        }, token=self._token())
+        }, token=self._token(), origin=self.origin)
 
     def upload_documents(self, documents: list[dict[str, Any]], target: ConnectionTarget) -> ConnectedUploadReceipt | None:
         entries = [{
@@ -411,7 +602,7 @@ class ConnectedClient:
         response = _request("/v1/tournament-incoming-results", body={
                 "tournamentId": target.tournament_id,
                 "entries": entries,
-            }, token=self._token())
+            }, token=self._token(), origin=self.origin)
         stored = response.get("results", ()) if isinstance(response, dict) else ()
         incoming_ids = tuple(
             str(item.get("incomingResultId"))
@@ -499,11 +690,11 @@ class ConnectedClient:
                    {"analysisCompletedAtMs": int(time.time() * 1000)} if complete else {}
                )),
         }
-        response = _request("/v1/tournament-evidence-records", body=body, token=self._token())
+        response = _request("/v1/tournament-evidence-records", body=body, token=self._token(), origin=self.origin)
         record = response.get("record", {}) if isinstance(response, dict) else {}
         if not isinstance(record, dict) or not record.get("recordId"):
             raise ConnectedError("Tournament Manager did not acknowledge the evidence record")
-        own = _request("/v1/tournament-evidence-records/own", token=self._token())
+        own = _request("/v1/tournament-evidence-records/own", token=self._token(), origin=self.origin)
         visible = any(
             isinstance(item, dict) and item.get("recordId") == record.get("recordId")
             for item in (own.get("records", ()) if isinstance(own, dict) else ())
@@ -550,7 +741,7 @@ class ConnectedClient:
             "entries": [],
             "liveMappings": mappings,
             **({"startedAtMs": started_at_ms} if started_at_ms is not None else {}),
-        }, token=self._token())
+        }, token=self._token(), origin=self.origin)
         record = response.get("record", {}) if isinstance(response, dict) else {}
         if not isinstance(record, dict) or not record.get("recordId"):
             raise ConnectedError("Tournament Manager did not acknowledge the live run")
@@ -560,12 +751,13 @@ class ConnectedClient:
             result_count=int(record.get("resultCount") or 0),
             complete=bool(record.get("complete")),
             visible=True,
+            live_status=_live_status(record),
         )
 
     def mark_live_stopping(self, record_id: str) -> None:
         _request(
             f"/v1/tournament-evidence-records/{urllib.parse.quote(record_id, safe='')}/actions/stopping",
-            body={}, token=self._token(),
+            body={}, token=self._token(), origin=self.origin,
         )
 
     def verify_documents_visible(
@@ -576,7 +768,7 @@ class ConnectedClient:
     ) -> None:
         response = _request(
             f"/v1/administrator/tournaments/{urllib.parse.quote(tournament_id, safe='')}/incoming-results",
-            token=self._token(),
+            token=self._token(), origin=self.origin,
         )
         results = response.get("results", ()) if isinstance(response, dict) else ()
         visible_incoming = {

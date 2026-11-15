@@ -3,6 +3,15 @@ import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { ActorResolver } from "../identity/types.js";
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { TimeTrialWebCsrfVerifier } from "../timetrials/submission-routes.js";
+import type { InstallationBudget } from "../security/abuse-budgets.js";
+import {
+  accountSettingRateLimitFailure,
+  consumeAccountSettingMutationBudget,
+} from "../security/account-setting-mutation-budget.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
 import {
   ENGAGEMENT_ACCEPT_SCOPES,
   type EngagementAcceptScope,
@@ -81,12 +90,37 @@ function replyFor(error: unknown): Readonly<{
   body: Readonly<{ code: string; message: string }>;
 }> {
   if (error instanceof NotificationChannelError) {
+    if (error.code === "provider_not_allowed") return { status: 400, body: { code: "web_push_provider_not_allowed", message: "This browser's push service is not accepted by this installation." } };
     if (error.code === "invalid_input") return { status: 400, body: { code: "notification_settings_invalid", message: "Check the notification settings and try again." } };
     if (error.code === "not_authenticated") return { status: 401, body: { code: "not_authenticated", message: "Sign in to manage notifications." } };
     if (error.code === "unsupported") return { status: 409, body: { code: "web_push_unsupported", message: "Web notifications are not available on this installation." } };
   }
   return { status: 503, body: { code: "notification_settings_unavailable", message: "Notification settings are temporarily unavailable." } };
 }
+
+/**
+ * Registering and removing browsers share one durable per-account budget across
+ * API instances. A person enabling notifications on a few devices, or toggling
+ * them, stays far below it; a script cycling endpoints does not.
+ */
+export const WEB_PUSH_SUBSCRIPTION_MUTATIONS_PER_HOUR = 30;
+
+async function consumeSubscriptionBudget(
+  actor: Awaited<ReturnType<ActorResolver>>,
+  rateLimiter: MutationRateLimiter,
+): Promise<void> {
+  if (actor.role !== "account" && actor.role !== "administrator") {
+    throw new NotificationChannelError("not_authenticated");
+  }
+  await rateLimiter.consume(
+    actor.userAccountId, "web-push-subscriptions-hour", 3_600, WEB_PUSH_SUBSCRIPTION_MUTATIONS_PER_HOUR,
+  );
+}
+
+const rateLimitedBody = {
+  code: "web_push_subscription_rate_limited",
+  message: "Too many notification device changes were received. Wait before retrying.",
+} as const;
 
 async function requireWrite(
   request: FastifyRequest,
@@ -110,7 +144,10 @@ export async function registerNotificationChannelRoutes(
   options: Readonly<{
     resolveActor: ActorResolver;
     service: NotificationChannelService;
+    rateLimiter: MutationRateLimiter;
     csrfVerifier?: TimeTrialWebCsrfVerifier;
+    /** H1: the installation-wide budget for new notification devices, after the account's own. */
+    installationBudget?: InstallationBudget;
   }>,
 ): Promise<void> {
   app.get("/v1/notification-settings", {
@@ -133,11 +170,13 @@ export async function registerNotificationChannelRoutes(
     activityReactions: boolean;
   } }>(
     "/v1/notification-settings/preferences",
-    { schema: { body: preferencesSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 503: errorResponseSchema } } },
+    { schema: { body: preferencesSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema } } },
     async (request, reply) => {
       try {
         const actor = await options.resolveActor(request);
         await requireWrite(request, actor, options.csrfVerifier);
+        // H1: one of the cheap account settings, sharing their durable budget.
+        await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
         const current = await options.service.status(actor);
         await options.service.updatePreferences(actor, {
           scope: request.body.scope ?? current.preferences.scope,
@@ -148,6 +187,11 @@ export async function registerNotificationChannelRoutes(
         });
         return reply.send({ acknowledged: true });
       } catch (error) {
+        const refusal = accountSettingRateLimitFailure(error);
+        if (refusal !== null) {
+          void reply.header("retry-after", String(refusal.retryAfterSeconds));
+          return reply.code(429).send(refusal.body);
+        }
         const result = replyFor(error);
         if (result.status === 400) return reply.code(400).send(result.body);
         if (result.status === 401) return reply.code(401).send(result.body);
@@ -158,14 +202,20 @@ export async function registerNotificationChannelRoutes(
 
   app.post<{ Body: { endpoint: string; keys: { p256dh: string; auth: string } } }>(
     "/v1/web-push/subscriptions",
-    { schema: { body: subscriptionSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 409: errorResponseSchema, 503: errorResponseSchema } } },
+    { schema: { body: subscriptionSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 409: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema } } },
     async (request, reply) => {
       try {
         const actor = await options.resolveActor(request);
         await requireWrite(request, actor, options.csrfVerifier);
+        await consumeSubscriptionBudget(actor, options.rateLimiter);
+        await options.installationBudget?.consume();
         await options.service.subscribe(actor, request.body);
         return reply.send({ acknowledged: true });
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send(rateLimitedBody);
+        }
         const result = replyFor(error);
         if (result.status === 400) return reply.code(400).send(result.body);
         if (result.status === 401) return reply.code(401).send(result.body);
@@ -177,14 +227,19 @@ export async function registerNotificationChannelRoutes(
 
   app.delete<{ Body: { endpoint: string } }>(
     "/v1/web-push/subscriptions",
-    { schema: { body: unsubscribeSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 503: errorResponseSchema } } },
+    { schema: { body: unsubscribeSchema, response: { 200: acknowledgedSchema, 400: errorResponseSchema, 401: errorResponseSchema, 429: errorResponseSchema, 503: errorResponseSchema } } },
     async (request, reply) => {
       try {
         const actor = await options.resolveActor(request);
         await requireWrite(request, actor, options.csrfVerifier);
+        await consumeSubscriptionBudget(actor, options.rateLimiter);
         await options.service.unsubscribe(actor, request.body.endpoint);
         return reply.send({ acknowledged: true });
       } catch (error) {
+        if (error instanceof MutationRateLimitExceeded) {
+          void reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send(rateLimitedBody);
+        }
         const result = replyFor(error);
         if (result.status === 400) return reply.code(400).send(result.body);
         if (result.status === 401) return reply.code(401).send(result.body);

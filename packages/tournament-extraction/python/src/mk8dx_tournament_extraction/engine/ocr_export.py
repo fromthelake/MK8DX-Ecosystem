@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 from openpyxl.utils import get_column_letter
 
+from ..spreadsheet_text import csv_literal_frame, literal_text_cells
 from .app_runtime import load_app_config
 from .console_logging import LOGGER
 from .game_catalog import load_game_catalog
@@ -406,21 +407,26 @@ def write_results_workbooks(df, folder_path):
     debug_output_excel_path = None
     debug_output_csv_path = None
 
-    with pd.ExcelWriter(output_excel_path) as writer:
+    # Names and OCR text stay text in a spreadsheet (spreadsheet_text): string cells in
+    # the workbooks, one protecting apostrophe where a CSV cell would read as a formula.
+    with pd.ExcelWriter(output_excel_path, engine="openpyxl") as writer:
         user_df.to_excel(writer, index=False, sheet_name="Results")
+        literal_text_cells(writer.sheets["Results"])
         autosize_worksheet_columns(writer.sheets["Results"], user_df)
         final_standings_df.to_excel(writer, index=False, sheet_name="Final Standings")
+        literal_text_cells(writer.sheets["Final Standings"])
         autosize_worksheet_columns(writer.sheets["Final Standings"], final_standings_df)
-    user_df.to_csv(output_csv_path, index=False, encoding="utf-8-sig")
-    final_standings_df.to_csv(final_standings_csv_path, index=False, encoding="utf-8-sig")
+    csv_literal_frame(user_df).to_csv(output_csv_path, index=False, encoding="utf-8-sig")
+    csv_literal_frame(final_standings_df).to_csv(final_standings_csv_path, index=False, encoding="utf-8-sig")
     if write_debug_artifacts and debug_df is not None:
         debug_output_dir.mkdir(parents=True, exist_ok=True)
         debug_output_excel_path = debug_output_dir / f"{timestamp}_Tournament_Results_Debug.xlsx"
         debug_output_csv_path = debug_output_dir / f"{timestamp}_Tournament_Results_Debug.csv"
-        with pd.ExcelWriter(debug_output_excel_path) as writer:
+        with pd.ExcelWriter(debug_output_excel_path, engine="openpyxl") as writer:
             debug_df.to_excel(writer, index=False, sheet_name="Debug Results")
+            literal_text_cells(writer.sheets["Debug Results"])
             autosize_worksheet_columns(writer.sheets["Debug Results"], debug_df)
-        debug_df.to_csv(debug_output_csv_path, index=False, encoding="utf-8-sig")
+        csv_literal_frame(debug_df).to_csv(debug_output_csv_path, index=False, encoding="utf-8-sig")
     return {
         "user_df": user_df,
         "debug_df": debug_df,

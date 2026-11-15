@@ -79,6 +79,20 @@ class RouteTestStore implements ClaimWriteRepository, ClaimWriteTransaction {
 
   async addClaimNote(): Promise<void> {}
 
+  async countClaimQuotaUsage(account: string, player: string) {
+    const all = [...this.claims.values()];
+    const open = (claim: ClaimSnapshot) => claim.claimStatus === "requested" || claim.claimStatus === "under_review";
+    return {
+      accountOpenRequests: all.filter((claim) => claim.userAccountId === account && open(claim)).length,
+      accountRequests: all.filter((claim) => claim.userAccountId === account).length,
+      playerOpenRequests: all.filter((claim) => claim.playerId === player && open(claim)).length,
+    };
+  }
+
+  async countClaimNotes(): Promise<number> {
+    return 0;
+  }
+
   async hasVerifiedClaimForPlayer(requestedPlayerId: string): Promise<boolean> {
     return [...this.claims.values()].some(
       (claim) => claim.playerId === requestedPlayerId && claim.claimStatus === "verified",

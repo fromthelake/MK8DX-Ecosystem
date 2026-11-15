@@ -247,12 +247,15 @@ integration("public Time Trial publication integration", () => {
       playerUsername: "SyntheticPublicRacer",
     }]);
 
+    // A revision is the owner's own: sent by the account that holds the verified claim.
     await service.submit(submission(2, "needs_review"), {
-      publicationIntent: "trusted_runtime",
+      publicationIntent: "trusted_runtime", actorUserAccountId: accountId,
     });
     expect(await publicRepository.listPlayerResults(playerId)).toEqual([]);
 
-    await service.submit(submission(3), { publicationIntent: "trusted_runtime" });
+    await service.submit(submission(3), {
+      publicationIntent: "trusted_runtime", actorUserAccountId: accountId,
+    });
     const history = await publicRepository.listPlayerResults(playerId);
     expect(history).toHaveLength(1);
     expect(history[0]).toMatchObject({

@@ -42,7 +42,30 @@ export type AliasServiceErrorCode =
   | "not_found"
   | "conflict"
   | "invalid_command"
-  | "invalid_transition";
+  | "invalid_transition"
+  | "quota_exceeded";
+
+/**
+ * F04 quotas, enforced inside the transaction that holds the Player row lock, so concurrent
+ * requests (from any API process) cannot overshoot them. Generous for real use: a Player rarely
+ * has more than a handful of names.
+ */
+export const ALIAS_QUOTAS = Object.freeze({
+  /** Active self-declared aliases one Player may have. */
+  activeDeclaredPerPlayer: 20,
+  /** Self-declared aliases one Player may ever create (retired ones included), bounding history. */
+  declaredTotalPerPlayer: 100,
+  /** Active aliases of any type per Player, administrator-reviewed ones included. */
+  activePerPlayer: 200,
+  /** Provenance items on a self-declared alias (the schema allows 32 for administrators). */
+  selfDeclaredProvenanceItems: 4,
+});
+
+export type PlayerAliasCounts = Readonly<{
+  active: number;
+  activeDeclared: number;
+  declaredTotal: number;
+}>;
 
 export class AliasServiceError extends Error {
   public constructor(
@@ -82,8 +105,10 @@ export type PublicAliasProfile = Readonly<{
 
 export interface AliasReadRepository {
   findPublicAliasById(aliasId: string): Promise<PublicAliasProfile | null>;
+  /** Ordered by alias text then id; `after` continues after that alias, `limit` is at most 101. */
   listPublicAliasesByPlayerId(
     playerId: string,
+    page?: Readonly<{ limit: number; after?: string }>,
   ): Promise<readonly PublicAliasProfile[]>;
 }
 
@@ -121,6 +146,8 @@ export interface AliasWriteTransaction {
   hasVerifiedClaimOnPlayer(userAccountId: string, playerId: string): Promise<boolean>;
   findUserAccountStatus(userAccountId: string): Promise<AccountStatus | null>;
   findAliasForUpdate(aliasId: string): Promise<AliasSnapshot | null>;
+  /** Alias counts for a Player; called after `findHumanPlayerStatus` has locked the Player row. */
+  countPlayerAliases(playerId: string): Promise<PlayerAliasCounts>;
   createAlias(input: CreateAliasInput): Promise<void>;
   appendAliasEvent(input: AppendAliasEventInput): Promise<void>;
 }
@@ -267,6 +294,9 @@ export class AliasService {
         "a self-declared alias carries player_declaration provenance",
       );
     }
+    if (selfService && command.provenance.length > ALIAS_QUOTAS.selfDeclaredProvenanceItems) {
+      throw new AliasServiceError("invalid_command", "a self-declared alias carries few provenance items");
+    }
     const provenance = validateProvenance(command.provenance);
     const aliasId = this.idGenerator.newAliasId();
     if (!aliasIdPattern.test(aliasId)) {
@@ -288,6 +318,12 @@ export class AliasService {
       }
       if (playerStatus !== "active" || administratorStatus !== "active") {
         throw new AliasServiceError("conflict", "Alias review target is not active");
+      }
+      const counts = await transaction.countPlayerAliases(command.playerId);
+      if (counts.active >= ALIAS_QUOTAS.activePerPlayer ||
+          (selfService && (counts.activeDeclared >= ALIAS_QUOTAS.activeDeclaredPerPlayer ||
+            counts.declaredTotal >= ALIAS_QUOTAS.declaredTotalPerPlayer))) {
+        throw new AliasServiceError("quota_exceeded", "this Player has reached its alias limit");
       }
       const snapshot: AliasSnapshot = {
         aliasId,

@@ -16,6 +16,9 @@ import {
 } from "../src/timetrials/submission-service.js";
 
 const playerId = "player.synthetic_timetrial_01";
+const otherPlayerId = "player.synthetic_timetrial_02";
+const accountId = "user_account.synthetic_timetrial_01";
+const otherAccountId = "user_account.synthetic_timetrial_02";
 
 function scanSubmission(): TimeTrialSubmissionV1 {
   return {
@@ -114,7 +117,8 @@ class SyntheticProtector implements TimeTrialSensitiveValueProtector {
 
 class SyntheticStore implements TimeTrialWriteRepository, TimeTrialWriteTransaction {
   readonly submissions = new Map<string, TimeTrialSubmissionState>();
-  readonly activePlayers = new Set([playerId]);
+  readonly activePlayers = new Set([playerId, otherPlayerId]);
+  readonly verifiedClaims = new Set([`${accountId}|${playerId}`, `${otherAccountId}|${otherPlayerId}`]);
   readonly writes: TimeTrialRevisionPersistenceInput[] = [];
   transactionCount = 0;
   insertSubmissionCount = 0;
@@ -136,9 +140,15 @@ class SyntheticStore implements TimeTrialWriteRepository, TimeTrialWriteTransact
     return this.activePlayers.has(requestedPlayerId);
   }
 
+  async accountHoldsVerifiedClaimForUpdate(userAccountId: string, claimedPlayerId: string): Promise<boolean> {
+    return this.verifiedClaims.has(`${userAccountId}|${claimedPlayerId}`);
+  }
+
   async insertSubmission(submissionId: string, firstCreatedAtMs: number): Promise<void> {
     this.insertSubmissionCount += 1;
-    this.submissions.set(submissionId, { firstCreatedAtMs, latestRevision: 0 });
+    this.submissions.set(submissionId, {
+      firstCreatedAtMs, latestRevision: 0, owner: { playerId: null, sourceKind: "", carried: false },
+    });
   }
 
   async insertRevision(input: TimeTrialRevisionPersistenceInput): Promise<void> {
@@ -150,9 +160,23 @@ class SyntheticStore implements TimeTrialWriteRepository, TimeTrialWriteTransact
     this.submissions.set(input.submission.submissionId, {
       ...state,
       latestRevision: input.submission.revision,
+      owner: input.submission.revision === 1
+        ? {
+            playerId: input.playerId,
+            sourceKind: input.submission.source.kind,
+            carried: input.submission.carriedFrom !== undefined,
+          }
+        : state.owner,
     });
   }
 }
+
+const ownerContext = {
+  publicationIntent: "trusted_runtime", actorUserAccountId: accountId,
+} as const;
+const otherContext = {
+  publicationIntent: "trusted_runtime", actorUserAccountId: otherAccountId,
+} as const;
 
 function harness() {
   const store = new SyntheticStore();
@@ -349,19 +373,88 @@ describe("Time Trial submission application service", () => {
     expect(first.store.writes).toHaveLength(0);
 
     const existing = harness();
-    const input = scanSubmission();
+    const input: TimeTrialSubmissionV1 = {
+      ...scanSubmission(),
+      playerReference: { namespace: "player", value: playerId },
+    };
     existing.store.submissions.set(input.submissionId, {
       firstCreatedAtMs: input.timestamps.createdAtMs,
       latestRevision: 1,
+      owner: { playerId, sourceKind: "android_scan", carried: false },
     });
-    await expect(existing.service.submit({ ...input, revision: 1 })).rejects
+    await expect(existing.service.submit({ ...input, revision: 1 }, ownerContext)).rejects
       .toMatchObject({ code: "revision_conflict" });
-    await expect(existing.service.submit({ ...input, revision: 3 })).rejects
+    await expect(existing.service.submit({ ...input, revision: 3 }, ownerContext)).rejects
       .toMatchObject({ code: "revision_conflict" });
-    await expect(existing.service.submit({ ...input, revision: 2 })).resolves
+    await expect(existing.service.submit({ ...input, revision: 2 }, ownerContext)).resolves
       .toMatchObject({ revision: 2 });
     expect(existing.store.insertSubmissionCount).toBe(0);
     expect(existing.store.writes).toHaveLength(1);
+  });
+
+  describe("a revision of an existing submission is the stored owner's own", () => {
+    const owned = (): TimeTrialSubmissionV1 => ({
+      ...scanSubmission(),
+      playerReference: { namespace: "player", value: playerId },
+    });
+    const seeded = (owner: TimeTrialSubmissionState["owner"]) => {
+      const run = harness();
+      run.store.submissions.set(owned().submissionId, {
+        firstCreatedAtMs: 1, latestRevision: 1, owner,
+      });
+      return run;
+    };
+    const ownerState = { playerId, sourceKind: "android_scan", carried: false } as const;
+
+    it("refuses another Player's revision whatever revision number it guesses", async () => {
+      const run = seeded(ownerState);
+      const other = { ...owned(), playerReference: { namespace: "player" as const, value: otherPlayerId } };
+      for (const revision of [1, 2, 3]) {
+        await expect(run.service.submit({ ...other, revision }, otherContext)).rejects
+          .toMatchObject({ code: "submission_forbidden" });
+      }
+      // The owner's Player named by another account is refused too (no claim on it).
+      await expect(run.service.submit({ ...owned(), revision: 2 }, otherContext)).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      expect(run.store.writes).toHaveLength(0);
+    });
+
+    it("fails closed for a submission without a central Player owner", async () => {
+      const run = seeded({ playerId: null, sourceKind: "android_scan", carried: false });
+      await expect(run.service.submit({ ...owned(), revision: 2 }, ownerContext)).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      const restricted = { ...scanSubmission(), revision: 2 };
+      await expect(run.service.submit(restricted, ownerContext)).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      expect(run.store.writes).toHaveLength(0);
+    });
+
+    it("keeps the source class and carried state", async () => {
+      const run = seeded(ownerState);
+      await expect(run.service.submit({
+        ...owned(), revision: 2, source: { kind: "livetrial_capture" },
+      }, ownerContext)).rejects.toMatchObject({ code: "submission_forbidden" });
+      await expect(run.service.submit({
+        ...owned(), revision: 2, source: { kind: "web_manual" },
+      }, ownerContext)).rejects.toMatchObject({ code: "submission_forbidden" });
+      const carried = seeded({ ...ownerState, carried: true });
+      await expect(carried.service.submit({ ...owned(), revision: 2 }, ownerContext)).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      // android_scan -> android_manual stays in the Android class.
+      await expect(run.service.submit({
+        ...owned(), revision: 2, source: { kind: "android_manual" },
+      }, ownerContext)).resolves.toMatchObject({ revision: 2 });
+    });
+
+    it("needs a signed-in account that still holds a verified claim, checked in the transaction", async () => {
+      const run = seeded(ownerState);
+      await expect(run.service.submit({ ...owned(), revision: 2 })).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      run.store.verifiedClaims.delete(`${accountId}|${playerId}`);
+      await expect(run.service.submit({ ...owned(), revision: 2 }, ownerContext)).rejects
+        .toMatchObject({ code: "submission_forbidden" });
+      expect(run.store.writes).toHaveLength(0);
+    });
   });
 
   it("rejects malformed protector output before opening a transaction", async () => {

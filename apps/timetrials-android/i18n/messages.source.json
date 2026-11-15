@@ -59,14 +59,14 @@
   {
    "key": " on a card to place, swap, or park it.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:287"
+    "AndroidTournamentGroupDraftStep.kt:283"
    ],
    "nl": " op een kaart om in te delen, te wisselen of te parkeren."
   },
   {
    "key": " on a card to swap two participants between final groups as an administrator.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:282"
+    "AndroidTournamentGroupDraftStep.kt:278"
    ],
    "nl": " op een kaart om als admin twee deelnemers tussen eindgroepen te wisselen."
   },
@@ -108,7 +108,7 @@
   {
    "key": "\"{0}\" does not produce a usable username. Use letters and numbers.",
    "places": [
-    "AndroidTournamentScreen.kt:867"
+    "AndroidTournamentScreen.kt:872"
    ],
    "nl": "\"{0}\" levert geen bruikbare gebruikersnaam op. Gebruik letters en cijfers."
   },
@@ -179,7 +179,7 @@
   {
    "key": "1 night",
    "places": [
-    "AndroidTournamentRosterImport.kt:103"
+    "AndroidTournamentRosterImport.kt:114"
    ],
    "nl": "1 avond"
   },
@@ -299,13 +299,13 @@
   {
    "key": "A Player name is ambiguous or unknown. Map this feed in the web manager.",
    "places": [
-    "AndroidTournamentScreen.kt:3595"
+    "AndroidTournamentScreen.kt:3600"
    ]
   },
   {
    "key": "A new Player is created on the roster and stays claimable.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1418"
+    "AndroidTournamentGroupDraftStep.kt:1414"
    ],
    "nl": "Een nieuwe speler wordt aangemaakt op de spelerslijst en blijft claimbaar."
   },
@@ -333,7 +333,7 @@
   {
    "key": "ACCOUNTS AND PLAYERS",
    "places": [
-    "AndroidIdentityLinkScreen.kt:108"
+    "AndroidIdentityLinkScreen.kt:118"
    ],
    "nl": "ACCOUNTS EN SPELERS"
   },
@@ -382,7 +382,7 @@
   {
    "key": "Absent",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1393",
+    "AndroidTournamentGroupDraftStep.kt:1389",
     "AndroidTournamentParticipantsStep.kt:748",
     "AndroidTournamentParticipantsStep.kt:771",
     "AndroidTournamentParticipantsStep.kt:783"
@@ -455,14 +455,14 @@
   {
    "key": "Active director: {0}. Step 1 shows only this director's tournaments.",
    "places": [
-    "AndroidTournamentScreen.kt:2417"
+    "AndroidTournamentScreen.kt:2422"
    ],
    "nl": "Actieve directeur: {0}. Stap 1 toont alleen toernooien van deze directeur."
   },
   {
    "key": "Active in Step 7",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1615"
+    "AndroidTournamentGroupDraftStep.kt:1611"
    ],
    "nl": "Actief in Stap 7"
   },
@@ -483,7 +483,7 @@
   {
    "key": "Add",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1305"
+    "AndroidTournamentGroupDraftStep.kt:1301"
    ],
    "nl": "Toevoegen"
   },
@@ -497,8 +497,8 @@
   {
    "key": "Add Switch",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:863",
-    "AndroidTournamentGroupDraftStep.kt:864"
+    "AndroidTournamentGroupDraftStep.kt:859",
+    "AndroidTournamentGroupDraftStep.kt:860"
    ],
    "nl": "Switch toevoegen"
   },
@@ -526,7 +526,7 @@
   {
    "key": "Add participant",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:979",
+    "AndroidTournamentGroupDraftStep.kt:975",
     "AndroidTournamentParticipantsStep.kt:861"
    ],
    "nl": "Deelnemer toevoegen"
@@ -569,7 +569,7 @@
   {
    "key": "Admin actions",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1578"
+    "AndroidTournamentGroupDraftStep.kt:1574"
    ],
    "nl": "Admin Acties"
   },
@@ -598,7 +598,7 @@
   {
    "key": "Affects TrueSkill",
    "places": [
-    "AndroidTournamentScreen.kt:3773",
+    "AndroidTournamentScreen.kt:3778",
     "AndroidDutchUiCopy.kt:196"
    ],
    "nl": "Telt mee voor TrueSkill"
@@ -636,7 +636,7 @@
   {
    "key": "All Tournaments",
    "places": [
-    "AndroidTournamentScreen.kt:3172",
+    "AndroidTournamentScreen.kt:3177",
     "AndroidDutchUiCopy.kt:80"
    ],
    "nl": "Alle toernooien"
@@ -708,7 +708,7 @@
   {
    "key": "All {0} participants are placed - ready to continue.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:475"
+    "AndroidTournamentGroupDraftStep.kt:471"
    ],
    "nl": "Alle {0} deelnemers ingedeeld - klaar om door te gaan."
   },
@@ -722,7 +722,7 @@
   {
    "key": "Already linked to an account",
    "places": [
-    "AndroidIdentityLinkScreen.kt:353"
+    "AndroidIdentityLinkScreen.kt:385"
    ],
    "nl": "Al aan een account gekoppeld"
   },
@@ -743,7 +743,7 @@
   {
    "key": "Also take {0}'s Nintendo Switch 1 and/or 2 out of the tournament",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1513"
+    "AndroidTournamentGroupDraftStep.kt:1509"
    ],
    "nl": "Nintendo Switch 1 en/of 2 van {0} ook uit het toernooi halen"
   },
@@ -778,7 +778,7 @@
   {
    "key": "An occupied seat swaps both participants; an empty seat places {0}.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:669"
+    "AndroidTournamentGroupDraftStep.kt:665"
    ],
    "nl": "Een bezette plek wisselt beide deelnemers; een lege plek plaatst {0}."
   },
@@ -893,14 +893,14 @@
   {
    "key": "Are this person's Time Trial times already on this website?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:315"
+    "AndroidIdentityLinkScreen.kt:347"
    ],
    "nl": "Staan de Time Trial-tijden van deze persoon al op deze website?"
   },
   {
    "key": "Are you sure you want to remove {0} from the tournament? {1} is registered to {2}. It is removed from their profile as well.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1542"
+    "AndroidTournamentGroupDraftStep.kt:1538"
    ],
    "nl": "Weet je zeker dat je {0} wilt verwijderen uit het toernooi? {1} staat op naam van {2}. Deze wordt ook uit diens profiel gehaald."
   },
@@ -914,7 +914,7 @@
   {
    "key": "Are you sure you want to take {0} out of Present? The participant is set to Absent.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1503"
+    "AndroidTournamentGroupDraftStep.kt:1499"
    ],
    "nl": "Weet je zeker dat je deelnemer {0} uit Aanwezig wilt halen? Deelnemer wordt naar Afwezig gezet."
   },
@@ -935,7 +935,7 @@
   {
    "key": "At least two final groups with Players are needed.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1603"
+    "AndroidTournamentGroupDraftStep.kt:1599"
    ],
    "nl": "Minimaal twee eindgroepen met deelnemers nodig."
   },
@@ -999,7 +999,7 @@
   {
    "key": "Avg. SP: {0} · Spread: +{1} / -{2}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:844"
+    "AndroidTournamentGroupDraftStep.kt:840"
    ],
    "nl": "Gem. SP: {0} · Spreiding: +{1} / -{2}"
   },
@@ -1046,7 +1046,7 @@
   {
    "key": "Back to Step 0",
    "places": [
-    "AndroidTournamentScreen.kt:2667"
+    "AndroidTournamentScreen.kt:2672"
    ],
    "nl": "Terug naar Stap 0"
   },
@@ -1060,8 +1060,8 @@
   {
    "key": "Back to Step {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:260",
-    "AndroidTournamentGroupDraftStep.kt:1639",
+    "AndroidTournamentGroupDraftStep.kt:256",
+    "AndroidTournamentGroupDraftStep.kt:1635",
     "AndroidTournamentLayoutExportStep.kt:189",
     "AndroidTournamentResultsExportStep.kt:109"
    ],
@@ -1205,7 +1205,7 @@
   {
    "key": "Blocked: more than 3 connection resets. Correct the desktop session; no segments were discarded.",
    "places": [
-    "AndroidTournamentScreen.kt:3646"
+    "AndroidTournamentScreen.kt:3651"
    ]
   },
   {
@@ -1336,7 +1336,7 @@
   {
    "key": "CSV columns: Switcheigenaar, Console (NS1/NS2), Deelnemer 1, Deelnemer 2, Groep. Separated by ; , or a tab; Dutch and English header rows both work.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:422"
+    "AndroidTournamentGroupDraftStep.kt:418"
    ],
    "nl": "CSV kolommen: Switcheigenaar, Console (NS1/NS2), Deelnemer 1, Deelnemer 2, Groep. Gescheiden door ; , of een tab; Nederlandse en Engelse kopregels werken allebei."
   },
@@ -1358,10 +1358,10 @@
   {
    "key": "Cancel",
    "places": [
+    "AndroidStepUp.kt:237",
+    "AndroidStepUp.kt:245",
     "AndroidAccountEcosystemScreens.kt:424",
-    "AndroidIdentityLinkScreen.kt:213",
-    "AndroidIdentityLinkScreen.kt:310",
-    "AndroidLanPairingScreen.kt:128"
+    "AndroidIdentityLinkScreen.kt:245"
    ],
    "nl": "Annuleren"
   },
@@ -1547,16 +1547,23 @@
    "nl": "Controleer deze waarde voordat je publiceert."
   },
   {
+   "key": "Check your inbox and open the link. This window waits for your confirmation.",
+   "places": [
+    "AndroidStepUp.kt:198"
+   ],
+   "nl": "Kijk in je inbox en open de link. Dit venster wacht op je bevestiging."
+  },
+  {
    "key": "Checking names…",
    "places": [
-    "AndroidTournamentScreen.kt:996"
+    "AndroidTournamentScreen.kt:1001"
    ],
    "nl": "Namen controleren…"
   },
   {
    "key": "Checking the layout…",
    "places": [
-    "AndroidTournamentScreen.kt:344"
+    "AndroidTournamentScreen.kt:349"
    ],
    "nl": "Indeling controleren…"
   },
@@ -1577,7 +1584,7 @@
   {
    "key": "Choose Players from two different final groups.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1609"
+    "AndroidTournamentGroupDraftStep.kt:1605"
    ],
    "nl": "Kies spelers uit twee verschillende eindgroepen."
   },
@@ -1592,14 +1599,14 @@
   {
    "key": "Choose a Player",
    "places": [
-    "AndroidIdentityLinkScreen.kt:309"
+    "AndroidIdentityLinkScreen.kt:341"
    ],
    "nl": "Kies een speler"
   },
   {
    "key": "Choose a Player…",
    "places": [
-    "AndroidIdentityLinkScreen.kt:254"
+    "AndroidIdentityLinkScreen.kt:286"
    ],
    "nl": "Kies een speler…"
   },
@@ -1620,14 +1627,14 @@
   {
    "key": "Choose a director first. Step 1 will then show only that director's tournaments.",
    "places": [
-    "AndroidTournamentScreen.kt:2422"
+    "AndroidTournamentScreen.kt:2427"
    ],
    "nl": "Kies eerst een directeur. Stap 1 toont daarna alleen toernooien van die directeur."
   },
   {
    "key": "Choose a seat in {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:657"
+    "AndroidTournamentGroupDraftStep.kt:653"
    ],
    "nl": "Kies plek in {0}"
   },
@@ -1671,14 +1678,14 @@
   {
    "key": "Choose date",
    "places": [
-    "AndroidTournamentScreen.kt:2810"
+    "AndroidTournamentScreen.kt:2815"
    ],
    "nl": "Kies datum"
   },
   {
    "key": "Choose director",
    "places": [
-    "AndroidTournamentScreen.kt:2261"
+    "AndroidTournamentScreen.kt:2266"
    ],
    "nl": "Kies directeur"
   },
@@ -1700,7 +1707,7 @@
   {
    "key": "Choose existing tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2869"
+    "AndroidTournamentScreen.kt:2874"
    ],
    "nl": "Kies bestaand toernooi"
   },
@@ -1714,7 +1721,7 @@
   {
    "key": "Choose one route: start a new tournament or load an existing tournament for this director.",
    "places": [
-    "AndroidTournamentScreen.kt:2746"
+    "AndroidTournamentScreen.kt:2751"
    ],
    "nl": "Kies één route om verder te gaan: start een nieuw toernooi of laad een bestaand toernooi van deze directeur."
   },
@@ -1776,7 +1783,7 @@
   {
    "key": "Choose the director you are operating for",
    "places": [
-    "AndroidTournamentScreen.kt:2379"
+    "AndroidTournamentScreen.kt:2384"
    ],
    "nl": "Kies de directeur voor wie je werkt"
   },
@@ -1790,14 +1797,14 @@
   {
    "key": "Choose two different participants.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1608"
+    "AndroidTournamentGroupDraftStep.kt:1604"
    ],
    "nl": "Kies twee verschillende deelnemers."
   },
   {
    "key": "Choose two participants.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1607"
+    "AndroidTournamentGroupDraftStep.kt:1603"
    ],
    "nl": "Kies twee deelnemers."
   },
@@ -1840,7 +1847,7 @@
   {
    "key": "Choose…",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1167",
+    "AndroidTournamentGroupDraftStep.kt:1163",
     "AndroidTournamentRosterPicker.kt:239"
    ],
    "nl": "Kies…"
@@ -1863,7 +1870,7 @@
   {
    "key": "Clear director choice",
    "places": [
-    "AndroidTournamentScreen.kt:2299"
+    "AndroidTournamentScreen.kt:2304"
    ],
    "nl": "Directeurkeuze wissen"
   },
@@ -1901,7 +1908,7 @@
   {
    "key": "Close ✕",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1309"
+    "AndroidTournamentGroupDraftStep.kt:1305"
    ],
    "nl": "Sluiten ✕"
   },
@@ -2096,7 +2103,7 @@
   {
    "key": "Complete the current guided step first.",
    "places": [
-    "AndroidTournamentScreen.kt:3781",
+    "AndroidTournamentScreen.kt:3786",
     "AndroidDutchUiCopy.kt:434"
    ],
    "nl": "Voltooi eerst de huidige begeleide stap."
@@ -2118,7 +2125,7 @@
   {
    "key": "Confirm all scores",
    "places": [
-    "AndroidTournamentScreen.kt:3101",
+    "AndroidTournamentScreen.kt:3106",
     "AndroidDutchUiCopy.kt:383"
    ],
    "nl": "Alle scores bevestigen"
@@ -2133,7 +2140,7 @@
   {
    "key": "Confirm delete",
    "places": [
-    "AndroidTournamentScreen.kt:3181",
+    "AndroidTournamentScreen.kt:3186",
     "AndroidDutchUiCopy.kt:84"
    ],
    "nl": "Verwijderen bevestigen"
@@ -2141,7 +2148,7 @@
   {
    "key": "Confirm final layout",
    "places": [
-    "AndroidTournamentScreen.kt:3106",
+    "AndroidTournamentScreen.kt:3111",
     "AndroidDutchUiCopy.kt:386"
    ],
    "nl": "Finale-indeling bevestigen"
@@ -2149,26 +2156,26 @@
   {
    "key": "Confirm final scores",
    "places": [
-    "AndroidTournamentScreen.kt:3111"
+    "AndroidTournamentScreen.kt:3116"
    ]
   },
   {
    "key": "Confirm group feed ({0})",
    "places": [
-    "AndroidTournamentScreen.kt:3609"
+    "AndroidTournamentScreen.kt:3614"
    ]
   },
   {
    "key": "Confirm layout and continue",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:245"
+    "AndroidTournamentGroupDraftStep.kt:241"
    ],
    "nl": "Indeling bevestigen en doorgaan"
   },
   {
    "key": "Confirm layout and go to Step 8",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:244"
+    "AndroidTournamentGroupDraftStep.kt:240"
    ],
    "nl": "Indeling bevestigen en ga naar Stap 8"
   },
@@ -2182,10 +2189,18 @@
   {
    "key": "Confirm qualifier layout",
    "places": [
-    "AndroidTournamentScreen.kt:3096",
+    "AndroidTournamentScreen.kt:3101",
     "AndroidDutchUiCopy.kt:380"
    ],
    "nl": "Kwalificatie-indeling bevestigen"
+  },
+  {
+   "key": "Confirm with a new email link",
+   "places": [
+    "AndroidStepUp.kt:236",
+    "AndroidIdentityLinkScreen.kt:138"
+   ],
+   "nl": "Bevestig met een nieuwe e-maillink"
   },
   {
    "key": "Confirming setup…",
@@ -2220,7 +2235,7 @@
   {
    "key": "Connection errors",
    "places": [
-    "AndroidTournamentScreen.kt:3716",
+    "AndroidTournamentScreen.kt:3721",
     "AndroidDutchUiCopy.kt:429"
    ],
    "nl": "Verbindingsfouten"
@@ -2256,7 +2271,7 @@
   {
    "key": "Continue to Step 1",
    "places": [
-    "AndroidTournamentScreen.kt:2446"
+    "AndroidTournamentScreen.kt:2451"
    ],
    "nl": "Verder naar Stap 1"
   },
@@ -2347,8 +2362,8 @@
   {
    "key": "Could not load that Tournament.",
    "places": [
-    "AndroidTournamentScreen.kt:2100",
-    "AndroidTournamentScreen.kt:2179",
+    "AndroidTournamentScreen.kt:2105",
+    "AndroidTournamentScreen.kt:2184",
     "AndroidDutchUiCopy.kt:351"
    ],
    "nl": "Dat toernooi kon niet worden geladen."
@@ -2466,7 +2481,7 @@
   {
    "key": "Create final groups",
    "places": [
-    "AndroidTournamentScreen.kt:3104",
+    "AndroidTournamentScreen.kt:3109",
     "AndroidDutchUiCopy.kt:385"
    ],
    "nl": "Finalegroepen maken"
@@ -2489,7 +2504,7 @@
    "key": "Create qualifier groups",
    "places": [
     "AndroidTournamentParticipantsStep.kt:1106",
-    "AndroidTournamentScreen.kt:3094",
+    "AndroidTournamentScreen.kt:3099",
     "AndroidDutchUiCopy.kt:379"
    ],
    "nl": "Maak kwalificatiegroepen"
@@ -2511,14 +2526,14 @@
   {
    "key": "Creating Player…",
    "places": [
-    "AndroidTournamentScreen.kt:1099"
+    "AndroidTournamentScreen.kt:1104"
    ],
    "nl": "Speler aanmaken…"
   },
   {
    "key": "Creating new Players…",
    "places": [
-    "AndroidTournamentScreen.kt:1057"
+    "AndroidTournamentScreen.kt:1062"
    ],
    "nl": "Nieuwe spelers aanmaken…"
   },
@@ -2581,7 +2596,7 @@
   {
    "key": "Data actions",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1637"
+    "AndroidTournamentGroupDraftStep.kt:1633"
    ],
    "nl": "Data-acties"
   },
@@ -2638,7 +2653,7 @@
   {
    "key": "Delete draft",
    "places": [
-    "AndroidTournamentScreen.kt:3178",
+    "AndroidTournamentScreen.kt:3183",
     "AndroidDutchUiCopy.kt:83"
    ],
    "nl": "Concept verwijderen"
@@ -2646,7 +2661,7 @@
   {
    "key": "Delete this draft permanently? This is only allowed before races are recorded.",
    "places": [
-    "AndroidTournamentScreen.kt:3180",
+    "AndroidTournamentScreen.kt:3185",
     "AndroidDutchUiCopy.kt:403"
    ],
    "nl": "Dit concept definitief verwijderen? Dit kan alleen voordat races zijn vastgelegd."
@@ -2748,7 +2763,7 @@
    "key": "Directors: {0}",
    "places": [
     "AndroidClaimCandidates.kt:102",
-    "AndroidTournamentRosterImport.kt:135"
+    "AndroidTournamentRosterImport.kt:146"
    ],
    "nl": "Directeuren: {0}"
   },
@@ -2886,14 +2901,14 @@
   {
    "key": "Empty seat",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:988"
+    "AndroidTournamentGroupDraftStep.kt:984"
    ],
    "nl": "Lege plek"
   },
   {
    "key": "Empty seat · place",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:730"
+    "AndroidTournamentGroupDraftStep.kt:726"
    ],
    "nl": "Lege plek · plaats"
   },
@@ -3012,7 +3027,7 @@
   {
    "key": "Enter the total per Player, or let Tournament Live / Tournament Processor deliver race results. Excel workbooks can be imported in the web app.",
    "places": [
-    "AndroidTournamentScreen.kt:3679",
+    "AndroidTournamentScreen.kt:3684",
     "AndroidDutchUiCopy.kt:431"
    ],
    "nl": "Voer per speler het totaal in, of laat Tournament Live / Tournament Processor de raceresultaten aanleveren. Excel-werkmappen kun je in de webapp importeren."
@@ -3076,7 +3091,7 @@
   {
    "key": "Everything is already saved",
    "places": [
-    "AndroidTournamentScreen.kt:2697",
+    "AndroidTournamentScreen.kt:2702",
     "AndroidTournamentStepTheme.kt:428"
    ],
    "nl": "Alles is al opgeslagen"
@@ -3120,7 +3135,7 @@
   {
    "key": "Export CSV",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:415",
+    "AndroidTournamentGroupDraftStep.kt:411",
     "AndroidTournamentParticipantsStep.kt:531"
    ],
    "nl": "Exporteer CSV"
@@ -3128,15 +3143,15 @@
   {
    "key": "Export layout",
    "places": [
-    "AndroidTournamentScreen.kt:1648",
-    "AndroidTournamentScreen.kt:1970"
+    "AndroidTournamentScreen.kt:1653",
+    "AndroidTournamentScreen.kt:1975"
    ],
    "nl": "Exporteer indeling"
   },
   {
    "key": "Export participants (CSV)",
    "places": [
-    "AndroidTournamentScreen.kt:2063"
+    "AndroidTournamentScreen.kt:2068"
    ],
    "nl": "Exporteer deelnemers (CSV)"
   },
@@ -3261,7 +3276,7 @@
   {
    "key": "Final Groups layout",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:232"
+    "AndroidTournamentGroupDraftStep.kt:228"
    ],
    "nl": "Eindgroepen indeling"
   },
@@ -3367,7 +3382,7 @@
   {
    "key": "Finalization pins the current results. Public visibility and rating inclusion are independent choices.",
    "places": [
-    "AndroidTournamentScreen.kt:3776",
+    "AndroidTournamentScreen.kt:3781",
     "AndroidDutchUiCopy.kt:207"
    ],
    "nl": "Bij afronden worden de huidige resultaten vastgezet. Openbare zichtbaarheid en meetellen voor de rating zijn afzonderlijke keuzes."
@@ -3375,7 +3390,7 @@
   {
    "key": "Finalize Tournament",
    "places": [
-    "AndroidTournamentScreen.kt:3777",
+    "AndroidTournamentScreen.kt:3782",
     "AndroidDutchUiCopy.kt:79"
    ],
    "nl": "Toernooi afronden"
@@ -3427,7 +3442,7 @@
   {
    "key": "First choose a group. Then choose the exact seat: place on an empty seat or swap with the occupied seat.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:664"
+    "AndroidTournamentGroupDraftStep.kt:660"
    ],
    "nl": "Kies eerst een groep. Daarna kies je de exacte stoel: plaats op een lege plek of wissel met de bezette plek."
   },
@@ -3448,7 +3463,7 @@
   {
    "key": "First choose which Tournament Director works with these tournaments.",
    "places": [
-    "AndroidTournamentScreen.kt:2359"
+    "AndroidTournamentScreen.kt:2364"
    ],
    "nl": "Kies eerst welke toernooi directeur met deze toernooien werkt."
   },
@@ -3560,7 +3575,7 @@
   {
    "key": "From parking\n({0})",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1368"
+    "AndroidTournamentGroupDraftStep.kt:1364"
    ],
    "nl": "Uit parkeerzone\n({0})"
   },
@@ -3698,7 +3713,7 @@
   {
    "key": "Group",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1265"
+    "AndroidTournamentGroupDraftStep.kt:1261"
    ],
    "nl": "Groep"
   },
@@ -3771,21 +3786,21 @@
   {
    "key": "Has NS1",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1218"
+    "AndroidTournamentGroupDraftStep.kt:1214"
    ],
    "nl": "Heeft NS1"
   },
   {
    "key": "Has NS2",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1222"
+    "AndroidTournamentGroupDraftStep.kt:1218"
    ],
    "nl": "Heeft NS2"
   },
   {
    "key": "Has this person taken part in a tournament listed on this site?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:323"
+    "AndroidIdentityLinkScreen.kt:355"
    ],
    "nl": "Heeft deze persoon meegedaan aan een toernooi dat op deze site staat?"
   },
@@ -3842,7 +3857,7 @@
   {
    "key": "History",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1667"
+    "AndroidTournamentGroupDraftStep.kt:1663"
    ],
    "nl": "Geschiedenis"
   },
@@ -3929,14 +3944,14 @@
   {
    "key": "Import / export CSV (Step {0})",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:397"
+    "AndroidTournamentGroupDraftStep.kt:393"
    ],
    "nl": "Importeer / exporteer CSV (Stap {0})"
   },
   {
    "key": "Import CSV",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:405",
+    "AndroidTournamentGroupDraftStep.kt:401",
     "AndroidTournamentParticipantsStep.kt:523"
    ],
    "nl": "Importeer CSV"
@@ -3958,7 +3973,7 @@
   {
    "key": "Importing…",
    "places": [
-    "AndroidTournamentScreen.kt:938"
+    "AndroidTournamentScreen.kt:943"
    ],
    "nl": "Bezig met importeren…"
   },
@@ -3985,7 +4000,7 @@
   {
    "key": "Inactive",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1395",
+    "AndroidTournamentGroupDraftStep.kt:1391",
     "AndroidTournamentParticipantsStep.kt:1507",
     "AndroidDutchUiCopy.kt:407"
    ],
@@ -4001,7 +4016,7 @@
   {
    "key": "Incoming results could not be refreshed.",
    "places": [
-    "AndroidTournamentScreen.kt:1158",
+    "AndroidTournamentScreen.kt:1163",
     "AndroidDutchUiCopy.kt:354"
    ],
    "nl": "Binnenkomende uitslagen konden niet worden vernieuwd."
@@ -4116,14 +4131,14 @@
   {
    "key": "Known Player",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1365"
+    "AndroidTournamentGroupDraftStep.kt:1361"
    ],
    "nl": "Bekende speler"
   },
   {
    "key": "Known Player (not active in this tournament)",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1388"
+    "AndroidTournamentGroupDraftStep.kt:1384"
    ],
    "nl": "Bekende speler (niet actief in dit toernooi)"
   },
@@ -4263,7 +4278,7 @@
   {
    "key": "Layout checked · enter final scores",
    "places": [
-    "AndroidTournamentScreen.kt:3109",
+    "AndroidTournamentScreen.kt:3114",
     "AndroidDutchUiCopy.kt:388"
    ],
    "nl": "Indeling gecontroleerd · voer finalescores in"
@@ -4271,7 +4286,7 @@
   {
    "key": "Layout checked · enter scores",
    "places": [
-    "AndroidTournamentScreen.kt:3099",
+    "AndroidTournamentScreen.kt:3104",
     "AndroidDutchUiCopy.kt:382"
    ],
    "nl": "Indeling gecontroleerd · voer scores in"
@@ -4287,7 +4302,7 @@
   {
    "key": "Layout taken over from the file.",
    "places": [
-    "AndroidTournamentScreen.kt:363"
+    "AndroidTournamentScreen.kt:368"
    ],
    "nl": "Indeling overgenomen uit het bestand."
   },
@@ -4366,7 +4381,7 @@
   {
    "key": "Linked",
    "places": [
-    "AndroidIdentityLinkScreen.kt:191"
+    "AndroidIdentityLinkScreen.kt:223"
    ],
    "nl": "Gekoppeld"
   },
@@ -4380,7 +4395,7 @@
   {
    "key": "Linked · races remain available. Update these group links after changing the layout.",
    "places": [
-    "AndroidTournamentScreen.kt:3530",
+    "AndroidTournamentScreen.kt:3535",
     "AndroidDutchUiCopy.kt:470"
    ],
    "nl": "Gekoppeld · races blijven beschikbaar. Werk deze groepskoppelingen bij nadat je de indeling wijzigt."
@@ -4404,20 +4419,20 @@
   {
    "key": "Live feed complete · check final totals, then link the observed names to Players.",
    "places": [
-    "AndroidTournamentScreen.kt:3536"
+    "AndroidTournamentScreen.kt:3541"
    ]
   },
   {
    "key": "Live now · public viewers see in-game names and Total. Player linking follows after Stop.",
    "places": [
-    "AndroidTournamentScreen.kt:3534"
+    "AndroidTournamentScreen.kt:3539"
    ]
   },
   {
    "key": "Live standings",
    "places": [
     "AndroidTournamentNightScreen.kt:758",
-    "AndroidTournamentScreen.kt:3739",
+    "AndroidTournamentScreen.kt:3744",
     "AndroidDutchUiCopy.kt:432"
    ],
    "nl": "Live-tussenstanden"
@@ -4432,14 +4447,14 @@
   {
    "key": "Load existing tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2864"
+    "AndroidTournamentScreen.kt:2869"
    ],
    "nl": "Bestaand toernooi laden"
   },
   {
    "key": "Load selected tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2915"
+    "AndroidTournamentScreen.kt:2920"
    ],
    "nl": "Laad geselecteerd toernooi"
   },
@@ -4453,7 +4468,7 @@
   {
    "key": "Loading Tournament…",
    "places": [
-    "AndroidTournamentScreen.kt:2517",
+    "AndroidTournamentScreen.kt:2522",
     "AndroidDutchUiCopy.kt:210"
    ],
    "nl": "Toernooi laden…"
@@ -4461,7 +4476,7 @@
   {
    "key": "Loading accounts…",
    "places": [
-    "AndroidIdentityLinkScreen.kt:120"
+    "AndroidIdentityLinkScreen.kt:152"
    ],
    "nl": "Accounts laden…"
   },
@@ -4578,7 +4593,7 @@
   {
    "key": "MATCHES THE ANSWERS",
    "places": [
-    "AndroidIdentityLinkScreen.kt:343"
+    "AndroidIdentityLinkScreen.kt:375"
    ],
    "nl": "PAST BIJ DE ANTWOORDEN"
   },
@@ -4599,8 +4614,8 @@
    "key": "MK8DX LAN Tournament Board",
    "places": [
     "AndroidTournamentParticipantsStep.kt:321",
-    "AndroidTournamentScreen.kt:2277",
-    "AndroidTournamentScreen.kt:2628",
+    "AndroidTournamentScreen.kt:2282",
+    "AndroidTournamentScreen.kt:2633",
     "AndroidTournamentStepTheme.kt:435"
    ],
    "nl": "MK8DX LAN Toernooibord"
@@ -4650,7 +4665,7 @@
   {
    "key": "Management actions for tournament days. Unavailable actions always show the reason.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1581"
+    "AndroidTournamentGroupDraftStep.kt:1577"
    ],
    "nl": "Beheer- en testacties voor toernooidagen. Niet-beschikbare acties tonen altijd de reden."
   },
@@ -4686,7 +4701,7 @@
   {
    "key": "Manual totals follow the original score sheet. Only confirmed desktop race results can affect TrueSkill.",
    "places": [
-    "AndroidTournamentScreen.kt:3755",
+    "AndroidTournamentScreen.kt:3760",
     "AndroidDutchUiCopy.kt:433"
    ],
    "nl": "Handmatige totalen volgen het originele scoreblad. Alleen bevestigde raceresultaten uit de desktopapps kunnen TrueSkill beinvloeden."
@@ -4841,7 +4856,7 @@
   {
    "key": "More than 3 connection resets: correct the desktop session; nothing is truncated.",
    "places": [
-    "AndroidTournamentScreen.kt:3596"
+    "AndroidTournamentScreen.kt:3601"
    ]
   },
   {
@@ -4904,16 +4919,16 @@
   {
    "key": "Move {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:614",
-    "AndroidTournamentGroupDraftStep.kt:654",
-    "AndroidTournamentScreen.kt:3313"
+    "AndroidTournamentGroupDraftStep.kt:610",
+    "AndroidTournamentGroupDraftStep.kt:650",
+    "AndroidTournamentScreen.kt:3318"
    ],
    "nl": "Verplaats {0}"
   },
   {
    "key": "Move {0}'s Nintendo Switch to parking",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:948"
+    "AndroidTournamentGroupDraftStep.kt:944"
    ],
    "nl": "Nintendo Switch van {0} naar parking"
   },
@@ -4989,7 +5004,7 @@
   {
    "key": "NEEDS SEAT",
    "places": [
-    "AndroidTournamentScreen.kt:3307",
+    "AndroidTournamentScreen.kt:3312",
     "AndroidDutchUiCopy.kt:116"
    ],
    "nl": "HEEFT ZITPLAATS NODIG"
@@ -5073,7 +5088,7 @@
   {
    "key": "New",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:154",
+    "AndroidTournamentGroupDraftStep.kt:150",
     "AndroidTournamentParticipantsStep.kt:1495"
    ],
    "nl": "Nieuw"
@@ -5081,8 +5096,8 @@
   {
    "key": "New Player",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1366",
-    "AndroidTournamentGroupDraftStep.kt:1408"
+    "AndroidTournamentGroupDraftStep.kt:1362",
+    "AndroidTournamentGroupDraftStep.kt:1404"
    ],
    "nl": "Nieuwe speler"
   },
@@ -5098,7 +5113,7 @@
   {
    "key": "New Switch",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1369"
+    "AndroidTournamentGroupDraftStep.kt:1365"
    ],
    "nl": "Nieuwe Switch"
   },
@@ -5133,7 +5148,7 @@
   {
    "key": "New tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2764"
+    "AndroidTournamentScreen.kt:2769"
    ],
    "nl": "Nieuw toernooi"
   },
@@ -5190,7 +5205,7 @@
   {
    "key": "Nintendo Switch available",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1215"
+    "AndroidTournamentGroupDraftStep.kt:1211"
    ],
    "nl": "Nintendo Switch beschikbaar"
   },
@@ -5204,7 +5219,7 @@
   {
    "key": "No",
    "places": [
-    "AndroidIdentityLinkScreen.kt:410",
+    "AndroidIdentityLinkScreen.kt:442",
     "AndroidTournamentSignup.kt:345",
     "AndroidTournamentSignup.kt:352"
    ],
@@ -5213,7 +5228,7 @@
   {
    "key": "No Nintendo Switch assigned yet",
    "places": [
-    "AndroidTournamentScreen.kt:3264",
+    "AndroidTournamentScreen.kt:3269",
     "AndroidDutchUiCopy.kt:219"
    ],
    "nl": "Nog geen Nintendo Switch-systeem toegewezen"
@@ -5228,8 +5243,8 @@
   {
    "key": "No Player matches that.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:366",
-    "AndroidIdentityLinkScreen.kt:383"
+    "AndroidIdentityLinkScreen.kt:398",
+    "AndroidIdentityLinkScreen.kt:415"
    ],
    "nl": "Geen speler komt daarmee overeen."
   },
@@ -5243,14 +5258,14 @@
   {
    "key": "No Tournament has been loaded yet",
    "places": [
-    "AndroidTournamentScreen.kt:2316"
+    "AndroidTournamentScreen.kt:2321"
    ],
    "nl": "Er is nog geen toernooi geladen"
   },
   {
    "key": "No Tournament loaded",
    "places": [
-    "AndroidTournamentScreen.kt:2327"
+    "AndroidTournamentScreen.kt:2332"
    ],
    "nl": "Geen toernooi geladen"
   },
@@ -5271,7 +5286,7 @@
   {
    "key": "No account yet",
    "places": [
-    "AndroidIdentityLinkScreen.kt:241"
+    "AndroidIdentityLinkScreen.kt:273"
    ],
    "nl": "Nog geen account"
   },
@@ -5377,7 +5392,7 @@
   {
    "key": "No labels",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:811"
+    "AndroidTournamentGroupDraftStep.kt:807"
    ],
    "nl": "Geen labels"
   },
@@ -5507,7 +5522,7 @@
   {
    "key": "No seat",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1050"
+    "AndroidTournamentGroupDraftStep.kt:1046"
    ],
    "nl": "Geen plek"
   },
@@ -5535,7 +5550,7 @@
   {
    "key": "No tournaments available",
    "places": [
-    "AndroidTournamentScreen.kt:2556"
+    "AndroidTournamentScreen.kt:2561"
    ],
    "nl": "Geen toernooien beschikbaar"
   },
@@ -5717,7 +5732,7 @@
   {
    "key": "Not linked",
    "places": [
-    "AndroidIdentityLinkScreen.kt:252"
+    "AndroidIdentityLinkScreen.kt:284"
    ],
    "nl": "Niet gekoppeld"
   },
@@ -5822,7 +5837,7 @@
   {
    "key": "Not yet seated: {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:836"
+    "AndroidTournamentGroupDraftStep.kt:832"
    ],
    "nl": "Nog niet geplaatst: {0}"
   },
@@ -5836,7 +5851,7 @@
   {
    "key": "Nothing available",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1167"
+    "AndroidTournamentGroupDraftStep.kt:1163"
    ],
    "nl": "Niets beschikbaar"
   },
@@ -5857,7 +5872,7 @@
   {
    "key": "Nothing has happened yet.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1669"
+    "AndroidTournamentGroupDraftStep.kt:1665"
    ],
    "nl": "Er is nog niets gebeurd."
   },
@@ -5885,7 +5900,7 @@
   {
    "key": "Nothing was imported. {0}.",
    "places": [
-    "AndroidTournamentRosterImport.kt:170"
+    "AndroidTournamentRosterImport.kt:181"
    ],
    "nl": "Er is niets geïmporteerd. {0}."
   },
@@ -5965,7 +5980,7 @@
   {
    "key": "OTHER PLAYERS WITH THIS NAME",
    "places": [
-    "AndroidIdentityLinkScreen.kt:344"
+    "AndroidIdentityLinkScreen.kt:376"
    ],
    "nl": "ANDERE SPELERS MET DEZE NAAM"
   },
@@ -6036,7 +6051,7 @@
    "key": "On this site Players create themselves when they sign up. Ask the person to sign up, then add their Player.",
    "places": [
     "AndroidTournamentRosterPicker.kt:82",
-    "AndroidTournamentScreen.kt:110"
+    "AndroidTournamentScreen.kt:112"
    ],
    "nl": "Op deze site maken spelers zichzelf aan bij het aanmelden. Vraag de persoon zich aan te melden en voeg daarna zijn speler toe."
   },
@@ -6071,7 +6086,7 @@
   {
    "key": "Only a draft without recorded races can be deleted.",
    "places": [
-    "AndroidTournamentScreen.kt:2125",
+    "AndroidTournamentScreen.kt:2130",
     "AndroidDutchUiCopy.kt:350"
    ],
    "nl": "Alleen een concept zonder vastgelegde races kan worden verwijderd."
@@ -6079,8 +6094,8 @@
   {
    "key": "Only an administrator can swap between final groups.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:700",
-    "AndroidTournamentGroupDraftStep.kt:1595"
+    "AndroidTournamentGroupDraftStep.kt:696",
+    "AndroidTournamentGroupDraftStep.kt:1591"
    ],
    "nl": "Tussen eindgroepen wisselen kan alleen door een administrator."
   },
@@ -6343,7 +6358,7 @@
   {
    "key": "Other tournaments",
    "places": [
-    "AndroidTournamentScreen.kt:3185",
+    "AndroidTournamentScreen.kt:3190",
     "AndroidDutchUiCopy.kt:131"
    ],
    "nl": "Andere toernooien"
@@ -6410,7 +6425,7 @@
   {
    "key": "Owner (present participant)",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1446"
+    "AndroidTournamentGroupDraftStep.kt:1442"
    ],
    "nl": "Eigenaar (aanwezige deelnemer)"
   },
@@ -6490,9 +6505,9 @@
   {
    "key": "Park",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:709",
-    "AndroidTournamentGroupDraftStep.kt:947",
-    "AndroidTournamentScreen.kt:3318",
+    "AndroidTournamentGroupDraftStep.kt:705",
+    "AndroidTournamentGroupDraftStep.kt:943",
+    "AndroidTournamentScreen.kt:3323",
     "AndroidDutchUiCopy.kt:132"
    ],
    "nl": "Parkeer"
@@ -6500,35 +6515,35 @@
   {
    "key": "Parked Nintendo Switches ({0})",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:302"
+    "AndroidTournamentGroupDraftStep.kt:298"
    ],
    "nl": "Geparkeerde Nintendo Switches ({0})"
   },
   {
    "key": "Parked participants ({0})",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:325"
+    "AndroidTournamentGroupDraftStep.kt:321"
    ],
    "nl": "Geparkeerde deelnemers ({0})"
   },
   {
    "key": "Parking\n({0})",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1364"
+    "AndroidTournamentGroupDraftStep.kt:1360"
    ],
    "nl": "Parkeerzone\n({0})"
   },
   {
    "key": "Participant",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:978"
+    "AndroidTournamentGroupDraftStep.kt:974"
    ],
    "nl": "Deelnemer"
   },
   {
    "key": "Participant from parking",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1376"
+    "AndroidTournamentGroupDraftStep.kt:1372"
    ],
    "nl": "Deelnemer uit parkeerzone"
   },
@@ -6675,17 +6690,17 @@
   {
    "key": "Place Switch on this slot",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1438",
-    "AndroidTournamentGroupDraftStep.kt:1459"
+    "AndroidTournamentGroupDraftStep.kt:1434",
+    "AndroidTournamentGroupDraftStep.kt:1455"
    ],
    "nl": "Plaats Switch op deze plek"
   },
   {
    "key": "Place on this seat",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1382",
-    "AndroidTournamentGroupDraftStep.kt:1403",
-    "AndroidTournamentGroupDraftStep.kt:1425"
+    "AndroidTournamentGroupDraftStep.kt:1378",
+    "AndroidTournamentGroupDraftStep.kt:1399",
+    "AndroidTournamentGroupDraftStep.kt:1421"
    ],
    "nl": "Plaats op deze plek"
   },
@@ -6716,14 +6731,14 @@
   {
    "key": "Player from final group A",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1625"
+    "AndroidTournamentGroupDraftStep.kt:1621"
    ],
    "nl": "Speler uit eindgroep A"
   },
   {
    "key": "Player from final group B",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1626"
+    "AndroidTournamentGroupDraftStep.kt:1622"
    ],
    "nl": "Speler uit eindgroep B"
   },
@@ -6832,7 +6847,7 @@
   {
    "key": "Possible duplicate — compare before accepting",
    "places": [
-    "AndroidTournamentScreen.kt:3645",
+    "AndroidTournamentScreen.kt:3650",
     "AndroidDutchUiCopy.kt:231"
    ],
    "nl": "Mogelijk duplicaat — vergelijk vóór accepteren"
@@ -7002,7 +7017,7 @@
   {
    "key": "Public results",
    "places": [
-    "AndroidTournamentScreen.kt:3772",
+    "AndroidTournamentScreen.kt:3777",
     "AndroidDutchUiCopy.kt:141"
    ],
    "nl": "Openbare resultaten"
@@ -7057,7 +7072,7 @@
   {
    "key": "Qualifier Groups layout",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:234"
+    "AndroidTournamentGroupDraftStep.kt:230"
    ],
    "nl": "Kwalificatie Groepen indeling"
   },
@@ -7480,7 +7495,7 @@
   {
    "key": "Record incident",
    "places": [
-    "AndroidTournamentScreen.kt:3797",
+    "AndroidTournamentScreen.kt:3802",
     "AndroidDutchUiCopy.kt:235"
    ],
    "nl": "Incident vastleggen"
@@ -7502,7 +7517,7 @@
   {
    "key": "Recording {0} – {1} · {2} races",
    "places": [
-    "AndroidTournamentScreen.kt:3496"
+    "AndroidTournamentScreen.kt:3501"
    ]
   },
   {
@@ -7546,8 +7561,8 @@
    "places": [
     "AndroidAdministrationScreen.kt:209",
     "AndroidTournamentParticipantsStep.kt:337",
-    "AndroidTournamentScreen.kt:2649",
-    "AndroidTournamentScreen.kt:3157"
+    "AndroidTournamentScreen.kt:2654",
+    "AndroidTournamentScreen.kt:3162"
    ],
    "nl": "Vernieuwen"
   },
@@ -7582,7 +7597,7 @@
   {
    "key": "Reject result",
    "places": [
-    "AndroidTournamentScreen.kt:3661"
+    "AndroidTournamentScreen.kt:3666"
    ]
   },
   {
@@ -7595,14 +7610,14 @@
   {
    "key": "Removal can be undone by an administrator; the audit trail stays.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1659"
+    "AndroidTournamentGroupDraftStep.kt:1655"
    ],
    "nl": "Verwijderen kan een administrator ongedaan maken; het auditspoor blijft."
   },
   {
    "key": "Removal is no longer possible once races have been entered.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1654"
+    "AndroidTournamentGroupDraftStep.kt:1650"
    ],
    "nl": "Verwijderen kan niet meer zodra er races zijn ingevoerd."
   },
@@ -7646,7 +7661,7 @@
   {
    "key": "Remove selected tournament",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1646"
+    "AndroidTournamentGroupDraftStep.kt:1642"
    ],
    "nl": "Verwijder geselecteerd toernooi"
   },
@@ -7660,7 +7675,7 @@
   {
    "key": "Remove {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1539",
+    "AndroidTournamentGroupDraftStep.kt:1535",
     "AndroidTournamentStepTheme.kt:674"
    ],
    "nl": "{0} verwijderen"
@@ -7668,14 +7683,14 @@
   {
    "key": "Remove {0} from the tournament",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1043"
+    "AndroidTournamentGroupDraftStep.kt:1039"
    ],
    "nl": "{0} uit het toernooi halen"
   },
   {
    "key": "Remove {0}'s {1}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:956"
+    "AndroidTournamentGroupDraftStep.kt:952"
    ],
    "nl": "{0} van {1} verwijderen"
   },
@@ -7689,21 +7704,21 @@
   {
    "key": "Reopen layout",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:243"
+    "AndroidTournamentGroupDraftStep.kt:239"
    ],
    "nl": "Indeling heropenen"
   },
   {
    "key": "Reopen layout (Step 7)",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:242"
+    "AndroidTournamentGroupDraftStep.kt:238"
    ],
    "nl": "Indeling heropenen (Stap 7)"
   },
   {
    "key": "Reopens the previous step. Work that depends on this step is reset.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1644"
+    "AndroidTournamentGroupDraftStep.kt:1640"
    ],
    "nl": "Heropent de vorige stap. Werk dat van deze stap afhangt wordt teruggezet."
   },
@@ -7790,7 +7805,7 @@
    "places": [
     "AndroidHomeExperience.kt:160",
     "AndroidTrackContext.kt:193",
-    "AndroidTournamentScreen.kt:2526",
+    "AndroidTournamentScreen.kt:2531",
     "AndroidDutchUiCopy.kt:153"
    ],
    "nl": "Opnieuw"
@@ -7870,7 +7885,7 @@
   {
    "key": "Review finalization",
    "places": [
-    "AndroidTournamentScreen.kt:3774",
+    "AndroidTournamentScreen.kt:3779",
     "AndroidDutchUiCopy.kt:238"
    ],
    "nl": "Afronding controleren"
@@ -7967,7 +7982,7 @@
   {
    "key": "Running Tournament nights is for Directors; you can ask to host on the Tournaments tab. Time Trials remain fully usable.",
    "places": [
-    "AndroidTournamentScreen.kt:563",
+    "AndroidTournamentScreen.kt:568",
     "AndroidDutchUiCopy.kt:346"
    ],
    "nl": "Toernooiavonden draaien is voor Directeuren; op het tabblad Toernooien kun je vragen om te hosten. Time Trials blijven volledig bruikbaar."
@@ -8030,7 +8045,7 @@
   {
    "key": "STEP 0 · DIRECTOR",
    "places": [
-    "AndroidTournamentScreen.kt:2502",
+    "AndroidTournamentScreen.kt:2507",
     "AndroidDutchUiCopy.kt:442"
    ],
    "nl": "STAP 0 · DIRECTEUR"
@@ -8038,13 +8053,13 @@
   {
    "key": "STEP {0} OF 10",
    "places": [
-    "AndroidTournamentScreen.kt:3074"
+    "AndroidTournamentScreen.kt:3079"
    ]
   },
   {
    "key": "STEP {0}/10 · {1}",
    "places": [
-    "AndroidTournamentScreen.kt:3146"
+    "AndroidTournamentScreen.kt:3151"
    ]
   },
   {
@@ -8066,8 +8081,8 @@
    "places": [
     "AndroidCommunitySetupScreen.kt:180",
     "AndroidTournamentParticipantsStep.kt:1327",
-    "AndroidTournamentScreen.kt:2315",
-    "AndroidTournamentScreen.kt:2696"
+    "AndroidTournamentScreen.kt:2320",
+    "AndroidTournamentScreen.kt:2701"
    ],
    "nl": "Opslaan"
   },
@@ -8095,7 +8110,7 @@
   {
    "key": "Save incident",
    "places": [
-    "AndroidTournamentScreen.kt:3808",
+    "AndroidTournamentScreen.kt:3813",
     "AndroidDutchUiCopy.kt:240"
    ],
    "nl": "Incident opslaan"
@@ -8124,7 +8139,7 @@
   {
    "key": "Save {0} scores",
    "places": [
-    "AndroidTournamentScreen.kt:3754"
+    "AndroidTournamentScreen.kt:3759"
    ]
   },
   {
@@ -8137,7 +8152,7 @@
   {
    "key": "Saved in Downloads/MK8DX/{0}",
    "places": [
-    "AndroidTournamentScreen.kt:469"
+    "AndroidTournamentScreen.kt:474"
    ],
    "nl": "Opgeslagen in Downloads/MK8DX/{0}"
   },
@@ -8337,7 +8352,7 @@
   {
    "key": "Score entry",
    "places": [
-    "AndroidTournamentScreen.kt:3678",
+    "AndroidTournamentScreen.kt:3683",
     "AndroidDutchUiCopy.kt:430"
    ],
    "nl": "Score-invoer"
@@ -8375,7 +8390,7 @@
   {
    "key": "Search Players",
    "places": [
-    "AndroidIdentityLinkScreen.kt:331"
+    "AndroidIdentityLinkScreen.kt:363"
    ],
    "nl": "Spelers zoeken"
   },
@@ -8521,8 +8536,16 @@
    "nl": "Stuur een van je gepubliceerde tijden om te verbeteren. Eén keer per uur."
   },
   {
+   "key": "Send the link",
+   "places": [
+    "AndroidStepUp.kt:250"
+   ],
+   "nl": "Stuur de link"
+  },
+  {
    "key": "Sending…",
    "places": [
+    "AndroidStepUp.kt:274",
     "AndroidPlayerInteractions.kt:276",
     "AndroidDirectorHostRequest.kt:182"
    ],
@@ -8545,7 +8568,7 @@
   {
    "key": "Set to Absent",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1524"
+    "AndroidTournamentGroupDraftStep.kt:1520"
    ],
    "nl": "Naar Afwezig"
   },
@@ -8570,7 +8593,7 @@
    "key": "Share",
    "places": [
     "AndroidTournamentPlayerCharts.kt:335",
-    "AndroidTournamentScreen.kt:3166",
+    "AndroidTournamentScreen.kt:3171",
     "AndroidDutchUiCopy.kt:171"
    ],
    "nl": "Aandeel"
@@ -8593,7 +8616,7 @@
   {
    "key": "Share final layout",
    "places": [
-    "AndroidTournamentScreen.kt:3108",
+    "AndroidTournamentScreen.kt:3113",
     "AndroidDutchUiCopy.kt:387"
    ],
    "nl": "Finale-indeling delen"
@@ -8601,7 +8624,7 @@
   {
    "key": "Share final result",
    "places": [
-    "AndroidTournamentScreen.kt:3112",
+    "AndroidTournamentScreen.kt:3117",
     "AndroidDutchUiCopy.kt:389"
    ],
    "nl": "Einduitslag delen"
@@ -8609,22 +8632,22 @@
   {
    "key": "Share image",
    "places": [
-    "AndroidTournamentScreen.kt:532"
+    "AndroidTournamentScreen.kt:537"
    ],
    "nl": "Deel afbeelding"
   },
   {
    "key": "Share layout",
    "places": [
-    "AndroidTournamentScreen.kt:1508",
-    "AndroidTournamentScreen.kt:1831"
+    "AndroidTournamentScreen.kt:1513",
+    "AndroidTournamentScreen.kt:1836"
    ],
    "nl": "Deel indeling"
   },
   {
    "key": "Share qualifier layout",
    "places": [
-    "AndroidTournamentScreen.kt:3098",
+    "AndroidTournamentScreen.kt:3103",
     "AndroidDutchUiCopy.kt:381"
    ],
    "nl": "Kwalificatie-indeling delen"
@@ -8632,9 +8655,9 @@
   {
    "key": "Share results",
    "places": [
-    "AndroidTournamentScreen.kt:1363",
-    "AndroidTournamentScreen.kt:1421",
-    "AndroidTournamentScreen.kt:3103",
+    "AndroidTournamentScreen.kt:1368",
+    "AndroidTournamentScreen.kt:1426",
+    "AndroidTournamentScreen.kt:3108",
     "AndroidDutchUiCopy.kt:384"
    ],
    "nl": "Deel uitslag"
@@ -8727,6 +8750,13 @@
    "nl": "Toch {0}cc tonen"
   },
   {
+   "key": "Showing every account's email address needs a fresh confirmation.",
+   "places": [
+    "AndroidIdentityLinkScreen.kt:130"
+   ],
+   "nl": "Voor het tonen van de e-mailadressen van alle accounts is een nieuwe bevestiging nodig."
+  },
+  {
    "key": "Showing the most recent {0} of {1}.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:2117"
@@ -8803,7 +8833,7 @@
   {
    "key": "Sign in as a Director to view attendance, seating, stations, groups, standings and incoming results.",
    "places": [
-    "AndroidTournamentScreen.kt:2504",
+    "AndroidTournamentScreen.kt:2509",
     "AndroidDutchUiCopy.kt:356"
    ],
    "nl": "Meld je aan als Directeur om aanwezigheid, indeling, stations, groepen, standen en binnenkomende uitslagen te bekijken."
@@ -8811,7 +8841,7 @@
   {
    "key": "Sign in as the Tournament director",
    "places": [
-    "AndroidTournamentScreen.kt:2503",
+    "AndroidTournamentScreen.kt:2508",
     "AndroidDutchUiCopy.kt:443"
    ],
    "nl": "Log in als toernooidirecteur"
@@ -9087,14 +9117,14 @@
   {
    "key": "Start new tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2850"
+    "AndroidTournamentScreen.kt:2855"
    ],
    "nl": "Nieuw toernooi starten"
   },
   {
    "key": "Start time (optional)",
    "places": [
-    "AndroidTournamentScreen.kt:2818"
+    "AndroidTournamentScreen.kt:2823"
    ],
    "nl": "Starttijd (optioneel)"
   },
@@ -9121,22 +9151,22 @@
   {
    "key": "Step 0 · Choose director",
    "places": [
-    "AndroidTournamentScreen.kt:2335"
+    "AndroidTournamentScreen.kt:2340"
    ],
    "nl": "Stap 0 · Directeur kiezen"
   },
   {
    "key": "Step 0: Tournament Director",
    "places": [
-    "AndroidTournamentScreen.kt:2348",
-    "AndroidTournamentScreen.kt:2374"
+    "AndroidTournamentScreen.kt:2353",
+    "AndroidTournamentScreen.kt:2379"
    ],
    "nl": "Stap 0: Toernooi Directeur"
   },
   {
    "key": "Step 1 · Start tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2719"
+    "AndroidTournamentScreen.kt:2724"
    ],
    "nl": "Stap 1 · Toernooi starten"
   },
@@ -9150,7 +9180,7 @@
   {
    "key": "Step 1: Start tournament",
    "places": [
-    "AndroidTournamentScreen.kt:2732"
+    "AndroidTournamentScreen.kt:2737"
    ],
    "nl": "Stap 1: Toernooi starten"
   },
@@ -9171,7 +9201,7 @@
   {
    "key": "Step 3 · Create qualifier layout",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:239"
+    "AndroidTournamentGroupDraftStep.kt:235"
    ],
    "nl": "Stap 3 · Kwalificatie-indeling maken"
   },
@@ -9199,14 +9229,14 @@
   {
    "key": "Step 7 Admin Override",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1615"
+    "AndroidTournamentGroupDraftStep.kt:1611"
    ],
    "nl": "Stap 7 Admin Override"
   },
   {
    "key": "Step 7 · Check final groups",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:237"
+    "AndroidTournamentGroupDraftStep.kt:233"
    ],
    "nl": "Stap 7 · Eindgroepen controleren"
   },
@@ -9264,7 +9294,7 @@
   {
    "key": "Stop received · waiting for the final upload.",
    "places": [
-    "AndroidTournamentScreen.kt:3535"
+    "AndroidTournamentScreen.kt:3540"
    ]
   },
   {
@@ -9312,7 +9342,7 @@
   {
    "key": "Suggested: {0}{1}",
    "places": [
-    "AndroidTournamentScreen.kt:3647"
+    "AndroidTournamentScreen.kt:3652"
    ]
   },
   {
@@ -9326,14 +9356,14 @@
   {
    "key": "Swap Players between final groups",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1628"
+    "AndroidTournamentGroupDraftStep.kt:1624"
    ],
    "nl": "Wissel spelers tussen eindgroepen"
   },
   {
    "key": "Swap two Players between different final groups. Only meant as a manual admin override; it changes nothing about the ordinary drag behaviour.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1617"
+    "AndroidTournamentGroupDraftStep.kt:1613"
    ],
    "nl": "Wissel twee spelers tussen verschillende eindgroepen. Dit is alleen bedoeld als handmatige admin-override en verandert niets aan het normale sleepgedrag."
   },
@@ -9363,7 +9393,7 @@
   {
    "key": "Switch from parking",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1432"
+    "AndroidTournamentGroupDraftStep.kt:1428"
    ],
    "nl": "Switch uit parkeerzone"
   },
@@ -9384,7 +9414,7 @@
   {
    "key": "Switch slot",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1333"
+    "AndroidTournamentGroupDraftStep.kt:1329"
    ],
    "nl": "Switch-plek"
   },
@@ -9589,7 +9619,7 @@
   {
    "key": "Take {0} out of Present",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1499"
+    "AndroidTournamentGroupDraftStep.kt:1495"
    ],
    "nl": "{0} uit Aanwezig halen"
   },
@@ -9624,7 +9654,7 @@
   {
    "key": "Tap ",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:278"
+    "AndroidTournamentGroupDraftStep.kt:274"
    ],
    "nl": "Tik "
   },
@@ -9638,7 +9668,7 @@
   {
    "key": "Tap A, W or X for every Player and mark NS1/NS2. {0}/{1} Nintendo Switches ready.",
    "places": [
-    "AndroidTournamentScreen.kt:3089"
+    "AndroidTournamentScreen.kt:3094"
    ]
   },
   {
@@ -9658,7 +9688,7 @@
   {
    "key": "Tap a Player to move or park them",
    "places": [
-    "AndroidTournamentScreen.kt:3327",
+    "AndroidTournamentScreen.kt:3332",
     "AndroidDutchUiCopy.kt:248"
    ],
    "nl": "Tik op een speler om die te verplaatsen of te parkeren"
@@ -9710,7 +9740,7 @@
   {
    "key": "That change could not be saved.",
    "places": [
-    "AndroidTournamentScreen.kt:2149",
+    "AndroidTournamentScreen.kt:2154",
     "AndroidDutchUiCopy.kt:353"
    ],
    "nl": "Die wijziging kon niet worden opgeslagen."
@@ -9718,8 +9748,8 @@
   {
    "key": "That change could not be saved. Refresh the Tournament data and check again.",
    "places": [
-    "AndroidTournamentScreen.kt:125",
-    "AndroidTournamentScreen.kt:138"
+    "AndroidTournamentScreen.kt:127",
+    "AndroidTournamentScreen.kt:140"
    ],
    "nl": "Die wijziging kon niet worden opgeslagen. Vernieuw de toernooigegevens en controleer opnieuw."
   },
@@ -9754,14 +9784,14 @@
   {
    "key": "The CSV file contains no participants.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:145"
+    "AndroidTournamentLayoutCsv.kt:146"
    ],
    "nl": "Het CSV-bestand bevat geen deelnemers."
   },
   {
    "key": "The CSV file holds no participants.",
    "places": [
-    "AndroidTournamentRosterCsv.kt:218"
+    "AndroidTournamentRosterCsv.kt:219"
    ],
    "nl": "Het CSV-bestand bevat geen deelnemers."
   },
@@ -9827,28 +9857,28 @@
   {
    "key": "The Player could not be created.",
    "places": [
-    "AndroidTournamentScreen.kt:1140"
+    "AndroidTournamentScreen.kt:1145"
    ],
    "nl": "De speler kon niet worden aangemaakt."
   },
   {
    "key": "The Player list could not be read.",
    "places": [
-    "AndroidTournamentScreen.kt:1011"
+    "AndroidTournamentScreen.kt:1016"
    ],
    "nl": "De spelerslijst kon niet worden gelezen."
   },
   {
    "key": "The Player was not created.",
    "places": [
-    "AndroidTournamentScreen.kt:1112"
+    "AndroidTournamentScreen.kt:1117"
    ],
    "nl": "De speler is niet aangemaakt."
   },
   {
    "key": "The Players with this name could not be looked up.",
    "places": [
-    "AndroidTournamentScreen.kt:760"
+    "AndroidTournamentScreen.kt:765"
    ],
    "nl": "De spelers met deze naam konden niet worden opgezocht."
   },
@@ -9876,7 +9906,7 @@
   {
    "key": "The Tournament changed elsewhere. Refresh and try again.",
    "places": [
-    "AndroidTournamentScreen.kt:2144",
+    "AndroidTournamentScreen.kt:2149",
     "AndroidDutchUiCopy.kt:352"
    ],
    "nl": "Het toernooi is elders gewijzigd. Vernieuw en probeer het opnieuw."
@@ -9884,7 +9914,7 @@
   {
    "key": "The Tournament could not be created.",
    "places": [
-    "AndroidTournamentScreen.kt:671",
+    "AndroidTournamentScreen.kt:676",
     "AndroidDutchUiCopy.kt:348"
    ],
    "nl": "Het toernooi kon niet worden gemaakt."
@@ -9892,24 +9922,24 @@
   {
    "key": "The Tournament could not be deleted.",
    "places": [
-    "AndroidTournamentScreen.kt:1190",
-    "AndroidTournamentScreen.kt:1490",
-    "AndroidTournamentScreen.kt:1577",
-    "AndroidTournamentScreen.kt:1716"
+    "AndroidTournamentScreen.kt:1195",
+    "AndroidTournamentScreen.kt:1495",
+    "AndroidTournamentScreen.kt:1582",
+    "AndroidTournamentScreen.kt:1721"
    ],
    "nl": "Het toernooi kon niet worden verwijderd."
   },
   {
    "key": "The account keeps signing in, but stops seeing this Player's history until it is linked again. No result is deleted.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:217"
+    "AndroidIdentityLinkScreen.kt:249"
    ],
    "nl": "Het account kan zich blijven aanmelden, maar ziet de geschiedenis van deze speler niet meer tot het opnieuw gekoppeld is. Er wordt niets verwijderd."
   },
   {
    "key": "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
    "places": [
-    "AndroidTournamentScreen.kt:3457",
+    "AndroidTournamentScreen.kt:3462",
     "AndroidDutchUiCopy.kt:436"
    ],
    "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole."
@@ -9917,7 +9947,7 @@
   {
    "key": "The chosen Tournament could not be loaded.",
    "places": [
-    "AndroidTournamentScreen.kt:610"
+    "AndroidTournamentScreen.kt:615"
    ],
    "nl": "Het gekozen toernooi kon niet worden geladen."
   },
@@ -9980,7 +10010,7 @@
   {
    "key": "The file could not be saved in Downloads.",
    "places": [
-    "AndroidTournamentScreen.kt:472"
+    "AndroidTournamentScreen.kt:477"
    ],
    "nl": "Het bestand kon niet in Downloads worden opgeslagen."
   },
@@ -9994,28 +10024,28 @@
   {
    "key": "The group layout stays locked because races have already been entered. Those results were not removed. Continue to the score step to review them.",
    "places": [
-    "AndroidTournamentScreen.kt:148"
+    "AndroidTournamentScreen.kt:150"
    ],
    "nl": "De groepsindeling blijft vergrendeld omdat er al races zijn ingevoerd. Die uitslagen zijn niet verwijderd. Ga verder naar de scorestap om ze te controleren."
   },
   {
    "key": "The import could not be applied.",
    "places": [
-    "AndroidTournamentScreen.kt:984"
+    "AndroidTournamentScreen.kt:989"
    ],
    "nl": "De import kon niet worden toegepast."
   },
   {
    "key": "The import was rejected.",
    "places": [
-    "AndroidTournamentRosterImport.kt:150"
+    "AndroidTournamentRosterImport.kt:161"
    ],
    "nl": "De import is afgewezen."
   },
   {
    "key": "The layout could not be taken over. Check that the groups are still unlocked.",
    "places": [
-    "AndroidTournamentScreen.kt:368"
+    "AndroidTournamentScreen.kt:373"
    ],
    "nl": "De indeling kon niet worden overgenomen. Controleer of de groepen nog ontgrendeld zijn."
   },
@@ -10027,16 +10057,37 @@
    "nl": "De lijn is het communitygemiddelde, {0} per race."
   },
   {
+   "key": "The link could not be sent. Please retry.",
+   "places": [
+    "AndroidStepUp.kt:207"
+   ],
+   "nl": "De link kon niet worden verstuurd. Probeer het opnieuw."
+  },
+  {
+   "key": "The link has expired. Send a new one to continue.",
+   "places": [
+    "AndroidStepUp.kt:208"
+   ],
+   "nl": "De link is verlopen. Stuur een nieuwe om verder te gaan."
+  },
+  {
+   "key": "The link was sent.",
+   "places": [
+    "AndroidStepUp.kt:273"
+   ],
+   "nl": "De link is verstuurd."
+  },
+  {
    "key": "The list of Tournament Directors could not be loaded.",
    "places": [
-    "AndroidTournamentScreen.kt:646"
+    "AndroidTournamentScreen.kt:651"
    ],
    "nl": "De lijst met toernooi directeuren kon niet worden geladen."
   },
   {
    "key": "The new Players could not be created.",
    "places": [
-    "AndroidTournamentScreen.kt:1083"
+    "AndroidTournamentScreen.kt:1088"
    ],
    "nl": "De nieuwe spelers konden niet worden aangemaakt."
   },
@@ -10050,7 +10101,7 @@
   {
    "key": "The participant could not be added.",
    "places": [
-    "AndroidTournamentScreen.kt:845"
+    "AndroidTournamentScreen.kt:850"
    ],
    "nl": "Deelnemer kon niet worden toegevoegd."
   },
@@ -10058,14 +10109,14 @@
    "key": "The picture could not be made.",
    "places": [
     "AndroidTrackContext.kt:379",
-    "AndroidTournamentScreen.kt:535"
+    "AndroidTournamentScreen.kt:540"
    ],
    "nl": "De afbeelding kon niet worden gemaakt."
   },
   {
    "key": "The picture could not be saved.",
    "places": [
-    "AndroidTournamentScreen.kt:542"
+    "AndroidTournamentScreen.kt:547"
    ],
    "nl": "De afbeelding kon niet worden opgeslagen."
   },
@@ -10086,7 +10137,7 @@
   {
    "key": "The races could not be taken over.",
    "places": [
-    "AndroidTournamentScreen.kt:430"
+    "AndroidTournamentScreen.kt:435"
    ],
    "nl": "De races konden niet worden overgenomen."
   },
@@ -10128,7 +10179,7 @@
   {
    "key": "The same Player is chosen for two rows. A Player may appear once.",
    "places": [
-    "AndroidTournamentScreen.kt:1035"
+    "AndroidTournamentScreen.kt:1040"
    ],
    "nl": "Dezelfde speler is voor twee regels gekozen. Een speler mag één keer voorkomen."
   },
@@ -10165,7 +10216,7 @@
   {
    "key": "The server blocked this change because of a Tournament rule: {0}. Refresh the data and check the current state.",
    "places": [
-    "AndroidTournamentScreen.kt:162"
+    "AndroidTournamentScreen.kt:164"
    ],
    "nl": "De server heeft deze wijziging door een toernooiregel geblokkeerd: {0}. Vernieuw de gegevens en controleer de actuele toestand."
   },
@@ -10228,7 +10279,7 @@
   {
    "key": "The tournament changed in the meantime. Refresh the data, check the current step and then try again.",
    "places": [
-    "AndroidTournamentScreen.kt:156"
+    "AndroidTournamentScreen.kt:158"
    ],
    "nl": "Het toernooi is intussen gewijzigd. Vernieuw de gegevens, controleer de actuele stap en probeer daarna opnieuw."
   },
@@ -10256,7 +10307,7 @@
   {
    "key": "The workbook could not be made.",
    "places": [
-    "AndroidTournamentScreen.kt:483"
+    "AndroidTournamentScreen.kt:488"
    ],
    "nl": "De werkmap kon niet worden gemaakt."
   },
@@ -10333,7 +10384,7 @@
   {
    "key": "This account cannot operate tournaments.",
    "places": [
-    "AndroidTournamentScreen.kt:645"
+    "AndroidTournamentScreen.kt:650"
    ],
    "nl": "Dit account mag geen toernooi bedienen."
   },
@@ -10347,14 +10398,14 @@
   {
    "key": "This account may not edit this Tournament.",
    "places": [
-    "AndroidTournamentScreen.kt:608"
+    "AndroidTournamentScreen.kt:613"
    ],
    "nl": "Dit account mag dit toernooi niet bewerken."
   },
   {
    "key": "This account may not make this Tournament change.",
    "places": [
-    "AndroidTournamentScreen.kt:132"
+    "AndroidTournamentScreen.kt:134"
    ],
    "nl": "Dit account mag deze toernooiwijziging niet uitvoeren."
   },
@@ -10368,9 +10419,16 @@
   {
    "key": "This action is only available while the final layout is open.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1599"
+    "AndroidTournamentGroupDraftStep.kt:1595"
    ],
    "nl": "Deze actie is alleen beschikbaar zolang de eindgroep-indeling open staat."
+  },
+  {
+   "key": "This action needs a fresh confirmation. We send a one-time link to your account's email address. Open it, on this device or another one, and press Confirm. Then this action continues by itself.",
+   "places": [
+    "AndroidStepUp.kt:192"
+   ],
+   "nl": "Voor deze actie is een nieuwe bevestiging nodig. We sturen een eenmalige link naar het e-mailadres van je account. Open die, op dit apparaat of een ander, en druk op Bevestigen. Daarna gaat deze actie vanzelf verder."
   },
   {
    "key": "This app works with your own community: a club, a group of friends or an online community. Pick the way you play below. Not sure? Ask the person who runs your community.",
@@ -10680,7 +10738,7 @@
   {
    "key": "Today",
    "places": [
-    "AndroidTournamentScreen.kt:2804"
+    "AndroidTournamentScreen.kt:2809"
    ],
    "nl": "Vandaag"
   },
@@ -10697,6 +10755,13 @@
     "AndroidDutchUiCopy.kt:100"
    ],
    "nl": "Te veel pogingen met de pincode. Wacht even en probeer het opnieuw."
+  },
+  {
+   "key": "Too many links were requested. Wait a few minutes and try again.",
+   "places": [
+    "AndroidStepUp.kt:202"
+   ],
+   "nl": "Er zijn te veel links aangevraagd. Wacht een paar minuten en probeer het opnieuw."
   },
   {
    "key": "Top",
@@ -10819,20 +10884,20 @@
   {
    "key": "Tournament Live · {0}",
    "places": [
-    "AndroidTournamentScreen.kt:3495"
+    "AndroidTournamentScreen.kt:3500"
    ]
   },
   {
    "key": "Tournament access is linked to your signed-in account, not to a PIN.",
    "places": [
-    "AndroidTournamentScreen.kt:2453"
+    "AndroidTournamentScreen.kt:2458"
    ],
    "nl": "Toegang tot toernooibediening hangt aan je ingelogde account, niet aan een PIN."
   },
   {
    "key": "Tournament date (optional)",
    "places": [
-    "AndroidTournamentScreen.kt:2789"
+    "AndroidTournamentScreen.kt:2794"
    ],
    "nl": "Toernooidatum (optioneel)"
   },
@@ -10846,7 +10911,7 @@
   {
    "key": "Tournament finalized",
    "places": [
-    "AndroidTournamentScreen.kt:3780",
+    "AndroidTournamentScreen.kt:3785",
     "AndroidDutchUiCopy.kt:254"
    ],
    "nl": "Toernooi afgerond"
@@ -10854,7 +10919,7 @@
   {
    "key": "Tournament is unavailable right now. Your Time Trials are unaffected.",
    "places": [
-    "AndroidTournamentScreen.kt:569",
+    "AndroidTournamentScreen.kt:574",
     "AndroidDutchUiCopy.kt:347"
    ],
    "nl": "Het toernooi is nu niet beschikbaar. Dit heeft geen invloed op je Time Trials."
@@ -10862,14 +10927,14 @@
   {
    "key": "Tournament management",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1637"
+    "AndroidTournamentGroupDraftStep.kt:1633"
    ],
    "nl": "Toernooibeheer"
   },
   {
    "key": "Tournament menu",
    "places": [
-    "AndroidTournamentScreen.kt:2646",
+    "AndroidTournamentScreen.kt:2651",
     "AndroidTournamentStepTheme.kt:527"
    ],
    "nl": "Toernooimenu"
@@ -10877,7 +10942,7 @@
   {
    "key": "Tournament name",
    "places": [
-    "AndroidTournamentScreen.kt:2769",
+    "AndroidTournamentScreen.kt:2774",
     "AndroidDutchUiCopy.kt:255"
    ],
    "nl": "ToernooiNaam"
@@ -10934,7 +10999,7 @@
   {
    "key": "Tournament unavailable",
    "places": [
-    "AndroidTournamentScreen.kt:2524",
+    "AndroidTournamentScreen.kt:2529",
     "AndroidDutchUiCopy.kt:256"
    ],
    "nl": "Toernooi niet beschikbaar"
@@ -10942,7 +11007,7 @@
   {
    "key": "Tournament workflow",
    "places": [
-    "AndroidTournamentScreen.kt:3770",
+    "AndroidTournamentScreen.kt:3775",
     "AndroidDutchUiCopy.kt:257"
    ],
    "nl": "Toernooiworkflow"
@@ -11099,14 +11164,14 @@
   {
    "key": "Unknown",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:155"
+    "AndroidTournamentGroupDraftStep.kt:151"
    ],
    "nl": "Onbekend"
   },
   {
    "key": "Unknown name in the layout: {0}.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:382"
+    "AndroidTournamentLayoutCsv.kt:383"
    ],
    "nl": "Onbekende naam in de indeling: {0}."
   },
@@ -11121,15 +11186,15 @@
   {
    "key": "Unlink",
    "places": [
-    "AndroidIdentityLinkScreen.kt:202",
-    "AndroidIdentityLinkScreen.kt:227"
+    "AndroidIdentityLinkScreen.kt:234",
+    "AndroidIdentityLinkScreen.kt:259"
    ],
    "nl": "Ontkoppelen"
   },
   {
    "key": "Unlink this account?",
    "places": [
-    "AndroidIdentityLinkScreen.kt:212"
+    "AndroidIdentityLinkScreen.kt:244"
    ],
    "nl": "Dit account ontkoppelen?"
   },
@@ -11164,7 +11229,7 @@
   {
    "key": "Updating…",
    "places": [
-    "AndroidTournamentScreen.kt:2996",
+    "AndroidTournamentScreen.kt:3001",
     "AndroidDutchUiCopy.kt:261"
    ],
    "nl": "Bijwerken…"
@@ -11334,7 +11399,7 @@
   {
    "key": "Waiting for race names to verify every sticker-to-group link. Nothing is public yet; confirm manually only as a fallback.",
    "places": [
-    "AndroidTournamentScreen.kt:3533"
+    "AndroidTournamentScreen.kt:3538"
    ]
   },
   {
@@ -11375,7 +11440,7 @@
   {
    "key": "Waiting list",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1391",
+    "AndroidTournamentGroupDraftStep.kt:1387",
     "AndroidTournamentParticipantsStep.kt:747",
     "AndroidTournamentParticipantsStep.kt:770",
     "AndroidTournamentParticipantsStep.kt:782"
@@ -11456,7 +11521,7 @@
   {
    "key": "What happened?",
    "places": [
-    "AndroidTournamentScreen.kt:3803",
+    "AndroidTournamentScreen.kt:3808",
     "AndroidDutchUiCopy.kt:264"
    ],
    "nl": "Wat is er gebeurd?"
@@ -11493,7 +11558,7 @@
   {
    "key": "Who can sign in, and whose history they see.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:110"
+    "AndroidIdentityLinkScreen.kt:120"
    ],
    "nl": "Wie zich kan aanmelden, en wiens geschiedenis diegene ziet."
   },
@@ -11633,7 +11698,7 @@
     "AndroidAccountEcosystemScreens.kt:490",
     "AndroidAccountEcosystemScreens.kt:760",
     "AndroidAccountEcosystemScreens.kt:880",
-    "AndroidIdentityLinkScreen.kt:205"
+    "AndroidIdentityLinkScreen.kt:237"
    ],
    "nl": "Bezig…"
   },
@@ -11733,7 +11798,7 @@
   {
    "key": "Yes",
    "places": [
-    "AndroidIdentityLinkScreen.kt:403",
+    "AndroidIdentityLinkScreen.kt:435",
     "AndroidTournamentSignup.kt:344",
     "AndroidTournamentSignup.kt:351"
    ],
@@ -11763,7 +11828,7 @@
   {
    "key": "Yes, remove",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1551",
+    "AndroidTournamentGroupDraftStep.kt:1547",
     "AndroidTournamentStepTheme.kt:699"
    ],
    "nl": "Ja, verwijderen"
@@ -11843,9 +11908,16 @@
   {
    "key": "You are operating as yourself",
    "places": [
-    "AndroidTournamentScreen.kt:2380"
+    "AndroidTournamentScreen.kt:2385"
    ],
    "nl": "Je werkt als jezelf"
+  },
+  {
+   "key": "You are signed out. Sign in again first.",
+   "places": [
+    "AndroidStepUp.kt:206"
+   ],
+   "nl": "Je bent afgemeld. Meld je eerst opnieuw aan."
   },
   {
    "key": "You can host Tournaments now.",
@@ -12334,14 +12406,14 @@
   {
    "key": "a row with a Switch owner needs its console.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:109"
+    "AndroidTournamentLayoutCsv.kt:110"
    ],
    "nl": "een regel met een Switcheigenaar heeft ook de console nodig."
   },
   {
    "key": "a row with a console needs its Switch owner.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:114"
+    "AndroidTournamentLayoutCsv.kt:115"
    ],
    "nl": "een regel met een console heeft ook de Switcheigenaar nodig."
   },
@@ -12355,7 +12427,7 @@
   {
    "key": "also known as {0}",
    "places": [
-    "AndroidTournamentRosterImport.kt:113"
+    "AndroidTournamentRosterImport.kt:124"
    ],
    "nl": "ook bekend als {0}"
   },
@@ -12470,7 +12542,7 @@
   {
    "key": "e.g. New Player",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1412"
+    "AndroidTournamentGroupDraftStep.kt:1408"
    ],
    "nl": "Bijv. Nieuwe Deelnemer"
   },
@@ -12513,14 +12585,14 @@
   {
    "key": "has an account",
    "places": [
-    "AndroidTournamentRosterImport.kt:138"
+    "AndroidTournamentRosterImport.kt:149"
    ],
    "nl": "heeft een account"
   },
   {
    "key": "has signed in but has no account here yet",
    "places": [
-    "AndroidIdentityLinkScreen.kt:243"
+    "AndroidIdentityLinkScreen.kt:275"
    ],
    "nl": "heeft zich aangemeld maar heeft hier nog geen account"
   },
@@ -12549,7 +12621,7 @@
    "key": "last: {0}",
    "places": [
     "AndroidClaimCandidates.kt:108",
-    "AndroidTournamentRosterImport.kt:128"
+    "AndroidTournamentRosterImport.kt:139"
    ],
    "nl": "laatst: {0}"
   },
@@ -12557,7 +12629,7 @@
    "key": "last: {0} ({1})",
    "places": [
     "AndroidClaimCandidates.kt:110",
-    "AndroidTournamentRosterImport.kt:130"
+    "AndroidTournamentRosterImport.kt:141"
    ],
    "nl": "laatst: {0} ({1})"
   },
@@ -12585,7 +12657,7 @@
   {
    "key": "name appears twice in the file",
    "places": [
-    "AndroidTournamentRosterImport.kt:155"
+    "AndroidTournamentRosterImport.kt:166"
    ],
    "nl": "naam staat dubbel in het bestand"
   },
@@ -12606,7 +12678,7 @@
   {
    "key": "no account yet",
    "places": [
-    "AndroidTournamentRosterImport.kt:140"
+    "AndroidTournamentRosterImport.kt:151"
    ],
    "nl": "nog geen account"
   },
@@ -12620,7 +12692,7 @@
   {
    "key": "no nights yet",
    "places": [
-    "AndroidTournamentRosterImport.kt:117"
+    "AndroidTournamentRosterImport.kt:128"
    ],
    "nl": "nog geen avonden"
   },
@@ -12670,14 +12742,14 @@
   {
    "key": "on this night's list",
    "places": [
-    "AndroidTournamentRosterImport.kt:142"
+    "AndroidTournamentRosterImport.kt:153"
    ],
    "nl": "staat op de lijst van deze avond"
   },
   {
    "key": "participant",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1306"
+    "AndroidTournamentGroupDraftStep.kt:1302"
    ],
    "nl": "deelnemer"
   },
@@ -12740,7 +12812,7 @@
   {
    "key": "row {0} \"{1}\": {2}",
    "places": [
-    "AndroidTournamentRosterImport.kt:164"
+    "AndroidTournamentRosterImport.kt:175"
    ],
    "nl": "regel {0} \"{1}\": {2}"
   },
@@ -12754,14 +12826,14 @@
   {
    "key": "seat 2 is filled while seat 1 is empty.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:119"
+    "AndroidTournamentLayoutCsv.kt:120"
    ],
    "nl": "stoel 2 is gevuld terwijl stoel 1 leeg is."
   },
   {
    "key": "seat {0}",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1332"
+    "AndroidTournamentGroupDraftStep.kt:1328"
    ],
    "nl": "plek {0}"
   },
@@ -12789,43 +12861,43 @@
   {
    "key": "this Player already appears earlier in the file.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:129"
+    "AndroidTournamentLayoutCsv.kt:130"
    ],
    "nl": "deze speler staat al eerder in het bestand."
   },
   {
    "key": "this is not a console.",
    "places": [
-    "AndroidTournamentLayoutCsv.kt:104"
+    "AndroidTournamentLayoutCsv.kt:105"
    ],
    "nl": "dit is geen console."
   },
   {
    "key": "this is not a yes or a no.",
    "places": [
-    "AndroidTournamentRosterCsv.kt:192",
-    "AndroidTournamentRosterCsv.kt:202"
+    "AndroidTournamentRosterCsv.kt:193",
+    "AndroidTournamentRosterCsv.kt:203"
    ],
    "nl": "dit is geen ja of nee."
   },
   {
    "key": "this is not an attendance.",
    "places": [
-    "AndroidTournamentRosterCsv.kt:182"
+    "AndroidTournamentRosterCsv.kt:183"
    ],
    "nl": "dit is geen aanwezigheid."
   },
   {
    "key": "this name already exists in your nights; confirm that it is someone else",
    "places": [
-    "AndroidTournamentRosterImport.kt:156"
+    "AndroidTournamentRosterImport.kt:167"
    ],
    "nl": "deze naam bestaat al in jouw avonden; bevestig dat het iemand anders is"
   },
   {
    "key": "this name is already on row {0}.",
    "places": [
-    "AndroidTournamentRosterCsv.kt:226"
+    "AndroidTournamentRosterCsv.kt:227"
    ],
    "nl": "deze naam staat al op regel {0}."
   },
@@ -12839,7 +12911,7 @@
   {
    "key": "to parking",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:1344"
+    "AndroidTournamentGroupDraftStep.kt:1340"
    ],
    "nl": "naar parkeerzone"
   },
@@ -12867,14 +12939,14 @@
   {
    "key": "unusable name",
    "places": [
-    "AndroidTournamentRosterImport.kt:153"
+    "AndroidTournamentRosterImport.kt:164"
    ],
    "nl": "onbruikbare naam"
   },
   {
    "key": "username is taken",
    "places": [
-    "AndroidTournamentRosterImport.kt:161"
+    "AndroidTournamentRosterImport.kt:172"
    ],
    "nl": "gebruikersnaam is bezet"
   },
@@ -12923,7 +12995,7 @@
   {
    "key": "your name for them: {0}",
    "places": [
-    "AndroidTournamentRosterImport.kt:111"
+    "AndroidTournamentRosterImport.kt:122"
    ],
    "nl": "jouw naam voor deze speler: {0}"
   },
@@ -12944,7 +13016,7 @@
   {
    "key": "{0} Player parking · {1}",
    "places": [
-    "AndroidTournamentScreen.kt:3347"
+    "AndroidTournamentScreen.kt:3352"
    ]
   },
   {
@@ -12957,14 +13029,14 @@
   {
    "key": "{0} Switches & {1} participants",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:386"
+    "AndroidTournamentGroupDraftStep.kt:382"
    ],
    "nl": "{0} Switches & {1} deelnemers"
   },
   {
    "key": "{0} account(s), {1} not yet linked.",
    "places": [
-    "AndroidIdentityLinkScreen.kt:128"
+    "AndroidIdentityLinkScreen.kt:160"
    ],
    "nl": "{0} account(s), {1} nog niet gekoppeld."
   },
@@ -13049,7 +13121,7 @@
   {
    "key": "{0} desktop result{1} waiting under Incoming.",
    "places": [
-    "AndroidTournamentScreen.kt:3681"
+    "AndroidTournamentScreen.kt:3686"
    ]
   },
   {
@@ -13254,7 +13326,7 @@
   {
    "key": "{0} nights",
    "places": [
-    "AndroidTournamentRosterImport.kt:105"
+    "AndroidTournamentRosterImport.kt:116"
    ],
    "nl": "{0} avonden"
   },
@@ -13332,7 +13404,7 @@
   {
    "key": "{0} participants are not yet placed. Review the groups before continuing.",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:480"
+    "AndroidTournamentGroupDraftStep.kt:476"
    ],
    "nl": "Nog {0} deelnemers niet ingedeeld. Controleer de groepen voordat je doorgaat."
   },
@@ -13438,7 +13510,7 @@
   {
    "key": "{0} race(s). Exact name matches are suggestions only; this confirmation applies the complete group feed once.",
    "places": [
-    "AndroidTournamentScreen.kt:3594"
+    "AndroidTournamentScreen.kt:3599"
    ]
   },
   {
@@ -13452,14 +13524,14 @@
   {
    "key": "{0} races taken over from the workbook, with {1} character(s).",
    "places": [
-    "AndroidTournamentScreen.kt:421"
+    "AndroidTournamentScreen.kt:426"
    ],
    "nl": "{0} races overgenomen uit de werkmap, met {1} personage(s)."
   },
   {
    "key": "{0} races taken over from the workbook.",
    "places": [
-    "AndroidTournamentScreen.kt:415"
+    "AndroidTournamentScreen.kt:420"
    ],
    "nl": "{0} races overgenomen uit de werkmap."
   },
@@ -13674,7 +13746,7 @@
   {
    "key": "{0} was created, but could not be added to this Tournament.",
    "places": [
-    "AndroidTournamentScreen.kt:1127"
+    "AndroidTournamentScreen.kt:1132"
    ],
    "nl": "{0} is aangemaakt, maar kon niet aan dit toernooi worden toegevoegd."
   },
@@ -13717,27 +13789,27 @@
   {
    "key": "{0} · full · swap",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:690"
+    "AndroidTournamentGroupDraftStep.kt:686"
    ],
    "nl": "{0} · vol · wissel"
   },
   {
    "key": "{0} · provisional feed",
    "places": [
-    "AndroidTournamentScreen.kt:3593"
+    "AndroidTournamentScreen.kt:3598"
    ]
   },
   {
    "key": "{0} · swap",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:729"
+    "AndroidTournamentGroupDraftStep.kt:725"
    ],
    "nl": "{0} · wissel"
   },
   {
    "key": "{0} · {1} free",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:688"
+    "AndroidTournamentGroupDraftStep.kt:684"
    ],
    "nl": "{0} · {1} vrij"
   },
@@ -13751,7 +13823,7 @@
   {
    "key": "{0} · {1} races · {2} connection errors",
    "places": [
-    "AndroidTournamentScreen.kt:3510"
+    "AndroidTournamentScreen.kt:3515"
    ]
   },
   {
@@ -13818,27 +13890,27 @@
   {
    "key": "{0}, {1} with this Director",
    "places": [
-    "AndroidTournamentRosterImport.kt:121"
+    "AndroidTournamentRosterImport.kt:132"
    ],
    "nl": "{0}, {1} bij deze Directeur"
   },
   {
    "key": "{0}/12 Players · {1} Switches",
    "places": [
-    "AndroidTournamentScreen.kt:3260"
+    "AndroidTournamentScreen.kt:3265"
    ]
   },
   {
    "key": "{0}/{1} Switch · {2}/{3} seats",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:801"
+    "AndroidTournamentGroupDraftStep.kt:797"
    ],
    "nl": "{0}/{1} Switch · {2}/{3} plek"
   },
   {
    "key": "{0}/{1} present · revision {2}",
    "places": [
-    "AndroidTournamentScreen.kt:3148"
+    "AndroidTournamentScreen.kt:3153"
    ]
   },
   {
@@ -13920,7 +13992,7 @@
   {
    "key": "← Groups",
    "places": [
-    "AndroidTournamentGroupDraftStep.kt:739"
+    "AndroidTournamentGroupDraftStep.kt:735"
    ],
    "nl": "← Groepen"
   },
@@ -13934,14 +14006,14 @@
   {
    "key": "← Step 0",
    "places": [
-    "AndroidTournamentScreen.kt:2678"
+    "AndroidTournamentScreen.kt:2683"
    ],
    "nl": "← Stap 0"
   },
   {
    "key": "← Tournaments",
    "places": [
-    "AndroidTournamentScreen.kt:1237"
+    "AndroidTournamentScreen.kt:1242"
    ],
    "nl": "← Toernooien"
   },
@@ -13998,7 +14070,7 @@
    "key": "✓ Saved",
    "places": [
     "AndroidTournamentParticipantsStep.kt:396",
-    "AndroidTournamentScreen.kt:2708",
+    "AndroidTournamentScreen.kt:2713",
     "AndroidTournamentStepTheme.kt:503"
    ],
    "nl": "✓ Opgeslagen"

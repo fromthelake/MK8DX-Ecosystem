@@ -5,7 +5,9 @@ LiveTrial recognizes Time Trial runs from a capture card or from recorded videos
 your community's website after you sign in once. Results that cannot be sent yet wait in a local queue.
 
 The recognition engine is under `vision-runtime/livetrial/` (its own MIT license); its templates and OCR models
-come from the repository's asset collection. Build the Windows package with the commands in
+come from the repository's asset collection. The package ships `vision-runtime`; `engine-overlay/` is the working copy
+where engine fixes are made, and a fix goes into both copies (`tests/test_engine_overlay_matches_runtime.py` fails in CI
+when they differ). Build the Windows package with the commands in
 [Client builds](../../docs/CLIENT_BUILDS.md).
 
 ## Everyday use without flags
@@ -49,6 +51,24 @@ history (all sessions, "finished only" on by default and remembered), also while
 capturing - the engine serves it then. A switch shows **Send status &
 corrections** instead: every result on this PC with its state, kart icons,
 Correct and Send as.
+
+**Who can control the engine on 8777.** Reading (pictures, runs, settings,
+exports) is a `GET`; changing something (manual record, Stop capture, storage
+settings, clean-up, pins, SC/NSC, archive, the calibration grids) is a `POST`
+with a JSON body that only this computer's own page or the desktop app can
+make. The request must come from a loopback address with a `127.0.0.1` or
+`localhost` Host and Origin and carry the per-launch action proof in the
+`X-LiveTrial-Action` header. The engine places that proof only in the pages it
+serves to this computer; the desktop app makes one per launch and hands it to the
+engine it starts (`MK8DX_LIVETRIAL_ENGINE_ACTION`). A page on another site gets
+nothing (a cross-site read is refused, another Host name gets 421), and an old
+change by query string (`/api/record?mode=...`) answers 405 and changes nothing.
+With `--lan` a phone or tablet on the network can **watch** the live view and
+run history by the computer's IP address, but its buttons are disabled and every
+change is refused. Bodies are limited (16 KiB for an action, 256 KiB for a grid,
+10 s to arrive), one change is handled at a time (another gets 429 with
+`Retry-After`), at most 64 connections are served at once, and a run package is
+built in a temporary folder, so a download leaves the runs folder as it was.
 
 **Correct** saves a new revision; the earlier one is kept. It edits track, class,
 total and lap times, coins and mushrooms per lap and the kart combination

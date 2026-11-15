@@ -88,6 +88,11 @@ Puoi prima registrare e unirti a una community in seguito. Cosa succede ai tempi
 
 Imposta **Lingua della tua Switch** nelle Impostazioni quando la lingua della console è diversa da quella della dashboard.
 
+La dashboard si può controllare solo da questo computer: nella finestra di LiveTrial o nella pagina della dashboard
+aperta su questo PC. Se il motore viene avviato con `--lan` (vedi il
+[README del componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), telefoni e tablet della rete
+possono guardare la vista live e le corse, ma non possono cambiare nulla.
+
 ## Problemi
 
 - Sito sbagliato, o l'accesso apre il sito sbagliato: chiudi LiveTrial con **Esci da LiveTrial**, riavvialo e controlla

@@ -7,6 +7,7 @@ import {
   MK8DX_TOURNAMENT_DESKTOP_CLIENT_ID,
   type EmbeddedAuthSecret,
 } from "../authentication/embedded-passwordless-auth.js";
+import { parseWebPushProviderHosts } from "../notifications/web-push-egress.js";
 import type { ProtectedValueDecryptionKeyring, ProtectedValueKeyMaterial } from
   "../security/protected-value-adapters.js";
 import type { WebCsrfKeyMaterial } from "../security/web-csrf-service.js";
@@ -263,11 +264,19 @@ function ensureDistinctSecrets(values: readonly Uint8Array[]): void {
 
 function webPushConfiguration(
   environment: HostedRuntimeEnvironment,
-): Readonly<{ subject: string; publicKey: string; privateKey: string }> | undefined {
+): Readonly<{
+  subject: string; publicKey: string; privateKey: string; extraProviderHosts?: readonly string[];
+}> | undefined {
   const subject = environment["MK8DX_HOSTED_WEB_PUSH_SUBJECT"];
   const publicKey = environment["MK8DX_HOSTED_WEB_PUSH_PUBLIC_KEY"];
   const privateKey = environment["MK8DX_HOSTED_WEB_PUSH_PRIVATE_KEY"];
+  const extraHosts = environment["MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS"];
   if (subject === undefined && publicKey === undefined && privateKey === undefined) {
+    if (extraHosts !== undefined && extraHosts.trim() !== "") {
+      throw new HostedRuntimeConfigurationError(
+        "MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS requires the MK8DX_HOSTED_WEB_PUSH_* keys",
+      );
+    }
     return undefined;
   }
   if (subject === undefined || publicKey === undefined || privateKey === undefined) {
@@ -285,7 +294,16 @@ function webPushConfiguration(
       !/^[A-Za-z0-9_-]+$/.test(publicKey) || !/^[A-Za-z0-9_-]+$/.test(privateKey)) {
     throw new HostedRuntimeConfigurationError("MK8DX_HOSTED_WEB_PUSH_* configuration is invalid");
   }
-  return { subject, publicKey, privateKey };
+  // Extra push services the operator trusts besides the browsers' own (comma-separated host names,
+  // `*.example.org` for subdomains). They are still reached only on port 443 at public addresses.
+  let extraProviderHosts: readonly string[] = [];
+  try { extraProviderHosts = parseWebPushProviderHosts(extraHosts ?? ""); } catch {
+    throw new HostedRuntimeConfigurationError("MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS is invalid");
+  }
+  return {
+    subject, publicKey, privateKey,
+    ...(extraProviderHosts.length === 0 ? {} : { extraProviderHosts }),
+  };
 }
 
 export type HostedMysqlRuntimeConfig = Readonly<{
@@ -487,5 +505,9 @@ export function loadPasswordlessHostedRuntimeConfig(
     } }),
     webManual: { producerVersion, csrfKeys: configuredCsrfKeys },
     ...(configuredWebPush === undefined ? {} : { webPush: configuredWebPush }),
+    // How long a confirmed step-up (fresh e-mail confirmation) lasts; default 600 seconds.
+    ...(environment["MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS"] === undefined ? {} : {
+      stepUpWindowSeconds: integer(environment, "MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS", 600, 60, 3600),
+    }),
   };
 }

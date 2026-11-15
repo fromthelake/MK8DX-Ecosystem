@@ -33,6 +33,7 @@ import { MysqlAdministratorGrantWriteRepository } from
   "../dist/administration/mysql-administrator-grant-repository.js";
 import { createPasswordlessHostedRuntime } from
   "../dist/composition/hosted-runtime.js";
+import { readAbuseBudgetSettings } from "../dist/security/abuse-budgets.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(here, "../../..");
@@ -313,6 +314,9 @@ async function main() {
         keys: { "step-csrf-v1": Buffer.alloc(32, 36) },
       },
     },
+    // MK8DX_HOSTED_BUDGET_* from this process's environment, like the hosted server reads them,
+    // so a browser check can use small budgets (for example to see a 429 message).
+    abuseBudgets: readAbuseBudgetSettings(process.env),
     tournamentSubmissionAuthorizer: {
       async authorize(context) { return context.actor.role === "administrator"; },
     },
@@ -320,6 +324,11 @@ async function main() {
     async verify() {},
     async sendMagicLink(message) {
       appendFileSync(magicLinkLog, `${JSON.stringify({ url: message.url })}\n`);
+    },
+    // Fresh confirmation (step-up) links before dangerous administrator actions, for browser checks.
+    async sendStepUp(message) {
+      appendFileSync(`${handoffPath}.step-up-links.jsonl`,
+        `${JSON.stringify({ url: message.url, clientKind: message.clientKind })}\n`);
     },
     close() {},
   }));

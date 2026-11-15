@@ -2,6 +2,14 @@ import { createHash } from "node:crypto";
 
 import type { ActorContext } from "../identity/types.js";
 import type { ProtectedValue } from "../timetrials/submission-service.js";
+import { WebPushEgressPolicy } from "./web-push-egress.js";
+
+/**
+ * Active Web Push subscriptions one UserAccount may hold. A new browser beyond
+ * the limit replaces the account's least recently registered one, so the bound
+ * is hard but a person who changes devices is never locked out.
+ */
+export const WEB_PUSH_SUBSCRIPTIONS_PER_ACCOUNT = 10;
 
 /**
  * The outer gate on delivery. The two kind switches say whether a specific kind
@@ -46,11 +54,13 @@ export interface NotificationChannelRepository {
     nowMs: number,
   ): Promise<void>;
   subscriptionCount(userAccountId: string): Promise<number>;
+  /** Saves atomically, keeping at most `maximumActive` active subscriptions for the account. */
   saveSubscription(input: Readonly<{
     userAccountId: string;
     endpointSha256: Uint8Array;
     protectedSubscription: ProtectedValue;
     nowMs: number;
+    maximumActive: number;
   }>): Promise<void>;
   revokeSubscription(
     userAccountId: string,
@@ -61,7 +71,8 @@ export interface NotificationChannelRepository {
 
 export class NotificationChannelError extends Error {
   public constructor(public readonly code:
-    | "invalid_input" | "not_authenticated" | "unsupported" | "unavailable") {
+    | "invalid_input" | "provider_not_allowed" | "not_authenticated" | "unsupported"
+    | "unavailable") {
     super("Notification settings could not be processed.");
     this.name = "NotificationChannelError";
   }
@@ -81,8 +92,15 @@ function decodedLength(value: string): number {
   try { return Buffer.from(value, "base64url").byteLength; } catch { return -1; }
 }
 
+/**
+ * Checks a browser subscription. With a policy the endpoint must also belong to
+ * an accepted push service on port 443 (the delivery worker checks the resolved
+ * address again before every request); without one only its shape is checked,
+ * which is enough to find a stored subscription to remove.
+ */
 export function validateWebPushSubscription(
   value: WebPushSubscriptionInput,
+  policy?: WebPushEgressPolicy,
 ): WebPushSubscriptionInput {
   let endpoint: URL;
   try { endpoint = new URL(value.endpoint); } catch {
@@ -93,6 +111,14 @@ export function validateWebPushSubscription(
       endpoint.hash !== "" || decodedLength(value.keys.p256dh) !== 65 ||
       decodedLength(value.keys.auth) !== 16) {
     throw new NotificationChannelError("invalid_input");
+  }
+  if (policy !== undefined) {
+    const checked = policy.check(value.endpoint);
+    if ("refusal" in checked) {
+      throw new NotificationChannelError(
+        checked.refusal === "provider_not_allowed" ? "provider_not_allowed" : "invalid_input",
+      );
+    }
   }
   return {
     endpoint: endpoint.href,
@@ -106,6 +132,8 @@ export class NotificationChannelService {
     private readonly protector: WebPushSubscriptionProtector,
     private readonly publicApplicationServerKey: string | null,
     private readonly now: () => number = Date.now,
+    private readonly egressPolicy: WebPushEgressPolicy = new WebPushEgressPolicy(),
+    private readonly maximumSubscriptions: number = WEB_PUSH_SUBSCRIPTIONS_PER_ACCOUNT,
   ) {}
 
   public async status(actor: ActorContext): Promise<Readonly<{
@@ -129,7 +157,8 @@ export class NotificationChannelService {
           ...(this.publicApplicationServerKey === null
             ? {}
             : { applicationServerKey: this.publicApplicationServerKey }),
-          subscriptionCount,
+          // Older installations could exceed the quota until the retention pass trims them.
+          subscriptionCount: Math.min(subscriptionCount, 100),
         },
       };
     } catch (error) {
@@ -160,7 +189,7 @@ export class NotificationChannelService {
     if (this.publicApplicationServerKey === null) {
       throw new NotificationChannelError("unsupported");
     }
-    const subscription = validateWebPushSubscription(input);
+    const subscription = validateWebPushSubscription(input, this.egressPolicy);
     const document = JSON.stringify(subscription);
     let protectedSubscription: ProtectedValue;
     try { protectedSubscription = this.protector.protectSubscription(document); }
@@ -174,6 +203,7 @@ export class NotificationChannelService {
         endpointSha256: createHash("sha256").update(subscription.endpoint).digest(),
         protectedSubscription,
         nowMs: this.now(),
+        maximumActive: this.maximumSubscriptions,
       });
     } catch { throw new NotificationChannelError("unavailable"); }
   }

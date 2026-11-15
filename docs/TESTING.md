@@ -100,6 +100,8 @@ python -m pytest -q -p no:cacheprovider tests/windows_clients
 In a POSIX shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps/timetrials-desktop/tests`. The
 dashboard test runs with `node apps/timetrials-desktop/tests/history-startup.test.js` (also in CI). `engine-overlay/livetrial/tests/test_names.py` needs the full
 LiveTrial engine snapshot and its Clean Assets database, which are not in this repository.
+`apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py` fails when an `engine-overlay` file and the
+`vision-runtime` copy that the package ships no longer have the same text.
 
 Tournament tests (`tests/tournament`) run on the Tools package's locked runtime
 ([requirements.lock.txt](../tooling/tournament/requirements.lock.txt)). They include a smoke of the recorded
@@ -123,12 +125,18 @@ Each suite gets its own newly migrated schema; the reference-seed suite uses a s
 initial reference seed before testing its update path.
 Run them only against a **disposable** server, never against an installation's database. The CI entry point is
 `bash tooling/run_database_integration_ci.sh mysql`, `mysql84` or `mariadb` after `npm ci` and the API build on Linux.
+The CI entry point runs like an installation: it migrates each schema with a migration account (all privileges on
+that schema) and runs every suite with a **runtime account** that may only read and write rows, so a suite that
+needs more than that fails ([database accounts](OPERATIONS.md#database-accounts)). It starts its own engine on
+`127.0.0.1:33406`; set `MK8DX_CI_DATABASE_PORT` to use another free port, and in Git Bash on Windows set `TMPDIR` to
+a Windows path (for example `C:/Users/<you>/AppData/Local/Temp`) so Node can read its settings files.
 
 | Variable | Value |
 | --- | --- |
 | `MK8DX_MYSQL_INTEGRATION` | `1` |
 | `MK8DX_MYSQL_TEST_HOST`, `MK8DX_MYSQL_TEST_PORT` | the test server, for example `127.0.0.1` and `33406` |
 | `MK8DX_MYSQL_TEST_USER`, `MK8DX_MYSQL_TEST_PASSWORD` | an account that may use the test schema (the disposable server's `root` is simplest) |
+| `MK8DX_MYSQL_EXPECT_RUNTIME_ACCOUNT` | `1` when that account is a runtime account (only `SELECT`, `INSERT`, `UPDATE`, `DELETE`); `database-runtime-account.integration.test.ts` then checks that it is refused `DROP`, `ALTER`, `TRUNCATE`, `CREATE` and `GRANT`, and skips otherwise |
 | `MK8DX_MYSQL_TEST_DATABASE` | the schema; its name must end in `_test` or `_contract` |
 
 Rules that the suites enforce or rely on:

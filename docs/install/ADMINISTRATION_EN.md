@@ -43,6 +43,22 @@ python tooling/lifecycle.py verify --backup "$env:USERPROFILE\Documents\MK8DX-ba
 
 Replace `<ECHTE_MAPNAAM>` with the folder name that was actually created; use the complete folder, not just the `.gz` file. On Ubuntu the equivalent is `python3 tooling/lifecycle.py verify --backup '/root/mk8dx-backups/<ECHTE_MAPNAAM>'`. **You see:** `Backup verified` with route A1/A2/B1. **If it differs:** keep the failed copy private, make a new backup and investigate the error before you update. Also keep a copy on another, protected medium; a backup on the same broken VPS is no recovery plan. The backup contains accounts, database, admin status and all keys; never share it in an issue, email or public cloud link. The Caddy certificate volume stays in place during normal updates on the same host; a separately restored B1 project requests a new certificate at the eventual DNS cutover.
 
+## Automatic daily backup
+
+**What:** every night (03:15, caught up after a missed night) MK8DX makes the same backup as menu 6 by itself,
+verifies it and keeps the newest of each of 14 days and 4 weeks, at most 10 GB (B2: 1 GB). It is on for A1, A3
+and B1 after the first setup; B2 asks. Windows uses a Task Scheduler task for your account ("MK8DX automatic
+backup …"), Ubuntu/B2 one marked line in your crontab. **Where:** `Documents\MK8DX-backups\automatic` on Windows,
+`~/mk8dx-backups/automatic` on Linux. **You see:** **3** (check) or `python tooling/install.py backup-status
+--state-dir <installation>` shows `lastResult`, `lastSuccessAgeHours` and the newest folder; `stale: true` means
+nothing succeeded for 36 hours. **If it differs:** a failed night keeps every older backup; read `lastMessage`
+(for example "database is not running"), fix it and run `backup-run` once by hand.
+
+**Off the host:** add a second folder on another drive or NAS with `backup-schedule --copy-to <folder>`, or pull
+the newest one from your PC with `backup-latest --print-path` and `scp`. Restore uses the normal restore commands
+below with that folder. Turn it off with `backup-unschedule`; removing an installation should start with that.
+All options, exit codes and encryption: [Operations](../OPERATIONS.md#automatic-daily-backup-a1-a2-b1-a3-b2).
+
 ## Restoring without wiping the current installation
 
 **Goal:** check a backup in a **new** data folder and with a **new** Docker project. The helper refuses an existing target folder. On Windows, in PowerShell from the host package:
@@ -60,10 +76,14 @@ python tooling/install.py status --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX
 
 **Updating to 0.2.3:** this version moves the Docker database from MySQL 8.4 to MySQL 9.7 LTS. MySQL converts the data files once, at the first start on the new version; only a backup can undo that. So in the new package folder choose **7** (update) first: it makes a checked backup and applies the database updates. From 0.2.4 on, **2** (start) refuses until the update has run; with a 0.2.3 package, 2 would skip the backup. Menu **3** (check) is harmless. With the A2 package, **Update** in the browser makes the backup first by itself.
 
+**Updating to the next release (after 0.2.4):** menu **7** applies database updates 0092 and 0095 and gives the website its own database account that can only read and write rows; if the website does not start with it, the update returns to the previous account by itself ([database accounts](../OPERATIONS.md#database-accounts)). Afterwards, check that sign-in mail arrives: dangerous administrator actions and the account list now ask for a fresh e-mail link (see *Admin and problems* below). The automatic daily backup stays as it was. New built-in limits against floods need no setting; an `MK8DX_HOSTED_BUDGET_*` value you add must be a known name ([settings guide](SETTINGS_EN.md)).
+
 ## Admin and problems
 
 Under Administration → **Installation settings** the **Community name** is at the top (for example "Club Noord"), which the apps show instead of the web address (empty = no name). Below it are three choices for the whole site, each change recorded with the administrator's name: who creates Players, who counts for the rating, and **Times from other communities**. That last one is off by default: a Player who belongs to several communities then cannot carry a time set elsewhere. With *With approval*, every carried time stays out of the public overviews until an administrator makes it public; such times appear under Administration → Time Trials as not public, with a **Publish** button. If you switch *With approval* off while carried times are still waiting, the page asks whether you publish them all (or, with *Off*: refuse them) or leave them waiting. With *Allowed*, a carried time follows the normal publication rules. A carried time always shows where it came from (ADR-0225).
 
 The admin action (menu **5**) only works after signing in through the verified magic link for your own saved target address. The ordinary first registration never grants a role. If the admin address was wrong before the first grant, safely correct the target identity with `python tooling/install.py set-admin-email --state-dir '<jouw gegevensmap>' --admin-email 'eigenadres@example.org'` (with your data folder and your own address), sign in with exactly that address and then choose menu 5. A bootstrap that has already been used is not reopened; the existing limited administrator recovery from [Operations](../OPERATIONS.md) requires an explicitly verified target account and an owner decision.
+
+**Confirm dangerous actions by e-mail.** Changing administrator, Director or report rights, linking an account to a Player directly, the installation settings, recalculating ratings, removing, reopening or restoring a night, and opening the list of all accounts first ask for **Confirm with a new email link** → **Send the link**. The link goes to your own address (A1: the Mailpit inbox) and confirms this browser or app for 10 minutes. If the mail does not arrive because e-mail is not working, press **Send the link** anyway and, within 10 minutes, run on the host `python tooling/install.py step-up-link --state-dir '<your data folder>'`; open the link it prints and press **Confirm this action** ([details](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)). A2 offline sends no mail and does not ask.
 
 A home page without a sign-in mail is usually an SMTP problem; A1 has only Mailpit on the host, A2/B1 real mail. `/.well-known/assetlinks.json` must deliver `application/json` with `[]` (or later a correct association document of your own), not HTML. `/client-config.json` must show only the public server address. `/health/ready` checks the API/database, but does not prove inbox delivery or a physical client connection. When something fails, look first at the safe menu status and the applicable route guide. Never share private env/config/log lines with tokens or passwords.

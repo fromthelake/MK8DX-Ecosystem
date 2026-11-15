@@ -6,6 +6,7 @@ import {
   type AppendClaimEventInput,
   type ClaimLifecycleEventInput,
   type ClaimNoteInput,
+  type ClaimQuotaUsage,
   type ClaimSnapshot,
   type ClaimWriteRepository,
   type ClaimWriteTransaction,
@@ -319,6 +320,38 @@ class MysqlClaimWriteTransaction implements ClaimWriteTransaction {
       [userAccountId, playerId],
     );
     return rows.length > 0;
+  }
+
+  public async countClaimQuotaUsage(userAccountId: string, playerId: string): Promise<ClaimQuotaUsage> {
+    const [rows] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT
+         (SELECT COUNT(*) FROM player_claims AS c
+            INNER JOIN user_accounts AS a ON a.user_account_id = c.user_account_id
+            WHERE a.public_id = ? AND c.claim_status IN ('requested', 'under_review')) AS accountOpen,
+         (SELECT COUNT(*) FROM player_claims AS c
+            INNER JOIN user_accounts AS a ON a.user_account_id = c.user_account_id
+            WHERE a.public_id = ?) AS accountTotal,
+         (SELECT COUNT(*) FROM player_claims AS c
+            INNER JOIN players AS p ON p.player_id = c.player_id
+            WHERE p.public_id = ? AND c.claim_status IN ('requested', 'under_review')) AS playerOpen`,
+      [userAccountId, userAccountId, playerId],
+    );
+    const row: Readonly<Record<string, unknown>> = rows[0] ?? {};
+    return {
+      accountOpenRequests: requiredSafeInteger(Number(row["accountOpen"]), "claim quota"),
+      accountRequests: requiredSafeInteger(Number(row["accountTotal"]), "claim quota"),
+      playerOpenRequests: requiredSafeInteger(Number(row["playerOpen"]), "claim quota"),
+    };
+  }
+
+  public async countClaimNotes(playerClaimId: string): Promise<number> {
+    const [rows] = await this.connection.execute<RowDataPacket[]>(
+      `SELECT COUNT(*) AS total FROM player_claim_notes AS n
+       INNER JOIN player_claims AS c ON c.player_claim_id = n.player_claim_id
+       WHERE c.public_id = ?`,
+      [playerClaimId],
+    );
+    return requiredSafeInteger(Number(rows[0]?.["total"]), "claim note count");
   }
 
   public async addClaimNote(input: ClaimNoteInput): Promise<void> {
@@ -640,10 +673,38 @@ class MysqlClaimWriteTransaction implements ClaimWriteTransaction {
   }
 }
 
+/**
+ * Concurrent claim requests on neighbouring Players can deadlock on the gap locks of the uniqueness
+ * checks; MariaDB reports a deadlock while taking the auto-increment lock of `INSERT ... SELECT` as
+ * ER_AUTOINC_READ_FAILED. The whole transaction is rolled back, so it is retried a bounded number of
+ * times (the claim id is chosen before the transaction, so a retry cannot create a second claim).
+ */
+const MAXIMUM_TRANSACTION_ATTEMPTS = 6;
+
+function isRetryableLockError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) { return false; }
+  const candidate = error as { code?: unknown; errno?: unknown };
+  return candidate.code === "ER_LOCK_DEADLOCK" || candidate.errno === 1213 ||
+    candidate.code === "ER_AUTOINC_READ_FAILED" || candidate.errno === 1467;
+}
+
 export class MysqlClaimWriteRepository implements ClaimWriteRepository {
   public constructor(private readonly pool: Pool) {}
 
   public async transaction<T>(
+    work: (transaction: ClaimWriteTransaction) => Promise<T>,
+  ): Promise<T> {
+    for (let attempt = 1; ; attempt += 1) {
+      try {
+        return await this.attempt(work);
+      } catch (error) {
+        if (attempt >= MAXIMUM_TRANSACTION_ATTEMPTS || !isRetryableLockError(error)) { throw error; }
+        await new Promise((resolve) => setTimeout(resolve, 10 * attempt + Math.floor(Math.random() * 25)));
+      }
+    }
+  }
+
+  private async attempt<T>(
     work: (transaction: ClaimWriteTransaction) => Promise<T>,
   ): Promise<T> {
     const connection = await this.pool.getConnection();

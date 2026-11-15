@@ -2,8 +2,82 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 
 import type { ActorResolver } from "../identity/types.js";
 import type { ActorContext } from "../identity/types.js";
+import { MutationRateLimitExceeded } from "../security/mysql-mutation-rate-limiter.js";
 import { TournamentOperationError } from "./tournament-operation-service.js";
-import type { TournamentConnectedService } from "./tournament-connected-service.js";
+import {
+  TournamentEvidenceLimitError,
+  type TournamentConnectedService,
+} from "./tournament-connected-service.js";
+
+/**
+ * F04: the answers a refused evidence upload gets. Nothing was stored; the
+ * client keeps its local copy. 429 carries Retry-After; a full quota (409)
+ * clears when the Director links or dismisses records or retention runs.
+ */
+export function evidenceLimitFailure(error: unknown, prefix: string): {
+  status: number; retryAfterSeconds?: number; body: { code: string; message: string };
+} | null {
+  if (error instanceof MutationRateLimitExceeded) {
+    return {
+      status: 429, retryAfterSeconds: error.retryAfterSeconds,
+      body: { code: `${prefix}evidence_rate_limited`, message: "Too many evidence uploads; try again later." },
+    };
+  }
+  if (error instanceof TournamentEvidenceLimitError) {
+    if (error.limit === "record_bytes") {
+      return { status: 413, body: { code: `${prefix}evidence_record_too_large`, message: error.message } };
+    }
+    if (error.retryAfterSeconds !== undefined) {
+      return {
+        status: 429, retryAfterSeconds: error.retryAfterSeconds,
+        body: { code: `${prefix}evidence_rate_limited`, message: error.message },
+      };
+    }
+    return { status: 409, body: { code: `${prefix}evidence_quota_exceeded`, message: error.message } };
+  }
+  return null;
+}
+
+/**
+ * F05: one capture delegation as the administrator routes serve it. The web
+ * Director view parses exactly these keys (tournament-incoming-client.ts).
+ */
+export const liveCaptureDelegationSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "delegationId", "tournamentId", "delegateUserAccountId", "delegateDisplayName", "status", "reason",
+    "grantedByUserAccountId", "grantedAtMs", "expiresAtMs", "revokedByUserAccountId", "revokeReason", "revokedAtMs",
+  ],
+  properties: {
+    delegationId: { type: "string" },
+    tournamentId: { type: "string" },
+    delegateUserAccountId: { type: "string" },
+    delegateDisplayName: { type: "string" },
+    status: { type: "string", enum: ["active", "revoked"] },
+    reason: { type: "string" },
+    grantedByUserAccountId: { type: "string" },
+    grantedAtMs: { type: "integer" },
+    expiresAtMs: { type: "integer" },
+    revokedByUserAccountId: { type: ["string", "null"] },
+    revokeReason: { type: ["string", "null"] },
+    revokedAtMs: { type: ["integer", "null"] },
+  },
+} as const;
+
+const liveCaptureDelegationListSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["delegations"],
+  properties: { delegations: { type: "array", maxItems: 200, items: liveCaptureDelegationSchema } },
+} as const;
+
+const liveCaptureDelegationDocumentSchema = {
+  type: "object",
+  additionalProperties: false,
+  required: ["delegation"],
+  properties: { delegation: liveCaptureDelegationSchema },
+} as const;
 
 function requireBearer(request: FastifyRequest): void {
   if (!/^Bearer\s+\S+$/i.test(request.headers.authorization ?? "")) {
@@ -18,6 +92,11 @@ export function registerTournamentConnectedRoutes(app: FastifyInstance, dependen
 }): void {
   const handle = async <T>(reply: FastifyReply, work: () => Promise<T>): Promise<T> => {
     try { return await work(); } catch (error) {
+      const limited = evidenceLimitFailure(error, "tournament_");
+      if (limited !== null) {
+        if (limited.retryAfterSeconds !== undefined) void reply.header("retry-after", String(limited.retryAfterSeconds));
+        return reply.code(limited.status).send(limited.body) as T;
+      }
       if (error instanceof TournamentOperationError) {
         const status = error.code === "forbidden" ? 403 : error.code === "not_found" ? 404 : error.code === "conflict" ? 409 : 400;
         return reply.code(status).send({ code: `tournament_${error.code}`, message: error.message }) as T;
@@ -69,10 +148,24 @@ export function registerTournamentConnectedRoutes(app: FastifyInstance, dependen
     };
   });
 
+  // Newest-written first and bounded; `?limit=` (1-200) and `?before=` (the
+  // previous page's nextCursor) page through an account's history.
   app.get("/v1/tournament-evidence-records/own", async (request, reply) => handle(reply, async () => {
     requireBearer(request);
     const actor = await dependencies.resolveActor(request);
-    return { records: await dependencies.tournamentConnected.listOwnEvidenceRecords(actor) };
+    const query = (request.query ?? {}) as { limit?: unknown; before?: unknown };
+    const limit = query.limit === undefined ? undefined : Number(query.limit);
+    if (limit !== undefined && !/^\d{1,3}$/u.test(String(query.limit))) {
+      throw new TournamentOperationError("invalid_input", "limit must be between 1 and 200.");
+    }
+    if (query.before !== undefined && typeof query.before !== "string") {
+      throw new TournamentOperationError("invalid_input", "before is not a valid cursor.");
+    }
+    const page = await dependencies.tournamentConnected.listOwnEvidenceRecordsPage(actor, {
+      ...(limit === undefined ? {} : { limit }),
+      ...(typeof query.before === "string" ? { before: query.before } : {}),
+    });
+    return { records: page.records, nextCursor: page.nextCursor };
   }));
 
   app.get("/v1/administrator/tournaments/:tournamentId/evidence-records", async (request, reply) => handle(reply, async () => {
@@ -116,6 +209,64 @@ export function registerTournamentConnectedRoutes(app: FastifyInstance, dependen
       ...(body.reason === undefined ? {} : { reason: body.reason }),
       tournamentId,
       recordId,
+    }) };
+  }));
+
+  app.post("/v1/administrator/tournaments/:tournamentId/evidence-records/:recordId/actions/withdraw-live", async (request, reply) => handle(reply, async () => {
+    const actor = await dependencies.resolveActor(request);
+    const token = request.headers["x-mk8dx-csrf"];
+    if (typeof token !== "string" || !dependencies.csrfVerifier.verify(actor, token)) {
+      throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
+    }
+    const { tournamentId, recordId } = request.params as { tournamentId: string; recordId: string };
+    const body = (request.body ?? {}) as { expectedRevision: number; reason?: string };
+    return { record: await dependencies.tournamentConnected.withdrawLiveAssociation(actor, {
+      expectedRevision: body.expectedRevision,
+      ...(body.reason === undefined ? {} : { reason: body.reason }),
+      tournamentId,
+      recordId,
+    }) };
+  }));
+
+  // F05: the Director's explicit, revocable capture delegations for one night.
+  app.get("/v1/administrator/tournaments/:tournamentId/live-capture-delegations", {
+    schema: { response: { 200: liveCaptureDelegationListSchema } },
+  }, async (request, reply) => handle(reply, async () => {
+    const actor = await dependencies.resolveActor(request);
+    const { tournamentId } = request.params as { tournamentId: string };
+    return { delegations: await dependencies.tournamentConnected.listLiveCaptureDelegations(actor, tournamentId) };
+  }));
+
+  app.post("/v1/administrator/tournaments/:tournamentId/live-capture-delegations", {
+    schema: { response: { 200: liveCaptureDelegationDocumentSchema } },
+  }, async (request, reply) => handle(reply, async () => {
+    const actor = await dependencies.resolveActor(request);
+    const token = request.headers["x-mk8dx-csrf"];
+    if (typeof token !== "string" || !dependencies.csrfVerifier.verify(actor, token)) {
+      throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
+    }
+    const { tournamentId } = request.params as { tournamentId: string };
+    const body = (request.body ?? {}) as { delegateUserAccountId: string; reason: string; expiresInMinutes?: number };
+    return { delegation: await dependencies.tournamentConnected.grantLiveCaptureDelegation(actor, {
+      tournamentId,
+      delegateUserAccountId: body.delegateUserAccountId,
+      reason: body.reason,
+      ...(body.expiresInMinutes === undefined ? {} : { expiresInMinutes: body.expiresInMinutes }),
+    }) };
+  }));
+
+  app.post("/v1/administrator/tournaments/:tournamentId/live-capture-delegations/:delegationId/actions/revoke", {
+    schema: { response: { 200: liveCaptureDelegationDocumentSchema } },
+  }, async (request, reply) => handle(reply, async () => {
+    const actor = await dependencies.resolveActor(request);
+    const token = request.headers["x-mk8dx-csrf"];
+    if (typeof token !== "string" || !dependencies.csrfVerifier.verify(actor, token)) {
+      throw new TournamentOperationError("forbidden", "A valid same-origin request proof is required.");
+    }
+    const { tournamentId, delegationId } = request.params as { tournamentId: string; delegationId: string };
+    const body = (request.body ?? {}) as { reason: string };
+    return { delegation: await dependencies.tournamentConnected.revokeLiveCaptureDelegation(actor, {
+      tournamentId, delegationId, reason: body.reason,
     }) };
   }));
 

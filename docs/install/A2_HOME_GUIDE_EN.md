@@ -162,6 +162,8 @@ If you untick **Make a backup every night**, you get no recovery code and no bac
 
 ![recovery code](guide/img/recovery-code-en.png)
 
+**Database accounts:** the website signs in to its database with its own account that can only read and write data, so a fault in the website cannot delete tables; database updates use a second account. The setup creates both; an older installation gets them at its next update, and if the website does not start with the new account, the update returns to the old one. Nothing to do for you.
+
 ## 5. People and sign-in cards (MK8DX beheer)
 
 **MK8DX beheer** (Dutch for "MK8DX administration") is the same page as the setup, but for later: adding people and making sign-in cards. It only works on the MK8DX computer itself. The desktop shortcut is called "MK8DX beheer" in every language; the page title in English is **MK8DX administration**.

@@ -67,6 +67,9 @@ Grenzen om rekening mee te houden:
   wijziging in de ene vraagt dezelfde wijziging in de andere en opnieuw gegenereerde pariteitsvectoren.
   De [pijplijnkaart](architecture/RECOGNITION_PIPELINE_NL.md) beschrijft de echte app-adapters en pakketgrenzen;
   de README legt de lezer zelf uit.
+- De **LiveTrial-engine** wordt geleverd uit `apps/timetrials-desktop/vision-runtime/`. Maak een enginefix in de
+  werkkopie `apps/timetrials-desktop/engine-overlay/` en geef het `vision-runtime/`-bestand dezelfde tekst;
+  `apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py` faalt in CI als ze verschillen.
 - Gedeelde contracten in `packages/domain/` (JSON Schema) en regels in `packages/time-trial-rules/` hebben
   gebruikers in de API, website en clients. Controleer ze allemaal.
 
@@ -176,7 +179,8 @@ Linux-build van de clients bestaat nog niet.
 - **Eerste beheerder geweigerd** na de magic link: open de website na de link één keer in dezelfde browser en
   draai de opdracht opnieuw met exact hetzelfde adres en dezelfde `compose.env`.
 - **Linux `cp: cannot open '/run/mk8dx/operator.json': Permission denied`**: een installatiemap van een oudere
-  installer; elke `tooling/install.py`-opdracht herstelt dit, of `chmod 644 "$state/operator.json"`.
+  installer (`operator.json`, of `migration.json`, dat de `migrate`-service op dat pad koppelt, staat op 0600); elke
+  `tooling/install.py`-opdracht herstelt dit, of `chmod 644` op dat bestand in `$state`.
 - **`port is already allocated`**: een ander programma nam de poort; kies een andere met
   `python tooling/install.py change-origin --state-dir "$state" --origin http://127.0.0.1:<vrije poort>`.
 

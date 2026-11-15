@@ -12,6 +12,7 @@ import {
 import {
   TimeTrialSubmissionService,
   type ProtectedLookupValue,
+  type ProtectedTimeTrialEvidence,
   type ProtectedValue,
   type TimeTrialAssetCatalog,
   type TimeTrialPlayerReference,
@@ -228,10 +229,41 @@ integration("MySQL Time Trial write repository integration", () => {
     await pool.end();
   });
 
+  // A later revision of a submission without a central Player is no longer accepted through the
+  // submission service (it fails closed), so the repository's own handling of a restricted
+  // revision 2 is exercised directly, with the values the service would have protected.
+  const persistRestrictedRevisionDirectly = async (input: TimeTrialSubmissionV1): Promise<void> => {
+    const protector = new DeterministicProtector();
+    const { playerReference, evidence, ...publicFields } = input;
+    const namespace = playerReference.namespace as Exclude<TimeTrialPlayerReference["namespace"], "player">;
+    const participant = await protector.protectParticipantReference(namespace, playerReference.value);
+    const protectedEvidence: ProtectedTimeTrialEvidence[] = [];
+    for (const [index, item] of (evidence ?? []).entries()) {
+      protectedEvidence.push({
+        sequenceNumber: index + 1,
+        kind: item.kind,
+        protectedReference: await protector.protectEvidenceReference(item.reference),
+        ...(item.sha256 === undefined ? {} : { sha256: Uint8Array.from(Buffer.from(item.sha256, "hex")) }),
+        ...(item.mediaType === undefined ? {} : { mediaType: item.mediaType }),
+      });
+    }
+    await repository.transaction(async (transaction) => {
+      const current = await transaction.findSubmissionForUpdate(input.submissionId);
+      expect(current).toMatchObject({ latestRevision: input.revision - 1, owner: { playerId: null } });
+      await transaction.insertRevision({
+        submission: publicFields,
+        playerId: null,
+        restrictedParticipant: { namespace, ...participant },
+        protectedEvidence,
+        publicationEligibility: "explicit_review_required",
+      });
+    });
+  };
+
   it("atomically persists central and protected source revisions", async () => {
     await service.submit(manualSubmission());
     await service.submit(restrictedSubmission());
-    await service.submit(restrictedSubmission(2));
+    await persistRestrictedRevisionDirectly(restrictedSubmission(2));
 
     const [rows] = await pool.execute<any[]>(
       `SELECT submission.public_id AS submissionId,
@@ -288,9 +320,14 @@ integration("MySQL Time Trial write repository integration", () => {
   });
 
   it("rejects duplicate revision retries without adding rows", async () => {
-    await expect(service.submit(restrictedSubmission(2))).rejects.toMatchObject({
-      code: "revision_conflict",
-    });
+    // (The owner's own retry of a stored revision keeps its 409 conflict: see
+    // time-trial-revision-ownership.integration.test.ts.)
+    // Without a central Player owner every later revision fails closed, whatever its number.
+    for (const revision of [2, 3]) {
+      await expect(service.submit(restrictedSubmission(revision))).rejects.toMatchObject({
+        code: "submission_forbidden",
+      });
+    }
     const [rows] = await pool.execute<any[]>(
       `SELECT COUNT(*) AS revisionCount
        FROM time_trial_submission_revisions AS revision_record

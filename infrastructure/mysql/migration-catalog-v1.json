@@ -821,6 +821,24 @@
       "downPath": "migrations/0091_community_name.down.sql",
       "downSha256": "63fd065bd239d75af10476c5e2f232694824ac28a3addcdf204cf8d3d275ad48",
       "destructiveDown": true
+    },
+    {
+      "version": "0092",
+      "name": "tournament_evidence_limits_and_capture_delegations",
+      "upPath": "migrations/0092_tournament_evidence_limits_and_capture_delegations.up.sql",
+      "upSha256": "19a8ba4142162613fd6d87ec55c88bf7c309b9605826b09f511a8fde3917f980",
+      "downPath": "migrations/0092_tournament_evidence_limits_and_capture_delegations.down.sql",
+      "downSha256": "bab6f683b5e9a6ed6f55dd48f18c7b50e1eb4e9f73f5739fb0ec1b90db96d04f",
+      "destructiveDown": true
+    },
+    {
+      "version": "0095",
+      "name": "administrator_step_up",
+      "upPath": "migrations/0095_administrator_step_up.up.sql",
+      "upSha256": "a419a622b157b955229a0f0d77d59e7ec3c8bee85b7a9e4da66c19858cc67f19",
+      "downPath": "migrations/0095_administrator_step_up.down.sql",
+      "downSha256": "33ec6d0fdaca1ef7222f0ab2f6c2263f9a37d3799c7e34e08dd695dbd4af9d58",
+      "destructiveDown": true
     }
   ]
 }

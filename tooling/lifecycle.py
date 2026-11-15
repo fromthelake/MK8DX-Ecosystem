@@ -416,7 +416,29 @@ def restore_new(backup_dir, target, recovery_phrase_file=None, lan_ip=None):
         error = process.stderr.read() if process.stderr else b""
         if process.wait() != 0:
             raise RuntimeError("Database restore failed: " + error.decode(errors="replace")[:500])
+    restore_runtime_account(target, command)
     print(f"Database and private configuration restored to a new isolated project. Web origin: {origin}")
+
+
+def restore_runtime_account(target, command):
+    """Database accounts live outside the dump: a restored installation whose API had its own runtime-only
+    login gets that account again (same password) and its migration.json, which no backup carries."""
+    from tooling import database_accounts as accounts
+    from tooling.install import read_dotenv
+    api, environment = read_dotenv(target / "api.env"), read_dotenv(target / "compose.env")
+    user, password = api.get("MK8DX_HOSTED_MYSQL_USER"), api.get("MK8DX_HOSTED_MYSQL_PASSWORD", "")
+    if user in (None, environment.get("MK8DX_DATABASE_USER")):
+        return  # one shared login (an installation from before the accounts were separated)
+    if user != accounts.RUNTIME_USER:
+        raise RuntimeError("Backup names an unexpected runtime database account")
+    connection = {"MK8DX_HOSTED_MYSQL_HOST": "mysql", "MK8DX_HOSTED_MYSQL_PORT": "3306",
+                  "MK8DX_HOSTED_MYSQL_DATABASE": environment.get("MK8DX_DATABASE", "mk8dx"),
+                  "MK8DX_HOSTED_MYSQL_USER": user, "MK8DX_HOSTED_MYSQL_PASSWORD": password}
+    write_private(target / accounts.MIGRATION_FILE, json.dumps(accounts.migration_settings(
+        connection, environment["MK8DX_DATABASE_USER"], environment["MK8DX_DATABASE_PASSWORD"]), indent=2) + "\n")
+    if os.name == "posix":
+        os.chmod(target / accounts.MIGRATION_FILE, 0o644)  # read by the migrate service, like operator.json
+    accounts.docker_root_sql(command, ROOT, accounts.docker_runtime_sql(password), password)
 
 
 def main():
