@@ -147,7 +147,7 @@ Elke route geeft je dezelfde website; ze verschillen in waar hij draait en wie h
 | Route | Voor | Draait op | Status |
 | --- | --- | --- | --- |
 | **A2** thuis- of clubnetwerk | Je eigen netwerk, na de installatie geen internet nodig, inlogkaarten voor iedereen | Windows 11 (x86-64), Linux (x86-64 of arm64), Mac (Apple-chip of Intel) | Volledig getest op Windows 11; Linux in WSL 2; Mac gebouwd, nog niet op een echte Mac getest |
-| **A1** één computer | Uitproberen op de computer waar je achter zit | Windows 11 of Linux, x86-64, met Docker | Getest: installeren, bijwerken, back-up |
+| **A1** één computer | Uitproberen op de computer waar je achter zit | Windows 11 of Linux, x86-64, met Docker | Volledig getest op Windows 11 met 0.2.6 (nachtelijke back-up vanaf de volgende versie); Linux: installeren, bijwerken, back-up |
 | **A3** één computer zonder Docker | Een Windows-pc waar Docker geen optie is | Windows 11 met XAMPP en Node.js | Getest: installeren, bijwerken, back-up |
 | **B1** openbare website | Je online community, je eigen domein en e-mail | Een Linux x86-64-server (VPS) met Docker; Ubuntu 24.04 beschreven | Beschreven, nog niet volledig getest |
 | **B2** webhosting | Online, zonder eigen server | Een hostingpakket met Node.js (Passenger), MariaDB/MySQL en SSH | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd |

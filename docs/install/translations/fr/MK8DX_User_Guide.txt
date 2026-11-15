@@ -54,7 +54,7 @@ Si tu ne vois pas une version de 3.12 à 3.15, répare Python avec le même prog
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Compare la valeur entière avec la ligne de ce fichier dans SHA256SUMS.txt. Arrête-toi et demande une copie correcte si elles diffèrent. Fais un clic droit sur le ZIP et choisis « Extraire tout ». Une destination appropriée est Documents\MK8DX\host. Ouvre le dossier extrait qui contient Start-MK8DX.cmd et compose.yaml.
+Compare la valeur entière avec la ligne de ce fichier dans SHA256SUMS.txt. Arrête-toi et demande une copie correcte si elles diffèrent. Fais un clic droit sur le ZIP et choisis « Extraire tout ». Une destination appropriée est Documents\MK8DX-A1. Ouvre le dossier extrait qui contient Start-MK8DX.cmd et compose.yaml.
 
 4. Double-clique sur Start-MK8DX.cmd. La fenêtre s'ouvre avec une courte intro de course : le logo MK8DX et un compte à rebours 3-2-1-GO avec des bips (Start-MK8DX.cmd -SkipCountdown supprime le compte à rebours ; le guide d'hébergement liste toutes les options). Elle demande ensuite « Où MK8DX va-t-il tourner ? » et liste A1, A2 et B1. Tape A1 et appuie sur Entrée. Saisis l'adresse e-mail que tu utiliseras plus tard pour te connecter et devenir administrateur. La première installation démarre alors toute seule. MK8DX charge les programmes fournis et crée ses propres clés, une base de données et les données de référence standard. Le premier démarrage peut prendre un moment.
 
@@ -68,7 +68,7 @@ Les données personnelles de l'installation sont conservées en dehors du paquet
 
 Tu es connecté, mais tu n'as pas encore les droits d'administrateur. Rouvre Start-MK8DX.cmd et choisis 5. La première attribution indique « created » (créé) ; une répétition indique « unchanged » (inchangé). Actualise le site ou reconnecte-toi. La vue d'administration doit apparaître. Un premier inscrit quelconque ne reçoit jamais automatiquement les droits d'administrateur.
 
-6. Ouvre Circuits, choisis un circuit et regarde Staff Nintendo et Records du monde. Tu peux soumettre ton propre essai via « Soumettre un contre-la-montre ». Vérifie les détails avant de les envoyer. Une soumission n'équivaut pas à une approbation publique.
+6. Ouvre Circuits, choisis un circuit et regarde Staff Nintendo et Records du monde. Tu peux soumettre ton propre essai via « Publie ton temps » sur la page du circuit (puis « Publier » et « Confirmer et publier »). Vérifie les détails avant de les envoyer. Une soumission n'équivaut pas à une approbation publique.
 
 Mailpit contient des liens de connexion. Ne partage pas cette boîte de test avec d'autres personnes. Pour un site public, choisis la voie de l'hébergement mutualisé ou du VPS avec un vrai envoi d'e-mails.
 

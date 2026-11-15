@@ -151,7 +151,7 @@ Todas as vias dão-te o mesmo site; diferem no sítio onde corre e em quem lhe p
 | Via | Para | Corre em | Estado |
 | --- | --- | --- | --- |
 | **A2** rede de casa ou do clube | A tua própria rede, sem internet depois da instalação, cartões de início de sessão para todos | Windows 11 (x86-64), Linux (x86-64 ou arm64), Mac (Apple silicon ou Intel) | Testado de ponta a ponta no Windows 11; Linux em WSL 2; Mac compilado, ainda não testado num Mac real |
-| **A1** um computador | Experimentar no computador onde estás sentado | Windows 11 ou Linux, x86-64, com Docker | Testado: instalação, atualização, cópia de segurança |
+| **A1** um computador | Experimentar no computador onde estás sentado | Windows 11 ou Linux, x86-64, com Docker | Testado de ponta a ponta no Windows 11 com 0.2.6 (cópia de segurança noturna a partir da próxima versão); Linux: instalação, atualização, cópia de segurança |
 | **A3** um computador sem Docker | Um PC Windows onde o Docker não é opção | Windows 11 com XAMPP e Node.js | Testado: instalação, atualização, cópia de segurança |
 | **B1** site público | A tua comunidade online, o teu próprio domínio e email | Um servidor Linux x86-64 (VPS) com Docker; Ubuntu 24.04 documentado | Documentado, ainda não testado de ponta a ponta |
 | **B2** alojamento web | Online, sem servidor próprio | Um plano de alojamento com Node.js (Passenger), MariaDB/MySQL e SSH | O site da nossa própria comunidade funciona assim; o pacote público ainda não foi instalado de raiz numa conta de alojamento nova |

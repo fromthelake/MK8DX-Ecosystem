@@ -54,7 +54,7 @@ Siehst du keine Version von 3.12 bis 3.15, repariere Python mit demselben Instal
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Vergleiche den gesamten Wert mit der Zeile für diese Datei in SHA256SUMS.txt. Weichen sie ab, hör auf und fordere eine korrekte Kopie an. Klicke mit der rechten Maustaste auf die ZIP-Datei und wähle „Alle extrahieren“. Ein geeignetes Ziel ist Documents\MK8DX\host. Öffne den entpackten Ordner mit Start-MK8DX.cmd und compose.yaml.
+Vergleiche den gesamten Wert mit der Zeile für diese Datei in SHA256SUMS.txt. Weichen sie ab, hör auf und fordere eine korrekte Kopie an. Klicke mit der rechten Maustaste auf die ZIP-Datei und wähle „Alle extrahieren“. Ein geeignetes Ziel ist Documents\MK8DX-A1. Öffne den entpackten Ordner mit Start-MK8DX.cmd und compose.yaml.
 
 4. Doppelklicke auf Start-MK8DX.cmd. Das Fenster öffnet sich mit einem kurzen Renn-Intro: dem MK8DX-Logo und einem 3-2-1-GO-Countdown mit Pieptönen (Start-MK8DX.cmd -SkipCountdown lässt den Countdown weg; die Hosting-Anleitung listet alle Optionen). Dann fragt es „Wo soll MK8DX laufen?“ und listet A1, A2 und B1. Tippe A1 und drücke die Eingabetaste. Gib die E-Mail-Adresse ein, mit der du dich später anmelden und Administrator werden willst. Die erste Einrichtung startet dann von selbst. MK8DX lädt die mitgelieferten Programme und erstellt seine eigenen Schlüssel, eine Datenbank und die Standard-Referenzdaten. Der erste Start kann eine Weile dauern.
 
@@ -68,7 +68,7 @@ Persönliche Installationsdaten liegen außerhalb des entpackten Pakets unter %L
 
 Du bist angemeldet, hast aber noch keine Administratorrechte. Öffne Start-MK8DX.cmd erneut und wähle 5. Die erste Vergabe meldet „created“ (angelegt); eine Wiederholung meldet „unchanged“ (unverändert). Lade die Website neu oder melde dich erneut an. Die Verwaltungsansicht sollte erscheinen. Ein beliebiger erster Registrierter bekommt nie automatisch Administratorrechte.
 
-6. Öffne „Strecken“, wähle eine Strecke und schau dir „Nintendo-Mitarbeiter“ und „Weltrekorde“ an. Du kannst über „Zeitfahren posten“ deinen eigenen Testlauf einreichen. Prüfe die Angaben, bevor du sie sendest. Eine Einreichung ist nicht dasselbe wie eine öffentliche Freigabe.
+6. Öffne „Strecken“, wähle eine Strecke und schau dir „Nintendo-Mitarbeiter“ und „Weltrekorde“ an. Du kannst über „Poste deine Zeit“ auf der Streckenseite (danach „Veröffentlichen“ und „Bestätigen und veröffentlichen“) deinen eigenen Testlauf einreichen. Prüfe die Angaben, bevor du sie sendest. Eine Einreichung ist nicht dasselbe wie eine öffentliche Freigabe.
 
 Mailpit enthält Anmeldelinks. Teile diesen Test-Posteingang nicht mit anderen Leuten. Für eine öffentliche Website wählst du den Weg über Shared Hosting oder VPS mit echtem ausgehendem Mailversand.
 

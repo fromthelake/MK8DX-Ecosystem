@@ -54,7 +54,7 @@ Si no ves una versión de la 3.12 a la 3.15, repara Python con el mismo instalad
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Compara el valor completo con la línea de ese archivo en SHA256SUMS.txt. Si no coinciden, detente y pide una copia correcta. Haz clic derecho en el ZIP y elige “Extraer todo”. Un destino adecuado es Documents\MK8DX\host. Abre la carpeta extraída que contiene Start-MK8DX.cmd y compose.yaml.
+Compara el valor completo con la línea de ese archivo en SHA256SUMS.txt. Si no coinciden, detente y pide una copia correcta. Haz clic derecho en el ZIP y elige “Extraer todo”. Un destino adecuado es Documents\MK8DX-A1. Abre la carpeta extraída que contiene Start-MK8DX.cmd y compose.yaml.
 
 4. Haz doble clic en Start-MK8DX.cmd. La ventana se abre con una breve intro de carrera: el logotipo de MK8DX y una cuenta atrás 3-2-1-GO con pitidos (Start-MK8DX.cmd -SkipCountdown quita la cuenta atrás; la guía de hosting enumera todas las opciones). Después pregunta “¿Dónde se ejecutará MK8DX?” y muestra A1, A2 y B1. Escribe A1 y pulsa Intro. Introduce la dirección de correo electrónico con la que iniciarás sesión más tarde y con la que serás administrador. La primera configuración empieza entonces sola. MK8DX carga los programas suministrados y crea sus propias claves, una base de datos y los datos de referencia estándar. El primer inicio puede tardar un rato.
 
@@ -68,7 +68,7 @@ Los datos personales de la instalación se guardan fuera del paquete extraído, 
 
 Has iniciado sesión, pero todavía no tienes derechos de administrador. Vuelve a abrir Start-MK8DX.cmd y elige 5. La primera concesión dice “created”; una repetición dice “unchanged”. Actualiza la web o vuelve a iniciar sesión. Debería aparecer la vista de administración. Quien se registre primero nunca recibe derechos de administrador automáticamente.
 
-6. Abre “Circuitos”, elige un circuito y mira “Personal de Nintendo” y “Récords mundiales”. Puedes enviar tu propia carrera de prueba con “Enviar una Contrarreloj”. Comprueba los datos antes de enviarlos. Un envío no es lo mismo que una aprobación pública.
+6. Abre “Circuitos”, elige un circuito y mira “Personal de Nintendo” y “Récords mundiales”. Puedes enviar tu propia carrera de prueba con “Publica tu tiempo” en la página del circuito (después “Publicar” y “Confirmar y publicar”). Comprueba los datos antes de enviarlos. Un envío no es lo mismo que una aprobación pública.
 
 Mailpit contiene enlaces de inicio de sesión. No compartas este buzón de prueba con otras personas. Para una web pública, elige la vía de hosting compartido o la de VPS, con correo saliente real.
 

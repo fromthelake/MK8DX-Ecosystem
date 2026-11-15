@@ -54,7 +54,7 @@ Se não vires uma versão de 3.12 a 3.15, repara o Python com o mesmo instalador
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Compara o valor inteiro com a linha desse ficheiro no SHA256SUMS.txt. Para e pede uma cópia correta se forem diferentes. Clica com o botão direito no ZIP e escolhe «Extract All» (Extrair Tudo). Um destino adequado é Documents\MK8DX\host. Abre a pasta extraída que contém Start-MK8DX.cmd e compose.yaml.
+Compara o valor inteiro com a linha desse ficheiro no SHA256SUMS.txt. Para e pede uma cópia correta se forem diferentes. Clica com o botão direito no ZIP e escolhe «Extract All» (Extrair Tudo). Um destino adequado é Documents\MK8DX-A1. Abre a pasta extraída que contém Start-MK8DX.cmd e compose.yaml.
 
 4. Faz duplo clique em Start-MK8DX.cmd. A janela abre com uma curta introdução de corrida: o logótipo do MK8DX e uma contagem decrescente 3-2-1-GO com bips (Start-MK8DX.cmd -SkipCountdown omite a contagem; o guia de alojamento lista todas as opções). Depois pergunta «Onde vai funcionar o MK8DX?» e lista A1, A2 e B1. Escreve A1 e carrega em Enter. Introduz o endereço de e-mail com que vais iniciar sessão mais tarde e tornar-te administrador. A primeira configuração arranca então sozinha. O MK8DX carrega os programas fornecidos e cria as suas próprias chaves, uma base de dados e os dados de referência padrão. O primeiro arranque pode demorar algum tempo.
 
@@ -68,7 +68,7 @@ Os dados pessoais da instalação ficam fora do pacote extraído, em %LOCALAPPDA
 
 Tens sessão iniciada, mas ainda não tens direitos de administrador. Abre de novo o Start-MK8DX.cmd e escolhe 5. A primeira atribuição diz «created» (criado); uma repetição diz «unchanged» (sem alterações). Atualiza o site ou inicia sessão de novo. A vista de administração deve aparecer. Um primeiro registo qualquer nunca recebe direitos de administrador automaticamente.
 
-6. Abre «Pistas», escolhe uma pista e olha para «Equipa da Nintendo» e «Recordes Mundiais». Podes submeter uma tentativa de teste tua através de «Publicar um tempo». Verifica os dados antes de os enviares. Uma submissão não é o mesmo que uma aprovação pública.
+6. Abre «Pistas», escolhe uma pista e olha para «Equipa da Nintendo» e «Recordes Mundiais». Podes submeter uma tentativa de teste tua através de «Publica o teu tempo» na página da pista (depois «Publicar» e «Confirmar e publicar»). Verifica os dados antes de os enviares. Uma submissão não é o mesmo que uma aprovação pública.
 
 O Mailpit contém ligações de início de sessão. Não partilhes esta caixa de teste com outras pessoas. Para um site público, escolhe a via de alojamento partilhado ou de VPS, com envio de correio real.
 

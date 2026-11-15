@@ -5,6 +5,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- **A1 guide after a literal walkthrough of 0.2.6 on Windows 11** (EN/NL, user guide in all 15 languages): the package goes to
+  `Documents\MK8DX-A1`, not inside an A2 folder; sign-in describes the three welcome screens of a new account; posting a
+  time names the real buttons (**Post your time**, **Publish**, **Confirm and publish**) and the scanner's **GALLERY**;
+  menu 7 says to start the newer package; the nightly backup says how to check it and how to switch it on when the
+  0.2.6 first setup could not (the 0.2.6 host package lacked its backup modules, fixed since); and the A1 guides got
+  their own removal section, which warns to keep the images while an A2 installation runs on the same computer. The
+  README route table now says what was tested on A1 and with which version.
+
 ## 0.2.6 — 2026-11-15
 
 A follow-up to the 0.2.5 security release that makes running a night easier. Directors can delegate live capture
