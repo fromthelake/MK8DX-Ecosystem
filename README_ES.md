@@ -150,7 +150,7 @@ Todas las vías te dan la misma web; se diferencian en dónde se ejecuta y quié
 | Vía | Para | Se ejecuta en | Estado |
 | --- | --- | --- | --- |
 | **A2** red de casa o del club | Tu propia red, sin internet tras la instalación, tarjetas de acceso para todos | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Probado de principio a fin en Windows 11; Linux en WSL 2; Mac compilado, aún sin probar en un Mac real |
-| **A1** un ordenador | Probarlo en el ordenador en el que estás sentado | Windows 11 o Linux, x86-64, con Docker | Probado: instalación, actualización, copia de seguridad |
+| **A1** un ordenador | Probarlo en el ordenador en el que estás sentado | Windows 11 o Linux, x86-64, con Docker | Probado de principio a fin en Windows 11 con 0.2.6 (copia de seguridad nocturna desde la próxima versión); Linux: instalación, actualización, copia de seguridad |
 | **A3** un ordenador sin Docker | Un PC con Windows en el que Docker no es una opción | Windows 11 con XAMPP y Node.js | Probado de principio a fin en Windows 11: instalación, inicio de sesión, escáner, torneo, copia de seguridad, copia nocturna, actualización, desinstalación |
 | **B1** web pública | Tu comunidad en línea, con tu propio dominio y correo | Un servidor Linux x86-64 (VPS) con Docker; documentado para Ubuntu 24.04 | Documentado, aún sin probar de principio a fin |
 | **B2** hosting web | En línea, sin servidor propio | Un plan de hosting con Node.js (Passenger), MariaDB/MySQL y SSH | Nuestra propia web de comunidad funciona así; el paquete público aún no se ha instalado desde cero en una cuenta de hosting nueva |

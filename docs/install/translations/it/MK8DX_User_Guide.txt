@@ -54,7 +54,7 @@ Se non vedi una versione dalla 3.12 alla 3.15, ripara Python con lo stesso progr
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Confronta l'intero valore con la riga di quel file in SHA256SUMS.txt. Se sono diversi, fermati e chiedi una copia corretta. Fai clic con il tasto destro sullo ZIP e scegli “Extract All” (Estrai tutto). Una destinazione adatta è Documents\MK8DX\host. Apri la cartella estratta che contiene Start-MK8DX.cmd e compose.yaml.
+Confronta l'intero valore con la riga di quel file in SHA256SUMS.txt. Se sono diversi, fermati e chiedi una copia corretta. Fai clic con il tasto destro sullo ZIP e scegli “Extract All” (Estrai tutto). Una destinazione adatta è Documents\MK8DX-A1. Apri la cartella estratta che contiene Start-MK8DX.cmd e compose.yaml.
 
 4. Fai doppio clic su Start-MK8DX.cmd. La finestra si apre con una breve introduzione di gara: il logo MK8DX e un conto alla rovescia 3-2-1-GO con segnali acustici (Start-MK8DX.cmd -SkipCountdown toglie il conto alla rovescia; la guida all'hosting elenca tutte le opzioni). Poi chiede “Dove verrà eseguito MK8DX?” ed elenca A1, A2 e B1. Digita A1 e premi Invio. Inserisci l'indirizzo email che userai in seguito per accedere e diventare amministratore. La prima configurazione parte poi da sola. MK8DX carica i programmi forniti e crea le proprie chiavi, un database e i dati di riferimento standard. Il primo avvio può richiedere un po' di tempo.
 
@@ -68,7 +68,7 @@ I dati personali dell'installazione sono conservati fuori dal pacchetto estratto
 
 Hai effettuato l'accesso, ma non hai ancora i diritti di amministratore. Apri di nuovo Start-MK8DX.cmd e scegli 5. La prima assegnazione dice “created” (creato); una ripetizione dice “unchanged” (invariato). Aggiorna il sito web o accedi di nuovo. Dovrebbe comparire la vista di amministrazione. Il primo che si registra a caso non riceve mai automaticamente i diritti di amministratore.
 
-6. Apri Percorsi, scegli un percorso e guarda Staff Nintendo e Record mondiali. Puoi inviare un tuo tempo di prova tramite “Pubblica una Prova a tempo”. Controlla i dati prima di inviarli. Un invio non equivale a un'approvazione pubblica.
+6. Apri Percorsi, scegli un percorso e guarda Staff Nintendo e Record mondiali. Puoi inviare un tuo tempo di prova tramite “Pubblica il tuo tempo” nella pagina del percorso (poi “Pubblica” e “Conferma e pubblica”). Controlla i dati prima di inviarli. Un invio non equivale a un'approvazione pubblica.
 
 Mailpit contiene link di accesso. Non condividere questa casella di test con altre persone. Per un sito pubblico, scegli la via dell'hosting condiviso o del VPS con una vera posta in uscita.
 

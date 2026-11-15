@@ -149,7 +149,7 @@ Ogni percorso ti dà lo stesso sito; cambiano il luogo in cui gira e chi può ra
 | Percorso | Per | Gira su | Stato |
 | --- | --- | --- | --- |
 | **A2** rete di casa o del club | La tua rete, niente internet dopo l'installazione, tessere di accesso per tutti | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Testato da capo a fondo su Windows 11; Linux in WSL 2; Mac compilato, non ancora testato su un Mac reale |
-| **A1** un computer | Provarlo sul computer a cui sei seduto | Windows 11 o Linux, x86-64, con Docker | Testato: installazione, aggiornamento, backup |
+| **A1** un computer | Provarlo sul computer a cui sei seduto | Windows 11 o Linux, x86-64, con Docker | Testato dall'inizio alla fine su Windows 11 con 0.2.6 (backup notturno dalla prossima versione); Linux: installazione, aggiornamento, backup |
 | **A3** un computer senza Docker | Un PC Windows su cui Docker non è un'opzione | Windows 11 con XAMPP e Node.js | Testato dall'inizio alla fine su Windows 11: installazione, accesso, scanner, torneo, backup, backup notturno, aggiornamento, rimozione |
 | **B1** sito pubblico | La tua community online, con il tuo dominio e la tua email | Un server Linux x86-64 (VPS) con Docker; documentato per Ubuntu 24.04 | Documentato, non ancora testato da capo a fondo |
 | **B2** hosting web | Online, senza un server tuo | Un piano di hosting con Node.js (Passenger), MariaDB/MySQL e SSH | Il sito della nostra community funziona così; il pacchetto pubblico non è ancora stato installato da zero su un nuovo account di hosting |

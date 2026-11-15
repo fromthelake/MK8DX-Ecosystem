@@ -153,7 +153,7 @@ Chaque voie te donne le même site ; elles diffèrent par l'endroit où il tourn
 | Voie | Pour | Tourne sur | Statut |
 | --- | --- | --- | --- |
 | **A2** réseau domestique ou de club | Ton propre réseau, pas besoin d'internet après l'installation, des cartes de connexion pour tout le monde | Windows 11 (x86-64), Linux (x86-64 ou arm64), Mac (Apple silicon ou Intel) | Testé de bout en bout sous Windows 11 ; Linux sous WSL 2 ; Mac compilé, pas encore testé sur un vrai Mac |
-| **A1** un seul ordinateur | L'essayer sur l'ordinateur devant lequel tu es assis | Windows 11 ou Linux, x86-64, avec Docker | Testé : installation, mise à niveau, sauvegarde |
+| **A1** un seul ordinateur | L'essayer sur l'ordinateur devant lequel tu es assis | Windows 11 ou Linux, x86-64, avec Docker | Testé de bout en bout sous Windows 11 avec 0.2.6 (sauvegarde nocturne à partir de la prochaine version) ; Linux : installation, mise à niveau, sauvegarde |
 | **A3** un seul ordinateur sans Docker | Un PC Windows sur lequel Docker n'est pas envisageable | Windows 11 avec XAMPP et Node.js | Testé de bout en bout sous Windows 11 : installation, connexion, scanner, tournoi, sauvegarde, sauvegarde nocturne, mise à jour, désinstallation |
 | **B1** site web public | Ta communauté en ligne, ton propre domaine et ton propre e-mail | Un serveur Linux x86-64 (VPS) avec Docker ; Ubuntu 24.04 documenté | Documenté, pas encore testé de bout en bout |
 | **B2** hébergement web | En ligne, sans serveur à toi | Une offre d'hébergement avec Node.js (Passenger), MariaDB/MySQL et SSH | Notre propre site communautaire tourne ainsi ; le paquet public n'a pas encore été installé de zéro sur un nouveau compte d'hébergement |

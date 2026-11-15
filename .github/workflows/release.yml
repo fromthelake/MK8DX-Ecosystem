@@ -144,43 +144,49 @@ jobs:
         with:
           name: source
           path: ${{ runner.temp }}/out/
-  host-package:
+  container-images:
+    # The API and Web images are built once per processor and shared by every package that ships them: the
+    # A1/B1 host package and the A2 packages load this one build. In 0.2.6 they were built apart, so one tag
+    # meant different bytes in A1 and A2 and starting A1 re-pointed the tag an A2 installation starts from.
+    # host_bundle.py also gives each packaged image a tag that names its content.
     needs: verified
-    runs-on: ubuntu-24.04
-    timeout-minutes: 75
+    runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
+    timeout-minutes: 60
     permissions:
       contents: read
       packages: write
       id-token: write
       attestations: write
       artifact-metadata: write
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: '3.12'
-      - name: Build, package and publish versioned linux/amd64 images
+      - name: Build the API and Web images for linux/${{ matrix.arch }} (and publish amd64)
         id: images
         env:
           GH_TOKEN: ${{ github.token }}
+          ARCH: ${{ matrix.arch }}
         run: |
           set -euo pipefail
           version="$PACKAGE_VERSION"
-          mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version")
+          mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version" --platform linux --arch "$ARCH")
           test "${#images[@]}" -eq 4
           python tooling/assets/shared_asset_source.py verify
-          docker build --platform linux/amd64 --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
+          docker build --platform "linux/$ARCH" --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
             --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
             -f backend/api/Dockerfile -t "${images[0]}" .
-          docker build --platform linux/amd64 --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
+          docker build --platform "linux/$ARCH" --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
             --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
             -f apps/timetrials-web/Dockerfile -t "${images[1]}" .
-          # MySQL and Mailpit by their pinned digest (compose files); packaging checks it again.
-          python tooling/release/host_bundle.py --pull-base-images --arch amd64
-          mkdir -p "$RUNNER_TEMP/out"
-          python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
-            --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
-          if [ "$GITHUB_EVENT_NAME" != workflow_dispatch ]; then
+          mkdir -p "$RUNNER_TEMP/images"
+          docker save --output "$RUNNER_TEMP/images/container-images-$ARCH.tar" "${images[0]}" "${images[1]}"
+          if [ "$ARCH" = amd64 ] && [ "$GITHUB_EVENT_NAME" != workflow_dispatch ]; then
             echo "$GH_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
             docker push "${images[0]}"
             docker push "${images[1]}"
@@ -190,19 +196,51 @@ jobs:
             echo "web_digest=${web_digest##*@}" >> "$GITHUB_OUTPUT"
           fi
       - name: Attest API image provenance
-        if: github.event_name != 'workflow_dispatch'
+        if: matrix.arch == 'amd64' && github.event_name != 'workflow_dispatch'
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-name: ghcr.io/fromthelake/mk8dx-api
           subject-digest: ${{ steps.images.outputs.api_digest }}
           push-to-registry: true
       - name: Attest Web image provenance
-        if: github.event_name != 'workflow_dispatch'
+        if: matrix.arch == 'amd64' && github.event_name != 'workflow_dispatch'
         uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4
         with:
           subject-name: ghcr.io/fromthelake/mk8dx-web
           subject-digest: ${{ steps.images.outputs.web_digest }}
           push-to-registry: true
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: container-images-${{ matrix.arch }}
+          path: ${{ runner.temp }}/images/container-images-${{ matrix.arch }}.tar
+          retention-days: 1
+          compression-level: 1
+  host-package:
+    needs: [verified, container-images]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 75
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: container-images-amd64
+          path: ${{ runner.temp }}/images
+      - name: Package the shared linux/amd64 images
+        run: |
+          set -euo pipefail
+          version="$PACKAGE_VERSION"
+          docker load --input "$RUNNER_TEMP/images/container-images-amd64.tar"
+          rm "$RUNNER_TEMP/images/container-images-amd64.tar"
+          # MySQL and Mailpit by their pinned digest (compose files); packaging checks it again.
+          python tooling/release/host_bundle.py --pull-base-images --arch amd64
+          mkdir -p "$RUNNER_TEMP/out"
+          python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
+            --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: host-package
@@ -238,7 +276,7 @@ jobs:
     # A2 offline (ADR-0223): one package per host system and processor, each with its own image bundle and the
     # pinned CPython 3.12-3.15 wheels for the local CA tools. The containers are always Linux images, built natively
     # on an amd64 or arm64 runner (no emulation).
-    needs: [verified, macos-intel-cryptography]
+    needs: [verified, macos-intel-cryptography, container-images]
     runs-on: ${{ matrix.arch == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
     timeout-minutes: 90
     strategy:
@@ -261,7 +299,11 @@ jobs:
         with:
           name: macos-intel-cryptography
           path: ${{ runner.temp }}/built-wheels
-      - name: Build the images, fetch the wheels and package A2 for ${{ matrix.platform }}/${{ matrix.arch }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: container-images-${{ matrix.arch }}
+          path: ${{ runner.temp }}/images
+      - name: Load the shared images, fetch the wheels and package A2 for ${{ matrix.platform }}/${{ matrix.arch }}
         env:
           WHEEL_TAGS: ${{ matrix.wheel_tags }}
           A2_PLATFORM: ${{ matrix.platform }}
@@ -271,14 +313,10 @@ jobs:
           version="$PACKAGE_VERSION"
           mapfile -t images < <(python tooling/release/host_bundle.py --list-images --version "$version" --platform "$A2_PLATFORM" --arch "$A2_ARCH")
           test "${#images[@]}" -eq 4
-          python tooling/assets/shared_asset_source.py verify
-          for pair in "0 backend/api/Dockerfile" "1 apps/timetrials-web/Dockerfile"; do
-            set -- $pair
-            docker build --platform "linux/$A2_ARCH" \
-              --label org.opencontainers.image.source="https://github.com/$GITHUB_REPOSITORY" \
-              --label org.opencontainers.image.revision="$GITHUB_SHA" --label org.opencontainers.image.version="$version" \
-              -f "$2" -t "${images[$1]}" .
-          done
+          # The shared build of the container-images job: the same bytes as the host package of this processor.
+          docker load --input "$RUNNER_TEMP/images/container-images-$A2_ARCH.tar"
+          rm "$RUNNER_TEMP/images/container-images-$A2_ARCH.tar"
+          for image in "${images[0]}" "${images[1]}"; do docker image inspect "$image" > /dev/null; done
           python tooling/release/host_bundle.py --pull-base-images --arch "$A2_ARCH"
           platforms=()
           for tag in $WHEEL_TAGS; do platforms+=(--platform "$tag"); done
@@ -350,6 +388,8 @@ jobs:
         with:
           path: ${{ runner.temp }}/dist
           merge-multiple: true
+      - name: Leave the shared image builds out of the release (each package carries its own copy)
+        run: rm -f "$RUNNER_TEMP"/dist/container-images-*.tar
       - name: Generate SPDX software bill of materials for release assets
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:

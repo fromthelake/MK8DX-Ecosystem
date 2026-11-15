@@ -151,7 +151,7 @@ Jede Route gibt dir dieselbe Website; sie unterscheiden sich darin, wo sie läuf
 | Route | Für | Läuft auf | Status |
 | --- | --- | --- | --- |
 | **A2** Heim- oder Vereinsnetzwerk | Dein eigenes Netzwerk, nach der Einrichtung kein Internet nötig, Anmeldekarten für alle | Windows 11 (x86-64), Linux (x86-64 oder arm64), Mac (Apple Silicon oder Intel) | Unter Windows 11 durchgehend getestet; Linux in WSL 2; Mac gebaut, noch nicht auf einem echten Mac getestet |
-| **A1** ein Computer | Ausprobieren auf dem Computer, an dem du sitzt | Windows 11 oder Linux, x86-64, mit Docker | Getestet: Installation, Upgrade, Backup |
+| **A1** ein Computer | Ausprobieren auf dem Computer, an dem du sitzt | Windows 11 oder Linux, x86-64, mit Docker | End-to-End getestet unter Windows 11 mit 0.2.6 (nächtliches Backup ab der nächsten Version); Linux: Installation, Upgrade, Backup |
 | **A3** ein Computer ohne Docker | Ein Windows-PC, auf dem Docker keine Option ist | Windows 11 mit XAMPP und Node.js | Durchgehend getestet unter Windows 11: Installation, Anmeldung, Scanner, Turnier, Backup, nächtliches Backup, Update, Entfernen |
 | **B1** öffentliche Website | Deine Online-Community, deine eigene Domain und E-Mail | Ein Linux-x86-64-Server (VPS) mit Docker; Ubuntu 24.04 dokumentiert | Dokumentiert, noch nicht durchgehend getestet |
 | **B2** Webhosting | Online, ohne eigenen Server | Ein Hosting-Paket mit Node.js (Passenger), MariaDB/MySQL und SSH | Unsere eigene Community-Seite läuft so; das öffentliche Paket wurde noch nicht von Grund auf auf einem neuen Hosting-Konto installiert |

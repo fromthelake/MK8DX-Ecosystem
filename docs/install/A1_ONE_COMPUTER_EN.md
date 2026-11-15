@@ -33,7 +33,7 @@ option and open a new PowerShell window.
 `SHA256SUMS.txt` from the newest release. In PowerShell in that folder run
 `Get-FileHash .\mk8dx-host-local-<version>-amd64.zip -Algorithm SHA256` and compare the whole value with the
 file's line in `SHA256SUMS.txt`. Then right-click the ZIP → **Extract All** and choose for example
-`Documents\MK8DX\host`. **You see:** `Start-MK8DX.cmd`, `compose.yaml` and the folders `tooling`, `images` and
+`Documents\MK8DX-A1` (not inside the `Documents\MK8DX` folder of an A2 installation). **You see:** `Start-MK8DX.cmd`, `compose.yaml` and the folders `tooling`, `images` and
 `docs`. **If it differs:** you are probably one folder too high, or you downloaded GitHub's *Source code (zip)*;
 open the folder where `Start-MK8DX.cmd` really is.
 
@@ -52,7 +52,9 @@ and type **1** in the menu to finish the setup.
 
 **Where:** in the browser **on the same PC**. **Do:** type **8** in the menu (or open the Website address yourself),
 click **Sign in** and enter exactly the address from step 5. Open the test inbox address in a second tab, open the
-newest mail and click its sign-in link. **You see:** the website shows that you are signed in; **Tracks** shows
+newest mail and click its sign-in link. A new account first gets three short screens: whether your times are
+already on this website (choose **No** twice, then **Continue**), your racing name (**Create my Player**) and a few
+optional choices (**Save and finish** or **Skip for now**). **You see:** the website shows that you are signed in; **Tracks** shows
 the tracks with Nintendo Staff ghosts and world records. **If it differs:** check that you use the inbox and the
 address of this installation and that the link is still valid.
 
@@ -65,9 +67,10 @@ address in this installation.
 
 ## 8. Try it
 
-**Where:** on the website. **Do:** open **Tracks**, choose a track and use **Submit a Time Trial**. Optionally open
-`/scanner/` and upload a photo of a result screen. **You see:** your submission in your account. A submission and
-public approval are separate steps.
+**Where:** on the website. **Do:** open **Tracks**, choose a cup and a track, click **Post your time**, type the
+six digits of your time and choose **Publish** and then **Confirm and publish**. Optionally open `/scanner/`, choose
+**GALLERY** and pick a photo of a result screen. **You see:** your time on the track's leaderboard and on your home
+page; the scanner shows the total time, the lap times and the kart combination it read.
 
 ## Coming back later
 
@@ -82,7 +85,7 @@ Start Docker Desktop, open the same folder and double-click `Start-MK8DX.cmd`. T
 | 4 | stop MK8DX (keeps all data) |
 | 5 | make the saved address administrator |
 | 6 | make a backup in `Documents\MK8DX-backups` and check it right away |
-| 7 | update to the package you started the window from (a checked backup first) |
+| 7 | update to the package you started the window from (a checked backup first): extract a newer package next to the old one and start its `Start-MK8DX.cmd` |
 | 8 | open the website |
 | 0 | close the window |
 
@@ -93,12 +96,32 @@ update has run; with a 0.2.3 package, 2 would skip the backup. **3** (check) is 
 
 **Automatic backup:** MK8DX also makes a checked backup by itself every night (03:15, or as soon as the computer
 is on again) in `Documents\MK8DX-backups\automatic`, keeping 14 days and 4 weeks. **3** (check) shows the age and
-result of the last one under `automaticBackup`. Copy backups to another drive or a NAS too:
+result of the last one under `automaticBackup`; `"enabled": true` means it is on. With the 0.2.6 package the first
+setup could not switch it on (it says *Nightly automatic backup could not be switched on*) and an update does not
+switch it on either: run the line below once from a newer package. Run it in PowerShell in the package folder; it also
+copies every backup to another drive or a NAS (leave out `--copy-to ...` if you have none):
 `python tooling/install.py backup-schedule --state-dir "$env:LOCALAPPDATA\MK8DX\Server" --copy-to 'D:\MK8DX-backups'`.
-Turn it off with `backup-unschedule` instead of `backup-schedule`. Details: [Administration](ADMINISTRATION_EN.md#automatic-daily-backup).
+`backup-run` instead of `backup-schedule` makes one right away. Turn it off with `backup-unschedule`. Details: [Administration](ADMINISTRATION_EN.md#automatic-daily-backup).
 
 **Database accounts:** the website signs in to its database with its own account (`mk8dx_runtime`) that can only read and write data; database updates use the database's own account (`mk8dx_app`). Setup creates both; an older installation gets them at its next update (**7**), and if the website does not start with the new account the update returns to the old one. **3** (check) shows `"databaseAccounts": "separate"`. Details: [Operations](../OPERATIONS.md#database-accounts).
 
 Your data stays in `%LOCALAPPDATA%\MK8DX\Server` and in Docker; a newer package replaces only the program folder.
-Never run `docker compose down -v`. Restoring a backup on another computer: the chapter *Back up, restore, and update* in the
+Never run `docker compose down -v` (only when removing, below). Restoring a backup on another computer: the chapter *Back up, restore, and update* in the
 [user guide](MK8DX_User_Guide_EN.txt), or [ADMINISTRATION_EN.md](ADMINISTRATION_EN.md#restoring-without-wiping-the-current-installation).
+
+## Removing MK8DX from this computer
+
+This deletes the database, the accounts and the keys of this installation; make a backup first (**6**) if you may
+want anything back. In PowerShell in the package folder:
+
+1. `python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\Server"` (the nightly backup).
+2. Double-click `Start-MK8DX.cmd` and type **4** (stop), then **0**.
+3. `docker compose --env-file "$env:LOCALAPPDATA\MK8DX\Server\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v`
+   removes the containers and the database.
+4. `Remove-Item -LiteralPath "$env:LOCALAPPDATA\MK8DX\Server" -Recurse -Force` removes the keys and settings.
+5. `python tooling/remove_images.py` removes the programs. It keeps every image another installation or program
+   on this computer still uses (an A2 installation, for example) and says which.
+6. Delete the package folder, and in `Documents\MK8DX-backups` the backups you no longer need.
+
+**You see:** the website and the test inbox no longer answer, and `docker ps -a` shows no `mk8dx-os-…` containers
+of this installation. Details: [Host a community server](../guides/HOSTING.md#remove-an-installation).

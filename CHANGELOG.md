@@ -5,6 +5,25 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- **A1 guide after a literal walkthrough of 0.2.6 on Windows 11** (EN/NL, user guide in all 15 languages): the package goes to
+  `Documents\MK8DX-A1`, not inside an A2 folder; sign-in describes the three welcome screens of a new account; posting a
+  time names the real buttons (**Post your time**, **Publish**, **Confirm and publish**) and the scanner's **GALLERY**;
+  menu 7 says to start the newer package; the nightly backup says how to check it and how to switch it on when the
+  0.2.6 first setup could not (the 0.2.6 host package lacked its backup modules, fixed since); and the A1 guides got
+  their own removal section. The README route table now says what was tested on A1 and with which version.
+
+### Fixed
+
+- **A1 and A2 on one computer no longer share an image tag with different bytes.** In 0.2.6 the host package and the
+  A2 packages built their API and Web images separately under the same tag, so starting A1 re-pointed the tag an A2
+  installation starts from, and removing A1's images could take it away. The release now builds these images once per
+  processor for every package, and each package names all its images, MySQL and Mailpit included, by content
+  (`<tag>-<12 hex digits of the image ID>`).
+  Removing an installation uses the new `tooling/remove_images.py`, which keeps every image another container on the
+  computer still uses (another MK8DX installation, a QA database, another program).
+
 ## 0.2.6 — 2026-11-15
 
 A follow-up to the 0.2.5 security release that makes running a night easier. Directors can delegate live capture

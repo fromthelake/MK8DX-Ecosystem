@@ -67,6 +67,63 @@ class HostBundleImageReferencesTest(unittest.TestCase):
                 self.assertIn(image, payload)
 
 
+class ContentTagTest(unittest.TestCase):
+    """Two packages never load different bytes under one tag (A1 and A2 of 0.2.6 did)."""
+
+    IDS = {"ghcr.io/fromthelake/mk8dx-api:v0.2.7-amd64": "sha256:" + "a" * 12 + "1" * 52,
+           "ghcr.io/fromthelake/mk8dx-web:v0.2.7-amd64": "sha256:" + "b" * 12 + "2" * 52,
+           **{tag: "sha256:" + "e" * 12 + "3" * 52 for tag in host_bundle.base_image_pins()}}
+
+    def test_the_tag_names_the_image_content(self):
+        images = host_bundle.image_tags("v0.2.7")
+        tagged = host_bundle.content_tags(images, id_of=self.IDS.__getitem__)
+        self.assertEqual(tagged[:2], ("ghcr.io/fromthelake/mk8dx-api:v0.2.7-amd64-aaaaaaaaaaaa",
+                                      "ghcr.io/fromthelake/mk8dx-web:v0.2.7-amd64-bbbbbbbbbbbb"))
+        # MySQL and Mailpit too: their plain tags belong to whatever else runs on the computer.
+        self.assertEqual(tagged[2:], tuple(f"{tag}-eeeeeeeeeeee" for tag in images[2:]))
+
+    def test_different_builds_get_different_tags_and_equal_builds_the_same(self):
+        images = host_bundle.image_tags("v0.2.7")
+        other = {tag: "sha256:" + "c" * 64 for tag in self.IDS}
+        self.assertNotEqual(host_bundle.content_tags(images, id_of=self.IDS.__getitem__)[:2],
+                            host_bundle.content_tags(images, id_of=other.__getitem__)[:2])
+        self.assertEqual(host_bundle.content_tags(images, id_of=self.IDS.__getitem__),
+                         host_bundle.content_tags(images, id_of=dict(self.IDS).__getitem__))
+
+    def test_every_packaged_launcher_names_the_content_tags(self):
+        tagged = host_bundle.content_tags(host_bundle.image_tags("v0.2.7"), id_of=self.IDS.__getitem__)
+        for name in host_bundle.PACKAGE_IMAGE_FILES:
+            with self.subTest(name=name):
+                payload = host_bundle.package_bytes(name, tagged).decode("utf-8")
+                for image in tagged[:2]:
+                    self.assertIn(image, payload)
+        local = host_bundle.content_tags(host_bundle.IMAGES, id_of=lambda tag: "sha256:" + "d" * 64)
+        payload = host_bundle.package_bytes("compose.yaml", local).decode("utf-8")
+        self.assertIn("mk8dx/api:local-v010-node26-amd64-dddddddddddd", payload)
+        for tag, digest in host_bundle.base_image_pins().items():
+            name = host_bundle.BASE_IMAGE_FILES["mysql" if tag.startswith("mysql") else "mailpit"]
+            with self.subTest(base=tag):
+                packaged = host_bundle.package_bytes(name, local).decode("utf-8")
+                self.assertIn(f"image: {tag}-dddddddddddd\n", packaged)
+                self.assertNotIn(digest, packaged)
+
+    def test_an_unreadable_image_id_is_refused(self):
+        with self.assertRaises(SystemExit):
+            host_bundle.content_tags(host_bundle.IMAGES, id_of=lambda tag: "")
+
+    def test_the_removal_tool_is_packaged(self):
+        self.assertIn("tooling/remove_images.py", host_bundle.FILES)
+        self.assertTrue((host_bundle.ROOT / "tooling/remove_images.py").is_file())
+
+    def test_release_builds_each_architecture_once_for_all_packages(self):
+        workflow = (host_bundle.ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
+        # The API and Web images are built in one job per architecture; the A1/B1 host package and every A2
+        # package load that build instead of building their own.
+        self.assertEqual(workflow.count("-f backend/api/Dockerfile"), 1)
+        self.assertEqual(workflow.count("-f apps/timetrials-web/Dockerfile"), 1)
+        self.assertIn("docker load --input", workflow)
+
+
 class HostBundleBaseImagePinsTest(unittest.TestCase):
     """#34: MySQL and Mailpit are digest-pinned in Compose; a package starts its tar-loaded copies by tag."""
 

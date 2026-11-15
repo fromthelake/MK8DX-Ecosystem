@@ -82,8 +82,9 @@ python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host
     the packaging invocation; this selects matching GHCR image names in the archive, launchers and Compose file.
 - The script runs `tooling/privacy_scan.py` first and stops on a finding, so build from a clean clone. It also
   refuses a local MySQL or Mailpit image whose registry digest is not the pinned one. The package's Compose files
-  name those two images by tag only, because `docker load` does not restore registry digests; the manifest records
-  the pinned digests under `baseImageDigests`.
+  name every image by a tag without digest, because `docker load` does not restore registry digests; the manifest records
+  the pinned digests under `baseImageDigests`. That tag is the build tag plus 12 hex digits of the image ID (for
+  example `mysql:9.7.4-08ae8de7b350`), so a package never re-points a tag another installation starts from.
 - The image builds replace any images with the same tags on this machine, including those of an installed host
   package. Build on a machine that does not run one, or accept that it will run your build from then on.
 - A package you built yourself has no `SHA256SUMS.txt`; compare the copy on the server with `archiveSha256` in
@@ -210,15 +211,9 @@ make a backup first (choice 6) if there is anything you may want back.
 
 3. Remove the installation directory: `rm -rf "$state"` (the directory holds keys and passwords; delete it only
    after step 2, which needs its `compose.env`).
-4. Remove the images if no other installation on this machine uses them. `PACKAGE_MANIFEST.json` in the package
-   folder lists them:
-
-   ```sh
-   docker image rm $(python3 -c 'import json; print(" ".join(json.load(open("PACKAGE_MANIFEST.json"))["images"]))')
-   ```
-
-   Docker refuses to remove an image that a container still uses; `mysql` and `axllent/mailpit` may also belong
-   to other projects.
+4. Remove the images nothing else on this machine uses: `python3 tooling/remove_images.py` (`--dry-run` only
+   shows it). It reads them from `PACKAGE_MANIFEST.json` and keeps every image that another container, running or
+   stopped, still uses: another MK8DX installation, or another project's `mysql` or `axllent/mailpit`.
 5. Delete the package folder (`/opt/mk8dx/host`) and any backups you no longer need.
 
 **On Windows** (A1 or A2 with Docker Desktop) the steps are the same in PowerShell. The installation directory
@@ -228,7 +223,7 @@ is `%LOCALAPPDATA%\MK8DX\Server` unless you chose another one; open PowerShell i
 $state = Join-Path $env:LOCALAPPDATA 'MK8DX\Server'
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml -f compose.images.yaml down -v
 Remove-Item -LiteralPath $state -Recurse -Force
-docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).images
+python tooling/remove_images.py
 ```
 
 Use `compose.lan.yaml` instead of `compose.local.yaml` for A2. Then delete the package folder and any backups

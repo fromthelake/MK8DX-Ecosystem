@@ -52,7 +52,7 @@ Zie je geen versie van 3.12 tot en met 3.15, herstel Python via dezelfde install
 
 Get-FileHash '.\mk8dx-host-local-v0.2.6-amd64.zip' -Algorithm SHA256
 
-Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX\host. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
+Vergelijk de hele reeks met de regel voor dit bestand in SHA256SUMS.txt. Stop bij een verschil en vraag om een correcte kopie. Klik daarna met rechts op de ZIP en kies ‘Alles uitpakken’. Kies bijvoorbeeld Documenten\MK8DX-A1. Open de uitgepakte map waarin Start-MK8DX.cmd en compose.yaml staan.
 
 4. Dubbelklik op Start-MK8DX.cmd. Het venster opent met een korte race-intro: het MK8DX-logo en aftellen 3-2-1-GO met piepjes (Start-MK8DX.cmd -SkipCountdown laat het aftellen weg; de beheerpagina noemt alle opties). Daarna vraagt het venster “Waar gaat MK8DX draaien?” en noemt A1, A2 en B1. Typ A1 en druk op Enter. Typ daarna het e-mailadres waarmee jij je straks wilt aanmelden en beheerder wilt worden. De eerste installatie start daarna vanzelf. MK8DX laadt de meegeleverde programma's, maakt eigen sleutels, een database en de standaardreferenties aan. De eerste start kan even duren.
 
@@ -66,7 +66,7 @@ De persoonlijke installatiegegevens staan buiten het uitgepakte pakket in %LOCAL
 
 Je bent nu aangemeld, maar nog geen beheerder. Open Start-MK8DX.cmd opnieuw en kies 5. Bij de eerste toekenning verschijnt ‘created’; bij een herhaling ‘unchanged’. Ververs de website of meld je opnieuw aan. De beheerweergave hoort nu beschikbaar te zijn. Een willekeurige eerste registratie krijgt nooit automatisch beheerrechten.
 
-6. Open Tracks of Circuits, kies een circuit en bekijk Nintendo Staff en World Records. Je kunt een eigen proefrit indienen via ‘Submit a Time Trial’. Controleer je gegevens vóór verzenden. Een inzending is nog geen publieke goedkeuring.
+6. Open Tracks of Circuits, kies een circuit en bekijk Nintendo Staff en World Records. Je kunt een eigen proefrit indienen via ‘Plaats je tijd’ op de circuitpagina (daarna ‘Publiceer’ en ‘Bevestig en publiceer’). Controleer je gegevens vóór verzenden. Een inzending is nog geen publieke goedkeuring.
 
 Mailpit toont aanmeldlinks. Deel deze testbrievenbus dus niet met anderen. Voor een publiek bereikbare site kies je de webhosting- of VPS-route met echte uitgaande mail.
 
