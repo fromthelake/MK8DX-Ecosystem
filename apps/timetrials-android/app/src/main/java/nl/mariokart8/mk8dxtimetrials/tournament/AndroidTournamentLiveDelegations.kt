@@ -41,10 +41,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.ui.androidDateTimeText
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxTheme as Mk8dxDesignTheme
-import java.text.DateFormat
-import java.util.Date
 
 /** How often the resumed Step 5/9 view re-reads the capture delegations (the web panel's period). */
 internal const val ANDROID_LIVE_DELEGATION_REFRESH_MS = 30_000L
@@ -97,14 +96,14 @@ internal fun androidLiveFeedWithdrawable(record: AndroidTournamentEvidenceRecord
     return !(live.status == "stopping" && live.approvedAtMs == null)
 }
 
-internal fun androidDelegationMoment(ms: Long): String =
-    DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(ms))
+internal fun androidDelegationMoment(language: AndroidProductLanguage, ms: Long): String =
+    androidDateTimeText(language, ms)
 
 internal fun androidLiveDelegationState(
     language: AndroidProductLanguage,
     delegation: AndroidLiveCaptureDelegation,
     nowMs: Long,
-    moment: (Long) -> String = ::androidDelegationMoment,
+    moment: (Long) -> String = { androidDelegationMoment(language, it) },
 ): String {
     if (delegation.status == "revoked") {
         val revokedAt = delegation.revokedAtMs ?: return androidText(language, "revoked", "ingetrokken")
@@ -124,7 +123,7 @@ internal fun androidLiveDelegationState(
 internal fun androidRequestedLiveFeedText(
     language: AndroidProductLanguage,
     uploaderDelegation: AndroidLiveCaptureDelegation?,
-    moment: (Long) -> String = ::androidDelegationMoment,
+    moment: (Long) -> String = { androidDelegationMoment(language, it) },
     withdrawnAtMs: Long? = null,
 ): String {
     if (withdrawnAtMs != null) {

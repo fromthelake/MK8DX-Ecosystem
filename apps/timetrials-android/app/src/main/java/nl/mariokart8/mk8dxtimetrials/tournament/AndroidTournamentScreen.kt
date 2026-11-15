@@ -3523,8 +3523,10 @@ private fun EvidenceRecordCard(
     var linking by remember(record.recordId, record.revision) { mutableStateOf(false) }
     var localError by remember(record.recordId, record.revision) { mutableStateOf<String?>(null) }
     val scope = rememberCoroutineScope()
-    val timeFormat = remember { java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT) }
     val cardLanguage = LocalAndroidProductLanguage.current
+    val timeFormat = remember(cardLanguage) {
+        java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT, cardLanguage.locale)
+    }
     Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = RoundedCornerShape(15.dp)) {
         Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(7.dp)) {
             Text("Tournament Live · ${record.uploadedBy.displayName}", fontWeight = FontWeight.Black)

@@ -91,8 +91,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -106,6 +104,7 @@ import nl.mariokart8.mk8dxtimetrials.BuildConfig
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
+import nl.mariokart8.mk8dxtimetrials.ui.androidDateTimeText
 import nl.mariokart8.mk8dxtimetrials.track.ProductAssetImage
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidPresentationCountry
 import nl.mariokart8.mk8dxtimetrials.notifications.AndroidCanonicalNotificationSync
@@ -811,7 +810,7 @@ internal fun AndroidNotificationsScreen(
                     title = notificationTitle(notification, withThumb = track != null),
                     unread = !notification.read,
                     unreadLabel = androidText(language, "Unread", "Ongelezen"),
-                    meta = formatDate(notification.lastEventAtMs),
+                    meta = formatDate(notification.lastEventAtMs, LocalAndroidProductLanguage.current),
                     leading = track?.let {
                         {
                             ActivityTrackThumb(
@@ -1849,7 +1848,7 @@ private fun ResultDetailCard(
                     color = colors.textPrimary,
                 )
                 Mk8dxEngineMark(result.mode)
-                Mk8dxMetaLine(formatDate(result.resultAtMs))
+                Mk8dxMetaLine(formatDate(result.resultAtMs, LocalAndroidProductLanguage.current))
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text(
@@ -2265,8 +2264,8 @@ internal fun androidNotificationEventDetail(
     else -> listOfNotNull(event.actorDisplayName, event.detail).joinToString(" · ")
 }
 
-private fun formatDate(milliseconds: Long): String =
-    if (milliseconds <= 0) "" else SimpleDateFormat("d MMM yyyy · HH:mm", Locale.getDefault()).format(Date(milliseconds))
+private fun formatDate(milliseconds: Long, language: AndroidProductLanguage): String =
+    if (milliseconds <= 0) "" else androidDateTimeText(language, milliseconds)
 
 /**
  * The product's own pages open in a browser, never back in this app: the app is

@@ -35,13 +35,14 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import java.text.DateFormat
-import java.util.Date
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.track.Schema9AndroidTrackCatalog
 import nl.mariokart8.mk8dxtimetrials.ui.ProductText as Text
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
+import nl.mariokart8.mk8dxtimetrials.ui.androidDateText
+import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButton
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxButtonVariant
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxChip
@@ -150,7 +151,7 @@ internal fun AndroidMyTimesGroupCard(
                     Mk8dxEngineMark(group.mode)
                     Text(Mk8dxNumeric.formatTime(best.current.totalTimeMs), style = type.dataM, color = colors.textPrimary, maxLines = 1)
                 }
-                Mk8dxMetaLine(runDate(best))
+                Mk8dxMetaLine(runDate(best, LocalAndroidProductLanguage.current))
                 if (best.publicationStatus != "published") {
                     Mk8dxChip(androidText("Not published", "Niet gepubliceerd"), tone = Mk8dxChipTone.Warning)
                 }
@@ -173,7 +174,7 @@ internal fun AndroidMyTimesGroupCard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm),
                 ) {
-                    Mk8dxMetaLine(runDate(run), Modifier.weight(1f))
+                    Mk8dxMetaLine(runDate(run, LocalAndroidProductLanguage.current), Modifier.weight(1f))
                     if (run.publicationStatus != "published") {
                         Mk8dxChip(androidText("Not published", "Niet gepubliceerd"), tone = Mk8dxChipTone.Warning)
                     }
@@ -185,8 +186,8 @@ internal fun AndroidMyTimesGroupCard(
     }
 }
 
-private fun runDate(run: AndroidManagedTimeTrial): String =
-    DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(run.current.occurredAtMs ?: run.current.createdAtMs))
+private fun runDate(run: AndroidManagedTimeTrial, language: AndroidProductLanguage): String =
+    androidDateText(language, run.current.occurredAtMs ?: run.current.createdAtMs)
 
 /** A run's ⋯ menu. */
 @Composable
