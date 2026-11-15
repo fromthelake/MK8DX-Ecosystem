@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "Saisis et enregistre d'abord les {0} pour chaque groupe.",
   "Enter another result": "Saisir un autre résultat",
   "Enter coins gained or lost per lap.": "Saisis les pièces gagnées ou perdues par tour.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "Saisis le score total de chaque joueur. Le tableau se met à jour automatiquement quand tu quittes le champ ou appuies sur Entrée.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "Saisis le score total de chaque joueur. Les scores sont enregistrés et le tableau est mis à jour lorsque tu choisis le bouton sous la liste.",
   "Enter lap {0} as six digits.": "Saisis le tour {0} en six chiffres.",
   "Enter scores first before exporting.": "Saisis d'abord les scores avant d'exporter.",
   "Enter the code your app is showing, then decide whether it may use this account.": "Saisis le code affiché par ton appli, puis décide si elle peut utiliser ce compte.",

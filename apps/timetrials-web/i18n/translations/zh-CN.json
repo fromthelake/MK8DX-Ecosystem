@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "请先为每个小组输入并保存所有{0}。",
   "Enter another result": "输入另一个成绩",
   "Enter coins gained or lost per lap.": "输入每圈获得或失去的金币。",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "输入每名玩家的总分。离开输入框或按 Enter 后表格会自动更新。",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "输入每位玩家的总分。选择列表下方的按钮后，分数会被保存，表格也会更新。",
   "Enter lap {0} as six digits.": "请以六位数字输入第 {0} 圈。",
   "Enter scores first before exporting.": "导出前请先输入分数。",
   "Enter the code your app is showing, then decide whether it may use this account.": "输入应用中显示的代码，然后决定是否允许其使用此账户。",

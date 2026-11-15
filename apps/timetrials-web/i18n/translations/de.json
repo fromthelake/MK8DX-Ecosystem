@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "Gib zuerst für jede Gruppe alle {0} ein und speichere sie.",
   "Enter another result": "Weiteres Ergebnis eingeben",
   "Enter coins gained or lost per lap.": "Gib die pro Runde gewonnenen oder verlorenen Münzen ein.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "Gib die Gesamtpunktzahl jedes Spielers ein. Die Tabelle aktualisiert sich automatisch, wenn du das Feld verlässt oder Enter drückst.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "Gib die Gesamtpunktzahl jedes Spielers ein. Die Punkte werden gespeichert und die Tabelle wird aktualisiert, sobald du die Schaltfläche unter der Liste wählst.",
   "Enter lap {0} as six digits.": "Gib Runde {0} als sechs Ziffern ein.",
   "Enter scores first before exporting.": "Gib zuerst Punkte ein, bevor du exportierst.",
   "Enter the code your app is showing, then decide whether it may use this account.": "Gib den Code ein, den deine App anzeigt, und entscheide dann, ob sie dieses Konto verwenden darf.",

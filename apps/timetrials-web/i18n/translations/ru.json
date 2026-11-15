@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "Сначала введите и сохраните все {0} для каждой группы.",
   "Enter another result": "Ввести другой результат",
   "Enter coins gained or lost per lap.": "Введите монеты, полученные или потерянные за круг.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "Введите итоговые очки каждого игрока. Таблица обновляется автоматически, когда вы покидаете поле или нажимаете Enter.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "Введите общий счёт каждого игрока. Счёт сохраняется, а таблица обновляется, когда вы нажимаете кнопку под списком.",
   "Enter lap {0} as six digits.": "Введите круг {0} шестью цифрами.",
   "Enter scores first before exporting.": "Перед экспортом сначала введите очки.",
   "Enter the code your app is showing, then decide whether it may use this account.": "Введите код, который показывает ваше приложение, затем решите, может ли оно использовать этот аккаунт.",

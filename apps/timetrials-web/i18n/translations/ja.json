@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "先にすべてのグループで{0}をすべて入力して保存してください。",
   "Enter another result": "別の記録を入力",
   "Enter coins gained or lost per lap.": "ラップごとに獲得または失ったコインを入力してください。",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "各プレイヤーの合計スコアを入力してください。入力欄を離れるかEnterを押すと表が自動で更新されます。",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "各プレイヤーの合計スコアを入力してください。リストの下のボタンを選ぶと、スコアが保存され表が更新されます。",
   "Enter lap {0} as six digits.": "ラップ{0}を6桁の数字で入力してください。",
   "Enter scores first before exporting.": "エクスポートする前にスコアを入力してください。",
   "Enter the code your app is showing, then decide whether it may use this account.": "アプリに表示されているコードを入力し、そのアプリがこのアカウントを使ってよいか決めてください。",

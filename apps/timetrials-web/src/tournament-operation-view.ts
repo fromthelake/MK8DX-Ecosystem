@@ -6204,8 +6204,10 @@ export function mountTournamentOperation(
         : localized("Final scores", "Eindgroepscores");
       const hint = document.createElement("p"); hint.className = "tournament-op__hint";
       hint.textContent = localized(
-        "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.",
-        "Vul per speler de totaalscore in. De tabel werkt automatisch bij zodra je het veld verlaat of op Enter drukt.",
+        // Saving is explicit (the button under the list, with the revision check), as in the Android app; the
+        // older wording promised a save on leaving the field, which the parked PHP manager did.
+        "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.",
+        "Vul per speler de totaalscore in. De scores worden opgeslagen en de tabel bijgewerkt zodra je de knop onder de lijst kiest.",
       );
       card.append(header, label, hint);
       if (group.races.length > 0) {

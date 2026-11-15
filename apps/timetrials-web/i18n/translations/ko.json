@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "먼저 모든 그룹의 {0}을(를) 입력하고 저장하세요.",
   "Enter another result": "다른 결과 입력",
   "Enter coins gained or lost per lap.": "랩별로 얻거나 잃은 코인을 입력하세요.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "각 플레이어의 총점을 입력하세요. 입력란을 벗어나거나 Enter를 누르면 표가 자동으로 업데이트돼요.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "각 플레이어의 총점을 입력하세요. 목록 아래의 버튼을 선택하면 점수가 저장되고 표가 업데이트돼요.",
   "Enter lap {0} as six digits.": "{0}랩을 숫자 6자리로 입력하세요.",
   "Enter scores first before exporting.": "내보내기 전에 먼저 점수를 입력하세요.",
   "Enter the code your app is showing, then decide whether it may use this account.": "앱에 표시된 코드를 입력한 다음 이 계정 사용을 허용할지 결정하세요.",

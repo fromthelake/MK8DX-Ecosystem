@@ -533,10 +533,10 @@ private fun GroupScoreCard(
                     )
                 } else {
                     androidText(
-                        "Enter each Player's total score. The table updates automatically when you leave the " +
-                            "field or press Enter.",
-                        "Vul per speler de totaalscore in. De tabel werkt automatisch bij zodra je het " +
-                            "veld verlaat of op Enter drukt.",
+                        "Enter each Player's total score. The scores are saved and the table is updated when " +
+                            "you choose the button under the list.",
+                        "Vul per speler de totaalscore in. De scores worden opgeslagen en de tabel bijgewerkt " +
+                            "zodra je de knop onder de lijst kiest.",
                     )
                 },
                 color = TextSoft,
