@@ -346,6 +346,15 @@ class SchedulerTest(unittest.TestCase):
             sb.after_upgrade(self.state)
         enable.assert_called_once()
 
+    def test_update_finishes_a_schedule_that_was_wanted_but_never_made(self):
+        # A3/B2 0.2.6 recorded "on" at the first start but could not create the job (scheduler stays null).
+        sb.record_choice(self.state, True)
+        self.assertIsNone(sb.load_settings(self.state).get("scheduler"))
+        with patch.object(sb, "enable", return_value={"settings": sb.settings_for(self.state)}) as enable, \
+                patch("builtins.print"):
+            sb.after_upgrade(self.state)
+        enable.assert_called_once()
+
     def test_b2_question_defaults_to_yes(self):
         for answer, expected in (("", True), ("j", True), ("n", False), ("nee", False), ("No", False)):
             with patch("builtins.input", return_value=answer), patch("builtins.print"):

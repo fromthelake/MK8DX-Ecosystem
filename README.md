@@ -145,7 +145,7 @@ Every route gives you the same website; they differ in where it runs and who can
 | --- | --- | --- | --- |
 | **A2** home or club network | Your own network, no internet needed after setup, sign-in cards for everyone | Windows 11 (x86-64), Linux (x86-64 or arm64), Mac (Apple silicon or Intel) | Tested end to end on Windows 11; Linux in WSL 2; Mac built, not yet tested on a real Mac |
 | **A1** one computer | Trying it out on the computer you sit at | Windows 11 or Linux, x86-64, with Docker | Tested: install, upgrade, backup |
-| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested: install, upgrade, backup |
+| **A3** one computer without Docker | A Windows PC where Docker is not an option | Windows 11 with XAMPP and Node.js | Tested end to end on Windows 11: install, sign-in, scanner, Tournament, backup, nightly backup, update, removal |
 | **B1** public website | Your online community, your own domain and email | A Linux x86-64 server (VPS) with Docker; Ubuntu 24.04 documented | Documented, not yet tested end to end |
 | **B2** web hosting | Online, without a server of your own | A hosting plan with Node.js (Passenger), MariaDB/MySQL and SSH | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account |
 

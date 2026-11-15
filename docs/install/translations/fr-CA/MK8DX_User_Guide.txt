@@ -128,6 +128,12 @@ Cela ne fonctionne que pour un compte qui a déjà vérifié son adresse courrie
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+Sauvegarde nocturne : le premier démarrage active aussi une sauvegarde vérifiée chaque nuit à 03:15. Le Planificateur de tâches de Windows la fait sous ton propre compte, sans droits d'administrateur, dans Documents\MK8DX-backups\automatic; si l'ordinateur est éteint à cette heure-là, elle a lieu dès que possible après. Si la fenêtre MK8DX est fermée, la sauvegarde démarre et arrête elle-même sa propre base de données. Vérifie-la dans PowerShell dans le dossier du paquet :
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Tu dois voir "enabled": true et "scheduler": "windows-task"; après la première nuit aussi "lastResult": "ok". S'il affiche "enabled": false alors que tu ne l'as jamais désactivée (le paquet v0.2.6 ne pouvait pas l'activer), lance une fois la même commande avec backup-schedule au lieu de backup-status; la prochaine mise à jour avec l'étape 11 l'active aussi. Pour la désactiver, utilise backup-unschedule.
+
 11. Pour une mise à jour du logiciel, arrête Apache et fais puis vérifie une sauvegarde pendant que l'ancienne fenêtre MK8DX tourne encore. Appuie ensuite sur Ctrl+C dans cette fenêtre. Vérifie et extrais le nouveau ZIP A3 à côté de l'ancien paquet. Continue d'utiliser le même dossier de données %LOCALAPPDATA%\MK8DX\NoDocker. Dans PowerShell, à l'intérieur du nouveau paquet, démarre temporairement uniquement sa propre base de données :
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -151,6 +157,16 @@ Garde cette fenêtre ouverte. Dans la seconde fenêtre, utilise le nom réel de 
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Attends-toi à « Sauvegarde vérifiée » puis à une vérification réussie de toutes les migrations. Appuie sur Ctrl+C dans la fenêtre de maintenance. Ouvre Start-MK8DX-No-Docker.cmd et démarre Apache dans le XAMPP Control Panel. Connecte-toi avec un compte existant de la sauvegarde et vérifie l'accès administrateur et un résultat connu. Le premier administrateur n'est pas attribué une seconde fois. Si l'ordinateur cible a déjà une installation MK8DX ou un autre processus sur le port 18306, ne l'utilise pas comme cible de cette restauration; l'assistant n'efface pas une base de données existante. Garde la sauvegarde d'origine intacte.
+
+13. Pour retirer cette installation A3 de l'ordinateur, fais d'abord une sauvegarde comme à l'étape 10 si tu veux peut-être récupérer plus tard tes comptes et résultats. Les sauvegardes dans Documents\MK8DX-backups restent jusqu'à ce que tu les supprimes toi-même. Dans PowerShell, dans le dossier du paquet, désactive la sauvegarde nocturne :
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Arrête Apache dans XAMPP Control Panel et appuie sur Ctrl+C dans la fenêtre MK8DX. Retire ensuite le site MK8DX d'Apache :
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+Tu dois voir « MK8DX Apache site removed » et « Syntax OK ». Seuls la ligne Include et mk8dx-local.conf de l'étape 4 sont retirés; les autres sites web et bases de données de XAMPP restent tels quels. Supprime ensuite les dossiers %LOCALAPPDATA%\MK8DX\NoDocker (base de données, comptes et clés) et %LOCALAPPDATA%\MK8DX\ApacheBackup, puis enfin le dossier du paquet. XAMPP, Node.js et Python restent installés; désinstalle-les dans Paramètres Windows → Applications seulement si rien d'autre ne les utilise. Si tu utilises XAMPP pour d'autres sites web, redémarre Apache.
 
 L'utiliser sur ton réseau domestique
 
@@ -527,7 +543,7 @@ Confirmer les actions dangereuses : modifier les droits d'administrateur, de dir
 
 Sauvegarder, restaurer et mettre à jour
 
-Sauvegarde automatique : MK8DX fait aussi lui-même chaque nuit une sauvegarde vérifiée (A1, A3 et B1 l'activent à la première installation ; B2 pose la question une fois, Entrée vaut oui ; A2 a la sienne dans MK8DX beheer). Elle va dans Documents\MK8DX-backups\automatic sous Windows et dans ~/mk8dx-backups/automatic sous Linux et en hébergement mutualisé, garde 14 jours et 4 semaines, et une nuit en échec ne supprime jamais les sauvegardes plus anciennes. Le menu 3 (vérifier) affiche sous automaticBackup l'âge et le résultat de la dernière. Gardez quand même une copie hors de l'ordinateur ou du serveur : sous Windows avec python tooling/install.py backup-schedule --state-dir <dossier d'installation> --copy-to <dossier> (un autre disque ou un NAS) ; depuis un serveur, python3 tooling/install.py backup-latest --state-dir <dossier d'installation> --print-path donne le dossier vérifié le plus récent à récupérer avec scp. Désactivation avec backup-unschedule au lieu de backup-schedule. Si votre hébergeur sauvegarde déjà le compte chaque jour (DirectAdmin, JetBackup), cela peut suffire ; une sauvegarde à vous permet quand même de revenir vous-même à hier, clés du site comprises.
+Sauvegarde automatique : MK8DX fait aussi lui-même chaque nuit une sauvegarde vérifiée (A1, A3 et B1 l'activent à la première installation ; B2 pose la question une fois, Entrée vaut oui ; A2 a la sienne dans MK8DX beheer). Elle va dans Documents\MK8DX-backups\automatic sous Windows et dans ~/mk8dx-backups/automatic sous Linux et en hébergement mutualisé, garde 14 jours et 4 semaines, et une nuit en échec ne supprime jamais les sauvegardes plus anciennes. Le menu 3 (vérifier) affiche sous automaticBackup (A3: backup-status) l'âge et le résultat de la dernière. Gardez quand même une copie hors de l'ordinateur ou du serveur : sous Windows avec python tooling/install.py backup-schedule --state-dir <dossier d'installation> --copy-to <dossier> (un autre disque ou un NAS) ; depuis un serveur, python3 tooling/install.py backup-latest --state-dir <dossier d'installation> --print-path donne le dossier vérifié le plus récent à récupérer avec scp. Désactivation avec backup-unschedule au lieu de backup-schedule. Si votre hébergeur sauvegarde déjà le compte chaque jour (DirectAdmin, JetBackup), cela peut suffire ; une sauvegarde à vous permet quand même de revenir vous-même à hier, clés du site comprises.
 
 Comptes de base de données : le site se connecte à sa base avec un compte qui ne peut que lire et écrire des données, afin qu'une erreur du site ne puisse jamais supprimer les tables; les mises à jour de la base et les sauvegardes utilisent un second compte. A1, A2, A3 et B1 le configurent eux-mêmes, une installation existante lors de sa prochaine mise à jour (menu 7); si le site ne démarre pas avec le nouveau compte, la mise à jour revient à l'ancien et rien n'est perdu. Sur B2, créez dans DirectAdmin ou cPanel un second utilisateur de base de données avec seulement SELECT, INSERT, UPDATE et DELETE et entrez-le dans l'assistant, ou plus tard avec python3 tooling/install.py database-accounts --state-dir <dossier d'installation>; avec un seul utilisateur, B2 continue de fonctionner mais affiche un avertissement.
 

@@ -900,10 +900,14 @@ def after_setup(state: Path) -> None:
 
 
 def after_upgrade(state: Path) -> None:
-    """An update runs from a new package folder: point the existing schedule at it (only when it is on)."""
+    """An update runs from a new package folder: point the existing schedule at it (only when it is on).
+
+    "enabled" without a scheduler means the person never said no but the job was never made (the A3 and B2
+    packages up to 0.2.6 lacked the scheduler modules, so their first start could not switch it on); the
+    update finishes that. `backup-unschedule` records "enabled": false, so a deliberate off stays off."""
     try:
         settings = load_settings(state)
-        if settings is None or not settings.get("enabled") or not settings.get("scheduler"):
+        if settings is None or not settings.get("enabled"):
             return
         _announce(enable(state), Path(os.path.abspath(state)))
     except Exception as error:

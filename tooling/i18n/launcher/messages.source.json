@@ -422,7 +422,7 @@
    "key": "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.",
    "nl": "Back-ups die vanaf nu worden gemaakt hebben deze nieuwe code nodig. Eerder gemaakte back-ups gaan alleen open met de oude code: bewaar dat papier bij die back-ups.",
    "places": [
-    "scheduled_backup.py:937"
+    "scheduled_backup.py:941"
    ]
   },
   {
@@ -1487,7 +1487,7 @@
    "key": "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}",
    "nl": "Nieuwe herstelcode voor de back-ups (wordt maar één keer getoond; schrijf hem op en bewaar hem niet bij deze computer): {0}",
    "places": [
-    "scheduled_backup.py:935"
+    "scheduled_backup.py:939"
    ]
   },
   {
@@ -1509,7 +1509,7 @@
    "nl": "De nachtelijke automatische back-up kon niet worden aangezet: {0}. Je installatie is in orde; zie het hoofdstuk over back-ups in de handleiding.",
    "places": [
     "scheduled_backup.py:898",
-    "scheduled_backup.py:910"
+    "scheduled_backup.py:914"
    ]
   },
   {

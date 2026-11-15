@@ -115,7 +115,7 @@ flowchart TB
 | --- | --- | --- | --- |
 | **A2** 家用或俱樂部網路 | 你自己的網路，設定完成後不需要網際網路，每人一張登入卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 晶片或 Intel） | 已在 Windows 11 上完成端對端測試；Linux 在 WSL 2 中測試；Mac 版已建置，尚未在實體 Mac 上測試 |
 | **A1** 單台電腦 | 在你眼前這台電腦上試用 | Windows 11 或 Linux，x86-64，需要 Docker | 已測試：安裝、升級、備份 |
-| **A3** 不使用 Docker 的單台電腦 | 無法使用 Docker 的 Windows 電腦 | Windows 11，搭配 XAMPP 和 Node.js | 已測試：安裝、升級、備份 |
+| **A3** 不使用 Docker 的單台電腦 | 無法使用 Docker 的 Windows 電腦 | Windows 11，搭配 XAMPP 和 Node.js | 已在 Windows 11 上完整測試：安裝、登入、掃描器、錦標賽、備份、夜間備份、更新、移除 |
 | **B1** 公開網站 | 你的線上社群，使用你自己的網域和電子郵件 | 裝有 Docker 的 Linux x86-64 伺服器（VPS）；文件以 Ubuntu 24.04 為例 | 已有文件，尚未進行端對端測試 |
 | **B2** 虛擬主機 | 線上執行，不需要自己的伺服器 | 支援 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主機方案 | 我們自己的社群網站就是這樣運作的；公開套件尚未在全新的主機帳號上從頭安裝過 |
 
