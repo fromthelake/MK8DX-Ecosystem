@@ -1045,7 +1045,7 @@
    "key": "Keep this window open until you click Finish.",
    "nl": "Laat dit venster open tot je op Voltooien klikt.",
    "places": [
-    "setup_wizard.py:781"
+    "setup_wizard.py:784"
    ]
   },
   {
@@ -1315,7 +1315,7 @@
    "key": "MK8DX setup is open in your browser: {0}",
    "nl": "De MK8DX-installatie staat open in je browser: {0}",
    "places": [
-    "setup_wizard.py:780"
+    "setup_wizard.py:783"
    ]
   },
   {

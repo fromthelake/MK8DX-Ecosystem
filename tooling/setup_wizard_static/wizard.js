@@ -589,8 +589,11 @@ const views = {
     };
     const options = el("div", "list");
     const windows = (status.platform || "windows") === "windows";
+    // The texts name the Windows folder (Documents\MK8DX-backups, with the localized folder name). Linux and macOS
+    // keep the backups in ~/Documents/MK8DX-backups, whatever the language (auto_backup.default_backup_root).
+    const backupsHint = windows ? T.backupsHint : T.backupsHint.replace(/[^\s、，,。（(「“]*\\MK8DX-backups/u,"~/Documents/MK8DX-backups");
     options.append(option("autostart", windows ? T.autostart : T.autostartOther, windows ? T.autostartHint : T.autostartOtherHint),
-      option("backups", T.backups, T.backupsHint),
+      option("backups", T.backups, backupsHint),
       option("shortcut", T.shortcut));
     main.replaceChildren(el("h1", "", T.doneTitle), el("p", "lead", T.doneLead), list, options, el("p", "muted", T.doneManage));
     if (state.restoring) main.append(el("p", "muted", T.restoreReconnect));

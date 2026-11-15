@@ -512,6 +512,9 @@ class Wizard:
         result = {"autostart": auto_backup.ensure_docker_autostart() if autostart else "off"}
         if backups and self.installed():
             result.update(auto_backup.enable(self.state, sys.executable))
+        elif self.installed():
+            # Unticked in MK8DX beheer: an earlier Finish may have made the nightly job; remove it.
+            result["backupTask"] = auto_backup.disable()["task"]
         if self.installed():
             # Certificate renewal is not optional: without it the LAN HTTPS signer expires in a week.
             result["certificateRenewal"] = auto_backup.register_ca_renewal(self.state, sys.executable)

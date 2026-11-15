@@ -164,6 +164,28 @@ def enable(state: Path, python: str) -> dict:
     return {"recoveryCode": code, "task": register_daily_task(state, python), "folder": str(default_backup_root())}
 
 
+def remove_daily_task() -> str:
+    """Undo `register_daily_task`: "removed", "absent" or "failed". A2 schedules only this one nightly
+    job (Windows task, systemd user timer or LaunchAgent); it never uses cron."""
+    if sys.platform != "win32":
+        from tooling import host_platform
+        return host_platform.unschedule(TASK_NAME)
+    name = _quote(TASK_NAME)
+    script = (f"$t=Get-ScheduledTask -TaskName {name} -ErrorAction SilentlyContinue;"
+              f"if (-not $t) {{ 'absent' }} else {{ Unregister-ScheduledTask -TaskName {name} -Confirm:$false "
+              "-ErrorAction Stop; 'removed' }")
+    run = subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
+                         capture_output=True, text=True, check=False)
+    answer = run.stdout.strip()
+    return answer if run.returncode == 0 and answer in ("removed", "absent") else "failed"
+
+
+def disable() -> dict:
+    """The box "Make a backup every night" unticked: no nightly job any more. The stored recovery code stays, so
+    the backups made so far still open and ticking it again later keeps the same code."""
+    return {"task": remove_daily_task(), "folder": str(default_backup_root())}
+
+
 def backup_with_stored_code(state: Path, output: Path) -> Path:
     """One encrypted backup into `output`, using the recovery code the wizard stored."""
     from lifecycle import backup

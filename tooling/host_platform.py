@@ -218,6 +218,32 @@ def schedule(name: str, argv: list[str], *, daily: str | None = None, at_login: 
     return False
 
 
+def unschedule(name: str, *, platform: str | None = None) -> str:
+    """Remove the per-user job `schedule` made: "removed", "absent" (nothing to remove) or "failed"."""
+    platform = platform or sys.platform
+    if platform.startswith("linux"):
+        unit = _unit_name(name)
+        folder = _home() / ".config" / "systemd" / "user"
+        files = [folder / f"{unit}{suffix}" for suffix in (".timer", ".service")]
+        present = [path for path in files if path.exists()]
+        if not present:
+            return "absent"
+        # disable --now stops the timer and drops its timers.target.wants link; then the unit files go.
+        _run(["systemctl", "--user", "disable", "--now", *(path.name for path in present)])
+        for path in present:
+            path.unlink(missing_ok=True)
+        _run(["systemctl", "--user", "daemon-reload"])
+        return "failed" if any(path.exists() for path in files) else "removed"
+    if platform == "darwin":
+        target = _home() / "Library" / "LaunchAgents" / f"nl.mariokart8.{_unit_name(name)}.plist"
+        if not target.exists():
+            return "absent"
+        _run(["launchctl", "bootout", f"gui/{os.getuid()}", str(target)])
+        target.unlink(missing_ok=True)
+        return "removed"
+    return "failed"
+
+
 def docker_autostart(*, platform: str | None = None) -> str:
     """Docker at sign-in/boot. macOS: a sign-in job opens Docker Desktop. Linux: Docker Engine is
     a system service; when it is not enabled at boot the command to do so is returned."""
