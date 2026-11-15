@@ -20,11 +20,15 @@ regexes = [
   '''APPEARANCE_STORAGE_KEY\s*=\s*"''',
   # The macOS Keychain service name under which A2 stores its secrets (tooling/host_platform.py).
   '''KEYCHAIN_SERVICE\s*=\s*"''',
+  # A host package's content-named image tags (tooling/release/host_bundle.py content_tags): an image ID prefix.
+  '''api:v\d+\.\d+\.\d+[A-Za-z0-9.-]*-[0-9a-f]{12}\b''',
 ]
 
 [[rules.allowlists]]
 description = "Synthetic bearer, CSRF and device tokens in API and Android tests"
 paths = [
   '''(^|/)backend/api/test/''',
+  # Synthetic image IDs and Compose project names (tooling/remove_images.py tests).
+  '''(^|/)tooling/tests/test_remove_images\.py$''',
   '''(^|/)apps/timetrials-android/app/src/(test|androidTest)/''',
 ]
