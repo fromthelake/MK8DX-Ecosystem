@@ -65,7 +65,7 @@ export function bundle(lang, codes = languages()) {
   replaceOnce('<link rel="stylesheet" href="guide.css">', `<style>\n${css}</style>`);
   replaceOnce('<script src="guide.js" defer></script>', `<script>\n${js}</script>`);
   page = page.replace(/(src|href)="(img\/[^"]+)"/g, (_, attribute, relative) => `${attribute}="${dataUri(relative)}"`);
-  const pattern = new RegExp(`href="(${codes.map((code) => code.replace(/[-]/g, "\\-")).join("|")})\\.html"`, "g");
+  const pattern = new RegExp(`href="(${codes.map((code) => code.replace(/[\\^$.*+?()[\]{}|-]/g, "\\$&")).join("|")})\\.html"`, "g");
   page = page.replace(pattern, (_, code) => `href="${RELEASE}/MK8DX_Guide_${code}.html"`);
   const leftover = page.match(/(?:src|href)="(?!data:|https:|#)[^"]*"/);
   if (leftover) throw new Error(`${lang}.html still refers to a local file: ${leftover[0]}`);
