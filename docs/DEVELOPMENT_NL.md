@@ -35,7 +35,7 @@ Installeer daarna de vastgepinde Python-testpakketten in een virtuele omgeving:
 
 ```sh
 python -m venv .venv
-.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m pip install -r requirements-dev.txt     # Windows: .venv\Scripts\python.exe -m pip ...
 ```
 
 Op Windows is de interpreter `.venv\Scripts\python.exe`. De `python`-opdrachten in deze documenten en in
@@ -43,6 +43,11 @@ Op Windows is de interpreter `.venv\Scripts\python.exe`. De `python`-opdrachten 
 `source .venv/bin/activate` uit (Linux, macOS; Git Bash: `source .venv/Scripts/activate`) of
 `.venv\Scripts\Activate.ps1` (PowerShell), of typ het pad van de interpreter in plaats van `python`. `.gitattributes` houdt elk bestand byte-gelijk aan de
 commit, ook met `core.autocrlf`: migraties, collectie en testset worden op hash gecontroleerd.
+Node-afhankelijkheden zijn per component: `npm ci --prefix backend/api`, `npm ci --prefix apps/timetrials-web`,
+`npm ci --prefix tooling/i18n` (tekstextractor en catalogusbouwer) en
+`npm ci --ignore-scripts --prefix apps/timetrials-scanner-web`; er is geen `package.json` in de root. Een goede
+eerste ronde vraagt geen Docker, database of apparaat: de repositorycontroles onder
+[Een wijziging maken](#een-wijziging-maken) en daarna de rijen API en Website van [Testen](TESTING_NL.md#per-component).
 
 Een installatie bewaart accounts, database, sleutels, backups en clientwachtrijen in een gegevensmap
 **buiten** de repository; `tooling/install.py` weigert een gegevensmap daarbinnen.
@@ -174,6 +179,9 @@ Linux-build van de clients bestaat nog niet.
 
 - **Git Bash** herschrijft argumenten die met `/` beginnen (`/app/operator-command.sh`): zet
   `MSYS_NO_PATHCONV=1` voor de opdracht of gebruik PowerShell.
+- **PowerShell: `Activate.ps1 cannot be loaded because running scripts is disabled`**: het standaard
+  uitvoeringsbeleid van Windows. Voer eenmaal `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` uit, of sla
+  activeren over en typ `.venv\Scripts\python.exe` in plaats van `python`.
 - **Windows `Filename too long`**: `git config --global core.longpaths true` en een korte clonemap.
 - **LiveTrial-tests** vragen `PYTHONPATH=apps/timetrials-desktop`; één test verwacht Windows-paden.
 - **Eerste beheerder geweigerd** na de magic link: open de website na de link één keer in dezelfde browser en

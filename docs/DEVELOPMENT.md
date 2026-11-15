@@ -85,15 +85,18 @@ Then install the pinned Python test dependencies in a virtual environment:
 
 ```sh
 python -m venv .venv
-.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m pip install -r requirements-dev.txt     # Windows: .venv\Scripts\python.exe -m pip ...
 ```
 
 On Windows the interpreter is `.venv\Scripts\python.exe`. `.venv/` is ignored by Git. The `python` commands in
 these docs and in [Testing](TESTING.md) assume this environment is active: run `source .venv/bin/activate`
 (Linux, macOS, Git Bash: `source .venv/Scripts/activate`) or `.venv\Scripts\Activate.ps1` (PowerShell) in each new
 terminal, or type the interpreter path instead of `python`. Node dependencies are per
-component: `npm ci --prefix backend/api`, `npm ci --prefix apps/timetrials-web`, and
-`npm ci --ignore-scripts --prefix apps/timetrials-scanner-web`.
+component: `npm ci --prefix backend/api`, `npm ci --prefix apps/timetrials-web`,
+`npm ci --prefix tooling/i18n` (text extractor and catalog builder) and
+`npm ci --ignore-scripts --prefix apps/timetrials-scanner-web`; there is no `package.json` at the root.
+A good first round needs no Docker, database or device: the repository checks under [Make a change](#make-a-change),
+then the API and Website rows of [Testing](TESTING.md#per-component).
 
 An installation keeps its accounts, database, keys, backups and client queues in a state directory
 **outside** the repository; `tooling/install.py` refuses a state directory inside it.
@@ -290,6 +293,7 @@ build has not been made yet.
 | Symptom | Cause and fix |
 | --- | --- |
 | Git Bash: `docker ... run migrate sh /app/operator-command.sh` (or `run api ...`) fails with `can't open 'C:/Program Files/Git/app/...'` | Git Bash rewrites arguments that start with `/`. Prefix the command with `MSYS_NO_PATHCONV=1`, or use PowerShell. |
+| PowerShell: `Activate.ps1 cannot be loaded because running scripts is disabled on this system` | Windows' default execution policy. Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or skip activation and type `.venv\Scripts\python.exe` instead of `python`. |
 | Windows: `Filename too long` during clone, checkout or an Android build | `git config --global core.longpaths true`; keep the clone in a short path such as `C:\src\MK8DX-Ecosystem`. |
 | LiveTrial tests: `ModuleNotFoundError: No module named 'livetrial_desktop_app'` | Set `PYTHONPATH=apps/timetrials-desktop` (see [Testing](TESTING.md)). One of these tests asserts Windows paths and fails on Linux and macOS; CI runs them on Windows. |
 | The first-administrator command answers `refused` after you followed the magic link | Open the website once in the same browser after the link (the account is completed when the page loads), then run the command again with the exact same email address and the same installation's `compose.env`. |
