@@ -16,6 +16,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   now resolve every page-supplied file name through one small helper per product (`safe_paths`), which follows
   links and refuses anything outside its folder. The same names are accepted and refused as before; code scanning
   now recognises the check, so it no longer reports these places as possible path injection.
+- **Live dashboard, launchers and the Tournament package in all 15 languages**: the spectator scoreboard's own
+  texts follow `?lang=` (for OBS), the viewer's saved choice under the gear or the browser language, separately from
+  `?trackLang`; launcher window titles, the error messages of install, restore and backup steps, the setup wizard's
+  console lines and the Tournament Tools installer and launchers use the launcher languages. The translated
+  Tournament Directors guides now describe the live scoreboard too.
 
 ## 0.2.5 — 2026-11-16
 
