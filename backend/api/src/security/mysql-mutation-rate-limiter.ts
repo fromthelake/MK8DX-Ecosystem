@@ -77,13 +77,15 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
     // The statement returns this request's own count (LAST_INSERT_ID(expr) is per connection), so
     // concurrent requests in different processes each see their own position in the window: a
     // burst admits exactly `maximum`, instead of every request reading the burst's final total.
-    const [inserted] = await this.pool.execute<ResultSetHeader>(
+    // InnoDB may pick this single statement as a deadlock victim under a concurrent burst on
+    // neighbouring keys; it is then rolled back whole, so running it again counts it exactly once.
+    const [inserted] = await retryOnDeadlock(() => this.pool.execute<ResultSetHeader>(
       `INSERT INTO api_mutation_rate_limits (scope_key, window_started_at_ms, event_count, updated_at_ms)
        VALUES (?, ?, LAST_INSERT_ID(1), ?)
        ON DUPLICATE KEY UPDATE event_count = LAST_INSERT_ID(event_count + 1),
          updated_at_ms = VALUES(updated_at_ms)`,
       [key, started, now],
-    );
+    ));
     let count = Number(inserted?.insertId);
     if (!Number.isSafeInteger(count) || count < 1) {
       // A driver or adapter that does not report the value: read it back (fails closed in a burst).
@@ -159,19 +161,23 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
   private async recordRefusal(scope: string, subject: string | null, now: number): Promise<void> {
     const total = Math.floor(now / REFUSAL_LEDGER_TOTAL_WINDOW_MS) * REFUSAL_LEDGER_TOTAL_WINDOW_MS;
     const hour = Math.floor(now / REFUSAL_LEDGER_SUBJECT_WINDOW_MS) * REFUSAL_LEDGER_SUBJECT_WINDOW_MS;
-    const rows: (string | number)[] = [
-      `${REFUSAL_LEDGER_PREFIX}${scope}|${REFUSAL_LEDGER_TOTAL_SUBJECT}`, total, now,
-      ...(subject === null ? [] : [`${REFUSAL_LEDGER_PREFIX}${scope}|${subject}`, hour, now]),
+    // One row per statement: a statement holding a single row lock cannot form a lock cycle with
+    // the budget upserts of a concurrent burst (a two-row upsert did, CI 2026-11-15).
+    const rows: [string, number][] = [
+      [`${REFUSAL_LEDGER_PREFIX}${scope}|${REFUSAL_LEDGER_TOTAL_SUBJECT}`, total],
+      ...(subject === null ? [] : [[`${REFUSAL_LEDGER_PREFIX}${scope}|${subject}`, hour] as [string, number]]),
     ];
-    try {
-      await this.pool.execute<ResultSetHeader>(
-        `INSERT INTO api_mutation_rate_limits (scope_key, window_started_at_ms, event_count, updated_at_ms)
-         VALUES ${subject === null ? "(?, ?, 1, ?)" : "(?, ?, 1, ?), (?, ?, 1, ?)"}
-         ON DUPLICATE KEY UPDATE event_count = event_count + 1, updated_at_ms = VALUES(updated_at_ms)`,
-        rows,
-      );
-    } catch (error) {
-      this.observer?.ledgerFailed?.(error instanceof Error ? error.name : "UnknownError");
+    for (const [ledgerKey, windowStartedAtMs] of rows) {
+      try {
+        await retryOnDeadlock(() => this.pool.execute<ResultSetHeader>(
+          `INSERT INTO api_mutation_rate_limits (scope_key, window_started_at_ms, event_count, updated_at_ms)
+           VALUES (?, ?, 1, ?)
+           ON DUPLICATE KEY UPDATE event_count = event_count + 1, updated_at_ms = VALUES(updated_at_ms)`,
+          [ledgerKey, windowStartedAtMs, now],
+        ));
+      } catch (error) {
+        this.observer?.ledgerFailed?.(error instanceof Error ? error.name : "UnknownError");
+      }
     }
   }
 
@@ -180,5 +186,20 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
     if (current !== undefined) { this.refusals.set(scope, current + 1); return; }
     if (this.refusals.size < MAXIMUM_REPORTED_SCOPES) { this.refusals.set(scope, 1); return; }
     this.refusals.set("other", (this.refusals.get("other") ?? 0) + 1);
+  }
+}
+
+const DEADLOCK_ATTEMPTS = 4;
+
+/** Runs one autocommit statement again when InnoDB chose it as a deadlock victim (bounded, short jitter). */
+async function retryOnDeadlock<T>(statement: () => Promise<T>): Promise<T> {
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await statement();
+    } catch (error) {
+      const code = (error as { code?: unknown } | null)?.code;
+      if (code !== "ER_LOCK_DEADLOCK" || attempt >= DEADLOCK_ATTEMPTS) { throw error; }
+      await new Promise((resolve) => { setTimeout(resolve, Math.floor(Math.random() * 20 * attempt)); });
+    }
   }
 }

@@ -197,6 +197,24 @@ integration("administrator request budget report (real HTTP + real database)", (
     expect(dayLater.refusals).toEqual([]);
   });
 
+  it("counts every refusal of a concurrent burst from two API processes exactly, without a database error", async () => {
+    // Regression (CI 2026-11-15): ledger writes interleaved with the budget upserts of a burst deadlocked.
+    for (let round = 0; round < 3; round += 1) {
+      const scope = `rb-burst-${run}-${String(round)}`;
+      const limiters = [0, 1].map(() => new MysqlMutationRateLimiter(pool, () => clockMs));
+      const outcomes = await Promise.allSettled(Array.from({ length: 60 }, (_, index) =>
+        limiters[index % 2]!.consume(index % 3 === 0 ? "installation" : `user_account.rb_${run}_burst`, scope, 3_600, 5)));
+      const failed = outcomes.filter((outcome) => outcome.status === "rejected")
+        .map((outcome) => (outcome as PromiseRejectedResult).reason as Error);
+      expect(failed.filter((error) => error.name !== "MutationRateLimitExceeded").map((error) => error.message)).toEqual([]);
+      expect(outcomes.filter((outcome) => outcome.status === "fulfilled")).toHaveLength(10);
+      const [rows] = await pool.execute<RowDataPacket[]>(
+        "SELECT SUM(event_count) AS total FROM api_mutation_rate_limits WHERE scope_key = ?",
+        [`!refused|${scope}|*`]);
+      expect(Number(rows[0]?.["total"])).toBe(50);
+    }
+  });
+
   it("is for administrators only", async () => {
     const app = await reportApp();
     const account = await seed("account");

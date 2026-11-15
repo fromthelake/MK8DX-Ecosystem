@@ -160,16 +160,17 @@ describe("refusal ledger", () => {
     });
     await expect(limiter.consume("user_account.ben", "alias-mutations-hour", 3_600, 2))
       .rejects.toBeInstanceOf(MutationRateLimitExceeded);
-    const ledger = statements.find((statement) => statement.sql.includes("event_count = event_count + 1"))!;
-    expect(ledger.values).toEqual([
-      "!refused|alias-mutations-hour|*", Math.floor(NOW / 300_000) * 300_000, NOW,
-      "!refused|alias-mutations-hour|user_account.ben", Math.floor(NOW / 3_600_000) * 3_600_000, NOW,
+    // One row per statement (a two-row upsert deadlocked against a concurrent burst).
+    const ledger = statements.filter((statement) => statement.sql.includes("event_count = event_count + 1"));
+    expect(ledger.map((statement) => statement.values)).toEqual([
+      ["!refused|alias-mutations-hour|*", Math.floor(NOW / 300_000) * 300_000, NOW],
+      ["!refused|alias-mutations-hour|user_account.ben", Math.floor(NOW / 3_600_000) * 3_600_000, NOW],
     ]);
 
     failLedger = true;
     await expect(limiter.consume("user_account.ben", "alias-mutations-hour", 3_600, 2))
       .rejects.toBeInstanceOf(MutationRateLimitExceeded);
-    expect(failures).toEqual(["Error"]);
+    expect(failures).toEqual(["Error", "Error"]);
 
     statements.length = 0;
     failLedger = false;
@@ -177,6 +178,26 @@ describe("refusal ledger", () => {
     await limiter.recordQuotaRefusal("Not A Code");
     expect(statements).toHaveLength(1);
     expect(statements[0]!.values).toEqual(["!refused|quota.alias_quota_exceeded|*", Math.floor(NOW / 300_000) * 300_000, NOW]);
+  });
+
+  it("runs a deadlock victim again instead of failing the request", async () => {
+    let deadlocks = 2;
+    let inserts = 0;
+    const executor = {
+      async execute(sql: string) {
+        if (sql.includes("LAST_INSERT_ID(1)")) {
+          if (deadlocks > 0) { deadlocks -= 1; throw Object.assign(new Error("Deadlock found"), { code: "ER_LOCK_DEADLOCK" }); }
+          inserts += 1;
+          return [{ insertId: 1 }, []];
+        }
+        return [{ affectedRows: 0 }, []];
+      },
+    };
+    await new MysqlMutationRateLimiter(executor as never, () => NOW).consume("user_account.ben", "alias-mutations-hour", 3_600, 2);
+    expect(inserts).toBe(1);
+    const other = { async execute() { throw Object.assign(new Error("gone"), { code: "ER_ACCESS_DENIED_ERROR" }); } };
+    await expect(new MysqlMutationRateLimiter(other as never, () => NOW).consume("user_account.ben", "x", 60, 1))
+      .rejects.toThrow("gone");
   });
 
   it("recognises quota refusals by their fixed code only", () => {
