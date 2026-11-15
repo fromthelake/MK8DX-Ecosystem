@@ -145,7 +145,7 @@ Some boundaries to keep in mind:
 
 5. Stage only the intended paths and review `git diff --cached`. A diff of hundreds of lines for a one-line
    change means the line endings changed. Commit, push your branch to your fork and open a pull request with the
-   template. [Contributing](../CONTRIBUTING.md) explains the review, the AI-assistance policy and what CI runs.
+   template. [Contributing](../.github/CONTRIBUTING.md) explains the review, the AI-assistance policy and what CI runs.
 
 Never commit installation directories, `secrets.json`, `.env` files, databases, backups, recordings, logs or
 personal data. Add a `.gitignore` entry if a tool creates local files.
@@ -313,4 +313,4 @@ have their own build recipes. See [Release packages](RELEASE_PACKAGES.md).
 
 [AGENTS.md](../AGENTS.md) is the shared instruction file for coding agents; `CLAUDE.md` and `GEMINI.md` import it.
 Check that your agent actually loaded it. Pull requests prepared with AI assistance follow
-[Contributing](../CONTRIBUTING.md#ai-assisted-contributions).
+[Contributing](../.github/CONTRIBUTING.md#ai-assisted-contributions).

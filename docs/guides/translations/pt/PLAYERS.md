@@ -46,7 +46,7 @@ se a tua comunidade o tiver configurado; ativa-as nas definições da tua conta.
 O site está disponível nos 15 idiomas do jogo (escolhe o teu nas definições). O inglês e o neerlandês estão
 revistos; os outros 13 são traduções automáticas, e as correções são bem-vindas: vê
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) para o ficheiro a editar e
-[Contributing](../../../../CONTRIBUTING.md) para o pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) para o pull request.
 
 ## A aplicação Android
 
@@ -142,5 +142,5 @@ interruptor da própria aplicação têm de estar ambos ativados.
   de todas as contas juntas). Atingido esse limite, espera até que uma reivindicação pendente seja tratada, ou retira
   uma com **Retirar este pedido**, e tenta novamente.
 - Algo parece errado no site da tua comunidade: pergunta primeiro às pessoas que o gerem. Os erros no próprio software
-  podem ser comunicados nas issues do projeto; vê [SUPPORT.md](../../../../SUPPORT.md). Nunca publiques ligações de início de sessão nem os nomes de outras
+  podem ser comunicados nas issues do projeto; vê [SUPPORT.md](../../../../.github/SUPPORT.md). Nunca publiques ligações de início de sessão nem os nomes de outras
   pessoas.

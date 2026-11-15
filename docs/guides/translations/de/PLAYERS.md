@@ -50,7 +50,7 @@ hat; schalte sie in deinen Kontoeinstellungen ein.
 Die Website gibt es in den 15 Sprachen des Spiels (wähle deine in den Einstellungen). Englisch und Niederländisch
 sind geprüft; die anderen 13 sind maschinelle Übersetzungen, und Korrekturen sind willkommen: siehe
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) für die zu bearbeitende
-Datei und [Contributing](../../../../CONTRIBUTING.md) für den Pull Request.
+Datei und [Contributing](../../../../.github/CONTRIBUTING.md) für den Pull Request.
 
 ## Die Android-App
 
@@ -153,5 +153,5 @@ Benachrichtigungsberechtigung von Android und der eigene Schalter der App müsse
   allen Konten zusammen). Ist diese Grenze erreicht, warte, bis ein offener Claim bearbeitet wurde, oder ziehe einen
   mit **Diese Anfrage zurückziehen** zurück, und versuche es dann erneut.
 - Etwas sieht auf der Website deiner Community falsch aus: Frag zuerst die Leute, die sie betreiben. Fehler in der
-  Software selbst kannst du in den Issues des Projekts melden; siehe [SUPPORT.md](../../../../SUPPORT.md). Poste
+  Software selbst kannst du in den Issues des Projekts melden; siehe [SUPPORT.md](../../../../.github/SUPPORT.md). Poste
   niemals Anmeldelinks oder die Namen anderer Leute.

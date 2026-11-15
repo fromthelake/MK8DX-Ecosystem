@@ -2,11 +2,11 @@
 
 **나만의 마리오 카트 8 디럭스 커뮤니티 웹사이트를 직접 운영하세요 — 타임 어택에도, 대회의 밤에도.**
 
-언어: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+언어: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *이 번역은 영어 README를 기계 번역한 것입니다. 수정 제안을 환영합니다.*
 
-![커뮤니티 웹사이트의 홈 페이지: 나의 순위, 집중 코스, 그리고 라이벌](docs/readme/web-home.jpg)
+![커뮤니티 웹사이트의 홈 페이지: 나의 순위, 집중 코스, 그리고 라이벌](web-home.jpg)
 
 MK8DX Ecosystem은 직접 호스팅해서 사용하는 소프트웨어입니다. 커뮤니티에 하나의 웹사이트를 마련해 **타임 어택 기록**과 **대회 결과**라는 두 종류의 결과를 보관하고, 각각에 고유한 경쟁의 재미를 더해 줍니다.
 
@@ -88,24 +88,24 @@ flowchart TB
 
 **어떤 구성 요소가 필요한가요?**
 
-- **커뮤니티 서버 하나 — 모든 커뮤니티에 필요한 유일한 구성 요소입니다.** API와 데이터베이스를 갖춘 웹사이트입니다. 집이나 클럽 네트워크에서 실행하거나([A2](docs/install/A2_HOME_GUIDE_EN.md), 설치 후 인터넷 불필요) 서버 또는 웹 호스팅에서 온라인으로 운영하세요([Host a community server](docs/guides/HOSTING.md)).
-- **플레이어에게는 브라우저만 있으면 됩니다.** 웹사이트에 브라우저 스캐너가 함께 들어 있습니다. Android 앱은 휴대폰에서의 스캔, 인터넷 없이 보는 내 기록, 한 번의 탭으로 커뮤니티 전환을 더해 줍니다([Players](docs/guides/PLAYERS.md)).
-- **캡처 카드가 달린 Windows PC는 선택 사항입니다.** LiveTrial은 모든 타임 어택 주행을 스스로 기록합니다. 커뮤니티로는 클릭 한 번으로, 또는 자동으로 보낼 수 있습니다([LiveTrial](docs/guides/LIVETRIAL.md)).
-- **대회의 밤은 웹사이트에서 운영합니다.** Tournament Live(당일)와 Tournament Analysis(나중에 녹화 분석)는 레이스 결과를 제안할 뿐입니다. 점수는 직접 입력하거나 Excel/CSV에서 가져올 수도 있습니다. 주최자가 승인하기 전에는 순위표가 바뀌지 않습니다([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
-- **인식은 공유 부품이지 서비스가 아닙니다.** 각 앱이 자체 사본을 가지고 여러분의 기기에서 화면을 읽으며, 서버는 제안된 결과를 확인할 뿐입니다([Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) · [Architecture](docs/architecture/COMPONENTS.md)).
+- **커뮤니티 서버 하나 — 모든 커뮤니티에 필요한 유일한 구성 요소입니다.** API와 데이터베이스를 갖춘 웹사이트입니다. 집이나 클럽 네트워크에서 실행하거나([A2](../install/A2_HOME_GUIDE_EN.md), 설치 후 인터넷 불필요) 서버 또는 웹 호스팅에서 온라인으로 운영하세요([Host a community server](../guides/HOSTING.md)).
+- **플레이어에게는 브라우저만 있으면 됩니다.** 웹사이트에 브라우저 스캐너가 함께 들어 있습니다. Android 앱은 휴대폰에서의 스캔, 인터넷 없이 보는 내 기록, 한 번의 탭으로 커뮤니티 전환을 더해 줍니다([Players](../guides/PLAYERS.md)).
+- **캡처 카드가 달린 Windows PC는 선택 사항입니다.** LiveTrial은 모든 타임 어택 주행을 스스로 기록합니다. 커뮤니티로는 클릭 한 번으로, 또는 자동으로 보낼 수 있습니다([LiveTrial](../guides/LIVETRIAL.md)).
+- **대회의 밤은 웹사이트에서 운영합니다.** Tournament Live(당일)와 Tournament Analysis(나중에 녹화 분석)는 레이스 결과를 제안할 뿐입니다. 점수는 직접 입력하거나 Excel/CSV에서 가져올 수도 있습니다. 주최자가 승인하기 전에는 순위표가 바뀌지 않습니다([Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md)).
+- **인식은 공유 부품이지 서비스가 아닙니다.** 각 앱이 자체 사본을 가지고 여러분의 기기에서 화면을 읽으며, 서버는 제안된 결과를 확인할 뿐입니다([Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) · [Architecture](../architecture/COMPONENTS.md)).
 
 ## 시작하기
 
 | 하고 싶은 일 | 여기서 시작하세요 |
 | --- | --- |
-| **집이나 클럽에서 MK8DX 실행하기** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에서 내 컴퓨터용 A2 패키지를 받으세요: 압축을 풀고, 실행하고, '다음'을 클릭. 단계별 안내(A2 패키지에는 그림이 들어간 버전도 있습니다): [한국어](docs/install/translations/ko/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX 설치와 사용](docs/install/translations/ko/MK8DX_User_Guide_ko.docx) ([TXT](docs/install/translations/ko/MK8DX_User_Guide.txt)) |
-| **LAN 대회의 밤 운영하기** | [Tournament Directors](docs/guides/translations/ko/TOURNAMENT_DIRECTORS.md). Tournament Tools는 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
-| **타임 어택을 자동으로 기록하기** | [LiveTrial](docs/guides/translations/ko/LIVETRIAL.md) — Windows + 캡처 카드. 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
-| **내 기록을 올리고 비교하기** | [Players](docs/guides/translations/ko/PLAYERS.md) — 어떤 브라우저든 OK, Android 8.0 이상 |
-| **커뮤니티 웹사이트 호스팅하기** | [Host a community server](docs/guides/HOSTING.md) |
-| **코드 수정하기** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+| **집이나 클럽에서 MK8DX 실행하기** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에서 내 컴퓨터용 A2 패키지를 받으세요: 압축을 풀고, 실행하고, '다음'을 클릭. 단계별 안내(A2 패키지에는 그림이 들어간 버전도 있습니다): [한국어](../install/translations/ko/A2_HOME_GUIDE.md) · [English](../install/A2_HOME_GUIDE_EN.md) · [Nederlands](../install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX 설치와 사용](../install/translations/ko/MK8DX_User_Guide_ko.docx) ([TXT](../install/translations/ko/MK8DX_User_Guide.txt)) · [집이나 클럽에서 쓰는 MK8DX — 설명서 (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_ko.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_ko.html)) |
+| **LAN 대회의 밤 운영하기** | [Tournament Directors](../guides/translations/ko/TOURNAMENT_DIRECTORS.md). Tournament Tools는 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
+| **타임 어택을 자동으로 기록하기** | [LiveTrial](../guides/translations/ko/LIVETRIAL.md) — Windows + 캡처 카드. 커뮤니티 웹사이트 없이도 사용할 수 있습니다 |
+| **내 기록을 올리고 비교하기** | [Players](../guides/translations/ko/PLAYERS.md) — 어떤 브라우저든 OK, Android 8.0 이상 |
+| **커뮤니티 웹사이트 호스팅하기** | [Host a community server](../guides/HOSTING.md) |
+| **코드 수정하기** | [Developer guide](../DEVELOPMENT.md), [Testing](../TESTING.md), [Contributing](../../.github/CONTRIBUTING.md) |
 
-각 행에는 처음부터 끝까지 따라갈 안내서가 적혀 있습니다. 릴리스 패키지 대신 소스 코드에서 서버를 빌드하는 것은 개발자용입니다: [Getting started from source](docs/GETTING_STARTED.md).
+각 행에는 처음부터 끝까지 따라갈 안내서가 적혀 있습니다. 릴리스 패키지 대신 소스 코드에서 서버를 빌드하는 것은 개발자용입니다: [Getting started from source](../GETTING_STARTED.md).
 
 ### 어떤 경로에 어떤 컴퓨터를
 
@@ -128,11 +128,11 @@ flowchart TB
 | iPhone과 iPad | 브라우저에서 웹사이트 이용. Safari에서의 스캔은 아직 테스트 중 | iOS 앱은 없습니다: 빌드하고 서명하려면 Mac과 Apple 개발자 계정이 필요합니다 |
 | LiveTrial과 Tournament Live | x86-64 Windows(Windows 11에서 테스트), 화면마다 USB HDMI 캡처 카드 | 캡처 카드와 함께 제공되는 인식 엔진은 Windows용으로 빌드·테스트되었습니다. macOS나 Linux 빌드는 없습니다 |
 
-**Android 앱 첫 실행:** *커뮤니티 선택* 화면이 나옵니다. 집이나 클럽에서는 관리자가 보여 주는 **Prepare a device** 카드를 스캔하고, 온라인 커뮤니티라면 그 웹사이트 주소를 입력합니다. 그런 다음 브라우저로 로그인합니다. 자세한 내용: [Players](docs/guides/PLAYERS.md#first-start).
+**Android 앱 첫 실행:** *커뮤니티 선택* 화면이 나옵니다. 집이나 클럽에서는 관리자가 보여 주는 **Prepare a device** 카드를 스캔하고, 온라인 커뮤니티라면 그 웹사이트 주소를 입력합니다. 그런 다음 브라우저로 로그인합니다. 자세한 내용: [Players](../guides/PLAYERS.md#first-start).
 
 **앱 하나로 여러 커뮤니티를:** 위쪽의 커뮤니티 칩을 한 번 탭하면 클럽, 집의 설치본, 온라인 커뮤니티 사이를 전환할 수 있습니다. 각각 자신의 계정과 아직 보내지 않은 기록을 따로 보관합니다. **나** → **내 기록**에서는 인터넷 없이도 코스별 최고 기록을 볼 수 있고, 커뮤니티가 둘 이상이라면 최고 기록을 다른 커뮤니티로 가져갈 수도 있습니다 — 그 커뮤니티가 받아 준다면요.
 
-**왜 모든 것이 모든 곳에서 되지는 않나요?** 각 패키지는 빌드하고 시험해 본 환경에서만 제공됩니다. A1과 B1 서버 이미지는 x86-64 전용이고, A2에는 arm64 버전도 있습니다. Intel Mac에서는 A2에 필요한 보안 라이브러리(`cryptography`)가 더 이상 배포되지 않기 때문에, 릴리스 과정에서 Intel Mac에서 소스로부터 빌드하고 그곳에서 테스트합니다([방법](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3는 Docker를 쓸 수 없거나 쓰고 싶지 않은 분들을 위해 있습니다. [호스팅 가이드](docs/guides/HOSTING.md)와 [릴리스 패키지](docs/RELEASE_PACKAGES.md)에 모든 파일과 정확한 요구 사항이 나와 있습니다.
+**왜 모든 것이 모든 곳에서 되지는 않나요?** 각 패키지는 빌드하고 시험해 본 환경에서만 제공됩니다. A1과 B1 서버 이미지는 x86-64 전용이고, A2에는 arm64 버전도 있습니다. Intel Mac에서는 A2에 필요한 보안 라이브러리(`cryptography`)가 더 이상 배포되지 않기 때문에, 릴리스 과정에서 Intel Mac에서 소스로부터 빌드하고 그곳에서 테스트합니다([방법](../RELEASE_PACKAGES.md#intel-mac-a2-package)). A3는 Docker를 쓸 수 없거나 쓰고 싶지 않은 분들을 위해 있습니다. [호스팅 가이드](../guides/HOSTING.md)와 [릴리스 패키지](../RELEASE_PACKAGES.md)에 모든 파일과 정확한 요구 사항이 나와 있습니다.
 
 새로 설치하면 빈 상태에서 시작합니다. 커뮤니티 계정이나 결과는 이어받지 않습니다. 함께 들어 있는 것은 게임 카탈로그와 Nintendo 스태프 고스트 및 세계 기록 참조 데이터뿐입니다.
 
@@ -148,18 +148,18 @@ LAN 파티를 기억하시나요? 화면 하나에 두 명, 방을 가득 채운
 - **결정은 여러분이** — 결과가 반영되기 전에 주최자가 플레이어와 순위를 확인합니다. 그동안 실시간 순위는 잠정 결과로 표시됩니다.
 - **대회가 끝난 뒤에는** — 최종 순위, 공유할 수 있는 리포트(WhatsApp, PNG, CSV, WordPress에 바로 올릴 수 있는 글), 그리고 여러 밤에 걸쳐 쌓이는 TrueSkill 방식의 커뮤니티 레이팅(선택 사항).
 
-![레이스가 끝난 뒤의 Tournament Live: 캡처 카드 화면과, 드라이버별 캐릭터와 포인트가 표시된 도착 순서](docs/readme/tournament-live.jpg)
+![레이스가 끝난 뒤의 Tournament Live: 캡처 카드 화면과, 드라이버별 캐릭터와 포인트가 표시된 도착 순서](tournament-live.jpg)
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="대회의 밤 최종 결과: 플레이어별 캐릭터가 표시된 예선 그룹, 진출한 결승에 따라 색으로 구분" width="49%">
-  <img src="docs/readme/tournament-skill.jpg" alt="대회 실력 페이지: 플레이어의 TrueSkill 레이팅, 우승 횟수, 3위 이내 횟수, 평균 순위" width="49%">
+  <img src="tournament-results.jpg" alt="대회의 밤 최종 결과: 플레이어별 캐릭터가 표시된 예선 그룹, 진출한 결승에 따라 색으로 구분" width="49%">
+  <img src="tournament-skill.jpg" alt="대회 실력 페이지: 플레이어의 TrueSkill 레이팅, 우승 횟수, 3위 이내 횟수, 평균 순위" width="49%">
 </p>
 
 ### 그날 Tournament Live를 쓰지 못했나요? 나중에 녹화를 분석하세요
 
-실시간으로 캡처하지 않고 그 밤을 녹화해 두었나요? **Tournament Analysis** 창이 나중에 녹화를 읽어 줍니다. 동영상 하나, 여러 개, 또는 대회별 폴더를 추가하고 **START ANALYSIS**를 누르세요. 모든 레이스를 순위, 캐릭터, 포인트와 함께 찾아내고, 그동안 색으로 구분된 실시간 로그와 레인보우 로드 진행 막대가 진행 상황을 보여 줍니다. 결과는 Excel 통합 문서, CSV, 웹사이트용 가져오기 파일로 만들어지며, 주최자가 확인한 뒤 가져옵니다 — Tournament Live와 똑같은 검토 과정입니다. 레이스 네 번이 담긴 22분짜리 녹화를 노트북에서 약 70초 만에 분석했습니다. Windows용 Tournament Tools 패키지에서는 `TournamentAnalysis.cmd`를 더블클릭하세요(동영상을 `TournamentProcessor.cmd`로 끌어다 놓는 방법도 계속 쓸 수 있습니다). 개발자는 `python -m tournament_processor.gui`를 실행합니다. 자세한 단계는 [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards)에 있습니다.
+실시간으로 캡처하지 않고 그 밤을 녹화해 두었나요? **Tournament Analysis** 창이 나중에 녹화를 읽어 줍니다. 동영상 하나, 여러 개, 또는 대회별 폴더를 추가하고 **START ANALYSIS**를 누르세요. 모든 레이스를 순위, 캐릭터, 포인트와 함께 찾아내고, 그동안 색으로 구분된 실시간 로그와 레인보우 로드 진행 막대가 진행 상황을 보여 줍니다. 결과는 Excel 통합 문서, CSV, 웹사이트용 가져오기 파일로 만들어지며, 주최자가 확인한 뒤 가져옵니다 — Tournament Live와 똑같은 검토 과정입니다. 레이스 네 번이 담긴 22분짜리 녹화를 노트북에서 약 70초 만에 분석했습니다. Windows용 Tournament Tools 패키지에서는 `TournamentAnalysis.cmd`를 더블클릭하세요(동영상을 `TournamentProcessor.cmd`로 끌어다 놓는 방법도 계속 쓸 수 있습니다). 개발자는 `python -m tournament_processor.gui`를 실행합니다. 자세한 단계는 [Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards)에 있습니다.
 
-![분석 중인 Tournament Analysis 창: 왼쪽에는 컵 녹화 하나가 체크된 폴더가 분석 중이고, 오른쪽에는 찾아낸 레이스가 표시된 색 구분 활동 로그, 그 아래에 56%의 레인보우 로드 진행 막대와 시계](docs/readme/tournament-analysis.jpg)
+![분석 중인 Tournament Analysis 창: 왼쪽에는 컵 녹화 하나가 체크된 폴더가 분석 중이고, 오른쪽에는 찾아낸 레이스가 표시된 색 구분 활동 로그, 그 아래에 56%의 레인보우 로드 진행 막대와 시계](tournament-analysis.jpg)
 
 ## ⏱️ LiveTrial로 타임 어택 — 완전 자동
 
@@ -175,9 +175,9 @@ LiveTrial은 HDMI 화면을 지켜보며 다음을 스스로 알아봅니다.
 
 **모든 레이스의 클립**과 끝까지 본 고스트 리플레이의 클립을 저장하고, 랩 표와 차트가 담긴 주행 기록을 남깁니다. 또한 **세계 기록**, **Nintendo 스태프 고스트**, **자기 최고 기록**, **라이벌**과의 차이도 보여 줍니다. 결과는 클릭 한 번으로 커뮤니티에 보낼 수 있고(자동 전송을 켤 수도 있습니다), 원한다면 클립을 자신의 YouTube 채널에 올릴 수도 있습니다.
 
-![베이비 파크를 주행 중인 LiveTrial: 7랩 중 4랩째, 코인과 버섯을 실시간으로 세고 모든 랩을 고스트와 비교](docs/readme/livetrial-live.jpg)
+![베이비 파크를 주행 중인 LiveTrial: 7랩 중 4랩째, 코인과 버섯을 실시간으로 세고 모든 랩을 고스트와 비교](livetrial-live.jpg)
 
-![주행 후 LiveTrial의 주행 카드: 총 기록, 고스트와의 차이, 코인과 버섯](docs/readme/livetrial-run.jpg)
+![주행 후 LiveTrial의 주행 카드: 총 기록, 고스트와의 차이, 코인과 버섯](livetrial-run.jpg)
 
 ## 📱 소파에서 스캔하기
 
@@ -186,8 +186,8 @@ LiveTrial은 HDMI 화면을 지켜보며 다음을 스스로 알아봅니다.
 브라우저 스캐너는 **전부 여러분의 기기 안에서** 동작합니다 — 계정도 서버도 필요 없고, 처음 내려받은 뒤에는 오프라인에서도 쓸 수 있습니다. Android 앱도 기기 안에서 스캔합니다.
 
 <p>
-  <img src="docs/readme/scanner-reading.jpg" alt="고스트 선택 화면을 찍은 스마트폰 사진을 읽고 있는 브라우저 스캐너" width="32%">
-  <img src="docs/readme/scanner-filled.jpg" alt="스캔으로 채워진 양식: 캐릭터, 카트, 타이어, 글라이더, 국기, 랩 기록. 확실하지 않은 한 부분에 표시가 되어 있음" width="32%">
+  <img src="scanner-reading.jpg" alt="고스트 선택 화면을 찍은 스마트폰 사진을 읽고 있는 브라우저 스캐너" width="32%">
+  <img src="scanner-filled.jpg" alt="스캔으로 채워진 양식: 캐릭터, 카트, 타이어, 글라이더, 국기, 랩 기록. 확실하지 않은 한 부분에 표시가 되어 있음" width="32%">
 </p>
 
 ## 🏆 나의 기록, 나의 라이벌
@@ -195,8 +195,8 @@ LiveTrial은 HDMI 화면을 지켜보며 다음을 스스로 알아봅니다.
 모든 플레이어에게 코스별 자기 기록, 가족·친구·클럽과의 순위, 쫓아갈 라이벌(콕 찌르기, 도전, 가끔은 주사위 대결까지), 누군가 내 기록을 깼을 때의 알림, 그리고 현재 세계 기록을 기준으로 한 **23단계 마스터리 레벨**이 주어집니다.
 
 <p>
-  <img src="docs/readme/timetrials-leaderboard.jpg" alt="세계 기록, 조합, 랩별 버섯과 코인이 표시된 레인보우 로드 순위표" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="같은 순위표를 스마트폰의 다크 테마로 표시" width="24%">
+  <img src="timetrials-leaderboard.jpg" alt="세계 기록, 조합, 랩별 버섯과 코인이 표시된 레인보우 로드 순위표" width="72%">
+  <img src="phone-leaderboard.jpg" alt="같은 순위표를 스마트폰의 다크 테마로 표시" width="24%">
 </p>
 
 ## 🌍 여러분의 언어로 — 15개 언어 모두
@@ -212,11 +212,11 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 - **커뮤니티에 필요한 것을 추가**해 주세요 — 새로운 대회 방식, 통계, 결과를 공유하는 방법.
 - **문서를 개선**해서 다음 주최자가 더 빨리 시작할 수 있도록 해 주세요.
 
-[Contributing](CONTRIBUTING.md)과 [개발자 가이드](docs/DEVELOPMENT.md)부터 시작하세요. 풀 리퀘스트, 버그 리포트, 번역 수정 하나하나가 다음 LAN의 밤을 모두에게 더 좋게 만듭니다.
+[Contributing](../../.github/CONTRIBUTING.md)과 [개발자 가이드](../DEVELOPMENT.md)부터 시작하세요. 풀 리퀘스트, 버그 리포트, 번역 수정 하나하나가 다음 LAN의 밤을 모두에게 더 좋게 만듭니다.
 
 ## 프로젝트 현황
 
-안정 릴리스는 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에 있습니다. 0.2.0에서는 집이나 클럽에서 쓰는 A2가 추가되었고, 0.2.1에서는 Android 앱에 내 기록의 오프라인 사본과 더 차분한 레이아웃이 생겼습니다. 0.2.2에서는 녹화 분석이 다시 동작하고 Tournament Analysis 창이 추가되었습니다. 0.2.3에서는 웹 게이트웨이가 root 없이 실행되고, 저장소를 더 쉽게 시작할 수 있게 되었습니다. 또한 커뮤니티 서버의 데이터베이스가 MySQL 9.7 LTS로 바뀌었고, 모든 스캐너에서 카트와 글라이더 색상이 이제 캐릭터를 따릅니다. 0.2.4에서는 안내서, 설정 마법사, 런처와 Tournament 창이 게임의 15개 언어를 모두 지원하고, 모든 문자의 플레이어 이름을 읽으며, 모든 OCR 모델이 포함되어 오프라인에서도 인식이 동작합니다. 0.2.5는 모든 커뮤니티에 설치를 권장하는 보안 업데이트입니다. 더 엄격한 권한 확인과 요청 제한, 위험한 관리자 작업을 위한 새 이메일 확인, 분리된 데이터베이스 계정, 그리고 모든 경로의 자동 일일 백업이 포함됩니다. 0.2.6에서는 Director가 Android 앱에서 라이브 캡처를 위임할 수 있고, 관리자는 어떤 요청 제한이 요청을 거부했는지 볼 수 있으며, 라이브 점수판과 실행 프로그램이 15개 언어 모두를 지원하고, 앱의 날짜가 앱 자체 언어로 표시됩니다. 0.2.7에는 따로 공개되지 않은 0.2.6이 포함됩니다. 모든 설치 경로를 안내서대로 한 단계씩 따라 하며 안내서를 고쳤고, 야간 백업과 새 복구 코드가 모든 경로에서 동작하며, 한 컴퓨터의 두 설치가 더 이상 서로의 이미지를 바꿔 놓지 않습니다. [변경 내역](CHANGELOG.md), [Release packages](docs/RELEASE_PACKAGES.md), 그리고 전체 안내서([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt))를 참고하세요.
+안정 릴리스는 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에 있습니다. 0.2.0에서는 집이나 클럽에서 쓰는 A2가 추가되었고, 0.2.1에서는 Android 앱에 내 기록의 오프라인 사본과 더 차분한 레이아웃이 생겼습니다. 0.2.2에서는 녹화 분석이 다시 동작하고 Tournament Analysis 창이 추가되었습니다. 0.2.3에서는 웹 게이트웨이가 root 없이 실행되고, 저장소를 더 쉽게 시작할 수 있게 되었습니다. 또한 커뮤니티 서버의 데이터베이스가 MySQL 9.7 LTS로 바뀌었고, 모든 스캐너에서 카트와 글라이더 색상이 이제 캐릭터를 따릅니다. 0.2.4에서는 안내서, 설정 마법사, 런처와 Tournament 창이 게임의 15개 언어를 모두 지원하고, 모든 문자의 플레이어 이름을 읽으며, 모든 OCR 모델이 포함되어 오프라인에서도 인식이 동작합니다. 0.2.5는 모든 커뮤니티에 설치를 권장하는 보안 업데이트입니다. 더 엄격한 권한 확인과 요청 제한, 위험한 관리자 작업을 위한 새 이메일 확인, 분리된 데이터베이스 계정, 그리고 모든 경로의 자동 일일 백업이 포함됩니다. 0.2.6에서는 Director가 Android 앱에서 라이브 캡처를 위임할 수 있고, 관리자는 어떤 요청 제한이 요청을 거부했는지 볼 수 있으며, 라이브 점수판과 실행 프로그램이 15개 언어 모두를 지원하고, 앱의 날짜가 앱 자체 언어로 표시됩니다. 0.2.7에는 따로 공개되지 않은 0.2.6이 포함됩니다. 모든 설치 경로를 안내서대로 한 단계씩 따라 하며 안내서를 고쳤고, 야간 백업과 새 복구 코드가 모든 경로에서 동작하며, 한 컴퓨터의 두 설치가 더 이상 서로의 이미지를 바꿔 놓지 않습니다. [변경 내역](../../CHANGELOG.md), [Release packages](../RELEASE_PACKAGES.md), 그리고 전체 안내서([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt))를 참고하세요.
 
 인식 기능이 스스로 결과를 공식으로 만드는 일은 없습니다. 자신의 타임 어택은 직접 검토하고, 대회 레이스는 주최자가 확인한 뒤에 반영됩니다.
 
@@ -224,16 +224,16 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 | 하고 싶은 일 | 읽을 문서 |
 | --- | --- |
-| 인식이 어떻게 동작하는지 이해하기 | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| 구성 요소와 결과가 전달되는 과정 이해하기 | [Architecture](docs/architecture/COMPONENTS.md) |
-| 코드를 빌드하거나 수정하기 | [Developer guide](docs/DEVELOPMENT.md)와 [Testing](docs/TESTING.md) |
-| 네이티브 클라이언트 빌드하기 | [Client builds](docs/CLIENT_BUILDS.md) |
-| 설치본 운영하기(백업, 업그레이드, 복구) | [Operations](docs/OPERATIONS.md) |
-| 왜 이렇게 되어 있는지 알아보기 | [Decision index](docs/decisions/README.md) |
-| 기여하기 | [Contributing](CONTRIBUTING.md), [Code of conduct](CODE_OF_CONDUCT.md) |
-| 도움 받기 | [Getting help](SUPPORT.md) |
-| 보안 문제 신고하기 | [Security policy](SECURITY.md) |
-| 코딩 에이전트와 함께 작업하기 | [AGENTS.md](AGENTS.md) |
+| 인식이 어떻게 동작하는지 이해하기 | [Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) |
+| 구성 요소와 결과가 전달되는 과정 이해하기 | [Architecture](../architecture/COMPONENTS.md) |
+| 코드를 빌드하거나 수정하기 | [Developer guide](../DEVELOPMENT.md)와 [Testing](../TESTING.md) |
+| 네이티브 클라이언트 빌드하기 | [Client builds](../CLIENT_BUILDS.md) |
+| 설치본 운영하기(백업, 업그레이드, 복구) | [Operations](../OPERATIONS.md) |
+| 왜 이렇게 되어 있는지 알아보기 | [Decision index](../decisions/README.md) |
+| 기여하기 | [Contributing](../../.github/CONTRIBUTING.md), [Code of conduct](../../.github/CODE_OF_CONDUCT.md) |
+| 도움 받기 | [Getting help](../../.github/SUPPORT.md) |
+| 보안 문제 신고하기 | [Security policy](../../.github/SECURITY.md) |
+| 코딩 에이전트와 함께 작업하기 | [AGENTS.md](../../AGENTS.md) |
 
 ## 💡 이 프로젝트가 태어난 이야기
 
@@ -307,4 +307,4 @@ MK8DX Ecosystem은 2024년부터 개발되어 왔습니다. AI의 도움을 정�
 
 이것은 프로그래밍을 배우고 마리오 카트 8 디럭스를 더 재미있게 즐기기 위한, 독립적인 비상업 취미 프로젝트입니다. **Nintendo와 제휴하거나 Nintendo의 승인을 받은 프로젝트가 아닙니다.** Nintendo는 자사의 상표와 게임 콘텐츠에 대한 권리를 가지고 있습니다. 게임기와 게임을 구입해 Nintendo를 응원해 주세요.
 
-이 프로젝트의 오리지널 코드와 문서는 [Mozilla Public License 2.0](LICENSE)에 따라 라이선스됩니다. [라이선스 적용 범위](LICENSE_SCOPE.md)에서 그 범위를 설명합니다. Nintendo 자료, 게임 이미지, 인식 템플릿, 모델, 글꼴, 기타 제3자 자료는 적용 대상이 **아니며**, 각자의 조건을 따릅니다. [Third-party materials](docs/THIRD_PARTY_MATERIALS.md)를 참고하세요. 이 소프트웨어는 있는 그대로 제공됩니다.
+이 프로젝트의 오리지널 코드와 문서는 [Mozilla Public License 2.0](../../LICENSE)에 따라 라이선스됩니다. [라이선스 적용 범위](../../LICENSE_SCOPE.md)에서 그 범위를 설명합니다. Nintendo 자료, 게임 이미지, 인식 템플릿, 모델, 글꼴, 기타 제3자 자료는 적용 대상이 **아니며**, 각자의 조건을 따릅니다. [Third-party materials](../THIRD_PARTY_MATERIALS.md)를 참고하세요. 이 소프트웨어는 있는 그대로 제공됩니다.

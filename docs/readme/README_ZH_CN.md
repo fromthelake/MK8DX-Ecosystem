@@ -2,11 +2,11 @@
 
 **自己搭建属于你的马力欧卡丁车8 豪华版社区网站——计时赛*和*锦标赛之夜，一站搞定。**
 
-语言：[English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · 简体中文 · [繁體中文](README_ZH_TW.md)
+语言：[English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · 简体中文 · [繁體中文](README_ZH_TW.md)
 
 *本译文由机器根据英文版 README 翻译而成，欢迎指正。*
 
-![社区网站首页：你的排名、你的重点赛道和你的对手](docs/readme/web-home.jpg)
+![社区网站首页：你的排名、你的重点赛道和你的对手](web-home.jpg)
 
 MK8DX Ecosystem 是一套由你自己部署的系统。它为你的社区提供一个网站，同时保存两类成绩——**计时赛成绩**和**锦标赛成绩**——并为每一类都加入了独具特色的比拼方式。
 
@@ -88,24 +88,24 @@ flowchart TB
 
 **我需要哪些部分？**
 
-- **一台社区服务器——每个社区唯一必需的部分。** 它就是带有 API 和数据库的网站。可以运行在家里或俱乐部的网络上（[A2](docs/install/A2_HOME_GUIDE_EN.md)，安装后无需联网），也可以在线部署到服务器或网站托管上（[搭建社区服务器](docs/guides/HOSTING.md)）。
-- **玩家只需要一个浏览器。** 网站自带浏览器扫描器。Android 应用还增加了手机扫描、离线查看自己的成绩，以及一键切换社区（[Players](docs/guides/PLAYERS.md)）。
-- **带采集卡的 Windows 电脑是可选的。** LiveTrial 会自动记录每一次计时赛；你可以一键发送到你的社区，也可以自动发送（[LiveTrial](docs/guides/LIVETRIAL.md)）。
-- **锦标赛之夜在网站上进行。** Tournament Live（当晚）和 Tournament Analysis（赛后分析录像）只会提出比赛结果；分数也可以手动输入或从 Excel/CSV 导入。在组织者接受之前，排名不会改变（[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)）。
-- **识别是共享组件，而不是一项服务。** 每个应用都带有自己的一份副本，在你的设备上读取画面；服务器只检查提交的结果（[Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) · [Architecture](docs/architecture/COMPONENTS.md)）。
+- **一台社区服务器——每个社区唯一必需的部分。** 它就是带有 API 和数据库的网站。可以运行在家里或俱乐部的网络上（[A2](../install/A2_HOME_GUIDE_EN.md)，安装后无需联网），也可以在线部署到服务器或网站托管上（[搭建社区服务器](../guides/HOSTING.md)）。
+- **玩家只需要一个浏览器。** 网站自带浏览器扫描器。Android 应用还增加了手机扫描、离线查看自己的成绩，以及一键切换社区（[Players](../guides/PLAYERS.md)）。
+- **带采集卡的 Windows 电脑是可选的。** LiveTrial 会自动记录每一次计时赛；你可以一键发送到你的社区，也可以自动发送（[LiveTrial](../guides/LIVETRIAL.md)）。
+- **锦标赛之夜在网站上进行。** Tournament Live（当晚）和 Tournament Analysis（赛后分析录像）只会提出比赛结果；分数也可以手动输入或从 Excel/CSV 导入。在组织者接受之前，排名不会改变（[Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md)）。
+- **识别是共享组件，而不是一项服务。** 每个应用都带有自己的一份副本，在你的设备上读取画面；服务器只检查提交的结果（[Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) · [Architecture](../architecture/COMPONENTS.md)）。
 
 ## 快速开始
 
 | 我想要… | 从这里开始 |
 | --- | --- |
-| **在家里或俱乐部运行 MK8DX** | 从 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下载适合你电脑的 A2 软件包：解压、启动、点击“下一步”。分步说明（A2 软件包里还有带插图的版本）：[简体中文](docs/install/translations/zh-CN/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [安装和使用 MK8DX](docs/install/translations/zh-CN/MK8DX_User_Guide_zh-CN.docx) ([TXT](docs/install/translations/zh-CN/MK8DX_User_Guide.txt)) |
-| **组织 LAN 锦标赛之夜** | [Tournament Directors](docs/guides/translations/zh-CN/TOURNAMENT_DIRECTORS.md)；Tournament Tools 没有社区网站也能使用 |
-| **自动记录我的计时赛** | [LiveTrial](docs/guides/translations/zh-CN/LIVETRIAL.md)——Windows + 一张采集卡；没有社区网站也能使用 |
-| **提交并比较我的成绩** | [Players](docs/guides/translations/zh-CN/PLAYERS.md)——任意浏览器；Android 8.0+ |
-| **搭建社区网站** | [搭建社区服务器](docs/guides/HOSTING.md) |
-| **修改代码** | [开发者指南](docs/DEVELOPMENT.md)、[测试](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
+| **在家里或俱乐部运行 MK8DX** | 从 [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) 下载适合你电脑的 A2 软件包：解压、启动、点击“下一步”。分步说明（A2 软件包里还有带插图的版本）：[简体中文](../install/translations/zh-CN/A2_HOME_GUIDE.md) · [English](../install/A2_HOME_GUIDE_EN.md) · [Nederlands](../install/A2_THUIS_HANDLEIDING_NL.md) · [安装和使用 MK8DX](../install/translations/zh-CN/MK8DX_User_Guide_zh-CN.docx) ([TXT](../install/translations/zh-CN/MK8DX_User_Guide.txt)) · [在家或在俱乐部使用 MK8DX — 使用手册 (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_zh-CN.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_zh-CN.html)) |
+| **组织 LAN 锦标赛之夜** | [Tournament Directors](../guides/translations/zh-CN/TOURNAMENT_DIRECTORS.md)；Tournament Tools 没有社区网站也能使用 |
+| **自动记录我的计时赛** | [LiveTrial](../guides/translations/zh-CN/LIVETRIAL.md)——Windows + 一张采集卡；没有社区网站也能使用 |
+| **提交并比较我的成绩** | [Players](../guides/translations/zh-CN/PLAYERS.md)——任意浏览器；Android 8.0+ |
+| **搭建社区网站** | [搭建社区服务器](../guides/HOSTING.md) |
+| **修改代码** | [开发者指南](../DEVELOPMENT.md)、[测试](../TESTING.md)、[Contributing](../../.github/CONTRIBUTING.md) |
 
-每一行列出需要从头到尾照着做的指南。不使用发布软件包、而是从源代码构建服务器，适合开发者：[从源代码开始](docs/GETTING_STARTED.md)。
+每一行列出需要从头到尾照着做的指南。不使用发布软件包、而是从源代码构建服务器，适合开发者：[从源代码开始](../GETTING_STARTED.md)。
 
 ### 哪种路线适合哪种电脑
 
@@ -128,11 +128,11 @@ flowchart TB
 | iPhone 和 iPad | 在浏览器中使用网站；Safari 中的扫描功能仍在测试 | 没有 iOS 应用：构建和签名 iOS 应用需要一台 Mac 和一个 Apple 开发者账号 |
 | LiveTrial 和 Tournament Live | x86-64 架构的 Windows（已在 Windows 11 上测试），每块屏幕配一张 USB HDMI 采集卡 | 采集卡和内置的识别引擎都是针对 Windows 构建和测试的；没有 macOS 或 Linux 版本 |
 
-**首次启动 Android 应用**：它会询问*选择你的社区*。在家里或俱乐部，扫描管理员展示的 **Prepare a device** 卡片；如果是在线社区，则输入它的网站地址。然后通过浏览器登录。详情：[Players](docs/guides/PLAYERS.md#first-start)。
+**首次启动 Android 应用**：它会询问*选择你的社区*。在家里或俱乐部，扫描管理员展示的 **Prepare a device** 卡片；如果是在线社区，则输入它的网站地址。然后通过浏览器登录。详情：[Players](../guides/PLAYERS.md#first-start)。
 
 **一个应用，多个社区**：顶部的社区标签只需轻点一下，就能在你的俱乐部、你的家庭安装和某个在线社区之间切换；每个社区都保留各自的账号和尚未发送的成绩。在 **你** → **我的成绩** 中，你可以看到自己在每条赛道上的最佳成绩，没有网络也能查看；如果你加入了多个社区，还可以把最佳成绩带到另一个社区——前提是那个社区愿意接收。
 
-**为什么不是所有东西都能在所有地方运行？** 每个软件包只在已经构建并试用过的平台上提供。A1 和 B1 的服务器镜像只有 x86-64 版本；A2 还提供 arm64 版本。对于 Intel Mac，A2 所需的安全库（`cryptography`）已不再发布预编译版本，因此发布流程会在 Intel Mac 上从源码构建并在那里测试（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 是为无法或不想运行 Docker 的人准备的。[托管指南](docs/guides/HOSTING.md)和[发布软件包](docs/RELEASE_PACKAGES.md)列出了每个文件及其确切要求。
+**为什么不是所有东西都能在所有地方运行？** 每个软件包只在已经构建并试用过的平台上提供。A1 和 B1 的服务器镜像只有 x86-64 版本；A2 还提供 arm64 版本。对于 Intel Mac，A2 所需的安全库（`cryptography`）已不再发布预编译版本，因此发布流程会在 Intel Mac 上从源码构建并在那里测试（[方法](../RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 是为无法或不想运行 Docker 的人准备的。[托管指南](../guides/HOSTING.md)和[发布软件包](../RELEASE_PACKAGES.md)列出了每个文件及其确切要求。
 
 全新安装从空白开始：不会继承任何社区账号或成绩。它只带有游戏目录，以及任天堂工作人员幽灵和世界纪录的参考数据集。
 
@@ -148,18 +148,18 @@ flowchart TB
 - **一切由你掌控**——在成绩计入之前，组织者会核对玩家和名次。期间实时排名会以临时结果的形式显示。
 - **赛后**——最终排名、可分享的赛事报告（WhatsApp、PNG、CSV，以及可直接发布到 WordPress 的文章），还有可选的跨夜 TrueSkill 风格社区评分。
 
-![一场比赛结束后的 Tournament Live：采集卡画面，以及每位车手的完赛顺序、角色和积分](docs/readme/tournament-live.jpg)
+![一场比赛结束后的 Tournament Live：采集卡画面，以及每位车手的完赛顺序、角色和积分](tournament-live.jpg)
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="锦标赛之夜的最终成绩：资格赛分组，显示每位玩家的角色，并按其晋级的决赛着色" width="49%">
-  <img src="docs/readme/tournament-skill.jpg" alt="锦标赛实力页面：某位玩家的 TrueSkill 评分、胜场、前三次数和平均名次" width="49%">
+  <img src="tournament-results.jpg" alt="锦标赛之夜的最终成绩：资格赛分组，显示每位玩家的角色，并按其晋级的决赛着色" width="49%">
+  <img src="tournament-skill.jpg" alt="锦标赛实力页面：某位玩家的 TrueSkill 评分、胜场、前三次数和平均名次" width="49%">
 </p>
 
 ### 当晚没有用 Tournament Live？赛后分析录像
 
-当晚只录了像，没有实时采集？**Tournament Analysis** 窗口可以在赛后读取录像：添加一个视频、多个视频，或者每场锦标赛一个文件夹，按下 **START ANALYSIS**，它就会找出每一场比赛及其名次、角色和积分，同时用实时的彩色日志和一条彩虹之路进度条显示进度。分析结果是一个 Excel 工作簿、一个 CSV 文件和一个网站导入文件，供组织者核对后导入——审核流程与 Tournament Live 完全相同。一段 22 分钟、包含四场比赛的录像，在笔记本电脑上大约 70 秒就能分析完。在 Windows 版 Tournament Tools 软件包中，双击 `TournamentAnalysis.cmd` 即可（把视频拖到 `TournamentProcessor.cmd` 上仍然可用）；开发者可运行 `python -m tournament_processor.gui`。具体步骤见 [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards)。
+当晚只录了像，没有实时采集？**Tournament Analysis** 窗口可以在赛后读取录像：添加一个视频、多个视频，或者每场锦标赛一个文件夹，按下 **START ANALYSIS**，它就会找出每一场比赛及其名次、角色和积分，同时用实时的彩色日志和一条彩虹之路进度条显示进度。分析结果是一个 Excel 工作簿、一个 CSV 文件和一个网站导入文件，供组织者核对后导入——审核流程与 Tournament Live 完全相同。一段 22 分钟、包含四场比赛的录像，在笔记本电脑上大约 70 秒就能分析完。在 Windows 版 Tournament Tools 软件包中，双击 `TournamentAnalysis.cmd` 即可（把视频拖到 `TournamentProcessor.cmd` 上仍然可用）；开发者可运行 `python -m tournament_processor.gui`。具体步骤见 [Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards)。
 
-![运行中的 Tournament Analysis 窗口：左侧勾选了一个包含一段杯赛录像的文件夹，分析正在进行；右侧是彩色活动日志，列出已找到的比赛，下方是进度 56% 的彩虹之路进度条和计时](docs/readme/tournament-analysis.jpg)
+![运行中的 Tournament Analysis 窗口：左侧勾选了一个包含一段杯赛录像的文件夹，分析正在进行；右侧是彩色活动日志，列出已找到的比赛，下方是进度 56% 的彩虹之路进度条和计时](tournament-analysis.jpg)
 
 ## ⏱️ 用 LiveTrial 跑计时赛——全自动
 
@@ -175,9 +175,9 @@ LiveTrial 会监看 HDMI 画面，并自动识别：
 
 它会保存**每一场比赛的片段**，以及你完整观看的每一段幽灵回放；提供带圈速表和图表的跑图历史；并显示你与**世界纪录**、**任天堂工作人员幽灵**、**你自己的纪录**和**你的对手**之间的差距。一键即可把成绩发送到你的社区（也可以开启自动发送），还能选择把片段上传到你自己的 YouTube 频道。
 
-![LiveTrial 在宝宝公园跑图中：7 圈中的第 4 圈，实时统计金币和蘑菇，每一圈都与幽灵对比](docs/readme/livetrial-live.jpg)
+![LiveTrial 在宝宝公园跑图中：7 圈中的第 4 圈，实时统计金币和蘑菇，每一圈都与幽灵对比](livetrial-live.jpg)
 
-![LiveTrial 跑图结束后的成绩卡：总时间、与幽灵的差距、金币和蘑菇](docs/readme/livetrial-run.jpg)
+![LiveTrial 跑图结束后的成绩卡：总时间、与幽灵的差距、金币和蘑菇](livetrial-run.jpg)
 
 ## 📱 坐在沙发上就能扫描
 
@@ -186,8 +186,8 @@ LiveTrial 会监看 HDMI 画面，并自动识别：
 浏览器扫描器**完全在你的设备上运行**——不需要账号，不需要服务器，首次下载后即可离线使用。Android 应用同样在设备端完成扫描。
 
 <p>
-  <img src="docs/readme/scanner-reading.jpg" alt="浏览器扫描器正在读取一张用手机拍摄的选择幽灵画面照片" width="32%">
-  <img src="docs/readme/scanner-filled.jpg" alt="根据扫描结果填好的表单：角色、卡丁车、轮胎、滑翔翼、旗帜和圈速，唯一不确定的部分已被标出" width="32%">
+  <img src="scanner-reading.jpg" alt="浏览器扫描器正在读取一张用手机拍摄的选择幽灵画面照片" width="32%">
+  <img src="scanner-filled.jpg" alt="根据扫描结果填好的表单：角色、卡丁车、轮胎、滑翔翼、旗帜和圈速，唯一不确定的部分已被标出" width="32%">
 </p>
 
 ## 🏆 你的纪录，你的对手
@@ -195,8 +195,8 @@ LiveTrial 会监看 HDMI 画面，并自动识别：
 每位玩家都拥有自己在每条赛道上的纪录、与家人、朋友或俱乐部成员的排名、可以追赶的对手（还有戳一戳、挑战，偶尔来一场掷骰对决）、有人打破你的成绩时的通知，以及以当前世界纪录为标准的 **23 个精通度等级**。
 
 <p>
-  <img src="docs/readme/timetrials-leaderboard.jpg" alt="彩虹之路排行榜，包含世界纪录、组合配置，以及每圈的蘑菇和金币" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="同一个排行榜在手机上的样子，深色主题" width="24%">
+  <img src="timetrials-leaderboard.jpg" alt="彩虹之路排行榜，包含世界纪录、组合配置，以及每圈的蘑菇和金币" width="72%">
+  <img src="phone-leaderboard.jpg" alt="同一个排行榜在手机上的样子，深色主题" width="24%">
 </p>
 
 ## 🌍 说你的语言——全部 15 种
@@ -212,11 +212,11 @@ MK8DX 是开源项目，由玩家为玩家打造。你可以为你的俱乐部�
 - **添加你的社区需要的功能**——新的锦标赛赛制、统计数据、分享成绩的方式。
 - **完善文档**，让下一位组织者能更快上手。
 
-从 [Contributing](CONTRIBUTING.md) 和[开发者指南](docs/DEVELOPMENT.md)开始吧。每一个 pull request、每一份 bug 报告、每一处翻译修正，都会让下一个 LAN 之夜对所有人来说变得更好。
+从 [Contributing](../../.github/CONTRIBUTING.md) 和[开发者指南](../DEVELOPMENT.md)开始吧。每一个 pull request、每一份 bug 报告、每一处翻译修正，都会让下一个 LAN 之夜对所有人来说变得更好。
 
 ## 项目状态
 
-稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。0.2.6 让 Director 可以在 Android 应用中委托实时采集，让管理员看到哪些请求限制拒绝了请求，让实时记分板和启动器支持全部 15 种语言，并让应用中的日期使用应用自身的语言。0.2.7 包含未单独发布的 0.2.6：每种安装路线都按指南逐步走了一遍并修正了指南，夜间备份和新的恢复码在每种路线上都能使用，同一台电脑上的两个安装也不会再相互替换对方的镜像。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。0.2.6 让 Director 可以在 Android 应用中委托实时采集，让管理员看到哪些请求限制拒绝了请求，让实时记分板和启动器支持全部 15 种语言，并让应用中的日期使用应用自身的语言。0.2.7 包含未单独发布的 0.2.6：每种安装路线都按指南逐步走了一遍并修正了指南，夜间备份和新的恢复码在每种路线上都能使用，同一台电脑上的两个安装也不会再相互替换对方的镜像。请参阅[更新日志](../../CHANGELOG.md)、[发布软件包](../RELEASE_PACKAGES.md)和完整指南（[English](../install/MK8DX_User_Guide_EN.txt)、[Nederlands](../install/MK8DX_Handleiding_NL.txt)）。
 
 识别结果永远不会自动成为正式成绩：你自己的计时赛由你审核，锦标赛的比赛则要经组织者核对后才会计入。
 
@@ -224,16 +224,16 @@ MK8DX 是开源项目，由玩家为玩家打造。你可以为你的俱乐部�
 
 | 我想要… | 阅读 |
 | --- | --- |
-| 了解识别是如何工作的 | [识别流程](docs/architecture/RECOGNITION_PIPELINE.md) |
-| 了解各个组成部分，以及一条成绩是如何流转的 | [架构](docs/architecture/COMPONENTS.md) |
-| 构建或修改代码 | [开发者指南](docs/DEVELOPMENT.md)和[测试](docs/TESTING.md) |
-| 构建原生客户端 | [客户端构建](docs/CLIENT_BUILDS.md) |
-| 运维一套安装（备份、升级、恢复） | [运维](docs/OPERATIONS.md) |
-| 了解某样东西为什么是现在这个样子 | [决策索引](docs/decisions/README.md) |
-| 参与贡献 | [Contributing](CONTRIBUTING.md)、[行为准则](CODE_OF_CONDUCT.md) |
-| 获取帮助 | [获取帮助](SUPPORT.md) |
-| 报告安全问题 | [安全策略](SECURITY.md) |
-| 与编程智能体协作 | [AGENTS.md](AGENTS.md) |
+| 了解识别是如何工作的 | [识别流程](../architecture/RECOGNITION_PIPELINE.md) |
+| 了解各个组成部分，以及一条成绩是如何流转的 | [架构](../architecture/COMPONENTS.md) |
+| 构建或修改代码 | [开发者指南](../DEVELOPMENT.md)和[测试](../TESTING.md) |
+| 构建原生客户端 | [客户端构建](../CLIENT_BUILDS.md) |
+| 运维一套安装（备份、升级、恢复） | [运维](../OPERATIONS.md) |
+| 了解某样东西为什么是现在这个样子 | [决策索引](../decisions/README.md) |
+| 参与贡献 | [Contributing](../../.github/CONTRIBUTING.md)、[行为准则](../../.github/CODE_OF_CONDUCT.md) |
+| 获取帮助 | [获取帮助](../../.github/SUPPORT.md) |
+| 报告安全问题 | [安全策略](../../.github/SECURITY.md) |
+| 与编程智能体协作 | [AGENTS.md](../../AGENTS.md) |
 
 ## 💡 背后的故事
 
@@ -307,4 +307,4 @@ MK8DX Ecosystem 从 2024 年开始开发，过程中得到了 AI 的大量帮助
 
 这是一个独立的、非商业性的业余项目，目的是学习编程，并让马力欧卡丁车8 豪华版变得更加有趣。本项目**与 Nintendo 没有任何关联，也未获得 Nintendo 的认可**。Nintendo 拥有其商标和游戏内容；请购买 Nintendo 的主机和游戏来支持 Nintendo。
 
-本项目的原创代码和文档采用 [Mozilla Public License 2.0](LICENSE) 授权。[许可范围](LICENSE_SCOPE.md)说明了它涵盖的内容：它**不**涵盖 Nintendo 的素材、游戏图像、识别模板、模型、字体或其他第三方素材，这些素材仍适用其各自的条款。请参阅[第三方素材](docs/THIRD_PARTY_MATERIALS.md)。本软件按“原样”提供。
+本项目的原创代码和文档采用 [Mozilla Public License 2.0](../../LICENSE) 授权。[许可范围](../../LICENSE_SCOPE.md)说明了它涵盖的内容：它**不**涵盖 Nintendo 的素材、游戏图像、识别模板、模型、字体或其他第三方素材，这些素材仍适用其各自的条款。请参阅[第三方素材](../THIRD_PARTY_MATERIALS.md)。本软件按“原样”提供。

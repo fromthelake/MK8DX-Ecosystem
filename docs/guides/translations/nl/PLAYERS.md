@@ -46,7 +46,7 @@ sturen als je community dat heeft ingesteld; zet ze aan in je accountinstellinge
 De website is beschikbaar in de 15 talen van het spel (kies de jouwe in de instellingen). Engels en Nederlands zijn
 nagekeken; de andere 13 zijn machinevertalingen, en verbeteringen zijn welkom: zie
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) voor het bestand dat je aanpast en
-[Contributing](../../../../CONTRIBUTING.md) voor de pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) voor de pull request.
 
 ## De Android-app
 
@@ -142,5 +142,5 @@ eigen schakelaar van de app moeten allebei aan staan.
   accounts samen). Is die grens bereikt, wacht dan tot een openstaande claim is afgehandeld, of trek er een in met
   **Dit verzoek intrekken**, en probeer het opnieuw.
 - Ziet iets er verkeerd uit op de site van je community: vraag het eerst aan de mensen die hem runnen. Fouten in de software zelf
-  kun je melden in de issues van het project; zie [SUPPORT.md](../../../../SUPPORT.md). Plaats nooit aanmeldlinks of de namen van
+  kun je melden in de issues van het project; zie [SUPPORT.md](../../../../.github/SUPPORT.md). Plaats nooit aanmeldlinks of de namen van
   andere mensen.

@@ -5,6 +5,21 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **The illustrated guide as one file per language**: every release attaches `MK8DX_Guide_<locale>.pdf` and a
+  self-contained `MK8DX_Guide_<locale>.html` (works offline, no other files) in all 15 languages, under names
+  without a version, so `releases/latest/download/MK8DX_Guide_en.pdf` always gives the newest. Built by
+  `tooling/build_guide_bundle.mjs`; listed in `SHA256SUMS.txt` and `manifest.json`; linked from every README's
+  Get started and from START_HERE.
+
+### Changed
+
+- **A tidier repository root**: the 14 translated READMEs moved to `docs/readme/` (README.md stays at the root,
+  the language switcher links them), and `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md` and `SUPPORT.md`
+  moved to `.github/`, where GitHub still shows them. The unused `compose.preview.local.yaml` is removed.
+- **Fresh guide screenshots** of 0.2.7 with example names and the example address `192.168.1.50`.
+
 ## 0.2.7 — 2026-11-15
 
 0.2.6 was tagged but not published as a release; 0.2.7 includes everything in 0.2.6 (see its section below) plus

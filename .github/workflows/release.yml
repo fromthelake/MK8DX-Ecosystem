@@ -144,6 +144,30 @@ jobs:
         with:
           name: source
           path: ${{ runner.temp }}/out/
+  guides:
+    needs: verified
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.12.0
+      - name: The illustrated guide as one HTML file and one PDF per language
+        run: |
+          # CJK fonts for the Japanese, Korean and Chinese PDFs (the build fails on missing glyphs).
+          sudo apt-get update -q
+          sudo apt-get install -y -q fonts-noto-cjk
+          npm ci --ignore-scripts --prefix backend/api
+          npx --prefix backend/api playwright install --with-deps chromium
+          mkdir -p "$RUNNER_TEMP/out"
+          node tooling/build_guide_bundle.mjs --output "$RUNNER_TEMP/out"
+          test "$(ls "$RUNNER_TEMP"/out/MK8DX_Guide_*.pdf | wc -l)" -eq 15
+          test "$(ls "$RUNNER_TEMP"/out/MK8DX_Guide_*.html | wc -l)" -eq 15
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: guides
+          path: ${{ runner.temp }}/out/
   container-images:
     # The API and Web images are built once per processor and shared by every package that ships them: the
     # A1/B1 host package and the A2 packages load this one build. In 0.2.6 they were built apart, so one tag
@@ -374,7 +398,7 @@ jobs:
           name: native-packages
           path: ${{ runner.temp }}/out/*.zip
   draft-release:
-    needs: [android, tournament, livetrial, source, host-package, a2-packages, native-packages]
+    needs: [android, tournament, livetrial, source, guides, host-package, a2-packages, native-packages]
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     permissions:
@@ -408,6 +432,8 @@ jobs:
           cp "$GITHUB_WORKSPACE/LICENSE" "$GITHUB_WORKSPACE/LICENSE_SCOPE.md" "$GITHUB_WORKSPACE/SOURCE_FOR_BINARIES.txt" .
           cp "$GITHUB_WORKSPACE/docs/THIRD_PARTY_MATERIALS.md" .
           cp "$GITHUB_WORKSPACE"/docs/install/MK8DX_User_Guide_EN.* "$GITHUB_WORKSPACE"/docs/install/MK8DX_Handleiding_NL.* .
+          # The illustrated guides MK8DX_Guide_<locale>.html/.pdf come from the guides job (downloaded above).
+          test "$(ls MK8DX_Guide_*.pdf | wc -l)" -eq 15
           # The translated user guides: MK8DX_User_Guide_<locale>.txt/.docx (the locale keeps the names apart).
           for folder in "$GITHUB_WORKSPACE"/docs/install/translations/*/; do
             locale="$(basename "$folder")"

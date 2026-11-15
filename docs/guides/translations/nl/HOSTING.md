@@ -344,5 +344,5 @@ ook de eigenschappen openen en ` -SkipCountdown` aan het eind van het doel toevo
   toont een nieuwe eenmalige link voor die ene wachtende aanvraag, die je op dezelfde manier bevestigt. Het werkt
   alleen op de server zelf en wordt vastgelegd; zie
   [Operations](../../../OPERATIONS_NL.md#als-e-mail-niet-werkt-een-gevaarlijke-actie-bevestigen-vanaf-de-server).
-- Beveiligingsproblemen: [SECURITY.md](../../../../SECURITY.md). Houd de installatiemap, back-ups en aanmeldlinks
+- Beveiligingsproblemen: [SECURITY.md](../../../../.github/SECURITY.md). Houd de installatiemap, back-ups en aanmeldlinks
   buiten issues.

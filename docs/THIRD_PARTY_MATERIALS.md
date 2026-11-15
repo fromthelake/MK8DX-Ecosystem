@@ -62,5 +62,5 @@ distribute them next to it. Do not present the game material as covered by the M
 ## Rights holders
 
 If you hold rights in material included here and want it changed or removed, open an issue or use the private
-contact described in [SECURITY.md](../SECURITY.md). The asset collection is designed so that a file can be
+contact described in [SECURITY.md](../.github/SECURITY.md). The asset collection is designed so that a file can be
 replaced or removed exactly.

@@ -30,6 +30,16 @@ translated A2 guide `A2_HOME_GUIDE.md`), and all of them are inside the installa
 carry the illustrated A2 guide as `docs/install/guide/<locale>.html` for every language; the setup wizard's Manual
 link opens it in the browser's language.
 
+The same illustrated guide is attached as one file per language to read, print or pass on:
+`MK8DX_Guide_<locale>.html` (a single self-contained page: styles, script and screenshots inside, works offline) and
+`MK8DX_Guide_<locale>.pdf` (A4, every computer and device, all chapters open), for `en`, `nl` and the 13 locales
+above. The release workflow's `guides` job builds them from `docs/install/guide/` with
+`node tooling/build_guide_bundle.mjs --output <folder>` (Playwright Chromium, CJK fonts from `fonts-noto-cjk`;
+the build fails when Japanese, Korean or Chinese text has no font). Their names carry no version, so
+`https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.pdf` always gives the
+newest. They are not committed: they are generated copies of the committed, reviewed guide pages and screenshots
+(about 2 MB each, 30 files), unlike the TXT/DOCX guides, which the installation packages copy from the repository.
+
 A1, A2, A3 and B1 were installed by following their guides on 15 November 2026: A1 and A3 end to end on Windows 11, A2 end to end on
 Windows 11 and on Linux in WSL 2 (macOS built but not tested), and B1 rehearsed on Ubuntu 24.04 in WSL 2 (not yet on a real VPS). B2: our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The Android release APK is signed locally with the maintainer's retained key;
 earlier public debug APKs require one uninstall before installing it. Save any results not yet sent before that

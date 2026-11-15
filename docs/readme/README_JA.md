@@ -2,11 +2,11 @@
 
 **自分たちのマリオカート8 デラックス コミュニティサイトを、自分の手で運営しよう — タイムアタックにも、大会の夜にも。**
 
-言語: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+言語: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *この翻訳は英語版 README から機械翻訳したものです。修正のご提案を歓迎します。*
 
-![コミュニティサイトのホームページ：あなたの順位、注目のコース、そしてライバル](docs/readme/web-home.jpg)
+![コミュニティサイトのホームページ：あなたの順位、注目のコース、そしてライバル](web-home.jpg)
 
 MK8DX Ecosystem は、自分でホストして使うソフトウェアです。コミュニティにひとつのウェブサイトを用意し、**タイムアタックの記録**と**大会の結果**という 2 種類の結果を保存して、それぞれに独自の楽しみ方を加えます。
 
@@ -88,24 +88,24 @@ flowchart TB
 
 **どの部分が必要？**
 
-- **コミュニティサーバーひとつ — どのコミュニティにも必要な唯一の部分です。** API とデータベースを備えたウェブサイトです。自宅やクラブのネットワークで動かすか（[A2](docs/install/A2_HOME_GUIDE_EN.md)、セットアップ後はインターネット不要）、サーバーやウェブホスティングでオンライン運用します（[Host a community server](docs/guides/HOSTING.md)）。
-- **プレイヤーに必要なのはブラウザーだけです。** ウェブサイトにはブラウザースキャナーが付いています。Android アプリでは、スマホでのスキャン、インターネットなしでの自分のタイム表示、ワンタップでのコミュニティ切り替えが加わります（[Players](docs/guides/PLAYERS.md)）。
-- **キャプチャーボード付きの Windows PC は任意です。** LiveTrial はタイムアタックの走行をすべて自動で記録します。コミュニティへはワンクリック、または自動で送信できます（[LiveTrial](docs/guides/LIVETRIAL.md)）。
-- **大会の夜はウェブサイトで運営します。** Tournament Live（当日）と Tournament Analysis（あとから録画を解析）はレース結果を提案するだけです。得点は手入力や Excel/CSV からのインポートでも登録できます。主催者が承認するまで順位表は変わりません（[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)）。
-- **認識は共通部品であり、サービスではありません。** 各アプリが自分用のコピーを持ち、あなたの端末で画面を読み取ります。サーバーは提案された結果を確認するだけです（[Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) · [Architecture](docs/architecture/COMPONENTS.md)）。
+- **コミュニティサーバーひとつ — どのコミュニティにも必要な唯一の部分です。** API とデータベースを備えたウェブサイトです。自宅やクラブのネットワークで動かすか（[A2](../install/A2_HOME_GUIDE_EN.md)、セットアップ後はインターネット不要）、サーバーやウェブホスティングでオンライン運用します（[Host a community server](../guides/HOSTING.md)）。
+- **プレイヤーに必要なのはブラウザーだけです。** ウェブサイトにはブラウザースキャナーが付いています。Android アプリでは、スマホでのスキャン、インターネットなしでの自分のタイム表示、ワンタップでのコミュニティ切り替えが加わります（[Players](../guides/PLAYERS.md)）。
+- **キャプチャーボード付きの Windows PC は任意です。** LiveTrial はタイムアタックの走行をすべて自動で記録します。コミュニティへはワンクリック、または自動で送信できます（[LiveTrial](../guides/LIVETRIAL.md)）。
+- **大会の夜はウェブサイトで運営します。** Tournament Live（当日）と Tournament Analysis（あとから録画を解析）はレース結果を提案するだけです。得点は手入力や Excel/CSV からのインポートでも登録できます。主催者が承認するまで順位表は変わりません（[Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md)）。
+- **認識は共通部品であり、サービスではありません。** 各アプリが自分用のコピーを持ち、あなたの端末で画面を読み取ります。サーバーは提案された結果を確認するだけです（[Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) · [Architecture](../architecture/COMPONENTS.md)）。
 
 ## はじめよう
 
 | やりたいこと | ここから始めよう |
 | --- | --- |
-| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[日本語](docs/install/translations/ja/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX のインストールと使い方](docs/install/translations/ja/MK8DX_User_Guide_ja.docx) ([TXT](docs/install/translations/ja/MK8DX_User_Guide.txt)) |
-| **LAN 大会の夜を運営したい** | [Tournament Directors](docs/guides/translations/ja/TOURNAMENT_DIRECTORS.md)。Tournament Tools はコミュニティサイトがなくても使えます |
-| **タイムアタックを自動で記録したい** | [LiveTrial](docs/guides/translations/ja/LIVETRIAL.md) — Windows + キャプチャーボード。コミュニティサイトがなくても使えます |
-| **タイムを投稿して比べたい** | [Players](docs/guides/translations/ja/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
-| **コミュニティサイトをホストしたい** | [Host a community server](docs/guides/HOSTING.md) |
-| **コードを変更したい** | [Developer guide](docs/DEVELOPMENT.md)、[Testing](docs/TESTING.md)、[Contributing](CONTRIBUTING.md) |
+| **自宅やクラブで MK8DX を動かしたい** | [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) からお使いのコンピューター用の A2 パッケージを入手：展開して、起動して、「次へ」をクリック。ステップバイステップガイド（A2 パッケージには画像付きの版も入っています）：[日本語](../install/translations/ja/A2_HOME_GUIDE.md) · [English](../install/A2_HOME_GUIDE_EN.md) · [Nederlands](../install/A2_THUIS_HANDLEIDING_NL.md) · [MK8DX のインストールと使い方](../install/translations/ja/MK8DX_User_Guide_ja.docx) ([TXT](../install/translations/ja/MK8DX_User_Guide.txt)) · [自宅やクラブで使う MK8DX — マニュアル (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_ja.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_ja.html)) |
+| **LAN 大会の夜を運営したい** | [Tournament Directors](../guides/translations/ja/TOURNAMENT_DIRECTORS.md)。Tournament Tools はコミュニティサイトがなくても使えます |
+| **タイムアタックを自動で記録したい** | [LiveTrial](../guides/translations/ja/LIVETRIAL.md) — Windows + キャプチャーボード。コミュニティサイトがなくても使えます |
+| **タイムを投稿して比べたい** | [Players](../guides/translations/ja/PLAYERS.md) — どのブラウザーでも。Android 8.0 以降 |
+| **コミュニティサイトをホストしたい** | [Host a community server](../guides/HOSTING.md) |
+| **コードを変更したい** | [Developer guide](../DEVELOPMENT.md)、[Testing](../TESTING.md)、[Contributing](../../.github/CONTRIBUTING.md) |
 
-各行には、最初から最後までたどるべきガイドを挙げています。リリースパッケージではなくソースコードからサーバーをビルドするのは開発者向けです：[Getting started from source](docs/GETTING_STARTED.md)。
+各行には、最初から最後までたどるべきガイドを挙げています。リリースパッケージではなくソースコードからサーバーをビルドするのは開発者向けです：[Getting started from source](../GETTING_STARTED.md)。
 
 ### どのルートにどのコンピューターを使うか
 
@@ -128,11 +128,11 @@ flowchart TB
 | iPhone と iPad | ブラウザーでウェブサイトを利用。Safari でのスキャンは現在テスト中 | iOS アプリはありません：ビルドと署名には Mac と Apple の開発者アカウントが必要です |
 | LiveTrial と Tournament Live | x86-64 の Windows（Windows 11 でテスト済み）、画面ごとに USB HDMI キャプチャーボード | キャプチャーボードと同梱の認識エンジンは Windows 向けにビルド・テストされています。macOS 版や Linux 版はありません |
 
-**Android アプリの初回起動：** *コミュニティを選択* と表示されます。自宅やクラブでは、管理者が見せる **Prepare a device** カードをスキャンします。オンラインコミュニティの場合は、そのウェブサイトのアドレスを入力します。そのあとブラウザーでサインインします。詳しくは [Players](docs/guides/PLAYERS.md#first-start) をご覧ください。
+**Android アプリの初回起動：** *コミュニティを選択* と表示されます。自宅やクラブでは、管理者が見せる **Prepare a device** カードをスキャンします。オンラインコミュニティの場合は、そのウェブサイトのアドレスを入力します。そのあとブラウザーでサインインします。詳しくは [Players](../guides/PLAYERS.md#first-start) をご覧ください。
 
 **ひとつのアプリで、複数のコミュニティ：** 上部のコミュニティチップをワンタップするだけで、クラブ、自宅のインストール、オンラインコミュニティを切り替えられます。それぞれが独自のアカウントと未送信のタイムを保持します。**あなた** → **自分のタイム** では、インターネットがなくてもコースごとのベストタイムを確認できます。複数のコミュニティに参加している場合は、ベストタイムを別のコミュニティへ持ち込むこともできます — そのコミュニティが受け入れていれば。
 
-**なぜすべてがどこでも使えるわけではないの？** 各パッケージは、ビルドして試した環境でのみ提供しています。A1 と B1 のサーバーイメージは x86-64 向けのみで、A2 には arm64 版もあります。Intel Mac では A2 が必要とするセキュリティライブラリ（`cryptography`）が配布されなくなったため、リリースでは Intel Mac 上でソースからビルドし、そこでテストしています（[方法](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 は、Docker を使えない、または使いたくない人のためにあります。[ホスティングガイド](docs/guides/HOSTING.md) と [リリースパッケージ](docs/RELEASE_PACKAGES.md) に、すべてのファイルとその正確な要件が載っています。
+**なぜすべてがどこでも使えるわけではないの？** 各パッケージは、ビルドして試した環境でのみ提供しています。A1 と B1 のサーバーイメージは x86-64 向けのみで、A2 には arm64 版もあります。Intel Mac では A2 が必要とするセキュリティライブラリ（`cryptography`）が配布されなくなったため、リリースでは Intel Mac 上でソースからビルドし、そこでテストしています（[方法](../RELEASE_PACKAGES.md#intel-mac-a2-package)）。A3 は、Docker を使えない、または使いたくない人のためにあります。[ホスティングガイド](../guides/HOSTING.md) と [リリースパッケージ](../RELEASE_PACKAGES.md) に、すべてのファイルとその正確な要件が載っています。
 
 新しくインストールした環境は空の状態から始まります。コミュニティのアカウントや結果は引き継がれません。含まれるのは、ゲームカタログと、任天堂のスタッフゴーストおよび世界記録の参照データだけです。
 
@@ -148,18 +148,18 @@ LAN パーティーを覚えていますか？ 1 画面に 2 人、部屋いっ�
 - **主導権はあなたに** — 結果が正式に反映される前に、主催者がプレイヤーと順位を確認します。それまでの間、ライブ順位は暫定として表示されます。
 - **大会のあとで** — 最終順位、共有できるレポート（WhatsApp、PNG、CSV、WordPress にそのまま使える記事）、そして夜をまたいで積み上がる、TrueSkill 方式のコミュニティレーティング（任意）。
 
-![レース後の Tournament Live：キャプチャーボードの映像と、各ドライバーのキャラクターとポイント付きの着順](docs/readme/tournament-live.jpg)
+![レース後の Tournament Live：キャプチャーボードの映像と、各ドライバーのキャラクターとポイント付きの着順](tournament-live.jpg)
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="大会の夜の最終結果：各プレイヤーのキャラクター付きの予選グループ。進出した決勝ごとに色分け" width="49%">
-  <img src="docs/readme/tournament-skill.jpg" alt="大会スキルページ：プレイヤーの TrueSkill レーティング、勝利数、トップ 3 回数、平均順位" width="49%">
+  <img src="tournament-results.jpg" alt="大会の夜の最終結果：各プレイヤーのキャラクター付きの予選グループ。進出した決勝ごとに色分け" width="49%">
+  <img src="tournament-skill.jpg" alt="大会スキルページ：プレイヤーの TrueSkill レーティング、勝利数、トップ 3 回数、平均順位" width="49%">
 </p>
 
 ### 当日 Tournament Live を使わなかった？ あとから録画を解析しよう
 
-ライブでキャプチャーせずに、その夜を録画していましたか？ **Tournament Analysis** ウィンドウなら、あとから録画を読み取れます。動画を 1 本、複数本、または大会ごとのフォルダーを追加して **START ANALYSIS** を押すだけ。すべてのレースを着順、キャラクター、ポイントとともに見つけ出し、その間、色分けされたライブログとレインボーロードの進捗バーが進み具合を表示します。結果は Excel ワークブック、CSV、ウェブサイト用のインポートファイルとして出力され、主催者が確認してインポートします — Tournament Live と同じ確認の流れです。4 レースを含む 22 分の録画は、ノートパソコンで約 70 秒で解析できました。Windows 版 Tournament Tools パッケージでは `TournamentAnalysis.cmd` をダブルクリックします（動画を `TournamentProcessor.cmd` にドラッグする方法も引き続き使えます）。開発者は `python -m tournament_processor.gui` を実行します。手順は [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) にあります。
+ライブでキャプチャーせずに、その夜を録画していましたか？ **Tournament Analysis** ウィンドウなら、あとから録画を読み取れます。動画を 1 本、複数本、または大会ごとのフォルダーを追加して **START ANALYSIS** を押すだけ。すべてのレースを着順、キャラクター、ポイントとともに見つけ出し、その間、色分けされたライブログとレインボーロードの進捗バーが進み具合を表示します。結果は Excel ワークブック、CSV、ウェブサイト用のインポートファイルとして出力され、主催者が確認してインポートします — Tournament Live と同じ確認の流れです。4 レースを含む 22 分の録画は、ノートパソコンで約 70 秒で解析できました。Windows 版 Tournament Tools パッケージでは `TournamentAnalysis.cmd` をダブルクリックします（動画を `TournamentProcessor.cmd` にドラッグする方法も引き続き使えます）。開発者は `python -m tournament_processor.gui` を実行します。手順は [Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) にあります。
 
-![解析中の Tournament Analysis ウィンドウ：左側ではカップの録画 1 本にチェックが入ったフォルダーが解析中。右側には見つかったレースを示す色分けされたアクティビティログ、その下に 56% のレインボーロード進捗バーと時計](docs/readme/tournament-analysis.jpg)
+![解析中の Tournament Analysis ウィンドウ：左側ではカップの録画 1 本にチェックが入ったフォルダーが解析中。右側には見つかったレースを示す色分けされたアクティビティログ、その下に 56% のレインボーロード進捗バーと時計](tournament-analysis.jpg)
 
 ## ⏱️ LiveTrial でタイムアタック — 完全自動
 
@@ -175,9 +175,9 @@ LiveTrial は HDMI の映像を見て、自動で次のものを認識します�
 
 **すべてのレースのクリップ**と、最後まで見たゴーストのリプレイのクリップを保存し、ラップ表やグラフ付きの走行履歴を残します。さらに、**世界記録**、**任天堂のスタッフゴースト**、**自己ベスト**、**ライバル**との差も表示します。結果はワンクリックでコミュニティへ送信でき（自動送信もオンにできます）、必要ならクリップを自分の YouTube チャンネルにアップロードすることもできます。
 
-![ベビィパークを走行中の LiveTrial：7 周中 4 周目、コインとキノコをリアルタイムでカウントし、各ラップをゴーストと比較](docs/readme/livetrial-live.jpg)
+![ベビィパークを走行中の LiveTrial：7 周中 4 周目、コインとキノコをリアルタイムでカウントし、各ラップをゴーストと比較](livetrial-live.jpg)
 
-![走行後の LiveTrial のランカード：合計タイム、ゴーストとの差、コインとキノコ](docs/readme/livetrial-run.jpg)
+![走行後の LiveTrial のランカード：合計タイム、ゴーストとの差、コインとキノコ](livetrial-run.jpg)
 
 ## 📱 ソファからスキャン
 
@@ -186,8 +186,8 @@ LiveTrial は HDMI の映像を見て、自動で次のものを認識します�
 ブラウザー版スキャナーは**すべてあなたのデバイス上で**動作します — アカウントもサーバーも不要で、最初のダウンロード後はオフラインでも使えます。Android アプリもデバイス上でスキャンします。
 
 <p>
-  <img src="docs/readme/scanner-reading.jpg" alt="ゴーストえらび画面をスマートフォンで撮った写真を読み取るブラウザー版スキャナー" width="32%">
-  <img src="docs/readme/scanner-filled.jpg" alt="スキャン結果で入力されたフォーム：キャラクター、カート、タイヤ、グライダー、旗、ラップタイム。自信のない 1 か所に印が付いている" width="32%">
+  <img src="scanner-reading.jpg" alt="ゴーストえらび画面をスマートフォンで撮った写真を読み取るブラウザー版スキャナー" width="32%">
+  <img src="scanner-filled.jpg" alt="スキャン結果で入力されたフォーム：キャラクター、カート、タイヤ、グライダー、旗、ラップタイム。自信のない 1 か所に印が付いている" width="32%">
 </p>
 
 ## 🏆 あなたの記録、あなたのライバル
@@ -195,8 +195,8 @@ LiveTrial は HDMI の映像を見て、自動で次のものを認識します�
 プレイヤー一人ひとりに、コースごとの自己記録、家族や友だち、クラブとのランキング、追いかけるライバル（つつき、チャレンジ、ときどきサイコロ対決も）、誰かがあなたのタイムを抜いたときの通知、そして現在の世界記録を基準にした **23 段階のマスタリーレベル**が用意されています。
 
 <p>
-  <img src="docs/readme/timetrials-leaderboard.jpg" alt="世界記録、組み合わせ、ラップごとのキノコとコインを表示したレインボーロードのランキング" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="同じランキングをスマートフォンのダークテーマで表示" width="24%">
+  <img src="timetrials-leaderboard.jpg" alt="世界記録、組み合わせ、ラップごとのキノコとコインを表示したレインボーロードのランキング" width="72%">
+  <img src="phone-leaderboard.jpg" alt="同じランキングをスマートフォンのダークテーマで表示" width="24%">
 </p>
 
 ## 🌍 あなたの言語で — 全 15 言語に対応
@@ -212,11 +212,11 @@ MK8DX はオープンソースで、プレイヤーがプレイヤーのため�
 - **コミュニティに必要なものを追加**する — 新しい大会形式、統計、結果の共有方法。
 - **ドキュメントを改善**して、次の主催者がもっと早く始められるようにする。
 
-まずは [Contributing](CONTRIBUTING.md) と [開発者ガイド](docs/DEVELOPMENT.md) から始めてください。プルリクエスト、バグ報告、翻訳の修正のひとつひとつが、次の LAN の夜をみんなにとってより良いものにします。
+まずは [Contributing](../../.github/CONTRIBUTING.md) と [開発者ガイド](../DEVELOPMENT.md) から始めてください。プルリクエスト、バグ報告、翻訳の修正のひとつひとつが、次の LAN の夜をみんなにとってより良いものにします。
 
 ## プロジェクトの状況
 
-安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。0.2.2 では録画の解析が再び動くようになり、Tournament Analysis ウィンドウが加わりました。0.2.3 では Web ゲートウェイが root なしで動作し、リポジトリを使い始めやすくなりました。また、コミュニティサーバーのデータベースが MySQL 9.7 LTS になり、すべてのスキャナーでカートとグライダーの色がキャラクターに従うようになりました。0.2.4 では、ガイド、セットアップウィザード、ランチャー、Tournament の各ウィンドウがゲームの 15 言語すべてに対応し、あらゆる文字のプレイヤー名を読み取り、すべての OCR モデルを同梱してオフラインでも認識できるようになりました。0.2.5 は、すべてのコミュニティに更新をおすすめするセキュリティアップデートです。権限チェックとリクエスト制限が強化され、危険な管理者操作には新しいメールでの確認が必要になり、データベースアカウントが分離され、すべてのルートで毎日の自動バックアップが行われます。0.2.6 では、Director が Android アプリからライブキャプチャを委任できるようになり、管理者はどのリクエスト制限がリクエストを拒否したかを確認でき、ライブスコアボードとランチャーが全 15 言語に対応し、アプリの日付がアプリ自体の言語で表示されます。0.2.7 には、単独では公開されなかった 0.2.6 が含まれます。すべてのインストールルートをガイドどおりに一歩ずつ実行してガイドを修正し、夜間バックアップと新しい復旧コードがすべてのルートで動作し、1 台のコンピューター上の 2 つのインストールが互いのイメージを置き換えることはなくなりました。[変更履歴](CHANGELOG.md)、[Release packages](docs/RELEASE_PACKAGES.md)、そして完全版ガイド（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）をご覧ください。
+安定版リリースは [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) にあります。0.2.0 では自宅やクラブで使える A2 が追加され、0.2.1 では Android アプリにタイムのオフラインコピーと、より落ち着いたレイアウトが加わりました。0.2.2 では録画の解析が再び動くようになり、Tournament Analysis ウィンドウが加わりました。0.2.3 では Web ゲートウェイが root なしで動作し、リポジトリを使い始めやすくなりました。また、コミュニティサーバーのデータベースが MySQL 9.7 LTS になり、すべてのスキャナーでカートとグライダーの色がキャラクターに従うようになりました。0.2.4 では、ガイド、セットアップウィザード、ランチャー、Tournament の各ウィンドウがゲームの 15 言語すべてに対応し、あらゆる文字のプレイヤー名を読み取り、すべての OCR モデルを同梱してオフラインでも認識できるようになりました。0.2.5 は、すべてのコミュニティに更新をおすすめするセキュリティアップデートです。権限チェックとリクエスト制限が強化され、危険な管理者操作には新しいメールでの確認が必要になり、データベースアカウントが分離され、すべてのルートで毎日の自動バックアップが行われます。0.2.6 では、Director が Android アプリからライブキャプチャを委任できるようになり、管理者はどのリクエスト制限がリクエストを拒否したかを確認でき、ライブスコアボードとランチャーが全 15 言語に対応し、アプリの日付がアプリ自体の言語で表示されます。0.2.7 には、単独では公開されなかった 0.2.6 が含まれます。すべてのインストールルートをガイドどおりに一歩ずつ実行してガイドを修正し、夜間バックアップと新しい復旧コードがすべてのルートで動作し、1 台のコンピューター上の 2 つのインストールが互いのイメージを置き換えることはなくなりました。[変更履歴](../../CHANGELOG.md)、[Release packages](../RELEASE_PACKAGES.md)、そして完全版ガイド（[English](../install/MK8DX_User_Guide_EN.txt)、[Nederlands](../install/MK8DX_Handleiding_NL.txt)）をご覧ください。
 
 認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
 
@@ -224,16 +224,16 @@ MK8DX はオープンソースで、プレイヤーがプレイヤーのため�
 
 | やりたいこと | 読むもの |
 | --- | --- |
-| 認識の仕組みを理解したい | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| 構成要素と、結果がどのように伝わるかを理解したい | [Architecture](docs/architecture/COMPONENTS.md) |
-| コードをビルド・変更したい | [Developer guide](docs/DEVELOPMENT.md) と [Testing](docs/TESTING.md) |
-| ネイティブクライアントをビルドしたい | [Client builds](docs/CLIENT_BUILDS.md) |
-| インストールを運用したい（バックアップ、アップグレード、復旧） | [Operations](docs/OPERATIONS.md) |
-| なぜそうなっているのかを知りたい | [Decision index](docs/decisions/README.md) |
-| 貢献したい | [Contributing](CONTRIBUTING.md)、[Code of conduct](CODE_OF_CONDUCT.md) |
-| 助けがほしい | [Getting help](SUPPORT.md) |
-| セキュリティ上の問題を報告したい | [Security policy](SECURITY.md) |
-| コーディングエージェントと作業したい | [AGENTS.md](AGENTS.md) |
+| 認識の仕組みを理解したい | [Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) |
+| 構成要素と、結果がどのように伝わるかを理解したい | [Architecture](../architecture/COMPONENTS.md) |
+| コードをビルド・変更したい | [Developer guide](../DEVELOPMENT.md) と [Testing](../TESTING.md) |
+| ネイティブクライアントをビルドしたい | [Client builds](../CLIENT_BUILDS.md) |
+| インストールを運用したい（バックアップ、アップグレード、復旧） | [Operations](../OPERATIONS.md) |
+| なぜそうなっているのかを知りたい | [Decision index](../decisions/README.md) |
+| 貢献したい | [Contributing](../../.github/CONTRIBUTING.md)、[Code of conduct](../../.github/CODE_OF_CONDUCT.md) |
+| 助けがほしい | [Getting help](../../.github/SUPPORT.md) |
+| セキュリティ上の問題を報告したい | [Security policy](../../.github/SECURITY.md) |
+| コーディングエージェントと作業したい | [AGENTS.md](../../AGENTS.md) |
 
 ## 💡 誕生のストーリー
 
@@ -307,4 +307,4 @@ MK8DX Ecosystem は 2024 年から開発を続けてきました。たくさん�
 
 これは、プログラミングを学び、マリオカート8 デラックスをもっと楽しくするための、独立した非営利の趣味のプロジェクトです。**任天堂とは無関係であり、任天堂の承認を受けたものでもありません。** 任天堂は自社の商標とゲームコンテンツの権利を保有しています。ぜひゲーム機やソフトを購入して、任天堂を応援してください。
 
-このプロジェクトのオリジナルのコードとドキュメントは [Mozilla Public License 2.0](LICENSE) の下でライセンスされています。[ライセンスの適用範囲](LICENSE_SCOPE.md) では、その適用範囲を説明しています。任天堂の素材、ゲーム画像、認識用テンプレート、モデル、フォント、その他の第三者の素材は対象**外**で、それぞれ独自の条件に従います。[Third-party materials](docs/THIRD_PARTY_MATERIALS.md) をご覧ください。本ソフトウェアは現状のまま提供されます。
+このプロジェクトのオリジナルのコードとドキュメントは [Mozilla Public License 2.0](../../LICENSE) の下でライセンスされています。[ライセンスの適用範囲](../../LICENSE_SCOPE.md) では、その適用範囲を説明しています。任天堂の素材、ゲーム画像、認識用テンプレート、モデル、フォント、その他の第三者の素材は対象**外**で、それぞれ独自の条件に従います。[Third-party materials](../THIRD_PARTY_MATERIALS.md) をご覧ください。本ソフトウェアは現状のまま提供されます。

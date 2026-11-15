@@ -46,7 +46,7 @@
 網站提供遊戲的全部 15 種語言（在設定中選擇你的語言）。英文和荷蘭文經過
 審閱；其他 13 種是機器翻譯，歡迎提交更正：要編輯的檔案請見
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations)，
-提取要求（pull request）的方式請見 [Contributing](../../../../CONTRIBUTING.md)。
+提取要求（pull request）的方式請見 [Contributing](../../../../.github/CONTRIBUTING.md)。
 
 ## Android App
 
@@ -139,5 +139,5 @@ App 本身的開關都必須開啟。
   郵件會寄到本機測試收件匣，而不是你的信箱。
 - 認領被拒絕並顯示 *目前認領操作過多…*：等待提示的時間後再試。一個帳號同時最多可以有 5 個等待決定的認領（一個玩家最多 5 個，所有帳號合計）。達到上限時，請等待某個待處理的認領被處理，或用 **撤回此請求** 撤回一個，然後再試。
 - 你所在社群的網站上有什麼看起來不對：請先詢問負責它的人。軟體本身的錯誤
-  可以在專案的問題（issues）中回報；請見 [SUPPORT.md](../../../../SUPPORT.md)。絕不要張貼登入連結或他人的
+  可以在專案的問題（issues）中回報；請見 [SUPPORT.md](../../../../.github/SUPPORT.md)。絕不要張貼登入連結或他人的
   名稱。
