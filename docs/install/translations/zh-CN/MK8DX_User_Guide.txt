@@ -156,7 +156,7 @@ python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documen
 
 对于家庭或俱乐部网络，请使用 A2 软件包。下载 mk8dx-a2-windows-amd64-v0.2.6.zip（Linux：mk8dx-a2-linux-amd64 或 mk8dx-a2-linux-arm64；使用 Apple 芯片的 macOS：mk8dx-a2-macos-arm64；使用 Intel 处理器的 macOS：mk8dx-a2-macos-amd64）和 SHA256SUMS.txt，按照“在一台电脑上试用”中的方法检查校验和，解压软件包，然后双击 Start-MK8DX-LAN.cmd（Linux 和 macOS：sh tooling/start-mk8dx.sh）。浏览器中会打开一个安装程序，用 Next（下一步）带你完成所有步骤：网络地址、你的管理员账户、用于夜间备份的纸质恢复码，以及每个人在手机或电脑上使用的登录卡。不需要互联网、邮件服务器或 hosts 文件。
 
-带图片的完整分步指南是 docs/install/A2_HOME_GUIDE_EN.md；在软件包中它也是 docs/install/guide/en.html，安装程序通过它的 Manual（手册）链接打开它。指南涵盖准备 Windows、Linux 或 macOS，手机和电脑，Android 应用，LiveTrial，锦标赛之夜，备份，迁移到新电脑，固定地址，新的网络地址以及更新。
+带图片的完整分步指南是 docs/install/A2_HOME_GUIDE_EN.md；在软件包中它也是 docs/install/guide/en.html，安装程序通过它的 Manual（手册）链接打开它。指南涵盖准备 Windows、Linux 或 macOS，手机和电脑，Android 应用，LiveTrial，锦标赛之夜，备份，迁移到新电脑，固定地址，新的网络地址、更新以及从电脑上移除 MK8DX。
 
 高级：使用你自己的邮件服务器
 

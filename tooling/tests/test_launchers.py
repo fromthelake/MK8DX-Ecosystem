@@ -16,6 +16,17 @@ class LauncherTest(unittest.TestCase):
                 data.decode("ascii")
                 self.assertNotIn(b"\n", data.replace(b"\r\n", b""), "bare LF line ending")
 
+    def test_cmd_files_give_windows_powershell_its_own_modules(self):
+        # Started from a PowerShell 7 terminal, powershell.exe inherits PowerShell 7's PSModulePath and then
+        # cannot load Get-FileHash or Get-Date. Each launcher clears it before it starts powershell.exe.
+        for name in CMD_FILES:
+            lines = [line.strip() for line in (ROOT / name).read_text(encoding="ascii").splitlines()
+                     if not line.strip().lower().startswith("rem ")]
+            with self.subTest(name):
+                self.assertIn('set "PSModulePath="', lines)
+                first_powershell = next(i for i, line in enumerate(lines) if "powershell" in line.lower())
+                self.assertLess(lines.index('set "PSModulePath="'), first_powershell)
+
     def test_powershell_launcher_is_ascii_and_parses(self):
         for name in ("start-mk8dx.ps1", "mk8dx-ui.ps1"):
             script = ROOT / "tooling" / name

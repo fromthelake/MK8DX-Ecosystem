@@ -1046,6 +1046,9 @@ describe("passwordless authentication product page", () => {
     expect(lookup).toHaveBeenCalledWith("ABCD-1234");
     expect(node(root, "MK8DX Time Trials for Android requests access to your account."))
       .toBeDefined();
+    // The code the app shows stays visible for comparison, also when the app's link filled it in.
+    expect(node(root, "ABCD-1234")).toBeDefined();
+    expect(node(root, "Check that your app shows the same code.")).toBeDefined();
     node(root, "Approve device").dispatch("click");
     await settle();
     expect(approveDevice).toHaveBeenCalledWith("ABCD-1234");

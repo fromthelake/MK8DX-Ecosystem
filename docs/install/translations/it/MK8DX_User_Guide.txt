@@ -156,7 +156,7 @@ Usalo sulla tua rete domestica
 
 Per una rete di casa o del club, usa il pacchetto A2. Scarica mk8dx-a2-windows-amd64-v0.2.6.zip (Linux: mk8dx-a2-linux-amd64 o mk8dx-a2-linux-arm64; macOS con Apple silicon: mk8dx-a2-macos-arm64; macOS con un processore Intel: mk8dx-a2-macos-amd64) e SHA256SUMS.txt, verifica il checksum come in “Provalo su un computer”, estrai il pacchetto e fai doppio clic su Start-MK8DX-LAN.cmd (Linux e macOS: sh tooling/start-mk8dx.sh). Nel browser si apre una configurazione che ti guida in tutto con Next (Avanti): l'indirizzo di rete, il tuo account amministratore, un codice di ripristino su carta per i backup notturni e le persone, ciascuna con una scheda di accesso per il proprio telefono o PC. Non servono internet, un server di posta né un file hosts.
 
-La guida completa passo dopo passo, con immagini, è docs/install/A2_HOME_GUIDE_EN.md; all'interno del pacchetto è anche docs/install/guide/en.html, e la configurazione la apre dal suo link Manual (Manuale). Tratta la preparazione di Windows, Linux o macOS, di telefoni e PC, l'app Android, LiveTrial, le serate di torneo, i backup, il passaggio a un nuovo computer, un indirizzo fisso, un nuovo indirizzo di rete e gli aggiornamenti.
+La guida completa passo dopo passo, con immagini, è docs/install/A2_HOME_GUIDE_EN.md; all'interno del pacchetto è anche docs/install/guide/en.html, e la configurazione la apre dal suo link Manual (Manuale). Tratta la preparazione di Windows, Linux o macOS, di telefoni e PC, l'app Android, LiveTrial, le serate di torneo, i backup, il passaggio a un nuovo computer, un indirizzo fisso, un nuovo indirizzo di rete, gli aggiornamenti e la rimozione di MK8DX da un computer.
 
 Avanzato: con il tuo server di posta
 

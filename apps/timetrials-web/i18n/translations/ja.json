@@ -5272,7 +5272,6 @@
   "Working": "処理中",
   "You are signed in as": "次のユーザーとしてサインインしています：",
   "You are signed in to this installation.": "このインストールにサインインしました。",
-  "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.": "あとで同じ方法で行うこともできます。デスクトップの「MK8DX beheer」を開き、「メンバー」を選んでください。",
   "You can close this window now.": "このウィンドウは閉じてかまいません。",
   "You manage this installation. What's your name?": "このインストールはあなたが管理します。お名前は？",
   "You sign in as:": "サインインするユーザー：",
@@ -6051,6 +6050,8 @@
   "{0} refused in this window": "この時間枠で {0} 件拒否",
   "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "確認リンクは作成されましたが、メールを送信できませんでした。サーバー管理者にサーバー上で python tooling/install.py step-up-link を実行してリンクを渡してもらってください。リンクを開くと、このウィンドウが続行します。",
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "このライブフィードは {0} に取り下げました。公開ビューには表示されません。名簿一致やキャプチャ委任で再び公開されることはありません。戻すには下のライブ割り当てを確認してください。",
-  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前にカード → グループを確認してください。レース 1 の後、強い名前一致で View が開くのは、ディレクターがこのアカウントにライブキャプチャを委任した場合(またはディレクターか管理者のアカウントの場合)だけです。それ以外はフィードがディレクターを待ちます。スコアは STOP 後の Player 照合とグループ確認の後にのみ反映されます。"
+  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前にカード → グループを確認してください。レース 1 の後、強い名前一致で View が開くのは、ディレクターがこのアカウントにライブキャプチャを委任した場合(またはディレクターか管理者のアカウントの場合)だけです。それ以外はフィードがディレクターを待ちます。スコアは STOP 後の Player 照合とグループ確認の後にのみ反映されます。",
+  "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "あとで同じ方法で行うこともできます。デスクトップの「MK8DX beheer」をダブルクリックすると、この画面が開きます。",
+  "Check that your app shows the same code.": "アプリに同じコードが表示されていることを確認してください。"
  }
 }

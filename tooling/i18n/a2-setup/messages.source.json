@@ -1167,8 +1167,8 @@
    ]
   },
   {
-   "key": "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.",
-   "nl": "Dit kan ook later, precies zo: open 'MK8DX beheer' op het bureaublad en kies 'Mensen'.",
+   "key": "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.",
+   "nl": "Dit kan ook later, precies zo: dubbelklik op 'MK8DX beheer' op het bureaublad; dat opent op dit scherm.",
    "places": [
     "wizard.js:peopleLater"
    ]

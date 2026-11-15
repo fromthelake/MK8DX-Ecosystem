@@ -12,6 +12,7 @@
 
 import { chip, el, stepChevron, useDocument } from "./ds-components.js";
 import { localized } from "./product-language.js";
+import { displayTournamentGroupLabel } from "./tournaments-view-labels.js";
 import type { PublicTournamentEvent } from "./tournament-operation-client.js";
 
 /** The workflow the console runs: Step 1 starts the night, Step 10 exports. */
@@ -76,7 +77,8 @@ export function tournamentScoringGroups(
   const stage = step === 5 ? "qualifier" : "final";
   return event.groups
     .filter((group) => group.stage === stage)
-    .map((group) => ({ name: group.name, races: group.races.length }));
+    // The name as the reader's language shows it: "Groep 1" is stored, "Group 1" is what an English page says.
+    .map((group) => ({ name: displayTournamentGroupLabel(group.name, group.tierKey), races: group.races.length }));
 }
 
 /**

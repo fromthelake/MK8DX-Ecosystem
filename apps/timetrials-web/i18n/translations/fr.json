@@ -5272,7 +5272,6 @@
   "Working": "Traitement en cours",
   "You are signed in as": "Tu es connecté en tant que",
   "You are signed in to this installation.": "Tu es connecté à cette installation.",
-  "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.": "Tu peux aussi le faire plus tard, exactement de la même façon : ouvre « MK8DX beheer » sur le bureau et choisis « Personnes ».",
   "You can close this window now.": "Tu peux maintenant fermer cette fenêtre.",
   "You manage this installation. What's your name?": "C'est toi qui gères cette installation. Comment t'appelles-tu ?",
   "You sign in as:": "Tu te connectes en tant que :",
@@ -6051,6 +6050,8 @@
   "{0} refused in this window": "{0} refusés dans cette fenêtre",
   "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "Le lien de confirmation a été créé, mais l'e-mail n'a pas pu être envoyé. Demandez à l'opérateur du serveur d'exécuter python tooling/install.py step-up-link sur le serveur et de vous donner le lien. Ouvrez-le et cette fenêtre continuera.",
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "Tu as retiré ce flux en direct le {0}. Il reste hors de la vue publique : aucune correspondance de liste ni délégation de capture ne le rouvre. Confirme le routage en direct ci-dessous pour le remettre.",
-  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "Vérifie carte → groupe avant START. Après la course 1, une forte correspondance des noms n'ouvre View que si le directeur a délégué la capture en direct à ce compte (ou s'il appartient au directeur ou à un administrateur) ; sinon le flux attend le directeur. Les points ne comptent qu'après l'association des Players et la vérification du groupe après STOP."
+  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "Vérifie carte → groupe avant START. Après la course 1, une forte correspondance des noms n'ouvre View que si le directeur a délégué la capture en direct à ce compte (ou s'il appartient au directeur ou à un administrateur) ; sinon le flux attend le directeur. Les points ne comptent qu'après l'association des Players et la vérification du groupe après STOP.",
+  "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "Tu peux aussi le faire plus tard, exactement de la même façon : double-clique sur « MK8DX beheer » sur le bureau ; il s'ouvre sur cet écran.",
+  "Check that your app shows the same code.": "Vérifie que ton appli affiche le même code."
  }
 }
