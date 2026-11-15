@@ -109,7 +109,8 @@ export async function startPasswordlessHostedServer(
     // same-origin; loading fails closed when the configured root is invalid.
     ...(staticWebRoot === undefined || staticWebRoot.length === 0
       ? {}
-      : { staticWeb: { files: await loadStaticWebFiles(staticWebRoot) } }),
+      : { staticWeb: { files: await loadStaticWebFiles(staticWebRoot),
+                       origin: runtimeConfig.authentication.baseUrl } }),
     ...(environment["MK8DX_HOSTED_PUBLIC_BUNDLE_ROOT"]
       ? { publicBundle: { root: environment["MK8DX_HOSTED_PUBLIC_BUNDLE_ROOT"],
                           origin: runtimeConfig.authentication.baseUrl } }

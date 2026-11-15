@@ -623,7 +623,7 @@ export type LocalApiRuntimeRoutePolicies = Readonly<{
     csrfKeys: WebCsrfKeyMaterial;
   }>;
   operationalLog?: OperationalLogSink;
-  staticWeb?: Readonly<{ files: ReadonlyMap<string, StaticWebFile> }>;
+  staticWeb?: Readonly<{ files: ReadonlyMap<string, StaticWebFile>; origin: string }>;
   publicBundle?: Readonly<{ root: string; origin: string }>;
   gameAssets?: Readonly<{ rootDirectory: string }>;
   // The owner's native app builds offered to signed-in members (Apps page).

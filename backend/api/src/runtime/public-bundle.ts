@@ -65,6 +65,19 @@ export async function registerPublicBundleRoutes(
       return reply.type(file.type).send(createReadStream(file.path));
     });
   }
+  registerPublicClientConfigRoute(app, origin, offlineLan);
+}
+
+/**
+ * The public client document the web app reads on every page load
+ * (`PUBLIC_CLIENT_CONFIG_PATH` in apps/timetrials-web). Every composition that
+ * serves the web registers it through this one function, so the bundle routes
+ * and the root-mounted (Passenger) static web cannot drift apart. It carries
+ * the configured public origin only; never a secret.
+ */
+export function registerPublicClientConfigRoute(
+  app: FastifyInstance, origin: string, offlineLan = false,
+): void {
   app.get("/client-config.json", async (_request, reply) => {
     reply.header("cache-control", "no-store");
     return reply.send({ schemaVersion: "mk8dx.public-client.v1", websiteOrigin: origin,
