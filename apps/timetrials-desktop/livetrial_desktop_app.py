@@ -63,6 +63,9 @@ IDLE_QUIT_SECONDS = 15 * 60
 # Closes a run recorded without an account once it was given to one (send_as).
 MOVED_TO_ACCOUNT = "local.moved-to-account"
 STOP_WAIT_SECONDS = 45
+# The engine's control proof (engine-overlay/livetrial/serve.py ACTION_VARIABLE).
+ENGINE_ACTION_VARIABLE = "MK8DX_LIVETRIAL_ENGINE_ACTION"
+ENGINE_ORIGIN = "http://127.0.0.1:8777"
 REUSE_WINDOW_ENV = "MK8DX_LIVETRIAL_REUSE_WINDOW"
 
 
@@ -197,6 +200,11 @@ class LiveTrialDesktopApp:
         youtube: Callable[..., LiveTrialYouTubePublisher] = LiveTrialYouTubePublisher,
     ) -> None:
         self._environment = dict(environment)
+        # One action proof per launch for the engine on 8777 (its serve.py): the engine
+        # and run-history processes this app starts inherit it, so this app can ask the
+        # engine to stop and the pages the engine serves to this computer can control it.
+        self._engine_action = secrets.token_urlsafe(32)
+        self._environment[ENGINE_ACTION_VARIABLE] = self._engine_action
         if api_origin == cli.DEFAULT_API_ORIGIN:
             from livetrial_settings import read_server_origin
             api_origin = read_server_origin(cli.product_base_root(environment)) or api_origin
@@ -261,8 +269,11 @@ class LiveTrialDesktopApp:
             return 0
 
     def _ask_engine_to_stop(self) -> None:
-        request = urllib.request.Request("http://127.0.0.1:8777/api/stop", data=b"{}", method="POST",
-                                         headers={"Content-Type": "application/json"})
+        request = urllib.request.Request(
+            f"{ENGINE_ORIGIN}/api/stop", data=b"{}", method="POST",
+            headers={"Content-Type": "application/json", "Origin": ENGINE_ORIGIN,
+                     "X-LiveTrial-Action": self._engine_action},
+        )
         with urllib.request.urlopen(request, timeout=5) as response:
             response.read()
 

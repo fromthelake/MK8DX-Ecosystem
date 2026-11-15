@@ -51,13 +51,154 @@ python tooling/lifecycle.py restore-new --backup ..\mk8dx-backup-20260930 --stat
 
 De lokale route heeft geen apart mediavolume. Optionele private app-downloads en recognition-media worden niet geconfigureerd of geback-upt door deze lokale route. Productiebackups moeten voor iedere later toegevoegde mediaopslag worden uitgebreid.
 
+## Automatische dagelijkse back-up (A1, A2, B1, A3, B2)
+
+Elke route behalve A2 offline (die heeft een eigen verzegelde nachtelijke back-up in MK8DX beheer) krijgt één
+geplande opdracht, `python tooling/install.py backup-run --state-dir <installatie>`. Die maakt de gewone back-up
+van de route (dezelfde dump-opties en privébestanden als `lifecycle.py backup` / `install.py backup`, dus de
+gewone herstelopdrachten nemen hem aan), controleert hem met de herstelcontroles (SHA-256 van elk bestand, de dump
+pakt uit) en hernoemt hem pas daarna van een verborgen map `.partial-…` naar `<project>-<UTC-datum>-<tijd>`. Een
+mislukte of niet-gecontroleerde run verwijdert alleen zijn eigen halve map en laat elke oudere back-up staan.
+
+| | A1 / A3 (Windows) | A1 (Linux/macOS-desktop) | B1 (VPS) | B2 (gedeelde hosting) |
+| --- | --- | --- | --- | --- |
+| Planner | Taakplanner, huidige gebruiker, haalt een gemiste nacht in | systemd-gebruikerstimer / launchd | crontab van de gebruiker | één gemarkeerde regel in de crontab van de gebruiker |
+| Standaard | aan | aan | aan | gevraagd bij de setup, standaard ja |
+| Map | `Documents\MK8DX-backups\automatic` | `~/mk8dx-backups/automatic` | `~/mk8dx-backups/automatic` | `~/mk8dx-backups/automatic` (buiten `public_html`) |
+| Grootte-grens | 10 GiB | 10 GiB | 10 GiB | 1 GiB |
+
+`setup` zet hem aan (B2 alleen als de setupvraag met ja is beantwoord; `--no-auto-backup` bij `wizard`, `init` of
+`setup` laat hem uit); `upgrade` vanuit een nieuwe pakketmap laat de planning naar die map wijzen. A3 start voor de
+back-up zijn eigen MariaDB als MK8DX niet draait en stopt hem daarna weer. A1/B1 hebben de draaiende
+databasecontainer nodig (op Windows wacht de taak tot 15 minuten op Docker Desktop); anders mislukt de run met een
+duidelijke melding en blijft de vorige back-up de nieuwste.
+
+Bewaren: de nieuwste back-up van elk van de laatste 14 dagen, plus de nieuwste van elk van de 4 ISO-weken
+daarvoor; daarna vallen de oudste af tot het totaal binnen de grootte-grens past. De nieuwste gecontroleerde
+back-up wordt nooit verwijderd, ook niet als hij alleen al groter is. Back-upmappen zijn alleen voor de eigenaar
+(0700/0600; op Windows staan alleen deze gebruiker, SYSTEM en Administrators in de toegangslijst). Een run
+controleert eerst of er ongeveer twee keer de vorige back-up vrij is.
+
+```sh
+python3 tooling/install.py backup-status --state-dir <installatie>    # aan/uit, laatste resultaat, leeftijd in uren
+python3 tooling/install.py backup-run --state-dir <installatie>       # nu één run
+python3 tooling/install.py backup-latest --state-dir <installatie> --print-path
+python3 tooling/install.py backup-schedule --state-dir <installatie> [--backup-root MAP] [--copy-to MAP]
+        [--backup-time 03:15] [--keep-daily 14] [--keep-weekly 4] [--max-backup-mb 10240] [--encrypt-backups]
+python3 tooling/install.py backup-unschedule --state-dir <installatie>  # verwijdert taak/timer/cronregel
+```
+
+`install.py status` (menu 3, controleren) toont dezelfde samenvatting onder `automaticBackup`; `stale: true`
+betekent geen geslaagde back-up in de laatste 36 uur. Afsluitcodes van `backup-run`: 0 in orde, 1 back-up
+mislukt, 2 controle mislukt, 3 back-up in orde maar kopie mislukt, 4 er loopt al een run, 5 te weinig schijfruimte
+of quotum. Een cronrun drukt alleen fouten af, dus een gedeelde host mailt je precies die.
+
+**Crontab (B1/B2).** De regel eindigt op `# mk8dx-auto-backup:<id>` en neemt het `PATH` mee van de shell waarin
+`setup` draaide (zo worden Node en `mariadb-dump` van een geactiveerde Node-omgeving gevonden). Installeren en
+verwijderen herschrijven alleen die regel; alle andere regels blijven in volgorde staan. De melding en de
+64-teken-hash die DirectAdmin-achtige hosts bij `crontab -l` tonen, zijn geen crontabregels en worden niet
+teruggeschreven. Controleer met `crontab -l`.
+
+**Een kopie buiten de host.** Een back-up op dezelfde schijf overleeft geen kapotte schijf, server of
+hostingaccount. Kies op Windows een tweede map op een andere schijf of een NAS (gebruik een pad
+`\\server\share\map`; de taak draait als jij, maar netwerkschijfletters ontbreken daar soms):
+`backup-schedule --copy-to '\\nas\mk8dx'`. Elke gecontroleerde back-up wordt gekopieerd, opnieuw gecontroleerd en
+met dezelfde bewaarregels bewaard. Haal bij B1/B2 de nieuwste gecontroleerde back-up op vanaf je eigen pc (Windows
+heeft `scp` ingebouwd; gebruik de SSH-poort van je host):
+
+```sh
+latest=$(ssh -p 26 user@host 'cd ~/apps/mk8dx && python3 tooling/install.py backup-latest --state-dir ~/mk8dx-private --print-path')
+scp -P 26 -r "user@host:$latest" ./mk8dx-offsite/
+# of, met rsync aan beide kanten: rsync -a -e 'ssh -p 26' "user@host:$latest" ./mk8dx-offsite/
+```
+
+**Versleuteling (optioneel).** `--encrypt-backups` verzegelt elke back-up (AES-256-GCM met een scrypt-sleutel uit
+een herstelcode, zoals A2 offline). De code wordt één keer getoond: schrijf hem op en bewaar hem niet op de host.
+De host bewaart hem DPAPI-beschermd (Windows) of met `systemd-creds`/alleen-eigenaar-rechten (Linux) voor de
+nachtelijke run. Open een verzegelde back-up voor herstel met `install.py backup-open --state-dir <nieuwe
+installatie> --backup-input <verzegeld> --recovery-phrase-file <bestand met de code> --backup-output <nieuwe map>`
+en gebruik daarna de gewone herstelopdracht op die map. Op gedeelde hosting kan de code alleen naast de back-ups
+staan; verzegelen beschermt daar kopieën buiten de host, niet de host zelf. Daar is de bescherming:
+alleen-eigenaar-rechten buiten `public_html`. Zonder de code kan niemand een verzegelde back-up herstellen, jij ook
+niet.
+
+**Hersteloefening.** `tooling/tests/test_backup_restore_drill.py` (vrijwillig, `MK8DX_BACKUP_DRILL=1`) maakt
+gegevens in een wegwerp-MariaDB 11.4 en -MySQL 9.7 (B2-codepad) en in een echt A1-Compose-project, draait de
+geplande back-up, wist de gegevens, herstelt met de gewone herstelopdracht en vergelijkt elke rij.
+
+## Databaseaccounts
+
+De API van de website maakt verbinding met een databaseaccount dat alleen rijen mag lezen en schrijven (`SELECT`,
+`INSERT`, `UPDATE`, `DELETE` op de MK8DX-database). Zelfs SQL die via een toekomstige fout de database bereikt kan
+dan geen tabellen verwijderen, wijzigen of leegmaken, geen gebruikers aanmaken en geen rechten uitdelen; de
+echte-databasesuites draaien met precies zo'n account en controleren dat `DROP`, `ALTER`, `TRUNCATE`, `CREATE` en
+`GRANT` worden geweigerd. Database-updates, de referentiegegevens, back-ups en herstel gebruiken aparte accounts:
+
+| Route | Website (runtime) | Updates en referentiegegevens (migratie) | Back-up |
+| --- | --- | --- | --- |
+| A1, A2, A2 offline, B1 (Docker) | `mk8dx_runtime`, aangemaakt door `setup`/`upgrade` | `mk8dx_app` (de eigen gebruiker van het MySQL-image), alleen in de `migrate`-service | de root-login van MySQL binnen de databasecontainer (die heeft hij al; er verlaat niets de container) |
+| A3 (XAMPP + Node) | `mk8dx_runtime` op de eigen MariaDB | `mk8dx_app` | `mk8dx_backup` (`SELECT`, `SHOW VIEW`, `TRIGGER`, `LOCK TABLES`, `EVENT`) |
+| B2 (gedeelde hosting) | de tweede gebruiker die je in het paneel maakt ([B2-handleiding](install/B2_WEBHOSTING.md#aparte-databaseaccounts)) | de eerste gebruiker (alle rechten op de database) | de eerste gebruiker |
+
+Waar de logins staan: Docker-routes geven de API-container alleen `api.env` en `operator.json` (runtime-login); de
+migratielogin staat in `compose.env` (voor het MySQL-image) en in `migration.json`, die alleen de `migrate`-service
+mount (`docker compose ... run --rm --no-deps migrate sh /app/operator-command.sh ...`; `up` start hem nooit). A3 en
+B2 bewaren `operator.json` (runtime) en `migration.json` (migratie) in de private installatiemap. Wachtwoorden worden
+gegenereerd (A1–A3) of verborgen ingetypt (B2), net als de andere sleutels in `secrets.json` bewaard
+(`MK8DX_MIGRATION_MYSQL_PASSWORD`, bij A3 ook `MK8DX_NATIVE_BACKUP_MYSQL_PASSWORD`) en nooit getoond. `status` toont `"databaseAccounts": "separate"`.
+
+**Bestaande installaties.** De update splitst de accounts vanzelf en houdt de toegang: Docker-`upgrade` (en de
+pakketupdate van A2 offline) maakt en controleert de back-up, maakt `mk8dx_runtime`, houdt `mk8dx_app` ongewijzigd
+als migratielogin, past daarmee de migraties toe en start de nieuwe API met de runtime-login. Wordt de API daarmee
+niet gezond, dan komen de vorige bestanden byte voor byte terug en start de API weer met de vorige login; er wordt
+niets uit de database verwijderd. A3 doet hetzelfde bij de volgende start (of `maintenance`) van de eigen MariaDB.
+B2 kan zelf geen gebruikers aanmaken: tot je de tweede gebruiker toevoegt met `database-accounts` blijft alles
+werken en tonen `setup`, `upgrade` en `check` een waarschuwing. `python tooling/install.py database-accounts
+--state-dir <map>` maakt of herstelt het runtime-account op een Docker-route met de hand (MySQL draait), bijvoorbeeld
+na [Getting started](GETTING_STARTED.md) stap voor stap. Een herstel naar een nieuw project (`lifecycle.py
+restore-new`) maakt het runtime-account opnieuw, omdat accounts geen deel van een databasedump zijn.
+
+Controleer wat een account mag zonder een wachtwoord te tonen: `node api/dist/composition/database-account-check-main.js
+--private-environment-file <map>/operator.json` (A3/B2; in Docker: `docker compose ... run --rm --no-deps api sh
+/app/operator-command.sh dist/composition/database-account-check-main.js`) toont `canChangeSchema` en eventuele
+extra rechten.
+
+## Als e-mail niet werkt: een gevaarlijke actie bevestigen vanaf de server
+
+Gevaarlijke beheeracties, en de lijst met elk account en zijn e-mailadres, vragen een nieuwe e-maillink voor de
+sessie die erom vraagt (step-up; de bevestiging geldt `MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS`, 60 tot 3600, standaard
+600 seconden). Daarvoor moet e-mail werken. Ligt de mailserver plat of komt er op het adres geen mail meer aan, dan
+kan de beheerder van de server de link uitgeven:
+
+1. De beheerder drukt zoals gewoonlijk op de website of in de app op **Bevestig met een nieuwe e-maillink** →
+   **Stuur de link**. De aanvraag wordt voor die ene sessie bewaard, ook als de e-mail niet verstuurd kan worden.
+2. Binnen 10 minuten, op de server, vanuit de pakket- of repositorymap:
+   `python tooling/install.py step-up-link --state-dir <installatie>` (B1/B2: `python3`). Dat gebruikt het
+   beheerdersadres van de installatie; met `--admin-email <aanmeldadres>` kies je een ander account, bijvoorbeeld een
+   directeur.
+3. De opdracht toont één regel JSON met `stepUpLink`, `clientKind` (`web` of `native`), `requestedAt` en
+   `linkExpiresAt`. Controleer dat `requestedAt` het moment is waarop de knop werd ingedrukt, open de link in een
+   willekeurige browser en druk op **Deze actie bevestigen**. De wachtende actie gaat verder zoals met de gemailde
+   link; komt die gemailde link toch nog aan, dan werkt hij niet meer.
+
+De opdracht heeft geen HTTP-route: hij vraagt de private installatiemap en toegang tot deze server (Docker-routes
+draaien hem in de `api`-container met de private beheerdersinstellingen). Hij opent nooit zelf het venster, vervangt
+alleen de link van de ene wachtende aanvraag en wordt in de step-up-audit vastgelegd als `step_up_operator_link`. Hij
+weigert als er niets wacht, en als sessies op meer dan één apparaat wachten: meld dan de andere apparaten af (**Op alle
+apparaten afmelden** in het accountmenu), druk opnieuw op **Stuur de link** en draai hem nog eens. Behandel de getoonde
+link als een wachtwoord: hij werkt één keer, 10 minuten; plak hem nooit in een issue of chat. De onderliggende
+opdrachten zijn `node api/dist/security/step-up-operator-main.js --private-environment-file <map>/operator.json
+--email-stdin` (A3/B2) en `docker compose ... run -T --rm --no-deps api sh /app/operator-command.sh
+dist/security/step-up-operator-main.js --email-stdin` (Docker), beide met het adres op standaardinvoer. A2 offline
+verstuurt geen e-mail en vraagt geen step-up. Herstel daarna de mailinstellingen met `install.py change-smtp`.
+
 ## Software-update
 
 Maak eerst een gecontroleerde backup. Bouw de nieuwe publieke bronversie naar nieuwe images, inspecteer `docker compose config --quiet`, pas pending hash-gepinde migraties toe met `--backup-verified`, en start dan de nieuwe images:
 
 ```powershell
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml build api web
-docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps api sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --backup-verified
+docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml run --rm --no-deps migrate sh /app/operator-command.sh dist/composition/migration-apply-main.js --migration-catalog /app/infrastructure/mysql/migration-catalog-v1.json --confirm-database mk8dx --backup-verified
 docker compose --env-file "$state\compose.env" -f compose.yaml -f compose.local.yaml up -d --no-build
 ```
 
@@ -68,6 +209,8 @@ Een nieuwe referentieset is een **aparte** actie met de seed-CLI uit stap 6 van 
 De migratiecatalogus is hash-gepind en toegepaste migraties worden nooit herschreven. De publieke geschiedenis begint bij 0.1.0-rc.8, waarin de historische datareparaties 0048, 0049 en 0057 neutrale teksten hebben (geen persoonsgegevens). Elke installatie uit deze repository (of haar releases) werkt gewoon bij. Een database die de oorspronkelijke teksten van die migraties al toepaste vóór de publieke geschiedenis bestond (de eigen installatie van de maintainer), werkt verder bij vanuit de boom van de maintainer, niet met deze pakketten: de migratiecontrole weigert de gewijzigde hashes bewust.
 
 ## Een installatie verwijderen
+
+Haal eerst de nachtelijke back-upplanning weg: `python tooling/install.py backup-unschedule --state-dir $state`.
 
 Een proefinstallatie uit de broncode gooi je weg vanuit de root van de repository, met `$state` op de map van die
 installatie. `down -v` **verwijdert de databasevolume** met alle accounts en gegevens; maak eerst een backup als je

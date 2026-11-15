@@ -112,3 +112,14 @@ Choose **5**. The existing administration CLI uses the target address saved once
 ## 9. Keep administering
 
 **Where:** on the VPS in `/opt/mk8dx/host`, through the same SSH route. `sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance` offers **2 start**, **3 status**, **4 stop**, **6 backup**. With `--skip-countdown` before the folder the window leaves out the countdown ([options](ADMINISTRATION_EN.md#the-start-window-display-and-options)). Download a private backup off the VPS with WinSCP; a server failure must not also wipe all backups. Plan Ubuntu/Docker/MK8DX updates and keep an eye on free disk space. [Administration and restoring](ADMINISTRATION_EN.md) explains a separate restore installation and the update order. A new version of the ZIP replaces the software folder; `/var/lib/mk8dx/instance` and the named database volume stay in place. Never publish the private profile, sign-in links or backup as a web file.
+
+**Automatic backup:** `setup` puts one marked line in the crontab of the account that runs MK8DX: every night at
+03:15 a checked backup in `~/mk8dx-backups/automatic` (as root: `/root/mk8dx-backups/automatic`), 14 days and 4
+weeks, at most 10 GB. `crontab -l` shows the line; **3 status** shows the age and result of the last run under
+`automaticBackup`. Pull the newest one to your PC regularly with `backup-latest --print-path` and `scp`
+([commands](../OPERATIONS.md#automatic-daily-backup-a1-a2-b1-a3-b2)). Off: `python3 tooling/install.py
+backup-unschedule --state-dir /var/lib/mk8dx/instance`.
+
+**Database accounts:** the website signs in to its database with its own account (`mk8dx_runtime`) that can only read and write data; database updates use the database's own account (`mk8dx_app`). Setup creates both; an older installation gets them at its next update (`upgrade`), and if the website does not start with the new account the update returns to the old one. `status` shows `"databaseAccounts": "separate"`. Details: [Operations](../OPERATIONS.md#database-accounts).
+
+**Confirming dangerous actions:** changing rights, the installation settings, recalculating ratings, removing or reopening a night and the list of all accounts ask for a fresh link to your own address (**Confirm with a new email link**). Keep the SMTP settings working (`python3 tooling/install.py change-smtp --state-dir /var/lib/mk8dx/instance`). When mail fails, press **Send the link** anyway and run within 10 minutes `python3 tooling/install.py step-up-link --state-dir /var/lib/mk8dx/instance` in the SSH window; it prints a single-use link for that request ([details](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)).

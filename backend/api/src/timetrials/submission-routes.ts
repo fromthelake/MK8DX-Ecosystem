@@ -13,6 +13,7 @@ import type {
   EphemeralAndroidScanTestService,
   EphemeralScanTestSummary,
 } from "./ephemeral-scan-test-service.js";
+import type { InstallationBudget } from "../security/abuse-budgets.js";
 import { MutationRateLimitExceeded, type MutationRateLimiter } from
   "../security/mysql-mutation-rate-limiter.js";
 import {
@@ -52,6 +53,8 @@ export type TimeTrialSubmissionRouteOptions = Readonly<{
   service: Pick<TimeTrialSubmissionService, "submit">;
   testService?: Pick<EphemeralAndroidScanTestService, "submit" | "listForAccount">;
   rateLimiter?: MutationRateLimiter;
+  /** H1: the installation-wide budget for this path, consumed after the caller's own budget. */
+  installationBudget?: InstallationBudget;
   /** Answers `?feedback=v1`; a failure here never fails the submission. */
   feedback?: Pick<SubmissionFeedbackService, "forSubmission">;
 }>;
@@ -253,6 +256,17 @@ function failure(error: unknown): Readonly<{
   if (error.code === "carried_times_disabled") {
     return { statusCode: 403, response: { code: "carried_times_disabled", message: error.message } };
   }
+  // The same answer as an authorizer refusal: a revision of a submission the account does not own.
+  // Not retryable, so an offline queue parks it instead of re-sending it forever.
+  if (error.code === "submission_forbidden") {
+    return {
+      statusCode: 403,
+      response: {
+        code: "time_trial_submission_forbidden",
+        message: "The Time Trial submission is not authorized.",
+      },
+    };
+  }
   if (error.code === "player_not_found") {
     return {
       statusCode: 404,
@@ -361,6 +375,7 @@ export async function registerTimeTrialSubmissionRoutes(
             "global", "time-trial-submit-global-minute", 60, 300);
           await options.rateLimiter.consume(actor.userAccountId, "time-trial-submit-10m", 600, 240);
           await options.rateLimiter.consume(actor.userAccountId, "time-trial-submit-day", 86_400, 1_000);
+          await options.installationBudget?.consume();
         }
         let result: TimeTrialSubmissionResult;
         if (request.body.source.kind === "android_scan_test") {

@@ -137,6 +137,9 @@ app's own switch must both be on.
 
 - No sign-in email: check spam, the exact address and ask for a new link. On a local trial installation the
   email arrives in the local test inbox, not in your mailbox.
+- A claim is refused with *Too many claim actions at the moment…*: wait the time it names and try again. An account
+  can have at most 5 claims waiting for a decision at once (a Player at most 5 from all accounts together). At that
+  limit, wait until a waiting claim has been handled, or withdraw one with **Withdraw this request**, and try again.
 - Something looks wrong on your community's site: ask the people who run it first. Bugs in the software itself
   can be reported in the project's issues; see [SUPPORT.md](../../../../SUPPORT.md). Never post sign-in links or other
   people's names.

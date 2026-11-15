@@ -70,9 +70,76 @@ export type PublicTournamentLiveGroup = Readonly<{
   }>[];
 }>;
 
+/** F05: a Director's time-limited, revocable permission for one account to run this night's live capture. */
+export type TournamentLiveCaptureDelegation = Readonly<{
+  delegationId: string;
+  tournamentId: string;
+  delegateUserAccountId: string;
+  delegateDisplayName: string;
+  status: "active" | "revoked";
+  reason: string;
+  grantedByUserAccountId: string;
+  grantedAtMs: number;
+  expiresAtMs: number;
+  revokedByUserAccountId: string | null;
+  revokeReason: string | null;
+  revokedAtMs: number | null;
+}>;
+
+/** The capture-delegation durations a Director can pick; the API allows 5 minutes to 7 days. */
+export const LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES = 720;
+export const LIVE_CAPTURE_DELEGATION_MAXIMUM_MINUTES = 10_080;
+
 function record(value: unknown): Record<string, unknown> {
   if (typeof value !== "object" || value === null || Array.isArray(value)) throw new Error("Invalid Tournament response.");
   return value as Record<string, unknown>;
+}
+
+// The capture-delegation documents are parsed strictly: an unknown or missing
+// key is a contract drift between this client and the API's response schema
+// (liveCaptureDelegationSchema in backend/api), not something to guess at.
+function exact(value: Record<string, unknown>, keys: readonly string[]): void {
+  const actual = Object.keys(value).sort();
+  const expected = [...keys].sort();
+  if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) {
+    throw new Error("Invalid capture-delegation response.");
+  }
+}
+
+function liveCaptureDelegation(value: unknown): TournamentLiveCaptureDelegation {
+  const row = record(value);
+  exact(row, [
+    "delegationId", "tournamentId", "delegateUserAccountId", "delegateDisplayName", "status", "reason",
+    "grantedByUserAccountId", "grantedAtMs", "expiresAtMs", "revokedByUserAccountId", "revokeReason", "revokedAtMs",
+  ]);
+  const text = (key: string): string => {
+    const candidate = row[key];
+    if (typeof candidate !== "string" || candidate.length === 0) throw new Error("Invalid capture-delegation response.");
+    return candidate;
+  };
+  const time = (key: string): number => {
+    const candidate = row[key];
+    if (typeof candidate !== "number" || !Number.isSafeInteger(candidate) || candidate < 0) {
+      throw new Error("Invalid capture-delegation response.");
+    }
+    return candidate;
+  };
+  const optionalText = (key: string): string | null => row[key] === null ? null : text(key);
+  if (row["status"] !== "active" && row["status"] !== "revoked") throw new Error("Invalid capture-delegation response.");
+  return {
+    delegationId: text("delegationId"),
+    tournamentId: text("tournamentId"),
+    delegateUserAccountId: text("delegateUserAccountId"),
+    delegateDisplayName: text("delegateDisplayName"),
+    status: row["status"],
+    reason: text("reason"),
+    grantedByUserAccountId: text("grantedByUserAccountId"),
+    grantedAtMs: time("grantedAtMs"),
+    expiresAtMs: time("expiresAtMs"),
+    revokedByUserAccountId: optionalText("revokedByUserAccountId"),
+    revokeReason: optionalText("revokeReason"),
+    revokedAtMs: row["revokedAtMs"] === null ? null : time("revokedAtMs"),
+  };
 }
 
 function incoming(value: unknown): IncomingTournamentResult {
@@ -264,6 +331,64 @@ export class TournamentIncomingClient {
       signal,
     );
     return evidence(record(value)["record"]);
+  }
+
+  /**
+   * F05: take a public live feed back off the public view. Its evidence stays;
+   * the feed returns to the Director's list and only the Director can open it again.
+   */
+  public async withdrawLiveAssociation(tournamentId: string, evidenceRecord: TournamentEvidenceRecord, signal?: AbortSignal): Promise<TournamentEvidenceRecord> {
+    const value = await this.post(
+      `/v1/administrator/tournaments/${encodeURIComponent(tournamentId)}/evidence-records/${encodeURIComponent(evidenceRecord.recordId)}/actions/withdraw-live`,
+      { expectedRevision: evidenceRecord.revision, reason: "Live feed withdrawn by Tournament director" },
+      signal,
+    );
+    return evidence(record(value)["record"]);
+  }
+
+  public async listLiveCaptureDelegations(tournamentId: string, signal?: AbortSignal): Promise<readonly TournamentLiveCaptureDelegation[]> {
+    const response = await this.fetchPort(`/v1/administrator/tournaments/${encodeURIComponent(tournamentId)}/live-capture-delegations`, {
+      method: "GET", credentials: "same-origin", headers: { Accept: "application/json" },
+      ...(signal === undefined ? {} : { signal }),
+    });
+    if (!response.ok) throw new Error(`Capture delegations could not be loaded (${response.status}).`);
+    const body = record(await response.json());
+    exact(body, ["delegations"]);
+    if (!Array.isArray(body["delegations"])) throw new Error("Invalid capture-delegation response.");
+    return body["delegations"].map(liveCaptureDelegation);
+  }
+
+  public async grantLiveCaptureDelegation(tournamentId: string, input: Readonly<{
+    delegateUserAccountId: string;
+    expiresInMinutes: number;
+  }>, signal?: AbortSignal): Promise<TournamentLiveCaptureDelegation> {
+    if (!/^user_account\.[A-Za-z0-9._-]{1,140}$/u.test(input.delegateUserAccountId)) {
+      throw new Error("Choose an account to delegate live capture to.");
+    }
+    if (!Number.isSafeInteger(input.expiresInMinutes) || input.expiresInMinutes < 5 ||
+        input.expiresInMinutes > LIVE_CAPTURE_DELEGATION_MAXIMUM_MINUTES) {
+      throw new Error("A capture delegation lasts at most 7 days.");
+    }
+    const value = await this.post(
+      `/v1/administrator/tournaments/${encodeURIComponent(tournamentId)}/live-capture-delegations`,
+      { delegateUserAccountId: input.delegateUserAccountId, expiresInMinutes: input.expiresInMinutes,
+        reason: "Live capture delegated by Tournament director" },
+      signal,
+    );
+    const body = record(value);
+    exact(body, ["delegation"]);
+    return liveCaptureDelegation(body["delegation"]);
+  }
+
+  public async revokeLiveCaptureDelegation(tournamentId: string, delegationId: string, signal?: AbortSignal): Promise<TournamentLiveCaptureDelegation> {
+    const value = await this.post(
+      `/v1/administrator/tournaments/${encodeURIComponent(tournamentId)}/live-capture-delegations/${encodeURIComponent(delegationId)}/actions/revoke`,
+      { reason: "Capture delegation revoked by Tournament director" },
+      signal,
+    );
+    const body = record(value);
+    exact(body, ["delegation"]);
+    return liveCaptureDelegation(body["delegation"]);
   }
 
   public async reject(result: IncomingTournamentResult, reason: string, signal?: AbortSignal): Promise<void> {

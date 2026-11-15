@@ -1,3 +1,4 @@
+import { claimLimitMessage } from "./claim-limit-message.js";
 import {
   createClaimWalkClient,
   type ClaimNote,
@@ -160,10 +161,10 @@ export function mountPlayerClaimWalk(
     }).catch((error: unknown) => {
       if (disposed || current !== operation) { return; }
       for (const control of controls) { control.disabled = false; }
-      status.textContent = error instanceof PlayerClaimClientError && error.code === "conflict"
+      status.textContent = claimLimitMessage(error) ?? (error instanceof PlayerClaimClientError && error.code === "conflict"
         ? localized("This changed in the meantime. Reload to see where it stands.",
           "Dit is intussen veranderd. Herlaad om de stand te zien.")
-        : localized("That did not go through. Please try again.", "Dat lukte niet. Probeer het opnieuw.");
+        : localized("That did not go through. Please try again.", "Dat lukte niet. Probeer het opnieuw."));
     });
   };
 

@@ -90,6 +90,11 @@ Podes gravar primeiro e juntar-te a uma comunidade mais tarde. O que acontece à
 
 Define **Idioma da tua Switch** nas Definições quando o idioma da consola for diferente do idioma do painel.
 
+O painel só pode ser controlado a partir deste computador: na janela do LiveTrial ou na página do painel aberta neste
+PC. Se o motor for iniciado com `--lan` (vê o
+[README do componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), telemóveis e tablets na rede podem
+ver a vista em direto e as corridas, mas não podem alterar nada.
+
 ## Problemas
 
 - Site errado, ou o início de sessão abre o site errado: sai do LiveTrial com **Sair do LiveTrial**, volta a abri-lo

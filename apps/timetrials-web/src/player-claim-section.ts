@@ -1,3 +1,4 @@
+import { claimLimitMessage } from "./claim-limit-message.js";
 import {
   createPlayerClaimClient,
   PlayerClaimClientError,
@@ -279,7 +280,10 @@ export function mountPlayerClaimSection(
         content.append(profile);
       }).catch((error) => {
         if (disposed || current !== operation) { return; }
-        if (error instanceof PlayerClaimClientError) {
+        const limit = claimLimitMessage(error);
+        if (limit !== null) {
+          status.textContent = limit;
+        } else if (error instanceof PlayerClaimClientError) {
           if (error.code === "username_taken") {
             status.textContent =
               "That username is already in use. Choose another one.";
@@ -461,10 +465,11 @@ export function mountPlayerClaimSection(
             : `Your request for ${player.displayName} is ${claim.claimStatus}.`;
         }).catch((error) => {
           if (disposed || current !== operation) { return; }
-          status.textContent = error instanceof PlayerClaimClientError &&
+          const limit = claimLimitMessage(error);
+          status.textContent = limit !== null ? limit : (error instanceof PlayerClaimClientError &&
             error.code === "conflict"
             ? "Something already changed about this Player. Reload to see where it stands."
-            : "That request could not be sent. Please retry.";
+            : "That request could not be sent. Please retry.");
           request.disabled = false;
         });
       });

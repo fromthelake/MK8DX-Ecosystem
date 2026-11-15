@@ -7,6 +7,8 @@ import time
 from pathlib import Path
 from typing import Sequence
 
+from mk8dx_tournament_extraction.spreadsheet_text import csv_imported_rows
+
 from .recorded_export import write_recorded_results
 
 
@@ -182,7 +184,8 @@ def _publish_ocr_payload(payload: dict[str, object], args: argparse.Namespace) -
         workbook_path = Path(str(payload["output_excel_path"]))
         csv_path = workbook_path.with_suffix(".csv")
     with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        # Formula-like names carry the export's protecting apostrophe; read the real names.
+        rows = csv_imported_rows(csv.DictReader(handle))
     output_path = csv_path.with_name(csv_path.name.replace("_Tournament_Results.csv", "_TournamentRaceResultsV1.json"))
     write_recorded_results(
         rows,

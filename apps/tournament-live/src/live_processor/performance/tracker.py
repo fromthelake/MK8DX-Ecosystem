@@ -8,6 +8,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator
 
+from mk8dx_tournament_extraction.spreadsheet_text import LiteralCsvWriter
+
 from live_processor.paths import PERFORMANCE_ROOT, assert_write_allowed
 
 from .metrics import FunctionStats
@@ -159,7 +161,7 @@ class PerformanceTracker:
                 if key not in fieldnames:
                     fieldnames.append(key)
         with path.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=fieldnames or ["empty"])
+            writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=fieldnames or ["empty"]))
             writer.writeheader()
             for row in rows:
                 writer.writerow(row)

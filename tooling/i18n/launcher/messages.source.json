@@ -6,7 +6,7 @@
    "key": "'{0}' is not one of the choices above.",
    "nl": "'{0}' is geen van de keuzes hierboven.",
    "places": [
-    "install.py:1034"
+    "install.py:1179"
    ]
   },
   {
@@ -22,14 +22,14 @@
    "key": "A2 offline needs this Windows computer to keep one private IPv4 address on your home network.",
    "nl": "A2 offline heeft nodig dat deze Windows-computer één vast privé IPv4-adres in je thuisnetwerk houdt.",
    "places": [
-    "install.py:1096"
+    "install.py:1252"
    ]
   },
   {
    "key": "Address unchanged.",
    "nl": "Adres ongewijzigd.",
    "places": [
-    "install.py:404"
+    "install.py:431"
    ]
   },
   {
@@ -44,28 +44,28 @@
    "key": "Applying database updates of the new version",
    "nl": "Database-updates van de nieuwe versie uitvoeren",
    "places": [
-    "install.py:915"
+    "install.py:1032"
    ]
   },
   {
    "key": "Authorized sender address: ",
    "nl": "Geautoriseerd afzenderadres: ",
    "places": [
-    "native_install.py:145"
+    "native_install.py:195"
    ]
   },
   {
    "key": "Authorized sender email address: ",
    "nl": "Geautoriseerd e-mailadres van de afzender: ",
    "places": [
-    "install.py:1111"
+    "install.py:1267"
    ]
   },
   {
    "key": "Backup verified",
    "nl": "Back-up gecontroleerd",
    "places": [
-    "native_install.py:423"
+    "native_install.py:669"
    ]
   },
   {
@@ -164,38 +164,52 @@
    ]
   },
   {
-   "key": "Create an empty database and its limited user in DirectAdmin first. No existing database is erased.",
-   "nl": "Maak eerst in DirectAdmin een lege database en de bijbehorende beperkte gebruiker aan. Er wordt geen bestaande database gewist.",
+   "key": "Create a second database user in your hosting panel with only SELECT, INSERT, UPDATE and DELETE on database {0}.",
+   "nl": "Maak in je hostingpaneel een tweede databasegebruiker met alleen SELECT, INSERT, UPDATE en DELETE op database {0}.",
    "places": [
-    "native_install.py:129"
+    "native_install.py:566"
+   ]
+  },
+  {
+   "key": "Create an empty database in DirectAdmin (or cPanel) first, with two database users: one with all privileges on it (for updates and backups) and one with only SELECT, INSERT, UPDATE and DELETE (for the website). No existing database is erased.",
+   "nl": "Maak eerst in DirectAdmin (of cPanel) een lege database met twee databasegebruikers: één met alle rechten erop (voor updates en back-ups) en één met alleen SELECT, INSERT, UPDATE en DELETE (voor de website). Er wordt geen bestaande database gewist.",
+   "places": [
+    "native_install.py:173"
    ]
   },
   {
    "key": "Database host from DirectAdmin: ",
    "nl": "Databasehost uit DirectAdmin: ",
    "places": [
-    "native_install.py:131"
+    "native_install.py:177"
    ]
   },
   {
    "key": "Database port [3306]: ",
    "nl": "Databasepoort [3306]: ",
    "places": [
-    "native_install.py:132"
+    "native_install.py:178"
+   ]
+  },
+  {
+   "key": "Database user with all privileges on this database (full name): ",
+   "nl": "Databasegebruiker met alle rechten op deze database (volledige naam): ",
+   "places": [
+    "native_install.py:180"
    ]
   },
   {
    "key": "Database user's password (hidden): ",
    "nl": "Wachtwoord van de databasegebruiker (verborgen): ",
    "places": [
-    "native_install.py:135"
+    "native_install.py:181"
    ]
   },
   {
    "key": "Database: {0} on {1}",
    "nl": "Database: {0} op {1}",
    "places": [
-    "native_install.py:118"
+    "native_install.py:160"
    ]
   },
   {
@@ -210,6 +224,13 @@
    "nl": "Docker draait niet of deze gebruiker mag het niet gebruiken (Linux: sudo systemctl start docker en word lid van de groep docker; macOS: start Docker Desktop).",
    "places": [
     "start-mk8dx.sh:62"
+   ]
+  },
+  {
+   "key": "Does your host already make daily account backups (for example DirectAdmin or JetBackup)? Then you may say no. An own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support.",
+   "nl": "Maakt je hostingpartij al dagelijks back-ups van je account (bijvoorbeeld DirectAdmin of JetBackup)? Dan mag je nee zeggen. Met een eigen back-up zet je gisteren nog steeds zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten.",
+   "places": [
+    "scheduled_backup.py:823"
    ]
   },
   {
@@ -262,28 +283,28 @@
    "key": "Full database name (including provider prefix if shown): ",
    "nl": "Volledige databasenaam (met het voorvoegsel van de provider, als dat getoond wordt): ",
    "places": [
-    "native_install.py:133"
+    "native_install.py:179"
    ]
   },
   {
    "key": "Home or club network with your own mail server (advanced; for most homes and clubs use the mk8dx-a2 package, which needs no mail server)",
    "nl": "Thuis- of clubnetwerk met je eigen mailserver (geavanceerd; voor de meeste huishoudens en clubs gebruik je het pakket mk8dx-a2, dat geen mailserver nodig heeft)",
    "places": [
-    "install.py:414"
+    "install.py:441"
    ]
   },
   {
    "key": "Home or club network without internet (the mk8dx-a2 package opens this setup in your browser)",
    "nl": "Thuis- of clubnetwerk zonder internet (het pakket mk8dx-a2 opent deze installatie in je browser)",
    "places": [
-    "install.py:416"
+    "install.py:443"
    ]
   },
   {
    "key": "Host page (only on this computer): {0}",
    "nl": "Hostpagina (alleen op deze computer): {0}",
    "places": [
-    "install.py:948"
+    "install.py:1055"
    ]
   },
   {
@@ -311,7 +332,7 @@
    "key": "Installation step stopped: {0}",
    "nl": "Installatiestap gestopt: {0}",
    "places": [
-    "install.py:1270"
+    "install.py:1438"
    ]
   },
   {
@@ -333,14 +354,7 @@
    "key": "LAN firewall rule (Private profile, 80/443): {0}",
    "nl": "LAN-firewallregel (profiel Particulier, 80/443): {0}",
    "places": [
-    "install.py:947"
-   ]
-  },
-  {
-   "key": "Limited database user (full name): ",
-   "nl": "Beperkte databasegebruiker (volledige naam): ",
-   "places": [
-    "native_install.py:134"
+    "install.py:1054"
    ]
   },
   {
@@ -368,14 +382,21 @@
    "key": "Local mail inbox: {0}",
    "nl": "Lokale mailinbox: {0}",
    "places": [
-    "install.py:1263"
+    "install.py:1431"
    ]
   },
   {
    "key": "Local test mailbox: {0}",
    "nl": "Lokale testmailbox: {0}",
    "places": [
-    "native_install.py:119"
+    "native_install.py:161"
+   ]
+  },
+  {
+   "key": "MK8DX can make its own checked backup of the database and the site's keys every night: about 3 MB a day compressed, 14 days and 4 weeks are kept, at most 1 GB, outside public_html.",
+   "nl": "MK8DX kan elke nacht zelf een gecontroleerde back-up maken van de database en de sleutels van de site: ongeveer 3 MB per dag gecomprimeerd, 14 dagen en 4 weken worden bewaard, hooguit 1 GB, buiten public_html.",
+   "places": [
+    "scheduled_backup.py:821"
    ]
   },
   {
@@ -389,7 +410,7 @@
    "key": "MK8DX is starting. Leave this window open. Open {0}",
    "nl": "MK8DX start. Laat dit venster open. Open {0}",
    "places": [
-    "native_install.py:275"
+    "native_install.py:342"
    ]
   },
   {
@@ -420,28 +441,28 @@
    "key": "MK8DX will create its own MariaDB 11.4 database inside the private installation folder.",
    "nl": "MK8DX maakt een eigen MariaDB 11.4-database in de private installatiemap.",
    "places": [
-    "native_install.py:127"
+    "native_install.py:171"
    ]
   },
   {
    "key": "Mailbox SMTP login: ",
    "nl": "SMTP-login van de mailbox: ",
    "places": [
-    "native_install.py:143"
+    "native_install.py:193"
    ]
   },
   {
    "key": "Mailbox SMTP password (hidden): ",
    "nl": "SMTP-wachtwoord van de mailbox (verborgen): ",
    "places": [
-    "native_install.py:144"
+    "native_install.py:194"
    ]
   },
   {
    "key": "Mailbox SMTP server name: ",
    "nl": "SMTP-servernaam van de mailbox: ",
    "places": [
-    "native_install.py:141"
+    "native_install.py:191"
    ]
   },
   {
@@ -457,6 +478,13 @@
    "nl": "Een back-up maken - die wordt meteen gecontroleerd",
    "places": [
     "Manage-MK8DX-No-Docker.cmd:26"
+   ]
+  },
+  {
+   "key": "Make and check a backup automatically every night? [Y/n]: ",
+   "nl": "Elke nacht automatisch een gecontroleerde back-up maken? [J/n]: ",
+   "places": [
+    "scheduled_backup.py:827"
    ]
   },
   {
@@ -493,14 +521,14 @@
    "key": "Moved to the new address.",
    "nl": "Verhuisd naar het nieuwe adres.",
    "places": [
-    "install.py:404"
+    "install.py:431"
    ]
   },
   {
    "key": "Network: {0}",
    "nl": "Netwerk: {0}",
    "places": [
-    "install.py:399"
+    "install.py:426"
    ]
   },
   {
@@ -515,6 +543,21 @@
    "nl": "Volgende stap: typ 8 om de website te openen, log in met je adres en typ daarna 5 om beheerder te worden.",
    "places": [
     "start-mk8dx.ps1:169"
+   ]
+  },
+  {
+   "key": "Nightly automatic backup could not be switched on: {0}. Your installation is fine; see the backup chapter of the guide.",
+   "nl": "De nachtelijke automatische back-up kon niet worden aangezet: {0}. Je installatie is in orde; zie het hoofdstuk over back-ups in de handleiding.",
+   "places": [
+    "scheduled_backup.py:841",
+    "scheduled_backup.py:853"
+   ]
+  },
+  {
+   "key": "Nightly automatic backup is on: {0}. Turn it off with: {1}",
+   "nl": "Nachtelijke automatische back-up staat aan: {0}. Uitzetten met: {1}",
+   "places": [
+    "scheduled_backup.py:812"
    ]
   },
   {
@@ -536,7 +579,7 @@
    "key": "Open on this computer: {0}",
    "nl": "Open op deze computer: {0}",
    "places": [
-    "install.py:960"
+    "install.py:1070"
    ]
   },
   {
@@ -560,14 +603,14 @@
    "key": "Phones and other PCs first open: {0}",
    "nl": "Telefoons en andere pc's openen eerst: {0}",
    "places": [
-    "install.py:949"
+    "install.py:1056"
    ]
   },
   {
    "key": "Phones and other PCs open {0} and sign in again; paired apps pair again.",
    "nl": "Telefoons en andere pc's openen {0} en loggen opnieuw in; gekoppelde apps koppel je opnieuw.",
    "places": [
-    "install.py:405"
+    "install.py:432"
    ]
   },
   {
@@ -592,7 +635,7 @@
    "key": "Press Ctrl+C here to stop this MK8DX Node process and its local test mailbox.",
    "nl": "Druk hier op Ctrl+C om dit MK8DX-Node-proces en de lokale testmailbox te stoppen.",
    "places": [
-    "native_install.py:276"
+    "native_install.py:343"
    ]
   },
   {
@@ -614,7 +657,7 @@
    "key": "Private backup complete: {0}",
    "nl": "Private back-up klaar: {0}",
    "places": [
-    "native_install.py:409"
+    "native_install.py:655"
    ]
   },
   {
@@ -624,35 +667,35 @@
     "start-mk8dx.ps1:29",
     "start-mk8dx.sh:114",
     "Start-MK8DX-No-Docker.cmd:24",
-    "install.py:1260"
+    "install.py:1428"
    ]
   },
   {
    "key": "Private website name [mk8dx.home.arpa]: ",
    "nl": "Private websitenaam [mk8dx.home.arpa]: ",
    "places": [
-    "install.py:1102"
+    "install.py:1258"
    ]
   },
   {
    "key": "Public website host name (without https://): ",
    "nl": "Openbare hostnaam van de website (zonder https://): ",
    "places": [
-    "install.py:1105"
+    "install.py:1261"
    ]
   },
   {
    "key": "Public website on shared hosting with Node.js and MariaDB",
    "nl": "Openbare website op gedeelde hosting met Node.js en MariaDB",
    "places": [
-    "install.py:419"
+    "install.py:446"
    ]
   },
   {
    "key": "Public website on your own server (a VPS with Docker, your own domain and a mail provider)",
    "nl": "Openbare website op je eigen server (een VPS met Docker, je eigen domein en een mailprovider)",
    "places": [
-    "install.py:417"
+    "install.py:444"
    ]
   },
   {
@@ -696,43 +739,72 @@
    "key": "SMTP implicit-TLS port [465]: ",
    "nl": "SMTP-poort met impliciete TLS [465]: ",
    "places": [
-    "install.py:1109",
-    "native_install.py:142"
+    "install.py:1265",
+    "native_install.py:192"
    ]
   },
   {
    "key": "SMTP login (not your MK8DX admin account): ",
    "nl": "SMTP-login (niet je MK8DX-beheerdersaccount): ",
    "places": [
-    "install.py:1110"
+    "install.py:1266"
    ]
   },
   {
    "key": "SMTP password (hidden): ",
    "nl": "SMTP-wachtwoord (verborgen): ",
    "places": [
-    "install.py:1112"
+    "install.py:1268"
    ]
   },
   {
    "key": "SMTP server name supplied by your mail provider: ",
    "nl": "SMTP-servernaam van je mailprovider: ",
    "places": [
-    "install.py:1108"
+    "install.py:1264"
+   ]
+  },
+  {
+   "key": "Saved. The previous database user stays for database updates and backups. Now refresh the Passenger configuration (passenger-config) and restart the app in your hosting panel. Undo: database-accounts --undo",
+   "nl": "Opgeslagen. De vorige databasegebruiker blijft voor database-updates en back-ups. Vernieuw nu de Passenger-configuratie (passenger-config) en herstart de app in je hostingpaneel. Terugdraaien: database-accounts --undo",
+   "places": [
+    "native_install.py:589"
+   ]
+  },
+  {
+   "key": "Second database user for the website (full name): ",
+   "nl": "Tweede databasegebruiker voor de website (volledige naam): ",
+   "places": [
+    "native_install.py:568"
+   ]
+  },
+  {
+   "key": "Second database user for the website, with only SELECT, INSERT, UPDATE and DELETE (full name; Enter uses the first user, not recommended): ",
+   "nl": "Tweede databasegebruiker voor de website, met alleen SELECT, INSERT, UPDATE en DELETE (volledige naam; Enter gebruikt de eerste gebruiker, niet aanbevolen): ",
+   "places": [
+    "native_install.py:182"
+   ]
+  },
+  {
+   "key": "Second database user's password (hidden): ",
+   "nl": "Wachtwoord van de tweede databasegebruiker (verborgen): ",
+   "places": [
+    "native_install.py:569",
+    "native_install.py:185"
    ]
   },
   {
    "key": "Setup cancelled before a choice was made; nothing was created.",
    "nl": "Installatie geannuleerd voordat er een keuze was gemaakt; er is niets aangemaakt.",
    "places": [
-    "install.py:1032"
+    "install.py:1177"
    ]
   },
   {
    "key": "Setup cancelled. Start the same file again to continue.",
    "nl": "Installatie geannuleerd. Start hetzelfde bestand opnieuw om verder te gaan.",
    "places": [
-    "install.py:1272"
+    "install.py:1440"
    ]
   },
   {
@@ -775,8 +847,8 @@
    "key": "Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.",
    "nl": "Inlogmail: MK8DX verstuurt die via je mailprovider over TLS op poort 465 (impliciete TLS). Een provider die alleen STARTTLS op poort 587 aanbiedt, werkt nog niet. Het wachtwoord is niet zichtbaar terwijl je typt.",
    "places": [
-    "install.py:1106",
-    "native_install.py:139"
+    "install.py:1262",
+    "native_install.py:189"
    ]
   },
   {
@@ -800,7 +872,7 @@
    "key": "Starting the new version",
    "nl": "De nieuwe versie starten",
    "places": [
-    "install.py:923"
+    "install.py:1035"
    ]
   },
   {
@@ -823,15 +895,15 @@
    "key": "Stopping this MK8DX installation",
    "nl": "Deze MK8DX-installatie stoppen",
    "places": [
-    "native_install.py:284"
+    "native_install.py:351"
    ]
   },
   {
    "key": "That does not look like one email address; try again.",
    "nl": "Dat lijkt niet op één e-mailadres; probeer het opnieuw.",
    "places": [
-    "install.py:1119",
-    "native_install.py:149"
+    "install.py:1275",
+    "native_install.py:199"
    ]
   },
   {
@@ -861,8 +933,8 @@
    "key": "The address {0} is not active on this computer; reconnect it or use change-lan-address",
    "nl": "Het adres {0} is niet actief op deze computer; verbind het opnieuw of gebruik change-lan-address",
    "places": [
-    "install.py:687",
-    "install.py:735"
+    "install.py:714",
+    "install.py:762"
    ]
   },
   {
@@ -877,21 +949,21 @@
    "key": "The network is '{0}'; ask its administrator to allow TCP 80/443",
    "nl": "Het netwerk is '{0}'; vraag de beheerder ervan om TCP 80/443 toe te staan",
    "places": [
-    "install.py:703"
+    "install.py:730"
    ]
   },
   {
    "key": "The network of {0} is '{1}', not Private. In Windows Settings > Network & internet, open this network and choose 'Private network', then run this step again",
    "nl": "Het netwerk van {0} is '{1}', niet Private. Open in Windows-instellingen > Netwerk en internet dit netwerk, kies 'Particulier netwerk' en voer deze stap daarna opnieuw uit",
    "places": [
-    "install.py:737"
+    "install.py:764"
    ]
   },
   {
    "key": "The page phones and other PCs open first is updated to this package.",
    "nl": "De pagina die telefoons en andere pc's eerst openen, is bijgewerkt naar dit pakket.",
    "places": [
-    "install.py:632"
+    "install.py:659"
    ]
   },
   {
@@ -903,24 +975,74 @@
    ]
   },
   {
+   "key": "The website already has its own database account. To change it, run this with --undo first.",
+   "nl": "De website heeft al een eigen databaseaccount. Voer dit eerst uit met --undo om het te wijzigen.",
+   "places": [
+    "native_install.py:562"
+   ]
+  },
+  {
+   "key": "The website already uses the single database account.",
+   "nl": "De website gebruikt al het ene databaseaccount.",
+   "places": [
+    "native_install.py:555"
+   ]
+  },
+  {
+   "key": "The website did not start with its new database account ({0}); it uses the previous account again and your data is unchanged.",
+   "nl": "De website startte niet met het nieuwe databaseaccount ({0}); hij gebruikt weer het vorige account en je gegevens zijn ongewijzigd.",
+   "places": [
+    "install.py:918"
+   ]
+  },
+  {
+   "key": "The website now uses its own database account, which can only read and write data; database updates keep the existing account.",
+   "nl": "De website gebruikt nu een eigen databaseaccount dat alleen gegevens kan lezen en schrijven; database-updates houden het bestaande account.",
+   "places": [
+    "install.py:893",
+    "native_install.py:474"
+   ]
+  },
+  {
+   "key": "The website uses the first database account again. Refresh the Passenger configuration (passenger-config) and restart the app in your hosting panel.",
+   "nl": "De website gebruikt weer het eerste databaseaccount. Vernieuw de Passenger-configuratie (passenger-config) en herstart de app in je hostingpaneel.",
+   "places": [
+    "native_install.py:558"
+   ]
+  },
+  {
+   "key": "The website's database account could not be checked; see the message above.",
+   "nl": "Het databaseaccount van de website kon niet worden gecontroleerd; zie de melding hierboven.",
+   "places": [
+    "native_install.py:539"
+   ]
+  },
+  {
    "key": "This Windows computer without Docker (XAMPP and Node.js)",
    "nl": "Deze Windows-computer zonder Docker (XAMPP en Node.js)",
    "places": [
-    "install.py:418"
+    "install.py:445"
    ]
   },
   {
    "key": "This Windows host's private IPv4 address (for example 192.168.0.50): ",
    "nl": "Privé IPv4-adres van deze Windows-host (bijvoorbeeld 192.168.0.50): ",
    "places": [
-    "install.py:1103"
+    "install.py:1259"
    ]
   },
   {
    "key": "This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ",
    "nl": "Privé IPv4-adres van deze computer (zie ipconfig, bijv. 192.168.0.50): ",
    "places": [
-    "install.py:1098"
+    "install.py:1254"
+   ]
+  },
+  {
+   "key": "This installation creates and manages its own database accounts.",
+   "nl": "Deze installatie maakt en beheert haar eigen databaseaccounts.",
+   "places": [
+    "native_install.py:551"
    ]
   },
   {
@@ -935,28 +1057,28 @@
    "key": "This installation runs without Docker. A3: press Ctrl+C in the MK8DX window (Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in your hosting panel.",
    "nl": "Deze installatie draait zonder Docker. A3: druk op Ctrl+C in het MK8DX-venster (Start-MK8DX-No-Docker.cmd) en stop Apache in XAMPP. B2: stop de Node.js-app in je hostingpaneel.",
    "places": [
-    "install.py:1063"
+    "install.py:1212"
    ]
   },
   {
    "key": "This package ({0}) is older than the installation ({1})",
    "nl": "Dit pakket ({0}) is ouder dan de installatie ({1})",
    "places": [
-    "install.py:903"
+    "install.py:1020"
    ]
   },
   {
    "key": "This package is a different version than your installation runs ({0}). Choose 7 (update) first: it makes a checked backup and applies the database updates. Your data is unchanged.",
    "nl": "Dit pakket is een andere versie dan je installatie draait ({0}). Kies eerst 7 (bijwerken): die maakt een gecontroleerde back-up en voert de database-updates uit. Je gegevens blijven ongewijzigd.",
    "places": [
-    "install.py:812"
+    "install.py:931"
    ]
   },
   {
    "key": "Tip: reserve it in your router (DHCP reservation); a new address later means a new phone setup QR.",
    "nl": "Tip: reserveer het in je router (DHCP-reservering); een nieuw adres betekent later een nieuwe QR-code om telefoons in te stellen.",
    "places": [
-    "install.py:1097"
+    "install.py:1253"
    ]
   },
   {
@@ -970,7 +1092,7 @@
    "key": "Try MK8DX on this computer only (Docker; sign-in mail stays on this computer)",
    "nl": "MK8DX alleen op deze computer uitproberen (Docker; inlogmail blijft op deze computer)",
    "places": [
-    "install.py:413"
+    "install.py:440"
    ]
   },
   {
@@ -992,7 +1114,7 @@
    "key": "Type {0} or {1} and press Enter: ",
    "nl": "Typ {0} of {1} en druk op Enter: ",
    "places": [
-    "install.py:1030"
+    "install.py:1175"
    ]
   },
   {
@@ -1015,14 +1137,14 @@
    "key": "Updated to package {0}",
    "nl": "Bijgewerkt naar pakket {0}",
    "places": [
-    "install.py:929"
+    "install.py:1041"
    ]
   },
   {
    "key": "Updated to the package of this folder",
    "nl": "Bijgewerkt naar het pakket van deze map",
    "places": [
-    "install.py:929"
+    "install.py:1041"
    ]
   },
   {
@@ -1036,24 +1158,38 @@
    ]
   },
   {
+   "key": "Warning: the website uses the same database account as the database updates. It keeps working, but a fault that lets someone run SQL could then also delete tables. Create a second database user with only SELECT, INSERT, UPDATE and DELETE on this database in your hosting panel and run: install.py database-accounts --state-dir <folder> (guide: B2 webhosting, separate database accounts).",
+   "nl": "Waarschuwing: de website gebruikt hetzelfde databaseaccount als de database-updates. Alles blijft werken, maar een fout waardoor iemand SQL kan uitvoeren kan dan ook tabellen verwijderen. Maak in je hostingpaneel een tweede databasegebruiker met alleen SELECT, INSERT, UPDATE en DELETE op deze database en voer uit: install.py database-accounts --state-dir <map> (handleiding: B2 webhosting, aparte databaseaccounts).",
+   "places": [
+    "native_install.py:27"
+   ]
+  },
+  {
+   "key": "Warning: the website's database account can still change the database structure ({0}). Give it only SELECT, INSERT, UPDATE and DELETE in your hosting panel.",
+   "nl": "Waarschuwing: het databaseaccount van de website kan de databasestructuur nog wijzigen ({0}). Geef het in je hostingpaneel alleen SELECT, INSERT, UPDATE en DELETE.",
+   "places": [
+    "native_install.py:542"
+   ]
+  },
+  {
    "key": "Web origin: {0}",
    "nl": "Web-origin: {0}",
    "places": [
-    "install.py:1261"
+    "install.py:1429"
    ]
   },
   {
    "key": "Website after trusting the certificate: {0}",
    "nl": "Website nadat je het certificaat vertrouwt: {0}",
    "places": [
-    "install.py:950"
+    "install.py:1057"
    ]
   },
   {
    "key": "Website host name, without https://: ",
    "nl": "Hostnaam van de website, zonder https://: ",
    "places": [
-    "native_install.py:130"
+    "native_install.py:176"
    ]
   },
   {
@@ -1079,15 +1215,22 @@
    "key": "Where will MK8DX run?",
    "nl": "Waar gaat MK8DX draaien?",
    "places": [
-    "install.py:1024"
+    "install.py:1169"
+   ]
+  },
+  {
+   "key": "Write down this backup recovery code and keep it away from this computer: {0}",
+   "nl": "Schrijf deze herstelcode voor de back-ups op en bewaar hem niet op deze computer: {0}",
+   "places": [
+    "scheduled_backup.py:815"
    ]
   },
   {
    "key": "Your own future MK8DX administrator email: ",
    "nl": "Je eigen e-mailadres als toekomstige MK8DX-beheerder: ",
    "places": [
-    "install.py:1120",
-    "native_install.py:150"
+    "install.py:1276",
+    "native_install.py:200"
    ]
   },
   {
@@ -1155,7 +1298,7 @@
    "key": "{0}. The previous version is selected again. If it does not start, restore the backup made just before: {1}",
    "nl": "{0}. De vorige versie is weer gekozen. Als die niet start, zet dan de back-up terug die vlak daarvoor is gemaakt: {1}",
    "places": [
-    "install.py:913"
+    "install.py:1030"
    ]
   }
  ]

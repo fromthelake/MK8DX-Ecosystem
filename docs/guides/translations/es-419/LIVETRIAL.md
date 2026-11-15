@@ -90,6 +90,11 @@ Puedes grabar primero y unirte a una comunidad más tarde. Lo que pasa con las c
 
 Configura **Idioma de tu Switch** en Ajustes cuando el idioma de la consola sea distinto del idioma del panel.
 
+El panel solo se puede controlar desde esta computadora: en la ventana de LiveTrial o en la página del panel abierta
+en este PC. Si el motor se inicia con `--lan` (consulta el
+[README del componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), los teléfonos y tabletas de la red
+pueden ver la vista en directo y las carreras, pero no pueden cambiar nada.
+
 ## Problemas
 
 - Web equivocada, o el inicio de sesión abre el sitio equivocado: cierra LiveTrial con **Salir de LiveTrial**,

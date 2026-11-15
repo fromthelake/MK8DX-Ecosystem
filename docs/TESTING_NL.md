@@ -65,6 +65,8 @@ python -m pytest -q -p no:cacheprovider apps/timetrials-desktop/tests
 In een POSIX-shell: `PYTHONPATH=apps/timetrials-desktop python -m pytest -q apps/timetrials-desktop/tests`.
 De dashboardtest draait met `node apps/timetrials-desktop/tests/history-startup.test.js` (ook in CI). `engine-overlay/livetrial/tests/test_names.py` vraagt de volledige LiveTrial-engine
 en zijn Clean Assets-database, die niet in deze repository staan.
+`apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py` faalt zodra een bestand in `engine-overlay` en de
+`vision-runtime`-kopie die het pakket meeneemt niet meer dezelfde tekst hebben.
 
 Toernooitests (`tests/tournament`) draaien op de vergrendelde runtime van het Tools-pakket
 ([requirements.lock.txt](../tooling/tournament/requirements.lock.txt)). Ze bevatten een rooktest van de analyse
@@ -90,6 +92,7 @@ een installatie.
 | `MK8DX_MYSQL_INTEGRATION` | `1` |
 | `MK8DX_MYSQL_TEST_HOST`, `MK8DX_MYSQL_TEST_PORT` | de testserver, bijvoorbeeld `127.0.0.1` en `33406` |
 | `MK8DX_MYSQL_TEST_USER`, `MK8DX_MYSQL_TEST_PASSWORD` | een account voor het testschema (`root` van de wegwerpserver is het eenvoudigst) |
+| `MK8DX_MYSQL_EXPECT_RUNTIME_ACCOUNT` | `1` als dat account een runtime-account is (alleen `SELECT`, `INSERT`, `UPDATE`, `DELETE`); `database-runtime-account.integration.test.ts` controleert dan dat `DROP`, `ALTER`, `TRUNCATE`, `CREATE` en `GRANT` worden geweigerd, en wordt anders overgeslagen |
 | `MK8DX_MYSQL_TEST_DATABASE` | het schema; de naam eindigt op `_test` of `_contract` |
 
 - Het schema moet al **gemigreerd** zijn met `migration-apply-main.js --fresh-empty-database` (hieronder);
@@ -98,6 +101,12 @@ een installatie.
 - `tournament-operation`, `administrator-claim-review` en `mysql-firebase-backout-repository` vragen een schema
   dat nog niemand gebruikte. Het eenvoudigst en betrouwbaarst is één vers schema per suite.
 - `reference-seed.integration.test.ts` vraagt ook `MK8DX_REFERENCE_TEST_CONFIG` en wordt anders overgeslagen.
+
+`bash tooling/run_database_integration_ci.sh mysql|mysql84|mariadb` (de CI-ingang) werkt als een installatie: het
+migreert elk schema met een migratieaccount (alle rechten op dat schema) en draait elke suite met een
+**runtime-account** dat alleen rijen mag lezen en schrijven ([databaseaccounts](OPERATIONS_NL.md#databaseaccounts)).
+Het start een eigen engine op `127.0.0.1:33406`; zet `MK8DX_CI_DATABASE_PORT` voor een andere vrije poort, en in
+Git Bash op Windows `TMPDIR` op een Windows-pad zodat Node de instellingenbestanden kan lezen.
 
 Deze werkwijze draaide op 2026-11-02 alle 34 suites (alles behalve `reference-seed`) groen op MySQL 8.4.11; CI draait ze nu op 9.7
 (hieronder), 8.4 en MariaDB 11.4. Dit werkt in

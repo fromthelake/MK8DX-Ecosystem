@@ -52,6 +52,8 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 
 公开和社区积分是最后一步中两个独立的决定。
 
+在 CSV 和 Excel 导出中，以 `=`、`+`、`-` 或 `@` 开头的名字在电子表格程序中打开时仍保持为文本；在 CSV 中，它会为此在开头加上一个撇号，网站和工具的导入会再把它去掉。
+
 ## 3. Windows Tournament Tools
 
 ### 要求
@@ -126,7 +128,8 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 只有当网站运行在同一台 Windows 电脑上时（像 A1 和 A3 那样），才使用 `http://127.0.0.1:<port>`（或 `http://localhost:<port>`）：
@@ -134,6 +137,8 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 地址都需要它受信任的 HTTPS 地址。没有终端时（例如从脚本运行），`sign-in` 不会询问：
 请先用 `TournamentConnect.cmd server <address>` 设置地址。等待发往某个服务器的上传会留在那个
 服务器下。提交的比赛会进入 **收到的成绩**；它绝不会被自动公开。
+
+登录只会在你选择的地址上打开浏览器：TournamentConnect 和 Tournament Live 会把该地址与代码一起显示，并拒绝指向其他地方的登录链接。只有当浏览器显示相同的地址和相同的代码时才批准。`sign-out` 会结束此电脑在网站上的会话，然后在本机删除它；只有当网站确认该会话已失效时，它才会显示 *Signed out*。其他设备仍保持登录。如果无法连接网站，登录会保留在此电脑上：请稍后重试，或使用 `sign-out --this-pc-only`，然后在网站的账号菜单中用 **在所有设备上退出登录** 结束会话（用 **在所有地方退出登录** 确认后，该账号的所有设备都会退出登录）。在 Tournament Live 中，**退出登录** 与 `sign-out` 作用相同；**离线工作** 只会忘记此电脑上的连接，并会说明这一点。
 
 ### 把 Tournament Live 的结果送到网站
 
@@ -147,6 +152,18 @@ Analysis 和 Live）可以单独使用。它们会在你的电脑上写出 Excel
 3. 在网站上打开当晚的比赛，进入第 5 步（决赛小组为第 9 步），在 **可用的锦标赛实时录像** 下找到这次运行。
    在 **关联到小组** 中选择它的小组，然后选择 **关联已审核的录像**。这些比赛会作为待处理的证据等待，
    直到你接受它们。
+
+### 采集委托与撤下直播源
+
+仅凭名单匹配永远不会自行开放公开直播视图。Tournament Live 的直播源只有在你（或管理员）确认后，或者来自你已为今晚委托直播
+采集的账户时，才会公开。在此之前，网站会在该会话上显示 *正在等待赛事总监*，Tournament Live 也会提示它在等待赛事总监。
+
+- **委托：** 在第 5 步（决赛小组为第 9 步）的 **直播采集委托** 下，选择采集操作员的账户和 **有效期**（默认 12 小时，最长
+  7 天），然后点击 **委托直播采集**。等待中的会话也会提供 **将直播采集委托给 …（12 小时）**。账户的 Tournament Live
+  连接到今晚并按下 **START** 后，它就会出现在那里。之后，下一场名字与小组名单匹配的比赛会开放公开视图。
+- **撤销：** 点击委托旁的 **撤销**。该账户的直播源会立即离开公开视图；其比赛保留供你审核。
+- **撤下直播源：** 在公开的会话上点击 **撤下此直播源**，再点击一次确认。比赛会保留；只有你能通过 **手动确认实时分配**
+  再次开放它，名单匹配不能。
 
 ### 以后再连接
 
@@ -187,6 +204,10 @@ OCR 可能会读错名字、名次或累计分数。在确认之前，请把每�
 v0.2.2 包通过了一次实体 1× 验收运行：三台信号源电脑把录好的预选赛视频播放到各自的采集卡中
 （[issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)）。没有采集卡的视频回放
 不能测试采集路径。
+
+## 删除或移除比赛需要邮件链接
+
+在网站或 Android 应用中删除草稿或移除比赛时，会先要求重新确认。**通过新的邮件链接确认** 窗口会说明原因；点按 **发送链接** 会向你账号自己的邮箱发送一个一次性链接。该链接只能使用一次，有效期 10 分钟。在任意设备上打开它并点按 **确认此操作**，删除随后会自动继续。确认仅对该浏览器或应用有效，持续 10 分钟。进行比赛（参赛者、分组、分数、完成）时从不需要它，没有邮件的家庭或俱乐部离线安装也完全不会要求。收不到邮件？请检查垃圾邮件并发送新链接；如果社区的邮件无法使用，服务器的运营者可以在服务器上签发链接（见 [Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)）。
 
 ## 自己构建这些工具
 

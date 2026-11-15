@@ -137,6 +137,10 @@ interruptor da própria aplicação têm de estar ambos ativados.
 
 - Não chega o e-mail de início de sessão: verifica o spam e o endereço exato e pede uma nova ligação. Numa instalação de teste local, o
   e-mail chega à caixa de entrada de teste local, não à tua caixa de correio.
+- Uma reivindicação é recusada com *Demasiadas ações de reivindicação neste momento…*: espera o tempo indicado e tenta
+  novamente. Uma conta pode ter no máximo 5 reivindicações à espera de decisão ao mesmo tempo (um jogador no máximo 5
+  de todas as contas juntas). Atingido esse limite, espera até que uma reivindicação pendente seja tratada, ou retira
+  uma com **Retirar este pedido**, e tenta novamente.
 - Algo parece errado no site da tua comunidade: pergunta primeiro às pessoas que o gerem. Os erros no próprio software
   podem ser comunicados nas issues do projeto; vê [SUPPORT.md](../../../../SUPPORT.md). Nunca publiques ligações de início de sessão nem os nomes de outras
   pessoas.

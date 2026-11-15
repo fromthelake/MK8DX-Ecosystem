@@ -92,6 +92,11 @@ Je kunt eerst opnemen en later bij een community aansluiten. Dit gebeurt er met 
 
 Stel **Taal van je Switch** in bij Instellingen als de taal van de console afwijkt van die van het dashboard.
 
+Het dashboard is alleen vanaf deze computer te bedienen: in het LiveTrial-venster of op de dashboardpagina die op deze
+pc open staat. Start je de engine met `--lan` (zie de
+[README van de LiveTrial-component](../../../../apps/timetrials-desktop/README.md)), dan kunnen telefoons en tablets
+in het netwerk de live-weergave en de ritten bekijken, maar niets veranderen.
+
 ## Problemen
 
 - Verkeerde website, of aanmelden opent de verkeerde site: sluit LiveTrial af met **LiveTrial afsluiten**, start

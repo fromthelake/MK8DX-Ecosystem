@@ -141,6 +141,10 @@ l'interrupteur propre à l'application doivent tous deux être activés.
 
 - Pas d'e-mail de connexion : vérifie les spams, l'adresse exacte et demande un nouveau lien. Sur une installation d'essai locale,
   l'e-mail arrive dans la boîte de réception de test locale, pas dans ta boîte aux lettres.
+- Une revendication est refusée avec *Trop d’actions de revendication pour le moment…* : attends le délai indiqué et
+  réessaie. Un compte peut avoir au plus 5 revendications en attente de décision à la fois (un joueur au plus 5, tous
+  comptes confondus). À cette limite, attends qu’une revendication en attente soit traitée, ou retires-en une avec
+  **Retirer cette demande**, puis réessaie.
 - Quelque chose semble anormal sur le site de ta communauté : demande d'abord aux personnes qui le gèrent. Les bugs du logiciel lui-même
   peuvent être signalés dans les tickets du projet ; voir [SUPPORT.md](../../../../SUPPORT.md). Ne publie jamais de liens de connexion ni les noms
   d'autres personnes.

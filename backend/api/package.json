@@ -12,6 +12,7 @@
     "admin:locate-account": "node dist/administration/administrator-account-lookup-main.js",
     "admin:install": "node dist/administration/installer-administrator-main.js",
     "admin:recover": "node dist/administration/administrator-recovery-main.js",
+    "admin:step-up-link": "node dist/security/step-up-operator-main.js",
     "reference:seed": "node dist/composition/reference-seed-main.js",
     "auth:approve-android-device": "node dist/authentication/device-authorization-operator-main.js",
     "migration:firebase-import": "node dist/migration/firebase-import-main.js",

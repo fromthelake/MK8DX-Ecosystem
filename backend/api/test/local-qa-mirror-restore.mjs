@@ -38,7 +38,10 @@ const CATALOGED_MIGRATIONS = CATALOGED_MIGRATION_VERSIONS.length;
 // 0089 widens the same table's reason check once more. 0090 adds the empty carried-originals record
 // (filled from carried revisions, which a snapshot does not have) and widens the lifecycle checks.
 // 0091 adds the nullable community name to the (never restored) installation settings and widens its audit.
-const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088", "0089", "0090", "0091"]);
+// 0092 adds the empty live capture delegation table and three columns to Tournament evidence records plus one
+// nullable column to their live-mapping audit.
+// 0095 adds the two empty step-up tables (confirmation links and their audit); a snapshot carries neither.
+const REVIEWED_LOCALLY_APPLIED_SUFFIX = new Set(["0066", "0067", "0071", "0072", "0073", "0074", "0075", "0076", "0077", "0078", "0079", "0080", "0081", "0082", "0083", "0084", "0085", "0086", "0087", "0088", "0089", "0090", "0091", "0092", "0095"]);
 // Nullable columns those migrations add to tables the snapshot carries. A snapshot taken before the migration lacks
 // them; its rows restore into the remaining columns and the new column stays NULL, as it would in production.
 const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
@@ -58,6 +61,14 @@ const REVIEWED_LOCALLY_ADDED_COLUMNS = new Map([
   ]],
   // community_name NULL = not set, what every installation had before the setting existed.
   ["0091", [["installation_settings", "community_name"]]],
+  // entries_byte_length is NOT NULL DEFAULT 0: a restored record counts as empty towards the evidence quota until
+  // its uploader writes it again. The other three stay NULL (not purged, not withdrawn, basis not recorded).
+  ["0092", [
+    ["tournament_evidence_records", "entries_byte_length"],
+    ["tournament_evidence_records", "payload_purged_at_ms"],
+    ["tournament_evidence_records", "live_withdrawn_at_ms"],
+    ["tournament_live_mapping_audit", "authorization_basis"],
+  ]],
 ]);
 
 function locallyAddedColumns(snapshotMigrationCount, table) {

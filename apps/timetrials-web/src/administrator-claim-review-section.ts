@@ -1,3 +1,4 @@
+import { claimLimitMessage } from "./claim-limit-message.js";
 import {
   createClaimWalkClient,
   type ClaimNote,
@@ -141,9 +142,9 @@ export function mountAdministratorClaimReviewSection(
         void load();
         return;
       }
-      status.textContent = error instanceof PlayerClaimClientError && error.code === "invalid_input"
+      status.textContent = claimLimitMessage(error) ?? (error instanceof PlayerClaimClientError && error.code === "invalid_input"
         ? localized("Write a question for the person first.", "Schrijf eerst een vraag aan de persoon.")
-        : localized("That did not go through. Please try again.", "Dat lukte niet. Probeer het opnieuw.");
+        : localized("That did not go through. Please try again.", "Dat lukte niet. Probeer het opnieuw."));
     });
   };
 

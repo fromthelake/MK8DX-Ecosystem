@@ -2,6 +2,8 @@ import type { FastifyInstance } from "fastify";
 
 import type { NativeEmailApprovalService } from "./native-email-approval.js";
 import type { ClientAddressResolver } from "../security/client-address.js";
+import { MutationRateLimitExceeded } from "../security/mysql-mutation-rate-limiter.js";
+import { budgetRecipient, type AuthEmailBudgets } from "./auth-email-budgets.js";
 
 const SCHEMA_VERSION = "mk8dx.native-email-approval.v1";
 
@@ -43,9 +45,11 @@ export async function registerNativeEmailApprovalRoutes(
     service: Pick<NativeEmailApprovalService, "request" | "verifyCode" | "inspectLink" | "approveLink">;
     /** Per-client address for the per-address limit; without it the TCP peer is the client. */
     clientAddress?: Pick<ClientAddressResolver, "resolve">;
+    /** H1: durable per-address, installation and per-recipient mail budgets. */
+    budgets?: Pick<AuthEmailBudgets, "email">;
   }>,
 ): Promise<void> {
-  const { service, clientAddress } = options;
+  const { service, clientAddress, budgets } = options;
 
   app.post<{ Body: { userCode: string; email: string } }>(
     "/v1/native/device-authorization/email",
@@ -68,11 +72,22 @@ export async function registerNativeEmailApprovalRoutes(
             properties: { schemaVersion: { type: "string", const: SCHEMA_VERSION }, status: { type: "string", const: "sent_if_eligible" } },
           },
           400: errorSchema,
+          429: errorSchema,
         },
       },
     },
     async (request, reply) => {
       reply.header("Cache-Control", "no-store");
+      if (budgets !== undefined) {
+        try {
+          await budgets.email(request, budgetRecipient(request.body.email));
+        } catch (error) {
+          if (!(error instanceof MutationRateLimitExceeded)) { throw error; }
+          reply.header("retry-after", String(error.retryAfterSeconds));
+          return reply.code(429).send({ code: "native_email_rate_limited",
+            message: "Too many sign-in requests were received. Wait before retrying." });
+        }
+      }
       const requester = (clientAddress === undefined
         ? null
         : await clientAddress.resolve(request.raw.socket?.remoteAddress, request.headers)) ?? request.ip;

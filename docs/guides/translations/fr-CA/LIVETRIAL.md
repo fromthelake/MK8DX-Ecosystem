@@ -91,6 +91,11 @@ Tu peux d'abord enregistrer et rejoindre une communauté plus tard. Voici ce qu'
 
 Règle **Langue de ta Switch** dans les Paramètres quand la langue de la console diffère de celle du tableau de bord.
 
+Le tableau de bord ne se commande que depuis cet ordinateur : dans la fenêtre LiveTrial ou sur la page du tableau de
+bord ouverte sur ce PC. Si le moteur est lancé avec `--lan` (voir le
+[README du composant LiveTrial](../../../../apps/timetrials-desktop/README.md)), les téléphones et tablettes du réseau
+peuvent regarder la vue en direct et les courses, mais ne peuvent rien modifier.
+
 ## Problèmes
 
 - Mauvais site, ou la connexion ouvre le mauvais site : quitte LiveTrial avec **Quitter LiveTrial**, relance-le et

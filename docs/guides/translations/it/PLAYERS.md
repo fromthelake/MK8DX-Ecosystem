@@ -137,6 +137,10 @@ l'interruttore dell'app stessa.
 
 - Nessuna email di accesso: controlla lo spam e l'indirizzo esatto, e chiedi un nuovo link. In un'installazione di prova locale
   l'email arriva nella casella di posta di test locale, non nella tua casella di posta.
+- Una rivendicazione viene rifiutata con *Troppe azioni di rivendicazione in questo momento…*: attendi il tempo
+  indicato e riprova. Un account può avere al massimo 5 rivendicazioni in attesa di decisione alla volta (un giocatore
+  al massimo 5 da tutti gli account insieme). Raggiunto questo limite, attendi che una rivendicazione in sospeso venga
+  gestita, oppure ritirane una con **Ritira questa richiesta**, e riprova.
 - Qualcosa sembra sbagliato sul sito della tua community: chiedi prima alle persone che lo gestiscono. I bug del software stesso
   si possono segnalare nelle issue del progetto; vedi [SUPPORT.md](../../../../SUPPORT.md). Non pubblicare mai link di accesso o nomi
   di altre persone.

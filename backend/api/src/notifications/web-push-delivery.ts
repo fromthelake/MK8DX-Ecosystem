@@ -6,12 +6,24 @@ import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 import { TRACK_SOCIAL } from "../runtime/track-social-manifest.js";
 import type { ProtectedValue } from "../timetrials/submission-service.js";
 import type { WebPushSubscriptionInput } from "./notification-channel-service.js";
+import { WebPushEgressPolicy } from "./web-push-egress.js";
+import {
+  GuardedHttpsWebPushTransport,
+  WebPushTransportError,
+  type WebPushTransport,
+  type WebPushTransportFailure,
+} from "./web-push-transport.js";
 
 export type WebPushConfiguration = Readonly<{
   subject: string;
   publicKey: string;
   privateKey: string;
+  /** Push services the operator accepts besides the browsers' own (see web-push-egress.ts). */
+  extraProviderHosts?: readonly string[];
 }>;
+
+/** A subscription whose deliveries died this many times in a row, without a success since, is retired. */
+export const WEB_PUSH_DEAD_DELIVERIES_BEFORE_RETIREMENT = 3;
 
 export interface WebPushSubscriptionReader {
   decryptSubscription(value: ProtectedValue): string;
@@ -217,6 +229,45 @@ export class MysqlWebPushDeliveryRepository {
     return claimed;
   }
 
+  /**
+   * Hands claimed deliveries back without counting an attempt: used when an
+   * earlier delivery to the same subscription failed at the connection level
+   * in this round, so the rest do not each wait for the same broken endpoint.
+   */
+  public async release(deliveryIds: readonly number[], nextAttemptAtMs: number): Promise<void> {
+    if (deliveryIds.length === 0) return;
+    await this.pool.query<ResultSetHeader>(
+      `UPDATE notification_deliveries
+       SET delivery_status = 'retry', attempt_count = GREATEST(attempt_count, 1) - 1,
+           next_attempt_at_ms = ?
+       WHERE notification_delivery_id IN (?) AND delivery_status = 'processing'`,
+      [nextAttemptAtMs, [...deliveryIds]],
+    );
+  }
+
+  /** Due work and its age, for the operator's backlog signal. */
+  public async backlog(nowMs: number): Promise<Readonly<{
+    dueCount: number; oldestDueAgeMs: number; processingCount: number;
+  }>> {
+    const [rows] = await this.pool.execute<RowDataPacket[]>(
+      `SELECT
+         SUM(delivery_status IN ('pending', 'retry') AND next_attempt_at_ms <= ?) AS dueCount,
+         MIN(CASE WHEN delivery_status IN ('pending', 'retry') AND next_attempt_at_ms <= ?
+                  THEN next_attempt_at_ms END) AS oldestDue,
+         SUM(delivery_status = 'processing') AS processingCount
+       FROM notification_deliveries
+       WHERE delivery_status IN ('pending', 'retry', 'processing')`,
+      [nowMs, nowMs],
+    );
+    const row: Record<string, unknown> = rows[0] ?? {};
+    const oldest = row["oldestDue"] === null || row["oldestDue"] === undefined ? null : Number(row["oldestDue"]);
+    return {
+      dueCount: Number(row["dueCount"] ?? 0) || 0,
+      oldestDueAgeMs: oldest === null || !Number.isFinite(oldest) ? 0 : Math.max(0, nowMs - oldest),
+      processingCount: Number(row["processingCount"] ?? 0) || 0,
+    };
+  }
+
   public async delivered(deliveryId: number, nowMs: number): Promise<void> {
     await this.pool.execute<ResultSetHeader>(
       `UPDATE notification_deliveries
@@ -253,9 +304,26 @@ export class MysqlWebPushDeliveryRepository {
          WHERE notification_delivery_id = ?`,
         [dead ? "dead" : "retry", input.nowMs + delay, input.errorCode.slice(0, 32), input.deliveryId],
       );
-      if (input.expiredSubscription) {
+      let retire = input.expiredSubscription;
+      if (dead && !retire) {
+        // A subscription that keeps dying without a single success is stale:
+        // retire it rather than paying for it on every new notification.
+        const [counts] = await connection.execute<RowDataPacket[]>(
+          `SELECT COUNT(*) AS deadCount FROM notification_deliveries
+           WHERE web_push_subscription_id = ? AND delivery_status IN ('dead')
+             AND last_error_code IS NOT NULL AND last_error_code <> 'no_longer_eligible'
+             AND COALESCE(last_attempt_at_ms, 0) >= COALESCE(
+               (SELECT MAX(delivered.delivered_at_ms) FROM notification_deliveries AS delivered
+                WHERE delivered.web_push_subscription_id = ? AND delivered.delivery_status = 'delivered'),
+               0)`,
+          [input.subscriptionId, input.subscriptionId],
+        );
+        // This delivery becomes dead in this transaction and is counted too.
+        retire = Number(counts[0]?.["deadCount"] ?? 0) >= WEB_PUSH_DEAD_DELIVERIES_BEFORE_RETIREMENT;
+      }
+      if (retire) {
         await connection.execute<ResultSetHeader>(
-          `UPDATE web_push_subscriptions SET revoked_at_ms = ?, updated_at_ms = ?
+          `UPDATE web_push_subscriptions SET revoked_at_ms = GREATEST(?, created_at_ms), updated_at_ms = ?
            WHERE web_push_subscription_id = ? AND revoked_at_ms IS NULL`,
           [input.nowMs, input.nowMs, input.subscriptionId],
         );
@@ -443,50 +511,232 @@ function presentation(delivery: ClaimedDelivery): Readonly<{
   };
 }
 
+export type WebPushTickSummary = Readonly<{
+  claimed: number;
+  delivered: number;
+  retried: number;
+  dead: number;
+  released: number;
+  timeouts: number;
+  refused: number;
+  durationMs: number;
+}>;
+
+export type WebPushWorkerMetrics = Readonly<{
+  ticks: number;
+  skippedTicks: number;
+  claimed: number;
+  delivered: number;
+  retried: number;
+  dead: number;
+  released: number;
+  timeouts: number;
+  refused: number;
+  lastTickDurationMs: number;
+}>;
+
+export type WebPushWorkerOptions = Readonly<{
+  transport?: WebPushTransport;
+  /** Subscriptions served at the same time; one slow endpoint holds at most one slot. */
+  concurrency?: number;
+  claimLimit?: number;
+  /** How long deliveries that were handed back wait before they are offered again. */
+  releaseDelayMs?: number;
+}>;
+
+type Outcome = Readonly<{
+  status: "delivered" | "retry" | "dead";
+  connectionFailure: boolean;
+  timeout: boolean;
+  refused: boolean;
+}>;
+
+type Counters = {
+  claimed: number; delivered: number; retried: number; dead: number;
+  released: number; timeouts: number; refused: number;
+};
+
+const refusals = new Set<WebPushTransportFailure>([
+  "provider_not_allowed", "invalid_endpoint", "destination_refused",
+]);
+
 export class WebPushDeliveryWorker {
   private running = false;
+  private readonly transport: WebPushTransport;
+  private readonly concurrency: number;
+  private readonly claimLimit: number;
+  private readonly releaseDelayMs: number;
+  private readonly vapidDetails: Readonly<{ subject: string; publicKey: string; privateKey: string }>;
+  private totals: WebPushWorkerMetrics = {
+    ticks: 0, skippedTicks: 0, claimed: 0, delivered: 0, retried: 0, dead: 0, released: 0,
+    timeouts: 0, refused: 0, lastTickDurationMs: 0,
+  };
 
   public constructor(
-    private readonly repository: MysqlWebPushDeliveryRepository,
+    private readonly repository: Pick<MysqlWebPushDeliveryRepository,
+      "materialize" | "claim" | "delivered" | "failed" | "release">,
     configuration: WebPushConfiguration,
     private readonly now: () => number = Date.now,
+    options: WebPushWorkerOptions = {},
   ) {
+    // Validates the VAPID key pair once at start-up.
     webPush.setVapidDetails(configuration.subject, configuration.publicKey, configuration.privateKey);
+    this.vapidDetails = {
+      subject: configuration.subject,
+      publicKey: configuration.publicKey,
+      privateKey: configuration.privateKey,
+    };
+    this.transport = options.transport ?? new GuardedHttpsWebPushTransport({
+      policy: new WebPushEgressPolicy(configuration.extraProviderHosts ?? []),
+    });
+    this.concurrency = Math.max(1, Math.min(16, options.concurrency ?? 4));
+    this.claimLimit = Math.max(1, Math.min(50, options.claimLimit ?? 20));
+    this.releaseDelayMs = Math.max(0, options.releaseDelayMs ?? 60_000);
   }
 
-  public async tick(): Promise<void> {
-    if (this.running) return;
+  /** Cumulative counters since start, for health and operator logs. */
+  public metrics(): WebPushWorkerMetrics {
+    return { ...this.totals };
+  }
+
+  /**
+   * One delivery round; null when the previous round is still running.
+   * Every request has its own hard deadline (the transport's), at most
+   * `concurrency` subscriptions are served at once, and the deliveries of one
+   * subscription run in order, so a hanging endpoint costs one deadline per
+   * round and never holds the deliveries of other subscriptions.
+   */
+  public async tick(): Promise<WebPushTickSummary | null> {
+    if (this.running) {
+      this.totals = { ...this.totals, skippedTicks: this.totals.skippedTicks + 1 };
+      return null;
+    }
     this.running = true;
-    const nowMs = this.now();
+    const startedAtMs = this.now();
+    const summary: Counters = {
+      claimed: 0, delivered: 0, retried: 0, dead: 0, released: 0, timeouts: 0, refused: 0,
+    };
     try {
-      await this.repository.materialize(nowMs);
-      for (const delivery of await this.repository.claim(nowMs)) {
-        const display = presentation(delivery);
-        try {
-          await webPush.sendNotification(delivery.subscription, JSON.stringify({
-            schemaVersion: "mk8dx.web-push.v1",
-            notificationId: delivery.notificationId,
-            eventRevision: delivery.eventRevision,
-            title: display.title,
-            body: display.body,
-            url: display.url,
-            tag: `mk8dx-notification-${delivery.notificationId}`,
-            unreadCount: delivery.unreadCount,
-          }), { TTL: 6 * 60 * 60, urgency: "high", topic: `n${delivery.notificationId}`.slice(0, 32) });
-          await this.repository.delivered(delivery.deliveryId, this.now());
-        } catch (error) {
-          const status = typeof error === "object" && error !== null &&
-            "statusCode" in error ? Number((error as { statusCode?: unknown }).statusCode) : 0;
-          await this.repository.failed({
-            deliveryId: delivery.deliveryId,
-            subscriptionId: delivery.subscriptionId,
-            nowMs: this.now(),
-            permanent: status >= 400 && status < 500 && status !== 408 && status !== 429,
-            expiredSubscription: status === 404 || status === 410,
-            errorCode: status > 0 ? `http_${status}` : "transport_error",
-          });
-        }
+      await this.repository.materialize(startedAtMs);
+      const claimed = await this.repository.claim(startedAtMs, this.claimLimit);
+      summary.claimed = claimed.length;
+      const groups = new Map<number, ClaimedDelivery[]>();
+      for (const delivery of claimed) {
+        const group = groups.get(delivery.subscriptionId);
+        if (group === undefined) groups.set(delivery.subscriptionId, [delivery]);
+        else group.push(delivery);
       }
-    } finally { this.running = false; }
+      const queue = [...groups.values()];
+      const failures: unknown[] = [];
+      const serve = async (): Promise<void> => {
+        for (let group = queue.shift(); group !== undefined; group = queue.shift()) {
+          // A failing database write leaves the rest of this group in
+          // 'processing'; the claim lease returns it to the queue later.
+          try { await this.serveSubscription(group, summary); }
+          catch (error) { failures.push(error); }
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(this.concurrency, queue.length) }, serve));
+      if (failures.length > 0) throw failures[0];
+      return { ...summary, durationMs: Math.max(0, this.now() - startedAtMs) };
+    } finally {
+      const totals = this.totals;
+      this.totals = {
+        ticks: totals.ticks + 1,
+        skippedTicks: totals.skippedTicks,
+        claimed: totals.claimed + summary.claimed,
+        delivered: totals.delivered + summary.delivered,
+        retried: totals.retried + summary.retried,
+        dead: totals.dead + summary.dead,
+        released: totals.released + summary.released,
+        timeouts: totals.timeouts + summary.timeouts,
+        refused: totals.refused + summary.refused,
+        lastTickDurationMs: Math.max(0, this.now() - startedAtMs),
+      };
+      this.running = false;
+    }
+  }
+
+  private async serveSubscription(group: readonly ClaimedDelivery[], summary: Counters): Promise<void> {
+    for (const [index, delivery] of group.entries()) {
+      const outcome = await this.deliver(delivery);
+      if (outcome.status === "delivered") summary.delivered += 1;
+      else if (outcome.status === "retry") summary.retried += 1;
+      else summary.dead += 1;
+      if (outcome.timeout) summary.timeouts += 1;
+      if (outcome.refused) summary.refused += 1;
+      if (outcome.connectionFailure && index + 1 < group.length) {
+        const rest = group.slice(index + 1).map((entry) => entry.deliveryId);
+        await this.repository.release(rest, this.now() + this.releaseDelayMs);
+        summary.released += rest.length;
+        return;
+      }
+    }
+  }
+
+  private async deliver(delivery: ClaimedDelivery): Promise<Outcome> {
+    const display = presentation(delivery);
+    let statusCode = 0;
+    let failure: WebPushTransportFailure | null = null;
+    try {
+      const details = webPush.generateRequestDetails(delivery.subscription, JSON.stringify({
+        schemaVersion: "mk8dx.web-push.v1",
+        notificationId: delivery.notificationId,
+        eventRevision: delivery.eventRevision,
+        title: display.title,
+        body: display.body,
+        url: display.url,
+        tag: `mk8dx-notification-${delivery.notificationId}`,
+        unreadCount: delivery.unreadCount,
+      }), {
+        TTL: 6 * 60 * 60,
+        urgency: "high",
+        topic: `n${delivery.notificationId}`.slice(0, 32),
+        vapidDetails: this.vapidDetails,
+      });
+      const headers: Record<string, string | number> = {};
+      for (const [name, value] of Object.entries(details.headers ?? {})) {
+        if (typeof value === "string" || typeof value === "number") headers[name] = value;
+      }
+      const body = details.body === null || details.body === undefined
+        ? null
+        : Buffer.from(details.body as Uint8Array);
+      statusCode = (await this.transport.send({
+        endpoint: delivery.subscription.endpoint, headers, body,
+      })).statusCode;
+    } catch (error) {
+      // A subscription the library cannot encrypt for is as undeliverable as a refused endpoint.
+      failure = error instanceof WebPushTransportError ? error.failure : "invalid_endpoint";
+    }
+    if (failure === null && statusCode >= 200 && statusCode <= 299) {
+      await this.repository.delivered(delivery.deliveryId, this.now());
+      return { status: "delivered", connectionFailure: false, timeout: false, refused: false };
+    }
+    const refused = failure !== null && refusals.has(failure);
+    // A refused destination is never retried: the endpoint is not an accepted
+    // push service, or its name does not resolve to public addresses only.
+    // Redirects are not followed and count as a permanent refusal too.
+    const permanent = refused || (failure === null &&
+      ((statusCode >= 300 && statusCode < 400) ||
+       (statusCode >= 400 && statusCode < 500 && statusCode !== 408 && statusCode !== 429)));
+    const expiredSubscription = (failure === null && (statusCode === 404 || statusCode === 410)) ||
+      failure === "provider_not_allowed" || failure === "invalid_endpoint";
+    const errorCode = failure !== null
+      ? (failure === "timeout" ? "transport_timeout" : failure)
+      : statusCode >= 300 && statusCode < 400 ? "redirect_refused" : `http_${statusCode}`;
+    await this.repository.failed({
+      deliveryId: delivery.deliveryId,
+      subscriptionId: delivery.subscriptionId,
+      nowMs: this.now(),
+      permanent,
+      expiredSubscription,
+      errorCode,
+    });
+    return {
+      status: permanent ? "dead" : "retry",
+      connectionFailure: failure !== null,
+      timeout: failure === "timeout",
+      refused,
+    };
   }
 }

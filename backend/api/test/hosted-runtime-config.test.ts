@@ -132,6 +132,26 @@ describe("passwordless hosted runtime configuration", () => {
     }
   });
 
+  it("reads extra Web Push providers only together with the Web Push keys", () => {
+    const push = {
+      MK8DX_HOSTED_WEB_PUSH_SUBJECT: "mailto:operator@example.test",
+      MK8DX_HOSTED_WEB_PUSH_PUBLIC_KEY: Buffer.alloc(65, 8).toString("base64url"),
+      MK8DX_HOSTED_WEB_PUSH_PRIVATE_KEY: Buffer.alloc(32, 9).toString("base64url"),
+    };
+    expect(loadPasswordlessHostedRuntimeConfig(environment(push)).webPush?.extraProviderHosts).toBeUndefined();
+    expect(loadPasswordlessHostedRuntimeConfig(environment({
+      ...push, MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS: "push.community.example, *.up.example.org",
+    })).webPush?.extraProviderHosts).toEqual(["push.community.example", "*.up.example.org"]);
+    for (const extra of ["10.0.0.1", "*.com", "push.example.org:8443", "https://push.example.org"]) {
+      expect(() => loadPasswordlessHostedRuntimeConfig(environment({
+        ...push, MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS: extra,
+      }))).toThrow(HostedRuntimeConfigurationError);
+    }
+    expect(() => loadPasswordlessHostedRuntimeConfig(environment({
+      MK8DX_HOSTED_WEB_PUSH_EXTRA_PROVIDER_HOSTS: "push.community.example",
+    }))).toThrow(HostedRuntimeConfigurationError);
+  });
+
   it("rejects unsafe database, path, JSON, key, boolean, and secret reuse", () => {
     for (const overrides of [
       { MK8DX_HOSTED_MYSQL_DATABASE: "mysql" },

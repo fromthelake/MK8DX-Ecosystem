@@ -87,6 +87,11 @@ Du kannst zuerst aufzeichnen und später einer Community beitreten. Was mit den 
 
 Stelle in den Einstellungen **Sprache deiner Switch** ein, wenn die Sprache der Konsole von der Sprache des Dashboards abweicht.
 
+Das Dashboard lässt sich nur von diesem Computer aus steuern: im LiveTrial-Fenster oder auf der Dashboard-Seite, die
+auf diesem PC geöffnet ist. Wird die Engine mit `--lan` gestartet (siehe
+[README der LiveTrial-Komponente](../../../../apps/timetrials-desktop/README.md)), können Handys und Tablets im
+Netzwerk die Live-Ansicht und die Läufe ansehen, aber nichts ändern.
+
 ## Probleme
 
 - Falsche Website, oder die Anmeldung öffnet die falsche Seite: Beende LiveTrial mit **LiveTrial beenden**, starte es

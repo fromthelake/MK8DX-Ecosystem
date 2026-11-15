@@ -16,6 +16,10 @@
 // itself, seen when.
 
 import type { ActorContext } from "../identity/types.js";
+import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
 
 /** Clients that may check in. The catalog constraint names the same three. */
 export const CLIENT_NAMES = ["android", "web", "livetrial"] as const;
@@ -74,6 +78,10 @@ export class ClientInstallationError extends Error {
  * on the write path, so nothing has to remember to run it.
  */
 export const CLIENT_INSTALLATION_RETENTION_MS = 18 * 30 * 24 * 60 * 60 * 1000;
+/** Rows kept per account (installations x versions); the least recently seen go first. */
+export const CLIENT_INSTALLATION_ROWS_PER_ACCOUNT = 100;
+/** Check-ins recorded per account and hour; more are acknowledged but not written. */
+export const CLIENT_CHECKINS_RECORDED_PER_ACCOUNT_HOUR = 120;
 
 const installationPattern = /^[A-Za-z0-9][A-Za-z0-9._-]{7,63}$/;
 const versionPattern = /^[0-9A-Za-z][0-9A-Za-z._+-]{0,63}$/;
@@ -82,6 +90,7 @@ export class ClientInstallationService {
   public constructor(
     private readonly repository: ClientInstallationRepository,
     private readonly now: () => number = Date.now,
+    private readonly limiter?: MutationRateLimiter,
   ) {}
 
   public async checkin(actor: ActorContext, checkin: ClientCheckin): Promise<void> {
@@ -104,6 +113,17 @@ export class ClientInstallationService {
       .slice(0, 64)
       .trim();
     const nowMs = this.now();
+    if (this.limiter !== undefined) {
+      try {
+        await this.limiter.consume(actor.userAccountId, "client-checkin-hour", 3_600,
+          CLIENT_CHECKINS_RECORDED_PER_ACCOUNT_HOUR);
+      } catch (error) {
+        // Best-effort telemetry: an over-eager client is acknowledged, not recorded,
+        // so no client retries or loses anything because of this budget.
+        if (error instanceof MutationRateLimitExceeded) { return; }
+        throw error;
+      }
+    }
     await this.repository.record(
       actor.userAccountId,
       {

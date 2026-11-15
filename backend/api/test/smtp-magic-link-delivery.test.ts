@@ -212,4 +212,26 @@ describe("SMTP magic-link delivery", () => {
       await expect(delivery.sendNativeSignIn(message)).rejects.toBeInstanceOf(SmtpMagicLinkDeliveryError);
     }
   });
+
+  it("sends a step-up confirmation only to the own origin with a well-formed link", async () => {
+    const transport = new SyntheticTransport();
+    const delivery = new SmtpMagicLinkDelivery(transport, "noreply@mk8dx.example", origin);
+    const good = { email: "anna@example.test", url: `${origin}/?step-up=${"b".repeat(43)}`,
+      clientKind: "native" as const, expiresInMinutes: 10 };
+    await delivery.sendStepUp(good);
+    const message = transport.messages[0]!;
+    expect(message).toMatchObject({ to: "anna@example.test", subject: "Confirm your MK8DX administrator action",
+      disableUrlAccess: true, disableFileAccess: true });
+    expect(String(message["html"])).toContain("step-up=");
+    expect(String(message["text"])).toContain("expires in 10 minutes");
+    for (const bad of [
+      { ...good, url: `https://evil.example/?step-up=${"b".repeat(43)}` },
+      { ...good, url: `${origin}/device?step-up=${"b".repeat(43)}` },
+      { ...good, url: `${origin}/?step-up=short` },
+      { ...good, email: "not an address" },
+      { ...good, expiresInMinutes: 0 },
+    ]) {
+      await expect(delivery.sendStepUp(bad)).rejects.toBeInstanceOf(SmtpMagicLinkDeliveryError);
+    }
+  });
 });

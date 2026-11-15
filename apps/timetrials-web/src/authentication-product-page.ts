@@ -6,6 +6,12 @@ import {
   NativeEmailApprovalClientError,
 } from "./native-email-approval-client.js";
 import {
+  StepUpClientError,
+  confirmStepUpLink,
+  inspectStepUpLink,
+  isStepUpToken,
+} from "./step-up-client.js";
+import {
   parseEngineMode,
   readViewerEnginePreference,
   resolveEngineMode,
@@ -2843,6 +2849,91 @@ export function mountAuthenticationProductPage(
     approve.control.focus?.();
   };
 
+  // The link in a step-up email (`/?step-up=<token>`): it shows what is being confirmed, and only the
+  // explicit button confirms it, because mail scanners open links.
+  const renderStepUpLink = async (token: string): Promise<void> => {
+    unmountProduct();
+    clear(content);
+    heading.hidden = true;
+    status.hidden = false;
+    const page = document.createElement("div");
+    page.className = "ds-root ds-device ds-stack";
+    page.setAttribute("data-spectacle", "minimal");
+    const title = document.createElement("h1");
+    title.className = "ds-title";
+    title.textContent = localized("Confirm an administrator action", "Beheeractie bevestigen");
+    const body = document.createElement("div");
+    body.className = "ds-stack";
+    page.append(title, body);
+    content.append(page);
+    const say = (tone: "info" | "success" | "warning" | "error", text: string): void => {
+      status.textContent = text;
+      body.replaceChildren(dsStatusMessage(tone, text));
+    };
+    const unusable = localized(
+      "This link has expired or was already used. Ask for a new email where you started the action.",
+      "Deze link is verlopen of al gebruikt. Vraag een nieuwe e-mail aan waar je de actie begon.");
+    say("info", localized("Checking the link…", "Link controleren…"));
+    if (!isStepUpToken(token)) { say("error", unusable); return; }
+    let request;
+    try {
+      request = await inspectStepUpLink(token);
+    } catch (error) {
+      if (disposed) { return; }
+      say("error", error instanceof StepUpClientError && error.code === "expired_or_used"
+        ? unusable
+        : localized("The link could not be checked. Please retry.", "De link kon niet worden gecontroleerd. Probeer het opnieuw."));
+      return;
+    }
+    if (disposed) { return; }
+    const minutes = Math.max(1, Math.round(request.windowSeconds / 60));
+    const summary = document.createElement("p");
+    summary.className = "ds-body";
+    summary.textContent = request.clientKind === "native"
+      ? localized(
+        `The MK8DX app signed in to your account asks to perform an administrator action. Confirming allows such actions from that app for ${minutes} minutes.`,
+        `De MK8DX-app die bij je account is aangemeld wil een beheeractie uitvoeren. Bevestigen staat zulke acties vanuit die app ${minutes} minuten toe.`)
+      : localized(
+        `A browser signed in to your account asks to perform an administrator action. Confirming allows such actions from that browser for ${minutes} minutes.`,
+        `Een browser die bij je account is aangemeld wil een beheeractie uitvoeren. Bevestigen staat zulke acties vanuit die browser ${minutes} minuten toe.`);
+    const warning = dsStatusMessage("warning", localized(
+      "Confirm only if you just asked for this yourself. If not, ignore this page and sign out your other sessions.",
+      "Bevestig alleen als je dit net zelf hebt gevraagd. Zo niet, negeer deze pagina en meld je andere sessies af."));
+    const notice = document.createElement("div");
+    const confirm = dsButton({
+      label: localized("Confirm this action", "Deze actie bevestigen"), variant: "primary",
+      onPress: () => {
+        const working = localized("Confirming…", "Bevestigen…");
+        confirm.setDisabled(working);
+        status.textContent = working;
+        notice.replaceChildren(dsStatusMessage("info", working));
+        void confirmStepUpLink(token).then(() => {
+          if (disposed) { return; }
+          const done = localized(
+            "Confirmed. The action continues where you started it; you can close this page.",
+            "Bevestigd. De actie gaat verder waar je hem begon; je kunt deze pagina sluiten.");
+          status.textContent = done;
+          notice.replaceChildren(dsStatusMessage("success", done));
+          confirm.root.hidden = true;
+        }).catch((error: unknown) => {
+          if (disposed) { return; }
+          const failed = error instanceof StepUpClientError && error.code === "expired_or_used"
+            ? unusable
+            : localized("Could not confirm. Please retry.", "Bevestigen is niet gelukt. Probeer het opnieuw.");
+          status.textContent = failed;
+          notice.replaceChildren(dsStatusMessage("error", failed));
+          confirm.setDisabled(null);
+        });
+      },
+    });
+    body.replaceChildren(dsPanel({
+      title: localized("Fresh confirmation", "Nieuwe bevestiging"), titleLevel: 2,
+      children: [summary, warning, confirm.root, notice],
+    }));
+    status.textContent = localized("Review this action.", "Beoordeel deze actie.");
+    confirm.control.focus?.();
+  };
+
   const renderNotFound = (): void => {
     setActiveNav(null);
     unmountProduct();
@@ -2976,6 +3067,12 @@ export function mountAuthenticationProductPage(
         compareIds[0] !== undefined) {
       return renderCompare(compareIds[0], compareIds[1] ?? null,
         parseEngineMode(query?.get("mode") ?? null));
+    }
+    const stepUpToken = query?.get("step-up") ?? null;
+    if (stepUpToken !== null) {
+      // The token must not linger in the address bar or history once read.
+      globalThis.history?.replaceState?.(null, "", "/?step-up=1");
+      return renderStepUpLink(stepUpToken);
     }
     const deviceEmail = query?.get("device-email") ?? null;
     if (deviceEmail !== null) {

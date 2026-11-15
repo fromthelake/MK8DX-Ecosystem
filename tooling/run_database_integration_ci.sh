@@ -19,11 +19,21 @@ if [[ "$mk8dx_image" != *@sha256:* ]]; then
 fi
 
 mk8dx_container="mk8dx-v010-ci-${mk8dx_engine}-${RANDOM}-${RANDOM}"
+# A free loopback port for the throwaway engine (default 33406; set another when that one is taken).
+mk8dx_port="${MK8DX_CI_DATABASE_PORT:-33406}"
+if [[ ! "$mk8dx_port" =~ ^[0-9]{4,5}$ ]]; then
+  echo 'MK8DX_CI_DATABASE_PORT must be a port number' >&2; exit 2
+fi
 mk8dx_password="ci-only-${RANDOM}-${RANDOM}"
+# Two accounts, as every installation route sets them up: migrations run with a migration account that may
+# change the schema; every suite runs with a runtime account that may only read and write rows.
+mk8dx_migration_password="ci-migration-${RANDOM}-${RANDOM}-${RANDOM}"
+mk8dx_runtime_password="ci-runtime-${RANDOM}-${RANDOM}-${RANDOM}"
 mk8dx_env_file="$(mktemp)"
-chmod 600 "$mk8dx_env_file"
+mk8dx_runtime_env_file="$(mktemp)"
+chmod 600 "$mk8dx_env_file" "$mk8dx_runtime_env_file"
 mk8dx_cleanup() {
-  rm -f -- "$mk8dx_env_file"
+  rm -f -- "$mk8dx_env_file" "$mk8dx_runtime_env_file"
   if [[ "$mk8dx_container" == mk8dx-v010-ci-* ]]; then
     docker rm -f "$mk8dx_container" >/dev/null 2>&1 || true
   fi
@@ -32,7 +42,7 @@ trap mk8dx_cleanup EXIT
 
 docker run -d --name "$mk8dx_container" \
   -e "MYSQL_ROOT_PASSWORD=$mk8dx_password" \
-  -p 127.0.0.1:33406:3306 "$mk8dx_image" >/dev/null
+  -p "127.0.0.1:${mk8dx_port}:3306" "$mk8dx_image" >/dev/null
 
 mk8dx_ready=0
 for _attempt in $(seq 1 90); do
@@ -57,11 +67,16 @@ if [[ "$mk8dx_engine" == mariadb ]]; then
     -e "SET GLOBAL sql_mode='ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'"
 fi
 
+docker exec -e "MYSQL_PWD=$mk8dx_password" "$mk8dx_container" "$mk8dx_client" -uroot -e "
+  CREATE USER 'mk8dx_ci_migration'@'%' IDENTIFIED BY '$mk8dx_migration_password';
+  CREATE USER 'mk8dx_ci_runtime'@'%' IDENTIFIED BY '$mk8dx_runtime_password';"
+
 export MK8DX_MYSQL_INTEGRATION=1
 export MK8DX_MYSQL_TEST_HOST=127.0.0.1
-export MK8DX_MYSQL_TEST_PORT=33406
-export MK8DX_MYSQL_TEST_USER=root
-export MK8DX_MYSQL_TEST_PASSWORD="$mk8dx_password"
+export MK8DX_MYSQL_TEST_PORT="$mk8dx_port"
+export MK8DX_MYSQL_TEST_USER=mk8dx_ci_runtime
+export MK8DX_MYSQL_TEST_PASSWORD="$mk8dx_runtime_password"
+export MK8DX_MYSQL_EXPECT_RUNTIME_ACCOUNT=1
 
 pushd backend/api >/dev/null
 mk8dx_count=0
@@ -75,9 +90,13 @@ for mk8dx_suite in test/*.integration.test.ts; do
   fi
   echo "[$mk8dx_engine $mk8dx_count] $mk8dx_suite"
   docker exec -e "MYSQL_PWD=$mk8dx_password" "$mk8dx_container" \
-    "$mk8dx_client" -uroot -e "CREATE DATABASE $mk8dx_database"
-  printf '{"MK8DX_HOSTED_MYSQL_HOST":"127.0.0.1","MK8DX_HOSTED_MYSQL_PORT":"33406","MK8DX_HOSTED_MYSQL_USER":"root","MK8DX_HOSTED_MYSQL_PASSWORD":"%s","MK8DX_HOSTED_MYSQL_DATABASE":"%s"}\n' \
-    "$mk8dx_password" "$mk8dx_database" > "$mk8dx_env_file"
+    "$mk8dx_client" -uroot -e "CREATE DATABASE $mk8dx_database;
+      GRANT ALL PRIVILEGES ON $mk8dx_database.* TO 'mk8dx_ci_migration'@'%';
+      GRANT SELECT, INSERT, UPDATE, DELETE ON $mk8dx_database.* TO 'mk8dx_ci_runtime'@'%';"
+  printf '{"MK8DX_HOSTED_MYSQL_HOST":"127.0.0.1","MK8DX_HOSTED_MYSQL_PORT":"%s","MK8DX_HOSTED_MYSQL_USER":"mk8dx_ci_migration","MK8DX_HOSTED_MYSQL_PASSWORD":"%s","MK8DX_HOSTED_MYSQL_DATABASE":"%s"}\n' \
+    "$mk8dx_port" "$mk8dx_migration_password" "$mk8dx_database" > "$mk8dx_env_file"
+  printf '{"MK8DX_HOSTED_MYSQL_HOST":"127.0.0.1","MK8DX_HOSTED_MYSQL_PORT":"%s","MK8DX_HOSTED_MYSQL_USER":"mk8dx_ci_runtime","MK8DX_HOSTED_MYSQL_PASSWORD":"%s","MK8DX_HOSTED_MYSQL_DATABASE":"%s"}\n' \
+    "$mk8dx_port" "$mk8dx_runtime_password" "$mk8dx_database" > "$mk8dx_runtime_env_file"
   node dist/composition/migration-apply-main.js \
     --private-environment-file "$mk8dx_env_file" \
     --migration-catalog ../../infrastructure/mysql/migration-catalog-v1.json \
@@ -90,12 +109,12 @@ for mk8dx_suite in test/*.integration.test.ts; do
       --world-record-seed ../../infrastructure/mysql/reference/world-records-v1.json
   fi
   MK8DX_MYSQL_TEST_DATABASE="$mk8dx_database" \
-    MK8DX_REFERENCE_TEST_CONFIG="$mk8dx_env_file" \
+    MK8DX_REFERENCE_TEST_CONFIG="$mk8dx_runtime_env_file" \
     npx vitest run --config vitest.config.ts "$mk8dx_suite"
 done
 popd >/dev/null
-if [[ "$mk8dx_count" != 40 ]]; then
-  echo "Expected 40 database suites; found $mk8dx_count" >&2
+if [[ "$mk8dx_count" != 50 ]]; then
+  echo "Expected 50 database suites; found $mk8dx_count" >&2
   exit 1
 fi
-echo "$mk8dx_engine: all $mk8dx_count integration suites passed"
+echo "$mk8dx_engine: all $mk8dx_count integration suites passed with the restricted runtime account"

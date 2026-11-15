@@ -1,3 +1,4 @@
+import { localized } from "./product-language.js";
 import {
   createIdentityLinkClient,
   IdentityLinkClientError,
@@ -52,9 +53,21 @@ export function mountAdministratorIdentityLinkSection(
   heading.textContent = "Accounts and Players";
   const status = document.createElement("p");
   status.setAttribute("role", "status");
-  status.textContent = "Loading accounts…";
+  // The list holds every account's e-mail address, so it is loaded only on request, and the server
+  // first asks this browser for a fresh confirmation by e-mail (the step-up dialog).
+  status.textContent = localized(
+    "The list shows every account's e-mail address. Opening it asks for a fresh confirmation by e-mail.",
+    "De lijst toont het e-mailadres van elk account. Openen vraagt om een nieuwe bevestiging per e-mail.");
+  const open = document.createElement("button");
+  open.type = "button";
+  open.className = "identity-link-open tt-auth__button";
+  open.textContent = localized("Show accounts", "Accounts tonen");
+  // The button sits in its own holder so it can be taken away and put back (a class with a display
+  // rule would override the hidden attribute).
+  const actions = document.createElement("div");
+  actions.append(open);
   const content = document.createElement("div");
-  container.append(heading, status, content);
+  container.append(heading, status, actions, content);
   root.append(container);
 
   const act = async (work: () => Promise<void>, done: string): Promise<void> => {
@@ -183,9 +196,19 @@ export function mountAdministratorIdentityLinkSection(
     try {
       const overview = await client.overview(controller.signal);
       if (disposed || current !== operation) { return; }
+      clear(actions);
       render(overview);
     } catch (error) {
       if (disposed || current !== operation) { return; }
+      if (error instanceof IdentityLinkClientError && error.code === "step_up_required") {
+        clear(content);
+        clear(actions);
+        actions.append(open);
+        status.textContent = localized(
+          "Not shown: the list needs a fresh confirmation by e-mail. Choose Show accounts to try again.",
+          "Niet getoond: de lijst vraagt om een nieuwe bevestiging per e-mail. Kies Accounts tonen om het opnieuw te proberen.");
+        return;
+      }
       if (error instanceof IdentityLinkClientError && error.code === "not_authorized") {
         // Not an administrator: the screen simply is not there.
         if (container.parentNode === root) { root.removeChild(container); }
@@ -195,7 +218,11 @@ export function mountAdministratorIdentityLinkSection(
     }
   };
 
-  const ready = load();
+  open.addEventListener("click", () => {
+    status.textContent = "Loading accounts…";
+    void load();
+  });
+  const ready = Promise.resolve();
 
   return {
     container,

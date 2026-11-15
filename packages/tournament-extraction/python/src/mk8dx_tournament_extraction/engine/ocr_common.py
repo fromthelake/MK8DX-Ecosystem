@@ -5,6 +5,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from ..spreadsheet_text import csv_imported_rows
 from .extract_common import (
     extract_exported_frame_number,
     find_score_bundle_consensus_paths,
@@ -63,7 +64,7 @@ def load_exported_frame_metadata(base_dir: Path):
     metadata_index = {}
     with metadata_path.open("r", encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle, delimiter=";")
-        for row in reader:
+        for row in csv_imported_rows(reader):
             video_name = str(row.get("Video", "")).strip()
             race_number_text = str(row.get("Race", "")).strip()
             kind = str(row.get("Kind", "")).strip()

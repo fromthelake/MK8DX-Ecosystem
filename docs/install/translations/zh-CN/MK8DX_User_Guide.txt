@@ -523,7 +523,13 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 在网站上，“管理”→“站点设置”中保存着整个网站范围的选项。“社区名称”（例如“北区俱乐部”）会在应用中代替网址显示；留空则不显示名称。“来自其他社区的成绩”决定玩家从另一个社区带来的成绩是被拒绝（“关闭”，默认值），还是等到管理员在“管理”→“计时赛”中点击它旁边的“发布”（“需审核”），或者遵循普通的发布规则（“允许”）。当仍有带来的成绩在等待时，如果你从“需审核”切换到其他选项，页面会询问如何处理它们。每一次更改都会记录管理员的名字。
 
+确认危险操作：更改管理员、赛事总监或报告权限，直接把账户关联到玩家，站点设置，重新计算评分，删除、重新打开或恢复比赛之夜，以及打开所有账户的列表，都会先要求“通过新的邮件链接确认”。点击“发送链接”；链接会发到你自己的邮箱地址，只能使用一次，10 分钟内有效，并且只确认当前这个浏览器或应用。在任意设备上打开它并点击“确认此操作”；操作会自动继续。如果你收到一封并非自己请求的邮件，说明有其他人持有你账户的会话：不要确认，并使用“在所有设备上退出登录”。如果邮件无法使用，仍然点击“发送链接”，并在 10 分钟内在服务器上运行 python tooling/install.py step-up-link --state-dir <安装文件夹>（在 Linux 和共享托管上使用 python3）；它会为该请求显示一个新的一次性链接。A2 不发送邮件，也不会要求这种确认。
+
 备份、恢复和更新
+
+自动备份：MK8DX 每晚还会自行创建一份经过校验的备份（A1、A3 和 B1 在首次设置时开启；B2 只询问一次，回车即为是；A2 在 MK8DX beheer 中有自己的备份）。在 Windows 上保存在 Documents\MK8DX-backups\automatic，在 Linux 和共享主机上保存在 ~/mk8dx-backups/automatic，保留 14 天和 4 周，某一晚失败也绝不会删除较早的备份。菜单 3（检查）会在 automaticBackup 下显示最近一次备份的时长和结果。仍请在电脑或服务器之外保留一份副本：在 Windows 上使用 python tooling/install.py backup-schedule --state-dir <安装文件夹> --copy-to <文件夹>（另一块硬盘或 NAS）；在服务器上，python3 tooling/install.py backup-latest --state-dir <安装文件夹> --print-path 会给出可用 scp 取回的最新已校验文件夹。关闭时把 backup-schedule 换成 backup-unschedule。如果主机商已每天备份账户（DirectAdmin、JetBackup），这可能已经足够；有自己的备份，你仍能亲自恢复到昨天，包括网站密钥。
+
+数据库账户：网站使用一个只能读写数据的账户登录数据库，因此网站中的错误永远无法删除数据表；数据库更新和备份使用第二个账户。A1、A2、A3 和 B1 会自动设置，现有安装会在下次更新（菜单 7）时设置；如果网站无法使用新账户启动，更新会回到旧账户，不会丢失任何数据。在 B2 上，请在 DirectAdmin 或 cPanel 中创建第二个只有 SELECT、INSERT、UPDATE 和 DELETE 的数据库用户，并在向导中填写，或稍后使用 python3 tooling/install.py database-accounts --state-dir <安装文件夹>；只有一个用户时 B2 仍可运行，但会显示警告。
 
 在相应的主机上选择菜单 6。在 Windows 上，备份保存在 Documents\MK8DX-backups\<timestamp> 下。在 Ubuntu 上，如果你以 root 身份工作，备份保存在 /root/mk8dx-backups/<timestamp> 下。备份包含数据库、账户、管理员权限、设置和密钥。请对整个文件夹保密，并把它也复制到主机之外受保护的存储中。只在同一台出故障的 VPS 上保存一份副本是不够的。
 

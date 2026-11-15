@@ -173,6 +173,11 @@ werkt maar één keer per installatie. Zie [Operations](../../../OPERATIONS.md) 
   dat ongedaan. Kies dus eerst 7 (bijwerken): die maakt een gecontroleerde back-up en voert de database-updates uit.
   Vanaf 0.2.4 weigert 2 (starten) tot de update gedraaid heeft; met een 0.2.3-pakket zou 2 de back-up overslaan
   (3, controleren, kan geen kwaad).
+- **De eerste update na 0.2.4** past de database-updates 0092 en 0095 toe en geeft de website een eigen
+  databaseaccount dat alleen rijen kan lezen en schrijven (`status` toont `"databaseAccounts": "separate"`; start de
+  website daarmee niet, dan gaat de update vanzelf terug naar het vorige account). Controleer daarna dat
+  aanmeldmail aankomt: gevaarlijke beheeracties vragen nu om een nieuwe e-maillink (hieronder). Ingebouwde grenzen
+  tegen overspoeling vragen geen instelling ([Muterende routes](../../../architecture/MUTATING_ROUTES.md#installation-budgets)).
 - **Mail of adres wijzigen**: `python3 tooling/install.py change-smtp|change-origin ...`, daarna `apply` en
   `check`, vanuit de pakketmap; het instellingenhoofdstuk van de handleiding heeft de exacte opdrachten.
 - **Herstellen**: `python3 tooling/lifecycle.py restore-new --backup <folder> --state-dir <new directory>` maakt uit een
@@ -315,5 +320,25 @@ ook de eigenschappen openen en ` -SkipCountdown` aan het eind van het doel toevo
   tijden staan onder Beheer → Tijdritten als achtergehouden, met een knop **Publiceren**. Stap je over van *Met goedkeuring* terwijl er nog meegenomen tijden wachten, dan vraagt de pagina
   of je ze allemaal wilt publiceren (of, bij overstappen naar uit, weigeren) of laten wachten. *Toegestaan* behandelt meegenomen tijden als elke
   andere inzending. Een meegenomen tijd laat altijd zien waar hij vandaan komt (ADR-0225).
+- **Gevaarlijke beheeracties vragen om een nieuwe e-maillink.** Beheerders-, directeurs- of verslagrechten geven of
+  intrekken, een account rechtstreeks aan een speler koppelen of ontkoppelen, een aanvraag om toernooien te leiden
+  goedkeuren, de installatie-instellingen wijzigen, ratings herberekenen, alle wachtende meegenomen tijden tegelijk
+  publiceren of weigeren, een toernooi weghalen, heropenen of terugzetten, een publicatie intrekken, en een directeur
+  die een toernooi verwijdert of weghaalt, tonen eerst **Bevestig met een nieuwe e-maillink**. De link gaat naar het
+  eigen adres van het account, werkt één keer en 10 minuten, en bevestigt alleen de browser- of app-sessie die erom
+  vroeg; open hem op een willekeurig apparaat en druk op **Deze actie bevestigen**, dan gaat de actie vanzelf verder.
+  Die sessie mag zulke acties daarna 10 minuten doen (`MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS`, 60 tot 3600, standaard
+  600). Hoogstens 3 links per account per 10 minuten en 10 per dag. Elke aanvraag, bevestiging en toegestane of
+  geweigerde actie wordt vastgelegd, zonder de link. De lijst met elk account en zijn e-mailadres (**Accounts and
+  Players**) laadt pas na **Accounts tonen** en vraagt om dezelfde bevestiging. Gewoon werk, de andere beheerpagina's
+  lezen en een avond runnen veranderen niet. Krijg je zo'n e-mail zonder dat je erom vroeg, dan heeft iemand anders een sessie van je account:
+  bevestig niet en meld je andere sessies af. Een offline LAN-installatie (A2 zonder e-mail) vraagt er niet om, omdat
+  ze de link niet kan versturen. De volledige lijst staat in
+  [Muterende routes](../../../architecture/MUTATING_ROUTES.md#fresh-confirmation-step-up). De bevestiging vraagt
+  werkende e-mail: houd de SMTP-instellingen actueel (`install.py change-smtp`). Werkt de mail niet, druk dan toch op
+  **Stuur de link** en draai binnen 10 minuten op de server `install.py step-up-link --state-dir <installatie>`; dat
+  toont een nieuwe eenmalige link voor die ene wachtende aanvraag, die je op dezelfde manier bevestigt. Het werkt
+  alleen op de server zelf en wordt vastgelegd; zie
+  [Operations](../../../OPERATIONS_NL.md#als-e-mail-niet-werkt-een-gevaarlijke-actie-bevestigen-vanaf-de-server).
 - Beveiligingsproblemen: [SECURITY.md](../../../../SECURITY.md). Houd de installatiemap, back-ups en aanmeldlinks
   buiten issues.

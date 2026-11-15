@@ -54,6 +54,10 @@ ligne : importer un fichier de résultats Live / Processor enregistré** dans un
 
 La publication et la cote de la communauté sont des décisions distinctes de l'étape finale.
 
+Dans les exports CSV et Excel, un nom qui commence par `=`, `+`, `-` ou `@` reste du texte quand tu ouvres le fichier
+dans un tableur ; dans un CSV, il reçoit pour cela une apostrophe au début, que les imports du site et des outils
+retirent ensuite.
+
 ## 3. Les Tournament Tools pour Windows
 
 ### Configuration requise
@@ -137,7 +141,8 @@ Dans PowerShell, dans le dossier du paquet :
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 (Dans l'ordre : `sign-in` demande une fois l'adresse du site, puis la connexion dans le navigateur; `server` affiche
@@ -152,6 +157,16 @@ pas de question : règle d'abord l'adresse avec `TournamentConnect.cmd server <a
 serveur restent avec ce serveur. Une course livrée arrive dans **Résultats entrants**; elle n'est jamais publiée
 automatiquement.
 
+La connexion n'ouvre le navigateur que sur l'adresse que tu as choisie : TournamentConnect et Tournament Live
+affichent cette adresse avec le code et refusent un lien de connexion qui pointe ailleurs. N'approuve que si le
+navigateur affiche la même adresse et le même code. `sign-out` met fin à la session de ce PC sur le site, puis la
+retire ici ; il n'affiche *Signed out* que lorsque le site confirme que la session ne fonctionne plus. Les autres
+appareils restent connectés. Si le site est injoignable, la connexion reste sur ce PC : réessaie plus tard, ou utilise
+`sign-out --this-pc-only` et mets fin à la session avec **Se déconnecter sur tous les appareils** dans le menu du
+compte sur le site (confirme avec **Se déconnecter partout** ; cela déconnecte tous les appareils du compte). Dans
+Tournament Live, **Se déconnecter** fait la même chose que `sign-out` ; **Travailler hors ligne** oublie seulement la
+connexion sur ce PC et le dit.
+
 ### Tournament Live vers le site
 
 1. Dans Tournament Live, choisis **Se connecter à Tournament Manager** (plus tard **Changer de tournoi**), termine la
@@ -165,6 +180,24 @@ automatiquement.
 3. Sur le site, ouvre la soirée, va à l'étape 5 (l'étape 9 pour les groupes finaux) et trouve le run sous **Enregistrements Tournament Live disponibles**.
    Choisis son groupe dans **Lier au groupe**, puis **Lier l'enregistrement vérifié**. Les courses attendent comme
    preuves en attente jusqu'à ce que tu les acceptes.
+
+### Délégations de capture et retrait d’un flux
+
+Une correspondance avec la liste n’ouvre jamais d’elle-même la vue publique en direct. Un flux Tournament Live ne
+devient public que lorsque vous (ou un administrateur) le confirmez, ou lorsqu’il provient d’un compte auquel vous
+avez délégué la capture en direct pour cette soirée. D’ici là, le site affiche *En attente du directeur* sur la
+session, et Tournament Live indique qu’il attend le directeur.
+
+- **Déléguer :** à l’étape 5 (étape 9 pour les groupes finaux), sous **Délégations de capture en direct**, choisissez
+  le compte de l’opérateur de capture et **Valable pendant** (12 heures par défaut, 7 jours au plus), puis **Déléguer
+  la capture en direct**. Une session en attente propose aussi **Déléguer la capture en direct à … (12 heures)**.
+  Un compte y apparaît dès que son Tournament Live s’est connecté à la soirée et a appuyé sur **START**. La prochaine
+  course dont les noms correspondent à la liste du groupe ouvre alors la vue publique.
+- **Révoquer :** choisissez **Révoquer** à côté de la délégation. Les flux de ce compte quittent aussitôt la vue
+  publique ; leurs courses restent pour votre vérification.
+- **Retirer un flux :** sur une session publique, choisissez **Retirer ce flux en direct** puis cliquez à nouveau pour
+  confirmer. Les courses restent ; vous seul pouvez le rouvrir avec **Confirmer manuellement le routage en direct**,
+  une correspondance avec la liste ne le peut pas.
 
 ### Se connecter plus tard
 
@@ -205,6 +238,18 @@ Les outils lisent le jeu dans ses 15 langues de console. Tournament Live a réus
 avec le paquet v0.2.2 : trois PC sources ont lu des vidéos de qualification enregistrées dans leurs propres cartes
 d'acquisition ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Une relecture vidéo sans carte
 d'acquisition ne teste pas le chemin de capture.
+
+## Supprimer ou retirer un tournoi demande un lien par e-mail
+
+Supprimer un brouillon ou retirer un tournoi, sur le site ou dans l'app Android, demande d'abord une nouvelle
+confirmation. La fenêtre **Confirmer avec un nouveau lien par e-mail** explique pourquoi ; **Envoyer le lien** envoie
+un lien à usage unique à l'adresse propre de ton compte. Le lien fonctionne une fois, pendant 10 minutes. Ouvre-le sur
+n'importe quel appareil et appuie sur **Confirmer cette action** ; la suppression reprend ensuite d'elle-même. La
+confirmation vaut 10 minutes, uniquement pour ce navigateur ou cette app. Mener la soirée (participants, groupes,
+scores, finalisation) ne la demande jamais, et une installation hors ligne à la maison ou au club sans courriel ne la
+demande pas du tout. Pas de courriel ? Vérifie les pourriels et envoie un nouveau lien ; si le courriel de la
+communauté ne fonctionne pas, la personne qui gère le serveur peut y émettre le lien à la place (voir
+[Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)).
 
 ## Compiler les outils soi-même
 

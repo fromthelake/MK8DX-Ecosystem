@@ -9,6 +9,10 @@ import { createAuthEndpoint, createAuthMiddleware, getSessionFromCtx } from "bet
 import { setSessionCookie } from "better-auth/cookies";
 
 import {
+  MutationRateLimitExceeded,
+  type MutationRateLimiter,
+} from "../security/mysql-mutation-rate-limiter.js";
+import {
   ADMIN_PIN_FAILURE_LIMIT,
   ADMIN_REMEMBERED_IDLE_MS,
   ACCOUNT_DEVICE_COOKIE,
@@ -17,6 +21,7 @@ import {
   REMEMBERED_ACCOUNTS_PER_DEVICE,
   REMEMBERED_ACCOUNT_IDLE_MS,
   deviceDigest,
+  deviceLimiterSubject,
   nativeDeviceDigest,
   entryIdPattern,
   newDeviceValue,
@@ -33,8 +38,14 @@ export type AccountSwitchAuthPluginOptions = Readonly<{
   store: AccountSwitchStore;
   directory: AccountSwitchDirectory;
   pins: AccountSwitchPins;
+  /** Bounds the sessions a remembered device can mint by switching (per account and per device). */
+  limiter?: MutationRateLimiter;
   nowMs?: () => number;
 }>;
+
+/** Switches that mint a new session, per account and per device and hour: far above real use. */
+export const ACCOUNT_SWITCH_SESSIONS_PER_ACCOUNT_HOUR = 60;
+export const ACCOUNT_SWITCH_SESSIONS_PER_DEVICE_HOUR = 120;
 
 /** The browser sign-ins that set a session cookie. Native (bearer) sign-in is not among them. */
 const REMEMBERING_PATHS = new Set(["/magic-link/verify", "/offline-invitation/redeem"]);
@@ -205,6 +216,21 @@ export function accountSwitchAuthPlugin(options: AccountSwitchAuthPluginOptions)
         }
         const found = await ctx.context.internalAdapter.findUserById(row.authUserId);
         if (found === null || found.emailVerified !== true) { return answer({ outcome: "unavailable" }); }
+        if (options.limiter !== undefined) {
+          // Only a device that holds a remembered entry gets here, so these buckets are bounded by
+          // real (device, account) pairs, never by values a caller makes up.
+          try {
+            await options.limiter.consume(target.userAccountId, "account-switch-session",
+              3_600, ACCOUNT_SWITCH_SESSIONS_PER_ACCOUNT_HOUR);
+            await options.limiter.consume(deviceLimiterSubject(device), "account-switch-session-device",
+              3_600, ACCOUNT_SWITCH_SESSIONS_PER_DEVICE_HOUR);
+          } catch (error) {
+            if (error instanceof MutationRateLimitExceeded) {
+              return answer({ outcome: "rate_limited", retryAfterSeconds: error.retryAfterSeconds });
+            }
+            throw error;
+          }
+        }
         const current = await getSessionFromCtx(ctx).catch(() => null);
         if (current !== null) {
           // The account switched away from stays remembered; only its session on this device ends.

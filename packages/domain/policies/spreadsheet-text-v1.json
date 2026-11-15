@@ -1,0 +1,71 @@
+{
+  "schema": "mk8dx.spreadsheet-text.v1",
+  "purpose": "Player names, group names, OCR text and other text that reaches a CSV or XLSX export must stay text when the file is opened in a spreadsheet program. The real value stays unchanged in the database and the domain; only the export boundary changes it, and every import of these files undoes exactly that change.",
+  "xlsx": "Write text as a string cell (shared or inline string, never a formula cell) and numbers as number cells. Do not add the CSV prefix in XLSX.",
+  "csv": {
+    "prefix": "'",
+    "needsPrefix": [
+      "A plain number never needs the prefix: an optional + or -, ASCII digits, optionally one . or , followed by ASCII digits (-5, +3, 12,5).",
+      "The first character is a control character U+0000-U+001F (tab, carriage return, line feed, ...).",
+      "After any leading spaces (U+0020, U+00A0, U+3000) the first character is one of = + - @ or their full-width forms U+FF1D U+FF0B U+FF0D U+FF20.",
+      "The value starts with ' and the rest needs the prefix (so a real leading apostrophe survives the round trip)."
+    ],
+    "export": "Prefix the value with one ' when it needs the prefix; otherwise write it unchanged. Delimiter quoting is applied afterwards, as before.",
+    "import": "When a value starts with ' and the rest needs the prefix, drop exactly that one '; otherwise keep the value unchanged."
+  },
+  "cases": [
+    { "value": "=1+1", "csv": "'=1+1" },
+    { "value": "=HYPERLINK(\"https://example.invalid\",\"x\")", "csv": "'=HYPERLINK(\"https://example.invalid\",\"x\")" },
+    { "value": "+1+1", "csv": "'+1+1" },
+    { "value": "-1+1", "csv": "'-1+1" },
+    { "value": "@SUM(A1:A2)", "csv": "'@SUM(A1:A2)" },
+    { "value": "@Sander", "csv": "'@Sander" },
+    { "value": "-", "csv": "'-" },
+    { "value": "\t=1+1", "csv": "'\t=1+1" },
+    { "value": "\r=1+1", "csv": "'\r=1+1" },
+    { "value": "\n=1+1", "csv": "'\n=1+1" },
+    { "value": "\tSander", "csv": "'\tSander" },
+    { "value": " =1+1", "csv": "' =1+1" },
+    { "value": "\u00A0=1+1", "csv": "'\u00A0=1+1" },
+    { "value": "\u3000=1+1", "csv": "'\u3000=1+1" },
+    { "value": "\uFF1D1+1", "csv": "'\uFF1D1+1" },
+    { "value": "\uFF0B1", "csv": "'\uFF0B1" },
+    { "value": "\uFF0D1", "csv": "'\uFF0D1" },
+    { "value": "\uFF20home", "csv": "'\uFF20home" },
+    { "value": "'=1+1", "csv": "''=1+1" },
+    { "value": "''=1+1", "csv": "'''=1+1" },
+    { "value": "'t Hoofd", "csv": "'t Hoofd" },
+    { "value": "'-5", "csv": "'-5" },
+    { "value": "-5", "csv": "-5" },
+    { "value": "+3", "csv": "+3" },
+    { "value": "12,5", "csv": "12,5" },
+    { "value": "-38.0", "csv": "-38.0" },
+    { "value": "0", "csv": "0" },
+    { "value": "1e5", "csv": "1e5" },
+    { "value": "-1e5", "csv": "'-1e5" },
+    { "value": "a=b", "csv": "a=b" },
+    { "value": "Sander", "csv": "Sander" },
+    { "value": "Zoë", "csv": "Zoë" },
+    { "value": "Сергей", "csv": "Сергей" },
+    { "value": "マリオ", "csv": "マリオ" },
+    { "value": "김민준", "csv": "김민준" },
+    { "value": "李雷", "csv": "李雷" },
+    { "value": "مريم", "csv": "مريم" },
+    { "value": "🍄Toad", "csv": "🍄Toad" },
+    { "value": "Sander, de 2e", "csv": "Sander, de 2e" },
+    { "value": "Moss;HM", "csv": "Moss;HM" },
+    { "value": "say \"hi\"", "csv": "say \"hi\"" },
+    { "value": "", "csv": "" }
+  ],
+  "importOnlyCases": [
+    { "csv": "'Sander", "value": "'Sander" },
+    { "csv": "'5", "value": "'5" },
+    { "csv": "'", "value": "'" }
+  ],
+  "documentCases": [
+    { "delimiter": ";", "cells": ["=1+1", "Moss;HM", "-5", "Zoë"], "line": "'=1+1;\"Moss;HM\";-5;Zoë" },
+    { "delimiter": ",", "cells": ["=1+1", "Sander, de 2e", "12", "@x"], "line": "'=1+1,\"Sander, de 2e\",12,'@x" },
+    { "delimiter": "\t", "cells": ["\t=1+1", "-1+1", "3", "マリオ"], "line": "\"'\t=1+1\"\t'-1+1\t3\tマリオ" },
+    { "delimiter": ";", "cells": ["=\"a\";b", "say \"hi\""], "line": "\"'=\"\"a\"\";b\";\"say \"\"hi\"\"\"" }
+  ]
+}

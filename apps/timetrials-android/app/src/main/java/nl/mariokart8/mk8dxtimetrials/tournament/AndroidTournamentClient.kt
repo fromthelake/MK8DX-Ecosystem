@@ -621,6 +621,11 @@ internal class AndroidTournamentClient(
     private val origin = exactOrigin(origin)
     private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
 
+    /** The fresh e-mail confirmation the server asks for before removing or deleting a Tournament. */
+    fun stepUp(): nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpClient? = session?.let {
+        nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpClient(origin.toString(), it, opener)
+    }
+
     /** ADR-0221: who creates Players and who counts; public, read with the night. */
     fun installationSettings(): AndroidInstallationSettings =
         AndroidInstallationSettings.decode(request("GET", "/v1/installation-settings"))

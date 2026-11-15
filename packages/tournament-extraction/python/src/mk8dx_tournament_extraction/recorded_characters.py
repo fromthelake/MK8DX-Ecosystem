@@ -19,6 +19,8 @@ from typing import Any
 
 import cv2  # type: ignore
 
+from .spreadsheet_text import LiteralCsvWriter, csv_imported_rows, set_text_cell
+
 
 def _layout_id(race_dir: Path) -> str:
     names = [path.name for path in (race_dir / "2RaceScore").glob("*.jpg")]
@@ -30,13 +32,14 @@ def _read_csv(path: Path) -> tuple[list[str], list[dict[str, str]], bool]:
     bom = raw.startswith(b"\xef\xbb\xbf")
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         reader = csv.DictReader(handle)
-        rows = list(reader)
+        # The engine's CSV protected formula-like names (spreadsheet_text); read the real ones.
+        rows = csv_imported_rows(reader)
         return list(reader.fieldnames or []), rows, bom
 
 
 def _write_csv(path: Path, fieldnames: list[str], rows: list[dict[str, str]], bom: bool) -> None:
     with path.open("w", encoding="utf-8-sig" if bom else "utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames)
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=fieldnames))
         writer.writeheader()
         writer.writerows(rows)
 
@@ -155,11 +158,11 @@ def _update_workbook(results_csv: Path, rows: list[dict[str, str]], standings: d
             row = by_key.get(key)
             if row is None:
                 continue
-            values["Character"].value = row["Character"]
+            set_text_cell(values["Character"], row["Character"])
             if "Player" in values:
-                values["Player"].value = row["Player"]
+                set_text_cell(values["Player"], row["Player"])
             if "Character Roster" in values:
-                values["Character Roster"].value = row.get("Character Roster", values["Character Roster"].value)
+                set_text_cell(values["Character Roster"], row.get("Character Roster", values["Character Roster"].value))
     if "Final Standings" in workbook.sheetnames:
         sheet = workbook["Final Standings"]
         header = [cell.value for cell in sheet[1]]
@@ -167,13 +170,13 @@ def _update_workbook(results_csv: Path, rows: list[dict[str, str]], standings: d
             values = {name: cell for name, cell in zip(header, cells)}
             key = (str(values["VideoName"].value), str(values["PlayerName"].value))
             if renamed and key in renamed:
-                values["PlayerName"].value = renamed[key]
+                set_text_cell(values["PlayerName"], renamed[key])
                 key = (key[0], renamed[key])
             character = standings.get(key)
             if character:
-                values["Character"].value = character
+                set_text_cell(values["Character"], character)
                 if "CharacterRosterName" in values:
-                    values["CharacterRosterName"].value = _roster_name(character)
+                    set_text_cell(values["CharacterRosterName"], _roster_name(character))
     workbook.save(path)
     return True
 
@@ -209,6 +212,6 @@ def apply_recorded_race_classes(results_csv: Path, frames_root: Path, clean_asse
             for index, cells in enumerate(sheet.iter_rows(min_row=2), start=2):
                 values = dict(zip(header, (cell.value for cell in cells)))
                 key = (str(values.get("Video")), str(values.get("Race")), str(values.get("Position")))
-                sheet.cell(row=index, column=column, value=by_key.get(key, ""))
+                set_text_cell(sheet.cell(row=index, column=column), by_key.get(key, ""))
             book.save(workbook)
     return {"applied": True, "racesWithClass": races}

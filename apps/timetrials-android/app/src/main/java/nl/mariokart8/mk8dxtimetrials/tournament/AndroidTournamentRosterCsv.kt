@@ -170,7 +170,8 @@ internal fun androidParseRosterCsv(
     val rows = mutableListOf<AndroidRosterCsvRow>()
     lines.drop(1).forEachIndexed { offset, line ->
         val cells = splitCsvLine(line, delimiter)
-        val displayName = cells.getOrNull(nameIndex).orEmpty().trim()
+        // Our own export protected a formula-like name (AndroidSpreadsheetText.kt): read the real name.
+        val displayName = androidCsvImportedText(cells.getOrNull(nameIndex).orEmpty()).trim()
         if (displayName.isEmpty()) return@forEachIndexed
         // Row numbers are the ones an operator sees in the spreadsheet.
         val rowNumber = offset + 2
@@ -247,17 +248,10 @@ internal fun androidRosterCsv(participants: List<AndroidTournamentParticipant>):
                 ATTENDANCE_WAITING -> "Wachtlijst"
                 else -> "Afwezig"
             }
-            builder.append(csvCell(participant.displayName)).append(';')
+            builder.append(androidCsvCell(participant.displayName)).append(';')
             builder.append(status).append(';')
             builder.append(if (participant.hasSwitch1) "ja" else "nee").append(';')
             builder.append(if (participant.hasSwitch2) "ja" else "nee").append("\r\n")
         }
     return builder.toString()
 }
-
-private fun csvCell(value: String): String =
-    if (value.any { it == ';' || it == '"' || it == '\n' || it == '\r' }) {
-        "\"" + value.replace("\"", "\"\"") + "\""
-    } else {
-        value
-    }

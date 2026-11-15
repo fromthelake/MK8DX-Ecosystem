@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 import pandas as pd
 
+from ..spreadsheet_text import literal_text_cells
 from .extract_common import debug_identity_workbook_path, find_score_bundle_anchor_path
 import textdistance
 from jellyfish import soundex
@@ -329,7 +330,10 @@ def _write_identity_debug_excel(output_folder, race_class, identity_rows):
     debug_df = pd.DataFrame(identity_rows)
     workbook_path = debug_identity_workbook_path(race_class)
     workbook_path.parent.mkdir(parents=True, exist_ok=True)
-    debug_df.to_excel(workbook_path, index=False)
+    with pd.ExcelWriter(workbook_path, engine="openpyxl") as writer:
+        debug_df.to_excel(writer, index=False)
+        for sheet in writer.sheets.values():
+            literal_text_cells(sheet)  # OCR names stay text (spreadsheet_text)
 
 
 def standardize_player_names(df, output_folder, write_debug_linking_excel=False):

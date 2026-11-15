@@ -564,6 +564,16 @@
    ]
   },
   {
+   "key": "12 hours (default)",
+   "nl": "12 uur (standaard)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "150cc and 200cc",
    "nl": "150cc en 200cc",
    "kinds": [
@@ -594,6 +604,16 @@
    ]
   },
   {
+   "key": "2 hours",
+   "nl": "2 uur",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "200cc only",
    "nl": "Alleen 200cc",
    "kinds": [
@@ -601,6 +621,16 @@
    ],
    "places": [
     "welcome-onboarding.ts"
+   ]
+  },
+  {
+   "key": "24 hours",
+   "nl": "24 uur",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -614,12 +644,42 @@
    ]
   },
   {
+   "key": "3 days",
+   "nl": "3 dagen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "3-16 characters: lower-case letters, digits, '-' or '_'. Must be unique.",
    "kinds": [
     "text"
    ],
    "places": [
     "player-claim-section.ts"
+   ]
+  },
+  {
+   "key": "6 hours",
+   "nl": "6 uur",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "7 days (maximum)",
+   "nl": "7 dagen (maximaal)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -784,6 +844,16 @@
    ]
   },
   {
+   "key": "A browser signed in to your account asks to perform an administrator action. Confirming allows such actions from that browser for {0} minutes.",
+   "nl": "Een browser die bij je account is aangemeld wil een beheeractie uitvoeren. Bevestigen staat zulke acties vanuit die browser {0} minuten toe.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "A closed path shows people an explanation instead of the button; the server refuses it too.",
    "nl": "Een gesloten route toont uitleg in plaats van de knop; de server weigert hem ook.",
    "kinds": [
@@ -934,6 +1004,16 @@
    ]
   },
   {
+   "key": "A roster match alone never opens a public live feed. A feed goes public when you confirm it, or when it comes from an account you delegated live capture to for this night. A delegation lasts 12 hours unless you choose otherwise (at most 7 days); revoking it takes that account's feeds off the public view at once.",
+   "nl": "Een rostermatch alleen opent nooit een openbare live-feed. Een feed wordt openbaar als jij hem bevestigt, of als hij komt van een account waaraan jij de live-capture voor deze avond hebt gedelegeerd. Een delegatie geldt 12 uur, tenzij je iets anders kiest (maximaal 7 dagen); intrekken haalt de feeds van dat account direct van de openbare weergave.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "A short note for the administrators (optional)",
    "nl": "Een korte notitie voor de beheerders (optioneel)",
    "kinds": [
@@ -1015,7 +1095,8 @@
     "localized"
    ],
    "places": [
-    "authentication-product-page.ts"
+    "authentication-product-page.ts",
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -1968,6 +2049,16 @@
    ]
   },
   {
+   "key": "An account appears here once its Tournament Live has connected to this night and pressed Start. Its feed then waits for you.",
+   "nl": "Een account verschijnt hier zodra zijn Tournament Live met deze avond is verbonden en op START heeft gedrukt. De feed wacht dan op jou.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "An account created on {0}",
    "nl": "Een account aangemaakt op {0}",
    "kinds": [
@@ -2822,8 +2913,8 @@
    ]
   },
   {
-   "key": "Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different {0} group. After race 1, a strong exact roster match may open the public View. Scores count only after Stop, Player matching and complete group approval here.",
-   "nl": "Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere {0}. Na race 1 kan een sterke exacte rostermatch de openbare View openen. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier.",
+   "key": "Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different {0} group. After race 1, a strong exact roster match opens the public View only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores count only after Stop, Player matching and complete group approval here.",
+   "nl": "Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere {0}. Na race 1 opent een sterke exacte rostermatch de openbare View alleen voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier.",
    "kinds": [
     "localized"
    ],
@@ -3260,6 +3351,16 @@
    ]
   },
   {
+   "key": "Capture delegations could not be loaded. Live feeds still wait for your confirmation.",
+   "nl": "Capturedelegaties konden niet worden geladen. Live-feeds wachten nog steeds op jouw bevestiging.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "Card ready.",
    "nl": "Kaart klaar.",
    "kinds": [
@@ -3564,6 +3665,16 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "Check your inbox and open the link. This window waits for your confirmation.",
+   "nl": "Kijk in je inbox en open de link. Dit venster wacht op je bevestiging.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
    ]
   },
   {
@@ -3928,6 +4039,26 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Choose an account",
+   "nl": "Kies een account",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "Choose an account to delegate live capture to.",
+   "nl": "Kies een account om de live-capture aan te delegeren.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -4329,6 +4460,16 @@
   {
    "key": "Click again to dismiss",
    "nl": "Klik nogmaals om te negeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Click again to withdraw",
+   "nl": "Klik nogmaals om terug te trekken",
    "kinds": [
     "localized"
    ],
@@ -4841,6 +4982,17 @@
    ]
   },
   {
+   "key": "Confirm an administrator action",
+   "nl": "Beheeractie bevestigen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts",
+    "route-identity.ts"
+   ]
+  },
+  {
    "key": "Confirm and publish · {0}cc",
    "nl": "Bevestig en publiceer · {0}cc",
    "kinds": [
@@ -4901,6 +5053,16 @@
    ]
   },
   {
+   "key": "Confirm only if you just asked for this yourself. If not, ignore this page and sign out your other sessions.",
+   "nl": "Bevestig alleen als je dit net zelf hebt gevraagd. Zo niet, negeer deze pagina en meld je andere sessies af.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Confirm publication",
    "nl": "Publicatie bevestigen",
    "kinds": [
@@ -4921,6 +5083,16 @@
    ]
   },
   {
+   "key": "Confirm this action",
+   "nl": "Deze actie bevestigen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Confirm what you publish",
    "nl": "Bevestig wat je publiceert",
    "kinds": [
@@ -4928,6 +5100,16 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "Confirm with a new email link",
+   "nl": "Bevestig met een nieuwe e-maillink",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
    ]
   },
   {
@@ -4961,6 +5143,26 @@
    ]
   },
   {
+   "key": "Confirmed. Continuing…",
+   "nl": "Bevestigd. Bezig met doorgaan…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
+   "key": "Confirmed. The action continues where you started it; you can close this page.",
+   "nl": "Bevestigd. De actie gaat verder waar je hem begon; je kunt deze pagina sluiten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Confirming layout",
    "nl": "Indeling bevestigen",
    "kinds": [
@@ -4978,6 +5180,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Confirming…",
+   "nl": "Bevestigen…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -5316,6 +5528,16 @@
    "places": [
     "authentication-product-page.ts",
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Could not confirm. Please retry.",
+   "nl": "Bevestigen is niet gelukt. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -6140,6 +6362,26 @@
    ]
   },
   {
+   "key": "Delegate live capture",
+   "nl": "Live-capture delegeren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "Delegate live capture to {0} (12 hours)",
+   "nl": "Live-capture delegeren aan {0} (12 uur)",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "Deletes",
    "nl": "Verwijderd",
    "kinds": [
@@ -6240,6 +6482,26 @@
    ],
    "places": [
     "administrator-observed-identity-section.ts"
+   ]
+  },
+  {
+   "key": "Describe the source in a few words, for example “TN13 workbook”. It is saved as a source identifier such as source.tn13-workbook.",
+   "nl": "Beschrijf de bron in een paar woorden, bijvoorbeeld “TN13 workbook”. Het wordt opgeslagen als bron-ID, zoals source.tn13-workbook.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-alias-section.ts"
+   ]
+  },
+  {
+   "key": "Describe the source with Latin letters or digits, for example tn13-workbook.",
+   "nl": "Beschrijf de bron met Latijnse letters of cijfers, bijvoorbeeld tn13-workbook.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-alias-section.ts"
    ]
   },
   {
@@ -8396,6 +8658,16 @@
    ]
   },
   {
+   "key": "Fresh confirmation",
+   "nl": "Nieuwe bevestiging",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "From now on every Player counts. Every rating is then recalculated from the whole history.",
    "nl": "Vanaf nu telt elke speler mee. Daarna wordt elke rating herberekend uit de hele geschiedenis.",
    "kinds": [
@@ -10476,6 +10748,16 @@
    ],
    "places": [
     "dutch-ui-copy.ts"
+   ]
+  },
+  {
+   "key": "Live capture delegations",
+   "nl": "Live-capturedelegaties",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -12816,6 +13098,16 @@
    ]
   },
   {
+   "key": "No capture delegations for this night.",
+   "nl": "Geen capturedelegaties voor deze avond.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "No carried times are waiting for review.",
    "nl": "Er wachten geen meegenomen tijden op goedkeuring.",
    "kinds": [
@@ -13945,6 +14237,16 @@
    ]
   },
   {
+   "key": "Not shown: the list needs a fresh confirmation by e-mail. Choose Show accounts to try again.",
+   "nl": "Niet getoond: de lijst vraagt om een nieuwe bevestiging per e-mail. Kies Accounts tonen om het opnieuw te proberen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-identity-link-section.ts"
+   ]
+  },
+  {
    "key": "Not sure? Choose yes and look for your name; you can always turn back.",
    "nl": "Twijfel je? Kies ja en zoek je naam; je kunt altijd terug.",
    "kinds": [
@@ -14744,6 +15046,16 @@
    ],
    "places": [
     "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "Only accounts whose Tournament Live connected to this night are offered. The delegation is for this night only.",
+   "nl": "Alleen accounts waarvan Tournament Live met deze avond is verbonden, worden aangeboden. De delegatie geldt alleen voor deze avond.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -18970,6 +19282,16 @@
    ]
   },
   {
+   "key": "Review this action.",
+   "nl": "Beoordeel deze actie.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Review this device request.",
    "nl": "Beoordeel dit apparaatverzoek.",
    "kinds": [
@@ -19018,7 +19340,28 @@
     "localized"
    ],
    "places": [
+    "tournament-live-delegation-section.ts",
     "tournament-report-grants.ts"
+   ]
+  },
+  {
+   "key": "Revoke the capture delegation of {0}",
+   "nl": "Capturedelegatie van {0} intrekken",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "Revoking the capture delegation…",
+   "nl": "Capturedelegatie wordt ingetrokken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -19524,6 +19867,16 @@
    ]
   },
   {
+   "key": "Saved as {0}",
+   "nl": "Opgeslagen als {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-alias-section.ts"
+   ]
+  },
+  {
    "key": "Saved.",
    "nl": "Opgeslagen.",
    "kinds": [
@@ -19647,6 +20000,17 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Saving the capture delegation…",
+   "nl": "Capturedelegatie wordt opgeslagen…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts",
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -20241,6 +20605,16 @@
    ]
   },
   {
+   "key": "Send the link",
+   "nl": "Stuur de link",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
    "key": "Sending your question…",
    "nl": "Je vraag versturen…",
    "kinds": [
@@ -20589,6 +20963,16 @@
    ],
    "places": [
     "crawl"
+   ]
+  },
+  {
+   "key": "Show accounts",
+   "nl": "Accounts tonen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-identity-link-section.ts"
    ]
   },
   {
@@ -22976,6 +23360,16 @@
    ]
   },
   {
+   "key": "The MK8DX app signed in to your account asks to perform an administrator action. Confirming allows such actions from that app for {0} minutes.",
+   "nl": "De MK8DX-app die bij je account is aangemeld wil een beheeractie uitvoeren. Bevestigen staat zulke acties vanuit die app {0} minuten toe.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "The Meta: exactly 3.25 Ground Speed and 4.75 Mini-Turbo.",
    "nl": "De meta: precies 3.25 grondsnelheid en 4.75 Mini-Turbo.",
    "kinds": [
@@ -23141,8 +23535,29 @@
    ]
   },
   {
-   "key": "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop.",
-   "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
+   "key": "The capture delegation could not be revoked.",
+   "nl": "De capturedelegatie kon niet worden ingetrokken.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "The capture delegation could not be saved.",
+   "nl": "De capturedelegatie kon niet worden opgeslagen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts",
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 opens the public View automatically only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores still wait for your Player and full group review after Stop.",
+   "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 opent de openbare View alleen automatisch voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
    "kinds": [
     "localized"
    ],
@@ -23488,6 +23903,56 @@
    ],
    "places": [
     "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "The link could not be sent. Please retry.",
+   "nl": "De link kon niet worden verstuurd. Probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
+   "key": "The link has expired. Send a new one to continue.",
+   "nl": "De link is verlopen. Stuur een nieuwe om verder te gaan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
+   "key": "The link was sent.",
+   "nl": "De link is verstuurd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
+   "key": "The list shows every account's e-mail address. Opening it asks for a fresh confirmation by e-mail.",
+   "nl": "De lijst toont het e-mailadres van elk account. Openen vraagt om een nieuwe bevestiging per e-mail.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-identity-link-section.ts"
+   ]
+  },
+  {
+   "key": "The live feed could not be withdrawn.",
+   "nl": "De live-feed kon niet worden teruggetrokken.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -24267,6 +24732,16 @@
    ]
   },
   {
+   "key": "This account holds your capture delegation until {0}. The next race whose names match the group list opens the public view; you can also confirm it now.",
+   "nl": "Dit account heeft jouw capturedelegatie tot {0}. De volgende race waarvan de namen bij de groepslijst passen, opent de openbare weergave; je kunt hem ook nu bevestigen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "This account is no longer remembered here. Sign in instead.",
    "nl": "Dit account wordt hier niet meer onthouden. Meld je gewoon aan.",
    "kinds": [
@@ -24304,6 +24779,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "This action needs a fresh confirmation. We send a one-time link to your account's email address. Open it, on this device or another one, and press Confirm. Then this action continues by itself.",
+   "nl": "Voor deze actie is een nieuwe bevestiging nodig. We sturen een eenmalige link naar het e-mailadres van je account. Open die, op dit apparaat of een ander, en druk op Bevestigen. Daarna gaat deze actie vanzelf verder.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
    ]
   },
   {
@@ -24484,6 +24969,16 @@
    ],
    "places": [
     "welcome-onboarding.ts"
+   ]
+  },
+  {
+   "key": "This link has expired or was already used. Ask for a new email where you started the action.",
+   "nl": "Deze link is verlopen of al gebruikt. Vraag een nieuwe e-mail aan waar je de actie begon.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -25010,6 +25505,56 @@
    ],
    "places": [
     "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "Too many claim actions at the moment. Please try again in a minute.",
+   "nl": "Te veel claimacties op dit moment. Probeer het over een minuut opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "claim-limit-message.ts"
+   ]
+  },
+  {
+   "key": "Too many claim actions at the moment. Please try again in {0} hours.",
+   "nl": "Te veel claimacties op dit moment. Probeer het over {0} uur opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "claim-limit-message.ts"
+   ]
+  },
+  {
+   "key": "Too many claim actions at the moment. Please try again in {0} minutes.",
+   "nl": "Te veel claimacties op dit moment. Probeer het over {0} minuten opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "claim-limit-message.ts"
+   ]
+  },
+  {
+   "key": "Too many claim actions at the moment. Please try again later.",
+   "nl": "Te veel claimacties op dit moment. Probeer het later opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "claim-limit-message.ts"
+   ]
+  },
+  {
+   "key": "Too many links were requested. Wait a few minutes and try again.",
+   "nl": "Er zijn te veel links aangevraagd. Wacht een paar minuten en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
    ]
   },
   {
@@ -26262,6 +26807,16 @@
    ]
   },
   {
+   "key": "Use Latin letters or digits (a–z, 0–9) for the source, for example tn13-workbook.",
+   "nl": "Gebruik Latijnse letters of cijfers (a–z, 0–9) voor de bron, bijvoorbeeld tn13-workbook.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-alias-section.ts"
+   ]
+  },
+  {
    "key": "Use Left and Right arrows to inspect every race.",
    "nl": "Gebruik de pijltoetsen links en rechts om elke race te bekijken.",
    "kinds": [
@@ -26349,6 +26904,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "Valid for",
+   "nl": "Geldig voor",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -26550,16 +27115,6 @@
    ]
   },
   {
-   "key": "Waiting for race names to verify the sticker-to-group links. Nothing is public yet; the director can confirm manually as a fallback.",
-   "nl": "Wacht op racenamen om de sticker-naar-groepkoppelingen te controleren. Er is nog niets openbaar; de toernooileider kan als terugval handmatig bevestigen.",
-   "kinds": [
-    "localized"
-   ],
-   "places": [
-    "tournament-incoming-section.ts"
-   ]
-  },
-  {
    "key": "Waiting for review",
    "nl": "Wacht op goedkeuring",
    "kinds": [
@@ -26567,6 +27122,16 @@
    ],
    "places": [
     "time-trial-management.ts"
+   ]
+  },
+  {
+   "key": "Waiting for the Director. Nothing is public yet: a roster match alone never opens a live feed. Confirm the live routing below, or delegate live capture for this night to this account.",
+   "nl": "Wacht op de toernooileider. Er is nog niets openbaar: een rostermatch alleen opent nooit een live-feed. Bevestig hieronder de live-koppeling, of delegeer de live-capture voor deze avond aan dit account.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -27099,6 +27664,16 @@
    ]
   },
   {
+   "key": "Where you saw it",
+   "nl": "Waar je het zag",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-alias-section.ts"
+   ]
+  },
+  {
    "key": "Where you saw it (tournament, workbook, message…)",
    "kinds": [
     "text"
@@ -27448,6 +28023,16 @@
    ]
   },
   {
+   "key": "Withdraw this live feed",
+   "nl": "Deze live-feed terugtrekken",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "Withdraw this request",
    "nl": "Dit verzoek intrekken",
    "kinds": [
@@ -27455,6 +28040,26 @@
    ],
    "places": [
     "player-claim-walk.ts"
+   ]
+  },
+  {
+   "key": "Withdrawing takes this feed off the public view at once. Its races stay here for review, and only you can open it again; a roster match cannot.",
+   "nl": "Terugtrekken haalt deze feed direct van de openbare weergave. De races blijven hier voor controle en alleen jij kunt hem weer openen; een rostermatch niet.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
+   "key": "Withdrawing the live feed…",
+   "nl": "Live-feed wordt teruggetrokken…",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
    ]
   },
   {
@@ -27881,6 +28486,16 @@
    ]
   },
   {
+   "key": "You are signed out. Sign in again first.",
+   "nl": "Je bent afgemeld. Meld je eerst opnieuw aan.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
    "key": "You are {0} faster than {1}",
    "nl": "Jij bent {0} sneller dan {1}",
    "kinds": [
@@ -27958,6 +28573,16 @@
    ],
    "places": [
     "ds-tournaments.ts"
+   ]
+  },
+  {
+   "key": "You have reached the limit for Player claims. Wait until a waiting claim has been handled, or withdraw one, and try again.",
+   "nl": "Je hebt de limiet voor spelersclaims bereikt. Wacht tot een openstaande claim is afgehandeld, of trek er een in, en probeer het opnieuw.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "claim-limit-message.ts"
    ]
   },
   {
@@ -29142,6 +29767,16 @@
    ]
   },
   {
+   "key": "active until {0}",
+   "nl": "actief tot {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
    "key": "ahead",
    "nl": "voor",
    "kinds": [
@@ -29440,6 +30075,16 @@
    ],
    "places": [
     "tournament-statistics-view.ts"
+   ]
+  },
+  {
+   "key": "expired {0}",
+   "nl": "verlopen {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {
@@ -30040,6 +30685,26 @@
    ],
    "places": [
     "tournament-standing-view.ts"
+   ]
+  },
+  {
+   "key": "revoked",
+   "nl": "ingetrokken",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
+   ]
+  },
+  {
+   "key": "revoked {0}",
+   "nl": "ingetrokken {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-live-delegation-section.ts"
    ]
   },
   {

@@ -114,17 +114,43 @@ describe("MySQL Time Trial write repository", () => {
   it("locks and strictly maps stable submission revision state", async () => {
     const connection = new SyntheticConnection([
       [{ submissionInternalId: "7", firstCreatedAtMs: "1900000000000" } as RowDataPacket],
-      [{ latestRevision: "2" } as RowDataPacket],
+      [{
+        latestRevision: "2", ownerCount: 1, unownedCount: "0", ownerPlayerId: "player.synthetic_mysql_01",
+      } as RowDataPacket],
+      [{ sourceKind: "android_scan", carried: 0 } as RowDataPacket],
     ]);
 
     await expect(repository(connection).transaction((transaction) =>
       transaction.findSubmissionForUpdate("user_submission.time.SYNTHETICMYSQL01"),
-    )).resolves.toEqual({ firstCreatedAtMs: 1_900_000_000_000, latestRevision: 2 });
+    )).resolves.toEqual({
+      firstCreatedAtMs: 1_900_000_000_000,
+      latestRevision: 2,
+      owner: { playerId: "player.synthetic_mysql_01", sourceKind: "android_scan", carried: false },
+    });
     expect(connection.calls[0]?.sql).toContain("FOR UPDATE");
     expect(connection.calls[0]?.values).toEqual([
       "user_submission.time.SYNTHETICMYSQL01",
     ]);
     expect(connection.calls[0]?.sql).not.toContain("SYNTHETICMYSQL01");
+  });
+
+  it("reports no owner when stored revisions name no Player or two different ones", async () => {
+    for (const aggregate of [
+      { latestRevision: 1, ownerCount: 0, unownedCount: 1, ownerPlayerId: null },
+      { latestRevision: 2, ownerCount: 2, unownedCount: 0, ownerPlayerId: "player.synthetic_mysql_01" },
+      { latestRevision: 2, ownerCount: 1, unownedCount: 1, ownerPlayerId: "player.synthetic_mysql_01" },
+    ]) {
+      const connection = new SyntheticConnection([
+        [{ submissionInternalId: 7, firstCreatedAtMs: 1 } as RowDataPacket],
+        [aggregate as RowDataPacket],
+        [{ sourceKind: "android_manual", carried: 1 } as RowDataPacket],
+      ]);
+      await expect(repository(connection).transaction((transaction) =>
+        transaction.findSubmissionForUpdate("user_submission.time.SYNTHETICMYSQL01"),
+      )).resolves.toMatchObject({
+        owner: { playerId: null, sourceKind: "android_manual", carried: true },
+      });
+    }
   });
 
   it("rejects malformed persisted aggregate values and rolls back", async () => {

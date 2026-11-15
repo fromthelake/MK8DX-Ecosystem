@@ -51,6 +51,7 @@ class SetupPageRefreshTest(unittest.TestCase):
                     patch.object(install, "update_offer", return_value={"available": True, "to": "r30"}), \
                     patch.object(install, "use_package_images", return_value=b""), \
                     patch.object(install, "run_compose"), \
+                    patch.object(install, "separate_database_accounts", return_value=None), \
                     patch.object(install, "status", side_effect=lambda *a, **k: order.append("status")), \
                     patch.object(install, "record_package", side_effect=lambda *a: order.append("record")), \
                     contextlib.redirect_stdout(io.StringIO()) as shown:

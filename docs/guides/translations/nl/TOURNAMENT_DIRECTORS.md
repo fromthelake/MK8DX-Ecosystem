@@ -55,6 +55,10 @@ Een voorlopige live stand is geen officiële uitslag. Je kunt een uitslagbestand
 
 Publicatie en de communityrating zijn aparte beslissingen in de laatste stap.
 
+In CSV- en Excel-exports blijft een naam die begint met `=`, `+`, `-` of `@` tekst als je het bestand in een
+spreadsheetprogramma opent; in een CSV krijgt zo'n naam daarvoor één apostrof vooraan, die de imports van de website
+en de tools weer weghalen.
+
 ## 3. De Windows Tournament Tools
 
 ### Vereisten
@@ -153,7 +157,8 @@ In PowerShell, in de pakketmap:
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 Gebruik `http://127.0.0.1:<port>` (of `http://localhost:<port>`) alleen als de website op dezelfde
@@ -162,6 +167,16 @@ elk ander adres heeft zijn vertrouwde HTTPS-adres nodig. Zonder terminal (bijvoo
 `sign-in` niets: stel het adres dan eerst in met `TournamentConnect.cmd server <adres>`. Uploads die op een server
 wachten, blijven bij die server. Een afgeleverde race komt in **Binnenkomende uitslagen** terecht; hij wordt nooit
 automatisch gepubliceerd.
+
+Aanmelden opent de browser alleen op het adres dat je hebt gekozen: TournamentConnect en Tournament Live tonen dat
+adres bij de code en weigeren een aanmeldlink die ergens anders naartoe wijst. Keur alleen goed als de browser
+hetzelfde adres en dezelfde code toont. `sign-out` beëindigt de sessie van deze pc op de website en verwijdert haar
+daarna hier; het meldt *Signed out* pas als de website bevestigt dat de sessie niet meer werkt. Andere apparaten
+blijven aangemeld. Is de website niet bereikbaar, dan blijft de aanmelding op deze pc staan: probeer het later
+opnieuw, of gebruik `sign-out --this-pc-only` en beëindig de sessie met **Op alle apparaten afmelden** in het
+accountmenu van de website (bevestig met **Overal afmelden**; dat meldt elk apparaat van het account af). In
+Tournament Live doet **Afmelden** hetzelfde als `sign-out`; **Offline werken** vergeet de koppeling alleen op deze pc
+en meldt dat ook.
 
 ### Tournament Live naar de website
 
@@ -175,6 +190,23 @@ automatisch gepubliceerd.
 3. Open op de website de avond, ga naar Stap 5 (Stap 9 voor de finalegroepen) en zoek de run onder **Beschikbare
    Tournament Live-opnamen**. Kies de groep bij **Koppelen aan groep** en daarna **Gecontroleerde opname
    koppelen**. De races wachten als bewijs in afwachting tot je ze accepteert.
+
+### Capturedelegaties en een feed terugtrekken
+
+Een rostermatch opent de openbare live-weergave nooit zelf. Een Tournament Live-feed wordt alleen openbaar als jij
+(of een beheerder) hem bevestigt, of als hij komt van een account waaraan jij de live-capture voor deze avond hebt
+gedelegeerd. Tot dan toont de website bij de run *Wacht op de toernooileider*, en meldt Tournament Live dat het op de
+toernooileider wacht.
+
+- **Delegeren:** kies in Stap 5 (Stap 9 voor de finalegroepen) onder **Live-capturedelegaties** het account van de
+  capture-operator en **Geldig voor** (standaard 12 uur, maximaal 7 dagen), en daarna **Live-capture delegeren**. Een
+  wachtende run biedt ook **Live-capture delegeren aan … (12 uur)**. Een account verschijnt daar zodra zijn
+  Tournament Live met de avond is verbonden en op **START** heeft gedrukt. De volgende race waarvan de namen bij de
+  groepslijst passen, opent dan de openbare weergave.
+- **Intrekken:** kies **Intrekken** naast de delegatie. De feeds van dat account verdwijnen direct van de openbare
+  weergave; de races blijven voor jouw controle.
+- **Feed terugtrekken:** kies bij een openbare run **Deze live-feed terugtrekken** en klik nogmaals om te bevestigen.
+  De races blijven; alleen jij kunt hem weer openen met **Live-koppeling handmatig bevestigen**, een rostermatch niet.
 
 ### Later koppelen
 
@@ -216,6 +248,18 @@ De tools lezen het spel in de 15 consoletalen. Tournament Live doorstond een fys
 v0.2.2-pakket: drie bron-pc's speelden opgenomen kwalificatievideo's af in hun eigen capturekaarten
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Een videoreplay zonder capturekaart
 test het capturepad niet.
+
+## Een toernooi verwijderen vraagt om een e-maillink
+
+Een concept verwijderen of een toernooi weghalen, op de website of in de Android-app, vraagt eerst om een nieuwe
+bevestiging. Het venster **Bevestig met een nieuwe e-maillink** legt uit waarom; **Stuur de link** stuurt een
+eenmalige link naar het eigen adres van je account. De link werkt één keer, 10 minuten lang. Open hem op een
+willekeurig apparaat en druk op **Deze actie bevestigen**; het verwijderen gaat daarna vanzelf verder. De bevestiging
+geldt 10 minuten, alleen voor die browser of app. Het runnen van de avond (deelnemers, groepen, scores, afronden)
+vraagt er nooit om, en een offline installatie thuis of op de club zonder e-mail vraagt er helemaal niet om. Geen
+e-mail? Kijk in je spammap en stuur een nieuwe link; werkt de e-mail van de community niet, dan kan wie de server
+beheert de link daar uitgeven (zie
+[Beheer](../../../OPERATIONS_NL.md#als-e-mail-niet-werkt-een-gevaarlijke-actie-bevestigen-vanaf-de-server)).
 
 ## Zelf de tools bouwen
 

@@ -28,6 +28,14 @@ interface SubmissionRow extends RowDataPacket {
 
 interface RevisionRow extends RowDataPacket {
   latestRevision: unknown;
+  ownerCount: unknown;
+  unownedCount: unknown;
+  ownerPlayerId: unknown;
+}
+
+interface FirstRevisionRow extends RowDataPacket {
+  sourceKind: unknown;
+  carried: unknown;
 }
 
 interface InternalIdRow extends RowDataPacket {
@@ -97,28 +105,84 @@ export class MysqlTimeTrialWriteTransaction implements TimeTrialWriteTransaction
       "TimeTrialSubmission.internalId",
       1,
     );
+    // The revisions are already serialized by the submission row lock above. The owner is the one
+    // central Player all of them name; any revision without one, or two different ones, means no
+    // owner the ordinary submission path may continue (the service then refuses).
     const [revisionRows] = await this.connection.execute<RevisionRow[]>(
-      `SELECT COALESCE(MAX(revision_number), 0) AS latestRevision
-       FROM time_trial_submission_revisions
-       WHERE time_trial_submission_id = ?`,
+      `SELECT COALESCE(MAX(revision.revision_number), 0) AS latestRevision,
+              COUNT(DISTINCT revision.player_id) AS ownerCount,
+              COALESCE(SUM(revision.player_id IS NULL), 0) AS unownedCount,
+              MIN(player.public_id) AS ownerPlayerId
+       FROM time_trial_submission_revisions AS revision
+       LEFT JOIN players AS player ON player.player_id = revision.player_id
+       WHERE revision.time_trial_submission_id = ?`,
       [submissionInternalId],
     );
     const revisionRow = singleRow(revisionRows, "Time Trial revision aggregate");
     if (revisionRow === null) {
       throw new TimeTrialPersistenceError("Time Trial revision aggregate was absent");
     }
+    const latestRevision = safeInteger(
+      revisionRow.latestRevision,
+      "TimeTrialSubmission.latestRevision",
+      0,
+    );
+    const ownerCount = safeInteger(revisionRow.ownerCount, "TimeTrialSubmission.ownerCount", 0);
+    const unownedCount = safeInteger(
+      revisionRow.unownedCount,
+      "TimeTrialSubmission.unownedCount",
+      0,
+    );
+    const [firstRows] = await this.connection.execute<FirstRevisionRow[]>(
+      `SELECT source_kind AS sourceKind,
+              carried_from_origin IS NOT NULL AS carried
+       FROM time_trial_submission_revisions
+       WHERE time_trial_submission_id = ?
+       ORDER BY revision_number ASC
+       LIMIT 1`,
+      [submissionInternalId],
+    );
+    const first = firstRows[0];
+    const ownerPlayerId = revisionRow.ownerPlayerId;
+    const owned = ownerCount === 1 && unownedCount === 0 &&
+      typeof ownerPlayerId === "string" && ownerPlayerId.length > 0;
     return {
       firstCreatedAtMs: safeInteger(
         row.firstCreatedAtMs,
         "TimeTrialSubmission.firstCreatedAtMs",
         0,
       ),
-      latestRevision: safeInteger(
-        revisionRow.latestRevision,
-        "TimeTrialSubmission.latestRevision",
-        0,
-      ),
+      latestRevision,
+      owner: {
+        playerId: owned ? ownerPlayerId : null,
+        sourceKind: typeof first?.sourceKind === "string" ? first.sourceKind : "",
+        carried: first !== undefined && Number(first.carried) === 1,
+      },
     };
+  }
+
+  public async accountHoldsVerifiedClaimForUpdate(
+    userAccountId: string,
+    playerId: string,
+  ): Promise<boolean> {
+    // Only the claim row is locked (a locking read does not lock the subqueries' rows), so a
+    // concurrent revocation either lands before this revision or after it, never halfway.
+    const [rows] = await this.connection.execute<InternalIdRow[]>(
+      `SELECT player_claim_id AS internalId
+       FROM player_claims
+       WHERE claim_status = 'verified'
+         AND user_account_id = (
+           SELECT user_account_id FROM user_accounts
+           WHERE public_id = ? AND account_status = 'active'
+         )
+         AND player_id = (
+           SELECT player_id FROM players
+           WHERE public_id = ? AND player_kind = 'human' AND record_status = 'active'
+         )
+       LIMIT 1 FOR UPDATE`,
+      [userAccountId, playerId],
+    );
+    return rows.length === 1;
   }
 
   public async findActiveHumanPlayerForUpdate(playerId: string): Promise<boolean> {

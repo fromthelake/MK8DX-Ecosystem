@@ -86,6 +86,15 @@ class AliasStore implements AliasWriteRepository, AliasWriteTransaction {
     return this.aliases.get(aliasId) ?? null;
   }
 
+  async countPlayerAliases(playerId: string) {
+    const mine = [...this.aliases.values()].filter((alias) => alias.playerId === playerId);
+    return {
+      active: mine.filter((alias) => alias.recordStatus === "active").length,
+      activeDeclared: mine.filter((alias) => alias.recordStatus === "active" && alias.aliasType === "declared").length,
+      declaredTotal: mine.filter((alias) => alias.aliasType === "declared").length,
+    };
+  }
+
   async createAlias(input: CreateAliasInput): Promise<void> {
     this.creations.push(input);
     this.aliases.set(input.snapshot.aliasId, input.snapshot);
@@ -371,5 +380,44 @@ describe("reviewed Alias application service", () => {
     await expect(
       suspended.service.createAlias(administrator, createCommand()),
     ).rejects.toMatchObject({ code: "conflict" });
+  });
+});
+
+describe("Alias quotas (F04)", () => {
+  const declared = (index: number) => ({ ...declareCommand(), aliasText: `Name ${String(index)}` });
+
+  it("caps active self-declared aliases per Player and leaves the store unchanged on refusal", async () => {
+    const { service, store } = harness();
+    store.verifiedClaims.set(accountActor.userAccountId!, new Set([playerId]));
+    for (let index = 0; index < 20; index += 1) {
+      await service.createAlias(accountActor, declared(index));
+    }
+    const before = store.creations.length;
+    await expect(service.createAlias(accountActor, declared(20))).rejects.toMatchObject({ code: "quota_exceeded" });
+    expect(store.creations).toHaveLength(before);
+    // Retiring one frees a place; fresh ids from the client side cannot help.
+    const first = [...store.aliases.values()][0]!;
+    await service.updateAlias(accountActor, { aliasId: first.aliasId, action: "retire" });
+    await expect(service.createAlias(accountActor, declared(21))).resolves.toMatchObject({ recordStatus: "active" });
+  });
+
+  it("bounds the history a Player can build by declaring and retiring", async () => {
+    const { service, store } = harness();
+    store.verifiedClaims.set(accountActor.userAccountId!, new Set([playerId]));
+    for (let index = 0; index < 100; index += 1) {
+      const alias = await service.createAlias(accountActor, declared(index));
+      await service.updateAlias(accountActor, { aliasId: alias.aliasId, action: "retire" });
+    }
+    await expect(service.createAlias(accountActor, declared(100))).rejects.toMatchObject({ code: "quota_exceeded" });
+    // The administrator reconciliation path is not bound by the self-service history cap.
+    await expect(service.createAlias(administrator, createCommand())).resolves.toMatchObject({ recordStatus: "active" });
+  });
+
+  it("refuses a self-declared alias with more provenance than a declaration needs", async () => {
+    const { service, store } = harness();
+    store.verifiedClaims.set(accountActor.userAccountId!, new Set([playerId]));
+    const many = { ...declareCommand(), provenance: Array.from({ length: 5 }, () => declareCommand().provenance[0]!) };
+    await expect(service.createAlias(accountActor, many)).rejects.toMatchObject({ code: "invalid_command" });
+    expect(store.transactionCount).toBe(0);
   });
 });

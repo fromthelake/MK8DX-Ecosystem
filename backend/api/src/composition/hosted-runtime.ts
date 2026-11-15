@@ -28,6 +28,8 @@ export type PasswordlessHostedRuntimeConfig = Readonly<{
     csrfKeys: WebCsrfKeyMaterial;
   }>;
   webPush?: WebPushConfiguration;
+  /** How long a confirmed step-up lasts (MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS, default 600). */
+  stepUpWindowSeconds?: number;
   timeTrialSubmissionAuthorizer?: LocalApiRuntimeRoutePolicies["timeTrialSubmissionAuthorizer"];
   tournamentSubmissionAuthorizer?: LocalApiRuntimeRoutePolicies["tournamentSubmissionAuthorizer"];
   operationalLog?: LocalApiRuntimeRoutePolicies["operationalLog"];
@@ -35,6 +37,7 @@ export type PasswordlessHostedRuntimeConfig = Readonly<{
   publicBundle?: LocalApiRuntimeRoutePolicies["publicBundle"];
   gameAssets?: LocalApiRuntimeRoutePolicies["gameAssets"];
   appDownloads?: LocalApiRuntimeRoutePolicies["appDownloads"];
+  abuseBudgets?: LocalApiRuntimeRoutePolicies["abuseBudgets"];
 }>;
 
 export type PasswordlessHostedRuntime = LocalApiRuntime;
@@ -69,6 +72,7 @@ export async function createPasswordlessHostedRuntime(
         },
       },
       offlineLan: config.offlineLan === true,
+      ...(config.stepUpWindowSeconds === undefined ? {} : { stepUpWindowSeconds: config.stepUpWindowSeconds }),
     };
     const runtime = await createHostedApiRuntime(
       config.core,
@@ -88,6 +92,7 @@ export async function createPasswordlessHostedRuntime(
         ...(config.appDownloads === undefined
           ? {}
           : { appDownloads: config.appDownloads }),
+        ...(config.abuseBudgets === undefined ? {} : { abuseBudgets: config.abuseBudgets }),
         ...(config.gameAssets === undefined
           ? {}
           : { gameAssets: config.gameAssets }),

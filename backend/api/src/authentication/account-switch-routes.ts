@@ -25,12 +25,16 @@ import {
   MutationRateLimitExceeded,
   type MutationRateLimiter,
 } from "../security/mysql-mutation-rate-limiter.js";
+import type { PreAuthBudget } from "../security/pre-auth-budget.js";
 import {
   ACCOUNT_SWITCH_FRESH_SIGN_IN_MS,
   NATIVE_ACCOUNT_DEVICE_HEADER,
   REMEMBERED_ACCOUNTS_PER_DEVICE,
+  deviceLimiterSubject,
   entryIdPattern,
+  nativeDeviceDigest,
   pinPattern,
+  type AccountSwitchKeys,
   type AccountSwitchPins,
   type AccountSwitchStore,
 } from "./account-switch.js";
@@ -56,6 +60,13 @@ export const NATIVE_REMEMBER_SCHEMA_VERSION = "mk8dx.native-account-remember.v1"
 export const NATIVE_ACCOUNT_SWITCH_SCHEMA_VERSION = "mk8dx.native-account-switch.v1";
 /** Remembering is done once per sign-in (and once per account when an app upgrades). */
 export const NATIVE_REMEMBERS_PER_DEVICE_HOUR = 30;
+/** The same ceiling per account: a fresh device value never resets it. */
+export const NATIVE_REMEMBERS_PER_ACCOUNT_HOUR = 30;
+/**
+ * Requests to the /v1/session/* routes per client-address slot and hour, counted before the caller
+ * is known (see security/pre-auth-budget.ts). Far above a tournament hall behind one address.
+ */
+export const SESSION_ROUTE_PRE_AUTH_PER_HOUR = 600;
 /** Turning a PIN on, changing or removing it: far beyond ordinary use. */
 export const ACCOUNT_SWITCH_PIN_CHANGES_PER_HOUR = 10;
 
@@ -192,6 +203,10 @@ export type AccountSwitchRouteOptions = Readonly<{
   pins: AccountSwitchPins;
   store: Pick<AccountSwitchStore, "isSwitchSession">;
   rateLimiter: MutationRateLimiter;
+  /** Server keys: native device buckets are keyed by an HMAC of the device value, never the value. */
+  keys: AccountSwitchKeys;
+  /** Bounded per-address protection for the session routes before authentication. */
+  preAuthBudget?: PreAuthBudget;
   trustedOrigins: readonly string[];
   csrfVerifier?: Readonly<{ verify(actor: ActorContext, proof: string): boolean | Promise<boolean> }>;
   nowMs?: () => number;
@@ -234,8 +249,30 @@ export async function registerAccountSwitchRoutes(
     return typeof device === "string" && /^[A-Za-z0-9_-]{43}$/.test(device) &&
       request.headers.origin === undefined && request.headers.cookie === undefined;
   };
-  const deviceSubject = (request: FastifyRequest): string =>
-    `native-device.${String(request.headers[NATIVE_ACCOUNT_DEVICE_HEADER]).slice(0, 16)}`;
+  /** A server-keyed digest of a native device value (null when the header is not one). */
+  const deviceSubject = (request: FastifyRequest): string | null => {
+    const digest = nativeDeviceDigest(options.keys, request.headers[NATIVE_ACCOUNT_DEVICE_HEADER] as string | undefined);
+    return digest === null ? null : deviceLimiterSubject(digest);
+  };
+  const limited = (reply: FastifyReply, error: MutationRateLimitExceeded, code: string) => {
+    reply.header("retry-after", String(error.retryAfterSeconds));
+    return reply.code(429).send(failure(code, "Try again later."));
+  };
+  /**
+   * The per-address budget, before anything else: it creates no row keyed by caller-chosen data.
+   * Returns false after answering 429/503.
+   */
+  const preAuth = async (request: FastifyRequest, reply: FastifyReply, code: string): Promise<boolean> => {
+    if (options.preAuthBudget === undefined) { return true; }
+    try {
+      await options.preAuthBudget.consume(request, "session-routes-preauth", 3_600, SESSION_ROUTE_PRE_AUTH_PER_HOUR);
+      return true;
+    } catch (error) {
+      if (error instanceof MutationRateLimitExceeded) { await limited(reply, error, code); return false; }
+      await reply.code(503).send(failure("session_unavailable", "Try again later."));
+      return false;
+    }
+  };
   const listDocument = (accounts: readonly RememberedAccountView[]): RememberedAccountsDocument => ({
     schemaVersion: REMEMBERED_ACCOUNTS_SCHEMA_VERSION,
     accounts: accounts.slice(0, REMEMBERED_ACCOUNTS_PER_DEVICE).map((account) => ({
@@ -255,13 +292,31 @@ export async function registerAccountSwitchRoutes(
       if (!nativeApp(request) || request.headers.authorization === undefined) {
         return reply.code(403).send(failure("native_remember_forbidden", "Only the signed-in app can do this."));
       }
+      if (!await preAuth(request, reply, "native_remember_rate_limited")) { return reply; }
+      // The session first: a rejected bearer allocates no account or device bucket.
+      let actor: ActorContext;
       try {
-        await options.rateLimiter.consume(deviceSubject(request), "native-account-remember",
+        actor = await options.resolveActor(request);
+      } catch {
+        return reply.code(503).send(failure("native_remember_unavailable", "Try again later."));
+      }
+      if (actor.role !== "account" && actor.role !== "administrator") {
+        return reply.code(401).send(failure("session_authentication_required", "Authentication is required."));
+      }
+      const device = deviceSubject(request);
+      if (device === null) {
+        return reply.code(403).send(failure("native_remember_forbidden", "Only the signed-in app can do this."));
+      }
+      try {
+        // The account budget before the device one: new device values cannot reset it, and a
+        // device bucket only exists for a request the account budget admitted.
+        await options.rateLimiter.consume(actor.userAccountId, "native-account-remember-account",
+          3_600, NATIVE_REMEMBERS_PER_ACCOUNT_HOUR);
+        await options.rateLimiter.consume(device, "native-account-remember-device",
           3_600, NATIVE_REMEMBERS_PER_DEVICE_HOUR);
       } catch (error) {
         if (error instanceof MutationRateLimitExceeded) {
-          reply.header("retry-after", String(error.retryAfterSeconds));
-          return reply.code(429).send(failure("native_remember_rate_limited", "Try again later."));
+          return limited(reply, error, "native_remember_rate_limited");
         }
         return reply.code(503).send(failure("native_remember_unavailable", "Try again later."));
       }
@@ -285,6 +340,7 @@ export async function registerAccountSwitchRoutes(
       if (!nativeApp(request)) {
         return reply.code(403).send(failure("native_forget_forbidden", "Only the app can do this."));
       }
+      if (!await preAuth(request, reply, "native_forget_rate_limited")) { return reply; }
       const body: unknown = request.body;
       if (!isPlainObject(body) || !onlyKeys(body, ["entryId"]) ||
           typeof body["entryId"] !== "string" || !entryIdPattern.test(body["entryId"])) {
@@ -335,6 +391,7 @@ export async function registerAccountSwitchRoutes(
       if (!nativeApp(request)) {
         return reply.code(403).send(failure("account_switch_origin_invalid", "Switch accounts from the app."));
       }
+      if (!await preAuth(request, reply, "account_switch_rate_limited")) { return reply; }
       const body: unknown = request.body;
       if (!isPlainObject(body) || !onlyKeys(body, ["entryId", "pin"]) ||
           typeof body["entryId"] !== "string" || !entryIdPattern.test(body["entryId"]) ||
@@ -392,6 +449,7 @@ export async function registerAccountSwitchRoutes(
       return reply.code(403).send(failure("account_switch_origin_invalid",
         "Switch accounts from this installation's own page."));
     }
+    if (!await preAuth(request, reply, "account_switch_rate_limited")) { return reply; }
     const body: unknown = request.body;
     if (!isPlainObject(body) || !onlyKeys(body, ["entryId", "pin"]) ||
         typeof body["entryId"] !== "string" || !entryIdPattern.test(body["entryId"]) ||

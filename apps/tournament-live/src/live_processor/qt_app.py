@@ -22,6 +22,7 @@ from dataclasses import replace
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
+from urllib.parse import urlsplit
 
 import numpy as np
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -36,6 +37,9 @@ from mk8dx_tournament_connected.client import (
     session_identity_key,
     score_workflow_step,
     sign_in,
+    sign_out,
+    SIGNED_OUT,
+    NO_SESSION,
 )
 from mk8dx_tournament_connected.session import SessionStore
 from mk8dx_tournament_extraction.engine import player_name_scripts
@@ -193,7 +197,7 @@ _DUTCH_UI = {
     "LOCAL / OFFLINE": "LOKAAL / OFFLINE",
     "Optional: sign in to upload this run as an independent evidence record. A Tournament choice is only a suggestion; recording and analysis stay local.": "Optioneel: meld je aan om deze run als zelfstandig bewijsrecord te uploaden. Een gekozen toernooi is alleen een voorstel; opname en analyse blijven lokaal.",
     "Connect to Tournament Manager": "Verbinden met Tournament Manager", "Change Tournament": "Toernooi wijzigen",
-    "Work offline": "Offline werken", "Retry upload": "Upload opnieuw proberen",
+    "Work offline": "Offline werken", "Retry upload": "Upload opnieuw proberen", "Sign out": "Afmelden",
     "Checking Tournament…": "Toernooi controleren…",
     "Language": "Taal",
     "Sources": "Bronnen", "Races per group": "Races per groep", "Highlight": "Markering",
@@ -590,6 +594,10 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         self.offline_button = QtWidgets.QPushButton("Work offline")
         self.offline_button.clicked.connect(self.work_offline)
         context_row.addWidget(self.offline_button)
+        # Ends this PC's session on the community website (Work offline only forgets it here).
+        self.sign_out_button = QtWidgets.QPushButton("Sign out")
+        self.sign_out_button.clicked.connect(self.sign_out)
+        context_row.addWidget(self.sign_out_button)
         self.retry_upload_button = QtWidgets.QPushButton("Retry upload")
         self.retry_upload_button.clicked.connect(self.retry_upload)
         context_row.addWidget(self.retry_upload_button)
@@ -872,6 +880,9 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         if not hasattr(self, "connection_mode"):
             return
         Mk8dxQtGui._update_retry_upload_button(self)
+        if hasattr(self, "sign_out_button"):
+            # Only a stored session can be ended on the website.
+            self.sign_out_button.setVisible(SessionStore().load() is not None)
         context = self.connection_context
         if context is None:
             if SessionStore().load() is not None:
@@ -1184,7 +1195,7 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         )
         self._connection_thread.start()
 
-    def work_offline(self) -> None:
+    def _forget_connection_locally(self) -> None:
         self._connection_store.clear()
         ConnectionTargetStore().clear()
         SessionStore().clear()
@@ -1193,6 +1204,36 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         self.connection_context = None
         self._update_connection_bar()
         self.refresh_sources()
+
+    def work_offline(self) -> None:
+        """Forget the connection on this PC only; the website session is not ended (see sign_out)."""
+        try:
+            had_session = SessionStore().load() is not None
+        except (OSError, ValueError):
+            had_session = True
+        self._forget_connection_locally()
+        if had_session:
+            self.connection_detail.setText(self._say(
+                "Working offline. The sign-in was removed from this PC only; it was not ended on the website. Use Sign out to end it there, or Sign out everywhere on the website's account page.",
+                "Offline aan het werk. De aanmelding is alleen van deze pc verwijderd; op de website is ze niet beëindigd. Gebruik Afmelden om haar daar te beëindigen, of Overal afmelden op de accountpagina van de website.",
+            ))
+
+    def sign_out(self) -> None:
+        """End this PC's session on the community website, then forget the connection here."""
+        if self._connection_thread is not None and self._connection_thread.is_alive():
+            return
+        self.connect_button.setEnabled(False)
+        self.sign_out_button.setEnabled(False)
+        self.connection_detail.setText(self._say("Signing out on the website…", "Afmelden op de website…"))
+
+        def worker() -> None:
+            try:
+                self._connection_queue.put(("signed_out", sign_out(SessionStore())))
+            except Exception as error:
+                self._connection_queue.put(("error", error))
+
+        self._connection_thread = threading.Thread(target=worker, name="tournament-sign-out", daemon=True)
+        self._connection_thread.start()
 
     def retry_upload(self) -> None:
         if self._connection_thread is not None and self._connection_thread.is_alive():
@@ -1292,6 +1333,8 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 continue
             self.connect_button.setEnabled(True)
             self.retry_upload_button.setEnabled(True)
+            if hasattr(self, "sign_out_button"):
+                self.sign_out_button.setEnabled(True)
             if kind in {"retry", "error"}:
                 self._retry_upload_active = False
                 self._update_retry_upload_button()
@@ -1350,12 +1393,34 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 )
                 self._set_status("new run cancelled; previous run retained")
             elif kind == "authorization":
-                code, _url = payload
+                code, url = payload
+                # sign_in() validated the address: the chosen community's own /device page.
+                host = urlsplit(url).netloc
                 self.connection_detail.setText(self._say(
-                    "Browser code: {0} · approve this connection in the opened browser.",
-                    "Browsercode: {0} · keur deze verbinding goed in de geopende browser.",
-                    code,
+                    "Browser code: {0} · approve this connection only on {1} in the opened browser.",
+                    "Browsercode: {0} · keur deze verbinding alleen goed op {1} in de geopende browser.",
+                    code, host,
                 ))
+            elif kind == "signed_out":
+                if payload.state in {SIGNED_OUT, NO_SESSION}:
+                    self._forget_connection_locally()
+                    if payload.state == SIGNED_OUT:
+                        self.connection_detail.setText(self._say(
+                            "Signed out on {0}. This session no longer works; other devices stay signed in.",
+                            "Afgemeld op {0}. Deze sessie werkt niet meer; andere apparaten blijven aangemeld.",
+                            payload.host,
+                        ))
+                else:
+                    QtWidgets.QMessageBox.warning(
+                        self,
+                        self._say("Tournament connection", "Tournament-koppeling"),
+                        self._say(
+                            "Sign-out on {0} was not confirmed; the sign-in is still on this PC. Try again when online, or choose Work offline and use Sign out everywhere on the website's account page.",
+                            "Afmelden op {0} is niet bevestigd; de aanmelding staat nog op deze pc. Probeer het opnieuw als je online bent, of kies Offline werken en gebruik Overal afmelden op de accountpagina van de website.",
+                            payload.host,
+                        ),
+                    )
+                    self._update_connection_bar()
             elif kind == "retry":
                 uploaded, retained = payload
                 message = self._say(
@@ -1405,10 +1470,18 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
                 if run_id == self._connected_live_run_id:
                     self._connected_live_record_id = receipt.record_id
                     self._connected_live_registration_failures = 0
-                    self.connection_detail.setText(self._say(
-                        "Live run registered; race 1 checks the group match. Scores wait for final review after Stop.",
-                        "Live-run geregistreerd; race 1 controleert de groepsmatch. Scores wachten op de eindcontrole na STOP.",
-                    ))
+                    # A roster match alone never opens the public view: only the Director, an
+                    # administrator or an account the Director delegated live capture to.
+                    if getattr(receipt, "live_status", None) == "active":
+                        self.connection_detail.setText(self._say(
+                            "Live run registered; the public live view is open. Scores wait for final review after Stop.",
+                            "Live-run geregistreerd; de openbare live-weergave is open. Scores wachten op de eindcontrole na STOP.",
+                        ))
+                    else:
+                        self.connection_detail.setText(self._say(
+                            "Live run registered; waiting for the Director. The public live view opens when the Director confirms it, or after race 1 if this account is the Director's or holds their capture delegation. Scores wait for final review after Stop.",
+                            "Live-run geregistreerd; wacht op de toernooileider. De openbare live-weergave opent als de toernooileider hem bevestigt, of na race 1 als dit account van de toernooileider is of zijn capturedelegatie heeft. Scores wachten op de eindcontrole na STOP.",
+                        ))
                     if self._connected_live_stop_requested:
                         self._mark_connected_live_stopping(run_id)
             elif kind == "live_registration_error":
@@ -2930,6 +3003,8 @@ class Mk8dxQtGui(QtWidgets.QMainWindow):
         # Reset only lights up when there is actually session data to discard.
         self.reset_btn.setEnabled(self.controller is not None and not stopping and not pending)
         self.offline_button.setEnabled(not stopping and not pending)
+        if hasattr(self, "sign_out_button"):
+            self.sign_out_button.setEnabled(not stopping and not pending and not connecting)
         self.connect_button.setEnabled(
             not stopping and not pending and not checking_context and not connecting
         )

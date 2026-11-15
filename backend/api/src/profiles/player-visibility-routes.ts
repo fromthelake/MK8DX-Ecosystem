@@ -3,6 +3,8 @@ import type { FastifyInstance } from "fastify";
 import { errorResponseSchema, playerIdParamsSchema } from
   "../identity/schemas.js";
 import type { ActorResolver } from "../identity/types.js";
+import { consumeAccountSettingMutationBudget } from "../security/account-setting-mutation-budget.js";
+import { MutationRateLimitExceeded, type MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 import type { TimeTrialWebCsrfVerifier } from
   "../timetrials/submission-routes.js";
 import {
@@ -17,6 +19,8 @@ export type PlayerVisibilityRouteOptions = Readonly<{
   resolveActor: ActorResolver;
   service: Pick<PlayerVisibilityService, "readOwn" | "setOwn" | "setForPlayer">;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  /** H1: the shared account-setting budget (own visibility; an administrator's change per Player). */
+  rateLimiter?: MutationRateLimiter;
 }>;
 
 const stateSchema = {
@@ -63,6 +67,8 @@ function errorReply(error: unknown): Readonly<{
   status: number;
   body: ErrorResponse;
 }> {
+  // A spent durable budget becomes 429 with Retry-After in the application's error handler.
+  if (error instanceof MutationRateLimitExceeded) { throw error; }
   if (error instanceof PlayerVisibilityError) {
     switch (error.code) {
       case "invalid_input":
@@ -151,6 +157,9 @@ export async function registerPlayerVisibilityRoutes(
       try {
         const actor = await options.resolveActor(request);
         await requireProof(options, actor, request.headers["x-mk8dx-csrf"]);
+        if (options.rateLimiter !== undefined) {
+          await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
+        }
         const state = await options.service.setOwn(
           actor, request.body.visibility,
         );
@@ -179,6 +188,9 @@ export async function registerPlayerVisibilityRoutes(
       try {
         const actor = await options.resolveActor(request);
         await requireProof(options, actor, request.headers["x-mk8dx-csrf"]);
+        if (options.rateLimiter !== undefined) {
+          await consumeAccountSettingMutationBudget(actor, options.rateLimiter);
+        }
         const state = await options.service.setForPlayer(
           actor,
           request.params.playerId,

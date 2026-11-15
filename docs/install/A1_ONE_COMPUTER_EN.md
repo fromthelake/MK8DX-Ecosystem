@@ -91,6 +91,14 @@ once, at the first start on the new version; only a backup can undo that. So in 
 first: it makes a checked backup and applies the database updates. From 0.2.4 on, **2** (start) refuses until the
 update has run; with a 0.2.3 package, 2 would skip the backup. **3** (check) is harmless.
 
+**Automatic backup:** MK8DX also makes a checked backup by itself every night (03:15, or as soon as the computer
+is on again) in `Documents\MK8DX-backups\automatic`, keeping 14 days and 4 weeks. **3** (check) shows the age and
+result of the last one under `automaticBackup`. Copy backups to another drive or a NAS too:
+`python tooling/install.py backup-schedule --state-dir "$env:LOCALAPPDATA\MK8DX\Server" --copy-to 'D:\MK8DX-backups'`.
+Turn it off with `backup-unschedule` instead of `backup-schedule`. Details: [Administration](ADMINISTRATION_EN.md#automatic-daily-backup).
+
+**Database accounts:** the website signs in to its database with its own account (`mk8dx_runtime`) that can only read and write data; database updates use the database's own account (`mk8dx_app`). Setup creates both; an older installation gets them at its next update (**7**), and if the website does not start with the new account the update returns to the old one. **3** (check) shows `"databaseAccounts": "separate"`. Details: [Operations](../OPERATIONS.md#database-accounts).
+
 Your data stays in `%LOCALAPPDATA%\MK8DX\Server` and in Docker; a newer package replaces only the program folder.
 Never run `docker compose down -v`. Restoring a backup on another computer: the chapter *Back up, restore, and update* in the
 [user guide](MK8DX_User_Guide_EN.txt), or [ADMINISTRATION_EN.md](ADMINISTRATION_EN.md#restoring-without-wiping-the-current-installation).

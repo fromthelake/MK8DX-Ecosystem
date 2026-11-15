@@ -8,6 +8,7 @@ import type { FastifyInstance, FastifyReply } from "fastify";
 
 import { errorResponseSchema } from "../identity/schemas.js";
 import type { ActorContext, ActorResolver } from "../identity/types.js";
+import { MutationRateLimitExceeded, type MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 import {
   RatingLifecycleError,
   type RatingLifecycleService,
@@ -59,7 +60,12 @@ const csrfHeadersSchema = {
   properties: { "x-mk8dx-csrf": { type: "string", minLength: 1, maxLength: 1024 } },
 } as const;
 
+/** H1: rating decisions per administrator, and the far rarer full recalculation. Never unlimited. */
+export const RATING_ADMINISTRATION_BUDGETS = Object.freeze({ writesPerHour: 300, recalculationsPerHour: 10 });
+
 function failure(error: unknown): Readonly<{ status: 400 | 403 | 404 | 409 | 503; body: ErrorResponse }> {
+  // A spent durable budget becomes 429 with Retry-After in the application's error handler.
+  if (error instanceof MutationRateLimitExceeded) { throw error; }
   if (error instanceof RatingLifecycleError) {
     switch (error.code) {
       case "invalid_command":
@@ -84,6 +90,7 @@ export async function registerRatingAdministrationRoutes(
     service: Pick<RatingLifecycleService, "recordDecision" | "recalculate" | "applyPublication">;
     readRepository: RatingAdministrationReadRepository;
     csrfVerifier: Readonly<{ verify(actor: ActorContext, token: string): boolean }>;
+    rateLimiter?: MutationRateLimiter;
   }>,
 ): Promise<void> {
   const administrator = async (
@@ -96,6 +103,11 @@ export async function registerRatingAdministrationRoutes(
     }
     if (token !== undefined && !dependencies.csrfVerifier.verify(actor, token)) {
       throw new RatingLifecycleError("forbidden", "request proof required");
+    }
+    // Writes carry the proof; reads do not and are not counted.
+    if (token !== undefined && dependencies.rateLimiter !== undefined) {
+      await dependencies.rateLimiter.consume(actor.userAccountId, "rating-administration.hour", 3_600,
+        RATING_ADMINISTRATION_BUDGETS.writesPerHour);
     }
     return actor;
   };
@@ -210,6 +222,8 @@ export async function registerRatingAdministrationRoutes(
     } } },
     async (request, reply) => handle(reply, async () => {
       const actor = await administrator(request, request.headers["x-mk8dx-csrf"]);
+      await dependencies.rateLimiter?.consume(actor.userAccountId, "rating-administration.recalculate.hour", 3_600,
+        RATING_ADMINISTRATION_BUDGETS.recalculationsPerHour);
       return dependencies.service.recalculate({
         administratorAccountId: actor.userAccountId,
         reasonCode: request.body.reasonCode,

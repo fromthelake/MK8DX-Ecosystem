@@ -31,6 +31,7 @@ import {
   MutationRateLimitExceeded,
   type MutationRateLimiter,
 } from "../src/security/mysql-mutation-rate-limiter.js";
+import { PreAuthBudget } from "../src/security/pre-auth-budget.js";
 
 const baseUrl = "https://mk8dx.example.test";
 const secrets = [
@@ -125,7 +126,7 @@ function absorb(jar: Jar, raw: unknown): void {
 }
 const header = (jar: Jar): string => [...jar].map(([name, value]) => `${name}=${value}`).join("; ");
 
-async function harness(offline = false) {
+async function harness(offline = false, preAuthSlots = 1_024) {
   let now = Date.now();
   const nowMs = () => now;
   const database: MemoryDB = {
@@ -168,7 +169,7 @@ async function harness(offline = false) {
       attempts: { limiter, tokenKey: Buffer.alloc(32, 7) },
       async bindAccount() { /* the binding service is exercised by its own tests */ },
     } : undefined,
-    { keys, store, directory, pins, nowMs },
+    { keys, store, directory, pins, nowMs, limiter },
   );
   const app = Fastify({ logger: false });
   await registerEmbeddedAuthRoutes(app, auth, baseUrl);
@@ -181,13 +182,16 @@ async function harness(offline = false) {
       : { role: person.administrator ? "administrator" : "account", userAccountId: person.userAccountId };
   };
   await registerAccountSwitchRoutes(app, {
-    api, resolveActor, pins, store, rateLimiter: limiter, trustedOrigins: [baseUrl], nowMs,
+    api, resolveActor, pins, store, rateLimiter: limiter, trustedOrigins: [baseUrl], nowMs, keys,
+    preAuthBudget: new PreAuthBudget(limiter, Buffer.alloc(32, 9), auth.clientAddress, preAuthSlots),
     csrfVerifier: { verify: (_actor, proof) => proof === "good-proof" },
   });
   await app.ready();
   return {
     app, auth, database, links, audit, store, pinStore, limiter, pins,
     advance(ms: number) { now += ms; },
+    /** Moves the limiter clock just past the next hour boundary, so a test stays in one window. */
+    alignHour() { now = Math.ceil(now / 3_600_000) * 3_600_000 + 1_000; },
   };
 }
 type Harness = Awaited<ReturnType<typeof harness>>;
@@ -779,5 +783,97 @@ describe("PIN hashing", () => {
       { version: 3, value: "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=" },
     ]));
     expect(await rotated.verify("0420", first)).toBe(false);
+  });
+});
+
+/** Every limiter key whose subject is not a fixed-size pre-authentication slot. */
+function nonSlotKeys(h: Harness): string[] {
+  return [...h.limiter.counts.keys()].filter((key) => !/\|preauth-slot\.[0-9]+\|/.test(key));
+}
+const randomDevice = (index: number): string =>
+  `${String(index).padStart(6, "0")}${"Z".repeat(37)}`;
+
+describe("session routes before and after authentication (F03)", () => {
+  it("allocates no device or account bucket for a rejected native remember", async () => {
+    const h = await harness();
+    try {
+      for (let index = 0; index < 5; index += 1) {
+        const response = await h.app.inject({ method: "POST", url: "/v1/session/native-remember",
+          headers: app(randomDevice(index), `invalid-bearer-${String(index)}-${"x".repeat(24)}`), payload: {} });
+        expect(response.statusCode).toBe(401);
+      }
+      expect(nonSlotKeys(h)).toEqual([]);
+      expect(h.store.rows).toEqual([]);
+      expect(h.database["mk8dx_auth_session"]).toEqual([]);
+    } finally { await h.app.close(); }
+  });
+
+  it("never keys a bucket by the device value the caller sent", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      expect((await nativeRemember(h, appDevice, ann)).statusCode).toBe(200);
+      for (const key of h.limiter.counts.keys()) {
+        expect(key).not.toContain(appDevice.slice(0, 16));
+      }
+    } finally { await h.app.close(); }
+  });
+
+  it("keeps one account budget however many fresh device values the app sends", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      h.alignHour();
+      const codes: number[] = [];
+      for (let index = 0; index < 32; index += 1) {
+        codes.push((await nativeRemember(h, randomDevice(index), ann)).statusCode);
+      }
+      expect(codes.slice(0, 30).every((code) => code === 200)).toBe(true);
+      expect(codes.slice(30)).toEqual([429, 429]);
+      const limited = await nativeRemember(h, randomDevice(99), ann);
+      expect(limited.statusCode, limited.body).toBe(429);
+      expect(String(limited.headers["retry-after"])).toMatch(/^[0-9]+$/);
+      // Device buckets exist only for the 30 admitted requests.
+      expect(nonSlotKeys(h).filter((key) => key.startsWith("native-account-remember-device|"))).toHaveLength(30);
+    } finally { await h.app.close(); }
+  });
+
+  it("refuses an anonymous flood from one address, with bounded storage for many addresses", async () => {
+    const h = await harness(false, 8);
+    h.alignHour();
+    try {
+      const codes = new Set<number>();
+      for (let index = 0; index < 50; index += 1) {
+        const response = await h.app.inject({ method: "POST", url: "/v1/session/native-remember",
+          headers: { ...app(randomDevice(index), `invalid-${"y".repeat(30)}`), "x-real-ip": `198.51.100.${String(index)}` },
+          payload: {} });
+        codes.add(response.statusCode);
+      }
+      expect([...codes]).toEqual([401]);
+      const slotKeys = [...h.limiter.counts.keys()].filter((key) => key.includes("|preauth-slot."));
+      expect(slotKeys.length).toBeLessThanOrEqual(8);
+      let last = 0;
+      for (let index = 0; index < 700; index += 1) {
+        last = (await h.app.inject({ method: "POST", url: "/v1/session/native-account-switch",
+          headers: app(randomDevice(index)), payload: { entryId: "q".repeat(22) } })).statusCode;
+      }
+      expect(last).toBe(429);
+    } finally { await h.app.close(); }
+  });
+
+  it("bounds the sessions one remembered device can mint by switching", async () => {
+    const h = await harness();
+    try {
+      const ann = await nativeSignIn(h, "ann@example.test");
+      await nativeRemember(h, appDevice, ann);
+      const target = (await nativeList(h, appDevice, ann))[0]!;
+      h.alignHour();
+      const codes: number[] = [];
+      for (let index = 0; index < 62; index += 1) {
+        codes.push((await nativeSwitch(h, appDevice, target.entryId)).statusCode);
+      }
+      expect(codes.slice(0, 60).every((code) => code === 200)).toBe(true);
+      expect(codes.slice(60)).toEqual([429, 429]);
+    } finally { await h.app.close(); }
   });
 });

@@ -54,7 +54,7 @@ dezelfde afbeelding.
 | --- | --- |
 | Web-scanner | TypeScript uit `packages/icon-matcher/ts/` wordt door Vite in de scanner gebundeld; `stage_shared_fields.mjs` zet een vastgelegde herkenningspack in `public/shared-icon/`. |
 | Android | Gradle compileert `packages/icon-matcher/java/` en `java-result/` in de scanruntime; de app bevat lokaal gestagede referenties. |
-| LiveTrial | `tooling/livetrial/prepare_engine.py` kopieert de Python-lezer in de voorbereide engine; de Windows-bouwer voegt de herkenningspack toe. Enginewijzigingen lopen via `engine-overlay/`. |
+| LiveTrial | Het pakket levert de engine uit `apps/timetrials-desktop/vision-runtime/`: `tooling/livetrial/prepare_engine.py` kopieert die met de Python-lezer in de voorbereide engine, en de Windows-bouwer voegt de herkenningspack toe. Enginefixes worden gemaakt in de werkkopie `engine-overlay/`; een CI-test (`tests/test_engine_overlay_matches_runtime.py`) faalt als die afwijkt van `vision-runtime/`. De engine leest velden alleen met de centrale lezer; een schakelaar naar een andere veldlezer is er niet. |
 | Tournament-tools | De Windows-bouwer pint de Python-wheel `mk8dx-icon-matcher` met de andere runtimepakketten. |
 
 De pack bevat de frameposities, ankers en referenties. Controleer bij een

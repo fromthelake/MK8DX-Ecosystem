@@ -11,6 +11,81 @@ import {
 } from "./tournament-accept-unit-of-work.js";
 import { TournamentResultServiceError } from "./race-result-service.js";
 import { TournamentOperationError } from "./tournament-operation-service.js";
+import type { MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+
+/**
+ * F04: limits on Tournament evidence that any signed-in account can upload.
+ * Rates go through the shared durable limiter (several API processes share
+ * one budget); the storage quotas are enforced atomically in the upload
+ * transaction. The defaults leave room for a full night of several live feeds
+ * and offline catch-up uploads; see backend/api/README.md.
+ */
+export interface TournamentEvidenceStorageLimits {
+  /** Bytes of result entries one record may hold (the request body limit also applies). */
+  maxRecordBytes: number;
+  /** Unlinked records (uploading or available) one account may keep. */
+  maxOpenRecordsPerAccount: number;
+  /** Bytes of unlinked records one account may keep. */
+  maxOpenBytesPerAccount: number;
+  /** New records one account may create in any 24 hours. */
+  maxNewRecordsPerAccountPerDay: number;
+  /** Bytes of unlinked records the whole installation keeps. */
+  maxInstallationOpenBytes: number;
+}
+
+export interface TournamentEvidenceLimits extends TournamentEvidenceStorageLimits {
+  /** Upload requests (new or updated records) per account per window. */
+  accountUploadsPerWindow: number;
+  /** Upload requests from all accounts together per window. */
+  installationUploadsPerWindow: number;
+  uploadWindowSeconds: number;
+  /** Days after its last change that a never-linked record may be removed. */
+  retentionDays: number;
+  /** Most records one Tournament evidence list returns. */
+  listLimit: number;
+}
+
+export const DEFAULT_TOURNAMENT_EVIDENCE_LIMITS: TournamentEvidenceLimits = Object.freeze({
+  maxRecordBytes: 1_048_576,
+  maxOpenRecordsPerAccount: 100,
+  maxOpenBytesPerAccount: 64 * 1_048_576,
+  maxNewRecordsPerAccountPerDay: 200,
+  maxInstallationOpenBytes: 1_024 * 1_048_576,
+  accountUploadsPerWindow: 240,
+  installationUploadsPerWindow: 6_000,
+  uploadWindowSeconds: 600,
+  retentionDays: 90,
+  listLimit: 500,
+});
+
+/** A storage quota refused an evidence upload; nothing was written. */
+export class TournamentEvidenceLimitError extends Error {
+  public constructor(
+    public readonly limit: "record_bytes" | "open_records" | "open_bytes" | "new_records_per_day" | "installation_open_bytes",
+    message: string,
+    public readonly retryAfterSeconds?: number,
+  ) {
+    super(message);
+    this.name = "TournamentEvidenceLimitError";
+  }
+}
+
+/** A Director's explicit, revocable, time-limited permission for one account to run live capture. */
+export interface TournamentLiveCaptureDelegation {
+  delegationId: string;
+  tournamentId: string;
+  delegateUserAccountId: string;
+  /** The delegate's verified Player name, or a neutral label; the Director picks and recognizes people by name. */
+  delegateDisplayName: string;
+  status: "active" | "revoked";
+  reason: string;
+  grantedByUserAccountId: string;
+  grantedAtMs: number;
+  expiresAtMs: number;
+  revokedByUserAccountId: string | null;
+  revokeReason: string | null;
+  revokedAtMs: number | null;
+}
 
 export type IncomingResultStatus = "pending" | "accepted" | "rejected" | "blocked";
 
@@ -227,7 +302,12 @@ export interface IncomingTournamentResult {
 export interface TournamentConnectedRepository {
   listEligibleTournaments(userAccountId: string): Promise<readonly ConnectedTournamentSummary[]>;
   findActiveTournamentInternalId(tournamentId: string): Promise<number | null>;
-  canReviewTournament(tournamentId: string, userAccountId: string, administrator: boolean): Promise<boolean>;
+  /**
+   * Whether this account may review the Tournament now: an active
+   * administrator grant, or the Tournament's director with an active
+   * tournament.operation capability, read from the database.
+   */
+  canReviewTournament(tournamentId: string, userAccountId: string): Promise<boolean>;
   upsertEvidenceRecord(input: {
     recordId: string;
     clientRecordId: string;
@@ -245,9 +325,13 @@ export interface TournamentConnectedRepository {
       mappings: readonly TournamentLiveMapping[];
     } | null;
     nowMs: number;
+    limits: TournamentEvidenceStorageLimits;
   }): Promise<TournamentEvidenceRecord>;
-  listOwnEvidenceRecords(userAccountId: string): Promise<readonly TournamentEvidenceRecord[]>;
-  listEvidenceRecordsForTournament(tournamentId: string): Promise<readonly TournamentEvidenceRecord[]>;
+  listOwnEvidenceRecords(
+    userAccountId: string,
+    page?: Readonly<{ limit: number; before?: Readonly<{ updatedAtMs: number; recordId: string }> }>,
+  ): Promise<readonly TournamentEvidenceRecord[]>;
+  listEvidenceRecordsForTournament(tournamentId: string, limit?: number): Promise<readonly TournamentEvidenceRecord[]>;
   findEvidenceRecord(recordId: string): Promise<StoredTournamentEvidenceRecord | null>;
   approveLiveAssociation(input: {
     recordId: string;
@@ -272,6 +356,36 @@ export interface TournamentConnectedRepository {
     reason: string;
     nowMs: number;
   }): Promise<TournamentEvidenceRecord>;
+  /** Takes a public live feed back to `requested`; a roster match cannot reopen it. */
+  withdrawLiveAssociation?(input: {
+    recordId: string;
+    expectedRevision: number;
+    tournamentId: string;
+    reviewedByUserAccountId: string;
+    reason: string;
+    nowMs: number;
+  }): Promise<TournamentEvidenceRecord>;
+  grantLiveCaptureDelegation?(input: {
+    delegationId: string;
+    tournamentId: string;
+    delegateUserAccountId: string;
+    grantedByUserAccountId: string;
+    reason: string;
+    expiresAtMs: number;
+    nowMs: number;
+  }): Promise<TournamentLiveCaptureDelegation>;
+  revokeLiveCaptureDelegation?(input: {
+    delegationId: string;
+    tournamentId: string;
+    revokedByUserAccountId: string;
+    reason: string;
+    nowMs: number;
+  }): Promise<TournamentLiveCaptureDelegation>;
+  listLiveCaptureDelegations?(input: {
+    tournamentId: string;
+    reviewedByUserAccountId: string;
+  }): Promise<readonly TournamentLiveCaptureDelegation[]>;
+  applyEvidenceRetention?(input: { cutoffMs: number; nowMs: number; batchSize: number }): Promise<Readonly<{ deleted: number; purged: number }>>;
   markOwnEvidenceStopping(input: {
     recordId: string;
     uploadedByUserAccountId: string;
@@ -502,6 +616,9 @@ export class TournamentConnectedService {
    * holding no transaction and exists for tests built on synthetic doubles.
    */
   private readonly acceptUnitOfWork: TournamentAcceptUnitOfWork;
+  private readonly evidenceLimits: TournamentEvidenceLimits;
+  private readonly rateLimiter: MutationRateLimiter | undefined;
+  private readonly newDelegationId: () => string;
 
   public constructor(
     private readonly repository: TournamentConnectedRepository,
@@ -510,10 +627,19 @@ export class TournamentConnectedService {
     private readonly now: () => number = Date.now,
     acceptUnitOfWork?: TournamentAcceptUnitOfWork,
     private readonly hasOperatorCapability: (userAccountId: string) => Promise<boolean> = async () => false,
+    options: Readonly<{
+      /** The shared durable limiter; without one only the storage quotas apply. */
+      rateLimiter?: MutationRateLimiter;
+      evidenceLimits?: Partial<TournamentEvidenceLimits>;
+      newDelegationId?: () => string;
+    }> = {},
   ) {
     this.acceptUnitOfWork = acceptUnitOfWork ?? directTournamentAcceptUnitOfWork({
       repository, raceResults, operations,
     });
+    this.evidenceLimits = { ...DEFAULT_TOURNAMENT_EVIDENCE_LIMITS, ...options.evidenceLimits };
+    this.rateLimiter = options.rateLimiter;
+    this.newDelegationId = options.newDelegationId ?? (() => `live_capture_delegation.${randomUUID()}`);
   }
 
   /**
@@ -572,6 +698,23 @@ export class TournamentConnectedService {
     }[];
   }): Promise<TournamentEvidenceRecord> {
     const userAccountId = requireSignedIn(actor);
+    // F04: an account budget and a shared installation budget, durable across
+    // API processes, before any parsing or database work. A refused request
+    // writes nothing; the client keeps its local copy and retries later.
+    if (this.rateLimiter !== undefined) {
+      const limits = this.evidenceLimits;
+      await this.rateLimiter.consume(userAccountId, "tournament-evidence.account",
+        limits.uploadWindowSeconds, limits.accountUploadsPerWindow);
+      await this.rateLimiter.consume("installation", "tournament-evidence.installation",
+        limits.uploadWindowSeconds, limits.installationUploadsPerWindow);
+    }
+    if (typeof input !== "object" || input === null || !Array.isArray(input.entries) ||
+        (input.liveMappings !== undefined && !Array.isArray(input.liveMappings))) {
+      throw new TournamentOperationError("invalid_input", "entries and liveMappings must be arrays.");
+    }
+    if (input.entries.length > 200 || (input.liveMappings?.length ?? 0) > 8) {
+      throw new TournamentOperationError("invalid_input", "Upload 1 to 200 evidence results and at most 8 live feeds.");
+    }
     const clientRecordId = boundedText(input.clientRecordId, "clientRecordId", 160);
     const liveMappings = (input.liveMappings ?? []).map((mapping) => ({
       observedGroupLabel: boundedText(mapping.observedGroupLabel, "observedGroupLabel", 128),
@@ -641,7 +784,13 @@ export class TournamentConnectedService {
       complete: input.complete,
       liveRegistration: registeringLive ? { mappings: liveMappings } : null,
       nowMs: this.now(),
+      limits: this.evidenceLimits,
     });
+    // F05: the roster match below is only a quality gate. Whether this
+    // uploader may open the public view at all - administrator, this
+    // Tournament's director, or a holder of the director's capture
+    // delegation - is decided by the repository inside its transaction; for
+    // anybody else the feed simply stays `requested` for the director.
     if (record.live?.status !== "requested" || entries.length === 0 ||
       record.suggestedTournamentId === null || this.repository.groupMemberMatchNames === undefined) {
       return record;
@@ -746,13 +895,134 @@ export class TournamentConnectedService {
     return records.flatMap(projectTournamentLiveGroups);
   }
 
+  /**
+   * An account's own records, most recently written first, one bounded page
+   * at a time. `before` is the `nextCursor` of the previous page.
+   */
+  public async listOwnEvidenceRecordsPage(actor: ActorContext, page: Readonly<{ limit?: number; before?: string }> = {}): Promise<Readonly<{
+    records: readonly TournamentEvidenceRecord[];
+    nextCursor: string | null;
+  }>> {
+    const userAccountId = requireSignedIn(actor);
+    const limit = page.limit === undefined ? 200 : page.limit;
+    if (!Number.isSafeInteger(limit) || limit < 1 || limit > 200) {
+      throw new TournamentOperationError("invalid_input", "limit must be between 1 and 200.");
+    }
+    let before: { updatedAtMs: number; recordId: string } | undefined;
+    if (page.before !== undefined) {
+      const match = /^(\d{1,16})~([0-9a-f-]{36})$/u.exec(page.before);
+      if (match === null) throw new TournamentOperationError("invalid_input", "before is not a valid cursor.");
+      before = { updatedAtMs: Number(match[1]), recordId: match[2]! };
+    }
+    const rows = await this.repository.listOwnEvidenceRecords(userAccountId, {
+      limit: limit + 1, ...(before === undefined ? {} : { before }),
+    });
+    const records = rows.slice(0, limit);
+    const last = records[records.length - 1];
+    return {
+      records,
+      nextCursor: rows.length > limit && last !== undefined ? `${last.updatedAtMs}~${last.recordId}` : null,
+    };
+  }
+
   public async listOwnEvidenceRecords(actor: ActorContext): Promise<readonly TournamentEvidenceRecord[]> {
-    return this.repository.listOwnEvidenceRecords(requireSignedIn(actor));
+    return (await this.listOwnEvidenceRecordsPage(actor)).records;
   }
 
   public async listEvidenceRecords(actor: ActorContext, tournamentId: string): Promise<readonly TournamentEvidenceRecord[]> {
     await this.assertReviewer(actor, tournamentId);
-    return this.repository.listEvidenceRecordsForTournament(tournamentId);
+    return this.repository.listEvidenceRecordsForTournament(tournamentId, this.evidenceLimits.listLimit);
+  }
+
+  /** F05: the director takes a public live feed back off the public view; its evidence stays. */
+  public async withdrawLiveAssociation(actor: ActorContext, input: {
+    tournamentId: string;
+    recordId: string;
+    expectedRevision: number;
+    reason?: string;
+  }): Promise<TournamentEvidenceRecord> {
+    const reviewer = await this.assertReviewer(actor, input.tournamentId);
+    if (this.repository.withdrawLiveAssociation === undefined) throw new TournamentOperationError("unavailable");
+    if (!Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 1) {
+      throw new TournamentOperationError("invalid_input", "expectedRevision is invalid.");
+    }
+    const reason = input.reason === undefined || (typeof input.reason === "string" && input.reason.trim() === "")
+      ? "Live feed withdrawn by Tournament director"
+      : boundedText(input.reason, "reason", 512);
+    return this.repository.withdrawLiveAssociation({
+      recordId: boundedText(input.recordId, "recordId", 160),
+      expectedRevision: input.expectedRevision,
+      tournamentId: input.tournamentId,
+      reviewedByUserAccountId: reviewer,
+      reason,
+      nowMs: this.now(),
+    });
+  }
+
+  /**
+   * F05: the director gives one account permission to run this Tournament's
+   * live capture, so that account's strong roster match may open the public
+   * view. Time-limited (default 12 hours, at most 7 days) and revocable.
+   */
+  public async grantLiveCaptureDelegation(actor: ActorContext, input: {
+    tournamentId: string;
+    delegateUserAccountId: string;
+    reason: string;
+    expiresInMinutes?: number;
+  }): Promise<TournamentLiveCaptureDelegation> {
+    const reviewer = await this.assertReviewer(actor, input.tournamentId);
+    if (this.repository.grantLiveCaptureDelegation === undefined) throw new TournamentOperationError("unavailable");
+    const minutes = input.expiresInMinutes ?? 720;
+    if (!Number.isSafeInteger(minutes) || minutes < 5 || minutes > 10_080) {
+      throw new TournamentOperationError("invalid_input", "expiresInMinutes must be between 5 and 10080.");
+    }
+    const delegate = boundedText(input.delegateUserAccountId, "delegateUserAccountId", 160);
+    if (!/^user_account\.[A-Za-z0-9._-]{1,140}$/u.test(delegate)) {
+      throw new TournamentOperationError("invalid_input", "delegateUserAccountId is invalid.");
+    }
+    const nowMs = this.now();
+    return this.repository.grantLiveCaptureDelegation({
+      delegationId: this.newDelegationId(),
+      tournamentId: input.tournamentId,
+      delegateUserAccountId: delegate,
+      grantedByUserAccountId: reviewer,
+      reason: boundedText(input.reason, "reason", 255),
+      expiresAtMs: nowMs + minutes * 60_000,
+      nowMs,
+    });
+  }
+
+  public async revokeLiveCaptureDelegation(actor: ActorContext, input: {
+    tournamentId: string;
+    delegationId: string;
+    reason: string;
+  }): Promise<TournamentLiveCaptureDelegation> {
+    const reviewer = await this.assertReviewer(actor, input.tournamentId);
+    if (this.repository.revokeLiveCaptureDelegation === undefined) throw new TournamentOperationError("unavailable");
+    return this.repository.revokeLiveCaptureDelegation({
+      delegationId: boundedText(input.delegationId, "delegationId", 80),
+      tournamentId: input.tournamentId,
+      revokedByUserAccountId: reviewer,
+      reason: boundedText(input.reason, "reason", 255),
+      nowMs: this.now(),
+    });
+  }
+
+  public async listLiveCaptureDelegations(actor: ActorContext, tournamentId: string): Promise<readonly TournamentLiveCaptureDelegation[]> {
+    const reviewer = await this.assertReviewer(actor, tournamentId);
+    if (this.repository.listLiveCaptureDelegations === undefined) throw new TournamentOperationError("unavailable");
+    return this.repository.listLiveCaptureDelegations({ tournamentId, reviewedByUserAccountId: reviewer });
+  }
+
+  /** F04: one bounded retention pass; the runtime calls it on a timer. */
+  public async applyEvidenceRetention(batchSize = 200): Promise<Readonly<{ deleted: number; purged: number }>> {
+    if (this.repository.applyEvidenceRetention === undefined) return { deleted: 0, purged: 0 };
+    const nowMs = this.now();
+    return this.repository.applyEvidenceRetention({
+      cutoffMs: nowMs - this.evidenceLimits.retentionDays * 86_400_000,
+      nowMs,
+      batchSize,
+    });
   }
 
   public async linkEvidenceRecord(actor: ActorContext, input: {
@@ -1046,7 +1316,9 @@ export class TournamentConnectedService {
 
   private async assertReviewer(actor: ActorContext, tournamentId: string): Promise<string> {
     const userAccountId = requireSignedIn(actor);
-    if (!await this.repository.canReviewTournament(tournamentId, userAccountId, actor.role === "administrator")) {
+    // F02: never the actor's role - the repository reads the account's live
+    // administrator grant or this Tournament's director and capability.
+    if (typeof tournamentId !== "string" || !await this.repository.canReviewTournament(tournamentId, userAccountId)) {
       throw new TournamentOperationError("forbidden", "This account cannot review the selected Tournament.");
     }
     return userAccountId;

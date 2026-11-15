@@ -7,6 +7,7 @@
 // or `Present`, `ja` or `yes`.
 
 import { localized } from "./product-language.js";
+import { csvImportedText, csvLiteralText } from "./spreadsheet-text.js";
 
 export type CsvRecord = Readonly<Record<string, string>>;
 
@@ -66,7 +67,10 @@ export function csvRecords(value: string): readonly CsvRecord[] {
   if (fields.some((field) => field.length > 0)) { rows.push(fields); }
   const headers = rows.shift()?.map((header) => header.replace(/^﻿/u, "")) ?? [];
   if (headers.length === 0 || headers.some((header) => header.length === 0)) { return []; }
-  return rows.map((values) => Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])));
+  // A cell our own export protected against formula reading (spreadsheet-text.ts)
+  // comes back as the real value, so a re-imported name is not a new name.
+  return rows.map((values) => Object.fromEntries(headers.map((header, index) =>
+    [header, csvImportedText(values[index] ?? "")])));
 }
 
 const headerKey = (value: string): string => value
@@ -180,11 +184,17 @@ export function csvWriteDelimiter(): string {
   return localized("en", "nl") === "nl" ? ";" : ",";
 }
 
-/** One CSV file: a byte-order mark so Excel keeps the accents, CRLF rows. */
+/**
+ * One CSV file: a byte-order mark so Excel keeps the accents, CRLF rows. A cell
+ * a spreadsheet would read as a formula gets one leading apostrophe
+ * (spreadsheet-text.ts); plain numbers stay numbers. Delimiter quoting follows.
+ */
 export function csvDocument(rows: readonly (readonly string[])[], delimiter = csvWriteDelimiter()): string {
-  const quote = (value: string): string =>
-    new RegExp(`[${delimiter === "\t" ? "\\t" : delimiter}"\r\n]`, "u").test(value)
+  const quote = (raw: string): string => {
+    const value = csvLiteralText(raw);
+    return new RegExp(`[${delimiter === "\t" ? "\\t" : delimiter}"\r\n]`, "u").test(value)
       ? `"${value.replaceAll('"', '""')}"`
       : value;
+  };
   return `﻿${rows.map((row) => row.map(quote).join(delimiter)).join("\r\n")}\r\n`;
 }

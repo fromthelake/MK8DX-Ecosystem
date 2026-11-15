@@ -11,8 +11,15 @@ import {
   type AliasWriteTransaction,
   type AppendAliasEventInput,
   type CreateAliasInput,
+  type PlayerAliasCounts,
 } from "./alias-service.js";
 import type { AccountStatus } from "./types.js";
+
+interface AliasCountRow extends RowDataPacket {
+  activeCount: unknown;
+  activeDeclaredCount: unknown;
+  declaredTotalCount: unknown;
+}
 
 interface StatusRow extends RowDataPacket {
   statusValue: unknown;
@@ -154,6 +161,36 @@ class MysqlAliasWriteTransaction implements AliasWriteTransaction {
           "Player.recordStatus",
           new Set(["active", "archived"] as const),
         );
+  }
+
+  /**
+   * A locking read: it sees every committed alias of the Player, not this transaction's snapshot,
+   * so concurrent creates serialised by the Player row lock cannot overshoot a quota.
+   */
+  public async countPlayerAliases(playerId: string): Promise<PlayerAliasCounts> {
+    const [rows] = await this.connection.execute<AliasCountRow[]>(
+      `SELECT
+         COALESCE(SUM(alias_record.record_status = 'active'), 0) AS activeCount,
+         COALESCE(SUM(alias_record.record_status = 'active' AND alias_record.alias_type = 'declared'), 0)
+           AS activeDeclaredCount,
+         COALESCE(SUM(alias_record.alias_type = 'declared'), 0) AS declaredTotalCount
+       FROM aliases AS alias_record
+       INNER JOIN players AS player ON player.player_id = alias_record.player_id
+       WHERE player.public_id = ?
+       FOR UPDATE`,
+      [playerId],
+    );
+    const row = rows[0];
+    const number = (value: unknown): number => {
+      const parsed = Number(value);
+      if (!Number.isSafeInteger(parsed) || parsed < 0) { throw new Error("Alias count is invalid"); }
+      return parsed;
+    };
+    return {
+      active: number(row?.activeCount ?? 0),
+      activeDeclared: number(row?.activeDeclaredCount ?? 0),
+      declaredTotal: number(row?.declaredTotalCount ?? 0),
+    };
   }
 
   public async findUserAccountStatus(

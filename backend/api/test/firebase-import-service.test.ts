@@ -194,13 +194,19 @@ class FakeTransaction implements FirebaseImportTransaction {
     if (submission === undefined) {
       return null;
     }
-    const latestRevision = Math.max(
-      0,
-      ...this.state.revisions
-        .filter((revision) => revision.submissionId === submissionId)
-        .map((revision) => revision.revision),
-    );
-    return { firstCreatedAtMs: submission.firstCreatedAtMs, latestRevision };
+    const stored = this.state.revisions
+      .filter((revision) => revision.submissionId === submissionId);
+    const latestRevision = Math.max(0, ...stored.map((revision) => revision.revision));
+    const owners = new Set(stored.map((revision) => revision.playerId));
+    return {
+      firstCreatedAtMs: submission.firstCreatedAtMs,
+      latestRevision,
+      owner: {
+        playerId: owners.size === 1 ? [...owners][0] ?? null : null,
+        sourceKind: "android_manual",
+        carried: false,
+      },
+    };
   }
 
   public async findActiveHumanPlayerForUpdate(playerId: string): Promise<boolean> {

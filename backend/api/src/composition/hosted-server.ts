@@ -12,12 +12,16 @@ import {
 } from "../runtime/operational-log.js";
 import { loadAppDownloads } from "../runtime/app-downloads.js";
 import type { AppDownloadStore } from "../runtime/app-downloads.js";
+import { createHmac } from "node:crypto";
+
 import {
   prepareAppDownloadLinks,
+  probeAppDownloadLinkExpiry,
   readAppDownloadLinkConfig,
   type AppDownloadLinks,
 } from "../runtime/app-download-links.js";
 import { loadStaticWebFiles } from "../runtime/static-web.js";
+import { readAbuseBudgetSettings } from "../security/abuse-budgets.js";
 
 const allowedHosts = new Set(["127.0.0.1", "::1", "0.0.0.0"]);
 
@@ -81,10 +85,26 @@ export async function startPasswordlessHostedServer(
   const downloadLinkConfig = readAppDownloadLinkConfig(environment);
   const downloadLinks = downloadLinkConfig === null
     ? undefined
-    : await prepareAppDownloadLinks(downloadLinkConfig);
+    : await prepareAppDownloadLinks(downloadLinkConfig, {
+        // The same key in every process of this installation, so a repeated
+        // click reuses the folder whichever process answers it.
+        key: createHmac("sha256", Buffer.from(runtimeConfig.authentication.secrets[0]!.value, "base64"))
+          .update("mk8dx.app-download-link-key.v1", "ascii").digest(),
+        onSweep(sweep) {
+          if (sweep.removed === 0 && sweep.failed === 0 && sweep.complete) { return; }
+          operationalLog.log({
+            event: sweep.failed === 0 ? "app_download_links_swept" : "app_download_links_sweep_failed",
+            category: "lifecycle",
+            detail: `removed:${String(sweep.removed)} live:${String(sweep.live)} ` +
+              `failed:${String(sweep.failed)} complete:${String(sweep.complete)}`,
+          });
+        },
+      });
   const runtime = await createPasswordlessHostedRuntime({
     ...runtimeConfig,
     operationalLog,
+    // H1: MK8DX_HOSTED_BUDGET_* settings; an invalid or unknown one stops the start with its name.
+    abuseBudgets: readAbuseBudgetSettings(environment),
     // Root-mounted Passenger deployments must serve the static web product
     // same-origin; loading fails closed when the configured root is invalid.
     ...(staticWebRoot === undefined || staticWebRoot.length === 0
@@ -109,6 +129,17 @@ export async function startPasswordlessHostedServer(
       category: "lifecycle",
       detail: address,
     });
+    if (downloadLinkConfig !== null && environment["MK8DX_HOSTED_APP_DOWNLOAD_LINK_PROBE"] !== "false") {
+      // Ask the real web server once whether it refuses an expired link. Log only;
+      // never blocks the start or the downloads.
+      void probeAppDownloadLinkExpiry(downloadLinkConfig, runtimeConfig.authentication.baseUrl)
+        .then((result) => {
+          operationalLog.log({ event: "app_download_link_expiry_probe", category: "lifecycle", detail: result });
+        })
+        .catch(() => {
+          operationalLog.log({ event: "app_download_link_expiry_probe", category: "lifecycle", detail: "unreachable" });
+        });
+    }
     let closed = false;
     return {
       address,
@@ -116,6 +147,7 @@ export async function startPasswordlessHostedServer(
       async close(): Promise<void> {
         if (closed) { return; }
         closed = true;
+        downloadLinks?.close();
         await runtime.close();
         operationalLog.log({ event: "server_closed", category: "lifecycle" });
       },
@@ -126,6 +158,7 @@ export async function startPasswordlessHostedServer(
       category: "lifecycle",
       errorName: error instanceof Error ? error.name : "UnknownError",
     });
+    downloadLinks?.close();
     await runtime.close();
     throw error;
   }

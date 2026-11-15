@@ -23,7 +23,7 @@ services:
     restart: unless-stopped
     logging: {options: {max-size: "10m", max-file: "3"}}
   api:
-    image: ${MK8DX_API_IMAGE:-mk8dx/api:local-v010-node26-amd64}
+    image: &api-image ${MK8DX_API_IMAGE:-mk8dx/api:local-v010-node26-amd64}
     build:
       context: .
       dockerfile: backend/api/Dockerfile
@@ -49,6 +49,19 @@ services:
       timeout: 5s
       retries: 12
     restart: unless-stopped
+    logging: {options: {max-size: "10m", max-file: "3"}}
+  # Database updates and reference data only (`install.py` runs it with `docker compose run`; `up` never starts
+  # it). It alone mounts migration.json, the login that may change the schema; the api service above gets the
+  # runtime login, which can only read and write rows (tooling/database_accounts.py).
+  migrate:
+    image: *api-image
+    profiles: ["maintenance"]
+    volumes:
+      - ${MK8DX_STATE_DIR:?}/migration.json:/run/mk8dx/operator.json:ro
+    depends_on:
+      mysql: {condition: service_healthy}
+    command: ["true"]
+    restart: "no"
     logging: {options: {max-size: "10m", max-file: "3"}}
   web:
     image: ${MK8DX_WEB_IMAGE:-mk8dx/web:local-v010-node26-amd64}

@@ -150,6 +150,7 @@ def run(recorded_assets: Path, runtime_root: Path) -> dict:
     from mk8dx_tournament_extraction.engine import extract_text
     from mk8dx_tournament_extraction.engine.extract_common import score_bundle_dir
     from mk8dx_tournament_extraction.engine.ocr_scoreboard_consensus import load_character_templates
+    from mk8dx_tournament_extraction.spreadsheet_text import csv_imported_rows
     from tournament_processor.recorded_export import write_recorded_results
 
     templates_by_name = {str(item["character_name"]): item for item in load_character_templates()}
@@ -171,7 +172,7 @@ def run(recorded_assets: Path, runtime_root: Path) -> dict:
     )
     csv_path = Path(payload["output_excel_path"]).with_suffix(".csv")
     with csv_path.open("r", encoding="utf-8-sig", newline="") as handle:
-        rows = list(csv.DictReader(handle))
+        rows = csv_imported_rows(csv.DictReader(handle))
     canonical = write_recorded_results(
         rows,
         csv_path.with_name(csv_path.name.replace("_Tournament_Results.csv", "_TournamentRaceResultsV1.json")),

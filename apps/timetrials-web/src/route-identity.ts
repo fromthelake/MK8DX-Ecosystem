@@ -24,6 +24,8 @@ const ROUTE_KEYS: ReadonlySet<string> = new Set([
   "signin", "authError", "welcome", "return",
   // The link in a native sign-in email (ADR-0209).
   "device-email",
+  // The link in a step-up (fresh confirmation) email.
+  "step-up",
   // Development and QA only; main.ts loads the gallery for it.
   "design-gallery",
 ]);
@@ -62,6 +64,7 @@ const ROUTES: readonly Readonly<{ key: string; shape: RouteShape }>[] = [
   { key: "player", shape: { title: () => localized("Player", "Speler"), spectacle: "medium", action: "outline" } },
   { key: "signin", shape: { title: () => localized("Sign in", "Aanmelden"), spectacle: "minimal", action: "none" } },
   { key: "device-email", shape: { title: () => localized("Approve a sign-in", "Aanmelding goedkeuren"), spectacle: "minimal", action: "none" } },
+  { key: "step-up", shape: { title: () => localized("Confirm an administrator action", "Beheeractie bevestigen"), spectacle: "minimal", action: "none" } },
   { key: "authError", shape: { title: () => localized("Sign in", "Aanmelden"), spectacle: "minimal", action: "none" } },
   { key: "welcome", shape: { title: () => localized("Welcome", "Welkom"), spectacle: "low", action: "none" } },
   { key: "settings", shape: { title: () => localized("Settings", "Instellingen"), spectacle: "low", action: "filled" } },

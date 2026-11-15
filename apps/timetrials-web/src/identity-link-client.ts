@@ -30,7 +30,9 @@ export type IdentityLinkOverview = Readonly<{
 }>;
 
 export type IdentityLinkClientErrorCode =
-  | "not_authorized" | "conflict" | "invalid_input" | "invalid_response" | "unavailable";
+  | "not_authorized" | "conflict" | "invalid_input" | "invalid_response" | "unavailable"
+  /** The list holds every account's address: the server wants a fresh e-mail confirmation first. */
+  | "step_up_required";
 
 export class IdentityLinkClientError extends Error {
   public constructor(public readonly code: IdentityLinkClientErrorCode, message?: string) {
@@ -43,7 +45,7 @@ export type FetchPort = typeof globalThis.fetch;
 
 async function read(
   fetchPort: FetchPort, path: string, init: RequestInit,
-): Promise<Readonly<{ status: number; body: unknown }>> {
+): Promise<Readonly<{ status: number; body: unknown; stepUpRequired: boolean }>> {
   const response = await fetchPort(path, { credentials: "same-origin", ...init });
   const text = await response.text();
   if (text.length > maximumResponseBytes) {
@@ -52,7 +54,10 @@ async function read(
   let body: unknown = null;
   try { body = text.length === 0 ? null : JSON.parse(text); }
   catch { throw new IdentityLinkClientError("invalid_response"); }
-  return { status: response.status, body };
+  return {
+    status: response.status, body,
+    stepUpRequired: response.status === 403 && response.headers?.get?.("x-mk8dx-step-up") === "required",
+  };
 }
 
 function statusToError(status: number): IdentityLinkClientError {
@@ -119,6 +124,7 @@ export function createIdentityLinkClient(
         headers: { Accept: "application/json" },
         ...(signal === undefined ? {} : { signal }),
       });
+      if (answer.stepUpRequired) { throw new IdentityLinkClientError("step_up_required"); }
       if (answer.status !== 200) { throw statusToError(answer.status); }
       const body = answer.body as Record<string, unknown> | null;
       if (body === null || body["schemaVersion"] !== "mk8dx.administrator-identity-links.v1" ||

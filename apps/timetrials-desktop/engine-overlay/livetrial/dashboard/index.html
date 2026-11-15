@@ -672,6 +672,14 @@
 
 <script>
 "use strict";
+// Changing something (recording, stop, settings, clean-up, pins, categories,
+// archive) is a POST carrying this launch's action proof. The engine puts the
+// proof only in the page it serves to this computer: a phone or tablet on the
+// network (--lan) can watch, but not control.
+const ACTION_PROOF = (document.querySelector('meta[name="livetrial-action"]') || {}).content || "";
+const engineAction = (path, body) => fetch(path, { method: "POST", cache: "no-store",
+  headers: { "Content-Type": "application/json", "X-LiveTrial-Action": ACTION_PROOF },
+  body: JSON.stringify(body || {}) });
 /* =============== i18n =============== */
 const STR = {
   nl: {
@@ -1216,7 +1224,7 @@ document.getElementById("expertbtn").onclick = () => {
   EXPERT = !EXPERT; localStorage.setItem("lt-expert", EXPERT ? "1" : "0"); render();
 };
 async function toggleArchive(key) {
-  try { await fetch("api/archive?key=" + encodeURIComponent(key)); } catch (e) {}
+  try { await engineAction("api/archive", { key }); } catch (e) {}
   FORCE_RENDER = true;
   load();
 }
@@ -1227,7 +1235,7 @@ document.getElementById("detail").addEventListener("click", async ev => {
   const cb = ev.target.closest("[data-cat]");
   if (cb) {
     ev.stopPropagation();
-    try { await fetch(`api/category?key=${encodeURIComponent(cb.dataset.cat)}&value=${cb.dataset.catval}`); }
+    try { await engineAction("api/category", { key: cb.dataset.cat, value: cb.dataset.catval || "" }); }
     catch (e) {}
     FORCE_RENDER = true; load(); return;
   }
@@ -1712,15 +1720,15 @@ async function loadStorage() {
   render();
 }
 async function saveSetting(k, v) {
-  try { await fetch("api/settings?" + k + "=" + encodeURIComponent(v)); } catch (e) {}
+  try { await engineAction("api/settings", { [k]: v }); } catch (e) {}
   await loadStorage();
 }
 async function runCleanup(dry) {
-  try { await fetch("api/storage/cleanup" + (dry ? "?dry=1" : "")); } catch (e) {}
+  try { await engineAction("api/storage/cleanup", { dryRun: !!dry }); } catch (e) {}
   await loadStorage();
 }
 async function togglePin(file) {
-  try { await fetch("api/pin?file=" + encodeURIComponent(file)); } catch (e) {}
+  try { await engineAction("api/pin", { file }); } catch (e) {}
   await loadStorage();
 }
 function storageHtml() {
@@ -2705,7 +2713,7 @@ function updateLive() {
       <div class="chips" id="lv-chips"></div>
       <div class="clips" id="lv-clips"></div></div>`;
     const setRec = async (mode, on) => {
-      try { await fetch(`api/record?mode=${mode}&on=${on ? 1 : 0}`); } catch (e) {}
+      try { await engineAction("api/record", { mode, on: !!on }); } catch (e) {}
       load();
     };
     document.getElementById("lv-rec").onclick = () => setRec("manual", !(DATA.record || {}).manual);
@@ -2719,7 +2727,7 @@ function updateLive() {
     // dialog on purpose: a mis-click must not end a session mid-run.
     if (document.getElementById("lv-stop")) document.getElementById("lv-stop").onclick = async () => {
       if (!window.confirm(T("stopConfirm"))) return;
-      try { await fetch("api/stop", { method: "POST" }); } catch (e) {}
+      try { await engineAction("api/stop"); } catch (e) {}
       const head = wrap.querySelector(".livehead");
       if (head) head.innerHTML = `<span class="livelabel">⏹</span><span class="livephase">${esc(T("stopped"))}</span>`;
       DATA.live = false;
@@ -2728,6 +2736,9 @@ function updateLive() {
   const rec = DATA.record || {};
   const rb = document.getElementById("lv-rec");
   rb.className = "recbtn" + (rec.active ? " on" : "");
+  rb.disabled = !ACTION_PROOF;   // watching from another device: no control
+  const sb = document.getElementById("lv-stop");
+  if (sb) sb.disabled = !ACTION_PROOF;
   const el = rec.active ? Math.max(0, (s.elapsedMs || 0) - (rec.sinceMs || 0)) : 0;
   rb.textContent = rec.active
     ? `● REC ${Math.floor(el / 60000)}:${String(Math.floor(el / 1000) % 60).padStart(2, "0")}`

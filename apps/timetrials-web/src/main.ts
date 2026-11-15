@@ -5,6 +5,8 @@ import { loadProductCatalog } from "./product-catalog.js";
 import { parseProductLanguage, productLanguage, usesProductCatalog } from "./product-language.js";
 import { requestSiteBackdrop } from "./site-backdrop.js";
 import { registerProductServiceWorker } from "./web-push-settings.js";
+import { stepUpAwareFetch } from "./step-up-client.js";
+import { confirmWithEmailLink } from "./step-up-dialog.js";
 
 
 const root = document.getElementById("app");
@@ -18,7 +20,20 @@ if (!(root instanceof HTMLElement)) {
 const galleryRequested = new URLSearchParams(window.location.search).has("design-gallery");
 const galleryModule = ["./ds", "gallery.js"].join("-");
 
+// A dangerous administrator action may first need a fresh e-mail confirmation (step-up). Every request
+// the product makes goes through this one fetch, so each such action gets the same dialog and is repeated
+// once after confirmation; every other answer passes through untouched.
+function installStepUp(): void {
+  const pageFetch = globalThis.fetch.bind(globalThis);
+  globalThis.fetch = stepUpAwareFetch(
+    pageFetch,
+    () => confirmWithEmailLink({ fetcher: pageFetch }),
+    window.location.origin,
+  ) as typeof globalThis.fetch;
+}
+
 function startProduct(root: HTMLElement): void {
+  installStepUp();
   // The head boot script already painted the chosen profile; this adopts the same record so the
   // running page and the DOM cannot drift apart (ADR-0205).
   startAppearance();

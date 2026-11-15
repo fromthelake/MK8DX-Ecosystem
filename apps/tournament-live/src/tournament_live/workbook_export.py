@@ -7,6 +7,7 @@ from typing import Any
 
 import pandas as pd
 
+from mk8dx_tournament_extraction.spreadsheet_text import csv_literal_frame, literal_text_cells
 from mk8dx_tournament_extraction.engine.ocr_export import (
     build_final_standings_df,
     build_user_export_df,
@@ -93,8 +94,12 @@ def write_compatible_workbook(
         # ADR-0217: the race class column (the manual upload carries it to the website too)
         results["Class"] = [classes.get((str(video), _to_int(race)), "")
                             for video, race in zip(results["Video"], results["Race"])]
+    # Names stay text in a spreadsheet (spreadsheet_text): string cells in the
+    # workbook, one protecting apostrophe where a CSV cell would read as a formula.
     with pd.ExcelWriter(workbook_path, engine="openpyxl") as writer:
         results.to_excel(writer, index=False, sheet_name="Results")
         final.to_excel(writer, index=False, sheet_name="Final Standings")
-    results.to_csv(tournament_csv_path, index=False)
-    final.to_csv(final_csv_path, index=False)
+        for sheet in writer.sheets.values():
+            literal_text_cells(sheet)
+    csv_literal_frame(results).to_csv(tournament_csv_path, index=False)
+    csv_literal_frame(final).to_csv(final_csv_path, index=False)

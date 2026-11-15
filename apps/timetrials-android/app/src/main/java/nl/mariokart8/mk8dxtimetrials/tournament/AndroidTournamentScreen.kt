@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import android.widget.Toast
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpController
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpDialog
 import nl.mariokart8.mk8dxtimetrials.auth.androidReadableReference
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -304,6 +306,9 @@ internal fun AndroidTournamentConsole(
     var installationSettings by remember(client) { mutableStateOf(AndroidInstallationSettings.DEFAULTS) }
     var installationSettingsLoaded by remember(client) { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    // Removing or deleting a Tournament needs a fresh e-mail confirmation of this app session (step-up).
+    val stepUp = remember(client) { AndroidStepUpController() }
+    AndroidStepUpDialog(stepUp, client = { client?.stepUp() })
     val openedTournamentId = document?.summary?.tournamentId
     LaunchedEffect(client, openedTournamentId) {
         val activeClient = client
@@ -1175,13 +1180,13 @@ internal fun AndroidTournamentConsole(
         error = null
         scope.launch {
             runCatching {
-                withContext(Dispatchers.IO) {
+                stepUp.guarded { withContext(Dispatchers.IO) {
                     activeClient.removeTournament(
                         selected.tournamentId,
                         "Verwijderd door de toernooidirecteur in de app",
                     )
                     activeClient.list()
-                }
+                } }
             }.onSuccess { list ->
                 tournaments = list
                 document = null
@@ -1475,13 +1480,13 @@ internal fun AndroidTournamentConsole(
                         error = null
                         scope.launch {
                             runCatching {
-                                withContext(Dispatchers.IO) {
+                                stepUp.guarded { withContext(Dispatchers.IO) {
                                     client.removeTournament(
                                         loaded.summary.tournamentId,
                                         "Verwijderd door de toernooidirecteur in de app",
                                     )
                                     client.list()
-                                }
+                                } }
                             }.onSuccess { list ->
                                 tournaments = list
                                 document = null
@@ -1562,13 +1567,13 @@ internal fun AndroidTournamentConsole(
                         error = null
                         scope.launch {
                             runCatching {
-                                withContext(Dispatchers.IO) {
+                                stepUp.guarded { withContext(Dispatchers.IO) {
                                     client.removeTournament(
                                         loaded.summary.tournamentId,
                                         "Verwijderd door de toernooidirecteur in de app",
                                     )
                                     client.list()
-                                }
+                                } }
                             }.onSuccess { list ->
                                 tournaments = list
                                 document = null
@@ -1701,13 +1706,13 @@ internal fun AndroidTournamentConsole(
                         error = null
                         scope.launch {
                             runCatching {
-                                withContext(Dispatchers.IO) {
+                                stepUp.guarded { withContext(Dispatchers.IO) {
                                     client.removeTournament(
                                         loaded.summary.tournamentId,
                                         "Verwijderd door de toernooidirecteur in de app",
                                     )
                                     client.list()
-                                }
+                                } }
                             }.onSuccess { list ->
                                 tournaments = list
                                 document = null
@@ -1798,13 +1803,13 @@ internal fun AndroidTournamentConsole(
                         error = null
                         scope.launch {
                             runCatching {
-                                withContext(Dispatchers.IO) {
+                                stepUp.guarded { withContext(Dispatchers.IO) {
                                     client.removeTournament(
                                         loaded.summary.tournamentId,
                                         "Verwijderd door de toernooidirecteur in de app",
                                     )
                                     client.list()
-                                }
+                                } }
                             }.onSuccess { list ->
                                 tournaments = list
                                 document = null
@@ -1885,13 +1890,13 @@ internal fun AndroidTournamentConsole(
                         error = null
                         scope.launch {
                             runCatching {
-                                withContext(Dispatchers.IO) {
+                                stepUp.guarded { withContext(Dispatchers.IO) {
                                     client.removeTournament(
                                         loaded.summary.tournamentId,
                                         "Verwijderd door de toernooidirecteur in de app",
                                     )
                                     client.list()
-                                }
+                                } }
                             }.onSuccess { list ->
                                 tournaments = list
                                 document = null
@@ -2112,10 +2117,10 @@ internal fun AndroidTournamentConsole(
                 error = null
                 scope.launch {
                     runCatching {
-                        withContext(Dispatchers.IO) {
+                        stepUp.guarded { withContext(Dispatchers.IO) {
                             client.deleteDraft(selected.tournamentId, selected.revision)
                             client.list()
-                        }
+                        } }
                     }.onSuccess { list ->
                         tournaments = list
                         document = null

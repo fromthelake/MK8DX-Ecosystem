@@ -15,6 +15,7 @@ from .data_paths import resolve_asset_file
 from .project_paths import PROJECT_ROOT
 from . import extract_initial_scan as initial_scan
 from .. import locale_templates
+from ..spreadsheet_text import LiteralCsvWriter
 from . import extract_score_screen_selection as score_screen_selection
 from . import extract_video_io as video_io
 from .extract_common import (
@@ -2380,10 +2381,11 @@ def extract_frames(
     if APP_CONFIG.write_debug_csv:
         os.makedirs(os.path.dirname(csv_output_path), exist_ok=True)
         csv_context = open(csv_output_path, mode='w', newline='')
-        csv_writer = csv.writer(csv_context, delimiter=';')
+        # Video names stay text in a spreadsheet (spreadsheet_text); ocr_common reads them back.
+        csv_writer = LiteralCsvWriter(csv.writer(csv_context, delimiter=';'))
         csv_writer.writerow(["Video", "Target", "Frame Number", "Max Value", "Timecode"])
         metadata_context = open(metadata_output_path, mode='w', newline='')
-        metadata_writer = MetadataCsvWriter(csv.writer(metadata_context, delimiter=';'))
+        metadata_writer = MetadataCsvWriter(LiteralCsvWriter(csv.writer(metadata_context, delimiter=';')))
         metadata_writer.writerow(
             [
                 "VideoLabel",
@@ -2408,7 +2410,7 @@ def extract_frames(
     if TOTAL_SCORE_TRACE_ENABLED:
         os.makedirs(os.path.dirname(total_score_trace_output_path), exist_ok=True)
         total_score_trace_context = open(total_score_trace_output_path, mode='w', newline='')
-        trace_writer = csv.writer(total_score_trace_context, delimiter=';')
+        trace_writer = LiteralCsvWriter(csv.writer(total_score_trace_context, delimiter=';'))
         trace_writer.writerow(
             [
                 "VideoLabel",

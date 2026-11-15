@@ -2,7 +2,9 @@
  * The claim walk of ADR-0216: the person's own claims with the conversation, the reviewer's cards,
  * and the actions on both sides. Responses are checked key for key, like every client here.
  */
-import { forgetSharedPlayerClaims, PlayerClaimClientError } from "./player-claim-client.js";
+import {
+  claimRateLimited, forgetSharedPlayerClaims, isClaimQuotaAnswer, PlayerClaimClientError,
+} from "./player-claim-client.js";
 
 export const CLAIM_WALK_PATH = "/v1/me/player-claim-walk";
 export const CLAIM_REVIEWS_PATH = "/v1/player-claim-reviews";
@@ -275,6 +277,10 @@ export function createClaimWalkClient(
       });
     } catch {
       throw new PlayerClaimClientError("unavailable");
+    }
+    if (response.status === 429) { throw claimRateLimited(response); }
+    if (response.status === 409 && isClaimQuotaAnswer(await bounded(response.clone()).catch(() => null))) {
+      throw new PlayerClaimClientError("quota_exceeded");
     }
     checkStatus(response.status);
     return bounded(response);

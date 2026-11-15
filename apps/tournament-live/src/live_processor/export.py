@@ -7,6 +7,8 @@ import zipfile
 from pathlib import Path
 from xml.sax.saxutils import escape
 
+from mk8dx_tournament_extraction.spreadsheet_text import LiteralCsvWriter
+
 from .paths import (
     EXPORT_ROOT,
     assert_write_allowed,
@@ -101,7 +103,9 @@ def write_csv(path: Path, rows: list[dict[str, str]]) -> None:
             if key not in fieldnames:
                 fieldnames.append(key)
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames or ["empty"])
+        # Names stay text in a spreadsheet (spreadsheet_text); the workbook below
+        # writes inline strings only, so it needs no protection.
+        writer = LiteralCsvWriter(csv.DictWriter(handle, fieldnames=fieldnames or ["empty"]))
         writer.writeheader()
         for row in rows:
             writer.writerow(row)

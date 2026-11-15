@@ -84,10 +84,14 @@ export class PlayerClaimClientError extends Error {
       | "display_name_taken"
       | "already_linked"
       | "rate_limited"
+      /** The server's hard limit on waiting claims or claim notes (409 claim_quota_exceeded). */
+      | "quota_exceeded"
       /** ADR-0221: the installation lets only Directors create Players. */
       | "creation_closed"
       | "unavailable"
       | "invalid_response",
+    /** For rate_limited: the server's Retry-After, when it gave one. */
+    public readonly retryAfterSeconds: number | null = null,
   ) {
     super("The Player claim operation could not be completed.");
     this.name = "PlayerClaimClientError";
@@ -327,7 +331,24 @@ async function send(
   } catch {
     throw new PlayerClaimClientError("unavailable");
   }
-  return { status: response.status, body: await bounded(response) };
+  if (response.status === 429) { throw claimRateLimited(response); }
+  const body = await bounded(response);
+  if (response.status === 409 && isClaimQuotaAnswer(body)) {
+    throw new PlayerClaimClientError("quota_exceeded");
+  }
+  return { status: response.status, body };
+}
+
+/** 429 with the server's Retry-After (seconds), when it is a sensible number. */
+export function claimRateLimited(response: Response): PlayerClaimClientError {
+  const seconds = Number(response.headers.get("retry-after"));
+  return new PlayerClaimClientError("rate_limited",
+    Number.isSafeInteger(seconds) && seconds > 0 && seconds <= 7 * 86_400 ? seconds : null);
+}
+
+export function isClaimQuotaAnswer(body: unknown): boolean {
+  return typeof body === "object" && body !== null && !Array.isArray(body) &&
+    (body as Record<string, unknown>)["code"] === "claim_quota_exceeded";
 }
 
 function checkStatus(status: number, administrator = false): void {

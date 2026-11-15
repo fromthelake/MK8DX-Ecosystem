@@ -118,6 +118,9 @@ Some boundaries to keep in mind:
   A change to one needs the same change in the others and regenerated parity vectors;
   [the pipeline map](architecture/RECOGNITION_PIPELINE.md) shows the actual app
   adapters and package boundaries. Its README explains the reader itself.
+- The **LiveTrial engine** ships from `apps/timetrials-desktop/vision-runtime/`. Make an engine fix in the
+  working copy `apps/timetrials-desktop/engine-overlay/` and give the `vision-runtime/` file the same text;
+  `apps/timetrials-desktop/tests/test_engine_overlay_matches_runtime.py` fails in CI when the two differ.
 - Shared contracts in `packages/domain/` (JSON Schema) and rules in `packages/time-trial-rules/` have consumers
   in the API, website and clients. Check all of them.
 
@@ -267,11 +270,11 @@ build has not been made yet.
 
 | Symptom | Cause and fix |
 | --- | --- |
-| Git Bash: `docker ... run api sh /app/operator-command.sh` fails with `can't open 'C:/Program Files/Git/app/...'` | Git Bash rewrites arguments that start with `/`. Prefix the command with `MSYS_NO_PATHCONV=1`, or use PowerShell. |
+| Git Bash: `docker ... run migrate sh /app/operator-command.sh` (or `run api ...`) fails with `can't open 'C:/Program Files/Git/app/...'` | Git Bash rewrites arguments that start with `/`. Prefix the command with `MSYS_NO_PATHCONV=1`, or use PowerShell. |
 | Windows: `Filename too long` during clone, checkout or an Android build | `git config --global core.longpaths true`; keep the clone in a short path such as `C:\src\MK8DX-Ecosystem`. |
 | LiveTrial tests: `ModuleNotFoundError: No module named 'livetrial_desktop_app'` | Set `PYTHONPATH=apps/timetrials-desktop` (see [Testing](TESTING.md)). One of these tests asserts Windows paths and fails on Linux and macOS; CI runs them on Windows. |
 | The first-administrator command answers `refused` after you followed the magic link | Open the website once in the same browser after the link (the account is completed when the page loads), then run the command again with the exact same email address and the same installation's `compose.env`. |
-| Linux: `cp: cannot open '/run/mk8dx/operator.json': Permission denied` during migrations | An installation directory made by an older installer has `operator.json` at mode 0600, which the API container's user cannot read on a Linux Docker Engine. Any `tooling/install.py` command on that installation fixes it, or run `chmod 644 "$state/operator.json"` (the directory stays 0700). |
+| Linux: `cp: cannot open '/run/mk8dx/operator.json': Permission denied` during migrations or an operator command | An installation directory made by an older installer has `operator.json` (or `migration.json`, which the `migrate` service mounts at that path) at mode 0600, which the API image's user cannot read on a Linux Docker Engine. Any `tooling/install.py` command on that installation fixes it, or run `chmod 644` on that file in `$state` (the directory stays 0700). |
 | `docker compose up`: `port is already allocated` | Another program took the installation's port after `init` chose it. Stop that program, or move the installation with `python tooling/install.py change-origin --state-dir "$state" --origin http://127.0.0.1:<free port>` and start again. |
 | The first Docker build is slow | It downloads Node, MySQL, Caddy and npm packages and copies the asset collection; later builds use the cache. |
 | `privacy_scan.py` reports `unreviewed binary` | You added an image or another binary. Binaries are admitted only through reviewed manifests (the collection, `packages/assets/native-binaries-v1.json`, `packages/assets/test-set/test-set-files-v1.json`); explain in the pull request why it is needed. |

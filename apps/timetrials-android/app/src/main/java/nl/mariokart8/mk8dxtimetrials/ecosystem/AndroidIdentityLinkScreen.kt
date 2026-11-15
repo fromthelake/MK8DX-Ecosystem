@@ -23,6 +23,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpController
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpDialog
+import nl.mariokart8.mk8dxtimetrials.auth.isStepUpRequired
 import nl.mariokart8.mk8dxtimetrials.offline.androidNoConnectionText
 import nl.mariokart8.mk8dxtimetrials.offline.isConnectionFailure
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
@@ -62,14 +65,21 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
     var forbidden by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
     var reload by remember { mutableStateOf(0) }
+    // The list holds every account's email address, so the server asks for a fresh confirmation first.
+    var needsConfirmation by remember { mutableStateOf(false) }
+    val stepUp = remember(client) { AndroidStepUpController() }
     val language = LocalAndroidProductLanguage.current
+
+    AndroidStepUpDialog(stepUp, client = { client.stepUp() })
 
     LaunchedEffect(client, reload) {
         message = null
         runCatching { withContext(Dispatchers.IO) { client.overview() } }
-            .onSuccess { overview = it }
+            .onSuccess { overview = it; needsConfirmation = false }
             .onFailure { failure ->
-                if (failure is AndroidIdentityLinkException && failure.forbidden) {
+                if (failure.isStepUpRequired()) {
+                    needsConfirmation = true
+                } else if (failure is AndroidIdentityLinkException && failure.forbidden) {
                     forbidden = true
                 } else {
                     message = if (failure.isConnectionFailure()) {
@@ -88,7 +98,7 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
     val act: (suspend () -> Unit, String) -> Unit = { work, done ->
         busy = true
         scope.launch {
-            runCatching { withContext(Dispatchers.IO) { work() } }
+            runCatching { stepUp.guarded { withContext(Dispatchers.IO) { work() } } }
                 .onSuccess { message = done; reload += 1 }
                 .onFailure {
                     message = if (it.isConnectionFailure()) androidNoConnectionText(language, client.originText, showingCopy = false)
@@ -115,6 +125,28 @@ internal fun AndroidIdentityLinkScreen(client: AndroidIdentityLinkClient) {
             color = colors.textSecondary,
         )
         message?.let { Mk8dxStatusMessage(it, tone = Mk8dxStatusTone.Info) }
+        if (current == null && needsConfirmation) {
+            Text(
+                androidText(
+                    "Showing every account's email address needs a fresh confirmation.",
+                    "Voor het tonen van de e-mailadressen van alle accounts is een nieuwe bevestiging nodig.",
+                ),
+                style = type.bodyS,
+                color = colors.textSecondary,
+            )
+            Mk8dxButton(
+                androidText("Confirm with a new email link", "Bevestig met een nieuwe e-maillink"),
+                onClick = {
+                    scope.launch {
+                        runCatching { stepUp.guarded { withContext(Dispatchers.IO) { client.overview() } } }
+                            .onSuccess { overview = it; needsConfirmation = false }
+                    }
+                },
+                variant = Mk8dxButtonVariant.Primary,
+                modifier = Modifier.testTag("identity-link-step-up"),
+            )
+            return@Column
+        }
         if (current == null) {
             Text(
                 androidText("Loading accounts…", "Accounts laden…"),

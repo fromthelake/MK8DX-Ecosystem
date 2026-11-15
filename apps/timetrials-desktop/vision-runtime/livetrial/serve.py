@@ -6,15 +6,29 @@ by the capture loop and the page auto-refreshes.
 
 Usage:
     ..\\.venv\\Scripts\\python.exe livetrial\\serve.py [--runs-dir livetrial/runs] [--port 8777]
+
+Reading is a GET. Changing something (recording, stop, retention settings,
+clean-up, pins, categories, archive, calibration grids) is a POST that only
+this computer's own page can make: the request must come from a loopback
+address with a loopback Host and Origin, carry a JSON body within its size
+bound, and carry the per-launch action proof in the X-LiveTrial-Action header.
+The proof is placed only in pages served to this computer (or handed to the
+desktop app through MK8DX_LIVETRIAL_ENGINE_ACTION), so with --lan a phone or
+tablet can watch, but not control.
 """
 
 from __future__ import annotations
 
 import argparse
+import hmac
+import ipaddress
 import json
+import math
 import os
 import re
+import secrets
 import sys
+import tempfile
 import threading
 import time
 from dataclasses import asdict
@@ -75,6 +89,89 @@ DIGIT_GRIDS = {
     "/api/lapgrid": "lap_grid.json",
     "/api/coinsgrid": "coins_grid.json",
 }
+# Every calibration file a POST may replace, by route.
+CALIBRATION_FILES = {**DIGIT_GRIDS, "/api/grid": "card_grid.json"}
+
+# -- control boundary ----------------------------------------------------------
+ACTION_HEADER = "X-LiveTrial-Action"
+# The desktop app makes one proof per launch and hands it to the engine it starts.
+ACTION_VARIABLE = "MK8DX_LIVETRIAL_ENGINE_ACTION"
+_ACTION_SHAPE = re.compile(r"[A-Za-z0-9_-]{32,128}")
+LOOPBACK_NAMES = frozenset({"127.0.0.1", "localhost", "::1"})
+MAX_ACTION_BYTES = 16 * 1024            # record/stop/settings/pin/category/archive
+MAX_CALIBRATION_BYTES = 256 * 1024      # one grid file (the largest today is ~5 KB)
+BODY_READ_SECONDS = 10.0                # a body that trickles in longer is dropped
+WRITE_WAIT_SECONDS = 2.0                # one change at a time; a crowd gets 429
+MAX_CONNECTIONS = 64                    # concurrent connections the engine serves
+MAX_MARKED_KEYS = 20000                 # categories.json / archived.json entries
+MAX_KEY_LENGTH = 512
+# a clip as the storage inventory names it: "<session folder>/clip_HHMMSS[_runNN].mp4"
+_RUN_FILE = re.compile(r"[^/\\\x00-\x1f.][^/\\\x00-\x1f]{0,127}/clip_\d{6}(?:_run\d+)?\.(?:mp4|mkv)")
+_SWITCH_LANGUAGE = re.compile(r"(?:[a-z]{2}(?:-[A-Z]{2})?)?")
+SETTING_LIMITS = {"maxTotalGb": (0.5, 100000.0), "minFreeGb": (0.0, 100000.0),
+                  "keepLatest": (0, 100000), "recordHeight": (0, 4320)}
+# Routes that used to change something on a plain GET; they now answer 405.
+_FORMER_GET_ACTIONS = frozenset({"/api/pin", "/api/category", "/api/archive"})
+
+
+def action_token(environment=None) -> str:
+    """This launch's action proof: the desktop app's, else a fresh random one."""
+    offered = (os.environ if environment is None else environment).get(ACTION_VARIABLE, "")
+    return offered if isinstance(offered, str) and _ACTION_SHAPE.fullmatch(offered) else secrets.token_urlsafe(32)
+
+
+def _host_name(header: str) -> str | None:
+    """The name part of a Host header, lower-case, without brackets or port."""
+    value = (header or "").strip().lower()
+    if value.startswith("["):
+        end = value.find("]")
+        if end < 0:
+            return None
+        name, rest = value[1:end], value[end + 1:]
+    else:
+        name, colon, port = value.partition(":")
+        rest = colon + port
+    if not name or (rest and not re.fullmatch(r":\d{1,5}", rest)):
+        return None
+    return name
+
+
+def _is_ip_literal(name: str) -> bool:
+    try:
+        ipaddress.ip_address(name)
+        return True
+    except ValueError:
+        return False
+
+
+def _is_loopback_address(address: str) -> bool:
+    try:
+        ip = ipaddress.ip_address(address)
+    except ValueError:
+        return False
+    mapped = getattr(ip, "ipv4_mapped", None)
+    return (mapped or ip).is_loopback
+
+
+class ActionRefused(ValueError):
+    """A well-formed request whose content is not acceptable (answered 400/409)."""
+
+    def __init__(self, message: str, status: int = 400):
+        super().__init__(message)
+        self.status = status
+
+
+def _write_atomic(target: Path, text: str) -> None:
+    target.parent.mkdir(parents=True, exist_ok=True)
+    partial = target.with_name(f".{target.name}.{secrets.token_hex(4)}.partial")
+    try:
+        partial.write_text(text, encoding="utf-8")
+        os.replace(partial, target)
+    finally:
+        try:
+            partial.unlink()
+        except OSError:
+            pass
 
 
 def build_meta(root: Path) -> dict:
@@ -168,9 +265,13 @@ def build_meta(root: Path) -> dict:
 class RunStore:
     """Aggregates run reports; live mode pushes runs in-memory as well."""
 
-    def __init__(self, runs_dir: Path, assets_root: Path | None = None):
+    def __init__(self, runs_dir: Path, assets_root: Path | None = None,
+                 config_dir: Path | None = None, settings_path: Path | None = None):
         self.runs_dir = runs_dir
         self.assets_root = Path(assets_root) if assets_root else DEFAULT_ASSETS
+        # where the calibration grids live (the engine's config folder)
+        self.config_dir = Path(config_dir) if config_dir else DASH.parent / "config"
+        self.settings_path = Path(settings_path) if settings_path else storage.SETTINGS_PATH
         self._meta: dict | None = None
         self.live = False
         # Set by POST /api/stop from the dashboard's Stop button; the
@@ -197,7 +298,7 @@ class RunStore:
         self.record: dict = {"manual": False, "auto": True, "active": False,
                              "file": None, "sinceMs": 0, "clips": [], "dir": None,
                              "blocked": False}
-        self.settings = storage.Settings.load()
+        self.settings = storage.Settings.load(self.settings_path)
         self._storage: dict = {}
         self._storage_at = 0.0
 
@@ -216,17 +317,46 @@ class RunStore:
             self.record["blocked"] = bool(st.get("blockRecording"))
         return st
 
-    def update_settings(self, changes: dict) -> dict:
-        for k, v in changes.items():
-            if not hasattr(self.settings, k):
-                continue
-            cur = getattr(self.settings, k)
+    @staticmethod
+    def _setting_value(key: str, current, value):
+        """One retention setting, checked; ActionRefused when it is not acceptable."""
+        if isinstance(current, bool):
+            if value in (True, 1, "1", "true", "True"):
+                return True
+            if value in (False, 0, "0", "false", "False"):
+                return False
+            raise ActionRefused(f"{key} must be on or off")
+        if isinstance(current, (int, float)):
+            if isinstance(value, bool) or not isinstance(value, (int, float, str)) \
+                    or (isinstance(value, str) and len(value) > 32):
+                raise ActionRefused(f"{key} must be a number")
             try:
-                setattr(self.settings, k, (v not in ("0", "false", "False", 0, False))
-                        if isinstance(cur, bool) else type(cur)(v))
-            except (TypeError, ValueError):
-                continue
-        self.settings.sane().save()
+                number = float(value)
+            except ValueError:
+                raise ActionRefused(f"{key} must be a number") from None
+            low, high = SETTING_LIMITS.get(key, (0, 100000))
+            if not math.isfinite(number) or not low <= number <= high:
+                raise ActionRefused(f"{key} is out of range")
+            return int(number) if isinstance(current, int) else number
+        if isinstance(current, str):
+            if not isinstance(value, str) or not _SWITCH_LANGUAGE.fullmatch(value):
+                raise ActionRefused(f"{key} is not a language code")
+            return value
+        raise ActionRefused(f"{key} cannot be changed")
+
+    def update_settings(self, changes: dict) -> dict:
+        """Apply all of `changes` or none of them (unknown keys are refused)."""
+        if not isinstance(changes, dict) or not changes or len(changes) > 32:
+            raise ActionRefused("settings expected")
+        checked = {}
+        for k, v in changes.items():
+            if not isinstance(k, str) or k.startswith("_") or not hasattr(self.settings, k) \
+                    or callable(getattr(self.settings, k)):
+                raise ActionRefused("unknown setting")
+            checked[k] = self._setting_value(k, getattr(self.settings, k), v)
+        for k, v in checked.items():
+            setattr(self.settings, k, v)
+        self.settings.sane().save(self.settings_path)
         with self._lock:
             self._storage, self._storage_at = {}, 0.0   # force a re-plan
         return asdict(self.settings)
@@ -334,12 +464,15 @@ class RunStore:
 
     def set_category(self, key: str, value: str) -> str:
         cats = self.categories()
+        if not isinstance(cats, dict):
+            cats = {}
         if value in ("sc", "nsc"):
+            if key not in cats and len(cats) >= MAX_MARKED_KEYS:
+                raise ActionRefused("too many categorised runs", 409)
             cats[key] = value
         else:
             cats.pop(key, None)
-        self.runs_dir.mkdir(parents=True, exist_ok=True)
-        (self.runs_dir / "categories.json").write_text(json.dumps(cats, indent=0), encoding="utf-8")
+        _write_atomic(self.runs_dir / "categories.json", json.dumps(cats, indent=0))
         return cats.get(key, "nsc")
 
     # -- exports --------------------------------------------------------------
@@ -399,23 +532,29 @@ class RunStore:
                            "wheel": r["wheel"], "glider": r["glider"]}
         return {"format": "livetrial.rivals.v1", "runs": len(rows), "best": list(best.values())}
 
-    def package(self, key: str) -> dict:
+    def package(self, key: str, out_dir: Path | None = None) -> dict:
         """One zip per run: clip + end-screen still + the submission JSON +
         what was verified. Leaderboards ask for proof, and a folder of loose
-        files is not proof — this is the thing you attach."""
+        files is not proof — this is the thing you attach. The download route
+        builds it in a temporary folder, so a GET leaves the runs folder as it was."""
         import zipfile
         run = next((r for r in self.snapshot()["runs"] if r.get("key") == key), None)
         if not run:
             return {"ok": False, "error": "run not found"}
         stem = f"{(((run.get('context') or {}).get('trackName') or {}).get('trackId') or 'run')}".split(".")[-1]
+        stem = re.sub(r"[^A-Za-z0-9_-]+", "_", stem)[:64] or "run"
         p = ((run.get("results") or {}).get("player") or {})
         name = f"livetrial_{stem}_{storage.ms_to_clock(p.get('totalMs')).replace(':', 'm').replace('.', 's')}.zip"
-        out = self.runs_dir / name
+        out = (Path(out_dir) if out_dir is not None else self.runs_dir) / name
         try:
             with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED) as z:
+                base = self.runs_dir.resolve()
                 for f in (run.get("clipFile"), run.get("endscreenFile")):
-                    if f and (self.runs_dir / f).is_file():
-                        z.write(self.runs_dir / f, Path(f).name)
+                    if not isinstance(f, str) or not f:
+                        continue
+                    source = (self.runs_dir / f).resolve()
+                    if base in source.parents and source.is_file():
+                        z.write(source, source.name)
                 z.writestr("run.json", json.dumps(run, indent=1, default=str))
                 if run.get("submission"):
                     z.writestr("submission.json", json.dumps(run["submission"], indent=1))
@@ -451,9 +590,10 @@ class RunStore:
         if key in arch:
             arch.discard(key)
         else:
+            if len(arch) >= MAX_MARKED_KEYS:
+                raise ActionRefused("too many archived runs", 409)
             arch.add(key)
-        self.runs_dir.mkdir(parents=True, exist_ok=True)
-        (self.runs_dir / "archived.json").write_text(json.dumps(sorted(arch)), encoding="utf-8")
+        _write_atomic(self.runs_dir / "archived.json", json.dumps(sorted(arch)))
         return key in arch
 
     def ghost_runs(self) -> list:
@@ -656,64 +796,208 @@ class RunStore:
                 "lanUrl": getattr(self, "lan_url", None)}
 
 
-def make_handler(store: RunStore):
+def make_handler(store: RunStore, token: str | None = None):
+    action_secret = token if isinstance(token, str) and _ACTION_SHAPE.fullmatch(token) else action_token()
+    write_lock = threading.Lock()        # one state/config change at a time
+    package_lock = threading.Lock()      # one run package being zipped at a time
+    post_routes = frozenset({*CALIBRATION_FILES, "/api/stop", "/api/record", "/api/settings",
+                             "/api/storage/cleanup", "/api/pin", "/api/category", "/api/archive"})
+
     class Handler(BaseHTTPRequestHandler):
         # keep-alive: the dashboard polls /api/preview.jpg ~12x/s and /api/runs
         # every 1.5s. HTTP/1.0 (the default) opens a fresh TCP connection + a new
         # server thread per request; 1.1 reuses one connection. All responses
         # send Content-Length (see _send / the range branch), so framing is safe.
         protocol_version = "HTTP/1.1"
+        # An idle keep-alive connection or a stalled peer gives its thread back.
+        timeout = 60
+        ACTION_TOKEN = action_secret
 
         def log_message(self, *a):  # quiet
             pass
 
-        def _send(self, code: int, body: bytes, ctype: str):
+        def _security_headers(self):
+            self.send_header("X-Content-Type-Options", "nosniff")
+            self.send_header("Referrer-Policy", "no-referrer")
+            # the desktop app shows these pages in its own loopback window
+            self.send_header("Content-Security-Policy",
+                             "frame-ancestors 'self' http://127.0.0.1:* http://localhost:*")
+
+        def _send(self, code: int, body: bytes, ctype: str, extra: dict | None = None):
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             self.send_header("Content-Length", str(len(body)))
             self.send_header("Cache-Control", "no-store")
+            self._security_headers()
+            for name, value in (extra or {}).items():
+                self.send_header(name, value)
             self.end_headers()
             self.wfile.write(body)
 
+        def _json(self, code: int, document, extra: dict | None = None):
+            self._send(code, json.dumps(document).encode("utf-8"), "application/json", extra)
 
-        def do_POST(self):
-            path = self.path.split("?")[0]
-            if path in DIGIT_GRIDS:
+        # -- who may read, who may change ----------------------------------
+        def _host_allowed(self) -> bool:
+            name = _host_name(self.headers.get("Host", ""))
+            if name in LOOPBACK_NAMES:
+                return True
+            # Opt-in LAN viewing (--lan): a phone opens the computer's address.
+            # An IP literal cannot be DNS-rebound; any other name is refused.
+            return bool(getattr(self.server, "lan", False)) and name is not None and _is_ip_literal(name)
+
+        def _local_page(self) -> bool:
+            """This computer, by its loopback address and a loopback Host."""
+            return (_is_loopback_address(self.client_address[0])
+                    and _host_name(self.headers.get("Host", "")) in LOOPBACK_NAMES)
+
+        def _read_allowed(self) -> bool:
+            return self._host_allowed() and self.headers.get("Sec-Fetch-Site", "none") != "cross-site"
+
+        def _action_allowed(self) -> bool:
+            if not self._local_page():
+                return False
+            port = self.server.server_address[1]
+            if self.headers.get("Origin", "") not in {f"http://127.0.0.1:{port}", f"http://localhost:{port}",
+                                                       f"http://[::1]:{port}"}:
+                return False
+            if self.headers.get("Sec-Fetch-Site", "same-origin") != "same-origin":
+                return False
+            offered = self.headers.get(ACTION_HEADER, "")
+            return bool(offered) and hmac.compare_digest(offered.encode("utf-8"), action_secret.encode("ascii"))
+
+        def _page(self, name: str):
+            """A dashboard page; only the page served to this computer carries the proof."""
+            payload = (DASH / name).read_bytes()
+            if self._local_page():
+                payload = payload.replace(
+                    b"</head>", b'<meta name="livetrial-action" content="' + action_secret.encode("ascii")
+                    + b'">\n</head>', 1)
+            self._send(200, payload, "text/html; charset=utf-8")
+
+        def _read_body(self, limit: int):
+            """The request body within `limit` bytes and BODY_READ_SECONDS, or None
+            (and the connection closes) when it is missing, too large or too slow."""
+            if self.headers.get("Transfer-Encoding"):
+                self.close_connection = True
+                self._json(411, {"ok": False, "error": "length required"})
+                return None
+            try:
+                length = int(self.headers.get("Content-Length", "0") or "0")
+            except ValueError:
+                length = -1
+            if length < 0:
+                self.close_connection = True
+                self._json(400, {"ok": False, "error": "bad request"})
+                return None
+            if length > limit:
+                self.close_connection = True
+                self._json(413, {"ok": False, "error": "request too large"})
+                return None
+            if not length:
+                return b""
+            try:
+                self.connection.settimeout(BODY_READ_SECONDS)
+                body = self.rfile.read(length)
+            except OSError:
+                self.close_connection = True
+                return None
+            finally:
                 try:
-                    n = int(self.headers.get("Content-Length") or 0)
-                    body = self.rfile.read(n)
-                    json.loads(body)                    # reject malformed input
-                    (DASH.parent / "config" / DIGIT_GRIDS[path]).write_text(
-                        body.decode("utf-8"), encoding="utf-8")
-                    self._send(200, b'{"ok":true}', "application/json")
-                except Exception as e:  # noqa: BLE001
-                    self._send(400, json.dumps({"ok": False, "error": str(e)}).encode(),
-                               "application/json")
-            elif path == "/api/stop":
+                    self.connection.settimeout(self.timeout)
+                except OSError:
+                    pass
+            if len(body) != length:
+                self.close_connection = True
+                return None
+            return body
+
+        def do_OPTIONS(self):  # noqa: N802
+            # No CORS: a preflight is never approved, so no other site can make a change.
+            self._send(405, b"", "text/plain", {"Allow": "GET, POST"})
+
+        def do_POST(self):  # noqa: N802
+            path = self.path.split("?")[0]
+            raw = self._read_body(MAX_CALIBRATION_BYTES if path in CALIBRATION_FILES else MAX_ACTION_BYTES)
+            if raw is None:
+                return
+            if path not in post_routes:
+                self._send(404, b"not found", "text/plain")
+                return
+            if not self._action_allowed():
+                self._json(403, {"ok": False, "error": "not allowed"})
+                return
+            if self.headers.get("Content-Type", "").split(";", 1)[0].strip().lower() != "application/json":
+                self._json(415, {"ok": False, "error": "JSON expected"})
+                return
+            try:
+                body = json.loads(raw.decode("utf-8") or "{}")
+            except (UnicodeDecodeError, ValueError):
+                body = None
+            if not isinstance(body, dict):
+                self._json(400, {"ok": False, "error": "a JSON object expected"})
+                return
+            if not write_lock.acquire(timeout=WRITE_WAIT_SECONDS):
+                self._json(429, {"ok": False, "error": "busy"}, {"Retry-After": "1"})
+                return
+            try:
+                code, document = self._act(path, body, raw)
+            except ActionRefused as refused:
+                code, document = refused.status, {"ok": False, "error": str(refused)}
+            except Exception:  # noqa: BLE001
+                code, document = 500, {"ok": False, "error": "that did not work; nothing was changed"}
+            finally:
+                write_lock.release()
+            self._json(code, document)
+
+        def _act(self, path: str, body: dict, raw: bytes):
+            if path in CALIBRATION_FILES:
+                # the calibrator's own text is kept as it was sent (it is valid JSON)
+                _write_atomic(store.config_dir / CALIBRATION_FILES[path], raw.decode("utf-8"))
+                return 200, {"ok": True}
+            if path == "/api/stop":
                 # Only meaningful while a capture is running; answering
                 # first lets the page show its farewell before the
                 # server disappears with the capture process.
                 store.stop_requested = True
-                self._send(200, json.dumps({"ok": True, "live": bool(store.live)}).encode(),
-                           "application/json")
-            elif path == "/api/grid":
-                try:
-                    n = int(self.headers.get("Content-Length") or 0)
-                    body = self.rfile.read(n)
-                    gp = DASH.parent / "config" / "card_grid.json"
-                    json.loads(body)                       # reject malformed input
-                    gp.write_text(body.decode("utf-8"), encoding="utf-8")
-                    self._send(200, b'{"ok":true}', "application/json")
-                except Exception as e:                     # noqa: BLE001
-                    self._send(400, json.dumps({"ok": False, "error": str(e)}).encode(),
-                               "application/json")
-            else:
-                self._send(404, b"not found", "text/plain")
+                return 200, {"ok": True, "live": bool(store.live)}
+            if path == "/api/record":
+                mode, on = body.get("mode"), body.get("on")
+                if mode not in ("manual", "auto") or not isinstance(on, bool):
+                    raise ActionRefused("mode (manual/auto) and on (true/false) expected")
+                store.record[mode] = on
+                return 200, dict(store.record)
+            if path == "/api/settings":
+                return 200, store.update_settings(body)
+            if path == "/api/storage/cleanup":
+                dry = body.get("dryRun", False)
+                if not isinstance(dry, bool):
+                    raise ActionRefused("dryRun must be true or false")
+                return 200, store.cleanup(dry_run=dry)
+            if path == "/api/pin":
+                rel = body.get("file")
+                if not isinstance(rel, str) or not _RUN_FILE.fullmatch(rel) or ".." in rel:
+                    raise ActionRefused("a clip of a session expected")
+                pinned = storage.toggle_pin(store.runs_dir, rel)
+                store.storage_status(max_age=0.0)
+                return 200, {"file": rel, "pinned": pinned}
+            key = body.get("key")
+            if not isinstance(key, str) or not key or len(key) > MAX_KEY_LENGTH:
+                raise ActionRefused("key required")
+            if path == "/api/category":
+                value = body.get("value", "")
+                if not isinstance(value, str):
+                    raise ActionRefused("value must be sc, nsc or empty")
+                return 200, {"key": key, "category": store.set_category(key, value)}
+            return 200, {"archived": store.toggle_archive(key)}   # /api/archive
 
-        def do_GET(self):
+        def do_GET(self):  # noqa: N802
+            if not self._read_allowed():
+                self._send(421 if not self._host_allowed() else 403, b"not allowed", "text/plain")
+                return
             path = self.path.split("?")[0]
             if path in ("/", "/index.html"):
-                self._send(200, (DASH / "index.html").read_bytes(), "text/html; charset=utf-8")
+                self._page("index.html")
             elif path in ("/app-icon", "/favicon.ico"):
                 # The product's icon (MK8DX_LIVETRIAL_PRODUCT_ICON, set by the desktop
                 # app), so run history carries the same favicon as the dashboard.
@@ -723,9 +1007,9 @@ def make_handler(store: RunStore):
                 self._send(200, (DASH / "overlay.html").read_bytes(), "text/html; charset=utf-8")
             elif path in ("/grid", "/grid.html"):
                 # card-grid calibration tool (see tests/_grid_propose.py)
-                self._send(200, (DASH / "grid.html").read_bytes(), "text/html; charset=utf-8")
+                self._page("grid.html")
             elif path == "/api/grid":
-                gp = DASH.parent / "config" / "card_grid.json"
+                gp = store.config_dir / "card_grid.json"
                 if not gp.is_file():
                     self._send(404, b'{"error":"run tests/_grid_propose.py first"}',
                                "application/json")
@@ -750,12 +1034,11 @@ def make_handler(store: RunStore):
                 else:
                     self._send(404, b"unknown grid mode", "text/plain")
             elif path in ("/deltagrid", "/deltagrid.html"):
-                self._send(200, (DASH / "deltagrid.html").read_bytes(),
-                           "text/html; charset=utf-8")
+                self._page("deltagrid.html")
             elif path == "/api/staffsplits":
                 self._send(200, json.dumps(_staff_splits()).encode(), "application/json")
             elif path in DIGIT_GRIDS:
-                gp = DASH.parent / "config" / DIGIT_GRIDS[path]
+                gp = store.config_dir / DIGIT_GRIDS[path]
                 self._send(200 if gp.is_file() else 404,
                            gp.read_bytes() if gp.is_file() else b'{"error":"missing"}',
                            "application/json")
@@ -787,18 +1070,37 @@ def make_handler(store: RunStore):
             elif path == "/api/export/package":
                 from urllib.parse import parse_qs, urlparse
                 q = parse_qs(urlparse(self.path).query)
-                out = store.package((q.get("key") or [""])[0])
-                if out.get("ok"):
-                    data = Path(out["path"]).read_bytes()
-                    self.send_response(200)
-                    self.send_header("Content-Type", "application/zip")
-                    self.send_header("Content-Disposition",
-                                     f'attachment; filename="{Path(out["path"]).name}"')
-                    self.send_header("Content-Length", str(len(data)))
-                    self.end_headers()
-                    self.wfile.write(data)
-                else:
-                    self._send(400, json.dumps(out).encode(), "application/json")
+                key = (q.get("key") or [""])[0]
+                if not key or len(key) > MAX_KEY_LENGTH:
+                    self._json(400, {"ok": False, "error": "key required"})
+                    return
+                if not package_lock.acquire(blocking=False):
+                    self._json(429, {"ok": False, "error": "busy"}, {"Retry-After": "2"})
+                    return
+                try:
+                    # Built in a temporary folder and removed after sending: a GET
+                    # leaves the runs folder exactly as it was.
+                    with tempfile.TemporaryDirectory(prefix="livetrial-package-") as scratch:
+                        out = store.package(key, Path(scratch))
+                        if not out.get("ok"):
+                            self._json(400, {"ok": False, "error": out.get("error") or "no package"})
+                            return
+                        target = Path(out["path"])
+                        self.send_response(200)
+                        self.send_header("Content-Type", "application/zip")
+                        self.send_header("Content-Disposition", f'attachment; filename="{target.name}"')
+                        self.send_header("Content-Length", str(target.stat().st_size))
+                        self.send_header("Cache-Control", "no-store")
+                        self._security_headers()
+                        self.end_headers()
+                        with open(target, "rb") as handle:
+                            while True:
+                                chunk = handle.read(1 << 20)
+                                if not chunk:
+                                    break
+                                self.wfile.write(chunk)
+                finally:
+                    package_lock.release()
             elif path == "/api/runs":
                 self._send(200, json.dumps(store.snapshot()).encode("utf-8"), "application/json")
             elif path == "/api/live":
@@ -836,6 +1138,9 @@ def make_handler(store: RunStore):
                             code = 206
                         except ValueError:
                             start, end = 0, size - 1
+                        if code == 206 and not 0 <= start <= end:
+                            self._send(416, b"", "text/plain", {"Content-Range": f"bytes */{size}"})
+                            return
                     self.send_response(code)
                     self.send_header("Content-Type", ctype)
                     self.send_header("Accept-Ranges", "bytes")
@@ -843,6 +1148,7 @@ def make_handler(store: RunStore):
                         self.send_header("Content-Range", f"bytes {start}-{end}/{size}")
                     self.send_header("Content-Length", str(end - start + 1))
                     self.send_header("Cache-Control", "max-age=3600")
+                    self._security_headers()
                     self.end_headers()
                     with open(target, "rb") as f:  # stream chunks: mp4s are large
                         f.seek(start)
@@ -855,60 +1161,28 @@ def make_handler(store: RunStore):
                             remaining -= len(chunk)
                 else:
                     self._send(404, b"not found", "text/plain")
-            elif path == "/api/record":
-                from urllib.parse import parse_qs, urlparse
-                q = parse_qs(urlparse(self.path).query)
-                mode = (q.get("mode") or [""])[0]
-                on = (q.get("on") or [""])[0]
-                if mode in ("manual", "auto") and on in ("0", "1"):
-                    store.record[mode] = on == "1"
-                self._send(200, json.dumps(store.record).encode(), "application/json")
+            elif path in ("/api/record", "/api/settings") or path in _FORMER_GET_ACTIONS:
+                # Read-only: what is set now. A change is a POST with the action proof;
+                # an old-style change by query string is refused, not applied.
+                if "?" in self.path or path in _FORMER_GET_ACTIONS:
+                    self._json(405, {"ok": False, "error": "use POST"}, {"Allow": "POST"})
+                else:
+                    self._json(200, dict(store.record) if path == "/api/record" else asdict(store.settings))
             elif path == "/api/storage":
                 self._send(200, json.dumps(store.storage_status()).encode(), "application/json")
             elif path == "/api/storage/cleanup":
+                # GET only previews (dry=1) what a clean-up would remove; it deletes nothing.
                 from urllib.parse import parse_qs, urlparse
                 q = parse_qs(urlparse(self.path).query)
-                dry = (q.get("dry") or ["0"])[0] == "1"
-                self._send(200, json.dumps(store.cleanup(dry_run=dry)).encode(), "application/json")
-            elif path == "/api/settings":
-                from urllib.parse import parse_qs, urlparse
-                q = {k: v[0] for k, v in parse_qs(urlparse(self.path).query).items()}
-                out = store.update_settings(q) if q else asdict(store.settings)
-                self._send(200, json.dumps(out).encode(), "application/json")
-            elif path == "/api/pin":
-                from urllib.parse import parse_qs, urlparse
-                q = parse_qs(urlparse(self.path).query)
-                rel = (q.get("file") or [""])[0]
-                if rel:
-                    pinned = storage.toggle_pin(store.runs_dir, rel)
-                    store.storage_status(max_age=0.0)
-                    self._send(200, json.dumps({"file": rel, "pinned": pinned}).encode(),
-                               "application/json")
+                if (q.get("dry") or ["0"])[0] != "1":
+                    self._json(405, {"ok": False, "error": "use POST"}, {"Allow": "POST"})
                 else:
-                    self._send(400, b"file required", "text/plain")
+                    self._json(200, store.cleanup(dry_run=True))
             elif path == "/api/export.csv":
                 self._send(200, store.csv().encode("utf-8"), "text/csv; charset=utf-8")
             elif path == "/api/export.json":
                 # portable head-to-head export: what another player can import
                 self._send(200, json.dumps(store.export_runs()).encode(), "application/json")
-            elif path == "/api/category":
-                from urllib.parse import parse_qs, urlparse
-                q = parse_qs(urlparse(self.path).query)
-                key = (q.get("key") or [""])[0]
-                val = (q.get("value") or [""])[0]
-                if key:
-                    self._send(200, json.dumps({"key": key, "category": store.set_category(key, val)}).encode(),
-                               "application/json")
-                else:
-                    self._send(400, b"key required", "text/plain")
-            elif path == "/api/archive":
-                from urllib.parse import parse_qs, urlparse
-                q = parse_qs(urlparse(self.path).query)
-                key = (q.get("key") or [""])[0]
-                if key:
-                    self._send(200, json.dumps({"archived": store.toggle_archive(key)}).encode(), "application/json")
-                else:
-                    self._send(400, b"key required", "text/plain")
             elif path == "/api/preview.jpg":
                 from urllib.parse import parse_qs
                 try:
@@ -935,6 +1209,7 @@ def make_handler(store: RunStore):
                 self.send_response(200)
                 self.send_header("Content-Type", "multipart/x-mixed-replace; boundary=frame")
                 self.send_header("Cache-Control", "no-store")
+                self._security_headers()
                 self.send_header("Connection", "close")  # streamed, no Content-Length -> don't keep-alive under HTTP/1.1
                 self.close_connection = True
                 self.end_headers()
@@ -973,7 +1248,31 @@ def _lan_ip() -> str | None:
 
 class QuietServer(ThreadingHTTPServer):
     """Client disconnects (browser closing an MJPEG/preview request) are
-    normal — don't spam tracebacks to stderr for them."""
+    normal — don't spam tracebacks to stderr for them. At most
+    MAX_CONNECTIONS connections are served at once; one more is closed."""
+
+    lan = False                     # True only with --lan (read-only network viewing)
+    daemon_threads = True
+
+    def __init__(self, *args, **kwargs):
+        self._slots = threading.BoundedSemaphore(MAX_CONNECTIONS)
+        super().__init__(*args, **kwargs)
+
+    def process_request(self, request, client_address):
+        if not self._slots.acquire(blocking=False):
+            self.shutdown_request(request)
+            return
+        try:
+            super().process_request(request, client_address)
+        except Exception:
+            self._slots.release()
+            raise
+
+    def process_request_thread(self, request, client_address):
+        try:
+            super().process_request_thread(request, client_address)
+        finally:
+            self._slots.release()
 
     def handle_error(self, request, client_address):
         import sys as _sys
@@ -991,6 +1290,8 @@ def _bind(store: RunStore, port: int, lan: bool = False) -> ThreadingHTTPServer:
         raise SystemExit(
             f"Port {port} is already in use (another serve.py/watch.py?). "
             f"Close it or pass --port <other>.") from e
+    # On the network the pages can be watched; changes stay with this computer.
+    httpd.lan = bool(lan)
     print(f"LiveTrial dashboard: http://127.0.0.1:{port}/")
     if lan:
         ip = _lan_ip()
@@ -1015,7 +1316,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs-dir", default=str(HERE / "runs"))
     ap.add_argument("--port", type=int, default=8777)
-    ap.add_argument("--lan", action="store_true", help="also reachable on the local network (phone/tablet)")
+    ap.add_argument("--lan", action="store_true",
+                    help="also viewable on the local network (phone/tablet); control stays on this computer")
     args = ap.parse_args()
     serve(RunStore(Path(args.runs_dir)), args.port, lan=args.lan)
 

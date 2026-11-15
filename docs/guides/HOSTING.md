@@ -166,12 +166,22 @@ works only once per installation. See [Operations](../OPERATIONS.md) for the bou
 - **Backups**: choice 6, then check the folder with
   `python3 tooling/lifecycle.py verify --backup "$HOME/mk8dx-backups/<folder>"` (expect `Backup verified`).
   Copy the whole folder to protected storage off the server. It contains the database, accounts and keys.
+- **Automatic backup**: after the first setup a line in your crontab makes a checked backup every night in
+  `~/mk8dx-backups/automatic` (14 days + 4 weeks, at most 10 GB). Choice 3 shows its age and result under
+  `automaticBackup`. Pull the newest one off the server regularly:
+  `python3 tooling/install.py backup-latest --state-dir <installation> --print-path` gives the folder for `scp`
+  or `rsync` ([Operations](../OPERATIONS.md#automatic-daily-backup-a1-a2-b1-a3-b2)).
 - **Updates**: check the new host package and extract it into a new, empty folder next to the old one (for
   example `/opt/mk8dx/host-new`), then run its launcher with the **same** installation directory and choose 7.
   Keep the old folder until the update has been checked. The update to 0.2.3 moves the database from MySQL 8.4
   to 9.7 LTS. MySQL upgrades the data files once, at the first start on the new version, and only a backup undoes
   that. So choose 7 (update) first: it makes a checked backup and applies the database updates. From 0.2.4 on,
   2 (start) refuses until the update has run; with a 0.2.3 package, 2 would skip the backup (3, check, is harmless).
+- **The next update after 0.2.4** applies database updates 0092 and 0095 and gives the website its own database
+  account that can only read and write rows (`status` shows `"databaseAccounts": "separate"`; if the website does
+  not start with it, the update returns to the previous account by itself). Check afterwards that sign-in mail
+  arrives: dangerous administrator actions now need a fresh email link (below). Built-in limits against floods need
+  no setting ([Mutating routes](../architecture/MUTATING_ROUTES.md#installation-budgets)).
 - **Change mail or address**: `python3 tooling/install.py change-smtp|change-origin ...`, then `apply` and
   `check`, from the package folder; the user guide's settings chapter has the exact commands.
 - **Restore**: `python3 tooling/lifecycle.py restore-new --backup <folder> --state-dir <new directory>` creates a
@@ -185,6 +195,8 @@ To throw away a trial installation (or one you have migrated away from), work fr
 same installation directory. This **deletes the database, the accounts and the keys** of that installation;
 make a backup first (choice 6) if there is anything you may want back.
 
+0. Remove the nightly backup schedule first:
+   `python3 tooling/install.py backup-unschedule --state-dir <installation>`.
 1. Run the launcher and choose **3**: note the `route` (A1, A2 or B1). Then run it again and choose **4** to stop.
 2. Remove the containers, the network and the volumes (the database, and for A2/B1 the certificates). Use the
    Compose file that matches the route: `compose.local.yaml` for A1, `compose.lan.yaml` for A2,
@@ -314,5 +326,23 @@ can also open its properties and add ` -SkipCountdown` at the end of the target.
   times are listed under Administration → Time Trials as withheld, with a **Publish** button. When you switch away from *With approval* while carried times still wait, the page asks
   whether to publish (or, when switching to off, refuse) all of them or leave them waiting. *Allowed* treats carried times like any
   other submission. A carried time always shows where it came from (ADR-0225).
+- **Dangerous administrator actions ask for a fresh email link.** Granting or revoking administrator, Director or
+  report rights, linking or unlinking an account and a Player directly, approving a request to host, changing the
+  installation settings, recalculating ratings, publishing or refusing all waiting carried times at once, removing,
+  reopening or restoring a Tournament, retracting a publication, and a Director deleting or removing a Tournament first
+  show **Confirm with a new email link**. The link goes to the account's own address, works once for 10 minutes and
+  confirms only the browser or app session that asked; open it on any device and press **Confirm this action**, and
+  the action continues by itself. That session may then do such actions for 10 minutes
+  (`MK8DX_HOSTED_STEP_UP_WINDOW_SECONDS`, 60 to 3600, default 600). At most 3 links per account per 10 minutes and 10
+  per day. Every request, confirmation and allowed or refused action is recorded without the link. The list of every
+  account with its email address (**Accounts and Players**) loads only after **Show accounts** and asks for the same
+  confirmation. Everyday work, reading the other administration pages and running a night are unchanged. An email you did not ask for means someone
+  else holds a session of your account: do not confirm it, and sign out your other sessions. An offline LAN
+  installation (A2 without email) does not ask, because it cannot send the link. The full list is in
+  [Mutating routes](../architecture/MUTATING_ROUTES.md#fresh-confirmation-step-up). The confirmation needs working
+  email: keep the SMTP settings current (`install.py change-smtp`). When mail fails, press **Send the link** anyway
+  and, within 10 minutes, run `install.py step-up-link --state-dir <installation>` on the server; it prints a new
+  single-use link for that one waiting request, which you confirm the same way. It only runs on the server itself
+  and is recorded; see [Operations](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server).
 - Security problems: [SECURITY.md](../../SECURITY.md). Keep the installation directory, backups and sign-in links
   out of issues.

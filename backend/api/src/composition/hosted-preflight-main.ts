@@ -5,6 +5,7 @@ import { pathToFileURL } from "node:url";
 import mysql from "mysql2/promise";
 
 import { Schema9AssetCatalog } from "../assets/schema9-asset-catalog.js";
+import { readAbuseBudgetSettings } from "../security/abuse-budgets.js";
 import {
   loadPasswordlessHostedRuntimeConfig,
   type HostedRuntimeEnvironment,
@@ -124,6 +125,7 @@ export async function runHostedDeploymentPreflight(
   let config;
   try {
     config = loadPasswordlessHostedRuntimeConfig(environment);
+    readAbuseBudgetSettings(environment);
   } catch (error) {
     // Configuration errors name only the offending variable, never its value.
     return failed(

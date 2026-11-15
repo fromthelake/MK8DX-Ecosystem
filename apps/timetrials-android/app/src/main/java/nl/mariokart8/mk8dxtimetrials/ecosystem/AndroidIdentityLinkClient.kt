@@ -5,6 +5,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import nl.mariokart8.mk8dxtimetrials.auth.AndroidAuthenticatedNativeSession
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpClient
+import nl.mariokart8.mk8dxtimetrials.auth.AndroidStepUpRequiredException
+import nl.mariokart8.mk8dxtimetrials.auth.STEP_UP_HEADER
 import nl.mariokart8.mk8dxtimetrials.tournament.AndroidTournamentConnectionOpener
 import java.net.URI
 
@@ -64,6 +67,9 @@ internal class AndroidIdentityLinkClient(
     /** The community's origin, for a person-facing "No connection to {host}". */
     val originText: String get() = origin.toString()
     private val json = Json { ignoreUnknownKeys = true; explicitNulls = false }
+
+    /** The fresh e-mail confirmation the server asks for before the account list and any (un)link. */
+    fun stepUp(): AndroidStepUpClient = AndroidStepUpClient(origin.toString(), session, opener)
 
     fun overview(): AndroidIdentityLinkOverview {
         val body = request("GET", "/v1/native/administrator/identity-links", null)
@@ -136,6 +142,9 @@ internal class AndroidIdentityLinkClient(
                 connection.outputStream.use { it.write(encoded) }
             }
             val status = connection.responseCode
+            if (status == 403 && connection.getHeaderField(STEP_UP_HEADER) == "required") {
+                throw AndroidStepUpRequiredException()
+            }
             if (status == 401 || status == 403) {
                 throw AndroidIdentityLinkException(
                     forbidden = true,

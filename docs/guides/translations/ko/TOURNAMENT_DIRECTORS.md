@@ -52,6 +52,8 @@ Tournament Tools에서 온 레이스: 그룹의 **수신된 결과**를 열고, 
 
 공개와 커뮤니티 레이팅은 마지막 단계에서 각각 따로 결정합니다.
 
+CSV와 Excel 내보내기에서 `=`, `+`, `-`, `@`로 시작하는 이름은 스프레드시트 프로그램에서 파일을 열어도 텍스트로 남습니다. CSV에서는 이를 위해 앞에 아포스트로피가 하나 붙으며, 웹사이트와 도구의 가져오기가 이를 다시 제거합니다.
+
 ## 3. Windows Tournament Tools
 
 ### 요구 사항
@@ -130,7 +132,8 @@ PowerShell에서, 패키지 폴더 안에서:
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 `http://127.0.0.1:<port>`(또는 `http://localhost:<port>`)는 웹사이트가 A1과 A3처럼 같은 Windows
@@ -138,6 +141,8 @@ PowerShell에서, 패키지 폴더 안에서:
 주소에는 신뢰할 수 있는 HTTPS 주소가 필요합니다. 터미널이 없으면(예: 스크립트에서 실행) `sign-in`은 묻지 않습니다.
 먼저 `TournamentConnect.cmd server <address>`로 주소를 설정하세요. 한 서버를 기다리는 업로드는 그
 서버에 남습니다. 전달된 레이스는 **수신된 결과**에 들어가며, 절대 자동으로 공개되지 않습니다.
+
+로그인은 선택한 주소에서만 브라우저를 엽니다. TournamentConnect와 Tournament Live는 그 주소를 코드와 함께 보여 주고, 다른 곳을 가리키는 로그인 링크는 거부합니다. 브라우저에 같은 주소와 같은 코드가 보일 때만 승인하세요. `sign-out`은 웹사이트에서 이 PC의 세션을 끝낸 다음 여기에서도 지웁니다. 웹사이트가 세션이 더 이상 작동하지 않는다고 확인할 때만 *Signed out*이라고 표시합니다. 다른 기기는 로그인 상태로 남습니다. 웹사이트에 연결할 수 없으면 로그인은 이 PC에 남습니다. 나중에 다시 시도하거나, `sign-out --this-pc-only`를 사용한 뒤 웹사이트 계정 메뉴의 **모든 기기에서 로그아웃**으로 세션을 끝내세요(**모든 곳에서 로그아웃**으로 확인하면 계정의 모든 기기가 로그아웃됩니다). Tournament Live에서 **로그아웃**은 `sign-out`과 같은 일을 합니다. **오프라인으로 작업**은 이 PC의 연결만 잊고 그렇다고 알려 줍니다.
 
 ### Tournament Live에서 웹사이트로
 
@@ -151,6 +156,20 @@ PowerShell에서, 패키지 폴더 안에서:
 3. 웹사이트에서 밤을 열고 5단계(결승 그룹은 9단계)로 가서 **사용 가능한 Tournament Live 녹화** 아래에서 실행 기록을 찾습니다.
    **그룹에 연결**에서 그룹을 고른 다음 **검토된 녹화 연결**을 선택합니다. 레이스는 내가 승인할 때까지
    대기 중인 증거로 남습니다.
+
+### 캡처 위임과 피드 철회
+
+명단 일치만으로는 공개 라이브 화면이 절대 저절로 열리지 않아요. Tournament Live 피드는 당신(또는 관리자)이 확인하거나, 이 밤의
+라이브 캡처를 위임한 계정에서 올 때만 공개돼요. 그 전까지 웹사이트의 실행에는 *디렉터를 기다리는 중이에요* 가 표시되고,
+Tournament Live도 디렉터를 기다린다고 알려요.
+
+- **위임:** 5단계(결승 그룹은 9단계)의 **라이브 캡처 위임** 에서 캡처 담당자의 계정과 **유효 기간**(기본 12시간, 최대 7일)을
+  고른 뒤 **라이브 캡처 위임** 을 누르세요. 대기 중인 실행에도 **…에게 라이브 캡처 위임(12시간)** 이 있어요. 계정은
+  그 Tournament Live가 이 밤에 연결되고 **START** 를 누르면 나타나요. 그 뒤 이름이 그룹 명단과 일치하는 다음 레이스에서 공개
+  화면이 열려요.
+- **취소:** 위임 옆의 **취소** 를 고르세요. 그 계정의 피드는 곧바로 공개 화면에서 내려가고, 레이스는 확인용으로 남아요.
+- **피드 철회:** 공개 중인 실행에서 **이 라이브 피드 철회** 를 고르고 한 번 더 클릭해 확인하세요. 레이스는 남아요. 다시 열 수
+  있는 사람은 **라이브 연결 수동 확인** 을 쓰는 당신뿐이고, 명단 일치로는 열리지 않아요.
 
 ### 나중에 연결
 
@@ -191,6 +210,10 @@ OCR은 이름, 순위 또는 누적 점수를 잘못 읽을 수 있습니다. �
 v0.2.2 패키지로 실제 1× 인수 테스트를 통과했습니다: 소스 PC 세 대가 녹화된 예선 영상을 각자의 캡처 카드로 재생했습니다
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). 캡처 카드 없이 영상을 재생하는 것은
 캡처 경로를 테스트하지 않습니다.
+
+## 대회 삭제에는 이메일 링크가 필요합니다
+
+웹사이트나 Android 앱에서 초안을 삭제하거나 대회를 제거하면 먼저 새로운 확인을 요청합니다. **새 이메일 링크로 확인** 창이 이유를 설명하고, **링크 보내기**를 누르면 계정 자신의 주소로 일회용 링크가 전송됩니다. 링크는 10분 동안 한 번만 작동합니다. 아무 기기에서나 링크를 열고 **이 작업 확인**을 누르면 삭제가 자동으로 계속됩니다. 확인은 해당 브라우저나 앱에서만 10분 동안 유효합니다. 대회 진행(참가자, 그룹, 점수, 마감)에는 요청되지 않으며, 이메일이 없는 집이나 클럽의 오프라인 설치에서는 전혀 묻지 않습니다. 이메일이 오지 않으면 스팸함을 확인하고 새 링크를 보내세요. 커뮤니티의 이메일이 작동하지 않으면 서버를 운영하는 사람이 서버에서 링크를 발급할 수 있습니다([Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server) 참고).
 
 ## 도구 직접 빌드하기
 

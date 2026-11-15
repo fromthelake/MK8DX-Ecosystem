@@ -11,6 +11,7 @@ import {
   type TimeTrialLifecycleService,
 } from "./lifecycle-service.js";
 import type { TimeTrialWebCsrfVerifier } from "./submission-routes.js";
+import { MutationRateLimitExceeded, type MutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
 
 type ErrorResponse = Readonly<{ code: string; message: string }>;
 
@@ -22,7 +23,32 @@ export type TimeTrialLifecycleRouteOptions = Readonly<{
     | "retire" | "restore" | "setVideo" | "publishReviewed" | "resolveCarriedWaiting"
   >;
   csrfVerifier?: TimeTrialWebCsrfVerifier;
+  /** H1: durable per-account budget for corrections, videos, retire/restore and publishing. */
+  rateLimiter?: MutationRateLimiter;
 }>;
+
+/**
+ * Lifecycle actions per account (H1). A correction adds a revision, so this bounds what one account
+ * can store; an owner fixes a few runs at a time, an administrator reviews many after an import.
+ */
+export const TIME_TRIAL_LIFECYCLE_BUDGETS = Object.freeze({
+  accountPerHour: 60,
+  accountPerDay: 300,
+  administratorPerHour: 600,
+  administratorPerDay: 3_000,
+});
+
+async function consumeLifecycleBudget(
+  limiter: MutationRateLimiter | undefined,
+  actor: ActorContext,
+): Promise<void> {
+  if (limiter === undefined || (actor.role !== "account" && actor.role !== "administrator")) { return; }
+  const administrator = actor.role === "administrator";
+  await limiter.consume(actor.userAccountId, "time-trial-lifecycle.hour", 3_600,
+    administrator ? TIME_TRIAL_LIFECYCLE_BUDGETS.administratorPerHour : TIME_TRIAL_LIFECYCLE_BUDGETS.accountPerHour);
+  await limiter.consume(actor.userAccountId, "time-trial-lifecycle.day", 86_400,
+    administrator ? TIME_TRIAL_LIFECYCLE_BUDGETS.administratorPerDay : TIME_TRIAL_LIFECYCLE_BUDGETS.accountPerDay);
+}
 
 const submissionIdSchema = {
   type: "string",
@@ -228,6 +254,8 @@ function errorReply(error: unknown): Readonly<{
   status: number;
   body: ErrorResponse;
 }> {
+  // A spent durable budget becomes 429 with Retry-After in the application's error handler.
+  if (error instanceof MutationRateLimitExceeded) { throw error; }
   if (error instanceof TimeTrialLifecycleError) {
     switch (error.code) {
       case "invalid_input":
@@ -345,6 +373,7 @@ export async function registerTimeTrialLifecycleRoutes(
         try {
           const actor = await options.resolveActor(request);
           await requireProof(options, actor, request.headers["x-mk8dx-csrf"]);
+          await consumeLifecycleBudget(options.rateLimiter, actor);
           return reply.send(wrap(
             await run(
               actor, request.params.submissionId, request.body as Body,

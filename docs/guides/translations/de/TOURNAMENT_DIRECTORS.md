@@ -53,6 +53,10 @@ eine gespeicherte Live-/Processor-Ergebnisdatei importieren** innerhalb einer Gr
 
 Veröffentlichung und Community-Wertung sind getrennte Entscheidungen im letzten Schritt.
 
+In CSV- und Excel-Exporten bleibt ein Name, der mit `=`, `+`, `-` oder `@` beginnt, Text, wenn du die Datei in einem
+Tabellenprogramm öffnest; in einer CSV bekommt er dafür einen führenden Apostroph, den die Importe der Website und der
+Tools wieder entfernen.
+
 ## 3. Die Windows-Tournament-Tools
 
 ### Voraussetzungen
@@ -134,7 +138,8 @@ In PowerShell, im Paketordner:
 .\TournamentConnect.cmd tournaments                       # lists the nights you may deliver to
 .\TournamentConnect.cmd target                            # night and group for Tournament Live's live feed (clear-target)
 .\TournamentConnect.cmd send <name>_TournamentRaceResultsV1.json   # asks which night, then uploads
-.\TournamentConnect.cmd sign-out
+.\TournamentConnect.cmd sign-out                          # ends this PC's session on the website, then forgets it here
+.\TournamentConnect.cmd sign-out --this-pc-only           # forgets it on this PC only; the website session stays valid
 ```
 
 Nutze `http://127.0.0.1:<port>` (oder `http://localhost:<port>`) nur, wenn die Website auf demselben Windows-Computer
@@ -142,6 +147,16 @@ läuft, wie bei A1 und A3: Einfaches HTTP wird für diese Adressen auf diesem PC
 Adresse braucht ihre vertrauenswürdige HTTPS-Adresse. Ohne Terminal (zum Beispiel aus einem Skript) fragt `sign-in` nicht:
 Setze die Adresse zuerst mit `TournamentConnect.cmd server <address>`. Uploads, die auf einen Server warten, bleiben bei
 diesem Server. Ein abgeliefertes Rennen landet in **Eingehende Ergebnisse**; es wird nie automatisch veröffentlicht.
+
+Die Anmeldung öffnet den Browser nur auf der Adresse, die du gewählt hast: TournamentConnect und Tournament Live
+zeigen diese Adresse zusammen mit dem Code und lehnen einen Anmeldelink ab, der woandershin zeigt. Bestätige nur, wenn
+der Browser dieselbe Adresse und denselben Code zeigt. `sign-out` beendet die Sitzung dieses PCs auf der Website und
+entfernt sie danach hier; es meldet *Signed out* erst, wenn die Website bestätigt, dass die Sitzung nicht mehr
+funktioniert. Andere Geräte bleiben angemeldet. Ist die Website nicht erreichbar, bleibt die Anmeldung auf diesem PC:
+Versuche es später erneut, oder nutze `sign-out --this-pc-only` und beende die Sitzung mit **Auf allen Geräten
+abmelden** im Kontomenü der Website (bestätige mit **Überall abmelden**; das meldet jedes Gerät des Kontos ab). In
+Tournament Live macht **Abmelden** dasselbe wie `sign-out`; **Offline arbeiten** vergisst die Verbindung nur auf
+diesem PC und sagt das auch.
 
 ### Tournament Live zur Website
 
@@ -154,6 +169,24 @@ diesem Server. Ein abgeliefertes Rennen landet in **Eingehende Ergebnisse**; es 
 3. Öffne auf der Website den Abend, gehe zu Schritt 5 (Schritt 9 für die Finalgruppen) und suche den Lauf unter **Verfügbare Tournament-Live-Aufnahmen**.
    Wähle seine Gruppe in **Mit Gruppe verknüpfen** und dann **Geprüfte Aufnahme verknüpfen**. Die Rennen warten als ausstehende
    Belege, bis du sie annimmst.
+
+### Aufnahme-Delegationen und einen Feed zurückziehen
+
+Ein Roster-Abgleich öffnet die öffentliche Live-Ansicht nie von selbst. Ein Tournament-Live-Feed wird nur öffentlich,
+wenn du (oder ein Administrator) ihn bestätigst oder wenn er von einem Konto kommt, an das du die Live-Aufnahme für
+diesen Abend delegiert hast. Bis dahin zeigt die Website beim Lauf *Wartet auf den Turnierleiter*, und Tournament Live
+meldet, dass es auf den Turnierleiter wartet.
+
+- **Delegieren:** Wähle in Schritt 5 (Schritt 9 für die Finalgruppen) unter **Live-Aufnahme-Delegationen** das Konto
+  des Aufnahme-Operators und **Gültig für** (standardmäßig 12 Stunden, höchstens 7 Tage), dann **Live-Aufnahme
+  delegieren**. Ein wartender Lauf bietet auch **Live-Aufnahme an … delegieren (12 Stunden)**. Ein Konto erscheint
+  dort, sobald sein Tournament Live mit dem Abend verbunden ist und **START** gedrückt hat. Das nächste Rennen, dessen
+  Namen zur Gruppenliste passen, öffnet dann die öffentliche Ansicht.
+- **Widerrufen:** Wähle **Widerrufen** neben der Delegation. Die Feeds dieses Kontos verschwinden sofort aus der
+  öffentlichen Ansicht; ihre Rennen bleiben zur Prüfung.
+- **Feed zurückziehen:** Wähle bei einem öffentlichen Lauf **Diesen Live-Feed zurückziehen** und klicke zur Bestätigung
+  erneut. Die Rennen bleiben; nur du kannst ihn mit **Live-Zuordnung manuell bestätigen** wieder öffnen, ein
+  Roster-Abgleich nicht.
 
 ### Später verbinden
 
@@ -194,6 +227,18 @@ Die Tools lesen das Spiel in seinen 15 Konsolensprachen. Tournament Live hat mit
 1×-Abnahmelauf bestanden: Drei Quell-PCs spielten aufgezeichnete Qualifikationsvideos in ihre eigenen Capture-Karten ab
 ([issue #137](https://github.com/fromthelake/MK8DX-Ecosystem/issues/137)). Eine Videowiedergabe ohne Capture-Karte
 testet den Aufnahmeweg nicht.
+
+## Ein Turnier zu löschen oder zu entfernen verlangt einen E-Mail-Link
+
+Einen Entwurf zu löschen oder ein Turnier zu entfernen, auf der Website oder in der Android-App, verlangt zuerst eine
+neue Bestätigung. Das Fenster **Mit einem neuen E-Mail-Link bestätigen** erklärt, warum; **Link senden** schickt einen
+einmaligen Link an die eigene Adresse deines Kontos. Der Link funktioniert einmal, 10 Minuten lang. Öffne ihn auf
+einem beliebigen Gerät und tippe auf **Diese Aktion bestätigen**; das Löschen geht dann von selbst weiter. Die
+Bestätigung gilt 10 Minuten und nur für diesen Browser oder diese App. Das Durchführen des Abends (Teilnehmer,
+Gruppen, Punkte, Abschließen) verlangt sie nie, und eine Offline-Installation zu Hause oder im Verein ohne E-Mail
+fragt gar nicht danach. Keine E-Mail? Sieh im Spam-Ordner nach und sende einen neuen Link; funktioniert die E-Mail der
+Community nicht, kann die Person, die den Server betreibt, den Link stattdessen dort ausstellen (siehe
+[Operations](../../../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server)).
 
 ## Die Tools selbst bauen
 

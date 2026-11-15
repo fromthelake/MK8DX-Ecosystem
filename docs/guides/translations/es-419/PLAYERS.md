@@ -137,6 +137,10 @@ interruptor propio de la app tienen que estar activados los dos.
 
 - No llega el correo de inicio de sesión: mira en spam, comprueba la dirección exacta y pide un enlace nuevo. En una instalación local de prueba el
   correo llega al buzón de prueba local, no a tu buzón de correo.
+- Una reclamación se rechaza con *Demasiadas acciones de reclamación en este momento…*: espera el tiempo que indica y
+  vuelve a intentarlo. Una cuenta puede tener como máximo 5 reclamaciones a la espera de decisión a la vez (un
+  jugador, como máximo 5 de todas las cuentas juntas). Al llegar a ese límite, espera a que se resuelva una
+  reclamación pendiente, o retira una con **Retirar esta solicitud**, y vuelve a intentarlo.
 - Algo se ve mal en la web de tu comunidad: pregunta primero a quienes la llevan. Los errores del propio software
   se pueden comunicar en las issues del proyecto; consulta [SUPPORT.md](../../../../SUPPORT.md). Nunca publiques enlaces de inicio de sesión ni nombres
   de otras personas.

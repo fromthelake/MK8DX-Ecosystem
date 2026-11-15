@@ -68,6 +68,14 @@ kbd { background:#2a2a22; border:1px solid var(--ln); border-radius:4px; padding
 </div>
 
 <script>
+// Changing something (recording, stop, settings, clean-up, pins, categories,
+// archive) is a POST carrying this launch's action proof. The engine puts the
+// proof only in the page it serves to this computer: a phone or tablet on the
+// network (--lan) can watch, but not control.
+const ACTION_PROOF = (document.querySelector('meta[name="livetrial-action"]') || {}).content || "";
+const engineAction = (path, body) => fetch(path, { method: "POST", cache: "no-store",
+  headers: { "Content-Type": "application/json", "X-LiveTrial-Action": ACTION_PROOF },
+  body: JSON.stringify(body || {}) });
 const $ = s => document.querySelector(s);
 let G = null, MAN = [], IMGS = {}, SEG = true, CELL = true;
 
@@ -339,7 +347,7 @@ $("#btnSeg").onclick = e => { SEG = !SEG; e.target.classList.toggle("on", SEG); 
 $("#btnCell").onclick = e => { CELL = !CELL; e.target.classList.toggle("on", CELL); draw(); };
 $("#btnReset").onclick = load;
 $("#btnSave").onclick = async () => {
-  const r = await fetch(tgt().api, { method: "POST", body: JSON.stringify(G) });
+  const r = await engineAction(tgt().api, G);
   $("#score").textContent = (await r.json()).ok
     ? ("saved to config/" + tgt().file) : "save FAILED";
 };
