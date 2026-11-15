@@ -6014,6 +6014,12 @@
   "this folder": "ce dossier",
   "waiting for track detection": "en attente de la détection du circuit",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} n'a pas de dossier Input_Videos. Dépose un fichier vidéo ou un dossier de session qui contient Input_Videos.",
-  "{0} races confirmed": "{0} courses confirmées"
+  "{0} races confirmed": "{0} courses confirmées",
+  "column header|Pos": "Pos.",
+  "column header|Race": "Course",
+  "column header|Gap": "Écart",
+  "column header|Total": "Total",
+  "column header|This race": "Course",
+  "column header|Last race": "Préc."
  }
 }

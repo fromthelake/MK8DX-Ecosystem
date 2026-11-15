@@ -6014,6 +6014,12 @@
   "this folder": "эта папка",
   "waiting for track detection": "ожидание определения трассы",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "В {0} нет папки Input_Videos. Перетащите видеофайл или папку сессии, содержащую Input_Videos.",
-  "{0} races confirmed": "Подтверждено гонок: {0}"
+  "{0} races confirmed": "Подтверждено гонок: {0}",
+  "column header|Pos": "№",
+  "column header|Race": "Гонка",
+  "column header|Gap": "Отст.",
+  "column header|Total": "Итог",
+  "column header|This race": "Гонка",
+  "column header|Last race": "Пред."
  }
 }

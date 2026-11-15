@@ -6014,6 +6014,12 @@
   "this folder": "esta pasta",
   "waiting for track detection": "à espera da deteção da pista",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} não tem pasta Input_Videos. Arrasta um ficheiro de vídeo ou uma pasta de sessão que contenha Input_Videos.",
-  "{0} races confirmed": "{0} corridas confirmadas"
+  "{0} races confirmed": "{0} corridas confirmadas",
+  "column header|Pos": "Pos.",
+  "column header|Race": "Corr.",
+  "column header|Gap": "Dif.",
+  "column header|Total": "Total",
+  "column header|This race": "Corr.",
+  "column header|Last race": "Ant."
  }
 }

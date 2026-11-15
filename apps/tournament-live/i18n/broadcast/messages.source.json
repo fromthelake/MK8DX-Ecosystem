@@ -6,80 +6,80 @@
    "key": "1 race confirmed",
    "nl": "1 race bevestigd",
    "places": [
-    "app.js:1136"
+    "app.js:1153"
    ]
   },
   {
    "key": "Automatic (race result ↔ overall)",
    "nl": "Automatisch (race-uitslag ↔ totaalstand)",
    "places": [
-    "app.js:1314"
+    "app.js:1331"
    ]
   },
   {
    "key": "Awaiting results",
    "nl": "Wachten op uitslagen",
    "places": [
-    "app.js:1031"
+    "app.js:1048"
    ]
   },
   {
    "key": "Browser language (default)",
    "nl": "Browsertaal (standaard)",
    "places": [
-    "app.js:1310"
+    "app.js:1327"
    ]
   },
   {
    "key": "Connection error — scores may adjust after the next race",
    "nl": "Verbindingsfout — scores kunnen na de volgende race nog veranderen",
    "places": [
-    "app.js:756"
+    "app.js:771"
    ]
   },
   {
    "key": "Connection reset — totals continued from prior standings",
    "nl": "Verbinding opnieuw opgebouwd — totalen gaan verder vanaf de vorige stand",
    "places": [
-    "app.js:752"
+    "app.js:767"
    ]
   },
   {
    "key": "DUE",
    "nl": "VERWACHT",
    "places": [
-    "app.js:946"
+    "app.js:963"
    ]
   },
   {
    "key": "Detecting track…",
    "nl": "Baan herkennen…",
    "places": [
-    "app.js:685",
-    "app.js:744",
-    "app.js:746"
+    "app.js:700",
+    "app.js:759",
+    "app.js:761"
    ]
   },
   {
    "key": "Disconnected — last total kept",
    "nl": "Verbinding verbroken — laatste totaal blijft staan",
    "places": [
-    "app.js:854"
+    "app.js:871"
    ]
   },
   {
    "key": "Display settings",
    "nl": "Weergave-instellingen",
    "places": [
-    "app.js:1304",
-    "app.js:1306"
+    "app.js:1321",
+    "app.js:1323"
    ]
   },
   {
    "key": "Driver",
    "nl": "Speler",
    "places": [
-    "app.js:790",
+    "app.js:805",
     "index.html:81"
    ]
   },
@@ -87,88 +87,87 @@
    "key": "English + Dutch (default)",
    "nl": "Engels + Nederlands (standaard)",
    "places": [
-    "app.js:1318"
+    "app.js:1335"
    ]
   },
   {
    "key": "Finished",
    "nl": "Afgelopen",
    "places": [
-    "app.js:695",
-    "app.js:1108"
+    "app.js:710",
+    "app.js:1125"
    ]
   },
   {
    "key": "Gap",
    "nl": "Verschil",
    "places": [
-    "app.js:790"
+    "app.js:806"
    ]
   },
   {
    "key": "LIVE",
    "nl": "LIVE",
    "places": [
-    "app.js:876",
-    "app.js:940",
-    "app.js:951"
+    "app.js:893",
+    "app.js:957",
+    "app.js:968"
    ]
   },
   {
    "key": "Language",
    "nl": "Taal",
    "places": [
-    "app.js:1309"
+    "app.js:1326"
    ]
   },
   {
    "key": "Last race",
    "nl": "Vorige race",
    "places": [
-    "app.js:621",
-    "app.js:629"
+    "app.js:484"
    ]
   },
   {
    "key": "Latest race",
    "nl": "Laatste race",
    "places": [
-    "app.js:695"
+    "app.js:710"
    ]
   },
   {
    "key": "Live standings",
    "nl": "Live stand",
    "places": [
-    "app.js:606"
+    "app.js:621"
    ]
   },
   {
    "key": "Load videos and start the virtual capture to fill the tournament tables.",
    "nl": "Laad video's en start de virtuele opname om de toernooitabellen te vullen.",
    "places": [
-    "app.js:661"
+    "app.js:676"
    ]
   },
   {
    "key": "MK8DX Live Scoreboard",
    "nl": "MK8DX Live-scorebord",
    "places": [
-    "app.js:165"
+    "app.js:168"
    ]
   },
   {
    "key": "Next result",
    "nl": "Volgende uitslag",
    "places": [
-    "app.js:881"
+    "app.js:898"
    ]
   },
   {
    "key": "Next result in {0}",
    "nl": "Volgende uitslag over {0}",
    "places": [
-    "app.js:942"
+    "app.js:959"
    ]
   },
   {
@@ -182,21 +181,21 @@
    "key": "Next: {0}",
    "nl": "Volgende: {0}",
    "places": [
-    "app.js:802"
+    "app.js:819"
    ]
   },
   {
    "key": "No result this race — possible connection error",
    "nl": "Geen uitslag deze race — mogelijk een verbindingsfout",
    "places": [
-    "app.js:851"
+    "app.js:868"
    ]
   },
   {
    "key": "OFFLINE",
    "nl": "OFFLINE",
    "places": [
-    "app.js:924",
+    "app.js:941",
     "index.html:32"
    ]
   },
@@ -204,45 +203,45 @@
    "key": "On going",
    "nl": "Bezig",
    "places": [
-    "app.js:1108"
+    "app.js:1125"
    ]
   },
   {
    "key": "Overall",
    "nl": "Totaal",
    "places": [
-    "app.js:695"
+    "app.js:710"
    ]
   },
   {
    "key": "Overall only",
    "nl": "Alleen totaalstand",
    "places": [
-    "app.js:1315"
+    "app.js:1332"
    ]
   },
   {
    "key": "Overall standings",
    "nl": "Totaalstand",
    "places": [
-    "app.js:362",
-    "app.js:363",
-    "app.js:368",
-    "app.js:374"
+    "app.js:365",
+    "app.js:366",
+    "app.js:371",
+    "app.js:377"
    ]
   },
   {
    "key": "Overall standings appear once race {0} is confirmed",
    "nl": "De totaalstand verschijnt zodra race {0} bevestigd is",
    "places": [
-    "app.js:400"
+    "app.js:403"
    ]
   },
   {
    "key": "Pos",
    "nl": "Pos",
    "places": [
-    "app.js:790",
+    "app.js:805",
     "index.html:79"
    ]
   },
@@ -250,8 +249,8 @@
    "key": "Race",
    "nl": "Race",
    "places": [
-    "app.js:783",
-    "app.js:790",
+    "app.js:798",
+    "app.js:806",
     "index.html:28"
    ]
   },
@@ -259,8 +258,8 @@
    "key": "Race in progress",
    "nl": "Race bezig",
    "places": [
-    "app.js:1028",
-    "app.js:1034",
+    "app.js:1045",
+    "app.js:1051",
     "index.html:65"
    ]
   },
@@ -268,59 +267,59 @@
    "key": "Race result",
    "nl": "Race-uitslag",
    "places": [
-    "app.js:372",
-    "app.js:704"
+    "app.js:375",
+    "app.js:719"
    ]
   },
   {
    "key": "Race {0} in progress",
    "nl": "Race {0} bezig",
    "places": [
-    "app.js:362",
-    "app.js:367"
+    "app.js:365",
+    "app.js:370"
    ]
   },
   {
    "key": "Race {0} result",
    "nl": "Uitslag race {0}",
    "places": [
-    "app.js:372"
+    "app.js:375"
    ]
   },
   {
    "key": "Race {0} · in progress",
    "nl": "Race {0} · bezig",
    "places": [
-    "app.js:368"
+    "app.js:371"
    ]
   },
   {
    "key": "Scoreboard",
    "nl": "Scorebord",
    "places": [
-    "app.js:1313"
+    "app.js:1330"
    ]
   },
   {
    "key": "Scores adjusted — player drop (race {0} discounted)",
    "nl": "Scores aangepast — speler weggevallen (race {0} telt niet mee)",
    "places": [
-    "app.js:757"
+    "app.js:772"
    ]
   },
   {
    "key": "Standby",
    "nl": "Stand-by",
    "places": [
-    "app.js:359",
-    "app.js:695"
+    "app.js:362",
+    "app.js:710"
    ]
   },
   {
    "key": "Standings current",
    "nl": "Stand bijgewerkt",
    "places": [
-    "app.js:935"
+    "app.js:952"
    ]
   },
   {
@@ -334,8 +333,7 @@
    "key": "This race",
    "nl": "Deze race",
    "places": [
-    "app.js:629",
-    "index.html:82"
+    "app.js:483"
    ]
   },
   {
@@ -349,7 +347,7 @@
    "key": "Total",
    "nl": "Totaal",
    "places": [
-    "app.js:790",
+    "app.js:807",
     "index.html:83"
    ]
   },
@@ -357,7 +355,7 @@
    "key": "Tournament standings",
    "nl": "Toernooistand",
    "places": [
-    "app.js:589",
+    "app.js:604",
     "index.html:17"
    ]
   },
@@ -365,59 +363,59 @@
    "key": "Track names",
    "nl": "Baannamen",
    "places": [
-    "app.js:1317"
+    "app.js:1334"
    ]
   },
   {
    "key": "Track pending",
    "nl": "Baan nog onbekend",
    "places": [
-    "app.js:744",
-    "app.js:745",
-    "app.js:1064",
-    "app.js:1067"
+    "app.js:759",
+    "app.js:760",
+    "app.js:1081",
+    "app.js:1084"
    ]
   },
   {
    "key": "Tracking race",
    "nl": "Race wordt gevolgd",
    "places": [
-    "app.js:952"
+    "app.js:969"
    ]
   },
   {
    "key": "Tracking race…",
    "nl": "Race wordt gevolgd…",
    "places": [
-    "app.js:883"
+    "app.js:900"
    ]
   },
   {
    "key": "UP TO DATE",
    "nl": "BIJGEWERKT",
    "places": [
-    "app.js:934"
+    "app.js:951"
    ]
   },
   {
    "key": "Unknown track",
    "nl": "Onbekende baan",
    "places": [
-    "app.js:1096"
+    "app.js:1113"
    ]
   },
   {
    "key": "Waiting for feed",
    "nl": "Wachten op feed",
    "places": [
-    "app.js:926"
+    "app.js:943"
    ]
   },
   {
    "key": "Waiting for feed…",
    "nl": "Wachten op feed…",
    "places": [
-    "app.js:588",
+    "app.js:603",
     "index.html:18"
    ]
   },
@@ -425,170 +423,214 @@
    "key": "Waiting for first race…",
    "nl": "Wachten op de eerste race…",
    "places": [
-    "app.js:685"
+    "app.js:700"
    ]
   },
   {
    "key": "Waiting for live feeds…",
    "nl": "Wachten op livefeeds…",
    "places": [
-    "app.js:660"
+    "app.js:675"
    ]
   },
   {
    "key": "Waiting for race results to come in",
    "nl": "Wachten tot de race-uitslagen binnenkomen",
    "places": [
-    "app.js:878",
-    "app.js:947"
+    "app.js:895",
+    "app.js:964"
    ]
   },
   {
    "key": "Waiting for the first race",
    "nl": "Wachten op de eerste race",
    "places": [
-    "app.js:359"
+    "app.js:362"
    ]
   },
   {
    "key": "after 1 race",
    "nl": "na 1 race",
    "places": [
-    "app.js:379"
+    "app.js:382"
    ]
   },
   {
    "key": "after race {0}",
    "nl": "na race {0}",
    "places": [
-    "app.js:410"
+    "app.js:413"
    ]
   },
   {
    "key": "after race {0} of {1}",
    "nl": "na race {0} van {1}",
    "places": [
-    "app.js:410"
+    "app.js:413"
    ]
   },
   {
    "key": "after {0} races",
    "nl": "na {0} races",
    "places": [
-    "app.js:379"
+    "app.js:382"
    ]
   },
   {
    "key": "any moment",
    "nl": "elk moment",
    "places": [
-    "app.js:1030"
+    "app.js:1047"
+   ]
+  },
+  {
+   "key": "column header|Gap",
+   "nl": "Gat",
+   "places": [
+    "app.js:806"
+   ]
+  },
+  {
+   "key": "column header|Last race",
+   "nl": "Vorige",
+   "places": [
+    "app.js:484"
+   ]
+  },
+  {
+   "key": "column header|Pos",
+   "nl": "Pos",
+   "places": [
+    "app.js:805",
+    "index.html:79"
+   ]
+  },
+  {
+   "key": "column header|Race",
+   "nl": "Race",
+   "places": [
+    "app.js:806"
+   ]
+  },
+  {
+   "key": "column header|This race",
+   "nl": "Race",
+   "places": [
+    "app.js:483"
+   ]
+  },
+  {
+   "key": "column header|Total",
+   "nl": "Tot.",
+   "places": [
+    "app.js:807",
+    "index.html:83"
    ]
   },
   {
    "key": "confirmed failed",
    "nl": "bevestiging mislukt",
    "places": [
-    "app.js:916"
+    "app.js:933"
    ]
   },
   {
    "key": "confirmed failed race {0}",
    "nl": "bevestiging race {0} mislukt",
    "places": [
-    "app.js:916"
+    "app.js:933"
    ]
   },
   {
    "key": "confirmed in {0}s",
    "nl": "bevestigd in {0} s",
    "places": [
-    "app.js:910"
+    "app.js:927"
    ]
   },
   {
    "key": "confirmed queued",
    "nl": "bevestiging in wachtrij",
    "places": [
-    "app.js:913"
+    "app.js:930"
    ]
   },
   {
    "key": "confirmed queued race {0}",
    "nl": "bevestiging race {0} in wachtrij",
    "places": [
-    "app.js:913"
+    "app.js:930"
    ]
   },
   {
    "key": "confirmed running race {0} {1}",
    "nl": "bevestiging race {0} bezig {1}",
    "places": [
-    "app.js:906"
+    "app.js:923"
    ]
   },
   {
    "key": "confirmed running {0}",
    "nl": "bevestiging bezig {0}",
    "places": [
-    "app.js:907"
+    "app.js:924"
    ]
   },
   {
    "key": "latest race · awaiting confirmation",
    "nl": "laatste race · wacht op bevestiging",
    "places": [
-    "app.js:1135"
+    "app.js:1152"
    ]
   },
   {
    "key": "no race confirmed yet",
    "nl": "nog geen race bevestigd",
    "places": [
-    "app.js:411"
+    "app.js:414"
    ]
   },
   {
    "key": "of {0}",
    "nl": "van {0}",
    "places": [
-    "app.js:419"
+    "app.js:422"
    ]
   },
   {
    "key": "overall points",
    "nl": "totaalpunten",
    "places": [
-    "app.js:387"
+    "app.js:390"
    ]
   },
   {
    "key": "race {0} awaiting confirmation",
    "nl": "race {0} wacht op bevestiging",
    "places": [
-    "app.js:412"
+    "app.js:415"
    ]
   },
   {
    "key": "standing by",
    "nl": "stand-by",
    "places": [
-    "app.js:1137"
+    "app.js:1154"
    ]
   },
   {
    "key": "waiting for track detection",
    "nl": "wachten op baanherkenning",
    "places": [
-    "app.js:1065",
-    "app.js:1069"
+    "app.js:1082",
+    "app.js:1086"
    ]
   },
   {
    "key": "{0} races confirmed",
    "nl": "{0} races bevestigd",
    "places": [
-    "app.js:1136"
+    "app.js:1153"
    ]
   }
  ]

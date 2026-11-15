@@ -5930,7 +5930,7 @@
   "Session folder : {0}": "工作階段資料夾 : {0}",
   "Session id     : {0}": "工作階段 ID    : {0}",
   "Sign out: {0}": "登出: {0}",
-  "Standby": "待命",
+  "Standby": "等待中",
   "Standings current": "排名為最新",
   "Standings will appear after the first race is confirmed.": "第一場比賽確認後將顯示排名。",
   "Starting the Tournament Analysis window ... (this window shows startup errors)": "正在啟動 Tournament Analysis 視窗 ...（此視窗會顯示啟動錯誤）",
@@ -6010,10 +6010,16 @@
   "overall points": "總分數",
   "race {0} awaiting confirmation": "第 {0} 場比賽待確認",
   "recognition images": "辨識影像",
-  "standing by": "待命中",
+  "standing by": "等待中",
   "this folder": "此資料夾",
   "waiting for track detection": "等待賽道辨識",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} 沒有 Input_Videos 資料夾。請拖曳一個影片檔案，或一個包含 Input_Videos 的工作階段資料夾。",
-  "{0} races confirmed": "已確認 {0} 場比賽"
+  "{0} races confirmed": "已確認 {0} 場比賽",
+  "column header|Pos": "名次",
+  "column header|Race": "本場",
+  "column header|Gap": "差距",
+  "column header|Total": "總分",
+  "column header|This race": "本場",
+  "column header|Last race": "上場"
  }
 }

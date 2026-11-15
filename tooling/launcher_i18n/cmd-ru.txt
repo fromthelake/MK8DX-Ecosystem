@@ -1,0 +1,59 @@
+  actual   {0}|  получено  {0}
+  expected {0}|  ожидалось {0}
+ FAILED - the tools were NOT installed completely. See {0}.| ОШИБКА - инструменты установлены НЕ полностью. См. {0}.
+ Log file       : {0}| Файл журнала : {0}
+ MK8DX Tournament Tools - installer (package version {0})| MK8DX Tournament Tools - установщик (версия пакета {0})
+ Package folder : {0}| Папка пакета : {0}
+ Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.| Порядок работы описан в README-FIRST.txt и USING_MK8DX_TOURNAMENT_TOOLS.md.
+ Run this installer again; completed downloads are reused.| Запустите этот установщик снова; уже завершённые загрузки будут использованы повторно.
+ SUCCESS - MK8DX Tournament Tools are installed in this folder.| ГОТОВО - MK8DX Tournament Tools установлены в эту папку.
+ TournamentAnalysis.cmd   - window to analyse recordings afterwards| TournamentAnalysis.cmd   - окно для последующего анализа записей
+ TournamentConnect.cmd    - optional connection to the website| TournamentConnect.cmd    - необязательное подключение к сайту
+ TournamentLive.cmd       - live capture-card tournament app| TournamentLive.cmd       - турнирное приложение для карты захвата в реальном времени
+ TournamentLiveCli.cmd    - advanced command line| TournamentLiveCli.cmd    - расширенная командная строка
+ TournamentProcessor.cmd  - process a recorded video (drag it onto the file)| TournamentProcessor.cmd  - обработка записанного видео (перетащите его на этот файл)
+ TournamentTools.config.cmd - local settings and bundled assets| TournamentTools.config.cmd - локальные настройки и прилагаемые ресурсы
+---- Step 2: installing the Tournament tools and their dependencies ----|---- Шаг 2: установка инструментов Tournament и их зависимостей ----
+Adding Tournament Live interface support (about 3.5 MB) ...|Добавление поддержки интерфейса Tournament Live (около 3,5 МБ) ...
+Check your connection and run the installer again.|Проверьте подключение и запустите установщик снова.
+Creating a private runtime inside the package ...|Создание закрытой среды выполнения внутри пакета ...
+Downloading the official python.org runtime (about 11 MB) ...|Загрузка официальной среды выполнения с python.org (около 11 МБ) ...
+Examples (type them in this window):|Примеры (введите их в этом окне):
+Existing package runtime found (embedded Python). It will be updated in place.|Найдена существующая среда выполнения пакета (встроенный Python). Она будет обновлена на месте.
+Existing package runtime found (virtual environment). It will be updated in place.|Найдена существующая среда выполнения пакета (виртуальное окружение). Она будет обновлена на месте.
+Extract the whole zip again and run the installer from that folder.|Распакуйте весь zip-архив заново и запустите установщик из этой папки.
+FAILED: Tournament Live interface support could not be added (step {0}).|ОШИБКА: не удалось добавить поддержку интерфейса Tournament Live (шаг {0}).
+FAILED: the Python runtime could not be downloaded. Check your connection and retry.|ОШИБКА: не удалось загрузить среду выполнения Python. Проверьте подключение и повторите попытку.
+FAILED: the Python runtime could not be prepared. See {0}.|ОШИБКА: не удалось подготовить среду выполнения Python. См. {0}.
+FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.|ОШИБКА: загруженная среда выполнения Python не прошла проверку безопасности и была удалена. Повторите попытку позже.
+FAILED: the package installer could not be downloaded. Check your connection and retry.|ОШИБКА: не удалось загрузить установщик пакетов. Проверьте подключение и повторите попытку.
+FAILED: the package installer could not be prepared. See {0}.|ОШИБКА: не удалось подготовить установщик пакетов. См. {0}.
+FAILED: the private runtime could not be created. See {0}.|ОШИБКА: не удалось создать закрытую среду выполнения. См. {0}.
+FAILED: this folder is not a complete package.|ОШИБКА: эта папка не является полным пакетом.
+First use: {0}|Первое использование: {0}
+Local processing and file exports never require sign-in or internet.|Локальная обработка и экспорт файлов никогда не требуют входа или интернета.
+MK8DX Tournament Analysis|MK8DX Tournament Analysis
+MK8DX Tournament Connect - optional|MK8DX Tournament Connect - необязательно
+MK8DX Tournament Live|MK8DX Tournament Live
+MK8DX Tournament Live - command line|MK8DX Tournament Live - командная строка
+MK8DX Tournament Live - command line. Sub-commands:|MK8DX Tournament Live - командная строка. Подкоманды:
+MK8DX Tournament Processor|MK8DX Tournament Processor
+MK8DX Tournament Tools - installer|MK8DX Tournament Tools - установщик
+No 64-bit Python 3.12 was found on this computer.|На этом компьютере не найден 64-битный Python 3.12.
+Optional browser sign-in uploads an existing JSON result as PENDING evidence.|Необязательный вход через браузер загружает существующий результат JSON как доказательство со статусом PENDING.
+Preparing the Python package installer ...|Подготовка установщика пакетов Python ...
+Python runtime: {0} [{1}]|Среда выполнения Python: {0} [{1}]
+Running dry-run now to show where Tournament Live stores its files:|Сейчас выполняется пробный запуск (dry-run), чтобы показать, где Tournament Live хранит свои файлы:
+SHA-256 verified. Extracting the runtime ...|SHA-256 проверен. Распаковка среды выполнения ...
+Send a result: {0}|Отправить результат: {0}
+Sign out: {0}|Выйти: {0}
+Starting the Tournament Analysis window ... (this window shows startup errors)|Запуск окна Tournament Analysis ... (в этом окне отображаются ошибки запуска)
+Starting the Tournament Live GUI ... (this window shows startup progress and errors)|Запуск графического интерфейса Tournament Live ... (в этом окне отображаются ход запуска и ошибки)
+The package runtime is missing. Run {0} first.|Среда выполнения пакета отсутствует. Сначала запустите {0}.
+This can take 5 to 30 minutes. Please wait ...|Это может занять от 5 до 30 минут. Пожалуйста, подождите ...
+This downloads PyTorch, EasyOCR, OpenCV and Qt (several GB with NVIDIA CUDA).|Будут загружены PyTorch, EasyOCR, OpenCV и Qt (несколько ГБ с NVIDIA CUDA).
+Tournament Analysis exited with code {0}.|Tournament Analysis завершился с кодом {0}.
+Tournament Live exited with code {0}.|Tournament Live завершился с кодом {0}.
+Tournament Live interface support added.|Поддержка интерфейса Tournament Live добавлена.
+Using the 64-bit Python 3.12 already on this computer:|Используется 64-битный Python 3.12, уже установленный на этом компьютере:
+Verifying the downloaded runtime ...|Проверка загруженной среды выполнения ...

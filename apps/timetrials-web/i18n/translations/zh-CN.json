@@ -5930,7 +5930,7 @@
   "Session folder : {0}": "会话文件夹 : {0}",
   "Session id     : {0}": "会话 ID    : {0}",
   "Sign out: {0}": "退出登录: {0}",
-  "Standby": "待命",
+  "Standby": "等待中",
   "Standings current": "排名为最新",
   "Standings will appear after the first race is confirmed.": "第一场比赛确认后将显示排名。",
   "Starting the Tournament Analysis window ... (this window shows startup errors)": "正在启动 Tournament Analysis 窗口 ...（此窗口会显示启动错误）",
@@ -6010,10 +6010,16 @@
   "overall points": "总积分",
   "race {0} awaiting confirmation": "第 {0} 场比赛待确认",
   "recognition images": "识别图像",
-  "standing by": "待命中",
+  "standing by": "等待中",
   "this folder": "此文件夹",
   "waiting for track detection": "等待赛道识别",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} 没有 Input_Videos 文件夹。请拖入一个视频文件，或一个包含 Input_Videos 的会话文件夹。",
-  "{0} races confirmed": "已确认 {0} 场比赛"
+  "{0} races confirmed": "已确认 {0} 场比赛",
+  "column header|Pos": "名次",
+  "column header|Race": "本场",
+  "column header|Gap": "差距",
+  "column header|Total": "总分",
+  "column header|This race": "本场",
+  "column header|Last race": "上场"
  }
 }

@@ -6014,6 +6014,12 @@
   "this folder": "questa cartella",
   "waiting for track detection": "in attesa del rilevamento del percorso",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} non ha una cartella Input_Videos. Trascina un file video o una cartella di sessione che contiene Input_Videos.",
-  "{0} races confirmed": "{0} gare confermate"
+  "{0} races confirmed": "{0} gare confermate",
+  "column header|Pos": "Pos.",
+  "column header|Race": "Gara",
+  "column header|Gap": "Dist.",
+  "column header|Total": "Tot.",
+  "column header|This race": "Gara",
+  "column header|Last race": "Prec."
  }
 }

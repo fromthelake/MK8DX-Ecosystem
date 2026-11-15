@@ -76,6 +76,12 @@ function Tr([string]$English) {
   for ($i = 0; $i -lt $args.Count; $i++) { $text = $text.Replace('{' + $i + '}', [string]$args[$i]) }
   return $text
 }
+# The cmd launchers name their window in English (`title`) and hand the same text over in MK8DX_WINDOW_TITLE: the
+# PowerShell they start anyway shows it in the launcher language, so the title costs no extra process (cmd keeps a
+# title a child set after the child ends).
+if ($env:MK8DX_WINDOW_TITLE -and $script:MK8DXLanguage -ne 'en') {
+  try { $Host.UI.RawUI.WindowTitle = Tr $env:MK8DX_WINDOW_TITLE } catch { }
+}
 
 # ---- Rich mode -------------------------------------------------------------------------------------------------
 # Truecolor block-letter logo, gradient laps and a small car on the track. Only in a terminal that renders 24-bit
@@ -626,9 +632,6 @@ if ($Show) {
   #   -Show Menu   -ShowText <title> -ShowItems '1=First;2=Second;0=Close'
   #   -Show Finish -ShowText <text>              finish line and, with a race clock, the lap results
   #   -Show Prompt -ShowText <text>              a question without a line break (cmd `set /p` reads the answer)
-  #   -Show Text   -ShowText <text>              plain lines, nothing added (the Tournament package's cmd files)
-  #   -Show Title  -ShowText <text>              the text on stdout for cmd `title` (read with code page 65001)
-  #   -Show Language                             the chosen language code on stdout
   # The texts are English and shown in the launcher language (Tr); -ShowValues 'a|b' fills {0}, {1} in each.
   # Every call is a new process, so the race clock and the laps live in the file named by MK8DX_RACE_FILE
   # (start ticks, then one line per lap); Finish removes it. Without that variable there is no clock.
@@ -690,9 +693,6 @@ if ($Show) {
       }
     }
     'Prompt' { Write-Host $ShowText -NoNewline }
-    'Text' { foreach ($line in $ShowText -split '\|') { Write-Host $line } }
-    'Title' { [Console]::Out.WriteLine($ShowText) }
-    'Language' { [Console]::Out.WriteLine($script:MK8DXLanguage) }
     'Finish' {
       Write-Finish $ShowText
       if ($raceFile) { Remove-Item -LiteralPath $raceFile -ErrorAction SilentlyContinue }

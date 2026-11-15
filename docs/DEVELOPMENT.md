@@ -201,9 +201,13 @@ helper in `tooling/tournament/build_windows_package.py`) keep their English in t
 (PowerShell), `ui_t '...'` (sh), `t("...")` (Python; `_text("...")` in the package's setup helper), `call :say` /
 `call :title` (the package's cmd files) or as the `-ShowText`/`-ShowItems` texts a cmd file hands to
 `tooling/mk8dx-ui.ps1`; values are `{0}`, `{1}`, filled after the lookup. Technical details inside a message
-(a database client's output, a path) stay as they are. The package ships `launcher_text.py`, `mk8dx-ui.ps1` and the
-catalogs in its `tools\` folder; `MK8DX_TOURNAMENT_LANGUAGE` in `TournamentTools.config.cmd` (any of the 15 codes,
-or `auto`) comes before `MK8DX_LANGUAGE` there. Their Dutch is in
+(a database client's output, a path) stay as they are. A cmd launcher names its window in English (`title`) and
+hands the same text over in `MK8DX_WINDOW_TITLE`; the `mk8dx-ui.ps1` it starts anyway shows it translated, so the
+title costs no extra process. The package's cmd files never start PowerShell for a text: `tooling/mk8dx-text.cmd`
+chooses the language (same rules, registry for the Windows display language) and reads the texts marked `"cmd"`
+from `tooling/launcher_i18n/cmd-<language>.txt` (`English|text` lines the catalog builder writes). The package ships
+`launcher_text.py`, `mk8dx-text.cmd` and the catalogs in its `tools\` folder; `MK8DX_TOURNAMENT_LANGUAGE` in
+`TournamentTools.config.cmd` (any of the 15 codes, or `auto`) comes before `MK8DX_LANGUAGE` there. Their Dutch is in
 `tooling/i18n/launcher/dutch.json`. After changing one, run `python tooling/i18n/extract_launcher_messages.py`
 (`--check` also fails on a text without Dutch), add the English to the ten translation files and rebuild: the
 catalogs land in `tooling/launcher_i18n/` (with `nl.json`). The language is `MK8DX_LANGUAGE` when set, else the
@@ -218,7 +222,8 @@ texts `t("...")` in `app.js` and `data-i18n="..."` in `index.html`; their Dutch 
 writes the message source; the catalogs land in `broadcast_web/i18n/`, which `broadcast_server.py` serves at
 `/api/messages/<language>`. The page chooses `?lang=` (for OBS), else the viewer's saved choice, else the browser's
 languages (the same exact/regional/base rules), else English; it is independent of `?trackLang=` and of the console
-language recognition reads. `tests/tournament/broadcast_dashboard_view.test.mjs` checks the choice and the catalogs.
+language recognition reads. A key may carry a context before a bar: `column header|Gap` is the dashboard's own short
+form for a narrow column (the full text is its title), so it never changes the website's `Gap`. `tests/tournament/broadcast_dashboard_view.test.mjs` checks the choice and the catalogs.
 
 **The Tournament Analysis window** (`apps/tournament-processor`, Qt and Tk) keeps its EN/NL `TEXTS` table in
 `gui.py`; `python tooling/i18n/extract_processor_messages.py` writes its message source, the catalogs land in

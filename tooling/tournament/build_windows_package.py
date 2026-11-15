@@ -77,7 +77,7 @@ TCLTK_URL = f"https://www.python.org/ftp/python/{PYTHON_EMBED_VERSION}/amd64/tcl
 TCLTK_SHA256 = "55c96ffad69b1c834aa52e11b9ce41637a178ba6ad6607e83956044834276e2a"
 
 MANIFEST_KIND = "mk8dx.tournament-tools-windows-package.v1"
-LAUNCHER_TEXT_FILES = ("launcher_text.py", "mk8dx-ui.ps1")
+LAUNCHER_TEXT_FILES = ("launcher_text.py", "mk8dx-text.cmd")
 
 
 class BuildError(RuntimeError):
@@ -286,48 +286,25 @@ exit /b 0
 
 :language
 rem The text language: MK8DX_TOURNAMENT_LANGUAGE (TournamentTools.config.cmd) unless auto, else MK8DX_LANGUAGE,
-rem else the Windows display language, matched to one of the 15 game languages by tools\mk8dx-ui.ps1 (the
-rem launchers' mechanism; catalogs in tools\launcher_i18n). MK8DX_LANGUAGE itself stays as it was for the apps.
-setlocal
-if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
-set "FOUND=en"
-if exist "%PKG_ROOT%tools\mk8dx-ui.ps1" for /f "delims=" %%L in ('^<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\mk8dx-ui.ps1" -Show Language 2^>nul') do set "FOUND=%%L"
-endlocal & set "MK8DX_LAUNCHER_LANGUAGE=%FOUND%"
+rem else the Windows display language; tools\mk8dx-text.cmd matches it to one of the 15 game languages and reads
+rem the texts from tools\launcher_i18n without starting PowerShell. MK8DX_LANGUAGE itself stays as it was.
+if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LAUNCHER_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
+if exist "%PKG_ROOT%tools\mk8dx-text.cmd" call "%PKG_ROOT%tools\mk8dx-text.cmd" language
 exit /b 0
 
 :say
-rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4. Other languages: tools\mk8dx-ui.ps1.
-if not defined MK8DX_LAUNCHER_LANGUAGE goto :say_en
-if /I "%MK8DX_LAUNCHER_LANGUAGE:~0,2%"=="en" goto :say_en
-if not exist "%PKG_ROOT%tools\mk8dx-ui.ps1" goto :say_en
-setlocal
-set "MK8DX_LANGUAGE=%MK8DX_LAUNCHER_LANGUAGE%"
-<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\mk8dx-ui.ps1" -Show Text -ShowText "%~1" -ShowValues "%~2|%~3|%~4|"
-if not errorlevel 1 exit /b 0
-endlocal
-:say_en
-set "MK8DX_SAY=%~1"
-call set "MK8DX_SAY=%%MK8DX_SAY:{0}=%~2%%"
-call set "MK8DX_SAY=%%MK8DX_SAY:{1}=%~3%%"
-call set "MK8DX_SAY=%%MK8DX_SAY:{2}=%~4%%"
-echo(%MK8DX_SAY%
-set "MK8DX_SAY="
+rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4.
+if not exist "%PKG_ROOT%tools\mk8dx-text.cmd" goto :say_plain
+call "%PKG_ROOT%tools\mk8dx-text.cmd" say %*
+exit /b 0
+:say_plain
+echo(%~1
 exit /b 0
 
 :title
-rem %1 = the English window title, shown in the text language (UTF-8 read through code page 65001).
+rem %1 = the English window title.
 title %~1
-if not defined MK8DX_LAUNCHER_LANGUAGE exit /b 0
-if /I "%MK8DX_LAUNCHER_LANGUAGE:~0,2%"=="en" exit /b 0
-if not exist "%PKG_ROOT%tools\mk8dx-ui.ps1" exit /b 0
-setlocal
-set "MK8DX_LANGUAGE=%MK8DX_LAUNCHER_LANGUAGE%"
-set "CODEPAGE="
-for /f "tokens=2 delims=:." %%c in ('chcp') do set "CODEPAGE=%%c"
->nul chcp 65001
-for /f "usebackq delims=" %%t in (`^<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\mk8dx-ui.ps1" -Show Title -ShowText "%~1"`) do title %%t
-if defined CODEPAGE >nul chcp %CODEPAGE%
-endlocal
+if exist "%PKG_ROOT%tools\mk8dx-text.cmd" call "%PKG_ROOT%tools\mk8dx-text.cmd" title %1
 exit /b 0
 
 rem ---- helpers: Windows 10/11 ship curl.exe and tar.exe; PowerShell is the fallback ----
@@ -480,48 +457,25 @@ exit /b 1
 
 :language
 rem The text language: MK8DX_TOURNAMENT_LANGUAGE (TournamentTools.config.cmd) unless auto, else MK8DX_LANGUAGE,
-rem else the Windows display language, matched to one of the 15 game languages by tools\\mk8dx-ui.ps1 (the
-rem launchers' mechanism; catalogs in tools\\launcher_i18n). MK8DX_LANGUAGE itself stays as it was for the apps.
-setlocal
-if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
-set "FOUND=en"
-if exist "%PKG_ROOT%tools\\mk8dx-ui.ps1" for /f "delims=" %%L in ('^<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\\mk8dx-ui.ps1" -Show Language 2^>nul') do set "FOUND=%%L"
-endlocal & set "MK8DX_LAUNCHER_LANGUAGE=%FOUND%"
+rem else the Windows display language; tools\\mk8dx-text.cmd matches it to one of the 15 game languages and reads
+rem the texts from tools\\launcher_i18n without starting PowerShell. MK8DX_LANGUAGE itself stays as it was.
+if defined MK8DX_TOURNAMENT_LANGUAGE if /I not "%MK8DX_TOURNAMENT_LANGUAGE%"=="auto" set "MK8DX_LAUNCHER_LANGUAGE=%MK8DX_TOURNAMENT_LANGUAGE%"
+if exist "%PKG_ROOT%tools\\mk8dx-text.cmd" call "%PKG_ROOT%tools\\mk8dx-text.cmd" language
 exit /b 0
 
 :say
-rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4. Other languages: tools\\mk8dx-ui.ps1.
-if not defined MK8DX_LAUNCHER_LANGUAGE goto :say_en
-if /I "%MK8DX_LAUNCHER_LANGUAGE:~0,2%"=="en" goto :say_en
-if not exist "%PKG_ROOT%tools\\mk8dx-ui.ps1" goto :say_en
-setlocal
-set "MK8DX_LANGUAGE=%MK8DX_LAUNCHER_LANGUAGE%"
-<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\\mk8dx-ui.ps1" -Show Text -ShowText "%~1" -ShowValues "%~2|%~3|%~4|"
-if not errorlevel 1 exit /b 0
-endlocal
-:say_en
-set "MK8DX_SAY=%~1"
-call set "MK8DX_SAY=%%MK8DX_SAY:{0}=%~2%%"
-call set "MK8DX_SAY=%%MK8DX_SAY:{1}=%~3%%"
-call set "MK8DX_SAY=%%MK8DX_SAY:{2}=%~4%%"
-echo(%MK8DX_SAY%
-set "MK8DX_SAY="
+rem %1 = the English text; {0} {1} {2} are filled with %2 %3 %4.
+if not exist "%PKG_ROOT%tools\\mk8dx-text.cmd" goto :say_plain
+call "%PKG_ROOT%tools\\mk8dx-text.cmd" say %*
+exit /b 0
+:say_plain
+echo(%~1
 exit /b 0
 
 :title
-rem %1 = the English window title, shown in the text language (UTF-8 read through code page 65001).
+rem %1 = the English window title.
 title %~1
-if not defined MK8DX_LAUNCHER_LANGUAGE exit /b 0
-if /I "%MK8DX_LAUNCHER_LANGUAGE:~0,2%"=="en" exit /b 0
-if not exist "%PKG_ROOT%tools\\mk8dx-ui.ps1" exit /b 0
-setlocal
-set "MK8DX_LANGUAGE=%MK8DX_LAUNCHER_LANGUAGE%"
-set "CODEPAGE="
-for /f "tokens=2 delims=:." %%c in ('chcp') do set "CODEPAGE=%%c"
->nul chcp 65001
-for /f "usebackq delims=" %%t in (`^<nul powershell.exe -NoProfile -ExecutionPolicy Bypass -File "%PKG_ROOT%tools\\mk8dx-ui.ps1" -Show Title -ShowText "%~1"`) do title %%t
-if defined CODEPAGE >nul chcp %CODEPAGE%
-endlocal
+if exist "%PKG_ROOT%tools\\mk8dx-text.cmd" call "%PKG_ROOT%tools\\mk8dx-text.cmd" title %1
 exit /b 0
 """
 
@@ -1237,11 +1191,11 @@ def main() -> int:
         shutil.copy2(TORCH_SELECTOR, tools / "select_torch.py")
         (tools / "mk8dx_tools_setup.py").write_text(render(SETUP_HELPER_PY), encoding="utf-8")
         # The texts of the installer, the launchers and the setup helper in the 15 game languages: the launcher
-        # windows' mechanism (tooling/launcher_text.py, tooling/mk8dx-ui.ps1, tooling/launcher_i18n).
+        # windows' mechanism (tooling/launcher_text.py, tooling/mk8dx-text.cmd, tooling/launcher_i18n).
         for name in LAUNCHER_TEXT_FILES:
             shutil.copy2(REPOSITORY_ROOT / "tooling" / name, tools / name)
         (tools / "launcher_i18n").mkdir()
-        for catalog in sorted((REPOSITORY_ROOT / "tooling" / "launcher_i18n").glob("*.json")):
+        for catalog in sorted((REPOSITORY_ROOT / "tooling" / "launcher_i18n").glob("*.*")):
             shutil.copy2(catalog, tools / "launcher_i18n" / catalog.name)
         # Batch files must be CRLF and plain ASCII-safe for cmd.exe.
         installer = render(INSTALLER_CMD).replace("\r\n", "\n").replace("\n", "\r\n")

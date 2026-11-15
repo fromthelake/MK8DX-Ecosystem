@@ -5931,7 +5931,7 @@
   "Session id     : {0}": "ID de sesión      : {0}",
   "Sign out: {0}": "Cerrar sesión: {0}",
   "Standby": "En espera",
-  "Standings current": "Clasificación al día",
+  "Standings current": "Clasificación actualizada",
   "Standings will appear after the first race is confirmed.": "La clasificación aparecerá cuando se confirme la primera carrera.",
   "Starting the Tournament Analysis window ... (this window shows startup errors)": "Iniciando la ventana de Tournament Analysis ... (esta ventana muestra los errores de inicio)",
   "Starting the Tournament Live GUI ... (this window shows startup progress and errors)": "Iniciando la interfaz de Tournament Live ... (esta ventana muestra el progreso y los errores de inicio)",
@@ -5965,7 +5965,7 @@
   "Track pending": "Circuito pendiente",
   "Tracking race": "Siguiendo la carrera",
   "Tracking race…": "Siguiendo la carrera…",
-  "UP TO DATE": "AL DÍA",
+  "UP TO DATE": "ACTUALIZADO",
   "Unexpected generated environment format": "Formato inesperado del archivo de entorno generado",
   "Unknown installation action": "Acción de instalación desconocida",
   "Unknown installation route": "Ruta de instalación desconocida",
@@ -6014,6 +6014,12 @@
   "this folder": "esta carpeta",
   "waiting for track detection": "esperando la detección del circuito",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} no tiene carpeta Input_Videos. Arrastra un archivo de vídeo o una carpeta de sesión que contenga Input_Videos.",
-  "{0} races confirmed": "{0} carreras confirmadas"
+  "{0} races confirmed": "{0} carreras confirmadas",
+  "column header|Pos": "Pos.",
+  "column header|Race": "Carr.",
+  "column header|Gap": "Dif.",
+  "column header|Total": "Total",
+  "column header|This race": "Carr.",
+  "column header|Last race": "Ant."
  }
 }

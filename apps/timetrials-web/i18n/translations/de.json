@@ -5756,7 +5756,7 @@
   "Connection reset — totals continued from prior standings": "Verbindung neu aufgebaut — Gesamtpunkte ab dem vorherigen Stand fortgesetzt",
   "Copying the video into {0} (different drive; this can take a while) ...": "Das Video wird nach {0} kopiert (anderes Laufwerk; das kann eine Weile dauern) ...",
   "Creating a private runtime inside the package ...": "Eine private Laufzeitumgebung wird im Paket erstellt ...",
-  "DUE": "FÄLLIG",
+  "DUE": "ERWARTET",
   "Database and private configuration restored to a new isolated project. Web origin: {0}": "Datenbank und private Konfiguration wurden in ein neues, getrenntes Projekt wiederhergestellt. Web-Origin: {0}",
   "Database dump failed: {0}": "Datenbank-Export fehlgeschlagen: {0}",
   "Database export failed with exit code {0}: {1}": "Datenbank-Export mit Rückgabecode {0} fehlgeschlagen: {1}",
@@ -5930,7 +5930,7 @@
   "Session folder : {0}": "Sitzungsordner : {0}",
   "Session id     : {0}": "Sitzungs-ID    : {0}",
   "Sign out: {0}": "Abmelden: {0}",
-  "Standby": "Bereit",
+  "Standby": "Wartet",
   "Standings current": "Stand aktuell",
   "Standings will appear after the first race is confirmed.": "Die Wertung erscheint, sobald das erste Rennen bestätigt ist.",
   "Starting the Tournament Analysis window ... (this window shows startup errors)": "Das Tournament Analysis-Fenster wird gestartet ... (dieses Fenster zeigt Startfehler)",
@@ -6010,10 +6010,16 @@
   "overall points": "Gesamtpunkte",
   "race {0} awaiting confirmation": "Rennen {0} wartet auf Bestätigung",
   "recognition images": "Erkennungsbilder",
-  "standing by": "in Bereitschaft",
+  "standing by": "wartet",
   "this folder": "dieser Ordner",
   "waiting for track detection": "warte auf Streckenerkennung",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} hat keinen Ordner Input_Videos. Zieh eine Videodatei oder einen Sitzungsordner mit Input_Videos darauf.",
-  "{0} races confirmed": "{0} Rennen bestätigt"
+  "{0} races confirmed": "{0} Rennen bestätigt",
+  "column header|Pos": "Pl.",
+  "column header|Race": "Lauf",
+  "column header|Gap": "Abst.",
+  "column header|Total": "Ges.",
+  "column header|This race": "Lauf",
+  "column header|Last race": "Vorh."
  }
 }

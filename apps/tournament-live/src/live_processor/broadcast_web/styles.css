@@ -884,7 +884,10 @@ body.viewctl-awake .viewctl__gear,
   .gridrow { flex: none; height: 40px; }
   .gridcols,
   .gridrow { grid-template-columns: 24px 16px minmax(0, 1fr) 46px 34px 40px; gap: 5px; }
-  .gridcols { padding: 8px 12px 6px; }
+  /* Phone-width headers: smaller and without letter spacing so the short headers fit their narrow columns;
+     the +/- glyph may reach into the gap beside its 16px column. */
+  .gridcols { padding: 8px 12px 6px; font-size: 10px; letter-spacing: 0; }
+  .gridcols span.gridcols__delta { overflow: visible; }
   .gridrows { padding: 0 8px 10px; }
   .gridrow { padding: 4px 8px; }
   .gridrow__rank, .gridrow__total { font-size: 18px; }

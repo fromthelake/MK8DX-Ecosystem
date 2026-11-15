@@ -122,14 +122,17 @@ function uiLanguage() {
 // The dashboard's own texts, English as the key (the shared catalog pipeline:
 // tooling/i18n/extract_broadcast_messages.py + build_web_catalogs.mjs), loaded
 // from the server (/api/messages/<language>) for the chosen language. A missing
-// catalog or text stays English; {0}, {1} are filled after the lookup.
+// catalog or text stays English; {0}, {1} are filled after the lookup. A key may
+// carry a context before a bar ("column header|Gap": the short form for a narrow
+// column, its own translation); without a translation the English after the bar
+// is shown.
 let uiMessages = {};
 let uiMessagesFor = "en";
 let uiMessagesLoading = "";
 
 function t(english, ...values) {
   const own = Object.prototype.hasOwnProperty.call(uiMessages, english) ? uiMessages[english] : null;
-  const template = typeof own === "string" && own.trim() ? own : english;
+  const template = typeof own === "string" && own.trim() ? own : english.slice(english.indexOf("|") + 1);
   return template.replace(/\{(\d+)\}/g, (match, index) => (index < values.length ? String(values[index]) : match));
 }
 
@@ -474,6 +477,18 @@ function shortCupName(name, lang) {
   return /^en(-|$)/.test(lang || "en") ? text.replace(/\s*cup\s*$/i, "").trim() : text.trim();
 }
 
+// A narrow column header: the short form ("column header|This race"), the full text as its title. The
+// keys are spelled out so the extractor finds them.
+const COLUMN_HEADERS = {
+  "This race": () => [t("column header|This race"), t("This race")],
+  "Last race": () => [t("column header|Last race"), t("Last race")],
+};
+function setColumnHeader(node, english) {
+  const [label, full] = COLUMN_HEADERS[english]();
+  node.textContent = label;
+  node.title = full;
+}
+
 function setLang(node, lang) {
   if (lang) node.setAttribute("lang", lang);
   else node.removeAttribute("lang");
@@ -618,7 +633,7 @@ function render() {
   if (isRacing) {
     el.trackbar.hidden = true;
     el.totalsbar.hidden = true;
-    el.colRace.textContent = t("Last race");
+    setColumnHeader(el.colRace, "Last race");
     el.board.classList.remove("view-race");
     el.board.classList.add("view-total");
     renderRacingHero(payload);
@@ -626,7 +641,7 @@ function render() {
   } else {
     // The points column means different things per view, so label it honestly
     // and emphasise whichever column the rows are actually sorted by.
-    el.colRace.textContent = isRaceView ? t("This race") : t("Last race");
+    setColumnHeader(el.colRace, isRaceView ? "This race" : "Last race");
     el.board.classList.toggle("view-race", isRaceView);
     el.board.classList.toggle("view-total", !isRaceView);
     renderTrackOrTotals(payload, view.kind);
@@ -787,8 +802,10 @@ function buildGridCard(payload) {
       ${debugView ? `<div class="gridcard__debug">${escapeHtml(gridDebugText(payload))}</div>` : ""}
       <div class="gridcard__tablecap">${escapeHtml(caption)}</div>
       <div class="gridcols">
-        ${[t("Pos"), "+/–", t("Driver"), t("Race"), t("Gap"), t("Total")].map((label, index) =>
-          `<span${index === 1 ? ' class="gridcols__delta"' : ""} title="${escapeAttr(label)}">${escapeHtml(label)}</span>`).join("")}
+        ${[[t("column header|Pos"), t("Pos")], ["+/–", "+/–"], [t("Driver"), t("Driver")],
+          [t("column header|Race"), t("Race")], [t("column header|Gap"), t("Gap")],
+          [t("column header|Total"), t("Total")]].map(([label, full], index) =>
+          `<span${index === 1 ? ' class="gridcols__delta"' : ""} title="${escapeAttr(full)}">${escapeHtml(label)}</span>`).join("")}
       </div>
       <div class="gridrows-wrap${isEmpty ? " is-empty" : ""}">
         <ol class="gridrows${swap ? " swap" : ""}">${rowsHtml}</ol>

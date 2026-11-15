@@ -1,6 +1,7 @@
 """The Tournament Tools package writes its launchers, including the analysis window's."""
 
 import importlib.util
+import json
 import re
 import sys
 from pathlib import Path
@@ -179,3 +180,36 @@ def test_package_texts_are_launcher_texts_in_every_language(tmp_path):
         else:
             os.environ["MK8DX_LAUNCHER_LANGUAGE"] = previous
         sys.modules.pop("launcher_text", None)
+
+
+def test_package_cmd_lines_are_translated_without_powershell(tmp_path):
+    """A launcher without its runtime says so in the chosen language, through tools\\mk8dx-text.cmd."""
+    import os
+    import shutil
+    import subprocess
+
+    if os.name != "nt":
+        import pytest
+        pytest.skip("cmd.exe is Windows only")
+    builder, helper = _setup_helper(tmp_path)
+    package = tmp_path / "package"
+    (package / "tools").mkdir(parents=True)
+    helper.write_launchers(package)
+    for name in builder.LAUNCHER_TEXT_FILES:
+        shutil.copy2(ROOT / "tooling" / name, package / "tools" / name)
+    shutil.copytree(ROOT / "tooling/launcher_i18n", package / "tools" / "launcher_i18n")
+    for text in (package / "TournamentLive.cmd").read_text(encoding="utf-8").splitlines():
+        assert text.lower().startswith("rem ") or "powershell" not in text.lower()
+    german = json.loads((ROOT / "tooling/launcher_i18n/de.json").read_text(encoding="utf-8"))["messages"]
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = 0
+    environment = {key: value for key, value in os.environ.items()
+                   if key not in ("MK8DX_LANGUAGE", "MK8DX_LAUNCHER_LANGUAGE")}
+    for language, expected in (("de", german["The package runtime is missing. Run {0} first."]),
+                               ("en", "The package runtime is missing. Run {0} first.")):
+        result = subprocess.run(["cmd.exe", "/d", "/c", str(package / "TournamentLive.cmd")], input=b"",
+                                capture_output=True, timeout=60, creationflags=subprocess.CREATE_NEW_CONSOLE,
+                                startupinfo=startup, env={**environment, "MK8DX_TOURNAMENT_LANGUAGE": language})
+        assert result.returncode == 1
+        assert expected.replace("{0}", "Install-MK8DX-TournamentTools.cmd") in result.stdout.decode("utf-8"), language

@@ -6014,6 +6014,12 @@
   "this folder": "このフォルダー",
   "waiting for track detection": "コース検出を待っています",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0} に Input_Videos フォルダーがありません。動画ファイルか、Input_Videos を含むセッションフォルダーをドロップしてください。",
-  "{0} races confirmed": "{0}レース確認済み"
+  "{0} races confirmed": "{0}レース確認済み",
+  "column header|Pos": "順位",
+  "column header|Race": "今回",
+  "column header|Gap": "差",
+  "column header|Total": "合計",
+  "column header|This race": "今回",
+  "column header|Last race": "前回"
  }
 }

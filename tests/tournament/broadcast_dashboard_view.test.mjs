@@ -365,3 +365,18 @@ test("every catalog has every dashboard text with its placeholders", () => {
     assert.ok(same.length <= 8, `${language} keeps ${same.length} texts English: ${same.join(" | ")}`);
   }
 });
+
+test("narrow column headers use their own short forms, the full text as the title", async () => {
+  const english = await loadDashboard({ search: "view=grid", feeds: [feed()] });
+  assert.match(english.grid().innerHTML, /<span title="Gap">Gap<\/span><span title="Total">Total<\/span>/);
+  const messages = catalog("ru").messages;
+  const { grid } = await loadDashboard({ search: "view=grid&lang=ru", feeds: [feed()] });
+  for (const key of ["Pos", "Race", "Gap", "Total"]) {
+    const short = messages[`column header|${key}`];
+    assert.ok(short && short.length <= 5, `${key}: ${short}`);
+    assert.ok(grid().innerHTML.includes(`<span title="${messages[key]}">${short}</span>`), key);
+  }
+  const normal = await loadDashboard({ search: "lang=ru", feeds: [feed()] });
+  assert.equal(normal.el("col-race").textContent, messages["column header|This race"]);
+  assert.equal(normal.el("col-race").title, messages["This race"]);
+});

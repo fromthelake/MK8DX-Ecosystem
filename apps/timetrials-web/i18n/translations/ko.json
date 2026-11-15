@@ -6014,6 +6014,12 @@
   "this folder": "이 폴더",
   "waiting for track detection": "코스 감지 대기 중",
   "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.": "{0}에 Input_Videos 폴더가 없어요. 영상 파일이나 Input_Videos가 들어 있는 세션 폴더를 끌어다 놓으세요.",
-  "{0} races confirmed": "레이스 {0}개 확인됨"
+  "{0} races confirmed": "레이스 {0}개 확인됨",
+  "column header|Pos": "순위",
+  "column header|Race": "이번",
+  "column header|Gap": "차이",
+  "column header|Total": "합계",
+  "column header|This race": "이번",
+  "column header|Last race": "이전"
  }
 }

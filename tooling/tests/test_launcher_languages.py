@@ -68,6 +68,34 @@ class LanguageChoiceTest(unittest.TestCase):
                 self.assertEqual(result.stdout.splitlines()[-len(tags):], expected)
 
 
+    def test_cmd_text_helper_uses_the_same_rules(self):
+        """tooling/mk8dx-text.cmd: the package's cmd files choose their language without PowerShell."""
+        if os.name != "nt":
+            self.skipTest("cmd.exe is Windows only")
+        tags = list(CASES) + [tag for tag in UNKNOWN if tag]
+        helper = ROOT / "tooling" / "mk8dx-text.cmd"
+        lines = ["@echo off"]
+        for tag in tags:
+            lines += [f'set "MK8DX_LANGUAGE={tag}"', 'set "MK8DX_LAUNCHER_LANGUAGE="',
+                      f'call "{helper}" language', "echo(%MK8DX_LAUNCHER_LANGUAGE%"]
+        with tempfile.TemporaryDirectory() as temporary:
+            script = Path(temporary) / "choose.cmd"
+            script.write_bytes(("\r\n".join(lines) + "\r\n").encode("ascii"))
+            result = subprocess.run(["cmd.exe", "/d", "/c", str(script)], capture_output=True, timeout=120,
+                                    env=english_env(), **hidden_console())
+        self.assertEqual(result.returncode, 0, result.stderr)
+        expected = [CASES.get(tag, "en") for tag in tags]
+        self.assertEqual(result.stdout.decode("ascii").split(), expected)
+
+
+def hidden_console():
+    """A console of its own (cmd's code page switch must not touch the test runner's), not shown."""
+    startup = subprocess.STARTUPINFO()
+    startup.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startup.wShowWindow = 0
+    return {"creationflags": subprocess.CREATE_NEW_CONSOLE, "startupinfo": startup}
+
+
 class CatalogTest(unittest.TestCase):
     def test_extractor_is_up_to_date_and_every_text_has_dutch(self):
         result = subprocess.run([sys.executable, str(ROOT / "tooling/i18n/extract_launcher_messages.py"), "--check"],
@@ -90,6 +118,47 @@ class CatalogTest(unittest.TestCase):
                     self.assertEqual(numbered(text), numbered(english), (code, english, text))
                     self.assertNotIn("\t", text)
                     self.assertEqual(text.endswith(" "), english.endswith(" "), (code, english, text))
+
+    def test_cmd_text_files_cover_every_cmd_text(self):
+        """cmd-<language>.txt: the texts the package's cmd files show, as "English|text" lines cmd can read."""
+        entries = json.loads(SOURCE.read_text(encoding="utf-8"))["messages"]
+        cmd_texts = {entry["key"] for entry in entries if entry.get("cmd")}
+        self.assertIn("Tournament Live exited with code {0}.", cmd_texts)
+        self.assertIn("MK8DX Tournament Live", cmd_texts)
+        for code in CATALOG_LANGUAGES:
+            path = CATALOGS / f"cmd-{code}.txt"
+            with self.subTest(code):
+                if code == "en-US":
+                    self.assertFalse(path.exists())
+                    continue
+                lines = path.read_bytes().decode("utf-8").split("\n")
+                self.assertEqual(lines.pop(), "")
+                pairs = dict(line.split("|", 1) for line in lines)
+                self.assertEqual(set(pairs), cmd_texts)
+                messages = json.loads((CATALOGS / f"{code}.json").read_text(encoding="utf-8"))["messages"]
+                for english, text in pairs.items():
+                    self.assertEqual(text, messages[english])
+                    self.assertFalse(set('|"%\r') & set(english + text), (code, english))
+
+    def test_cmd_window_titles_are_launcher_texts(self):
+        """The cmd launchers hand their English title to mk8dx-ui.ps1, which shows it in the launcher language."""
+        keys = {entry["key"] for entry in json.loads(SOURCE.read_text(encoding="utf-8"))["messages"]}
+        for name in ("Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "Start-MK8DX-No-Docker.cmd",
+                     "Manage-MK8DX-No-Docker.cmd"):
+            text = (ROOT / name).read_text(encoding="ascii")
+            title = re.search(r"^title (.+)$", text, re.M).group(1).strip()
+            with self.subTest(name):
+                self.assertIn(f'set "MK8DX_WINDOW_TITLE={title}"', text)
+                self.assertIn(title, keys)
+                self.assertTrue(launcher_text.messages("ja")[title])
+                self.assertNotIn("powershell", text.split("MK8DX_WINDOW_TITLE")[0].lower())
+        ui = (ROOT / "tooling" / "mk8dx-ui.ps1").read_text(encoding="ascii")
+        self.assertIn("$Host.UI.RawUI.WindowTitle = Tr $env:MK8DX_WINDOW_TITLE", ui)
+        helper = (ROOT / "tooling" / "mk8dx-text.cmd").read_bytes()
+        helper.decode("ascii")
+        code = [line for line in helper.decode("ascii").lower().splitlines() if not line.startswith("rem ")]
+        self.assertFalse([line for line in code if "powershell" in line])
+        self.assertEqual(helper.count(b"\n"), helper.count(b"\r\n"))
 
     def test_python_lookup_fills_values_after_translating(self):
         german = launcher_text.messages("de")["Website: {0}"]

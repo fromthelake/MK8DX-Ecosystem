@@ -6,7 +6,7 @@
    "key": "  Excel, CSV and *_TournamentRaceResultsV1.json for website import",
    "nl": "  Excel, CSV en *_TournamentRaceResultsV1.json voor import in de website",
    "places": [
-    "build_windows_package.py:963"
+    "build_windows_package.py:917"
    ]
   },
   {
@@ -14,107 +14,122 @@
    "nl": "  gevonden {0}",
    "places": [
     "build_windows_package.py:191",
-    "build_windows_package.py:378"
-   ]
+    "build_windows_package.py:355"
+   ],
+   "cmd": true
   },
   {
    "key": "  expected {0}",
    "nl": "  verwacht {0}",
    "places": [
     "build_windows_package.py:190",
-    "build_windows_package.py:377"
-   ]
+    "build_windows_package.py:354"
+   ],
+   "cmd": true
   },
   {
    "key": " FAILED - the tools were NOT installed completely. See {0}.",
    "nl": " MISLUKT - de tools zijn NIET volledig geinstalleerd. Zie {0}.",
    "places": [
     "build_windows_package.py:273"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " Log file       : {0}",
    "nl": " Logbestand      : {0}",
    "places": [
     "build_windows_package.py:128"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " MK8DX Tournament Tools - installer (package version {0})",
    "nl": " MK8DX Tournament Tools - installatie (pakketversie {0})",
    "places": [
     "build_windows_package.py:125"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " Package folder : {0}",
    "nl": " Pakketmap       : {0}",
    "places": [
     "build_windows_package.py:127"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " Read README-FIRST.txt and USING_MK8DX_TOURNAMENT_TOOLS.md for the workflow.",
    "nl": " Lees README-FIRST.txt en USING_MK8DX_TOURNAMENT_TOOLS.md voor de werkwijze.",
    "places": [
     "build_windows_package.py:239"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " Run this installer again; completed downloads are reused.",
    "nl": " Start deze installatie opnieuw; voltooide downloads worden hergebruikt.",
    "places": [
     "build_windows_package.py:274"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " SUCCESS - MK8DX Tournament Tools are installed in this folder.",
    "nl": " GELUKT - MK8DX Tournament Tools zijn in deze map geinstalleerd.",
    "places": [
     "build_windows_package.py:230"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentAnalysis.cmd   - window to analyse recordings afterwards",
    "nl": " TournamentAnalysis.cmd   - venster om opnames achteraf te analyseren",
    "places": [
     "build_windows_package.py:233"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentConnect.cmd    - optional connection to the website",
    "nl": " TournamentConnect.cmd    - optionele verbinding met de website",
    "places": [
     "build_windows_package.py:236"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentLive.cmd       - live capture-card tournament app",
    "nl": " TournamentLive.cmd       - live toernooi-app voor een capturekaart",
    "places": [
     "build_windows_package.py:234"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentLiveCli.cmd    - advanced command line",
    "nl": " TournamentLiveCli.cmd    - geavanceerde opdrachtregel",
    "places": [
     "build_windows_package.py:235"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentProcessor.cmd  - process a recorded video (drag it onto the file)",
    "nl": " TournamentProcessor.cmd  - verwerk een opname (sleep de video naar het bestand)",
    "places": [
     "build_windows_package.py:232"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": " TournamentTools.config.cmd - local settings and bundled assets",
    "nl": " TournamentTools.config.cmd - lokale instellingen en meegeleverde assets",
    "places": [
     "build_windows_package.py:237"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "'{0}' is not one of the choices above.",
@@ -129,14 +144,14 @@
    "places": [
     "start-mk8dx.ps1:207",
     "start-mk8dx.sh:179",
-    "Manage-MK8DX-No-Docker.cmd:61"
+    "Manage-MK8DX-No-Docker.cmd:57"
    ]
   },
   {
    "key": "(all EasyOCR models are included; no download needed, this works offline)",
    "nl": "(alle EasyOCR-modellen zitten erbij; er wordt niets gedownload, dit werkt offline)",
    "places": [
-    "build_windows_package.py:956"
+    "build_windows_package.py:910"
    ]
   },
   {
@@ -144,7 +159,8 @@
    "nl": "---- Stap 2: Tournament-tools en onderdelen installeren ----",
    "places": [
     "build_windows_package.py:220"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "--force-ca-rotation applies only to maintain-ca",
@@ -157,7 +173,7 @@
    "key": "A <video name>_TournamentSession folder is created next to the video.",
    "nl": "Naast de video wordt een map <videonaam>_TournamentSession gemaakt.",
    "places": [
-    "build_windows_package.py:971"
+    "build_windows_package.py:925"
    ]
   },
   {
@@ -234,8 +250,9 @@
    "key": "Adding Tournament Live interface support (about 3.5 MB) ...",
    "nl": "Ondersteuning voor de Tournament Live-interface wordt toegevoegd (ongeveer 3,5 MB) ...",
    "places": [
-    "build_windows_package.py:369"
-   ]
+    "build_windows_package.py:346"
+   ],
+   "cmd": true
   },
   {
    "key": "Address unchanged.",
@@ -414,7 +431,7 @@
    "places": [
     "start-mk8dx.ps1:180",
     "start-mk8dx.sh:159",
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -422,7 +439,8 @@
    "nl": "Controleer de verbinding en start de installatie opnieuw.",
    "places": [
     "build_windows_package.py:268"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Checked backup, then the update",
@@ -464,14 +482,14 @@
    "key": "Checking Python and Node.js",
    "nl": "Python en Node.js controleren",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:22"
+    "Start-MK8DX-No-Docker.cmd:18"
    ]
   },
   {
    "key": "Checking the installation",
    "nl": "De installatie controleren",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:35"
+    "Start-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -500,7 +518,7 @@
    "nl": "Sluiten",
    "places": [
     "start-mk8dx.sh:165",
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -528,7 +546,7 @@
    "key": "Copying the video into {0} (different drive; this can take a while) ...",
    "nl": "De video wordt gekopieerd naar {0} (andere schijf; dit kan even duren) ...",
    "places": [
-    "build_windows_package.py:906"
+    "build_windows_package.py:860"
    ]
   },
   {
@@ -564,7 +582,8 @@
    "nl": "Er wordt een eigen runtime in het pakket gemaakt ...",
    "places": [
     "build_windows_package.py:168"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Database and private configuration restored to a new isolated project. Web origin: {0}",
@@ -670,7 +689,7 @@
    "key": "Done.",
    "nl": "Klaar.",
    "places": [
-    "mk8dx-ui.ps1:494",
+    "mk8dx-ui.ps1:500",
     "mk8dx-ui.sh:314"
    ]
   },
@@ -679,13 +698,14 @@
    "nl": "De officiele python.org-runtime wordt gedownload (ongeveer 11 MB) ...",
    "places": [
     "build_windows_package.py:179"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Easiest use: drag a recorded tournament video (.mp4/.mkv) onto TournamentProcessor.cmd.",
    "nl": "Snelste werkwijze: sleep een opgenomen toernooivideo (.mp4/.mkv) naar TournamentProcessor.cmd.",
    "places": [
-    "build_windows_package.py:970"
+    "build_windows_package.py:924"
    ]
   },
   {
@@ -706,8 +726,9 @@
    "key": "Examples (type them in this window):",
    "nl": "Voorbeelden (typ ze in dit venster):",
    "places": [
-    "build_windows_package.py:585"
-   ]
+    "build_windows_package.py:539"
+   ],
+   "cmd": true
   },
   {
    "key": "Existing installation adopted without changing runtime files, keys, accounts or volumes",
@@ -728,14 +749,16 @@
    "nl": "Bestaande pakket-runtime gevonden (ingesloten Python). Deze wordt bijgewerkt.",
    "places": [
     "build_windows_package.py:143"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Existing package runtime found (virtual environment). It will be updated in place.",
    "nl": "Bestaande pakket-runtime gevonden (virtuele omgeving). Deze wordt bijgewerkt.",
    "places": [
     "build_windows_package.py:149"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Existing path has no safe operator profile.",
@@ -749,63 +772,72 @@
    "nl": "Pak het volledige zipbestand opnieuw uit en start de installatie vanuit die map.",
    "places": [
     "build_windows_package.py:245"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: Tournament Live interface support could not be added (step {0}).",
    "nl": "MISLUKT: ondersteuning voor de Tournament Live-interface kon niet worden toegevoegd (stap {0}).",
    "places": [
     "build_windows_package.py:267"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the Python runtime could not be downloaded. Check your connection and retry.",
    "nl": "MISLUKT: de Python-runtime kon niet worden gedownload. Controleer de verbinding en probeer opnieuw.",
    "places": [
     "build_windows_package.py:251"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the Python runtime could not be prepared. See {0}.",
    "nl": "MISLUKT: de Python-runtime kon niet worden voorbereid. Zie {0}.",
    "places": [
     "build_windows_package.py:258"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the downloaded Python runtime failed its safety check. It was removed. Retry later.",
    "nl": "MISLUKT: de veiligheidscontrole van de Python-runtime mislukte. Het bestand is verwijderd. Probeer later opnieuw.",
    "places": [
     "build_windows_package.py:254"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the package installer could not be downloaded. Check your connection and retry.",
    "nl": "MISLUKT: de pakketinstallatie kon niet worden gedownload. Controleer de verbinding en probeer opnieuw.",
    "places": [
     "build_windows_package.py:261"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the package installer could not be prepared. See {0}.",
    "nl": "MISLUKT: de pakketinstallatie kon niet worden voorbereid. Zie {0}.",
    "places": [
     "build_windows_package.py:264"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: the private runtime could not be created. See {0}.",
    "nl": "MISLUKT: de eigen runtime kon niet worden gemaakt. Zie {0}.",
    "places": [
     "build_windows_package.py:248"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "FAILED: this folder is not a complete package.",
    "nl": "MISLUKT: deze map bevat geen compleet pakket.",
    "places": [
     "build_windows_package.py:244"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "First setup",
@@ -835,8 +867,9 @@
    "key": "First use: {0}",
    "nl": "Eerste gebruik: {0}",
    "places": [
-    "build_windows_package.py:607"
-   ]
+    "build_windows_package.py:561"
+   ],
+   "cmd": true
   },
   {
    "key": "Folder exists without a complete MK8DX operator profile. Keep it and inspect it; do not reset data.",
@@ -962,7 +995,7 @@
    "key": "Installed version: {0}",
    "nl": "Geïnstalleerde versie: {0}",
    "places": [
-    "build_windows_package.py:979"
+    "build_windows_package.py:933"
    ]
   },
   {
@@ -998,7 +1031,7 @@
    "key": "Keep the MK8DX window from Start-MK8DX-No-Docker.cmd open while you use this.",
    "nl": "Houd het MK8DX-venster van Start-MK8DX-No-Docker.cmd open zolang je dit gebruikt.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:29"
+    "Manage-MK8DX-No-Docker.cmd:25"
    ]
   },
   {
@@ -1047,7 +1080,7 @@
    "key": "Linked the video into {0}",
    "nl": "De video is gekoppeld aan {0}",
    "places": [
-    "build_windows_package.py:904"
+    "build_windows_package.py:858"
    ]
   },
   {
@@ -1117,8 +1150,9 @@
    "key": "Local processing and file exports never require sign-in or internet.",
    "nl": "Lokaal verwerken en bestanden exporteren vragen nooit om inloggen of internet.",
    "places": [
-    "build_windows_package.py:600"
-   ]
+    "build_windows_package.py:554"
+   ],
+   "cmd": true
   },
   {
    "key": "Local restore addresses disagree",
@@ -1145,28 +1179,28 @@
    "key": "MK8DX - Time Trials LAN",
    "nl": "MK8DX - Tijdritten op het LAN",
    "places": [
-    "Start-MK8DX-LAN.cmd:7"
+    "Start-MK8DX-LAN.cmd:4"
    ]
   },
   {
    "key": "MK8DX - community server",
    "nl": "MK8DX - communityserver",
    "places": [
-    "Start-MK8DX.cmd:7"
+    "Start-MK8DX.cmd:4"
    ]
   },
   {
    "key": "MK8DX - community server without Docker",
    "nl": "MK8DX - communityserver zonder Docker",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:8"
+    "Start-MK8DX-No-Docker.cmd:5"
    ]
   },
   {
    "key": "MK8DX - manage (no Docker)",
    "nl": "MK8DX - beheer (zonder Docker)",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:8"
+    "Manage-MK8DX-No-Docker.cmd:5"
    ]
   },
   {
@@ -1180,49 +1214,55 @@
    "key": "MK8DX Tournament Analysis",
    "nl": "MK8DX Tournament Analysis",
    "places": [
-    "build_windows_package.py:544"
-   ]
+    "build_windows_package.py:498"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Connect - optional",
    "nl": "MK8DX Tournament Connect - optioneel",
    "places": [
-    "build_windows_package.py:598"
-   ]
+    "build_windows_package.py:552"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Live",
    "nl": "MK8DX Tournament Live",
    "places": [
-    "build_windows_package.py:561"
-   ]
+    "build_windows_package.py:515"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Live - command line",
    "nl": "MK8DX Tournament Live - opdrachtregel",
    "places": [
-    "build_windows_package.py:575"
-   ]
+    "build_windows_package.py:529"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Live - command line. Sub-commands:",
    "nl": "MK8DX Tournament Live - opdrachtregel. Subopdrachten:",
    "places": [
-    "build_windows_package.py:582"
-   ]
+    "build_windows_package.py:536"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Processor",
    "nl": "MK8DX Tournament Processor",
    "places": [
-    "build_windows_package.py:528"
-   ]
+    "build_windows_package.py:482"
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX Tournament Processor - recorded tournament video",
    "nl": "MK8DX Tournament Processor - opgenomen toernooivideo",
    "places": [
-    "build_windows_package.py:968"
+    "build_windows_package.py:922"
    ]
   },
   {
@@ -1230,7 +1270,8 @@
    "nl": "MK8DX Tournament Tools - installatie",
    "places": [
     "build_windows_package.py:122"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "MK8DX can make its own checked backup of the database and the site's keys every night: about 3 MB a day compressed, 14 days and 4 weeks are kept, at most 1 GB, outside public_html.",
@@ -1250,7 +1291,7 @@
    "key": "MK8DX is not installed yet. Start {0} first.",
    "nl": "MK8DX is nog niet geïnstalleerd. Start eerst {0}.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:15"
+    "Manage-MK8DX-No-Docker.cmd:11"
    ]
   },
   {
@@ -1281,14 +1322,14 @@
    "key": "MK8DX starts now. Leave this window open while you use the website.",
    "nl": "MK8DX start nu. Laat dit venster open zolang je de website gebruikt.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:39"
+    "Start-MK8DX-No-Docker.cmd:35"
    ]
   },
   {
    "key": "MK8DX stopped. Read the message above, fix it and start this file again.",
    "nl": "MK8DX is gestopt. Lees de melding hierboven, los het op en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:57"
+    "Start-MK8DX-No-Docker.cmd:53"
    ]
   },
   {
@@ -1352,7 +1393,7 @@
    "key": "Make a backup - it is checked right away",
    "nl": "Een back-up maken - die wordt meteen gecontroleerd",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -1374,7 +1415,7 @@
    "key": "Make me administrator - after you signed in once",
    "nl": "Maak mij beheerder - nadat je één keer bent ingelogd",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -1438,7 +1479,7 @@
    "key": "Next: open XAMPP Control Panel and click Start next to Apache.",
    "nl": "Volgende stap: open XAMPP Control Panel en klik op Start naast Apache.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:40"
+    "Start-MK8DX-No-Docker.cmd:36"
    ]
   },
   {
@@ -1468,7 +1509,8 @@
    "nl": "Er is geen 64-bits Python 3.12 op deze computer gevonden.",
    "places": [
     "build_windows_package.py:178"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "No admin email recorded; use --admin-email when initializing or configure it first",
@@ -1489,14 +1531,14 @@
    "key": "Node.js was not found. Install Node.js 24 from nodejs.org, close this window and start this file again.",
    "nl": "Node.js is niet gevonden. Installeer Node.js 24 van nodejs.org, sluit dit venster en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:52"
+    "Start-MK8DX-No-Docker.cmd:48"
    ]
   },
   {
    "key": "Not found: {0}",
    "nl": "Niet gevonden: {0}",
    "places": [
-    "build_windows_package.py:914"
+    "build_windows_package.py:868"
    ]
   },
   {
@@ -1641,8 +1683,9 @@
    "key": "Optional browser sign-in uploads an existing JSON result as PENDING evidence.",
    "nl": "Met optioneel inloggen in de browser upload je een bestaande JSON-uitslag als PENDING-bewijs.",
    "places": [
-    "build_windows_package.py:599"
-   ]
+    "build_windows_package.py:553"
+   ],
+   "cmd": true
   },
   {
    "key": "Origin saved. Restart API/Web through the installation command and reconnect clients.",
@@ -1662,7 +1705,7 @@
    "key": "Output folder  : {0}",
    "nl": "Uitvoermap     : {0}",
    "places": [
-    "build_windows_package.py:954"
+    "build_windows_package.py:908"
    ]
   },
   {
@@ -1743,7 +1786,8 @@
    "nl": "De Python-pakketinstallatie wordt voorbereid ...",
    "places": [
     "build_windows_package.py:200"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Preparing the included Python packages (once, without internet).",
@@ -1793,7 +1837,7 @@
    "key": "Private backup - keep it safe, never share it: {0}",
    "nl": "Private back-up - bewaar hem goed, deel hem nooit: {0}",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:52"
+    "Manage-MK8DX-No-Docker.cmd:48"
    ]
   },
   {
@@ -1837,7 +1881,7 @@
    "places": [
     "start-mk8dx.ps1:29",
     "start-mk8dx.sh:114",
-    "Start-MK8DX-No-Docker.cmd:30",
+    "Start-MK8DX-No-Docker.cmd:26",
     "install.py:1451"
    ]
   },
@@ -1866,7 +1910,7 @@
    "key": "Processing the recording ...",
    "nl": "De opname wordt verwerkt ...",
    "places": [
-    "build_windows_package.py:955"
+    "build_windows_package.py:909"
    ]
   },
   {
@@ -1936,14 +1980,14 @@
    "key": "PyTorch backend: {0}",
    "nl": "PyTorch-rekenmodus: {0}",
    "places": [
-    "build_windows_package.py:773"
+    "build_windows_package.py:727"
    ]
   },
   {
    "key": "Python 3.12 or newer was not found. Install it from python.org with 'Add python.exe to PATH' ticked, close this window and start this file again.",
    "nl": "Python 3.12 of nieuwer is niet gevonden. Installeer het van python.org met 'Add python.exe to PATH' aangevinkt, sluit dit venster en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:47"
+    "Start-MK8DX-No-Docker.cmd:43"
    ]
   },
   {
@@ -1965,13 +2009,14 @@
    "nl": "Python-runtime: {0} [{1}]",
    "places": [
     "build_windows_package.py:214"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Re-extract the complete package and verify PACKAGE_MANIFEST.json.",
    "nl": "Pak het volledige pakket opnieuw uit en controleer PACKAGE_MANIFEST.json.",
    "places": [
-    "build_windows_package.py:945"
+    "build_windows_package.py:899"
    ]
   },
   {
@@ -2051,29 +2096,31 @@
    "key": "Results are written to Output_Results as Excel, CSV and a website import file.",
    "nl": "De uitslagen komen in Output_Results als Excel, CSV en een importbestand voor de website.",
    "places": [
-    "build_windows_package.py:972"
+    "build_windows_package.py:926"
    ]
   },
   {
    "key": "Results: {0}",
    "nl": "Uitslagen: {0}",
    "places": [
-    "build_windows_package.py:962"
+    "build_windows_package.py:916"
    ]
   },
   {
    "key": "Running dry-run now to show where Tournament Live stores its files:",
    "nl": "Nu volgt een proefrun die laat zien waar Tournament Live zijn bestanden opslaat:",
    "places": [
-    "build_windows_package.py:592"
-   ]
+    "build_windows_package.py:546"
+   ],
+   "cmd": true
   },
   {
    "key": "SHA-256 verified. Extracting the runtime ...",
    "nl": "SHA-256 klopt. De runtime wordt uitgepakt ...",
    "places": [
     "build_windows_package.py:193"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "SMTP configuration saved privately. Run apply to recreate API/Web without resetting data.",
@@ -2215,21 +2262,22 @@
    "key": "Send a result: {0}",
    "nl": "Een uitslag versturen: {0}",
    "places": [
-    "build_windows_package.py:608"
-   ]
+    "build_windows_package.py:562"
+   ],
+   "cmd": true
   },
   {
    "key": "Session folder : {0}",
    "nl": "Sessiemap      : {0}",
    "places": [
-    "build_windows_package.py:952"
+    "build_windows_package.py:906"
    ]
   },
   {
    "key": "Session id     : {0}",
    "nl": "Sessie-id      : {0}",
    "places": [
-    "build_windows_package.py:953"
+    "build_windows_package.py:907"
    ]
   },
   {
@@ -2250,7 +2298,7 @@
    "key": "Show the addresses",
    "nl": "De adressen tonen",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -2264,15 +2312,16 @@
    "key": "Sign out: {0}",
    "nl": "Uitloggen: {0}",
    "places": [
-    "build_windows_package.py:609"
-   ]
+    "build_windows_package.py:563"
+   ],
+   "cmd": true
   },
   {
    "key": "Sign-in mail - a test inbox: {1}",
    "nl": "Inlogmail - een testinbox: {1}",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:40",
-    "Manage-MK8DX-No-Docker.cmd:57"
+    "Start-MK8DX-No-Docker.cmd:36",
+    "Manage-MK8DX-No-Docker.cmd:53"
    ]
   },
   {
@@ -2311,22 +2360,24 @@
    "places": [
     "start-mk8dx.ps1:193",
     "start-mk8dx.sh:171",
-    "Start-MK8DX-No-Docker.cmd:38"
+    "Start-MK8DX-No-Docker.cmd:34"
    ]
   },
   {
    "key": "Starting the Tournament Analysis window ... (this window shows startup errors)",
    "nl": "Het Tournament Analysis-venster wordt gestart ... (dit venster toont opstartfouten)",
    "places": [
-    "build_windows_package.py:550"
-   ]
+    "build_windows_package.py:504"
+   ],
+   "cmd": true
   },
   {
    "key": "Starting the Tournament Live GUI ... (this window shows startup progress and errors)",
    "nl": "De Tournament Live-interface wordt gestart ... (dit venster toont de opstartvoortgang en fouten)",
    "places": [
-    "build_windows_package.py:564"
-   ]
+    "build_windows_package.py:518"
+   ],
+   "cmd": true
   },
   {
    "key": "Starting the new version",
@@ -2399,7 +2450,7 @@
    "key": "That step did not finish. Is the MK8DX window still open? Read the message above.",
    "nl": "Die stap is niet afgerond. Is het MK8DX-venster nog open? Lees de melding hierboven.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:65"
+    "Manage-MK8DX-No-Docker.cmd:61"
    ]
   },
   {
@@ -2444,7 +2495,7 @@
    "key": "The bundled recognition assets are missing:",
    "nl": "De meegeleverde herkenningsbestanden ontbreken:",
    "places": [
-    "build_windows_package.py:943"
+    "build_windows_package.py:897"
    ]
   },
   {
@@ -2480,8 +2531,9 @@
    "key": "The package runtime is missing. Run {0} first.",
    "nl": "De pakket-runtime ontbreekt. Voer eerst {0} uit.",
    "places": [
-    "build_windows_package.py:477"
-   ]
+    "build_windows_package.py:454"
+   ],
+   "cmd": true
   },
   {
    "key": "The page phones and other PCs open first is updated to this package.",
@@ -2508,8 +2560,8 @@
    "key": "The selected step stopped. Read the message above before retrying.",
    "nl": "De gekozen stap is gestopt. Lees de melding hierboven voordat je het opnieuw probeert.",
    "places": [
-    "Start-MK8DX.cmd:12",
-    "Start-MK8DX-LAN.cmd:12"
+    "Start-MK8DX.cmd:8",
+    "Start-MK8DX-LAN.cmd:8"
    ]
   },
   {
@@ -2574,7 +2626,7 @@
    "key": "Then drop the video again.",
    "nl": "Sleep de video daarna opnieuw naar de launcher.",
    "places": [
-    "build_windows_package.py:946"
+    "build_windows_package.py:900"
    ]
   },
   {
@@ -2610,7 +2662,8 @@
    "nl": "Dit kan 5 tot 30 minuten duren. Even geduld ...",
    "places": [
     "build_windows_package.py:222"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ",
@@ -2624,7 +2677,8 @@
    "nl": "PyTorch, EasyOCR, OpenCV en Qt worden gedownload (meerdere GB bij NVIDIA CUDA).",
    "places": [
     "build_windows_package.py:221"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "This installation creates and manages its own database accounts.",
@@ -2701,29 +2755,32 @@
    "key": "To stop: press Ctrl+C here, then Stop next to Apache.",
    "nl": "Stoppen: druk hier op Ctrl+C en daarna op Stop naast Apache.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:40"
+    "Start-MK8DX-No-Docker.cmd:36"
    ]
   },
   {
    "key": "Tournament Analysis exited with code {0}.",
    "nl": "Tournament Analysis is gestopt met code {0}.",
    "places": [
-    "build_windows_package.py:555"
-   ]
+    "build_windows_package.py:509"
+   ],
+   "cmd": true
   },
   {
    "key": "Tournament Live exited with code {0}.",
    "nl": "Tournament Live is gestopt met code {0}.",
    "places": [
-    "build_windows_package.py:569"
-   ]
+    "build_windows_package.py:523"
+   ],
+   "cmd": true
   },
   {
    "key": "Tournament Live interface support added.",
    "nl": "Ondersteuning voor de Tournament Live-interface is toegevoegd.",
    "places": [
-    "build_windows_package.py:389"
-   ]
+    "build_windows_package.py:366"
+   ],
+   "cmd": true
   },
   {
    "key": "Try MK8DX on this computer only (Docker; sign-in mail stays on this computer)",
@@ -2744,7 +2801,7 @@
    "nl": "Typ een nummer en druk op Enter: ",
    "places": [
     "start-mk8dx.sh:166",
-    "Manage-MK8DX-No-Docker.cmd:34"
+    "Manage-MK8DX-No-Docker.cmd:30"
    ]
   },
   {
@@ -2880,14 +2937,16 @@
    "nl": "De bestaande 64-bits Python 3.12 op deze computer wordt gebruikt:",
    "places": [
     "build_windows_package.py:166"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Verifying the downloaded runtime ...",
    "nl": "De gedownloade runtime wordt gecontroleerd ...",
    "places": [
     "build_windows_package.py:186"
-   ]
+   ],
+   "cmd": true
   },
   {
    "key": "Waiting for the Docker engine",
@@ -2957,7 +3016,7 @@
    "places": [
     "start-mk8dx.ps1:186",
     "start-mk8dx.sh:156",
-    "Manage-MK8DX-No-Docker.cmd:32"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -2985,7 +3044,7 @@
    "key": "You can also drop a session folder that already has an Input_Videos sub-folder.",
    "nl": "Je kunt ook een sessiemap met een bestaande submap Input_Videos naar de launcher slepen.",
    "places": [
-    "build_windows_package.py:973"
+    "build_windows_package.py:927"
    ]
   },
   {
@@ -3000,14 +3059,14 @@
    "key": "Your private installation",
    "nl": "Je private installatie",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:29"
+    "Start-MK8DX-No-Docker.cmd:25"
    ]
   },
   {
    "key": "Your private installation folder is kept: {0}",
    "nl": "Je private installatiemap blijft bewaard: {0}",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:58"
+    "Start-MK8DX-No-Docker.cmd:54"
    ]
   },
   {
@@ -3022,7 +3081,7 @@
    "key": "community server without Docker - XAMPP and Node.js",
    "nl": "communityserver zonder Docker - XAMPP en Node.js",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:21"
+    "Start-MK8DX-No-Docker.cmd:17"
    ]
   },
   {
@@ -3036,7 +3095,7 @@
    "key": "game data",
    "nl": "spelgegevens",
    "places": [
-    "build_windows_package.py:936"
+    "build_windows_package.py:890"
    ]
   },
   {
@@ -3053,21 +3112,21 @@
    "key": "manage the installation without Docker",
    "nl": "de installatie beheren zonder Docker",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:24"
    ]
   },
   {
    "key": "not set",
    "nl": "niet ingesteld",
    "places": [
-    "build_windows_package.py:940"
+    "build_windows_package.py:894"
    ]
   },
   {
    "key": "package {0}",
    "nl": "pakket {0}",
    "places": [
-    "mk8dx-ui.ps1:361",
+    "mk8dx-ui.ps1:367",
     "mk8dx-ui.sh:187"
    ]
   },
@@ -3075,7 +3134,7 @@
    "key": "recognition images",
    "nl": "herkenningsafbeeldingen",
    "places": [
-    "build_windows_package.py:935"
+    "build_windows_package.py:889"
    ]
   },
   {
@@ -3096,7 +3155,7 @@
    "key": "{0} has no Input_Videos folder. Drop a video file or a session folder that contains Input_Videos.",
    "nl": "{0} heeft geen map Input_Videos. Sleep een videobestand of een sessiemap met Input_Videos naar de launcher.",
    "places": [
-    "build_windows_package.py:919"
+    "build_windows_package.py:873"
    ]
   },
   {
