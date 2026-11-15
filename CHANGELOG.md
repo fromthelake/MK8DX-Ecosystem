@@ -70,7 +70,7 @@ setting, `MK8DX_HOSTED_SMTP_TIMEOUT_MS`. Android app 2.99.8 (177).
   resolve every file name that a page supplies through one small helper per product, which follows links and
   refuses anything outside its folder. Accepted and refused names are the same as before.
 
-## 0.2.5 — 2026-11-16
+## 0.2.5 — 2026-11-15
 
 A security release; updating is recommended for every community. Permission checks are stronger on every route,
 every change counts against request limits and quotas, Tournament Connect and Tournament Live stay on the chosen
