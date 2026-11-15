@@ -191,6 +191,8 @@ Om een proefinstallatie weg te gooien (of een installatie waarvan je bent overge
 dezelfde installatiemap. Dit **wist de database, de accounts en de sleutels** van die installatie;
 maak eerst een back-up (keuze 6) als er iets is wat je misschien terug wilt.
 
+0. Haal eerst de nachtelijke back-up uit de planning:
+   `python3 tooling/install.py backup-unschedule --state-dir <installatie>`.
 1. Start het startscript en kies **3**: noteer de `route` (A1, A2 of B1). Start het daarna opnieuw en kies **4** om te stoppen.
 2. Verwijder de containers, het netwerk en de volumes (de database, en voor A2/B1 de certificaten). Gebruik het
    Compose-bestand dat bij de route hoort: `compose.local.yaml` voor A1, `compose.lan.yaml` voor A2,
@@ -227,6 +229,29 @@ docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).imag
 
 Gebruik voor A2 `compose.lan.yaml` in plaats van `compose.local.yaml`. Wis daarna de pakketmap en de back-ups
 in `Documents\MK8DX-backups` die je niet meer nodig hebt.
+
+**Het pakket voor thuis en de club (`mk8dx-a2-…`, A2 zonder mail)** heeft geen menu: het startscript opent MK8DX beheer.
+De installatiemap is `~/.local/share/mk8dx/LAN` op Linux (`%LOCALAPPDATA%\MK8DX\LAN` op Windows),
+het draait met `compose.offline-lan.yaml`, en `backup-unschedule` raakt de nachtelijke taken niet. Op Linux,
+vanuit de pakketmap (getest in WSL 2 met 0.2.6):
+
+```sh
+state=~/.local/share/mk8dx/LAN
+py=$(ls -d ~/.local/share/mk8dx/python-offline-*)/bin/python
+"$py" tooling/auto_backup.py run --state-dir "$state"     # laatste versleutelde back-up, als je iets terug wilt kunnen
+systemctl --user disable --now mk8dx-mk8dx-backup.timer mk8dx-mk8dx-certificate-renewal.timer
+rm -f ~/.config/systemd/user/mk8dx-mk8dx-*.service ~/.config/systemd/user/mk8dx-mk8dx-*.timer
+systemctl --user daemon-reload
+"$py" tooling/install.py stop --state-dir "$state"
+docker compose --env-file "$state/compose.env" -f compose.yaml -f compose.offline-lan.yaml -f compose.images.yaml down -v
+rm -rf "$state" ~/.local/share/mk8dx/python-offline-* ~/.local/share/applications/mk8dx-beheer.desktop ~/Desktop/mk8dx-beheer.desktop
+```
+
+Verwijder daarna de images (stap 4) en de pakketmap. Een back-up gaat alleen open met de herstelcode van die
+installatie: bewaar het papier daarmee zolang je `~/Documents/MK8DX-backups` bewaart. Verwijder het MK8DX-certificaat
+van apparaten die het vertrouwden (A2-handleiding, hoofdstuk 6). Op Windows verwijder je in plaats van de systemd-timers
+de taken "MK8DX backup", "MK8DX certificate renewal" en "MK8DX start" in Taakplanner en de firewallregel
+`MK8DX-A2-offline-<adres>`.
 
 Een installatie die vanaf de broncode is gebouwd, verwijder je op dezelfde manier vanuit de hoofdmap van de repository; zie
 [Operations](../../../OPERATIONS.md#remove-an-installation).

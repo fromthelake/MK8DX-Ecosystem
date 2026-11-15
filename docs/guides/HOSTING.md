@@ -234,6 +234,29 @@ docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).imag
 Use `compose.lan.yaml` instead of `compose.local.yaml` for A2. Then delete the package folder and any backups
 in `Documents\MK8DX-backups` that you no longer need.
 
+**The home and club package (`mk8dx-a2-…`, A2 without mail)** has no menu: its launcher opens MK8DX beheer.
+Its installation directory is `~/.local/share/mk8dx/LAN` on Linux (`%LOCALAPPDATA%\MK8DX\LAN` on Windows),
+it runs with `compose.offline-lan.yaml`, and `backup-unschedule` does not touch its nightly jobs. On Linux,
+from the package folder (tested in WSL 2 with 0.2.6):
+
+```sh
+state=~/.local/share/mk8dx/LAN
+py=$(ls -d ~/.local/share/mk8dx/python-offline-*)/bin/python
+"$py" tooling/auto_backup.py run --state-dir "$state"     # last sealed backup, if you may want it back
+systemctl --user disable --now mk8dx-mk8dx-backup.timer mk8dx-mk8dx-certificate-renewal.timer
+rm -f ~/.config/systemd/user/mk8dx-mk8dx-*.service ~/.config/systemd/user/mk8dx-mk8dx-*.timer
+systemctl --user daemon-reload
+"$py" tooling/install.py stop --state-dir "$state"
+docker compose --env-file "$state/compose.env" -f compose.yaml -f compose.offline-lan.yaml -f compose.images.yaml down -v
+rm -rf "$state" ~/.local/share/mk8dx/python-offline-* ~/.local/share/applications/mk8dx-beheer.desktop ~/Desktop/mk8dx-beheer.desktop
+```
+
+Then remove the images (step 4) and the package folder. A backup only opens with the recovery code of that
+installation: keep the paper with it as long as you keep `~/Documents/MK8DX-backups`. Remove the MK8DX
+certificate from devices that trusted it (A2 manual, chapter 6). On Windows remove the Task Scheduler tasks
+"MK8DX backup", "MK8DX certificate renewal" and "MK8DX start" and the firewall rule `MK8DX-A2-offline-<address>`
+instead of the systemd timers.
+
 An installation built from source is removed the same way from the repository root; see
 [Operations](../OPERATIONS.md#remove-an-installation).
 
