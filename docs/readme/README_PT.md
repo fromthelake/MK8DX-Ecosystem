@@ -310,6 +310,19 @@ Começa por [Contributing](../../.github/CONTRIBUTING.md) e pelo [guia do progra
 Cada pull request, relatório de erro e correção de tradução torna a próxima noite LAN melhor para
 todos.
 
+## Apoiar o desenvolvimento
+
+Sou o Bas, o programador do MK8DX Ecosystem. A minha próxima ambição é uma estação de trabalho de IA local
+para experimentar com modelos maiores, visão computacional e automação.
+
+O primeiro marco de financiamento é de 5000 €, a caminho de uma configuração completa hoje estimada em cerca
+de 23 000 €. É equipamento para o meu próprio trabalho de desenvolvimento; não precisas dele para usar o
+MK8DX Ecosystem. O [roteiro do Local AI Lab](../LOCAL_AI_LAB.md) (em inglês) explica o plano e é o único sítio com o
+progresso.
+
+O apoio é totalmente voluntário. As versões de código aberto continuam livremente disponíveis, sem funções
+só para doadores nem prioridade no desenvolvimento: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+
 ## Estado do projeto
 
 As versões estáveis estão em [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); a 0.2.0
@@ -405,8 +418,9 @@ Afinal, foi assim que toda esta aventura começou.
 
 ## Licença e Nintendo
 
-Este é um projeto amador independente e não comercial, para aprender a programar e tornar o Mario Kart 8 Deluxe
-ainda mais divertido. **Não é afiliado nem aprovado pela Nintendo**. A Nintendo é dona das suas marcas e do
+Este é um projeto independente feito por fãs e disponibilizado gratuitamente. O apoio financeiro ao programador é
+totalmente opcional e não compra funcionalidades, prioridade no desenvolvimento nem outros benefícios. O projeto
+não é afiliado nem aprovado pela Nintendo. A Nintendo é dona das suas marcas e do
 conteúdo dos jogos; apoia a Nintendo comprando as suas consolas e jogos.
 
 O código e a documentação originais do projeto estão licenciados sob a [Mozilla Public License 2.0](../../LICENSE).

@@ -314,6 +314,19 @@ Commence par [Contributing](../../.github/CONTRIBUTING.md) et le [guide du déve
 Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
 pour tout le monde.
 
+## Soutenir le développement
+
+Je suis Bas, le développeur de MK8DX Ecosystem. Ma prochaine ambition est un poste de travail d'IA local
+pour expérimenter avec des modèles plus grands, la vision par ordinateur et l'automatisation.
+
+Le premier palier de financement est de 5 000 €, en vue d'une configuration complète estimée aujourd'hui à
+environ 23 000 €. C'est de l'équipement pour mon propre travail de développement ; tu n'en as pas besoin pour
+utiliser MK8DX Ecosystem. La [feuille de route du Local AI Lab](../LOCAL_AI_LAB.md) (en anglais) explique le plan et est
+le seul endroit qui suit la progression.
+
+Le soutien est entièrement volontaire. Les versions open source restent librement disponibles, sans
+fonctions réservées aux donateurs ni priorité de développement : [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+
 ## État du projet
 
 Les versions stables sont sur [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); la
@@ -410,8 +423,9 @@ Après tout, c'est comme ça que toute cette aventure a commencé.
 
 ## Licence et Nintendo
 
-Ceci est un projet amateur indépendant et non commercial, pour apprendre la programmation et rendre
-Mario Kart 8 Deluxe encore plus amusant. Il n'est **ni affilié à Nintendo ni approuvé par Nintendo**.
+Ceci est un projet indépendant créé par un fan et mis à disposition gratuitement. Le soutien financier au
+développeur est entièrement facultatif et n'achète ni fonctionnalités, ni priorité de développement, ni autres
+avantages. Le projet n'est ni affilié à Nintendo ni approuvé par Nintendo.
 Nintendo détient ses marques et le contenu de ses jeux; soutiens Nintendo en achetant ses consoles et
 ses jeux.
 

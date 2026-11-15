@@ -299,6 +299,18 @@ Begin bij [Bijdragen](../../.github/CONTRIBUTING.md) en de [ontwikkelaarshandlei
 Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
 iedereen.
 
+## Ontwikkeling steunen
+
+Ik ben Bas, de ontwikkelaar van MK8DX Ecosystem. Mijn volgende ambitie is een lokaal AI-werkstation om te
+experimenteren met grotere modellen, computervisie en automatisering.
+
+De eerste financieringsmijlpaal is € 5.000, op weg naar een complete opstelling die nu op ongeveer € 23.000
+wordt geschat. Dit is apparatuur voor mijn eigen ontwikkelwerk; je hebt het niet nodig om MK8DX Ecosystem te
+gebruiken. De [Local AI Lab-roadmap](../LOCAL_AI_LAB.md) (Engels) legt het plan uit en houdt als enige de voortgang bij.
+
+Steun is helemaal vrijwillig. Opensourcereleases blijven vrij beschikbaar, zonder functies alleen voor
+donateurs en zonder voorrang bij de ontwikkeling: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+
 ## Status
 
 Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
@@ -396,8 +408,9 @@ Zo is dit hele avontuur tenslotte ook begonnen.
 
 ## Licentie en Nintendo
 
-Dit is een onafhankelijk, niet-commercieel hobbyproject om te leren programmeren en Mario Kart 8 Deluxe nog
-leuker te maken. Het is **niet verbonden aan of goedgekeurd door Nintendo**. Nintendo is eigenaar van zijn
+Dit is een onafhankelijk fanproject, gratis beschikbaar gesteld. Financiële steun aan de ontwikkelaar is volledig
+vrijwillig en koopt geen functies, ontwikkelvoorrang of andere voordelen. Het project is niet verbonden aan of
+goedgekeurd door Nintendo. Nintendo is eigenaar van zijn
 merken en spelinhoud; steun Nintendo door zijn consoles en games te kopen.
 
 De eigen code en documentatie van het project vallen onder de [Mozilla Public License 2.0](../../LICENSE). De

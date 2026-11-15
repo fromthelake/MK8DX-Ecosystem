@@ -309,6 +309,19 @@ Fang mit [Contributing](../../.github/CONTRIBUTING.md) und dem [Entwicklerhandbu
 Jeder Pull Request, jeder Fehlerbericht und jede Übersetzungskorrektur macht den nächsten LAN-Abend für
 alle besser.
 
+## Entwicklung unterstützen
+
+Ich bin Bas, der Entwickler von MK8DX Ecosystem. Mein nächstes Ziel ist eine lokale KI-Workstation, um mit
+größeren Modellen, Computer Vision und Automatisierung zu experimentieren.
+
+Der erste Finanzierungsmeilenstein liegt bei 5.000 €, auf dem Weg zu einem kompletten Aufbau, der derzeit auf
+etwa 23.000 € geschätzt wird. Diese Ausrüstung ist für meine eigene Entwicklungsarbeit; um MK8DX Ecosystem zu
+nutzen, brauchst du sie nicht. Die [Local-AI-Lab-Roadmap](../LOCAL_AI_LAB.md) (Englisch) erklärt den Plan und führt als
+einzige Seite den Fortschritt.
+
+Unterstützung ist völlig freiwillig. Open-Source-Releases bleiben frei verfügbar, ohne Funktionen nur für
+Unterstützer und ohne Vorrang bei der Entwicklung: [Ko-fi](https://ko-fi.com/fromthelake) · [GitHub Sponsors](https://github.com/sponsors/fromthelake)
+
 ## Projektstatus
 
 Stabile Releases gibt es auf [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0
@@ -404,8 +417,9 @@ Schließlich hat genau so dieses ganze Abenteuer begonnen.
 
 ## Lizenz und Nintendo
 
-Dies ist ein unabhängiges, nicht kommerzielles Hobbyprojekt, um Programmieren zu lernen und Mario Kart 8
-Deluxe noch mehr Spaß zu machen. Es ist **weder mit Nintendo verbunden noch von Nintendo unterstützt**.
+Dies ist ein unabhängiges Fanprojekt, das kostenlos zur Verfügung gestellt wird. Finanzielle Unterstützung für den
+Entwickler ist völlig freiwillig und erkauft keine Funktionen, keinen Vorrang bei der Entwicklung und keine anderen
+Vorteile. Das Projekt ist weder mit Nintendo verbunden noch von Nintendo unterstützt.
 Nintendo besitzt seine Marken und Spielinhalte; bitte unterstütze Nintendo, indem du seine Konsolen und
 Spiele kaufst.
 
