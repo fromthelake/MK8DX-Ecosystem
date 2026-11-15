@@ -213,6 +213,10 @@ import {
   MysqlAccountAppearancePreferenceRepository,
 } from "../profiles/account-appearance-preference.js";
 import { MysqlMutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import {
+  AdministratorRequestBudgetsService,
+  MysqlAdministratorRequestBudgetsRepository,
+} from "../administration/administrator-request-budgets.js";
 import { PreAuthBudget, derivePreAuthBudgetKey } from "../security/pre-auth-budget.js";
 import { AbuseBudgets, defaultAbuseBudgetSettings, type AbuseBudgetSettings } from "../security/abuse-budgets.js";
 import { AuthEmailBudgets } from "../authentication/auth-email-budgets.js";
@@ -1052,6 +1056,9 @@ async function createMysqlApiRuntime(
           .join(" ").slice(0, 160);
         routePolicies.operationalLog?.log({ event: "rate_limit_refusals", category: "lifecycle", detail });
       },
+      ledgerFailed(errorName) {
+        routePolicies.operationalLog?.log({ event: "rate_limit_ledger_failed", category: "lifecycle", errorName });
+      },
     });
     const stopRateLimitCleanup = mutationRateLimiter.startCleanupTimer();
     // H1: installation-wide and per-target budgets on the same durable limiter (MK8DX_HOSTED_BUDGET_*).
@@ -1360,6 +1367,14 @@ async function createMysqlApiRuntime(
           clock,
         ),
       },
+      administratorRequestBudgets: {
+        service: new AdministratorRequestBudgetsService(
+          new MysqlAdministratorRequestBudgetsRepository(pool),
+          abuseBudgets.settings,
+          clock,
+        ),
+      },
+      quotaRefusals: mutationRateLimiter,
       claimLifecycle: {
         // The people who decide a request hear that it arrived; the producer
         // never fails the request itself.

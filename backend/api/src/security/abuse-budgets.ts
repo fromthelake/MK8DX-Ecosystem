@@ -181,6 +181,30 @@ export class AbuseBudgets {
   }
 }
 
+/**
+ * Every installation budget a route spends, by the scope it passes to `installation` or
+ * `forInstallation`. The administrator view reads the current window of each to show the headroom;
+ * a test binds this list to the calls in the source, so a new installation budget cannot be missed.
+ */
+export const INSTALLATION_BUDGET_SCOPES: readonly Readonly<{ scope: string; budgets: readonly AbuseBudgetName[] }>[] = [
+  { scope: "api-mutations.installation", budgets: ["mutationsPerMinute"] },
+  { scope: "auth-email", budgets: ["authEmailsPerHour", "authEmailsPerDay"] },
+  { scope: "device-code", budgets: ["deviceCodesPerHour"] },
+  { scope: "player-claims.requests", budgets: ["claimRequestsPerHour", "claimRequestsPerDay"] },
+  { scope: "player-claims.messages", budgets: ["claimMessagesPerHour", "claimMessagesPerDay"] },
+  { scope: "time-trial-submit", budgets: ["submissionsPerHour", "submissionsPerDay"] },
+  { scope: "notifications", budgets: ["notificationsPerHour", "notificationsPerDay"] },
+  { scope: "app-downloads", budgets: ["downloadsPerHour", "downloadsPerDay"] },
+  { scope: "aliases", budgets: ["aliasesPerHour", "aliasesPerDay"] },
+  { scope: "web-push-subscriptions", budgets: ["pushSubscriptionsPerHour", "pushSubscriptionsPerDay"] },
+  { scope: "player-engagements", budgets: ["engagementsPerHour", "engagementsPerDay"] },
+];
+
+/** The limiter scope one installation budget is counted under (`<scope>.<window>`). */
+export function installationBudgetScope(scope: string, budget: BudgetWindow): string {
+  return `${scope}.${windowLabel(budget)}`;
+}
+
 function windowLabel(budget: BudgetWindow): string {
   if (budget.windowSeconds === DAY) { return "day"; }
   if (budget.windowSeconds === HOUR) { return "hour"; }
@@ -196,4 +220,23 @@ export function budgetRefusal(error: unknown, code: string, message: string): Re
 }> | null {
   if (!(error instanceof MutationRateLimitExceeded)) { return null; }
   return { retryAfterSeconds: error.retryAfterSeconds, body: { code, message } };
+}
+
+const QUOTA_REFUSAL_STATUSES = new Set([403, 409, 413, 429]);
+
+/**
+ * The fixed code of a refused response that the refusal ledger counts as a quota: a full stored
+ * quota (`*_quota_exceeded`, `*_too_large`), a per-recipient limit (`*_recipient_limit`) or a missing
+ * fresh confirmation (`step_up_required`). Budget refusals from the durable limiter are counted by
+ * the limiter itself and are not repeated here. Anything else, or a payload that is not a small
+ * JSON string, gives null.
+ */
+export function quotaRefusalCode(statusCode: number, payload: unknown): string | null {
+  if (!QUOTA_REFUSAL_STATUSES.has(statusCode) || typeof payload !== "string" || payload.length > 4_096) {
+    return null;
+  }
+  const code = /"code":"([a-z0-9_]{1,64})"/.exec(payload)?.[1];
+  if (code === undefined) { return null; }
+  return code === "step_up_required" || code.endsWith("_quota_exceeded") || code.endsWith("_too_large") ||
+    code.endsWith("_recipient_limit") ? code : null;
 }

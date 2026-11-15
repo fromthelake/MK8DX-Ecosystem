@@ -5,6 +5,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **Administrator view of request limits**: a new **Request limits** section on the administration page (loaded when
+  opened) shows which request budgets and quotas refused requests in about the last hour and day, per scope, how many
+  were affected, the most refused accounts (only accounts are named; targets, recipients and addresses are counted),
+  every `MK8DX_HOSTED_BUDGET_*` value with its default, and how much of each installation budget is used in its current
+  window. The counts come from a refusal ledger kept in the existing limiter table; no database migration.
+
 ### Changed
 
 - **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
