@@ -144,7 +144,7 @@
    "places": [
     "start-mk8dx.ps1:207",
     "start-mk8dx.sh:179",
-    "Manage-MK8DX-No-Docker.cmd:57"
+    "Manage-MK8DX-No-Docker.cmd:60"
    ]
   },
   {
@@ -431,7 +431,7 @@
    "places": [
     "start-mk8dx.ps1:180",
     "start-mk8dx.sh:159",
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -482,14 +482,14 @@
    "key": "Checking Python and Node.js",
    "nl": "Python en Node.js controleren",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:18"
+    "Start-MK8DX-No-Docker.cmd:21"
    ]
   },
   {
    "key": "Checking the installation",
    "nl": "De installatie controleren",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:31"
+    "Start-MK8DX-No-Docker.cmd:34"
    ]
   },
   {
@@ -518,7 +518,7 @@
    "nl": "Sluiten",
    "places": [
     "start-mk8dx.sh:165",
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -1031,7 +1031,7 @@
    "key": "Keep the MK8DX window from Start-MK8DX-No-Docker.cmd open while you use this.",
    "nl": "Houd het MK8DX-venster van Start-MK8DX-No-Docker.cmd open zolang je dit gebruikt.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:25"
+    "Manage-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
@@ -1045,7 +1045,7 @@
    "key": "Keep this window open until you click Finish.",
    "nl": "Laat dit venster open tot je op Voltooien klikt.",
    "places": [
-    "setup_wizard.py:781"
+    "setup_wizard.py:784"
    ]
   },
   {
@@ -1291,7 +1291,7 @@
    "key": "MK8DX is not installed yet. Start {0} first.",
    "nl": "MK8DX is nog niet geïnstalleerd. Start eerst {0}.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:11"
+    "Manage-MK8DX-No-Docker.cmd:14"
    ]
   },
   {
@@ -1315,21 +1315,21 @@
    "key": "MK8DX setup is open in your browser: {0}",
    "nl": "De MK8DX-installatie staat open in je browser: {0}",
    "places": [
-    "setup_wizard.py:780"
+    "setup_wizard.py:783"
    ]
   },
   {
    "key": "MK8DX starts now. Leave this window open while you use the website.",
    "nl": "MK8DX start nu. Laat dit venster open zolang je de website gebruikt.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:35"
+    "Start-MK8DX-No-Docker.cmd:38"
    ]
   },
   {
    "key": "MK8DX stopped. Read the message above, fix it and start this file again.",
    "nl": "MK8DX is gestopt. Lees de melding hierboven, los het op en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:53"
+    "Start-MK8DX-No-Docker.cmd:56"
    ]
   },
   {
@@ -1393,7 +1393,7 @@
    "key": "Make a backup - it is checked right away",
    "nl": "Een back-up maken - die wordt meteen gecontroleerd",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -1415,7 +1415,7 @@
    "key": "Make me administrator - after you signed in once",
    "nl": "Maak mij beheerder - nadat je één keer bent ingelogd",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -1480,7 +1480,7 @@
    "key": "Next: open XAMPP Control Panel and click Start next to Apache.",
    "nl": "Volgende stap: open XAMPP Control Panel en klik op Start naast Apache.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:36"
+    "Start-MK8DX-No-Docker.cmd:39"
    ]
   },
   {
@@ -1532,7 +1532,7 @@
    "key": "Node.js was not found. Install Node.js 24 from nodejs.org, close this window and start this file again.",
    "nl": "Node.js is niet gevonden. Installeer Node.js 24 van nodejs.org, sluit dit venster en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:48"
+    "Start-MK8DX-No-Docker.cmd:51"
    ]
   },
   {
@@ -1838,7 +1838,7 @@
    "key": "Private backup - keep it safe, never share it: {0}",
    "nl": "Private back-up - bewaar hem goed, deel hem nooit: {0}",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:48"
+    "Manage-MK8DX-No-Docker.cmd:51"
    ]
   },
   {
@@ -1882,7 +1882,7 @@
    "places": [
     "start-mk8dx.ps1:29",
     "start-mk8dx.sh:114",
-    "Start-MK8DX-No-Docker.cmd:26",
+    "Start-MK8DX-No-Docker.cmd:29",
     "install.py:1454"
    ]
   },
@@ -1988,7 +1988,7 @@
    "key": "Python 3.12 or newer was not found. Install it from python.org with 'Add python.exe to PATH' ticked, close this window and start this file again.",
    "nl": "Python 3.12 of nieuwer is niet gevonden. Installeer het van python.org met 'Add python.exe to PATH' aangevinkt, sluit dit venster en start dit bestand opnieuw.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:43"
+    "Start-MK8DX-No-Docker.cmd:46"
    ]
   },
   {
@@ -2299,7 +2299,7 @@
    "key": "Show the addresses",
    "nl": "De adressen tonen",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -2321,8 +2321,8 @@
    "key": "Sign-in mail - a test inbox: {1}",
    "nl": "Inlogmail - een testinbox: {1}",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:36",
-    "Manage-MK8DX-No-Docker.cmd:53"
+    "Start-MK8DX-No-Docker.cmd:39",
+    "Manage-MK8DX-No-Docker.cmd:56"
    ]
   },
   {
@@ -2361,7 +2361,7 @@
    "places": [
     "start-mk8dx.ps1:193",
     "start-mk8dx.sh:171",
-    "Start-MK8DX-No-Docker.cmd:34"
+    "Start-MK8DX-No-Docker.cmd:37"
    ]
   },
   {
@@ -2451,7 +2451,7 @@
    "key": "That step did not finish. Is the MK8DX window still open? Read the message above.",
    "nl": "Die stap is niet afgerond. Is het MK8DX-venster nog open? Lees de melding hierboven.",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:61"
+    "Manage-MK8DX-No-Docker.cmd:64"
    ]
   },
   {
@@ -2561,8 +2561,8 @@
    "key": "The selected step stopped. Read the message above before retrying.",
    "nl": "De gekozen stap is gestopt. Lees de melding hierboven voordat je het opnieuw probeert.",
    "places": [
-    "Start-MK8DX.cmd:8",
-    "Start-MK8DX-LAN.cmd:8"
+    "Start-MK8DX.cmd:11",
+    "Start-MK8DX-LAN.cmd:11"
    ]
   },
   {
@@ -2756,7 +2756,7 @@
    "key": "To stop: press Ctrl+C here, then Stop next to Apache.",
    "nl": "Stoppen: druk hier op Ctrl+C en daarna op Stop naast Apache.",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:36"
+    "Start-MK8DX-No-Docker.cmd:39"
    ]
   },
   {
@@ -2802,7 +2802,7 @@
    "nl": "Typ een nummer en druk op Enter: ",
    "places": [
     "start-mk8dx.sh:166",
-    "Manage-MK8DX-No-Docker.cmd:30"
+    "Manage-MK8DX-No-Docker.cmd:33"
    ]
   },
   {
@@ -3017,7 +3017,7 @@
    "places": [
     "start-mk8dx.ps1:186",
     "start-mk8dx.sh:156",
-    "Manage-MK8DX-No-Docker.cmd:28"
+    "Manage-MK8DX-No-Docker.cmd:31"
    ]
   },
   {
@@ -3060,14 +3060,14 @@
    "key": "Your private installation",
    "nl": "Je private installatie",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:25"
+    "Start-MK8DX-No-Docker.cmd:28"
    ]
   },
   {
    "key": "Your private installation folder is kept: {0}",
    "nl": "Je private installatiemap blijft bewaard: {0}",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:54"
+    "Start-MK8DX-No-Docker.cmd:57"
    ]
   },
   {
@@ -3082,7 +3082,7 @@
    "key": "community server without Docker - XAMPP and Node.js",
    "nl": "communityserver zonder Docker - XAMPP en Node.js",
    "places": [
-    "Start-MK8DX-No-Docker.cmd:17"
+    "Start-MK8DX-No-Docker.cmd:20"
    ]
   },
   {
@@ -3113,7 +3113,7 @@
    "key": "manage the installation without Docker",
    "nl": "de installatie beheren zonder Docker",
    "places": [
-    "Manage-MK8DX-No-Docker.cmd:24"
+    "Manage-MK8DX-No-Docker.cmd:27"
    ]
   },
   {

@@ -504,7 +504,10 @@ class Wizard:
         status, payload = self.host_call("GET", "/api/setup")
         if status != 200:
             raise RuntimeError("Setup information unavailable")
-        return {"setupUrl": payload["setupUrl"], "qr": payload["qrDataUrl"], "origin": payload["origin"],
+        # pairingUrl is the link inside the Prepare a device QR (with the key fingerprint); the Android app needs
+        # it when the camera cannot scan, and a browser opens the same /setup page with it.
+        return {"setupUrl": payload["setupUrl"], "pairingUrl": payload.get("pairingUrl", payload["setupUrl"]),
+                "qr": payload["qrDataUrl"], "origin": payload["origin"],
                 "fingerprint": payload["rootCertificateSha256"]}
 
     def finish(self, shortcut: bool, autostart: bool = True, backups: bool = True):

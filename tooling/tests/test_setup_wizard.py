@@ -241,6 +241,21 @@ class WizardServerTest(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, "Setup information unavailable"):
                 self.wizard.setup_info()
 
+    def test_setup_info_passes_the_pairing_link_for_copy_address(self):
+        # The Android app refuses the bare /setup address; Copy address copies the QR's full link instead.
+        link = "http://192.168.1.50/setup#mk8dx-pair=1&origin=https%3A%2F%2F192.168.1.50&spki=" + "cd" * 32
+        host = type("Host", (), {})()
+        host.call = lambda method, path, body=None: (200, {"setupUrl": "http://192.168.1.50/setup", "pairingUrl": link,
+                                                           "qrDataUrl": "data:", "origin": "https://192.168.1.50",
+                                                           "rootCertificateSha256": "ab" * 32})
+        self.wizard.host = host
+        with patch.object(self.wizard, "ensure_host", side_effect=lambda: host):
+            info = self.wizard.setup_info()
+        self.assertEqual(info["setupUrl"], "http://192.168.1.50/setup")
+        self.assertEqual(info["pairingUrl"], link)
+        static = (Path(__file__).resolve().parents[1] / "setup_wizard_static" / "wizard.js").read_text(encoding="utf-8")
+        self.assertIn("copyButton(T.copySetup, setup.pairingUrl || setup.setupUrl)", static)
+
     def test_revoke_card_calls_the_host_page(self):
         host = type("Host", (), {})()
         calls = []

@@ -156,7 +156,7 @@ python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documen
 
 對於家用或俱樂部網路，請使用 A2 套件。下載 mk8dx-a2-windows-amd64-v0.2.6.zip（Linux：mk8dx-a2-linux-amd64 或 mk8dx-a2-linux-arm64；使用 Apple 晶片的 macOS：mk8dx-a2-macos-arm64；使用 Intel 處理器的 macOS：mk8dx-a2-macos-amd64）和 SHA256SUMS.txt，依照「在一台電腦上試用」中的方式檢查總和檢查碼，解壓縮套件，然後按兩下 Start-MK8DX-LAN.cmd（Linux 和 macOS：sh tooling/start-mk8dx.sh）。瀏覽器中會開啟一個安裝程式，用 Next（下一步）帶你完成所有步驟：網路位址、你的管理員帳號、用於夜間備份的紙本復原碼，以及每個人在手機或電腦上使用的登入卡。不需要網際網路、郵件伺服器或 hosts 檔案。
 
-附有圖片的完整逐步指南是 docs/install/A2_HOME_GUIDE_EN.md；在套件中它也是 docs/install/guide/en.html，安裝程式會透過它的 Manual（手冊）連結開啟它。指南涵蓋準備 Windows、Linux 或 macOS，手機和電腦，Android App，LiveTrial，錦標賽之夜，備份，搬到新電腦，固定位址，新的網路位址以及更新。
+附有圖片的完整逐步指南是 docs/install/A2_HOME_GUIDE_EN.md；在套件中它也是 docs/install/guide/en.html，安裝程式會透過它的 Manual（手冊）連結開啟它。指南涵蓋準備 Windows、Linux 或 macOS，手機和電腦，Android App，LiveTrial，錦標賽之夜，備份，搬到新電腦，固定位址，新的網路位址、更新以及從電腦移除 MK8DX。
 
 進階：使用你自己的郵件伺服器
 

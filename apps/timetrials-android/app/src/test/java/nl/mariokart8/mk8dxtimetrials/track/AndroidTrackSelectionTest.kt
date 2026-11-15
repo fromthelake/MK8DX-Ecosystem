@@ -2,6 +2,7 @@ package nl.mariokart8.mk8dxtimetrials.track
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductCatalog
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
 
 class AndroidTrackSelectionTest {
@@ -35,5 +36,26 @@ class AndroidTrackSelectionTest {
     fun cupSelectionUsesTheShortLocalizedCupName() {
         assertEquals("Mushroom", cupSelectionLabel("Mushroom Cup", AndroidProductLanguage.ENGLISH))
         assertEquals("Paddenstoel", cupSelectionLabel("Mushroom Cup", AndroidProductLanguage.DUTCH))
+    }
+
+    @Test
+    fun cupSelectionFollowsTheAppLanguageNotTheDutchTable() {
+        // A2 walkthrough: an English (US) app showed "Paddenstoel", "Bloemen", ... on Post a time.
+        assertEquals("Mushroom", cupSelectionLabel("Mushroom Cup", AndroidProductLanguage.ENGLISH_US))
+        AndroidProductCatalog.install { path ->
+            if (path == "i18n/de.json") {
+                """{"schemaVersion":"mk8dx.web-message-catalog.v1","language":"de","messages":{},""" +
+                    """"gameNames":{"Mushroom Cup":"Pilz-Cup"}}"""
+            } else {
+                null
+            }
+        }
+        try {
+            assertEquals("Pilz-Cup", cupSelectionLabel("Mushroom Cup", AndroidProductLanguage.GERMAN))
+            // A language without a catalog entry falls back to English, never to Dutch.
+            assertEquals("Mushroom Cup", cupSelectionLabel("Mushroom Cup", AndroidProductLanguage.FRENCH))
+        } finally {
+            AndroidProductCatalog.install { null }
+        }
     }
 }

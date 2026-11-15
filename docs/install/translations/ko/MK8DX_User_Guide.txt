@@ -156,7 +156,7 @@ python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documen
 
 집이나 클럽 네트워크에는 A2 패키지를 쓰세요. mk8dx-a2-windows-amd64-v0.2.6.zip(Linux: mk8dx-a2-linux-amd64 또는 mk8dx-a2-linux-arm64, Apple 실리콘 macOS: mk8dx-a2-macos-arm64, Intel 프로세서 macOS: mk8dx-a2-macos-amd64)과 SHA256SUMS.txt를 다운로드하고, “컴퓨터 한 대에서 시험해 보기”처럼 체크섬을 확인한 다음, 패키지의 압축을 풀고 Start-MK8DX-LAN.cmd를 두 번 클릭합니다(Linux와 macOS: sh tooling/start-mk8dx.sh). 브라우저에서 설치 화면이 열리고 Next(다음)로 모든 과정을 안내합니다: 네트워크 주소, 내 관리자 계정, 매일 밤 백업을 위한 종이 복구 코드, 각자의 휴대폰이나 PC용 로그인 카드가 있는 사람들. 인터넷, 메일 서버, hosts 파일은 필요 없습니다.
 
-그림이 들어 있는 전체 단계별 안내서는 docs/install/A2_HOME_GUIDE_EN.md이며, 패키지 안에서는 docs/install/guide/en.html이기도 하고, 설치 화면의 Manual(설명서) 링크로 열립니다. Windows, Linux 또는 macOS 준비, 휴대폰과 PC, Android 앱, LiveTrial, 토너먼트 밤, 백업, 새 컴퓨터로 옮기기, 고정 주소, 새 네트워크 주소, 업데이트를 다룹니다.
+그림이 들어 있는 전체 단계별 안내서는 docs/install/A2_HOME_GUIDE_EN.md이며, 패키지 안에서는 docs/install/guide/en.html이기도 하고, 설치 화면의 Manual(설명서) 링크로 열립니다. Windows, Linux 또는 macOS 준비, 휴대폰과 PC, Android 앱, LiveTrial, 토너먼트 밤, 백업, 새 컴퓨터로 옮기기, 고정 주소, 새 네트워크 주소, 업데이트, 컴퓨터에서 MK8DX 제거하기를 다룹니다.
 
 고급: 자체 메일 서버 사용
 

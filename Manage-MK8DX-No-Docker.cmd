@@ -4,6 +4,9 @@ title MK8DX - manage (no Docker)
 rem The window title in the launcher language: tooling\mk8dx-ui.ps1 sets it when the launcher starts.
 set "MK8DX_WINDOW_TITLE=MK8DX - manage (no Docker)"
 cd /d "%~dp0"
+rem Started from a PowerShell 7 window, Windows PowerShell 5.1 would inherit its module path and miss
+rem Get-FileHash and Get-Date. An empty PSModulePath lets powershell.exe use its own modules.
+set "PSModulePath="
 set "empty=0"
 set "MK8DX_A3_STATE=%LOCALAPPDATA%\MK8DX\NoDocker"
 if not exist "%MK8DX_A3_STATE%\operator-profile.json" (

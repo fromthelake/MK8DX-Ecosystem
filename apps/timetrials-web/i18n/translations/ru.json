@@ -5272,7 +5272,6 @@
   "Working": "Выполняется",
   "You are signed in as": "Вы вошли как",
   "You are signed in to this installation.": "Вы вошли в эту установку.",
-  "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.": "Это можно сделать и позже, точно так же: откройте «MK8DX beheer» на рабочем столе и выберите «Люди».",
   "You can close this window now.": "Теперь это окно можно закрыть.",
   "You manage this installation. What's your name?": "Вы управляете этой установкой. Как вас зовут?",
   "You sign in as:": "Вы входите как:",
@@ -6051,6 +6050,8 @@
   "{0} refused in this window": "{0} отклонено в этом окне",
   "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "Ссылка подтверждения создана, но письмо отправить не удалось. Попросите оператора сервера выполнить на сервере python tooling/install.py step-up-link и передать вам ссылку. Откройте её, и это окно продолжит работу.",
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "Вы отозвали эту прямую трансляцию {0}. Она остаётся скрытой от публики: ни совпадение по списку, ни делегирование захвата не откроют её снова. Подтвердите ниже маршрутизацию трансляции, чтобы вернуть её.",
-  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "Проверьте карту → группу до START. После гонки 1 сильное совпадение имён открывает View, только если директор делегировал этому аккаунту захват трансляции (или аккаунт принадлежит директору или администратору); иначе трансляция ждёт директора. Очки засчитываются только после сопоставления Players и проверки группы после STOP."
+  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "Проверьте карту → группу до START. После гонки 1 сильное совпадение имён открывает View, только если директор делегировал этому аккаунту захват трансляции (или аккаунт принадлежит директору или администратору); иначе трансляция ждёт директора. Очки засчитываются только после сопоставления Players и проверки группы после STOP.",
+  "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "Это можно сделать и позже, точно так же: дважды щёлкните «MK8DX beheer» на рабочем столе — откроется этот экран.",
+  "Check that your app shows the same code.": "Убедитесь, что приложение показывает тот же код."
  }
 }

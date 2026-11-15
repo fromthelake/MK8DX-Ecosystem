@@ -42,7 +42,7 @@ const SOURCE = {
     adminField: "Je naam", adminHint: "Bijvoorbeeld 'Papa', 'Sanne' of 'Clubleiding'. Dit is alleen het label van het account in MK8DX beheer. Je spelersnaam op de website kies je zelf bij de eerste keer inloggen.",
     peopleTitle: "Wie spelen er mee?",
     peopleLead: "Wil je nu al accounts maken voor anderen — familie, vrienden, clubleden of collega's? Iedereen krijgt een eigen persoonlijke inlogkaart.",
-    peopleLater: "Dit kan ook later, precies zo: open 'MK8DX beheer' op het bureaublad en kies 'Mensen'.",
+    peopleLater: "Dit kan ook later, precies zo: dubbelklik op 'MK8DX beheer' op het bureaublad; dat opent op dit scherm.",
     peopleField: "Namen (één per regel)", peopleAdd: "Toevoegen", peopleNow: "In deze installatie:", skip: "Overslaan",
     cardsTitle: "Inloggen op telefoons en pc's",
     cardsLead: "Inloggen op een telefoon, tablet of pc gaat in twee stappen: eerst het apparaat voorbereiden, daarna inloggen als de juiste persoon.",
@@ -137,7 +137,7 @@ const SOURCE = {
     adminField: "Your name", adminHint: "For example 'Dad', 'Sam' or 'Club team'. This is only the account's label in MK8DX administration. Everyone picks their own player name on the website the first time they sign in.",
     peopleTitle: "Who plays?",
     peopleLead: "Do you want to create accounts for others now — family, friends, club members or colleagues? Everyone gets a personal sign-in card.",
-    peopleLater: "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.",
+    peopleLater: "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.",
     peopleField: "Names (one per line)", peopleAdd: "Add", peopleNow: "In this installation:", skip: "Skip",
     cardsTitle: "Sign in on phones and PCs",
     cardsLead: "Signing in on a phone, tablet or PC takes two steps: first prepare the device, then sign in as the right person.",
@@ -526,7 +526,7 @@ const views = {
       const s = el("div", "person"); const img = el("img"); img.src = setup.qr; img.alt = T.setupCard;
       // The same short code the /setup page shows, in the same grouping, so comparing is easy.
       const code = setup.fingerprint.slice(0, 16).toUpperCase().match(/.{4}/g).join(" ");
-      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), copyButton(T.copySetup, setup.setupUrl),
+      s.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl), copyButton(T.copySetup, setup.pairingUrl || setup.setupUrl),
         el("div", "muted", T.fingerprint), el("div", "short-code", code));
       deviceCards.append(s);
     } catch (error) { main.append(errorBox(error.message)); }

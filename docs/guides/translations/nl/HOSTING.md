@@ -232,26 +232,10 @@ in `Documents\MK8DX-backups` die je niet meer nodig hebt.
 
 **Het pakket voor thuis en de club (`mk8dx-a2-…`, A2 zonder mail)** heeft geen menu: het startscript opent MK8DX beheer.
 De installatiemap is `~/.local/share/mk8dx/LAN` op Linux (`%LOCALAPPDATA%\MK8DX\LAN` op Windows),
-het draait met `compose.offline-lan.yaml`, en `backup-unschedule` raakt de nachtelijke taken niet. Op Linux,
-vanuit de pakketmap (getest in WSL 2 met 0.2.6):
-
-```sh
-state=~/.local/share/mk8dx/LAN
-py=$(ls -d ~/.local/share/mk8dx/python-offline-*)/bin/python
-"$py" tooling/auto_backup.py run --state-dir "$state"     # laatste versleutelde back-up, als je iets terug wilt kunnen
-systemctl --user disable --now mk8dx-mk8dx-backup.timer mk8dx-mk8dx-certificate-renewal.timer
-rm -f ~/.config/systemd/user/mk8dx-mk8dx-*.service ~/.config/systemd/user/mk8dx-mk8dx-*.timer
-systemctl --user daemon-reload
-"$py" tooling/install.py stop --state-dir "$state"
-docker compose --env-file "$state/compose.env" -f compose.yaml -f compose.offline-lan.yaml -f compose.images.yaml down -v
-rm -rf "$state" ~/.local/share/mk8dx/python-offline-* ~/.local/share/applications/mk8dx-beheer.desktop ~/Desktop/mk8dx-beheer.desktop
-```
-
-Verwijder daarna de images (stap 4) en de pakketmap. Een back-up gaat alleen open met de herstelcode van die
-installatie: bewaar het papier daarmee zolang je `~/Documents/MK8DX-backups` bewaart. Verwijder het MK8DX-certificaat
-van apparaten die het vertrouwden (A2-handleiding, hoofdstuk 6). Op Windows verwijder je in plaats van de systemd-timers
-de taken "MK8DX backup", "MK8DX certificate renewal" en "MK8DX start" in Taakplanner en de firewallregel
-`MK8DX-A2-offline-<adres>`.
+het draait met `compose.offline-lan.yaml`, en `backup-unschedule` raakt de nachtelijke taken niet. Verwijder het met
+*MK8DX van deze computer verwijderen* in hoofdstuk 12 van de [A2-handleiding](../../../install/A2_THUIS_HANDLEIDING_NL.md):
+Windows en Linux (getest in WSL 2 met 0.2.6), de geplande taken, de containers en volumes, de snelkoppeling, de images,
+het certificaat op apparaten en de firewallregel op Windows.
 
 Een installatie die vanaf de broncode is gebouwd, verwijder je op dezelfde manier vanuit de hoofdmap van de repository; zie
 [Operations](../../../OPERATIONS.md#remove-an-installation).
