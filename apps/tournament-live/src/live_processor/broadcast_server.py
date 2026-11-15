@@ -339,12 +339,14 @@ class BroadcastServer:
                 self._send_file(candidate)
 
             def _send_messages(self, language: str) -> None:
-                # Only the known language names map to a file, so no request text reaches a path.
+                # Only the known language names, and only as a file inside the catalog folder (safe_paths).
                 if language not in UI_LANGUAGES:
                     self.send_error(404)
                     return
-                candidate = MESSAGES_ROOT / f"{language}.json"
-                if not candidate.is_file():
+                from .safe_paths import file_within
+
+                candidate = file_within(MESSAGES_ROOT, f"{language}.json")
+                if candidate is None:
                     self.send_error(404)
                     return
                 self._send_file(candidate)
