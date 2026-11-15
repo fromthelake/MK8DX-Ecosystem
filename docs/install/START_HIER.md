@@ -10,10 +10,10 @@ Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag 
 
 | Route | Voor wie | Status | Naslag |
 | --- | --- | --- | --- |
-| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Volledig getest op Windows 11 met 0.2.6 | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) ([English](A1_ONE_COMPUTER_EN.md)) |
-| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Ondersteund | [Nederlandse handleiding, hoofdstuk 2](MK8DX_Handleiding_NL.txt); [English guide, chapter 2](MK8DX_User_Guide_EN.txt) |
+| **A1** — één Windows-computer met Docker | Rustig proberen op je eigen pc, zonder domein of echte e-mail | Volledig getest op Windows 11 | [A1_EEN_COMPUTER.md](A1_EEN_COMPUTER.md) ([English](A1_ONE_COMPUTER_EN.md)) |
+| **A3** — één Windows-computer zonder Docker (XAMPP en Node.js) | Als Docker niet kan of mag | Volledig getest op Windows 11 | [Nederlandse handleiding, hoofdstuk 2](MK8DX_Handleiding_NL.txt); [English guide, chapter 2](MK8DX_User_Guide_EN.txt) |
 | **A2** — thuis of op de club, zonder internet | Telefoons en pc's thuis of op een toernooilocatie laten meedoen, met een begeleide installatie in de browser | Getest op Windows 11 (Linux in WSL 2; macOS niet getest) | [A2_THUIS_HANDLEIDING_NL.md](A2_THUIS_HANDLEIDING_NL.md) |
-| **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | Gedocumenteerd; nog niet end-to-end getest | [B1_VPS.md](B1_VPS.md) |
+| **B1** — een eigen VPS met Docker | Een openbare website op je eigen domein | Volgens de handleiding doorlopen op Ubuntu 24.04 in WSL 2; nog niet op een echte VPS getest | [B1_VPS.md](B1_VPS.md) |
 | **B2** — webhosting met Node.js en MariaDB | Een openbare website zonder eigen server | Onze eigen communitysite draait zo; het openbare pakket is nog niet vanaf nul op een nieuw hostingaccount geïnstalleerd | [B2_WEBHOSTING.md](B2_WEBHOSTING.md) |
 
 Daarna: [apps koppelen](CLIENTS.md), [instellingen](INSTELLINGEN.md), [beheer, updates en herstel](BEHEER.md)

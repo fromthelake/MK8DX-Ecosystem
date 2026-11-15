@@ -30,8 +30,8 @@ translated A2 guide `A2_HOME_GUIDE.md`), and all of them are inside the installa
 carry the illustrated A2 guide as `docs/install/guide/<locale>.html` for every language; the setup wizard's Manual
 link opens it in the browser's language.
 
-A1 and A3 are supported after fresh-install and upgrade tests with data. A2 is tested end to end on Windows 11
-(Linux in WSL 2; macOS built but not tested). B1 is documented but has not been tested end to end. B2: our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The Android release APK is signed locally with the maintainer's retained key;
+A1, A2, A3 and B1 were installed by following their guides on 15 November 2026: A1 and A3 end to end on Windows 11, A2 end to end on
+Windows 11 and on Linux in WSL 2 (macOS built but not tested), and B1 rehearsed on Ubuntu 24.04 in WSL 2 (not yet on a real VPS). B2: our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The Android release APK is signed locally with the maintainer's retained key;
 earlier public debug APKs require one uninstall before installing it. Save any results not yet sent before that
 uninstall. Later updates signed with the same release key install in place.
 

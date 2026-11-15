@@ -114,9 +114,9 @@ flowchart TB
 | 路線 | 適用於 | 執行環境 | 狀態 |
 | --- | --- | --- | --- |
 | **A2** 家用或俱樂部網路 | 你自己的網路，設定完成後不需要網際網路，每人一張登入卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 晶片或 Intel） | 已在 Windows 11 上完成端對端測試；Linux 在 WSL 2 中測試；Mac 版已建置，尚未在實體 Mac 上測試 |
-| **A1** 單台電腦 | 在你眼前這台電腦上試用 | Windows 11 或 Linux，x86-64，需要 Docker | 已在 Windows 11 上以 0.2.6 完整測試（夜間備份自下一版本起）；Linux：安裝、升級、備份 |
+| **A1** 單台電腦 | 在你眼前這台電腦上試用 | Windows 11 或 Linux，x86-64，需要 Docker | 已在 Windows 11 上完整測試（夜間備份自 0.2.7 起）；Linux：安裝、升級、備份 |
 | **A3** 不使用 Docker 的單台電腦 | 無法使用 Docker 的 Windows 電腦 | Windows 11，搭配 XAMPP 和 Node.js | 已在 Windows 11 上完整測試：安裝、登入、掃描器、錦標賽、備份、夜間備份、更新、移除 |
-| **B1** 公開網站 | 你的線上社群，使用你自己的網域和電子郵件 | 裝有 Docker 的 Linux x86-64 伺服器（VPS）；文件以 Ubuntu 24.04 為例 | 已有文件，尚未進行端對端測試 |
+| **B1** 公開網站 | 你的線上社群，使用你自己的網域和電子郵件 | 裝有 Docker 的 Linux x86-64 伺服器（VPS）；文件以 Ubuntu 24.04 為例 | 已依指南在 WSL 2 中的 Ubuntu 24.04 上演練；尚未在實際 VPS 上測試 |
 | **B2** 虛擬主機 | 線上執行，不需要自己的伺服器 | 支援 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主機方案 | 我們自己的社群網站就是這樣運作的；公開套件尚未在全新的主機帳號上從頭安裝過 |
 
 周邊的 App：
@@ -216,7 +216,7 @@ MK8DX 是開源專案，由玩家為玩家打造。你可以為你的俱樂部�
 
 ## 專案狀態
 
-穩定版本發布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可以在家裡或俱樂部使用；0.2.1 讓 Android App 擁有成績的離線副本，版面也更加清爽。0.2.2 讓錄影分析重新可用，並新增了 Tournament Analysis 視窗。0.2.3 讓 Web 閘道不需 root 即可執行，並讓這個儲存庫更容易上手。同時，社群伺服器的資料庫升級到 MySQL 9.7 LTS，所有掃描器中的卡丁車和滑翔翼顏色現在都會跟隨角色。0.2.4 讓指南、設定精靈、啟動器和 Tournament 視窗支援遊戲的全部 15 種語言，能讀取任何文字的玩家名稱，並內建所有 OCR 模型，辨識可離線進行。0.2.5 是建議每個社群都安裝的安全性更新：更嚴格的權限檢查與請求限制，危險的管理員操作需要新的電子郵件確認，獨立的資料庫帳戶，以及每種路線的每日自動備份。0.2.6 讓 Director 可以在 Android App 中委派即時擷取，讓管理員看到哪些請求限制拒絕了請求，讓即時記分板與啟動器支援全部 15 種語言，並讓 App 中的日期使用 App 本身的語言。請參閱[變更紀錄](CHANGELOG.md)、[發行套件](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+穩定版本發布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可以在家裡或俱樂部使用；0.2.1 讓 Android App 擁有成績的離線副本，版面也更加清爽。0.2.2 讓錄影分析重新可用，並新增了 Tournament Analysis 視窗。0.2.3 讓 Web 閘道不需 root 即可執行，並讓這個儲存庫更容易上手。同時，社群伺服器的資料庫升級到 MySQL 9.7 LTS，所有掃描器中的卡丁車和滑翔翼顏色現在都會跟隨角色。0.2.4 讓指南、設定精靈、啟動器和 Tournament 視窗支援遊戲的全部 15 種語言，能讀取任何文字的玩家名稱，並內建所有 OCR 模型，辨識可離線進行。0.2.5 是建議每個社群都安裝的安全性更新：更嚴格的權限檢查與請求限制，危險的管理員操作需要新的電子郵件確認，獨立的資料庫帳戶，以及每種路線的每日自動備份。0.2.6 讓 Director 可以在 Android App 中委派即時擷取，讓管理員看到哪些請求限制拒絕了請求，讓即時記分板與啟動器支援全部 15 種語言，並讓 App 中的日期使用 App 本身的語言。0.2.7 包含未單獨發布的 0.2.6：每種安裝路線都依指南逐步走過一遍並修正了指南，夜間備份與新的復原碼在每種路線上都能使用，同一台電腦上的兩個安裝也不會再互相取代對方的映像檔。請參閱[變更紀錄](CHANGELOG.md)、[發行套件](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
 
 辨識結果永遠不會自動成為正式成績：你自己的計時賽由你審核，錦標賽的比賽則要經過主辦人確認後才會計入。
 

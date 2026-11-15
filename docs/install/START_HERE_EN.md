@@ -10,10 +10,10 @@ It takes you through step by step. The pages in this folder are technical refere
 
 | Route | For whom | Status | Reference |
 | --- | --- | --- | --- |
-| **A1** — one Windows computer with Docker | Trying it calmly on your own PC, without a domain or real email | Tested end to end on Windows 11 with 0.2.6 | [A1_ONE_COMPUTER_EN.md](A1_ONE_COMPUTER_EN.md) ([Dutch](A1_EEN_COMPUTER.md)) |
-| **A3** — one Windows computer without Docker (XAMPP and Node.js) | When Docker is not possible or not allowed | Supported | [English guide, chapter 2](MK8DX_User_Guide_EN.txt); [Dutch guide, chapter 2](MK8DX_Handleiding_NL.txt) |
+| **A1** — one Windows computer with Docker | Trying it calmly on your own PC, without a domain or real email | Tested end to end on Windows 11 | [A1_ONE_COMPUTER_EN.md](A1_ONE_COMPUTER_EN.md) ([Dutch](A1_EEN_COMPUTER.md)) |
+| **A3** — one Windows computer without Docker (XAMPP and Node.js) | When Docker is not possible or not allowed | Tested end to end on Windows 11 | [English guide, chapter 2](MK8DX_User_Guide_EN.txt); [Dutch guide, chapter 2](MK8DX_Handleiding_NL.txt) |
 | **A2** — at home or at the club, without internet | Letting phones and PCs join at home or at a tournament venue, with a guided installation in the browser | Tested on Windows 11 (Linux in WSL 2; macOS not tested) | [A2_HOME_GUIDE_EN.md](A2_HOME_GUIDE_EN.md) |
-| **B1** — your own VPS with Docker | A public website on your own domain | Documented; not yet tested end to end | [B1_VPS_EN.md](B1_VPS_EN.md) |
+| **B1** — your own VPS with Docker | A public website on your own domain | Rehearsed by following the guide on Ubuntu 24.04 in WSL 2; not yet tested on a real VPS | [B1_VPS_EN.md](B1_VPS_EN.md) |
 | **B2** — web hosting with Node.js and MariaDB | A public website without a server of your own | Our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account | [B2_WEBHOSTING_EN.md](B2_WEBHOSTING_EN.md) |
 
 After that: [connecting the apps](CLIENTS_EN.md), [settings](SETTINGS_EN.md), [administration, updates and restoring](ADMINISTRATION_EN.md)
