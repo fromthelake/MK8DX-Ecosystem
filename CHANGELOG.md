@@ -3,6 +3,16 @@
 All notable changes to MK8DX Ecosystem are recorded here. The first stable public package is
 `0.1.0`; earlier `0.1.0-rc.N` tags are release candidates. Dates are in ISO format.
 
+## Unreleased
+
+### Changed
+
+- **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
+  runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no
+  reasoned allowlist entry (see Mutating routes, "Checked by a test"). CodeQL's `js/missing-rate-limiting` rule,
+  which could not see the database-backed limiter and raised only false alerts, is the one rule now excluded; all
+  other CodeQL queries still run.
+
 ## 0.2.5 — 2026-11-16
 
 A security release; updating is recommended for every community. Permission checks are stronger on every route,

@@ -59,6 +59,11 @@ test environment.
 | LiveTrial (`apps/timetrials-desktop`) | see below |
 | Android, Tournament | the build and test steps in [Client builds](CLIENT_BUILDS.md) |
 
+The API's `npm test` includes `test/request-budget-coverage.test.ts`: it composes the real hosted runtime (no
+database needed) and fails when a mutating route, or a step-up protected read, has no request budget and no
+reasoned allowlist entry ([mutating routes](architecture/MUTATING_ROUTES.md#checked-by-a-test)). It replaces
+CodeQL's `js/missing-rate-limiting` rule, the only rule `.github/codeql/codeql-config.yml` excludes.
+
 Central reader, TypeScript and Python:
 
 ```sh

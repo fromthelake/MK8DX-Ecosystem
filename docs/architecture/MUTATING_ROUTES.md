@@ -40,7 +40,7 @@ same-origin proof), **Budget** (durable per-account or per-address budget), **Qu
 | `POST /v1/session/native-account-switch`, `POST /v1/session/account-switch` | device value (app header / browser cookie) | remembered entry of that device; PIN on the server | browser: Origin must be the installation | per address (pre-auth); PIN attempts per account and device; new sessions 60/h per account, 120/h per device | - | - | - |
 | `POST /v1/session/native-forget` | app device header | entry of that device | n/a | per address (pre-auth) | - | idempotent | delete |
 | `PUT /v1/account/switch-pin`, `POST /v1/account/switch-pin/clear` | account | self | Origin + proof | 10/h | 1 per account | upsert | - |
-| `POST /v1/device-invitations` | account | self | proof | 10/h | - | - | ticket 15 min |
+| `POST /v1/session/device-invitations` | account | self | proof | 10/h | - | - | ticket 15 min |
 | `POST /v1/native/device-authorization/email` (+ `/verify`, `/link`) | anonymous with a device code | that device code | n/a | durable per address slot, per recipient and the installation mail budget (shared with `/api/auth/*`); in-process per address and e-mail; durable per challenge | 3 sends per device code | single use | with the device code |
 
 ## Identity, Players, aliases and profile
@@ -217,6 +217,21 @@ request (made by **Send the link**, stored even when the e-mail fails) with a ne
 the operator's terminal; the person still confirms it on the link page, and the window opens only for the session
 that asked. It refuses when nothing is pending or when sessions of more than one device are waiting, and records
 `step_up_operator_link` in the audit. See [Operations](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server).
+
+## Checked by a test
+
+`backend/api/test/request-budget-coverage.test.ts` (part of the API's ordinary `npm test`) composes the real hosted
+runtime, with and without e-mail (offline LAN), and reads every registered route from
+`security/request-budget-coverage.ts`. Every `POST`/`PUT`/`PATCH`/`DELETE` route and every step-up protected read
+must be covered by the general signed-in backstop (the same predicate, `mutationBackstopCovers`, that `app.ts`
+uses), by a budget the route declares next to the code that spends it (`config: { requestBudget: "pre-auth" }` or
+`"route"`), or by an allowlist entry in the test whose reason points here (Better Auth's `/api/auth/*`, the
+single-use native sign-in link, the two step-up protected reads of the account list). Routes reachable before
+sign-in are listed in the test and never count as covered by the backstop, which counts signed-in callers only.
+The test fails for a new unbudgeted route and for a stale list entry. It replaces CodeQL's
+`js/missing-rate-limiting` heuristic, which cannot see this durable limiter and is the only rule excluded in
+`.github/codeql/codeql-config.yml`. When you add a route reachable before sign-in, declare its budget and add it
+to the test's list.
 
 ## Open items
 

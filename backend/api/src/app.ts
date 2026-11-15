@@ -148,6 +148,7 @@ import {
   type MutationRateLimiter,
 } from "./security/mysql-mutation-rate-limiter.js";
 import { budgetRefusal, type AbuseBudgets } from "./security/abuse-budgets.js";
+import { mutationBackstopCovers, recordRegisteredRoutes } from "./security/request-budget-coverage.js";
 import type { AuthEmailBudgets } from "./authentication/auth-email-budgets.js";
 import type { EphemeralAndroidScanTestService } from
   "./timetrials/ephemeral-scan-test-service.js";
@@ -643,6 +644,9 @@ export async function buildApp(
       },
     },
   });
+  // Every route is recorded with its declared budget, so a test can prove each mutating route is
+  // budgeted (security/request-budget-coverage.ts). Registered before any route.
+  recordRegisteredRoutes(app);
 
   if (dependencies.requestConcurrencyLimit !== undefined) {
     const limit = dependencies.requestConcurrencyLimit;
@@ -706,14 +710,12 @@ export async function buildApp(
   }
   if (dependencies.abuseBudgets !== undefined) {
     const budgets = dependencies.abuseBudgets;
-    const mutatingMethods = new Set(["POST", "PUT", "PATCH", "DELETE"]);
     // H1 backstop: every signed-in mutation under /v1 counts against the caller's own durable budget
     // (administrators higher, never unlimited) and one installation-wide per-minute budget, before
     // the body is read. Route-specific budgets and quotas still apply on top.
     app.addHook("onRequest", async (request, reply) => {
-      if (!mutatingMethods.has(request.method)) return;
       const path = request.url.split("?", 1)[0] ?? "";
-      if (!path.startsWith("/v1/")) return;
+      if (!mutationBackstopCovers(request.method, path)) return;
       const actor = sharedActor(request);
       let resolved: ActorContext;
       try { resolved = await actor; } catch { return; }
