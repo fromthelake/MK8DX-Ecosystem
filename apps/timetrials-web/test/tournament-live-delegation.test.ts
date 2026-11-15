@@ -19,7 +19,7 @@ function delegation(overrides: Record<string, unknown> = {}): Record<string, unk
 }
 
 function liveRecord(recordId: string, status: "requested" | "active" | "stopping" | "complete", approvedAtMs: number | null,
-  uploader = { userAccountId: "user_account.capture", displayName: "Capture operator" }) {
+  uploader = { userAccountId: "user_account.capture", displayName: "Capture operator" }, withdrawnAtMs: number | null = null) {
   return {
     recordId, clientRecordId: `run-${recordId}`, revision: 3, status: "uploading",
     sourceKind: "tournament_live_capture", uploadedBy: uploader,
@@ -27,7 +27,7 @@ function liveRecord(recordId: string, status: "requested" | "active" | "stopping
     suggestedTournamentId: TOURNAMENT, suggestedTournamentName: "Live night",
     linkedTournamentId: null, groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: 2,
     live: {
-      status, approvedAtMs, stoppedAtMs: null, completedAtMs: null,
+      status, approvedAtMs, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs,
       mappings: [{ observedGroupLabel: "Capture Card A", groupId: "tournament_group.live_a", phase: "qualifier" }],
     },
   };
@@ -55,6 +55,18 @@ describe("capture-delegation client parsing", () => {
     await expect(client({ delegations: [delegation({ status: "expired" })] }).listLiveCaptureDelegations(TOURNAMENT)).rejects.toThrow();
     await expect(client({ delegations: [], nextCursor: null }).listLiveCaptureDelegations(TOURNAMENT)).rejects.toThrow();
     await expect(client({ code: "tournament_forbidden" }, 403).listLiveCaptureDelegations(TOURNAMENT)).rejects.toThrow("403");
+  });
+
+  it("reads the live association strictly, including when the Director withdrew it", async () => {
+    const records = (body: unknown) => new TournamentIncomingClient(async () => Response.json(body)).listEvidenceRecords(TOURNAMENT);
+    const withdrawn = liveRecord("evidence.withdrawn", "requested", null, undefined, NOW - 5_000);
+    expect((await records({ records: [withdrawn] }))[0]!.live!.withdrawnAtMs).toBe(NOW - 5_000);
+    expect((await records({ records: [liveRecord("evidence.active", "active", 5)] }))[0]!.live!.withdrawnAtMs).toBeNull();
+    const withExtra = liveRecord("evidence.extra", "requested", null);
+    await expect(records({ records: [{ ...withExtra, live: { ...withExtra.live, reopenedAtMs: 1 } }] })).rejects.toThrow();
+    const { withdrawnAtMs: _dropped, ...older } = withExtra.live;
+    await expect(records({ records: [{ ...withExtra, live: older }] })).rejects.toThrow();
+    await expect(records({ records: [{ ...withExtra, live: { ...withExtra.live, withdrawnAtMs: "soon" } }] })).rejects.toThrow();
   });
 
   it("refuses a duration beyond 7 days and a malformed account before any request", async () => {
@@ -128,6 +140,18 @@ describe("Director live-capture delegation view", () => {
       body: { delegateUserAccountId: "user_account.capture", expiresInMinutes: 720,
         reason: "Live capture delegated by Tournament director" },
     }]);
+  });
+
+  it("says a withdrawn feed stays private until the Director reopens it, even for a delegated uploader", async () => {
+    const withdrawnAt = NOW - 120_000;
+    const { container } = await mount(
+      [liveRecord("evidence.withdrawn", "requested", null, undefined, withdrawnAt)], [delegation()]);
+    const texts = descendants(container).map((node) => node.textContent ?? "");
+    expect(texts.some((text) => text.startsWith("You withdrew this live feed on ") &&
+      text.includes("no roster match or capture delegation opens it again"))).toBe(true);
+    expect(texts.some((text) => text.includes("The next race whose names match the group list opens the public view"))).toBe(false);
+    expect(descendants(container).some((node) => node.tagName === "button" &&
+      (node.textContent ?? "").startsWith("Delegate live capture to "))).toBe(false);
   });
 
   it("issues a delegation from the panel with the chosen duration", async () => {

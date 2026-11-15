@@ -19,7 +19,7 @@ const invalidated: TournamentEvidenceRecord = {
   startedAtMs: 1, stoppedAtMs: null, analysisCompletedAtMs: null, complete: false,
   suggestedTournamentId: "tournament.synthetic", suggestedTournamentName: "Synthetic", linkedTournamentId: null,
   groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: 2,
-  live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null },
+  live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null },
 };
 
 describe("Tournament connected dismiss-live route", () => {

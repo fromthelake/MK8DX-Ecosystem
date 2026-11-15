@@ -175,10 +175,15 @@ internal fun TournamentScoreEntryStep(
                         fontWeight = FontWeight.Black,
                         fontSize = 14.sp,
                     )
+                    // The web's wording (tournament-operation-view.ts): a roster match alone opens nothing (F05).
+                    val groupKind = if (qualifier) "qualifier" else "final"
+                    val dutchGroup = if (qualifier) "kwalificatiegroep" else "finalegroep"
                     LocalizedText(
-                        "Before Start, the capture operator selects this Tournament and maps every sticker-named card to a " +
-                            "different ${if (qualifier) "qualifier" else "final"} group. After race 1, a strong exact roster " +
-                            "match may open the public View. Scores count only after Stop, Player matching and complete group approval here.",
+                        androidText(
+                            LocalAndroidProductLanguage.current,
+                            "Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different $groupKind group. After race 1, a strong exact roster match opens the public View only for a feed from you, an administrator or an account you delegated live capture to; other feeds wait for you. Scores count only after Stop, Player matching and complete group approval here.",
+                            "Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere $dutchGroup. Na race 1 opent een sterke exacte rostermatch de openbare View alleen voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier.",
+                        ),
                         color = TextMain,
                         fontSize = 12.sp,
                         lineHeight = 16.sp,

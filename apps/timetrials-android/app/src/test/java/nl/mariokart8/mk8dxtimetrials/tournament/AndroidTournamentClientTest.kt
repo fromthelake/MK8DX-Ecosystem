@@ -458,6 +458,43 @@ class AndroidTournamentClientTest {
     }
 
     @Test
+    fun evidenceRecordsReadTheLiveAssociationStrictlyIncludingItsWithdrawal() {
+        fun recordJson(live: String) = """{"recordId":"evidence.one","clientRecordId":"run-1","revision":3,""" +
+            """"status":"uploading","sourceKind":"tournament_live_capture",""" +
+            """"uploadedBy":{"userAccountId":"user_account.capture","displayName":"Capture operator"},""" +
+            """"startedAtMs":1,"stoppedAtMs":null,"analysisCompletedAtMs":null,"complete":false,""" +
+            """"suggestedTournamentId":"tournament.demo","suggestedTournamentName":"Demo","linkedTournamentId":null,""" +
+            """"groups":[],"resultCount":0,"createdAtMs":1,"updatedAtMs":2,"live":$live}"""
+        fun answering(live: String) = AndroidTournamentClient(
+            "https://example.invalid", session,
+            AndroidTournamentConnectionOpener {
+                TournamentFakeHttpsConnection(it, responseBody =
+                    """{"schemaVersion":"mk8dx.native-tournament-evidence-records.v1","records":[${recordJson(live)}]}""")
+            },
+        )
+        val mapping = """[{"observedGroupLabel":"Card 1","groupId":"tournament_group.one","phase":"qualifier"}]"""
+        val withdrawn = answering(
+            """{"status":"requested","mappings":$mapping,"approvedAtMs":null,"stoppedAtMs":null,"completedAtMs":null,"withdrawnAtMs":77}""",
+        ).evidenceRecords("tournament.demo").single()
+        assertEquals(77L, withdrawn.live?.withdrawnAtMs)
+        val public = answering(
+            """{"status":"active","mappings":$mapping,"approvedAtMs":5,"stoppedAtMs":null,"completedAtMs":null,"withdrawnAtMs":null}""",
+        ).evidenceRecords("tournament.demo").single()
+        assertEquals(null, public.live?.withdrawnAtMs)
+        listOf(
+            // An older document without the key, an unknown key, and a timestamp that is not a number.
+            """{"status":"requested","mappings":[],"approvedAtMs":null,"stoppedAtMs":null,"completedAtMs":null}""",
+            """{"status":"requested","mappings":[],"approvedAtMs":null,"stoppedAtMs":null,"completedAtMs":null,"withdrawnAtMs":null,"reopenedAtMs":1}""",
+            """{"status":"requested","mappings":[],"approvedAtMs":null,"stoppedAtMs":null,"completedAtMs":null,"withdrawnAtMs":"soon"}""",
+            "null",
+        ).forEach { live ->
+            assertThrows(live, AndroidTournamentClientException::class.java) {
+                answering(live).evidenceRecords("tournament.demo")
+            }
+        }
+    }
+
+    @Test
     fun grantRevokeAndWithdrawSendTheWebReasons() {
         val connections = mutableListOf<TournamentFakeHttpsConnection>()
         val client = AndroidTournamentClient(

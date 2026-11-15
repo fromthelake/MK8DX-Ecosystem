@@ -489,6 +489,11 @@ internal data class AndroidTournamentEvidenceUploader(val userAccountId: String,
 @Serializable
 internal data class AndroidTournamentLiveMapping(val observedGroupLabel: String, val groupId: String, val phase: String)
 
+/** TournamentLiveAssociation's keys in backend/api (tooling/tests/test_web_api_live_capture_agreement.py binds them). */
+internal val ANDROID_LIVE_ASSOCIATION_KEYS =
+    setOf("status", "mappings", "approvedAtMs", "stoppedAtMs", "completedAtMs", "withdrawnAtMs")
+private val ANDROID_LIVE_ASSOCIATION_TIMESTAMPS = listOf("approvedAtMs", "stoppedAtMs", "completedAtMs", "withdrawnAtMs")
+
 @Serializable
 internal data class AndroidTournamentLiveAssociation(
     val status: String,
@@ -496,6 +501,8 @@ internal data class AndroidTournamentLiveAssociation(
     val approvedAtMs: Long? = null,
     val stoppedAtMs: Long? = null,
     val completedAtMs: Long? = null,
+    /** The Director took the feed off the public view; only the Director reopens it. */
+    val withdrawnAtMs: Long? = null,
 )
 
 @Serializable
@@ -1274,11 +1281,33 @@ internal class AndroidTournamentClient(
     }
 
     fun evidenceRecords(tournamentId: String): List<AndroidTournamentEvidenceRecord> {
-        val response = json.decodeFromString<AndroidTournamentEvidenceResponse>(
-            request("GET", "/v1/native/tournaments/${pathSegment(tournamentId)}/evidence-records"),
-        )
+        val body = request("GET", "/v1/native/tournaments/${pathSegment(tournamentId)}/evidence-records")
+        requireExactLiveAssociations(body)
+        val response = json.decodeFromString<AndroidTournamentEvidenceResponse>(body)
         if (response.schemaVersion != "mk8dx.native-tournament-evidence-records.v1") malformedResponse()
         return response.records
+    }
+
+    /**
+     * The live association is read strictly, like the web client: exactly the
+     * keys of TournamentLiveAssociation in backend/api, each timestamp a number
+     * or null. A drift would otherwise hide, for example, that a feed was withdrawn.
+     */
+    private fun requireExactLiveAssociations(body: String) {
+        val records = runCatching { json.parseToJsonElement(body).jsonObject["records"]?.jsonArray }.getOrNull()
+            ?: malformedResponse()
+        for (record in records) {
+            val live = runCatching { record.jsonObject["live"] }.getOrNull() ?: continue
+            if (live is JsonNull) malformedResponse()
+            val fields = runCatching { live.jsonObject }.getOrNull() ?: malformedResponse()
+            if (fields.keys != ANDROID_LIVE_ASSOCIATION_KEYS) malformedResponse()
+            for (key in ANDROID_LIVE_ASSOCIATION_TIMESTAMPS) {
+                val value = fields[key]
+                if (value is JsonNull) continue
+                val primitive = runCatching { value!!.jsonPrimitive }.getOrNull() ?: malformedResponse()
+                if (primitive.isString || primitive.content.toLongOrNull()?.takeIf { it >= 0 } == null) malformedResponse()
+            }
+        }
     }
 
     fun publicLiveGroups(tournamentId: String): List<AndroidPublicLiveGroup> {

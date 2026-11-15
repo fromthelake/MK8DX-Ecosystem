@@ -285,7 +285,7 @@ it("registers a mapped live run before its first race and requires director appr
       complete: false, suggestedTournamentId: input.suggestedTournamentId,
       suggestedTournamentName: "Live Tournament", linkedTournamentId: null,
       groups: [], resultCount: 0, createdAtMs: input.nowMs, updatedAtMs: input.nowMs,
-      live: { status: "requested", mappings: input.liveRegistration!.mappings, approvedAtMs: null, stoppedAtMs: null, completedAtMs: null },
+      live: { status: "requested", mappings: input.liveRegistration!.mappings, approvedAtMs: null, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null },
     };
   };
   repo.approveLiveAssociation = async (input) => {
@@ -298,7 +298,7 @@ it("registers a mapped live run before its first race and requires director appr
       complete: false, suggestedTournamentId: input.tournamentId,
       suggestedTournamentName: "Live Tournament", linkedTournamentId: null,
       groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: input.nowMs,
-      live: { status: "active", mappings: input.mappings, approvedAtMs: input.nowMs, stoppedAtMs: null, completedAtMs: null },
+      live: { status: "active", mappings: input.mappings, approvedAtMs: input.nowMs, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null },
     };
   };
   const service = new TournamentConnectedService(repo, { async submit() { throw new Error("unreachable"); } }, {
@@ -335,7 +335,7 @@ it("dismisses a stale live request through the reviewer's repository call with a
       complete: false, suggestedTournamentId: input.tournamentId,
       suggestedTournamentName: "Live Tournament", linkedTournamentId: null,
       groups: [], resultCount: 0, createdAtMs: 1, updatedAtMs: input.nowMs,
-      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null },
+      live: { status: "invalidated", mappings: [], approvedAtMs: null, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null },
     };
   };
   const service = new TournamentConnectedService(repo, { async submit() { throw new Error("unreachable"); } }, {
@@ -385,7 +385,7 @@ it("activates only the provisional public view after every feed has a strong exa
   repo.findEvidenceRecord = async () => stored;
   repo.upsertEvidenceRecord = async (input) => {
     const live = input.liveRegistration
-      ? { status: "requested" as const, mappings: input.liveRegistration.mappings, approvedAtMs: null, stoppedAtMs: null, completedAtMs: null }
+      ? { status: "requested" as const, mappings: input.liveRegistration.mappings, approvedAtMs: null, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null }
       : stored?.live;
     const next: StoredTournamentEvidenceRecord = {
       recordId: stored?.recordId ?? input.recordId,
@@ -495,7 +495,7 @@ it("projects live totals through opening balance reset excluded race and a short
       { entryKey: "two:2", result: corrected, observedGroupLabel: "Feed 1", suggestedPhase: "qualifier", suggestedGroupId: null, suggestedRaceNumber: 2, occurredAtMs: 30 },
     ],
     live: {
-      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null,
+      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null,
       mappings: [{ observedGroupLabel: "Feed 1", groupId: "group.one", phase: "qualifier" }],
     },
   };
@@ -530,7 +530,7 @@ it("keeps one live standing per observed player when every race brings new obser
     entries: [1, 2, 3].map((n) => ({ entryKey: `race:${n}`, result: race(n, 15 * n, 12 * n), observedGroupLabel: "Groep 1",
       suggestedPhase: "qualifier", suggestedGroupId: null, suggestedRaceNumber: n, occurredAtMs: n })),
     live: {
-      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null,
+      status: "active", approvedAtMs: 5, stoppedAtMs: null, completedAtMs: null, withdrawnAtMs: null,
       mappings: [{ observedGroupLabel: "Groep 1", groupId: "group.one", phase: "qualifier" }],
     },
   };

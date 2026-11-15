@@ -51,6 +51,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Tournament Live names the real sign-out label**: its offline and unconfirmed sign-out messages (and the
   Tournament Connect command line) now point to **Sign out on all devices** in the website's account menu instead
   of a "Sign out everywhere" button on an account page, in every language.
+- **A withdrawn live feed says it stays private**: an evidence record's `live` object now carries `withdrawnAtMs`
+  (when the Director took the feed off the public view, `null` otherwise; the website and the app read the object
+  strictly). On the website and in the app a withdrawn run says it stays off the public view until the Director
+  confirms the live routing again, even when its account holds a capture delegation, instead of "the next race opens
+  the public view", and offers no delegation shortcut.
+- **Step 5/9 texts match the live-capture rule**: the Step 5 intro, the recordings intro (website, app) and Tournament
+  Live's connection help no longer say race 1 opens the public view by itself; a strong roster match opens it only for
+  a feed from the Director, an administrator or a delegated account. The app's recording cards (*Live now*, *Repair live
+  group links*, *start/stop unknown* and the other states) are translated in every language.
 
 ## 0.2.5 — 2026-11-16
 

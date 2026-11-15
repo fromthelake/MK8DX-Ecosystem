@@ -28968,6 +28968,16 @@
    ]
   },
   {
+   "key": "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.",
+   "nl": "Je hebt deze live-feed op {0} teruggetrokken. Hij blijft van de openbare weergave: geen rostermatch of capturedelegatie opent hem opnieuw. Bevestig hieronder de live-koppeling om hem terug te zetten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "tournament-incoming-section.ts"
+   ]
+  },
+  {
    "key": "You won",
    "nl": "Jij won",
    "kinds": [

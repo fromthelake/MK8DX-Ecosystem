@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[2]
 API = ROOT / "backend" / "api" / "src" / "tournaments" / "tournament-connected-routes.ts"
 SERVICE = ROOT / "backend" / "api" / "src" / "tournaments" / "tournament-connected-service.ts"
 WEB = ROOT / "apps" / "timetrials-web" / "src" / "tournament-incoming-client.ts"
+REPOSITORY = ROOT / "backend" / "api" / "src" / "tournaments" / "mysql-tournament-connected-repository.ts"
+ANDROID = (ROOT / "apps" / "timetrials-android" / "app" / "src" / "main" / "java" / "nl" / "mariokart8" /
+           "mk8dxtimetrials" / "tournament" / "AndroidTournamentClient.kt")
 
 
 def _names(block: str) -> list[str]:
@@ -61,6 +64,30 @@ class LiveCaptureDelegationAgreement(unittest.TestCase):
         self.assertEqual(_schema_required(api, "liveCaptureDelegationDocumentSchema"), ["delegation"])
         self.assertIn('exact(body, ["delegations"])', web)
         self.assertEqual(web.count('exact(body, ["delegation"])'), 2)
+
+
+
+class LiveAssociationAgreement(unittest.TestCase):
+    """The evidence record's `live` object: the service type, the repository mapping, the web and the app."""
+
+    def test_every_side_names_the_same_keys(self) -> None:
+        fields = _interface_fields(SERVICE.read_text(encoding="utf-8"), "TournamentLiveAssociation")
+        self.assertIn("withdrawnAtMs", fields)
+        repository = REPOSITORY.read_text(encoding="utf-8")
+        start = repository.index("const live = row.live_status")
+        mapped = re.findall(r"^\s+([A-Za-z0-9_]+):", repository[start:repository.index("};", start)], re.MULTILINE)
+        self.assertEqual(sorted(fields), sorted(mapped), "the repository does not map every live field")
+        web = WEB.read_text(encoding="utf-8")
+        match = re.search(r"exact\(liveRow,\s*\[(.*?)\]", web, re.DOTALL)
+        assert match is not None, "the web parser reads the live association without an exact() guard"
+        self.assertEqual(sorted(fields), sorted(_names(match.group(1))))
+        android = ANDROID.read_text(encoding="utf-8")
+        keys = re.search(r"ANDROID_LIVE_ASSOCIATION_KEYS =\s*setOf\((.*?)\)", android, re.DOTALL)
+        assert keys is not None
+        self.assertEqual(sorted(fields), sorted(_names(keys.group(1))))
+        block = android[android.index("data class AndroidTournamentLiveAssociation("):]
+        declared = re.findall(r"^\s+val ([A-Za-z0-9_]+):", block[:block.index("\n)")], re.MULTILINE)
+        self.assertEqual(sorted(fields), sorted(declared))
 
 
 if __name__ == "__main__":

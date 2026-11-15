@@ -49,6 +49,8 @@ export type TournamentEvidenceRecord = Readonly<{
     approvedAtMs: number | null;
     stoppedAtMs: number | null;
     completedAtMs: number | null;
+    /** The Director took the feed off the public view; only the Director reopens it. */
+    withdrawnAtMs: number | null;
   }>;
 }>;
 
@@ -98,12 +100,22 @@ function record(value: unknown): Record<string, unknown> {
 // The capture-delegation documents are parsed strictly: an unknown or missing
 // key is a contract drift between this client and the API's response schema
 // (liveCaptureDelegationSchema in backend/api), not something to guess at.
-function exact(value: Record<string, unknown>, keys: readonly string[]): void {
+function exact(value: Record<string, unknown>, keys: readonly string[], what = "capture-delegation response"): void {
   const actual = Object.keys(value).sort();
   const expected = [...keys].sort();
   if (actual.length !== expected.length || actual.some((key, index) => key !== expected[index])) {
-    throw new Error("Invalid capture-delegation response.");
+    throw new Error(`Invalid ${what}.`);
   }
+}
+
+/** A timestamp the API always sends: a number or null, nothing else. */
+function nullableTimestamp(row: Record<string, unknown>, key: string): number | null {
+  const value = row[key];
+  if (value === null) return null;
+  if (typeof value !== "number" || !Number.isSafeInteger(value) || value < 0) {
+    throw new Error("Invalid live evidence association.");
+  }
+  return value;
 }
 
 function liveCaptureDelegation(value: unknown): TournamentLiveCaptureDelegation {
@@ -205,6 +217,9 @@ function evidence(value: unknown): TournamentEvidenceRecord {
   let live: TournamentEvidenceRecord["live"];
   if (row["live"] !== undefined) {
     const liveRow = record(row["live"]);
+    // Strict like the delegation documents: the keys are TournamentLiveAssociation in backend/api.
+    exact(liveRow, ["status", "mappings", "approvedAtMs", "stoppedAtMs", "completedAtMs", "withdrawnAtMs"],
+      "live evidence association");
     if (!["requested", "active", "stopping", "complete", "invalidated"].includes(String(liveRow["status"])) ||
         !Array.isArray(liveRow["mappings"])) throw new Error("Invalid live evidence association.");
     live = {
@@ -216,9 +231,10 @@ function evidence(value: unknown): TournamentEvidenceRecord {
         }
         return { observedGroupLabel: mapping["observedGroupLabel"], groupId: mapping["groupId"], phase: mapping["phase"] };
       }),
-      approvedAtMs: typeof liveRow["approvedAtMs"] === "number" ? liveRow["approvedAtMs"] : null,
-      stoppedAtMs: typeof liveRow["stoppedAtMs"] === "number" ? liveRow["stoppedAtMs"] : null,
-      completedAtMs: typeof liveRow["completedAtMs"] === "number" ? liveRow["completedAtMs"] : null,
+      approvedAtMs: nullableTimestamp(liveRow, "approvedAtMs"),
+      stoppedAtMs: nullableTimestamp(liveRow, "stoppedAtMs"),
+      completedAtMs: nullableTimestamp(liveRow, "completedAtMs"),
+      withdrawnAtMs: nullableTimestamp(liveRow, "withdrawnAtMs"),
     };
   }
   return {

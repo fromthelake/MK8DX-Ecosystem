@@ -433,7 +433,6 @@ internal object AndroidDutchUiCopy {
         "Manual totals follow the original score sheet. Only confirmed desktop race results can affect TrueSkill." to "Handmatige totalen volgen het originele scoreblad. Alleen bevestigde raceresultaten uit de desktopapps kunnen TrueSkill beinvloeden.",
         "Complete the current guided step first." to "Voltooi eerst de huidige begeleide stap.",
         "Nothing needs your attention" to "Je hoeft niets te doen",
-        "The capture operator selects this Tournament and a different current group for each sticker-named feed before Start. Race 1 can confirm the public View automatically; scores still wait for your Player and full group review after Stop." to "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 kan de openbare View automatisch bevestigen; scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole.",
         "No completed recording is available yet." to "Er is nog geen voltooide opname beschikbaar.",
         "Available recordings could not be loaded." to "Beschikbare opnamen konden niet worden geladen.",
         // Authentication and shared-phone account management (2026-08-30
@@ -497,10 +496,6 @@ internal object AndroidDutchUiCopy {
         }
         Regex("^Step (5|9) · Tournament Live / Processor incoming results$").matchEntire(value)?.let {
             return "Stap ${it.groupValues[1]} · Binnenkomende uitslagen van Tournament Live / Processor"
-        }
-        Regex("^Before Start, the capture operator selects this Tournament and maps every sticker-named card to a different (qualifier|final) group\\. After race 1, a strong exact roster match may open the public View\\. Scores count only after Stop, Player matching and complete group approval here\\.$").matchEntire(value)?.let {
-            val group = if (it.groupValues[1] == "final") "finalegroep" else "kwalificatiegroep"
-            return "Vóór START selecteert de capture-operator dit toernooi en koppelt iedere card met stickernaam aan een andere $group. Na race 1 kan een sterke exacte rostermatch de openbare View openen. Scores tellen pas na STOP, Player-koppeling en volledige groepscontrole hier."
         }
         Regex("^Available Tournament Live recordings \\((\\d+)\\)$").matchEntire(value)?.let {
             return "Beschikbare Tournament Live-opnamen (${it.groupValues[1]})"

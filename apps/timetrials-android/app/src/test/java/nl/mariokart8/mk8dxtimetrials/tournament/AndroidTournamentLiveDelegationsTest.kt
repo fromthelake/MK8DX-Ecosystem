@@ -96,6 +96,19 @@ class AndroidTournamentLiveDelegationsTest {
     }
 
     @Test
+    fun aWithdrawnFeedStaysPrivateEvenForADelegatedUploader() {
+        val active = androidActiveLiveCaptureDelegation(listOf(delegation()), "user_account.capture", now)
+        val english = androidRequestedLiveFeedText(AndroidProductLanguage.ENGLISH, active, moment, withdrawnAtMs = 7)
+        assertTrue(english.startsWith("You withdrew this live feed on t7."))
+        assertTrue(english.contains("no roster match or capture delegation opens it again"))
+        assertFalse(english.contains("opens the public view"))
+        assertTrue(
+            androidRequestedLiveFeedText(AndroidProductLanguage.DUTCH, null, moment, withdrawnAtMs = 7)
+                .startsWith("Je hebt deze live-feed op t7 teruggetrokken."),
+        )
+    }
+
+    @Test
     fun offersTheWebDurationsWithTwelveHoursAsDefault() {
         assertEquals(listOf(120, 360, 720, 1_440, 4_320, 10_080), ANDROID_LIVE_DELEGATION_DURATIONS)
         assertEquals(720, ANDROID_LIVE_CAPTURE_DELEGATION_DEFAULT_MINUTES)

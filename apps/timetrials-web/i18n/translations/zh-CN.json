@@ -6049,6 +6049,8 @@
   "starts again at {0}": "将于 {0} 重新开始",
   "{0} in the last hour · {1} affected": "过去一小时 {0} 次 · 涉及 {1}",
   "{0} refused in this window": "此窗口内拒绝 {0} 次",
-  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "确认链接已创建，但电子邮件无法发送。请服务器管理员在服务器上运行 python tooling/install.py step-up-link 并把链接给你。打开链接后，此窗口将继续。"
+  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "确认链接已创建，但电子邮件无法发送。请服务器管理员在服务器上运行 python tooling/install.py step-up-link 并把链接给你。打开链接后，此窗口将继续。",
+  "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "你已于 {0} 撤回此直播源。它将保持不公开:名单匹配或采集委托都不会再次公开它。如需恢复,请在下方确认直播分配。",
+  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前请检查卡 → 组。第 1 场比赛后,只有当总监已将直播采集委托给此账户(或该账户属于总监或管理员)时,强名称匹配才会打开 View;否则直播源等待总监。积分仅在 STOP 后完成 Player 匹配和分组审核后计入。"
  }
 }
