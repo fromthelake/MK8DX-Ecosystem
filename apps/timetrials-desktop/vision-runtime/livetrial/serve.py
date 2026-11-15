@@ -39,6 +39,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from livetrial import engine, storage  # noqa: E402
 from livetrial.ghostmenu import ghost_matches, replay_hud_lap_times  # noqa: E402
+from livetrial.safe_paths import UnsafePathError, resolve_within  # noqa: E402
 
 _FLAG_ICON = ("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>"
               "<text y='.9em' font-size='90'>\U0001F3C1</text></svg>").encode("utf-8")
@@ -1122,8 +1123,11 @@ def make_handler(store: RunStore, token: str | None = None):
                     root, rel = DASH, path[len("/static/"):]
                 else:
                     root, rel = store.runs_dir, path[len("/runs/"):]
-                target = (root / rel.replace("%20", " ")).resolve()
-                if root.resolve() in target.parents and target.is_file() \
+                try:
+                    target = resolve_within(root, rel.replace("%20", " "))
+                except UnsafePathError:
+                    target = None
+                if target is not None and target.is_file() \
                         and target.suffix.lower() in (".png", ".jpg", ".jpeg", ".mp4"):
                     ctypes = {".png": "image/png", ".mp4": "video/mp4"}
                     ctype = ctypes.get(target.suffix.lower(), "image/jpeg")

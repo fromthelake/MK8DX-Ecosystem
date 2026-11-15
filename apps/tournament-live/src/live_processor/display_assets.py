@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any
 
 from .paths import PRIVATE_REFERENCE_ROOT
+from .safe_paths import file_within
 
 
 def clean_assets_root() -> Path:
@@ -67,6 +68,4 @@ def canonical_asset_paths() -> frozenset[str]:
 def canonical_asset_file(relative: str) -> Path | None:
     if relative not in canonical_asset_paths():
         return None
-    root = clean_assets_root()
-    path = (root / relative).resolve()
-    return path if path.is_relative_to(root) and path.is_file() else None
+    return file_within(clean_assets_root(), relative)

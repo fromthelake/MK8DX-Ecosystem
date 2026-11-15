@@ -29,6 +29,7 @@ import re
 import tempfile
 import time
 
+from livetrial_safe_paths import file_within
 from livetrial_youtube import VideoMetadata
 
 
@@ -73,10 +74,10 @@ def resolve_clip(runs_root: str | Path, clip_id: object) -> Path:
     if SESSION_NAME.fullmatch(session) is None or session.startswith(("_", ".")) or session == "latest" \
             or CLIP_NAME.fullmatch(name) is None:
         _fail("That clip is not on this PC.")
-    root = Path(runs_root)
-    path = root / session / name
+    path = file_within(runs_root, f"{session}/{name}", refuse_symlink=True)
     try:
-        if path.is_symlink() or not path.is_file() or path.resolve().parent.parent != root.resolve():
+        # directly in a session folder of the runs folder: a session link that leads deeper is refused
+        if path is None or path.parent.parent != Path(os.path.realpath(runs_root)):
             _fail("That clip is not on this PC any more.")
     except OSError:
         _fail("That clip is not on this PC any more.")
