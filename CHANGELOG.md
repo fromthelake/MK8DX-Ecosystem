@@ -19,7 +19,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **A1 and A2 on one computer no longer share an image tag with different bytes.** In 0.2.6 the host package and the
   A2 packages built their API and Web images separately under the same tag, so starting A1 re-pointed the tag an A2
   installation starts from, and removing A1's images could take it away. The release now builds these images once per
-  processor for every package, and each package names them by content (`<tag>-<12 hex digits of the image ID>`).
+  processor for every package, and each package names all its images, MySQL and Mailpit included, by content
+  (`<tag>-<12 hex digits of the image ID>`).
   Removing an installation uses the new `tooling/remove_images.py`, which keeps every image another container on the
   computer still uses (another MK8DX installation, a QA database, another program).
 

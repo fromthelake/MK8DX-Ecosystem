@@ -82,8 +82,9 @@ python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host
     de pakketopdracht; daarmee komen de bijpassende GHCR-imagenamen in het archief, de startscripts en het Compose-bestand.
 - Het script draait eerst `tooling/privacy_scan.py` en stopt bij een bevinding, dus bouw vanuit een schone kloon. Het
   weigert ook een lokaal MySQL- of Mailpit-image waarvan de registry-digest niet de vastgelegde is. De Compose-bestanden van het pakket
-  noemen die twee images alleen op tag, omdat `docker load` geen registry-digests terugzet; het manifest legt
-  de vastgelegde digests vast onder `baseImageDigests`.
+  noemen elk image bij een tag zonder digest, omdat `docker load` geen registry-digests terugzet; het manifest legt
+  de vastgelegde digests vast onder `baseImageDigests`. Die tag is de build-tag plus 12 hexcijfers van het image-ID
+  (bijvoorbeeld `mysql:9.7.4-08ae8de7b350`), zodat een pakket nooit een tag verlegt waarmee een andere installatie start.
 - De image-builds vervangen alle images met dezelfde tags op deze machine, ook die van een geïnstalleerd
   hostpakket. Bouw op een machine waarop er geen draait, of accepteer dat die vanaf dan jouw build draait.
 - Een zelfgebouwd pakket heeft geen `SHA256SUMS.txt`; vergelijk de kopie op de server in plaats daarvan met `archiveSha256` in

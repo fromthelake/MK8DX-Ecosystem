@@ -77,7 +77,7 @@ Every base image is pinned by tag and digest: Node and Caddy in the Dockerfiles,
 together; review upstream security updates in a tested PR). The release workflow fetches MySQL and Mailpit with
 `host_bundle.py --pull-base-images`, by digest, and the packager refuses a local copy with another digest. A
 package loads its images from a tar, where `docker load` keeps only the tag, so its Compose files name those two
-images by tag; the manifest records the digests under `baseImageDigests`.
+images by a tag (with the content suffix below); the manifest records the digests under `baseImageDigests`.
 
 The gateway's Caddy runs without root. The image starts as root only for its entrypoint
 (`infrastructure/docker/gateway-entrypoint.sh`), which picks the user, gives `/data` and `/config` (the
@@ -98,8 +98,8 @@ Maintainers and other users can build the same packages from a clean clone with
 `tooling/release/full_archive.py`, `tooling/release/host_bundle.py`, `tooling/release/non_docker_bundle.py` and
 the [client recipes](CLIENT_BUILDS.md). The [hosting guide](guides/HOSTING.md#build-the-host-package-from-a-clone)
 has the manual image commands. Use `host_bundle.py --version <release-tag>` to select versioned GHCR image names;
-without it, local clone builds continue to use the current local image tags. Inside a package the API and Web images carry
-that tag plus the first 12 hex digits of their image ID (`…:v0.2.7-amd64-3f2a9c1d0b4e`), so two packages never load
+without it, local clone builds continue to use the current local image tags. Inside a package every image (API, Web,
+MySQL, Mailpit) carries its tag plus the first 12 hex digits of their image ID (`…:v0.2.7-amd64-3f2a9c1d0b4e`), so two packages never load
 different bytes under one tag; `PACKAGE_MANIFEST.json` lists those under `images` and the build tags under
 `builtImages`. The release builds the API and Web images once per processor (job `container-images`) and the host
 package and every A2 package load that build, so A1, B1 and A2 of one release share their images. Removing an

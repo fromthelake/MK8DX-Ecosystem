@@ -82,8 +82,9 @@ python3 tooling/release/host_bundle.py --output "$HOME/mk8dx-packages/mk8dx-host
     the packaging invocation; this selects matching GHCR image names in the archive, launchers and Compose file.
 - The script runs `tooling/privacy_scan.py` first and stops on a finding, so build from a clean clone. It also
   refuses a local MySQL or Mailpit image whose registry digest is not the pinned one. The package's Compose files
-  name those two images by tag only, because `docker load` does not restore registry digests; the manifest records
-  the pinned digests under `baseImageDigests`.
+  name every image by a tag without digest, because `docker load` does not restore registry digests; the manifest records
+  the pinned digests under `baseImageDigests`. That tag is the build tag plus 12 hex digits of the image ID (for
+  example `mysql:9.7.4-08ae8de7b350`), so a package never re-points a tag another installation starts from.
 - The image builds replace any images with the same tags on this machine, including those of an installed host
   package. Build on a machine that does not run one, or accept that it will run your build from then on.
 - A package you built yourself has no `SHA256SUMS.txt`; compare the copy on the server with `archiveSha256` in
