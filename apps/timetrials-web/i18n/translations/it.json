@@ -5721,6 +5721,7 @@
   "per sign-in or link, counted only": "per accesso o link, solo contato",
   "starts again at {0}": "riparte alle {0}",
   "{0} in the last hour · {1} affected": "{0} nell'ultima ora · {1} interessati",
-  "{0} refused in this window": "{0} rifiutati in questa finestra"
+  "{0} refused in this window": "{0} rifiutati in questa finestra",
+  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "Il link di conferma è stato creato, ma non è stato possibile inviare l'e-mail. Chiedi all'operatore del server di eseguire python tooling/install.py step-up-link sul server e di darti il link. Aprilo e questa finestra proseguirà."
  }
 }

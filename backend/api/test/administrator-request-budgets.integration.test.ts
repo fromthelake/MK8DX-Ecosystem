@@ -17,6 +17,7 @@ import { CLAIM_ACCOUNT_BUDGETS } from "../src/identity/routes.js";
 import type { ActorContext } from "../src/identity/types.js";
 import { AbuseBudgets, defaultAbuseBudgetSettings, type AbuseBudgetSettings } from "../src/security/abuse-budgets.js";
 import { MysqlMutationRateLimiter } from "../src/security/mysql-mutation-rate-limiter.js";
+import { RefusalLedger } from "../src/security/refusal-ledger.js";
 
 const database = process.env["MK8DX_MYSQL_TEST_DATABASE"] ?? "";
 const integration = process.env["MK8DX_MYSQL_INTEGRATION"] === "1" &&
@@ -39,8 +40,11 @@ integration("administrator request budget report (real HTTP + real database)", (
     };
   };
 
+  let ledger: RefusalLedger;
+
   async function reportApp(): Promise<FastifyInstance> {
-    const limiter = new MysqlMutationRateLimiter(pool, () => clockMs);
+    ledger = new RefusalLedger(pool, () => clockMs);
+    const limiter = new MysqlMutationRateLimiter(pool, () => clockMs, undefined, ledger);
     const budgetSettings = settings();
     const resolveActor = async (request: FastifyRequest): Promise<ActorContext> => {
       const [kind, id] = (request.headers.authorization ?? "").split(" ");
@@ -52,10 +56,11 @@ integration("administrator request budget report (real HTTP + real database)", (
       identityRepository: new MysqlIdentityReadRepository(pool),
       resolveActor,
       abuseBudgets: new AbuseBudgets(limiter, budgetSettings),
-      quotaRefusals: limiter,
+      quotaRefusals: ledger,
       administratorRequestBudgets: {
         service: new AdministratorRequestBudgetsService(
-          new MysqlAdministratorRequestBudgetsRepository(pool), budgetSettings, { nowMs: () => clockMs }),
+          new MysqlAdministratorRequestBudgetsRepository(pool), budgetSettings, { nowMs: () => clockMs },
+          undefined, () => ledger.unflushed()),
       },
       claimLifecycle: new ClaimLifecycleService(new MysqlClaimWriteRepository(pool), {
         newPlayerClaimId: () => `player_claim.rb_${randomBytes(8).toString("hex")}`,
@@ -144,10 +149,23 @@ integration("administrator request budget report (real HTTP + real database)", (
     expect(statuses.at(-1)).toBe(429);
 
     const administrator = await seed("account");
+    const ledgerRows = async (): Promise<string[]> => {
+      const [rows] = await pool.execute<RowDataPacket[]>(
+        "SELECT scope_key AS scopeKey FROM api_mutation_rate_limits WHERE scope_key LIKE '!refused|%' ORDER BY scope_key");
+      return rows.map((row) => String(row["scopeKey"]));
+    };
+    // Refusals cost no database write: nothing of the ledger is in the table before a flush, and the
+    // report already shows this process's counts from memory.
+    expect(await ledgerRows()).toEqual([]);
+    const fromMemory = (await report(app, `Administrator ${administrator}`)).json<AdministratorRequestBudgets>();
+    await ledger.flush();
+    expect(ledger.unflushed()).toEqual([]);
     const response = await report(app, `Administrator ${administrator}`);
     expect(response.statusCode).toBe(200);
     expect(response.headers["cache-control"]).toBe("no-store");
     const body = response.json<AdministratorRequestBudgets>();
+    // The same numbers from memory and, after the flush, from the database (no double count).
+    expect({ ...fromMemory, generatedAtMs: 0 }).toEqual({ ...body, generatedAtMs: 0 });
     const scope = (name: string) => body.refusals.find((item) => item.scope === name);
 
     expect(scope("player-claims.requests.player.day")).toEqual({
@@ -180,9 +198,7 @@ integration("administrator request budget report (real HTTP + real database)", (
         windowSeconds: 86_400, value: 2, defaultValue: 5 });
 
     // The ledger stores a subject row only for a refused subject: the target and the busy account.
-    const [rows] = await pool.execute<RowDataPacket[]>(
-      "SELECT scope_key AS scopeKey FROM api_mutation_rate_limits WHERE scope_key LIKE '!refused|%' ORDER BY scope_key");
-    const keys = rows.map((row) => String(row["scopeKey"]));
+    const keys = await ledgerRows();
     expect(keys.filter((key) => !key.endsWith("|*"))).toHaveLength(2);
     expect(keys.some((key) => key === `!refused|player-claims.self.hour|${busy}`)).toBe(true);
 
@@ -198,16 +214,22 @@ integration("administrator request budget report (real HTTP + real database)", (
   });
 
   it("counts every refusal of a concurrent burst from two API processes exactly, without a database error", async () => {
-    // Regression (CI 2026-11-15): ledger writes interleaved with the budget upserts of a burst deadlocked.
+    // Regression (CI 2026-11-15): ledger writes on the refusal path deadlocked against the budget
+    // upserts of a burst. Now the burst writes only budget rows; both processes then flush together.
     for (let round = 0; round < 3; round += 1) {
       const scope = `rb-burst-${run}-${String(round)}`;
-      const limiters = [0, 1].map(() => new MysqlMutationRateLimiter(pool, () => clockMs));
+      const ledgers = [0, 1].map(() => new RefusalLedger(pool, () => clockMs));
+      const limiters = ledgers.map((owned) => new MysqlMutationRateLimiter(pool, () => clockMs, undefined, owned));
       const outcomes = await Promise.allSettled(Array.from({ length: 60 }, (_, index) =>
         limiters[index % 2]!.consume(index % 3 === 0 ? "installation" : `user_account.rb_${run}_burst`, scope, 3_600, 5)));
       const failed = outcomes.filter((outcome) => outcome.status === "rejected")
         .map((outcome) => (outcome as PromiseRejectedResult).reason as Error);
       expect(failed.filter((error) => error.name !== "MutationRateLimitExceeded").map((error) => error.message)).toEqual([]);
       expect(outcomes.filter((outcome) => outcome.status === "fulfilled")).toHaveLength(10);
+      const [before] = await pool.execute<RowDataPacket[]>(
+        "SELECT COUNT(*) AS total FROM api_mutation_rate_limits WHERE scope_key LIKE ?", [`!refused|${scope}|%`]);
+      expect(Number(before[0]?.["total"])).toBe(0);
+      await Promise.all(ledgers.map((owned) => owned.flush()));
       const [rows] = await pool.execute<RowDataPacket[]>(
         "SELECT SUM(event_count) AS total FROM api_mutation_rate_limits WHERE scope_key = ?",
         [`!refused|${scope}|*`]);

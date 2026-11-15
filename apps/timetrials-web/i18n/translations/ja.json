@@ -5721,6 +5721,7 @@
   "per sign-in or link, counted only": "サインインまたはリンクごと（件数のみ）",
   "starts again at {0}": "{0} に再開",
   "{0} in the last hour · {1} affected": "この1時間に {0} 件 · 対象 {1}",
-  "{0} refused in this window": "この時間枠で {0} 件拒否"
+  "{0} refused in this window": "この時間枠で {0} 件拒否",
+  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "確認リンクは作成されましたが、メールを送信できませんでした。サーバー管理者にサーバー上で python tooling/install.py step-up-link を実行してリンクを渡してもらってください。リンクを開くと、このウィンドウが続行します。"
  }
 }

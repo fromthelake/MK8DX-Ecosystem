@@ -14,7 +14,8 @@ import {
   REFUSAL_LEDGER_SUBJECT_WINDOW_MS,
   REFUSAL_LEDGER_TOTAL_SUBJECT,
   REFUSAL_LEDGER_TOTAL_WINDOW_MS,
-} from "../security/mysql-mutation-rate-limiter.js";
+  type RefusalLedgerEntry,
+} from "../security/refusal-ledger.js";
 import {
   DEFAULT_TOURNAMENT_EVIDENCE_LIMITS,
   type TournamentEvidenceLimits,
@@ -25,8 +26,9 @@ import {
  * counters only: scope names are fixed code strings, counts are numbers, and the one kind of
  * subject that is named is an account (its public id and screen name), which administrators
  * already see. Target, recipient, address-slot and device subjects are digests and are only
- * counted. The source is the refusal ledger the durable limiter keeps in `api_mutation_rate_limits`
- * (see `security/mysql-mutation-rate-limiter.ts`) and the budget rows themselves.
+ * counted. The source is the refusal ledger (`security/refusal-ledger.ts`): its rows flushed to
+ * `api_mutation_rate_limits` by every API process, plus this process's counts not flushed yet,
+ * and the budget rows themselves.
  */
 export const ADMINISTRATOR_REQUEST_BUDGETS_SCHEMA_VERSION = "mk8dx.administrator-request-budgets.v1";
 
@@ -118,6 +120,8 @@ export class AdministratorRequestBudgetsService {
     private readonly clock: Readonly<{ nowMs(): number }> = { nowMs: () => Date.now() },
     private readonly evidenceLimits: Pick<TournamentEvidenceLimits, "uploadWindowSeconds" | "installationUploadsPerWindow">
       = DEFAULT_TOURNAMENT_EVIDENCE_LIMITS,
+    /** This process's ledger counts that are not in the database yet. */
+    private readonly unflushed: () => readonly RefusalLedgerEntry[] = () => [],
   ) {}
 
   public async report(actor: ActorContext): Promise<AdministratorRequestBudgets> {
@@ -138,6 +142,7 @@ export class AdministratorRequestBudgetsService {
         Math.min(...headroomInputs.map((input) => input.windowStartedAtMs))),
     ]);
     let truncated = subjects.length >= MAXIMUM_READ_REFUSAL_SUBJECTS;
+    const merged = mergeUnflushed(totals, subjects, this.unflushed(), sinceHourMs, sinceDayMs, sinceSubjectsMs);
 
     type Scope = { lastHour: number; lastDay: number; kinds: Map<RequestBudgetSubjectKind, number>;
       subjects: number; accounts: { accountId: string; refused: number }[] };
@@ -150,12 +155,12 @@ export class AdministratorRequestBudgetsService {
       }
       return value;
     };
-    for (const row of totals) {
+    for (const row of merged.totals) {
       const value = scopeOf(row.scope);
       value.lastHour += row.lastHour;
       value.lastDay += row.lastDay;
     }
-    for (const row of subjects) {
+    for (const row of merged.subjects) {
       const value = scopeOf(row.scope);
       const kind = requestBudgetSubjectKind(row.subject);
       value.kinds.set(kind, (value.kinds.get(kind) ?? 0) + 1);
@@ -258,6 +263,33 @@ export class AdministratorRequestBudgetsService {
     });
     return inputs;
   }
+}
+
+/** Adds the not yet flushed counts to the database rows (the same key in both is summed). */
+function mergeUnflushed(
+  totals: readonly RefusalTotalRow[], subjects: readonly RefusalSubjectRow[],
+  unflushed: readonly RefusalLedgerEntry[], sinceHourMs: number, sinceDayMs: number, sinceSubjectsMs: number,
+): { totals: RefusalTotalRow[]; subjects: RefusalSubjectRow[] } {
+  const totalMap = new Map(totals.map((row) => [row.scope, { ...row }]));
+  const subjectMap = new Map(subjects.map((row) => [`${row.scope}|${row.subject}`, { ...row }]));
+  for (const entry of unflushed) {
+    const key = ledgerKey(entry.scopeKey);
+    if (key === null) { continue; }
+    if (key.subject === REFUSAL_LEDGER_TOTAL_SUBJECT) {
+      if (entry.windowStartedAtMs < sinceDayMs) { continue; }
+      const row = totalMap.get(key.scope) ?? { scope: key.scope, lastHour: 0, lastDay: 0 };
+      totalMap.set(key.scope, {
+        scope: key.scope,
+        lastHour: row.lastHour + (entry.windowStartedAtMs >= sinceHourMs ? entry.count : 0),
+        lastDay: row.lastDay + entry.count,
+      });
+    } else if (entry.windowStartedAtMs >= sinceSubjectsMs) {
+      const id = `${key.scope}|${key.subject}`;
+      const row = subjectMap.get(id);
+      subjectMap.set(id, { scope: key.scope, subject: key.subject, refused: (row?.refused ?? 0) + entry.count });
+    }
+  }
+  return { totals: [...totalMap.values()], subjects: [...subjectMap.values()] };
 }
 
 interface TotalRow extends RowDataPacket { scopeKey: unknown; lastHour: unknown; lastDay: unknown }

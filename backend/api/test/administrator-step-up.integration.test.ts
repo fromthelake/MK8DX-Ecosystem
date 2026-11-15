@@ -2,6 +2,8 @@
 // Better Auth sessions (browser cookie and native bearer), the real routes and guard, the real SMTP-shaped
 // delivery port captured in memory, and a disposable MySQL schema of its own (MK8DX_MYSQL_TEST_DATABASE
 // ending in _test). Synthetic accounts and keys only.
+import { createServer, type Server } from "node:net";
+
 import mysql, { type Pool, type RowDataPacket } from "mysql2/promise";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
@@ -16,6 +18,7 @@ import {
   createPasswordlessHostedRuntime,
   type PasswordlessHostedRuntime,
 } from "../src/composition/hosted-runtime.js";
+import { createSmtpMagicLinkDelivery } from "../src/authentication/smtp-magic-link-delivery.js";
 import type { StepUpEmail } from "../src/security/step-up-service.js";
 import { STEP_UP_ROUTES } from "../src/security/step-up-policy.js";
 import { issueOperatorStepUpLink, OperatorStepUpError } from "../src/security/step-up-operator-main.js";
@@ -31,6 +34,8 @@ integration("step-up before dangerous actions (real HTTP routes, real sessions, 
   let hosted: PasswordlessHostedRuntime;
   const magicLinks: PasswordlessMagicLink[] = [];
   const stepUpMails: StepUpEmail[] = [];
+  // When set, step-up mail goes through the real SMTP delivery to a mail server that is down.
+  let failingDelivery: { sendStepUp(message: StepUpEmail): Promise<void> } | null = null;
   const database = process.env["MK8DX_MYSQL_TEST_DATABASE"] ?? "";
   const mysqlOptions = {
     host: process.env["MK8DX_MYSQL_TEST_HOST"] ?? "127.0.0.1",
@@ -184,7 +189,10 @@ integration("step-up before dangerous actions (real HTTP routes, real sessions, 
     }, () => ({
       async verify() {},
       async sendMagicLink(message) { magicLinks.push(message); },
-      async sendStepUp(message) { stepUpMails.push(message); },
+      async sendStepUp(message) {
+        if (failingDelivery !== null) { return failingDelivery.sendStepUp(message); }
+        stepUpMails.push(message);
+      },
       close() {},
     }));
     admin = await signIn("h3-admin@example.test");
@@ -414,6 +422,35 @@ integration("step-up before dangerous actions (real HTTP routes, real sessions, 
     expect((ambiguous as OperatorStepUpError).reason).toBe("several_sessions_pending");
     await pool.execute("DELETE FROM api_step_up_challenges WHERE auth_user_id = ? AND confirmed_at_ms IS NULL", [authUserId]);
   });
+
+  it("answers 503 step_up_mail_unavailable within the SMTP bound when the mail server is stopped, and the break-glass still works", async () => {
+    // The real SMTP delivery against a mail server that is not running (its port refuses connections).
+    const probe: Server = createServer();
+    await new Promise<void>((resolve) => { probe.listen(0, "127.0.0.1", resolve); });
+    const port = (probe.address() as { port: number }).port;
+    await new Promise<void>((resolve) => { probe.close(() => { resolve(); }); });
+    failingDelivery = createSmtpMagicLinkDelivery({
+      host: "127.0.0.1", port, secure: false, username: "", password: "", fromAddress: "auth@example.test",
+      allowedLinkOrigin: baseUrl, localDemo: true, timeoutMs: 1_000,
+    });
+    try {
+      const started = Date.now();
+      const reply = await requestStepUp(ordinary);
+      expect(Date.now() - started).toBeLessThan(4_000);
+      expect(reply.statusCode).toBe(503);
+      expect(reply.json()).toEqual({ code: "step_up_mail_unavailable",
+        message: "The confirmation link was created, but the email could not be sent. Ask the server operator to run install.py step-up-link.",
+        linkExpiresAtMs: expect.any(Number) });
+      // The link exists (the request of a moment ago); the operator hands it over and it confirms this session.
+      const issued = await issueOperatorStepUpLink(pool, { email: "h3-ordinary@example.test", linkOrigin: baseUrl,
+        nowMs: Date.now() });
+      expect(Date.now() - Date.parse(issued.requestedAt)).toBeLessThan(10_000);
+      expect((await confirm(new URL(issued.stepUpLink).searchParams.get("step-up") ?? "")).statusCode).toBe(200);
+      expect(await status(ordinary)).toMatchObject({ active: true });
+    } finally {
+      failingDelivery = null;
+    }
+  }, 30_000);
 
   it("limits how many confirmation emails one account can ask for", async () => {
     const fresh = await signIn("h3-rate@example.test");

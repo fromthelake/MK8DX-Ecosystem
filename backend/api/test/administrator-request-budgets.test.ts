@@ -17,6 +17,7 @@ import {
   quotaRefusalCode,
 } from "../src/security/abuse-budgets.js";
 import { MysqlMutationRateLimiter, MutationRateLimitExceeded } from "../src/security/mysql-mutation-rate-limiter.js";
+import { RefusalLedger } from "../src/security/refusal-ledger.js";
 
 const NOW = 1_900_000_000_000;
 
@@ -139,67 +140,93 @@ describe("web and API agree on the report", () => {
 });
 
 describe("refusal ledger", () => {
-  it("counts a limiter refusal for the installation and the refused subject, and still refuses when the ledger fails", async () => {
+  it("counts N refusals in memory with no database work, then writes them in one batched upsert", async () => {
     const statements: Array<{ sql: string; values: unknown[] }> = [];
-    let failLedger = false;
     const executor = {
       async execute(sql: string, values: unknown[]) {
         statements.push({ sql, values });
-        if (sql.includes("event_count = event_count + 1")) {
-          if (failLedger) { throw new Error("ledger down"); }
-          return [{ affectedRows: 2 }, []];
-        }
-        if (sql.includes("INSERT INTO")) { return [{ insertId: 3 }, []]; }
-        return [{ affectedRows: 0 }, []];
+        if (sql.includes("LAST_INSERT_ID(1)")) { return [{ insertId: 3 }, []]; }
+        return [{ affectedRows: 1 }, []];
       },
     };
-    const failures: string[] = [];
-    const limiter = new MysqlMutationRateLimiter(executor as never, () => NOW, {
-      cleanupCompleted() {}, cleanupFailed() {}, refusalsSinceLastReport() {},
-      ledgerFailed(name) { failures.push(name); },
-    });
-    await expect(limiter.consume("user_account.ben", "alias-mutations-hour", 3_600, 2))
-      .rejects.toBeInstanceOf(MutationRateLimitExceeded);
-    // One row per statement (a two-row upsert deadlocked against a concurrent burst).
-    const ledger = statements.filter((statement) => statement.sql.includes("event_count = event_count + 1"));
-    expect(ledger.map((statement) => statement.values)).toEqual([
-      ["!refused|alias-mutations-hour|*", Math.floor(NOW / 300_000) * 300_000, NOW],
-      ["!refused|alias-mutations-hour|user_account.ben", Math.floor(NOW / 3_600_000) * 3_600_000, NOW],
-    ]);
-
-    failLedger = true;
-    await expect(limiter.consume("user_account.ben", "alias-mutations-hour", 3_600, 2))
-      .rejects.toBeInstanceOf(MutationRateLimitExceeded);
-    expect(failures).toEqual(["Error", "Error"]);
+    const ledger = new RefusalLedger(executor as never, () => NOW);
+    const limiter = new MysqlMutationRateLimiter(executor as never, () => NOW, undefined, ledger);
+    await limiter.cleanupExpired();
+    statements.length = 0;
+    const refusals = 250;
+    for (let index = 0; index < refusals; index += 1) {
+      await expect(limiter.consume(`user_account.r${String(index % 7)}`, "alias-mutations-hour", 3_600, 2))
+        .rejects.toBeInstanceOf(MutationRateLimitExceeded);
+    }
+    ledger.recordQuotaRefusal("alias_quota_exceeded");
+    ledger.recordQuotaRefusal("Not A Code");
+    // The refusal path did only the budget statement itself: one per request, no ledger write.
+    expect(statements).toHaveLength(refusals);
+    expect(statements.every((statement) => statement.sql.includes("LAST_INSERT_ID(1)"))).toBe(true);
+    expect(ledger.unflushed().find((entry) => entry.scopeKey === "!refused|alias-mutations-hour|*")?.count).toBe(refusals);
 
     statements.length = 0;
-    failLedger = false;
-    await limiter.recordQuotaRefusal("alias_quota_exceeded");
-    await limiter.recordQuotaRefusal("Not A Code");
+    await ledger.flush();
     expect(statements).toHaveLength(1);
-    expect(statements[0]!.values).toEqual(["!refused|quota.alias_quota_exceeded|*", Math.floor(NOW / 300_000) * 300_000, NOW]);
+    const values = statements[0]!.values;
+    // 1 total + 7 subjects + 1 quota total, four values each, in key order.
+    expect(values).toHaveLength(9 * 4);
+    expect(values.slice(0, 4)).toEqual(["!refused|alias-mutations-hour|*", Math.floor(NOW / 300_000) * 300_000, refusals, NOW]);
+    expect(values).toContain("!refused|quota.alias_quota_exceeded|*");
+    expect(ledger.unflushed()).toEqual([]);
+    statements.length = 0;
+    await ledger.flush();
+    expect(statements).toHaveLength(0);
   });
 
-  it("runs a deadlock victim again instead of failing the request", async () => {
-    let deadlocks = 2;
-    let inserts = 0;
+  it("stays bounded under many subjects and keeps the counts when a flush fails", async () => {
+    let fail = true;
+    const failures: string[] = [];
+    let written: unknown[] = [];
     const executor = {
-      async execute(sql: string) {
-        if (sql.includes("LAST_INSERT_ID(1)")) {
-          if (deadlocks > 0) { deadlocks -= 1; throw Object.assign(new Error("Deadlock found"), { code: "ER_LOCK_DEADLOCK" }); }
-          inserts += 1;
-          return [{ insertId: 1 }, []];
-        }
-        return [{ affectedRows: 0 }, []];
+      async execute(_sql: string, values: unknown[]) {
+        if (fail) { throw Object.assign(new Error("down"), { code: "ECONNREFUSED" }); }
+        written = values;
+        return [{ affectedRows: 1 }, []];
       },
     };
-    await new MysqlMutationRateLimiter(executor as never, () => NOW).consume("user_account.ben", "alias-mutations-hour", 3_600, 2);
-    expect(inserts).toBe(1);
-    const other = { async execute() { throw Object.assign(new Error("gone"), { code: "ER_ACCESS_DENIED_ERROR" }); } };
-    await expect(new MysqlMutationRateLimiter(other as never, () => NOW).consume("user_account.ben", "x", 60, 1))
-      .rejects.toThrow("gone");
+    const ledger = new RefusalLedger(executor as never, () => NOW, { ledgerFailed(name) { failures.push(name); } }, 10);
+    for (let index = 0; index < 1_000; index += 1) { ledger.record("preauth.hour", `preauth-slot.${String(index)}`); }
+    const held = ledger.unflushed();
+    expect(held.length).toBeLessThanOrEqual(12);
+    const sum = (entries: readonly { scopeKey: string; count: number }[], suffix: string) =>
+      entries.filter((entry) => entry.scopeKey.endsWith(suffix)).reduce((total, entry) => total + entry.count, 0);
+    expect(sum(held, "|*")).toBe(1_000);
+    expect(held.find((entry) => entry.scopeKey === "!refused|other|other")!.count).toBe(1_000 - 9);
+
+    await ledger.flush();
+    expect(failures).toEqual(["Error"]);
+    expect(sum(ledger.unflushed(), "|*")).toBe(1_000);
+    fail = false;
+    await ledger.flush();
+    expect(ledger.unflushed()).toEqual([]);
+    // Every count arrives (1,000 totals and 1,000 subject counts), still within the bound.
+    expect(written.length / 4).toBeLessThanOrEqual(12);
+    expect(written.filter((_value, index) => index % 4 === 2).reduce((total: number, value) => total + Number(value), 0))
+      .toBe(2_000);
   });
 
+  it("writes a flush again when InnoDB chose it as a deadlock victim", async () => {
+    let deadlocks = 2;
+    let writes = 0;
+    const executor = {
+      async execute() {
+        if (deadlocks > 0) { deadlocks -= 1; throw Object.assign(new Error("Deadlock found"), { code: "ER_LOCK_DEADLOCK" }); }
+        writes += 1;
+        return [{ affectedRows: 1 }, []];
+      },
+    };
+    const ledger = new RefusalLedger(executor as never, () => NOW);
+    ledger.record("x.hour", null);
+    await ledger.flush();
+    expect(writes).toBe(1);
+    expect(ledger.unflushed()).toEqual([]);
+  });
   it("recognises quota refusals by their fixed code only", () => {
     expect(quotaRefusalCode(409, JSON.stringify({ code: "alias_quota_exceeded", message: "x" }))).toBe("alias_quota_exceeded");
     expect(quotaRefusalCode(409, JSON.stringify({ code: "native_tournament_evidence_quota_exceeded", message: "x" })))

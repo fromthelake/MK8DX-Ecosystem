@@ -98,6 +98,18 @@ export class StepUpRateLimited extends Error {
   }
 }
 
+/**
+ * The confirmation link was created and stored, but the e-mail could not be sent (the mail server
+ * did not answer in time or refused). The operator's break-glass `install.py step-up-link` issues
+ * a new link for exactly this pending request.
+ */
+export class StepUpMailUnavailable extends Error {
+  public constructor(public readonly linkExpiresAtMs: number) {
+    super("The confirmation e-mail could not be sent.");
+    this.name = "StepUpMailUnavailable";
+  }
+}
+
 export class StepUpUnavailable extends Error {
   public constructor() {
     super("This account has no verified email address to confirm with.");
@@ -179,10 +191,15 @@ export class StepUpService {
     });
     const url = new URL("/", this.options.linkOrigin);
     url.searchParams.set("step-up", token);
-    await this.delivery.sendStepUp({
-      email: session.email, url: url.toString(), clientKind,
-      expiresInMinutes: Math.round(STEP_UP_LINK_LIFETIME_SECONDS / 60),
-    });
+    try {
+      await this.delivery.sendStepUp({
+        email: session.email, url: url.toString(), clientKind,
+        expiresInMinutes: Math.round(STEP_UP_LINK_LIFETIME_SECONDS / 60),
+      });
+    } catch {
+      // The challenge stays: the break-glass replaces its link (security/step-up-operator-main.ts).
+      throw new StepUpMailUnavailable(linkExpiresAtMs);
+    }
     await this.store.record({ kind: "step_up_requested", authUserId: session.authUserId,
       sessionDigest: digest, clientKind }, now);
     return { linkExpiresAtMs };

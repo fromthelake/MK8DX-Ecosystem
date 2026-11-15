@@ -23752,6 +23752,16 @@
    ]
   },
   {
+   "key": "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+   "nl": "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
    "key": "The connection failed. Reload to try again.",
    "nl": "De verbinding mislukte. Herlaad om het opnieuw te proberen.",
    "kinds": [

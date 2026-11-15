@@ -213,6 +213,7 @@ import {
   MysqlAccountAppearancePreferenceRepository,
 } from "../profiles/account-appearance-preference.js";
 import { MysqlMutationRateLimiter } from "../security/mysql-mutation-rate-limiter.js";
+import { RefusalLedger } from "../security/refusal-ledger.js";
 import {
   AdministratorRequestBudgetsService,
   MysqlAdministratorRequestBudgetsRepository,
@@ -698,6 +699,14 @@ async function createMysqlApiRuntime(
     active: config.authenticationKeys,
     retained: config.authenticationRetainedKeys ?? [],
   });
+  // Refusals of every limiter in this process, counted in memory and flushed in one batch every
+  // 30 seconds and at shutdown (security/refusal-ledger.ts): a refused request costs no DB write.
+  const refusalLedger = new RefusalLedger(pool, clock.nowMs, {
+    ledgerFailed(errorName) {
+      routePolicies.operationalLog?.log({ event: "rate_limit_ledger_failed", category: "lifecycle", errorName });
+    },
+  });
+  const stopRefusalLedgerFlush = refusalLedger.startFlushTimer();
   const bindingRepository = new MysqlAuthenticationBindingRepository(pool, clock);
   const offlineInvitation = authentication.kind === "embedded" &&
       authentication.policy.offlineLan === true
@@ -709,7 +718,7 @@ async function createMysqlApiRuntime(
             .update("mk8dx.offline-invitation-digest.v1", "ascii").digest(),
         ),
         attempts: {
-          limiter: new MysqlMutationRateLimiter(pool, clock.nowMs),
+          limiter: new MysqlMutationRateLimiter(pool, clock.nowMs, undefined, refusalLedger),
           tokenKey: createHmac("sha256", Buffer.from(authentication.policy.config.secrets[0]!.value, "base64"))
             .update("mk8dx.offline-invitation-attempt.v1", "ascii").digest(),
         },
@@ -757,7 +766,7 @@ async function createMysqlApiRuntime(
             return null;
           },
         };
-        const limiter = new MysqlMutationRateLimiter(pool, clock.nowMs);
+        const limiter = new MysqlMutationRateLimiter(pool, clock.nowMs, undefined, refusalLedger);
         const pins = new AccountSwitchPins(new MysqlAccountSwitchPinStore(pool),
           new AccountSwitchPinHasher(keys), limiter);
         return { keys, store, directory, pins, limiter, nowMs: clock.nowMs };
@@ -1056,10 +1065,7 @@ async function createMysqlApiRuntime(
           .join(" ").slice(0, 160);
         routePolicies.operationalLog?.log({ event: "rate_limit_refusals", category: "lifecycle", detail });
       },
-      ledgerFailed(errorName) {
-        routePolicies.operationalLog?.log({ event: "rate_limit_ledger_failed", category: "lifecycle", errorName });
-      },
-    });
+    }, refusalLedger);
     const stopRateLimitCleanup = mutationRateLimiter.startCleanupTimer();
     // H1: installation-wide and per-target budgets on the same durable limiter (MK8DX_HOSTED_BUDGET_*).
     const abuseBudgets = new AbuseBudgets(mutationRateLimiter,
@@ -1242,7 +1248,7 @@ async function createMysqlApiRuntime(
       (userAccountId) => tournamentOperatorCapabilityService.has(userAccountId),
       // F04: evidence uploads share the durable limiter, so several API
       // processes of one installation spend one budget.
-      { rateLimiter: new MysqlMutationRateLimiter(pool, clock.nowMs) },
+      { rateLimiter: new MysqlMutationRateLimiter(pool, clock.nowMs, undefined, refusalLedger) },
     );
     const tournamentRetractionService = new TournamentRetractionService(
       new MysqlTournamentRetractionRepository(pool),
@@ -1372,9 +1378,11 @@ async function createMysqlApiRuntime(
           new MysqlAdministratorRequestBudgetsRepository(pool),
           abuseBudgets.settings,
           clock,
+          undefined,
+          () => refusalLedger.unflushed(),
         ),
       },
-      quotaRefusals: mutationRateLimiter,
+      quotaRefusals: refusalLedger,
       claimLifecycle: {
         // The people who decide a request hear that it arrived; the producer
         // never fails the request itself.
@@ -1981,6 +1989,7 @@ async function createMysqlApiRuntime(
         clearInterval(evidenceRetentionTimer);
         if (stepUpRetentionTimer !== null) { clearInterval(stepUpRetentionTimer); }
         stopRateLimitCleanup();
+        stopRefusalLedgerFlush();
         if (webPushTimer !== null) { clearInterval(webPushTimer); }
         clearInterval(notificationProducerTimer);
         clearInterval(notificationProducerInspectionTimer);
@@ -1988,6 +1997,8 @@ async function createMysqlApiRuntime(
         try {
           await app.close();
         } finally {
+          // The last counts of this process (graceful shutdown); never throws.
+          await refusalLedger.flush();
           await pool.end();
         }
       },

@@ -34,6 +34,7 @@ import { MysqlAdministratorGrantWriteRepository } from
 import { createPasswordlessHostedRuntime } from
   "../dist/composition/hosted-runtime.js";
 import { readAbuseBudgetSettings } from "../dist/security/abuse-budgets.js";
+import { createSmtpMagicLinkDelivery } from "../dist/authentication/smtp-magic-link-delivery.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = resolve(here, "../../..");
@@ -326,7 +327,16 @@ async function main() {
       appendFileSync(magicLinkLog, `${JSON.stringify({ url: message.url })}\n`);
     },
     // Fresh confirmation (step-up) links before dangerous administrator actions, for browser checks.
+    // MK8DX_STACK_STEP_UP_SMTP_PORT sends them through the real SMTP delivery to that loopback port
+    // instead, so a check can see what the page does when the mail server is down.
     async sendStepUp(message) {
+      const smtpPort = Number(process.env.MK8DX_STACK_STEP_UP_SMTP_PORT ?? "0");
+      if (smtpPort > 0) {
+        const real = createSmtpMagicLinkDelivery({ host: "127.0.0.1", port: smtpPort, secure: false, username: "",
+          password: "", fromAddress: "auth@example.test", allowedLinkOrigin: baseUrl, localDemo: true,
+          timeoutMs: 1_000 });
+        try { return await real.sendStepUp(message); } finally { real.close(); }
+      }
       appendFileSync(`${handoffPath}.step-up-links.jsonl`,
         `${JSON.stringify({ url: message.url, clientKind: message.clientKind })}\n`);
     },

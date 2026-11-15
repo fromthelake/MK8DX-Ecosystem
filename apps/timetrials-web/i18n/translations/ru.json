@@ -5721,6 +5721,7 @@
   "per sign-in or link, counted only": "на вход или ссылку, только подсчёт",
   "starts again at {0}": "начнётся заново в {0}",
   "{0} in the last hour · {1} affected": "{0} за последний час · затронуто: {1}",
-  "{0} refused in this window": "{0} отклонено в этом окне"
+  "{0} refused in this window": "{0} отклонено в этом окне",
+  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "Ссылка подтверждения создана, но письмо отправить не удалось. Попросите оператора сервера выполнить на сервере python tooling/install.py step-up-link и передать вам ссылку. Откройте её, и это окно продолжит работу."
  }
 }

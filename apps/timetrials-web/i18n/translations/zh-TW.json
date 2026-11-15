@@ -5721,6 +5721,7 @@
   "per sign-in or link, counted only": "依登入或連結，僅計數",
   "starts again at {0}": "將於 {0} 重新開始",
   "{0} in the last hour · {1} affected": "過去一小時 {0} 次 · 涉及 {1}",
-  "{0} refused in this window": "此視窗內拒絕 {0} 次"
+  "{0} refused in this window": "此視窗內拒絕 {0} 次",
+  "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "確認連結已建立，但無法寄出電子郵件。請伺服器管理員在伺服器上執行 python tooling/install.py step-up-link 並把連結給你。開啟連結後，此視窗會繼續。"
  }
 }

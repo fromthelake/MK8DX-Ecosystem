@@ -502,6 +502,9 @@ export function loadPasswordlessHostedRuntimeConfig(
       fromAddress: required(environment, "MK8DX_HOSTED_SMTP_FROM_ADDRESS"),
       allowedLinkOrigin: baseUrl,
       localDemo,
+      ...(environment["MK8DX_HOSTED_SMTP_TIMEOUT_MS"] === undefined ? {} : {
+        timeoutMs: integer(environment, "MK8DX_HOSTED_SMTP_TIMEOUT_MS", 5_000, 1_000, 60_000),
+      }),
     } }),
     webManual: { producerVersion, csrfKeys: configuredCsrfKeys },
     ...(configuredWebPush === undefined ? {} : { webPush: configuredWebPush }),

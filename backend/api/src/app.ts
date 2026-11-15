@@ -321,7 +321,7 @@ export type AppDependencies = Readonly<{
    * Counts refusals that do not pass through the durable limiter (a full quota, a missing fresh
    * confirmation) in the refusal ledger, by their fixed response code only.
    */
-  quotaRefusals?: Readonly<{ recordQuotaRefusal(code: string): Promise<void> }>;
+  quotaRefusals?: Readonly<{ recordQuotaRefusal(code: string): void }>;
   administratorGrants?: Readonly<{
     service: Pick<
       AdministratorGrantService,
@@ -762,7 +762,8 @@ export async function buildApp(
     // subject, no path), and a failure to count never changes the response.
     app.addHook("onSend", async (_request, reply, payload) => {
       const code = quotaRefusalCode(reply.statusCode, payload);
-      if (code !== null) { await ledger.recordQuotaRefusal(code).catch(() => undefined); }
+      // Memory only (security/refusal-ledger.ts): a refused response costs no database write.
+      if (code !== null) { ledger.recordQuotaRefusal(code); }
       return payload;
     });
   }

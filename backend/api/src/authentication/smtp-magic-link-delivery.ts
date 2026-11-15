@@ -34,7 +34,15 @@ export type SmtpMagicLinkConfig = Readonly<{
   fromAddress: string;
   allowedLinkOrigin: string;
   localDemo?: boolean;
+  /**
+   * Bound on one SMTP attempt in milliseconds (MK8DX_HOSTED_SMTP_TIMEOUT_MS, 1000 to 60000, default
+   * 5000): connection and greeting each, and the whole step-up mail, so a request never waits long
+   * on a mail server that is down.
+   */
+  timeoutMs?: number;
 }>;
+
+export const SMTP_DEFAULT_TIMEOUT_MS = 5_000;
 
 export interface SmtpMagicLinkTransport {
   verify(): Promise<unknown>;
@@ -63,7 +71,9 @@ function validate(config: SmtpMagicLinkConfig): SmtpMagicLinkConfig {
     !Number.isSafeInteger(config.port) || config.port < 1 || config.port > 65535 ||
     (!config.localDemo && (config.username.length < 1 || config.password.length < 1)) ||
     config.username.length > 320 || config.password.length > 1024 ||
-    !mailboxPattern.test(config.fromAddress) || config.fromAddress.length > 320) {
+    !mailboxPattern.test(config.fromAddress) || config.fromAddress.length > 320 ||
+    (config.timeoutMs !== undefined &&
+      (!Number.isSafeInteger(config.timeoutMs) || config.timeoutMs < 1_000 || config.timeoutMs > 60_000))) {
     throw new SmtpMagicLinkConfigurationError("SMTP configuration is invalid");
   }
   return { ...config, allowedLinkOrigin: exactLinkOrigin(config.allowedLinkOrigin, config.localDemo) };
@@ -170,6 +180,7 @@ export class SmtpMagicLinkDelivery implements PasswordlessEmailDelivery, NativeE
     private readonly fromAddress: string,
     allowedLinkOrigin: string,
     localDemo = false,
+    private readonly timeoutMs: number = SMTP_DEFAULT_TIMEOUT_MS,
   ) {
     if (!mailboxPattern.test(fromAddress) || fromAddress.length > 320) {
       throw new SmtpMagicLinkConfigurationError("SMTP sender is invalid");
@@ -360,15 +371,25 @@ export class SmtpMagicLinkDelivery implements PasswordlessEmailDelivery, NativeE
       footer: "If that was not you, ignore this email — nothing happens without the button — and " +
         "sign out your other sessions from your account settings.",
     };
+    // The whole attempt is bounded: the person waits at most this long for the answer, and the
+    // link stays stored for the operator's break-glass when the mail server does not answer.
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      await this.transport.sendMail({
-        from: this.fromAddress, to: message.email,
-        subject: "Confirm your MK8DX administrator action",
-        text: emailPlainText(parts),
-        html: emailShell(parts),
-        disableFileAccess: true, disableUrlAccess: true,
-      });
+      await Promise.race([
+        this.transport.sendMail({
+          from: this.fromAddress, to: message.email,
+          subject: "Confirm your MK8DX administrator action",
+          text: emailPlainText(parts),
+          html: emailShell(parts),
+          disableFileAccess: true, disableUrlAccess: true,
+        }),
+        new Promise((_resolve, reject) => {
+          timer = setTimeout(() => { reject(new Error("timeout")); }, this.timeoutMs);
+          timer.unref?.();
+        }),
+      ]);
     } catch { throw new SmtpMagicLinkDeliveryError("step-up delivery failed"); }
+    finally { if (timer !== undefined) { clearTimeout(timer); } }
   }
 
   public async sendEmailVerification(message: PasswordlessAccountEmail): Promise<void> {
@@ -398,11 +419,17 @@ export function createSmtpMagicLinkDelivery(
     }),
     disableFileAccess: true,
     disableUrlAccess: true,
+    // Bounded phases instead of Nodemailer's minutes-long defaults.
+    connectionTimeout: validated.timeoutMs ?? SMTP_DEFAULT_TIMEOUT_MS,
+    greetingTimeout: validated.timeoutMs ?? SMTP_DEFAULT_TIMEOUT_MS,
+    socketTimeout: 3 * (validated.timeoutMs ?? SMTP_DEFAULT_TIMEOUT_MS),
+    dnsTimeout: validated.timeoutMs ?? SMTP_DEFAULT_TIMEOUT_MS,
   });
   return new SmtpMagicLinkDelivery(
     transport,
     validated.fromAddress,
     validated.allowedLinkOrigin,
     validated.localDemo,
+    validated.timeoutMs ?? SMTP_DEFAULT_TIMEOUT_MS,
   );
 }
