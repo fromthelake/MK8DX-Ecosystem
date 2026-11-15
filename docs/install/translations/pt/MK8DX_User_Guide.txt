@@ -128,6 +128,12 @@ Só funciona para uma conta que já verificou o seu e-mail. Espera «created» (
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+Cópia de segurança noturna: o primeiro arranque também ativa uma cópia verificada todas as noites às 03:15. O Agendador de Tarefas do Windows faz-a com a tua própria conta, sem direitos de administrador, em Documents\MK8DX-backups\automatic; se o computador estiver desligado a essa hora, é feita logo que possível depois. Se a janela do MK8DX estiver fechada, a cópia arranca e para a sua própria base de dados. Verifica-a no PowerShell na pasta do pacote:
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Deves ver "enabled": true e "scheduler": "windows-task"; depois da primeira noite também "lastResult": "ok". Se aparecer "enabled": false embora nunca a tenhas desativado (o pacote v0.2.6 não conseguia ativá-la), executa uma vez o mesmo comando com backup-schedule em vez de backup-status; a próxima atualização com o passo 11 também a ativa. Para a desativar, usa backup-unschedule.
+
 11. Para uma atualização do software, para o Apache e faz e verifica uma cópia de segurança enquanto a janela antiga do MK8DX ainda está em execução. Depois carrega em Ctrl+C nessa janela. Verifica e extrai o novo ZIP A3 ao lado do pacote antigo. Continua a usar a mesma pasta de dados %LOCALAPPDATA%\MK8DX\NoDocker. No PowerShell dentro do pacote novo, arranca temporariamente apenas a sua própria base de dados:
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -151,6 +157,16 @@ Mantém esta janela aberta. Na segunda janela, usa o nome real da tua pasta de c
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Espera por «Cópia de segurança verificada» e depois por uma verificação bem-sucedida de todas as migrações. Carrega em Ctrl+C na janela de manutenção. Abre o Start-MK8DX-No-Docker.cmd e arranca o Apache no XAMPP Control Panel. Inicia sessão com uma conta existente da cópia de segurança e verifica o acesso de administrador e um resultado conhecido. O primeiro administrador não é atribuído de novo. Se o computador de destino já tiver uma instalação MK8DX ou outro processo na porta 18306, não o uses como destino deste restauro; o assistente não apaga uma base de dados existente. Mantém intacta a cópia de segurança original.
+
+13. Para remover esta instalação A3 do computador, faz primeiro uma cópia de segurança como no passo 10 se talvez quiseres recuperar mais tarde as tuas contas e resultados. As cópias em Documents\MK8DX-backups ficam até as apagares tu. No PowerShell na pasta do pacote, desativa a cópia noturna:
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Para o Apache no XAMPP Control Panel e carrega em Ctrl+C na janela do MK8DX. Depois retira o site do MK8DX do Apache:
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+Deves ver “MK8DX Apache site removed” e “Syntax OK”. Só são removidos a linha Include e mk8dx-local.conf do passo 4; os outros sites e bases de dados do XAMPP ficam como estão. Depois apaga as pastas %LOCALAPPDATA%\MK8DX\NoDocker (base de dados, contas e chaves) e %LOCALAPPDATA%\MK8DX\ApacheBackup e, por fim, a pasta do pacote. O XAMPP, o Node.js e o Python continuam instalados; remove-os em Definições do Windows → Aplicações só se nada mais os usar. Se usas o XAMPP para outros sites, volta a iniciar o Apache.
 
 Usar na tua rede doméstica
 
@@ -527,7 +543,7 @@ Confirmar ações perigosas: alterar direitos de administrador, de diretor ou de
 
 Cópia de segurança, restauro e atualização
 
-Cópia automática: o MK8DX também faz sozinho todas as noites uma cópia de segurança verificada (A1, A3 e B1 ligam-na na primeira configuração; B2 pergunta uma vez, Enter é sim; A2 tem a sua no MK8DX beheer). Vai para Documents\MK8DX-backups\automatic no Windows e para ~/mk8dx-backups/automatic no Linux e no alojamento partilhado, guarda 14 dias e 4 semanas, e uma noite falhada nunca apaga cópias mais antigas. O menu 3 (verificar) mostra em automaticBackup a idade e o resultado da última. Guarde mesmo assim uma cópia fora do computador ou do servidor: no Windows com python tooling/install.py backup-schedule --state-dir <pasta de instalação> --copy-to <pasta> (outro disco ou um NAS); a partir de um servidor, python3 tooling/install.py backup-latest --state-dir <pasta de instalação> --print-path indica a pasta verificada mais recente para trazer com scp. Desliga-se com backup-unschedule em vez de backup-schedule. Se o seu alojamento já faz cópias diárias da conta (DirectAdmin, JetBackup), pode bastar; com uma cópia própria volta sozinho ao dia de ontem, incluindo as chaves do site.
+Cópia automática: o MK8DX também faz sozinho todas as noites uma cópia de segurança verificada (A1, A3 e B1 ligam-na na primeira configuração; B2 pergunta uma vez, Enter é sim; A2 tem a sua no MK8DX beheer). Vai para Documents\MK8DX-backups\automatic no Windows e para ~/mk8dx-backups/automatic no Linux e no alojamento partilhado, guarda 14 dias e 4 semanas, e uma noite falhada nunca apaga cópias mais antigas. O menu 3 (verificar) mostra em automaticBackup (A3: backup-status) a idade e o resultado da última. Guarde mesmo assim uma cópia fora do computador ou do servidor: no Windows com python tooling/install.py backup-schedule --state-dir <pasta de instalação> --copy-to <pasta> (outro disco ou um NAS); a partir de um servidor, python3 tooling/install.py backup-latest --state-dir <pasta de instalação> --print-path indica a pasta verificada mais recente para trazer com scp. Desliga-se com backup-unschedule em vez de backup-schedule. Se o seu alojamento já faz cópias diárias da conta (DirectAdmin, JetBackup), pode bastar; com uma cópia própria volta sozinho ao dia de ontem, incluindo as chaves do site.
 
 Contas de base de dados: o site liga-se à sua base de dados com uma conta que só pode ler e escrever dados, para que uma falha do site nunca possa apagar as tabelas; as atualizações da base de dados e as cópias de segurança usam uma segunda conta. A1, A2, A3 e B1 configuram isto sozinhos, uma instalação existente na próxima atualização (menu 7); se o site não arrancar com a nova conta, a atualização volta à antiga e nada se perde. No B2, cria no DirectAdmin ou cPanel um segundo utilizador de base de dados com apenas SELECT, INSERT, UPDATE e DELETE e introduz-o no assistente, ou mais tarde com python3 tooling/install.py database-accounts --state-dir <pasta de instalação>; com um só utilizador o B2 continua a funcionar, mas mostra um aviso.
 

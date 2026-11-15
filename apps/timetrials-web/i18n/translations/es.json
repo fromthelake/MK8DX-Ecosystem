@@ -1025,7 +1025,7 @@
   "Enter and save all {0} for every group first.": "Introduce y guarda primero todos los {0} de cada grupo.",
   "Enter another result": "Introducir otro resultado",
   "Enter coins gained or lost per lap.": "Introduce las monedas ganadas o perdidas por vuelta.",
-  "Enter each Player's total score. The table updates automatically when you leave the field or press Enter.": "Introduce la puntuación total de cada Jugador. La tabla se actualiza automáticamente al salir del campo o pulsar Intro.",
+  "Enter each Player's total score. The scores are saved and the table is updated when you choose the button under the list.": "Introduce la puntuación total de cada jugador. Las puntuaciones se guardan y la tabla se actualiza cuando eliges el botón que hay debajo de la lista.",
   "Enter lap {0} as six digits.": "Introduce la vuelta {0} con seis dígitos.",
   "Enter scores first before exporting.": "Introduce las puntuaciones antes de exportar.",
   "Enter the code your app is showing, then decide whether it may use this account.": "Introduce el código que muestra tu app y luego decide si puede usar esta cuenta.",
@@ -6052,6 +6052,11 @@
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "Retiraste este feed en directo el {0}. Sigue fuera de la vista pública: ninguna coincidencia de lista ni delegación de captura lo vuelve a abrir. Confirma abajo el enrutamiento en directo para restaurarlo.",
   "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "Comprueba tarjeta → grupo antes de START. Tras la carrera 1, una coincidencia fuerte de nombres abre View solo si el director delegó la captura en directo a esta cuenta (o es del director o de un administrador); si no, el feed espera al director. Los puntos solo cuentan tras emparejar a los Players y revisar el grupo después de STOP.",
   "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "También puedes hacerlo más tarde, exactamente igual: haz doble clic en «MK8DX beheer» en el escritorio; se abre en esta pantalla.",
-  "Check that your app shows the same code.": "Comprueba que tu app muestra el mismo código."
+  "Check that your app shows the same code.": "Comprueba que tu app muestra el mismo código.",
+  "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}": "Nuevo código de recuperación de las copias de seguridad (se muestra una sola vez; anótalo y guárdalo lejos de este ordenador): {0}",
+  "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.": "Las copias de seguridad que se hagan a partir de ahora necesitan este nuevo código. Las anteriores solo se abren con el código antiguo: guarda ese papel con ellas.",
+  "Make a new recovery code": "Crear un nuevo código de recuperación",
+  "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.": "Solo hace falta si otra persona ha visto tu código. Después de Finalizar recibirás un código nuevo; las copias anteriores siguen necesitando el código antiguo.",
+  "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.": "A partir de ahora, las copias nuevas usan este código nuevo. Las copias anteriores solo se abren con el código antiguo: guarda ese papel con esas copias."
  }
 }

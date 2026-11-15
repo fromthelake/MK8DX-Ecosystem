@@ -115,7 +115,7 @@ flowchart TB
 | --- | --- | --- | --- |
 | **A2** 집 또는 클럽 네트워크 | 자신의 네트워크, 설정 후 인터넷 불필요, 모두에게 로그인 카드 | Windows 11 (x86-64), Linux (x86-64 또는 arm64), Mac (Apple 실리콘 또는 Intel) | Windows 11에서 처음부터 끝까지 테스트 완료. Linux는 WSL 2에서 테스트. Mac은 빌드는 했지만 실제 Mac에서는 아직 미테스트 |
 | **A1** 컴퓨터 한 대 | 지금 앉아 있는 컴퓨터에서 한번 써 보기 | Windows 11 또는 Linux, x86-64, Docker 필요 | Windows 11에서 0.2.6으로 처음부터 끝까지 테스트 완료(야간 백업은 다음 버전부터); Linux: 설치, 업그레이드, 백업 |
-| **A3** Docker 없는 컴퓨터 한 대 | Docker를 쓸 수 없는 Windows PC | XAMPP와 Node.js가 설치된 Windows 11 | 테스트 완료: 설치, 업그레이드, 백업 |
+| **A3** Docker 없는 컴퓨터 한 대 | Docker를 쓸 수 없는 Windows PC | XAMPP와 Node.js가 설치된 Windows 11 | Windows 11에서 처음부터 끝까지 테스트 완료: 설치, 로그인, 스캐너, 토너먼트, 백업, 야간 백업, 업데이트, 제거 |
 | **B1** 공개 웹사이트 | 온라인 커뮤니티, 자신의 도메인과 이메일 | Docker가 설치된 Linux x86-64 서버(VPS). Ubuntu 24.04 문서 제공 | 문서화 완료, 처음부터 끝까지의 테스트는 아직 |
 | **B2** 웹 호스팅 | 자기 서버 없이 온라인으로 | Node.js (Passenger), MariaDB/MySQL, SSH를 지원하는 호스팅 요금제 | 저희 커뮤니티 사이트가 이 방식으로 운영 중. 공개 패키지를 새 호스팅 계정에 처음부터 설치해 본 적은 아직 없음 |
 

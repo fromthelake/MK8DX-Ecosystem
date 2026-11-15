@@ -57,6 +57,26 @@ class AutoBackupTest(unittest.TestCase):
                 self.assertIn(setting, script)
             self.assertNotIn("-Password", script)  # current user: no stored password, no elevation
 
+    def test_unticking_removes_the_nightly_task_on_every_platform(self):
+        # Windows: the "MK8DX backup" task goes; a missing task is "absent", a refusal "failed".
+        for stdout, code, expected in (("removed\n", 0, "removed"), ("absent\n", 0, "absent"), ("", 1, "failed")):
+            calls = []
+            with patch.object(auto_backup.sys, "platform", "win32"), \
+                    patch.object(auto_backup.subprocess, "run", side_effect=lambda args, **k: calls.append(args)
+                                 or types.SimpleNamespace(returncode=code, stdout=stdout)):
+                self.assertEqual(auto_backup.remove_daily_task(), expected)
+            script = calls[0][-1]
+            self.assertIn("Unregister-ScheduledTask -TaskName 'MK8DX backup' -Confirm:$false", script)
+            self.assertNotIn("certificate renewal", script)
+        # Linux and macOS: the systemd user timer / LaunchAgent of that same job.
+        for platform in ("linux", "darwin"):
+            with patch.object(auto_backup.sys, "platform", platform), \
+                    patch("tooling.host_platform.unschedule", return_value="removed") as unschedule:
+                with tempfile.TemporaryDirectory() as temporary:
+                    with patch.object(auto_backup, "default_backup_root", return_value=Path(temporary)):
+                        self.assertEqual(auto_backup.disable(), {"task": "removed", "folder": temporary})
+            unschedule.assert_called_once_with("MK8DX backup")
+
     def test_task_time_is_validated(self):
         with self.assertRaises(ValueError):
             auto_backup.register_daily_task(Path("."), "py.exe", when="3am; Remove-Item x")

@@ -55,6 +55,24 @@ def read_recovery_code(state: Path) -> str:
     return unprotect_root((state / PHRASE_FILE).read_bytes()).decode("utf-8")
 
 
+def rotate_recovery_code(state: Path) -> str:
+    """A new recovery code in place of the stored one (for example after it was seen by someone else).
+
+    Backups made from now on are sealed with the new code. Backups made before are not touched: they still
+    open only with the old code, so that paper stays with them. Returns the new code, to be shown once."""
+    from tooling import host_platform
+    from tooling.offline_lan_ca import _restrict, protect_root
+    target = Path(state) / PHRASE_FILE
+    if not target.is_file():
+        raise ValueError("This installation has no recovery code yet; switch on the nightly backup first")
+    code = new_recovery_code()
+    host_platform.replace_secret_file(target, code.encode("utf-8"), protect_with=protect_root,
+                                      restrict=lambda path: _restrict(path, directory=False))
+    if read_recovery_code(Path(state)) != code:
+        raise RuntimeError("The new recovery code could not be read back")
+    return code
+
+
 def _quote(value: str) -> str:
     """A PowerShell single-quoted literal."""
     return "'" + str(value).replace("'", "''") + "'"
@@ -164,6 +182,28 @@ def enable(state: Path, python: str) -> dict:
     return {"recoveryCode": code, "task": register_daily_task(state, python), "folder": str(default_backup_root())}
 
 
+def remove_daily_task() -> str:
+    """Undo `register_daily_task`: "removed", "absent" or "failed". A2 schedules only this one nightly
+    job (Windows task, systemd user timer or LaunchAgent); it never uses cron."""
+    if sys.platform != "win32":
+        from tooling import host_platform
+        return host_platform.unschedule(TASK_NAME)
+    name = _quote(TASK_NAME)
+    script = (f"$t=Get-ScheduledTask -TaskName {name} -ErrorAction SilentlyContinue;"
+              f"if (-not $t) {{ 'absent' }} else {{ Unregister-ScheduledTask -TaskName {name} -Confirm:$false "
+              "-ErrorAction Stop; 'removed' }")
+    run = subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
+                         capture_output=True, text=True, check=False)
+    answer = run.stdout.strip()
+    return answer if run.returncode == 0 and answer in ("removed", "absent") else "failed"
+
+
+def disable() -> dict:
+    """The box "Make a backup every night" unticked: no nightly job any more. The stored recovery code stays, so
+    the backups made so far still open and ticking it again later keeps the same code."""
+    return {"task": remove_daily_task(), "folder": str(default_backup_root())}
+
+
 def backup_with_stored_code(state: Path, output: Path) -> Path:
     """One encrypted backup into `output`, using the recovery code the wizard stored."""
     from lifecycle import backup
@@ -195,10 +235,17 @@ def run(state: Path, root: Path | None = None) -> Path:
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("action", choices=["run"])
+    parser.add_argument("action", choices=["run", "new-code"])
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--backup-root", type=Path)
     args = parser.parse_args(argv)
+    if args.action == "new-code":
+        # The same as `install.py backup-new-code` and MK8DX beheer's "Make a new recovery code".
+        code = rotate_recovery_code(args.state_dir.resolve())
+        print(f"New recovery code (shown only once, write it down): {code}")
+        print("Backups made from now on need this new code. Backups made before still open only with the old "
+              "code: keep that paper with them.")
+        return 0
     print(f"Backup written: {run(args.state_dir.resolve(), args.backup_root)}")
     return 0
 

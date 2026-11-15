@@ -1,6 +1,7 @@
 """A3 (XAMPP + Node.js) and B2 (shared hosting): the setup questions, their refusals and readable output."""
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -95,6 +96,50 @@ class NativeOutputTest(unittest.TestCase):
                     self.assertRaises(SystemExit) as stopped:
                 install.main()
         self.assertIn("Ctrl+C", str(stopped.exception))
+
+
+@unittest.skipUnless(sys.platform == "win32", "configure_xampp.ps1 is the Windows A3 helper")
+class XamppHelperTest(unittest.TestCase):
+    """configure_xampp.ps1 adds one Include line and the fragment; -Remove takes back exactly that."""
+
+    def run_helper(self, root: Path, package: Path, local: Path, *extra: str) -> str:
+        # Windows PowerShell 5.1 as a person starts it: a PowerShell 7 PSModulePath would hide Get-FileHash.
+        environment = {k: v for k, v in os.environ.items() if k.upper() != "PSMODULEPATH"}
+        environment["LOCALAPPDATA"] = str(local)
+        done = subprocess.run(["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File",
+                               str(package / "tooling/configure_xampp.ps1"), "-XamppRoot", str(root), *extra],
+                              capture_output=True, text=True, stdin=subprocess.DEVNULL, env=environment, timeout=120)
+        self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+        return done.stdout
+
+    def test_remove_restores_the_original_httpd_conf_bytes(self):
+        repository = Path(install.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            root, package, local = base / "xampp", base / "package", base / "local"
+            (root / "apache/conf/extra").mkdir(parents=True)
+            (root / "apache/bin").mkdir(parents=True)
+            # A stand-in for httpd.exe: cmd.exe with no input ends at once with exit code 0 ("syntax OK").
+            (root / "apache/bin/httpd.exe").write_bytes(Path(r"C:\Windows\System32\cmd.exe").read_bytes())
+            original = b'ServerRoot "C:/xampp/apache"\r\nListen 80\r\n# caf\xe9 site\r\nInclude conf/extra/other.conf\r\n'
+            conf = root / "apache/conf/httpd.conf"
+            conf.write_bytes(original)
+            (package / "tooling").mkdir(parents=True)
+            (package / "apache").mkdir()
+            (package / "tooling/configure_xampp.ps1").write_bytes(
+                (repository / "tooling/configure_xampp.ps1").read_bytes())
+            fragment = repository / "infrastructure/native/apache-mk8dx-local.conf"
+            (package / "apache/apache-mk8dx-local.conf").write_bytes(fragment.read_bytes())
+
+            self.run_helper(root, package, local)
+            self.assertTrue(conf.read_bytes().endswith(b"\r\nInclude conf/extra/mk8dx-local.conf\r\n"))
+            self.assertTrue((root / "apache/conf/extra/mk8dx-local.conf").is_file())
+
+            removed = self.run_helper(root, package, local, "-Remove")
+            self.assertIn("MK8DX Apache site removed", removed)
+            self.assertEqual(conf.read_bytes(), original)  # every other byte, including the é, unchanged
+            self.assertFalse((root / "apache/conf/extra/mk8dx-local.conf").exists())
+            self.assertIn("nothing changed", self.run_helper(root, package, local, "-Remove"))
 
 
 if __name__ == "__main__":

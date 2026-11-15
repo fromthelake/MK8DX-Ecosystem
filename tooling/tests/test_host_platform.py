@@ -107,6 +107,39 @@ class ScheduleTest(unittest.TestCase):
         self.assertIn(["systemctl", "--user", "enable", "mk8dx-mk8dx-backup.timer"], calls)
         self.assertFalse(any("sudo" in part for command in calls for part in command))
 
+    def test_linux_unschedule_removes_the_user_timer_and_service(self):
+        with tempfile.TemporaryDirectory() as home:
+            calls = []
+            with patch.dict("os.environ", {"HOME": home}), \
+                    patch.object(host_platform, "_run", side_effect=lambda command, **k: calls.append(command) or answer()):
+                self.assertEqual(host_platform.unschedule("MK8DX backup", platform="linux"), "absent")
+                self.assertEqual(calls, [])
+                host_platform.schedule("MK8DX backup", ["/p", "run"], daily="03:00", platform="linux")
+                host_platform.schedule("MK8DX certificate renewal", ["/p", "maintain-ca"], daily="03:30", platform="linux")
+                calls.clear()
+                self.assertEqual(host_platform.unschedule("MK8DX backup", platform="linux"), "removed")
+            units = Path(home) / ".config" / "systemd" / "user"
+            self.assertFalse((units / "mk8dx-mk8dx-backup.timer").exists())
+            self.assertFalse((units / "mk8dx-mk8dx-backup.service").exists())
+            self.assertTrue((units / "mk8dx-mk8dx-certificate-renewal.timer").exists())  # only the named job goes
+        self.assertEqual(calls[0], ["systemctl", "--user", "disable", "--now",
+                                    "mk8dx-mk8dx-backup.timer", "mk8dx-mk8dx-backup.service"])
+        self.assertEqual(calls[-1], ["systemctl", "--user", "daemon-reload"])
+
+    def test_macos_unschedule_boots_out_and_removes_the_launch_agent(self):
+        with tempfile.TemporaryDirectory() as home:
+            calls = []
+            with patch.dict("os.environ", {"HOME": home}), \
+                    patch.object(host_platform.os, "getuid", create=True, return_value=501), \
+                    patch.object(host_platform, "_run", side_effect=lambda command, **k: calls.append(command) or answer()):
+                host_platform.schedule("MK8DX backup", ["/p", "run"], daily="03:00", platform="darwin")
+                calls.clear()
+                self.assertEqual(host_platform.unschedule("MK8DX backup", platform="darwin"), "removed")
+                self.assertEqual(host_platform.unschedule("MK8DX backup", platform="darwin"), "absent")
+            agent = Path(home) / "Library" / "LaunchAgents" / "nl.mariokart8.mk8dx-mk8dx-backup.plist"
+            self.assertFalse(agent.exists())
+        self.assertEqual(calls, [["launchctl", "bootout", "gui/501", str(agent)]])
+
     def test_macos_daily_and_sign_in_jobs_are_launch_agents(self):
         with tempfile.TemporaryDirectory() as home:
             with patch.dict("os.environ", {"HOME": home}), \

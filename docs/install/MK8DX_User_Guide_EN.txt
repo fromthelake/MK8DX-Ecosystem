@@ -126,6 +126,12 @@ It works only for an account that has already verified its email. Expect “crea
 
 python tooling/install.py verify-backup --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker" --backup-output "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01"
 
+Nightly backup: the first start also switches on a checked backup every night at 03:15. Windows Task Scheduler makes it under your own account, without administrator rights, in Documents\MK8DX-backups\automatic; if the computer is off at that time, it runs as soon as possible afterwards. When the MK8DX window is closed, the backup starts and stops its own database. Check it in PowerShell in the package folder:
+
+python tooling/install.py backup-status --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Expect "enabled": true and "scheduler": "windows-task"; after the first night also "lastResult": "ok". If it shows "enabled": false although you never switched it off (the v0.2.6 package could not switch it on), run the same command once with backup-schedule instead of backup-status; the next update with step 11 also switches it on. To switch it off, use backup-unschedule.
+
 11. For a software update, stop Apache and make and verify a backup while the old MK8DX window is still running. Then press Ctrl+C in that window. Check and extract the new A3 ZIP beside the old package. Continue using the same %LOCALAPPDATA%\MK8DX\NoDocker data folder. In PowerShell inside the new package, temporarily start only its own database:
 
 python tooling/install.py maintenance --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
@@ -149,6 +155,16 @@ Keep this window open. In the second window use your actual backup folder name, 
 python tooling/install.py restore-local --backup-input "$env:USERPROFILE\Documents\MK8DX-backups\a3-2026-10-01" --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
 
 Expect “Backup verified” and then a passing check of all migrations. Press Ctrl+C in the maintenance window. Open Start-MK8DX-No-Docker.cmd and start Apache in XAMPP Control Panel. Sign in with an existing account from the backup and check administrator access and a known result. The first administrator is not granted again. If the target computer already has an MK8DX installation or another process on port 18306, do not use it as this restore target; the helper does not erase an existing database. Keep the original backup intact.
+
+13. To remove this A3 installation from the computer, first make a backup as in step 10 if you may want your accounts and results back later. Backups in Documents\MK8DX-backups stay until you delete them yourself. In PowerShell in the package folder, switch off the nightly backup:
+
+python tooling/install.py backup-unschedule --state-dir "$env:LOCALAPPDATA\MK8DX\NoDocker"
+
+Stop Apache in XAMPP Control Panel and press Ctrl+C in the MK8DX window. Then take the MK8DX site out of Apache:
+
+powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoot 'C:\xampp' -Remove
+
+Expect “MK8DX Apache site removed” and “Syntax OK”. Only the Include line and mk8dx-local.conf from step 4 are removed; other XAMPP websites and databases stay as they are. Then delete the folders %LOCALAPPDATA%\MK8DX\NoDocker (database, accounts and keys) and %LOCALAPPDATA%\MK8DX\ApacheBackup, and finally the package folder. XAMPP, Node.js and Python stay installed; remove them in Windows Settings → Apps only if nothing else uses them. If you use XAMPP for other websites, start Apache again.
 
 Use it on your home network
 
@@ -527,7 +543,7 @@ Confirming dangerous actions: changing administrator, Director or report rights,
 
 Back up, restore, and update
 
-Automatic backup: MK8DX also makes a checked backup by itself every night. A1, A3 and B1 switch it on at the first setup; B2 asks once (Enter is yes); A2 has its own in MK8DX beheer. It goes to Documents\MK8DX-backups\automatic on Windows and to ~/mk8dx-backups/automatic on Linux and shared hosting, keeps 14 days and 4 weeks, and a failed night never removes older backups. Menu 3 (check) shows the age and result of the last one under automaticBackup. Still keep a copy away from the computer or server: on Windows add a second folder on another drive or a NAS with python tooling/install.py backup-schedule --state-dir <installation folder> --copy-to <folder>; from a server, python3 tooling/install.py backup-latest --state-dir <installation folder> --print-path names the newest checked folder to fetch with scp. Turn it off with backup-unschedule instead of backup-schedule. A shared host that already makes daily account backups (DirectAdmin, JetBackup) may be enough for you; an own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support. To restore, use the newest folder in automatic exactly like a backup from menu 6 in the commands below.
+Automatic backup: MK8DX also makes a checked backup by itself every night. A1, A3 and B1 switch it on at the first setup; B2 asks once (Enter is yes); A2 has its own in MK8DX beheer. It goes to Documents\MK8DX-backups\automatic on Windows and to ~/mk8dx-backups/automatic on Linux and shared hosting, keeps 14 days and 4 weeks, and a failed night never removes older backups. Menu 3 (check) shows the age and result of the last one under automaticBackup (A3: backup-status). Still keep a copy away from the computer or server: on Windows add a second folder on another drive or a NAS with python tooling/install.py backup-schedule --state-dir <installation folder> --copy-to <folder>; from a server, python3 tooling/install.py backup-latest --state-dir <installation folder> --print-path names the newest checked folder to fetch with scp. Turn it off with backup-unschedule instead of backup-schedule. A shared host that already makes daily account backups (DirectAdmin, JetBackup) may be enough for you; an own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support. To restore, use the newest folder in automatic exactly like a backup from menu 6 in the commands below.
 
 Database accounts: the website signs in to its database with an account that can only read and write data, so a fault in the website can never delete the tables; database updates and backups use a second account. A1, A2, A3 and B1 set this up themselves, an existing installation at its next update (menu 7); if the website does not start with the new account, the update returns to the old one and nothing is lost. On B2, create a second database user with only SELECT, INSERT, UPDATE and DELETE in DirectAdmin or cPanel and enter it in the wizard, or later with python3 tooling/install.py database-accounts --state-dir <installation folder>; with one user B2 keeps working but shows a warning.
 

@@ -1110,7 +1110,7 @@ def main():
     utf8_output()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["init", "wizard", "adopt", "status", "change-origin", "change-lan-address", "change-smtp", "set-admin-email", "setup", "start", "stop", "serve", "maintenance", "maintain-ca", "check", "check-database", "apply", "admin", "step-up-link", "host-unlock", "upgrade", "update-package", "backup", "verify-backup", "restore-new", "restore-local", "restore-wizard", "passenger-config", "database-accounts",
-                                           "backup-run", "backup-schedule", "backup-unschedule", "backup-status",
+                                           "backup-run", "backup-schedule", "backup-unschedule", "backup-new-code", "backup-status",
                                            "backup-latest", "backup-open"])
     parser.add_argument("--state-dir", type=Path, required=True)
     parser.add_argument("--mode", choices=["local", "lan", "offline-lan", "production", "xampp", "shared"], default="local")

@@ -89,6 +89,37 @@ def unprotect(blob: bytes) -> bytes:
     raise RuntimeError("Unknown MK8DX secret format on this platform")
 
 
+def forget(blob: bytes) -> None:
+    """Remove what `protect` kept outside the file: the macOS Keychain item. A file or systemd-creds secret
+    lives only in its file, so replacing the file is enough there."""
+    if not blob.startswith(KEYCHAIN_MARKER):
+        return
+    account = blob[len(KEYCHAIN_MARKER):].decode("ascii")
+    if not re.fullmatch(r"secret-[0-9a-f]{24}", account):
+        raise RuntimeError("Unexpected MK8DX Keychain reference")
+    _run(["security", "delete-generic-password", "-s", KEYCHAIN_SERVICE, "-a", account])
+
+
+def replace_secret_file(path: Path, data: bytes, *, protect_with, restrict=None) -> None:
+    """Store a new protected secret in place of the one in `path` (which must exist), with one atomic rename:
+    a crash leaves the old secret or the new one, never neither. An old Keychain item goes afterwards."""
+    old = path.read_bytes()
+    temporary = path.with_name(path.name + ".new")
+    temporary.unlink(missing_ok=True)
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(protect_with(data))
+        if restrict is not None:
+            restrict(temporary)
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+    if sys.platform != "win32":
+        forget(old)
+
+
 def protection_kind(blob: bytes) -> str:
     """For status screens: how a stored secret is protected (never its content)."""
     for marker, kind in ((FILE_MARKER, "file-permissions"), (SYSTEMD_MARKER, "systemd-creds"),
@@ -216,6 +247,32 @@ def schedule(name: str, argv: list[str], *, daily: str | None = None, at_login: 
         _run(["launchctl", "bootout", domain, str(target)])
         return _run(["launchctl", "bootstrap", domain, str(target)]).returncode == 0
     return False
+
+
+def unschedule(name: str, *, platform: str | None = None) -> str:
+    """Remove the per-user job `schedule` made: "removed", "absent" (nothing to remove) or "failed"."""
+    platform = platform or sys.platform
+    if platform.startswith("linux"):
+        unit = _unit_name(name)
+        folder = _home() / ".config" / "systemd" / "user"
+        files = [folder / f"{unit}{suffix}" for suffix in (".timer", ".service")]
+        present = [path for path in files if path.exists()]
+        if not present:
+            return "absent"
+        # disable --now stops the timer and drops its timers.target.wants link; then the unit files go.
+        _run(["systemctl", "--user", "disable", "--now", *(path.name for path in present)])
+        for path in present:
+            path.unlink(missing_ok=True)
+        _run(["systemctl", "--user", "daemon-reload"])
+        return "failed" if any(path.exists() for path in files) else "removed"
+    if platform == "darwin":
+        target = _home() / "Library" / "LaunchAgents" / f"nl.mariokart8.{_unit_name(name)}.plist"
+        if not target.exists():
+            return "absent"
+        _run(["launchctl", "bootout", f"gui/{os.getuid()}", str(target)])
+        target.unlink(missing_ok=True)
+        return "removed"
+    return "failed"
 
 
 def docker_autostart(*, platform: str | None = None) -> str:

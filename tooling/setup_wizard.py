@@ -153,6 +153,9 @@ class Wizard:
         info = {"installed": self.installed(), "qaCandidate": self.qa_candidate, "stateDir": str(self.state),
                 "platform": "windows" if sys.platform == "win32" else "macos" if sys.platform == "darwin" else "linux"}
         if info["installed"]:
+            from tooling import auto_backup
+            # MK8DX beheer offers "Make a new recovery code" only when there is one to replace.
+            info["recoveryCode"] = auto_backup.has_recovery_code(self.state)
             info["addresses"] = install.offline_addresses(self.state)
             info["administrator"] = self.host is not None
             # A new router or another network gives this computer a new address: offer the move.
@@ -510,11 +513,19 @@ class Wizard:
                 "qr": payload["qrDataUrl"], "origin": payload["origin"],
                 "fingerprint": payload["rootCertificateSha256"]}
 
-    def finish(self, shortcut: bool, autostart: bool = True, backups: bool = True):
+    def finish(self, shortcut: bool, autostart: bool = True, backups: bool = True, new_code: bool = False):
         from tooling import auto_backup
         result = {"autostart": auto_backup.ensure_docker_autostart() if autostart else "off"}
+        had_code = self.installed() and auto_backup.has_recovery_code(self.state)
         if backups and self.installed():
             result.update(auto_backup.enable(self.state, sys.executable))
+        elif self.installed():
+            # Unticked in MK8DX beheer: an earlier Finish may have made the nightly job; remove it.
+            result["backupTask"] = auto_backup.disable()["task"]
+        if new_code and had_code:
+            # Shown once, like the first code; backups made before keep the old one (not re-encrypted).
+            result.update({"recoveryCode": auto_backup.rotate_recovery_code(self.state), "recoveryCodeRotated": True,
+                           "folder": str(auto_backup.default_backup_root())})
         if self.installed():
             # Certificate renewal is not optional: without it the LAN HTTPS signer expires in a week.
             result["certificateRenewal"] = auto_backup.register_ca_renewal(self.state, sys.executable)
@@ -752,7 +763,7 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     return self.send(200, {"closing": True})
                 if path == "/api/finish":
                     result = wizard.finish(bool(body.get("shortcut", True)), bool(body.get("autostart", True)),
-                                           bool(body.get("backups", True)))
+                                           bool(body.get("backups", True)), bool(body.get("newCode", False)))
                     # Keep serving briefly so the page can show the one-time recovery code.
                     threading.Timer(600.0, self.server.shutdown).start()
                     return self.send(200, result)
