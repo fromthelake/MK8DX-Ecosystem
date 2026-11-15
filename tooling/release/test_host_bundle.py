@@ -172,8 +172,24 @@ class HostBundlePlatformTest(unittest.TestCase):
         self.assertEqual(host_bundle.image_tags("v0.2.0", "arm64")[:2],
                          ("ghcr.io/fromthelake/mk8dx-api:v0.2.0-arm64", "ghcr.io/fromthelake/mk8dx-web:v0.2.0-arm64"))
 
-    def test_offline_package_carries_the_platform_layer(self):
-        self.assertIn("tooling/host_platform.py", host_bundle.OFFLINE_FILES)
+    def test_every_package_carries_the_platform_layer_and_backup_scheduler(self):
+        # scheduled_backup.schedule imports these on every route; a B1 package without them could not
+        # switch on its nightly backup ("cannot import name 'auto_backup' from 'tooling'").
+        import ast
+        source = (Path(host_bundle.ROOT) / "tooling" / "scheduled_backup.py").read_text(encoding="utf-8")
+        schedule = next(node for node in ast.walk(ast.parse(source))
+                        if isinstance(node, ast.FunctionDef) and node.name == "schedule")
+        needed = {f"tooling/{alias.name}.py" for node in ast.walk(schedule)
+                  if isinstance(node, ast.ImportFrom) and node.module == "tooling" for alias in node.names}
+        self.assertEqual(needed, {"tooling/auto_backup.py", "tooling/host_platform.py"})
+        for name in needed:
+            self.assertIn(name, host_bundle.FILES)
+            self.assertNotIn(name, host_bundle.OFFLINE_FILES)  # listed once: the ZIP must not hold it twice
+        # The web-hosting / XAMPP packages (B2, A3) schedule the same backup.
+        import inspect
+        staged = inspect.getsource(non_docker_bundle)
+        for name in needed:
+            self.assertIn(f'"{name}"', staged)
 
 
 if __name__ == "__main__":

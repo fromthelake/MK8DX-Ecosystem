@@ -77,7 +77,10 @@ class OfflineLanInstallTest(unittest.TestCase):
             with patch.object(install, "run_compose") as run_up, \
                     patch.object(install, "ensure_offline_firewall", return_value="present") as firewall:
                 printed = _printed(install.operate, state, "start", qa_offline_candidate=True)
-                self.assertIn("LAN firewall rule (Private profile, 80/443): present", printed)
+                # Windows names its Private-profile rule; Linux and macOS print the "Network:" line the manual names.
+                self.assertIn("LAN firewall rule (Private profile, 80/443): present" if sys.platform == "win32"
+                              else "Network: present", printed)
+                self.assertEqual("Private profile" in printed, sys.platform == "win32")
                 self.assertIn("Phones and other PCs first open: http://192.168.50.20/setup", printed)
                 self.assertIn("Website after trusting the certificate: https://192.168.50.20", printed)
                 self.assertEqual(run_up.call_args_list[-1].args[1:],

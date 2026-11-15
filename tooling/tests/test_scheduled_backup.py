@@ -97,6 +97,19 @@ class CrontabTest(unittest.TestCase):
         with self.assertRaises(sb.BackupError):
             sb.cron_line(Path("/home/u/50%"), "03:15", "/usr/bin/python3", "/usr/bin")
 
+    def test_cron_line_leaves_out_wsl_windows_path_entries(self):
+        # WSL appends the whole Windows PATH under /mnt/<drive>/: with it the line passed cron's
+        # 1000-character limit and `crontab` refused the table ("command too long").
+        windows = ":".join(f"/mnt/c/Program Files/Tool {n}/bin" for n in range(60))
+        path_env = f"/usr/local/bin:/usr/bin:/bin:/usr/bin:relative/bin:{windows}:/mnt/data/bin:/mnt/d"
+        self.assertEqual(sb.cron_path(path_env), "/usr/local/bin:/usr/bin:/bin:/mnt/data/bin")
+        line = sb.cron_line(Path("/var/lib/mk8dx/instance"), "03:15", "/usr/bin/python3", path_env)
+        self.assertIn("PATH=/usr/local/bin:/usr/bin:/bin:/mnt/data/bin ", line)
+        self.assertLess(len(line), sb.CRON_LINE_MAX)
+        with self.assertRaisesRegex(sb.BackupError, "more than cron accepts"):
+            sb.cron_line(Path("/var/lib/mk8dx/instance"), "03:15", "/usr/bin/python3",
+                         ":".join(f"/opt/tool-{n:03d}/bin" for n in range(80)))
+
     def test_scheduler_per_route(self):
         self.assertEqual(sb.choose_scheduler("A1", platform="win32"), "windows-task")
         self.assertEqual(sb.choose_scheduler("A3", platform="win32"), "windows-task")

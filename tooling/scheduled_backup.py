@@ -642,11 +642,30 @@ def _cron_safe(value: str) -> str:
     return shlex.quote(value)
 
 
+# cron refuses a line of 1000 characters or more ("command too long"); stay clearly below it.
+CRON_LINE_MAX = 990
+_WSL_DRIVE = re.compile(r"^/mnt/[A-Za-z](/|$)")
+
+
+def cron_path(path_env: str) -> str:
+    """The PATH for the cron job: absolute entries, each once. WSL appends every Windows PATH entry under
+    /mnt/<drive>/; a Linux cron job never needs those, and with them the line exceeds cron's limit."""
+    kept: list[str] = []
+    for entry in path_env.split(":"):
+        if entry.startswith("/") and not _WSL_DRIVE.match(entry) and entry not in kept:
+            kept.append(entry)
+    return ":".join(kept) or "/usr/bin:/bin"
+
+
 def cron_line(state: Path, when: str, python: str, path_env: str) -> str:
     hour, minute = (int(part) for part in when.split(":"))
-    return (f"{minute} {hour} * * * cd {_cron_safe(str(ROOT))} && PATH={_cron_safe(path_env)} "
+    line = (f"{minute} {hour} * * * cd {_cron_safe(str(ROOT))} && PATH={_cron_safe(cron_path(path_env))} "
             f"{_cron_safe(python)} tooling/install.py backup-run --state-dir {_cron_safe(str(state))} --quiet "
             f">/dev/null {CRON_MARKER}{cron_id(state)}")
+    if len(line) > CRON_LINE_MAX:
+        raise BackupError(EXIT_FAILED, f"The crontab line would be {len(line)} characters, more than cron accepts; "
+                                       "shorten PATH or the package and installation folder names")
+    return line
 
 
 _DIRECTADMIN_NOISE = (re.compile(r"^Backup of .* previous crontab saved"), re.compile(r"^[0-9a-fA-F]{64}$"))

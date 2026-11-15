@@ -45,6 +45,8 @@ FILES = (
     "Start-MK8DX.cmd", "Start-MK8DX-LAN.cmd", "compose.yaml", "compose.local.yaml", "compose.lan.yaml",
     "compose.production.yaml", "compose.images.yaml", "tooling/install.py", "tooling/lifecycle.py",
     "tooling/database_accounts.py", "tooling/scheduled_backup.py",
+    # The daily backup schedule (scheduled_backup.schedule) needs these on every route, not only A2.
+    "tooling/auto_backup.py", "tooling/host_platform.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",
     "tooling/mk8dx-ui.sh", "tooling/launcher_text.py",
     # The launcher texts in the 15 game languages (tooling/i18n/build_web_catalogs.mjs, product "launcher").
@@ -59,7 +61,7 @@ FILES = (
 OFFLINE_FILES = (
     "compose.offline-lan.yaml", "infrastructure/docker/Caddyfile.offline-lan",
     "tooling/offline_lan_ca.py", "tooling/offline_lan_ca_lifecycle.py", "tooling/requirements-offline-lan.txt",
-    "tooling/setup_wizard.py", "tooling/auto_backup.py", "tooling/host_platform.py",
+    "tooling/setup_wizard.py",
     "tooling/setup_wizard_static/index.html",
     "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
     "tooling/setup_wizard_static/language.js",

@@ -63,6 +63,8 @@ def content(stage):
     copy_tree(ROOT / "infrastructure/mysql/reference", stage / "mysql/reference")
     for name in ("tooling/install.py", "tooling/native_install.py", "tooling/launcher_text.py",
                  "tooling/database_accounts.py", "tooling/scheduled_backup.py", "tooling/lifecycle.py",
+                 # The daily backup schedule (scheduled_backup.schedule) imports these two.
+                 "tooling/auto_backup.py", "tooling/host_platform.py",
                  *LAUNCHER_CATALOGS, "LICENSE",
                  "LICENSE_SCOPE.md", "SOURCE_FOR_BINARIES.txt",
                  "docs/THIRD_PARTY_MATERIALS.md", *DOCS):

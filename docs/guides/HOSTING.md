@@ -195,10 +195,6 @@ To throw away a trial installation (or one you have migrated away from), work fr
 same installation directory. This **deletes the database, the accounts and the keys** of that installation;
 make a backup first (choice 6) if there is anything you may want back.
 
-A home or club installation (A2, started with `Start-MK8DX-LAN.cmd` or `tooling/start-mk8dx.sh`) has no launcher
-menu and its own scheduled jobs: remove it with *Removing MK8DX from this computer* in chapter 12 of the
-[A2 guide](../install/A2_HOME_GUIDE_EN.md).
-
 0. Remove the nightly backup schedule first:
    `python3 tooling/install.py backup-unschedule --state-dir <installation>`.
 1. Run the launcher and choose **3**: note the `route` (A1, A2 or B1). Then run it again and choose **4** to stop.
@@ -237,6 +233,13 @@ docker image rm (Get-Content PACKAGE_MANIFEST.json -Raw | ConvertFrom-Json).imag
 
 Use `compose.lan.yaml` instead of `compose.local.yaml` for A2. Then delete the package folder and any backups
 in `Documents\MK8DX-backups` that you no longer need.
+
+**The home and club package (`mk8dx-a2-…`, A2 without mail)** has no menu: its launcher opens MK8DX beheer.
+Its installation directory is `~/.local/share/mk8dx/LAN` on Linux (`%LOCALAPPDATA%\MK8DX\LAN` on Windows),
+it runs with `compose.offline-lan.yaml`, and `backup-unschedule` does not touch its nightly jobs. Remove it with
+*Removing MK8DX from this computer* in chapter 12 of the [A2 guide](../install/A2_HOME_GUIDE_EN.md): Windows
+and Linux (tested in WSL 2 with 0.2.6), the scheduled jobs, the containers and volumes, the shortcut, the images,
+the certificate on devices and the Windows firewall rule.
 
 An installation built from source is removed the same way from the repository root; see
 [Operations](../OPERATIONS.md#remove-an-installation).

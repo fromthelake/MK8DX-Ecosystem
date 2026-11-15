@@ -135,7 +135,7 @@
    "key": "'{0}' is not one of the choices above.",
    "nl": "'{0}' is geen van de keuzes hierboven.",
    "places": [
-    "install.py:1202"
+    "install.py:1205"
    ]
   },
   {
@@ -166,7 +166,7 @@
    "key": "--force-ca-rotation applies only to maintain-ca",
    "nl": "--force-ca-rotation geldt alleen voor maintain-ca",
    "places": [
-    "install.py:1158"
+    "install.py:1161"
    ]
   },
   {
@@ -208,7 +208,7 @@
    "key": "A2 offline needs this Windows computer to keep one private IPv4 address on your home network.",
    "nl": "A2 offline heeft nodig dat deze Windows-computer één vast privé IPv4-adres in je thuisnetwerk houdt.",
    "places": [
-    "install.py:1275"
+    "install.py:1278"
    ]
   },
   {
@@ -301,7 +301,7 @@
    "key": "Authorized sender email address: ",
    "nl": "Geautoriseerd e-mailadres van de afzender: ",
    "places": [
-    "install.py:1290"
+    "install.py:1293"
    ]
   },
   {
@@ -682,7 +682,7 @@
    "key": "Does your host already make daily account backups (for example DirectAdmin or JetBackup)? Then you may say no. An own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support.",
    "nl": "Maakt je hostingpartij al dagelijks back-ups van je account (bijvoorbeeld DirectAdmin of JetBackup)? Dan mag je nee zeggen. Met een eigen back-up zet je gisteren nog steeds zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten.",
    "places": [
-    "scheduled_backup.py:823"
+    "scheduled_backup.py:842"
    ]
   },
   {
@@ -903,7 +903,7 @@
    "key": "Host page (only on this computer): {0}",
    "nl": "Hostpagina (alleen op deze computer): {0}",
    "places": [
-    "install.py:1071"
+    "install.py:1074"
    ]
   },
   {
@@ -988,7 +988,7 @@
    "key": "Installation step stopped: {0}",
    "nl": "Installatiestap gestopt: {0}",
    "places": [
-    "install.py:1461"
+    "install.py:1464"
    ]
   },
   {
@@ -1066,7 +1066,7 @@
    "key": "LAN firewall rule (Private profile, 80/443): {0}",
    "nl": "LAN-firewallregel (profiel Particulier, 80/443): {0}",
    "places": [
-    "install.py:1070"
+    "install.py:1072"
    ]
   },
   {
@@ -1136,7 +1136,7 @@
    "key": "Local mail inbox: {0}",
    "nl": "Lokale mailinbox: {0}",
    "places": [
-    "install.py:1454"
+    "install.py:1457"
    ]
   },
   {
@@ -1277,7 +1277,7 @@
    "key": "MK8DX can make its own checked backup of the database and the site's keys every night: about 3 MB a day compressed, 14 days and 4 weeks are kept, at most 1 GB, outside public_html.",
    "nl": "MK8DX kan elke nacht zelf een gecontroleerde back-up maken van de database en de sleutels van de site: ongeveer 3 MB per dag gecomprimeerd, 14 dagen en 4 weken worden bewaard, hooguit 1 GB, buiten public_html.",
    "places": [
-    "scheduled_backup.py:821"
+    "scheduled_backup.py:840"
    ]
   },
   {
@@ -1400,7 +1400,7 @@
    "key": "Make and check a backup automatically every night? [Y/n]: ",
    "nl": "Elke nacht automatisch een gecontroleerde back-up maken? [J/n]: ",
    "places": [
-    "scheduled_backup.py:827"
+    "scheduled_backup.py:846"
    ]
   },
   {
@@ -1472,7 +1472,8 @@
    "key": "Network: {0}",
    "nl": "Netwerk: {0}",
    "places": [
-    "install.py:426"
+    "install.py:426",
+    "install.py:1073"
    ]
   },
   {
@@ -1493,15 +1494,15 @@
    "key": "Nightly automatic backup could not be switched on: {0}. Your installation is fine; see the backup chapter of the guide.",
    "nl": "De nachtelijke automatische back-up kon niet worden aangezet: {0}. Je installatie is in orde; zie het hoofdstuk over back-ups in de handleiding.",
    "places": [
-    "scheduled_backup.py:841",
-    "scheduled_backup.py:853"
+    "scheduled_backup.py:860",
+    "scheduled_backup.py:872"
    ]
   },
   {
    "key": "Nightly automatic backup is on: {0}. Turn it off with: {1}",
    "nl": "Nachtelijke automatische back-up staat aan: {0}. Uitzetten met: {1}",
    "places": [
-    "scheduled_backup.py:812"
+    "scheduled_backup.py:831"
    ]
   },
   {
@@ -1516,7 +1517,7 @@
    "key": "No admin email recorded; use --admin-email when initializing or configure it first",
    "nl": "Geen e-mailadres van de beheerder vastgelegd; gebruik --admin-email bij het initialiseren of stel het eerst in",
    "places": [
-    "install.py:1097"
+    "install.py:1100"
    ]
   },
   {
@@ -1659,7 +1660,7 @@
    "key": "Open on this computer: {0}",
    "nl": "Open op deze computer: {0}",
    "places": [
-    "install.py:1086"
+    "install.py:1089"
    ]
   },
   {
@@ -1754,7 +1755,7 @@
    "key": "Phones and other PCs first open: {0}",
    "nl": "Telefoons en andere pc's openen eerst: {0}",
    "places": [
-    "install.py:1072"
+    "install.py:1075"
    ]
   },
   {
@@ -1882,7 +1883,7 @@
     "start-mk8dx.ps1:29",
     "start-mk8dx.sh:114",
     "Start-MK8DX-No-Docker.cmd:29",
-    "install.py:1451"
+    "install.py:1454"
    ]
   },
   {
@@ -1903,7 +1904,7 @@
    "key": "Private website name [mk8dx.home.arpa]: ",
    "nl": "Private websitenaam [mk8dx.home.arpa]: ",
    "places": [
-    "install.py:1281"
+    "install.py:1284"
    ]
   },
   {
@@ -1959,7 +1960,7 @@
    "key": "Public website host name (without https://): ",
    "nl": "Openbare hostnaam van de website (zonder https://): ",
    "places": [
-    "install.py:1284"
+    "install.py:1287"
    ]
   },
   {
@@ -2133,7 +2134,7 @@
    "key": "SMTP implicit-TLS port [465]: ",
    "nl": "SMTP-poort met impliciete TLS [465]: ",
    "places": [
-    "install.py:1288",
+    "install.py:1291",
     "native_install.py:192"
    ]
   },
@@ -2141,7 +2142,7 @@
    "key": "SMTP login (not your MK8DX admin account): ",
    "nl": "SMTP-login (niet je MK8DX-beheerdersaccount): ",
    "places": [
-    "install.py:1289"
+    "install.py:1292"
    ]
   },
   {
@@ -2162,7 +2163,7 @@
    "key": "SMTP password (hidden): ",
    "nl": "SMTP-wachtwoord (verborgen): ",
    "places": [
-    "install.py:1291"
+    "install.py:1294"
    ]
   },
   {
@@ -2176,7 +2177,7 @@
    "key": "SMTP server name supplied by your mail provider: ",
    "nl": "SMTP-servernaam van je mailprovider: ",
    "places": [
-    "install.py:1287"
+    "install.py:1290"
    ]
   },
   {
@@ -2284,14 +2285,14 @@
    "key": "Setup cancelled before a choice was made; nothing was created.",
    "nl": "Installatie geannuleerd voordat er een keuze was gemaakt; er is niets aangemaakt.",
    "places": [
-    "install.py:1200"
+    "install.py:1203"
    ]
   },
   {
    "key": "Setup cancelled. Start the same file again to continue.",
    "nl": "Installatie geannuleerd. Start hetzelfde bestand opnieuw om verder te gaan.",
    "places": [
-    "install.py:1463"
+    "install.py:1466"
    ]
   },
   {
@@ -2342,7 +2343,7 @@
    "key": "Sign-in mail: MK8DX sends it through your mail provider over TLS on port 465 (implicit TLS). A provider that only offers STARTTLS on port 587 does not work yet. The password is not shown while you type.",
    "nl": "Inlogmail: MK8DX verstuurt die via je mailprovider over TLS op poort 465 (impliciete TLS). Een provider die alleen STARTTLS op poort 587 aanbiedt, werkt nog niet. Het wachtwoord is niet zichtbaar terwijl je typt.",
    "places": [
-    "install.py:1285",
+    "install.py:1288",
     "native_install.py:189"
    ]
   },
@@ -2442,7 +2443,7 @@
    "key": "That does not look like one email address; try again.",
    "nl": "Dat lijkt niet op één e-mailadres; probeer het opnieuw.",
    "places": [
-    "install.py:1298",
+    "install.py:1301",
     "native_install.py:199"
    ]
   },
@@ -2640,7 +2641,7 @@
    "key": "This Windows host's private IPv4 address (for example 192.168.0.50): ",
    "nl": "Privé IPv4-adres van deze Windows-host (bijvoorbeeld 192.168.0.50): ",
    "places": [
-    "install.py:1282"
+    "install.py:1285"
    ]
   },
   {
@@ -2669,7 +2670,7 @@
    "key": "This computer's private IPv4 address (see ipconfig, e.g. 192.168.0.50): ",
    "nl": "Privé IPv4-adres van deze computer (zie ipconfig, bijv. 192.168.0.50): ",
    "places": [
-    "install.py:1277"
+    "install.py:1280"
    ]
   },
   {
@@ -2699,7 +2700,7 @@
    "key": "This installation runs without Docker. A3: press Ctrl+C in the MK8DX window (Start-MK8DX-No-Docker.cmd) and stop Apache in XAMPP. B2: stop the Node.js app in your hosting panel.",
    "nl": "Deze installatie draait zonder Docker. A3: druk op Ctrl+C in het MK8DX-venster (Start-MK8DX-No-Docker.cmd) en stop Apache in XAMPP. B2: stop de Node.js-app in je hostingpaneel.",
    "places": [
-    "install.py:1235"
+    "install.py:1238"
    ]
   },
   {
@@ -2748,7 +2749,7 @@
    "key": "Tip: reserve it in your router (DHCP reservation); a new address later means a new phone setup QR.",
    "nl": "Tip: reserveer het in je router (DHCP-reservering); een nieuw adres betekent later een nieuwe QR-code om telefoons in te stellen.",
    "places": [
-    "install.py:1276"
+    "install.py:1279"
    ]
   },
   {
@@ -2808,7 +2809,7 @@
    "key": "Type {0} or {1} and press Enter: ",
    "nl": "Typ {0} of {1} en druk op Enter: ",
    "places": [
-    "install.py:1198"
+    "install.py:1201"
    ]
   },
   {
@@ -2822,7 +2823,7 @@
    "key": "Unknown installation action",
    "nl": "Onbekende installatieactie",
    "places": [
-    "install.py:1103"
+    "install.py:1106"
    ]
   },
   {
@@ -2976,14 +2977,14 @@
    "key": "Web origin: {0}",
    "nl": "Web-origin: {0}",
    "places": [
-    "install.py:1452"
+    "install.py:1455"
    ]
   },
   {
    "key": "Website after trusting the certificate: {0}",
    "nl": "Website nadat je het certificaat vertrouwt: {0}",
    "places": [
-    "install.py:1073"
+    "install.py:1076"
    ]
   },
   {
@@ -3023,7 +3024,7 @@
    "key": "Where will MK8DX run?",
    "nl": "Waar gaat MK8DX draaien?",
    "places": [
-    "install.py:1192"
+    "install.py:1195"
    ]
   },
   {
@@ -3037,7 +3038,7 @@
    "key": "Write down this backup recovery code and keep it away from this computer: {0}",
    "nl": "Schrijf deze herstelcode voor de back-ups op en bewaar hem niet op deze computer: {0}",
    "places": [
-    "scheduled_backup.py:815"
+    "scheduled_backup.py:834"
    ]
   },
   {
@@ -3051,7 +3052,7 @@
    "key": "Your own future MK8DX administrator email: ",
    "nl": "Je eigen e-mailadres als toekomstige MK8DX-beheerder: ",
    "places": [
-    "install.py:1299",
+    "install.py:1302",
     "native_install.py:200"
    ]
   },
