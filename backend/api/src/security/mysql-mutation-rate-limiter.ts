@@ -1,5 +1,7 @@
 import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
+import type { RefusalLedger } from "./refusal-ledger.js";
+
 export class MutationRateLimitExceeded extends Error {
   public constructor(public readonly retryAfterSeconds: number) {
     super("The mutation rate limit was exceeded.");
@@ -44,6 +46,8 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
     private readonly pool: Pick<Pool, "execute">,
     private readonly nowMs: () => number = Date.now,
     private readonly observer?: MutationRateLimiterObserver,
+    /** Counts refusals in memory for the administrator view (security/refusal-ledger.ts); no DB work here. */
+    private readonly ledger?: Pick<RefusalLedger, "record">,
   ) {}
 
   public async consume(subject: string, scope: string, windowSeconds: number, maximum: number): Promise<void> {
@@ -81,6 +85,7 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
     }
     if (!Number.isSafeInteger(count) || count > maximum) {
       this.countRefusal(scope);
+      this.ledger?.record(scope, subject);
       throw new MutationRateLimitExceeded(Math.max(1, Math.ceil((started + windowMs - now) / 1_000)));
     }
   }

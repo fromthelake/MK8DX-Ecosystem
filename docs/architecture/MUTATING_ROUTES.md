@@ -17,7 +17,7 @@ When you add or change a mutating route, update its row in the same change.
 | Same-origin proof ("CSRF") | `security/web-csrf-service.ts`, `GET /v1/session/csrf` | HMAC proof bound to the account, 15 minutes. Routes marked *proof* require it for cookie (browser) requests when the installation has the web product. Native apps use bearer tokens and send no cookies. |
 | Body size | Fastify default 1 MiB; per-route `bodyLimit` where stated | All JSON routes run with `coerceTypes`, `removeAdditional` and `useDefaults` off. |
 | Concurrency | `app.ts` | At most 100 requests in flight per API process (503 with Retry-After beyond). |
-| Durable budget | `security/mysql-mutation-rate-limiter.ts` | Fixed-window counters in `api_mutation_rate_limits`, shared by all API processes. Each request receives its own count atomically. Rows older than 48 hours are removed in bounded batches, on use and by an hourly timer; cleanup and refusal counts are logged without subjects. Over budget: 429 with Retry-After. |
+| Durable budget | `security/mysql-mutation-rate-limiter.ts` | Fixed-window counters in `api_mutation_rate_limits`, shared by all API processes. Each request receives its own count atomically. Rows older than 48 hours are removed in bounded batches, on use and by an hourly timer; cleanup and refusal counts are logged without subjects. Over budget: 429 with Retry-After. Every refusal is also counted, in process memory only (the refusal ledger, `security/refusal-ledger.ts`): the refusal path does no extra database work. See the administrator view below. |
 | Budget before sign-in | `security/pre-auth-budget.ts` | For routes reachable before the caller is known: the client address (trusted-proxy rules in `security/client-address.ts`) is mapped with a server key onto a fixed number of slots (1024), so caller-chosen values can never create new rows. |
 | Better Auth limiter | `authentication/embedded-passwordless-auth.ts` | Per-address limits for `/api/auth/*` (sign-in links, verification, device codes, change of e-mail). |
 | General backstop | `app.ts` (`AbuseBudgets.mutation`) | Every signed-in `POST`/`PUT`/`PATCH`/`DELETE` under `/v1` (also one no route answers) first spends the caller's own budget: 600 per 10 minutes and 10,000 per day per account, 3,000 per 10 minutes and 30,000 per day per administrator (higher, never unlimited), then one installation-wide budget of 6,000 per minute. Counted before the body is read; reads are never counted. Route budgets and quotas below apply on top. |
@@ -121,6 +121,22 @@ from 1 to 1,000,000 and an unknown `MK8DX_HOSTED_BUDGET_*` name stops the start 
 queue and retry after the stated time. The limiter reports refusal counts per scope (fixed names, no subjects) in the
 operational log as `rate_limit_refusals`.
 
+**Administrator view.** `GET /v1/administrator/request-budgets` (administration page, section **Request limits**,
+loaded when opened) shows, from the refusal ledger, the refusals per scope in about the last hour and day (5-minute
+steps), how many distinct subjects were refused, and for account budgets the five most refused accounts by public id and
+screen name; target, recipient, address-slot and device subjects are digests and are only counted. Quota refusals that do
+not pass through the limiter (`*_quota_exceeded`, `*_too_large`, `*_recipient_limit`, `step_up_required`) are counted
+by their response code under `quota.<code>`, without a subject. It also shows every `MK8DX_HOSTED_BUDGET_*` value with
+its default and the use of each installation budget (and the built-in Tournament evidence budget) in its current
+window. No migration. **The refusal ledger** counts in each API process's memory, in a bounded map (at most 4,096
+keys between flushes; beyond that a refusal is counted under the scope `other`), so a refused request costs no
+database write and a flood cannot grow it. Every 30 seconds, and on a graceful shutdown, the process writes its counts
+as one batched upsert into `api_mutation_rate_limits` (keys `!refused|<scope>|*` per 5 minutes and
+`!refused|<scope>|<subject>` per hour; `!` cannot occur in a budget scope), where the 48-hour cleanup removes them. The
+report adds the counts of the answering process that are not flushed yet. A crash or kill loses at most one flush
+interval of counts (the refusals themselves are unaffected), and another process's unflushed counts appear after its
+next flush.
+
 | Setting (`MK8DX_HOSTED_BUDGET_…`) | Default | Path |
 | --- | --- | --- |
 | `MUTATIONS_PER_MINUTE` | 6,000 | every signed-in `/v1` write (backstop) |
@@ -198,7 +214,9 @@ sends e-mail; an offline LAN installation (no e-mail) has no step-up.
 | `POST /v1/tournament-publications/:publicationId/actions/retract` | administrator | destructive |
 | `POST /v1/tournaments/:tournamentId/actions/delete`, `/v1/native/tournaments/:tournamentId/actions/delete`, `/v1/native/tournaments/:tournamentId/actions/remove` | any signed-in caller (the Director) | destructive |
 
-Routine, without step-up: every other read (the account list with addresses is the one read that asks, and the
+Routine, without step-up: every other read, including the request-budget report
+(`GET /v1/administrator/request-budgets`: operational counts, fixed scope names and, for account budgets, account ids
+and screen names an administrator already sees; no e-mail address, no reversible target; decided 2026-11-15) (the account list with addresses is the one read that asks, and the
 administration pages load it only on request), claim decisions (a reviewed, user-initiated request with its own
 dispute and revoke path), aliases, observed tournament identities, Player visibility, Time Trial correct/retire/restore
 and publish of one result, Tournament publication, live-capture delegations and evidence review, and every action
@@ -206,7 +224,7 @@ that runs a night (participants, groups, races, scores, finalize, workflow steps
 
 | Step-up route | Auth | Proof | Budget | Retention |
 | --- | --- | --- | --- | --- |
-| `POST /v1/session/step-up` (send a link) | session (cookie or bearer) | browser: Origin must be a trusted origin | 3 per 10 min and 10 per day per account; 429 with Retry-After | links: 10 min; rows removed one day after link and window ended |
+| `POST /v1/session/step-up` (send a link; the mail attempt is bounded by `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 s; when it fails the link is kept and the answer is 503 `step_up_mail_unavailable` with `linkExpiresAtMs`, for the break-glass below) | session (cookie or bearer) | browser: Origin must be a trusted origin | 3 per 10 min and 10 per day per account; 429 with Retry-After | links: 10 min; rows removed one day after link and window ended |
 | `GET /v1/session/step-up` (status, polled by the clients) | session | n/a | - | n/a |
 | `GET /v1/session/step-up/link?token=` (what the link page shows) | anyone with the link | n/a | - | never confirms |
 | `POST /v1/session/step-up/link` (Confirm button) | anyone with the link (single use, atomic) | n/a | per address (pre-auth) 30 per 10 min | audit `api_step_up_audit_events` 400 days (refusals at most 60/h per account) |

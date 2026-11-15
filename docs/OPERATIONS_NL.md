@@ -172,6 +172,9 @@ kan de beheerder van de server de link uitgeven:
 
 1. De beheerder drukt zoals gewoonlijk op de website of in de app op **Bevestig met een nieuwe e-maillink** →
    **Stuur de link**. De aanvraag wordt voor die ene sessie bewaard, ook als de e-mail niet verstuurd kan worden.
+   Eén mailpoging is begrensd (`MK8DX_HOSTED_SMTP_TIMEOUT_MS`, 1000 tot 60000, standaard 5000); mislukt die, dan
+   meldt de pagina binnen die tijd dat de link is aangemaakt maar niet gemaild, noemt deze opdracht en blijft op de
+   bevestiging wachten (`503 step_up_mail_unavailable`).
 2. Binnen 10 minuten, op de server, vanuit de pakket- of repositorymap:
    `python tooling/install.py step-up-link --state-dir <installatie>` (B1/B2: `python3`). Dat gebruikt het
    beheerdersadres van de installatie; met `--admin-email <aanmeldadres>` kies je een ander account, bijvoorbeeld een

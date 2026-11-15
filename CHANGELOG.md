@@ -5,7 +5,21 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **Administrator view of request limits**: a new **Request limits** section on the administration page (loaded when
+  opened) shows which request budgets and quotas refused requests in about the last hour and day, per scope, how many
+  were affected, the most refused accounts (only accounts are named; targets, recipients and addresses are counted),
+  every `MK8DX_HOSTED_BUDGET_*` value with its default, and how much of each installation budget is used in its current
+  window. Refusals are counted in memory (a refused request costs no database write) and flushed every 30 seconds
+  into the existing limiter table; no database migration.
+
 ### Changed
+
+- **A failed step-up e-mail answers quickly and points to the break-glass**: one mail attempt is bounded (new optional
+  setting `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 seconds) instead of waiting minutes on a mail server that is down.
+  When **Send the link** cannot mail, the link is still created and the page says so within that time, names
+  `install.py step-up-link` and keeps waiting for the confirmation (`503 step_up_mail_unavailable` instead of 500).
 
 - **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
   runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no

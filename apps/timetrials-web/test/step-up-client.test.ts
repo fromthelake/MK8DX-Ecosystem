@@ -97,4 +97,16 @@ describe("step-up client", () => {
     });
     expect(sent[0]).toMatchObject({ method: "POST", credentials: "same-origin" });
   });
+
+  it("tells a failed e-mail (link created, break-glass possible) apart from other failures", async () => {
+    const mailDown = async () => new Response(JSON.stringify({ code: "step_up_mail_unavailable",
+      message: "x", linkExpiresAtMs: 1_900_000_600_000 }), { status: 503 });
+    await expect(requestStepUp(mailDown)).rejects.toMatchObject({ code: "mail_unavailable", linkExpiresAtMs: 1_900_000_600_000 });
+    const otherOutage = async () => new Response(JSON.stringify({ code: "busy" }), { status: 503 });
+    await expect(requestStepUp(otherOutage)).rejects.toMatchObject({ code: "unavailable" });
+    const broken = async () => new Response(JSON.stringify({ code: "step_up_mail_unavailable" }), { status: 503 });
+    await expect(requestStepUp(broken)).rejects.toMatchObject({ code: "unavailable" });
+    const crashed = async () => new Response("{}", { status: 500 });
+    await expect(requestStepUp(crashed)).rejects.toBeInstanceOf(StepUpClientError);
+  });
 });

@@ -166,7 +166,10 @@ default 600). That needs working e-mail. When the mail server is down or the add
 operator of the server can hand out the link instead:
 
 1. The administrator presses **Confirm with a new email link** → **Send the link** on the website or in the app, as
-   usual. The request is stored for that one session even when the e-mail cannot be sent.
+   usual. The request is stored for that one session even when the e-mail cannot be sent. One mail attempt is
+   bounded (`MK8DX_HOSTED_SMTP_TIMEOUT_MS`, 1000 to 60000, default 5000); when it fails the page answers within that
+   time that the link was created but not mailed, names this command, and keeps waiting for the confirmation
+   (`503 step_up_mail_unavailable`).
 2. Within 10 minutes, on the server, from the package or repository folder:
    `python tooling/install.py step-up-link --state-dir <installation>` (B1/B2: `python3`). It names the
    installation's administrator; add `--admin-email <sign-in address>` for another account, such as a Director.

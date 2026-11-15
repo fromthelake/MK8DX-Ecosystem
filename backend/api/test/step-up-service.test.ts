@@ -4,6 +4,7 @@ import type { MutationRateLimiter } from "../src/security/mysql-mutation-rate-li
 import { MutationRateLimitExceeded } from "../src/security/mysql-mutation-rate-limiter.js";
 import { STEP_UP_ROUTES, stepUpPolicyFor, stepUpRequiredBody } from "../src/security/step-up-policy.js";
 import {
+  StepUpMailUnavailable,
   StepUpRateLimited,
   StepUpService,
   StepUpUnavailable,
@@ -14,7 +15,7 @@ import {
 
 // Unit level (an in-memory store and limiter); the real routes, sessions and MySQL store are covered by
 // administrator-step-up.integration.test.ts.
-function harness(limit = Number.POSITIVE_INFINITY) {
+function harness(limit = Number.POSITIVE_INFINITY, mailDown = false) {
   let now = 1_900_000_000_000;
   const rows: Array<{ session: string; user: string; link: string; linkExpires: number; grantExpires: number | null }> = [];
   const audit: StepUpAuditEvent[] = [];
@@ -59,7 +60,10 @@ function harness(limit = Number.POSITIVE_INFINITY) {
     },
   };
   let tokenIndex = 0;
-  const service = new StepUpService(store, { async sendStepUp(mail) { mails.push(mail); } }, limiter, {
+  const service = new StepUpService(store, { async sendStepUp(mail) {
+    if (mailDown) { throw new Error("smtp down"); }
+    mails.push(mail);
+  } }, limiter, {
     linkOrigin: "https://club.example", nowMs: () => now,
     newLinkToken: () => `${String(tokenIndex++).padStart(2, "0")}${"t".repeat(41)}`,
   });
@@ -127,5 +131,16 @@ describe("step-up service", () => {
       expect(() => new StepUpService(store, { sendStepUp: async () => undefined }, limiter,
         { linkOrigin: "https://club.example", windowSeconds })).toThrow();
     }
+  });
+});
+
+describe("step-up when the mail server is down", () => {
+  it("keeps the link for the break-glass and says that only the e-mail failed", async () => {
+    const { service, mails } = harness(Number.POSITIVE_INFINITY, true);
+    const error = await service.request(session, "web").catch((caught: unknown) => caught);
+    expect(error).toBeInstanceOf(StepUpMailUnavailable);
+    expect((error as StepUpMailUnavailable).linkExpiresAtMs).toBeGreaterThan(0);
+    expect(mails).toEqual([]);
+    expect(await service.status(session)).toMatchObject({ active: false, pending: true });
   });
 });

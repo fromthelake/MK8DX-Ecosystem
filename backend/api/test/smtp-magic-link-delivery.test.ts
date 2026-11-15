@@ -1,6 +1,9 @@
+import { createServer, type Socket } from "node:net";
+
 import { describe, expect, it } from "vitest";
 
 import {
+  createSmtpMagicLinkDelivery,
   SmtpMagicLinkConfigurationError,
   SmtpMagicLinkDelivery,
   SmtpMagicLinkDeliveryError,
@@ -232,6 +235,46 @@ describe("SMTP magic-link delivery", () => {
       { ...good, expiresInMinutes: 0 },
     ]) {
       await expect(delivery.sendStepUp(bad)).rejects.toBeInstanceOf(SmtpMagicLinkDeliveryError);
+    }
+  });
+
+  it("bounds a step-up mail to a mail server that never answers, and checks the timeout setting", async () => {
+    const hanging: SmtpMagicLinkTransport = {
+      async verify() { return true; },
+      sendMail: () => new Promise(() => undefined),
+      close() {},
+    };
+    const delivery = new SmtpMagicLinkDelivery(hanging, "noreply@mk8dx.example", origin, false, 50);
+    const started = Date.now();
+    await expect(delivery.sendStepUp({ email: "anna@example.test", url: `${origin}/?step-up=${"b".repeat(43)}`,
+      clientKind: "web", expiresInMinutes: 10 })).rejects.toBeInstanceOf(SmtpMagicLinkDeliveryError);
+    expect(Date.now() - started).toBeLessThan(2_000);
+    const base = { host: "smtp.example.test", port: 465, secure: true, username: "u", password: "p",
+      fromAddress: "auth@example.test", allowedLinkOrigin: origin };
+    for (const timeoutMs of [999, 60_001, 1.5]) {
+      expect(() => createSmtpMagicLinkDelivery({ ...base, timeoutMs })).toThrow(SmtpMagicLinkConfigurationError);
+    }
+    createSmtpMagicLinkDelivery({ ...base, timeoutMs: 1_000 }).close();
+  });
+
+  it("gives up on a real mail server that accepts the connection and never greets, within the bound", async () => {
+    const sockets: Socket[] = [];
+    const hung = createServer((socket) => { sockets.push(socket); });
+    await new Promise<void>((resolve) => { hung.listen(0, "127.0.0.1", resolve); });
+    const port = (hung.address() as { port: number }).port;
+    const delivery = createSmtpMagicLinkDelivery({ host: "127.0.0.1", port, secure: false, username: "", password: "",
+      fromAddress: "auth@example.test", allowedLinkOrigin: "http://127.0.0.1:47811", localDemo: true, timeoutMs: 1_000 });
+    try {
+      const started = Date.now();
+      await expect(delivery.sendStepUp({ email: "anna@example.test",
+        url: `http://127.0.0.1:47811/?step-up=${"b".repeat(43)}`, clientKind: "web", expiresInMinutes: 10 }))
+        .rejects.toBeInstanceOf(SmtpMagicLinkDeliveryError);
+      expect(Date.now() - started).toBeLessThan(3_000);
+      expect(sockets.length).toBeGreaterThan(0);
+    } finally {
+      delivery.close();
+      for (const socket of sockets) { socket.destroy(); }
+      await new Promise<void>((resolve) => { hung.close(() => { resolve(); }); });
     }
   });
 });

@@ -27,6 +27,8 @@ describe("integrated web production host boundary", () => {
       "administrator-observed-identity-section.ts",
       "administrator-overview-client.ts",
       "administrator-overview-section.ts",
+      "administrator-request-budgets-client.ts",
+      "administrator-request-budgets-section.ts",
       "administrator-time-trial-section.ts",
       "administrator-tournament-removal-section.ts",
       "app-downloads-view.ts",

@@ -3483,6 +3483,16 @@
    ]
   },
   {
+   "key": "Change a setting in the installation's private settings and restart the API; a setting that is not present keeps its default.",
+   "nl": "Wijzig een instelling in de privé-instellingen van de installatie en herstart de API; een instelling die ontbreekt houdt de standaardwaarde.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "Change and recalculate",
    "nl": "Wijzigen en herberekenen",
    "kinds": [
@@ -5750,6 +5760,16 @@
    ]
   },
   {
+   "key": "Counted until {0}.",
+   "nl": "Geteld tot {0}.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "Counting the races these Players share…",
    "nl": "De gezamenlijke races tellen…",
    "kinds": [
@@ -6145,6 +6165,16 @@
    ],
    "places": [
     "ds-build.ts"
+   ]
+  },
+  {
+   "key": "Current settings",
+   "nl": "Huidige instellingen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -9998,6 +10028,16 @@
    ]
   },
   {
+   "key": "Installation budgets in the current window",
+   "nl": "Installatiebudgetten in het huidige venster",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "Installation settings",
    "nl": "Installatie-instellingen",
    "kinds": [
@@ -11271,9 +11311,9 @@
    ],
    "places": [
     "administrator-observed-identity-section.ts",
+    "administrator-request-budgets-section.ts",
     "dutch-ui-copy.ts",
-    "notification-section.ts",
-    "player-interactions-panel.ts"
+    "notification-section.ts"
    ]
   },
   {
@@ -12050,6 +12090,16 @@
    ],
    "places": [
     "ds-home.ts"
+   ]
+  },
+  {
+   "key": "More was refused than this list shows.",
+   "nl": "Er is meer geweigerd dan deze lijst toont.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -14484,6 +14534,16 @@
    ],
    "places": [
     "post-time-task.ts"
+   ]
+  },
+  {
+   "key": "Nothing was refused in the last day.",
+   "nl": "Er is de laatste dag niets geweigerd.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -18366,9 +18426,11 @@
    "key": "Refresh",
    "nl": "Vernieuwen",
    "kinds": [
-    "dutch-copy"
+    "dutch-copy",
+    "localized"
    ],
    "places": [
+    "administrator-request-budgets-section.ts",
     "dutch-ui-copy.ts"
    ]
   },
@@ -18380,6 +18442,16 @@
    ],
    "places": [
     "installation-settings-section.ts"
+   ]
+  },
+  {
+   "key": "Refused in the last day",
+   "nl": "Geweigerd in de laatste dag",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -18787,6 +18859,17 @@
    ],
    "places": [
     "tournament-publication-section.ts"
+   ]
+  },
+  {
+   "key": "Request limits",
+   "nl": "Verzoeklimieten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts",
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -23669,6 +23752,16 @@
    ]
   },
   {
+   "key": "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.",
+   "nl": "De bevestigingslink is aangemaakt, maar de e-mail kon niet worden verstuurd. Vraag de serverbeheerder om op de server python tooling/install.py step-up-link uit te voeren en je de link te geven. Open die en dit venster gaat verder.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "step-up-dialog.ts"
+   ]
+  },
+  {
    "key": "The connection failed. Reload to try again.",
    "nl": "De verbinding mislukte. Herlaad om het opnieuw te proberen.",
    "kinds": [
@@ -24215,6 +24308,16 @@
    ],
    "places": [
     "director-host-request-section.ts"
+   ]
+  },
+  {
+   "key": "The request limits could not be loaded.",
+   "nl": "De verzoeklimieten konden niet worden geladen.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -27625,6 +27728,16 @@
    ]
   },
   {
+   "key": "What the request budgets and quotas refused in about the last hour and day, and how much of each installation budget is used now. Only accounts are named; other targets are counted.",
+   "nl": "Wat de verzoekbudgetten en quota ongeveer het laatste uur en de laatste dag weigerden, en hoeveel van elk installatiebudget nu is gebruikt. Alleen accounts worden genoemd; andere doelen worden alleen geteld.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "Where it shows",
    "kinds": [
     "crawl"
@@ -29737,6 +29850,16 @@
    ]
   },
   {
+   "key": "a quota, counted for the whole installation",
+   "nl": "een quotum, geteld voor de hele installatie",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "a row with a Switch owner needs its console.",
    "nl": "een regel met een Switcheigenaar heeft ook de console nodig.",
    "kinds": [
@@ -29878,6 +30001,16 @@
    ]
   },
   {
+   "key": "built-in limit",
+   "nl": "ingebouwde limiet",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "captured live by the Windows app",
    "kinds": [
     "crawl"
@@ -29985,6 +30118,16 @@
    ],
    "places": [
     "tournament-night-report-view.ts"
+   ]
+  },
+  {
+   "key": "default {0}",
+   "nl": "standaard {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -30145,6 +30288,16 @@
    ],
    "places": [
     "tournament-operation-view.ts"
+   ]
+  },
+  {
+   "key": "for the whole installation",
+   "nl": "voor de hele installatie",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -30497,6 +30650,106 @@
    ]
   },
   {
+   "key": "per 10 minutes",
+   "nl": "per 10 minuten",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per Player or claim, counted only",
+   "nl": "per speler of claim, alleen geteld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per account",
+   "nl": "per account",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per address group, counted only",
+   "nl": "per adresgroep, alleen geteld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per day",
+   "nl": "per dag",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per device, counted only",
+   "nl": "per apparaat, alleen geteld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per e-mail recipient, counted only",
+   "nl": "per e-mailontvanger, alleen geteld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per hour",
+   "nl": "per uur",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per minute",
+   "nl": "per minuut",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
+   "key": "per sign-in or link, counted only",
+   "nl": "per aanmelding of link, alleen geteld",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "personal bests ",
    "nl": "persoonlijke records ",
    "kinds": [
@@ -30823,6 +31076,16 @@
    ],
    "places": [
     "tournament-start-clock.ts"
+   ]
+  },
+  {
+   "key": "starts again at {0}",
+   "nl": "begint opnieuw om {0}",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
@@ -31868,6 +32131,16 @@
    ]
   },
   {
+   "key": "{0} in the last hour · {1} affected",
+   "nl": "{0} in het laatste uur · {1} getroffen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
+   ]
+  },
+  {
    "key": "{0} in this group",
    "nl": "{0} in deze groep",
    "kinds": [
@@ -32887,6 +33160,16 @@
    ],
    "places": [
     "administrator-time-trial-section.ts"
+   ]
+  },
+  {
+   "key": "{0} refused in this window",
+   "nl": "{0} geweigerd in dit venster",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "administrator-request-budgets-section.ts"
    ]
   },
   {
