@@ -16,7 +16,7 @@ import {
   STATIC_WEB_SECURITY_HEADERS,
   type StaticWebFile,
 } from "./runtime/static-web.js";
-import { registerPublicBundleRoutes } from "./runtime/public-bundle.js";
+import { registerPublicBundleRoutes, registerPublicClientConfigRoute } from "./runtime/public-bundle.js";
 
 import { registerAdministratorGrantRoutes } from
   "./administration/administrator-grant-routes.js";
@@ -608,6 +608,8 @@ export type AppDependencies = Readonly<{
   socialPreview?: SocialPreviewDependencies;
   staticWeb?: Readonly<{
     files: ReadonlyMap<string, StaticWebFile>;
+    /** The configured public origin, published as /client-config.json. */
+    origin: string;
   }>;
   publicBundle?: Readonly<{ root: string; origin: string }>;
 }>;
@@ -928,6 +930,11 @@ export async function buildApp(
   if (dependencies.publicBundle !== undefined) {
     await registerPublicBundleRoutes(app, dependencies.publicBundle.root,
       dependencies.publicBundle.origin, dependencies.embeddedAuth?.offlineLan === true);
+  } else if (dependencies.staticWeb !== undefined) {
+    // The root-mounted (Passenger) composition serves the web without a
+    // public bundle; the page still reads /client-config.json on every load.
+    registerPublicClientConfigRoute(app, dependencies.staticWeb.origin,
+      dependencies.embeddedAuth?.offlineLan === true);
   }
 
   if (dependencies.embeddedAuth !== undefined) {

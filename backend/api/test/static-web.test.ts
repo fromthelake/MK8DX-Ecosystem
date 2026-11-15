@@ -130,7 +130,7 @@ describe("same-origin static web serving", () => {
   it("serves the product with security headers, etags, and 304 revalidation", async () => {
     const app = await buildApp({
       identityRepository: emptyRepository,
-      staticWeb: { files },
+      staticWeb: { files, origin: "https://mk8dx.example" },
     });
     try {
       const index = await app.inject({ method: "GET", url: "/" });
@@ -175,6 +175,53 @@ describe("same-origin static web serving", () => {
       expect(live.statusCode).toBe(200);
     } finally {
       await app.close();
+    }
+  });
+});
+
+describe("public client config on the root-mounted composition", () => {
+  it("serves the same no-store document as the bundle routes, without a public bundle", async () => {
+    const app = await buildApp({
+      identityRepository: emptyRepository,
+      staticWeb: { files, origin: "https://mk8dx.example" },
+    });
+    try {
+      const config = await app.inject({ method: "GET", url: "/client-config.json" });
+      expect(config.statusCode).toBe(200);
+      expect(config.headers["cache-control"]).toBe("no-store");
+      expect(config.headers["content-type"]).toContain("application/json");
+      expect(config.json()).toEqual({
+        schemaVersion: "mk8dx.public-client.v1",
+        websiteOrigin: "https://mk8dx.example",
+      });
+      for (const url of ["/unknown.json", "/client-config.json.bak", "/styles/client-config.json"]) {
+        expect((await app.inject({ method: "GET", url })).statusCode).toBe(404);
+      }
+    } finally {
+      await app.close();
+    }
+  });
+
+  it("registers the document once when the public bundle is also configured", async () => {
+    const bundle = mkdtempSync(join(tmpdir(), "mk8dx-static-bundle-"));
+    mkdirSync(join(bundle, "scanner"));
+    mkdirSync(join(bundle, "assets"));
+    writeFileSync(join(bundle, "scanner", "index.html"), "<p>scanner</p>");
+    const app = await buildApp({
+      identityRepository: emptyRepository,
+      staticWeb: { files, origin: "https://mk8dx.example" },
+      publicBundle: { root: bundle, origin: "https://mk8dx.example" },
+    });
+    try {
+      const config = await app.inject({ method: "GET", url: "/client-config.json" });
+      expect(config.statusCode).toBe(200);
+      expect(config.json()).toEqual({
+        schemaVersion: "mk8dx.public-client.v1",
+        websiteOrigin: "https://mk8dx.example",
+      });
+    } finally {
+      await app.close();
+      rmSync(bundle, { recursive: true, force: true });
     }
   });
 });
