@@ -127,6 +127,26 @@ in `TournamentTools.config.cmd` auf diese Datei. Aus einem Klon öffnet `python 
 Tournament Processor und seine Erkennungs-Assets installiert sind; es braucht PySide6 (das `gui`-Extra des Processors) und
 öffnet sonst, oder mit `--classic-gui`, ein einfacheres Tkinter-Fenster.
 
+### Die Live-Anzeigetafel für Publikum und OBS
+
+**Live-Anzeigetafel öffnen** (eine Gruppe nach der anderen) und **Feste Anzeigetafel mit allen Feeds öffnen** in Tournament Live
+öffnen das Dashboard für das Publikum; füge dieselbe URL als OBS-Browserquelle hinzu. Drei Anzeigeeinstellungen liegen unter
+dem kleinen Zahnrad unten rechts (es erscheint, wenn du die Maus bewegst; OBS zeigt es nicht):
+
+- **Sprache**: die eigenen Texte des Dashboards (Überschriften, Bildunterschriften, Status, dieses Panel) in einer der 15
+  Sprachen des Spiels. *Browsersprache* (Standard) folgt dem Browser und fällt auf Englisch zurück. Streckennamen und die
+  Konsolensprache, die Tournament Live liest, sind davon getrennt.
+- **Anzeigetafel**: *Automatisch* (Standard) wechselt nach jedem Rennen zwischen dem letzten Rennergebnis und der
+  Gesamtwertung. *Nur Gesamtwertung* hält die Gesamtwertung im Bild; sie enthält nur bestätigte Rennen, und die
+  Bildunterschrift sagt, bis zu welchem Rennen, zum Beispiel *nach Rennen 7 von 12 · Rennen 8 wartet auf Bestätigung*.
+- **Streckennamen**: *Englisch + Niederländisch* (Standard) oder eine der 15 Sprachen des Spiels, nur für Strecken- und
+  Cupnamen. Es ändert nicht, welche Konsolensprache Tournament Live liest.
+
+Der Browser merkt sich die Auswahl. Für OBS gibst du sie in der URL an: `?lang=de` (Texte des Dashboards),
+`?scoreboard=overall`, `?trackLang=ja` (oder eine vollständige Locale wie `zh-TW`, `es-419`), zusammen zum Beispiel
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` blendet das Zahnrad auch in
+einem gewöhnlichen Browser aus.
+
 ### Mit der Website verbinden (optional)
 
 In PowerShell, im Paketordner:

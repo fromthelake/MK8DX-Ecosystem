@@ -6,9 +6,9 @@
 // apps/timetrials-web/i18n/translations/<language>.json ({ language, reviewed, messages: { english: text } }).
 // fr-CA and es-419 fall back to fr and es where they have no own translation; game names always come from the
 // region's own Clean Assets names. A translation may leave out a placeholder (an English plural suffix, say) but
-// never name one the English does not have. The other products (Android, LiveTrial, Tournament Live and the A2
-// setup wizard / invitation page, Tournament Analysis, the launcher windows; PRODUCTS below) get the same catalog
-// limited to their own texts.
+// never name one the English does not have. The other products (Android, LiveTrial, Tournament Live and its
+// spectator dashboard, the A2 setup wizard / invitation page, Tournament Analysis, the launcher windows; PRODUCTS
+// below) get the same catalog limited to their own texts.
 // Output: apps/timetrials-web/styles/i18n-<language>-<hash>.json and
 // apps/timetrials-web/src/i18n-catalog-index.generated.ts. Prints the coverage per language.
 // Every web source text needs an entry in each translation file, or that language shows it in English (the
@@ -53,6 +53,9 @@ const PRODUCTS = [
   ["android", "apps/timetrials-android/i18n/messages.source.json", "apps/timetrials-android/app/src/main/assets/i18n"],
   ["livetrial", "apps/timetrials-desktop/i18n/messages.source.json", "apps/timetrials-desktop/dashboard/i18n"],
   ["tournamentLive", "apps/tournament-live/i18n/messages.source.json", "apps/tournament-live/src/live_processor/i18n"],
+  // The Live spectator dashboard (tooling/i18n/extract_broadcast_messages.py), served by broadcast_server.py.
+  ["tournamentLiveBroadcast", "apps/tournament-live/i18n/broadcast/messages.source.json",
+    "apps/tournament-live/src/live_processor/broadcast_web/i18n", { gameNames: false, dutch: true }],
   // The A2 offline pages (tooling/i18n/extract_a2_messages.py): setup wizard + /setup page, invitation page.
   // They show no game names, so their catalogs leave them out.
   ["a2Setup", "tooling/i18n/a2-setup/messages.source.json", "tooling/setup_wizard_static/i18n", { gameNames: false }],

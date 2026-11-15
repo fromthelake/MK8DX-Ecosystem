@@ -125,6 +125,26 @@ in `TournamentTools.config.cmd` to that file. From a clone, `python -m tournamen
 Tournament Processor and its recognition assets are installed; it needs PySide6 (the processor's `gui` extra) and
 otherwise, or with `--classic-gui`, opens a simpler Tkinter window.
 
+### The live scoreboard for spectators and OBS
+
+Tournament Live's **Open live scoreboard** (one group at a time) and **Open fixed all-feeds scoreboard** open the
+spectator dashboard; add the same URL as an OBS Browser source. Three display settings, under the small gear at the
+bottom right (it appears when you move the mouse; OBS does not show it):
+
+- **Language**: the dashboard's own texts (headers, captions, status, this panel) in one of the 15 game languages.
+  *Browser language* (default) follows the browser and falls back to English. Track names and the console language
+  Tournament Live reads are separate.
+- **Scoreboard**: *Automatic* (default) alternates the latest race result and the overall standings after each
+  race. *Overall only* keeps the overall standings on screen; they hold confirmed races only, and the caption says
+  which race they include, for example *after race 7 of 12 · race 8 awaiting confirmation*.
+- **Track names**: *English + Dutch* (default) or one of the 15 game languages, for track and cup names only. It
+  does not change the console language Tournament Live reads.
+
+The browser remembers the choice. For OBS add it to the URL: `?lang=de` (dashboard texts), `?scoreboard=overall`,
+`?trackLang=ja` (or a full locale such as `zh-TW`, `es-419`), together for example
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` hides the gear in an
+ordinary browser too.
+
 ### Connect to the website (optional)
 
 In PowerShell, in the package folder:

@@ -66,8 +66,8 @@ def test_settings_file_is_kept(tmp_path):
 def test_installer_and_readme_name_the_analysis_launcher(tmp_path):
     builder, _ = _setup_helper(tmp_path)
     say_lines = [line for line in builder.INSTALLER_CMD.splitlines() if "TournamentAnalysis.cmd" in line]
-    assert len(say_lines) == 2  # header comment and the EN/NL :say line
-    assert any(line.startswith('call :say " TournamentAnalysis.cmd') and "achteraf" in line for line in say_lines)
+    assert len(say_lines) == 2  # header comment and the :say line
+    assert any(line.startswith('call :say " TournamentAnalysis.cmd') and "afterwards" in line for line in say_lines)
     assert "TournamentAnalysis.cmd" in builder.README_FIRST
     builder.INSTALLER_CMD.encode("ascii")
 
@@ -134,3 +134,48 @@ def test_package_settings_name_reading_in_every_script_and_the_engine_reads_it(t
     assert values == ["on"]  # default on: correct results first
     assert player_name_scripts.enabled({"MK8DX_NAME_SCRIPTS": values[0]}) is True
     assert player_name_scripts.enabled({"MK8DX_NAME_SCRIPTS": "off"}) is False
+
+def test_package_texts_are_launcher_texts_in_every_language(tmp_path):
+    """The installer, the launchers and the setup helper speak the launcher windows' 15 languages."""
+    import json
+    import shutil
+
+    builder, helper = _setup_helper(tmp_path)
+    source = {entry["key"] for entry in json.loads(
+        (ROOT / "tooling/i18n/launcher/messages.source.json").read_text(encoding="utf-8"))["messages"]}
+    package = tmp_path / "package"
+    package.mkdir()
+    helper.write_launchers(package)
+    cmd_texts = re.findall(r'call :(?:say|title) "([^"]*)"', builder.INSTALLER_CMD)
+    for name in helper.LAUNCHERS:
+        text = (package / name).read_text(encoding="utf-8")
+        assert re.findall(r"^title .*", text, re.M) == ["title %~1"], name  # every title goes through :title
+        # Plain English echo lines are gone; only the command examples of the command-line window stay.
+        assert re.search(r"^\s*echo [A-Za-z]", text, re.M) is None or name == "TournamentLiveCli.cmd", name
+        cmd_texts += re.findall(r'call :(?:say|title) "([^"]*)"', text)
+    assert "MK8DX Tournament Live" in cmd_texts and "Tournament Live exited with code {0}." in cmd_texts
+    assert set(cmd_texts) - {""} <= source
+    assert "INSTALL_LANG" not in builder.INSTALLER_CMD and ":say_nl" not in builder.INSTALLER_CMD
+    german = json.loads((ROOT / "tooling/launcher_i18n/de.json").read_text(encoding="utf-8"))["messages"]
+    assert all(german.get(text) for text in set(cmd_texts) - {""})
+    # Without the launcher text tools the helper speaks English; with them (as packaged) the chosen language.
+    assert helper._text("Not found: {0}", "x.mp4") == "Not found: x.mp4"
+    tools = tmp_path / "tools"
+    tools.mkdir()
+    for name in builder.LAUNCHER_TEXT_FILES:
+        shutil.copy2(ROOT / "tooling" / name, tools / name)
+    shutil.copytree(ROOT / "tooling/launcher_i18n", tools / "launcher_i18n")
+    shutil.copy2(tmp_path / "mk8dx_tools_setup.py", tools / "mk8dx_tools_setup.py")
+    packaged = _load(tools / "mk8dx_tools_setup.py", "_mk8dx_tools_setup_packaged")
+    sys.modules.pop("launcher_text", None)
+    import os
+    previous = os.environ.get("MK8DX_LAUNCHER_LANGUAGE")
+    os.environ["MK8DX_LAUNCHER_LANGUAGE"] = "de"
+    try:
+        assert packaged._text("Not found: {0}", "x.mp4") == german["Not found: {0}"].replace("{0}", "x.mp4")
+    finally:
+        if previous is None:
+            os.environ.pop("MK8DX_LAUNCHER_LANGUAGE", None)
+        else:
+            os.environ["MK8DX_LAUNCHER_LANGUAGE"] = previous
+        sys.modules.pop("launcher_text", None)

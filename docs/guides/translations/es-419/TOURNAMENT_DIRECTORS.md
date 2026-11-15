@@ -128,6 +128,26 @@ de `TournamentTools.config.cmd` la ruta de ese archivo. Desde un clon, `python -
 Tournament Processor y sus recursos de reconocimiento están instalados; necesita PySide6 (el extra `gui` del processor) y,
 si no lo tiene, o con `--classic-gui`, abre una ventana Tkinter más sencilla.
 
+### El marcador en vivo para el público y OBS
+
+**Abrir marcador en directo** (un grupo cada vez) y **Abrir marcador fijo de todas las señales** de Tournament Live abren
+el panel para el público; añade la misma URL como fuente de navegador en OBS. Hay tres opciones de configuración de visualización bajo el
+pequeño engranaje de abajo a la derecha (aparece al mover el mouse; OBS no lo muestra):
+
+- **Idioma**: los textos propios del panel (encabezados, leyendas, estado, este panel) en uno de los 15 idiomas del juego.
+  *Idioma del navegador* (predeterminado) sigue al navegador y, si no puede, usa el inglés. Los nombres de los circuitos y
+  el idioma de la consola que lee Tournament Live van aparte.
+- **Marcador**: *Automático* (predeterminado) alterna después de cada carrera entre el resultado de la última carrera y la
+  clasificación general. *Solo clasificación general* mantiene la clasificación general en pantalla; solo incluye carreras
+  confirmadas y la leyenda indica hasta qué carrera, por ejemplo *tras la carrera 7 de 12 · carrera 8 pendiente de confirmación*.
+- **Nombres de circuitos**: *Inglés + neerlandés* (predeterminado) o uno de los 15 idiomas del juego, solo para los nombres
+  de circuitos y copas. No cambia el idioma de la consola que lee Tournament Live.
+
+El navegador recuerda la elección. Para OBS, añádela a la URL: `?lang=de` (textos del panel), `?scoreboard=overall`,
+`?trackLang=ja` (o una locale completa como `zh-TW`, `es-419`), juntos por ejemplo
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` oculta el engranaje también en
+un navegador normal.
+
 ### Conectarte a la web (opcional)
 
 En PowerShell, en la carpeta del paquete:

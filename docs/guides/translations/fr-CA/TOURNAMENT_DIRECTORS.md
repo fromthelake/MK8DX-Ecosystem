@@ -130,6 +130,28 @@ dans `TournamentTools.config.cmd` sur ce fichier. Depuis un clone, `python -m to
 le Tournament Processor et ses ressources de reconnaissance sont installés; il a besoin de PySide6 (l'extra `gui` du processor) et,
 sinon, ou avec `--classic-gui`, ouvre une fenêtre Tkinter plus simple.
 
+### Le tableau des scores en direct pour le public et OBS
+
+**Ouvrir le tableau des scores en direct** (un groupe à la fois) et **Ouvrir le tableau des scores fixe de tous les flux**
+dans Tournament Live ouvrent le tableau de bord pour le public; ajoute la même URL comme source Navigateur dans OBS.
+Trois paramètres d'affichage se trouvent sous la petite roue dentée en bas à droite (elle apparaît quand tu bouges la
+souris; OBS ne l'affiche pas) :
+
+- **Langue** : les textes propres au tableau de bord (en-têtes, légendes, état, ce panneau) dans l'une des 15 langues du
+  jeu. *Langue du navigateur* (par défaut) suit le navigateur et se rabat sur l'anglais. Les noms des circuits et la langue
+  de la console que lit Tournament Live sont indépendants.
+- **Tableau des scores** : *Automatique* (par défaut) alterne après chaque course entre le résultat de la dernière course
+  et le classement général. *Classement général seul* garde le classement général à l'écran; il ne contient que les
+  courses confirmées et la légende indique jusqu'à quelle course, par exemple
+  *après la course 7 sur 12 · course 8 en attente de confirmation*.
+- **Noms des circuits** : *Anglais + néerlandais* (par défaut) ou l'une des 15 langues du jeu, uniquement pour les noms
+  des circuits et des coupes. Cela ne change pas la langue de la console que lit Tournament Live.
+
+Le navigateur retient le choix. Pour OBS, ajoute-le à l'URL : `?lang=de` (textes du tableau de bord), `?scoreboard=overall`,
+`?trackLang=ja` (ou une locale complète comme `zh-TW`, `es-419`), ensemble par exemple
+`http://127.0.0.1:8800/?view=grid&lang=ja&scoreboard=overall&trackLang=ja`. `?controls=0` masque aussi la roue dentée
+dans un navigateur ordinaire.
+
 ### Se connecter au site (facultatif)
 
 Dans PowerShell, dans le dossier du paquet :

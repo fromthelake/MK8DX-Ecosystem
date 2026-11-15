@@ -194,10 +194,16 @@ invitation page), else the browser's languages matched exactly, then by region (
 zh-Hant/TW/HK → zh-TW, other zh → zh-CN), then by base language, else English. `tooling/tests/test_a2_languages.py`
 checks the choice and that every catalog covers every text.
 
-**The launcher windows** (`Start-MK8DX*.cmd`, `tooling/start-mk8dx.ps1`/`.sh`, the No-Docker files and the
-prompts of `tooling/install.py`/`native_install.py`) keep their English in the code, marked `Tr '...'`
-(PowerShell), `ui_t '...'` (sh), `t("...")` (Python) or as the `-ShowText`/`-ShowItems` texts a cmd file hands to
-`tooling/mk8dx-ui.ps1`; values are `{0}`, `{1}`, filled after the lookup. Their Dutch is in
+**The launcher windows** (`Start-MK8DX*.cmd` with their window titles, `tooling/start-mk8dx.ps1`/`.sh`, the
+No-Docker files, the prompts and the error messages users see from `tooling/install.py`/`native_install.py`/
+`lifecycle.py`, the setup wizard's console lines, and the Tournament Tools package's installer, launchers and setup
+helper in `tooling/tournament/build_windows_package.py`) keep their English in the code, marked `Tr '...'`
+(PowerShell), `ui_t '...'` (sh), `t("...")` (Python; `_text("...")` in the package's setup helper), `call :say` /
+`call :title` (the package's cmd files) or as the `-ShowText`/`-ShowItems` texts a cmd file hands to
+`tooling/mk8dx-ui.ps1`; values are `{0}`, `{1}`, filled after the lookup. Technical details inside a message
+(a database client's output, a path) stay as they are. The package ships `launcher_text.py`, `mk8dx-ui.ps1` and the
+catalogs in its `tools\` folder; `MK8DX_TOURNAMENT_LANGUAGE` in `TournamentTools.config.cmd` (any of the 15 codes,
+or `auto`) comes before `MK8DX_LANGUAGE` there. Their Dutch is in
 `tooling/i18n/launcher/dutch.json`. After changing one, run `python tooling/i18n/extract_launcher_messages.py`
 (`--check` also fails on a text without Dutch), add the English to the ten translation files and rebuild: the
 catalogs land in `tooling/launcher_i18n/` (with `nl.json`). The language is `MK8DX_LANGUAGE` when set, else the
@@ -205,6 +211,14 @@ system UI language (Windows display language; `LC_ALL`/`LC_MESSAGES`/`LANG`), wi
 rules; `tooling/launcher_text.py` implements them for Python and hands the sh launcher its catalog as tab-separated
 lines, so sh never parses JSON. `tooling/tests/test_launcher_languages.py` checks the choice in Python,
 PowerShell 5.1/7 and sh, the catalogs and the translated output.
+
+**The Tournament Live spectator dashboard** (`apps/tournament-live/src/live_processor/broadcast_web`) marks its
+texts `t("...")` in `app.js` and `data-i18n="..."` in `index.html`; their Dutch is in
+`apps/tournament-live/i18n/broadcast/dutch.json`. `python tooling/i18n/extract_broadcast_messages.py` (`--check`)
+writes the message source; the catalogs land in `broadcast_web/i18n/`, which `broadcast_server.py` serves at
+`/api/messages/<language>`. The page chooses `?lang=` (for OBS), else the viewer's saved choice, else the browser's
+languages (the same exact/regional/base rules), else English; it is independent of `?trackLang=` and of the console
+language recognition reads. `tests/tournament/broadcast_dashboard_view.test.mjs` checks the choice and the catalogs.
 
 **The Tournament Analysis window** (`apps/tournament-processor`, Qt and Tk) keeps its EN/NL `TEXTS` table in
 `gui.py`; `python tooling/i18n/extract_processor_messages.py` writes its message source, the catalogs land in

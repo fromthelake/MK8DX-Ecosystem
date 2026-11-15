@@ -113,6 +113,21 @@ class LauncherOutputTest(unittest.TestCase):
         self.assertIn(german["Setup cancelled before a choice was made; nothing was created."], stderr)
         self.assertNotIn("Where will MK8DX run?", stdout)
 
+    def test_lifecycle_and_package_errors_reach_the_window_translated(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            result = subprocess.run([sys.executable, str(ROOT / "tooling/lifecycle.py"), "backup", "--state-dir",
+                                     str(Path(temporary) / "missing"), "--output", str(Path(temporary) / "out")],
+                                    capture_output=True, env=english_env(MK8DX_LANGUAGE="ja", PYTHONIOENCODING="utf-8"),
+                                    cwd=ROOT)
+        stderr = result.stderr.decode("utf-8")
+        japanese = launcher_text.messages("ja")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn(japanese["Lifecycle operation refused or failed: {0}"].split("{0}")[0], stderr)
+        self.assertNotIn("Lifecycle operation refused", stderr)
+        # A message raised deep inside is a catalog text too, not only the frame around it.
+        self.assertEqual(launcher_text.t("Backup checksum mismatch", language="ru"),
+                         launcher_text.messages("ru")["Backup checksum mismatch"])
+
     def test_powershell_demo_in_japanese_is_utf8_when_redirected(self):
         japanese = launcher_text.messages("ja")
         for shell in dict.fromkeys(filter(None, (shutil.which("pwsh"), shutil.which("powershell")))):
