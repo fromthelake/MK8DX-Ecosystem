@@ -2,9 +2,9 @@
 
 **Host je eigen Mario Kart 8 Deluxe-communitywebsite — voor Time Trials *én* toernooiavonden.**
 
-Taal: [English](README.md) · [English (US)](README_EN_US.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Taal: [English](../../README.md) · [English (US)](README_EN_US.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
-![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](docs/readme/web-home.jpg)
+![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](web-home.jpg)
 
 MK8DX Ecosystem host je zelf. Het geeft je community één website die twee soorten uitslagen
 bijhoudt — **Time Trial-uitslagen** en **toernooi-uitslagen** — en bij elk zijn eigen soort
@@ -109,36 +109,36 @@ flowchart TB
 **Welke onderdelen heb ik nodig?**
 
 - **Eén communityserver — het enige onderdeel dat elke community nodig heeft.** Dat is de website met
-  zijn API en database. Draai hem op je thuis- of clubnetwerk ([A2](docs/install/A2_THUIS_HANDLEIDING_NL.md), na
+  zijn API en database. Draai hem op je thuis- of clubnetwerk ([A2](../install/A2_THUIS_HANDLEIDING_NL.md), na
   de installatie geen internet nodig) of online op een server of webhosting
-  ([Een communityserver hosten](docs/guides/HOSTING.md), Engels).
+  ([Een communityserver hosten](../guides/HOSTING.md), Engels).
 - **Spelers hebben niet meer nodig dan een browser.** De website brengt de browserscanner mee. De Android-app
   voegt scannen op de telefoon toe, je tijden zonder internet en in één tik wisselen tussen community's
-  ([Players](docs/guides/PLAYERS.md), Engels).
+  ([Players](../guides/PLAYERS.md), Engels).
 - **Een Windows-pc met een capture card is optioneel.** LiveTrial legt elke Time Trial-rit vanzelf vast; je
-  stuurt hem met één klik naar je community, of automatisch ([LiveTrial](docs/guides/translations/nl/LIVETRIAL.md)).
+  stuurt hem met één klik naar je community, of automatisch ([LiveTrial](../guides/translations/nl/LIVETRIAL.md)).
 - **Toernooiavonden draai je op de website.** Tournament Live (tijdens de avond) en Tournament Analysis (opnames
   achteraf) stellen alleen race-uitslagen voor; scores kun je ook intypen of importeren uit Excel/CSV. Niets
   verandert de stand voordat de organisator het accepteert
-  ([Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md)).
+  ([Tournament Directors](../guides/translations/nl/TOURNAMENT_DIRECTORS.md)).
 - **Herkenning is gedeeld, geen dienst.** Elke app heeft een eigen kopie en leest het scherm op je eigen
   apparaat; de server controleert alleen de voorgestelde uitslag
-  ([Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE_NL.md) ·
-  [Architectuur](docs/architecture/COMPONENTS_NL.md)).
+  ([Herkenningspijplijn](../architecture/RECOGNITION_PIPELINE_NL.md) ·
+  [Architectuur](../architecture/COMPONENTS_NL.md)).
 
 ## Aan de slag
 
 | Ik wil… | Begin hier |
 | --- | --- |
-| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [MK8DX installeren en gebruiken](docs/install/MK8DX_Handleiding_NL.docx) ([TXT](docs/install/MK8DX_Handleiding_NL.txt)) |
-| **LAN-toernooiavonden organiseren** | [Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md); de Tournament Tools werken ook zonder communitywebsite |
-| **mijn Time Trials automatisch vastleggen** | [LiveTrial](docs/guides/translations/nl/LIVETRIAL.md) — Windows + een capture card; werkt ook zonder communitywebsite |
-| **mijn tijden posten en vergelijken** | [Players](docs/guides/translations/nl/PLAYERS.md) — elke browser; Android 8.0+ |
-| **een communitywebsite hosten** | [Een communityserver hosten](docs/guides/HOSTING.md) (Engels) |
-| **de code aanpassen** | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md), [Testen](docs/TESTING_NL.md), [Bijdragen](CONTRIBUTING.md) |
+| **MK8DX thuis of bij mijn club draaien** | Het A2-pakket voor je computer van [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): uitpakken, starten, op Volgende klikken. Stap voor stap (het A2-pakket bevat ook een versie met plaatjes): [Nederlands](../install/A2_THUIS_HANDLEIDING_NL.md) · [English](../install/A2_HOME_GUIDE_EN.md) · [MK8DX installeren en gebruiken](../install/MK8DX_Handleiding_NL.docx) ([TXT](../install/MK8DX_Handleiding_NL.txt)) · [MK8DX thuis of op de club — handleiding (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.html)) |
+| **LAN-toernooiavonden organiseren** | [Tournament Directors](../guides/translations/nl/TOURNAMENT_DIRECTORS.md); de Tournament Tools werken ook zonder communitywebsite |
+| **mijn Time Trials automatisch vastleggen** | [LiveTrial](../guides/translations/nl/LIVETRIAL.md) — Windows + een capture card; werkt ook zonder communitywebsite |
+| **mijn tijden posten en vergelijken** | [Players](../guides/translations/nl/PLAYERS.md) — elke browser; Android 8.0+ |
+| **een communitywebsite hosten** | [Een communityserver hosten](../guides/HOSTING.md) (Engels) |
+| **de code aanpassen** | [Ontwikkelaarshandleiding](../DEVELOPMENT_NL.md), [Testen](../TESTING_NL.md), [Bijdragen](../../.github/CONTRIBUTING.md) |
 
 Elke regel noemt de handleiding die je van begin tot eind volgt. De server uit de broncode bouwen in plaats
-van een releasepakket gebruiken is voor ontwikkelaars: [Starten vanuit de broncode](docs/GETTING_STARTED.md) (Engels).
+van een releasepakket gebruiken is voor ontwikkelaars: [Starten vanuit de broncode](../GETTING_STARTED.md) (Engels).
 
 ### Welke computer voor welke route
 
@@ -163,7 +163,7 @@ De apps eromheen:
 
 **Eerste start van de Android-app:** die vraagt *Kies je community*. Thuis of bij de club scan je de kaart
 **Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
-Daarna log je in via de browser. Details: [Spelers](docs/guides/PLAYERS.md#first-start) (Engels).
+Daarna log je in via de browser. Details: [Spelers](../guides/PLAYERS.md#first-start) (Engels).
 
 **Eén app, meerdere community's:** met de communitychip bovenin wissel je met één tik tussen je club, je
 installatie thuis en een online community; elk houdt een eigen account en eigen niet verzonden tijden. Onder
@@ -173,9 +173,9 @@ neem je je beste tijden mee naar een andere — als die community ze aanneemt.
 **Waarom niet alles overal?** Een pakket wordt alleen aangeboden waar het gebouwd en geprobeerd is. De
 serverimages van A1 en B1 bestaan alleen voor x86-64; A2 heeft ook arm64. Voor Intel-Macs wordt de
 beveiligingsbibliotheek die A2 nodig heeft (`cryptography`) niet meer uitgebracht, dus bouwt de release hem
-vanaf de broncode op een Intel-Mac en test hem daar ([hoe](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)).
-A3 bestaat voor wie geen Docker kan of wil draaien. De [hostinghandleiding](docs/guides/HOSTING.md) en de
-[releasepakketten](docs/RELEASE_PACKAGES.md) noemen elk bestand en de precieze eisen.
+vanaf de broncode op een Intel-Mac en test hem daar ([hoe](../RELEASE_PACKAGES.md#intel-mac-a2-package)).
+A3 bestaat voor wie geen Docker kan of wil draaien. De [hostinghandleiding](../guides/HOSTING.md) en de
+[releasepakketten](../RELEASE_PACKAGES.md) noemen elk bestand en de precieze eisen.
 
 Een nieuwe installatie begint leeg: er worden geen communityaccounts of uitslagen overgenomen. Ze bevat alleen
 de spelcatalogus en de referentiesets van de Nintendo staff ghosts en de wereldrecords.
@@ -202,11 +202,11 @@ groep als volgende speelt, de scores, de finales en de standen.
 - **Na afloop** — eindstanden, een deelbaar verslag (WhatsApp, PNG, CSV, een artikel klaar voor
   WordPress) en een optionele TrueSkill-communityrating over alle avonden.
 
-![Tournament Live na een race: het beeld van de capture card, en de eindvolgorde met het character en de punten van elke rijder](docs/readme/tournament-live.jpg)
+![Tournament Live na een race: het beeld van de capture card, en de eindvolgorde met het character en de punten van elke rijder](tournament-live.jpg)
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="Eindstand van een toernooiavond: voorrondegroepen met het character van elke speler, gekleurd naar de finale waarin ze verder gingen" width="49%">
-  <img src="docs/readme/tournament-skill.jpg" alt="Pagina toernooivaardigheid: TrueSkill-rating, overwinningen, top 3 en gemiddelde eindpositie van een speler" width="49%">
+  <img src="tournament-results.jpg" alt="Eindstand van een toernooiavond: voorrondegroepen met het character van elke speler, gekleurd naar de finale waarin ze verder gingen" width="49%">
+  <img src="tournament-skill.jpg" alt="Pagina toernooivaardigheid: TrueSkill-rating, overwinningen, top 3 en gemiddelde eindpositie van een speler" width="49%">
 </p>
 
 ### Geen Tournament Live op de avond? Analyseer de opnames achteraf
@@ -219,10 +219,10 @@ Excel-werkmap, een CSV en een importbestand voor de website, dat de organisator 
 importeert — dezelfde controle als bij Tournament Live. Een opname van 22 minuten met vier races duurde op een laptop ongeveer 70 seconden. Dubbelklik in het Windows-pakket
 Tournament Tools op `TournamentAnalysis.cmd` (een video naar `TournamentProcessor.cmd` slepen
 werkt nog steeds); ontwikkelaars starten `python -m tournament_processor.gui`.
-[Tournament Directors](docs/guides/translations/nl/TOURNAMENT_DIRECTORS.md#opnames-achteraf-analyseren)
+[Tournament Directors](../guides/translations/nl/TOURNAMENT_DIRECTORS.md#opnames-achteraf-analyseren)
 beschrijft de stappen.
 
-![Venster Tournament Analysis tijdens een analyse: links een map met één cup-opname aangevinkt, de analyse loopt; rechts het gekleurde activiteitenlog met gevonden races, en onderaan de Rainbow Road-voortgangsbalk op 56% en de klok](docs/readme/tournament-analysis.jpg)
+![Venster Tournament Analysis tijdens een analyse: links een map met één cup-opname aangevinkt, de analyse loopt; rechts het gekleurde activiteitenlog met gevonden races, en onderaan de Rainbow Road-voortgangsbalk op 56% en de klok](tournament-analysis.jpg)
 
 ## ⏱️ Time Trials met LiveTrial — volledig automatisch
 
@@ -245,9 +245,9 @@ een rittengeschiedenis met rondetabellen en grafieken, en laat je achterstand zi
 uitslagen met één klik naar je community (of zet automatisch versturen aan), en upload desgewenst
 een clip naar je eigen YouTube-kanaal.
 
-![LiveTrial tijdens een rit op Baby Park: ronde 4 van 7, munten en paddenstoelen live geteld, elke ronde vergeleken met de ghost](docs/readme/livetrial-live.jpg)
+![LiveTrial tijdens een rit op Baby Park: ronde 4 van 7, munten en paddenstoelen live geteld, elke ronde vergeleken met de ghost](livetrial-live.jpg)
 
-![De ritkaart van LiveTrial achteraf: totaaltijd, verschil met de ghost, munten en paddenstoelen](docs/readme/livetrial-run.jpg)
+![De ritkaart van LiveTrial achteraf: totaaltijd, verschil met de ghost, munten en paddenstoelen](livetrial-run.jpg)
 
 ## 📱 Scannen vanaf de bank
 
@@ -260,8 +260,8 @@ De browserscanner draait **volledig op je eigen apparaat** — geen account, gee
 eerste download ook offline. De Android-app scant ook op het toestel zelf.
 
 <p>
-  <img src="docs/readme/scanner-reading.jpg" alt="De browserscanner leest een telefoonfoto van een Select-a-Ghost-scherm" width="32%">
-  <img src="docs/readme/scanner-filled.jpg" alt="Het formulier ingevuld door de scan: character, kart, banden, glider, vlag en rondetijden, met het ene onzekere onderdeel gemarkeerd" width="32%">
+  <img src="scanner-reading.jpg" alt="De browserscanner leest een telefoonfoto van een Select-a-Ghost-scherm" width="32%">
+  <img src="scanner-filled.jpg" alt="Het formulier ingevuld door de scan: character, kart, banden, glider, vlag en rondetijden, met het ene onzekere onderdeel gemarkeerd" width="32%">
 </p>
 
 ## 🏆 Jouw records, jouw rivalen
@@ -271,8 +271,8 @@ om op te jagen (met porren, uitdagingen en af en toe een dobbelsteenduel), meldi
 tijd verbetert, en **23 masteryniveaus** gemeten aan de huidige wereldrecords.
 
 <p>
-  <img src="docs/readme/timetrials-leaderboard.jpg" alt="Ranglijst van Rainbow Road met het wereldrecord, combo's, paddenstoelen en munten per ronde" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="Dezelfde ranglijst op een telefoon, in het donkere thema" width="24%">
+  <img src="timetrials-leaderboard.jpg" alt="Ranglijst van Rainbow Road met het wereldrecord, combo's, paddenstoelen en munten per ronde" width="72%">
+  <img src="phone-leaderboard.jpg" alt="Dezelfde ranglijst op een telefoon, in het donkere thema" width="24%">
 </p>
 
 ## 🌍 Spreekt je taal — alle 15
@@ -295,7 +295,7 @@ LAN-scene in je stad; pas het aan aan hoe *jouw* avonden werken; en bouw erop ve
   uitslagen te delen.
 - **Verbeter de documentatie**, zodat de volgende organisator nog sneller op weg is.
 
-Begin bij [Bijdragen](CONTRIBUTING.md) en de [ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md).
+Begin bij [Bijdragen](../../.github/CONTRIBUTING.md) en de [ontwikkelaarshandleiding](../DEVELOPMENT_NL.md).
 Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
 iedereen.
 
@@ -304,9 +304,9 @@ iedereen.
 Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
 A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
 0.2.2 laat het analyseren van opnames weer werken en voegt het venster Tournament Analysis toe. 0.2.3 laat de webgateway zonder root draaien en maakt de repository makkelijker om mee te beginnen. Ook gaat de database van de communityserver naar MySQL 9.7 LTS, en in elke scanner volgen de kleur van kart en zweefvlieger nu het personage. 0.2.4 brengt de handleidingen, de installatiewizard, de startvensters en de Tournament-vensters in alle 15 talen van het spel, leest spelersnamen in elk schrift en bevat alle OCR-modellen, zodat herkenning offline werkt. 0.2.5 is een beveiligingsupdate die elke community zou moeten installeren: strengere rechtencontroles en verzoeklimieten, een nieuwe e-mailbevestiging voor gevaarlijke beheeracties, aparte databaseaccounts en een automatische dagelijkse back-up op elke route. Met 0.2.6 delegeert een Director live-opname ook vanuit de Android-app, zien beheerders welke verzoeklimieten verzoeken weigerden, zijn het live-scorebord en de starters er in alle 15 talen en toont de app datums in zijn eigen taal. 0.2.7 bevat 0.2.6, dat niet apart is uitgebracht: elke installatieroute is stap voor stap volgens de handleiding doorlopen en de handleidingen zijn verbeterd, de nachtelijke back-up en een nieuwe herstelcode werken op elke route, en twee installaties op één computer kunnen elkaars images niet meer vervangen.
-Zie de [changelog](CHANGELOG.md) (wijzigingen op `main` sinds de laatste release, voor de volgende, staan onder *Unreleased*), de [releasepakketten](docs/RELEASE_PACKAGES.md) en de
-volledige handleiding ([Nederlands](docs/install/MK8DX_Handleiding_NL.txt),
-[English](docs/install/MK8DX_User_Guide_EN.txt)).
+Zie de [changelog](../../CHANGELOG.md) (wijzigingen op `main` sinds de laatste release, voor de volgende, staan onder *Unreleased*), de [releasepakketten](../RELEASE_PACKAGES.md) en de
+volledige handleiding ([Nederlands](../install/MK8DX_Handleiding_NL.txt),
+[English](../install/MK8DX_User_Guide_EN.txt)).
 
 Herkenning maakt een uitslag nooit vanzelf officieel: je controleert je eigen Time Trials, en een
 organisator controleert toernooiraces voordat ze tellen.
@@ -315,16 +315,16 @@ organisator controleert toernooiraces voordat ze tellen.
 
 | Ik wil… | Lees |
 | --- | --- |
-| begrijpen hoe de herkenning werkt | [Herkenningspijplijn](docs/architecture/RECOGNITION_PIPELINE.md) (Engels) |
-| de onderdelen begrijpen en hoe een uitslag reist | [Architectuur](docs/architecture/COMPONENTS.md) (Engels) |
-| de code bouwen of aanpassen | [Ontwikkelaarshandleiding](docs/DEVELOPMENT_NL.md) en [Testen](docs/TESTING_NL.md) |
-| de native apps bouwen | [Client builds](docs/CLIENT_BUILDS.md) (Engels) |
-| een installatie beheren (back-up, bijwerken, herstel) | [Beheer](docs/OPERATIONS_NL.md) |
-| weten waarom iets is zoals het is | [Besluitenoverzicht](docs/decisions/README.md) (Engels) |
-| bijdragen | [Bijdragen](CONTRIBUTING.md), [Gedragscode](CODE_OF_CONDUCT.md) |
-| hulp krijgen | [Hulp krijgen](SUPPORT.md) |
-| een beveiligingsprobleem melden | [Beveiligingsbeleid](SECURITY.md) |
-| met een coding agent werken | [AGENTS.md](AGENTS.md) |
+| begrijpen hoe de herkenning werkt | [Herkenningspijplijn](../architecture/RECOGNITION_PIPELINE.md) (Engels) |
+| de onderdelen begrijpen en hoe een uitslag reist | [Architectuur](../architecture/COMPONENTS.md) (Engels) |
+| de code bouwen of aanpassen | [Ontwikkelaarshandleiding](../DEVELOPMENT_NL.md) en [Testen](../TESTING_NL.md) |
+| de native apps bouwen | [Client builds](../CLIENT_BUILDS.md) (Engels) |
+| een installatie beheren (back-up, bijwerken, herstel) | [Beheer](../OPERATIONS_NL.md) |
+| weten waarom iets is zoals het is | [Besluitenoverzicht](../decisions/README.md) (Engels) |
+| bijdragen | [Bijdragen](../../.github/CONTRIBUTING.md), [Gedragscode](../../.github/CODE_OF_CONDUCT.md) |
+| hulp krijgen | [Hulp krijgen](../../.github/SUPPORT.md) |
+| een beveiligingsprobleem melden | [Beveiligingsbeleid](../../.github/SECURITY.md) |
+| met een coding agent werken | [AGENTS.md](../../AGENTS.md) |
 
 ## 💡 Het verhaal erachter
 
@@ -400,8 +400,8 @@ Dit is een onafhankelijk, niet-commercieel hobbyproject om te leren programmeren
 leuker te maken. Het is **niet verbonden aan of goedgekeurd door Nintendo**. Nintendo is eigenaar van zijn
 merken en spelinhoud; steun Nintendo door zijn consoles en games te kopen.
 
-De eigen code en documentatie van het project vallen onder de [Mozilla Public License 2.0](LICENSE). De
-[licentiereikwijdte](LICENSE_SCOPE.md) legt uit wat die dekt: hij dekt **geen** materiaal van Nintendo,
+De eigen code en documentatie van het project vallen onder de [Mozilla Public License 2.0](../../LICENSE). De
+[licentiereikwijdte](../../LICENSE_SCOPE.md) legt uit wat die dekt: hij dekt **geen** materiaal van Nintendo,
 spelafbeeldingen, herkenningstemplates, modellen, lettertypen of ander materiaal van derden, dat zijn eigen
-voorwaarden houdt. Zie [Materiaal van derden](docs/THIRD_PARTY_MATERIALS.md). De software wordt geleverd
+voorwaarden houdt. Zie [Materiaal van derden](../THIRD_PARTY_MATERIALS.md). De software wordt geleverd
 zoals hij is.

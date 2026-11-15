@@ -171,6 +171,8 @@ Cria um código novo se outra pessoa pode ter visto o teu ou se perdeste o papel
 
 ![código de recuperação](../../guide/img/recovery-code-en.png)
 
+![novo código de recuperação](../../guide/img/admin-new-code-en.png)
+
 ## 5. Pessoas e cartões de início de sessão (MK8DX beheer)
 
 O **MK8DX beheer** (em neerlandês, «administração do MK8DX») é a mesma página que a configuração, mas para mais tarde: adicionar pessoas e fazer cartões de início de sessão. Só funciona no próprio computador MK8DX. O atalho no ambiente de trabalho chama-se «MK8DX beheer» em todos os idiomas; o título da página é **Administração do MK8DX**.

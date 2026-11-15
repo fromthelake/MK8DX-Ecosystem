@@ -2,11 +2,11 @@
 
 **Aloja tu propia web de comunidad de Mario Kart 8 Deluxe: para Contrarreloj *y* para noches de torneo.**
 
-Idioma: [English](README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · Español (Latinoamérica) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Idioma: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · Español · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
 *Esta traducción se ha hecho automáticamente a partir del README en inglés; las correcciones son bienvenidas.*
 
-![La página de inicio de una web de comunidad: tu posición, tus circuitos destacados y tus rivales](docs/readme/web-home.jpg)
+![La página de inicio de una web de comunidad: tu posición, tus circuitos destacados y tus rivales](web-home.jpg)
 
 MK8DX Ecosystem es algo que alojas tú mismo. Le da a tu comunidad una sola web que guarda dos tipos
 de resultados —**resultados de Contrarreloj** y **resultados de torneos**— y añade a cada uno su
@@ -20,8 +20,8 @@ propia forma de competir.
 - **Introduce un tiempo a tu manera**: escríbelo a mano, escanea la pantalla de resultados con una
   cámara —en la web o en la app de Android— o deja que la aplicación de Windows **LiveTrial** registre
   cada carrera por sí sola mediante una capturadora.
-- **LiveTrial ve la propia carrera**: cuándo agarras monedas, cuándo usas tus champiñones… y hace un
-  **video de cada carrera** que puedes usar como quieras.
+- **LiveTrial ve la propia carrera**: cuándo coges monedas, cuándo usas tus champiñones… y hace un
+  **vídeo de cada carrera** que puedes usar como quieras.
 
 **🏁 Torneos**
 
@@ -39,9 +39,9 @@ propia forma de competir.
 Hasta ahora no había una forma sólida de sacar los datos de Mario Kart 8 Deluxe de una Nintendo Switch
 mediante una capturadora: casi siempre era volver a teclearlos, u OCR que solo lee texto. MK8DX lee los
 tiempos, las posiciones y los puntos *y* reconoce las imágenes: el **personaje (incluido el color
-correcto)**, el **vehículo, las llantas, el planeador** y la **bandera**, allí donde el juego los muestre.
+correcto)**, la **carrocería, las ruedas, el ala delta** y la **bandera**, allí donde el juego los muestre.
 
-Y ni siquiera necesitas una capturadora para eso: desde el sofá, apunta el celular a la TV y escanea
+Y ni siquiera necesitas una capturadora para eso: desde el sofá, apunta el móvil a la tele y escanea
 una **pantalla de resultados** de Contrarreloj o una **pantalla de selección de fantasma**, y el
 resultado va directo a tu web. Que sepamos, eso tampoco se había hecho antes.
 
@@ -75,7 +75,7 @@ pantalla del juego en tus propios dispositivos y envían lo que encuentran a la 
 flowchart TB
   REC["Reconocimiento compartido<br/>integrado en cada app"]
 
-  subgraph devices["Celulares y navegadores de los jugadores"]
+  subgraph devices["Móviles y navegadores de los jugadores"]
     WEB["Cualquier navegador<br/>web + escáner"]
     APP["App de Android<br/>con escáner"]
   end
@@ -102,7 +102,7 @@ flowchart TB
   WEB <--->|"tiempos, clasificaciones, rivales"| API
   APP <-->|"tiempos, enviados al tener conexión"| API
   LT -->|"carreras contrarreloj"| API
-  TL -->|"resultados, en vivo"| DIR
+  TL -->|"resultados, en directo"| DIR
   TA -->|"archivo de importación"| DIR
   DIR -->|"aceptado = oficial"| API
   API <--> DB
@@ -112,46 +112,46 @@ flowchart TB
 **¿Qué piezas necesito?**
 
 - **Un servidor de comunidad: la única pieza que toda comunidad necesita.** Es la web con su API y su
-  base de datos. Ejecútalo en tu red de casa o del club ([A2](docs/install/A2_HOME_GUIDE_EN.md), sin internet
+  base de datos. Ejecútalo en tu red de casa o del club ([A2](../install/A2_HOME_GUIDE_EN.md), sin internet
   tras la instalación) u online en un servidor o hosting web
-  ([Alojar un servidor de comunidad](docs/guides/HOSTING.md)).
+  ([Alojar un servidor de comunidad](../guides/HOSTING.md)).
 - **A los jugadores les basta un navegador.** La web incluye el escáner del navegador. La app de Android añade
-  escanear con el celular, tus tiempos sin internet y cambiar de comunidad con un toque
-  ([Players](docs/guides/PLAYERS.md)).
-- **Una PC con Windows y una capturadora es opcional.** LiveTrial registra solo cada carrera contrarreloj; la
-  envías a tu comunidad con un clic, o automáticamente ([LiveTrial](docs/guides/LIVETRIAL.md)).
+  escanear con el móvil, tus tiempos sin internet y cambiar de comunidad con un toque
+  ([Players](../guides/PLAYERS.md)).
+- **Un PC con Windows y una capturadora es opcional.** LiveTrial registra solo cada carrera contrarreloj; la
+  envías a tu comunidad con un clic, o automáticamente ([LiveTrial](../guides/LIVETRIAL.md)).
 - **Las noches de torneo se gestionan en la web.** Tournament Live (durante la noche) y Tournament Analysis
   (grabaciones después) solo proponen resultados; las puntuaciones también se pueden teclear o importar desde
   Excel/CSV. Nada cambia la clasificación hasta que el organizador lo acepta
-  ([Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md)).
+  ([Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md)).
 - **El reconocimiento es compartido, no un servicio.** Cada app lleva su propia copia y lee la pantalla en tu
   dispositivo; el servidor solo comprueba el resultado propuesto
-  ([Pipeline de reconocimiento](docs/architecture/RECOGNITION_PIPELINE.md) ·
-  [Arquitectura](docs/architecture/COMPONENTS.md)).
+  ([Pipeline de reconocimiento](../architecture/RECOGNITION_PIPELINE.md) ·
+  [Arquitectura](../architecture/COMPONENTS.md)).
 
 ## Primeros pasos
 
 | Quiero… | Empieza aquí |
 | --- | --- |
-| **ejecutar MK8DX en casa o en mi club** | El paquete A2 para tu computadora desde [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): descomprímelo, inícialo y haz clic en Siguiente. Paso a paso (el paquete A2 también incluye una versión ilustrada): [Español (Latinoamérica)](docs/install/translations/es-419/A2_HOME_GUIDE.md) · [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Instalar y usar MK8DX](docs/install/translations/es-419/MK8DX_User_Guide_es-419.docx) ([TXT](docs/install/translations/es-419/MK8DX_User_Guide.txt)) |
-| **organizar noches de torneo LAN** | [Tournament Directors](docs/guides/translations/es-419/TOURNAMENT_DIRECTORS.md); las Tournament Tools también funcionan sin web de comunidad |
-| **registrar mis Contrarreloj automáticamente** | [LiveTrial](docs/guides/translations/es-419/LIVETRIAL.md): Windows + una capturadora; también funciona sin web de comunidad |
-| **publicar y comparar mis tiempos** | [Players](docs/guides/translations/es-419/PLAYERS.md): cualquier navegador; Android 8.0+ |
-| **alojar una web de comunidad** | [Alojar un servidor de comunidad](docs/guides/HOSTING.md) |
-| **cambiar el código** | [Guía para desarrolladores](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+| **ejecutar MK8DX en casa o en mi club** | El paquete A2 para tu ordenador desde [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): descomprímelo, inícialo y haz clic en Siguiente. Paso a paso (el paquete A2 también incluye una versión ilustrada): [Español](../install/translations/es/A2_HOME_GUIDE.md) · [English](../install/A2_HOME_GUIDE_EN.md) · [Nederlands](../install/A2_THUIS_HANDLEIDING_NL.md) · [Instalar y usar MK8DX](../install/translations/es/MK8DX_User_Guide_es.docx) ([TXT](../install/translations/es/MK8DX_User_Guide.txt)) · [MK8DX en casa o en tu club: manual (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_es.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_es.html)) |
+| **organizar noches de torneo LAN** | [Tournament Directors](../guides/translations/es/TOURNAMENT_DIRECTORS.md); las Tournament Tools también funcionan sin web de comunidad |
+| **registrar mis Contrarreloj automáticamente** | [LiveTrial](../guides/translations/es/LIVETRIAL.md): Windows + una capturadora; también funciona sin web de comunidad |
+| **publicar y comparar mis tiempos** | [Players](../guides/translations/es/PLAYERS.md): cualquier navegador; Android 8.0+ |
+| **alojar una web de comunidad** | [Alojar un servidor de comunidad](../guides/HOSTING.md) |
+| **cambiar el código** | [Guía para desarrolladores](../DEVELOPMENT.md), [Testing](../TESTING.md), [Contributing](../../.github/CONTRIBUTING.md) |
 
 Cada fila indica la guía que debes seguir de principio a fin. Compilar el servidor desde el código
-fuente en lugar de usar un paquete de release es para desarrolladores: [Empezar desde el código fuente](docs/GETTING_STARTED.md).
+fuente en lugar de usar un paquete de release es para desarrolladores: [Empezar desde el código fuente](../GETTING_STARTED.md).
 
-### Qué computadora para cada vía
+### Qué ordenador para cada vía
 
 Todas las vías te dan la misma web; se diferencian en dónde se ejecuta y quién puede acceder a ella.
 
 | Vía | Para | Se ejecuta en | Estado |
 | --- | --- | --- | --- |
-| **A2** red de casa o del club | Tu propia red, sin internet tras la instalación, tarjetas de acceso para todos | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Probado de principio a fin en Windows 11; Linux en WSL 2; Mac compilado, aún sin probar en una Mac real |
-| **A1** una computadora | Probarlo en la computadora en la que estás sentado | Windows 11 o Linux, x86-64, con Docker | Probado de principio a fin en Windows 11 (copia de seguridad nocturna desde la 0.2.7); Linux: instalación, actualización, copia de seguridad |
-| **A3** una computadora sin Docker | Una PC con Windows en la que Docker no es una opción | Windows 11 con XAMPP y Node.js | Probado de principio a fin en Windows 11: instalación, inicio de sesión, escáner, torneo, copia de seguridad, copia nocturna, actualización, desinstalación |
+| **A2** red de casa o del club | Tu propia red, sin internet tras la instalación, tarjetas de acceso para todos | Windows 11 (x86-64), Linux (x86-64 o arm64), Mac (Apple silicon o Intel) | Probado de principio a fin en Windows 11; Linux en WSL 2; Mac compilado, aún sin probar en un Mac real |
+| **A1** un ordenador | Probarlo en el ordenador en el que estás sentado | Windows 11 o Linux, x86-64, con Docker | Probado de principio a fin en Windows 11 (copia de seguridad nocturna desde la 0.2.7); Linux: instalación, actualización, copia de seguridad |
+| **A3** un ordenador sin Docker | Un PC con Windows en el que Docker no es una opción | Windows 11 con XAMPP y Node.js | Probado de principio a fin en Windows 11: instalación, inicio de sesión, escáner, torneo, copia de seguridad, copia nocturna, actualización, desinstalación |
 | **B1** web pública | Tu comunidad en línea, con tu propio dominio y correo | Un servidor Linux x86-64 (VPS) con Docker; documentado para Ubuntu 24.04 | Ensayado siguiendo la guía en Ubuntu 24.04 en WSL 2; aún sin probar en un VPS real |
 | **B2** hosting web | En línea, sin servidor propio | Un plan de hosting con Node.js (Passenger), MariaDB/MySQL y SSH | Nuestra propia web de comunidad funciona así; el paquete público aún no se ha instalado desde cero en una cuenta de hosting nueva |
 
@@ -160,14 +160,14 @@ Las apps que lo rodean:
 | App | Se ejecuta en | Por qué |
 | --- | --- | --- |
 | Web y escáner del navegador | Cualquier navegador moderno; se recomienda Chrome o Edge para escanear | El escáner funciona por completo en tu dispositivo y necesita un navegador que le dé varios hilos |
-| App de Android | Android 8.0 o posterior, se recomienda arm64 | Escanea en el propio celular, también sin conexión |
-| iPhone y iPad | La web en el navegador; el escaneo en Safari aún se está probando | No hay app para iOS: crearla y firmarla requiere una Mac y una cuenta de desarrollador de Apple |
+| App de Android | Android 8.0 o posterior, se recomienda arm64 | Escanea en el propio móvil, también sin conexión |
+| iPhone y iPad | La web en el navegador; el escaneo en Safari aún se está probando | No hay app para iOS: crearla y firmarla requiere un Mac y una cuenta de desarrollador de Apple |
 | LiveTrial y Tournament Live | Windows en x86-64 (probado en Windows 11), con una capturadora HDMI USB por pantalla | Las capturadoras y el motor de reconocimiento incluido están hechos y probados para Windows; no hay versión para macOS ni Linux |
 
 **Primer inicio de la app de Android:** te pide *Elige tu comunidad*. En casa o en el club escaneas la
 tarjeta **Prepare a device** que te muestra tu administrador; para una comunidad en línea escribes la
 dirección de su web. Después inicias sesión a través del navegador. Detalles:
-[Players](docs/guides/PLAYERS.md#first-start).
+[Players](../guides/PLAYERS.md#first-start).
 
 **Una app, varias comunidades:** el selector de comunidad de arriba cambia de un toque entre tu club, tu
 instalación de casa y una comunidad en línea; cada una conserva su propia cuenta y sus tiempos sin
@@ -177,9 +177,9 @@ más de una comunidad puedes llevar tus mejores tiempos a otra, si esa comunidad
 **¿Por qué no todo en todas partes?** Cada paquete solo se ofrece donde se ha compilado y probado. Las
 imágenes de servidor A1 y B1 solo existen para x86-64; A2 también tiene arm64. Para los Mac con Intel ya
 no se publica la biblioteca de seguridad que necesita A2 (`cryptography`), así que la release la compila
-desde el código fuente en una Mac con Intel y la prueba allí
-([cómo](docs/RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 existe para quien no puede o no quiere usar
-Docker. La [guía de hosting](docs/guides/HOSTING.md) y los [paquetes de release](docs/RELEASE_PACKAGES.md)
+desde el código fuente en un Mac con Intel y la prueba allí
+([cómo](../RELEASE_PACKAGES.md#intel-mac-a2-package)). A3 existe para quien no puede o no quiere usar
+Docker. La [guía de hosting](../guides/HOSTING.md) y los [paquetes de release](../RELEASE_PACKAGES.md)
 enumeran cada archivo y sus requisitos exactos.
 
 Una instalación nueva empieza vacía: no hereda cuentas ni resultados de ninguna comunidad. Solo trae el
@@ -206,31 +206,31 @@ clasificación.
   circuito (también a pantalla dividida para dos jugadores), los guarda localmente y los envía a la
   noche en la web.
 - **Tú tienes el control**: el organizador revisa jugadores y posiciones antes de que cuente un
-  resultado. Mientras tanto, la clasificación en vivo se muestra de forma provisional.
+  resultado. Mientras tanto, la clasificación en directo se muestra de forma provisional.
 - **Después**: clasificación final, un informe para compartir (WhatsApp, PNG, CSV, un artículo listo
   para WordPress) y, si quieres, una puntuación de comunidad al estilo TrueSkill a lo largo de las noches.
 
-![Tournament Live después de una carrera: la señal de la capturadora y el orden de llegada con el personaje y los puntos de cada piloto](docs/readme/tournament-live.jpg)
+![Tournament Live después de una carrera: la señal de la capturadora y el orden de llegada con el personaje y los puntos de cada piloto](tournament-live.jpg)
 
 <p>
-  <img src="docs/readme/tournament-results.jpg" alt="Resultados finales de una noche de torneo: grupos de clasificación con el personaje de cada jugador, coloreados según la final a la que pasaron" width="49%">
-  <img src="docs/readme/tournament-skill.jpg" alt="Página de habilidad del torneo: puntuación TrueSkill, victorias, podios y posición media de un jugador" width="49%">
+  <img src="tournament-results.jpg" alt="Resultados finales de una noche de torneo: grupos de clasificación con el personaje de cada jugador, coloreados según la final a la que pasaron" width="49%">
+  <img src="tournament-skill.jpg" alt="Página de habilidad del torneo: puntuación TrueSkill, victorias, podios y posición media de un jugador" width="49%">
 </p>
 
 ### ¿Sin Tournament Live esa noche? Analiza las grabaciones después
 
-¿Grabaste la noche en lugar de capturarla en vivo? La ventana **Tournament Analysis** lee las
-grabaciones después: añade un video, varios o una carpeta por torneo, presiona **START ANALYSIS** y
-encontrará cada carrera con sus posiciones, personajes y puntos, mientras un registro en vivo y en
+¿Grabaste la noche en lugar de capturarla en directo? La ventana **Tournament Analysis** lee las
+grabaciones después: añade un vídeo, varios o una carpeta por torneo, pulsa **START ANALYSIS** y
+encontrará cada carrera con sus posiciones, personajes y puntos, mientras un registro en directo y en
 colores y una barra de progreso de la Senda Arco Iris muestran cuánto le falta. El resultado es un
 libro de Excel, un CSV y un archivo de importación para la web, que el organizador revisa e importa: la
-misma revisión que con Tournament Live. Una grabación de 22 minutos con cuatro carreras tardó unos 70 segundos en una laptop. En el paquete Tournament Tools para Windows, haz doble clic en
-`TournamentAnalysis.cmd` (arrastrar un video sobre `TournamentProcessor.cmd` sigue funcionando);
+misma revisión que con Tournament Live. Una grabación de 22 minutos con cuatro carreras tardó unos 70 segundos en un portátil. En el paquete Tournament Tools para Windows, haz doble clic en
+`TournamentAnalysis.cmd` (arrastrar un vídeo sobre `TournamentProcessor.cmd` sigue funcionando);
 los desarrolladores ejecutan `python -m tournament_processor.gui`.
-[Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) explica los
+[Tournament Directors](../guides/TOURNAMENT_DIRECTORS.md#analyse-recordings-afterwards) explica los
 pasos.
 
-![La ventana Tournament Analysis durante un análisis: a la izquierda, una carpeta con la grabación de una copa marcada y el análisis en marcha; a la derecha, el registro de actividad en colores con las carreras encontradas y, debajo, la barra de progreso de la Senda Arco Iris al 56 % y el reloj](docs/readme/tournament-analysis.jpg)
+![La ventana Tournament Analysis durante un análisis: a la izquierda, una carpeta con la grabación de una copa marcada y el análisis en marcha; a la derecha, el registro de actividad en colores con las carreras encontradas y, debajo, la barra de progreso de la Senda Arco Iris al 56 % y el reloj](tournament-analysis.jpg)
 
 ## ⏱️ Contrarreloj con LiveTrial: totalmente automático
 
@@ -242,25 +242,25 @@ LiveTrial observa la señal HDMI y reconoce por sí solo:
 - los menús por los que pasas, el **circuito** y la **clase** (150cc/200cc);
 - durante la carrera: el **cronómetro, el contador de vueltas, las monedas y los objetos**;
 - en la pantalla de resultados: el **tiempo total, cada tiempo por vuelta** (3, o 7 en Baby Park), el
-  **personaje, el vehículo, las llantas, el planeador** y la **bandera**;
+  **personaje, la carrocería, las ruedas, el ala delta** y la **bandera**;
 - el panel de **selección de fantasma** —nombres, tiempos, vueltas y piezas de los fantasmas— y si un
   fantasma es uno de los **fantasmas del personal de Nintendo**;
 - el **idioma de tu Switch** (los 12 idiomas del sistema), automáticamente.
 
-Guarda un **video de cada carrera** y de cada repetición de fantasma que veas hasta el final, un
+Guarda un **vídeo de cada carrera** y de cada repetición de fantasma que veas hasta el final, un
 historial de carreras con tablas y gráficos de vueltas, y te muestra tu diferencia con el **récord
 mundial**, el **fantasma del personal de Nintendo**, tu **propio récord** y tus **rivales**. Envía
-resultados a tu comunidad con un clic (o activa el envío automático) y, si quieres, sube un video a tu
+resultados a tu comunidad con un clic (o activa el envío automático) y, si quieres, sube un vídeo a tu
 propio canal de YouTube.
 
-![LiveTrial durante una carrera en Baby Park: vuelta 4 de 7, monedas y champiñones contados en vivo, cada vuelta comparada con el fantasma](docs/readme/livetrial-live.jpg)
+![LiveTrial durante una carrera en Baby Park: vuelta 4 de 7, monedas y champiñones contados en directo, cada vuelta comparada con el fantasma](livetrial-live.jpg)
 
-![La ficha de carrera de LiveTrial después: tiempo total, la diferencia con el fantasma, monedas y champiñones](docs/readme/livetrial-run.jpg)
+![La ficha de carrera de LiveTrial después: tiempo total, la diferencia con el fantasma, monedas y champiñones](livetrial-run.jpg)
 
 ## 📱 Escanea desde el sofá
 
-¿Haciendo Contrarreloj en casa de un amigo? Toma tu celular o tablet, apunta a la TV y el escáner lee
-la pantalla de resultados: **total, vueltas, personaje, vehículo, llantas, planeador, bandera y nombre
+¿Haciendo Contrarreloj en casa de un amigo? Coge tu móvil o tablet, apunta a la tele y el escáner lee
+la pantalla de resultados: **total, vueltas, personaje, carrocería, ruedas, ala delta, bandera y nombre
 del jugador**, o un **panel de fantasma** con su circuito y sus tiempos. Todo lo dudoso se muestra con
 alternativas para que elijas la correcta antes de publicar.
 
@@ -268,8 +268,8 @@ El escáner del navegador funciona **por completo en tu dispositivo**: sin cuent
 conexión tras la primera descarga. La app de Android también escanea en el propio dispositivo.
 
 <p>
-  <img src="docs/readme/scanner-reading.jpg" alt="El escáner del navegador leyendo una foto hecha con el celular de una pantalla de selección de fantasma" width="32%">
-  <img src="docs/readme/scanner-filled.jpg" alt="El formulario rellenado a partir del escaneo: personaje, kart, llantas, planeador, bandera y tiempos por vuelta, con la única pieza dudosa marcada" width="32%">
+  <img src="scanner-reading.jpg" alt="El escáner del navegador leyendo una foto hecha con el móvil de una pantalla de selección de fantasma" width="32%">
+  <img src="scanner-filled.jpg" alt="El formulario rellenado a partir del escaneo: personaje, kart, ruedas, ala delta, bandera y tiempos por vuelta, con la única pieza dudosa marcada" width="32%">
 </p>
 
 ## 🏆 Tus récords, tus rivales
@@ -279,8 +279,8 @@ club, rivales a los que perseguir (con toques, desafíos y algún que otro duelo
 alguien bate tu tiempo y **23 niveles de maestría** medidos frente a los récords mundiales actuales.
 
 <p>
-  <img src="docs/readme/timetrials-leaderboard.jpg" alt="Clasificación de la Senda Arco Iris con el récord mundial, combinaciones, champiñones y monedas por vuelta" width="72%">
-  <img src="docs/readme/phone-leaderboard.jpg" alt="La misma clasificación en un celular, con el tema oscuro" width="24%">
+  <img src="timetrials-leaderboard.jpg" alt="Clasificación de la Senda Arco Iris con el récord mundial, combinaciones, champiñones y monedas por vuelta" width="72%">
+  <img src="phone-leaderboard.jpg" alt="La misma clasificación en un móvil, con el tema oscuro" width="24%">
 </p>
 
 ## 🌍 Habla tu idioma: los 15
@@ -303,7 +303,7 @@ escena LAN de tu ciudad; adáptalo a cómo funcionan *tus* noches; y construye s
 - **Añade lo que necesita tu comunidad**: nuevos formatos de torneo, estadísticas, formas de compartir resultados.
 - **Mejora la documentación** para que el próximo organizador empiece aún más rápido.
 
-Empieza por [Contributing](CONTRIBUTING.md) y la [guía para desarrolladores](docs/DEVELOPMENT.md).
+Empieza por [Contributing](../../.github/CONTRIBUTING.md) y la [guía para desarrolladores](../DEVELOPMENT.md).
 Cada pull request, informe de error y corrección de traducción hace que la próxima noche LAN sea mejor
 para todos.
 
@@ -311,9 +311,9 @@ para todos.
 
 Las versiones estables están en [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
 la 0.2.0 añadió A2, en casa o en el club; la 0.2.1 da a la app de Android una copia sin conexión de tus
-tiempos y un diseño más tranquilo. La 0.2.2 hace que vuelva a funcionar el análisis de grabaciones y añade la ventana Tournament Analysis. La 0.2.3 ejecuta la pasarela web sin root y facilita empezar con el repositorio. Además, la base de datos del servidor de la comunidad pasa a MySQL 9.7 LTS y, en todos los escáneres, el color del kart y del planeador sigue ahora al personaje. La 0.2.4 trae las guías, el asistente de configuración, los lanzadores y las ventanas de Tournament en los 15 idiomas del juego, lee los nombres de los jugadores en cualquier escritura e incluye todos los modelos de OCR, así que el reconocimiento funciona sin conexión. La 0.2.5 es una actualización de seguridad que toda comunidad debería instalar: comprobaciones de permisos más estrictas y límites de solicitudes, una nueva confirmación por correo electrónico para las acciones de administración peligrosas, cuentas de base de datos separadas y una copia de seguridad diaria automática en cada vía. La 0.2.6 permite a un Director delegar la captura en vivo desde la app de Android, muestra a los administradores qué límites de solicitudes rechazaron peticiones, lleva el marcador en vivo y los lanzadores a los 15 idiomas y muestra las fechas en el idioma de la propia app. La 0.2.7 incluye la 0.2.6, que no se publicó por separado: cada vía de instalación se siguió paso a paso con su guía y las guías se corrigieron, la copia de seguridad nocturna y un nuevo código de recuperación funcionan en todas las vías, y dos instalaciones en una misma computadora ya no pueden sustituirse las imágenes entre sí. Consulta el [registro de cambios](CHANGELOG.md), los
-[paquetes de release](docs/RELEASE_PACKAGES.md) y la guía completa
-([English](docs/install/MK8DX_User_Guide_EN.txt), [Nederlands](docs/install/MK8DX_Handleiding_NL.txt)).
+tiempos y un diseño más tranquilo. La 0.2.2 hace que vuelva a funcionar el análisis de grabaciones y añade la ventana Tournament Analysis. La 0.2.3 ejecuta la pasarela web sin root y facilita empezar con el repositorio. Además, la base de datos del servidor de la comunidad pasa a MySQL 9.7 LTS y, en todos los escáneres, el color del kart y del ala delta sigue ahora al personaje. La 0.2.4 trae las guías, el asistente de configuración, los lanzadores y las ventanas de Tournament en los 15 idiomas del juego, lee los nombres de los jugadores en cualquier escritura e incluye todos los modelos de OCR, así que el reconocimiento funciona sin conexión. La 0.2.5 es una actualización de seguridad que toda comunidad debería instalar: comprobaciones de permisos más estrictas y límites de solicitudes, una nueva confirmación por correo electrónico para las acciones de administración peligrosas, cuentas de base de datos separadas y una copia de seguridad diaria automática en cada vía. La 0.2.6 permite a un Director delegar la captura en directo desde la app de Android, muestra a los administradores qué límites de solicitudes rechazaron peticiones, lleva el marcador en directo y los lanzadores a los 15 idiomas y muestra las fechas en el idioma de la propia app. La 0.2.7 incluye la 0.2.6, que no se publicó por separado: cada vía de instalación se siguió paso a paso con su guía y las guías se corrigieron, la copia de seguridad nocturna y un nuevo código de recuperación funcionan en todas las vías, y dos instalaciones en un mismo ordenador ya no pueden sustituirse las imágenes entre sí. Consulta el [registro de cambios](../../CHANGELOG.md), los
+[paquetes de release](../RELEASE_PACKAGES.md) y la guía completa
+([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt)).
 
 El reconocimiento nunca hace oficial un resultado por sí solo: tú revisas tus propias Contrarreloj, y
 un organizador revisa las carreras del torneo antes de que cuenten.
@@ -322,16 +322,16 @@ un organizador revisa las carreras del torneo antes de que cuenten.
 
 | Quiero… | Lee |
 | --- | --- |
-| entender cómo funciona el reconocimiento | [Recognition pipeline](docs/architecture/RECOGNITION_PIPELINE.md) |
-| entender las partes y cómo viaja un resultado | [Arquitectura](docs/architecture/COMPONENTS.md) |
-| compilar o cambiar el código | [Guía para desarrolladores](docs/DEVELOPMENT.md) y [Testing](docs/TESTING.md) |
-| compilar los clientes nativos | [Client builds](docs/CLIENT_BUILDS.md) |
-| gestionar una instalación (copia de seguridad, actualización, recuperación) | [Operations](docs/OPERATIONS.md) |
-| saber por qué algo es como es | [Índice de decisiones](docs/decisions/README.md) |
-| contribuir | [Contributing](CONTRIBUTING.md), [Código de conducta](CODE_OF_CONDUCT.md) |
-| obtener ayuda | [Getting help](SUPPORT.md) |
-| informar de un problema de seguridad | [Política de seguridad](SECURITY.md) |
-| trabajar con un agente de programación | [AGENTS.md](AGENTS.md) |
+| entender cómo funciona el reconocimiento | [Recognition pipeline](../architecture/RECOGNITION_PIPELINE.md) |
+| entender las partes y cómo viaja un resultado | [Arquitectura](../architecture/COMPONENTS.md) |
+| compilar o cambiar el código | [Guía para desarrolladores](../DEVELOPMENT.md) y [Testing](../TESTING.md) |
+| compilar los clientes nativos | [Client builds](../CLIENT_BUILDS.md) |
+| gestionar una instalación (copia de seguridad, actualización, recuperación) | [Operations](../OPERATIONS.md) |
+| saber por qué algo es como es | [Índice de decisiones](../decisions/README.md) |
+| contribuir | [Contributing](../../.github/CONTRIBUTING.md), [Código de conducta](../../.github/CODE_OF_CONDUCT.md) |
+| obtener ayuda | [Getting help](../../.github/SUPPORT.md) |
+| informar de un problema de seguridad | [Política de seguridad](../../.github/SECURITY.md) |
+| trabajar con un agente de programación | [AGENTS.md](../../AGENTS.md) |
 
 ## 💡 La historia detrás
 
@@ -345,7 +345,7 @@ Y ese grupo no dejaba de crecer.
 
 Lo que empezó con solo 16 jugadores acabó convirtiéndose en una comunidad de más de 68 participantes, con hasta **36 jugadores compitiendo en una sola noche**. Juntos han completado **más de 1000 carreras registradas**, en los 96 circuitos y durante incontables horas de competición amistosa.
 
-El montaje evolucionó igual de rápido. Lo que empezó con **Wi-Fi, una GoPro, mucha revisión manual y un montón de problemas de conexión** fue evolucionando poco a poco hacia capturadoras, una red Ethernet totalmente cableada, seguimiento automático de las carreras y 36 jugadores compitiendo en una bodega rodeados de consolas, pantallas, cables, amigos y, por supuesto, pizza.
+El montaje evolucionó igual de rápido. Lo que empezó con **Wi-Fi, una GoPro, mucha revisión manual y un montón de problemas de conexión** fue evolucionando poco a poco hacia capturadoras, una red Ethernet totalmente cableada, seguimiento automático de las carreras y 36 jugadores compitiendo en una nave rodeados de consolas, pantallas, cables, amigos y, por supuesto, pizza.
 
 Y cada torneo traía ideas nuevas.
 
@@ -395,7 +395,7 @@ Si este proyecto te ayuda a organizar un torneo LAN, empezar una rivalidad amist
 
 **Sigue compartiendo tus mejores momentos, tus ideas y tus mejoras.** Eso es lo que mantiene viva una comunidad como esta.
 
-Y, por último, muchísimas gracias a **Nintendo** por crear unas consolas y unos juegos tan fantásticos. Si disfrutas de Mario Kart, apoya a quienes lo hacen posible: compra las consolas y los juegos originales, invita a tus amigos, familia o compañeros de trabajo y disfruten jugando juntos.
+Y, por último, muchísimas gracias a **Nintendo** por crear unas consolas y unos juegos tan fantásticos. Si disfrutas de Mario Kart, apoya a quienes lo hacen posible: compra las consolas y los juegos originales, invita a tus amigos, familia o compañeros de trabajo y disfrutad jugando juntos.
 
 Al fin y al cabo, así es como empezó toda esta aventura.
 
@@ -407,8 +407,8 @@ Este es un proyecto aficionado, independiente y sin ánimo de lucro, para aprend
 Mario Kart 8 Deluxe más divertido. **No está afiliado a Nintendo ni cuenta con su respaldo.** Nintendo es
 propietaria de sus marcas y del contenido de sus juegos; apoya a Nintendo comprando sus consolas y juegos.
 
-El código y la documentación originales del proyecto tienen licencia [Mozilla Public License 2.0](LICENSE).
-El [alcance de la licencia](LICENSE_SCOPE.md) explica lo que cubre: **no** cubre material de Nintendo,
+El código y la documentación originales del proyecto tienen licencia [Mozilla Public License 2.0](../../LICENSE).
+El [alcance de la licencia](../../LICENSE_SCOPE.md) explica lo que cubre: **no** cubre material de Nintendo,
 imágenes del juego, plantillas de reconocimiento, modelos, fuentes ni otro material de terceros, que
-mantienen sus propias condiciones. Consulta [Third-party materials](docs/THIRD_PARTY_MATERIALS.md). El
+mantienen sus propias condiciones. Consulta [Third-party materials](../THIRD_PARTY_MATERIALS.md). El
 software se proporciona tal cual.

@@ -169,6 +169,8 @@ Make a new code when someone else may have seen yours, or when you lost the pape
 
 ![recovery code](guide/img/recovery-code-en.png)
 
+![new recovery code](guide/img/admin-new-code-en.png)
+
 **Database accounts:** the website signs in to its database with its own account that can only read and write data, so a fault in the website cannot delete tables; database updates use a second account. The setup creates both; an older installation gets them at its next update, and if the website does not start with the new account, the update returns to the old one. Nothing to do for you.
 
 ## 5. People and sign-in cards (MK8DX beheer)

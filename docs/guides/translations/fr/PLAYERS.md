@@ -49,7 +49,7 @@ active-les dans les paramètres de ton compte.
 Le site est disponible dans les 15 langues du jeu (choisis la tienne dans les paramètres). L'anglais et le néerlandais
 sont relus ; les 13 autres sont des traductions automatiques, et les corrections sont les bienvenues : voir
 [Modifier les textes de l'interface et les traductions](../../../DEVELOPMENT.md#change-ui-text-and-translations) pour le fichier à modifier et
-[Contributing](../../../../CONTRIBUTING.md) pour la pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) pour la pull request.
 
 ## L'application Android
 
@@ -146,5 +146,5 @@ l'interrupteur propre à l'application doivent tous deux être activés.
   comptes confondus). À cette limite, attends qu’une revendication en attente soit traitée, ou retires-en une avec
   **Retirer cette demande**, puis réessaie.
 - Quelque chose semble anormal sur le site de ta communauté : demande d'abord aux personnes qui le gèrent. Les bugs du logiciel lui-même
-  peuvent être signalés dans les tickets du projet ; voir [SUPPORT.md](../../../../SUPPORT.md). Ne publie jamais de liens de connexion ni les noms
+  peuvent être signalés dans les tickets du projet ; voir [SUPPORT.md](../../../../.github/SUPPORT.md). Ne publie jamais de liens de connexion ni les noms
   d'autres personnes.

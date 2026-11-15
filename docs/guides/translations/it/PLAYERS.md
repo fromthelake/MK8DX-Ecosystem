@@ -46,7 +46,7 @@ se la tua community le ha configurate; attivale nelle impostazioni del tuo accou
 Il sito web è disponibile nelle 15 lingue del gioco (scegli la tua nelle impostazioni). L'inglese e l'olandese sono
 revisionati; le altre 13 sono traduzioni automatiche e le correzioni sono benvenute: vedi
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) per il file da modificare e
-[Contributing](../../../../CONTRIBUTING.md) per la pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) per la pull request.
 
 ## L'app Android
 
@@ -142,5 +142,5 @@ l'interruttore dell'app stessa.
   al massimo 5 da tutti gli account insieme). Raggiunto questo limite, attendi che una rivendicazione in sospeso venga
   gestita, oppure ritirane una con **Ritira questa richiesta**, e riprova.
 - Qualcosa sembra sbagliato sul sito della tua community: chiedi prima alle persone che lo gestiscono. I bug del software stesso
-  si possono segnalare nelle issue del progetto; vedi [SUPPORT.md](../../../../SUPPORT.md). Non pubblicare mai link di accesso o nomi
+  si possono segnalare nelle issue del progetto; vedi [SUPPORT.md](../../../../.github/SUPPORT.md). Non pubblicare mai link di accesso o nomi
   di altre persone.

@@ -171,6 +171,8 @@ Crée un nouveau code si quelqu'un d'autre a pu voir le tien ou si tu as perdu l
 
 ![code de récupération](../../guide/img/recovery-code-en.png)
 
+![nouveau code de récupération](../../guide/img/admin-new-code-en.png)
+
 ## 5. Les personnes et les cartes de connexion (MK8DX beheer)
 
 **MK8DX beheer** (« administration MK8DX » en néerlandais) est la même page que l'installation, mais pour plus tard : ajouter des personnes et créer des cartes de connexion. Elle ne fonctionne que sur l'ordinateur MK8DX lui-même. Le raccourci sur le bureau s'appelle « MK8DX beheer » dans toutes les langues ; le titre de la page est **Administration MK8DX**.

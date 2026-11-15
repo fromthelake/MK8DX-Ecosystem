@@ -31,7 +31,7 @@ body:
     attributes:
       label: Where is the text?
       description: A page or screen of the website, app or tool, or a README file.
-      placeholder: "README_DE.md, section Time Trials"
+      placeholder: "docs/readme/README_DE.md, section Time Trials"
     validations:
       required: true
   - type: textarea

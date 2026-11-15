@@ -46,7 +46,7 @@ notifications if your community has set that up; turn them on in your account se
 The website is available in the game's 15 languages (choose yours in the settings). English and Dutch are
 reviewed; the other 13 are machine translations, and corrections are welcome: see
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) for the file to edit and
-[Contributing](../../../../CONTRIBUTING.md) for the pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) for the pull request.
 
 ## The Android app
 
@@ -141,5 +141,5 @@ app's own switch must both be on.
   can have at most 5 claims waiting for a decision at once (a Player at most 5 from all accounts together). At that
   limit, wait until a waiting claim has been handled, or withdraw one with **Withdraw this request**, and try again.
 - Something looks wrong on your community's site: ask the people who run it first. Bugs in the software itself
-  can be reported in the project's issues; see [SUPPORT.md](../../../../SUPPORT.md). Never post sign-in links or other
+  can be reported in the project's issues; see [SUPPORT.md](../../../../.github/SUPPORT.md). Never post sign-in links or other
   people's names.

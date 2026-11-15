@@ -171,6 +171,8 @@ Crea un código nuevo si otra persona ha podido ver el tuyo o si perdiste el pap
 
 ![código de recuperación](../../guide/img/recovery-code-en.png)
 
+![nuevo código de recuperación](../../guide/img/admin-new-code-en.png)
+
 ## 5. Personas y tarjetas de acceso (MK8DX beheer)
 
 **MK8DX beheer** (en neerlandés, «administración de MK8DX») es la misma página que la configuración, pero para después: añadir personas y hacer tarjetas de acceso. Solo funciona en el propio ordenador MK8DX. El acceso directo del escritorio se llama «MK8DX beheer» en todos los idiomas; el título de la página es **Administración de MK8DX**.

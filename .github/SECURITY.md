@@ -19,7 +19,7 @@ or other people's personal data. If a maintainer needs a diagnostic, they will a
 redacted one.
 
 You can expect an acknowledgement within two weeks. When a fix is ready it is released and the
-report is credited in the [changelog](CHANGELOG.md) unless you prefer otherwise.
+report is credited in the [changelog](../CHANGELOG.md) unless you prefer otherwise.
 
 ## Scope
 
@@ -35,11 +35,11 @@ update here is still welcome); and reports that need physical access to an opera
 ## Supported versions
 
 Only the latest release and the `main` branch receive fixes. The project is pre-1.0; see the
-[changelog](CHANGELOG.md).
+[changelog](../CHANGELOG.md).
 
 ## For operators
 
 Keep your installation directory, `secrets.json`, database backups and client signing keys outside Git
 and out of public reports. `tooling/install.py` keeps them in a private state directory for this reason.
 Update to the latest release after a security fix and follow the backup step in
-[Operations](docs/OPERATIONS.md) before every upgrade.
+[Operations](../docs/OPERATIONS.md) before every upgrade.

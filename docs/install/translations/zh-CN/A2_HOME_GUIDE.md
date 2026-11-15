@@ -171,6 +171,8 @@ Linux 和 macOS 终端中的消息：
 
 ![恢复码](../../guide/img/recovery-code-en.png)
 
+![新的恢复码](../../guide/img/admin-new-code-en.png)
+
 ## 5. 人员和登录卡（MK8DX beheer）
 
 **MK8DX beheer**（荷兰语，意为“MK8DX 管理”）与安装程序是同一个页面，只是供以后使用：添加人员和制作登录卡。它只能在 MK8DX 电脑本机上使用。桌面快捷方式在所有语言中都叫 “MK8DX beheer”；页面标题是 **MK8DX 管理**。

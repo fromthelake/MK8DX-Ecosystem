@@ -31,4 +31,4 @@ replace any copyright or license notice from another rightsholder.
 
 No license can require someone to submit a pull request to this project. To
 offer an improvement for the MK8DX community, use
-[CONTRIBUTING.md](CONTRIBUTING.md).
+[CONTRIBUTING.md](.github/CONTRIBUTING.md).

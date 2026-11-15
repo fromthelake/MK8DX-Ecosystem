@@ -6,6 +6,14 @@ De volledige, gewone handleiding is [MK8DX_Handleiding_NL.txt](MK8DX_Handleiding
 [Word-bestand](MK8DX_Handleiding_NL.docx)); in het Engels [MK8DX_User_Guide_EN.txt](MK8DX_User_Guide_EN.txt).
 Die neemt je stap voor stap mee. De pagina's in deze map zijn technische naslag per route.
 
+De A2-handleiding met plaatjes (thuis of op de club) is ook één bestand om te lezen, af te drukken of door te geven:
+[PDF](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.pdf) of
+[HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.html); in het Engels
+[PDF](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.pdf) of
+[HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.html). Elke release heeft ze in alle 15
+talen als `MK8DX_Guide_<taal>.pdf` en `.html` (bijvoorbeeld `MK8DX_Guide_de.pdf`). Het HTML-bestand werkt offline,
+zonder andere bestanden.
+
 ## Welke route past bij jou?
 
 | Route | Voor wie | Status | Naslag |

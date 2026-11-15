@@ -171,6 +171,8 @@ Linux와 macOS의 터미널에 나오는 메시지:
 
 ![복구 코드](../../guide/img/recovery-code-en.png)
 
+![새 복구 코드](../../guide/img/admin-new-code-en.png)
+
 ## 5. 사람과 로그인 카드(MK8DX beheer)
 
 **MK8DX beheer**(네덜란드어로 "MK8DX 관리")는 설치 화면과 같은 페이지이지만 나중에 쓰는 용도입니다: 사람을 추가하고 로그인 카드를 만듭니다. MK8DX 컴퓨터 자체에서만 작동합니다. 바탕 화면 바로 가기 이름은 모든 언어에서 "MK8DX beheer"이고, 페이지 제목은 **MK8DX 관리**입니다.

@@ -171,6 +171,8 @@ Erstelle einen neuen Code, wenn jemand anderes deinen gesehen haben könnte oder
 
 ![Wiederherstellungscode](../../guide/img/recovery-code-en.png)
 
+![neuer Wiederherstellungscode](../../guide/img/admin-new-code-en.png)
+
 ## 5. Leute und Anmeldekarten (MK8DX beheer)
 
 **MK8DX beheer** (Niederländisch für „MK8DX-Verwaltung“) ist dieselbe Seite wie die Einrichtung, aber für später: Leute hinzufügen und Anmeldekarten erstellen. Sie funktioniert nur auf dem MK8DX-Computer selbst. Die Desktop-Verknüpfung heißt in jeder Sprache „MK8DX beheer“; der Seitentitel ist **MK8DX-Administration**.

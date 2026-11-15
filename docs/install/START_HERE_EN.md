@@ -6,6 +6,14 @@ The complete, plain guide is [MK8DX_User_Guide_EN.txt](MK8DX_User_Guide_EN.txt) 
 [Word file](MK8DX_User_Guide_EN.docx)); in Dutch [MK8DX_Handleiding_NL.txt](MK8DX_Handleiding_NL.txt).
 It takes you through step by step. The pages in this folder are technical reference per route.
 
+The illustrated A2 guide (home or club, with screenshots) is also one file to read, print or pass on:
+[PDF](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.pdf) or
+[HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.html); in Dutch
+[PDF](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.pdf) or
+[HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_nl.html). Every release has them in all 15
+languages as `MK8DX_Guide_<language>.pdf` and `.html` (for example `MK8DX_Guide_de.pdf`). The HTML file works
+offline, without other files.
+
 ## Which route suits you?
 
 | Route | For whom | Status | Reference |

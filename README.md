@@ -2,7 +2,7 @@
 
 **Host your own Mario Kart 8 Deluxe community website — for Time Trials *and* tournament nights.**
 
-Language: English · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
+Language: English · [English (US)](docs/readme/README_EN_US.md) · [Nederlands](docs/readme/README_NL.md) · [Deutsch](docs/readme/README_DE.md) · [Español](docs/readme/README_ES.md) · [Español (Latinoamérica)](docs/readme/README_ES_419.md) · [Français](docs/readme/README_FR.md) · [Français (Canada)](docs/readme/README_FR_CA.md) · [Italiano](docs/readme/README_IT.md) · [Português](docs/readme/README_PT.md) · [Русский](docs/readme/README_RU.md) · [日本語](docs/readme/README_JA.md) · [한국어](docs/readme/README_KO.md) · [简体中文](docs/readme/README_ZH_CN.md) · [繁體中文](docs/readme/README_ZH_TW.md)
 
 ![The home page of a community website: your standing, your focus tracks and your rivals](docs/readme/web-home.jpg)
 
@@ -127,12 +127,12 @@ flowchart TB
 
 | I want to… | Start here |
 | --- | --- |
-| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step (the A2 package also contains an illustrated version): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Installing and using MK8DX](docs/install/MK8DX_User_Guide_EN.docx) ([TXT](docs/install/MK8DX_User_Guide_EN.txt)) |
+| **run MK8DX at home or at my club** | The A2 package for your computer from [Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases): unpack, start, click Next. Step by step (the A2 package also contains an illustrated version): [English](docs/install/A2_HOME_GUIDE_EN.md) · [Nederlands](docs/install/A2_THUIS_HANDLEIDING_NL.md) · [Installing and using MK8DX](docs/install/MK8DX_User_Guide_EN.docx) ([TXT](docs/install/MK8DX_User_Guide_EN.txt)) · [MK8DX at home or at your club — guide (PDF)](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.pdf) ([HTML](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.html)) |
 | **organise LAN tournament nights** | [Tournament Directors](docs/guides/TOURNAMENT_DIRECTORS.md); the Tournament Tools also work without a community website |
 | **record my Time Trials automatically** | [LiveTrial](docs/guides/LIVETRIAL.md) — Windows + a capture card; also works without a community website |
 | **post and compare my times** | [Players](docs/guides/PLAYERS.md) — any browser; Android 8.0+ |
 | **host a community website** | [Host a community server](docs/guides/HOSTING.md) |
-| **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](CONTRIBUTING.md) |
+| **change the code** | [Developer guide](docs/DEVELOPMENT.md), [Testing](docs/TESTING.md), [Contributing](.github/CONTRIBUTING.md) |
 
 Each row names the guide to follow from start to finish. Building the server from source instead of
 using a release package is for developers: [Getting started from source](docs/GETTING_STARTED.md).
@@ -289,7 +289,7 @@ city's LAN scene; adapt it to how *your* nights work; and build on it:
 - **Add what your community needs** — new tournament formats, statistics, ways to share results.
 - **Improve the docs** so the next organiser gets started even faster.
 
-Start with [Contributing](CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
+Start with [Contributing](.github/CONTRIBUTING.md) and the [developer guide](docs/DEVELOPMENT.md).
 Every pull request, bug report and translation fix makes the next LAN night better for everyone.
 
 ## Project status
@@ -313,9 +313,9 @@ organiser checks tournament races before they count.
 | build the native clients | [Client builds](docs/CLIENT_BUILDS.md) |
 | run an installation (backup, upgrade, recovery) | [Operations](docs/OPERATIONS.md) |
 | know why something is the way it is | [Decision index](docs/decisions/README.md) |
-| contribute | [Contributing](CONTRIBUTING.md), [Code of conduct](CODE_OF_CONDUCT.md) |
-| get help | [Getting help](SUPPORT.md) |
-| report a security problem | [Security policy](SECURITY.md) |
+| contribute | [Contributing](.github/CONTRIBUTING.md), [Code of conduct](.github/CODE_OF_CONDUCT.md) |
+| get help | [Getting help](.github/SUPPORT.md) |
+| report a security problem | [Security policy](.github/SECURITY.md) |
 | work with a coding agent | [AGENTS.md](AGENTS.md) |
 
 ## 💡 The story behind it

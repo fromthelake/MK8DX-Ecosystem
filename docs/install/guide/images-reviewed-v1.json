@@ -3,12 +3,16 @@
   "note": "Each screenshot was looked at before it was listed: example data only.",
   "files": {
     "docs/install/guide/img/admin-cards-en.png": {
-      "sizeBytes": 79877,
-      "sha256": "f5721238c93dff98fd603dd9a6b6d90c2d8b5dc12a3448ac479f3edab8d6d414"
+      "sizeBytes": 141653,
+      "sha256": "c80c000ad63c8fed9dce472e3a78f3e74be18c604a897737bdcf4bb14bcc2ea0"
+    },
+    "docs/install/guide/img/admin-new-code-en.png": {
+      "sizeBytes": 111057,
+      "sha256": "d9468f9978343699b6854f4759c56b70e0ebc9b9caaf4eeec8d61df71016bc29"
     },
     "docs/install/guide/img/admin-people-en.png": {
-      "sizeBytes": 103000,
-      "sha256": "166695549998ae9c7b3d62b93e873f773db4ea7e40735e9ac4b0416deb08be0c"
+      "sizeBytes": 103571,
+      "sha256": "c7a704558ebdca9263fb9a179a677356875cd189af0c6694289400a7c7fb2229"
     },
     "docs/install/guide/img/android-change-server-en.png": {
       "sizeBytes": 71034,
@@ -27,96 +31,100 @@
       "sha256": "55e38a477530c9142f2ad993117b2e1950185fa18555f3c422c39f891f0a6ffe"
     },
     "docs/install/guide/img/beheer-kaarten-nl.png": {
-      "sizeBytes": 87477,
-      "sha256": "126f458266b02ed79c694ceeaba00c77dd477f0f6a5382c3172276284258f8a7"
+      "sizeBytes": 182264,
+      "sha256": "74573fa470103ad3c7f3b04c58a5298be56e9749c7764e10886f7744fd68a9d7"
     },
     "docs/install/guide/img/beheer-mensen-nl.png": {
-      "sizeBytes": 101347,
-      "sha256": "0b9c0776af1f19d0335ff5fcd98599e4b3f36e66deff3224e02fd9455e972344"
+      "sizeBytes": 101909,
+      "sha256": "f08aea9ae5f5bafb6092e424fd1fe6b4fcdaf669d689da36e14065b39ae16552"
+    },
+    "docs/install/guide/img/beheer-nieuwe-code-nl.png": {
+      "sizeBytes": 114051,
+      "sha256": "34f5a3d7431a3c0a1d0ae95eeefa241079ac59ad6ccdc52712d8fd09d7cb2700"
     },
     "docs/install/guide/img/herstelcode-nl.png": {
-      "sizeBytes": 88932,
-      "sha256": "2acd49b733f54bd3d1d5163aca360d52709eb8e98f1d4628eab95c82dd119c1e"
+      "sizeBytes": 91357,
+      "sha256": "50124614fae9a24d76aea7d62fdbbbc9f79db6a13f079d232b74cc4e157f8cde"
     },
     "docs/install/guide/img/mk8dx-icon.png": {
       "sizeBytes": 48598,
       "sha256": "a91723c06b8b799b92b1fef2b4a45dbd5c6b42899a1f408040ea31d4257eefed"
     },
     "docs/install/guide/img/phone-accept-invitation-en.png": {
-      "sizeBytes": 45439,
-      "sha256": "2b80c4db6db8ba50d56c9fd32ee6babe5b1a1530f313a72ec8c79d6582f8b5d3"
+      "sizeBytes": 65165,
+      "sha256": "d5e5ac92b9514a551505e813c82c253ad4a671d3b5f5f6b33bcbab6e0cea8f6f"
     },
     "docs/install/guide/img/phone-prepare-device-en.png": {
-      "sizeBytes": 130005,
-      "sha256": "c6a817249ec42ca196259482e842a760bcd003debfa665ca1cd811407574daed"
+      "sizeBytes": 124027,
+      "sha256": "562f4dc9f74333abd0043e026777028ffecf79b0f198f8329cf3f1c79d9a515d"
     },
     "docs/install/guide/img/recovery-code-en.png": {
-      "sizeBytes": 86509,
-      "sha256": "45a23b985f7d0f19095ad1b6f1028ea1c6d27ad79535380005e5412a0b02f16e"
+      "sizeBytes": 89318,
+      "sha256": "46bec5d6064dd88d171e4d50c308bdf1f8c73ad938d043b119aba41c29055753"
     },
     "docs/install/guide/img/telefoon-apparaat-voorbereiden-nl.png": {
-      "sizeBytes": 134779,
-      "sha256": "07d90a9af9286c3777a2d0123f6ea031e24da0a0b0906c651027076cf7b299a1"
+      "sizeBytes": 132100,
+      "sha256": "7bff42a7cec700c92730e20b64f186a950f46fd01137e8718f2f1ed887323a7e"
     },
     "docs/install/guide/img/telefoon-uitnodiging-accepteren-nl.png": {
-      "sizeBytes": 50576,
-      "sha256": "08c0328f389600076d0e2647f63191f1f1672e086feff7a8b02de484341163c2"
+      "sizeBytes": 70321,
+      "sha256": "6d2d2921df58ad467b9c9fc528347ca66bfd90a0cf1f571a494b3e557926b667"
     },
     "docs/install/guide/img/website-ander-account-nl.png": {
-      "sizeBytes": 36849,
-      "sha256": "7ea9d8f8b4b0a46bfe2ee4d0bc29514c18191eaaf86bc025df229eec6eee544c"
+      "sizeBytes": 47827,
+      "sha256": "f64edaa1af39df84b39888143de7d1f9a6856e44836fa41d208df525d3b87a79"
     },
     "docs/install/guide/img/website-switch-account-en.png": {
-      "sizeBytes": 30981,
-      "sha256": "04eb64af99af065488f88e3beb4edd6fad7ef528113b74c1cf7fc80788be2599"
+      "sizeBytes": 44132,
+      "sha256": "3b6793384da2a5ce79ab3dc98df11a49095adbc54151bf35f485119c707d4a6e"
     },
     "docs/install/guide/img/wizard-check-en.png": {
-      "sizeBytes": 76668,
-      "sha256": "8eab6d430ccdc260f697526128a08d86bdabfb216c0422ace5f4f7f8957b9c07"
+      "sizeBytes": 79828,
+      "sha256": "e756cb8c095f58870acf1feedccfab3104641c1f8b6807f35bc684ae5e11579f"
     },
     "docs/install/guide/img/wizard-controle-nl.png": {
-      "sizeBytes": 78088,
-      "sha256": "8b246f6171b1c5e4ce059369897341ea88c59ed7180aa7c90d92219dfb2cf30a"
+      "sizeBytes": 81360,
+      "sha256": "9f017a999c4f29e66bd8d717e558892ff6b89024673e3cd8cc85e413b2c4181e"
     },
     "docs/install/guide/img/wizard-done-en.png": {
-      "sizeBytes": 97036,
-      "sha256": "2c2df164dbd655d8b00caa7a3d6948ff4f2e0669843aa1c55a62e33ff12a1756"
+      "sizeBytes": 99292,
+      "sha256": "06ba8295f5bc24a4c1dfe3674381eb3b4292a34afaebcc4202f6ee17d1a7dd40"
     },
     "docs/install/guide/img/wizard-klaar-nl.png": {
-      "sizeBytes": 99913,
-      "sha256": "a5c825798c0164fde177d483b893d4acde79107b084a02d2f0ea33f468b260aa"
+      "sizeBytes": 102208,
+      "sha256": "1d82adb5a84b156dbd8e3ba9568c84d0c96bf093973b108974df0bfb1a8bca31"
     },
     "docs/install/guide/img/wizard-move-en.png": {
-      "sizeBytes": 89016,
-      "sha256": "e0f6431784528efdd4250f8df5933e40b955a651ac80bba557f8c9a0d9434b1d"
+      "sizeBytes": 92186,
+      "sha256": "61413c931de361a6a1334f5a149b6058eaf5a0eca8091487ce10da4fb35e0806"
     },
     "docs/install/guide/img/wizard-netwerk-nl.png": {
-      "sizeBytes": 74468,
-      "sha256": "f7eba57b055d333779ec93955d1d63c79fb6dd5750179f65cc8e313b2e817f34"
+      "sizeBytes": 74177,
+      "sha256": "d0e8e45510cd65c5bbeb66f15e5be3161f1b57a8b38022743bed52b50444084b"
     },
     "docs/install/guide/img/wizard-network-en.png": {
-      "sizeBytes": 73154,
-      "sha256": "6440566417bca2d8ee23823a4b948a5d3e526d6ac1d372b92dab14b7d05bbcb9"
+      "sizeBytes": 73110,
+      "sha256": "fa7a97e1226d7fd5d0f82c943d596e7cf31ea68790e772900918b4602a267503"
     },
     "docs/install/guide/img/wizard-restore-en.png": {
-      "sizeBytes": 98596,
-      "sha256": "cec0e08580ad543f96b7f8dd7ffd42468c6eee1b409ea97a51e858bae953a5bb"
+      "sizeBytes": 101147,
+      "sha256": "aa3b19eee4fb911bbed231d4e2a7b65f1e98ced288513c00e49ed059aed88454"
     },
     "docs/install/guide/img/wizard-terugzetten-nl.png": {
-      "sizeBytes": 98396,
-      "sha256": "c8aa76829427c6a1ac8dd8dee6a67ffd642d79feb45bf5a27d646527dfe5b9b9"
+      "sizeBytes": 101049,
+      "sha256": "88dd8d2ddc849c0abb6d6b98e1bc0f585d0c43bbf6d6f15b12b15ee6ca82f3ea"
     },
     "docs/install/guide/img/wizard-verhuizen-nl.png": {
-      "sizeBytes": 92883,
-      "sha256": "94ac5ac354abc14978a9d075392a39425444eedf89332738cfc46a5a6292d894"
+      "sizeBytes": 96240,
+      "sha256": "4831326a7a872e588472d5dd3b81fed8b481806ba0979c11a7f1c85b806b79a8"
     },
     "docs/install/guide/img/wizard-welcome-en.png": {
-      "sizeBytes": 142601,
-      "sha256": "fc4b4d373c3f440bc69ab804dcfb043139d93930a1741f07eb8767b0cda0e1bb"
+      "sizeBytes": 145948,
+      "sha256": "dc2ce143188c29d91ef270f949d72b29503cfd969d7120848d86bcdc7cff0fe8"
     },
     "docs/install/guide/img/wizard-welkom-nl.png": {
-      "sizeBytes": 144623,
-      "sha256": "61cd0a65ab223548ae1569c63a6c6eb05cc54b21298e2be4b852f1257149f572"
+      "sizeBytes": 147760,
+      "sha256": "304a735daa1ae0fc4493ab1854f7dd15c0e36a9a7cb4a1fb822fe476609f6ef2"
     }
   }
 }

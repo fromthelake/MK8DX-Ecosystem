@@ -46,7 +46,7 @@ si tu comunidad lo ha configurado; actívalas en los ajustes de tu cuenta.
 La web está disponible en los 15 idiomas del juego (elige el tuyo en los ajustes). El inglés y el neerlandés están
 revisados; los otros 13 son traducciones automáticas, y las correcciones son bienvenidas: consulta
 [Change UI text and translations](../../../DEVELOPMENT.md#change-ui-text-and-translations) para el archivo que hay que editar y
-[Contributing](../../../../CONTRIBUTING.md) para la pull request.
+[Contributing](../../../../.github/CONTRIBUTING.md) para la pull request.
 
 ## La app de Android
 
@@ -142,5 +142,5 @@ interruptor propio de la app tienen que estar activados los dos.
   jugador, como máximo 5 de todas las cuentas juntas). Al llegar a ese límite, espera a que se resuelva una
   reclamación pendiente, o retira una con **Retirar esta solicitud**, y vuelve a intentarlo.
 - Algo se ve mal en la web de tu comunidad: pregunta primero a quienes la llevan. Los errores del propio software
-  se pueden comunicar en las issues del proyecto; consulta [SUPPORT.md](../../../../SUPPORT.md). Nunca publiques enlaces de inicio de sesión ni nombres
+  se pueden comunicar en las issues del proyecto; consulta [SUPPORT.md](../../../../.github/SUPPORT.md). Nunca publiques enlaces de inicio de sesión ni nombres
   de otras personas.

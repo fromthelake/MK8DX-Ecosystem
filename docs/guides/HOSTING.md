@@ -346,5 +346,5 @@ can also open its properties and add ` -SkipCountdown` at the end of the target.
   and, within 10 minutes, run `install.py step-up-link --state-dir <installation>` on the server; it prints a new
   single-use link for that one waiting request, which you confirm the same way. It only runs on the server itself
   and is recorded; see [Operations](../OPERATIONS.md#when-e-mail-fails-confirm-a-dangerous-action-from-the-server).
-- Security problems: [SECURITY.md](../../SECURITY.md). Keep the installation directory, backups and sign-in links
+- Security problems: [SECURITY.md](../../.github/SECURITY.md). Keep the installation directory, backups and sign-in links
   out of issues.

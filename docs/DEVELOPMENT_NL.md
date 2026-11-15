@@ -94,7 +94,7 @@ Grenzen om rekening mee te houden:
    ```
 
 5. Voeg alleen de bedoelde paden toe, bekijk `git diff --cached`, commit, en open een pull request zoals
-   [Contributing](../CONTRIBUTING.md) beschrijft.
+   [Contributing](../.github/CONTRIBUTING.md) beschrijft.
 
 Commit nooit installatiemappen, `secrets.json`, `.env`-bestanden, databases, backups, opnames, logs of
 persoonsgegevens. Voeg een `.gitignore`-regel toe als een programma lokale bestanden maakt.
