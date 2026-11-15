@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import nl.mariokart8.mk8dxtimetrials.ui.LocalizedText as Text
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidDutchPresentationCatalog
 import nl.mariokart8.mk8dxtimetrials.ui.AndroidProductLanguage
+import nl.mariokart8.mk8dxtimetrials.ui.androidCatalogPresentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -69,11 +70,16 @@ internal fun boundedAndroidTrackSearchInput(value: String): String {
     return builder.toString()
 }
 
-internal fun cupSelectionLabel(name: String, language: AndroidProductLanguage): String {
-    if (language == AndroidProductLanguage.ENGLISH) return name.removeSuffix(" Cup")
-    return AndroidDutchPresentationCatalog.translate(name)
+/**
+ * The cup tile's label in the app language: the short name in English (UK and US) and Dutch, the catalog's cup
+ * name in the other languages. Only Dutch reads the Dutch table (an English (US) app showed "Paddenstoel").
+ */
+internal fun cupSelectionLabel(name: String, language: AndroidProductLanguage): String = when (language) {
+    AndroidProductLanguage.ENGLISH, AndroidProductLanguage.ENGLISH_US -> name.removeSuffix(" Cup")
+    AndroidProductLanguage.DUTCH -> AndroidDutchPresentationCatalog.translate(name)
         .replace(Regex("(?i)-?beker$"), "")
         .trim()
+    else -> androidCatalogPresentation(language, name)
 }
 
 @Composable
