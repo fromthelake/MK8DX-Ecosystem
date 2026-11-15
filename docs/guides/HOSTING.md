@@ -177,7 +177,7 @@ works only once per installation. See [Operations](../OPERATIONS.md) for the bou
   to 9.7 LTS. MySQL upgrades the data files once, at the first start on the new version, and only a backup undoes
   that. So choose 7 (update) first: it makes a checked backup and applies the database updates. From 0.2.4 on,
   2 (start) refuses until the update has run; with a 0.2.3 package, 2 would skip the backup (3, check, is harmless).
-- **The next update after 0.2.4** applies database updates 0092 and 0095 and gives the website its own database
+- **The update to 0.2.5** applies database updates 0092 and 0095 and gives the website its own database
   account that can only read and write rows (`status` shows `"databaseAccounts": "separate"`; if the website does
   not start with it, the update returns to the previous account by itself). Check afterwards that sign-in mail
   arrives: dangerous administrator actions now need a fresh email link (below). Built-in limits against floods need

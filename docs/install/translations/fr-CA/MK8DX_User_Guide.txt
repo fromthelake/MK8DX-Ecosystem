@@ -1,6 +1,6 @@
 Installer et utiliser MK8DX
 
-Guide pour MK8DX 0.2.4 · 15 novembre 2026
+Guide pour MK8DX 0.2.5 · 16 novembre 2026
 
 Ceci est une traduction automatique du guide anglais MK8DX_User_Guide_EN.txt; la version anglaise fait foi. Les corrections sont les bienvenues via le formulaire de billet « Translation correction ».
 
@@ -8,7 +8,7 @@ Bienvenue
 
 MK8DX est un site web pour les contre-la-montre et les tournois de Mario Kart 8 Deluxe. Tu peux parcourir les circuits et les temps de référence, te connecter grâce à un lien envoyé par courriel et soumettre tes propres résultats. Un administrateur peut examiner les soumissions. Le scanner, l'application Android et les programmes Windows sont des outils séparés.
 
-Les paquets de release sont joints aux GitHub Releases du projet. Ouvre la page des releases, https://github.com/fromthelake/MK8DX-Ecosystem/releases, et choisis la release la plus récente. Sous Assets, télécharge le paquet de ta voie et SHA256SUMS.txt. Le bouton Source code (zip) de GitHub n'est pas le paquet d'installation. Si tu travailles plutôt depuis un clone des sources, tu peux compiler les paquets toi-même; voir « Résolution des problèmes et compilation par toi-même ». Le v0.2.4 dans le nom de fichier d'un paquet identifie cette release; les images Docker contenues dans le paquet hôte portent les étiquettes de version correspondantes. Garde tous les fichiers de la même release.
+Les paquets de release sont joints aux GitHub Releases du projet. Ouvre la page des releases, https://github.com/fromthelake/MK8DX-Ecosystem/releases, et choisis la release la plus récente. Sous Assets, télécharge le paquet de ta voie et SHA256SUMS.txt. Le bouton Source code (zip) de GitHub n'est pas le paquet d'installation. Si tu travailles plutôt depuis un clone des sources, tu peux compiler les paquets toi-même; voir « Résolution des problèmes et compilation par toi-même ». Le v0.2.5 dans le nom de fichier d'un paquet identifie cette release; les images Docker contenues dans le paquet hôte portent les étiquettes de version correspondantes. Garde tous les fichiers de la même release.
 
 Choisis une seule façon d'utiliser le site. Sur un seul ordinateur Windows, utilise soit Docker, soit XAMPP, Node.js et le MariaDB actuel inclus. La voie réseau Docker documentée atteint un second PC Windows sur ton réseau de confiance. Pour un domaine public, choisis soit un hébergement web mutualisé avec Node.js (le chapitre prend mijn.host Starter comme exemple), soit ton propre VPS Docker. Ces chapitres sont des alternatives, pas un parcours à suivre dans l'ordre. Les clients pour téléphone et Windows viennent après les voies du site.
 
@@ -50,9 +50,9 @@ python --version
 
 Si tu ne vois pas une version de 3.12 à 3.15, répare Python avec le même programme d'installation. Vérifie aussi si Windows n'a pas ouvert un alias du Microsoft Store au lieu du Python installé. Ici, Python ne fait que lancer l'assistant d'installation; tu n'as pas à compiler de logiciel.
 
-3. Mets mk8dx-host-local-v0.2.4-amd64.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Ouvre PowerShell dans ce dossier et vérifie le paquet hôte :
+3. Mets mk8dx-host-local-v0.2.5-amd64.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Ouvre PowerShell dans ce dossier et vérifie le paquet hôte :
 
-Get-FileHash '.\mk8dx-host-local-v0.2.4-amd64.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-host-local-v0.2.5-amd64.zip' -Algorithm SHA256
 
 Compare la valeur entière avec la ligne de ce fichier dans SHA256SUMS.txt. Arrête-toi et demande une copie correcte si elles diffèrent. Fais un clic droit sur le ZIP et choisis « Extraire tout ». Une destination appropriée est Documents\MK8DX\host. Ouvre le dossier extrait qui contient Start-MK8DX.cmd et compose.yaml.
 
@@ -89,11 +89,11 @@ python --version
 
 Tu dois voir Node 24 et Python 3.12 ou plus récent. Ils font tourner des fichiers MK8DX précompilés; tu ne compiles pas l'application. Si une commande est inconnue, rouvre PowerShell, puis répare cette installation si nécessaire.
 
-3. Mets mk8dx-xampp-node-windows-v0.2.4.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Dans PowerShell, compare la valeur SHA-256 entière avec la ligne de ce ZIP :
+3. Mets mk8dx-xampp-node-windows-v0.2.5.zip et SHA256SUMS.txt dans le même dossier de téléchargement. Dans PowerShell, compare la valeur SHA-256 entière avec la ligne de ce ZIP :
 
-Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.4.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.5.zip' -Algorithm SHA256
 
-Si elles correspondent, fais un clic droit sur le ZIP et choisis « Extraire tout ». Un dossier approprié est Documents\MK8DX\nodocker-v0.2.4. Ouvre le dossier extrait qui contient Start-MK8DX-No-Docker.cmd. Il contient déjà bin\mailpit.exe et bin\mariadb-11.4.13-winx64.zip. Tu ne compiles pas de code source et tu ne remplaces pas une ancienne base de données XAMPP. Ne mets pas ce paquet dans htdocs.
+Si elles correspondent, fais un clic droit sur le ZIP et choisis « Extraire tout ». Un dossier approprié est Documents\MK8DX\nodocker-v0.2.5. Ouvre le dossier extrait qui contient Start-MK8DX-No-Docker.cmd. Il contient déjà bin\mailpit.exe et bin\mariadb-11.4.13-winx64.zip. Tu ne compiles pas de code source et tu ne remplaces pas une ancienne base de données XAMPP. Ne mets pas ce paquet dans htdocs.
 
 4. Prépare Apache pour ce seul site local. Ouvre PowerShell dans le dossier MK8DX extrait. Règle -XamppRoot sur l'emplacement réel de ton XAMPP :
 
@@ -154,7 +154,7 @@ Attends-toi à « Sauvegarde vérifiée » puis à une vérification réussie de
 
 L'utiliser sur ton réseau domestique
 
-Pour un réseau domestique ou de club, utilise le paquet A2. Télécharge mk8dx-a2-windows-amd64-v0.2.4.zip (Linux : mk8dx-a2-linux-amd64 ou mk8dx-a2-linux-arm64; macOS avec puce Apple : mk8dx-a2-macos-arm64; macOS avec processeur Intel : mk8dx-a2-macos-amd64) et SHA256SUMS.txt, vérifie la somme de contrôle comme dans « L'essayer sur un seul ordinateur », décompresse le paquet et double-clique sur Start-MK8DX-LAN.cmd (Linux et macOS : sh tooling/start-mk8dx.sh). Une installation s'ouvre dans ton navigateur et te guide à travers tout avec Next (Suivant) : l'adresse réseau, ton compte administrateur, un code de récupération sur papier pour les sauvegardes de nuit, et les personnes, chacune avec une carte de connexion pour son téléphone ou son PC. Pas besoin d'internet, de serveur de messagerie ni de fichier hosts.
+Pour un réseau domestique ou de club, utilise le paquet A2. Télécharge mk8dx-a2-windows-amd64-v0.2.5.zip (Linux : mk8dx-a2-linux-amd64 ou mk8dx-a2-linux-arm64; macOS avec puce Apple : mk8dx-a2-macos-arm64; macOS avec processeur Intel : mk8dx-a2-macos-amd64) et SHA256SUMS.txt, vérifie la somme de contrôle comme dans « L'essayer sur un seul ordinateur », décompresse le paquet et double-clique sur Start-MK8DX-LAN.cmd (Linux et macOS : sh tooling/start-mk8dx.sh). Une installation s'ouvre dans ton navigateur et te guide à travers tout avec Next (Suivant) : l'adresse réseau, ton compte administrateur, un code de récupération sur papier pour les sauvegardes de nuit, et les personnes, chacune avec une carte de connexion pour son téléphone ou son PC. Pas besoin d'internet, de serveur de messagerie ni de fichier hosts.
 
 Le guide complet pas à pas, avec images, est docs/install/A2_HOME_GUIDE_EN.md; dans le paquet, c'est aussi docs/install/guide/en.html, et l'installation l'ouvre depuis son lien Manual (Manuel). Il couvre la préparation de Windows, Linux ou macOS, les téléphones et les PC, l'application Android, LiveTrial, les soirées tournoi, les sauvegardes, le passage à un nouvel ordinateur, une adresse fixe, une nouvelle adresse réseau et les mises à jour.
 
@@ -221,9 +221,9 @@ Hébergement mutualisé public avec Node.js, sans Docker
 
 Cette voie utilise Node.js avec Passenger et MariaDB, tels que proposés par un hébergement mutualisé comme mijn.host Starter. Elle ne nécessite ni VPS, ni Docker, ni accès root, ni ton propre serveur Caddy. Le paquet est testé sur une configuration Linux et MariaDB locale. Tu dois encore vérifier les étapes dans ton propre compte DirectAdmin et l'envoi réel des courriels. Utilise un (sous-)domaine séparé et une base de données vide. Ne modifie pas un site ou une base de données existants. Starter annonce actuellement 2 Go de RAM et 5 Go de stockage; vérifie dans ton propre panneau qu'il y a assez de place pour l'envoi, les dépendances npm, les données et les sauvegardes.
 
-1. Télécharge mk8dx-mijnhost-node-v0.2.4.zip et SHA256SUMS.txt depuis la page des releases indiquée dans Bienvenue. Ce ZIP est le paquet à envoyer. Le ZIP de l'hôte Docker et le ZIP complet des sources sont des fichiers différents. Mets les deux fichiers dans un même dossier sur ton PC Windows. Ouvre PowerShell à cet endroit et compare la valeur SHA-256 complète avec la ligne de SHA256SUMS.txt :
+1. Télécharge mk8dx-mijnhost-node-v0.2.5.zip et SHA256SUMS.txt depuis la page des releases indiquée dans Bienvenue. Ce ZIP est le paquet à envoyer. Le ZIP de l'hôte Docker et le ZIP complet des sources sont des fichiers différents. Mets les deux fichiers dans un même dossier sur ton PC Windows. Ouvre PowerShell à cet endroit et compare la valeur SHA-256 complète avec la ligne de SHA256SUMS.txt :
 
-Get-FileHash '.\mk8dx-mijnhost-node-v0.2.4.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.5.zip' -Algorithm SHA256
 
 Arrête-toi si les valeurs diffèrent.
 
@@ -246,7 +246,7 @@ ssh -p 26 <your-username>@<your-server-name>
 
 Tu dois arriver à une invite Linux. Garde le mot de passe du compte dans ton gestionnaire de mots de passe. Ce n'est pas un accès root à un VPS. La même voie SSH sert à transférer le ZIP vérifié. Ouvre une seconde fenêtre PowerShell sur ton PC dans le dossier de téléchargement :
 
-scp -P 26 '.\mk8dx-mijnhost-node-v0.2.4.zip' <your-username>@<your-server-name>:
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.5.zip' <your-username>@<your-server-name>:
 
 Le ZIP apparaît dans le répertoire personnel de ton hébergement. Une option SFTP séparée peut avoir d'autres paramètres; cette voie n'utilise que l'accès SSH/SCP documenté.
 
@@ -261,7 +261,7 @@ command -v mariadb-dump || command -v mysqldump
 S'il manque une commande, compare exactement l'outil manquant avec ton panneau d'hébergement ou l'aide de mijn.host. Ne crée pas d'URL d'installation publique non sécurisée. Extrais le ZIP dans ton dossier d'application privé, pas dans public_html :
 
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.4.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.5.zip" -d "$HOME/apps/mk8dx"
 cd "$HOME/apps/mk8dx"
 
 Tu dois voir api, web, scanner, assets, mysql et tooling. Le dossier de l'application est privé. Le programme d'installation garde aussi le profil, les secrets et les sauvegardes en dehors de public_html.
@@ -313,7 +313,7 @@ L'assistant indique Sauvegarde vérifiée. Garde aussi une copie protégée en d
 cd "$HOME"
 mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-before-update"
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.4.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.5.zip" -d "$HOME/apps/mk8dx"
 
 Colle à nouveau la ligne d'activation de Node 24 depuis DirectAdmin. Installe les dépendances Linux verrouillées dans le nouveau dossier api et reviens à la racine de l'application :
 
@@ -359,7 +359,7 @@ Choisis une phrase de passe solide quand elle est demandée. Le fichier sans .pu
 WinSCP: https://winscp.net/eng/download.php
 Formats de clé WinSCP : https://winscp.net/eng/docs/ui_login_authentication
 
-Obtiens l'empreinte de la clé d'hôte SSH via la console VPS indépendante de ton fournisseur ou son support. Compare-la avec le message de première connexion dans WinSCP. N'accepte qu'une correspondance exacte. Fais glisser le mk8dx-host-local-v0.2.4-amd64.zip vérifié du côté gauche, ton PC, vers /root/ à droite, le serveur. N'envoie pas de sauvegardes ni de secrets dans public_html.
+Obtiens l'empreinte de la clé d'hôte SSH via la console VPS indépendante de ton fournisseur ou son support. Compare-la avec le message de première connexion dans WinSCP. N'accepte qu'une correspondance exacte. Fais glisser le mk8dx-host-local-v0.2.5-amd64.zip vérifié du côté gauche, ton PC, vers /root/ à droite, le serveur. N'envoie pas de sauvegardes ni de secrets dans public_html.
 
 3. Ouvre PowerShell sur ton PC pour le terminal du serveur. Utilise ta vraie IP, ton vrai port et le vrai chemin de ta clé. C'est la même clé OpenSSH qu'à l'étape 1, pas le fichier .ppk converti :
 
@@ -432,9 +432,9 @@ La réponse doit être l'IP de ton VPS. Vérifie tout enregistrement AAAA exista
 7. Dans le terminal Ubuntu, le ZIP transféré par WinSCP se trouve sous /root/. Vérifie-le et extrais-le :
 
 pwd
-ls -lh /root/mk8dx-host-local-v0.2.4-amd64.zip
+ls -lh /root/mk8dx-host-local-v0.2.5-amd64.zip
 mkdir -p /opt/mk8dx/host /var/lib/mk8dx
-unzip -q /root/mk8dx-host-local-v0.2.4-amd64.zip -d /opt/mk8dx/host
+unzip -q /root/mk8dx-host-local-v0.2.5-amd64.zip -d /opt/mk8dx/host
 cd /opt/mk8dx/host
 ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
 
@@ -462,13 +462,13 @@ Pour envoyer des résultats, ces outils utilisent l'adresse d'une communauté ex
 
 Copie toujours l'adresse complète du site affichée comme « Website » (site web; ou « origin » ou « Web origin ») pour ta propre installation, y compris le port quand il est affiché. Ne saisis jamais l'adresse de la boîte de test (« Sign-in mail » ou « localMailInbox ») dans LiveTrial : elle n'ouvre que la boîte de test locale. Sur un second appareil, utilise le nom réseau HTTPS ou ton domaine public, et non l'adresse 127.0.0.1 du serveur.
 
-Pour Android, il te faut Android 8.0 ou plus récent; arm64 est recommandé. L'APK signé localement pour la release fait environ 530 Mo. Garde au moins 1 Go libre comme marge d'installation. Vérifie mk8dx-android-release-v0.2.4.apk avec SHA256SUMS.txt sur ton PC, copie-le sur ton téléphone et ouvre-le depuis Fichiers ou Téléchargements. Si Android demande d'autoriser les installations depuis cette application de fichiers, ne l'autorise que pour le paquet vérifié. Tu peux désactiver cette autorisation ensuite.
+Pour Android, il te faut Android 8.0 ou plus récent; arm64 est recommandé. L'APK signé localement pour la release fait environ 530 Mo. Garde au moins 1 Go libre comme marge d'installation. Vérifie mk8dx-android-release-v0.2.5.apk avec SHA256SUMS.txt sur ton PC, copie-le sur ton téléphone et ouvre-le depuis Fichiers ou Téléchargements. Si Android demande d'autoriser les installations depuis cette application de fichiers, ne l'autorise que pour le paquet vérifié. Tu peux désactiver cette autorisation ensuite.
 
 Au premier démarrage, « Choisis ta communauté » demande comment ta communauté joue. Pour une communauté en ligne, saisis l'adresse communautaire HTTPS de confiance complète sous « Adresse du site web », par exemple https://www.mijneigenwebsite.nl, sans chemin ni barre oblique finale, et touche « Enregistrer ». Pour une installation à la maison ou au club (A2), touche « Scanner le code QR » et scanne la carte « Préparer un appareil »; le guide A2 explique cette étape pas à pas. Plus tard, touche le nom de la communauté en haut de l'application pour changer de communauté ou en ajouter une avec « Ajouter une communauté ». Chaque communauté garde son propre compte et ses runs en attente; rien ne passe automatiquement de l'une à l'autre. Tes propres temps se trouvent sous ton nom → Mes temps, même hors ligne. En cas d'échec, ouvre la même adresse dans le navigateur de ton téléphone. Connecte-toi ensuite via le code du navigateur avec ton propre compte. Les APK publics précédents étaient signés en mode debug. Enregistre les résultats pas encore envoyés, désinstalle une fois cette application debug, puis installe cet APK signé pour la release. Les APK ultérieurs signés avec la même clé de release peuvent le mettre à jour sur place; ce n'est pas une version du Play Store.
 
 Un APK est signé par son auteur, et non séparément pour chaque domaine. Les Android App Links automatiques nécessitent en revanche une association publique entre l'identité réelle de l'application, son vrai certificat de signature et ton domaine. Le fichier /.well-known/assetlinks.json par défaut contient donc [] en JSON. La sélection manuelle du serveur et la connexion fonctionnent sans cette association automatique. Une version personnalisée signée séparément relève de la voie développeur.
 
-Pour LiveTrial sous Windows x86-64, vérifie desktop-client-v0.2.4.zip avec SHA256SUMS.txt et extrais tout le ZIP, par exemple dans Documents. Prévois environ 2 Go pour l'extraction et tes propres enregistrements; c'est une marge, pas un minimum mesuré. Ouvre LiveTrial.exe. La capture en direct depuis une carte d'acquisition nécessite aussi FFmpeg, qui n'est pas inclus à cause de sa licence : exécute une fois winget install Gyan.FFmpeg dans PowerShell et redémarre LiveTrial (l'analyse de vidéos fonctionne sans). Va dans Paramètres → Adresse du site de la communauté, saisis l'adresse exacte de ton installation et choisis Enregistrer le serveur. Confirme le changement.
+Pour LiveTrial sous Windows x86-64, vérifie desktop-client-v0.2.5.zip avec SHA256SUMS.txt et extrais tout le ZIP, par exemple dans Documents. Prévois environ 2 Go pour l'extraction et tes propres enregistrements; c'est une marge, pas un minimum mesuré. Ouvre LiveTrial.exe. La capture en direct depuis une carte d'acquisition nécessite aussi FFmpeg, qui n'est pas inclus à cause de sa licence : exécute une fois winget install Gyan.FFmpeg dans PowerShell et redémarre LiveTrial (l'analyse de vidéos fonctionne sans). Va dans Paramètres → Adresse du site de la communauté, saisis l'adresse exacte de ton installation et choisis Enregistrer le serveur. Confirme le changement.
 
 LiveTrial enregistre l'adresse et redémarre tout seul. Laisse la fenêtre ouverte pendant ce temps. Après le redémarrage, vérifie que Paramètres affiche ton adresse exacte. Connecte-toi seulement ensuite; la connexion doit ouvrir ta communauté. Quand tu ouvres Historique des runs, cette section attend brièvement son serveur local si nécessaire, puis se charge toute seule. Tu ne devrais pas avoir besoin de F5. Si LiveTrial indique que le redémarrage automatique a échoué, choisis Quitter LiveTrial dans l'application, attends qu'il soit fermé et rouvre LiveTrial.exe. Fermer seulement la fenêtre du navigateur ne suffit pas : LiveTrial peut continuer de tourner en arrière-plan.
 
@@ -476,7 +476,7 @@ Si le champ est toujours vide avec l'exemple https://www.example.org, ou si la c
 
 Le scanner du navigateur fait déjà partie du site. Ouvre /scanner/ sur ton adresse HTTPS de confiance et commence par « image upload » (envoi d'image). Sélectionne ta propre image de résultats, examine les détails reconnus et ne confirme qu'après les avoir vérifiés. L'utilisation de la caméra en direct nécessite l'autorisation du navigateur et un HTTPS de confiance en dehors de localhost. La reconnaissance dépend aussi de l'enregistrement. La voie décrite pour A2 avec un second navigateur Windows est documentée mais n'a pas été testée de bout en bout.
 
-Pour Tournament sous Windows x86-64, vérifie tournament-tools-v0.2.4.zip et extrais le ZIP complet. Ouvre Install-MK8DX-TournamentTools.cmd. Prévois plusieurs Go d'espace libre : le ZIP d'environ 450 Mo et environ 1,3 Go pour l'extraction ne couvrent pas toutes les dépendances ni tes propres médias. Le programme d'installation a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics; les modèles OCR sont inclus, et ensuite le traitement fonctionne hors ligne. Aucun minimum exact pour l'ensemble des dépendances et des médias n'a été mesuré. Aucun réglage GPU n'est nécessaire : avec un pilote NVIDIA récent, le programme d'installation choisit tout seul la version CUDA, et la carte graphique accélère alors la lecture des noms, des points et des temps (OCR). Le premier scan d'un enregistrement tourne toujours sur le processeur, car la version d'OpenCV du paquet n'a pas de prise en charge CUDA; USING_MK8DX_TOURNAMENT_TOOLS.md dans le paquet explique les deux étapes. Attends SUCCESS et garde runtime-assets intact. En cas d'échec, lis install.log dans le dossier du paquet.
+Pour Tournament sous Windows x86-64, vérifie tournament-tools-v0.2.5.zip et extrais le ZIP complet. Ouvre Install-MK8DX-TournamentTools.cmd. Prévois plusieurs Go d'espace libre : le ZIP d'environ 450 Mo et environ 1,3 Go pour l'extraction ne couvrent pas toutes les dépendances ni tes propres médias. Le programme d'installation a besoin d'internet une fois, pour télécharger Python 3.12 et des paquets publics; les modèles OCR sont inclus, et ensuite le traitement fonctionne hors ligne. Aucun minimum exact pour l'ensemble des dépendances et des médias n'a été mesuré. Aucun réglage GPU n'est nécessaire : avec un pilote NVIDIA récent, le programme d'installation choisit tout seul la version CUDA, et la carte graphique accélère alors la lecture des noms, des points et des temps (OCR). Le premier scan d'un enregistrement tourne toujours sur le processeur, car la version d'OpenCV du paquet n'a pas de prise en charge CUDA; USING_MK8DX_TOURNAMENT_TOOLS.md dans le paquet explique les deux étapes. Attends SUCCESS et garde runtime-assets intact. En cas d'échec, lis install.log dans le dossier du paquet.
 
 Fais glisser un enregistrement .mp4 ou .mkv sur TournamentProcessor.cmd. Le programme crée à côté de la vidéo un dossier de session avec un fichier Excel, un CSV et un fichier se terminant par _TournamentRaceResultsV1.json. TournamentLive.cmd nécessite un matériel de capture approprié et un pilote pour l'entrée en direct.
 
@@ -607,14 +607,14 @@ Utiliser Linux
 
 Ce que tu peux essayer en local dès maintenant
 
-Il te faut seulement ton propre ordinateur Linux, sans ordinateur Windows. S'il tourne sous Ubuntu 24.04 sur x86-64, le paquet hôte Docker inclus est la voie serveur locale. Exécute d'abord uname -m et vérifie qu'il indique x86_64. Installe Docker Engine avec le plugin Compose, Python 3.12 à 3.15 et unzip. L'installation de Docker sous Ubuntu est expliquée pas à pas dans « Créer un site web public sur un VPS »; pour cet essai local, saute le DNS, l'ouverture des ports du pare-feu vers internet et le vrai SMTP. Télécharge mk8dx-host-local-v0.2.4-amd64.zip et son SHA256SUMS.txt depuis la même release. Ouvre Terminal dans le dossier de téléchargement et vérifie le ZIP. Compare le résultat avec sa ligne dans SHA256SUMS.txt. Arrête-toi s'ils diffèrent :
+Il te faut seulement ton propre ordinateur Linux, sans ordinateur Windows. S'il tourne sous Ubuntu 24.04 sur x86-64, le paquet hôte Docker inclus est la voie serveur locale. Exécute d'abord uname -m et vérifie qu'il indique x86_64. Installe Docker Engine avec le plugin Compose, Python 3.12 à 3.15 et unzip. L'installation de Docker sous Ubuntu est expliquée pas à pas dans « Créer un site web public sur un VPS »; pour cet essai local, saute le DNS, l'ouverture des ports du pare-feu vers internet et le vrai SMTP. Télécharge mk8dx-host-local-v0.2.5-amd64.zip et son SHA256SUMS.txt depuis la même release. Ouvre Terminal dans le dossier de téléchargement et vérifie le ZIP. Compare le résultat avec sa ligne dans SHA256SUMS.txt. Arrête-toi s'ils diffèrent :
 
-sha256sum mk8dx-host-local-v0.2.4-amd64.zip
+sha256sum mk8dx-host-local-v0.2.5-amd64.zip
 
 Extrais le paquet et entre dans son dossier :
 
 mkdir -p "$HOME/MK8DX/host"
-unzip -q mk8dx-host-local-v0.2.4-amd64.zip -d "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.5-amd64.zip -d "$HOME/MK8DX/host"
 cd "$HOME/MK8DX/host"
 
 Le lanceur Linux existant est :
@@ -633,7 +633,7 @@ Ce que tu peux essayer en local dès maintenant
 
 Il te faut seulement ton propre Mac, sans ordinateur Windows ni autre serveur. Sur un Mac Intel, un développeur peut essayer de faire tourner en local les images Docker Linux/amd64 incluses. Si le site, l'API et la base de données démarrent réellement, ouvre les adresses A1 affichées du site et de Mailpit dans le navigateur de ce même Mac. Le scanner fait partie du site. Aucun essai sur Mac n'a encore montré un nouveau compte, une soumission, un enregistrement en base de données et un résultat visible sur le site. Une page d'accueil qui fonctionne ne prouve pas à elle seule une installation complète.
 
-Sur un Mac Intel, installe Docker Desktop pour Mac et Python 3.12 à 3.15. Télécharge le même ZIP hôte et SHA256SUMS.txt. Ouvre Terminal dans le dossier de téléchargement, exécute shasum -a 256 mk8dx-host-local-v0.2.4-amd64.zip et compare le résultat avec SHA256SUMS.txt. Arrête-toi s'ils diffèrent. Utilise ensuite les commandes mkdir, unzip et cd du chapitre Linux. Lance le même lanceur shell et choisis A1. C'est un essai pour développeurs, pas une voie validée pour les utilisateurs de Mac. Sur Apple Silicon, ce paquet hôte A1 nécessite une émulation pour ses images amd64; il n'existe pas de paquet A1 arm64 natif, et le fonctionnement et la vitesse sous émulation n'ont pas été démontrés. Sur un Mac avec Apple Silicon, utilise plutôt le paquet A2 mk8dx-a2-macos-arm64 (voir « L'utiliser sur ton réseau domestique »).
+Sur un Mac Intel, installe Docker Desktop pour Mac et Python 3.12 à 3.15. Télécharge le même ZIP hôte et SHA256SUMS.txt. Ouvre Terminal dans le dossier de téléchargement, exécute shasum -a 256 mk8dx-host-local-v0.2.5-amd64.zip et compare le résultat avec SHA256SUMS.txt. Arrête-toi s'ils diffèrent. Utilise ensuite les commandes mkdir, unzip et cd du chapitre Linux. Lance le même lanceur shell et choisis A1. C'est un essai pour développeurs, pas une voie validée pour les utilisateurs de Mac. Sur Apple Silicon, ce paquet hôte A1 nécessite une émulation pour ses images amd64; il n'existe pas de paquet A1 arm64 natif, et le fonctionnement et la vitesse sous émulation n'ont pas été démontrés. Sur un Mac avec Apple Silicon, utilise plutôt le paquet A2 mk8dx-a2-macos-arm64 (voir « L'utiliser sur ton réseau domestique »).
 
 Docker Desktop pour Mac : https://docs.docker.com/desktop/setup/install/mac-install/
 
