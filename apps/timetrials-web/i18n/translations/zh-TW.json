@@ -5272,7 +5272,6 @@
   "Working": "處理中",
   "You are signed in as": "你已登入為",
   "You are signed in to this installation.": "你已登入這個安裝。",
-  "You can also do this later, exactly the same way: open 'MK8DX beheer' on the desktop and choose 'People'.": "之後也能用完全相同的方式完成：開啟桌面上的「MK8DX beheer」，然後選擇「成員」。",
   "You can close this window now.": "現在可以關閉此視窗了。",
   "You manage this installation. What's your name?": "由你管理這個安裝。你叫什麼名字？",
   "You sign in as:": "你將登入為：",
@@ -6051,6 +6050,8 @@
   "{0} refused in this window": "此視窗內拒絕 {0} 次",
   "The confirmation link was created, but the email could not be sent. Ask the server operator to run python tooling/install.py step-up-link on the server and give you the link. Open it and this window continues.": "確認連結已建立，但無法寄出電子郵件。請伺服器管理員在伺服器上執行 python tooling/install.py step-up-link 並把連結給你。開啟連結後，此視窗會繼續。",
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "你已於 {0} 撤回此直播來源。它將保持不公開:名單比對或擷取委派都不會再次公開它。如需恢復,請在下方確認直播分配。",
-  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前請檢查卡 → 組。第 1 場比賽後,只有當總監已將直播擷取委派給此帳戶(或該帳戶屬於總監或管理員)時,強名稱比對才會開啟 View;否則直播來源等待總監。積分僅在 STOP 後完成 Player 比對和分組審核後計入。"
+  "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前請檢查卡 → 組。第 1 場比賽後,只有當總監已將直播擷取委派給此帳戶(或該帳戶屬於總監或管理員)時,強名稱比對才會開啟 View;否則直播來源等待總監。積分僅在 STOP 後完成 Player 比對和分組審核後計入。",
+  "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "之後也能用完全相同的方式完成：在桌面上按兩下「MK8DX beheer」，就會開啟這個畫面。",
+  "Check that your app shows the same code.": "請確認你的 App 顯示的是同一組代碼。"
  }
 }

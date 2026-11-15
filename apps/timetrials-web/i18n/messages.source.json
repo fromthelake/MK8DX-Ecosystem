@@ -3649,6 +3649,16 @@
    ]
   },
   {
+   "key": "Check that your app shows the same code.",
+   "nl": "Controleer dat je app dezelfde code toont.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Check the Player id and Track id filters, then try again.",
    "kinds": [
     "text"

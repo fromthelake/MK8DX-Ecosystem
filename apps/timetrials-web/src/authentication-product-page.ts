@@ -2196,6 +2196,22 @@ export function mountAuthenticationProductPage(
           `${deviceName(device.clientId)} requests access to your account.`,
           `${deviceName(device.clientId)} vraagt toegang tot je account.`,
         );
+        // The app shows this code large ("Device code"); a request opened from the app's own link fills it in, so
+        // show it here too and let the person compare before approving.
+        const code = document.createElement("p");
+        code.className = "ds-body";
+        const codeLabel = document.createElement("span");
+        codeLabel.textContent = `${localized("Device code", "Apparaatcode")}: `;
+        const codeValue = document.createElement("strong");
+        codeValue.setAttribute("data-device-code", "");
+        codeValue.textContent = device.userCode;
+        code.append(codeLabel, codeValue);
+        const compare = document.createElement("p");
+        compare.className = "ds-body";
+        compare.textContent = localized(
+          "Check that your app shows the same code.",
+          "Controleer dat je app dezelfde code toont.",
+        );
         const warning = dsStatusMessage("warning", localized(
           "Approve only if you started this request on your device.",
           "Keur alleen goed als je dit verzoek zelf op je apparaat bent begonnen.",
@@ -2248,7 +2264,7 @@ export function mountAuthenticationProductPage(
         actions.className = "ds-cluster";
         actions.setAttribute("data-gap", "sm");
         actions.append(approve.root, deny.root);
-        decision.append(summary, warning, actions, decisionNotice);
+        decision.append(summary, code, compare, warning, actions, decisionNotice);
         body.replaceChildren(dsPanel({
           title: localized("Review this device request.", "Beoordeel dit apparaatverzoek."),
           titleLevel: 2,
