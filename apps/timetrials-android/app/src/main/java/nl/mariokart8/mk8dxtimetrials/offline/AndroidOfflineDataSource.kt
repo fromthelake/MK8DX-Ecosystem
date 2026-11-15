@@ -6,8 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import java.text.DateFormat
-import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidActivityLap
@@ -24,6 +22,8 @@ import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidRival
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidTimeTrialsEcosystemDataSource
 import nl.mariokart8.mk8dxtimetrials.ecosystem.AndroidTrackBest
 import nl.mariokart8.mk8dxtimetrials.ui.androidText
+import nl.mariokart8.mk8dxtimetrials.ui.androidDateTimeText
+import nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusMessage
 import nl.mariokart8.mk8dxtimetrials.ui.design.Mk8dxStatusTone
 
@@ -155,7 +155,7 @@ internal fun AndroidOfflineStatusLine(modifier: Modifier = Modifier) {
     val state = LocalAndroidOfflineState.current ?: return
     val since by state.offlineSince.collectAsState()
     val at = since ?: return
-    val time = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(at))
+    val time = androidDateTimeText(LocalAndroidProductLanguage.current, at)
     Mk8dxStatusMessage(
         androidText("Offline — last updated $time", "Offline — laatst bijgewerkt $time"),
         modifier = modifier.testTag("offline-status"),

@@ -48,6 +48,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Fixed
 
+- **Dates in the Android app follow the app's language**: the capture-delegation panel, the live-feed texts, the
+  recording cards, My times, the notifications and results lists and the offline status line format dates and times in
+  the language chosen in the app's settings, not in the phone's language (a Dutch app on an English phone shows
+  "15 nov 2026 13:06"). That language's locale also decides between a 24-hour and a 12-hour clock.
 - **Tournament Live names the real sign-out label**: its offline and unconfirmed sign-out messages (and the
   Tournament Connect command line) now point to **Sign out on all devices** in the website's account menu instead
   of a "Sign out everywhere" button on an account page, in every language.
