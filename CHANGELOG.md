@@ -5,67 +5,72 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.6 — 2026-11-15
+
+A follow-up to the 0.2.5 security release that makes running a night easier. Directors can delegate live capture
+from the Android app as well as the website, administrators can see which request limits refused requests, the
+live scoreboard, the launchers and the Tournament Tools installer speak all 15 languages of the game, and dates in
+the Android app follow the app's own language. No database migration; MySQL stays 9.7 LTS. One new optional
+setting, `MK8DX_HOSTED_SMTP_TIMEOUT_MS`. Android app 2.99.8 (177).
+
 ### Added
 
-- **Live capture delegations in the Android app**: a Director's Step 5/9 view in the app now has the web's panel:
-  the night's delegations with their state, **Delegate live capture** for an account whose Tournament Live
-  connected to the night (2 hours to 7 days, 12 hours by default), **Revoke**, the *Waiting for the Director*
-  wording and a per-run delegation shortcut on a waiting feed, and **Withdraw this live feed** (tap twice) on a
-  public one. The native delegation routes now have strict response schemas, like the administrator routes.
-- **Administrator view of request limits**: a new **Request limits** section on the administration page (loaded when
-  opened) shows which request budgets and quotas refused requests in about the last hour and day, per scope, how many
-  were affected, the most refused accounts (only accounts are named; targets, recipients and addresses are counted),
-  every `MK8DX_HOSTED_BUDGET_*` value with its default, and how much of each installation budget is used in its current
-  window. Refusals are counted in memory (a refused request costs no database write) and flushed every 30 seconds
-  into the existing limiter table; no database migration.
+- **Live capture delegations in the Android app**: a Director's Step 5/9 view in the app now has the same panel as
+  the website. It lists the night's delegations with their state, offers **Delegate live capture** for an account
+  whose Tournament Live connected to the night (2 hours to 7 days, 12 hours by default) and **Revoke**, shows a
+  delegation shortcut on a feed that is *Waiting for the Director*, and offers **Withdraw this live feed** (tap
+  twice) on a public one.
+- **Request limits on the administration page**: a new **Request limits** section (loaded when you open it) shows
+  which request budgets and quotas refused requests in about the last hour and day, how many requests were
+  affected, the accounts refused most often (only accounts are named; other targets are only counted), every
+  `MK8DX_HOSTED_BUDGET_*` value with its default, and how much of each installation-wide budget is used in its
+  current window. Counting a refusal costs no extra database write. No migration.
 
 ### Changed
 
 - **The web delegation panel refreshes by itself**: while the Step 5/9 view is visible it re-reads the night's
-  capture delegations about every 30 seconds (paused while the tab is hidden), so a delegation issued, revoked or
-  expired elsewhere shows without a reload.
-- **A failed step-up e-mail answers quickly and points to the break-glass**: one mail attempt is bounded (new optional
-  setting `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 seconds) instead of waiting minutes on a mail server that is down.
-  When **Send the link** cannot mail, the link is still created and the page says so within that time, names
-  `install.py step-up-link` and keeps waiting for the confirmation (`503 step_up_mail_unavailable` instead of 500).
-  The Android app's confirmation window does the same: it shows the web's message (in every language) instead of
-  "The link could not be sent" and keeps waiting until the created link expires.
-
-- **Request budgets are checked by a test instead of a CodeQL heuristic**: a new API test composes the real hosted
-  runtime and fails when any mutating route, or a step-up protected read, has no durable request budget and no
-  reasoned allowlist entry (see Mutating routes, "Checked by a test"). CodeQL's `js/missing-rate-limiting` rule,
-  which could not see the database-backed limiter and raised only false alerts, is the one rule now excluded; all
-  other CodeQL queries still run.
-- **One central safe-path check in Python**: Tournament Live, the LiveTrial desktop app and the LiveTrial engine
-  now resolve every page-supplied file name through one small helper per product (`safe_paths`), which follows
-  links and refuses anything outside its folder. The same names are accepted and refused as before; code scanning
-  now recognises the check, so it no longer reports these places as possible path injection.
-- **Live dashboard, launchers and the Tournament package in all 15 languages**: the spectator scoreboard's own
-  texts follow `?lang=` (for OBS), the viewer's saved choice under the gear or the browser language, separately from
-  `?trackLang`; launcher window titles, the error messages of install, restore and backup steps, the setup wizard's
-  console lines and the Tournament Tools installer and launchers use the launcher languages. The translated
+  delegations about every 30 seconds (paused while the tab is hidden), so a delegation issued, revoked or expired
+  elsewhere shows without a reload.
+- **A failed confirmation email answers quickly**: when the mail server is down, **Send the link** now gives up
+  after a bounded time (new optional setting `MK8DX_HOSTED_SMTP_TIMEOUT_MS`, default 5 seconds) instead of waiting
+  for minutes. The link is still created, the page says that it could not be mailed, names the
+  `install.py step-up-link` fallback and keeps waiting for the confirmation. The Android app shows the same message
+  in every language and keeps waiting until the link expires.
+- **Live scoreboard, launchers and the Tournament package in all 15 languages**: the spectator scoreboard follows
+  `?lang=` (handy for OBS), the viewer's choice under the gear or the browser language, separately from
+  `?trackLang`. Launcher window titles, the messages of the install, restore and backup steps, the setup wizard's
+  console lines, and the Tournament Tools installer and launchers use the launcher languages. The translated
   Tournament Directors guides now describe the live scoreboard too.
 
 ### Fixed
 
-- **Dates in the Android app follow the app's language**: the capture-delegation panel, the live-feed texts, the
-  recording cards, My times, the notifications and results lists and the offline status line format dates and times in
-  the language chosen in the app's settings, not in the phone's language (a Dutch app on an English phone shows
-  "15 nov 2026 13:06"). That language's locale also decides between a 24-hour and a 12-hour clock.
-- **Tournament Live names the real sign-out label**: its offline and unconfirmed sign-out messages (and the
-  Tournament Connect command line) now point to **Sign out on all devices** in the website's account menu instead
-  of a "Sign out everywhere" button on an account page, in every language.
-- **A withdrawn live feed says it stays private**: an evidence record's `live` object now carries `withdrawnAtMs`
-  (when the Director took the feed off the public view, `null` otherwise; the website and the app read the object
-  strictly). On the website and in the app a withdrawn run says it stays off the public view until the Director
-  confirms the live routing again, even when its account holds a capture delegation, instead of "the next race opens
-  the public view", and offers no delegation shortcut.
-- **Step 5/9 texts match the live-capture rule**: the Step 5 intro, the recordings intro (website, app) and Tournament
-  Live's connection help no longer say race 1 opens the public view by itself; a strong roster match opens it only for
-  a feed from the Director, an administrator or a delegated account. The app's recording cards (*Live now*, *Repair live
-  group links*, *start/stop unknown* and the other states) are translated in every language.
+- **Dates in the Android app follow the app's language**: delegations, live feeds, recording cards, My times,
+  notifications, results lists and the offline status line format dates and times in the language chosen in the
+  app's settings instead of the phone's language (a Dutch app on an English phone shows "15 nov 2026 13:06"), with
+  a 24-hour or 12-hour clock as that language expects.
+- **Tournament Live names the real sign-out button**: its sign-out messages (and Tournament Connect's command line)
+  now point to **Sign out on all devices** in the website's account menu, in every language.
+- **A withdrawn live feed says that it stays private**: on the website and in the app a feed the Director took off
+  the public view now says it stays private until the Director confirms the live routing again, even when its
+  account holds a delegation, and offers no delegation shortcut. Evidence records carry the new `live.withdrawnAtMs`
+  field (`null` when not withdrawn).
+- **Step 5/9 texts match the live-capture rule**: the Step 5 introduction, the recordings introduction (website and
+  app) and Tournament Live's connection help no longer say that race 1 opens the public view by itself; a strong
+  roster match opens it only for a feed from the Director, an administrator or a delegated account. The app's
+  recording cards (*Live now*, *Repair live group links* and the other states) are translated in every language.
 
-## 0.2.5 — 2026-11-16
+### Security
+
+- **Every mutating route is checked for a request budget by a test**: a new API test starts the real hosted
+  runtime and fails when a route that changes data, or a read protected by a fresh confirmation, has no durable
+  request budget and no reasoned exception (see
+  [Mutating routes](docs/architecture/MUTATING_ROUTES.md#checked-by-a-test)). It replaces one CodeQL heuristic that
+  could not see the database-backed limiter; all other CodeQL queries still run.
+- **One central safe-path check in Python**: Tournament Live, the LiveTrial desktop app and the LiveTrial engine
+  resolve every file name that a page supplies through one small helper per product, which follows links and
+  refuses anything outside its folder. Accepted and refused names are the same as before.
+
+## 0.2.5 — 2026-11-15
 
 A security release; updating is recommended for every community. Permission checks are stronger on every route,
 every change counts against request limits and quotas, Tournament Connect and Tournament Live stay on the chosen

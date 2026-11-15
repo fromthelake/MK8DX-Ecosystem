@@ -216,7 +216,7 @@ MK8DX 是开源项目，由玩家为玩家打造。你可以为你的俱乐部�
 
 ## 项目状态
 
-稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。0.2.6 让 Director 可以在 Android 应用中委托实时采集，让管理员看到哪些请求限制拒绝了请求，让实时记分板和启动器支持全部 15 种语言，并让应用中的日期使用应用自身的语言。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
 
 识别结果永远不会自动成为正式成绩：你自己的计时赛由你审核，锦标赛的比赛则要经组织者核对后才会计入。
 
