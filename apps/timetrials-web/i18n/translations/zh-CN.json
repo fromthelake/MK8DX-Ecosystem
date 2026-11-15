@@ -6052,6 +6052,11 @@
   "You withdrew this live feed on {0}. It stays off the public view: no roster match or capture delegation opens it again. Confirm the live routing below to put it back.": "你已于 {0} 撤回此直播源。它将保持不公开:名单匹配或采集委托都不会再次公开它。如需恢复,请在下方确认直播分配。",
   "Check card → group before Start. After race 1 a strong name match opens View only if the Director delegated live capture to this account (or it is the Director's or an administrator's); otherwise the feed waits for the Director. Scores count only after Player matching and group review after Stop.": "START 前请检查卡 → 组。第 1 场比赛后,只有当总监已将直播采集委托给此账户(或该账户属于总监或管理员)时,强名称匹配才会打开 View;否则直播源等待总监。积分仅在 STOP 后完成 Player 匹配和分组审核后计入。",
   "You can also do this later, exactly the same way: double-click 'MK8DX beheer' on the desktop; it opens on this screen.": "以后也可以用完全相同的方式完成：双击桌面上的“MK8DX beheer”，会打开这个界面。",
-  "Check that your app shows the same code.": "请确认你的应用显示的是同一个代码。"
+  "Check that your app shows the same code.": "请确认你的应用显示的是同一个代码。",
+  "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}": "备份的新恢复码（只显示一次；请记下来，并存放在远离这台电脑的地方）：{0}",
+  "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.": "从现在起创建的备份需要这个新代码。之前的备份只能用旧代码打开：请把那张纸和这些备份放在一起。",
+  "Make a new recovery code": "创建新的恢复码",
+  "Only needed when someone else has seen your code. After Finish you get a new code; older backups keep needing the old code.": "只有在别人看到了你的代码时才需要。点“完成”后你会得到一个新代码；之前的备份仍然需要旧代码。",
+  "New backups use this new code from now on. Backups made before open only with the old code: keep that paper with those backups.": "从现在起，新备份使用这个新代码。之前的备份只能用旧代码打开：请把那张纸和这些备份放在一起。"
  }
 }

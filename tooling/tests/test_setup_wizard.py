@@ -169,6 +169,22 @@ class WizardServerTest(unittest.TestCase):
             enable.assert_called_once()
             disable.assert_called_once_with()
 
+    def test_finish_with_a_new_recovery_code_shows_it_once_and_only_replaces_an_existing_one(self):
+        from tooling import auto_backup
+        with patch.object(self.wizard, "installed", return_value=True), \
+                patch.object(auto_backup, "ensure_docker_autostart", return_value="present"), \
+                patch.object(auto_backup, "register_ca_renewal", return_value=True), \
+                patch.object(auto_backup, "enable", return_value={"task": True, "recoveryCode": None}), \
+                patch.object(auto_backup, "rotate_recovery_code", return_value="AAAA-BBBB-CCCC-DDDD-EEEE") as rotate:
+            with patch.object(auto_backup, "has_recovery_code", return_value=True):
+                rotated = self.wizard.finish(shortcut=False, new_code=True)
+                self.assertEqual((rotated["recoveryCode"], rotated["recoveryCodeRotated"]),
+                                 ("AAAA-BBBB-CCCC-DDDD-EEEE", True))
+                self.assertNotIn("recoveryCode", {k: v for k, v in self.wizard.finish(shortcut=False).items() if v})
+            with patch.object(auto_backup, "has_recovery_code", return_value=False):
+                self.assertNotIn("recoveryCodeRotated", self.wizard.finish(shortcut=False, new_code=True))
+            rotate.assert_called_once_with(self.wizard.state)
+
     def test_update_is_its_own_route_and_moves_the_tasks_itself(self):
         # Owner 11-11: no clicking through people and cards after an update; the start window says it worked.
         import io

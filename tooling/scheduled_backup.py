@@ -397,6 +397,44 @@ def create_recovery_code(state: Path) -> str | None:
     return code
 
 
+def _protect(data: bytes) -> bytes:
+    if sys.platform == "win32":
+        from tooling.offline_lan_ca import protect_root
+        return protect_root(data)
+    from tooling import host_platform
+    return host_platform.protect(data)
+
+
+def rotate_recovery_code(state: Path) -> str:
+    """A new recovery code for the encrypted automatic backups, in place of the stored one.
+
+    Backups made from now on are sealed with it; backups made before keep the old code (they are not
+    re-encrypted), so that paper stays with them. Returns the new code, to be shown once. A2 offline keeps
+    its code in auto_backup (`backup_new_code` picks the right one)."""
+    from tooling import host_platform
+    from tooling.auto_backup import new_recovery_code
+    target = _code_path(state)
+    if not target.is_file():
+        raise BackupError(EXIT_FAILED, "This installation has no backup recovery code: its automatic backups "
+                                       "are not encrypted (switch that on with backup-schedule --encrypt-backups)")
+    code = new_recovery_code()
+    host_platform.replace_secret_file(target, code.encode("utf-8"), protect_with=_protect)
+    if read_recovery_code(state) != code:
+        raise BackupError(EXIT_FAILED, "The new recovery code could not be read back")
+    return code
+
+
+def backup_new_code(state: Path) -> str:
+    """The route's own recovery code store: A2 offline (MK8DX beheer) or the encrypted automatic backups."""
+    if profile_of(state).get("route") == "A2_OFFLINE":
+        from tooling import auto_backup
+        try:
+            return auto_backup.rotate_recovery_code(state)
+        except ValueError as error:
+            raise BackupError(EXIT_FAILED, str(error)) from None
+    return rotate_recovery_code(state)
+
+
 def read_recovery_code(state: Path) -> str:
     blob = _code_path(state).read_bytes()
     if sys.platform == "win32":
@@ -891,6 +929,13 @@ def command(action: str, args) -> int:
                             max_total_mb=args.max_backup_mb,
                             encrypt=True if args.encrypt_backups else None)
             _announce(result, state)
+            return EXIT_OK
+        if action == "backup-new-code":
+            code = backup_new_code(state)
+            print(t("New backup recovery code (shown only once; write it down and keep it away from this "
+                    "computer): {0}", code))
+            print(t("Backups made from now on need this new code. Backups made before still open only with "
+                    "the old code: keep that paper with them."))
             return EXIT_OK
         if action == "backup-unschedule":
             disable(state)

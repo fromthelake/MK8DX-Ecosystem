@@ -160,7 +160,14 @@ Where the backups are:
 
 Now and then copy the `MK8DX-backups` folder to a USB stick or another drive. Otherwise, if the computer breaks, the backups are only on that broken computer.
 
-If you untick **Make a backup every night**, you get no recovery code and no backups are made. If you switch it on again later in MK8DX beheer and click **Finish**, you see your recovery code at that moment.
+If you untick **Make a backup every night** and click **Finish**, MK8DX stops the nightly backup; the backups already made stay. If you tick it again later, the backups start again with the same recovery code, which is not shown again. If you no longer have that code, make a new one as below.
+
+**A new recovery code**
+
+Make a new code when someone else may have seen yours, or when you lost the paper. This works from version 0.2.7.
+
+1. **Do:** open MK8DX beheer, click **Next** until "Done! Enjoy the races.", tick **Make a new recovery code** and click **Finish**. → **You see:** the **MK8DX recovery code** card with the new code, shown only once, and the sentence that backups made before still need the old code.
+2. **Do:** write the new code down as in step 2 above. Keep the old paper with the backups made before: they are not converted and open only with the old code. Delete those old backups and the old paper once you no longer need them. → **You see:** the next backups use the new code.
 
 ![recovery code](../../guide/img/recovery-code-en.png)
 
@@ -277,7 +284,7 @@ This needs app version 2.95.0 or newer. The app does not need the certificate in
 1. **Do:** open the app. On a new install it starts on **Choose your community**; otherwise tap the community name at the top of the app and then **Add a community**. → **You see:** **Choose your community** with the panels **At home or at the club** and **Online community**. Under **At home or at the club** tap **Scan the QR code**.
 2. **Do:** if needed tap **Use the camera** and allow the camera. Scan the QR code on the **Prepare a device** card. → **You see:** **Check that this is your installation** with an **Address** and a **Key fingerprint (SHA-256)**. → **See something else?** "This is not the QR code of a Prepare a device card.": you scanned a personal card. Scan the Prepare a device card. If scanning fails: on the MK8DX computer click **Copy address** on the **Prepare a device** card in MK8DX beheer, send that link to the phone (it is not secret), paste it at **Or paste the setup link** and tap **Next**. Typing only the short New device address (for example `http://192.168.1.50/setup`) is not enough: the app also needs the key fingerprint that is in the QR code and in the copied link, and says "This is not the QR code of a Prepare a device card." In version 0.2.6, **Copy address** still copies only the short address; there, scan the card.
 3. **Do:** compare the address with the website address, and the long key with the Prepare this device page: open **Full fingerprints** there and look at "Root public key SHA-256 (SPKI)". You can open that page on another device, or on the MK8DX computer itself through the New device address. → **You see:** both exactly the same. Tap **Connect** (when the app was already set to another server, confirm the change). → **See something else?** If they differ, tap **Back** and do not connect. "Could not get a matching certificate from": check the network and that the MK8DX computer is on, and try again.
-4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in**. The app reminds you that at home or at the club you sign in with your personal sign-in card, not with email. Tap **Sign in to synchronize**. → **You see:** the browser opens the approval page with "MK8DX Time Trials for Android requests access to your account." and the **Device code**. Check that it is the same as the **Device code** the app shows (version 0.2.6 does not show the code on this page yet), approve only if you just started this on your phone, and tap **Approve device**. The page says "Device approved. Go back to the app to finish signing in." Go back to the app; it shows "Signed in as" with your name. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
+4. **Do:** in **Settings**, at **Player on this phone**, tap **Sign in**. The app reminds you that at home or at the club you sign in with your personal sign-in card, not with email. Tap **Sign in to synchronize**. → **You see:** the browser opens the approval page with "MK8DX Time Trials for Android requests access to your account." and the **Device code**. Check that it is the same as the **Device code** the app shows, approve only if you just started this on your phone, and tap **Approve device**. The page says "Device approved. Go back to the app to finish signing in." Go back to the app; it shows "Signed in as" with your name. → **See something else?** If the browser asks you to sign in, first sign in with your card (chapter 6).
 5. **Do:** post a time in the app. → **You see:** the time on the installation's website.
 
 Unpairing: tap the community name at the top → **Add a community** → **Forget this installation**.
@@ -448,6 +455,7 @@ This chapter is not needed for normal use.
 - `tooling/install.py status --state-dir <folder>`: checks that profile, certificates and settings agree.
 - `tooling/install.py check --state-dir <folder>`: status plus the Docker Compose settings and the containers.
 - `tooling/auto_backup.py run --state-dir <folder>`: makes an encrypted backup now with the stored recovery code, like the nightly job (with `--backup-root <folder>` in another folder). Note: `install.py backup` is for other routes and does not make an A2 backup.
+- `tooling/install.py backup-new-code --state-dir <folder>`: makes a new recovery code, like **Make a new recovery code** in MK8DX beheer, and shows it once. Backups made before keep the old code.
 - `tooling/install.py maintain-ca --qa-offline-candidate --state-dir <folder>`: renews the certificate when due and otherwise does nothing; `--force-ca-rotation` renews at once.
 - `tooling/install.py change-lan-address --lan-bind-address 192.168.1.51 --qa-offline-candidate --state-dir <folder>`: moves to a new address, like **Move**.
 - `tooling/install.py stop --state-dir <folder>` and `tooling/install.py start --qa-offline-candidate --state-dir <folder>`: stop and start.

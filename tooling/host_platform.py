@@ -89,6 +89,37 @@ def unprotect(blob: bytes) -> bytes:
     raise RuntimeError("Unknown MK8DX secret format on this platform")
 
 
+def forget(blob: bytes) -> None:
+    """Remove what `protect` kept outside the file: the macOS Keychain item. A file or systemd-creds secret
+    lives only in its file, so replacing the file is enough there."""
+    if not blob.startswith(KEYCHAIN_MARKER):
+        return
+    account = blob[len(KEYCHAIN_MARKER):].decode("ascii")
+    if not re.fullmatch(r"secret-[0-9a-f]{24}", account):
+        raise RuntimeError("Unexpected MK8DX Keychain reference")
+    _run(["security", "delete-generic-password", "-s", KEYCHAIN_SERVICE, "-a", account])
+
+
+def replace_secret_file(path: Path, data: bytes, *, protect_with, restrict=None) -> None:
+    """Store a new protected secret in place of the one in `path` (which must exist), with one atomic rename:
+    a crash leaves the old secret or the new one, never neither. An old Keychain item goes afterwards."""
+    old = path.read_bytes()
+    temporary = path.with_name(path.name + ".new")
+    temporary.unlink(missing_ok=True)
+    fd = os.open(temporary, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+    try:
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(protect_with(data))
+        if restrict is not None:
+            restrict(temporary)
+        os.replace(temporary, path)
+    except BaseException:
+        temporary.unlink(missing_ok=True)
+        raise
+    if sys.platform != "win32":
+        forget(old)
+
+
 def protection_kind(blob: bytes) -> str:
     """For status screens: how a stored secret is protected (never its content)."""
     for marker, kind in ((FILE_MARKER, "file-permissions"), (SYSTEMD_MARKER, "systemd-creds"),
