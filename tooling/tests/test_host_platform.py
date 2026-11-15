@@ -143,7 +143,13 @@ class ShortcutTest(unittest.TestCase):
                 (Path(home) / "Desktop").mkdir()
                 with patch.dict("os.environ", {"HOME": home}):
                     self.assertTrue(host_platform.desktop_shortcut(Path("/pkg/tooling/start-mk8dx.sh"), platform=platform))
-                self.assertIn("/pkg/tooling/start-mk8dx.sh", (Path(home) / "Desktop" / name).read_text())
+                text = (Path(home) / "Desktop" / name).read_text()
+                # Through /bin/sh: an unpacked ZIP leaves start-mk8dx.sh without its execute bit.
+                self.assertIn('/bin/sh "/pkg/tooling/start-mk8dx.sh"', text)
+                if platform == "linux":
+                    self.assertIn('Exec=/bin/sh "/pkg/tooling/start-mk8dx.sh"', text)
+                    menu = Path(home) / ".local" / "share" / "applications" / name
+                    self.assertEqual(menu.read_text(), text)
 
 
 if __name__ == "__main__":

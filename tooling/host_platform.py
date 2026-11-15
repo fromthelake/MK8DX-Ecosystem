@@ -236,12 +236,15 @@ def docker_autostart(*, platform: str | None = None) -> str:
 
 
 def desktop_shortcut(launcher: Path, *, platform: str | None = None) -> bool:
-    """A "MK8DX beheer" icon that opens the administration (the package's own launcher)."""
+    """A "MK8DX beheer" icon that opens the administration (the package's own launcher).
+
+    The icon runs the launcher through /bin/sh, as the manual does: an unpacked ZIP does not keep
+    the execute bit, so executing the script file itself fails with "Permission denied"."""
     platform = platform or sys.platform
     desktop = _home() / "Desktop"
     if platform.startswith("linux"):
         entry = ("[Desktop Entry]\nType=Application\nName=MK8DX beheer\nTerminal=true\n"
-                 f"Exec={_systemd_quote(launcher.as_posix())}\nPath={_systemd_quote(launcher.parent.parent.as_posix())}\n")
+                 f"Exec=/bin/sh {_systemd_quote(launcher.as_posix())}\nPath={_systemd_quote(launcher.parent.parent.as_posix())}\n")
         applications = _home() / ".local" / "share" / "applications"
         applications.mkdir(parents=True, exist_ok=True)
         (applications / "mk8dx-beheer.desktop").write_text(entry, encoding="utf-8")
@@ -254,7 +257,7 @@ def desktop_shortcut(launcher: Path, *, platform: str | None = None) -> bool:
         if not desktop.is_dir():
             return False
         target = desktop / "MK8DX beheer.command"
-        target.write_text(f"#!/bin/sh\nexec {_systemd_quote(launcher.as_posix())}\n", encoding="utf-8")
+        target.write_text(f"#!/bin/sh\nexec /bin/sh {_systemd_quote(launcher.as_posix())}\n", encoding="utf-8")
         target.chmod(0o755)
         return True
     return False

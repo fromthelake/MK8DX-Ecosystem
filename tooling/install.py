@@ -1067,7 +1067,10 @@ def operate(state, action, backup_output=None, user_account_id=None, force_ca_ro
             refresh_offline_setup_page(state)
             firewall = ensure_offline_firewall(state)
             addresses = offline_addresses(state)
-            print(t("LAN firewall rule (Private profile, 80/443): {0}", firewall))
+            # Windows makes a Private-profile rule; Linux and macOS report the firewall state ("Network:",
+            # with a manual command when ufw/firewalld is active), as the A2 manual describes.
+            print(t("LAN firewall rule (Private profile, 80/443): {0}", firewall) if sys.platform == "win32"
+                  else t("Network: {0}", firewall))
             print(t("Host page (only on this computer): {0}", addresses['hostPage']))
             print(t("Phones and other PCs first open: {0}", addresses['phoneSetup']))
             print(t("Website after trusting the certificate: {0}", addresses['website']))
