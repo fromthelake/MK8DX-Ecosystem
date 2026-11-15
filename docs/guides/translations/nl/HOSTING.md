@@ -191,6 +191,10 @@ Om een proefinstallatie weg te gooien (of een installatie waarvan je bent overge
 dezelfde installatiemap. Dit **wist de database, de accounts en de sleutels** van die installatie;
 maak eerst een back-up (keuze 6) als er iets is wat je misschien terug wilt.
 
+Een installatie thuis of op de club (A2, gestart met `Start-MK8DX-LAN.cmd` of `tooling/start-mk8dx.sh`) heeft geen
+menu in het startscript en eigen geplande taken: verwijder die met *MK8DX van deze computer verwijderen* in hoofdstuk 12
+van de [A2-handleiding](../../../install/A2_THUIS_HANDLEIDING_NL.md).
+
 1. Start het startscript en kies **3**: noteer de `route` (A1, A2 of B1). Start het daarna opnieuw en kies **4** om te stoppen.
 2. Verwijder de containers, het netwerk en de volumes (de database, en voor A2/B1 de certificaten). Gebruik het
    Compose-bestand dat bij de route hoort: `compose.local.yaml` voor A1, `compose.lan.yaml` voor A2,
