@@ -13,6 +13,11 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   which could not see the database-backed limiter and raised only false alerts, is the one rule now excluded; all
   other CodeQL queries still run.
 
+- **One central safe-path check in Python**: Tournament Live, the LiveTrial desktop app and the LiveTrial engine
+  now resolve every page-supplied file name through one small helper per product (`safe_paths`), which follows
+  links and refuses anything outside its folder. The same names are accepted and refused as before; code scanning
+  now recognises the check, so it no longer reports these places as possible path injection.
+
 ## 0.2.5 — 2026-11-16
 
 A security release; updating is recommended for every community. Permission checks are stronger on every route,

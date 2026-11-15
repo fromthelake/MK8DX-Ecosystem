@@ -27,6 +27,7 @@ import re
 
 from livetrial_ecosystem import load_cached_progress, player_progress_view
 from livetrial_runtime_root import resource_root
+from livetrial_safe_paths import UnsafePathError, resolve_within
 
 
 DEFAULT_PORT = 8776
@@ -122,16 +123,11 @@ def load_track_catalog(runtime_root: str | Path) -> tuple[dict, Path | None]:
 
 def _safe_static(root: Path, name: str, maximum: int) -> bytes | None:
     try:
-        target = (root / name).resolve(strict=True)
-        if (
-            target.is_symlink()
-            or not target.is_file()
-            or root.resolve(strict=True) not in target.parents
-            or target.stat().st_size > maximum
-        ):
+        target = resolve_within(root, name, strict=True)
+        if target.is_symlink() or not target.is_file() or target.stat().st_size > maximum:
             return None
         return target.read_bytes()
-    except (OSError, ValueError):
+    except (OSError, ValueError):  # UnsafePathError is a ValueError
         return None
 
 
@@ -482,7 +478,12 @@ def start_progress_dashboard(
             folder = Path(uploads_root)
             folder.mkdir(parents=True, exist_ok=True)
             stem = re.sub(r"[^A-Za-z0-9._-]+", "_", Path(name).stem)[:60] or "video"
-            target = folder / f"{time.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(3)}-{stem}{suffix}"
+            try:
+                target = resolve_within(folder, f"{time.strftime('%Y%m%d-%H%M%S')}-{secrets.token_hex(3)}-{stem}{suffix}")
+            except UnsafePathError:
+                self._drain()
+                self._send(400, b'{"ok":false,"message":"Choose a video file (mp4, mkv, mov, avi, webm)."}', "application/json; charset=utf-8")
+                return
             partial = target.with_name(target.name + ".partial")
             remaining = length
             try:

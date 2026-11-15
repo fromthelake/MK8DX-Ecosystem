@@ -350,9 +350,10 @@ class BroadcastServer:
                 if kind not in _ASSET_KINDS or not _ASSET_NAME_RE.match(name):
                     self.send_error(404)
                     return
-                imported_root = IMPORTED_ASSETS_ROOT.resolve()
-                candidate = (imported_root / kind / name).resolve()
-                if not candidate.is_relative_to(imported_root) or not candidate.is_file():
+                from .safe_paths import file_within
+
+                candidate = file_within(IMPORTED_ASSETS_ROOT, f"{kind}/{name}")
+                if candidate is None:
                     self.send_error(404)
                     return
                 self._send_file(candidate, cache=True)
