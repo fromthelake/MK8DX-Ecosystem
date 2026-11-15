@@ -5,20 +5,36 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.8 — 2026-11-15
+
+The release to install or update to after 0.2.5. 0.2.6 and 0.2.7 were not kept as separate releases; 0.2.8
+includes both (their sections below stay as the detailed history). Together they bring:
+
+- **Easier tournament nights**: Directors can delegate live capture from the Android app as well as the website,
+  administrators see which request limits refused requests, and the live scoreboard, launchers and Tournament Tools
+  installer speak all 15 languages of the game (0.2.6).
+- **Guides you can follow step by step**: A2 (Windows 11 and Linux in WSL 2), A1 and A3 (Windows 11) were installed
+  by following their guides and the guides were corrected; B1 was rehearsed privately on Ubuntu 24.04 in WSL 2. The
+  nightly backup works on every route, a new recovery code can be made on request, and two installations on one
+  computer can no longer replace each other's images (0.2.7).
+- **The illustrated guide as one PDF or HTML file in every language**, fresh screenshots and a tidier repository
+  (0.2.8, below).
+
+No database migration since 0.2.5; MySQL stays 9.7 LTS. Android app 2.99.12 (181).
+
 ### Added
 
 - **The illustrated guide as one file per language**: every release attaches `MK8DX_Guide_<locale>.pdf` and a
   self-contained `MK8DX_Guide_<locale>.html` (works offline, no other files) in all 15 languages, under names
-  without a version, so `releases/latest/download/MK8DX_Guide_en.pdf` always gives the newest. Built by
-  `tooling/build_guide_bundle.mjs`; listed in `SHA256SUMS.txt` and `manifest.json`; linked from every README's
-  Get started and from START_HERE.
+  without a version, so `releases/latest/download/MK8DX_Guide_en.pdf` always gives the newest. Every README's Get
+  started and Start here link to them directly. Both files are listed in `SHA256SUMS.txt` and `manifest.json`.
 
 ### Changed
 
-- **A tidier repository root**: the 14 translated READMEs moved to `docs/readme/` (README.md stays at the root,
-  the language switcher links them), and `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md` and `SUPPORT.md`
+- **A tidier repository root**: the 14 translated READMEs moved to `docs/readme/` (README.md stays at the root and
+  its language switcher links them), and `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md` and `SUPPORT.md`
   moved to `.github/`, where GitHub still shows them. The unused `compose.preview.local.yaml` is removed.
-- **Fresh guide screenshots** of 0.2.7 with example names and the example address `192.168.1.50`.
+- **Fresh guide screenshots** with example names and the example address `192.168.1.50`.
 
 ## 0.2.7 — 2026-11-15
 
