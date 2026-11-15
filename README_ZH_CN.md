@@ -114,9 +114,9 @@ flowchart TB
 | 路线 | 适用于 | 运行环境 | 状态 |
 | --- | --- | --- | --- |
 | **A2** 家庭或俱乐部网络 | 你自己的网络，设置完成后无需联网，每人一张登录卡 | Windows 11（x86-64）、Linux（x86-64 或 arm64）、Mac（Apple 芯片或 Intel） | 已在 Windows 11 上完成端到端测试；Linux 在 WSL 2 中测试；Mac 版已构建，尚未在真实 Mac 上测试 |
-| **A1** 单台电脑 | 在你面前的这台电脑上试用 | Windows 11 或 Linux，x86-64，需要 Docker | 已在 Windows 11 上用 0.2.6 完整测试（夜间备份从下一版本起）；Linux：安装、升级、备份 |
+| **A1** 单台电脑 | 在你面前的这台电脑上试用 | Windows 11 或 Linux，x86-64，需要 Docker | 已在 Windows 11 上完整测试（夜间备份从 0.2.7 起）；Linux：安装、升级、备份 |
 | **A3** 不使用 Docker 的单台电脑 | 无法使用 Docker 的 Windows 电脑 | Windows 11，配合 XAMPP 和 Node.js | 已在 Windows 11 上完整测试：安装、登录、扫描器、锦标赛、备份、夜间备份、更新、移除 |
-| **B1** 公开网站 | 你的在线社区，使用你自己的域名和邮箱 | 装有 Docker 的 Linux x86-64 服务器（VPS）；文档以 Ubuntu 24.04 为例 | 已有文档，尚未进行端到端测试 |
+| **B1** 公开网站 | 你的在线社区，使用你自己的域名和邮箱 | 装有 Docker 的 Linux x86-64 服务器（VPS）；文档以 Ubuntu 24.04 为例 | 已按指南在 WSL 2 中的 Ubuntu 24.04 上演练；尚未在真实 VPS 上测试 |
 | **B2** 虚拟主机 | 在线运行，无需自己的服务器 | 支持 Node.js（Passenger）、MariaDB/MySQL 和 SSH 的主机方案 | 我们自己的社区网站就是这样运行的；公开软件包尚未在全新的主机账户上从零安装过 |
 
 配套应用：
@@ -216,7 +216,7 @@ MK8DX 是开源项目，由玩家为玩家打造。你可以为你的俱乐部�
 
 ## 项目状态
 
-稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。0.2.6 让 Director 可以在 Android 应用中委托实时采集，让管理员看到哪些请求限制拒绝了请求，让实时记分板和启动器支持全部 15 种语言，并让应用中的日期使用应用自身的语言。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
+稳定版本发布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可在家里或俱乐部使用；0.2.1 为 Android 应用加入了成绩的离线副本，并带来更清爽的布局。0.2.2 让录像分析重新可用，并新增了 Tournament Analysis 窗口。0.2.3 让 Web 网关无需 root 运行，并让这个仓库更容易上手。同时，社区服务器的数据库升级到 MySQL 9.7 LTS，所有扫描器中的卡丁车和滑翔伞颜色现在都跟随角色。0.2.4 让指南、安装向导、启动器和 Tournament 窗口支持游戏的全部 15 种语言，能读取任何文字的玩家名字，并内置所有 OCR 模型，识别可离线进行。0.2.5 是建议每个社区都安装的安全更新：更严格的权限检查和请求限制，危险的管理员操作需要新的电子邮件确认，独立的数据库账户，以及每种路线的每日自动备份。0.2.6 让 Director 可以在 Android 应用中委托实时采集，让管理员看到哪些请求限制拒绝了请求，让实时记分板和启动器支持全部 15 种语言，并让应用中的日期使用应用自身的语言。0.2.7 包含未单独发布的 0.2.6：每种安装路线都按指南逐步走了一遍并修正了指南，夜间备份和新的恢复码在每种路线上都能使用，同一台电脑上的两个安装也不会再相互替换对方的镜像。请参阅[更新日志](CHANGELOG.md)、[发布软件包](docs/RELEASE_PACKAGES.md)和完整指南（[English](docs/install/MK8DX_User_Guide_EN.txt)、[Nederlands](docs/install/MK8DX_Handleiding_NL.txt)）。
 
 识别结果永远不会自动成为正式成绩：你自己的计时赛由你审核，锦标赛的比赛则要经组织者核对后才会计入。
 

@@ -5,24 +5,54 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.7 — 2026-11-15
+
+0.2.6 was tagged but not published as a release; 0.2.7 includes everything in 0.2.6 (see its section below) plus
+the fixes from following every installation guide literally, step by step: A2 on Windows 11 and on Linux (Ubuntu
+24.04 in WSL 2), A1 and A3 on Windows 11, and a private B1 rehearsal on Ubuntu 24.04 in WSL 2. The nightly backup
+now works on every route, a new recovery code can be made on request, and two installations on one computer can no
+longer replace each other's images. No database migration; MySQL stays 9.7 LTS. Android app 2.99.10 (179).
+
+### Added
+
+- **A new backup recovery code on request**: **MK8DX beheer** (A2) and `install.py backup-new-code` make a new
+  recovery code for the nightly backup. Backups made before keep needing the old code, so keep both.
+- **Removal steps for every route** in the guides, in all languages: one A2 chapter for Windows and Linux, the A1
+  guides' own removal section, and an A3 step. `configure_xampp.ps1 -Remove` undoes exactly what the A3 setup
+  added to XAMPP, and the new `tooling/remove_images.py` removes only the images that no container on the computer
+  still uses (another MK8DX installation, a QA database or another program keeps its images).
+- **A safe B1 rehearsal**: the B1 guide shows how to try the steps privately first on a spare Ubuntu machine, with a
+  private `.home.arpa` name and a local test inbox for the sign-in mail.
+
 ### Changed
 
-- **A1 guide after a literal walkthrough of 0.2.6 on Windows 11** (EN/NL, user guide in all 15 languages): the package goes to
-  `Documents\MK8DX-A1`, not inside an A2 folder; sign-in describes the three welcome screens of a new account; posting a
-  time names the real buttons (**Post your time**, **Publish**, **Confirm and publish**) and the scanner's **GALLERY**;
-  menu 7 says to start the newer package; the nightly backup says how to check it and how to switch it on when the
-  0.2.6 first setup could not (the 0.2.6 host package lacked its backup modules, fixed since); and the A1 guides got
-  their own removal section. The README route table now says what was tested on A1 and with which version.
+- **Guides follow what you really see**: after the walkthroughs, the A1, A2, A3, B1 and Linux guides (English and
+  Dutch, and the user guide in all 15 languages) name the real buttons and screens, add the missing unzip,
+  certificate and backup-check steps, put the A1 package in its own `Documents\MK8DX-A1` folder and describe the
+  welcome screens of a new account. The README route tables say what was tested on which route.
+- **The A2 approval page shows the device code** to compare with the phone, and the setup wizard's hint names the
+  real screen.
+- **Unticking the nightly backup removes the scheduled job** on every platform, and Linux and macOS show their own
+  backup folder. An update switches the nightly backup on when it was wanted but could not be created before (A3,
+  B2), and leaves it off when you switched it off.
+- **One image build per release**: the API and Web images are built once per processor for every package, and each
+  package names all its images, MySQL and Mailpit included, by content (`<tag>-<12 hex digits of the image ID>`).
 
 ### Fixed
 
-- **A1 and A2 on one computer no longer share an image tag with different bytes.** In 0.2.6 the host package and the
-  A2 packages built their API and Web images separately under the same tag, so starting A1 re-pointed the tag an A2
-  installation starts from, and removing A1's images could take it away. The release now builds these images once per
-  processor for every package, and each package names all its images, MySQL and Mailpit included, by content
-  (`<tag>-<12 hex digits of the image ID>`).
-  Removing an installation uses the new `tooling/remove_images.py`, which keeps every image another container on the
-  computer still uses (another MK8DX installation, a QA database, another program).
+- **Shared hosting answers `/client-config.json`**: B2 installations now serve the public client configuration the
+  apps and the guide expect, instead of a 404.
+- **A1 and A2 on one computer no longer clash**: before, both packages carried their own build of the API and Web
+  images under the same tag, so starting A1 could re-point the image an A2 installation starts from, and removing
+  A1's images could take it away.
+- **Nightly backups on A1, B1, A3 and B2**: the host and web-hosting packages now ship the backup modules, so the
+  nightly backup can be switched on at setup and follows updates.
+- **A2 pairing**: **Copy address** copies the full pairing link (with the key fingerprint), so pasting it on a phone
+  works as well as scanning the card.
+- **Launchers work from PowerShell 7**, and on Linux the **MK8DX beheer** menu entry starts reliably and shows the
+  Network line the guide names.
+- **Language fixes**: group labels and the Android app's cup names follow the chosen language, and the Step 5 text
+  says that its button saves the scores.
 
 ## 0.2.6 — 2026-11-15
 

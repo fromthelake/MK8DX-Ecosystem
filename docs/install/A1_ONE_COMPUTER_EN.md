@@ -96,9 +96,9 @@ update has run; with a 0.2.3 package, 2 would skip the backup. **3** (check) is 
 
 **Automatic backup:** MK8DX also makes a checked backup by itself every night (03:15, or as soon as the computer
 is on again) in `Documents\MK8DX-backups\automatic`, keeping 14 days and 4 weeks. **3** (check) shows the age and
-result of the last one under `automaticBackup`; `"enabled": true` means it is on. With the 0.2.6 package the first
-setup could not switch it on (it says *Nightly automatic backup could not be switched on*) and an update does not
-switch it on either: run the line below once from a newer package. Run it in PowerShell in the package folder; it also
+result of the last one under `automaticBackup`; `"enabled": true` means it is on. If it is not on (an installation set
+up with an older package may have said *Nightly automatic backup could not be switched on*, and an update does not
+switch it on afterwards), run the line below once. Run it in PowerShell in the package folder; it also
 copies every backup to another drive or a NAS (leave out `--copy-to ...` if you have none):
 `python tooling/install.py backup-schedule --state-dir "$env:LOCALAPPDATA\MK8DX\Server" --copy-to 'D:\MK8DX-backups'`.
 `backup-run` instead of `backup-schedule` makes one right away. Turn it off with `backup-unschedule`. Details: [Administration](ADMINISTRATION_EN.md#automatic-daily-backup).
