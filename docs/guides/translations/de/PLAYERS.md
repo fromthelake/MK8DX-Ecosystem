@@ -100,10 +100,7 @@ Person, die deine Community betreibt.
   Beispiel `https://www.example.org` (ohne Pfad, ohne Schrägstrich am Ende), und tippe auf **Speichern**. Wenn das
   fehlschlägt, öffne dieselbe Adresse im Browser des Handys: Sie muss sich ohne Zertifikatswarnung öffnen.
 
-Dann melde dich an: Tippe oben rechts auf das Personensymbol und auf **Anmelden**; Einstellungen › **Spieler auf
-diesem Handy** macht dasselbe. Die App zeigt einen Code und öffnet deine Community im Browser, wo du mit deinem
-eigenen Konto bestätigst (bei einer Installation zu Hause oder im Verein erinnert dich die App daran: Melde dich dort
-zuerst mit deiner persönlichen Anmeldekarte an).
+Zu Hause oder im Verein (A2) vergleichst du zuerst den 16-stelligen Installationscode und tippst auf **Verbinden**. Folge dann den Schritten in der App: **Zertifikat speichern**, **Einstellungen öffnen** und es als CA-Zertifikat installieren, danach **Anmeldekarte scannen** und direkt in der App anmelden. Dafür brauchst du keinen Browser-Gerätecode. Bei einer Online-Community tippst du auf das Personensymbol und **Anmelden**; die Bestätigung erfolgt im Browser.
 
 ### Sich zurechtfinden
 

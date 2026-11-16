@@ -159,8 +159,7 @@ The apps around it:
 | LiveTrial and Tournament Live | Windows on x86-64 (tested on Windows 11), with a USB HDMI capture card per screen | The capture cards and the bundled recognition engine are built and tested for Windows; there is no macOS or Linux build |
 
 **First start of the Android app:** it asks *Choose your community*. At home or at the club you scan the
-**Prepare a device** card your administrator shows; for an online community you type its website address. Then you
-sign in through the browser. Details: [Players](docs/guides/PLAYERS.md#first-start).
+**Prepare a device** card your administrator shows; for an online community you type its website address. On A2, install the certificate with the app’s Trust step and scan your personal sign-in card in the app. Online communities use browser approval to sign in. Details: [Players](docs/guides/PLAYERS.md#first-start).
 
 **One app, several communities:** the community chip at the top switches between your club, your home
 installation and an online community in one tap; each keeps its own account and unsent times. Under **You** →

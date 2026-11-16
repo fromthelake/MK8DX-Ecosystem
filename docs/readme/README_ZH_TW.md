@@ -128,7 +128,7 @@ flowchart TB
 | iPhone 和 iPad | 在瀏覽器中使用網站；Safari 中的掃描功能仍在測試 | 沒有 iOS App：建置和簽署 iOS App 需要一台 Mac 和一個 Apple 開發者帳號 |
 | LiveTrial 和 Tournament Live | x86-64 的 Windows（已在 Windows 11 上測試），每個螢幕配一張 USB HDMI 擷取卡 | 擷取卡和內建的辨識引擎都是針對 Windows 建置和測試的；沒有 macOS 或 Linux 版本 |
 
-**第一次啟動 Android App**：它會詢問*選擇你的社群*。在家裡或俱樂部，掃描管理員出示的 **Prepare a device** 卡片；如果是線上社群，就輸入它的網址。接著透過瀏覽器登入。詳情：[Players](../guides/PLAYERS.md#first-start)。
+**第一次啟動 Android App**：它會詢問*選擇你的社群*。在家裡或俱樂部，掃描管理員出示的 **Prepare a device** 卡片；如果是線上社群，就輸入它的網址。對於 A2，請在 App 的「信任」步驟安裝憑證，並在 App 內掃描個人登入卡。線上社群則在瀏覽器中核准登入。詳情：[Players](../guides/translations/zh-TW/PLAYERS.md)。
 
 **一個 App，多個社群**：上方的社群標籤只要點一下，就能在你的俱樂部、你家裡的安裝和某個線上社群之間切換；每個社群都保有各自的帳號和尚未送出的成績。在 **你** → **我的成績** 裡，你可以看到自己在每條賽道上的最佳成績，沒有網路也能看；如果你加入了不只一個社群，還可以把最佳成績帶到另一個社群——前提是那個社群願意接受。
 

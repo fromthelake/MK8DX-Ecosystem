@@ -92,9 +92,7 @@ person who runs your community.
   `https://www.example.org` (no path, no trailing slash), and tap **Save**. If it fails, open the same address in
   the phone's browser: it must open without a certificate warning.
 
-Then sign in: tap the person icon at the top right and **Sign in**; Settings › **Player on this phone** does the
-same. The app shows a code and opens your community in the browser, where you confirm with your own account (on a
-home or club installation the app reminds you: first sign in there with your personal sign-in card).
+At home or at the club (A2), compare the 16-character installation code, tap **Connect**, then follow the app’s steps: **Save certificate**, **Open Settings** to install it as a CA certificate, and **Scan sign-in card** to sign in as yourself inside the app. No browser device code is needed. For an online community, tap the person icon and **Sign in** (or Settings › **Player on this phone**); the app opens your community in the browser for approval.
 
 ### Finding your way
 

@@ -92,9 +92,7 @@ persona che gestisce la tua community.
   `https://www.example.org` (senza percorso, senza barra finale), e tocca **Salva**. Se non funziona, apri lo stesso indirizzo nel
   browser del telefono: deve aprirsi senza avvisi sul certificato.
 
-Poi accedi: tocca l'icona della persona in alto a destra e **Accedi**; Impostazioni › **Giocatore su questo telefono** fa la
-stessa cosa. L'app mostra un codice e apre la tua community nel browser, dove confermi con il tuo account (in
-un'installazione a casa o al club l'app te lo ricorda: prima accedi lì con la tua scheda di accesso personale).
+A casa o al club (A2), confronta prima il codice dell'installazione di 16 caratteri e tocca **Connetti**. Segui i passaggi nell'app: **Salva certificato**, **Apri impostazioni** per installarlo come certificato CA, poi **Scansiona scheda di accesso** per accedere nell'app. Non serve un codice nel browser. Per una community online, tocca l'icona della persona e **Accedi**; l'approvazione avviene nel browser.
 
 ### Orientarsi
 

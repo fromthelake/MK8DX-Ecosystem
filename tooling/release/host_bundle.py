@@ -85,6 +85,7 @@ OFFLINE_FILES = (
     "compose.offline-lan.yaml", "infrastructure/docker/Caddyfile.offline-lan",
     "tooling/offline_lan_ca.py", "tooling/offline_lan_ca_lifecycle.py", "tooling/requirements-offline-lan.txt",
     "tooling/setup_wizard.py",
+    "tooling/relocate_a2_package.ps1",
     "tooling/setup_wizard_static/index.html",
     "tooling/setup_wizard_static/wizard.js", "tooling/setup_wizard_static/wizard.css",
     "tooling/setup_wizard_static/language.js", "tooling/setup_wizard_static/add-device.js",

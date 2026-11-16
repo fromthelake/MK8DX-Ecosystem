@@ -92,9 +92,7 @@ persona que lleva tu comunidad.
   `https://www.example.org` (sin ruta y sin barra final), y toca **Guardar**. Si falla, abre la misma dirección en
   el navegador del móvil: debe abrirse sin aviso de certificado.
 
-Después inicia sesión: toca el icono de persona arriba a la derecha e **Iniciar sesión**; Ajustes › **Jugador en este móvil** hace lo
-mismo. La app muestra un código y abre tu comunidad en el navegador, donde confirmas con tu propia cuenta (en una
-instalación de casa o de club la app te lo recuerda: inicia sesión allí primero con tu tarjeta de acceso personal).
+En casa o en el club (A2), compara primero el código de instalación de 16 caracteres y toca **Conectar**. Sigue los pasos de la aplicación: **Guardar certificado**, **Abrir Ajustes** para instalarlo como certificado CA y **Escanear tarjeta de inicio de sesión** para entrar en la propia aplicación. No hace falta un código del navegador. En una comunidad en línea, toca el icono de persona e **Iniciar sesión**; la aprobación se hace en el navegador.
 
 ### Orientarte
 

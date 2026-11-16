@@ -166,8 +166,8 @@ Las apps que lo rodean:
 
 **Primer inicio de la app de Android:** te pide *Elige tu comunidad*. En casa o en el club escaneas la
 tarjeta **Prepare a device** que te muestra tu administrador; para una comunidad en línea escribes la
-dirección de su web. Después inicias sesión a través del navegador. Detalles:
-[Players](../guides/PLAYERS.md#first-start).
+dirección de su web. En A2 instalas el certificado con el paso Confiar y escaneas tu tarjeta personal en la aplicación. En las comunidades en línea apruebas el inicio de sesión en el navegador. Detalles:
+[Players](../guides/translations/es/PLAYERS.md).
 
 **Una app, varias comunidades:** el selector de comunidad de arriba cambia de un toque entre tu club, tu
 instalación de casa y una comunidad en línea; cada una conserva su propia cuenta y sus tiempos sin
