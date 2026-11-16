@@ -17,6 +17,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   who it signs in as and needs no browser and no device code (ADR-0224 amendment 2026-11-16): new API routes
   `POST /v1/session/native-invitation-preview` and `POST /v1/session/native-invitation-redeem`, offline-invitation
   installations only. The Players screen offers the same card scan.
+- **MK8DX beheer: Add a phone or device**, a guided three-step flow per person: 1 Trust (the Prepare a device QR
+  code with its short check code, with a line for the app and one for a phone without it), 2 the person's one-time
+  sign-in card with a countdown and **New card**, 3 **Done** as soon as a device signed in with that card. The host
+  page answers a new administrator-only, rate-limited `POST /api/invitations/status` with the card's state only.
+- **Welcome card**: a printable A6 or A4 page per person with the address, both QR codes and the three numbered
+  steps; the sign-in QR is marked personal and one-time with its expiry, and is left out once it can no longer be
+  used (a card still lasts 15 minutes; no longer-lived card is offered).
 
 ### Changed
 
@@ -37,6 +44,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 - **Android: "Sign in", "PLAYERS" and "No recent community activity yet — be the first." were English in the other
   languages** (Dutch included).
+- Opening the technical host page (127.0.0.1 with its port) directly now says, in all 15 languages, to use the
+  **MK8DX beheer** shortcut instead of the one-time admin code.
 
 ## 0.2.8 — 2026-11-15
 

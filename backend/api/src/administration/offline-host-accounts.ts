@@ -16,6 +16,16 @@ export type OfflineHostAccount = Readonly<{
   active: boolean;
 }>;
 
+export type OfflineHostInvitationState = "open" | "used" | "revoked" | "expired";
+
+/** A card's state from its ticket row: used wins over revoked (a revoke never touches a used card). */
+export function invitationStateOf(consumedAtMs: unknown, revokedAtMs: unknown, expiresAtMs: unknown,
+                                  nowMs: number): OfflineHostInvitationState {
+  if (consumedAtMs !== null) { return "used"; }
+  if (revokedAtMs !== null) { return "revoked"; }
+  return Number(expiresAtMs) > nowMs ? "open" : "expired";
+}
+
 type AccountRow = RowDataPacket & {
   accountKey: string; userAccountId: string; displayLabel: string;
   role: string; active: number;
@@ -146,6 +156,32 @@ export class MysqlOfflineHostAccounts {
        INNER JOIN user_accounts user ON user.user_account_id=offline.user_account_id
        ORDER BY offline.created_at_ms, offline.account_key LIMIT 500`);
     return rows.map(decode);
+  }
+
+  /**
+   * Whether a sign-in card an administrator holds on screen was used: MK8DX beheer's "Add a
+   * phone or device" waits for "used" (the device is then signed in as that person). Only the
+   * state is returned, never the token, digest, account or times; the caller must be an active
+   * offline administrator, the same right that made and may revoke the card.
+   */
+  public async invitationState(actorAccountId: string, invitationId: string):
+  Promise<OfflineHostInvitationState> {
+    if (!/^offline_invitation\.[0-9a-f-]{36}$/.test(invitationId)) {
+      throw new OfflineHostAccountError("invalid");
+    }
+    const now = this.nowMs();
+    if (!Number.isSafeInteger(now) || now < 0) { throw new OfflineHostAccountError("invalid"); }
+    if (!await activeOfflineAdministrator(this.pool, actorAccountId)) {
+      throw new OfflineHostAccountError("forbidden");
+    }
+    const [rows] = await this.pool.execute<(RowDataPacket & {
+      consumedAtMs: number | string | null; revokedAtMs: number | string | null;
+      expiresAtMs: number | string; })[]>(
+      `SELECT consumed_at_ms consumedAtMs, revoked_at_ms revokedAtMs, expires_at_ms expiresAtMs
+       FROM offline_invitation_tickets WHERE invitation_id=? LIMIT 1`, [invitationId]);
+    const row = rows[0];
+    if (row === undefined) { throw new OfflineHostAccountError("invalid"); }
+    return invitationStateOf(row.consumedAtMs, row.revokedAtMs, row.expiresAtMs, now);
   }
 
   /**

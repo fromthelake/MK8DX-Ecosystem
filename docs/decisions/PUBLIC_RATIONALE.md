@@ -377,8 +377,10 @@ signs in as (preview, does not use it up) and, on confirmation, calls
 `POST /v1/session/native-invitation-redeem`. The route exists only in offline-invitation installations,
 admits only a native app (its device header; no Origin, Cookie or Authorization, so no web page can
 spend a card), requires the body's `origin` to be this installation's own origin, spends a per-address
-budget first and then the card's existing limits (5 per card per 15 minutes, keyed by an HMAC of the
-token, and 120 per minute per installation, shared with the browser page). It consumes the same one-use,
+budget first and then the card limits shared with the browser page: a token that is no live card spends
+only a separate failure budget, so made-up tokens cannot block real cards; a live card spends 5 per card
+per 15 minutes (keyed by an HMAC of the token) and 120 per minute per installation, previews and
+redemptions in separate buckets. A session that cannot be handed over is ended at once. It consumes the same one-use,
 15-minute ticket atomically, binds the same account and creates the same Better Auth session a device
 approval would, returned as a bearer token instead of a cookie: no new privilege, and the session is
 audited like any other (`auth_session_created`). The token travels only in the JSON body over the pinned

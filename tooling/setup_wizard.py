@@ -465,6 +465,23 @@ class Wizard:
             raise RuntimeError("This card could not be revoked; it may already be used or expired")
         return {"revoked": True}
 
+    CARD_STATES = ("open", "used", "revoked", "expired")
+
+    def card_state(self, invitation_id: str):
+        """Whether a sign-in card on screen was used ("Add a phone or device" waits for "used": a device then
+        signed in as that person). The host page answers with the state only (ADR-0224, administrator session).
+        A host without that answer (an older API image) gives "unsupported"; the page then asks the person."""
+        if not re.fullmatch(r"offline_invitation\.[0-9a-f-]{36}", invitation_id or ""):
+            raise ValueError("Unknown card")
+        status, payload = self.host_call("POST", "/api/invitations/status", {"invitationId": invitation_id})
+        if status == 200 and payload.get("state") in self.CARD_STATES:
+            return {"state": payload["state"]}
+        if status == 404 and not payload.get("code"):
+            return {"state": "unsupported"}
+        if status == 429:
+            raise RuntimeError("Asked too often; trying again shortly")
+        raise RuntimeError("The state of this card is unavailable")
+
     def sign_out(self, account_key: str):
         """End every session of another person (lost phone, card given to the wrong person)."""
         status, payload = self.host_call("POST", "/api/accounts/sign-out", {"accountKey": account_key})
@@ -701,7 +718,7 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     file = GUIDE / path[len("/guide/"):]
                     if file.is_file():
                         return self.send(200, file.read_bytes(), TYPES[file.suffix])
-                if path in ("/wizard.js", "/language.js", "/wizard.css", "/icon.png"):
+                if path in ("/wizard.js", "/language.js", "/add-device.js", "/wizard.css", "/icon.png"):
                     file = STATIC / path[1:]
                     return self.send(200, file.read_bytes(), TYPES[file.suffix])
                 # The wizard's language catalogs (tooling/i18n/build_web_catalogs.mjs), one per game language.
@@ -756,6 +773,8 @@ def make_handler(wizard: Wizard, token: str, host_header: str):
                     return self.send(200, wizard.card(str(body.get("accountKey", "")), str(body.get("role", "account"))))
                 if path == "/api/people/sign-out":
                     return self.send(200, wizard.sign_out(str(body.get("accountKey", ""))))
+                if path == "/api/card/status":
+                    return self.send(200, wizard.card_state(str(body.get("invitationId", ""))))
                 if path == "/api/card/revoke":
                     return self.send(200, wizard.revoke_card(str(body.get("invitationId", ""))))
                 if path == "/api/close":

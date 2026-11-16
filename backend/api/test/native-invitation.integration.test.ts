@@ -31,6 +31,7 @@ import {
   type NativeInvitationAuthApi,
 } from "../src/authentication/native-invitation-routes.js";
 import { PreAuthBudget } from "../src/security/pre-auth-budget.js";
+import { MysqlOfflineHostAccounts } from "../src/administration/offline-host-accounts.js";
 
 const database = process.env["MK8DX_MYSQL_TEST_DATABASE"] ?? "";
 const integration = process.env["MK8DX_MYSQL_INTEGRATION"] === "1" &&
@@ -204,6 +205,26 @@ integration("native sign-in card redemption (ADR-0224 amendment 2026-11-16)", ()
     // Neither the token nor its digest-free form is kept by the limiters.
     const [limits] = await pool.execute<RowDataPacket[]>("SELECT * FROM api_mutation_rate_limits");
     expect(JSON.stringify(limits)).not.toContain(ticket.token);
+  });
+
+  it("shows a card the app redeemed as used in MK8DX beheer's Add a device wizard", async () => {
+    const adminKey = `offline_account.${randomUUID()}`;
+    await pool.execute(
+      `INSERT INTO offline_auth_accounts
+         (account_key, auth_email, display_label, account_role, active,
+          user_account_id, created_at_ms, updated_at_ms)
+       SELECT ?, ?, 'Synthetic administrator', 'administrator', TRUE, user_account_id, ?, ?
+       FROM user_accounts WHERE public_id=?`,
+      [adminKey, `${randomUUID()}@accounts.mk8dx.invalid`, clockMs, clockMs, issuerId]);
+    try {
+      const hostAccounts = new MysqlOfflineHostAccounts(pool, () => clockMs);
+      const card = await tickets.issue(issuer(), accountKey, "account");
+      expect(await hostAccounts.invitationState(issuerId, card.invitationId)).toBe("open");
+      expect((await redeem(card.token)).statusCode).toBe(200);
+      expect(await hostAccounts.invitationState(issuerId, card.invitationId)).toBe("used");
+    } finally {
+      await pool.execute("DELETE FROM offline_auth_accounts WHERE account_key=?", [adminKey]);
+    }
   });
 
   it("lets exactly one of two simultaneous redemptions of the same card through", async () => {
