@@ -294,7 +294,7 @@ Every pull request, bug report and translation fix makes the next LAN night bett
 
 ## Project status
 
-The current release is **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Every installation route was installed by following its guide in
+The current release is **[v0.2.9](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Every installation route was installed by following its guide in
 November 2026: A2 on Windows and Linux, A1 and A3 on Windows, and B1 rehearsed on Linux in WSL 2; the Mac
 packages are built but not yet tested on a real Mac. What changed per version is in the [changelog](CHANGELOG.md).
 

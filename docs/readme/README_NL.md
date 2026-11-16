@@ -301,7 +301,7 @@ iedereen.
 
 ## Status
 
-De huidige versie is **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Elke installatieroute is in november 2026 geïnstalleerd door de
+De huidige versie is **[v0.2.9](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Elke installatieroute is in november 2026 geïnstalleerd door de
 handleiding te volgen: A2 op Windows en Linux, A1 en A3 op Windows, en B1 als generale repetitie op Linux in WSL 2;
 de Mac-pakketten zijn gebouwd, maar nog niet getest op een echte Mac. Wat er per versie veranderde, staat in de
 [changelog](../../CHANGELOG.md).

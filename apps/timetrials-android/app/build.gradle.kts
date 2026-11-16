@@ -58,8 +58,8 @@ android {
         applicationId = "nl.mariokart8.mk8dxtimetrials"
         minSdk = if (enableScanRuntime) 26 else 24
         targetSdk = 36
-        versionCode = 181
-        versionName = "2.99.12"
+        versionCode = 183
+        versionName = "2.99.13"
 
         manifestPlaceholders["mk8dxLauncherIcon"] = "@mipmap/mk8dx_product_launcher"
         manifestPlaceholders["mk8dxApiHost"] = mk8dxApiUri.host

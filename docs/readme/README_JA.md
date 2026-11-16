@@ -216,7 +216,7 @@ MK8DX はオープンソースで、プレイヤーがプレイヤーのため�
 
 ## プロジェクトの状況
 
-現在のリリースは **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)** です。2026 年 11 月に、すべてのインストールルートをそれぞれのガイドどおりにインストールしました。A2 は Windows と Linux、A1 と A3 は Windows、B1 は WSL 2 上の Linux でのリハーサルです。Mac 用パッケージはビルド済みですが、実機の Mac ではまだテストしていません。バージョンごとの変更点は[変更履歴](../../CHANGELOG.md)をご覧ください。
+現在のリリースは **[v0.2.9](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)** です。2026 年 11 月に、すべてのインストールルートをそれぞれのガイドどおりにインストールしました。A2 は Windows と Linux、A1 と A3 は Windows、B1 は WSL 2 上の Linux でのリハーサルです。Mac 用パッケージはビルド済みですが、実機の Mac ではまだテストしていません。バージョンごとの変更点は[変更履歴](../../CHANGELOG.md)をご覧ください。
 
 認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
 
