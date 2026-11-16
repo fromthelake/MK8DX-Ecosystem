@@ -89,6 +89,30 @@ this PC. When the engine is started with `--lan` (see the
 [LiveTrial component README](../../../../apps/timetrials-desktop/README.md)), phones and tablets on the network can
 watch the live view and the runs but cannot change anything.
 
+## Readable clip names
+
+Inside LiveTrial a clip keeps its internal name. Every finished clip also appears in one folder,
+`Documents\MK8DX\LiveTrial-clips`, under a name you can read:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Date and time the clip started (this PC's clock), track, class (50cc, 100cc, 150cc, 200cc or Mirror) and the
+  time, with two spaces between the fields. A clip recorded with the record button is called `Manual`, a ghost
+  replay `Ghost <track>`. A track or time LiveTrial did not recognize is left out (`Unknown track`), never guessed.
+  When a name is already taken, ` (2)` is added.
+- The track is named in LiveTrial's language. Names use only letters, digits, spaces and `-`: apostrophes and other
+  punctuation are dropped and accents become plain letters (Yoshi's Circuit becomes Yoshis Circuit). In Russian,
+  Japanese, Korean or Chinese the track is named in English, so the file names stay plain letters.
+- On the same drive as LiveTrial's data the entry is a hard link and takes no extra space; on another drive it is a
+  copy. When LiveTrial's storage cleanup removes a clip, its readable copy goes too; a pinned clip keeps its copy.
+- **Run history** shows the name under the clip, with **Open folder**. Turn the copies off or choose another folder
+  under **Readable copy of clips** in Settings.
+
+The copy is made in the background once the clip is complete. If it fails (for example the folder cannot be
+reached), the clip itself is not affected.
+
 ## Problems
 
 - Wrong website, or sign-in opens the wrong site: quit LiveTrial with **Quit LiveTrial**, start it again and check

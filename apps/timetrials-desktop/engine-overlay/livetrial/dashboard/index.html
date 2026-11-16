@@ -558,6 +558,8 @@
   .cliplink { color: var(--ink-2); text-decoration: none; border: 1px solid var(--border);
               border-radius: 99px; padding: 2px 11px; background: var(--tile);
               font-variant-numeric: tabular-nums; }
+  .readable { margin-top: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; overflow-wrap: anywhere; }
+  .readable code { white-space: pre-wrap; }
   .cliplink:hover { color: var(--ink-1); border-color: var(--ink-muted); }
   /* ghost panel: the card the engine read by itself */
   .lvghost:empty { display: none; }
@@ -775,6 +777,7 @@ const STR = {
     replayOf: "Herhaling van", replayLoop: "ronde", staffGhost: "Nintendo-staff",
     stopped: "Opname gestopt. Het LiveTrial-venster staat weer in het menu; dit tabblad kun je sluiten.",
     clip: "Clip van deze run", downloadClip: "download clip", noFlag: "geen vlag ingesteld",
+    readableCopy: "Leesbare kopie", openFolder: "Open map",
     noRuns: "Nog geen runs — start een time trial, ik kijk mee via de capture-kaart.",
     speed: "Snelheid", accel: "Acceleratie", weight: "Gewicht", handling: "Besturing", grip: "Grip", miniturbo: "Mini-turbo",
     identical: "speler en ghost rijden identieke setups", vsWr: "vs WR", bestPossible: "theoretisch best",
@@ -908,6 +911,7 @@ const STR = {
     replayOf: "Replay of", replayLoop: "loop", staffGhost: "Nintendo staff",
     stopped: "Capture stopped. The LiveTrial window is back at its menu; you can close this tab.",
     clip: "Clip of this run", downloadClip: "download clip", noFlag: "no flag set",
+    readableCopy: "Readable copy", openFolder: "Open folder",
     noRuns: "No runs yet — start a time trial, I'm watching the capture card.",
     speed: "Speed", accel: "Acceleration", weight: "Weight", handling: "Handling", grip: "Grip", miniturbo: "Mini-turbo",
     identical: "player and ghost run identical setups", vsWr: "vs WR", bestPossible: "theoretical best",
@@ -1301,7 +1305,7 @@ function render() {
   // (playback jumps to 0), collapsing the event-log <details>, and clearing
   // text selection. The left list still rebuilds every render (it's cheap).
   const detailKey = r
-    ? [runKey(r), VIEW, LANG, EXPERT ? 1 : 0, (r.events || []).length, r.clipFile || "",
+    ? [runKey(r), VIEW, LANG, EXPERT ? 1 : 0, (r.events || []).length, r.clipFile || "", r.readableClip || "",
        r.endscreenFile || "",
        JSON.stringify(r.results || {}), JSON.stringify(r.identity || {})].join("|")
     : "empty|" + LANG;
@@ -1727,6 +1731,16 @@ async function runCleanup(dry) {
   try { await engineAction("api/storage/cleanup", { dryRun: !!dry }); } catch (e) {}
   await loadStorage();
 }
+// The clip's readable copy in the LiveTrial-clips folder (readable_clips.py): its name, and a button that
+// opens Explorer there. Only this computer's own page can press it (the action proof).
+function readableHtml(r) {
+  if (!r.readableClip) return "";
+  return `<div class="readable dim">${T("readableCopy")}: <code>${esc(r.readableClip)}</code>
+    ${ACTION_PROOF ? `<button class="cliplink" data-file="${esc(r.clipFile)}" onclick="openReadable(this.dataset.file)">📂 ${T("openFolder")}</button>` : ""}</div>`;
+}
+async function openReadable(file) {
+  try { await engineAction("api/readable-clip/open", { file }); } catch (e) {}
+}
 async function togglePin(file) {
   try { await engineAction("api/pin", { file }); } catch (e) {}
   await loadStorage();
@@ -1935,6 +1949,7 @@ function ghostDetailHtml(r) {
     <video controls preload="metadata" src="runs/${esc(r.clipFile)}"
       style="width:100%;max-height:430px;border-radius:10px;background:#000"></video>
     <div class="actions"><a class="cliplink" href="runs/${esc(r.clipFile)}" download>⬇ ${T("downloadClip")}</a></div>
+    ${readableHtml(r)}
   </div>` : ""}
   ${r.endscreenFile ? `<div class="panel"><h2>🖼️ ${T("ghostPanel")}</h2>
     <a href="runs/${esc(r.endscreenFile)}" target="_blank" rel="noopener">
@@ -2022,6 +2037,7 @@ function detailHtml(r) {
       onerror="if((this.dataset.retry|0)<20){this.dataset.retry=(this.dataset.retry|0)+1;setTimeout(()=>{this.src=this.src.split('?')[0]+'?r='+Date.now();this.load();},3000)}"
       style="width:100%;max-height:430px;border-radius:10px;background:#000"></video>
     <div class="actions"><a class="cliplink" href="runs/${esc(r.clipFile)}" download>⬇ ${T("downloadClip")}</a></div>
+    ${readableHtml(r)}
   </div>` : ""}
   ${/* the end-screen still is kept for every run and outlives the clip, so it
        is the panel that is always there once the video has been trimmed */""}

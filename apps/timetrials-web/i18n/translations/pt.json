@@ -6079,6 +6079,10 @@
   "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.": "Volta à app MK8DX. Ela conclui o início de sessão sozinha; podes fechar esta página.",
   "Tap the button to download the certificate. The file is called {file}.": "Toca no botão para transferir o certificado. O ficheiro chama-se {file}.",
   "Trust": "Confiança",
-  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo (nomes dos menus em inglês): Security → More security settings → Install from storage → CA certificate."
+  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo (nomes dos menus em inglês): Security → More security settings → Install from storage → CA certificate.",
+  "Readable copy of clips": "Cópia legível dos clips",
+  "Folder for readable clips": "Pasta para os clips legíveis",
+  "Save folder": "Guardar pasta",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "Cada clip terminado aparece também nesta pasta com um nome legível: data, hora, pista, classe e tempo. Na mesma unidade não ocupa espaço extra; quando a limpeza do LiveTrial remove um clip, a cópia também desaparece."
  }
 }

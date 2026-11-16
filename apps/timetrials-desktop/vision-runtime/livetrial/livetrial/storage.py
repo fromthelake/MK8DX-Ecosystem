@@ -476,6 +476,11 @@ def apply(runs_dir: Path, decided: dict, *, dry_run: bool = False) -> dict:
             removed.append(item["file"])
         except OSError as e:
             errors.append(f"{item['file']}: {e}")
+    if removed and not dry_run:
+        # A removed clip takes its readable entry (readable_clips.py) with it: with a hard link the space only
+        # comes free once both names are gone. A pinned clip is never in the plan, so its entry stays too.
+        from . import readable_clips
+        readable_clips.remove_for(Path(runs_dir), removed)
     return {"freedBytes": freed, "removed": removed, "errors": errors,
             "dryRun": bool(dry_run)}
 

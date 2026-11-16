@@ -6079,6 +6079,10 @@
   "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.": "切換回 MK8DX 應用程式。它會自動完成登入；你可以關閉此頁面。",
   "Tap the button to download the certificate. The file is called {file}.": "點按按鈕下載憑證。檔名為 {file}。",
   "Trust": "信任",
-  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo（選單名稱為英文）：Security → More security settings → Install from storage → CA certificate."
+  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo（選單名稱為英文）：Security → More security settings → Install from storage → CA certificate.",
+  "Readable copy of clips": "易讀的片段副本",
+  "Folder for readable clips": "易讀片段的資料夾",
+  "Save folder": "儲存資料夾",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "每個完成的片段也會以易讀的名稱出現在此資料夾中：日期、時刻、賽道、等級和成績。在同一磁碟上不佔用額外空間；當 LiveTrial 的清理刪除某個片段時，它的副本也會一併刪除。"
  }
 }

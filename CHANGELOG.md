@@ -5,6 +5,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **LiveTrial: readable clip names.** Every finished clip (runs, record-button clips and ghost replays) also
+  appears in `Documents\MK8DX\LiveTrial-clips` with a name such as
+  `2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4`: start date and time, track in LiveTrial's language
+  (English for a non-Latin language), class and time, ASCII letters only. It is a hard link on the same drive (no
+  extra space), otherwise a copy, made in the background; the storage clean-up removes it with its clip and a
+  pinned clip keeps it. The internal clip names do not change. Settings → **Readable copy of clips** (on by
+  default) turns it off or chooses another folder; Run history shows the name with **Open folder**.
+
 ### Changed
 
 - **Clearer first steps on an A2 (offline) installation** for phones and browsers. The host's "Prepare this device"

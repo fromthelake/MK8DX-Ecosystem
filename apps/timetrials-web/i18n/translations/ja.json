@@ -6079,6 +6079,10 @@
   "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.": "MK8DX アプリに戻ってください。サインインはアプリが自動で完了します。このページは閉じてかまいません。",
   "Tap the button to download the certificate. The file is called {file}.": "ボタンをタップして証明書をダウンロードしてください。ファイル名は {file} です。",
   "Trust": "信頼",
-  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo（メニュー名は英語）: Security → More security settings → Install from storage → CA certificate."
+  "vivo: Security → More security settings → Install from storage → CA certificate.": "vivo（メニュー名は英語）: Security → More security settings → Install from storage → CA certificate.",
+  "Readable copy of clips": "クリップの読みやすいコピー",
+  "Folder for readable clips": "読みやすいクリップのフォルダー",
+  "Save folder": "フォルダーを保存",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "完了したクリップは、日付・時刻・コース・クラス・タイムの読みやすい名前でこのフォルダーにも表示されます。同じドライブなら追加の容量は使いません。LiveTrial のクリーンアップがクリップを削除すると、そのコピーも削除されます。"
  }
 }

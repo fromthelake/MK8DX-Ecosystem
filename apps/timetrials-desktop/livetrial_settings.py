@@ -17,12 +17,15 @@ import hashlib
 from urllib.parse import urlsplit
 
 
-SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v4"
+SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v5"
+V4_SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v4"
 V3_SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v3"
 V2_SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v2"
 LEGACY_SETTINGS_SCHEMA_VERSION = "mk8dx.livetrial-settings.v1"
-_KEYS = {"schemaVersion", "autoSyncCompletedRuns", "language", "captureDevice", "consoleLanguage"}
-_V3_KEYS = _KEYS - {"consoleLanguage"}
+_KEYS = {"schemaVersion", "autoSyncCompletedRuns", "language", "captureDevice", "consoleLanguage",
+         "readableClips", "readableClipsFolder"}
+_V4_KEYS = _KEYS - {"readableClips", "readableClipsFolder"}
+_V3_KEYS = _V4_KEYS - {"consoleLanguage"}
 # The Switch's system language, which Mario Kart 8 Deluxe follows: "auto"
 # detects it at the start of each capture or analysis (the engine's
 # consolelang.py), any other value is the player's choice and is kept. The
@@ -36,6 +39,8 @@ CONSOLE_LANGUAGES = (
 )
 _CONSOLE_CODES = {CONSOLE_LANGUAGE_AUTO} | {code for code, _label in CONSOLE_LANGUAGES}
 MAX_CAPTURE_DEVICE_CHARACTERS = 300
+MAX_FOLDER_CHARACTERS = 240
+_FOLDER_REFUSED = set('\n\r\t\x00*?"<>|')
 SETTINGS_FILE_NAME = "settings.json"
 MAX_SETTINGS_BYTES = 8 * 1024
 SERVER_FILE_NAME = "server.json"
@@ -104,7 +109,56 @@ def default_settings() -> dict:
         # card chosen last time; None until a person has picked one.
         "captureDevice": None,
         "consoleLanguage": CONSOLE_LANGUAGE_AUTO,
+        # A readable copy of every finished clip (the engine's readable_clips.py) in one folder; None means the
+        # default folder, Documents\MK8DX\LiveTrial-clips (default_readable_clips_folder()).
+        "readableClips": True,
+        "readableClipsFolder": None,
     }
+
+
+def documents_folder() -> Path:
+    """The person's real Documents folder: the Windows known folder (also when it was moved, for example to
+    OneDrive), else <home>/Documents."""
+    if os.name == "nt":
+        try:
+            import ctypes
+            import uuid
+            from ctypes import wintypes
+
+            class _Guid(ctypes.Structure):
+                _fields_ = [("Data1", wintypes.DWORD), ("Data2", wintypes.WORD), ("Data3", wintypes.WORD),
+                            ("Data4", ctypes.c_ubyte * 8)]
+
+            guid = _Guid.from_buffer_copy(uuid.UUID("FDD39AD0-238F-46AF-ADB4-6C85480369C7").bytes_le)  # Documents
+            found = ctypes.c_wchar_p()
+            if ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(guid), 0, None, ctypes.byref(found)) == 0:
+                try:
+                    if found.value:
+                        return Path(found.value)
+                finally:
+                    ctypes.windll.ole32.CoTaskMemFree(found)
+        except Exception:  # noqa: BLE001 - fall back to the profile folder
+            pass
+    return Path(os.environ.get("USERPROFILE") or Path.home()) / "Documents"
+
+
+def default_readable_clips_folder() -> Path:
+    return documents_folder() / "MK8DX" / "LiveTrial-clips"
+
+
+def readable_clips_folder(settings: dict) -> Path:
+    """Where the readable clip copies go: the chosen folder, else the default one."""
+    chosen = settings.get("readableClipsFolder")
+    return Path(chosen) if isinstance(chosen, str) and chosen else default_readable_clips_folder()
+
+
+def _valid_folder(value: object) -> bool:
+    return value is None or (
+        isinstance(value, str)
+        and 3 <= len(value) <= MAX_FOLDER_CHARACTERS
+        and not _FOLDER_REFUSED.intersection(value)
+        and Path(value).is_absolute()
+    )
 
 
 def _valid_capture_device(value: object) -> bool:
@@ -155,6 +209,18 @@ def read_settings(product_root: str | Path) -> dict:
             for key in ("autoSyncCompletedRuns", "language", "captureDevice"):
                 migrated[key] = document[key]
             return migrated
+        if (
+            document.get("schemaVersion") == V4_SETTINGS_SCHEMA_VERSION
+            and set(document) == _V4_KEYS
+            and isinstance(document.get("autoSyncCompletedRuns"), bool)
+            and document.get("language") in LANGUAGE_CODES
+            and _valid_capture_device(document.get("captureDevice"))
+            and document.get("consoleLanguage") in _CONSOLE_CODES
+        ):
+            migrated = default_settings()
+            for key in ("autoSyncCompletedRuns", "language", "captureDevice", "consoleLanguage"):
+                migrated[key] = document[key]
+            return migrated
         if not _valid_document(document):
             return default_settings()
         return dict(document)
@@ -170,6 +236,8 @@ def _valid_document(document: dict) -> bool:
         and document.get("language") in LANGUAGE_CODES
         and _valid_capture_device(document.get("captureDevice"))
         and document.get("consoleLanguage") in _CONSOLE_CODES
+        and isinstance(document.get("readableClips"), bool)
+        and _valid_folder(document.get("readableClipsFolder"))
     )
 
 
@@ -245,4 +313,23 @@ def write_console_language(product_root: str | Path, code: str) -> dict:
         raise LiveTrialSettingsError("LiveTrial settings are unavailable.") from None
     document = read_settings(product_root)
     document["consoleLanguage"] = code
+    return _write_settings(product_root, document)
+
+
+_UNCHANGED = object()
+
+
+def write_readable_clips(product_root: str | Path, enabled: object = None, folder: object = _UNCHANGED) -> dict:
+    """Turn the readable clip copies on or off and/or choose their folder ("" or None = the default folder)."""
+    document = read_settings(product_root)
+    if enabled is not None:
+        if not isinstance(enabled, bool):
+            raise LiveTrialSettingsError("LiveTrial settings are unavailable.") from None
+        document["readableClips"] = enabled
+    if folder is not _UNCHANGED:
+        value = folder.strip().strip('"') if isinstance(folder, str) else folder
+        value = value or None
+        if not _valid_folder(value):
+            raise LiveTrialSettingsError("Choose a complete folder path, such as D:\\Clips.") from None
+        document["readableClipsFolder"] = value
     return _write_settings(product_root, document)

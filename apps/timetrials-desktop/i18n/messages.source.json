@@ -34,7 +34,7 @@
    "key": " (your name {0})",
    "nl": " (je naam {0})",
    "places": [
-    "app.js:1727"
+    "app.js:1746"
    ]
   },
   {
@@ -91,7 +91,7 @@
    "key": "A correction saves a new version; the earlier one is kept.",
    "nl": "Een correctie bewaart een nieuwe versie; de eerdere blijft bewaard.",
    "places": [
-    "app.js:1650"
+    "app.js:1669"
    ]
   },
   {
@@ -105,7 +105,7 @@
    "key": "A title is one line.",
    "nl": "Een titel is één regel.",
    "places": [
-    "app.js:2083"
+    "app.js:2102"
    ]
   },
   {
@@ -153,28 +153,28 @@
    "key": "Add missing details",
    "nl": "Ontbrekende details toevoegen",
    "places": [
-    "app.js:1698"
+    "app.js:1717"
    ]
   },
   {
    "key": "Added to your website result: {0}",
    "nl": "Toegevoegd aan je websiteresultaat: {0}",
    "places": [
-    "app.js:1729"
+    "app.js:1748"
    ]
   },
   {
    "key": "Address saved. LiveTrial is restarting…",
    "nl": "Adres opgeslagen. LiveTrial start opnieuw…",
    "places": [
-    "app.js:1572"
+    "app.js:1577"
    ]
   },
   {
    "key": "Adds what this ghost shows and your website result lacks (laps, coins, mushrooms, parts); nothing is replaced",
    "nl": "Voegt toe wat deze ghost laat zien en je websiteresultaat mist (rondes, munten, paddenstoelen, onderdelen); niets wordt vervangen",
    "places": [
-    "app.js:1698"
+    "app.js:1717"
    ]
   },
   {
@@ -209,22 +209,22 @@
    "key": "Already on the website",
    "nl": "Staat al op de website",
    "places": [
-    "app.js:1685",
-    "app.js:1686"
+    "app.js:1704",
+    "app.js:1705"
    ]
   },
   {
    "key": "Already saved",
    "nl": "Al bewaard",
    "places": [
-    "app.js:1687"
+    "app.js:1706"
    ]
   },
   {
    "key": "Also forget locally stored YouTube upload history for this Player ({0} clip(s)).",
    "nl": "Ook de lokaal bewaarde YouTube-uploadgeschiedenis van deze speler vergeten ({0} clip(s)).",
    "places": [
-    "app.js:2060"
+    "app.js:2079"
    ]
   },
   {
@@ -330,7 +330,7 @@
    "key": "Body",
    "nl": "Chassis",
    "places": [
-    "app.js:1885"
+    "app.js:1904"
    ]
   },
   {
@@ -351,7 +351,7 @@
    "key": "By clicking 'Upload to YouTube', you certify that the content you are uploading complies with the <a href=\"{0}\" target=\"_blank\" rel=\"noreferrer\">YouTube Terms of Service</a>, including the <a href=\"{1}\" target=\"_blank\" rel=\"noreferrer\">YouTube Community Guidelines</a>.",
    "nl": "Door op 'Uploaden naar YouTube' te klikken, verklaar je dat de inhoud die je uploadt voldoet aan de <a href=\"{0}\" target=\"_blank\" rel=\"noreferrer\">Servicevoorwaarden van YouTube</a>, inclusief de <a href=\"{1}\" target=\"_blank\" rel=\"noreferrer\">Communityrichtlijnen van YouTube</a>.",
    "places": [
-    "app.js:2092"
+    "app.js:2111"
    ]
   },
   {
@@ -407,8 +407,8 @@
    "key": "Cancel",
    "nl": "Annuleren",
    "places": [
-    "app.js:2020",
-    "app.js:2105"
+    "app.js:2039",
+    "app.js:2124"
    ]
   },
   {
@@ -422,7 +422,7 @@
    "key": "Capture and sending stop until you start LiveTrial again. Everything saved stays on this PC.",
    "nl": "Opnemen en verzenden stoppen tot je LiveTrial weer start. Alles wat is opgeslagen blijft op deze pc.",
    "places": [
-    "app.js:1621"
+    "app.js:1640"
    ]
   },
   {
@@ -499,7 +499,7 @@
    "key": "Character",
    "nl": "Coureur",
    "places": [
-    "app.js:1885"
+    "app.js:1904"
    ]
   },
   {
@@ -535,14 +535,14 @@
    "key": "Choose an account in the account menu to upload clips.",
    "nl": "Kies een account in het accountmenu om clips te uploaden.",
    "places": [
-    "app.js:2168"
+    "app.js:2187"
    ]
   },
   {
    "key": "Choose or add an account to connect its YouTube channel.",
    "nl": "Kies of voeg een account toe om het YouTube-kanaal ervan te koppelen.",
    "places": [
-    "app.js:2017"
+    "app.js:2036"
    ]
   },
   {
@@ -577,14 +577,14 @@
    "key": "Clips on this PC",
    "nl": "Clips op deze pc",
    "places": [
-    "app.js:2248"
+    "app.js:2267"
    ]
   },
   {
    "key": "Clips you upload go to {0}'s YouTube channel.",
    "nl": "Clips die je uploadt gaan naar het YouTube-kanaal van {0}.",
    "places": [
-    "app.js:2023"
+    "app.js:2042"
    ]
   },
   {
@@ -667,22 +667,22 @@
    "key": "Connect YouTube",
    "nl": "YouTube koppelen",
    "places": [
-    "app.js:2032"
+    "app.js:2051"
    ]
   },
   {
    "key": "Connect YouTube in the account menu (top right) to upload clips.",
    "nl": "Koppel YouTube in het accountmenu (rechtsboven) om clips te uploaden.",
    "places": [
-    "app.js:2169"
+    "app.js:2188"
    ]
   },
   {
    "key": "Connect again",
    "nl": "Opnieuw koppelen",
    "places": [
-    "app.js:1997",
-    "app.js:2032"
+    "app.js:2016",
+    "app.js:2051"
    ]
   },
   {
@@ -696,14 +696,14 @@
    "key": "Connect {0}'s YouTube channel to upload clips as evidence. LiveTrial never sees your Google password.",
    "nl": "Koppel het YouTube-kanaal van {0} om clips als bewijs te uploaden. LiveTrial ziet nooit je Google-wachtwoord.",
    "places": [
-    "app.js:2031"
+    "app.js:2050"
    ]
   },
   {
    "key": "Connected",
    "nl": "Gekoppeld",
    "places": [
-    "app.js:1995"
+    "app.js:2014"
    ]
   },
   {
@@ -717,7 +717,7 @@
    "key": "Connecting…",
    "nl": "Koppelen…",
    "places": [
-    "app.js:1996"
+    "app.js:2015"
    ]
   },
   {
@@ -731,22 +731,22 @@
    "key": "Copy link",
    "nl": "Link kopiëren",
    "places": [
-    "app.js:2120"
+    "app.js:2139"
    ]
   },
   {
    "key": "Copy this link:",
    "nl": "Kopieer deze link:",
    "places": [
-    "app.js:2195"
+    "app.js:2214"
    ]
   },
   {
    "key": "Correct",
    "nl": "Corrigeren",
    "places": [
-    "app.js:1655",
-    "app.js:1740"
+    "app.js:1674",
+    "app.js:1759"
    ]
   },
   {
@@ -760,14 +760,14 @@
    "key": "Correct a recognized run",
    "nl": "Een herkende rit corrigeren",
    "places": [
-    "app.js:1871"
+    "app.js:1890"
    ]
   },
   {
    "key": "Correction saved ({0}). It goes out with the next send.",
    "nl": "Correctie opgeslagen ({0}). Die gaat mee met de volgende verzending.",
    "places": [
-    "app.js:1984"
+    "app.js:2003"
    ]
   },
   {
@@ -815,42 +815,42 @@
    "key": "Description",
    "nl": "Beschrijving",
    "places": [
-    "app.js:2098"
+    "app.js:2117"
    ]
   },
   {
    "key": "Differs from your website result; nothing added",
    "nl": "Wijkt af van je websiteresultaat; niets toegevoegd",
    "places": [
-    "app.js:1724"
+    "app.js:1743"
    ]
   },
   {
    "key": "Disconnect",
    "nl": "Ontkoppelen",
    "places": [
-    "app.js:2062"
+    "app.js:2081"
    ]
   },
   {
    "key": "Disconnect YouTube",
    "nl": "YouTube ontkoppelen",
    "places": [
-    "app.js:2024"
+    "app.js:2043"
    ]
   },
   {
    "key": "Disconnect YouTube for {0}? LiveTrial's access is removed from this PC. Videos already on YouTube are not deleted.",
    "nl": "YouTube ontkoppelen voor {0}? De toegang van LiveTrial wordt van deze pc gehaald. Video's die al op YouTube staan worden niet verwijderd.",
    "places": [
-    "app.js:2059"
+    "app.js:2078"
    ]
   },
   {
    "key": "Disconnecting removes LiveTrial's access from this PC. Videos already on YouTube stay there.",
    "nl": "Ontkoppelen haalt de toegang van LiveTrial van deze pc. Video's die al op YouTube staan blijven staan.",
    "places": [
-    "app.js:2025"
+    "app.js:2044"
    ]
   },
   {
@@ -885,14 +885,21 @@
    "key": "Engine class",
    "nl": "Motorklasse",
    "places": [
-    "app.js:1873"
+    "app.js:1892"
    ]
   },
   {
    "key": "Enter a title for the video.",
    "nl": "Vul een titel voor de video in.",
    "places": [
-    "app.js:2081"
+    "app.js:2100"
+   ]
+  },
+  {
+   "key": "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.",
+   "nl": "Elke afgeronde clip verschijnt ook in deze map met een leesbare naam: datum, tijdstip, baan, klasse en tijd. Op dezelfde schijf kost dat geen extra ruimte; als het opruimen van LiveTrial een clip verwijdert, gaat de kopie mee.",
+   "places": [
+    "app.js:1543"
    ]
   },
   {
@@ -913,7 +920,7 @@
    "key": "Export this ghost as JSON",
    "nl": "Deze ghost als JSON exporteren",
    "places": [
-    "app.js:1701"
+    "app.js:1720"
    ]
   },
   {
@@ -927,42 +934,49 @@
    "key": "Find a {0}…",
    "nl": "{0} zoeken…",
    "places": [
-    "app.js:1906"
+    "app.js:1925"
    ]
   },
   {
    "key": "Finish in your browser: sign in with Google and allow uploads.",
    "nl": "Rond het af in je browser: meld je aan bij Google en sta uploaden toe.",
    "places": [
-    "app.js:2019"
+    "app.js:2038"
    ]
   },
   {
    "key": "Finishing…",
    "nl": "Afronden…",
    "places": [
-    "app.js:2125"
+    "app.js:2144"
+   ]
+  },
+  {
+   "key": "Folder for readable clips",
+   "nl": "Map voor leesbare clips",
+   "places": [
+    "app.js:1544"
    ]
   },
   {
    "key": "Forget this upload",
    "nl": "Deze upload vergeten",
    "places": [
-    "app.js:2121"
+    "app.js:2140"
    ]
   },
   {
    "key": "Forget this upload on this PC? The video stays on YouTube; delete it there in YouTube Studio if you want it gone.",
    "nl": "Deze upload op deze pc vergeten? De video blijft op YouTube staan; verwijder hem daar in YouTube Studio als je hem weg wilt.",
    "places": [
-    "app.js:2113"
+    "app.js:2132"
    ]
   },
   {
    "key": "From your ghost",
    "nl": "Van je ghost",
    "places": [
-    "app.js:1739"
+    "app.js:1758"
    ]
   },
   {
@@ -976,21 +990,21 @@
    "key": "Ghost race",
    "nl": "Ghostrit",
    "places": [
-    "app.js:1710"
+    "app.js:1729"
    ]
   },
   {
    "key": "Ghost replay",
    "nl": "Ghost-replay",
    "places": [
-    "app.js:2149"
+    "app.js:2168"
    ]
   },
   {
    "key": "Glider",
    "nl": "Paraglider",
    "places": [
-    "app.js:1885"
+    "app.js:1904"
    ]
   },
   {
@@ -1018,21 +1032,21 @@
    "key": "Google Privacy Policy",
    "nl": "Privacybeleid van Google",
    "places": [
-    "app.js:2005"
+    "app.js:2024"
    ]
   },
   {
    "key": "Google allows only Private uploads until LiveTrial's YouTube review is done. A Private video can only be watched by you, so it is not yet visible as evidence on the website.",
    "nl": "Google staat alleen privé-uploads toe tot de YouTube-controle van LiveTrial klaar is. Een privévideo kan alleen jij bekijken, dus die is nog niet zichtbaar als bewijs op de website.",
    "places": [
-    "app.js:2101"
+    "app.js:2120"
    ]
   },
   {
    "key": "Google ended LiveTrial's access (while the Google app is in testing, after 7 days). Connect again to upload.",
    "nl": "Google heeft de toegang van LiveTrial beëindigd (zolang de Google-app in de testfase is, na 7 dagen). Koppel opnieuw om te uploaden.",
    "places": [
-    "app.js:2030"
+    "app.js:2049"
    ]
   },
   {
@@ -1046,7 +1060,7 @@
    "key": "If you keep it, LiveTrial keeps showing those clips as on YouTube with their links, and will not upload them again.",
    "nl": "Als je hem bewaart, blijft LiveTrial die clips als 'op YouTube' met hun link tonen en uploadt hij ze niet opnieuw.",
    "places": [
-    "app.js:2061"
+    "app.js:2080"
    ]
   },
   {
@@ -1109,7 +1123,7 @@
    "key": "Kart combination",
    "nl": "Kartcombinatie",
    "places": [
-    "app.js:1875"
+    "app.js:1894"
    ]
   },
   {
@@ -1117,21 +1131,21 @@
    "nl": "Houden",
    "places": [
     "app.js:1110",
-    "app.js:2115"
+    "app.js:2134"
    ]
   },
   {
    "key": "Keep connected",
    "nl": "Gekoppeld houden",
    "places": [
-    "app.js:2063"
+    "app.js:2082"
    ]
   },
   {
    "key": "Keep open",
    "nl": "Openhouden",
    "places": [
-    "app.js:1623"
+    "app.js:1642"
    ]
   },
   {
@@ -1145,14 +1159,14 @@
    "key": "LAST RACE",
    "nl": "LAATSTE RIT",
    "places": [
-    "app.js:1863"
+    "app.js:1882"
    ]
   },
   {
    "key": "LAST SESSION",
    "nl": "VORIGE SESSIE",
    "places": [
-    "app.js:1797"
+    "app.js:1816"
    ]
   },
   {
@@ -1200,35 +1214,35 @@
    "key": "Lap {0}: coins are a whole number from 0 to 10 (what you hold at the end of the lap).",
    "nl": "Ronde {0}: munten zijn een heel getal van 0 tot 10 (wat je aan het eind van de ronde hebt).",
    "places": [
-    "app.js:1947"
+    "app.js:1966"
    ]
   },
   {
    "key": "Lap {0}: mushrooms are a whole number from 0 to 3.",
    "nl": "Ronde {0}: paddenstoelen zijn een heel getal van 0 tot 3.",
    "places": [
-    "app.js:1949"
+    "app.js:1968"
    ]
   },
   {
    "key": "Lap {0}: use a time such as 0:34.567.",
    "nl": "Ronde {0}: gebruik een tijd zoals 0:34.567.",
    "places": [
-    "app.js:1937"
+    "app.js:1956"
    ]
   },
   {
    "key": "Laps",
    "nl": "Rondes",
    "places": [
-    "app.js:2152"
+    "app.js:2171"
    ]
   },
   {
    "key": "Laps: time, coins, mushrooms",
    "nl": "Rondes: tijd, munten, paddenstoelen",
    "places": [
-    "app.js:1877"
+    "app.js:1896"
    ]
   },
   {
@@ -1242,7 +1256,7 @@
    "key": "Linked by your name {0}",
    "nl": "Gekoppeld via je naam {0}",
    "places": [
-    "app.js:1739"
+    "app.js:1758"
    ]
   },
   {
@@ -1267,21 +1281,21 @@
    "key": "LiveTrial asks Google only for permission to upload videos, and uploads only the clip you choose.",
    "nl": "LiveTrial vraagt Google alleen toestemming om video's te uploaden, en uploadt alleen de clip die jij kiest.",
    "places": [
-    "app.js:2033"
+    "app.js:2052"
    ]
   },
   {
    "key": "LiveTrial is closed. You can close this window.",
    "nl": "LiveTrial is afgesloten. Je kunt dit venster sluiten.",
    "places": [
-    "app.js:1638"
+    "app.js:1657"
    ]
   },
   {
    "key": "LiveTrial privacy policy",
    "nl": "Privacybeleid LiveTrial",
    "places": [
-    "app.js:2005"
+    "app.js:2024"
    ]
   },
   {
@@ -1296,7 +1310,7 @@
    "nl": "Laden…",
    "places": [
     "app.js:1521",
-    "app.js:2248"
+    "app.js:2267"
    ]
   },
   {
@@ -1384,7 +1398,7 @@
    "key": "Mine ({0})",
    "nl": "Van mij ({0})",
    "places": [
-    "app.js:1692"
+    "app.js:1711"
    ]
   },
   {
@@ -1398,7 +1412,7 @@
    "key": "Moved to {0}; it goes out with the next send",
    "nl": "Naar {0} gezet; gaat mee met de volgende verzending",
    "places": [
-    "app.js:1840"
+    "app.js:1859"
    ]
   },
   {
@@ -1412,7 +1426,7 @@
    "key": "My ghost names",
    "nl": "Mijn ghostnamen",
    "places": [
-    "app.js:1541"
+    "app.js:1546"
    ]
   },
   {
@@ -1440,7 +1454,7 @@
    "key": "Nintendo staff",
    "nl": "Nintendo-staff",
    "places": [
-    "app.js:1682"
+    "app.js:1701"
    ]
   },
   {
@@ -1448,7 +1462,7 @@
    "nl": "Geen account",
    "places": [
     "app.js:1249",
-    "app.js:1653"
+    "app.js:1672"
    ]
   },
   {
@@ -1462,21 +1476,21 @@
    "key": "No clips on this PC yet. LiveTrial keeps one clip per race while it captures.",
    "nl": "Nog geen clips op deze pc. LiveTrial bewaart tijdens het opnemen één clip per rit.",
    "places": [
-    "app.js:2176"
+    "app.js:2195"
    ]
   },
   {
    "key": "No finished race yet. Each race you finish appears here with whether it is on the website, and every ghost you look at on the ghost menu as a Ghost race.",
    "nl": "Nog geen uitgereden rit. Elke rit die je uitrijdt verschijnt hier, met of hij al op de website staat, en elke ghost die je in het ghostmenu bekijkt als Ghostrit.",
    "places": [
-    "app.js:1808"
+    "app.js:1827"
    ]
   },
   {
    "key": "No finished runs with a recognized time yet.",
    "nl": "Nog geen uitgereden ritten met een herkende tijd.",
    "places": [
-    "app.js:2176"
+    "app.js:2195"
    ]
   },
   {
@@ -1504,14 +1518,14 @@
    "key": "No race was saved in this session.",
    "nl": "In deze sessie is geen rit opgeslagen.",
    "places": [
-    "app.js:1808"
+    "app.js:1827"
    ]
   },
   {
    "key": "No recognized runs on this PC yet.",
    "nl": "Nog geen herkende ritten op deze pc.",
    "places": [
-    "app.js:1656"
+    "app.js:1675"
    ]
   },
   {
@@ -1567,21 +1581,21 @@
    "key": "Not connected",
    "nl": "Niet gekoppeld",
    "places": [
-    "app.js:1999"
+    "app.js:2018"
    ]
   },
   {
    "key": "Not finished",
    "nl": "Niet uitgereden",
    "places": [
-    "app.js:2149"
+    "app.js:2168"
    ]
   },
   {
    "key": "Not mine",
    "nl": "Niet van mij",
    "places": [
-    "app.js:1695"
+    "app.js:1714"
    ]
   },
   {
@@ -1603,21 +1617,21 @@
    "key": "Not sent yet",
    "nl": "Nog niet verzonden",
    "places": [
-    "app.js:1819"
+    "app.js:1838"
    ]
   },
   {
    "key": "Not set up",
    "nl": "Niet ingesteld",
    "places": [
-    "app.js:1998"
+    "app.js:2017"
    ]
   },
   {
    "key": "Nothing matches.",
    "nl": "Niets gevonden.",
    "places": [
-    "app.js:1910"
+    "app.js:1929"
    ]
   },
   {
@@ -1659,7 +1673,8 @@
    "key": "Off",
    "nl": "Uit",
    "places": [
-    "app.js:1539"
+    "app.js:1539",
+    "app.js:1542"
    ]
   },
   {
@@ -1673,22 +1688,23 @@
    "key": "On",
    "nl": "Aan",
    "places": [
-    "app.js:1539"
+    "app.js:1539",
+    "app.js:1542"
    ]
   },
   {
    "key": "On YouTube",
    "nl": "Op YouTube",
    "places": [
-    "app.js:2118"
+    "app.js:2137"
    ]
   },
   {
    "key": "On the website",
    "nl": "Op de website",
    "places": [
-    "app.js:1816",
-    "app.js:1857"
+    "app.js:1835",
+    "app.js:1876"
    ]
   },
   {
@@ -1702,7 +1718,7 @@
    "key": "Only on this PC",
    "nl": "Alleen op deze pc",
    "places": [
-    "app.js:1815"
+    "app.js:1834"
    ]
   },
   {
@@ -1723,7 +1739,7 @@
    "key": "Open it on the website",
    "nl": "Open hem op de website",
    "places": [
-    "app.js:1685"
+    "app.js:1704"
    ]
   },
   {
@@ -1766,7 +1782,7 @@
    "key": "Optional. To use it, place your Google Desktop client file here:",
    "nl": "Optioneel. Zet daarvoor je Google Desktop-clientbestand hier:",
    "places": [
-    "app.js:2015"
+    "app.js:2034"
    ]
   },
   {
@@ -1871,29 +1887,29 @@
    "key": "Preparing…",
    "nl": "Voorbereiden…",
    "places": [
-    "app.js:2125"
+    "app.js:2144"
    ]
   },
   {
    "key": "Private",
    "nl": "Privé",
    "places": [
-    "app.js:2090",
-    "app.js:2118"
+    "app.js:2109",
+    "app.js:2137"
    ]
   },
   {
    "key": "Private: only you can watch it, so it is not usable as public evidence on the website.",
    "nl": "Privé: alleen jij kunt hem bekijken, dus hij is niet bruikbaar als openbaar bewijs op de website.",
    "places": [
-    "app.js:2117"
+    "app.js:2136"
    ]
   },
   {
    "key": "Probably yours",
    "nl": "Waarschijnlijk van jou",
    "places": [
-    "app.js:1688"
+    "app.js:1707"
    ]
   },
   {
@@ -1914,7 +1930,7 @@
    "key": "Public",
    "nl": "Openbaar",
    "places": [
-    "app.js:2090"
+    "app.js:2109"
    ]
   },
   {
@@ -1935,7 +1951,7 @@
    "key": "Quit",
    "nl": "Afsluiten",
    "places": [
-    "app.js:1623"
+    "app.js:1642"
    ]
   },
   {
@@ -1949,21 +1965,21 @@
    "key": "Quit LiveTrial?",
    "nl": "LiveTrial afsluiten?",
    "places": [
-    "app.js:1619"
+    "app.js:1638"
    ]
   },
   {
    "key": "Quitting stops the analysis. Runs it found so far are kept; the rest of the video is not read.",
    "nl": "Afsluiten stopt de analyse. Ritten die tot nu toe gevonden zijn blijven bewaard; de rest van de video wordt niet gelezen.",
    "places": [
-    "app.js:1617"
+    "app.js:1636"
    ]
   },
   {
    "key": "Quitting stops the capture first, the same way Stop does. Races you finished are already saved; a race still in progress is not.",
    "nl": "Afsluiten stopt eerst de opname, net als Stoppen. Ritten die je hebt uitgereden zijn al bewaard; een race die nog bezig is niet.",
    "places": [
-    "app.js:1615"
+    "app.js:1634"
    ]
   },
   {
@@ -2011,7 +2027,7 @@
    "key": "Races as they come in",
    "nl": "Ritten zodra ze binnenkomen",
    "places": [
-    "app.js:1798"
+    "app.js:1817"
    ]
   },
   {
@@ -2038,7 +2054,14 @@
    "key": "Read from the Select-a-Ghost panel; not linked to any account",
    "nl": "Gelezen van het Select-a-Ghost-paneel; aan geen account gekoppeld",
    "places": [
-    "app.js:1710"
+    "app.js:1729"
+   ]
+  },
+  {
+   "key": "Readable copy of clips",
+   "nl": "Leesbare kopie van clips",
+   "places": [
+    "app.js:1541"
    ]
   },
   {
@@ -2059,7 +2082,7 @@
    "key": "Recognized runs",
    "nl": "Herkende ritten",
    "places": [
-    "app.js:1649"
+    "app.js:1668"
    ]
   },
   {
@@ -2150,7 +2173,7 @@
    "key": "Removed account",
    "nl": "Verwijderd account",
    "places": [
-    "app.js:1653"
+    "app.js:1672"
    ]
   },
   {
@@ -2239,14 +2262,21 @@
    "key": "Save correction",
    "nl": "Correctie opslaan",
    "places": [
-    "app.js:1880"
+    "app.js:1899"
+   ]
+  },
+  {
+   "key": "Save folder",
+   "nl": "Map opslaan",
+   "places": [
+    "app.js:1545"
    ]
   },
   {
    "key": "Save names",
    "nl": "Namen bewaren",
    "places": [
-    "app.js:1544"
+    "app.js:1549"
    ]
   },
   {
@@ -2260,7 +2290,7 @@
    "key": "Saved on this PC only: no account was signed in",
    "nl": "Alleen op deze pc bewaard: er was geen account aangemeld",
    "places": [
-    "app.js:1856"
+    "app.js:1875"
    ]
   },
   {
@@ -2281,7 +2311,7 @@
    "key": "Saved, waiting to be sent",
    "nl": "Opgeslagen, wacht op verzending",
    "places": [
-    "app.js:1859"
+    "app.js:1878"
    ]
   },
   {
@@ -2365,7 +2395,7 @@
    "key": "Send as {0}",
    "nl": "Verstuur als {0}",
    "places": [
-    "app.js:1826"
+    "app.js:1845"
    ]
   },
   {
@@ -2380,8 +2410,8 @@
    "nl": "Nu verzenden",
    "places": [
     "app.js:1238",
-    "app.js:1740",
-    "app.js:1859"
+    "app.js:1759",
+    "app.js:1878"
    ]
   },
   {
@@ -2443,7 +2473,7 @@
    "key": "Show unfinished runs ({0})",
    "nl": "Niet uitgereden ritten tonen ({0})",
    "places": [
-    "app.js:2174"
+    "app.js:2193"
    ]
   },
   {
@@ -2510,14 +2540,14 @@
    "key": "Sign in to claim it",
    "nl": "Meld je aan om hem te claimen",
    "places": [
-    "app.js:1693"
+    "app.js:1712"
    ]
   },
   {
    "key": "Sign in to send it",
    "nl": "Meld je aan om te versturen",
    "places": [
-    "app.js:1825"
+    "app.js:1844"
    ]
   },
   {
@@ -2596,28 +2626,28 @@
    "key": "Stop analysis and quit",
    "nl": "Analyse stoppen en afsluiten",
    "places": [
-    "app.js:1623"
+    "app.js:1642"
    ]
   },
   {
    "key": "Stop capture and quit",
    "nl": "Opname stoppen en afsluiten",
    "places": [
-    "app.js:1623"
+    "app.js:1642"
    ]
   },
   {
    "key": "Stopping the analysis…",
    "nl": "Analyse stoppen…",
    "places": [
-    "app.js:1631"
+    "app.js:1650"
    ]
   },
   {
    "key": "Stopping the capture and saving what is finished…",
    "nl": "Opname stoppen en bewaren wat klaar is…",
    "places": [
-    "app.js:1631"
+    "app.js:1650"
    ]
   },
   {
@@ -2638,7 +2668,7 @@
    "key": "Switch to this community and restart LiveTrial? Existing accounts and pending runs stay with their old server.",
    "nl": "Naar deze community wisselen en LiveTrial opnieuw starten? Bestaande accounts en wachtende ritten blijven bij de oude server.",
    "places": [
-    "app.js:1560"
+    "app.js:1565"
    ]
   },
   {
@@ -2652,7 +2682,7 @@
    "key": "THIS SESSION",
    "nl": "DEZE SESSIE",
    "places": [
-    "app.js:1797"
+    "app.js:1816"
    ]
   },
   {
@@ -2700,7 +2730,7 @@
    "key": "Terms of use",
    "nl": "Gebruiksvoorwaarden",
    "places": [
-    "app.js:2005"
+    "app.js:2024"
    ]
   },
   {
@@ -2728,14 +2758,14 @@
    "key": "The address was saved, but LiveTrial did not reopen. Open LiveTrial again to use the new community.",
    "nl": "Het adres is opgeslagen, maar LiveTrial is niet opnieuw geopend. Open LiveTrial opnieuw voor de nieuwe community.",
    "places": [
-    "app.js:1581"
+    "app.js:1586"
    ]
   },
   {
    "key": "The address was saved, but the automatic restart did not start. Quit LiveTrial and open it again.",
    "nl": "Het adres is opgeslagen, maar automatisch opnieuw starten lukte niet. Sluit LiveTrial af en open het opnieuw.",
    "places": [
-    "app.js:1567"
+    "app.js:1572"
    ]
   },
   {
@@ -2756,7 +2786,7 @@
    "key": "The description is too long for YouTube ({0} of 5000 bytes).",
    "nl": "De beschrijving is te lang voor YouTube ({0} van 5000 bytes).",
    "places": [
-    "app.js:2084"
+    "app.js:2103"
    ]
   },
   {
@@ -2770,7 +2800,7 @@
    "key": "The laps add up to {0}, the total time is {1}.",
    "nl": "De rondes tellen op tot {0}, de totaaltijd is {1}.",
    "places": [
-    "app.js:1942"
+    "app.js:1961"
    ]
   },
   {
@@ -2791,7 +2821,7 @@
    "key": "The proposed time is highly unreasonable, please double check all information.",
    "nl": "De voorgestelde tijd is zeer onwaarschijnlijk, controleer alle gegevens nog eens.",
    "places": [
-    "app.js:1818"
+    "app.js:1837"
    ]
   },
   {
@@ -2805,7 +2835,7 @@
    "key": "The title is {0} characters; YouTube allows 100.",
    "nl": "De titel is {0} tekens; YouTube staat er 100 toe.",
    "places": [
-    "app.js:2082"
+    "app.js:2101"
    ]
   },
   {
@@ -2841,14 +2871,14 @@
    "key": "This community is already selected.",
    "nl": "Deze community is al gekozen.",
    "places": [
-    "app.js:1559"
+    "app.js:1564"
    ]
   },
   {
    "key": "This is the world record time. Is it really your own ghost?",
    "nl": "Dit is de wereldrecordtijd. Is dit echt je eigen ghost?",
    "places": [
-    "app.js:1757"
+    "app.js:1776"
    ]
   },
   {
@@ -2882,21 +2912,21 @@
    "key": "Tires",
    "nl": "Banden",
    "places": [
-    "app.js:1885"
+    "app.js:1904"
    ]
   },
   {
    "key": "Title on YouTube",
    "nl": "Titel op YouTube",
    "places": [
-    "app.js:2096"
+    "app.js:2115"
    ]
   },
   {
    "key": "To also remove the permission at Google:",
    "nl": "Om de toestemming ook bij Google in te trekken:",
    "places": [
-    "app.js:2026"
+    "app.js:2045"
    ]
   },
   {
@@ -2918,14 +2948,14 @@
    "key": "Total time",
    "nl": "Totaaltijd",
    "places": [
-    "app.js:1874"
+    "app.js:1893"
    ]
   },
   {
    "key": "Total time: use a time such as 1:42.123.",
    "nl": "Totaaltijd: gebruik een tijd zoals 1:42.123.",
    "places": [
-    "app.js:1932"
+    "app.js:1951"
    ]
   },
   {
@@ -2953,28 +2983,28 @@
    "key": "Track",
    "nl": "Circuit",
    "places": [
-    "app.js:1872"
+    "app.js:1891"
    ]
   },
   {
    "key": "Track not read",
    "nl": "Baan niet gelezen",
    "places": [
-    "app.js:1680"
+    "app.js:1699"
    ]
   },
   {
    "key": "Troubleshooting: the numbered menu is still available as",
    "nl": "Probleemoplossing: het genummerde menu is nog beschikbaar als",
    "places": [
-    "app.js:1546"
+    "app.js:1551"
    ]
   },
   {
    "key": "Try again…",
    "nl": "Opnieuw proberen…",
    "places": [
-    "app.js:2136"
+    "app.js:2155"
    ]
   },
   {
@@ -2995,7 +3025,7 @@
    "key": "Undo",
    "nl": "Ongedaan maken",
    "places": [
-    "app.js:1740"
+    "app.js:1759"
    ]
   },
   {
@@ -3009,14 +3039,14 @@
    "key": "Unknown track",
    "nl": "Onbekend circuit",
    "places": [
-    "app.js:2149"
+    "app.js:2168"
    ]
   },
   {
    "key": "Unlisted",
    "nl": "Niet vermeld",
    "places": [
-    "app.js:2090"
+    "app.js:2109"
    ]
   },
   {
@@ -3037,42 +3067,42 @@
    "key": "Upload history of {0} clip(s) forgotten on this PC. The videos are still on YouTube.",
    "nl": "Uploadgeschiedenis van {0} clip(s) op deze pc vergeten. De video's staan nog op YouTube.",
    "places": [
-    "app.js:2037"
+    "app.js:2056"
    ]
   },
   {
    "key": "Upload to YouTube",
    "nl": "Uploaden naar YouTube",
    "places": [
-    "app.js:2104"
+    "app.js:2123"
    ]
   },
   {
    "key": "Upload to YouTube…",
    "nl": "Uploaden naar YouTube…",
    "places": [
-    "app.js:2136"
+    "app.js:2155"
    ]
   },
   {
    "key": "Uploading uses the YouTube API Services: by uploading you agree to the",
    "nl": "Uploaden gebruikt de YouTube API Services: door te uploaden ga je akkoord met de",
    "places": [
-    "app.js:2005"
+    "app.js:2024"
    ]
   },
   {
    "key": "Uploading {0}%",
    "nl": "Uploaden {0}%",
    "places": [
-    "app.js:2125"
+    "app.js:2144"
    ]
   },
   {
    "key": "Uploads go to {0}'s YouTube channel. Nothing is uploaded until you review a clip's title, description and visibility and press Upload to YouTube.",
    "nl": "Uploads gaan naar het YouTube-kanaal van {0}. Er wordt niets geüpload tot je de titel, beschrijving en zichtbaarheid van een clip hebt bekeken en op Uploaden naar YouTube drukt.",
    "places": [
-    "app.js:2166"
+    "app.js:2185"
    ]
   },
   {
@@ -3086,7 +3116,7 @@
    "key": "Use the lap sum ({0}) as total",
    "nl": "Som van de rondes ({0}) als totaal",
    "places": [
-    "app.js:1960"
+    "app.js:1979"
    ]
   },
   {
@@ -3107,7 +3137,7 @@
    "key": "Visibility on YouTube",
    "nl": "Zichtbaarheid op YouTube",
    "places": [
-    "app.js:2100"
+    "app.js:2119"
    ]
   },
   {
@@ -3135,7 +3165,7 @@
    "nl": "Wacht op verzending",
    "places": [
     "app.js:1237",
-    "app.js:1820"
+    "app.js:1839"
    ]
   },
   {
@@ -3156,7 +3186,7 @@
    "key": "Watch",
    "nl": "Bekijken",
    "places": [
-    "app.js:2153"
+    "app.js:2172"
    ]
   },
   {
@@ -3205,7 +3235,7 @@
    "key": "While this account is the active one, a ghost with exactly one of these names is linked to it by itself once you leave it; Nintendo staff ghosts, world-record times and times you already have never are. Separate names with commas. You can undo a link until it is sent.",
    "nl": "Zolang dit account actief is, wordt een ghost met precies een van deze namen vanzelf eraan gekoppeld zodra je hem verlaat; Nintendo-staffghosts, wereldrecordtijden en tijden die je al hebt nooit. Scheid namen met komma's. Je kunt een koppeling ongedaan maken tot hij verzonden is.",
    "places": [
-    "app.js:1543"
+    "app.js:1548"
    ]
   },
   {
@@ -3240,7 +3270,7 @@
    "key": "World record",
    "nl": "Wereldrecord",
    "places": [
-    "app.js:1683"
+    "app.js:1702"
    ]
   },
   {
@@ -3261,7 +3291,7 @@
    "key": "Yes, forget",
    "nl": "Ja, vergeten",
    "places": [
-    "app.js:2114"
+    "app.js:2133"
    ]
   },
   {
@@ -3275,7 +3305,7 @@
    "key": "Yes, this time is right",
    "nl": "Ja, deze tijd klopt",
    "places": [
-    "app.js:1962"
+    "app.js:1981"
    ]
   },
   {
@@ -3296,28 +3326,28 @@
    "key": "YouTube Terms of Service",
    "nl": "YouTube-servicevoorwaarden",
    "places": [
-    "app.js:2005"
+    "app.js:2024"
    ]
   },
   {
    "key": "YouTube does not accept < or > in a title or description.",
    "nl": "YouTube accepteert geen < of > in een titel of beschrijving.",
    "places": [
-    "app.js:2085"
+    "app.js:2104"
    ]
   },
   {
    "key": "YouTube integration is not configured",
    "nl": "YouTube-koppeling is niet ingesteld",
    "places": [
-    "app.js:2014"
+    "app.js:2033"
    ]
   },
   {
    "key": "YouTube integration is not configured. Clips stay on this PC.",
    "nl": "YouTube-koppeling is niet ingesteld. Clips blijven op deze pc.",
    "places": [
-    "app.js:2167"
+    "app.js:2186"
    ]
   },
   {
@@ -3387,7 +3417,7 @@
    "key": "Your website result already has everything",
    "nl": "Je websiteresultaat heeft alles al",
    "places": [
-    "app.js:1730"
+    "app.js:1749"
    ]
   },
   {
@@ -3401,7 +3431,7 @@
    "key": "e.g. BAwSer, BasAi",
    "nl": "bijv. BAwSer, BasAi",
    "places": [
-    "app.js:1542"
+    "app.js:1547"
    ]
   },
   {
@@ -3457,7 +3487,7 @@
    "key": "not read",
    "nl": "niet gelezen",
    "places": [
-    "app.js:1897"
+    "app.js:1916"
    ]
   },
   {
@@ -3600,7 +3630,7 @@
    "key": "your data",
    "nl": "je gegevens",
    "places": [
-    "app.js:1546"
+    "app.js:1551"
    ]
   },
   {
@@ -3614,7 +3644,7 @@
    "key": "{0} has {1} laps; this run has {2}.",
    "nl": "{0} heeft {1} rondes; deze rit heeft er {2}.",
    "places": [
-    "app.js:1939"
+    "app.js:1958"
    ]
   },
   {
@@ -3628,7 +3658,7 @@
    "key": "{0} is faster than the World Record ({1}{2}). Is this time right?",
    "nl": "{0} is sneller dan het wereldrecord ({1}{2}). Klopt deze tijd echt?",
    "places": [
-    "app.js:1956"
+    "app.js:1975"
    ]
   },
   {
@@ -3670,7 +3700,7 @@
    "key": "{0} mushrooms in total; a time trial has 3.",
    "nl": "{0} paddenstoelen in totaal; een time trial heeft er 3.",
    "places": [
-    "app.js:1952"
+    "app.js:1971"
    ]
   },
   {
@@ -3747,7 +3777,7 @@
    "key": "{0}:{1} left",
    "nl": "nog {0}:{1}",
    "places": [
-    "app.js:2129"
+    "app.js:2148"
    ]
   },
   {
@@ -3776,29 +3806,29 @@
    "key": "✓ Copied",
    "nl": "✓ Gekopieerd",
    "places": [
-    "app.js:2194"
+    "app.js:2213"
    ]
   },
   {
    "key": "✓ Saved",
    "nl": "✓ Bewaard",
    "places": [
-    "app.js:1604"
+    "app.js:1623"
    ]
   },
   {
    "key": "✓ Saved for {0}",
    "nl": "✓ Bewaard voor {0}",
    "places": [
-    "app.js:1761"
+    "app.js:1780"
    ]
   },
   {
    "key": "✓ Sent as {0}",
    "nl": "✓ Verstuurd als {0}",
    "places": [
-    "app.js:1761",
-    "app.js:1840"
+    "app.js:1780",
+    "app.js:1859"
    ]
   }
  ]

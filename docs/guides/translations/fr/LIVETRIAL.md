@@ -96,6 +96,32 @@ bord ouverte sur ce PC. Si le moteur est lancé avec `--lan` (voir le
 [README du composant LiveTrial](../../../../apps/timetrials-desktop/README.md)), les téléphones et tablettes du réseau
 peuvent regarder la vue en direct et les courses, mais ne peuvent rien modifier.
 
+## Noms de clip lisibles
+
+Dans LiveTrial, un clip garde son nom interne. Chaque clip terminé apparaît aussi dans un seul dossier,
+`Documents\MK8DX\LiveTrial-clips`, sous un nom lisible :
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Date et heure du début du clip (l'horloge de ce PC), circuit, catégorie (50cc, 100cc, 150cc, 200cc ou Mirror) et
+  le temps, avec deux espaces entre les champs. Un clip enregistré avec le bouton d'enregistrement s'appelle
+  `Manual`, un replay de fantôme `Ghost <circuit>`. Un circuit ou un temps que LiveTrial n'a pas reconnu est omis
+  (`Unknown track`), jamais deviné. Si un nom est déjà pris, ` (2)` est ajouté.
+- Le circuit est nommé dans la langue de LiveTrial. Les noms n'utilisent que des lettres, des chiffres, des espaces
+  et `-` : les apostrophes et autres signes disparaissent et les accents deviennent des lettres simples (Yoshi's
+  Circuit devient Yoshis Circuit). En russe, japonais, coréen ou chinois, le circuit est nommé en anglais, pour que
+  les noms de fichier restent en lettres simples.
+- Sur le même disque que les données de LiveTrial, l'entrée est un lien physique (hard link) qui ne prend pas de
+  place en plus ; sur un autre disque, c'est une copie. Quand le nettoyage du stockage de LiveTrial supprime un
+  clip, sa copie lisible part aussi ; un clip épinglé garde sa copie.
+- L'**Historique des runs** affiche le nom sous le clip, avec **Open folder**. Désactive les copies ou choisis un
+  autre dossier sous **Copie lisible des clips** dans les **Paramètres**.
+
+La copie se fait en arrière-plan une fois le clip terminé. Si elle échoue (par exemple, le dossier est
+inaccessible), le clip lui-même n'est pas touché.
+
 ## Problèmes
 
 - Mauvais site, ou la connexion ouvre le mauvais site : quitte LiveTrial avec **Quitter LiveTrial**, relance-le et

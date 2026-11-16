@@ -1538,6 +1538,11 @@ $("#settings-toggle").addEventListener("click", async () => {
     <div class="dialog-field"><label>${tr("Send new runs automatically", "Nieuwe ritten automatisch verzenden")}</label><span class="segmented" id="setting-auto">
       <button type="button" data-auto="true" aria-pressed="${settings.autoSend}">${tr("On", "Aan")}</button><button type="button" data-auto="false" aria-pressed="${!settings.autoSend}">${tr("Off", "Uit")}</button></span>
       <small class="quit-note">${tr("Runs are always saved on this PC first; without a connection they wait and go out later.", "Ritten worden altijd eerst op deze pc opgeslagen; zonder verbinding wachten ze en gaan ze later mee.")}</small></div>
+    <div class="dialog-field"><label>${tr("Readable copy of clips", "Leesbare kopie van clips")}</label><span class="segmented" id="setting-readable">
+      <button type="button" data-readable="true" aria-pressed="${settings.readableClips}">${tr("On", "Aan")}</button><button type="button" data-readable="false" aria-pressed="${!settings.readableClips}">${tr("Off", "Uit")}</button></span>
+      <small class="quit-note">${tr("Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.", "Elke afgeronde clip verschijnt ook in deze map met een leesbare naam: datum, tijdstip, baan, klasse en tijd. Op dezelfde schijf kost dat geen extra ruimte; als het opruimen van LiveTrial een clip verwijdert, gaat de kopie mee.")}</small>
+      <input id="setting-readable-folder" type="text" spellcheck="false" autocomplete="off" data-no-translate value="${escapeHtml(settings.readableClipsFolder || "")}" aria-label="${escapeHtml(tr("Folder for readable clips", "Map voor leesbare clips"))}">
+      <button type="button" class="capture-secondary" id="setting-readable-save">${tr("Save folder", "Map opslaan")}</button></div>
     <div class="dialog-field"><label for="setting-ghost-names">${tr("My ghost names", "Mijn ghostnamen")}<span id="setting-ghost-account"></span></label>
       <input id="setting-ghost-names" type="text" maxlength="340" autocomplete="off" spellcheck="false" placeholder="${escapeHtml(tr("e.g. BAwSer, BasAi", "bijv. BAwSer, BasAi"))}">
       <small class="quit-note">${tr("While this account is the active one, a ghost with exactly one of these names is linked to it by itself once you leave it; Nintendo staff ghosts, world-record times and times you already have never are. Separate names with commas. You can undo a link until it is sent.", "Zolang dit account actief is, wordt een ghost met precies een van deze namen vanzelf eraan gekoppeld zodra je hem verlaat; Nintendo-staffghosts, wereldrecordtijden en tijden die je al hebt nooit. Scheid namen met komma's. Je kunt een koppeling ongedaan maken tot hij verzonden is.")}</small>
@@ -1586,6 +1591,20 @@ $("#settings-toggle").addEventListener("click", async () => {
       $$("#setting-auto [data-auto]").forEach(item => item.setAttribute("aria-pressed", String((item.dataset.auto === "true") === next.autoSend)));
     } catch (error) { dialogError(error.message); }
   }));
+  $$("#setting-readable [data-readable]").forEach(button => button.addEventListener("click", async () => {
+    try {
+      const next = await action("settings.set", {readableClips: button.dataset.readable === "true"});
+      $$("#setting-readable [data-readable]").forEach(item => item.setAttribute("aria-pressed", String((item.dataset.readable === "true") === next.readableClips)));
+      dialogError("");
+    } catch (error) { dialogError(error.message); }
+  }));
+  $("#setting-readable-save").addEventListener("click", async () => {
+    try {
+      const next = await action("settings.set", {readableClipsFolder: $("#setting-readable-folder").value.trim()});
+      $("#setting-readable-folder").value = next.readableClipsFolder || "";
+      dialogError("");
+    } catch (error) { dialogError(error.message); }
+  });
   // My ghost names: per account (owner 2026-09-28: "BAwSer ... and more recently BasAi").
   const namesInput = $("#setting-ghost-names"), namesSave = $("#setting-ghost-save");
   try {
