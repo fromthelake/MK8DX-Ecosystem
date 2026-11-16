@@ -6,7 +6,7 @@ button, a { display: inline-block; padding: .8rem 1.1rem; border-radius: .5rem; 
 button { border: 0; background: #ffcc00; color: #10121a; cursor: pointer; }
 button:disabled { opacity: .55; cursor: default; }
 a { color: #ffdc50; }
-a[hidden] { display: none; }
+a[hidden], button[hidden] { display: none; }
 :focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
 .who { font-size: 1.25rem; margin: 1rem 0 0.5rem; }
@@ -14,3 +14,9 @@ a[hidden] { display: none; }
 .not-you { font-size: 0.9rem; opacity: 0.8; }
 .language { display: block; margin: 0 0 0 auto; max-width: 60%; padding: .35rem .5rem; border-radius: .4rem;
   font: inherit; font-size: .9rem; color: #f5f7ff; background: #11183a; border: 1px solid #323c6b; }
+.steps { display: flex; flex-wrap: wrap; gap: .35rem 1rem; list-style: none; padding: 0; margin: 0 0 1rem;
+  font-size: .95rem; color: #b8bfdc; }
+.steps b { display: inline-block; min-width: 1.6em; margin-right: .3rem; text-align: center; border: 1px solid #323c6b;
+  border-radius: 999px; }
+.steps [aria-current] { color: #f5f7ff; font-weight: 700; }
+.steps [aria-current] b { background: #ffcc00; color: #10121a; border-color: #ffcc00; }

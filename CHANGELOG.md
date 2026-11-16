@@ -5,6 +5,18 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Changed
+
+- **Clearer first steps on an A2 (offline) installation** for phones and browsers. The host's "Prepare this device"
+  page, the invitation page and `/device` share three numbered steps (1 Trust, 2 Scan sign-in card, 3 Done). The
+  certificate downloads as `MK8DX-<check code>-<date>.crt` instead of another `root.crt`, the page explains
+  Chrome's "cannot be downloaded securely" prompt (choose Keep), names the Pixel/stock Android and vivo menus and
+  says that the certificate step is needed for the website too (iPhone). A signed-out `/device` page lists what to
+  do next, continues by itself once the phone is signed in (checked every 3 seconds and on returning to the tab), and
+  after approval says plainly to go back to the app; the invitation page then offers "Back to approving your app".
+- **The website follows the browser's language** until a language is chosen (a Dutch phone opens in Dutch); a
+  choice made in the language menu or Settings still wins.
+
 ## 0.2.8 — 2026-11-15
 
 The release to install or update to after 0.2.5. 0.2.6 and 0.2.7 were not kept as separate releases; 0.2.8

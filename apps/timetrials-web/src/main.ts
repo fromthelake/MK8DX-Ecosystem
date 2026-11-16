@@ -2,7 +2,7 @@ import { startAppearance } from "./appearance-runtime.js";
 import { mountAuthenticationProductPage } from "./authentication-product-page.js";
 import { installDutchUiCopy } from "./dutch-ui-copy.js";
 import { loadProductCatalog } from "./product-catalog.js";
-import { parseProductLanguage, productLanguage, usesProductCatalog } from "./product-language.js";
+import { adoptBrowserLanguages, parseProductLanguage, productLanguage, usesProductCatalog } from "./product-language.js";
 import { requestSiteBackdrop } from "./site-backdrop.js";
 import { registerProductServiceWorker } from "./web-push-settings.js";
 import { stepUpAwareFetch } from "./step-up-client.js";
@@ -49,6 +49,10 @@ if (linkedLanguage !== null) {
   try { window.localStorage.setItem("mk8dx.product-language.v1", linkedLanguage); } catch { /* the page still shows it */ }
   document.documentElement.setAttribute("lang", linkedLanguage);
 }
+
+// No explicit choice yet: follow the browser's languages (a Dutch phone opens in Dutch). Nothing is stored, so the
+// language menu and Settings stay the only way to make a lasting choice.
+adoptBrowserLanguages(navigator.languages?.length ? navigator.languages : [navigator.language]);
 
 // Every language except English and Dutch reads its text from a catalog, fetched once before the first
 // render (product-catalog.ts); without it the page stays English rather than failing.

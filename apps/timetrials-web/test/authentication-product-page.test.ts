@@ -235,9 +235,101 @@ describe("passwordless authentication product page", () => {
     });
     await mounted.ready;
     await settle();
-    expect(String(root.textContent)).toContain("return to approve this device");
+    expect(String(root.textContent)).toContain("This page continues by itself");
     expect(descendants(root).some((node) => node.type === "email")).toBe(false);
     mounted.unmount();
+  });
+
+  it("guides a signed-out phone through numbered steps and continues once it is signed in elsewhere", async () => {
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+    const storage = new Map<string, string>();
+    vi.stubGlobal("localStorage", {
+      getItem: (key: string) => storage.get(key) ?? null,
+      setItem: (key: string, value: string) => { storage.set(key, value); },
+      removeItem: (key: string) => { storage.delete(key); },
+    });
+    try {
+      const document = new FakeDocument();
+      const root = document.createElement("div");
+      let signedIn = false;
+      const session = vi.fn(async () => signedIn ? { authenticated: true as const } : null);
+      const lookup = vi.fn(async (userCode: string) => ({
+        userCode, clientId: "mk8dx.timetrials.android.v1" as const,
+      }));
+      const approveDevice = vi.fn(async () => undefined);
+      const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+        client: client({
+          session, device: lookup, approveDevice,
+          async installationMode() { return "offline-invitation"; },
+        }),
+        pathname: "/device", search: "?user_code=ABCD-1234",
+      });
+      await mounted.ready;
+      await settle();
+      // Not signed in: the three steps with step 2 current, the next steps numbered from 2, no dead end.
+      const steps = descendants(root).find((candidate) => candidate.className === "ds-onboarding-steps")!;
+      expect(steps.children.map((item) => item.attributes.get("data-state"))).toEqual(["done", "current", "todo"]);
+      expect(steps.textContent).toContain("Scan sign-in card");
+      const next = descendants(root).find((candidate) => candidate.attributes.has("data-device-next"))!;
+      expect(next.attributes.get("start")).toBe("2");
+      expect(next.children.map((item) => item.textContent)).toEqual([
+        "Scan your personal sign-in card with your phone's camera. Ask the host administrator for it; it works once and expires after 15 minutes.",
+        "Come back here. This page refreshes by itself as soon as you are signed in.",
+      ]);
+      expect(node(root, "Check again")).toBeDefined();
+      // Only an expiry marker for the invitation page's "back" link: never the device code.
+      expect(Number(storage.get("mk8dx.pending-device.v1"))).toBeGreaterThan(Date.now());
+      expect([...storage.values()].join()).not.toContain("ABCD");
+      expect(lookup).not.toHaveBeenCalled();
+
+      // Still signed out at the next check: nothing changes.
+      await vi.advanceTimersByTimeAsync(3_000);
+      expect(lookup).not.toHaveBeenCalled();
+      // The invitation was accepted in another tab: the next check continues to the request by itself.
+      signedIn = true;
+      await vi.advanceTimersByTimeAsync(3_000);
+      await settle();
+      expect(lookup).toHaveBeenCalledWith("ABCD-1234");
+      const approved = descendants(root).find((candidate) => candidate.className === "ds-onboarding-steps")!;
+      expect(approved.children.map((item) => item.attributes.get("data-state"))).toEqual(["done", "done", "current"]);
+      const calls = session.mock.calls.length;
+      await vi.advanceTimersByTimeAsync(9_000);
+      expect(session.mock.calls.length).toBe(calls);  // the watch stopped
+
+      node(root, "Approve device").dispatch("click");
+      await settle();
+      await settle();
+      expect(approveDevice).toHaveBeenCalledWith("ABCD-1234");
+      expect(node(root, "Done: go back to the app")).toBeDefined();
+      expect(node(root,
+        "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.")).toBeDefined();
+      expect(storage.has("mk8dx.pending-device.v1")).toBe(false);
+      mounted.unmount();
+    } finally {
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    }
+  });
+
+  it("stops asking for the session when a signed-out device page is left", async () => {
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+    try {
+      const document = new FakeDocument();
+      const root = document.createElement("div");
+      const session = vi.fn(async () => null);
+      const mounted = mountAuthenticationProductPage(root as unknown as HTMLElement, {
+        client: client({ session, async installationMode() { return "offline-invitation"; } }),
+        pathname: "/device", search: "",
+      });
+      await mounted.ready;
+      await settle();
+      mounted.unmount();
+      const calls = session.mock.calls.length;
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(session.mock.calls.length).toBe(calls);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("does not request the protected app catalog for an anonymous visitor", async () => {
@@ -1055,6 +1147,9 @@ describe("passwordless authentication product page", () => {
     expect(mounted.status.textContent).toBe(
       "Device approved. Go back to the app to finish signing in.",
     );
+    expect(node(root, "Done: go back to the app")).toBeDefined();
+    // An email-link installation has no certificate step, so no A2 onboarding steps.
+    expect(descendants(root).some((candidate) => candidate.className === "ds-onboarding-steps")).toBe(false);
   });
 
   it("returns to the interrupted protected page after signing in", async () => {
