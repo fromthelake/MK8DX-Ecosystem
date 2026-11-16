@@ -1,6 +1,6 @@
 {
   "schemaVersion": "mk8dx.component-registry.v1",
-  "ecosystemVersion": "0.2.10",
+  "ecosystemVersion": "0.2.11",
   "components": [
     {
       "id": "web",
