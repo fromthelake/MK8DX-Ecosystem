@@ -27,6 +27,7 @@ import math
 import os
 import re
 import secrets
+import socket
 import sys
 import tempfile
 import threading
@@ -102,6 +103,8 @@ LOOPBACK_NAMES = frozenset({"127.0.0.1", "localhost", "::1"})
 MAX_ACTION_BYTES = 16 * 1024            # record/stop/settings/pin/category/archive
 MAX_CALIBRATION_BYTES = 256 * 1024      # one grid file (the largest today is ~5 KB)
 BODY_READ_SECONDS = 10.0                # a body that trickles in longer is dropped
+DRAIN_BYTES = 4 * MAX_CALIBRATION_BYTES  # a refused body read and discarded at most ...
+DRAIN_SECONDS = 2.0                     # ... for at most this long, so the client gets the answer
 WRITE_WAIT_SECONDS = 2.0                # one change at a time; a crowd gets 429
 MAX_CONNECTIONS = 64                    # concurrent connections the engine serves
 MAX_MARKED_KEYS = 20000                 # categories.json / archived.json entries
@@ -876,6 +879,37 @@ def make_handler(store: RunStore, token: str | None = None):
                     + b'">\n</head>', 1)
             self._send(200, payload, "text/html; charset=utf-8")
 
+        def _refuse_unread_body(self, length: int):
+            """Answer 413 to a body that is never read, so the client still gets it.
+
+            Closing a socket with unread data makes Windows (and Linux) send a
+            reset, which can arrive before the client has read the answer: the
+            client then sees a connection abort instead of 413. So the answer goes
+            out with Connection: close, the sending side is half-closed, and the
+            declared body is read and discarded within DRAIN_BYTES and
+            DRAIN_SECONDS before the socket closes. Nothing read is kept."""
+            self.close_connection = True
+            self._json(413, {"ok": False, "error": "request too large"}, {"Connection": "close"})
+            try:
+                self.wfile.flush()
+                self.connection.shutdown(socket.SHUT_WR)
+            except OSError:
+                return
+            remaining = min(length, DRAIN_BYTES)
+            deadline = time.monotonic() + DRAIN_SECONDS
+            try:
+                while remaining > 0:
+                    left = deadline - time.monotonic()
+                    if left <= 0:
+                        break
+                    self.connection.settimeout(left)
+                    chunk = self.rfile.read1(min(remaining, 64 * 1024))
+                    if not chunk:
+                        break
+                    remaining -= len(chunk)
+            except OSError:
+                pass
+
         def _read_body(self, limit: int):
             """The request body within `limit` bytes and BODY_READ_SECONDS, or None
             (and the connection closes) when it is missing, too large or too slow."""
@@ -892,8 +926,7 @@ def make_handler(store: RunStore, token: str | None = None):
                 self._json(400, {"ok": False, "error": "bad request"})
                 return None
             if length > limit:
-                self.close_connection = True
-                self._json(413, {"ok": False, "error": "request too large"})
+                self._refuse_unread_body(length)
                 return None
             if not length:
                 return b""
