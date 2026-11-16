@@ -160,9 +160,9 @@ class AndroidTimeTrialsProductComponentDeviceTest {
                     tracksContent = { _, _, _, _ -> },
                     savedResultsContent = { _, _ -> },
                     rankContent = { _, _, _, _, _, _ -> Text("Rank route") },
-                    profileContent = { _, _ -> Text("Profile route") },
+                    profileContent = { _, _, _ -> Text("Profile route") },
                     notificationsContent = { _, _, _ -> Text("Notifications route") },
-                    settingsContent = { _, _ -> Text("Settings route") },
+                    settingsContent = { _, _, _, _ -> Text("Settings route") },
                     activePlayerLabel = "player.ben",
                 )
             }

@@ -166,6 +166,7 @@ class MainActivity : ComponentActivity() {
         // the first frame, on every supported release (DESIGN_SYSTEM §23).
         installSplashScreen()
         super.onCreate(savedInstanceState)
+        AndroidPreviousDefaultMigration.run(applicationContext)
         // Edge to edge: the product draws behind the system bars and the shell
         // consumes the insets itself, so the backdrop reaches the screen edges
         // while nothing lands under a bar.

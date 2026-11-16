@@ -5,6 +5,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+- Android keeps the remembered account and unsent Time Trials when an update changes the APK's packaged
+  default community and the old community can be identified from the phone's remembered installations.
+  Existing destination accounts and results take precedence; the old copy stays available for recovery.
+- The A2 phone onboarding says **Done** once all three steps are complete. Its completed Connect row no
+  longer presents a button that does nothing, and the other step rows have a larger touch target.
+
 ## 0.2.9 — 2026-11-16
 
 The release to install or update to after 0.2.5. 0.2.6, 0.2.7 and 0.2.8 were not kept as separate releases;

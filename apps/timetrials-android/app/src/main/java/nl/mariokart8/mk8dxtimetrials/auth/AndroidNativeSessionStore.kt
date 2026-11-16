@@ -14,7 +14,7 @@ import javax.crypto.spec.GCMParameterSpec
 import nl.mariokart8.mk8dxtimetrials.AndroidServerOrigin
 
 private const val keyAlias = "mk8dx_timetrials_auth_session_v2"
-private const val preferencesName = "mk8dx_timetrials_private_auth_session_v2"
+internal const val ANDROID_SESSION_PREFERENCES_NAME = "mk8dx_timetrials_private_auth_session_v2"
 private const val legacyKeyAlias = "mk8dx_timetrials_auth_session_v1"
 private const val legacyPreferencesName = "mk8dx_timetrials_private_auth_session_v1"
 private const val legacyCiphertextKey = "ciphertext"
@@ -303,12 +303,12 @@ internal class AndroidKeystoreNativeSessionStore private constructor(
 
 private fun preferences(context: Context): SharedPreferences =
     context.getSharedPreferences(
-        if (AndroidServerOrigin.usesPackagedDefault(context)) preferencesName
-        else preferencesName + "_" + AndroidServerOrigin.namespace(context),
+        if (AndroidServerOrigin.usesPackagedDefault(context)) ANDROID_SESSION_PREFERENCES_NAME
+        else ANDROID_SESSION_PREFERENCES_NAME + "_" + AndroidServerOrigin.namespace(context),
         Context.MODE_PRIVATE,
     )
 
-private class AndroidPreferencesSessionSlotDirectory(
+internal class AndroidPreferencesSessionSlotDirectory(
     private val preferences: SharedPreferences,
 ) : AndroidSessionSlotDirectory {
     override fun slotIds(): List<String> = preferences.getString(slotIndexKey, null)
@@ -342,7 +342,7 @@ private class AndroidPreferencesSessionSlotDirectory(
     }
 }
 
-private class AndroidKeystoreSessionSecretVault(
+internal class AndroidKeystoreSessionSecretVault(
     private val preferences: SharedPreferences,
 ) : AndroidSessionSecretVault {
     override fun read(slotId: String, purpose: String): String? {
