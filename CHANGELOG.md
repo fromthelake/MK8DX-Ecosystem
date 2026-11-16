@@ -5,7 +5,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
-## 0.2.11 — 2026-11-16
+## 0.2.11 — 2026-11-17
 
 - The A2 guides in all 15 languages explain the current Android certificate and in-app sign-in steps,
   and tell Windows users how to choose a permanent package folder or relocate it safely after an update.
