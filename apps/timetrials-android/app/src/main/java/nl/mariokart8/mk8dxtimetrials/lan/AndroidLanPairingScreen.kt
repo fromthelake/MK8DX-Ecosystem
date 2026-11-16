@@ -63,8 +63,9 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 private sealed interface PairingStep {
     data object Scanning : PairingStep
-    data class Confirm(val offer: AndroidLanPairingOffer) : PairingStep
-    data class Connecting(val offer: AndroidLanPairingOffer) : PairingStep
+    /** The root is fetched first, so the confirm screen can show the same short code as the card. */
+    data class Fetching(val offer: AndroidLanPairingOffer) : PairingStep
+    data class Confirm(val offer: AndroidLanPairingOffer, val root: java.security.cert.X509Certificate) : PairingStep
 }
 
 /**
@@ -81,9 +82,35 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
     var pasted by rememberSaveable { mutableStateOf("") }
     val scope = rememberCoroutineScope()
 
+    fun fetch(parsed: AndroidLanPairingOffer) {
+        message = null
+        step = PairingStep.Fetching(parsed)
+        scope.launch {
+            // Accepted only when its key matches the fingerprint in the QR (the pin); nothing is stored yet.
+            val root = withContext(Dispatchers.IO) {
+                runCatching { AndroidLanRootFetcher.fetch(parsed.host) }
+                    .onFailure { android.util.Log.w("MK8DXLanPairing", "root fetch failed: ${it.javaClass.simpleName}: ${it.message}") }
+                    .getOrNull()
+                    ?.let { bytes ->
+                        AndroidLanRoot.accept(bytes, parsed.spkiSha256)
+                            ?: null.also { android.util.Log.w("MK8DXLanPairing", "root refused (${bytes.size} bytes)") }
+                    }
+            }
+            if (root == null) {
+                step = PairingStep.Scanning
+                message = t(
+                    "Could not get a matching certificate from ${parsed.host}. Check the network and that the host is running, then try again. Nothing was changed.",
+                    "Geen passend certificaat gekregen van ${parsed.host}. Controleer het netwerk en of de host draait, en probeer opnieuw. Er is niets gewijzigd.",
+                )
+            } else {
+                step = PairingStep.Confirm(parsed, root)
+            }
+        }
+    }
+
     fun offer(text: String) {
         val parsed = AndroidLanPairingPayload.parse(text)
-        if (parsed != null) { message = null; step = PairingStep.Confirm(parsed) }
+        if (parsed != null) fetch(parsed)
         else message = t(
             "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.",
             "Dit is niet de QR-code van een kaart Apparaat voorbereiden. Een persoonlijke inlogkaart komt later, in de browser.",
@@ -136,71 +163,75 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
                     )
                 }
             }
-            is PairingStep.Confirm, is PairingStep.Connecting -> {
-                val pairing = if (current is PairingStep.Confirm) current.offer else (current as PairingStep.Connecting).offer
+            is PairingStep.Fetching -> {
+                Mk8dxDisplayText(t("Check that this is your installation", "Controleer dat dit jouw installatie is"), type.display4)
+                Mk8dxStatusMessage(t("Connecting…", "Verbinden…"), tone = Mk8dxStatusTone.Info)
+            }
+            is PairingStep.Confirm -> {
+                val pairing = current.offer
+                val certificateSha256 = AndroidLanCertificateCode.certificateSha256(current.root)
                 Mk8dxDisplayText(t("Check that this is your installation", "Controleer dat dit jouw installatie is"), type.display4)
                 Text(
                     t(
-                        "The same address and key are on the Prepare this device page, under Full fingerprints.",
-                        "Hetzelfde adres en dezelfde sleutel staan op de pagina Dit apparaat voorbereiden, bij Volledige vingerafdrukken.",
+                        "First check this code. It must match the code on the Prepare a device card or in MK8DX beheer on the host computer.",
+                        "Controleer eerst deze code. Hij moet gelijk zijn aan de code op de kaart Apparaat voorbereiden of in MK8DX beheer op de hostcomputer.",
                     ),
                     style = type.body,
                     color = colors.textBody,
                 )
+                Mk8dxPanel(t("CODE", "CODE")) {
+                    Text(
+                        AndroidLanCertificateCode.short(certificateSha256),
+                        style = type.display6,
+                        color = colors.textPrimary,
+                        fontFamily = FontFamily.Monospace,
+                        modifier = Modifier.testTag("lan-pairing-short-code"),
+                    )
+                }
                 Mk8dxPanel(t("ADDRESS", "ADRES")) {
                     Text(pairing.origin, style = type.body, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
                 }
-                Mk8dxPanel(t("KEY FINGERPRINT (SHA-256)", "SLEUTELVINGERAFDRUK (SHA-256)")) {
-                    Text(AndroidLanRoot.grouped(pairing.spkiSha256), style = type.body, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
+                var details by rememberSaveable { mutableStateOf(false) }
+                Mk8dxButton(
+                    t("Full fingerprints", "Volledige vingerafdrukken"),
+                    { details = !details },
+                    variant = Mk8dxButtonVariant.Quiet,
+                    tag = "lan-pairing-details",
+                )
+                if (details) {
+                    Mk8dxPanel(null) {
+                        Text(t("Root certificate SHA-256:", "SHA-256 van het basiscertificaat:"), style = type.bodyS, color = colors.textSecondary)
+                        Text(certificateSha256, style = type.bodyS, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
+                        Text(t("Root public key SHA-256 (SPKI):", "SHA-256 van de publieke sleutel (SPKI):"), style = type.bodyS, color = colors.textSecondary)
+                        Text(pairing.spkiSha256, style = type.bodyS, color = colors.textPrimary, fontFamily = FontFamily.Monospace)
+                    }
                 }
                 Text(
                     t(
-                        "Connect only if both match exactly. The app will then trust this installation, and only for this address.",
-                        "Verbind alleen als beide precies gelijk zijn. De app vertrouwt daarna deze installatie, en alleen voor dit adres.",
+                        "Connect only if the code matches exactly. The app will then trust this installation, and only for this address.",
+                        "Verbind alleen als de code precies gelijk is. De app vertrouwt daarna deze installatie, en alleen voor dit adres.",
                     ),
                     style = type.body,
                     color = colors.textBody,
                 )
-                message?.let {
-                    Mk8dxStatusMessage(it, tone = if (current is PairingStep.Connecting) Mk8dxStatusTone.Info else Mk8dxStatusTone.Error)
-                }
+                message?.let { Mk8dxStatusMessage(it, tone = Mk8dxStatusTone.Error) }
                 Row(horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.sm)) {
                     Mk8dxButton(
                         t("Back", "Terug"),
                         { message = null; step = PairingStep.Scanning },
                         variant = Mk8dxButtonVariant.Quiet,
-                        disabledReason = if (current is PairingStep.Confirm) null else t("Connecting…", "Verbinden…"),
                         tag = "lan-pairing-back",
                     )
                     Mk8dxButton(
                         t("Connect", "Verbinden"),
                         {
-                        step = PairingStep.Connecting(pairing)
-                        message = t("Connecting…", "Verbinden…")
-                        scope.launch {
-                            val root = withContext(Dispatchers.IO) {
-                                runCatching { AndroidLanRootFetcher.fetch(pairing.host) }
-                                    .onFailure { android.util.Log.w("MK8DXLanPairing", "root fetch failed: ${it.javaClass.simpleName}: ${it.message}") }
-                                    .getOrNull()
-                                    ?.let { bytes ->
-                                        AndroidLanRoot.accept(bytes, pairing.spkiSha256)
-                                            ?: null.also { android.util.Log.w("MK8DXLanPairing", "root refused (${bytes.size} bytes)") }
-                                    }
-                            }
-                            if (root == null) {
-                                step = PairingStep.Confirm(pairing)
-                                message = t(
-                                    "Could not get a matching certificate from ${pairing.host}. Check the network and that the host is running, then try again. Nothing was changed.",
-                                    "Geen passend certificaat gekregen van ${pairing.host}. Controleer het netwerk en of de host draait, en probeer opnieuw. Er is niets gewijzigd.",
-                                )
-                            } else {
-                                AndroidLanPairingStore.save(context, pairing.origin, pairing.spkiSha256, root)
+                            if (AndroidLanPairingStore.save(context, pairing.origin, pairing.spkiSha256, current.root)) {
                                 onPaired(pairing.origin)
+                            } else {
+                                message = t("Could not save the connection. Try again.", "De verbinding kon niet worden opgeslagen. Probeer opnieuw.")
                             }
-                        }
                         },
                         variant = Mk8dxButtonVariant.Primary,
-                        disabledReason = if (current is PairingStep.Confirm) null else t("Connecting…", "Verbinden…"),
                         tag = "lan-pairing-connect",
                     )
                 }
@@ -210,8 +241,16 @@ internal fun AndroidLanPairingFlow(onPaired: (String) -> Unit, onCancel: () -> U
     }
 }
 
+/**
+ * The app's own QR scanner: [onText] receives every decoded text; a text [accepts] approves is delivered once.
+ */
 @Composable
-private fun QrCameraPreview(onText: (String) -> Unit, label: String) {
+internal fun QrCameraPreview(
+    onText: (String) -> Unit,
+    label: String,
+    accepts: (String) -> Boolean = { AndroidLanPairingPayload.parse(it) != null },
+    tag: String = "lan-pairing-camera",
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     var granted by remember {
@@ -225,7 +264,7 @@ private fun QrCameraPreview(onText: (String) -> Unit, label: String) {
             variant = Mk8dxButtonVariant.Primary,
             size = Mk8dxButtonSize.Lg,
             camera = true,
-            tag = "lan-pairing-camera",
+            tag = tag,
             modifier = Modifier.fillMaxWidth(),
         )
         return
@@ -268,10 +307,10 @@ private fun QrCameraPreview(onText: (String) -> Unit, label: String) {
                                 val buffer = plane.buffer
                                 val data = ByteArray(buffer.remaining()).also { buffer.get(it) }
                                 val text = AndroidQrDecoder.decode(data, plane.rowStride, image.width, image.height)
-                                if (text != null && AndroidLanPairingPayload.parse(text) != null &&
+                                if (text != null && accepts(text) &&
                                     delivered.compareAndSet(false, true)) {
                                     ContextCompat.getMainExecutor(viewContext).execute { onText(text) }
-                                } else if (text != null && AndroidLanPairingPayload.parse(text) == null) {
+                                } else if (text != null && !accepts(text)) {
                                     ContextCompat.getMainExecutor(viewContext).execute { onText(text) }
                                 }
                             } finally {

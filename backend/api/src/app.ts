@@ -205,6 +205,10 @@ import {
   type DeviceInvitationRouteOptions,
 } from "./authentication/device-invitation-routes.js";
 import {
+  registerNativeInvitationRoutes,
+  type NativeInvitationRouteOptions,
+} from "./authentication/native-invitation-routes.js";
+import {
   registerTournamentSubmissionRoutes,
   type TournamentSubmissionAuthorizer,
   type TournamentWebCsrfVerifier,
@@ -285,6 +289,11 @@ export type AppDependencies = Readonly<{
    * it the route is not registered, so an email-link installation answers 404.
    */
   deviceInvitations?: Omit<DeviceInvitationRouteOptions, "resolveActor">;
+  /**
+   * ADR-0224 amendment 2026-11-16: the Android app redeems a personal sign-in card itself. Present only
+   * in an offline-invitation installation, like `deviceInvitations`.
+   */
+  nativeInvitations?: NativeInvitationRouteOptions;
   /** ADR-0224 phase 2: remembered accounts, one-tap switching and the optional PIN. */
   accountSwitch?: Omit<AccountSwitchRouteOptions, "resolveActor">;
   nativeEmailApproval?: Readonly<{
@@ -1312,6 +1321,9 @@ export async function buildApp(
       ...dependencies.deviceInvitations,
       resolveActor,
     });
+  }
+  if (dependencies.nativeInvitations !== undefined) {
+    await registerNativeInvitationRoutes(app, dependencies.nativeInvitations);
   }
   if (dependencies.resolveActor !== undefined) {
     await registerSessionCapabilityRoutes(

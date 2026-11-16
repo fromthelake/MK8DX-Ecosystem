@@ -396,7 +396,7 @@
   {
    "key": "ADDRESS",
    "places": [
-    "AndroidLanPairingScreen.kt:150"
+    "AndroidLanPairingScreen.kt:191"
    ],
    "nl": "ADRES"
   },
@@ -749,6 +749,13 @@
    "nl": "Alle scores binnen · de uitslag wordt gedeeld"
   },
   {
+   "key": "All set. Enjoy racing!",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:180"
+   ],
+   "nl": "Alles klaar. Veel raceplezier!"
+  },
+  {
    "key": "All {0} participants are inactive absentees and are therefore hidden.",
    "places": [
     "AndroidTournamentParticipantsStep.kt:612"
@@ -768,6 +775,13 @@
     "AndroidTournamentStatisticsSection.kt:533"
    ],
    "nl": "Alle {0} gereden banen — sorteer en filter elke kolom"
+  },
+  {
+   "key": "Almost ready",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:142"
+   ],
+   "nl": "Bijna klaar"
   },
   {
    "key": "Already linked to an account",
@@ -942,7 +956,7 @@
   {
    "key": "Approve this request in your browser, then check it here.",
    "places": [
-    "AndroidAuthenticationScreen.kt:269",
+    "AndroidAuthenticationScreen.kt:267",
     "AndroidDutchUiCopy.kt:198"
    ],
    "nl": "Keur dit verzoek goed in je browser en controleer het daarna hier."
@@ -1095,7 +1109,7 @@
    "places": [
     "AndroidCommunitySetupScreen.kt:229",
     "AndroidAdministrationScreen.kt:203",
-    "AndroidLanPairingScreen.kt:169",
+    "AndroidLanPairingScreen.kt:220",
     "AndroidDutchUiCopy.kt:22"
    ],
    "nl": "Terug"
@@ -1364,7 +1378,7 @@
   {
    "key": "CLOSE BEHIND",
    "places": [
-    "AndroidHomeExperience.kt:612"
+    "AndroidHomeExperience.kt:615"
    ],
    "nl": "VLAK ACHTER JE"
   },
@@ -1374,6 +1388,13 @@
     "AndroidDutchUiCopy.kt:278"
    ],
    "nl": "KLEINSTE DUEL"
+  },
+  {
+   "key": "CODE",
+   "places": [
+    "AndroidLanPairingScreen.kt:182"
+   ],
+   "nl": "CODE"
   },
   {
    "key": "COMMUNITY",
@@ -1549,10 +1570,17 @@
   {
    "key": "Character and kart setup not recorded.",
    "places": [
-    "AndroidHomeExperience.kt:1709",
+    "AndroidHomeExperience.kt:1712",
     "AndroidDutchUiCopy.kt:35"
    ],
    "nl": "Personage en kartcombinatie niet vastgelegd."
+  },
+  {
+   "key": "Check again",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:305"
+   ],
+   "nl": "Opnieuw controleren"
   },
   {
    "key": "Check approval",
@@ -1578,7 +1606,8 @@
   {
    "key": "Check that this is your installation",
    "places": [
-    "AndroidLanPairingScreen.kt:141"
+    "AndroidLanPairingScreen.kt:167",
+    "AndroidLanPairingScreen.kt:173"
    ],
    "nl": "Controleer dat dit jouw installatie is"
   },
@@ -1637,6 +1666,13 @@
     "AndroidTournamentScreen.kt:349"
    ],
    "nl": "Indeling controleren…"
+  },
+  {
+   "key": "Checking…",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:289"
+   ],
+   "nl": "Controleren…"
   },
   {
    "key": "Checks the scanner and sync; the result expires after 24 hours.",
@@ -2160,7 +2196,7 @@
   {
    "key": "Compare",
    "places": [
-    "AndroidHomeExperience.kt:867"
+    "AndroidHomeExperience.kt:870"
    ],
    "nl": "Vergelijk"
   },
@@ -2304,23 +2340,22 @@
   {
    "key": "Connect",
    "places": [
-    "AndroidLanPairingScreen.kt:176"
+    "AndroidLanOnboardingScreen.kt:155",
+    "AndroidLanPairingScreen.kt:226"
    ],
    "nl": "Verbinden"
   },
   {
-   "key": "Connect only if both match exactly. The app will then trust this installation, and only for this address.",
+   "key": "Connect only if the code matches exactly. The app will then trust this installation, and only for this address.",
    "places": [
-    "AndroidLanPairingScreen.kt:157"
+    "AndroidLanPairingScreen.kt:210"
    ],
-   "nl": "Verbind alleen als beide precies gelijk zijn. De app vertrouwt daarna deze installatie, en alleen voor dit adres."
+   "nl": "Verbind alleen als de code precies gelijk is. De app vertrouwt daarna deze installatie, en alleen voor dit adres."
   },
   {
    "key": "Connecting…",
    "places": [
-    "AndroidLanPairingScreen.kt:172",
-    "AndroidLanPairingScreen.kt:179",
-    "AndroidLanPairingScreen.kt:203"
+    "AndroidLanPairingScreen.kt:168"
    ],
    "nl": "Verbinden…"
   },
@@ -2359,6 +2394,13 @@
     "AndroidDutchUiCopy.kt:446"
    ],
    "nl": "Verbinding maken met aanmelden…"
+  },
+  {
+   "key": "Contacting the installation…",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:460"
+   ],
+   "nl": "Contact met de installatie…"
   },
   {
    "key": "Continue to Step 1",
@@ -2426,7 +2468,7 @@
   {
    "key": "Corrected",
    "places": [
-    "AndroidHomeExperience.kt:1741"
+    "AndroidHomeExperience.kt:1744"
    ],
    "nl": "Gecorrigeerd"
   },
@@ -2440,7 +2482,7 @@
   {
    "key": "Could not get a matching certificate from {0}. Check the network and that the host is running, then try again. Nothing was changed.",
    "places": [
-    "AndroidLanPairingScreen.kt:192"
+    "AndroidLanPairingScreen.kt:101"
    ],
    "nl": "Geen passend certificaat gekregen van {0}. Controleer het netwerk en of de host draait, en probeer opnieuw. Er is niets gewijzigd."
   },
@@ -2463,7 +2505,7 @@
   {
    "key": "Could not react right now",
    "places": [
-    "AndroidHomeExperience.kt:697"
+    "AndroidHomeExperience.kt:700"
    ],
    "nl": "Reageren lukt nu niet"
   },
@@ -2483,6 +2525,13 @@
     "AndroidAccountEcosystemScreens.kt:1637"
    ],
    "nl": "Opslaan mislukt"
+  },
+  {
+   "key": "Could not save the connection. Try again.",
+   "places": [
+    "AndroidLanPairingScreen.kt:231"
+   ],
+   "nl": "De verbinding kon niet worden opgeslagen. Probeer opnieuw."
   },
   {
    "key": "Counted over every race in a finalized tournament.",
@@ -2897,14 +2946,15 @@
   {
    "key": "Does the browser ask you to sign in first? Then you have no account on this installation yet: scan the personal sign-in card your administrator makes for you, then open the approval page again.",
    "places": [
-    "AndroidAuthenticationScreen.kt:276"
+    "AndroidAuthenticationScreen.kt:274"
    ],
    "nl": "Vraagt de browser eerst om aan te melden? Dan heb je nog geen account op deze installatie: scan de persoonlijke inlogkaart die je beheerder voor je maakt en open daarna de goedkeuringspagina opnieuw."
   },
   {
    "key": "Done",
    "places": [
-    "AndroidRankScreen.kt:675"
+    "AndroidRankScreen.kt:675",
+    "AndroidLanOnboardingScreen.kt:182"
    ],
    "nl": "Klaar"
   },
@@ -2978,7 +3028,7 @@
    "places": [
     "AndroidAccountEcosystemScreens.kt:218",
     "AndroidAccountEcosystemScreens.kt:1919",
-    "AndroidHomeExperience.kt:1718",
+    "AndroidHomeExperience.kt:1721",
     "AndroidTrackContext.kt:1041"
    ],
    "nl": "Bewerken"
@@ -3054,9 +3104,10 @@
   {
    "key": "English",
    "places": [
+    "AndroidLanOnboarding.kt:127",
     "AndroidDutchUiCopy.kt:63"
    ],
-   "nl": "Engels"
+   "nl": "Dutch"
   },
   {
    "key": "English and Dutch are reviewed; other languages are machine-translated.",
@@ -3219,7 +3270,7 @@
   {
    "key": "Expired — sign in again to synchronize",
    "places": [
-    "AndroidAuthenticationScreen.kt:457",
+    "AndroidAuthenticationScreen.kt:455",
     "AndroidDutchUiCopy.kt:457"
    ],
    "nl": "Verlopen — meld je opnieuw aan om te synchroniseren"
@@ -3298,7 +3349,7 @@
   {
    "key": "Fastest",
    "places": [
-    "AndroidHomeExperience.kt:1576"
+    "AndroidHomeExperience.kt:1579"
    ],
    "nl": "Snelste"
   },
@@ -3546,6 +3597,13 @@
    "nl": "Afgerond"
   },
   {
+   "key": "First check this code. It must match the code on the Prepare a device card or in MK8DX beheer on the host computer.",
+   "places": [
+    "AndroidLanPairingScreen.kt:175"
+   ],
+   "nl": "Controleer eerst deze code. Hij moet gelijk zijn aan de code op de kaart Apparaat voorbereiden of in MK8DX beheer op de hostcomputer."
+  },
+  {
    "key": "First choose a group. Then choose the exact seat: place on an empty seat or swap with the occupied seat.",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:660"
@@ -3576,7 +3634,7 @@
   {
    "key": "First time",
    "places": [
-    "AndroidHomeExperience.kt:899"
+    "AndroidHomeExperience.kt:902"
    ],
    "nl": "Eerste tijd"
   },
@@ -3691,6 +3749,13 @@
     "AndroidDutchUiCopy.kt:86"
    ],
    "nl": "Alle accountinstellingen"
+  },
+  {
+   "key": "Full fingerprints",
+   "places": [
+    "AndroidLanPairingScreen.kt:196"
+   ],
+   "nl": "Volledige vingerafdrukken"
   },
   {
    "key": "Full lap, coin, mushroom and build details when recorded",
@@ -3864,7 +3929,8 @@
   {
    "key": "HOME OR CLUB",
    "places": [
-    "AndroidLanPairingScreen.kt:107"
+    "AndroidLanOnboardingScreen.kt:141",
+    "AndroidLanPairingScreen.kt:134"
    ],
    "nl": "THUIS OF CLUB"
   },
@@ -4193,13 +4259,6 @@
    "nl": "VOERTUIG"
   },
   {
-   "key": "KEY FINGERPRINT (SHA-256)",
-   "places": [
-    "AndroidLanPairingScreen.kt:153"
-   ],
-   "nl": "SLEUTELVINGERAFDRUK (SHA-256)"
-  },
-  {
    "key": "Kart setup",
    "places": [
     "AndroidDutchUiCopy.kt:95"
@@ -4268,7 +4327,7 @@
   {
    "key": "Lap",
    "places": [
-    "AndroidHomeExperience.kt:1658",
+    "AndroidHomeExperience.kt:1661",
     "AndroidDutchUiCopy.kt:104"
    ],
    "nl": "Ronde"
@@ -4276,7 +4335,7 @@
   {
    "key": "Lap time",
    "places": [
-    "AndroidHomeExperience.kt:1659",
+    "AndroidHomeExperience.kt:1662",
     "AndroidDutchUiCopy.kt:105"
    ],
    "nl": "Rondetijd"
@@ -4291,7 +4350,7 @@
   {
    "key": "Lap times and coins not recorded.",
    "places": [
-    "AndroidHomeExperience.kt:1645"
+    "AndroidHomeExperience.kt:1648"
    ]
   },
   {
@@ -4359,6 +4418,20 @@
     "AndroidAdministrationScreen.kt:181"
    ],
    "nl": "Laatste maand"
+  },
+  {
+   "key": "Later",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:198"
+   ],
+   "nl": "Later"
+  },
+  {
+   "key": "Later? The app already works on this phone. Until step 2 is done, the website in your browser shows a security warning; until step 3, your times stay on this phone. These steps come back at the next start.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:190"
+   ],
+   "nl": "Later? De app werkt al op deze telefoon. Tot stap 2 klaar is, geeft de website in je browser een beveiligingswaarschuwing; tot stap 3 blijven je tijden op deze telefoon. Deze stappen komen terug bij de volgende start."
   },
   {
    "key": "Latest Time Trials",
@@ -4441,6 +4514,13 @@
     "AndroidAccountEcosystemScreens.kt:1625"
    ],
    "nl": "Laat mij porren door"
+  },
+  {
+   "key": "Let your phone trust the installation",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:156"
+   ],
+   "nl": "Je telefoon laten vertrouwen"
   },
   {
    "key": "Light",
@@ -4752,7 +4832,7 @@
   {
    "key": "MY SESSIONS",
    "places": [
-    "AndroidHomeExperience.kt:621"
+    "AndroidHomeExperience.kt:624"
    ],
    "nl": "MIJN SESSIES"
   },
@@ -5066,7 +5146,7 @@
   {
    "key": "Mushrooms",
    "places": [
-    "AndroidHomeExperience.kt:1666",
+    "AndroidHomeExperience.kt:1669",
     "AndroidTrackContext.kt:719",
     "AndroidDutchUiCopy.kt:114"
    ],
@@ -5112,7 +5192,7 @@
   {
    "key": "NEEDS ACTION",
    "places": [
-    "AndroidHomeExperience.kt:594"
+    "AndroidHomeExperience.kt:597"
    ],
    "nl": "VRAAGT OM ACTIE"
   },
@@ -5270,7 +5350,8 @@
   {
    "key": "Next",
    "places": [
-    "AndroidLanPairingScreen.kt:130"
+    "AndroidLanOnboardingScreen.kt:412",
+    "AndroidLanPairingScreen.kt:157"
    ],
    "nl": "Volgende"
   },
@@ -5408,7 +5489,7 @@
   {
    "key": "No accounts are remembered on this device.",
    "places": [
-    "AndroidAuthenticationScreen.kt:389",
+    "AndroidAuthenticationScreen.kt:387",
     "AndroidDutchUiCopy.kt:456"
    ],
    "nl": "Er zijn geen accounts bekend op dit apparaat."
@@ -5465,7 +5546,7 @@
   {
    "key": "No detailed run data was recorded.",
    "places": [
-    "AndroidHomeExperience.kt:1559"
+    "AndroidHomeExperience.kt:1562"
    ],
    "nl": "Er zijn geen uitgebreide rundetails vastgelegd."
   },
@@ -5585,7 +5666,7 @@
   {
    "key": "No recent community activity yet — be the first.",
    "places": [
-    "AndroidHomeExperience.kt:577",
+    "AndroidHomeExperience.kt:578",
     "AndroidDutchUiCopy.kt:220"
    ],
    "nl": "Nog geen recente communityactiviteit — wees de eerste."
@@ -5957,11 +6038,25 @@
    "nl": "Niet aangemeld · Aanmelden"
   },
   {
+   "key": "Not trusted by your phone yet.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:296"
+   ],
+   "nl": "Nog niet vertrouwd door je telefoon."
+  },
+  {
    "key": "Not yet seated: {0}",
    "places": [
     "AndroidTournamentGroupDraftStep.kt:832"
    ],
    "nl": "Nog niet geplaatst: {0}"
+  },
+  {
+   "key": "Not you? Then do not sign in; the card stays valid for the right person.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:425"
+   ],
+   "nl": "Ben jij dit niet? Meld je dan niet aan; de kaart blijft geldig voor de juiste persoon."
   },
   {
    "key": "Note (optional)",
@@ -6001,7 +6096,7 @@
   {
    "key": "Nothing matches this filter yet.",
    "places": [
-    "AndroidHomeExperience.kt:584"
+    "AndroidHomeExperience.kt:587"
    ],
    "nl": "Nog niets dat bij dit filter past."
   },
@@ -6170,6 +6265,13 @@
    "nl": "Op deze telefoon en waarover je hoort"
   },
   {
+   "key": "On this phone:",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:286"
+   ],
+   "nl": "Op deze telefoon:"
+  },
+  {
    "key": "On this site Players create themselves when they sign up. Ask the person to sign up, then add their Player.",
    "places": [
     "AndroidTournamentRosterPicker.kt:82",
@@ -6257,6 +6359,20 @@
    "nl": "Open MK8DX voor de details."
   },
   {
+   "key": "Open Settings",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:280"
+   ],
+   "nl": "Instellingen openen"
+  },
+  {
+   "key": "Open Settings and search for “certificate”. Choose Install a certificate (or Install from storage) → CA certificate → choose the MK8DX file → confirm with your PIN.",
+   "places": [
+    "AndroidLanOnboarding.kt:151"
+   ],
+   "nl": "Open Instellingen en zoek op “certificaat”. Kies Certificaat installeren (of Installeren vanuit opslag) → CA-certificaat → kies het MK8DX-bestand → bevestig met je pincode."
+  },
+  {
    "key": "Open Settings for details.",
    "places": [
     "AndroidNotificationPresentation.kt:204"
@@ -6331,7 +6447,7 @@
   {
    "key": "Open leaderboard",
    "places": [
-    "AndroidHomeExperience.kt:1587"
+    "AndroidHomeExperience.kt:1590"
    ],
    "nl": "Open klassement"
   },
@@ -6451,9 +6567,16 @@
   {
    "key": "Or paste the setup link",
    "places": [
-    "AndroidLanPairingScreen.kt:122"
+    "AndroidLanPairingScreen.kt:149"
    ],
    "nl": "Of plak de setup-link"
+  },
+  {
+   "key": "Or paste the sign-in link",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:404"
+   ],
+   "nl": "Of plak de inloglink"
   },
   {
    "key": "Orange",
@@ -6532,7 +6655,7 @@
   {
    "key": "Overtaken",
    "places": [
-    "AndroidHomeExperience.kt:804"
+    "AndroidHomeExperience.kt:807"
    ],
    "nl": "Ingehaald"
   },
@@ -6562,7 +6685,7 @@
    "key": "PB",
    "places": [
     "AndroidComebackStrip.kt:337",
-    "AndroidHomeExperience.kt:1271"
+    "AndroidHomeExperience.kt:1274"
    ],
    "nl": "PR"
   },
@@ -6583,7 +6706,7 @@
   {
    "key": "PIN required",
    "places": [
-    "AndroidAuthenticationScreen.kt:507",
+    "AndroidAuthenticationScreen.kt:505",
     "AndroidDutchUiCopy.kt:98"
    ],
    "nl": "Pincode nodig"
@@ -6605,7 +6728,6 @@
   {
    "key": "PLAYERS",
    "places": [
-    "AndroidAuthenticationScreen.kt:168",
     "AndroidDutchUiCopy.kt:135"
    ],
    "nl": "SPELERS"
@@ -6770,9 +6892,16 @@
   {
    "key": "Paste the setup link first",
    "places": [
-    "AndroidLanPairingScreen.kt:133"
+    "AndroidLanPairingScreen.kt:160"
    ],
    "nl": "Plak eerst de setup-link"
+  },
+  {
+   "key": "Paste the sign-in link first",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:415"
+   ],
+   "nl": "Plak eerst de inloglink"
   },
   {
    "key": "People",
@@ -6919,7 +7048,7 @@
   {
    "key": "Point the camera at the QR code on the Prepare a device card. Your administrator shows it on the MK8DX computer or hands it out on paper. The phone must be on the same Wi-Fi as that computer.",
    "places": [
-    "AndroidLanPairingScreen.kt:112"
+    "AndroidLanPairingScreen.kt:139"
    ],
    "nl": "Richt de camera op de QR-code van de kaart Apparaat voorbereiden. Je beheerder laat die zien op de MK8DX-computer of geeft hem op papier. De telefoon moet op dezelfde wifi zitten als die computer."
   },
@@ -7313,7 +7442,7 @@
   {
    "key": "REST OF THE COMMUNITY",
    "places": [
-    "AndroidHomeExperience.kt:630"
+    "AndroidHomeExperience.kt:633"
    ],
    "nl": "REST VAN DE COMMUNITY"
   },
@@ -7343,7 +7472,7 @@
   {
    "key": "RIVALS",
    "places": [
-    "AndroidHomeExperience.kt:603"
+    "AndroidHomeExperience.kt:606"
    ],
    "nl": "RIVALEN"
   },
@@ -7364,7 +7493,7 @@
   {
    "key": "Race this track",
    "places": [
-    "AndroidHomeExperience.kt:860"
+    "AndroidHomeExperience.kt:863"
    ],
    "nl": "Circuit rijden"
   },
@@ -7498,7 +7627,7 @@
   {
    "key": "React to this run",
    "places": [
-    "AndroidHomeExperience.kt:724"
+    "AndroidHomeExperience.kt:727"
    ],
    "nl": "Reageer op deze rit"
   },
@@ -7582,7 +7711,7 @@
   {
    "key": "Recent rival activity from {0}",
    "places": [
-    "AndroidHomeExperience.kt:1050"
+    "AndroidHomeExperience.kt:1053"
    ],
    "nl": "Recente rivalactiviteit van {0}"
   },
@@ -8101,6 +8230,20 @@
    "nl": "Gooi de dobbelsteen"
   },
   {
+   "key": "Root certificate SHA-256:",
+   "places": [
+    "AndroidLanPairingScreen.kt:203"
+   ],
+   "nl": "SHA-256 van het basiscertificaat:"
+  },
+  {
+   "key": "Root public key SHA-256 (SPKI):",
+   "places": [
+    "AndroidLanPairingScreen.kt:205"
+   ],
+   "nl": "SHA-256 van de publieke sleutel (SPKI):"
+  },
+  {
    "key": "Roster tools",
    "places": [
     "AndroidDutchUiCopy.kt:411"
@@ -8132,7 +8275,7 @@
   {
    "key": "Run {0}",
    "places": [
-    "AndroidHomeExperience.kt:1618"
+    "AndroidHomeExperience.kt:1621"
    ],
    "nl": "Rit {0}"
   },
@@ -8244,6 +8387,13 @@
    "nl": "Opslaan"
   },
   {
+   "key": "Save certificate",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:261"
+   ],
+   "nl": "Certificaat opslaan"
+  },
+  {
    "key": "Save changes",
    "places": [
     "AndroidPostTimeTask.kt:899"
@@ -8305,6 +8455,13 @@
     "AndroidAccountEcosystemScreens.kt:1098"
    ],
    "nl": "Opgeslagen"
+  },
+  {
+   "key": "Saved in Downloads as {0}.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:274"
+   ],
+   "nl": "Opgeslagen in Downloads als {0}."
   },
   {
    "key": "Saved in Downloads/MK8DX/{0}",
@@ -8450,9 +8607,16 @@
    "nl": "Resultaat scannen — we vullen in wat kan"
   },
   {
+   "key": "Scan sign-in card",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:388"
+   ],
+   "nl": "Inlogkaart scannen"
+  },
+  {
    "key": "Scan the Prepare a device card",
    "places": [
-    "AndroidLanPairingScreen.kt:110"
+    "AndroidLanPairingScreen.kt:137"
    ],
    "nl": "Scan de kaart Apparaat voorbereiden"
   },
@@ -8464,6 +8628,13 @@
    "nl": "Scan de QR-code"
   },
   {
+   "key": "Scan the personal sign-in card your administrator made for you. The card works once, for 15 minutes.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:380"
+   ],
+   "nl": "Scan de persoonlijke inlogkaart die je beheerder voor je maakte. De kaart werkt één keer, 15 minuten lang."
+  },
+  {
    "key": "Scanned",
    "places": [
     "AndroidPostTimeTask.kt:1337"
@@ -8473,7 +8644,7 @@
   {
    "key": "Scanned evidence stays private on this device.",
    "places": [
-    "AndroidAuthenticationScreen.kt:315",
+    "AndroidAuthenticationScreen.kt:313",
     "AndroidDutchUiCopy.kt:242"
    ],
    "nl": "Gescand bewijs blijft privé op dit apparaat."
@@ -8755,6 +8926,41 @@
    "nl": "Instellingen"
   },
   {
+   "key": "Settings → Passwords & security → Privacy → Encryption & credentials → Install a certificate → CA certificate → choose the MK8DX file.",
+   "places": [
+    "AndroidLanOnboarding.kt:143"
+   ],
+   "nl": "Instellingen → Wachtwoorden en beveiliging → Privacy → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat → kies het MK8DX-bestand."
+  },
+  {
+   "key": "Settings → Security & privacy → More security & privacy → Encryption & credentials → Install a certificate → CA certificate → Install anyway → choose the MK8DX file.",
+   "places": [
+    "AndroidLanOnboarding.kt:139"
+   ],
+   "nl": "Instellingen → Beveiliging en privacy → Meer beveiliging en privacy → Versleuteling en inloggegevens → Een certificaat installeren → CA-certificaat → Toch installeren → kies het MK8DX-bestand."
+  },
+  {
+   "key": "Settings → Security & privacy → More security settings → Install from storage → CA certificate → choose the MK8DX file.",
+   "places": [
+    "AndroidLanOnboarding.kt:147"
+   ],
+   "nl": "Instellingen → Beveiliging en privacy → Meer beveiligingsinstellingen → Installeren vanuit opslag → CA-certificaat → kies het MK8DX-bestand."
+  },
+  {
+   "key": "Settings → Security and privacy → More security settings → Install from device storage → CA certificate → Install anyway → choose the MK8DX file.",
+   "places": [
+    "AndroidLanOnboarding.kt:135"
+   ],
+   "nl": "Instellingen → Beveiliging en privacy → Meer beveiligingsinstellingen → Installeren vanaf apparaatopslag → CA-certificaat → Toch installeren → kies het MK8DX-bestand."
+  },
+  {
+   "key": "Settings → Security → More security settings → Install from storage → CA certificate → choose the MK8DX file → confirm with your PIN.",
+   "places": [
+    "AndroidLanOnboarding.kt:131"
+   ],
+   "nl": "Instellingen → Beveiliging → Meer veiligheidsinstellingen → Installeren vanuit opslag → CA-certificaat → kies het MK8DX-bestand → bevestig met je pincode."
+  },
+  {
    "key": "Share",
    "places": [
     "AndroidTournamentPlayerCharts.kt:335",
@@ -8982,9 +9188,9 @@
    "key": "Sign in",
    "places": [
     "AndroidTimeTrialsProductComponent.kt:1324",
-    "AndroidAccountEcosystemScreens.kt:246",
     "AndroidMyStatsScreen.kt:302",
-    "AndroidTournamentOverview.kt:307"
+    "AndroidLanOnboardingScreen.kt:157",
+    "AndroidLanOnboardingScreen.kt:435"
    ],
    "nl": "Aanmelden"
   },
@@ -9147,7 +9353,7 @@
   {
    "key": "Signed in and ready to synchronize.",
    "places": [
-    "AndroidAuthenticationScreen.kt:309",
+    "AndroidAuthenticationScreen.kt:307",
     "AndroidDutchUiCopy.kt:445"
    ],
    "nl": "Aangemeld en klaar om te synchroniseren."
@@ -9158,6 +9364,21 @@
     "AndroidAccountEcosystemScreens.kt:1127"
    ],
    "nl": "Aangemeld als {0} · Speler wisselen of afmelden"
+  },
+  {
+   "key": "Signed in as {0}.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:171"
+   ],
+   "nl": "Aangemeld als {0}."
+  },
+  {
+   "key": "Signing in did not work. Try again.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:345",
+    "AndroidLanOnboardingScreen.kt:450"
+   ],
+   "nl": "Aanmelden lukte niet. Probeer opnieuw."
   },
   {
    "key": "Skip this row",
@@ -10132,6 +10353,20 @@
    "nl": "De capture-operator selecteert dit toernooi en vóór START voor iedere feed met stickernaam een andere actuele groep. Race 1 opent de openbare View alleen automatisch voor een feed van jou, een beheerder of een account waaraan jij de live-capture hebt gedelegeerd; andere feeds wachten op jou. Scores wachten na STOP nog op jouw Player-koppeling en volledige groepscontrole."
   },
   {
+   "key": "The card was used, but this account has no Player yet. Finish the Player setup on the website.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:446"
+   ],
+   "nl": "De kaart is gebruikt, maar dit account heeft nog geen speler. Rond de spelersinstelling af op de website."
+  },
+  {
+   "key": "The certificate could not be saved. Try again.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:277"
+   ],
+   "nl": "Het certificaat kon niet worden opgeslagen. Probeer opnieuw."
+  },
+  {
    "key": "The chosen Tournament could not be loaded.",
    "places": [
     "AndroidTournamentScreen.kt:615"
@@ -10235,6 +10470,20 @@
     "AndroidTournamentRosterImport.kt:161"
    ],
    "nl": "De import is afgewezen."
+  },
+  {
+   "key": "The installation cannot be reached right now. Check the Wi-Fi.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:301"
+   ],
+   "nl": "De installatie is nu niet bereikbaar. Controleer de wifi."
+  },
+  {
+   "key": "The installation could not be reached. Check the Wi-Fi.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:368"
+   ],
+   "nl": "De installatie is niet bereikbaar. Controleer de wifi."
   },
   {
    "key": "The layout could not be taken over. Check that the groups are still unlocked.",
@@ -10390,13 +10639,6 @@
     "AndroidTournamentScreen.kt:1040"
    ],
    "nl": "Dezelfde speler is voor twee regels gekozen. Een speler mag één keer voorkomen."
-  },
-  {
-   "key": "The same address and key are on the Prepare this device page, under Full fingerprints.",
-   "places": [
-    "AndroidLanPairingScreen.kt:143"
-   ],
-   "nl": "Hetzelfde adres en dezelfde sleutel staan op de pagina Dit apparaat voorbereiden, bij Volledige vingerafdrukken."
   },
   {
    "key": "The same community records as the website",
@@ -10646,6 +10888,13 @@
    "nl": "Voor deze actie is een nieuwe bevestiging nodig. We sturen een eenmalige link naar het e-mailadres van je account. Open die, op dit apparaat of een ander, en druk op Bevestigen. Daarna gaat deze actie vanzelf verder."
   },
   {
+   "key": "This app already trusts the installation. Your phone itself does not yet: the website in the browser and signing in through the browser need it. Save the certificate, then install it in Settings as a CA certificate.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:253"
+   ],
+   "nl": "Deze app vertrouwt de installatie al. Je telefoon zelf nog niet: de website in de browser en inloggen via de browser hebben dat nodig. Sla het certificaat op en installeer het daarna in Instellingen als CA-certificaat."
+  },
+  {
    "key": "This app works with your own community: a club, a group of friends or an online community. Pick the way you play below. Not sure? Ask the person who runs your community.",
    "places": [
     "AndroidCommunitySetupScreen.kt:117"
@@ -10658,6 +10907,20 @@
     "AndroidPostTimeTask.kt:744"
    ],
    "nl": "Deze build kan geen resultaat opslaan."
+  },
+  {
+   "key": "This card belongs to another installation than the one this phone is connected to.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:340"
+   ],
+   "nl": "Deze kaart hoort bij een andere installatie dan die waarmee deze telefoon verbonden is."
+  },
+  {
+   "key": "This card can no longer be used (it is valid once, for 15 minutes). Ask your administrator for a new one.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:336"
+   ],
+   "nl": "Deze kaart kan niet meer gebruikt worden (hij werkt één keer, 15 minuten lang). Vraag je beheerder om een nieuwe."
   },
   {
    "key": "This community does not accept times from other communities.",
@@ -10689,11 +10952,11 @@
    "nl": "Deze groep heeft nog geen opname."
   },
   {
-   "key": "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.",
+   "key": "This is not a personal sign-in card.",
    "places": [
-    "AndroidAuthenticationScreen.kt:233"
+    "AndroidLanOnboardingScreen.kt:350"
    ],
-   "nl": "Dit is een installatie thuis of bij de club: je meldt je aan met je persoonlijke inlogkaart, niet met e-mail. Nog geen account hier? Vraag je beheerder om een kaart, scan die met de camera van deze telefoon en kom daarna terug om op de knop hieronder te tikken."
+   "nl": "Dit is geen persoonlijke inlogkaart."
   },
   {
    "key": "This is not an Excel workbook (.xlsx).",
@@ -10705,7 +10968,7 @@
   {
    "key": "This is not the QR code of a Prepare a device card. A personal sign-in card comes later, in the browser.",
    "places": [
-    "AndroidLanPairingScreen.kt:87"
+    "AndroidLanPairingScreen.kt:114"
    ],
    "nl": "Dit is niet de QR-code van een kaart Apparaat voorbereiden. Een persoonlijke inlogkaart komt later, in de browser."
   },
@@ -10820,6 +11083,13 @@
     "AndroidTournamentScoreWorkbookPanel.kt:177"
    ],
    "nl": "Deze werkmap bevat geen uitslagen."
+  },
+  {
+   "key": "Three steps for this phone. You only do them once.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:144"
+   ],
+   "nl": "Drie stappen voor deze telefoon. Je doet ze maar één keer."
   },
   {
    "key": "Tie-break setting for equal {0} (Step {1})",
@@ -10970,6 +11240,13 @@
     "AndroidDutchUiCopy.kt:100"
    ],
    "nl": "Te veel pogingen met de pincode. Wacht even en probeer het opnieuw."
+  },
+  {
+   "key": "Too many attempts. Wait a moment, then try again.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:344"
+   ],
+   "nl": "Te veel pogingen. Wacht even en probeer opnieuw."
   },
   {
    "key": "Too many links were requested. Wait a few minutes and try again.",
@@ -11393,7 +11670,7 @@
   {
    "key": "Unknown source",
    "places": [
-    "AndroidHomeExperience.kt:1732",
+    "AndroidHomeExperience.kt:1735",
     "AndroidDutchUiCopy.kt:260"
    ],
    "nl": "Onbekende bron"
@@ -11480,7 +11757,8 @@
   {
    "key": "Use the camera",
    "places": [
-    "AndroidLanPairingScreen.kt:119"
+    "AndroidLanOnboardingScreen.kt:399",
+    "AndroidLanPairingScreen.kt:146"
    ],
    "nl": "Camera gebruiken"
   },
@@ -12290,6 +12568,13 @@
    "nl": "Jij stuurde {0} {1}{2}."
   },
   {
+   "key": "You sign in as:",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:422"
+   ],
+   "nl": "Je meldt je aan als:"
+  },
+  {
    "key": "You stay #{0} on the leaderboard.",
    "places": [
     "AndroidSubmissionFeedback.kt:87"
@@ -12536,6 +12821,13 @@
    "nl": "Je telefoon vraagt om hoog contrast, dus het product gebruikt de hoogcontrastweergave."
   },
   {
+   "key": "Your phone trusts this installation.",
+   "places": [
+    "AndroidLanOnboardingScreen.kt:291"
+   ],
+   "nl": "Je telefoon vertrouwt deze installatie."
+  },
+  {
    "key": "Your profile could not be loaded right now.",
    "places": [
     "AndroidAccountEcosystemScreens.kt:161"
@@ -12772,14 +13064,14 @@
   {
    "key": "compared with this Player's previous PB",
    "places": [
-    "AndroidHomeExperience.kt:1546"
+    "AndroidHomeExperience.kt:1549"
    ],
    "nl": "vergeleken met het vorige PR van deze speler"
   },
   {
    "key": "compared with your PB",
    "places": [
-    "AndroidHomeExperience.kt:1544"
+    "AndroidHomeExperience.kt:1547"
    ],
    "nl": "vergeleken met jouw PR"
   },
@@ -12864,7 +13156,7 @@
   {
    "key": "just now",
    "places": [
-    "AndroidHomeExperience.kt:1022"
+    "AndroidHomeExperience.kt:1025"
    ],
    "nl": "zojuist"
   },
@@ -13518,7 +13810,7 @@
   {
    "key": "{0} is close behind your PB",
    "places": [
-    "AndroidHomeExperience.kt:1045"
+    "AndroidHomeExperience.kt:1048"
    ],
    "nl": "{0} zit vlak achter jouw PB"
   },
@@ -13704,7 +13996,7 @@
   {
    "key": "{0} passed your PB",
    "places": [
-    "AndroidHomeExperience.kt:1040"
+    "AndroidHomeExperience.kt:1043"
    ],
    "nl": "{0} passeerde jouw PB"
   },
@@ -14068,7 +14360,7 @@
   {
    "key": "{0} {1} · personal best",
    "places": [
-    "AndroidHomeExperience.kt:1055"
+    "AndroidHomeExperience.kt:1058"
    ],
    "nl": "{0} {1} · persoonlijk record"
   },
@@ -14229,28 +14521,28 @@
   {
    "key": "{0}d ago",
    "places": [
-    "AndroidHomeExperience.kt:1030"
+    "AndroidHomeExperience.kt:1033"
    ],
    "nl": "{0}d geleden"
   },
   {
    "key": "{0}h ago",
    "places": [
-    "AndroidHomeExperience.kt:1028"
+    "AndroidHomeExperience.kt:1031"
    ],
    "nl": "{0}u geleden"
   },
   {
    "key": "{0}m ago",
    "places": [
-    "AndroidHomeExperience.kt:1024"
+    "AndroidHomeExperience.kt:1027"
    ],
    "nl": "{0}m geleden"
   },
   {
    "key": "{0}mo ago",
    "places": [
-    "AndroidHomeExperience.kt:1031"
+    "AndroidHomeExperience.kt:1034"
    ],
    "nl": "{0}mnd geleden"
   },
@@ -14407,7 +14699,7 @@
   {
    "key": "🙂+ React",
    "places": [
-    "AndroidHomeExperience.kt:714"
+    "AndroidHomeExperience.kt:717"
    ],
    "nl": "🙂+ Reageer"
   }

@@ -7,6 +7,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **Android: three clear steps after connecting to a home or club installation (A2).** After "Connect" the app
+  shows 1 Connect ✓, 2 Let your phone trust the installation, 3 Sign in, at every start until done ("Later" says
+  what does not work yet). Step 2 saves the certificate the app already pinned to Downloads as
+  `MK8DX-<check code>-<root date>.crt` (DER; the same name the `/setup` page downloads, instead of
+  `root (5).crt`), opens the phone's certificate installer or security settings, shows the menu path for Vivo, Samsung, Pixel, Xiaomi/Redmi/POCO,
+  OnePlus/OPPO or any other phone, and turns green once the phone's own certificate store trusts the installation
+  (checked again on every return). Step 3 signs in by scanning the personal sign-in card with the app itself, shows
+  who it signs in as and needs no browser and no device code (ADR-0224 amendment 2026-11-16): new API routes
+  `POST /v1/session/native-invitation-preview` and `POST /v1/session/native-invitation-redeem`, offline-invitation
+  installations only. The Players screen offers the same card scan.
 - **MK8DX beheer: Add a phone or device**, a guided three-step flow per person: 1 Trust (the Prepare a device QR
   code with its short check code, with a line for the app and one for a phone without it), 2 the person's one-time
   sign-in card with a countdown and **New card**, 3 **Done** as soon as a device signed in with that card. The host
@@ -26,6 +36,14 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   after approval says plainly to go back to the app; the invitation page then offers "Back to approving your app".
 - **The website follows the browser's language** until a language is chosen (a Dutch phone opens in Dutch); a
   choice made in the language menu or Settings still wins.
+- **Android: one installation code everywhere.** Before connecting, the app now shows the same 16-character code as
+  the Prepare a device card and the `/setup` page (the root certificate's SHA-256), with both full fingerprints
+  under "Full fingerprints". The pin itself is unchanged: the root is accepted only when its key matches the QR.
+
+### Fixed
+
+- **Android: "Sign in", "PLAYERS" and "No recent community activity yet — be the first." were English in the other
+  languages** (Dutch included).
 - Opening the technical host page (127.0.0.1 with its port) directly now says, in all 15 languages, to use the
   **MK8DX beheer** shortcut instead of the one-time admin code.
 

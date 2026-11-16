@@ -41,6 +41,8 @@ const BEFORE_SIGN_IN: readonly string[] = [
   "POST /v1/session/account-switch",
   "POST /v1/session/native-account-switch",
   "POST /v1/session/native-forget",
+  "POST /v1/session/native-invitation-preview",
+  "POST /v1/session/native-invitation-redeem",
   "POST /v1/session/native-remember",
   "POST /v1/session/step-up/link",
 ];

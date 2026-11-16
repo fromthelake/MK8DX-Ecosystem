@@ -21,6 +21,9 @@ internal const val ANDROID_NATIVE_REMEMBER_PATH = "/v1/session/native-remember"
 internal const val ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH = "/v1/session/native-remembered-accounts"
 internal const val ANDROID_NATIVE_ACCOUNT_SWITCH_PATH = "/v1/session/native-account-switch"
 internal const val ANDROID_NATIVE_FORGET_PATH = "/v1/session/native-forget"
+// ADR-0224 amendment 2026-11-16: the app redeems a personal sign-in card itself (A2 installations).
+internal const val ANDROID_NATIVE_INVITATION_PREVIEW_PATH = "/v1/session/native-invitation-preview"
+internal const val ANDROID_NATIVE_INVITATION_REDEEM_PATH = "/v1/session/native-invitation-redeem"
 internal val androidAccountDevicePattern = Regex("^[A-Za-z0-9_-]{43}$")
 private val entryIdPattern = Regex("^[A-Za-z0-9_-]{22}$")
 private val pinPattern = Regex("^[0-9]{4}$")
@@ -33,6 +36,7 @@ private val userCodePattern = Regex("^[A-Za-z0-9-]{4,32}$")
 private val deviceCodePattern = Regex("^[A-Za-z0-9_-]{20,255}$")
 private val playerIdPattern = Regex("^player\\.[a-z0-9]+(?:[._-][a-z0-9]+)*$")
 private val playerUsernamePattern = Regex("^[a-z0-9_-]{3,16}$")
+private val invitationTokenPattern = Regex("^[A-Za-z0-9_-]{43}$")
 
 internal data class AndroidAuthenticationRequest(
     val method: String,
@@ -112,6 +116,16 @@ internal sealed interface AndroidNativeSwitchResult {
     data object Refused : AndroidNativeSwitchResult
     /** No longer remembered here: sign in instead. */
     data object Unavailable : AndroidNativeSwitchResult
+}
+
+/** What the installation said about a scanned sign-in card. The token itself is never part of it. */
+internal sealed interface AndroidInvitationResult {
+    data class Preview(val displayLabel: String) : AndroidInvitationResult
+    data class Redeemed(val bearerToken: String, val expiresInSeconds: Long) : AndroidInvitationResult
+    /** Unknown, used, expired or withdrawn: ask for a new card. */
+    data object Unavailable : AndroidInvitationResult
+    data object OtherInstallation : AndroidInvitationResult
+    data object RateLimited : AndroidInvitationResult
 }
 
 internal sealed interface AndroidDeviceTokenPollResult {
@@ -370,6 +384,60 @@ internal class AndroidDeviceAuthorizationClient(
         if (document.keys != setOf("schemaVersion", "forgotten") ||
             document.string("schemaVersion") != "mk8dx.native-account-forget.v1") invalidResponse()
         return document.flag("forgotten")
+    }
+
+    /** Who a scanned card signs in as, without using it up. */
+    fun previewInvitation(card: nl.mariokart8.mk8dxtimetrials.lan.AndroidOfflineInvitationCard, accountDevice: String):
+        AndroidInvitationResult = invitation(ANDROID_NATIVE_INVITATION_PREVIEW_PATH, card, accountDevice)
+
+    /** Uses the card: the installation answers with a bearer session for the card's own account. */
+    fun redeemInvitation(card: nl.mariokart8.mk8dxtimetrials.lan.AndroidOfflineInvitationCard, accountDevice: String):
+        AndroidInvitationResult = invitation(ANDROID_NATIVE_INVITATION_REDEEM_PATH, card, accountDevice)
+
+    private fun invitation(
+        path: String,
+        card: nl.mariokart8.mk8dxtimetrials.lan.AndroidOfflineInvitationCard,
+        accountDevice: String,
+    ): AndroidInvitationResult {
+        if (!card.token.matches(invitationTokenPattern) || !accountDevice.matches(androidAccountDevicePattern)) {
+            invalidInput()
+        }
+        // The token goes only to the installation the card was printed for, which is this client's own origin.
+        val ownOrigin = "https://${origin.host}" + if (origin.port == -1 || origin.port == 443) "" else ":${origin.port}"
+        if (card.origin != ownOrigin) return AndroidInvitationResult.OtherInstallation
+        val response = executor.execute(
+            AndroidAuthenticationRequest(
+                "POST",
+                path,
+                buildJsonObject {
+                    put("token", card.token)
+                    put("origin", card.origin)
+                }.toString(),
+                null,
+                accountDevice = accountDevice,
+            ),
+        )
+        if (response.statusCode == 200) {
+            val document = response.document(200)
+            return if (path == ANDROID_NATIVE_INVITATION_PREVIEW_PATH) {
+                if (document.keys != setOf("schemaVersion", "displayLabel") ||
+                    document.string("schemaVersion") != "mk8dx.native-invitation-preview.v1") invalidResponse()
+                val label = document.string("displayLabel")
+                if (label.isEmpty() || label.length > 128 || label.any { it.code < 0x20 || it.code == 0x7f }) invalidResponse()
+                AndroidInvitationResult.Preview(label)
+            } else {
+                if (document.keys != setOf("schemaVersion", "token", "expiresIn") ||
+                    document.string("schemaVersion") != "mk8dx.native-invitation-session.v1") invalidResponse()
+                val token = document.string("token").takeIf { it.matches(tokenPattern) } ?: invalidResponse()
+                AndroidInvitationResult.Redeemed(token, document.positiveLong("expiresIn", 60, 604_800))
+            }
+        }
+        return when (response.errorCode()) {
+            "native_invitation_unavailable" -> AndroidInvitationResult.Unavailable
+            "native_invitation_origin_invalid" -> AndroidInvitationResult.OtherInstallation
+            "native_invitation_rate_limited" -> AndroidInvitationResult.RateLimited
+            else -> invalidResponse()
+        }
     }
 
     fun revoke(token: String, accountDevice: String? = null, keepRemembered: Boolean = false) {

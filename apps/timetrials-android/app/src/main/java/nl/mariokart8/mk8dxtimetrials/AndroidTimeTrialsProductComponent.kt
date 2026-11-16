@@ -1073,7 +1073,7 @@ private fun Mk8dxProductHeader(
                 if (playerLabel == null) {
                     Icon(
                         Icons.Filled.Person,
-                        contentDescription = "Sign in",
+                        contentDescription = nl.mariokart8.mk8dxtimetrials.ui.androidLocalizedPresentation("Sign in"),
                         tint = colors.textSecondary,
                         modifier = Modifier.size(28.dp).padding(2.dp),
                     )

@@ -207,6 +207,62 @@ internal class AndroidAuthenticationController(
         return requestAuthorization()
     }
 
+    /** Who a scanned sign-in card signs in as (network; call off the main thread). Never uses the card. */
+    fun previewInvitation(card: nl.mariokart8.mk8dxtimetrials.lan.AndroidOfflineInvitationCard): AndroidInvitationResult {
+        val device = store.accountDeviceValue() ?: throw AndroidAuthenticationException("No app device value.")
+        return client.previewInvitation(card, device)
+    }
+
+    /**
+     * Signs in with a scanned personal sign-in card (ADR-0224 amendment 2026-11-16): the installation turns the
+     * one-use card into the same bearer session a device approval gives. A Player already signed in here stays
+     * one tap away, as with "Add account". The card's token is never stored or logged.
+     */
+    fun signInWithInvitation(card: nl.mariokart8.mk8dxtimetrials.lan.AndroidOfflineInvitationCard): AndroidInvitationResult {
+        val device = store.accountDeviceValue() ?: throw AndroidAuthenticationException("No app device value.")
+        val previous = mutableState.value
+        mutableState.value = AndroidAuthenticationState.Working
+        val result = try {
+            client.redeemInvitation(card, device)
+        } catch (error: Exception) {
+            runCatching { diagnosticSink("signInWithInvitation failed: ${redactedAuthenticationCauseTypes(error)}") }
+            mutableState.value = previous
+            throw AndroidAuthenticationException("Android invitation sign-in failed.")
+        }
+        if (result !is AndroidInvitationResult.Redeemed) {
+            mutableState.value = previous
+            return result
+        }
+        val next = try {
+            val session = client.establishSession(result.bearerToken, result.expiresInSeconds)
+            val slotId = androidSessionSlotId(session.playerId)
+            val current = (previous as? AndroidAuthenticationState.SignedIn)?.session
+            val currentSlot = store.activeSlotId()
+            if (current != null && currentSlot != null && currentSlot != slotId) {
+                runCatching {
+                    client.rememberOnServer(current.bearerToken, device)
+                    client.revoke(current.bearerToken, device, keepRemembered = true)
+                }
+                store.dropCredential(currentSlot)
+            }
+            store.save(slotId, session)
+            store.setActiveSlotId(slotId)
+            runCatching { client.rememberOnServer(session.bearerToken, device) }
+            refreshAccounts()
+            AndroidAuthenticationState.SignedIn(session)
+        } catch (setup: AndroidPlayerSetupRequiredException) {
+            // Not kept on this phone, so it must not live on at the server either.
+            runCatching { client.revoke(result.bearerToken) }
+            AndroidAuthenticationState.Failed("player_setup", setup.playerSetupUri)
+        } catch (error: Exception) {
+            runCatching { diagnosticSink("invitation session failed: ${redactedAuthenticationCauseTypes(error)}") }
+            runCatching { client.revoke(result.bearerToken) }
+            AndroidAuthenticationState.Failed("invitation")
+        }
+        mutableState.value = next
+        return result
+    }
+
     fun requestAuthorization(): AndroidPendingDeviceAuthorization {
         mutableState.value = AndroidAuthenticationState.Working
         return try {

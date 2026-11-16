@@ -74,6 +74,7 @@ import {
   MysqlAccountSwitchStore,
 } from "../authentication/mysql-account-switch-store.js";
 import type { AccountSwitchAuthApi } from "../authentication/account-switch-routes.js";
+import type { NativeInvitationAuthApi } from "../authentication/native-invitation-routes.js";
 import { MysqlEmbeddedAuthAuditSink } from
   "../authentication/mysql-embedded-auth-audit-sink.js";
 import { MysqlPasswordlessAccountLookup } from
@@ -1599,6 +1600,17 @@ async function createMysqlApiRuntime(
               rateLimiter: mutationRateLimiter,
               ...(webCsrfService === null ? {} : { csrfVerifier: webCsrfService }),
             },
+            ...(embeddedAuth === null || authentication.kind !== "embedded"
+              ? {}
+              : {
+                  nativeInvitations: {
+                    api: embeddedAuth.api as unknown as NativeInvitationAuthApi,
+                    origin: offlineInvitation.origin,
+                    preAuthBudget: new PreAuthBudget(mutationRateLimiter,
+                      derivePreAuthBudgetKey(authentication.policy.config.secrets[0]!.value),
+                      embeddedAuth.clientAddress),
+                  },
+                }),
           }),
       accountAppearancePreference: {
         service: accountAppearancePreferenceService,

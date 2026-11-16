@@ -165,7 +165,7 @@ internal fun AndroidAuthenticationScreen(
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.xs)) {
-            Mk8dxSectionLabel("PLAYERS")
+            Mk8dxSectionLabel(androidLocalizedPresentation("PLAYERS"))
             Mk8dxDisplayText(androidLocalizedPresentation("Who is racing?"), type.display6)
             Text(
                 "Switch Player quickly on a shared phone. Every saved result keeps the Player who created it.",
@@ -229,13 +229,11 @@ internal fun AndroidAuthenticationScreen(
                         color = colors.textBody,
                     )
                     if (homeOrClub) {
-                        Mk8dxStatusMessage(
-                            nl.mariokart8.mk8dxtimetrials.ui.androidText(
-                                "This is a home or club installation: you sign in with your personal sign-in card, not with email. No account here yet? Ask your administrator for a card, scan it with this phone's camera, then come back and tap the button below.",
-                                "Dit is een installatie thuis of bij de club: je meldt je aan met je persoonlijke inlogkaart, niet met e-mail. Nog geen account hier? Vraag je beheerder om een kaart, scan die met de camera van deze telefoon en kom daarna terug om op de knop hieronder te tikken.",
-                            ),
-                            tone = Mk8dxStatusTone.Info,
-                            modifier = Modifier.testTag("android-authentication-home-or-club"),
+                        // A2: the personal sign-in card is scanned here, in the app; the browser route stays below.
+                        nl.mariokart8.mk8dxtimetrials.lan.AndroidInvitationSignIn(
+                            origin = requireNotNull(nl.mariokart8.mk8dxtimetrials.AndroidServerOrigin.current(context)),
+                            controller = controller,
+                            language = nl.mariokart8.mk8dxtimetrials.ui.LocalAndroidProductLanguage.current,
                         )
                     }
                     Mk8dxButton(
@@ -247,7 +245,7 @@ internal fun AndroidAuthenticationScreen(
                             },
                         ),
                         startDeviceAuthorization,
-                        variant = Mk8dxButtonVariant.Primary,
+                        variant = if (homeOrClub) Mk8dxButtonVariant.Secondary else Mk8dxButtonVariant.Primary,
                         tag = "android-authentication-sign-in",
                         modifier = Modifier.fillMaxWidth(),
                     )
