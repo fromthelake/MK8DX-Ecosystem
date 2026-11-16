@@ -160,14 +160,20 @@ and bump the version in the release link of the Project status section of every 
 2. Attach the locally release-signed APK, remove the debug APK for a stable release, and keep the Android notices ZIP.
    Verify the APK signing certificate against the retained owner certificate. The earlier public APKs were debug
    builds: users must protect unsent results and uninstall once before installing the release-signed APK.
-3. Refresh `SHA256SUMS.txt` so it lists every attached file. The workflow wrote it before the signing step, and the user
-   guides tell people to stop when a package has no matching line:
+3. Refresh `manifest.json` and `SHA256SUMS.txt` **after** replacing the debug APK, so the manifest lists the
+   signed APK actually attached to the final release. Run this from a checkout at the tag commit; the release
+   manifest reads `compatibility.json` from that checkout. The workflow wrote both files before the signing step,
+   and the user guides tell people to stop when a package has no matching checksum line:
 
    ```sh
    tag=vX.Y.Z   # the release being published
+   commit=$(git rev-parse HEAD)
+   test "$(git rev-list -n 1 "$tag")" = "$commit"
    mkdir release-check && cd release-check
    gh release download "$tag" --repo fromthelake/MK8DX-Ecosystem
    rm SHA256SUMS.txt
+   python ../tooling/release/release_manifest.py . "$tag" "$commit"
+   gh release upload "$tag" manifest.json --clobber --repo fromthelake/MK8DX-Ecosystem
    sha256sum -- * > SHA256SUMS.txt
    gh release upload "$tag" SHA256SUMS.txt --clobber --repo fromthelake/MK8DX-Ecosystem
    ```
@@ -175,6 +181,8 @@ and bump the version in the release link of the Project status section of every 
 4. Check that every asset has a line (`wc -l SHA256SUMS.txt` equals the number of other assets). Verify the
    unchanged downloaded CI assets with `gh attestation verify <file> -R fromthelake/MK8DX-Ecosystem` and inspect
    `SBOM.spdx.json`. The locally signed APK has separate signing-certificate evidence, not CI provenance.
+   The final, locally refreshed manifest is checked by its published checksum and against the asset list; its
+   original CI attestation applies only to the draft version.
    At draft review, start **every route called supported** in the release notes afresh from that draft's downloaded
    assets. Record its source commit, migrations, readiness and affected routes. For A1, load the Docker images
    inside the downloaded host ZIP even if a local image already has the same tag; a cached tag is not package
