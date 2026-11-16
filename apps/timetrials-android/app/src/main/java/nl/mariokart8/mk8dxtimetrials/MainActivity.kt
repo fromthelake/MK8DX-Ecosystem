@@ -105,6 +105,8 @@ import nl.mariokart8.mk8dxtimetrials.notifications.notificationTarget
 
 class MainActivity : ComponentActivity() {
     private var showServerSetup by mutableStateOf(false)
+    /** A home or club installation whose trust and sign-in steps are not done yet (decided at each start). */
+    private var showLanOnboarding by mutableStateOf(false)
     private val openedNotification = MutableStateFlow<AndroidNotificationTarget?>(null)
     private val openedLink = MutableStateFlow<AndroidDeepLink?>(null)
     private val localOutbox: AndroidLocalTimeTrialOutbox by lazy {
@@ -174,6 +176,9 @@ class MainActivity : ComponentActivity() {
             AndroidCanonicalNotificationSync.enqueueImmediate(applicationContext)
         }
         readIntent(intent)
+        showLanOnboarding = AndroidServerOrigin.current(applicationContext)?.let {
+            nl.mariokart8.mk8dxtimetrials.lan.androidLanOnboardingWanted(applicationContext, it)
+        } == true
         setContent {
             val origin = AndroidServerOrigin.current(applicationContext)
             if (origin == null || showServerSetup) {
@@ -188,6 +193,14 @@ class MainActivity : ComponentActivity() {
                         recreate()
                     }
                 }
+                return@setContent
+            }
+            if (showLanOnboarding) {
+                nl.mariokart8.mk8dxtimetrials.lan.AndroidLanOnboardingScreen(
+                    origin = origin,
+                    controller = authenticationController,
+                    onLeave = { showLanOnboarding = false },
+                )
                 return@setContent
             }
             val target by openedNotification.collectAsState()

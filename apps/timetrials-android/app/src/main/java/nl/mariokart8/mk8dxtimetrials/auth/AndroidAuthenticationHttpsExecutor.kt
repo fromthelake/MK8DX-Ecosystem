@@ -17,6 +17,8 @@ private val allowedRequests = setOf(
     "GET $ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH",
     "POST $ANDROID_NATIVE_ACCOUNT_SWITCH_PATH",
     "POST $ANDROID_NATIVE_FORGET_PATH",
+    "POST $ANDROID_NATIVE_INVITATION_PREVIEW_PATH",
+    "POST $ANDROID_NATIVE_INVITATION_REDEEM_PATH",
 )
 /** The routes that only exist for a remembered app device. */
 private val accountDevicePaths = setOf(
@@ -24,6 +26,8 @@ private val accountDevicePaths = setOf(
     ANDROID_NATIVE_REMEMBERED_ACCOUNTS_PATH,
     ANDROID_NATIVE_ACCOUNT_SWITCH_PATH,
     ANDROID_NATIVE_FORGET_PATH,
+    ANDROID_NATIVE_INVITATION_PREVIEW_PATH,
+    ANDROID_NATIVE_INVITATION_REDEEM_PATH,
 )
 private val bearerPattern = Regex("^[A-Za-z0-9_-]{20,255}$")
 
@@ -101,7 +105,8 @@ private fun validate(request: AndroidAuthenticationRequest) {
         (request.path in setOf(ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH, ANDROID_AUTH_SIGN_OUT_PATH,
             ANDROID_NATIVE_REMEMBER_PATH) && request.bearerToken == null) ||
         (request.path in setOf(ANDROID_AUTH_DEVICE_CODE_PATH, ANDROID_AUTH_DEVICE_TOKEN_PATH,
-            ANDROID_NATIVE_FORGET_PATH) && request.bearerToken != null) ||
+            ANDROID_NATIVE_FORGET_PATH, ANDROID_NATIVE_INVITATION_PREVIEW_PATH,
+            ANDROID_NATIVE_INVITATION_REDEEM_PATH) && request.bearerToken != null) ||
         request.accountDevice?.matches(androidAccountDevicePattern) == false ||
         (request.path in accountDevicePaths && request.accountDevice == null) ||
         (request.accountDevice != null && request.path !in accountDevicePaths &&

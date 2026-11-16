@@ -370,6 +370,20 @@ Amendment (2026-11-11): the Android app switches accounts as well. The server ke
 list (the app holds only the active bearer token and a random device value, in a separate
 namespace from browser device cookies), so the PIN and administrator rules apply unchanged and
 signing out everywhere also empties the app's list.
+Amendment (2026-11-16, owner-approved onboarding): the Android app redeems a personal sign-in card
+itself instead of sending the person through the browser and a device approval. The app scans the card
+with its own scanner, refuses a card whose origin is not the installation it pinned, shows who the card
+signs in as (preview, does not use it up) and, on confirmation, calls
+`POST /v1/session/native-invitation-redeem`. The route exists only in offline-invitation installations,
+admits only a native app (its device header; no Origin, Cookie or Authorization, so no web page can
+spend a card), requires the body's `origin` to be this installation's own origin, spends a per-address
+budget first and then the card's existing limits (5 per card per 15 minutes, keyed by an HMAC of the
+token, and 120 per minute per installation, shared with the browser page). It consumes the same one-use,
+15-minute ticket atomically, binds the same account and creates the same Better Auth session a device
+approval would, returned as a bearer token instead of a cookie: no new privilege, and the session is
+audited like any other (`auth_session_created`). The token travels only in the JSON body over the pinned
+connection to its own installation and is never stored or logged. The browser route and the device-code
+flow stay as they are.
 
 ## ADR-0225
 

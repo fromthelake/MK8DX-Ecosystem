@@ -243,7 +243,7 @@ internal fun AndroidProfileRecordsScreen(
                         style = Mk8dxTheme.type.body,
                         color = colors.textBody,
                     )
-                    Mk8dxButton("Sign in", onSignIn, variant = Mk8dxButtonVariant.Primary)
+                    Mk8dxButton(androidLocalizedPresentation("Sign in"), onSignIn, variant = Mk8dxButtonVariant.Primary)
                 }
             }
             if (unsynchronizedResultCount > 0) item { AndroidWaitingBanner(unsynchronizedResultCount, onSavedResults) }
