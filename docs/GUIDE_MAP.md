@@ -14,7 +14,7 @@ An available file is not evidence that a native speaker checked it.
 
 | Reader task | Guide to follow | Related summaries or references |
 | --- | --- | --- |
-| Choose an installation route | `docs/install/START_HERE_EN.md` / `START_HIER.md` | Root README, Hosting and the reading guide introduction |
+| Choose an installation route | `docs/install/START_HERE_EN.md` / `START_HIER.md`, with `translations/<locale>/START_HERE.md` | Root README, Hosting and the reading guide introduction |
 | Install and run at home or at a club (A2) | `docs/install/A2_HOME_GUIDE_EN.md` / `A2_THUIS_HANDLEIDING_NL.md`, with `translations/<locale>/A2_HOME_GUIDE.md` | Reading guide chapter 3; the A2 guide also owns local certificate trust, sign-in cards, backup, restore, update and package relocation |
 | Try A1 on one computer | `docs/install/A1_ONE_COMPUTER_EN.md` / `A1_EEN_COMPUTER.md` | Reading guide chapter 1; Hosting |
 | Try A3 without Docker | Reading guide chapter 2 | Start here and Hosting point to that chapter; no separate A3 guide exists |
@@ -44,10 +44,11 @@ route. Check unique content and links before retiring an older page.
 | Family | Source locales | Built or distributed copies | In A2 ZIP? |
 | --- | --- | --- | --- |
 | Root README | All 15 | Markdown only | No |
+| Start here | All 15 | Markdown only | Yes |
 | A2 full guide | All 15 | `docs/install/guide/<locale>.html`; standalone release HTML and PDF | Yes: Markdown and local HTML |
 | Broad reading guide | All 15 | DOCX built from TXT; TXT/DOCX release assets | Yes: TXT and DOCX |
 | Players, LiveTrial, Tournament Directors | All 15 | Markdown only | No |
-| Start here, A1, B1, B2, Clients, Administration, Settings, Hosting | EN/NL | Markdown only | `docs/install` families yes; Hosting no |
+| A1, B1, B2, Clients, Administration, Settings, Hosting | EN/NL | Markdown only | `docs/install` families yes; Hosting no |
 
 `tooling/build_guide_html.py` builds the local A2 HTML from the Markdown
 sources and uses screenshots from `docs/install/guide/img/` (one EN and one NL

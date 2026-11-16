@@ -1,6 +1,6 @@
 # Start hier: een MK8DX-installatie kiezen
 
-English: [START_HERE_EN.md](START_HERE_EN.md)
+[English](START_HERE_EN.md) · [English (US)](translations/en-US/START_HERE.md) · **Nederlands** · [Deutsch](translations/de/START_HERE.md) · [Español](translations/es/START_HERE.md) · [Español (Latinoamérica)](translations/es-419/START_HERE.md) · [Français](translations/fr/START_HERE.md) · [Français (Canada)](translations/fr-CA/START_HERE.md) · [Italiano](translations/it/START_HERE.md) · [日本語](translations/ja/START_HERE.md) · [한국어](translations/ko/START_HERE.md) · [Português](translations/pt/START_HERE.md) · [Русский](translations/ru/START_HERE.md) · [简体中文](translations/zh-CN/START_HERE.md) · [繁體中文](translations/zh-TW/START_HERE.md)
 
 De volledige, gewone handleiding is [MK8DX_Handleiding_NL.txt](MK8DX_Handleiding_NL.txt) (ook als
 [Word-bestand](MK8DX_Handleiding_NL.docx)); in het Engels [MK8DX_User_Guide_EN.txt](MK8DX_User_Guide_EN.txt).
