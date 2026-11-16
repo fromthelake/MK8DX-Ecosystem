@@ -315,7 +315,19 @@ integration("H1 abuse budgets (real HTTP + real database)", () => {
     const proxy = { async resolve(_peer: string | undefined, headers: Readonly<Record<string, unknown>>) {
       return String(headers["x-real-ip"] ?? "198.51.100.1");
     } };
-    const mail = new AuthEmailBudgets(budgets, new PreAuthBudget(limiter, randomBytes(32), proxy), randomBytes(32));
+    // Clients that share a pre-authentication slot share its budget (pre-auth-budget.ts, by design).
+    // Under a random slot key, about 1 run in 60 put two of the addresses below in one slot (the
+    // single address then got 4 of its 5 mails). This case measures each budget on its own, so it
+    // uses a key under which every address it asks from has a slot of its own.
+    const victimAddresses = Array.from({ length: 8 }, (_, index) => `203.0.113.${String(index)}`);
+    const singleAddress = "192.0.2.77";
+    const spreadAddresses = Array.from({ length: 10 }, (_, index) => `198.18.0.${String(index)}`);
+    const allAddresses = [...victimAddresses, singleAddress, ...spreadAddresses];
+    let preAuth = new PreAuthBudget(limiter, randomBytes(32), proxy);
+    const ownSlots = async (budget: PreAuthBudget) => new Set(await Promise.all(allAddresses.map((address) =>
+      budget.subject({ headers: { "x-real-ip": address }, raw: {} })))).size === allAddresses.length;
+    while (!(await ownSlots(preAuth))) { preAuth = new PreAuthBudget(limiter, randomBytes(32), proxy); }
+    const mail = new AuthEmailBudgets(budgets, preAuth, randomBytes(32));
     let sent = 0;
     const app = Fastify();
     apps.push(app);
@@ -333,17 +345,17 @@ integration("H1 abuse budgets (real HTTP + real database)", () => {
       headers: { "x-real-ip": address }, payload: { userCode: "ABCD-EFGH", email },
     });
     // One victim inbox from many addresses: only the per-recipient budget gets through.
-    const victim = await Promise.all(Array.from({ length: 8 }, (_, index) => ask("Victim@Example.org ", `203.0.113.${String(index)}`)));
+    const victim = await Promise.all(victimAddresses.map((address) => ask("Victim@Example.org ", address)));
     expect(victim.filter((response) => response.statusCode === 202)).toHaveLength(3);
     expect(victim.filter((response) => response.statusCode === 429)).toHaveLength(5);
     // One address with many recipients: the per-address budget.
     const single = [];
-    for (let index = 0; index < 7; index += 1) { single.push((await ask(`p${String(index)}@example.org`, "192.0.2.77")).statusCode); }
+    for (let index = 0; index < 7; index += 1) { single.push((await ask(`p${String(index)}@example.org`, singleAddress)).statusCode); }
     expect(single.filter((status) => status === 202)).toHaveLength(5);
     // Many addresses and recipients together: the installation budget (20 per hour in total; the
     // eight victim and five single-address requests above already used 13 of it).
-    const spread = await Promise.all(Array.from({ length: 10 }, (_, index) =>
-      ask(`q${String(index)}@example.org`, `198.18.0.${String(index)}`)));
+    const spread = await Promise.all(spreadAddresses.map((address, index) =>
+      ask(`q${String(index)}@example.org`, address)));
     expect(spread.filter((response) => response.statusCode === 202)).toHaveLength(7);
     expect(spread.filter((response) => response.statusCode === 429 &&
       Number(response.headers["retry-after"]) > 0)).toHaveLength(3);

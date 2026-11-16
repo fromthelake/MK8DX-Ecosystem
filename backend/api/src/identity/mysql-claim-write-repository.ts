@@ -678,8 +678,22 @@ class MysqlClaimWriteTransaction implements ClaimWriteTransaction {
  * checks; MariaDB reports a deadlock while taking the auto-increment lock of `INSERT ... SELECT` as
  * ER_AUTOINC_READ_FAILED. The whole transaction is rolled back, so it is retried a bounded number of
  * times (the claim id is chosen before the transaction, so a retry cannot create a second claim).
+ *
+ * A deadlock lets at least one of the waiting transactions through, but in a burst of N requests on
+ * the same gap the rest can meet again on the next attempt: a short, nearly fixed pause let ten
+ * concurrent requests use up six attempts on a busy database (one valid request then failed with
+ * 500). The pause therefore grows exponentially with full jitter, so the retries spread out, and
+ * the attempts cover a burst well beyond the per-account and per-Player quotas.
  */
-const MAXIMUM_TRANSACTION_ATTEMPTS = 6;
+const MAXIMUM_TRANSACTION_ATTEMPTS = 12;
+const RETRY_BASE_DELAY_MS = 10;
+const RETRY_MAXIMUM_DELAY_MS = 320;
+
+/** Full-jitter exponential pause before attempt `attempt + 1` (exported for tests). */
+export function claimTransactionRetryDelayMs(attempt: number, random: () => number = Math.random): number {
+  const ceiling = Math.min(RETRY_MAXIMUM_DELAY_MS, RETRY_BASE_DELAY_MS * 2 ** attempt);
+  return Math.floor(random() * ceiling);
+}
 
 function isRetryableLockError(error: unknown): boolean {
   if (typeof error !== "object" || error === null) { return false; }
@@ -699,7 +713,7 @@ export class MysqlClaimWriteRepository implements ClaimWriteRepository {
         return await this.attempt(work);
       } catch (error) {
         if (attempt >= MAXIMUM_TRANSACTION_ATTEMPTS || !isRetryableLockError(error)) { throw error; }
-        await new Promise((resolve) => setTimeout(resolve, 10 * attempt + Math.floor(Math.random() * 25)));
+        await new Promise((resolve) => setTimeout(resolve, claimTransactionRetryDelayMs(attempt)));
       }
     }
   }

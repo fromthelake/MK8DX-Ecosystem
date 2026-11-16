@@ -1,5 +1,7 @@
 import type { Pool, ResultSetHeader } from "mysql2/promise";
 
+import { retryOnDeadlock } from "./deadlock-retry.js";
+
 /**
  * The refusal ledger behind the administrator view of request budgets.
  *
@@ -26,7 +28,6 @@ export const REFUSAL_LEDGER_SUBJECT_WINDOW_MS = 3_600_000;
 export const REFUSAL_LEDGER_FLUSH_INTERVAL_MS = 30_000;
 export const REFUSAL_LEDGER_MAXIMUM_ENTRIES = 4_096;
 const QUOTA_REFUSAL_CODE = /^[a-z0-9_]{1,64}$/;
-const DEADLOCK_ATTEMPTS = 4;
 
 export type RefusalLedgerEntry = Readonly<{ scopeKey: string; windowStartedAtMs: number; count: number }>;
 
@@ -133,18 +134,5 @@ export class RefusalLedger {
     const held = this.pending.get(overflow);
     if (held !== undefined) { held.count += count; return; }
     this.pending.set(overflow, { scopeKey: overflowKey, windowStartedAtMs, count });
-  }
-}
-
-/** Runs one autocommit statement again when InnoDB chose it as a deadlock victim (bounded, short jitter). */
-async function retryOnDeadlock<T>(statement: () => Promise<T>): Promise<T> {
-  for (let attempt = 1; ; attempt += 1) {
-    try {
-      return await statement();
-    } catch (error) {
-      const code = (error as { code?: unknown } | null)?.code;
-      if (code !== "ER_LOCK_DEADLOCK" || attempt >= DEADLOCK_ATTEMPTS) { throw error; }
-      await new Promise((resolve) => { setTimeout(resolve, Math.floor(Math.random() * 20 * attempt)); });
-    }
   }
 }

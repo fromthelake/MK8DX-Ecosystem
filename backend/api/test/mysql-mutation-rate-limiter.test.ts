@@ -34,4 +34,40 @@ describe("database-backed mutation rate limiting", () => {
     await expect(limiter.consume("user_account.ben", "time-trial-submit-10m", 600, 2))
       .resolves.toBeUndefined();
   });
+  it("runs the upsert again when InnoDB picks it as a deadlock victim, and counts it once", async () => {
+    let upserts = 0;
+    const deadlock = Object.assign(new Error("Deadlock found when trying to get lock"), { code: "ER_LOCK_DEADLOCK", errno: 1213 });
+    const executor = {
+      async execute(sql: string) {
+        if (sql.includes("INSERT INTO")) {
+          upserts += 1;
+          if (upserts === 1) { throw deadlock; }
+          return [{ affectedRows: 1, insertId: 1 }, []];
+        }
+        return [{ affectedRows: 0 }, []];
+      },
+    };
+    const limiter = new MysqlMutationRateLimiter(executor as never, () => 61_000);
+    await expect(limiter.consume("preauth-slot.7", "auth-email.address", 3_600, 1)).resolves.toBeUndefined();
+    expect(upserts).toBe(2);
+  });
+
+  it("gives up after a bounded number of deadlocks and never retries other errors", async () => {
+    let upserts = 0;
+    const failWith = (error: Error) => ({
+      async execute(sql: string) {
+        if (sql.includes("INSERT INTO")) { upserts += 1; throw error; }
+        return [{ affectedRows: 0 }, []];
+      },
+    });
+    const deadlock = Object.assign(new Error("Deadlock"), { code: "ER_LOCK_DEADLOCK" });
+    await expect(new MysqlMutationRateLimiter(failWith(deadlock) as never, () => 61_000)
+      .consume("preauth-slot.7", "auth-email.address", 3_600, 1)).rejects.toBe(deadlock);
+    expect(upserts).toBe(4);
+    upserts = 0;
+    const other = Object.assign(new Error("gone"), { code: "PROTOCOL_CONNECTION_LOST" });
+    await expect(new MysqlMutationRateLimiter(failWith(other) as never, () => 61_000)
+      .consume("preauth-slot.7", "auth-email.address", 3_600, 1)).rejects.toBe(other);
+    expect(upserts).toBe(1);
+  });
 });

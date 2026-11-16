@@ -1,5 +1,6 @@
 import type { Pool, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
+import { retryOnDeadlock } from "./deadlock-retry.js";
 import type { RefusalLedger } from "./refusal-ledger.js";
 
 export class MutationRateLimitExceeded extends Error {
@@ -63,13 +64,16 @@ export class MysqlMutationRateLimiter implements MutationRateLimiter {
     // The statement returns this request's own count (LAST_INSERT_ID(expr) is per connection), so
     // concurrent requests in different processes each see their own position in the window: a
     // burst admits exactly `maximum`, instead of every request reading the burst's final total.
-    const [inserted] = await this.pool.execute<ResultSetHeader>(
+    // The cleanup DELETE (another process, or this one) walks the updated_at_ms index while this
+    // upsert moves its row in that index, so InnoDB can pick the upsert as a deadlock victim; it
+    // was rolled back whole, so it is run again instead of failing a valid request.
+    const [inserted] = await retryOnDeadlock(() => this.pool.execute<ResultSetHeader>(
       `INSERT INTO api_mutation_rate_limits (scope_key, window_started_at_ms, event_count, updated_at_ms)
        VALUES (?, ?, LAST_INSERT_ID(1), ?)
        ON DUPLICATE KEY UPDATE event_count = LAST_INSERT_ID(event_count + 1),
          updated_at_ms = VALUES(updated_at_ms)`,
       [key, started, now],
-    );
+    ));
     let count = Number(inserted?.insertId);
     if (!Number.isSafeInteger(count) || count < 1) {
       // A driver or adapter that does not report the value: read it back (fails closed in a burst).
