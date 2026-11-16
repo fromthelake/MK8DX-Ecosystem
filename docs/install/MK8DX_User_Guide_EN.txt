@@ -172,9 +172,9 @@ For a home or club network, use the A2 package. Download mk8dx-a2-windows-amd64-
 
 The complete step-by-step guide, with pictures, is docs/install/A2_HOME_GUIDE_EN.md; inside the package it is also docs/install/guide/en.html, and the setup opens it from its Manual link. It covers preparing Windows, Linux or macOS, phones and PCs, the Android app, LiveTrial, tournament nights, backups, moving to a new computer, a fixed address, a new network address, updates and removing MK8DX from a computer.
 
-Advanced: with your own mail server
+Historical advanced variant: with your own mail server
 
-The rest of this chapter describes an older, advanced variant with a private host name and sign-in links by email through your own mail server. Most people do not need it. It uses the mk8dx-host-local package and the choice A2 in its setup question.
+The current offline A2 instructions end above: continue in the linked illustrated A2 guide. The rest of this chapter documents a separate older variant with a private host name and email sign-in through your own mail server. It uses the mk8dx-host-local package and the choice A2 in its setup question. Do not combine the following hosts-file, SMTP, certificate or installer steps with the current mk8dx-a2 package or its installation data.
 
 This route creates a second, separate MK8DX installation on a Windows host. Your one-computer trial remains intact. The documented first client route is a second Windows PC using Chrome or Edge, including scanner image upload. A physical second PC or phone has not yet had a real user acceptance test. The generic Android app does not automatically trust the local certificate; use a public HTTPS community address on shared hosting or a VPS for it.
 
