@@ -5,9 +5,16 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
-- The A2 guides in all 15 languages now explain the current Android certificate and in-app sign-in steps,
+## 0.2.11 — 2026-11-16
+
+- The A2 guides in all 15 languages explain the current Android certificate and in-app sign-in steps,
   and tell Windows users how to choose a permanent package folder or relocate it safely after an update.
-  The next A2 package includes the same-drive relocation helper; already published packages are unchanged.
+  The A2 package includes the same-drive relocation helper; already published packages are unchanged.
+- A 15-language route chooser links readers to A1, A2, A3, B1, B2 and the general reading guide.
+  The A2 ZIP opens with a local language chooser, and a connected phone can read its illustrated guide
+  through the installation's read-only `/help/a2/` route.
+- Release packaging checks the guide files in each host/A2 ZIP against this commit and its package
+  manifest. Standalone HTML guide language links stay pinned to the same release.
 
 ## 0.2.10 — 2026-11-16
 
