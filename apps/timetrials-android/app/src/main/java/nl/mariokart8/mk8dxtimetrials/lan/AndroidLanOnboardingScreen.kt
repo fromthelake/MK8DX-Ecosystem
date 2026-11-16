@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
@@ -139,7 +140,7 @@ private fun OnboardingContent(
         verticalArrangement = Arrangement.spacedBy(Mk8dxSpacing.lg),
     ) {
         Mk8dxSectionLabel(t("HOME OR CLUB", "THUIS OF CLUB"))
-        Mk8dxDisplayText(t("Almost ready", "Bijna klaar"), type.display4)
+        Mk8dxDisplayText(if (plan.complete) t("Done", "Klaar") else t("Almost ready", "Bijna klaar"), type.display4)
         Text(
             t(
                 "Three steps for this phone. You only do them once.",
@@ -157,7 +158,7 @@ private fun OnboardingContent(
                     AndroidLanOnboardingStep.SignIn -> t("Sign in", "Inloggen")
                 },
                 status = status,
-                onClick = { if (step != AndroidLanOnboardingStep.Connect) opened = step },
+                onClick = if (step == AndroidLanOnboardingStep.Connect) null else ({ opened = step }),
                 tag = "lan-onboarding-step-${index + 1}",
             )
             if (expanded == step && step == AndroidLanOnboardingStep.Trust && pairing != null) {
@@ -205,13 +206,15 @@ private fun OnboardingContent(
 }
 
 @Composable
-private fun StepHeader(number: Int, title: String, status: AndroidLanStepStatus, onClick: () -> Unit, tag: String) {
+private fun StepHeader(number: Int, title: String, status: AndroidLanStepStatus, onClick: (() -> Unit)?, tag: String) {
     val colors = Mk8dxTheme.colors
     val type = Mk8dxTheme.type
     val done = status == AndroidLanStepStatus.Done
     val current = status == AndroidLanStepStatus.Current
     Row(
-        Modifier.fillMaxWidth().clickable(onClick = onClick).testTag(tag),
+        Modifier.fillMaxWidth().heightIn(min = 48.dp)
+            .then(if (onClick == null) Modifier else Modifier.clickable(onClick = onClick))
+            .testTag(tag),
         horizontalArrangement = Arrangement.spacedBy(Mk8dxSpacing.md),
         verticalAlignment = Alignment.CenterVertically,
     ) {
