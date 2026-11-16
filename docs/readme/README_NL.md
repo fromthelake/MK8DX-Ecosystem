@@ -299,6 +299,8 @@ Begin bij [Bijdragen](../../.github/CONTRIBUTING.md) en de [ontwikkelaarshandlei
 Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
 iedereen.
 
+Meer weten over de ontwikkelaar? Zie [github.com/fromthelake](https://github.com/fromthelake).
+
 ## Status
 
 Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
@@ -396,9 +398,9 @@ Zo is dit hele avontuur tenslotte ook begonnen.
 
 ## Licentie en Nintendo
 
-Dit is een onafhankelijk, niet-commercieel hobbyproject om te leren programmeren en Mario Kart 8 Deluxe nog
-leuker te maken. Het is **niet verbonden aan of goedgekeurd door Nintendo**. Nintendo is eigenaar van zijn
-merken en spelinhoud; steun Nintendo door zijn consoles en games te kopen.
+MK8DX Ecosystem is een onafhankelijk, niet-commercieel fanproject dat gratis beschikbaar wordt gesteld. Het is
+**niet verbonden aan of goedgekeurd door Nintendo**. Nintendo is eigenaar van zijn merken en spelinhoud; steun
+Nintendo door zijn consoles en games te kopen.
 
 De eigen code en documentatie van het project vallen onder de [Mozilla Public License 2.0](../../LICENSE). De
 [licentiereikwijdte](../../LICENSE_SCOPE.md) legt uit wat die dekt: hij dekt **geen** materiaal van Nintendo,

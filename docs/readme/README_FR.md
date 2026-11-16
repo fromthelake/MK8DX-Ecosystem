@@ -314,6 +314,8 @@ Commence par [Contributing](../../.github/CONTRIBUTING.md) et le [guide du déve
 Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
 pour tout le monde.
 
+Envie d'en savoir plus sur le développeur ? Consulte [github.com/fromthelake](https://github.com/fromthelake).
+
 ## État du projet
 
 Les versions stables sont sur [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases) ; la
@@ -410,10 +412,9 @@ Après tout, c'est comme ça que toute cette aventure a commencé.
 
 ## Licence et Nintendo
 
-Ceci est un projet amateur indépendant et non commercial, pour apprendre la programmation et rendre
-Mario Kart 8 Deluxe encore plus amusant. Il n'est **ni affilié à Nintendo ni approuvé par Nintendo**.
-Nintendo détient ses marques et le contenu de ses jeux ; soutiens Nintendo en achetant ses consoles et
-ses jeux.
+MK8DX Ecosystem est un projet de fans indépendant et non commercial, mis à disposition gratuitement. Il n'est
+**ni affilié à Nintendo ni approuvé par Nintendo**. Nintendo détient ses marques et le contenu de ses jeux ;
+soutiens Nintendo en achetant ses consoles et ses jeux.
 
 Le code original et la documentation du projet sont distribués sous la [Mozilla Public License 2.0](../../LICENSE).
 La [portée de la licence](../../LICENSE_SCOPE.md) explique ce qu'elle couvre : elle ne couvre **pas** le
