@@ -110,7 +110,8 @@ private fun OnboardingContent(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
     LaunchedEffect(trustCheck) {
-        trust = AndroidSystemTrust.Unknown
+        // The last answer stays on screen while asking again: resetting it would fold the open step away
+        // (returning from the camera permission dialog also counts as a resume).
         trust = withContext(Dispatchers.IO) { AndroidSystemTrustProbe.create().check(origin) }
     }
     val signedIn = authState is AndroidAuthenticationState.SignedIn
@@ -277,7 +278,7 @@ private fun TrustStep(
         }
         Mk8dxButton(
             t("Open Settings", "Instellingen openen"),
-            { AndroidCertificateSettings.open(context) },
+            { AndroidCertificateSettings.open(context, brand) },
             variant = if (saved != null) Mk8dxButtonVariant.Primary else Mk8dxButtonVariant.Secondary,
             tag = "lan-onboarding-open-settings",
             modifier = Modifier.fillMaxWidth(),

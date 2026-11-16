@@ -93,18 +93,23 @@ internal object AndroidLanCertificateSaver {
 /** Opens the most specific certificate screen this phone has, falling back to its security settings. */
 internal object AndroidCertificateSettings {
     /**
-     * In order: Android's own certificate installer, opened as for a CA certificate (it shows the file picker
-     * at once); "More security & privacy", where Encryption & credentials lives; the security settings; Settings.
+     * In order: on Pixel and stock Android "More security & privacy" (Encryption & credentials lives there), then
+     * the security settings, then Settings. Android's own certificate installer is deliberately not opened: on Android 11 and later
+     * it refuses a CA certificate unless Settings itself started it ("Install CA certificates in Settings",
+     * seen on the Android 16 emulator, 2026-11-16).
      */
-    fun candidates(): List<Intent> = listOf(
-        Intent("android.credentials.INSTALL").putExtra("certificate_install_usage", "ca"),
-        Intent("android.settings.PRIVACY_ADVANCED_SETTINGS"),
-        Intent(Settings.ACTION_SECURITY_SETTINGS),
-        Intent(Settings.ACTION_SETTINGS),
-    )
+    fun candidates(brand: AndroidPhoneBrand): List<Intent> =
+        // Vivo, Samsung, Xiaomi and OnePlus/OPPO routes start in their security settings; on Pixel and stock
+        // Android the certificate entry sits one level deeper, under "More security & privacy".
+        (if (brand == AndroidPhoneBrand.Pixel || brand == AndroidPhoneBrand.Generic) {
+            listOf(Intent("android.settings.PRIVACY_ADVANCED_SETTINGS"))
+        } else emptyList()) + listOf(
+            Intent(Settings.ACTION_SECURITY_SETTINGS),
+            Intent(Settings.ACTION_SETTINGS),
+        )
 
-    fun open(context: Context): Boolean {
-        for (intent in candidates()) {
+    fun open(context: Context, brand: AndroidPhoneBrand): Boolean {
+        for (intent in candidates(brand)) {
             try {
                 context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 return true
