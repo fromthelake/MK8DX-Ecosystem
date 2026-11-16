@@ -169,7 +169,7 @@ Les applications autour :
 
 **Premier lancement de l'application Android :** elle demande *Choisis ta communauté*. À la maison ou au
 club, tu scannes la carte **Prepare a device** que ton administrateur affiche; pour une communauté en
-ligne, tu tapes l'adresse de son site. Sur A2, installe le certificat à l'étape Confiance et numérise ta carte personnelle dans l'application. Pour une communauté en ligne, approuve la connexion dans le navigateur. Détails : [Joueurs](../guides/translations/fr-ca/PLAYERS.md).
+ligne, tu tapes l'adresse de son site. Sur A2, installe le certificat à l'étape Confiance et numérise ta carte personnelle dans l'application. Pour une communauté en ligne, approuve la connexion dans le navigateur. Détails : [Joueurs](../guides/translations/fr-CA/PLAYERS.md).
 
 **Une application, plusieurs communautés :** la pastille de communauté en haut bascule d'un geste entre
 ton club, ton installation à la maison et une communauté en ligne; chacune garde son propre compte et
