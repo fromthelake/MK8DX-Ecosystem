@@ -29,7 +29,9 @@ translation in `docs/install/translations/<locale>/` (there the TXT is `MK8DX_Us
 translated A2 guide `A2_HOME_GUIDE.md`), and all of them are inside the installation packages. The A2 packages also
 carry the illustrated A2 guide as `docs/install/guide/<locale>.html` for every language; the setup wizard's Manual
 link opens it in the browser's language. `START-HERE.html` at the A2 ZIP root is an offline language chooser for
-those pages.
+those pages. A phone that scans the Prepare a device card can open its locale's read-only guide from the same LAN
+host at `http://<installation-ip>/help/a2/<locale>.html`, before installing the certificate; this route serves only
+the bundled guide's HTML, CSS, JS and PNG files and does not expose the host-only setup wizard.
 
 The same illustrated guide is attached as one file per language to read, print or pass on:
 `MK8DX_Guide_<locale>.html` (a single self-contained page: styles, script and screenshots inside, works offline) and

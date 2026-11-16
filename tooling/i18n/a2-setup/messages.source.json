@@ -652,7 +652,8 @@
    "key": "Manual",
    "nl": "Handleiding",
    "places": [
-    "wizard.js:help"
+    "wizard.js:help",
+    "offline_lan_ca.py:help"
    ]
   },
   {
