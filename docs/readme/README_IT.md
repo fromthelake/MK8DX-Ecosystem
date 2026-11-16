@@ -302,14 +302,12 @@ Inizia da [Contributing](../../.github/CONTRIBUTING.md) e dalla [guida per svilu
 Ogni pull request, segnalazione di bug e correzione di traduzione rende la prossima serata LAN migliore
 per tutti.
 
-Vuoi sapere di più sullo sviluppatore? Vedi [github.com/fromthelake](https://github.com/fromthelake).
-
 ## Stato del progetto
 
-Le versioni stabili sono su [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases);
-la 0.2.0 ha aggiunto A2, a casa o al club; la 0.2.1 dà all'app Android una copia offline dei tuoi tempi e
-un layout più tranquillo. La 0.2.2 fa funzionare di nuovo l'analisi delle registrazioni e aggiunge la finestra Tournament Analysis. La 0.2.3 esegue il gateway web senza root e rende più facile iniziare con il repository. Porta inoltre il database del server della community a MySQL 9.7 LTS e, in ogni scanner, il colore di kart e deltaplano ora segue il personaggio. La 0.2.4 porta le guide, la procedura guidata di configurazione, i launcher e le finestre di Tournament in tutte le 15 lingue del gioco, legge i nomi dei giocatori in ogni sistema di scrittura e include tutti i modelli OCR, così il riconoscimento funziona offline. La 0.2.5 è un aggiornamento di sicurezza che ogni community dovrebbe installare: controlli dei permessi più rigorosi e limiti alle richieste, una nuova conferma via e-mail per le azioni di amministrazione pericolose, account di database separati e un backup giornaliero automatico su ogni percorso. La 0.2.6 consente a un Director di delegare la cattura dal vivo dall'app Android, mostra agli amministratori quali limiti di richieste hanno rifiutato richieste, porta il tabellone dal vivo e i launcher in tutte le 15 lingue e mostra le date nella lingua dell'app. La 0.2.7 include la 0.2.6, che non è stata pubblicata a parte: ogni percorso di installazione è stato seguito passo per passo con la sua guida e le guide sono state corrette, il backup notturno e un nuovo codice di recupero funzionano su ogni percorso, e due installazioni sullo stesso computer non possono più sostituirsi a vicenda le immagini. La 0.2.6 e la 0.2.7 non sono state pubblicate come release a sé; la 0.2.8 le include entrambe, riordina il repository e allega la guida illustrata come file PDF e HTML in ogni lingua. Vedi il [changelog](../../CHANGELOG.md), i [pacchetti di release](../RELEASE_PACKAGES.md)
-e la guida completa ([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt)).
+La versione attuale è **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. A novembre 2026 ogni percorso di installazione è stato installato
+seguendo la sua guida: A2 su Windows e Linux, A1 e A3 su Windows, e B1 come prova generale su Linux in WSL 2; i
+pacchetti per Mac sono compilati, ma non ancora provati su un Mac vero. Cosa è cambiato in ogni versione è nel
+[changelog](../../CHANGELOG.md).
 
 Il riconoscimento non rende mai ufficiale un risultato da solo: le tue Prove a tempo le controlli tu, e
 un organizzatore verifica le gare del torneo prima che contino.
@@ -396,6 +394,11 @@ E infine, un grande grazie a **Nintendo** per aver creato console e giochi così
 Dopotutto, è così che è iniziata tutta questa avventura.
 
 — [fromthelake](https://github.com/fromthelake)
+
+### Informazioni sullo sviluppatore
+
+Sono Bas, e MK8DX Ecosystem è una delle cose che costruisco nel tempo libero. Vuoi sapere di più su di me e sugli
+altri miei progetti, o vorresti sostenermi personalmente come sviluppatore? Dai un'occhiata al [mio profilo GitHub](https://github.com/fromthelake).
 
 ## Licenza e Nintendo
 

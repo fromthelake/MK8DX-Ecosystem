@@ -292,15 +292,11 @@ city's LAN scene; adapt it to how *your* nights work; and build on it:
 Start with [Contributing](../../.github/CONTRIBUTING.md) and the [developer guide](../DEVELOPMENT.md).
 Every pull request, bug report and translation fix makes the next LAN night better for everyone.
 
-Want to know more about the developer? See [github.com/fromthelake](https://github.com/fromthelake).
-
 ## Project status
 
-Stable releases are on [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 added A2,
-at home or at the club; 0.2.1 gives the Android app an offline copy of your times and a calmer layout. 0.2.2 makes recorded-video
-analysis work again and adds the Tournament Analysis window. 0.2.3 runs the web gateway without root and makes the repository easier to start with. It also moves the community server's database to MySQL 9.7 LTS, and in every scanner the kart and glider color now follow the character. 0.2.4 brings the guides, the setup wizard, the launchers and the Tournament windows in all 15 languages of the game, reads player names in every script, and includes every OCR model so recognition works offline. 0.2.5 is a security update that every community should install: stronger permission checks and request limits, a fresh email confirmation for dangerous administrator actions, separate database accounts and an automatic daily backup on every route. 0.2.6 lets a Director delegate live capture from the Android app, shows administrators which request limits refused requests, brings the live scoreboard and the launchers into all 15 languages and shows dates in the app's own language. 0.2.7 includes 0.2.6, which was not published on its own: every installation route was followed step by step through its guide and the guides were corrected, the nightly backup and a new recovery code work on every route, and two installations on one computer can no longer replace each other's images. 0.2.6 and 0.2.7 were not published as separate releases; 0.2.8 includes both, tidies the repository and attaches the illustrated guide as a PDF and an HTML file in every language. See the
-[changelog](../../CHANGELOG.md), [Release packages](../RELEASE_PACKAGES.md) and the complete guide
-([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt)).
+The current release is **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Every installation route was installed by following its guide in
+November 2026: A2 on Windows and Linux, A1 and A3 on Windows, and B1 rehearsed on Linux in WSL 2; the Mac
+packages are built but not yet tested on a real Mac. What changed per version is in the [changelog](../../CHANGELOG.md).
 
 Recognition never makes a result official by itself: you review your own Time Trials, and an
 organizer checks tournament races before they count.
@@ -387,6 +383,11 @@ And finally, a big thank you to **Nintendo** for creating such fantastic console
 After all, that's how this whole adventure started.
 
 — [fromthelake](https://github.com/fromthelake)
+
+### About the developer
+
+I'm Bas, and MK8DX Ecosystem is one of the things I build in my spare time. Want to know more about me and my
+other work, or would you like to support me personally as a developer? Take a look at [my GitHub profile](https://github.com/fromthelake).
 
 ## License and Nintendo
 

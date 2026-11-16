@@ -142,7 +142,8 @@ and `docs/install/MK8DX_Handleiding_NL.txt` and in every `docs/install/translati
 (they are attached to the release and name its files), regenerate the DOCX copies with
 `python tooling/release/build_reading_guides.py` (needs python-docx; it finds every locale folder and writes
 `MK8DX_User_Guide_<locale>.docx` there), rebuild the illustrated guides with `python tooling/build_guide_html.py`,
-and add the release to the Project status paragraph of every README.
+and bump the version in the release link of the Project status section of every README (`README.md` and the
+14 translations in `docs/readme/`); per-version changes go in `CHANGELOG.md`, not in the READMEs.
 
 1. Wait for the release workflow's draft and confirm all workflow jobs succeeded. Download the server ZIPs (host-local, the A2 packages, A3 and B2),
    verify their `sourceCommit` equals the tag commit, and check their internal manifests and bytes.

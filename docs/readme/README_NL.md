@@ -299,16 +299,12 @@ Begin bij [Bijdragen](../../.github/CONTRIBUTING.md) en de [ontwikkelaarshandlei
 Elke pull request, foutmelding en vertaalverbetering maakt de volgende LAN-avond beter voor
 iedereen.
 
-Meer weten over de ontwikkelaar? Zie [github.com/fromthelake](https://github.com/fromthelake).
-
 ## Status
 
-Stabiele versies staan op [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); 0.2.0 bracht
-A2, thuis of bij de club; 0.2.1 geeft de Android-app een offline kopie van je tijden en een rustiger indeling.
-0.2.2 laat het analyseren van opnames weer werken en voegt het venster Tournament Analysis toe. 0.2.3 laat de webgateway zonder root draaien en maakt de repository makkelijker om mee te beginnen. Ook gaat de database van de communityserver naar MySQL 9.7 LTS, en in elke scanner volgen de kleur van kart en zweefvlieger nu het personage. 0.2.4 brengt de handleidingen, de installatiewizard, de startvensters en de Tournament-vensters in alle 15 talen van het spel, leest spelersnamen in elk schrift en bevat alle OCR-modellen, zodat herkenning offline werkt. 0.2.5 is een beveiligingsupdate die elke community zou moeten installeren: strengere rechtencontroles en verzoeklimieten, een nieuwe e-mailbevestiging voor gevaarlijke beheeracties, aparte databaseaccounts en een automatische dagelijkse back-up op elke route. Met 0.2.6 delegeert een Director live-opname ook vanuit de Android-app, zien beheerders welke verzoeklimieten verzoeken weigerden, zijn het live-scorebord en de starters er in alle 15 talen en toont de app datums in zijn eigen taal. 0.2.7 bevat 0.2.6, dat niet apart is uitgebracht: elke installatieroute is stap voor stap volgens de handleiding doorlopen en de handleidingen zijn verbeterd, de nachtelijke back-up en een nieuwe herstelcode werken op elke route, en twee installaties op één computer kunnen elkaars images niet meer vervangen. 0.2.6 en 0.2.7 zijn niet als eigen release uitgebracht; 0.2.8 bevat ze allebei, ruimt de repository op en voegt de geïllustreerde handleiding in elke taal toe als pdf- en html-bestand.
-Zie de [changelog](../../CHANGELOG.md) (wijzigingen op `main` sinds de laatste release, voor de volgende, staan onder *Unreleased*), de [releasepakketten](../RELEASE_PACKAGES.md) en de
-volledige handleiding ([Nederlands](../install/MK8DX_Handleiding_NL.txt),
-[English](../install/MK8DX_User_Guide_EN.txt)).
+De huidige versie is **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Elke installatieroute is in november 2026 geïnstalleerd door de
+handleiding te volgen: A2 op Windows en Linux, A1 en A3 op Windows, en B1 als generale repetitie op Linux in WSL 2;
+de Mac-pakketten zijn gebouwd, maar nog niet getest op een echte Mac. Wat er per versie veranderde, staat in de
+[changelog](../../CHANGELOG.md).
 
 Herkenning maakt een uitslag nooit vanzelf officieel: je controleert je eigen Time Trials, en een
 organisator controleert toernooiraces voordat ze tellen.
@@ -395,6 +391,11 @@ En tot slot een dikke dankjewel aan **Nintendo** voor het maken van zulke fantas
 Zo is dit hele avontuur tenslotte ook begonnen.
 
 — [fromthelake](https://github.com/fromthelake)
+
+### Over de ontwikkelaar
+
+Ik ben Bas, en MK8DX Ecosystem is een van de dingen die ik in mijn vrije tijd bouw. Wil je meer weten over mij en
+mijn andere werk, of wil je mij persoonlijk steunen als ontwikkelaar? Kijk dan eens op [mijn GitHub-profiel](https://github.com/fromthelake).
 
 ## Licentie en Nintendo
 
