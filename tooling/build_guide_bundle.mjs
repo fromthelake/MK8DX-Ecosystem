@@ -1,12 +1,13 @@
 // Build the illustrated A2 guide as one self-contained HTML file and one PDF per language.
 //
-//   node tooling/build_guide_bundle.mjs --output <folder>            # all 15 languages, HTML + PDF
+//   node tooling/build_guide_bundle.mjs --output <folder> --version v0.2.11  # release: 15 languages, HTML + PDF
 //   node tooling/build_guide_bundle.mjs --output <folder> --only en,nl,ja --html-only
 //
 // Source: the committed pages docs/install/guide/<lang>.html (made by tooling/build_guide_html.py) with
 // guide.css, guide.js and the screenshots in docs/install/guide/img. The bundle inlines all of them (the
 // images as data: URIs), so MK8DX_Guide_<lang>.html opens anywhere without other files and without
-// internet. The language switcher points at the same file of the other language in the latest release.
+// internet. A release build pins the language switcher to that release, so an older guide never
+// silently opens a newer guide in another language. Local previews default to the latest release.
 // MK8DX_Guide_<lang>.pdf is that page printed by Playwright's Chromium: every computer and device, every
 // chapter open, light colours, A4 with page numbers. Japanese, Korean and Chinese need CJK fonts on the
 // build machine (Windows has them; on Ubuntu install fonts-noto-cjk); the build fails when a printed CJK
@@ -23,19 +24,23 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, "..");
 const guide = join(root, "docs", "install", "guide");
-const RELEASE = "https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download";
+const RELEASE = "https://github.com/fromthelake/MK8DX-Ecosystem/releases";
 const CJK = new Set(["ja", "ko", "zh-CN", "zh-TW"]);
 
 function parseArgs(argv) {
-  const options = { output: null, only: null, htmlOnly: false };
+  const options = { output: null, only: null, htmlOnly: false, version: null };
   for (let index = 0; index < argv.length; index += 1) {
     const name = argv[index];
     if (name === "--output") options.output = resolve(argv[++index]);
     else if (name === "--only") options.only = argv[++index].split(",").map((value) => value.trim()).filter(Boolean);
     else if (name === "--html-only") options.htmlOnly = true;
-    else throw new Error(`Unknown option ${name} (use --output <folder> [--only en,nl] [--html-only])`);
+    else if (name === "--version") options.version = argv[++index];
+    else throw new Error(`Unknown option ${name} (use --output <folder> [--version v0.2.11] [--only en,nl] [--html-only])`);
   }
   if (!options.output) throw new Error("Give --output <folder>");
+  if (options.version !== null && !/^v\d+\.\d+\.\d+(?:-rc\.\d+)?$/.test(options.version)) {
+    throw new Error("--version must be a release tag such as v0.2.11");
+  }
   return options;
 }
 
@@ -53,7 +58,7 @@ function dataUri(relative) {
 }
 
 /** The page of one language with its stylesheet, script and images inside the file. */
-export function bundle(lang, codes = languages()) {
+export function bundle(lang, codes = languages(), version = "latest") {
   let page = readFileSync(join(guide, `${lang}.html`), "utf8");
   const css = readFileSync(join(guide, "guide.css"), "utf8");
   const js = readFileSync(join(guide, "guide.js"), "utf8");
@@ -66,7 +71,8 @@ export function bundle(lang, codes = languages()) {
   replaceOnce('<script src="guide.js" defer></script>', `<script>\n${js}</script>`);
   page = page.replace(/(src|href)="(img\/[^"]+)"/g, (_, attribute, relative) => `${attribute}="${dataUri(relative)}"`);
   const pattern = new RegExp(`href="(${codes.map((code) => code.replace(/[\\^$.*+?()[\]{}|-]/g, "\\$&")).join("|")})\\.html"`, "g");
-  page = page.replace(pattern, (_, code) => `href="${RELEASE}/MK8DX_Guide_${code}.html"`);
+  const downloads = version === "latest" ? `${RELEASE}/latest/download` : `${RELEASE}/download/${version}`;
+  page = page.replace(pattern, (_, code) => `href="${downloads}/MK8DX_Guide_${code}.html"`);
   const leftover = page.match(/(?:src|href)="(?!data:|https:|#)[^"]*"/);
   if (leftover) throw new Error(`${lang}.html still refers to a local file: ${leftover[0]}`);
   return page;
@@ -132,7 +138,7 @@ async function main() {
   try {
     for (const lang of chosen) {
       const htmlPath = join(options.output, `MK8DX_Guide_${lang}.html`);
-      writeFileSync(htmlPath, bundle(lang, all), "utf8");
+      writeFileSync(htmlPath, bundle(lang, all, options.version ?? "latest"), "utf8");
       if (browser) await printPdf(browser, htmlPath, join(options.output, `MK8DX_Guide_${lang}.pdf`), lang);
       console.log(`MK8DX_Guide_${lang}${browser ? ".html + .pdf" : ".html"}`);
     }

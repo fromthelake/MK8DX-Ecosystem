@@ -94,6 +94,7 @@ OFFLINE_FILES = (
     *(f"tooling/setup_wizard_static/i18n/{language}.json" for language in (
         "en-US", "fr", "fr-CA", "de", "es", "es-419", "it", "pt", "ru", "ja", "ko", "zh-CN", "zh-TW")),
 )
+A2_GUIDE_START = ROOT / "tooling/release/a2_guide_start.html"
 
 
 def guide_paths() -> list[str]:
@@ -372,8 +373,11 @@ def main():
             lines = [f"{name}=={pins[name]} " + " ".join(rows) for name, rows in sorted(hashes.items())]
             file_bytes["wheels/requirements.hashes.txt"] = ("\n".join(lines) + "\n").encode()
         if args.offline_candidate:
+            file_bytes["START-HERE.html"] = A2_GUIDE_START.read_bytes()
             first = (f"MK8DX at home or at the club (A2), package {args.revision}\n\n"
                      + START[args.platform] + "\n"
+                     "Open START-HERE.html to choose your illustrated guide in any of the 15 languages.\n"
+                     "Open START-HERE.html om je geïllustreerde handleiding in een van de 15 talen te kiezen.\n\n"
                      "Step by step, with pictures: docs/install/guide/en.html (English),\n"
                      "docs/install/guide/nl.html (Nederlands) or docs/install/guide/<language>.html for the other\n"
                      "languages of the game (de, es, es-419, fr, fr-CA, it, ja, ko, pt, ru, zh-CN, zh-TW, en-US);\n"

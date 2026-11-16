@@ -28,7 +28,8 @@ through the Translation correction issue form). The English and Dutch files are 
 translation in `docs/install/translations/<locale>/` (there the TXT is `MK8DX_User_Guide.txt`, next to the
 translated A2 guide `A2_HOME_GUIDE.md`), and all of them are inside the installation packages. The A2 packages also
 carry the illustrated A2 guide as `docs/install/guide/<locale>.html` for every language; the setup wizard's Manual
-link opens it in the browser's language.
+link opens it in the browser's language. `START-HERE.html` at the A2 ZIP root is an offline language chooser for
+those pages.
 
 The same illustrated guide is attached as one file per language to read, print or pass on:
 `MK8DX_Guide_<locale>.html` (a single self-contained page: styles, script and screenshots inside, works offline) and
@@ -39,6 +40,13 @@ the build fails when Japanese, Korean or Chinese text has no font). Their names 
 `https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest/download/MK8DX_Guide_en.pdf` always gives the
 newest. They are not committed: they are generated copies of the committed, reviewed guide pages and screenshots
 (about 2 MB each, 30 files), unlike the TXT/DOCX guides, which the installation packages copy from the repository.
+The HTML language switcher built for a tagged release links to that same tag's guides. Write historical release
+notes with tag-pinned URLs such as `https://github.com/fromthelake/MK8DX-Ecosystem/releases/download/v0.2.10/MK8DX_Guide_en.pdf`,
+not `/releases/latest/download/`: an older release page must continue to open its own instructions. The evergreen
+README may keep the `latest` link.
+Before uploading a built host or A2 ZIP, `python -m tooling.release.verify_package_guides <zip>` checks every
+packaged guide byte and manifest hash against the checked-out release commit. The release workflow runs this after
+each of those ZIPs is built; a historical ZIP is checked against its own tag, never against a newer `main`.
 
 A1, A2, A3 and B1 were installed by following their guides on 15 November 2026: A1 and A3 end to end on Windows 11, A2 end to end on
 Windows 11 and on Linux in WSL 2 (macOS built but not tested), and B1 rehearsed on Ubuntu 24.04 in WSL 2 (not yet on a real VPS). B2: our own community site runs this way; the public package has not yet been installed from scratch on a new hosting account. The Android release APK is signed locally with the maintainer's retained key;

@@ -1,12 +1,14 @@
 """Check that a release ZIP will start the images it actually contains."""
 
+import hashlib
+import subprocess
 import tempfile
 import unittest
 import zipfile
 from pathlib import Path
 from unittest import mock
 
-from tooling.release import host_bundle, non_docker_bundle, release_manifest
+from tooling.release import host_bundle, non_docker_bundle, release_manifest, verify_package_guides
 
 
 class PackagedGuidesTest(unittest.TestCase):
@@ -65,6 +67,35 @@ class HostBundleArchiveLayoutTest(unittest.TestCase):
                 archive.extractall(folder / "unpacked")
             self.assertTrue((folder / "unpacked" / output.stem / "Start-MK8DX-LAN.cmd").is_file())
             self.assertEqual("v0.2.9", release_manifest.package_details(output)["revision"])
+
+    def test_actual_guide_bytes_and_start_page_match_the_release_source(self):
+        paths = host_bundle.guide_paths()
+        source = host_bundle.ROOT
+        files = {name: (source / name).read_bytes() for name in paths}
+        files["START-HERE.html"] = host_bundle.A2_GUIDE_START.read_bytes()
+        receipt = {"revision": "v0.2.11", "sourceCommit": subprocess.check_output(
+            ["git", "rev-parse", "HEAD"], cwd=source, text=True).strip(),
+            "files": {name: {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+                      for name, data in files.items()}}
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            tar = folder / "images.tar"
+            tar.write_bytes(b"test image")
+            output = folder / "mk8dx-a2-windows-amd64-v0.2.11.zip"
+            host_bundle.write_archive(output, receipt, files, {}, None, tar, "amd64", True)
+            self.assertEqual(len(paths), verify_package_guides.verify(output))
+
+            corrupted = dict(files)
+            corrupted["docs/install/A2_HOME_GUIDE_EN.md"] += b"\nold step\n"
+            receipt["files"]["docs/install/A2_HOME_GUIDE_EN.md"] = {
+                "bytes": len(corrupted["docs/install/A2_HOME_GUIDE_EN.md"]),
+                "sha256": hashlib.sha256(corrupted["docs/install/A2_HOME_GUIDE_EN.md"]).hexdigest(),
+            }
+            bad = folder / "bad" / output.name
+            bad.parent.mkdir()
+            host_bundle.write_archive(bad, receipt, corrupted, {}, None, tar, "amd64", True)
+            with self.assertRaisesRegex(ValueError, "guide differs from source"):
+                verify_package_guides.verify(bad)
 
 
 class HostBundleImageReferencesTest(unittest.TestCase):
