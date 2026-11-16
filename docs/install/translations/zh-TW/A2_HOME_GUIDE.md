@@ -477,12 +477,12 @@ LiveTrial 是一個 Windows 程式，它透過擷取卡（一個把 Switch 畫�
 
 **從這台電腦移除 MK8DX**
 
-目前還沒有移除按鈕。這些步驟會刪除資料庫、每個帳號和成績，以及此安裝的金鑰。如果你之後可能還想找回任何內容，請先建立一份備份（`tooling/auto_backup.py run`，見上文），並把它和寫有其復原碼的那張紙保存在一起：備份只能用該安裝的復原碼開啟。已在 Windows 11 和 WSL 2 中的 Linux 上測試（皆為 0.2.6）；macOS 的指令尚未測試。請在套件資料夾中操作，使用上文中的 Python，`<folder>` 為私人資料資料夾。
+目前還沒有移除按鈕。這些步驟會刪除資料庫、每個帳號和成績，以及此安裝的金鑰。如果你之後可能還想找回任何內容，請先建立一份備份（`tooling/auto_backup.py run`，見上文），並把它和寫有其復原碼的那張紙保存在一起：備份只能用該安裝的復原碼開啟。已在 Windows 11 和 WSL 2 中的 Linux 上測試（皆為 0.2.6；2026-11-16 又在 Windows 11 上用 0.2.7 測試）；macOS 的指令尚未測試。請在套件資料夾中操作，使用上文中的 Python，`<folder>` 為私人資料資料夾。
 
 - 停止排程工作。在 Windows 上，於 PowerShell 中：`Unregister-ScheduledTask -TaskName 'MK8DX backup','MK8DX certificate renewal','MK8DX start' -Confirm:$false`。在 Linux 上：`systemctl --user disable --now mk8dx-mk8dx-backup.timer mk8dx-mk8dx-certificate-renewal.timer`，接著 `rm -f ~/.config/systemd/user/mk8dx-mk8dx-*.service ~/.config/systemd/user/mk8dx-mk8dx-*.timer` 和 `systemctl --user daemon-reload`。在 macOS 上，對每個檔案 `~/Library/LaunchAgents/nl.mariokart8.mk8dx-<name>.plist`：`launchctl bootout gui/$(id -u) ~/Library/LaunchAgents/nl.mariokart8.mk8dx-<name>.plist`，接著刪除該檔案。（`install.py backup-unschedule` 用於其他安裝方式，不會影響這些工作。）
 - 停止 MK8DX：`tooling/install.py stop --state-dir <folder>`。接著移除容器、網路和磁碟區（資料庫和憑證）：`docker compose --env-file <folder>/compose.env -f compose.yaml -f compose.offline-lan.yaml -f compose.images.yaml down -v`。Docker 會把容器、網路和四個磁碟區回報為「Removed」。
-- 刪除私人資料資料夾（在上一步完成之前請保留它）以及它旁邊的 `python-offline-<code>` 資料夾。接著刪除 **MK8DX beheer** 捷徑：在 Windows 上是桌面上的那個；在 Linux 上是 `~/.local/share/applications/mk8dx-beheer.desktop` 和 `~/Desktop/mk8dx-beheer.desktop`。
-- 移除這台電腦上沒有其他地方使用的映像檔：`python tooling/remove_images.py`（Linux 和 macOS 上用 `python3`）。它從 `PACKAGE_MANIFEST.json` 讀取映像檔，保留其他容器仍在使用的每個映像檔（另一個 MK8DX 安裝，或其他程式的 `mysql` 或 `mailpit`），並說明保留了哪些。接著刪除套件資料夾。
+- 用上文中的 Python 移除這台電腦上沒有其他地方使用的映像檔（下一步會刪除這個 Python，所以先做這一步）：在 Windows 上是 `%LOCALAPPDATA%\MK8DX\python-offline-<code>\Scripts\python.exe tooling/remove_images.py`，在 Linux 上是 `~/.local/share/mk8dx/python-offline-<code>/bin/python tooling/remove_images.py`（macOS 上用同一個 `python-offline-<code>` 資料夾中的 `bin/python`）。加上 `--dry-run` 可先查看它會做什麼。它從 `PACKAGE_MANIFEST.json` 讀取映像檔，保留其他容器仍在使用的每個映像檔（另一個 MK8DX 安裝，或其他程式的 `mysql` 或 `mailpit`），並說明保留了哪些。早期 MK8DX 版本的映像檔（例如 `ghcr.io/fromthelake/mk8dx-api:v0.2.6-amd64` 或較舊的 `mysql`）不在該清單中，會保留下來：用 `docker images` 找到它們，用 `docker ps -a --filter ancestor=<image>` 確認沒有容器在使用，然後只用 `docker image rm <image>` 移除 MK8DX 帶來的映像檔。
+- 刪除私人資料資料夾（在前面的步驟完成之前請保留它）、它旁邊的 `python-offline-<code>` 資料夾以及套件資料夾。接著刪除 **MK8DX beheer** 捷徑：在 Windows 上是桌面上的那個；在 Linux 上是 `~/.local/share/applications/mk8dx-beheer.desktop` 和 `~/Desktop/mk8dx-beheer.desktop`。
 - 在每台裝置上移除「MK8DX offline LAN root」憑證（第 6 章），並在 Android App 中忘記此安裝（第 7 章）。
 - Windows 上的防火牆規則 `MK8DX-A2-offline-<address>` 只讓 MK8DX 通過 TCP 80 和 443。如果你要在同一個位址上重新安裝 MK8DX，請保留它：這樣 Windows 就不會再次要求權限。若要移除它，請在 **Windows PowerShell (Admin)**（Windows PowerShell（系統管理員））中執行：`Remove-NetFirewallRule -Name 'MK8DX-A2-offline-<address>'`。你在 Linux 上加入的 ufw 或 firewalld 規則（第 3 章）請用同一個工具移除。
 - 「文件」中的 `MK8DX-backups` 資料夾會保留；不再需要時請自行刪除。
