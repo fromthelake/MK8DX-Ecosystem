@@ -14,6 +14,7 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   the remaining rows a larger touch target.
 - A2 packages unpack into one folder named after the ZIP. The installation guide in every supported language
   points to that folder.
+- Updated better-auth and tifffile to their reviewed patch versions.
 
 ## 0.2.9 — 2026-11-16
 
