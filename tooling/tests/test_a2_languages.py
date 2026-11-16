@@ -94,6 +94,24 @@ class CatalogTest(unittest.TestCase):
                     catalog = json.loads((PRODUCTS[product] / f"{language}.json").read_text(encoding="utf-8"))
                     self.assertNotEqual(catalog["messages"][english], english)
 
+    def test_host_page_module_has_every_text_in_every_language(self):
+        # The API image ships compiled TypeScript only, so the host page's catalogs are one generated module.
+        module = (ROOT / "backend" / "api" / "src" / "administration" / "offline-host-text.generated.ts").read_text(
+            encoding="utf-8")
+        catalogs = json.loads(module.split(" = ", 1)[1].rstrip().rstrip(";"))
+        keys = source_keys("a2-host")
+        self.assertEqual(sorted(catalogs), sorted(CATALOG_LANGUAGES))
+        for language in CATALOG_LANGUAGES[1:]:
+            with self.subTest(language=language):
+                messages = catalogs[language]
+                self.assertEqual([key for key in keys if key not in messages], [])
+                self.assertEqual(sorted(set(messages) - set(keys)), [])
+                self.assertNotEqual(messages["Use the 'MK8DX beheer' shortcut"], "Use the 'MK8DX beheer' shortcut")
+                for english, translated in messages.items():
+                    if "MK8DX beheer" in english:  # the shortcut's name is the same in every language
+                        self.assertIn("MK8DX beheer", translated)
+                    self.assertEqual(sorted(PLACEHOLDER.findall(translated)), sorted(PLACEHOLDER.findall(english)))
+
 
 class SetupPageTest(unittest.TestCase):
     def setUp(self):

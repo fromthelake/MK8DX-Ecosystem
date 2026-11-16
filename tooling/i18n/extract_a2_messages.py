@@ -7,9 +7,12 @@
   -> tooling/i18n/a2-setup/messages.source.json
 * Invitation page (infrastructure/docker/offline-invite/app.js): its `SOURCE` tables.
   -> tooling/i18n/a2-invite/messages.source.json
+* The technical host page's unlock section (backend/api/src/administration/offline-host-text.ts): its `SOURCE`.
+  -> tooling/i18n/a2-host/messages.source.json
 
 tooling/i18n/build_web_catalogs.mjs turns the shared translations into the catalogs these pages load
-(tooling/setup_wizard_static/i18n/, infrastructure/docker/offline-invite/i18n/). Named placeholders such as
+(tooling/setup_wizard_static/i18n/, infrastructure/docker/offline-invite/i18n/,
+backend/api/src/administration/offline-host-text.generated.ts). Named placeholders such as
 {name} stay as they are in every translation. --check fails when a committed file is not up to date.
 """
 from __future__ import annotations
@@ -25,6 +28,7 @@ JS_STRING = r'"(?:[^"\\]|\\.)*"'
 ENTRY = re.compile(rf'\b([A-Za-z_][A-Za-z0-9_]*)\s*:\s*({JS_STRING})')
 SETUP = ROOT / "tooling" / "i18n" / "a2-setup" / "messages.source.json"
 INVITE = ROOT / "tooling" / "i18n" / "a2-invite" / "messages.source.json"
+HOST = ROOT / "tooling" / "i18n" / "a2-host" / "messages.source.json"
 
 
 def js_string(token: str) -> str:
@@ -84,8 +88,13 @@ def build() -> dict[Path, str]:
     tables = source_tables(ROOT / "infrastructure" / "docker" / "offline-invite" / "app.js")
     for key, english in tables["en"].items():
         add(invite, english, tables["nl"][key], f"app.js:{key}")
+    host: dict[str, dict] = {}
+    tables = source_tables(ROOT / "backend" / "api" / "src" / "administration" / "offline-host-text.ts")
+    for key, english in tables["en"].items():
+        add(host, english, tables["nl"][key], f"offline-host-text.ts:{key}")
     return {SETUP: render("mk8dx.a2-setup-message-source.v1", setup),
-            INVITE: render("mk8dx.a2-invite-message-source.v1", invite)}
+            INVITE: render("mk8dx.a2-invite-message-source.v1", invite),
+            HOST: render("mk8dx.a2-host-message-source.v1", host)}
 
 
 def main() -> int:

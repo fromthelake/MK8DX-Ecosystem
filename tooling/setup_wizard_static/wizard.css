@@ -96,3 +96,45 @@ button.small { padding: 8px 14px; font-size: 15px; }
 .list li .person-action { margin-left: auto; flex-shrink: 0; }
 .step-title { font-size: 20px; margin: 26px 0 4px; }
 .link-warn { font-size: 13px; margin: 8px 0 4px; text-align: left; }
+/* MK8DX beheer: Add a phone or device (add-device.js) */
+.person-actions { margin-left: auto; display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+.device-grid { display: grid; grid-template-columns: minmax(230px, 280px) 1fr; gap: 16px; align-items: start; margin-top: 14px; }
+.device-grid .list { margin: 0; }
+.device-done { background: var(--panel-2); border: 1px solid var(--ok); border-radius: 12px; padding: 14px 16px; }
+.device-done h2 { margin: 0; }
+.print-tools { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--line); }
+.print-tools .row label, .print-tools label.row { gap: 8px; }
+.countdown { font-size: 18px; }
+.person .alive { color: #4b5270; }
+@media (max-width: 600px) { .device-grid { grid-template-columns: 1fr; } .person-actions { margin-left: 0; } .list li { flex-wrap: wrap; } }
+/* The welcome card: a paper-like preview on screen, alone on the page when printed (A6 or A4). */
+.welcome-sheet, .welcome-bar { display: none; }
+body.print-welcome .frame { display: none; }
+body.print-welcome .welcome-bar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; max-width: 920px; margin: 16px auto; padding: 0 16px; }
+body.print-welcome .welcome-sheet { display: block; background: #fff; color: #111; margin: 0 auto 32px; box-shadow: 0 6px 30px rgba(0,0,0,.45);
+  font: 9pt/1.3 "Segoe UI", system-ui, sans-serif; width: 105mm; min-height: 148mm; padding: 6mm; }
+body.print-welcome .welcome-sheet.a4 { width: 210mm; min-height: 297mm; padding: 14mm; font-size: 13pt; }
+.welcome-sheet h1 { font-size: 1.6em; margin: 0 0 1mm; color: #111; }
+.welcome-sheet p { margin: .6mm 0; color: #111; }
+.welcome-address { font-size: 1.05em; }
+.welcome-steps { list-style: none; padding: 0; margin: 2mm 0 0; display: grid; gap: 2mm; }
+.welcome-steps li { display: grid; grid-template-columns: 1fr auto; gap: 2.5mm; align-items: center; border: .3mm solid #999; border-radius: 2mm; padding: 2mm; break-inside: avoid; }
+.welcome-steps li.personal { border: .6mm dashed #b00020; }
+.welcome-head { display: flex; align-items: center; gap: 2mm; font-size: 1.15em; }
+.welcome-number { display: inline-grid; place-items: center; width: 1.6em; height: 1.6em; border-radius: 50%; background: #111; color: #fff; font-weight: 800; flex: none; }
+.welcome-qr { width: 30mm; height: 30mm; image-rendering: pixelated; }
+.a4 .welcome-qr { width: 55mm; height: 55mm; }
+.welcome-empty { border: .4mm dashed #999; border-radius: 2mm; }
+.welcome-code { font: 700 1.05em/1.2 Consolas, monospace; letter-spacing: .3mm; }
+.welcome-url { font-size: .85em; overflow-wrap: anywhere; }
+.welcome-mark { font-weight: 800; color: #b00020; }
+.welcome-expiry { font-weight: 600; }
+@page welcome-a6 { size: 105mm 148mm; margin: 0; }  /* A6; not every browser knows the keyword */
+@page welcome-a4 { size: A4; margin: 0; }
+@media print {
+  body.print-welcome { background: #fff; }
+  body.print-welcome .welcome-bar { display: none !important; }
+  body.print-welcome .welcome-sheet { box-shadow: none; margin: 0; }
+  body.print-welcome .welcome-sheet.a6 { page: welcome-a6; width: 105mm; height: 148mm; min-height: 0; overflow: hidden; }
+  body.print-welcome .welcome-sheet.a4 { page: welcome-a4; width: 210mm; height: 297mm; min-height: 0; overflow: hidden; }
+}
