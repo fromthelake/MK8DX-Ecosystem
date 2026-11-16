@@ -316,7 +316,7 @@ pour tout le monde.
 
 ## État du projet
 
-La version actuelle est **[v0.2.9](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. En novembre 2026, chaque voie d'installation a été installée en
+La version actuelle est **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. En novembre 2026, chaque voie d'installation a été installée en
 suivant son guide : A2 sous Windows et Linux, A1 et A3 sous Windows, et B1 en répétition sous Linux dans WSL 2 ; les
 paquets Mac sont construits, mais pas encore testés sur un vrai Mac. Ce qui a changé à chaque version se trouve dans
 le [journal des modifications](../../CHANGELOG.md).
