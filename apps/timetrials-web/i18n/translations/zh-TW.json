@@ -6157,6 +6157,10 @@
   "This is not a personal sign-in card.": "這不是個人登入卡。",
   "Three steps for this phone. You only do them once.": "這支手機需要三個步驟。只需做一次。",
   "Too many attempts. Wait a moment, then try again.": "嘗試次數過多。請稍候再試一次。",
-  "Your phone trusts this installation.": "手機信任此安裝。"
+  "Your phone trusts this installation.": "手機信任此安裝。",
+  "Readable copy of clips": "易讀的片段副本",
+  "Folder for readable clips": "易讀片段的資料夾",
+  "Save folder": "儲存資料夾",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "每個完成的片段也會以易讀的名稱出現在此資料夾中：日期、時刻、賽道、等級和成績。在同一磁碟上不佔用額外空間；當 LiveTrial 的清理刪除某個片段時，它的副本也會一併刪除。"
  }
 }

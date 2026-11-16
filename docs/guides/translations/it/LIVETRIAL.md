@@ -93,6 +93,31 @@ aperta su questo PC. Se il motore viene avviato con `--lan` (vedi il
 [README del componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), telefoni e tablet della rete
 possono guardare la vista live e le corse, ma non possono cambiare nulla.
 
+## Nomi delle clip leggibili
+
+All'interno di LiveTrial una clip mantiene il suo nome interno. Ogni clip terminata compare anche in un'unica
+cartella, `Documenti\MK8DX\LiveTrial-clips` (sul disco `Documents\MK8DX\LiveTrial-clips`), con un nome leggibile:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Data e ora di inizio della clip (l'orologio di questo PC), pista, classe (50cc, 100cc, 150cc, 200cc o Mirror) e il
+  tempo, con due spazi tra i campi. Una clip registrata con il pulsante di registrazione si chiama `Manual`, un
+  replay di un fantasma `Ghost <pista>`. Una pista o un tempo che LiveTrial non ha riconosciuto viene omesso
+  (`Unknown track`), mai indovinato. Se un nome è già preso, viene aggiunto ` (2)`.
+- La pista è nella lingua di LiveTrial. I nomi usano solo lettere, cifre, spazi e `-`: apostrofi e altri segni
+  spariscono e gli accenti diventano lettere semplici (Yoshi's Circuit diventa Yoshis Circuit). In russo,
+  giapponese, coreano o cinese la pista è in inglese, così i nomi dei file restano in lettere semplici.
+- Sullo stesso disco dei dati di LiveTrial la voce è un collegamento fisico (hard link) e non occupa spazio in più;
+  su un altro disco è una copia. Quando la pulizia dello spazio di LiveTrial rimuove una clip, se ne va anche la sua
+  copia leggibile; una clip fissata mantiene la sua copia.
+- Lo **Storico dei tempi** mostra il nome sotto la clip, con **Open folder**. Disattiva le copie o scegli un'altra
+  cartella in **Copia leggibile delle clip** nelle **Impostazioni**.
+
+La copia viene fatta in background quando la clip è completa. Se non riesce (per esempio la cartella non è
+raggiungibile), la clip stessa non ne risente.
+
 ## Problemi
 
 - Sito sbagliato, o l'accesso apre il sito sbagliato: chiudi LiveTrial con **Esci da LiveTrial**, riavvialo e controlla

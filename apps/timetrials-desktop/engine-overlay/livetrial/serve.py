@@ -38,7 +38,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
-from livetrial import engine, storage  # noqa: E402
+from livetrial import engine, readable_clips, storage  # noqa: E402
 from livetrial.ghostmenu import ghost_matches, replay_hud_lap_times  # noqa: E402
 from livetrial.safe_paths import UnsafePathError, resolve_within  # noqa: E402
 
@@ -176,6 +176,17 @@ def _write_atomic(target: Path, text: str) -> None:
             partial.unlink()
         except OSError:
             pass
+
+
+def show_in_folder(target: Path) -> None:
+    """Open the file manager at `target` (Explorer selects the file), without waiting for it."""
+    import subprocess
+    if sys.platform == "win32":
+        subprocess.Popen(["explorer.exe", f"/select,{target}"])
+    elif sys.platform == "darwin":
+        subprocess.Popen(["open", "-R", str(target)])
+    else:
+        subprocess.Popen(["xdg-open", str(target.parent)])
 
 
 def build_meta(root: Path) -> dict:
@@ -795,6 +806,12 @@ class RunStore:
             ghost_runs = self.ghost_runs()
         except Exception:
             ghost_runs = []
+        # the readable copy's file name (readable_clips.py), shown with an Open folder button
+        readable = readable_clips.load_index(self.runs_dir)
+        for run in (*out_runs, *ghost_runs):
+            entry = readable.get(run.get("clipFile"))
+            if entry and isinstance(entry.get("name"), str):
+                run["readableClip"] = entry["name"]
         return {"runs": out_runs, "ghostRuns": ghost_runs, "live": self.live, "liveState": state,
                 "record": dict(self.record) if self.live else None,
                 "lanUrl": getattr(self, "lan_url", None)}
@@ -805,7 +822,8 @@ def make_handler(store: RunStore, token: str | None = None):
     write_lock = threading.Lock()        # one state/config change at a time
     package_lock = threading.Lock()      # one run package being zipped at a time
     post_routes = frozenset({*CALIBRATION_FILES, "/api/stop", "/api/record", "/api/settings",
-                             "/api/storage/cleanup", "/api/pin", "/api/category", "/api/archive"})
+                             "/api/storage/cleanup", "/api/pin", "/api/category", "/api/archive",
+                             "/api/readable-clip/open"})
 
     class Handler(BaseHTTPRequestHandler):
         # keep-alive: the dashboard polls /api/preview.jpg ~12x/s and /api/runs
@@ -1015,6 +1033,17 @@ def make_handler(store: RunStore, token: str | None = None):
                 pinned = storage.toggle_pin(store.runs_dir, rel)
                 store.storage_status(max_age=0.0)
                 return 200, {"file": rel, "pinned": pinned}
+            if path == "/api/readable-clip/open":
+                # Opens Explorer on THIS computer at the clip's readable copy; the page only names the
+                # internal clip, the path itself comes from the index the engine wrote.
+                rel = body.get("file")
+                if not isinstance(rel, str) or not _RUN_FILE.fullmatch(rel) or ".." in rel:
+                    raise ActionRefused("a clip of a session expected")
+                entry = readable_clips.readable_entry(store.runs_dir, rel)
+                if entry is None:
+                    raise ActionRefused("this clip has no readable copy", 404)
+                show_in_folder(Path(entry["path"]))
+                return 200, {"ok": True, "name": entry["name"]}
             key = body.get("key")
             if not isinstance(key, str) or not key or len(key) > MAX_KEY_LENGTH:
                 raise ActionRefused("key required")

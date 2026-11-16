@@ -24,6 +24,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Welcome card**: a printable A6 or A4 page per person with the address, both QR codes and the three numbered
   steps; the sign-in QR is marked personal and one-time with its expiry, and is left out once it can no longer be
   used (a card still lasts 15 minutes; no longer-lived card is offered).
+- **LiveTrial: readable clip names.** Every finished clip (runs, record-button clips and ghost replays) also
+  appears in `Documents\MK8DX\LiveTrial-clips` with a name such as
+  `2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4`: start date and time, track in LiveTrial's language
+  (English for a non-Latin language), class and time, ASCII letters only. It is a hard link on the same drive (no
+  extra space), otherwise a copy, made in the background; the storage clean-up removes it with its clip and a
+  pinned clip keeps it. The internal clip names do not change. Settings → **Readable copy of clips** (on by
+  default) turns it off or chooses another folder; Run history shows the name with **Open folder**.
 
 ### Changed
 

@@ -52,6 +52,26 @@ capturing - the engine serves it then. A switch shows **Send status &
 corrections** instead: every result on this PC with its state, kart icons,
 Correct and Send as.
 
+**Readable clip names.** Inside the runs folder a clip keeps its internal name
+(`live_YYYYMMDD_HHMMSS/clip_HHMMSS_runNN.mp4`; manual and ghost clips
+`clip_HHMMSS.mp4`), which the dashboard, timeline pairing, YouTube uploader and
+storage clean-up rely on. When a run is closed and its clip is complete (after the
+MKV-to-MP4 remux), the engine (`livetrial/readable_clips.py`, started with
+`--readable-clips-dir <folder> --readable-clips-language <code>`) also gives it a
+readable name in one folder, by default `Documents\MK8DX\LiveTrial-clips` (the
+Windows known Documents folder): `2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4`
+(start date/time, track in LiveTrial's language, class, time; two spaces between
+fields; only ASCII letters, digits, spaces and `-`; a non-Latin language names the
+track in English; unknown fields are left out, a taken name gets ` (2)`). Manual
+clips are `<date time>  Manual`, ghost replays `<date time>  Ghost <track> ...`. It
+is a hard link on the same volume, otherwise a copy, made on a background thread;
+failures are only logged. `runs/readable-clips.json` maps each internal clip to its
+entry, so the storage clean-up removes the entry with its clip (pinned clips keep
+theirs), the run list carries `readableClip`, and `POST /api/readable-clip/open`
+opens Explorer at it. Settings `readableClips` (default on) and
+`readableClipsFolder` (absent = the default folder) live in `settings.json`
+(`mk8dx.livetrial-settings.v5`).
+
 **Who can control the engine on 8777.** Reading (pictures, runs, settings,
 exports) is a `GET`; changing something (manual record, Stop capture, storage
 settings, clean-up, pins, SC/NSC, archive, the calibration grids) is a `POST`

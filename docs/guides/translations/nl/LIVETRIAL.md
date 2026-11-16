@@ -97,6 +97,32 @@ pc open staat. Start je de engine met `--lan` (zie de
 [README van de LiveTrial-component](../../../../apps/timetrials-desktop/README.md)), dan kunnen telefoons en tablets
 in het netwerk de live-weergave en de ritten bekijken, maar niets veranderen.
 
+## Leesbare clipnamen
+
+Binnen LiveTrial houdt een clip zijn interne naam. Elke afgeronde clip verschijnt ook in één map,
+`Documenten\MK8DX\LiveTrial-clips` (op schijf `Documents\MK8DX\LiveTrial-clips`), met een naam die je kunt lezen:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Datum en tijdstip waarop de clip begon (de klok van deze pc), circuit, klasse (50cc, 100cc, 150cc, 200cc of
+  Mirror) en de tijd, met twee spaties tussen de velden. Een clip die je met de opnameknop maakt heet `Manual`, een
+  ghost-replay `Ghost <circuit>`. Een circuit of tijd die LiveTrial niet herkende, wordt weggelaten
+  (`Unknown track`), nooit geraden. Is een naam al bezet, dan komt er ` (2)` achter.
+- Het circuit staat in de taal van LiveTrial (in het Nederlands dus bijvoorbeeld `Mario Kart-Stadion`). Namen
+  bevatten alleen letters, cijfers, spaties en `-`: apostrofs en andere leestekens vallen weg en accenten worden
+  gewone letters (GCN Yoshi's Circuit wordt GCN Yoshis Circuit). In het Russisch, Japans, Koreaans of Chinees staat
+  het circuit in het Engels, zodat de bestandsnamen gewone letters houden.
+- Op dezelfde schijf als de gegevens van LiveTrial is het een harde koppeling (hard link) die geen extra ruimte
+  kost; op een andere schijf is het een kopie. Als het opruimen van de opslag een clip verwijdert, gaat de leesbare
+  kopie mee; een vastgezette clip houdt zijn kopie.
+- **Ritgeschiedenis** toont de naam onder de clip, met **Open map**. Zet de kopieën uit of kies een andere map bij
+  **Leesbare kopie van clips** in Instellingen.
+
+De kopie wordt op de achtergrond gemaakt zodra de clip klaar is. Mislukt dat (de map is bijvoorbeeld niet
+bereikbaar), dan heeft de clip zelf daar geen last van.
+
 ## Problemen
 
 - Verkeerde website, of aanmelden opent de verkeerde site: sluit LiveTrial af met **LiveTrial afsluiten**, start

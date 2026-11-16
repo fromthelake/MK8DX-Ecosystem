@@ -92,6 +92,33 @@ auf diesem PC geöffnet ist. Wird die Engine mit `--lan` gestartet (siehe
 [README der LiveTrial-Komponente](../../../../apps/timetrials-desktop/README.md)), können Handys und Tablets im
 Netzwerk die Live-Ansicht und die Läufe ansehen, aber nichts ändern.
 
+## Lesbare Clipnamen
+
+Innerhalb von LiveTrial behält ein Clip seinen internen Namen. Jeder fertige Clip erscheint außerdem in einem
+Ordner, `Dokumente\MK8DX\LiveTrial-clips` (auf der Festplatte `Documents\MK8DX\LiveTrial-clips`), mit einem lesbaren
+Namen:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Datum und Uhrzeit, zu der der Clip begann (die Uhr dieses PCs), Strecke, Klasse (50cc, 100cc, 150cc, 200cc oder
+  Mirror) und die Zeit, mit zwei Leerzeichen zwischen den Feldern. Ein mit der Aufnahmetaste aufgenommener Clip
+  heißt `Manual`, ein Ghost-Replay `Ghost <Strecke>`. Eine Strecke oder Zeit, die LiveTrial nicht erkannt hat, wird
+  weggelassen (`Unknown track`), nie geraten. Ist ein Name schon vergeben, wird ` (2)` angehängt.
+- Die Strecke steht in der Sprache von LiveTrial. Namen enthalten nur Buchstaben, Ziffern, Leerzeichen und `-`:
+  Apostrophe und andere Satzzeichen entfallen, Akzente werden zu einfachen Buchstaben (Yoshi's Circuit wird zu
+  Yoshis Circuit). Auf Russisch, Japanisch, Koreanisch oder Chinesisch steht die Strecke auf Englisch, damit die
+  Dateinamen einfache Buchstaben behalten.
+- Auf demselben Laufwerk wie die Daten von LiveTrial ist der Eintrag eine feste Verknüpfung (Hardlink) und braucht
+  keinen zusätzlichen Platz; auf einem anderen Laufwerk ist er eine Kopie. Entfernt die Speicherbereinigung von
+  LiveTrial einen Clip, verschwindet auch seine lesbare Kopie; ein angehefteter Clip behält seine Kopie.
+- Der **Laufverlauf** zeigt den Namen unter dem Clip, mit **Open folder**. Schalte die Kopien aus oder wähle einen
+  anderen Ordner unter **Lesbare Kopie der Clips** in den **Einstellungen**.
+
+Die Kopie entsteht im Hintergrund, sobald der Clip fertig ist. Schlägt sie fehl (zum Beispiel weil der Ordner nicht
+erreichbar ist), bleibt der Clip selbst unberührt.
+
 ## Probleme
 
 - Falsche Website, oder die Anmeldung öffnet die falsche Seite: Beende LiveTrial mit **LiveTrial beenden**, starte es

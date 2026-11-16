@@ -45,6 +45,7 @@ from collections import deque
 from livetrial import hudtimes
 from livetrial.clock import read_clock
 from livetrial.ghostmenu import GHOST_CLIP_PANEL_HOLD_FRAMES, GhostClipPlanner, same_ghost
+from livetrial.readable_clips import ReadableClips, database_track_names
 from livetrial.report import write_ghost_replays, write_ghosts, write_reports
 from livetrial.runner import RunProcessor
 from serve import RunStore, start_background
@@ -564,6 +565,8 @@ class Recorder:
         # a clip's timestamps are only right through these anchors.
         self.frame_index = 0
         self.timeline: list = []
+        # wall clock of the current (or last) clip's start: the readable copy's date and time
+        self.started_at: datetime | None = None
 
     @staticmethod
     def _remux(raw: "Path | None", dst: Path) -> Path:
@@ -620,6 +623,7 @@ class Recorder:
             # write an MKV (crash-safe: playable even if killed mid-clip); the
             # caller-supplied .mp4 is produced by a lossless remux on stop().
             self.path, self.size = path, size
+            self.started_at = datetime.now()
             self._raw = path.with_suffix(".mkv")
             w, h = size
             self.proc = subprocess.Popen(
@@ -809,6 +813,11 @@ def main():
     ap.add_argument("--console-language", default="auto",
                     help="the Switch's system language (en, fr, de, es, it, nl, pt, ru, ja, zh-tw, zh-cn, ko), "
                          "or auto: detect it at the start of the session")
+    ap.add_argument("--readable-clips-dir",
+                    help="also give every finished clip a readable name in this folder "
+                         "(hard link on the same volume, else a copy); off when absent")
+    ap.add_argument("--readable-clips-language", default="en",
+                    help="LiveTrial's language for the track names in those file names (en, nl, de, ...)")
     ap.add_argument("--paired-qa-root", help="private output root for opt-in paired phone/card QA")
     ap.add_argument("--paired-qa-serial", help="authorized ADB phone serial for paired QA")
     ap.add_argument("--paired-qa-adb", default="adb", help="ADB executable for paired QA")
@@ -864,6 +873,37 @@ def main():
     store.live = True
     start_background(store, args.port, lan=args.lan)
 
+    # Readable copies of finished clips (livetrial/readable_clips.py), only when a folder is named. A run clip
+    # gets its copy once BOTH the clip is complete (remuxed) and its run is closed, whichever comes last.
+    readable = None
+    if args.readable_clips_dir:
+        readable = ReadableClips(Path(args.runs_dir), Path(args.readable_clips_dir),
+                                 args.readable_clips_language, names=database_track_names(store.assets_root))
+    readable_waiting: dict = {}     # run number -> (finished clip, its start) until that run closes
+
+    def readable_run(path, started, run):
+        ctx = (run or {}).get("context") or {}
+        player = ((run or {}).get("results") or {}).get("player") or {}
+        readable.submit(path, started, "run", (ctx.get("trackName") or {}).get("trackId"),
+                        ctx.get("cc"), player.get("totalMs"))
+
+    def readable_clip(done, started):
+        """A finished run or manual clip (ghost clips: ghost_clip_step) -> its readable copy, never fatal."""
+        if readable is None or done is None or done.suffix != ".mp4":
+            return
+        try:
+            tag = done.stem.rpartition("_run")[2] if "_run" in done.stem else ""
+            if not tag.isdigit():
+                readable.submit(done, started, "manual")
+                return
+            run = next((r for r in proc.runs if r.get("run") == int(tag)), None)
+            if run is not None and run.get("closedAt"):
+                readable_run(done, started, run)
+            else:
+                readable_waiting[int(tag)] = (done, started)
+        except Exception as error:  # noqa: BLE001
+            print(f"readable clip skipped: {type(error).__name__}")
+
     t0 = time.monotonic()
     narrator = Narrator()
     # newest raw frame (media thread) + the source timestamp when replaying a file
@@ -906,6 +946,9 @@ def main():
             run["sessionDir"] = out.name
             run["key"] = f"{live_source}|{run['run']}|{run.get('goAtMs')}"
             store.push_live_run(run)
+            waiting = readable_waiting.pop(run.get("run"), None)
+            if waiting and readable is not None:
+                readable_run(*waiting, run)
 
     ghost_photo_count = 0
     lap_photo_count = 0
@@ -1127,7 +1170,8 @@ def main():
         if ok:
             panel_shot["ghost"], panel_shot["jpg"] = dict(gp), jpg.tobytes()
 
-    def stop_clip(ms):
+    def stop_clip(ms, ghost=False):
+        started = rec.started_at
         done = rec.stop()
         store.record.update(active=False, file=None)
         # A finished clip is the natural moment to enforce the retention
@@ -1147,6 +1191,8 @@ def main():
             return None
         store.record["clips"] = (store.record.get("clips") or [])[-11:] + [done.name]
         narrator.note(ms, f"Clip saved: {done.name}")
+        if not ghost:
+            readable_clip(done, started)
         # only auto run-clips carry the "_runNN" tag; announce those as a
         # fully-recorded run. Manual ad-hoc clips get "Clip saved" only, and an
         # ABORTED run (returned to menus, no result) does NOT get the "saved —
@@ -1194,11 +1240,14 @@ def main():
                     pass
             narrator.note(ms, f"Recording the replay of {label or 'this ghost'}")
         elif kind == "keep":
-            done = stop_clip(ms)
+            done = stop_clip(ms, ghost=True)
             if done is not None:
                 proc.ghost_records.note_clip(ghost, done.name, (action[2] or {}).get("goAtMs"),
                                              ms, int(time.time() * 1000))
                 narrator.note(ms, f"Ghost clip saved: {label}")
+                if readable is not None and done.suffix == ".mp4":
+                    readable.submit(done, rec.started_at, "ghost", ghost.get("trackId"), ghost.get("cc"),
+                                    ghost.get("totalMs"))
         elif kind == "discard":
             path = rec.path
             done = rec.stop()
@@ -1351,11 +1400,19 @@ def main():
             ghost_clip_step(now_ms(), None, False, ghost_clips.finish())
         except Exception:
             pass
-        rec.stop()
+        last_started = rec.started_at
+        last_clip = rec.stop()
         proc.finalize(now_ms())
         if paired_qa is not None:
             paired_qa.close()
         persist(None)
+        if readable is not None:
+            # the clip that was still rolling, then any run clip whose run closed only in finalize
+            readable_clip(last_clip, last_started)
+            for number, (clip, started) in sorted(readable_waiting.items()):
+                readable_run(clip, started, next((r for r in proc.runs if r.get("run") == number), None))
+            readable_waiting.clear()
+            readable.close(timeout=60)
         try:   # a replay still open at the end has just been closed into its record
             write_ghosts(out, proc.ghost_records.document(f"live:{source_name}"))
             if proc.an.ghost_replays:

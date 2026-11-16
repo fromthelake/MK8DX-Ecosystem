@@ -52,8 +52,10 @@ from livetrial_asset_catalog import Schema9LiveTrialAssetCatalog
 import livetrial_ghosts as ghosts
 from livetrial_product import CATALOG_SOURCE_SHA256, race_fingerprint
 from livetrial_runtime_root import asset_catalog_path
-from livetrial_settings import (CONSOLE_LANGUAGE_AUTO, CONSOLE_LANGUAGES, read_server_origin, read_settings,
-                                write_auto_sync, write_capture_device, write_console_language, write_language)
+from livetrial_settings import (CONSOLE_LANGUAGE_AUTO, CONSOLE_LANGUAGES, LiveTrialSettingsError,
+                                read_server_origin, read_settings, readable_clips_folder, write_auto_sync,
+                                write_capture_device, write_console_language, write_language,
+                                write_readable_clips)
 from livetrial_updates import CURRENT_WINDOWS_VERSION
 from livetrial_clips import endscreen_path, mk8dx_video_metadata
 from livetrial_youtube_publisher import LiveTrialYouTubePublisher
@@ -478,7 +480,8 @@ class LiveTrialDesktopApp:
         except Exception:
             pass
         return self._start_job("capture", device.name, ["capture", "--", "--dshow-name", argument,
-                                                        *self._console_language_arguments()])
+                                                        *self._console_language_arguments(),
+                                                        *self._readable_clips_arguments()])
 
     def stop(self) -> dict:
         with self._lock:
@@ -532,6 +535,14 @@ class LiveTrialDesktopApp:
         """The engine is told the Switch's language, or to detect it (the default)."""
         return ["--console-language", read_settings(self._data_root).get("consoleLanguage", CONSOLE_LANGUAGE_AUTO)]
 
+    def _readable_clips_arguments(self) -> list[str]:
+        """Readable clip copies (on by default): the folder, and LiveTrial's language for the track names."""
+        settings = read_settings(self._data_root)
+        if not settings.get("readableClips", True):
+            return []
+        return ["--readable-clips-dir", str(readable_clips_folder(settings)),
+                "--readable-clips-language", settings.get("language", "en")]
+
     # -- run-history server ---------------------------------------------------------
 
     def _stop_history_server(self) -> None:
@@ -572,6 +583,9 @@ class LiveTrialDesktopApp:
         return {"language": settings.get("language", "en"), "autoSend": bool(settings.get("autoSyncCompletedRuns")),
                 "consoleLanguage": settings.get("consoleLanguage", CONSOLE_LANGUAGE_AUTO),
                 "consoleLanguages": [{"code": code, "label": label} for code, label in CONSOLE_LANGUAGES],
+                "readableClips": bool(settings.get("readableClips", True)),
+                "readableClipsFolder": str(readable_clips_folder(settings)),
+                "readableClipsFolderChosen": bool(settings.get("readableClipsFolder")),
                 "version": CURRENT_WINDOWS_VERSION, "dataFolder": str(self._data_root), "serverOrigin": self._api_origin}
 
     def change_settings(self, body: dict) -> dict:
@@ -599,6 +613,20 @@ class LiveTrialDesktopApp:
             if not isinstance(auto, bool):
                 _fail("Automatic send is on or off.")
             write_auto_sync(self._data_root, auto)
+        readable = body.get("readableClips")
+        if readable is not None and not isinstance(readable, bool):
+            _fail("Readable copies are on or off.")
+        folder = body.get("readableClipsFolder", ...)
+        if folder is not ... and folder is not None and not isinstance(folder, str):
+            _fail("Choose a complete folder path, such as D:\\Clips.")
+        if readable is not None or folder is not ...:
+            try:
+                if folder is ...:
+                    write_readable_clips(self._data_root, readable)
+                else:
+                    write_readable_clips(self._data_root, readable, folder)
+            except LiveTrialSettingsError:
+                _fail("Choose a complete folder path, such as D:\\Clips.")
         return self.settings()
 
     # -- results on this PC --------------------------------------------------------

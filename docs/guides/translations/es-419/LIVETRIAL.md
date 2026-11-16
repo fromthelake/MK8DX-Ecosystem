@@ -95,6 +95,32 @@ en este PC. Si el motor se inicia con `--lan` (consulta el
 [README del componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), los teléfonos y tabletas de la red
 pueden ver la vista en directo y las carreras, pero no pueden cambiar nada.
 
+## Nombres de clip legibles
+
+Dentro de LiveTrial, un clip conserva su nombre interno. Cada clip terminado aparece también en una carpeta,
+`Documentos\MK8DX\LiveTrial-clips` (en el disco `Documents\MK8DX\LiveTrial-clips`), con un nombre legible:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Fecha y hora en que empezó el clip (el reloj de esta PC), pista, categoría (50cc, 100cc, 150cc, 200cc o Mirror) y
+  el tiempo, con dos espacios entre los campos. Un clip grabado con el botón de grabar se llama `Manual`, una
+  repetición de fantasma `Ghost <pista>`. Una pista o tiempo que LiveTrial no reconoció se omite
+  (`Unknown track`), nunca se adivina. Si un nombre ya existe, se agrega ` (2)`.
+- La pista aparece en el idioma de LiveTrial. Los nombres solo usan letras, cifras, espacios y `-`: los apóstrofos
+  y otros signos desaparecen y los acentos se convierten en letras simples (Yoshi's Circuit pasa a ser Yoshis
+  Circuit). En ruso, japonés, coreano o chino la pista aparece en inglés, para que los nombres de archivo sigan
+  siendo letras simples.
+- En la misma unidad que los datos de LiveTrial, la entrada es un enlace físico (hard link) y no ocupa espacio
+  adicional; en otra unidad es una copia. Cuando la limpieza de almacenamiento de LiveTrial elimina un clip, su
+  copia legible también desaparece; un clip fijado conserva su copia.
+- El **Historial de carreras** muestra el nombre bajo el clip, con **Open folder**. Desactiva las copias o elige otra
+  carpeta en **Copia legible de los clips** en **Configuración**.
+
+La copia se hace en segundo plano cuando el clip está completo. Si falla (por ejemplo, la carpeta no está
+accesible), el clip en sí no se ve afectado.
+
 ## Problemas
 
 - Web equivocada, o el inicio de sesión abre el sitio equivocado: cierra LiveTrial con **Salir de LiveTrial**,

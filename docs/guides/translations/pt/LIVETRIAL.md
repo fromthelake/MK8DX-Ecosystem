@@ -95,6 +95,31 @@ PC. Se o motor for iniciado com `--lan` (vê o
 [README do componente LiveTrial](../../../../apps/timetrials-desktop/README.md)), telemóveis e tablets na rede podem
 ver a vista em direto e as corridas, mas não podem alterar nada.
 
+## Nomes de clip legíveis
+
+Dentro do LiveTrial, um clip mantém o seu nome interno. Cada clip terminado aparece também numa única pasta,
+`Documentos\MK8DX\LiveTrial-clips` (no disco `Documents\MK8DX\LiveTrial-clips`), com um nome legível:
+
+```
+2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4
+```
+
+- Data e hora em que o clip começou (o relógio deste PC), pista, classe (50cc, 100cc, 150cc, 200cc ou Mirror) e o
+  tempo, com dois espaços entre os campos. Um clip gravado com o botão de gravar chama-se `Manual`, uma repetição de
+  fantasma `Ghost <pista>`. Uma pista ou tempo que o LiveTrial não reconheceu é omitido (`Unknown track`), nunca
+  adivinhado. Se um nome já existir, é acrescentado ` (2)`.
+- A pista aparece no idioma do LiveTrial. Os nomes usam apenas letras, algarismos, espaços e `-`: os apóstrofos e
+  outros sinais desaparecem e os acentos tornam-se letras simples (Yoshi's Circuit passa a Yoshis Circuit). Em russo,
+  japonês, coreano ou chinês a pista aparece em inglês, para que os nomes de ficheiro fiquem em letras simples.
+- Na mesma unidade que os dados do LiveTrial, a entrada é uma ligação física (hard link) e não ocupa espaço extra;
+  noutra unidade é uma cópia. Quando a limpeza de armazenamento do LiveTrial remove um clip, a cópia legível também
+  desaparece; um clip afixado mantém a sua cópia.
+- O **Histórico de tentativas** mostra o nome por baixo do clip, com **Open folder**. Desliga as cópias ou escolhe
+  outra pasta em **Cópia legível dos clips** nas **Definições**.
+
+A cópia é feita em segundo plano quando o clip está completo. Se falhar (por exemplo, a pasta não está acessível), o
+próprio clip não é afetado.
+
 ## Problemas
 
 - Site errado, ou o início de sessão abre o site errado: sai do LiveTrial com **Sair do LiveTrial**, volta a abri-lo

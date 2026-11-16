@@ -6157,6 +6157,10 @@
   "This is not a personal sign-in card.": "Questa non è una scheda di accesso personale.",
   "Three steps for this phone. You only do them once.": "Tre passi per questo telefono. Li fai una sola volta.",
   "Too many attempts. Wait a moment, then try again.": "Troppi tentativi. Attendi un momento, poi riprova.",
-  "Your phone trusts this installation.": "Il telefono si fida di questa installazione."
+  "Your phone trusts this installation.": "Il telefono si fida di questa installazione.",
+  "Readable copy of clips": "Copia leggibile delle clip",
+  "Folder for readable clips": "Cartella per le clip leggibili",
+  "Save folder": "Salva cartella",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "Ogni clip terminata compare anche in questa cartella con un nome leggibile: data, ora, pista, classe e tempo. Sullo stesso disco non occupa spazio in più; quando la pulizia di LiveTrial rimuove una clip, se ne va anche la sua copia."
  }
 }

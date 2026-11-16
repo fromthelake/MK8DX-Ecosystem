@@ -6157,6 +6157,10 @@
   "This is not a personal sign-in card.": "Это не личная карточка входа.",
   "Three steps for this phone. You only do them once.": "Три шага для этого телефона. Их нужно сделать только один раз.",
   "Too many attempts. Wait a moment, then try again.": "Слишком много попыток. Подожди немного и попробуй снова.",
-  "Your phone trusts this installation.": "Телефон доверяет этой установке."
+  "Your phone trusts this installation.": "Телефон доверяет этой установке.",
+  "Readable copy of clips": "Понятная копия клипов",
+  "Folder for readable clips": "Папка для понятных клипов",
+  "Save folder": "Сохранить папку",
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "Каждый готовый клип также появляется в этой папке с понятным именем: дата, время, трасса, класс и результат. На том же диске это не занимает лишнего места; когда очистка LiveTrial удаляет клип, удаляется и его копия."
  }
 }
