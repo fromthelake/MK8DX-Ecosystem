@@ -110,7 +110,10 @@ same-origin proof), **Budget** (durable per-account or per-address budget), **Qu
 | Home bootstrap / comeback (`GET`, writes a snapshot) | account | self | n/a | - | two snapshots per account | n/a | rotated |
 
 The offline host administration (`administration/offline-host-app.ts`) is a separate loopback-only server with its own
-unlock limit and is not part of this API.
+unlock limit and is not part of this API. Its one read that MK8DX beheer polls, `POST /api/invitations/status`
+(administrator session, same Host/Origin rules, 30 per minute on top of the server's 60), answers only whether a
+sign-in card is `open`, `used`, `revoked` or `expired`: never the token, account or times. "Add a phone or device"
+shows **Done** when the card on screen is `used`, that is when a device signed in with it.
 
 ## Installation budgets
 

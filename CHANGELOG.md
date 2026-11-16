@@ -5,6 +5,21 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+### Added
+
+- **MK8DX beheer: Add a phone or device**, a guided three-step flow per person: 1 Trust (the Prepare a device QR
+  code with its short check code, with a line for the app and one for a phone without it), 2 the person's one-time
+  sign-in card with a countdown and **New card**, 3 **Done** as soon as a device signed in with that card. The host
+  page answers a new administrator-only, rate-limited `POST /api/invitations/status` with the card's state only.
+- **Welcome card**: a printable A6 or A4 page per person with the address, both QR codes and the three numbered
+  steps; the sign-in QR is marked personal and one-time with its expiry, and is left out once it can no longer be
+  used (a card still lasts 15 minutes; no longer-lived card is offered).
+
+### Changed
+
+- Opening the technical host page (127.0.0.1 with its port) directly now says, in all 15 languages, to use the
+  **MK8DX beheer** shortcut instead of the one-time admin code.
+
 ## 0.2.8 — 2026-11-15
 
 The release to install or update to after 0.2.5. 0.2.6 and 0.2.7 were not kept as separate releases; 0.2.8

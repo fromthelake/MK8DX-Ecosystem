@@ -185,6 +185,8 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 2. **Doe (Linux):** start **MK8DX beheer** van het bureaublad of uit het appmenu. Op sommige Linux-bureaubladen moet je zo'n pictogram eerst toestaan (met rechts klikken en de optie kiezen om starten toe te staan). Het werkt ook met `sh tooling/start-mk8dx.sh` in de MK8DX-map, zoals in hoofdstuk 3. → **Je ziet:** een terminal en daarna de pagina **MK8DX beheer**.
 3. **Doe (macOS, niet getest):** dubbelklik op het bureaublad op **MK8DX beheer.command**, of start `sh tooling/start-mk8dx.sh` zoals in hoofdstuk 3. → **Je ziet:** Terminal en daarna de pagina **MK8DX beheer**.
 
+- **Zelf 127.0.0.1 met een poort ingetypt?** Een pagina **MK8DX lokaal beheer** die om een eenmalige beheercode vraagt, is de technische hostpagina. Die heb je niet nodig: sluit hem en open MK8DX beheer met de snelkoppeling zoals hierboven.
+
 **Mensen toevoegen**
 
 1. **Doe:** typ bij **Namen (één per regel)** de namen en klik op **Toevoegen**. → **Je ziet:** de namen onder "In deze installatie:".
@@ -206,6 +208,22 @@ Een **account** is wie inlogt. Een **Player** is de speler op de ranglijsten, me
 
 1. **Doe:** open MK8DX beheer. Op het eerste scherm staat bij iedere persoon de knop **Overal uitloggen**. Klik erop. → **Je ziet:** de knop verandert in **Zeker? Klik nogmaals**.
 2. **Doe:** klik nog een keer. → **Je ziet:** "Uitgelogd op alle apparaten. Met een nieuwe kaart kan deze persoon weer inloggen." Die persoon is nu uitgelogd op de website én in de app, het wisselen met één tik naar dat account verdwijnt en open kaarten van die persoon werken niet meer. → **Zie je iets anders?** Bij je eigen naam toont de tweede klik "Jezelf log je uit via het accountmenu op de website ('Op alle apparaten afmelden')." en wordt er niemand uitgelogd. Zo heet die keuze ook op de website.
+
+**Een telefoon of apparaat toevoegen voor één persoon**
+
+De begeleide manier om iemands telefoon, tablet of pc in gebruik te nemen, ook een iPhone of een apparaat zonder de MK8DX-app.
+
+1. **Doe:** open MK8DX beheer en klik bij de persoon op **Telefoon of apparaat toevoegen**. → **Je ziet:** "Een telefoon of apparaat toevoegen voor" met de naam, en **1 · Vertrouwen** met de kaart **Apparaat voorbereiden** en de korte code.
+2. **Doe:** op het apparaat, met de MK8DX-app (Android): scan de QR-code in de app. Zonder de app (iPhone, iPad, een andere telefoon of een pc): scan hem met de camera en volg de pagina die opent om het certificaat te installeren (hoofdstuk 6). Controleer dat de pagina of de app dezelfde code toont. Was dit apparaat al voorbereid, sla dit dan over. Klik op **Volgende**. → **Je ziet:** **2 · Inlogkaart scannen** met de persoonlijke kaart van die persoon, "Persoonlijk voor … Werkt één keer." en een aftelling zoals "Nog 14:59 geldig".
+3. **Doe:** scan die kaart met hetzelfde apparaat en accepteer daar de uitnodiging (hoofdstuk 6). → **Je ziet:** in MK8DX beheer vanzelf binnen een paar seconden: **3 · Klaar** en "… is ingelogd". → **Zie je iets anders?** "Deze kaart is verlopen." of "Deze kaart is ingetrokken.": klik op **Nieuwe kaart**; de oude kaart werkt niet meer zodra je een nieuwe maakt. "Deze installatie kan niet melden of de kaart gebruikt is": kijk op het apparaat en klik op **Het is gelukt**.
+4. **Doe:** klik op **Nog een apparaat** voor een tweede apparaat van dezelfde persoon, of op **Terug naar de mensen**.
+
+**Een welkomstkaart afdrukken**
+
+1. **Doe:** kies in Telefoon of apparaat toevoegen bij **Papierformaat** **A6** of **A4** en klik op **Welkomstkaart**. → **Je ziet:** een voorbeeld van één pagina, "Welkom bij MK8DX, …!", met het adres en drie genummerde stappen: 1 Vertrouwen (de QR-code Apparaat voorbereiden en de controlecode), 2 Inlogkaart scannen (de persoonlijke QR-code, gemarkeerd PERSOONLIJK, met "Geldig tot") en 3 Klaar.
+2. **Doe:** klik op **Afdrukken** en daarna op **Vorige**. → **Je ziet:** het afdrukvenster van je browser met alleen de welkomstkaart.
+
+- De inlogkaart erop werkt één keer en 15 minuten vanaf het moment dat hij gemaakt is, ook op papier. Een langer geldige kaart kan MK8DX niet maken, dus druk hem pas af vlak voordat je hem geeft. Afgedrukt zonder geldige kaart (bij stap 1, of nadat hij verlopen is) is stap 2 een leeg vak: de persoon krijgt dan op de dag zelf een nieuwe kaart. Het deel Vertrouwen blijft geldig tot MK8DX naar een ander adres verhuist.
 
 **MK8DX beheer afsluiten**
 

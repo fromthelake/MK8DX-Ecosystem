@@ -185,6 +185,8 @@ Un **account** è chi accede. Un **Giocatore** è il giocatore nelle classifiche
 2. **Cosa fare (Linux):** avvia **MK8DX beheer** dal desktop o dal menu delle applicazioni. Su alcuni desktop Linux devi prima consentire un'icona del genere (fai clic con il tasto destro e scegli l'opzione per consentirne l'avvio). Funziona anche con `sh tooling/start-mk8dx.sh` nella cartella MK8DX, come al capitolo 3. → **Cosa vedi:** un terminale e poi la pagina **Amministrazione MK8DX**.
 3. **Cosa fare (macOS, non testato):** fai doppio clic su **MK8DX beheer.command** sul desktop, oppure avvia `sh tooling/start-mk8dx.sh` come al capitolo 3. → **Cosa vedi:** il Terminale e poi la pagina **Amministrazione MK8DX**.
 
+- **Hai digitato tu 127.0.0.1 con una porta?** Una pagina **MK8DX lokaal beheer** che chiede un codice di amministrazione monouso è la pagina tecnica dell'host. Non ti serve: chiudila e apri MK8DX beheer con il collegamento, come sopra.
+
 **Aggiungere persone**
 
 1. **Cosa fare:** digita i nomi in **Nomi (uno per riga)** e fai clic su **Aggiungi**. → **Cosa vedi:** i nomi sotto "In questa installazione:".
@@ -206,6 +208,22 @@ Un **account** è chi accede. Un **Giocatore** è il giocatore nelle classifiche
 
 1. **Cosa fare:** apri MK8DX beheer. Nella prima schermata ogni persona ha un pulsante **Disconnetti ovunque**. Fai clic. → **Cosa vedi:** il pulsante diventa **Sicuro? Fai clic di nuovo**.
 2. **Cosa fare:** fai clic ancora una volta. → **Cosa vedi:** "Disconnesso da tutti i dispositivi. Con una nuova scheda questa persona può accedere di nuovo." Quella persona è ora disconnessa sul sito web e nell'app, il cambio con un tocco a quell'account scompare e le schede aperte di quella persona smettono di funzionare. → **Vedi qualcos'altro?** Accanto al tuo nome il secondo clic mostra "Disconnetti te stesso dal menu account sul sito («Disconnetti da tutti i dispositivi»)." e non viene disconnesso nessuno.
+
+**Aggiungere un telefono o dispositivo per una persona**
+
+Il modo guidato per mettere in funzione il telefono, il tablet o il PC di qualcuno, anche un iPhone o un dispositivo senza l'app MK8DX.
+
+1. **Cosa fare:** apri MK8DX beheer e fai clic su **Aggiungi un telefono o dispositivo** accanto alla persona. → **Cosa vedi:** "Aggiungi un telefono o dispositivo per …" con il nome, e **1 · Fiducia** con la scheda **Prepara un dispositivo** e il suo codice breve.
+2. **Cosa fare:** sul dispositivo, con l'app MK8DX (Android): scansiona il codice QR nell'app. Senza l'app (iPhone, iPad, un altro telefono o un PC): scansionalo con la fotocamera e segui la pagina che si apre per installare il certificato (capitolo 6). Controlla che la pagina o l'app mostri lo stesso codice. Se questo dispositivo è già stato preparato, salta questo passaggio. Fai clic su **Avanti**. → **Cosa vedi:** **2 · Scansiona la scheda di accesso** con la scheda personale di quella persona, "Personale per … Funziona una volta." e un conto alla rovescia come "Valida ancora per 14:59".
+3. **Cosa fare:** scansiona quella scheda con lo stesso dispositivo e accetta lì l'invito (capitolo 6). → **Cosa vedi:** in MK8DX beheer, da solo entro pochi secondi: **3 · Fatto** e "… ha eseguito l'accesso". → **Vedi qualcos'altro?** "Questa scheda è scaduta." oppure "Questa scheda è stata revocata.": fai clic su **Nuova scheda**; la vecchia scheda smette di funzionare quando ne crei una nuova. "Questa installazione non può segnalare se la scheda è stata usata": controlla il dispositivo e fai clic su **Ha funzionato**.
+4. **Cosa fare:** fai clic su **Un altro dispositivo** per un secondo dispositivo della stessa persona, oppure su **Torna alle persone**.
+
+**Stampare una scheda di benvenuto**
+
+1. **Cosa fare:** in Aggiungi un telefono o dispositivo, scegli **A6** o **A4** in **Formato carta** e fai clic su **Scheda di benvenuto**. → **Cosa vedi:** un'anteprima di una pagina, "Benvenuto in MK8DX, …!", con l'indirizzo e tre passaggi numerati: 1 Fiducia (il codice QR di Prepara un dispositivo e il codice di controllo), 2 Scansiona la scheda di accesso (il codice QR personale, contrassegnato PERSONALE, con "Valida fino a") e 3 Fatto.
+2. **Cosa fare:** fai clic su **Stampa** e poi su **Indietro**. → **Cosa vedi:** la finestra di stampa del browser con solo la scheda di benvenuto.
+
+- La scheda di accesso stampata funziona una volta e per 15 minuti dal momento in cui è stata creata, anche su carta. MK8DX non può creare una scheda che duri di più, quindi stampala poco prima di consegnarla. Se viene stampata senza una scheda valida (al passaggio 1, o dopo la scadenza), il passaggio 2 è un riquadro vuoto: la persona riceve allora una nuova scheda il giorno stesso. La parte Fiducia resta valida finché MK8DX non si sposta a un altro indirizzo.
 
 **Chiudere MK8DX beheer**
 

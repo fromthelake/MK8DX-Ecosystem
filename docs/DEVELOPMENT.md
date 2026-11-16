@@ -190,7 +190,10 @@ are the `SOURCE = { nl: {...}, en: {...} }` tables in `tooling/setup_wizard_stat
 one, run `python tooling/i18n/extract_a2_messages.py` (it writes `tooling/i18n/a2-setup/` and
 `tooling/i18n/a2-invite/messages.source.json`; `--check` tells whether they are current), add the new English
 texts to the ten translation files, and rebuild the catalogs: they land in `tooling/setup_wizard_static/i18n/`
-and `infrastructure/docker/offline-invite/i18n/`, without game names. Placeholders there are named (`{name}`)
+and `infrastructure/docker/offline-invite/i18n/`, without game names. The unlock section of the technical host page
+(127.0.0.1 with its port) keeps its English and Dutch in `backend/api/src/administration/offline-host-text.ts`
+(message source `tooling/i18n/a2-host/`); because the API image ships compiled TypeScript only, its catalogs are the
+generated module `offline-host-text.generated.ts` beside it. Placeholders there are named (`{name}`)
 and must stay the same. The pages choose the language with `language.js` (two identical copies, one per
 folder; the `/setup` page inlines it): a saved choice from the language menu (the website's own key on the
 invitation page), else the browser's languages matched exactly, then by region (es-MX → es-419,

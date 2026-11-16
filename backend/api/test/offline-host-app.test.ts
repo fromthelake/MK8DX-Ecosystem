@@ -4,7 +4,8 @@ import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
 
 import { createOfflineHostApp } from "../src/administration/offline-host-app.js";
-import { OfflineHostAccountError } from "../src/administration/offline-host-accounts.js";
+import { OfflineHostAccountError, invitationStateOf } from "../src/administration/offline-host-accounts.js";
+import { HOST_LANGUAGES, hostAccessTexts } from "../src/administration/offline-host-text.js";
 import { OfflineHostSessions } from "../src/administration/offline-host-session.js";
 import { OfflineHostUnlockStore } from "../src/administration/offline-host-unlock.js";
 
@@ -30,6 +31,7 @@ async function fixture(accountId: string | null) {
     role: "account" | "administrator"; active: true }[] = [];
   const revoked: string[] = [];
   const signedOut: [string, string][] = [];
+  const asked: [string, string][] = [];
   const accounts = {
     async create(_actor: string | null, displayLabel: string, role: "account" | "administrator") {
       const account = { accountKey: "offline_account.12345678-1234-1234-1234-123456789abc",
@@ -45,6 +47,11 @@ async function fixture(accountId: string | null) {
       }
       return { sessions: 2, invitations: 1 };
     },
+    async invitationState(actor: string, invitationId: string) {
+      asked.push([actor, invitationId]);
+      if (invitationId.endsWith("000000000000")) { throw new OfflineHostAccountError("invalid"); }
+      return "used" as const;
+    },
   };
   const tickets = {
     async issue() { return { invitationId: "offline_invitation.12345678-1234-1234-1234-123456789abc",
@@ -54,7 +61,7 @@ async function fixture(accountId: string | null) {
   const app = await createOfflineHostApp({ origin, unlocks, sessions, accounts, tickets,
     publicOrigin: "https://192.168.50.20",
     rootCertificateSha256: "a".repeat(64), rootSpkiSha256: "b".repeat(64) });
-  return { app, issued, unlocks, sessions, created, revoked, signedOut,
+  return { app, issued, unlocks, sessions, created, revoked, signedOut, asked,
     forbid: () => { allowed = false; } };
 }
 
@@ -186,6 +193,81 @@ describe("isolated offline host listener", () => {
         payload: { invitationId: invitation.json().invitationId } });
       expect(revoke.statusCode).toBe(200);
       expect(revoked).toHaveLength(1);
+    } finally { await app.close(); }
+  });
+
+  it("tells an administrator only whether a sign-in card was used", async () => {
+    const { app, issued, asked } = await fixture(administrator);
+    try {
+      const card = "offline_invitation.12345678-1234-1234-1234-123456789abc";
+      const anonymous = await app.inject({ method: "POST", url: "/api/invitations/status",
+        headers: { host, origin, "content-type": "application/json" }, payload: { invitationId: card } });
+      expect(anonymous.statusCode).toBe(403);
+      expect(asked).toEqual([]);
+      const unlocked = await app.inject({ method: "POST", url: "/api/unlock",
+        headers: { host, origin, "content-type": "application/json" }, payload: { code: issued.code } });
+      const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
+      const headers = { host, origin, cookie, "content-type": "application/json" };
+      const foreign = await app.inject({ method: "POST", url: "/api/invitations/status",
+        headers: { ...headers, origin: "http://evil.invalid" }, payload: { invitationId: card } });
+      expect(foreign.statusCode).toBe(403);
+      const extra = await app.inject({ method: "POST", url: "/api/invitations/status", headers,
+        payload: { invitationId: card, token: "x" } });
+      expect(extra.statusCode).toBe(400);
+      const used = await app.inject({ method: "POST", url: "/api/invitations/status", headers,
+        payload: { invitationId: card } });
+      expect(used.statusCode).toBe(200);
+      expect(used.json()).toEqual({ state: "used" });
+      expect(used.headers["cache-control"]).toBe("no-store");
+      expect(asked).toEqual([[administrator, card]]);
+      const unknown = await app.inject({ method: "POST", url: "/api/invitations/status", headers,
+        payload: { invitationId: "offline_invitation.00000000-0000-0000-0000-000000000000" } });
+      expect(unknown.statusCode).toBe(404);
+      expect(unknown.json()).toEqual({ code: "invitation_unavailable" });
+    } finally { await app.close(); }
+  });
+
+  it("rate-limits the card state to 30 a minute", async () => {
+    const { app, issued } = await fixture(administrator);
+    try {
+      const unlocked = await app.inject({ method: "POST", url: "/api/unlock",
+        headers: { host, origin, "content-type": "application/json" }, payload: { code: issued.code } });
+      const cookie = String(unlocked.headers["set-cookie"]).split(";")[0]!;
+      const codes = [];
+      for (let index = 0; index < 31; index++) {
+        codes.push((await app.inject({ method: "POST", url: "/api/invitations/status",
+          headers: { host, origin, cookie, "content-type": "application/json" },
+          payload: { invitationId: "offline_invitation.12345678-1234-1234-1234-123456789abc" } })).statusCode);
+      }
+      expect(codes.slice(0, 30).every((code) => code === 200)).toBe(true);
+      expect(codes[30]).toBe(429);
+    } finally { await app.close(); }
+  });
+
+  it("derives a card state with used before revoked before expiry", () => {
+    expect(invitationStateOf(5, null, 10, 20)).toBe("used");
+    expect(invitationStateOf(5, 6, 10, 1)).toBe("used");
+    expect(invitationStateOf(null, 6, 10, 1)).toBe("revoked");
+    expect(invitationStateOf(null, null, "10", 9)).toBe("open");
+    expect(invitationStateOf(null, null, 10, 10)).toBe("expired");
+  });
+
+  it("points a visitor of the host page at the MK8DX beheer shortcut in 15 languages", async () => {
+    const { app } = await fixture(administrator);
+    try {
+      const page = await app.inject({ method: "GET", url: "/", headers: { host } });
+      expect(page.body).toContain("MK8DX beheer");
+      expect(page.body).toContain("Eenmalige beheercode");
+      const script = await app.inject({ method: "GET", url: "/host.js", headers: { host } });
+      expect(script.body).toContain("const TEXTS=");
+      const texts = hostAccessTexts();
+      expect(Object.keys(texts).sort()).toEqual([...HOST_LANGUAGES].sort());
+      for (const language of HOST_LANGUAGES) {
+        expect(texts[language]!.accessHint).toContain("MK8DX beheer");
+        expect(texts[language]!.lang).toBe(language);
+      }
+      expect(texts["en"]!.accessTitle).toBe("Use the 'MK8DX beheer' shortcut");
+      expect(texts["nl"]!.accessTitle).toBe("Gebruik de snelkoppeling 'MK8DX beheer'");
     } finally { await app.close(); }
   });
 });

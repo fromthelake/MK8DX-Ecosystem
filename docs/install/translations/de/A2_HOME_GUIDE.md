@@ -185,6 +185,8 @@ Ein **Konto** ist, wer sich anmeldet. Ein **Spieler** ist der Spieler in den Ran
 2. **Aktion (Linux):** Starte **MK8DX beheer** vom Desktop oder aus dem App-Menü. Auf manchen Linux-Desktops musst du ein solches Symbol erst erlauben (klicke mit der rechten Maustaste darauf und wähle die Option, die das Starten erlaubt). Es geht auch mit `sh tooling/start-mk8dx.sh` im MK8DX-Ordner, wie in Kapitel 3. → **Du siehst:** ein Terminal und dann die Seite **MK8DX-Administration**.
 3. **Aktion (macOS, nicht getestet):** Doppelklicke auf dem Desktop auf **MK8DX beheer.command** oder starte `sh tooling/start-mk8dx.sh` wie in Kapitel 3. → **Du siehst:** das Terminal und dann die Seite **MK8DX-Administration**.
 
+- **127.0.0.1 mit einem Port selbst eingetippt?** Eine Seite **MK8DX lokaal beheer**, die nach einem einmaligen Verwaltungscode fragt, ist die technische Host-Seite. Die brauchst du nicht: Schließe sie und öffne MK8DX beheer wie oben mit der Verknüpfung.
+
 **Leute hinzufügen**
 
 1. **Aktion:** Tippe die Namen bei **Namen (einer pro Zeile)** ein und klicke auf **Hinzufügen**. → **Du siehst:** die Namen unter „In dieser Installation:“.
@@ -206,6 +208,22 @@ Ein **Konto** ist, wer sich anmeldet. Ein **Spieler** ist der Spieler in den Ran
 
 1. **Aktion:** Öffne MK8DX beheer. Auf dem ersten Bildschirm hat jede Person eine Schaltfläche **Überall abmelden**. Klicke darauf. → **Du siehst:** Die Schaltfläche ändert sich zu **Sicher? Nochmals klicken**.
 2. **Aktion:** Klicke noch einmal. → **Du siehst:** „Auf allen Geräten abgemeldet. Mit einer neuen Karte kann sich diese Person wieder anmelden.“ Diese Person ist jetzt auf der Website und in der App abgemeldet, der Wechsel zu diesem Konto mit einem Tippen verschwindet, und offene Karten dieser Person funktionieren nicht mehr. → **Siehst du etwas anderes?** Neben deinem eigenen Namen zeigt der zweite Klick „Dich selbst meldest du über das Kontomenü auf der Website ab (‚Auf allen Geräten abmelden‘).“, und es wird niemand abgemeldet.
+
+**Ein Handy oder Gerät für eine Person hinzufügen**
+
+Der geführte Weg, das Handy, Tablet oder den PC einer Person in Betrieb zu nehmen, auch ein iPhone oder ein Gerät ohne die MK8DX-App.
+
+1. **Aktion:** Öffne MK8DX beheer und klicke neben der Person auf **Handy oder Gerät hinzufügen**. → **Du siehst:** „Ein Handy oder Gerät für … hinzufügen“ mit dem Namen und **1 · Vertrauen** mit der Karte **Gerät vorbereiten** und ihrem kurzen Code.
+2. **Aktion:** Auf dem Gerät mit der MK8DX-App (Android): Scanne den QR-Code in der App. Ohne die App (iPhone, iPad, anderes Handy oder PC): Scanne ihn mit der Kamera und folge der Seite, die sich öffnet, um das Zertifikat zu installieren (Kapitel 6). Prüfe, dass die Seite oder die App denselben Code zeigt. Wurde dieses Gerät schon vorbereitet, überspringe das. Klicke auf **Weiter**. → **Du siehst:** **2 · Anmeldekarte scannen** mit der persönlichen Karte dieser Person, „Persönlich für … Funktioniert einmal.“ und einen Countdown wie „Noch 14:59 gültig“.
+3. **Aktion:** Scanne diese Karte mit demselben Gerät und nimm dort die Einladung an (Kapitel 6). → **Du siehst:** in MK8DX beheer von selbst innerhalb weniger Sekunden: **3 · Fertig** und „… ist angemeldet“. → **Siehst du etwas anderes?** „Diese Karte ist abgelaufen.“ oder „Diese Karte wurde widerrufen.“: Klicke auf **Neue Karte**; die alte Karte funktioniert nicht mehr, sobald du eine neue erstellst. „Diese Installation kann nicht melden, ob die Karte benutzt wurde“: Sieh auf dem Gerät nach und klicke auf **Hat geklappt**.
+4. **Aktion:** Klicke auf **Weiteres Gerät** für ein zweites Gerät derselben Person oder auf **Zurück zu den Personen**.
+
+**Eine Willkommenskarte drucken**
+
+1. **Aktion:** Wähle in „Handy oder Gerät hinzufügen“ bei **Papierformat** **A6** oder **A4** und klicke auf **Willkommenskarte**. → **Du siehst:** eine Vorschau einer Seite, „Willkommen bei MK8DX, …!“, mit der Adresse und drei nummerierten Schritten: 1 Vertrauen (der QR-Code von „Gerät vorbereiten“ und der Prüfcode), 2 Anmeldekarte scannen (der persönliche QR-Code, markiert mit PERSÖNLICH, mit „Gültig bis“) und 3 Fertig.
+2. **Aktion:** Klicke auf **Drucken** und danach auf **Zurück**. → **Du siehst:** das Druckfenster deines Browsers nur mit der Willkommenskarte.
+
+- Die Anmeldekarte darauf funktioniert einmal und 15 Minuten lang ab dem Moment, in dem sie erstellt wurde, auch auf Papier. Eine länger gültige Karte kann MK8DX nicht erstellen, drucke sie also erst kurz bevor du sie übergibst. Ohne gültige Karte gedruckt (bei Schritt 1 oder nachdem sie abgelaufen ist), ist Schritt 2 ein leeres Feld: Die Person bekommt dann am Tag selbst eine neue Karte. Der Teil Vertrauen bleibt gültig, bis MK8DX an eine andere Adresse umzieht.
 
 **MK8DX beheer schließen**
 

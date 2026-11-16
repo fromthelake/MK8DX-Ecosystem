@@ -185,6 +185,8 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 2. **Do (Linux):** start **MK8DX beheer** from the desktop or from the app menu. On some Linux desktops you first have to allow such an icon (right-click it and choose the option to allow launching). It also works with `sh tooling/start-mk8dx.sh` in the MK8DX folder, as in chapter 3. → **You see:** a terminal and then the **MK8DX administration** page.
 3. **Do (macOS, not tested):** double-click **MK8DX beheer.command** on the desktop, or start `sh tooling/start-mk8dx.sh` as in chapter 3. → **You see:** Terminal and then the **MK8DX administration** page.
 
+- **Typed 127.0.0.1 with a port yourself?** A page **MK8DX lokaal beheer** that asks for a one-time admin code is the technical host page. You do not need it: close it and open MK8DX beheer with the shortcut as above.
+
 **Adding people**
 
 1. **Do:** type the names at **Names (one per line)** and click **Add**. → **You see:** the names under "In this installation:".
@@ -206,6 +208,22 @@ An **account** is who signs in. A **Player** is the player on the rankings, with
 
 1. **Do:** open MK8DX beheer. On the first screen every person has a **Sign out everywhere** button. Click it. → **You see:** the button changes to **Sure? Click again**.
 2. **Do:** click once more. → **You see:** "Signed out on every device. A new card lets this person sign in again." That person is now signed out on the website and in the app, one-tap switching to that account disappears and open cards of that person stop working. → **See something else?** Next to your own name the second click shows "Sign yourself out from the account menu on the website ('Sign out on all devices')." and nothing is signed out.
+
+**Adding a phone or device for one person**
+
+The guided way to put someone's phone, tablet or PC in use, also an iPhone or a device without the MK8DX app.
+
+1. **Do:** open MK8DX beheer and click **Add a phone or device** next to the person. → **You see:** "Add a phone or device for" with the name, and **1 · Trust** with the **Prepare a device** card and its short code.
+2. **Do:** on the device, with the MK8DX app (Android): scan the QR code in the app. Without the app (iPhone, iPad, another phone or a PC): scan it with the camera and follow the page that opens to install the certificate (chapter 6). Check that the page or the app shows the same code. If this device was prepared before, skip this. Click **Next**. → **You see:** **2 · Scan the sign-in card** with that person's personal card, "Personal for … Works once." and a countdown such as "Valid for 14:59 more".
+3. **Do:** scan that card with the same device and accept the invitation there (chapter 6). → **You see:** in MK8DX beheer, by itself within a few seconds: **3 · Done** and "… is signed in". → **See something else?** "This card has expired." or "This card was revoked.": click **New card**; the old card stops working when you make a new one. "This installation cannot report whether the card was used": check the device and click **It worked**.
+4. **Do:** click **Another device** for a second device of the same person, or **Back to the people**.
+
+**Printing a welcome card**
+
+1. **Do:** in Add a phone or device, choose **A6** or **A4** at **Paper size** and click **Welcome card**. → **You see:** a preview of one page, "Welcome to MK8DX, …!", with the address and three numbered steps: 1 Trust (the Prepare a device QR code and the check code), 2 Scan the sign-in card (the personal QR code, marked PERSONAL, with "Valid until") and 3 Done.
+2. **Do:** click **Print**, and afterwards **Back**. → **You see:** your browser's print window with only the welcome card.
+
+- The sign-in card on it works once and for 15 minutes from the moment it was made, on paper too. MK8DX cannot make a card that lasts longer, so print it just before you hand it over. Printed without a valid card (on step 1, or after it expired), step 2 is an empty box: the person then gets a new card on the day itself. The Trust part stays valid until MK8DX moves to another address.
 
 **Closing MK8DX beheer**
 

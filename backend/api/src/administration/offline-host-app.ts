@@ -8,6 +8,7 @@ import { OfflineHostSessions } from "./offline-host-session.js";
 import { OfflineHostUnlockStore } from "./offline-host-unlock.js";
 import { OfflineHostAccountError, type MysqlOfflineHostAccounts } from "./offline-host-accounts.js";
 import type { OfflineInvitationTicketService } from "../authentication/offline-invitation-ticket.js";
+import { HOST_TEXT_NL, hostAccessTexts } from "./offline-host-text.js";
 
 const cookieName = "mk8dx_host_session";
 
@@ -24,9 +25,11 @@ const page = `<!doctype html><html lang="nl"><meta charset="utf-8">
 <main><header><h1>MK8DX lokaal beheer</h1><p>Alleen op deze computer. Deel de beheercode nooit via het netwerk.</p>
 <button id="logout" type="button" hidden>Afmelden</button></header>
 <p id="message" role="status" aria-live="polite"></p>
-<section id="access"><h2>Ontgrendelen</h2>
-<form id="unlock"><label>Eenmalige beheercode (niet de certificaatvingerafdruk) <input id="code" type="password" autocomplete="off" required></label>
-<button type="submit">Ontgrendelen</button></form></section>
+<section id="access"><h2 data-t="accessTitle">${HOST_TEXT_NL.accessTitle}</h2>
+<p data-t="accessHint">${HOST_TEXT_NL.accessHint}</p><p data-t="accessNoShortcut">${HOST_TEXT_NL.accessNoShortcut}</p>
+<p class="expert" data-t="accessExpert">${HOST_TEXT_NL.accessExpert}</p>
+<form id="unlock"><label><span data-t="codeLabel">${HOST_TEXT_NL.codeLabel}</span> <input id="code" type="password" autocomplete="off" required></label>
+<button type="submit" data-t="unlock">${HOST_TEXT_NL.unlock}</button></form></section>
 <section id="management" hidden>
 <section><h2>Installatie koppelen</h2><p>Vergelijk de certificaatvingerafdruk hieronder met /setup voordat je het certificaat vertrouwt.</p>
 <img id="setup-qr" alt="QR naar de publieke setup-pagina, ook om de app te koppelen" width="220" height="220">
@@ -63,10 +66,22 @@ input,select,button{font:inherit;padding:10px;border:1px solid #9daec2;border-ra
 button{background:#0757a6;color:white;border-color:#0757a6;cursor:pointer}button:hover{background:#004682}
 img{display:block;margin:12px 0;max-width:100%;height:auto}dd{overflow-wrap:anywhere;margin:0 0 10px}
 ul{padding-left:20px}li{margin:8px 0}#message{min-height:1.5em}a{overflow-wrap:anywhere}
-[hidden]{display:none!important}@media(max-width:480px){main{padding:10px}header,section{padding:14px}form{display:grid}label{min-width:0}}`;
+.expert{color:#4b5b70;font-size:.92em}[hidden]{display:none!important}@media(max-width:480px){main{padding:10px}header,section{padding:14px}form{display:grid}label{min-width:0}}`;
 
 const script = `"use strict";
 const $=(id)=>document.getElementById(id);let accounts=[],latestInvitation=null;
+// The unlock section in the 15 languages of the game (offline-host-text.ts); the rest of this page is Dutch.
+const TEXTS=${JSON.stringify(hostAccessTexts())};
+const pick=(tags)=>{const known=Object.keys(TEXTS);const lower=new Map(known.map((c)=>[c.toLowerCase(),c]));
+  for(const tag of tags){const parts=String(tag||"").replace(/_/g,"-").toLowerCase().split("-");if(!parts[0]||parts[0]==="*")continue;
+    const exact=lower.get(parts.join("-"));if(exact)return exact;
+    if(parts[0]==="zh")return parts.slice(1).some((p)=>["hant","tw","hk","mo"].includes(p))?"zh-TW":"zh-CN";
+    if(parts[0]==="es"&&parts[1]&&parts[1]!=="es")return "es-419";
+    const base=lower.get(parts[0]);if(base)return base}
+  return "en"};
+const ACCESS=TEXTS[pick(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language])];
+$("access").lang=ACCESS.lang;
+document.querySelectorAll("#access [data-t]").forEach((n)=>{n.textContent=ACCESS[n.dataset.t]});
 const request=async(path,body)=>fetch(path,{method:body===undefined?"GET":"POST",
   headers:body===undefined?{}:{"Content-Type":"application/json"},
   body:body===undefined?undefined:JSON.stringify(body),cache:"no-store",referrerPolicy:"no-referrer"});
@@ -99,7 +114,7 @@ async function loadManagement(){
 $("unlock").addEventListener("submit",async(event)=>{
   event.preventDefault();const code=$("code").value;$("code").value="";
   const response=await request("/api/unlock",{code});
-  say(response.ok?"Ontgrendeld.":"De code is ongeldig of verlopen.");if(response.ok)await loadManagement();
+  say(response.ok?ACCESS.unlocked:ACCESS.invalid);if(response.ok)await loadManagement();
 });
 $("bootstrap").addEventListener("submit",async(event)=>{
   event.preventDefault();const displayLabel=$("bootstrap-label").value;
@@ -145,7 +160,7 @@ export async function createOfflineHostApp(options: Readonly<{
   origin: string;
   unlocks: OfflineHostUnlockStore;
   sessions: OfflineHostSessions;
-  accounts: Pick<MysqlOfflineHostAccounts, "create" | "list" | "signOutEverywhere">;
+  accounts: Pick<MysqlOfflineHostAccounts, "create" | "list" | "signOutEverywhere" | "invitationState">;
   tickets: Pick<OfflineInvitationTicketService, "issue" | "revoke">;
   publicOrigin: string;
   rootCertificateSha256: string;
@@ -312,6 +327,30 @@ export async function createOfflineHostApp(options: Readonly<{
       return reply.code(404).send({ code: "account_unavailable" });
     }
   });
+  // MK8DX beheer polls this while a sign-in card is on screen: "used" means a device signed in
+  // as that person. Administrator session only; the answer is the state alone, no token or account.
+  app.post("/api/invitations/status", { config: { rateLimit: { max: 30, timeWindow: "1 minute" } } },
+    async (request, reply) => {
+    const session = await options.sessions.read(cookie(request.headers.cookie));
+    if (session?.accountId === undefined || session.accountId === null) {
+      return reply.code(403).send();
+    }
+    const body = request.body;
+    if (typeof body !== "object" || body === null || Array.isArray(body) ||
+        Object.keys(body).length !== 1 ||
+        typeof (body as Record<string, unknown>)["invitationId"] !== "string") {
+      return reply.code(400).send();
+    }
+    try {
+      return { state: await options.accounts.invitationState(session.accountId,
+        (body as { invitationId: string }).invitationId) };
+    } catch (error) {
+      if (error instanceof OfflineHostAccountError && error.code === "forbidden") {
+        return reply.code(403).send({ code: "invitation_status_forbidden" });
+      }
+      return reply.code(404).send({ code: "invitation_unavailable" });
+    }
+    });
   app.post("/api/invitations/revoke", async (request, reply) => {
     const session = await options.sessions.read(cookie(request.headers.cookie));
     if (session?.accountId === undefined || session.accountId === null) {
