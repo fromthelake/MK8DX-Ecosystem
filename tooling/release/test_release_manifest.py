@@ -37,6 +37,19 @@ class ReleaseManifestTest(unittest.TestCase):
                 with self.subTest(tag=tag), self.assertRaises(SystemExit):
                     release_manifest.build(Path(temporary), tag, commit)
 
+    def test_reads_a2_manifest_inside_its_top_level_directory(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "mk8dx-a2-windows-amd64-v0.2.9.zip"
+            with zipfile.ZipFile(path, "w") as archive:
+                archive.writestr(
+                    "mk8dx-a2-windows-amd64-v0.2.9/PACKAGE_MANIFEST.json",
+                    json.dumps({"platform": "windows", "arch": "amd64", "revision": "v0.2.9"}),
+                )
+            self.assertEqual(
+                {"platform": "windows", "arch": "amd64", "revision": "v0.2.9"},
+                release_manifest.package_details(path),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

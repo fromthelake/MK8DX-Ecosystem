@@ -83,7 +83,7 @@ Linux 尚未與 MK8DX 一起經過端對端測試。以下步驟是針對 Ubuntu
 **解壓縮套件**
 
 1. **操作：** 下載適用於你的系統的家用或俱樂部版 MK8DX 套件：Windows、Linux 或 macOS；Linux 和 macOS 還要選擇你的處理器（amd64 或 arm64）。要檢查下載是否正確，請將它的 SHA-256 與同一個版本中 `SHA256SUMS.txt` 裡對應的那一行比較（Windows：`Get-FileHash <file> -Algorithm SHA256`；Linux：`sha256sum <file>`；macOS：`shasum -a 256 <file>`）；另請參閱 `docs/RELEASE_PACKAGES.md#check-a-download`。→ **你會看到：** 你的「下載」資料夾中有一個 zip 檔。→ **看到的不一樣？** 如果瀏覽器警告此檔案不安全或很少被下載：選擇 **Keep**（保留）。Windows：接著在 zip 檔上按右鍵 → **Properties**（內容），勾選下方的 **Unblock**（解除封鎖），點選 **OK**（確定）。請在解壓縮之前做這一步；否則 Windows（智慧型應用程式控制，Smart App Control）之後可能會封鎖 `Start-MK8DX-LAN.cmd`。不要關閉智慧型應用程式控制：關閉後只有重新安裝 Windows 才能再次開啟它。
-2. **操作：** 把 zip 檔解壓縮到一個固定的資料夾，例如「文件」中的一個 MK8DX 資料夾。Windows：在 zip 檔上按右鍵 → **Extract All**（解壓縮全部）。請選擇一個會一直保留的資料夾：之後 MK8DX 都會從這個資料夾啟動，所以不要移動或刪除它。→ **你會看到：** 一個資料夾，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 資料夾。→ **看到的不一樣？** 如果你只是在檔案總管中開啟了 zip 檔，請真的把它解壓縮：從 zip 檔內部啟動是行不通的。沒有檔案管理員的 Linux（伺服器或 WSL）：`unzip ~/Downloads/mk8dx-a2-linux-amd64-<version>.zip -d ~/Documents/MK8DX`（換成你的檔名；`unzip` 來自第 2B 章第 2 步）。
+2. **操作：** 把 zip 檔解壓縮到一個固定的資料夾，例如「文件」中的一個 MK8DX 資料夾。Windows：在 zip 檔上按右鍵 → **Extract All**（解壓縮全部）。請選擇一個會一直保留的資料夾：之後 MK8DX 都會從這個資料夾啟動，所以不要移動或刪除它。→ **你會看到：** 一個資料夾，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 資料夾。→ **看到的不一樣？** 如果你只是在檔案總管中開啟了 zip 檔，請真的把它解壓縮：從 zip 檔內部啟動是行不通的。沒有檔案管理員的 Linux（伺服器或 WSL）：`unzip ~/Downloads/mk8dx-a2-linux-amd64-<version>.zip -d ~/Documents/MK8DX`（換成你的檔名；`unzip` 來自第 2B 章第 2 步）。 zip 檔中有一個以套件命名的資料夾；開啟該資料夾即可啟動 MK8DX。
 
 <!-- os: windows -->
 

@@ -10,6 +10,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   Existing destination accounts and results take precedence; the old copy stays available for recovery.
 - The A2 phone onboarding says **Done** once all three steps are complete. Its completed Connect row no
   longer presents a button that does nothing, and the other step rows have a larger touch target.
+- A2 ZIPs unpack into one folder named after the package. The installation guide in every supported
+  language points users to that folder.
 
 ## 0.2.9 — 2026-11-16
 

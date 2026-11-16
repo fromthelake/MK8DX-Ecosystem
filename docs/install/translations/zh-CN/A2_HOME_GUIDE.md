@@ -83,7 +83,7 @@ Linux 尚未与 MK8DX 一起经过端到端测试。以下步骤针对 Ubuntu 24
 **解压软件包**
 
 1. **操作：** 下载适用于你的系统的家庭或俱乐部版 MK8DX 软件包：Windows、Linux 或 macOS；对于 Linux 和 macOS，还要选择你的处理器（amd64 或 arm64）。要检查下载是否正确，请将它的 SHA-256 与同一版本中 `SHA256SUMS.txt` 里对应的那一行进行比较（Windows：`Get-FileHash <file> -Algorithm SHA256`；Linux：`sha256sum <file>`；macOS：`shasum -a 256 <file>`）；另见 `docs/RELEASE_PACKAGES.md#check-a-download`。→ **你会看到：** 你的“下载”文件夹中有一个 zip 文件。→ **看到的不一样？** 如果浏览器警告该文件不安全或很少被下载：选择 **Keep**（保留）。Windows：然后右键单击 zip 文件 → **Properties**（属性），勾选底部的 **Unblock**（解除锁定），点击 **OK**（确定）。请在解压之前做这一步；否则 Windows（智能应用控制，Smart App Control）以后可能会阻止 `Start-MK8DX-LAN.cmd`。不要关闭智能应用控制：关闭后只有重新安装 Windows 才能再次打开它。
-2. **操作：** 把 zip 文件解压到一个固定的文件夹，例如“文档”中的一个 MK8DX 文件夹。Windows：右键单击 zip 文件 → **Extract All**（全部解压缩）。请选择一个会一直保留的文件夹：以后 MK8DX 总是从这个文件夹启动，所以不要移动或删除它。→ **你会看到：** 一个文件夹，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 文件夹。→ **看到的不一样？** 如果你只是在文件资源管理器中打开了 zip 文件，请真正解压它：从 zip 文件内部启动是行不通的。没有文件管理器的 Linux（服务器或 WSL）：`unzip ~/Downloads/mk8dx-a2-linux-amd64-<version>.zip -d ~/Documents/MK8DX`（换成你的文件名；`unzip` 来自第 2B 章第 2 步）。
+2. **操作：** 把 zip 文件解压到一个固定的文件夹，例如“文档”中的一个 MK8DX 文件夹。Windows：右键单击 zip 文件 → **Extract All**（全部解压缩）。请选择一个会一直保留的文件夹：以后 MK8DX 总是从这个文件夹启动，所以不要移动或删除它。→ **你会看到：** 一个文件夹，其中包括 `Start-MK8DX-LAN.cmd`、`README-FIRST.txt` 以及 `docs`、`images` 和 `tooling` 文件夹。→ **看到的不一样？** 如果你只是在文件资源管理器中打开了 zip 文件，请真正解压它：从 zip 文件内部启动是行不通的。没有文件管理器的 Linux（服务器或 WSL）：`unzip ~/Downloads/mk8dx-a2-linux-amd64-<version>.zip -d ~/Documents/MK8DX`（换成你的文件名；`unzip` 来自第 2B 章第 2 步）。 zip 文件中有一个以软件包命名的文件夹；打开该文件夹以启动 MK8DX。
 
 <!-- os: windows -->
 

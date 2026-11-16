@@ -2,10 +2,11 @@
 
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest import mock
 
-from tooling.release import host_bundle, non_docker_bundle
+from tooling.release import host_bundle, non_docker_bundle, release_manifest
 
 
 class PackagedGuidesTest(unittest.TestCase):
@@ -44,6 +45,26 @@ class PackagedGuidesTest(unittest.TestCase):
         workflow = (host_bundle.ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
         self.assertIn('cp "$folder/MK8DX_User_Guide.txt" "MK8DX_User_Guide_${locale}.txt"', workflow)
         self.assertIn('cp "$folder/MK8DX_User_Guide_${locale}.docx" .', workflow)
+
+
+class HostBundleArchiveLayoutTest(unittest.TestCase):
+    def test_a2_zip_extracts_as_one_folder_with_manifest_and_launcher(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            folder = Path(temporary)
+            tar = folder / "images.tar"
+            tar.write_bytes(b"test image")
+            output = folder / "mk8dx-a2-windows-amd64-v0.2.9.zip"
+            host_bundle.write_archive(output, {"revision": "v0.2.9"},
+                                      {"Start-MK8DX-LAN.cmd": b"start"}, {}, None, tar, "amd64", True)
+            with zipfile.ZipFile(output) as archive:
+                root = output.stem + "/"
+                self.assertEqual(set(archive.namelist()), {
+                    root + "PACKAGE_MANIFEST.json", root + "Start-MK8DX-LAN.cmd",
+                    root + "images/docker-images-amd64.tar",
+                })
+                archive.extractall(folder / "unpacked")
+            self.assertTrue((folder / "unpacked" / output.stem / "Start-MK8DX-LAN.cmd").is_file())
+            self.assertEqual("v0.2.9", release_manifest.package_details(output)["revision"])
 
 
 class HostBundleImageReferencesTest(unittest.TestCase):
