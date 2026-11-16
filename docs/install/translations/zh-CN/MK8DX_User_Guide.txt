@@ -490,6 +490,8 @@ LiveTrial 会保存地址并自动重启。重启期间请保持窗口打开。�
 
 如果字段仍然是空的，显示的是 https://www.example.org 示例，或者登录打开了错误的网站，请停止。通过“退出 LiveTrial”退出现有的 LiveTrial 实例。同一台电脑上的另一个 Windows 账户可能已经启动了它。重新打开它并检查地址。不要手动编辑 server.json，也不要把成绩发送到错误的网站。处理视频文件不需要采集卡。实时采集需要兼容的采集卡和驱动程序。本地成绩和队列对每台服务器都是分开的。
 
+稍后连接：录制前请在设置中选好社区地址，即使尚无账户也是如此。成绩会留在录制时选择的服务器上。若要把成绩带到另一个社区，请连接该社区，再用“分析视频”重新处理原视频。未登录时录制的成绩不会自动发送；请用“以<账户>身份发送”将其分配给当前登录的账户。“立即发送”会按每条待发送成绩原来的账户发送；已退出登录的账户所录制的成绩，会等该账户重新登录后再发送。
+
 浏览器扫描器已经是网站的一部分。在你受信任的 HTTPS 地址上打开 /scanner/，从“图片上传”开始。选择你自己的成绩图片，检查识别出的详细信息，核对无误后再确认。使用实时相机需要浏览器权限，并且在 localhost 以外需要受信任的 HTTPS。识别效果还取决于录像质量。文档中描述了 A2 的第二台 Windows 浏览器方式，但尚未经过端到端测试。
 
 对于 Windows x86-64 上的锦标赛工具，检查 tournament-tools-v0.2.11.zip 并解压完整的 ZIP。打开 Install-MK8DX-TournamentTools.cmd。请预留数 GB 的可用空间：大约 450 MB 的 ZIP 和大约 1.3 GB 的解压空间并不能涵盖所有依赖和你自己的媒体文件。安装程序需要联网一次，用来下载 Python 3.12 和公开软件包；OCR 模型已经附带，之后处理可以离线进行。尚未测量所有依赖和媒体的确切最低空间要求。不需要设置 GPU：使用较新的 NVIDIA 驱动时，安装程序会自动选择 CUDA 版本，然后显卡会加快名字、积分和时间的读取（OCR）。录像的第一次扫描总是在处理器上运行，因为软件包中的 OpenCV 版本不支持 CUDA；软件包中的 USING_MK8DX_TOURNAMENT_TOOLS.md 说明了这两个步骤。等待显示 SUCCESS，并保持 runtime-assets 完好。如果失败，请阅读软件包文件夹中的 install.log。
@@ -612,6 +614,8 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 故障排除和自行构建
 
 如果网站是空的，请先使用菜单 3，并检查 Docker 是否在运行。在 A1 上，登录邮件会发送到 Mailpit；在 A2 和 B1 上，它应当发送到真实的收件箱。请始终确认你使用的是同一个安装、地址和电子邮件。在公共方式中收不到登录邮件时，需要检查真实的 SMTP 设置值以及服务商是否可以访问。/health/ready 报告的是 API 和数据库是否就绪，而不是收件箱投递情况。
+
+仅适用于 B2：如果共享主机拒绝大文件的应用下载，管理员可以启用短时有效、支持断点续传的静态下载链接。请参阅 docs/install/B2_WEBHOSTING_EN.md 中的“App downloads on hosts that limit application responses”。浏览器通知是可选功能，需要管理员自己的 VAPID 密钥和受支持的推送服务；请参阅同一指南中的“Browser notifications (Web Push)”。可选设置的位置和应用步骤见 docs/install/SETTINGS_EN.md。
 
 如果 Start-MK8DX.cmd 在 A1 上因“all predefined address pools have been fully subnetted”而停止，说明旧的 Docker 网络已经用完了 Docker 的地址范围。在 PowerShell 中运行 docker network ls 查看它们。只删除你确定不再使用的网络，例如使用 docker network prune，它只会删除没有任何容器使用的网络。然后重新打开 Start-MK8DX.cmd。
 
