@@ -4,6 +4,8 @@
 
 語言：[English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · 繁體中文
 
+[從這裡開始：選擇 MK8DX 安裝方式](../install/translations/zh-TW/START_HERE.md)
+
 *本譯文由機器根據英文版 README 翻譯而成，歡迎指正。*
 
 ![社群網站首頁：你的排名、你的重點賽道和你的對手](web-home.jpg)

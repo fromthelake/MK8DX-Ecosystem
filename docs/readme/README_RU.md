@@ -4,6 +4,8 @@
 
 Язык: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · Русский · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Начните здесь: выберите способ установки MK8DX](../install/translations/ru/START_HERE.md)
+
 *Этот перевод сделан машинным способом с английского README; исправления приветствуются.*
 
 ![Главная страница сайта сообщества: ваше место в рейтинге, ваши трассы в фокусе и ваши соперники](web-home.jpg)

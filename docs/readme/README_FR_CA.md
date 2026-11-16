@@ -4,6 +4,8 @@
 
 Langue : [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · Français (Canada) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Commencer ici : choisir une installation MK8DX](../install/translations/fr-CA/START_HERE.md)
+
 *Cette traduction a été réalisée automatiquement à partir du README anglais; les corrections sont les bienvenues.*
 
 ![La page d'accueil d'un site communautaire : ton classement, tes circuits à travailler et tes rivaux](web-home.jpg)

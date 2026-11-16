@@ -4,6 +4,8 @@
 
 언어: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[시작하기: MK8DX 설치 방법 선택](../install/translations/ko/START_HERE.md)
+
 *이 번역은 영어 README를 기계 번역한 것입니다. 수정 제안을 환영합니다.*
 
 ![커뮤니티 웹사이트의 홈 페이지: 나의 순위, 집중 코스, 그리고 라이벌](web-home.jpg)

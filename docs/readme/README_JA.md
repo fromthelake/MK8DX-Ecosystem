@@ -4,6 +4,8 @@
 
 言語: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[ここから始める：MK8DX のインストール方法を選ぶ](../install/translations/ja/START_HERE.md)
+
 *この翻訳は英語版 README から機械翻訳したものです。修正のご提案を歓迎します。*
 
 ![コミュニティサイトのホームページ：あなたの順位、注目のコース、そしてライバル](web-home.jpg)

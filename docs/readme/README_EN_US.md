@@ -4,6 +4,8 @@
 
 Language: [English](../../README.md) · English (US) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Start here: choose an MK8DX installation](../install/translations/en-US/START_HERE.md)
+
 ![The home page of a community website: your standing, your focus tracks and your rivals](web-home.jpg)
 
 MK8DX Ecosystem is something you host yourself. It gives your community one website that keeps

@@ -4,6 +4,8 @@
 
 Idioma: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · Español · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Empieza aquí: elige cómo instalar MK8DX](../install/translations/es/START_HERE.md)
+
 *Esta traducción se ha hecho automáticamente a partir del README en inglés; las correcciones son bienvenidas.*
 
 ![La página de inicio de una web de comunidad: tu posición, tus circuitos destacados y tus rivales](web-home.jpg)

@@ -4,6 +4,8 @@
 
 Lingua: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · Italiano · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Inizia qui: scegli come installare MK8DX](../install/translations/it/START_HERE.md)
+
 *Questa traduzione è stata realizzata automaticamente a partire dal README in inglese; le correzioni sono benvenute.*
 
 ![La home page di un sito della community: la tua posizione, i tuoi percorsi in evidenza e i tuoi rivali](web-home.jpg)
