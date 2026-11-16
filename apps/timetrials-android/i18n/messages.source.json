@@ -751,7 +751,7 @@
   {
    "key": "All set. Enjoy racing!",
    "places": [
-    "AndroidLanOnboardingScreen.kt:181"
+    "AndroidLanOnboardingScreen.kt:179"
    ],
    "nl": "Alles klaar. Veel raceplezier!"
   },
@@ -779,7 +779,7 @@
   {
    "key": "Almost ready",
    "places": [
-    "AndroidLanOnboardingScreen.kt:143"
+    "AndroidLanOnboardingScreen.kt:141"
    ],
    "nl": "Bijna klaar"
   },
@@ -1578,7 +1578,7 @@
   {
    "key": "Check again",
    "places": [
-    "AndroidLanOnboardingScreen.kt:307"
+    "AndroidLanOnboardingScreen.kt:304"
    ],
    "nl": "Opnieuw controleren"
   },
@@ -1670,7 +1670,7 @@
   {
    "key": "Checking…",
    "places": [
-    "AndroidLanOnboardingScreen.kt:291"
+    "AndroidLanOnboardingScreen.kt:288"
    ],
    "nl": "Controleren…"
   },
@@ -2340,7 +2340,7 @@
   {
    "key": "Connect",
    "places": [
-    "AndroidLanOnboardingScreen.kt:156",
+    "AndroidLanOnboardingScreen.kt:154",
     "AndroidLanPairingScreen.kt:226"
    ],
    "nl": "Verbinden"
@@ -2398,7 +2398,7 @@
   {
    "key": "Contacting the installation…",
    "places": [
-    "AndroidLanOnboardingScreen.kt:462"
+    "AndroidLanOnboardingScreen.kt:459"
    ],
    "nl": "Contact met de installatie…"
   },
@@ -2954,7 +2954,7 @@
    "key": "Done",
    "places": [
     "AndroidRankScreen.kt:675",
-    "AndroidLanOnboardingScreen.kt:183"
+    "AndroidLanOnboardingScreen.kt:181"
    ],
    "nl": "Klaar"
   },
@@ -3104,7 +3104,7 @@
   {
    "key": "English",
    "places": [
-    "AndroidLanOnboarding.kt:134",
+    "AndroidLanOnboarding.kt:127",
     "AndroidDutchUiCopy.kt:63"
    ],
    "nl": "Dutch"
@@ -3929,7 +3929,7 @@
   {
    "key": "HOME OR CLUB",
    "places": [
-    "AndroidLanOnboardingScreen.kt:142",
+    "AndroidLanOnboardingScreen.kt:140",
     "AndroidLanPairingScreen.kt:134"
    ],
    "nl": "THUIS OF CLUB"
@@ -4422,14 +4422,14 @@
   {
    "key": "Later",
    "places": [
-    "AndroidLanOnboardingScreen.kt:199"
+    "AndroidLanOnboardingScreen.kt:197"
    ],
    "nl": "Later"
   },
   {
    "key": "Later? The app already works on this phone. Until step 2 is done, the website in your browser shows a security warning; until step 3, your times stay on this phone. These steps come back at the next start.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:191"
+    "AndroidLanOnboardingScreen.kt:189"
    ],
    "nl": "Later? De app werkt al op deze telefoon. Tot stap 2 klaar is, geeft de website in je browser een beveiligingswaarschuwing; tot stap 3 blijven je tijden op deze telefoon. Deze stappen komen terug bij de volgende start."
   },
@@ -4518,7 +4518,7 @@
   {
    "key": "Let your phone trust the installation",
    "places": [
-    "AndroidLanOnboardingScreen.kt:157"
+    "AndroidLanOnboardingScreen.kt:155"
    ],
    "nl": "Je telefoon laten vertrouwen"
   },
@@ -5350,7 +5350,7 @@
   {
    "key": "Next",
    "places": [
-    "AndroidLanOnboardingScreen.kt:414",
+    "AndroidLanOnboardingScreen.kt:411",
     "AndroidLanPairingScreen.kt:157"
    ],
    "nl": "Volgende"
@@ -6040,7 +6040,7 @@
   {
    "key": "Not trusted by your phone yet.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:298"
+    "AndroidLanOnboardingScreen.kt:295"
    ],
    "nl": "Nog niet vertrouwd door je telefoon."
   },
@@ -6054,7 +6054,7 @@
   {
    "key": "Not you? Then do not sign in; the card stays valid for the right person.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:427"
+    "AndroidLanOnboardingScreen.kt:424"
    ],
    "nl": "Ben jij dit niet? Meld je dan niet aan; de kaart blijft geldig voor de juiste persoon."
   },
@@ -6267,7 +6267,7 @@
   {
    "key": "On this phone:",
    "places": [
-    "AndroidLanOnboardingScreen.kt:288"
+    "AndroidLanOnboardingScreen.kt:285"
    ],
    "nl": "Op deze telefoon:"
   },
@@ -6361,14 +6361,14 @@
   {
    "key": "Open Settings",
    "places": [
-    "AndroidLanOnboardingScreen.kt:282"
+    "AndroidLanOnboardingScreen.kt:279"
    ],
    "nl": "Instellingen openen"
   },
   {
    "key": "Open Settings and search for “certificate”. Choose Install a certificate (or Install from storage) → CA certificate → choose the MK8DX file → confirm with your PIN.",
    "places": [
-    "AndroidLanOnboarding.kt:158"
+    "AndroidLanOnboarding.kt:151"
    ],
    "nl": "Open Instellingen en zoek op “certificaat”. Kies Certificaat installeren (of Installeren vanuit opslag) → CA-certificaat → kies het MK8DX-bestand → bevestig met je pincode."
   },
@@ -6574,7 +6574,7 @@
   {
    "key": "Or paste the sign-in link",
    "places": [
-    "AndroidLanOnboardingScreen.kt:406"
+    "AndroidLanOnboardingScreen.kt:403"
    ],
    "nl": "Of plak de inloglink"
   },
@@ -6899,7 +6899,7 @@
   {
    "key": "Paste the sign-in link first",
    "places": [
-    "AndroidLanOnboardingScreen.kt:417"
+    "AndroidLanOnboardingScreen.kt:414"
    ],
    "nl": "Plak eerst de inloglink"
   },
@@ -8389,7 +8389,7 @@
   {
    "key": "Save certificate",
    "places": [
-    "AndroidLanOnboardingScreen.kt:262"
+    "AndroidLanOnboardingScreen.kt:260"
    ],
    "nl": "Certificaat opslaan"
   },
@@ -8459,7 +8459,7 @@
   {
    "key": "Saved in Downloads as {0}.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:276"
+    "AndroidLanOnboardingScreen.kt:273"
    ],
    "nl": "Opgeslagen in Downloads als {0}."
   },
@@ -8609,7 +8609,7 @@
   {
    "key": "Scan sign-in card",
    "places": [
-    "AndroidLanOnboardingScreen.kt:390"
+    "AndroidLanOnboardingScreen.kt:387"
    ],
    "nl": "Inlogkaart scannen"
   },
@@ -8630,7 +8630,7 @@
   {
    "key": "Scan the personal sign-in card your administrator made for you. The card works once, for 15 minutes.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:382"
+    "AndroidLanOnboardingScreen.kt:379"
    ],
    "nl": "Scan de persoonlijke inlogkaart die je beheerder voor je maakte. De kaart werkt één keer, 15 minuten lang."
   },
@@ -8928,35 +8928,35 @@
   {
    "key": "Settings → Passwords & security → Privacy → Encryption & credentials → Install a certificate → CA certificate → choose the MK8DX file.",
    "places": [
-    "AndroidLanOnboarding.kt:150"
+    "AndroidLanOnboarding.kt:143"
    ],
    "nl": "Instellingen → Wachtwoorden en beveiliging → Privacy → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat → kies het MK8DX-bestand."
   },
   {
    "key": "Settings → Security & privacy → More security & privacy → Encryption & credentials → Install a certificate → CA certificate → Install anyway → choose the MK8DX file.",
    "places": [
-    "AndroidLanOnboarding.kt:146"
+    "AndroidLanOnboarding.kt:139"
    ],
    "nl": "Instellingen → Beveiliging en privacy → Meer beveiliging en privacy → Versleuteling en inloggegevens → Een certificaat installeren → CA-certificaat → Toch installeren → kies het MK8DX-bestand."
   },
   {
    "key": "Settings → Security & privacy → More security settings → Install from storage → CA certificate → choose the MK8DX file.",
    "places": [
-    "AndroidLanOnboarding.kt:154"
+    "AndroidLanOnboarding.kt:147"
    ],
    "nl": "Instellingen → Beveiliging en privacy → Meer beveiligingsinstellingen → Installeren vanuit opslag → CA-certificaat → kies het MK8DX-bestand."
   },
   {
    "key": "Settings → Security and privacy → More security settings → Install from device storage → CA certificate → Install anyway → choose the MK8DX file.",
    "places": [
-    "AndroidLanOnboarding.kt:142"
+    "AndroidLanOnboarding.kt:135"
    ],
    "nl": "Instellingen → Beveiliging en privacy → Meer beveiligingsinstellingen → Installeren vanaf apparaatopslag → CA-certificaat → Toch installeren → kies het MK8DX-bestand."
   },
   {
    "key": "Settings → Security → More security settings → Install from storage → CA certificate → choose the MK8DX file → confirm with your PIN.",
    "places": [
-    "AndroidLanOnboarding.kt:138"
+    "AndroidLanOnboarding.kt:131"
    ],
    "nl": "Instellingen → Beveiliging → Meer veiligheidsinstellingen → Installeren vanuit opslag → CA-certificaat → kies het MK8DX-bestand → bevestig met je pincode."
   },
@@ -9189,8 +9189,8 @@
    "places": [
     "AndroidTimeTrialsProductComponent.kt:1324",
     "AndroidMyStatsScreen.kt:302",
-    "AndroidLanOnboardingScreen.kt:158",
-    "AndroidLanOnboardingScreen.kt:437"
+    "AndroidLanOnboardingScreen.kt:156",
+    "AndroidLanOnboardingScreen.kt:434"
    ],
    "nl": "Aanmelden"
   },
@@ -9368,15 +9368,15 @@
   {
    "key": "Signed in as {0}.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:172"
+    "AndroidLanOnboardingScreen.kt:170"
    ],
    "nl": "Aangemeld als {0}."
   },
   {
    "key": "Signing in did not work. Try again.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:347",
-    "AndroidLanOnboardingScreen.kt:452"
+    "AndroidLanOnboardingScreen.kt:344",
+    "AndroidLanOnboardingScreen.kt:449"
    ],
    "nl": "Aanmelden lukte niet. Probeer opnieuw."
   },
@@ -10355,14 +10355,14 @@
   {
    "key": "The card was used, but this account has no Player yet. Finish the Player setup on the website.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:448"
+    "AndroidLanOnboardingScreen.kt:445"
    ],
    "nl": "De kaart is gebruikt, maar dit account heeft nog geen speler. Rond de spelersinstelling af op de website."
   },
   {
    "key": "The certificate could not be saved. Try again.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:279"
+    "AndroidLanOnboardingScreen.kt:276"
    ],
    "nl": "Het certificaat kon niet worden opgeslagen. Probeer opnieuw."
   },
@@ -10474,14 +10474,14 @@
   {
    "key": "The installation cannot be reached right now. Check the Wi-Fi.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:303"
+    "AndroidLanOnboardingScreen.kt:300"
    ],
    "nl": "De installatie is nu niet bereikbaar. Controleer de wifi."
   },
   {
    "key": "The installation could not be reached. Check the Wi-Fi.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:370"
+    "AndroidLanOnboardingScreen.kt:367"
    ],
    "nl": "De installatie is niet bereikbaar. Controleer de wifi."
   },
@@ -10890,7 +10890,7 @@
   {
    "key": "This app already trusts the installation. Your phone itself does not yet: the website in the browser and signing in through the browser need it. Save the certificate, then install it in Settings as a CA certificate.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:254"
+    "AndroidLanOnboardingScreen.kt:252"
    ],
    "nl": "Deze app vertrouwt de installatie al. Je telefoon zelf nog niet: de website in de browser en inloggen via de browser hebben dat nodig. Sla het certificaat op en installeer het daarna in Instellingen als CA-certificaat."
   },
@@ -10911,14 +10911,14 @@
   {
    "key": "This card belongs to another installation than the one this phone is connected to.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:342"
+    "AndroidLanOnboardingScreen.kt:339"
    ],
    "nl": "Deze kaart hoort bij een andere installatie dan die waarmee deze telefoon verbonden is."
   },
   {
    "key": "This card can no longer be used (it is valid once, for 15 minutes). Ask your administrator for a new one.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:338"
+    "AndroidLanOnboardingScreen.kt:335"
    ],
    "nl": "Deze kaart kan niet meer gebruikt worden (hij werkt één keer, 15 minuten lang). Vraag je beheerder om een nieuwe."
   },
@@ -10954,7 +10954,7 @@
   {
    "key": "This is not a personal sign-in card.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:352"
+    "AndroidLanOnboardingScreen.kt:349"
    ],
    "nl": "Dit is geen persoonlijke inlogkaart."
   },
@@ -11087,7 +11087,7 @@
   {
    "key": "Three steps for this phone. You only do them once.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:145"
+    "AndroidLanOnboardingScreen.kt:143"
    ],
    "nl": "Drie stappen voor deze telefoon. Je doet ze maar één keer."
   },
@@ -11244,7 +11244,7 @@
   {
    "key": "Too many attempts. Wait a moment, then try again.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:346"
+    "AndroidLanOnboardingScreen.kt:343"
    ],
    "nl": "Te veel pogingen. Wacht even en probeer opnieuw."
   },
@@ -11757,7 +11757,7 @@
   {
    "key": "Use the camera",
    "places": [
-    "AndroidLanOnboardingScreen.kt:401",
+    "AndroidLanOnboardingScreen.kt:398",
     "AndroidLanPairingScreen.kt:146"
    ],
    "nl": "Camera gebruiken"
@@ -12570,7 +12570,7 @@
   {
    "key": "You sign in as:",
    "places": [
-    "AndroidLanOnboardingScreen.kt:424"
+    "AndroidLanOnboardingScreen.kt:421"
    ],
    "nl": "Je meldt je aan als:"
   },
@@ -12823,7 +12823,7 @@
   {
    "key": "Your phone trusts this installation.",
    "places": [
-    "AndroidLanOnboardingScreen.kt:293"
+    "AndroidLanOnboardingScreen.kt:290"
    ],
    "nl": "Je telefoon vertrouwt deze installatie."
   },

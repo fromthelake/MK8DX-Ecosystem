@@ -122,10 +122,17 @@
    ]
   },
   {
-   "key": "Choose the downloaded MK8DX file and confirm with your PIN.",
-   "nl": "Kies het gedownloade MK8DX-bestand en bevestig met je pincode.",
+   "key": "Choose the file {file} (not an older root.crt download) and confirm with your PIN.",
+   "nl": "Kies het bestand {file} (niet een oudere root.crt-download) en bevestig met je pincode.",
    "places": [
-    "offline_lan_ca.py:android[2]"
+    "offline_lan_ca.py:android[3]"
+   ]
+  },
+  {
+   "key": "Chrome may say that the file cannot be downloaded securely. Choose Keep: this server is not trusted yet, and the code above is your check.",
+   "nl": "Chrome kan melden dat het bestand niet beveiligd kan worden gedownload. Kies Behouden: deze server wordt nog niet vertrouwd, en de code hierboven is je controle.",
+   "places": [
+    "offline_lan_ca.py:android[1]"
    ]
   },
   {
@@ -185,8 +192,8 @@
    ]
   },
   {
-   "key": "Do this once per phone, tablet or PC. Afterwards, scan your personal sign-in card.",
-   "nl": "Doe dit één keer per telefoon, tablet of pc. Scan daarna je persoonlijke inlogkaart.",
+   "key": "Do this once per phone, tablet or PC, also when you only use the website without the app (for example on an iPhone). Afterwards, scan your personal sign-in card.",
+   "nl": "Doe dit één keer per telefoon, tablet of pc, ook als je alleen de website gebruikt zonder de app (bijvoorbeeld op een iPhone). Scan daarna je persoonlijke inlogkaart.",
    "places": [
     "offline_lan_ca.py:lead"
    ]
@@ -220,6 +227,13 @@
    ]
   },
   {
+   "key": "Done",
+   "nl": "Klaar",
+   "places": [
+    "offline_lan_ca.py:steps[2]"
+   ]
+  },
+  {
    "key": "Done!",
    "nl": "Klaar!",
    "places": [
@@ -231,13 +245,6 @@
    "nl": "Klaar! Veel racegenot.",
    "places": [
     "wizard.js:doneTitle"
-   ]
-  },
-  {
-   "key": "Done? Scan your personal sign-in card, or open",
-   "nl": "Klaar? Scan je persoonlijke inlogkaart, of open",
-   "places": [
-    "offline_lan_ca.py:done"
    ]
   },
   {
@@ -255,15 +262,15 @@
    ]
   },
   {
-   "key": "Download the certificate and open it.",
-   "nl": "Download het certificaat en open het.",
+   "key": "Download the certificate ({file}) and open it.",
+   "nl": "Download het certificaat ({file}) en open het.",
    "places": [
     "offline_lan_ca.py:windows[0]"
    ]
   },
   {
-   "key": "Download the certificate and open it; Keychain Access opens.",
-   "nl": "Download het certificaat en open het; Sleutelhangertoegang opent.",
+   "key": "Download the certificate ({file}) and open it; Keychain Access opens.",
+   "nl": "Download het certificaat ({file}) en open het; Sleutelhangertoegang opent.",
    "places": [
     "offline_lan_ca.py:mac[0]"
    ]
@@ -641,6 +648,13 @@
    ]
   },
   {
+   "key": "Next, step 2: scan your personal sign-in card with your phone's camera, or open",
+   "nl": "Daarna stap 2: scan je persoonlijke inlogkaart met de camera van je telefoon, of open",
+   "places": [
+    "offline_lan_ca.py:done"
+   ]
+  },
+  {
    "key": "No network address found. Connect this computer to your home network and click Try again.",
    "nl": "Geen netwerkadres gevonden. Verbind deze computer met je thuisnetwerk en klik op Opnieuw proberen.",
    "places": [
@@ -676,10 +690,10 @@
    ]
   },
   {
-   "key": "Open Settings and search for “certificate” (often: Security → More security settings → Encryption & credentials → Install a certificate → CA certificate).",
-   "nl": "Open Instellingen en zoek op “certificaat” (vaak: Beveiliging → Meer beveiligingsinstellingen → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat).",
+   "key": "Open Settings and search for “certificate”, then choose CA certificate. The menu differs per brand:",
+   "nl": "Open Instellingen en zoek op “certificaat”, kies daarna CA-certificaat. Het menu verschilt per merk:",
    "places": [
-    "offline_lan_ca.py:android[1]"
+    "offline_lan_ca.py:android[2]"
    ]
   },
   {
@@ -722,6 +736,13 @@
    "nl": "Telefoons, tablets en andere pc's bereiken MK8DX op dit adres:",
    "places": [
     "wizard.js:netLead"
+   ]
+  },
+  {
+   "key": "Pixel and other stock Android: Security & privacy → More security settings → Encryption & credentials → Install a certificate → CA certificate.",
+   "nl": "Pixel en ander standaard-Android: Beveiliging en privacy → Meer beveiligingsinstellingen → Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat.",
+   "places": [
+    "offline_lan_ca.py:brands[0]"
    ]
   },
   {
@@ -838,10 +859,24 @@
    ]
   },
   {
+   "key": "Samsung, Xiaomi, OnePlus, OPPO and other brands: search for “certificate” in Settings and choose CA certificate.",
+   "nl": "Samsung, Xiaomi, OnePlus, OPPO en andere merken: zoek in Instellingen op “certificaat” en kies CA-certificaat.",
+   "places": [
+    "offline_lan_ca.py:brands[2]"
+   ]
+  },
+  {
    "key": "Scan from the couch",
    "nl": "Scannen op de bank",
    "places": [
     "wizard.js:hiScanT"
+   ]
+  },
+  {
+   "key": "Scan sign-in card",
+   "nl": "Inlogkaart scannen",
+   "places": [
+    "offline_lan_ca.py:steps[1]"
    ]
   },
   {
@@ -953,7 +988,8 @@
    "key": "Steps",
    "nl": "Stappen",
    "places": [
-    "wizard.js:stepsLabel"
+    "wizard.js:stepsLabel",
+    "offline_lan_ca.py:steps_label"
    ]
   },
   {
@@ -964,8 +1000,8 @@
    ]
   },
   {
-   "key": "Tap the button to download the certificate.",
-   "nl": "Tik op de knop om het certificaat te downloaden.",
+   "key": "Tap the button to download the certificate. The file is called {file}.",
+   "nl": "Tik op de knop om het certificaat te downloaden. Het bestand heet {file}.",
    "places": [
     "offline_lan_ca.py:android[0]"
    ]
@@ -1101,6 +1137,13 @@
    "nl": "Later mensen toevoegen of kaarten maken: dubbelklik 'MK8DX beheer' op het bureaublad.",
    "places": [
     "wizard.js:doneManage"
+   ]
+  },
+  {
+   "key": "Trust",
+   "nl": "Vertrouwen",
+   "places": [
+    "offline_lan_ca.py:steps[0]"
    ]
   },
   {
@@ -1290,6 +1333,13 @@
    "nl": "nog bezig, dit kan een paar minuten duren",
    "places": [
     "wizard.js:stillWorking"
+   ]
+  },
+  {
+   "key": "vivo: Security → More security settings → Install from storage → CA certificate.",
+   "nl": "vivo: Beveiliging → Meer veiligheidsinstellingen → Installeren vanuit opslag → CA-certificaat.",
+   "places": [
+    "offline_lan_ca.py:brands[1]"
    ]
   }
  ]

@@ -1,4 +1,5 @@
 import { expandShortLink } from "./short-links.js";
+import { forgetPendingDevice, rememberPendingDevice } from "./pending-device.js";
 import {
   approveDeviceEmail,
   inspectDeviceEmail,
@@ -403,6 +404,9 @@ function isRankTab(
   return value === "total" || value === "medals" ||
     value === "mastery" || value === "tracks";
 }
+
+/** How often a signed-out /device page asks whether the sign-in happened elsewhere. */
+export const DEVICE_SESSION_POLL_MS = 3_000;
 
 export function mountAuthenticationProductPage(
   root: HTMLElement,
@@ -1881,11 +1885,46 @@ export function mountAuthenticationProductPage(
       if (rememberedOffline !== null) { invitation.prepend(rememberedOffline); }
       if (isDevice) {
         status.textContent = localized(
-          "Sign in with your invitation first, then return to approve this device.",
-          "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
+          "Sign in with your personal sign-in card first. This page continues by itself.",
+          "Meld je eerst aan met je persoonlijke inlogkaart. Deze pagina gaat daarna vanzelf verder.",
         );
-        content.append(dsPanel({ title: localized("Local invitation", "Lokale uitnodiging"),
-          titleLevel: 2, children: [invitation] }));
+        const steps = document.createElement("ol");
+        steps.className = "ds-device__next ds-stack";
+        steps.setAttribute("data-device-next", "");
+        // Numbered as the steps above: 2 scan the card here, 3 come back for the request.
+        steps.setAttribute("start", "2");
+        for (const text of [
+          localized(
+            "Scan your personal sign-in card with your phone's camera. Ask the host administrator for it; it works once and expires after 15 minutes.",
+            "Scan je persoonlijke inlogkaart met de camera van je telefoon. Vraag de hostbeheerder erom; hij werkt één keer en verloopt na 15 minuten.",
+          ),
+          localized(
+            "Come back here. This page refreshes by itself as soon as you are signed in.",
+            "Kom hier terug. Deze pagina vernieuwt zelf zodra je bent aangemeld.",
+          ),
+        ]) {
+          const item = document.createElement("li");
+          item.className = "ds-body";
+          item.textContent = text;
+          steps.append(item);
+        }
+        const trusted = document.createElement("p");
+        trusted.className = "ds-body-s";
+        trusted.textContent = localized(
+          "Step 1 is done: this page opened securely, so this phone trusts the server.",
+          "Stap 1 is klaar: deze pagina opende beveiligd, dus deze telefoon vertrouwt de server.",
+        );
+        const check = watchForDeviceSession();
+        const again = dsButton({
+          label: localized("Check again", "Opnieuw controleren"), variant: "secondary",
+          onPress: check,
+        });
+        rememberPendingDevice();
+        content.append(dsPanel({
+          title: localized("Next: sign in on this phone", "Volgende stap: meld je aan op deze telefoon"),
+          titleLevel: 2,
+          children: [onboardingSteps(2), trusted, steps, again.root, invitation],
+        }));
       } else {
         heading.hidden = true;
         status.hidden = true;
@@ -2130,10 +2169,76 @@ export function mountAuthenticationProductPage(
   };
   endSession = endSessionImplementation;
 
+  // The A2 onboarding in three numbered steps, worded as on the host's /setup page and the invitation page
+  // (tooling/offline_lan_ca.py, infrastructure/docker/offline-invite): 1 Trust, 2 Scan sign-in card, 3 Done.
+  const onboardingSteps = (current: 1 | 2 | 3): HTMLElement => {
+    const list = document.createElement("ol");
+    list.className = "ds-onboarding-steps";
+    list.setAttribute("aria-label", localized("Steps", "Stappen"));
+    const labels = [
+      localized("Trust", "Vertrouwen"),
+      localized("Scan sign-in card", "Inlogkaart scannen"),
+      localized("Done", "Klaar"),
+    ];
+    labels.forEach((label, index) => {
+      const step = index + 1;
+      const item = document.createElement("li");
+      item.className = "ds-onboarding-steps__step";
+      item.setAttribute("data-state", step < current ? "done" : step === current ? "current" : "todo");
+      if (step === current) { item.setAttribute("aria-current", "step"); }
+      const mark = document.createElement("span");
+      mark.className = "ds-onboarding-steps__mark";
+      mark.setAttribute("aria-hidden", "true");
+      mark.textContent = step < current ? "\u2713" : String(step);
+      const text = document.createElement("span");
+      text.textContent = label;
+      item.append(mark, text);
+      list.append(item);
+    });
+    return list;
+  };
+
+  // Signed out on /device: the sign-in happens elsewhere (the invitation page, often in another tab), so the
+  // page asks again every few seconds and whenever it comes back into view, then continues to the request.
+  let stopDeviceSessionWatch: (() => void) | null = null;
+  const watchForDeviceSession = (): (() => void) => {
+    stopDeviceSessionWatch?.();
+    let checking = false;
+    let stopped = false;
+    const check = (): void => {
+      if (checking || stopped || disposed) { return; }
+      if ((document as { visibilityState?: string }).visibilityState === "hidden") { return; }
+      checking = true;
+      sessionCache = null;
+      void loadSession().catch(() => null).then((session) => {
+        checking = false;
+        if (stopped || disposed || session === null) { return; }
+        stop();
+        void renderDevice();
+      });
+    };
+    const timer = globalThis.setInterval(check, DEVICE_SESSION_POLL_MS);
+    const target = document as { addEventListener?: Document["addEventListener"];
+      removeEventListener?: Document["removeEventListener"] };
+    globalThis.addEventListener?.("focus", check);
+    target.addEventListener?.("visibilitychange", check);
+    const stop = (): void => {
+      if (stopped) { return; }
+      stopped = true;
+      globalThis.clearInterval(timer);
+      globalThis.removeEventListener?.("focus", check);
+      target.removeEventListener?.("visibilitychange", check);
+      if (stopDeviceSessionWatch === stop) { stopDeviceSessionWatch = null; }
+    };
+    stopDeviceSessionWatch = stop;
+    return check;
+  };
+
   // W04 Device approval on the design system (Phase 12). Presentation only: the device-code
   // lookup, the two-step approve/deny, every state and every word are unchanged. The page is a
   // MINIMAL route (DESIGN_SYSTEM §5) — no art, one panel, one field, one action at a time.
   const renderDevice = async (): Promise<void> => {
+    stopDeviceSessionWatch?.();
     unmountProduct();
     clear(content);
     heading.hidden = true;
@@ -2146,8 +2251,16 @@ export function mountAuthenticationProductPage(
     title.textContent = localized("Approve a device", "Apparaat goedkeuren");
     const body = document.createElement("div");
     body.className = "ds-stack";
-    page.append(title, renderSignedInHeader(), body);
+    const stepsHost = document.createElement("div");
+    stepsHost.hidden = true;
+    page.append(title, stepsHost, renderSignedInHeader(), body);
     content.append(page);
+    // On a local (A2) server the phone has come through the certificate and the sign-in card: step 3.
+    if (await resolveInstallationMode() === "offline-invitation") {
+      stepsHost.append(onboardingSteps(3));
+      stepsHost.hidden = false;
+    }
+    if (disposed) { return; }
 
     const fieldId = "ds-device-code";
     const input = document.createElement("input");
@@ -2240,6 +2353,22 @@ export function mountAuthenticationProductPage(
               : localized("Device request denied.", "Apparaatverzoek geweigerd.");
             status.textContent = done;
             decisionNotice.replaceChildren(dsStatusMessage(approved ? "success" : "info", done));
+            if (!approved) { return; }
+            forgetPendingDevice();
+            // There is no app link for a local server's address (the app's https links are bound to the
+            // hosted website), so the way back is said plainly and prominently.
+            const back = document.createElement("p");
+            back.className = "ds-body";
+            back.textContent = localized(
+              "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.",
+              "Ga terug naar de MK8DX-app. Die rondt het aanmelden zelf af; je kunt deze pagina sluiten.",
+            );
+            body.replaceChildren(dsPanel({
+              title: localized("Done: go back to the app", "Klaar: ga terug naar de app"),
+              titleLevel: 2,
+              children: [dsStatusMessage("success", done), back],
+            }));
+            body.setAttribute("data-device-approved", "");
           }).catch(() => {
             if (disposed) { return; }
             decided = false;
@@ -3283,6 +3412,7 @@ export function mountAuthenticationProductPage(
       disposed = true;
       operation += 1;
       controller?.abort();
+      stopDeviceSessionWatch?.();
       globalThis.removeEventListener?.("popstate", onPopState);
       stopAppearanceWatch();
       appearanceMedia?.removeEventListener?.("change", followBrandAppearance);

@@ -94,6 +94,7 @@ describe("integrated web production host boundary", () => {
       "notification-client.ts",
       "notification-section.ts",
       "observed-identity-client.ts",
+      "pending-device.ts",
       "platform-mark.ts",
       "player-activity-client.ts",
       "player-alias-client.ts",

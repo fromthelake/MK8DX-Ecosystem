@@ -3,6 +3,7 @@
 import hashlib
 import ipaddress
 import plistlib
+import re
 import sys
 import tempfile
 import unittest
@@ -71,6 +72,38 @@ class OfflineLanCaTest(unittest.TestCase):
                     offline_lan_ca.provision(state, "192.168.12.34",
                                              protect=lambda value: b"another")
             self.assertNotEqual(roots[0], roots[1])
+
+    def test_the_certificate_download_has_a_descriptive_file_name(self):
+        """Phones collected root.crt, root (1).crt, ...; the page links a name with the check code and the root date,
+        and the gateway serves exactly that shape with the root's bytes and a matching Content-Disposition."""
+        caddy = (Path(__file__).resolve().parents[2] / "infrastructure/docker/Caddyfile.offline-lan").read_text(
+            encoding="utf-8")
+        pattern = re.search(r"@setup_named_crt path_regexp (\S+)\n", caddy).group(1)
+        block = caddy[caddy.index("handle @setup_named_crt {"):]
+        block = block[:block.index("\n  }\n")]
+        self.assertIn('header Content-Disposition "attachment; filename=\\"{http.request.orig_uri.path.file}\\""',
+                      block)
+        self.assertIn("rewrite * /root.crt", block)
+        self.assertLess(caddy.index("handle @setup_named_crt {"), caddy.index("\nhttps://"), "plain-HTTP site only")
+        with tempfile.TemporaryDirectory() as temporary:
+            state = Path(temporary) / "state"
+            state.mkdir()
+            metadata = offline_lan_ca.provision(state, "192.168.12.34", protect=lambda value: b"synthetic")
+            root = x509.load_pem_x509_certificate((state / "offline-ca/serving/root.pem").read_bytes())
+            name = offline_lan_ca.certificate_file_name(root)
+            self.assertEqual(name, f"MK8DX-{metadata['root']['certificateSha256'][:8].upper()}-"
+                                   f"{root.not_valid_before_utc:%Y-%m-%d}.crt")
+            self.assertRegex(f"/setup/{name}", pattern)
+            for wrong in ("/setup/root.crt", "/setup/MK8DX-8ab95020-2026-11-16.crt", "/setup/MK8DX-8AB95020-x.crt",
+                          "/setup/MK8DX-8AB95020-2026-11-16.crt/../index.html"):
+                self.assertNotRegex(wrong, pattern)
+            page = (state / "offline-ca/setup/index.html").read_text(encoding="utf-8")
+            self.assertIn(f'href="/setup/{name}"', page)
+            self.assertNotIn('href="/setup/root.crt"', page)
+            self.assertIn(f"The file is called {name}.", page)
+            self.assertIn("Choose Keep", page)  # Chrome's "cannot be downloaded securely" prompt
+            self.assertIn("Installeren vanuit opslag", page)  # the vivo route checked on a real phone
+            self.assertIn('<ol class="steps"', page)
 
     @unittest.skipUnless(sys.platform == "win32", "Windows DPAPI only")
     def test_windows_dpapi_machine_round_trip(self):

@@ -10,8 +10,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Android: three clear steps after connecting to a home or club installation (A2).** After "Connect" the app
   shows 1 Connect ✓, 2 Let your phone trust the installation, 3 Sign in, at every start until done ("Later" says
   what does not work yet). Step 2 saves the certificate the app already pinned to Downloads as
-  `MK8DX-<check code>-<root date>.crt` (DER; the same name the `/setup` page downloads, instead of `root (5).crt`), opens the phone's certificate
-  installer or security settings, shows the menu path for Vivo, Samsung, Pixel, Xiaomi/Redmi/POCO,
+  `MK8DX-<check code>-<root date>.crt` (DER; the same name the `/setup` page downloads, instead of
+  `root (5).crt`), opens the phone's certificate installer or security settings, shows the menu path for Vivo, Samsung, Pixel, Xiaomi/Redmi/POCO,
   OnePlus/OPPO or any other phone, and turns green once the phone's own certificate store trusts the installation
   (checked again on every return). Step 3 signs in by scanning the personal sign-in card with the app itself, shows
   who it signs in as and needs no browser and no device code (ADR-0224 amendment 2026-11-16): new API routes
@@ -20,6 +20,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Changed
 
+- **Clearer first steps on an A2 (offline) installation** for phones and browsers. The host's "Prepare this device"
+  page, the invitation page and `/device` share three numbered steps (1 Trust, 2 Scan sign-in card, 3 Done). The
+  certificate downloads as `MK8DX-<check code>-<date>.crt` instead of another `root.crt`, the page explains
+  Chrome's "cannot be downloaded securely" prompt (choose Keep), names the Pixel/stock Android and vivo menus and
+  says that the certificate step is needed for the website too (iPhone). A signed-out `/device` page lists what to
+  do next, continues by itself once the phone is signed in (checked every 3 seconds and on returning to the tab), and
+  after approval says plainly to go back to the app; the invitation page then offers "Back to approving your app".
+- **The website follows the browser's language** until a language is chosen (a Dutch phone opens in Dutch); a
+  choice made in the language menu or Settings still wins.
 - **Android: one installation code everywhere.** Before connecting, the app now shows the same 16-character code as
   the Prepare a device card and the `/setup` page (the root certificate's SHA-256), with both full fingerprints
   under "Full fingerprints". The pin itself is unchanged: the root is accepted only when its key matches the QR.

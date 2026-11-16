@@ -17,6 +17,13 @@
    ]
   },
   {
+   "key": "Back to approving your app",
+   "nl": "Terug naar het goedkeuren van je app",
+   "places": [
+    "app.js:backToDevice"
+   ]
+  },
+  {
    "key": "Checking invitation…",
    "nl": "Uitnodiging controleren…",
    "places": [
@@ -28,6 +35,13 @@
    "nl": "Verder naar MK8DX",
    "places": [
     "app.js:continue"
+   ]
+  },
+  {
+   "key": "Done",
+   "nl": "Klaar",
+   "places": [
+    "app.js:stepDone"
    ]
   },
   {
@@ -66,6 +80,13 @@
    ]
   },
   {
+   "key": "Scan sign-in card",
+   "nl": "Inlogkaart scannen",
+   "places": [
+    "app.js:stepScan"
+   ]
+  },
+  {
    "key": "Sign-in failed. Ask the administrator for a new invitation.",
    "nl": "Inloggen is niet gelukt. Vraag de beheerder om een nieuwe uitnodiging.",
    "places": [
@@ -73,10 +94,24 @@
    ]
   },
   {
+   "key": "Steps",
+   "nl": "Stappen",
+   "places": [
+    "app.js:steps"
+   ]
+  },
+  {
    "key": "This invitation is invalid. Ask the administrator for a new QR code.",
    "nl": "Deze uitnodiging is ongeldig. Vraag de beheerder om een nieuwe QR-code.",
    "places": [
     "app.js:invalid"
+   ]
+  },
+  {
+   "key": "Trust",
+   "nl": "Vertrouwen",
+   "places": [
+    "app.js:stepTrust"
    ]
   },
   {
