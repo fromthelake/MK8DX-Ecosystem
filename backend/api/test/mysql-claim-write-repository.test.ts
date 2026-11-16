@@ -3,7 +3,10 @@ import type { FieldPacket, QueryResult, RowDataPacket } from "mysql2";
 import type { Pool, PoolConnection } from "mysql2/promise";
 
 import { ClaimLifecycleError } from "../src/identity/claim-lifecycle-service.js";
-import { MysqlClaimWriteRepository } from "../src/identity/mysql-claim-write-repository.js";
+import {
+  claimTransactionRetryDelayMs,
+  MysqlClaimWriteRepository,
+} from "../src/identity/mysql-claim-write-repository.js";
 
 type QueryCall = Readonly<{ sql: string; values: unknown[] }>;
 
@@ -64,6 +67,31 @@ describe("MySQL claim write repository transaction", () => {
       rolledBack: 0,
       released: 1,
     });
+  });
+
+  it("retries a deadlocked transaction through a ten-request burst, then gives up", { timeout: 20_000 }, async () => {
+    // Ten concurrent claim requests on one gap can deadlock again on every attempt; the attempts
+    // must outlast such a burst instead of failing a valid request (seen on MySQL 8.4 and 9.7).
+    const deadlock = Object.assign(new Error("Deadlock found"), { code: "ER_LOCK_DEADLOCK", errno: 1213 });
+    const connection = new SyntheticConnection();
+    let failures = 10;
+    const result = await repository(connection).transaction(async () => {
+      if (failures > 0) { failures -= 1; throw deadlock; }
+      return "committed";
+    });
+    expect(result).toBe("committed");
+    expect(connection).toMatchObject({ began: 11, committed: 1, rolledBack: 10, released: 11 });
+
+    const exhausted = new SyntheticConnection();
+    await expect(repository(exhausted).transaction(async () => { throw deadlock; })).rejects.toBe(deadlock);
+    expect(exhausted).toMatchObject({ began: 12, committed: 0, rolledBack: 12, released: 12 });
+  });
+
+  it("spreads retries with a growing, bounded, fully jittered pause", () => {
+    expect(claimTransactionRetryDelayMs(1, () => 0)).toBe(0);
+    expect(claimTransactionRetryDelayMs(1, () => 0.999)).toBe(19);
+    expect(claimTransactionRetryDelayMs(3, () => 0.999)).toBe(79);
+    expect(claimTransactionRetryDelayMs(11, () => 0.999)).toBe(319);
   });
 
   it("rolls back and translates a generated-key race to an application conflict", async () => {
