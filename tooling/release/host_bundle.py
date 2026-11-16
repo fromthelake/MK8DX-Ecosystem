@@ -25,6 +25,27 @@ BASE_IMAGE_FILES = {"mysql": "compose.yaml", "mailpit": "compose.local.yaml"}
 PINNED_IMAGE = re.compile(r"^    image: (?P<tag>[a-z0-9./-]+:[A-Za-z0-9._-]+)@(?P<digest>sha256:[0-9a-f]{64})$", re.M)
 
 
+def archive_root(output: Path, offline_candidate: bool) -> str:
+    """A2 extracts into its own named directory, independent of the unzip destination."""
+    return output.stem + "/" if offline_candidate else ""
+
+
+def write_archive(output: Path, receipt: dict, file_bytes: dict[str, bytes],
+                  wheels: dict[str, str], wheels_dir: Path | None, tar: Path,
+                  arch: str, offline_candidate: bool) -> None:
+    root_in_zip = archive_root(output, offline_candidate)
+    with zipfile.ZipFile(output, "x", allowZip64=True) as archive:
+        archive.writestr(root_in_zip + "PACKAGE_MANIFEST.json", json.dumps(receipt, indent=2) + "\n")
+        for name, payload in file_bytes.items():
+            archive.writestr(root_in_zip + name, payload, compress_type=zipfile.ZIP_DEFLATED, compresslevel=6)
+        for wheel in wheels:
+            archive.write(wheels_dir / wheel, f"{root_in_zip}wheels/{wheel}", compress_type=zipfile.ZIP_STORED)
+        # Linux runners save uncompressed Docker layers. Compressing the tar
+        # here keeps the offline package practical to download.
+        archive.write(tar, f"{root_in_zip}images/docker-images-{arch}.tar", compress_type=zipfile.ZIP_DEFLATED,
+                      compresslevel=3)
+
+
 def base_image_pins() -> dict:
     """{tag: digest} of the MySQL and Mailpit images, read from their Compose files."""
     pins = {}
@@ -381,17 +402,7 @@ def main():
         if args.offline_candidate:
             receipt["qaOfflineCandidate"] = True
         try:
-            with zipfile.ZipFile(output, "x", allowZip64=True) as archive:
-                archive.writestr("PACKAGE_MANIFEST.json", json.dumps(receipt, indent=2) + "\n")
-                for name, payload in file_bytes.items():
-                    archive.writestr(name, payload, compress_type=zipfile.ZIP_DEFLATED, compresslevel=6)
-                for wheel in wheels:
-                    archive.write(args.wheels_dir / wheel, f"wheels/{wheel}", compress_type=zipfile.ZIP_STORED)
-                # Linux runners save uncompressed Docker layers. Compressing the
-                # tar here keeps the offline package practical to download;
-                # the manifest still verifies the exact tar bytes after unzip.
-                archive.write(tar, f"images/docker-images-{args.arch}.tar", compress_type=zipfile.ZIP_DEFLATED,
-                              compresslevel=3)
+            write_archive(output, receipt, file_bytes, wheels, args.wheels_dir, tar, args.arch, args.offline_candidate)
         except Exception:
             output.unlink(missing_ok=True)
             raise

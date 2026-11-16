@@ -28,9 +28,11 @@ def package_details(path: Path) -> dict:
         return {}
     try:
         with zipfile.ZipFile(path) as archive:
-            if "PACKAGE_MANIFEST.json" not in archive.namelist():
+            manifests = [name for name in archive.namelist() if name == "PACKAGE_MANIFEST.json" or
+                         (name.endswith("/PACKAGE_MANIFEST.json") and name.count("/") == 1)]
+            if len(manifests) != 1:
                 return {}
-            inner = json.loads(archive.read("PACKAGE_MANIFEST.json"))
+            inner = json.loads(archive.read(manifests[0]))
     except (zipfile.BadZipFile, ValueError):
         return {}
     return {key: inner[key] for key in ("platform", "arch", "images", "revision", "sourceCommit", "qaOfflineCandidate")
