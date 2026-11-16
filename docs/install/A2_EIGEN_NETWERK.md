@@ -4,9 +4,11 @@
 > volg dan [MK8DX thuis of op de club](A2_THUIS_HANDLEIDING_NL.md): een begeleide installatie in de
 > browser, zonder internet en zonder mailserver, met inlogkaarten voor iedereen.
 >
-> Deze pagina beschrijft een oudere, gevorderde variant: een vaste privé-hostnaam op je netwerk en
+> Deze pagina beschrijft een afzonderlijke oudere, gevorderde variant: een vaste privé-hostnaam op je netwerk en
 > aanmelden met een link per e-mail via je eigen mailserver. Daarvoor heb je het pakket
 > `mk8dx-host-local-…-amd64.zip` nodig en kies je in de installatievraag **A2**.
+> Combineer de onderstaande hosts-bestand-, SMTP-, certificaat- en installatiestappen niet met
+> het huidige `mk8dx-a2-…`-pakket of de installatiegegevens daarvan.
 
 ## 1. Controleer host en netwerk
 

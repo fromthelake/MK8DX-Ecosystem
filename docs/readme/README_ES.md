@@ -4,6 +4,8 @@
 
 Idioma: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · Español · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Empieza aquí: elige cómo instalar MK8DX](../install/translations/es/START_HERE.md)
+
 *Esta traducción se ha hecho automáticamente a partir del README en inglés; las correcciones son bienvenidas.*
 
 ![La página de inicio de una web de comunidad: tu posición, tus circuitos destacados y tus rivales](web-home.jpg)
@@ -309,7 +311,7 @@ para todos.
 
 ## Estado del proyecto
 
-La versión actual es **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. En noviembre de 2026 se instaló cada ruta de instalación siguiendo su
+La versión actual es **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. En noviembre de 2026 se instaló cada ruta de instalación siguiendo su
 guía: A2 en Windows y Linux, A1 y A3 en Windows, y B1 como ensayo en Linux con WSL 2; los paquetes para Mac están
 compilados, pero aún no se han probado en un Mac real. Lo que cambió en cada versión está en el
 [registro de cambios](../../CHANGELOG.md).

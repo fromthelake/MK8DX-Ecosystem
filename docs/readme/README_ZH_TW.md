@@ -4,6 +4,8 @@
 
 語言：[English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · 繁體中文
 
+[從這裡開始：選擇 MK8DX 安裝方式](../install/translations/zh-TW/START_HERE.md)
+
 *本譯文由機器根據英文版 README 翻譯而成，歡迎指正。*
 
 ![社群網站首頁：你的排名、你的重點賽道和你的對手](web-home.jpg)
@@ -216,7 +218,7 @@ MK8DX 是開源專案，由玩家為玩家打造。你可以為你的俱樂部�
 
 ## 專案狀態
 
-目前版本是 **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**。2026 年 11 月，每條安裝路線都依照各自的指南完成安裝：A2 在 Windows 和 Linux 上，A1 和 A3 在 Windows 上，B1 則在 WSL 2 中的 Linux 上進行演練；Mac 安裝套件已經建置，但尚未在真正的 Mac 上測試。各版本的變更請見[變更紀錄](../../CHANGELOG.md)。
+目前版本是 **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**。2026 年 11 月，每條安裝路線都依照各自的指南完成安裝：A2 在 Windows 和 Linux 上，A1 和 A3 在 Windows 上，B1 則在 WSL 2 中的 Linux 上進行演練；Mac 安裝套件已經建置，但尚未在真正的 Mac 上測試。各版本的變更請見[變更紀錄](../../CHANGELOG.md)。
 
 辨識結果永遠不會自動成為正式成績：你自己的計時賽由你審核，錦標賽的比賽則要經過主辦人確認後才會計入。
 

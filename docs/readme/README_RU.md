@@ -4,6 +4,8 @@
 
 Язык: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · Русский · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Начните здесь: выберите способ установки MK8DX](../install/translations/ru/START_HERE.md)
+
 *Этот перевод сделан машинным способом с английского README; исправления приветствуются.*
 
 ![Главная страница сайта сообщества: ваше место в рейтинге, ваши трассы в фокусе и ваши соперники](web-home.jpg)
@@ -310,7 +312,7 @@ MK8DX — проект с открытым исходным кодом, созд
 
 ## Состояние проекта
 
-Текущая версия — **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. В ноябре 2026 года каждый вариант установки был установлен строго по
+Текущая версия — **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. В ноябре 2026 года каждый вариант установки был установлен строго по
 своему руководству: A2 — в Windows и Linux, A1 и A3 — в Windows, а B1 — пробной установкой в Linux в WSL 2; пакеты
 для Mac собраны, но ещё не проверены на настоящем Mac. Что изменилось в каждой версии, смотрите в
 [журнале изменений](../../CHANGELOG.md).

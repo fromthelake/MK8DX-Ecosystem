@@ -101,6 +101,9 @@ figure img { max-width: 100%; height: auto; border: 1px solid var(--line); borde
   .bar, .toc, .hint { display: none !important; }
   .layout { display: block; padding: 0; }
   details.chapter { border: 0; box-shadow: none; break-inside: auto; }
+  /* Keep a phone capture and its caption together on one A4 sheet. */
+  figure { break-inside: avoid; page-break-inside: avoid; }
+  figure img { max-height: 230mm; width: auto; max-width: 100%; object-fit: contain; }
   body { background: #fff; color: #000; font-size: 11pt; }
 }
 .brand { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; color: inherit; margin-right: 1rem; }

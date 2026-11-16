@@ -4,6 +4,8 @@
 
 언어: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · 한국어 · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[시작하기: MK8DX 설치 방법 선택](../install/translations/ko/START_HERE.md)
+
 *이 번역은 영어 README를 기계 번역한 것입니다. 수정 제안을 환영합니다.*
 
 ![커뮤니티 웹사이트의 홈 페이지: 나의 순위, 집중 코스, 그리고 라이벌](web-home.jpg)
@@ -216,7 +218,7 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 ## 프로젝트 현황
 
-현재 릴리스는 **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**입니다. 2026년 11월에 모든 설치 경로를 각 가이드를 따라 설치했습니다. A2는 Windows와 Linux, A1과 A3는 Windows, B1은 WSL 2의 Linux에서 리허설했습니다. Mac 패키지는 빌드되었지만 아직 실제 Mac에서는 테스트하지 않았습니다. 버전별 변경 사항은 [변경 내역](../../CHANGELOG.md)에서 볼 수 있습니다.
+현재 릴리스는 **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**입니다. 2026년 11월에 모든 설치 경로를 각 가이드를 따라 설치했습니다. A2는 Windows와 Linux, A1과 A3는 Windows, B1은 WSL 2의 Linux에서 리허설했습니다. Mac 패키지는 빌드되었지만 아직 실제 Mac에서는 테스트하지 않았습니다. 버전별 변경 사항은 [변경 내역](../../CHANGELOG.md)에서 볼 수 있습니다.
 
 인식 기능이 스스로 결과를 공식으로 만드는 일은 없습니다. 자신의 타임 어택은 직접 검토하고, 대회 레이스는 주최자가 확인한 뒤에 반영됩니다.
 

@@ -4,6 +4,8 @@
 
 Taal: [English](../../README.md) · [English (US)](README_EN_US.md) · Nederlands · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Start hier: een MK8DX-installatie kiezen](../install/START_HIER.md)
+
 ![De startpagina van een communitywebsite: je stand, je focusbanen en je rivalen](web-home.jpg)
 
 MK8DX Ecosystem host je zelf. Het geeft je community één website die twee soorten uitslagen
@@ -301,7 +303,7 @@ iedereen.
 
 ## Status
 
-De huidige versie is **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Elke installatieroute is in november 2026 geïnstalleerd door de
+De huidige versie is **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Elke installatieroute is in november 2026 geïnstalleerd door de
 handleiding te volgen: A2 op Windows en Linux, A1 en A3 op Windows, en B1 als generale repetitie op Linux in WSL 2;
 de Mac-pakketten zijn gebouwd, maar nog niet getest op een echte Mac. Wat er per versie veranderde, staat in de
 [changelog](../../CHANGELOG.md).

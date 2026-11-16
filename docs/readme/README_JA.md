@@ -4,6 +4,8 @@
 
 言語: [English](../../README.md) · [English (US)](README_EN_US.md) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · 日本語 · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[ここから始める：MK8DX のインストール方法を選ぶ](../install/translations/ja/START_HERE.md)
+
 *この翻訳は英語版 README から機械翻訳したものです。修正のご提案を歓迎します。*
 
 ![コミュニティサイトのホームページ：あなたの順位、注目のコース、そしてライバル](web-home.jpg)
@@ -216,7 +218,7 @@ MK8DX はオープンソースで、プレイヤーがプレイヤーのため�
 
 ## プロジェクトの状況
 
-現在のリリースは **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)** です。2026 年 11 月に、すべてのインストールルートをそれぞれのガイドどおりにインストールしました。A2 は Windows と Linux、A1 と A3 は Windows、B1 は WSL 2 上の Linux でのリハーサルです。Mac 用パッケージはビルド済みですが、実機の Mac ではまだテストしていません。バージョンごとの変更点は[変更履歴](../../CHANGELOG.md)をご覧ください。
+現在のリリースは **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)** です。2026 年 11 月に、すべてのインストールルートをそれぞれのガイドどおりにインストールしました。A2 は Windows と Linux、A1 と A3 は Windows、B1 は WSL 2 上の Linux でのリハーサルです。Mac 用パッケージはビルド済みですが、実機の Mac ではまだテストしていません。バージョンごとの変更点は[変更履歴](../../CHANGELOG.md)をご覧ください。
 
 認識が結果を勝手に正式なものにすることはありません。自分のタイムアタックは自分で確認し、大会のレースは主催者が確認してから反映されます。
 

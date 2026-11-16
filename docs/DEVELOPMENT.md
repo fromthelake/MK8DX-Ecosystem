@@ -256,11 +256,16 @@ lists every missing text as a problem. It prints `"problemCount": 0` when every 
 
 ## Change a user guide
 
+The [user guide map](GUIDE_MAP.md) names the guide that owns each reader task,
+its language coverage, generated formats and package entry points.
+
 English and Dutch guides are written and reviewed by people; the other 13 languages are machine translations of
 the English. Where they live:
 
 - A2 guide: `docs/install/A2_HOME_GUIDE_EN.md` and `A2_THUIS_HANDLEIDING_NL.md`; translations in
   `docs/install/translations/<locale>/A2_HOME_GUIDE.md`.
+- Installation route chooser: `docs/install/START_HERE_EN.md` and `START_HIER.md`; translations in
+  `docs/install/translations/<locale>/START_HERE.md`.
 - Reading guide: `docs/install/MK8DX_User_Guide_EN.txt` and `MK8DX_Handleiding_NL.txt`; translations in
   `docs/install/translations/<locale>/MK8DX_User_Guide.txt`. The DOCX files next to them are built from the TXT.
 - Club guides: `docs/guides/*.md`; Dutch and the translations in `docs/guides/translations/<locale>/`.

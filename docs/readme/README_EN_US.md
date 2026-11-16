@@ -4,6 +4,8 @@
 
 Language: [English](../../README.md) · English (US) · [Nederlands](README_NL.md) · [Deutsch](README_DE.md) · [Español](README_ES.md) · [Español (Latinoamérica)](README_ES_419.md) · [Français](README_FR.md) · [Français (Canada)](README_FR_CA.md) · [Italiano](README_IT.md) · [Português](README_PT.md) · [Русский](README_RU.md) · [日本語](README_JA.md) · [한국어](README_KO.md) · [简体中文](README_ZH_CN.md) · [繁體中文](README_ZH_TW.md)
 
+[Start here: choose an MK8DX installation](../install/translations/en-US/START_HERE.md)
+
 ![The home page of a community website: your standing, your focus tracks and your rivals](web-home.jpg)
 
 MK8DX Ecosystem is something you host yourself. It gives your community one website that keeps
@@ -293,7 +295,7 @@ Every pull request, bug report and translation fix makes the next LAN night bett
 
 ## Project status
 
-The current release is **[v0.2.10](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Every installation route was installed by following its guide in
+The current release is **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Every installation route was installed by following its guide in
 November 2026: A2 on Windows and Linux, A1 and A3 on Windows, and B1 rehearsed on Linux in WSL 2; the Mac
 packages are built but not yet tested on a real Mac. What changed per version is in the [changelog](../../CHANGELOG.md).
 
