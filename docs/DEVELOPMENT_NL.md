@@ -104,7 +104,8 @@ persoonsgegevens. Voeg een `.gitignore`-regel toe als een programma lokale besta
 Engels is overal de brontekst en de sleutel; Engels (VK) en Nederlands staan in de code en zijn nagekeken. De
 andere 13 speltalen komen uit vertaalcatalogi.
 
-- Website (`apps/timetrials-web`): nieuwe of gewijzigde tekst staat inline als
+- Website (`apps/timetrials-web`): de paginataal is de opgeslagen keuze van de bezoeker (taalmenu, Instellingen of
+  een `?lang=`-link), anders de eerste browsertaal die een producttaal is, anders Engels. Nieuwe of gewijzigde tekst staat inline als
   `localized("English", "Nederlands")` (`src/product-language.ts`). `src/dutch-ui-copy.ts` vertaalt Engels dat
   zonder `localized` op de pagina komt (gedeelde labels, `title`/`aria-label`); gebruik voor nieuwe tekst liever
   `localized`.

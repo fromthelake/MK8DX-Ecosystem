@@ -157,6 +157,8 @@ The other 13 game languages come from translation catalogs.
 
 **Website (`apps/timetrials-web`)**
 
+- The page language is the visitor's stored choice (language menu, Settings or a `?lang=` link), else the first of
+  the browser's languages that is a product language (matched like the A2 pages' `language.js`), else English.
 - New or changed text goes inline in the source as `localized("English", "Nederlands")`
   (`src/product-language.ts`). For Dutch it returns the second argument; for a catalog language it looks the
   English up in that language's catalog and falls back to English.
