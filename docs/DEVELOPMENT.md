@@ -256,6 +256,9 @@ lists every missing text as a problem. It prints `"problemCount": 0` when every 
 
 ## Change a user guide
 
+The [user guide map](GUIDE_MAP.md) names the guide that owns each reader task,
+its language coverage, generated formats and package entry points.
+
 English and Dutch guides are written and reviewed by people; the other 13 languages are machine translations of
 the English. Where they live:
 
