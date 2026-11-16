@@ -214,11 +214,9 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 [Contributing](../../.github/CONTRIBUTING.md)과 [개발자 가이드](../DEVELOPMENT.md)부터 시작하세요. 풀 리퀘스트, 버그 리포트, 번역 수정 하나하나가 다음 LAN의 밤을 모두에게 더 좋게 만듭니다.
 
-개발자에 대해 더 알고 싶다면 [github.com/fromthelake](https://github.com/fromthelake)를 참고하세요.
-
 ## 프로젝트 현황
 
-안정 릴리스는 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)에 있습니다. 0.2.0에서는 집이나 클럽에서 쓰는 A2가 추가되었고, 0.2.1에서는 Android 앱에 내 기록의 오프라인 사본과 더 차분한 레이아웃이 생겼습니다. 0.2.2에서는 녹화 분석이 다시 동작하고 Tournament Analysis 창이 추가되었습니다. 0.2.3에서는 웹 게이트웨이가 root 없이 실행되고, 저장소를 더 쉽게 시작할 수 있게 되었습니다. 또한 커뮤니티 서버의 데이터베이스가 MySQL 9.7 LTS로 바뀌었고, 모든 스캐너에서 카트와 글라이더 색상이 이제 캐릭터를 따릅니다. 0.2.4에서는 안내서, 설정 마법사, 런처와 Tournament 창이 게임의 15개 언어를 모두 지원하고, 모든 문자의 플레이어 이름을 읽으며, 모든 OCR 모델이 포함되어 오프라인에서도 인식이 동작합니다. 0.2.5는 모든 커뮤니티에 설치를 권장하는 보안 업데이트입니다. 더 엄격한 권한 확인과 요청 제한, 위험한 관리자 작업을 위한 새 이메일 확인, 분리된 데이터베이스 계정, 그리고 모든 경로의 자동 일일 백업이 포함됩니다. 0.2.6에서는 Director가 Android 앱에서 라이브 캡처를 위임할 수 있고, 관리자는 어떤 요청 제한이 요청을 거부했는지 볼 수 있으며, 라이브 점수판과 실행 프로그램이 15개 언어 모두를 지원하고, 앱의 날짜가 앱 자체 언어로 표시됩니다. 0.2.7에는 따로 공개되지 않은 0.2.6이 포함됩니다. 모든 설치 경로를 안내서대로 한 단계씩 따라 하며 안내서를 고쳤고, 야간 백업과 새 복구 코드가 모든 경로에서 동작하며, 한 컴퓨터의 두 설치가 더 이상 서로의 이미지를 바꿔 놓지 않습니다. 0.2.6과 0.2.7은 별도 릴리스로 공개되지 않았습니다. 0.2.8은 둘 다 포함하고, 저장소를 정리했으며, 그림이 있는 안내서를 언어마다 PDF와 HTML 파일로 첨부합니다. [변경 내역](../../CHANGELOG.md), [Release packages](../RELEASE_PACKAGES.md), 그리고 전체 안내서([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt))를 참고하세요.
+현재 릴리스는 **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**입니다. 2026년 11월에 모든 설치 경로를 각 가이드를 따라 설치했습니다. A2는 Windows와 Linux, A1과 A3는 Windows, B1은 WSL 2의 Linux에서 리허설했습니다. Mac 패키지는 빌드되었지만 아직 실제 Mac에서는 테스트하지 않았습니다. 버전별 변경 사항은 [변경 내역](../../CHANGELOG.md)에서 볼 수 있습니다.
 
 인식 기능이 스스로 결과를 공식으로 만드는 일은 없습니다. 자신의 타임 어택은 직접 검토하고, 대회 레이스는 주최자가 확인한 뒤에 반영됩니다.
 
@@ -304,6 +302,10 @@ MK8DX Ecosystem은 2024년부터 개발되어 왔습니다. AI의 도움을 정�
 결국 이 모든 모험도 그렇게 시작되었으니까요.
 
 — [fromthelake](https://github.com/fromthelake)
+
+### 개발자 소개
+
+저는 Bas이고, MK8DX Ecosystem은 제가 여가 시간에 만드는 것 중 하나입니다. 저와 제 다른 작업에 대해 더 알고 싶거나 개발자인 저를 개인적으로 응원하고 싶다면 [제 GitHub 프로필](https://github.com/fromthelake)을 둘러보세요.
 
 ## 라이선스와 Nintendo
 

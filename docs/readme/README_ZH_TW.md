@@ -214,11 +214,9 @@ MK8DX 是開源專案，由玩家為玩家打造。你可以為你的俱樂部�
 
 從 [Contributing](../../.github/CONTRIBUTING.md) 和[開發者指南](../DEVELOPMENT.md)開始吧。每一個 pull request、每一份 bug 回報、每一處翻譯修正，都會讓下一個 LAN 之夜對所有人來說更美好。
 
-想進一步了解開發者？請造訪 [github.com/fromthelake](https://github.com/fromthelake)。
-
 ## 專案狀態
 
-穩定版本發布在 [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases)；0.2.0 新增了 A2，可以在家裡或俱樂部使用；0.2.1 讓 Android App 擁有成績的離線副本，版面也更加清爽。0.2.2 讓錄影分析重新可用，並新增了 Tournament Analysis 視窗。0.2.3 讓 Web 閘道不需 root 即可執行，並讓這個儲存庫更容易上手。同時，社群伺服器的資料庫升級到 MySQL 9.7 LTS，所有掃描器中的卡丁車和滑翔翼顏色現在都會跟隨角色。0.2.4 讓指南、設定精靈、啟動器和 Tournament 視窗支援遊戲的全部 15 種語言，能讀取任何文字的玩家名稱，並內建所有 OCR 模型，辨識可離線進行。0.2.5 是建議每個社群都安裝的安全性更新：更嚴格的權限檢查與請求限制，危險的管理員操作需要新的電子郵件確認，獨立的資料庫帳戶，以及每種路線的每日自動備份。0.2.6 讓 Director 可以在 Android App 中委派即時擷取，讓管理員看到哪些請求限制拒絕了請求，讓即時記分板與啟動器支援全部 15 種語言，並讓 App 中的日期使用 App 本身的語言。0.2.7 包含未單獨發布的 0.2.6：每種安裝路線都依指南逐步走過一遍並修正了指南，夜間備份與新的復原碼在每種路線上都能使用，同一台電腦上的兩個安裝也不會再互相取代對方的映像檔。0.2.6 和 0.2.7 沒有作為單獨的版本發布；0.2.8 包含這兩個版本，整理了儲存庫，並以 PDF 和 HTML 檔案附上每種語言的圖文指南。請參閱[變更紀錄](../../CHANGELOG.md)、[發行套件](../RELEASE_PACKAGES.md)和完整指南（[English](../install/MK8DX_User_Guide_EN.txt)、[Nederlands](../install/MK8DX_Handleiding_NL.txt)）。
+目前版本是 **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**。2026 年 11 月，每條安裝路線都依照各自的指南完成安裝：A2 在 Windows 和 Linux 上，A1 和 A3 在 Windows 上，B1 則在 WSL 2 中的 Linux 上進行演練；Mac 安裝套件已經建置，但尚未在真正的 Mac 上測試。各版本的變更請見[變更紀錄](../../CHANGELOG.md)。
 
 辨識結果永遠不會自動成為正式成績：你自己的計時賽由你審核，錦標賽的比賽則要經過主辦人確認後才會計入。
 
@@ -304,6 +302,10 @@ MK8DX Ecosystem 從 2024 年開始開發，過程中得到 AI 很大的幫助—
 畢竟，這整段冒險就是這樣開始的。
 
 — [fromthelake](https://github.com/fromthelake)
+
+### 關於開發者
+
+我是 Bas，MK8DX Ecosystem 是我在閒暇時間打造的作品之一。想進一步認識我和我的其他作品，或想以個人身分支持我這位開發者嗎？歡迎看看[我的 GitHub 個人檔案](https://github.com/fromthelake)。
 
 ## 授權與 Nintendo
 

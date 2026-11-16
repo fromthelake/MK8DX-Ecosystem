@@ -314,15 +314,12 @@ Commence par [Contributing](../../.github/CONTRIBUTING.md) et le [guide du déve
 Chaque pull request, rapport de bug et correction de traduction rend la prochaine soirée LAN meilleure
 pour tout le monde.
 
-Envie d'en savoir plus sur le développeur? Consulte [github.com/fromthelake](https://github.com/fromthelake).
-
 ## État du projet
 
-Les versions stables sont sur [GitHub Releases](https://github.com/fromthelake/MK8DX-Ecosystem/releases); la
-0.2.0 a ajouté A2, à la maison ou au club; la 0.2.1 donne à l'application Android une copie hors ligne de tes
-temps et une mise en page plus calme. La 0.2.2 fait de nouveau fonctionner l'analyse des enregistrements et ajoute la fenêtre Tournament Analysis. La 0.2.3 fait tourner la passerelle web sans root et facilite la prise en main du dépôt. Elle fait aussi passer la base de données du serveur communautaire à MySQL 9.7 LTS et, dans chaque scanner, la couleur du kart et du deltaplane suit désormais le personnage. La 0.2.4 apporte les guides, l'assistant de configuration, les lanceurs et les fenêtres Tournament dans les 15 langues du jeu, lit les noms des joueurs dans toutes les écritures et inclut tous les modèles OCR, pour que la reconnaissance fonctionne hors ligne. La 0.2.5 est une mise à jour de sécurité que chaque communauté devrait installer : contrôles d'autorisation renforcés et limites de requêtes, nouvelle confirmation par courriel pour les actions d'administration dangereuses, comptes de base de données séparés et sauvegarde quotidienne automatique sur chaque voie. La 0.2.6 permet à un Director de déléguer la capture en direct depuis l'application Android, montre aux administrateurs quelles limites de requêtes ont refusé des requêtes, apporte le tableau des pointages en direct et les lanceurs dans les 15 langues et affiche les dates dans la langue de l'application. La 0.2.7 comprend la 0.2.6, qui n'a pas été publiée séparément : chaque voie d'installation a été suivie pas à pas avec son guide et les guides ont été corrigés, la sauvegarde nocturne et un nouveau code de récupération fonctionnent sur chaque voie, et deux installations sur un même ordinateur ne peuvent plus remplacer les images l'une de l'autre. Les 0.2.6 et 0.2.7 n'ont pas été publiées comme versions séparées ; la 0.2.8 les comprend toutes les deux, range le dépôt et joint le guide illustré en PDF et en HTML dans chaque langue. Consulte le [journal des modifications](../../CHANGELOG.md), les
-[paquets de release](../RELEASE_PACKAGES.md) et le guide complet
-([English](../install/MK8DX_User_Guide_EN.txt), [Nederlands](../install/MK8DX_Handleiding_NL.txt)).
+La version actuelle est **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. En novembre 2026, chaque voie d'installation a été installée en
+suivant son guide : A2 sous Windows et Linux, A1 et A3 sous Windows, et B1 en répétition sous Linux dans WSL 2; les
+paquets Mac sont construits, mais pas encore testés sur un vrai Mac. Ce qui a changé à chaque version se trouve dans
+le [journal des modifications](../../CHANGELOG.md).
 
 La reconnaissance ne rend jamais un résultat officiel toute seule : tu vérifies tes propres
 contre-la-montre, et un organisateur contrôle les courses de tournoi avant qu'elles ne comptent.
@@ -409,6 +406,12 @@ Et enfin, un grand merci à **Nintendo** pour avoir créé des consoles et des j
 Après tout, c'est comme ça que toute cette aventure a commencé.
 
 — [fromthelake](https://github.com/fromthelake)
+
+### À propos du développeur
+
+Je suis Bas, et MK8DX Ecosystem fait partie des choses que je construis dans mes temps libres. Tu veux en savoir
+plus sur moi et mes autres projets, ou tu aimerais m'appuyer personnellement en tant que développeur? Jette un
+coup d'œil à [mon profil GitHub](https://github.com/fromthelake).
 
 ## Licence et Nintendo
 
