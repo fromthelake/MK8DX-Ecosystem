@@ -23,11 +23,23 @@ import {
  * global overload cap. The per-address limit stays, uniformly, but high enough
  * for one shared address: the API cannot reliably tell a collapsed gateway
  * address from a real client, so exempting "the gateway" would be guesswork.
+ *
+ * 2026-11-16 (security review of the native route): a stream of made-up tokens
+ * must not be able to fill the bucket real cards need. After the per-address
+ * limit, a presented token is first looked up (one indexed read of its digest):
+ * a token that is not a live card spends only the separate `failures` budget and
+ * creates no row of its own; a live card spends its own per-card budget and the
+ * global bucket of its operation, previews and redemptions apart.
  */
 export const OFFLINE_INVITATION_REDEEM_LIMITS = {
   perAddress: { window: 60, max: 60 },
   perToken: { windowSeconds: 900, maximum: 5 },
+  /** Redemptions of live cards, all clients together. */
   global: { windowSeconds: 60, maximum: 120 },
+  /** Previews of live cards, all clients together; separate from redemptions. */
+  previewGlobal: { windowSeconds: 60, maximum: 120 },
+  /** Tokens that are no live card (unknown, used, expired, revoked, malformed), all clients together. */
+  failures: { windowSeconds: 60, maximum: 600 },
 } as const;
 
 export type OfflineInvitationAuthPluginOptions = Readonly<{
@@ -38,25 +50,45 @@ export type OfflineInvitationAuthPluginOptions = Readonly<{
   attempts: Readonly<{ limiter: MutationRateLimiter; tokenKey: Uint8Array }>;
 }>;
 
+function rateLimited(error: unknown): never {
+  if (error instanceof MutationRateLimitExceeded) {
+    throw new APIError("TOO_MANY_REQUESTS", { code: "offline_invitation_rate_limited" },
+      { "Retry-After": String(error.retryAfterSeconds) });
+  }
+  throw error;
+}
+
+/**
+ * Spends the budgets of one presented token and answers the card's label when it is a live card. A token that
+ * is no live card is refused here as "unavailable" (the same answer as everywhere) after spending only the
+ * failure budget. Only the hash of a live card's token is ever stored as a bucket subject.
+ */
 async function consumeRedemptionAttempt(
-  attempts: OfflineInvitationAuthPluginOptions["attempts"],
+  options: Pick<OfflineInvitationAuthPluginOptions, "attempts" | "tickets">,
   token: string,
+  operation: "preview" | "redeem",
 ): Promise<void> {
-  const { perToken, global } = OFFLINE_INVITATION_REDEEM_LIMITS;
-  // Unknown and malformed tokens are counted too: they share the global cap
-  // and the bucket of their own hash. Only the hash is ever stored.
-  const tokenHash = createHmac("sha256", attempts.tokenKey).update(token, "utf8").digest("hex");
+  const { perToken, global, previewGlobal, failures } = OFFLINE_INVITATION_REDEEM_LIMITS;
+  const live = await options.tickets.preview(token).then(() => true, () => false);
   try {
-    await attempts.limiter.consume("all", "offline-invitation-redeem-global",
-      global.windowSeconds, global.maximum);
-    await attempts.limiter.consume(tokenHash, "offline-invitation-redeem-token",
-      perToken.windowSeconds, perToken.maximum);
-  } catch (error) {
-    if (error instanceof MutationRateLimitExceeded) {
-      throw new APIError("TOO_MANY_REQUESTS", { code: "offline_invitation_rate_limited" },
-        { "Retry-After": String(error.retryAfterSeconds) });
+    if (!live) {
+      await options.attempts.limiter.consume("all", "offline-invitation-failure-global",
+        failures.windowSeconds, failures.maximum);
+    } else {
+      const tokenHash = createHmac("sha256", options.attempts.tokenKey).update(token, "utf8").digest("hex");
+      await options.attempts.limiter.consume(tokenHash, "offline-invitation-redeem-token",
+        perToken.windowSeconds, perToken.maximum);
+      const bucket = operation === "preview" ? previewGlobal : global;
+      await options.attempts.limiter.consume("all",
+        operation === "preview" ? "offline-invitation-preview-global" : "offline-invitation-redeem-global",
+        bucket.windowSeconds, bucket.maximum);
     }
-    throw error;
+  } catch (error) {
+    rateLimited(error);
+  }
+  if (!live) {
+    // Do not disclose whether a ticket was unknown, expired or revoked.
+    throw new APIError("UNAUTHORIZED", { code: "offline_invitation_unavailable" });
   }
 }
 
@@ -139,7 +171,7 @@ export function offlineInvitationAuthPlugin(options: OfflineInvitationAuthPlugin
         requireHeaders: true,
       }, async (ctx) => {
         const token = presentedToken(ctx, options.origin);
-        await consumeRedemptionAttempt(options.attempts, token);
+        await consumeRedemptionAttempt(options, token, "preview");
         try {
           return ctx.json({ displayLabel: await options.tickets.preview(token) });
         } catch {
@@ -151,7 +183,7 @@ export function offlineInvitationAuthPlugin(options: OfflineInvitationAuthPlugin
         requireHeaders: true,
       }, async (ctx) => {
         const token = presentedToken(ctx, options.origin);
-        await consumeRedemptionAttempt(options.attempts, token);
+        await consumeRedemptionAttempt(options, token, "redeem");
         const { session, user } = await redeemToSession(ctx, options, token);
         await setSessionCookie(ctx, { session, user });
         return ctx.json({ ok: true });
@@ -166,7 +198,7 @@ export function offlineInvitationAuthPlugin(options: OfflineInvitationAuthPlugin
         method: "POST",
       }, async (ctx) => {
         const token = nativeToken(ctx.body);
-        await consumeRedemptionAttempt(options.attempts, token);
+        await consumeRedemptionAttempt(options, token, "preview");
         try {
           return ctx.json({ displayLabel: await options.tickets.preview(token) });
         } catch {
@@ -177,9 +209,26 @@ export function offlineInvitationAuthPlugin(options: OfflineInvitationAuthPlugin
         method: "POST",
       }, async (ctx) => {
         const token = nativeToken(ctx.body);
-        await consumeRedemptionAttempt(options.attempts, token);
+        await consumeRedemptionAttempt(options, token, "redeem");
         const { session } = await redeemToSession(ctx, options, token);
-        return ctx.json({ token: session.token, expiresAtMs: new Date(session.expiresAt).getTime() });
+        const expiresAtMs = new Date(session.expiresAt).getTime();
+        if (!Number.isSafeInteger(expiresAtMs) || expiresAtMs - Date.now() < 60_000) {
+          // Nobody will hold this session: end it now rather than leave it behind.
+          await ctx.context.internalAdapter.deleteSession(session.token);
+          throw new APIError("SERVICE_UNAVAILABLE", { code: "offline_invitation_session_unavailable" });
+        }
+        return ctx.json({ token: session.token, expiresAtMs });
+      }),
+      /**
+       * Ends a session the native route created but could not hand over (the route's own last check failed).
+       * Server-only; takes the session token the route itself just received.
+       */
+      revokeOfflineInvitationNativeSession: createAuthEndpoint.serverOnly({
+        method: "POST",
+      }, async (ctx) => {
+        const token = nativeToken(ctx.body);
+        await ctx.context.internalAdapter.deleteSession(token);
+        return ctx.json({ revoked: true });
       }),
     },
     rateLimit: [{

@@ -251,9 +251,12 @@ internal class AndroidAuthenticationController(
             refreshAccounts()
             AndroidAuthenticationState.SignedIn(session)
         } catch (setup: AndroidPlayerSetupRequiredException) {
+            // Not kept on this phone, so it must not live on at the server either.
+            runCatching { client.revoke(result.bearerToken) }
             AndroidAuthenticationState.Failed("player_setup", setup.playerSetupUri)
         } catch (error: Exception) {
             runCatching { diagnosticSink("invitation session failed: ${redactedAuthenticationCauseTypes(error)}") }
+            runCatching { client.revoke(result.bearerToken) }
             AndroidAuthenticationState.Failed("invitation")
         }
         mutableState.value = next

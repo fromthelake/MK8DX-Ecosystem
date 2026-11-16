@@ -27,7 +27,11 @@ private class InvitationStore : AndroidNativeSessionStore {
 }
 
 /** The installation's two card routes in miniature; a card works once. */
-private class CardServer(private val answer: Int = 200, private val code: String? = null) : AndroidAuthenticationRequestExecutor {
+private class CardServer(
+    private val answer: Int = 200,
+    private val code: String? = null,
+    private val bootstrap: Int = 200,
+) : AndroidAuthenticationRequestExecutor {
     val requests = mutableListOf<AndroidAuthenticationRequest>()
     private var used = false
 
@@ -49,8 +53,11 @@ private class CardServer(private val answer: Int = 200, private val code: String
             }
             ANDROID_AUTH_NATIVE_BOOTSTRAP_PATH -> {
                 require(request.bearerToken == "sessiontokenabcdefghijklmnop")
+                if (bootstrap == 403) return error(403, "native_time_trial_player_required")
+                if (bootstrap != 200) return error(bootstrap, "unavailable")
                 ok("""{"schemaVersion":"mk8dx.native-time-trial-bootstrap.v2","playerId":"player.oma","username":"oma","displayName":"Oma"}""")
             }
+            ANDROID_AUTH_SIGN_OUT_PATH -> ok("""{"success":true}""")
             ANDROID_NATIVE_REMEMBER_PATH -> ok("""{"schemaVersion":"mk8dx.native-account-remember.v1","remembered":true}""")
             else -> error(404, "not_found")
         }
@@ -86,6 +93,19 @@ class AndroidInvitationSignInTest {
         // The card is used up.
         assertEquals(AndroidInvitationResult.Unavailable, controller.signInWithInvitation(card))
         assertTrue(controller.state.value is AndroidAuthenticationState.SignedIn)
+    }
+
+    @Test fun aSessionThatCannotBeUsedHereIsSignedOutAtOnce() {
+        for (bootstrap in listOf(403, 503)) {
+            val server = CardServer(bootstrap = bootstrap)
+            val store = InvitationStore()
+            val controller = controller(server, store)
+            assertTrue(controller.signInWithInvitation(card) is AndroidInvitationResult.Redeemed)
+            assertTrue(controller.state.value is AndroidAuthenticationState.Failed)
+            assertNull(store.activeSlotId())
+            val signOut = server.requests.single { it.path == ANDROID_AUTH_SIGN_OUT_PATH }
+            assertEquals("sessiontokenabcdefghijklmnop", signOut.bearerToken)
+        }
     }
 
     @Test fun aCardOfAnotherInstallationIsNeverSent() {

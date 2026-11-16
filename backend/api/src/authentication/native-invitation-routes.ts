@@ -71,6 +71,8 @@ const requestBodySchema = {
 export interface NativeInvitationAuthApi {
   previewOfflineInvitationNative(input: { body: { token: string } }): Promise<{ displayLabel: string }>;
   redeemOfflineInvitationNative(input: { body: { token: string } }): Promise<{ token: string; expiresAtMs: number }>;
+  /** Ends a session this route created but could not hand over. */
+  revokeOfflineInvitationNativeSession(input: { body: { token: string } }): Promise<{ revoked: boolean }>;
 }
 
 export type NativeInvitationRouteOptions = Readonly<{
@@ -211,6 +213,8 @@ export async function registerNativeInvitationRoutes(
       }
       const expiresIn = Math.floor((session.expiresAtMs - nowMs()) / 1_000);
       if (!Number.isSafeInteger(expiresIn) || expiresIn < 60) {
+        // The card is used and a session exists that nobody will hold: end it before answering.
+        await options.api.revokeOfflineInvitationNativeSession({ body: { token: session.token } }).catch(() => undefined);
         return reply.code(503).send(failure("native_invitation_unavailable_now", "Try again later."));
       }
       return reply.send({ schemaVersion: NATIVE_INVITATION_SESSION_SCHEMA_VERSION,

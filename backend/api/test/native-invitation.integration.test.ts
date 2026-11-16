@@ -206,6 +206,30 @@ integration("native sign-in card redemption (ADR-0224 amendment 2026-11-16)", ()
     expect(JSON.stringify(limits)).not.toContain(ticket.token);
   });
 
+  it("lets exactly one of two simultaneous redemptions of the same card through", async () => {
+    const card = await tickets.issue(issuer(), accountKey, "account");
+    const [first, second] = await Promise.all([redeem(card.token), redeem(card.token)]);
+    const statuses = [first.statusCode, second.statusCode].sort();
+    expect(statuses).toEqual([200, 401]);
+    const [rows] = await pool.execute<RowDataPacket[]>(
+      "SELECT COUNT(*) used FROM offline_invitation_tickets WHERE invitation_id=? AND consumed_at_ms IS NOT NULL",
+      [card.invitationId]);
+    expect(Number(rows[0]!["used"])).toBe(1);
+  });
+
+  it("a flood of made-up tokens does not block a real card", async () => {
+    for (let attempt = 0; attempt < 130; attempt += 1) {
+      const fake = randomBytes(32).toString("base64url");
+      const response = attempt % 2 === 0 ? await redeem(fake) : await app.inject({ method: "POST",
+        url: NATIVE_INVITATION_PREVIEW_PATH, headers: native, payload: { token: fake, origin } });
+      expect([401, 429]).toContain(response.statusCode);
+      if (response.statusCode === 429) { break; } // the per-address budget of this one test client
+    }
+    await pool.execute("DELETE FROM api_mutation_rate_limits WHERE scope_key LIKE 'native-invitation-preauth|%'");
+    const card = await tickets.issue(issuer(), accountKey, "account");
+    expect((await redeem(card.token)).statusCode).toBe(200);
+  });
+
   it("refuses an expired card and a card of another installation (which stays usable)", async () => {
     const expired = await tickets.issue(issuer(), accountKey, "account");
     clockMs += OFFLINE_INVITATION_LIFETIME_MS;

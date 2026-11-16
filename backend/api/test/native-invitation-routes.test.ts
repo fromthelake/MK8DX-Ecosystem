@@ -43,6 +43,7 @@ class CountingLimiter implements MutationRateLimiter {
 async function app(api: Partial<NativeInvitationAuthApi>, limiter: MutationRateLimiter = new CountingLimiter(),
                    registered = true) {
   const presented: string[] = [];
+  const revoked: string[] = [];
   const instance = await buildApp({
     identityRepository: new NullIdentityReads(),
     ...(registered ? {
@@ -61,12 +62,16 @@ async function app(api: Partial<NativeInvitationAuthApi>, limiter: MutationRateL
             if (api.redeemOfflineInvitationNative) { return api.redeemOfflineInvitationNative(input); }
             return { token: "S".repeat(32), expiresAtMs: now + 7 * 86_400_000 };
           },
+          async revokeOfflineInvitationNativeSession(input) {
+            revoked.push(input.body.token);
+            return { revoked: true };
+          },
         },
       },
     } : {}),
   });
   openApps.push(instance);
-  return { instance, presented };
+  return { instance, presented, revoked };
 }
 
 const nativeHeaders = { "content-type": "application/json", "x-mk8dx-account-device": device };
@@ -171,6 +176,17 @@ describe("native sign-in card routes", () => {
     expect(second.headers["retry-after"]).toBe("42");
     expect(limiter.calls).toEqual(["native-invitation-preauth|60|60", "native-invitation-preauth|60|60"]);
     expect(presented).toEqual([token]);
+  });
+
+  it("ends a session it created but cannot hand over (expiring within a minute)", async () => {
+    const { instance, revoked } = await app({
+      async redeemOfflineInvitationNative() { return { token: "T".repeat(32), expiresAtMs: now + 30_000 }; },
+    });
+    const response = await instance.inject({ method: "POST", url: NATIVE_INVITATION_REDEEM_PATH,
+      headers: nativeHeaders, payload: { token, origin } });
+    expect(response.statusCode).toBe(503);
+    expect(response.body).not.toContain("T".repeat(32));
+    expect(revoked).toEqual(["T".repeat(32)]);
   });
 
   it("is absent where the installation has no offline invitations", async () => {
