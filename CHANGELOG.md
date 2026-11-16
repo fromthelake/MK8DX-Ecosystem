@@ -5,6 +5,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+- The A2 guides in all 15 languages now explain the current Android certificate and in-app sign-in steps,
+  and tell Windows users how to choose a permanent package folder or relocate it safely after an update.
+  The next A2 package includes the same-drive relocation helper; already published packages are unchanged.
+
 ## 0.2.10 — 2026-11-16
 
 - Android 2.99.15 (build 185) keeps a remembered account and pending Time Trials when switching from a previous

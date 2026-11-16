@@ -167,7 +167,7 @@ As apps à volta:
 
 **Primeiro arranque da app Android:** pergunta *Escolhe a tua comunidade*. Em casa ou no clube digitalizas o
 cartão **Preparar um dispositivo** que o teu administrador mostra; para uma comunidade online escreves o endereço
-do site. Depois inicias sessão através do navegador. Detalhes: [Jogadores](../guides/PLAYERS.md#first-start).
+do site. Na A2, instala o certificado no passo Confiar e lê o cartão pessoal na aplicação. Numa comunidade online, aprova o início de sessão no navegador. Detalhes: [Jogadores](../guides/translations/pt/PLAYERS.md).
 
 **Uma app, várias comunidades:** o chip de comunidade no topo alterna com um toque entre o teu clube, a tua
 instalação de casa e uma comunidade online; cada uma guarda a sua própria conta e os tempos por enviar. Em **Tu** →

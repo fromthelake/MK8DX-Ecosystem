@@ -92,9 +92,7 @@ persoon die je community runt.
   `https://www.example.org` (geen pad, geen slash aan het eind), en tik op **Opslaan**. Lukt het niet, open dan hetzelfde adres in
   de browser van de telefoon: het moet openen zonder certificaatwaarschuwing.
 
-Meld je daarna aan: tik rechtsboven op het persoonspictogram en op **Aanmelden**; Instellingen › **Speler op deze telefoon** doet
-hetzelfde. De app toont een code en opent je community in de browser, waar je bevestigt met je eigen account (bij een
-installatie thuis of bij de club herinnert de app je eraan: meld je daar eerst aan met je persoonlijke inlogkaart).
+Thuis of bij de club (A2) vergelijk je eerst de controlecode van 16 tekens en tik je op **Verbinden**. Volg daarna de stappen in de app: **Certificaat opslaan**, **Instellingen openen** om het als CA-certificaat te installeren, en **Inlogkaart scannen** om je in de app aan te melden. Een browsercode is daarvoor niet nodig. Bij een online community tik je op het persoonspictogram en **Aanmelden** (of Instellingen › **Speler op deze telefoon**); de app opent dan je community in de browser voor goedkeuring.
 
 ### Je weg vinden
 

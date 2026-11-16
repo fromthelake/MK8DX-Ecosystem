@@ -165,7 +165,7 @@ Le app intorno:
 
 **Primo avvio dell'app Android:** ti chiede *Scegli la tua community*. A casa o al club scansioni la
 tessera **Prepare a device** che ti mostra l'amministratore; per una community online digiti l'indirizzo
-del suo sito. Poi accedi tramite il browser. Dettagli: [Players](../guides/PLAYERS.md#first-start).
+del suo sito. Su A2 installa il certificato nel passaggio Fiducia e scansiona la scheda personale nell'app. Per una community online approva l'accesso nel browser. Dettagli: [Players](../guides/translations/it/PLAYERS.md).
 
 **Un'app, più community:** il selettore della community in alto passa con un tocco dal tuo club alla tua
 installazione di casa a una community online; ognuna conserva il proprio account e i tempi non ancora

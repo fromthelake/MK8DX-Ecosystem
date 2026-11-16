@@ -96,9 +96,7 @@ personne qui gère ta communauté.
   `https://www.example.org` (sans chemin ni barre oblique finale), et touche **Enregistrer**. En cas d'échec, ouvre la même adresse dans
   le navigateur du téléphone : elle doit s'ouvrir sans avertissement de certificat.
 
-Connecte-toi ensuite : touche l'icône de personne en haut à droite, puis **Se connecter** ; Paramètres › **Joueur sur ce téléphone** fait la
-même chose. L'application affiche un code et ouvre ta communauté dans le navigateur, où tu confirmes avec ton propre compte (sur une
-installation à la maison ou au club, l'application te le rappelle : connecte-toi d'abord là-bas avec ta carte de connexion personnelle).
+À la maison ou au club (A2), compare d'abord le code d'installation de 16 caractères et touche **Connecter**. Suis ensuite les étapes de l'application : **Enregistrer le certificat**, **Ouvrir les paramètres** pour l'installer comme certificat d'autorité, puis **Scanner la carte de connexion** pour te connecter dans l'application. Aucun code du navigateur n'est nécessaire. Pour une communauté en ligne, touche l'icône de personne et **Se connecter** ; l'approbation se fait dans le navigateur.
 
 ### Se repérer
 

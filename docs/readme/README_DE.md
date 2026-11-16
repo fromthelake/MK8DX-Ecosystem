@@ -167,7 +167,7 @@ Die Apps drumherum:
 
 **Erster Start der Android-App:** Sie fragt *Wähle deine Community*. Zu Hause oder im Verein scannst du die
 Karte **Prepare a device**, die dein Administrator dir zeigt; für eine Online-Community tippst du ihre
-Website-Adresse ein. Danach meldest du dich über den Browser an. Details: [Spieler](../guides/PLAYERS.md#first-start).
+Website-Adresse ein. Bei A2 installierst du das Zertifikat über den Schritt Vertrauen und scannst deine persönliche Anmeldekarte in der App. Bei Online-Communitys bestätigst du die Anmeldung im Browser. Details: [Spieler](../guides/translations/de/PLAYERS.md).
 
 **Eine App, mehrere Communitys:** Der Community-Chip oben wechselt mit einem Tipp zwischen deinem Verein,
 deiner Installation zu Hause und einer Online-Community; jede behält ihr eigenes Konto und ihre noch nicht

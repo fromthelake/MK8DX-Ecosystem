@@ -138,7 +138,7 @@ flowchart TB
 | **de code aanpassen** | [Ontwikkelaarshandleiding](../DEVELOPMENT_NL.md), [Testen](../TESTING_NL.md), [Bijdragen](../../.github/CONTRIBUTING.md) |
 
 Elke regel noemt de handleiding die je van begin tot eind volgt. De server uit de broncode bouwen in plaats
-van een releasepakket gebruiken is voor ontwikkelaars: [Starten vanuit de broncode](../GETTING_STARTED.md) (Engels).
+van een releasepakket gebruiken is voor ontwikkelaars: [Starten vanuit de broncode](../GETTING_STARTED.md).
 
 ### Welke computer voor welke route
 
@@ -163,7 +163,7 @@ De apps eromheen:
 
 **Eerste start van de Android-app:** die vraagt *Kies je community*. Thuis of bij de club scan je de kaart
 **Apparaat voorbereiden** die je beheerder laat zien; bij een online community typ je het adres van de website.
-Daarna log je in via de browser. Details: [Spelers](../guides/PLAYERS.md#first-start) (Engels).
+Bij A2 installeer je het certificaat via de stap Vertrouwen en scan je je persoonlijke inlogkaart in de app. Bij online communities keur je de aanmelding goed in de browser. Details: [Spelers](../guides/translations/nl/PLAYERS.md).
 
 **Eén app, meerdere community's:** met de communitychip bovenin wissel je met één tik tussen je club, je
 installatie thuis en een online community; elk houdt een eigen account en eigen niet verzonden tijden. Onder

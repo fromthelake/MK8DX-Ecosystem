@@ -92,9 +92,7 @@ pessoa que gere a tua comunidade.
   `https://www.example.org` (sem caminho, sem barra final), e toca em **Guardar**. Se falhar, abre o mesmo endereço no
   navegador do telemóvel: tem de abrir sem aviso de certificado.
 
-Depois inicia sessão: toca no ícone de pessoa no canto superior direito e em **Iniciar sessão**; Definições › **Jogador neste telemóvel** faz o
-mesmo. A aplicação mostra um código e abre a tua comunidade no navegador, onde confirmas com a tua própria conta (numa
-instalação em casa ou no clube, a aplicação lembra-te: inicia primeiro sessão aí com o teu cartão pessoal de início de sessão).
+Em casa ou no clube (A2), compara primeiro o código de instalação de 16 caracteres e toca em **Ligar**. Segue os passos da aplicação: **Guardar certificado**, **Abrir definições** para o instalar como certificado de AC e **Ler cartão de início de sessão** para entrar na própria aplicação. Não é preciso um código no navegador. Numa comunidade online, toca no ícone de pessoa e em **Iniciar sessão**; a aprovação é feita no navegador.
 
 ### Orientar-te
 
