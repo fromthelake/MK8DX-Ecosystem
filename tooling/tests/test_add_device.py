@@ -126,7 +126,7 @@ console.log(JSON.stringify(D.sheet({{ person: {{ name: "Sam" }}, setup: {json.du
 
     def test_print_css_has_a6_and_a4_pages_and_hides_the_wizard(self):
         css = (STATIC / "wizard.css").read_text(encoding="utf-8")
-        self.assertRegex(css, r"@page welcome-a6 \{ size: A6;")
+        self.assertRegex(css, r"@page welcome-a6 \{ size: 105mm 148mm;")
         self.assertRegex(css, r"@page welcome-a4 \{ size: A4;")
         self.assertIn("body.print-welcome .frame { display: none; }", css)
         self.assertRegex(css, r"\.welcome-sheet\.a6 \{ page: welcome-a6;")

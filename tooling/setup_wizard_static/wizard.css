@@ -129,7 +129,7 @@ body.print-welcome .welcome-sheet.a4 { width: 210mm; min-height: 297mm; padding:
 .welcome-url { font-size: .85em; overflow-wrap: anywhere; }
 .welcome-mark { font-weight: 800; color: #b00020; }
 .welcome-expiry { font-weight: 600; }
-@page welcome-a6 { size: A6; margin: 0; }
+@page welcome-a6 { size: 105mm 148mm; margin: 0; }  /* A6; not every browser knows the keyword */
 @page welcome-a4 { size: A4; margin: 0; }
 @media print {
   body.print-welcome { background: #fff; }
