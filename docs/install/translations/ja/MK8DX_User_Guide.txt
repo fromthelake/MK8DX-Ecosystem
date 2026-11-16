@@ -613,13 +613,13 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 トラブルシューティングと自分でのビルド
 
-ウェブサイトが空の場合は、まずメニュー 3 を使い、Docker が動いているか確認します。A1 ではサインインメールは Mailpit に届きます。A2 と B1 では実際の受信箱に届くはずです。常に、同じインストール、アドレス、メールアドレスを使っているか確認してください。公開の方法でサインインメールが届かない場合は、実際の SMTP の値とプロバイダーにつながるかを確認する必要があります。/health/ready は API とデータベースの準備状態を報告するもので、受信箱への配信を報告するものではありません。
+ウェブサイトが空の場合は Docker を確認します。A1 と B1 ではメニュー 3、A2 では MK8DX beheer を開きます。A1 のサインインメールは Mailpit に届き、B1 では実際の受信箱に届きます。A2 はメールではなくサインインカードを使います。正しいインストールとサイトのアドレスを使っているか確認し、メールを使う方法ではサインインのメールアドレスも確認してください。公開の方法でメールが届かない場合は、SMTP 設定とプロバイダーへの接続を確認します。/health/ready は API とデータベースの準備状態を示し、メールの配信は確認しません。
 
 B2 のみ：共有ホストが大きなアプリのダウンロードを拒否する場合、管理者は有効期間が短く、再開可能な静的ダウンロードリンクを有効にできます。手順は docs/install/B2_WEBHOSTING_EN.md の「App downloads on hosts that limit application responses」を参照してください。ブラウザー通知は任意で、管理者自身の VAPID 鍵と対応するプッシュサービスが必要です。同じガイドの「Browser notifications (Web Push)」を参照してください。任意設定の場所と適用方法は docs/install/SETTINGS_EN.md にあります。
 
 A1 で Start-MK8DX.cmd が「all predefined address pools have been fully subnetted」で止まる場合は、古い Docker ネットワークが Docker のアドレス範囲を使い切っています。PowerShell で docker network ls を実行して一覧を確認します。使っていないと確実に分かっているネットワークだけを削除してください。たとえば docker network prune は、どのコンテナーも使っていないネットワークだけを削除します。そのあと Start-MK8DX.cmd をもう一度開きます。
 
-A2 では、まず両方の PC の hosts のエントリー、プライベートネットワーク、ファイアウォールのポート、証明書のフィンガープリントを確認します。B1 では、DNS の A レコード、プロバイダーのポート 80/443、有効な HTTPS、そしてメールを確認します。証明書の警告を無視しないでください。助けを求めるときに、secrets.json、バックアップ、サインインのリンク、SSH キー、パスワードを含むログの行を決して共有しないでください。
+A2 では、まず端末が MK8DX コンピューターと同じプライベートなローカルネットワークにあるか、Website のアドレスとファイアウォールの許可が正しいか、端末が「デバイスを準備」に表示されるコードと一致する証明書を信頼しているか確認します。A2 ガイドの第 11 章を参照してください。 B1 では、DNS の A レコード、プロバイダーのポート 80/443、有効な HTTPS、そしてメールを確認します。証明書の警告を無視しないでください。助けを求めるときに、secrets.json、バックアップ、サインインのリンク、SSH キー、パスワードを含むログの行を決して共有しないでください。
 
 自分のコード、ブランディング、署名済みの最終的な APK をビルドするには、同じリリースページから mk8dx-full-local パッケージをダウンロードします。ソース、内部のアセットコレクション、ビルドの手順が含まれています。開発者向けの説明は docs/DEVELOPMENT.md と docs/CLIENT_BUILDS.md にあります。リポジトリのクローン（git clone https://github.com/fromthelake/MK8DX-Ecosystem.git）またはそのパッケージから、docs/guides/HOSTING.md（「Build the host package from a clone」）で Docker のホストパッケージと共用ホスティング用・XAMPP 用のパッケージを、docs/CLIENT_BUILDS.md で Android、LiveTrial、Tournament のパッケージをビルドできます。通常のインストールとサーバーの選択には、Android Studio、ソースの編集、自分でビルドした Docker イメージは必要ありません。パッケージ内のゲームの素材には、それぞれの利用条件があります。docs/THIRD_PARTY_MATERIALS.md を参照してください。
 

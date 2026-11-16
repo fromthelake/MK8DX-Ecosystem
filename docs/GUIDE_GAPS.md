@@ -3,8 +3,8 @@
 This is a content audit, not another installation guide. The comparison source is
 `install/MK8DX_User_Guide_EN.txt` (chapters 1–11), whose Dutch and 13 other language
 versions follow the same route structure. The seven guides below currently have only
-English and Dutch versions. The new route chooser (`START_HERE_EN.md` / `START_HIER.md`)
-is being translated separately. A3 already has a full chapter 2 in the reading guide.
+English and Dutch versions. The route chooser is now available in all 15 languages.
+A3 already has a full chapter 2 in the reading guide.
 
 | EN/NL-only family | Covered in the 15-language reading guide | Remaining gap for a reader using another language |
 | --- | --- | --- |

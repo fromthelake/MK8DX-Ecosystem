@@ -613,13 +613,13 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 疑難排解與自行建置
 
-如果網站是空的，請先使用選單 3，並檢查 Docker 是否在執行中。在 A1 上，登入郵件會寄到 Mailpit；在 A2 和 B1 上，它應該寄到真實的收件匣。請一律確認你使用的是同一個安裝、網址和電子郵件。在公開方式中收不到登入郵件時，需要檢查真實的 SMTP 設定值以及業者是否可以連線。/health/ready 回報的是 API 和資料庫是否就緒，而不是收件匣的寄送情況。
+如果網站是空的，請檢查 Docker：A1 和 B1 使用選單 3，A2 則開啟 MK8DX beheer。A1 的登入郵件會寄到 Mailpit；B1 的郵件應送達真實收件匣。A2 使用登入卡，不使用郵件。請確認安裝與網站網址是否正確；對於使用郵件的方式，還要確認登入電子郵件地址。公開方式收不到郵件時，請檢查 SMTP 設定與業者連線。/health/ready 只回報 API 和資料庫是否就緒，不確認郵件是否送達。
 
 僅適用於 B2：如果共用主機拒絕大型應用程式下載，管理員可以啟用短暫有效且可續傳的靜態下載連結。請參閱 docs/install/B2_WEBHOSTING_EN.md 中的「App downloads on hosts that limit application responses」。瀏覽器通知是選用功能，需要管理員自己的 VAPID 金鑰及支援的推播服務；請參閱同一指南中的「Browser notifications (Web Push)」。選用設定的位置與套用步驟見 docs/install/SETTINGS_EN.md。
 
 如果 Start-MK8DX.cmd 在 A1 上因「all predefined address pools have been fully subnetted」而停止，表示舊的 Docker 網路已經用完 Docker 的位址範圍。在 PowerShell 中執行 docker network ls 查看它們。只移除你確定沒有在使用的網路，例如使用 docker network prune，它只會移除沒有任何容器使用的網路。然後重新開啟 Start-MK8DX.cmd。
 
-在 A2 上，請先檢查兩台電腦上的 hosts 項目、私人網路、防火牆連接埠和憑證指紋。在 B1 上，檢查 DNS A 記錄、業者連接埠 80/443、有效的 HTTPS，然後再檢查郵件。不要忽視憑證警告。求助時絕不要分享 secrets.json、備份、登入連結、SSH 金鑰或包含密碼的記錄行。
+在 A2 上，請先確認裝置與 MK8DX 電腦位於同一個私人區域網路，Website 網址和防火牆存取設定正確，而且裝置信任與「準備裝置」卡片上的代碼相符的憑證。請參閱 A2 指南第 11 章。 在 B1 上，檢查 DNS A 記錄、業者連接埠 80/443、有效的 HTTPS，然後再檢查郵件。不要忽視憑證警告。求助時絕不要分享 secrets.json、備份、登入連結、SSH 金鑰或包含密碼的記錄行。
 
 要建置你自己的程式碼、品牌識別或最終簽署的 APK，請從同一個發布頁面下載 mk8dx-full-local 套件。它包含原始碼、內部素材集和建置方法。開發者說明請見 docs/DEVELOPMENT.md 和 docs/CLIENT_BUILDS.md。從程式碼儲存庫的複製（git clone https://github.com/fromthelake/MK8DX-Ecosystem.git）或那個套件出發，docs/guides/HOSTING.md（「Build the host package from a clone」）用於建置 Docker 主機套件以及共享主機和 XAMPP 套件，docs/CLIENT_BUILDS.md 用於建置 Android、LiveTrial 和錦標賽套件。一般的安裝和伺服器選擇不需要 Android Studio、修改原始碼或自行建置 Docker 映像檔。套件中的遊戲素材遵循它們自己的條款；請見 docs/THIRD_PARTY_MATERIALS.md。
 

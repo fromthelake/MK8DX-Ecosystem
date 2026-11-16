@@ -613,13 +613,13 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 문제 해결과 직접 빌드하기
 
-웹사이트가 비어 있으면 메뉴 3부터 시작하고 Docker가 실행 중인지 확인하세요. A1에서는 로그인 메일이 Mailpit으로 가고, A2와 B1에서는 실제 받은편지함으로 가야 합니다. 항상 같은 설치, 주소, 이메일을 쓰고 있는지 확인하세요. 공개 방법에서 로그인 메일이 오지 않으면 실제 SMTP 값과 업체 접속 가능 여부를 확인해야 합니다. /health/ready는 API와 데이터베이스의 준비 상태를 알려 줄 뿐, 받은편지함 전달은 알려 주지 않습니다.
+웹사이트가 비어 있으면 Docker를 확인하세요. A1과 B1에서는 메뉴 3을 사용하고 A2에서는 MK8DX beheer를 여세요. A1의 로그인 메일은 Mailpit으로 가고 B1에서는 실제 받은편지함으로 가야 합니다. A2는 이메일 대신 로그인 카드를 사용합니다. 올바른 설치와 웹사이트 주소인지 확인하고 이메일을 쓰는 경로에서는 로그인 주소도 확인하세요. 공개 경로에서 메일이 오지 않으면 SMTP 설정과 업체 연결을 확인하세요. /health/ready는 API와 데이터베이스의 준비 상태만 알려 주며 메일 전달은 확인하지 않습니다.
 
 B2만 해당: 공유 호스팅에서 큰 앱 다운로드를 거부하면 관리자가 유효 기간이 짧고 이어받을 수 있는 정적 다운로드 링크를 켤 수 있습니다. docs/install/B2_WEBHOSTING_EN.md의 “App downloads on hosts that limit application responses”를 보세요. 브라우저 알림은 선택 사항이며 운영자 자신의 VAPID 키와 지원되는 푸시 서비스가 필요합니다. 같은 안내서의 “Browser notifications (Web Push)”를 보세요. 선택 설정의 위치와 적용 방법은 docs/install/SETTINGS_EN.md에 있습니다.
 
 A1에서 Start-MK8DX.cmd가 “all predefined address pools have been fully subnetted”로 멈추면, 오래된 Docker 네트워크가 Docker의 주소 범위를 다 써 버린 것입니다. PowerShell에서 docker network ls를 실행해 목록을 확인하세요. 쓰지 않는다고 확실히 아는 네트워크만 지우세요. 예를 들어 docker network prune은 어떤 컨테이너도 쓰지 않는 네트워크만 지웁니다. 그런 다음 Start-MK8DX.cmd를 다시 여세요.
 
-A2에서는 먼저 두 PC의 hosts 항목, 사설 네트워크, 방화벽 포트, 인증서 지문을 확인하세요. B1에서는 DNS A 레코드, 업체 포트 80/443, 유효한 HTTPS를 확인한 다음 메일을 확인하세요. 인증서 경고를 무시하지 마세요. 도움을 요청할 때 secrets.json, 백업, 로그인 링크, SSH 키, 비밀번호가 들어 있는 로그 줄을 절대 공유하지 마세요.
+A2에서는 먼저 기기가 MK8DX 컴퓨터와 같은 사설 로컬 네트워크에 있는지, Website 주소와 방화벽 허용이 맞는지, 기기가 기기 준비 카드의 코드와 일치하는 인증서를 신뢰하는지 확인하세요. A2 안내서 11장을 보세요. B1에서는 DNS A 레코드, 업체 포트 80/443, 유효한 HTTPS를 확인한 다음 메일을 확인하세요. 인증서 경고를 무시하지 마세요. 도움을 요청할 때 secrets.json, 백업, 로그인 링크, SSH 키, 비밀번호가 들어 있는 로그 줄을 절대 공유하지 마세요.
 
 내 코드, 브랜딩, 최종 서명 APK를 빌드하려면 같은 릴리스 페이지에서 mk8dx-full-local 패키지를 다운로드하세요. 여기에는 소스, 내부 에셋 모음, 빌드 방법이 들어 있습니다. 개발자 안내는 docs/DEVELOPMENT.md와 docs/CLIENT_BUILDS.md에 있습니다. 저장소 클론(git clone https://github.com/fromthelake/MK8DX-Ecosystem.git)이나 그 패키지에서, docs/guides/HOSTING.md(“Build the host package from a clone”)는 Docker 호스트 패키지와 공유 호스팅 및 XAMPP 패키지를 빌드하고, docs/CLIENT_BUILDS.md는 Android, LiveTrial, Tournament 패키지를 빌드합니다. 일반 설치와 서버 선택에는 Android Studio, 소스 편집, 직접 빌드한 Docker 이미지가 필요 없습니다. 패키지 안의 게임 자료는 자체 조건을 따릅니다. docs/THIRD_PARTY_MATERIALS.md를 참고하세요.
 
