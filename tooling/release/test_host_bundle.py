@@ -138,7 +138,7 @@ class HostBundleBaseImagePinsTest(unittest.TestCase):
             self.assertIn(f"    image: {tag}@{digest}\n", (host_bundle.ROOT / name).read_text(encoding="utf-8"))
 
     def test_packaged_compose_files_name_the_tag_without_the_digest(self):
-        for version in (None, "v0.2.8"):
+        for version in (None, "v0.2.9"):
             images = host_bundle.image_tags(version)
             for name in set(host_bundle.BASE_IMAGE_FILES.values()):
                 with self.subTest(version=version, name=name):

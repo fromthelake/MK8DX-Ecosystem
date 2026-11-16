@@ -8,6 +8,6 @@
   ],
   "databaseMigration": "0095",
   "nativeClientSupport": "android-livetrial-tournament-build-from-this-repository",
-  "productVersion": "0.2.8",
+  "productVersion": "0.2.9",
   "schemaVersion": "mk8dx.compatibility.v1"
 }

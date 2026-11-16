@@ -311,7 +311,7 @@ alle besser.
 
 ## Projektstatus
 
-Die aktuelle Version ist **[v0.2.8](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Jeder Installationsweg wurde im November 2026 nach seiner Anleitung
+Die aktuelle Version ist **[v0.2.9](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**. Jeder Installationsweg wurde im November 2026 nach seiner Anleitung
 installiert: A2 unter Windows und Linux, A1 und A3 unter Windows und B1 als Probelauf unter Linux in WSL 2; die
 Mac-Pakete sind gebaut, aber noch nicht auf einem echten Mac getestet. Was sich in jeder Version geändert hat, steht
 im [Changelog](../../CHANGELOG.md).

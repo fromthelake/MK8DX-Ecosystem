@@ -5,6 +5,28 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.9 — 2026-11-16
+
+The release to install or update to after 0.2.5. 0.2.6, 0.2.7 and 0.2.8 were not kept as separate releases;
+0.2.9 includes them all (their sections below stay as the detailed history). Together they bring:
+
+- **Easier first steps for phones at home or at the club (A2)**: the Android app, the website and MK8DX beheer
+  share three numbered steps (trust the installation, scan your sign-in card, done). The app signs in by scanning
+  the personal card itself, MK8DX beheer has an **Add a phone or device** wizard and a printable welcome card, and
+  the website follows the browser's language (0.2.9, below).
+- **Readable LiveTrial clips**: every clip also appears under a name with date, track, class and time (0.2.9).
+- **Easier tournament nights**: Directors can delegate live capture from the Android app as well as the website,
+  administrators see which request limits refused requests, and the live scoreboard, launchers and Tournament Tools
+  installer speak all 15 languages of the game (0.2.6).
+- **Guides you can follow step by step**: A2 (Windows 11 and Linux in WSL 2), A1 and A3 (Windows 11) were installed
+  by following their guides and the guides were corrected; B1 was rehearsed privately on Ubuntu 24.04 in WSL 2. The
+  nightly backup works on every route, a new recovery code can be made on request, and two installations on one
+  computer can no longer replace each other's images (0.2.7).
+- **The illustrated guide as one PDF or HTML file in every language**, fresh screenshots and a tidier repository
+  (0.2.8).
+
+No database migration since 0.2.5; MySQL stays 9.7 LTS. Android app 2.99.13 (183).
+
 ### Added
 
 - **Android: three clear steps after connecting to a home or club installation (A2).** After "Connect" the app
@@ -46,6 +68,12 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 - **Android: one installation code everywhere.** Before connecting, the app now shows the same 16-character code as
   the Prepare a device card and the `/setup` page (the root certificate's SHA-256), with both full fingerprints
   under "Full fingerprints". The pin itself is unchanged: the root is accepted only when its key matches the QR.
+- **Project description and support**: the READMEs describe MK8DX Ecosystem as an independent, non-commercial fan
+  project, free of charge and not affiliated with Nintendo, with a short *About the developer* section; Project
+  status names the current release and the tested routes. The Sponsor button (GitHub Sponsors and Ko-fi) supports
+  the developer personally.
+- **A2 removal steps in a working order**: the images are cleaned up with the package's own Python before any folder
+  is deleted, and leftover images from earlier versions are explained.
 
 ### Fixed
 
@@ -53,6 +81,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   languages** (Dutch included).
 - Opening the technical host page (127.0.0.1 with its port) directly now says, in all 15 languages, to use the
   **MK8DX beheer** shortcut instead of the one-time admin code.
+- **LiveTrial's control server always answers a refused oversized request** with its 413 instead of a connection
+  reset on Windows.
+- **Busy moments no longer fail on a database deadlock**: request-limit and claim statements that collide with the
+  limiter's clean-up are retried, without counting anything twice.
 
 ## 0.2.8 — 2026-11-15
 
