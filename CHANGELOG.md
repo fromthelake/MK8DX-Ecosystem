@@ -5,13 +5,15 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
-- Android keeps the remembered account and unsent Time Trials when an update changes the APK's packaged
-  default community and the old community can be identified from the phone's remembered installations.
-  Existing destination accounts and results take precedence; the old copy stays available for recovery.
-- The A2 phone onboarding says **Done** once all three steps are complete. Its completed Connect row no
-  longer presents a button that does nothing, and the other step rows have a larger touch target.
-- A2 ZIPs unpack into one folder named after the package. The installation guide in every supported
-  language points users to that folder.
+## 0.2.10 — 2026-11-16
+
+- Android 2.99.15 (build 185) keeps a remembered account and pending Time Trials when switching from a previous
+  packaged community default, when the previous community can be identified. Existing destination data takes
+  precedence; the old copy remains available for recovery.
+- The completed A2 phone onboarding says **Done** (or **Klaar** in Dutch), has no inactive Connect button and gives
+  the remaining rows a larger touch target.
+- A2 packages unpack into one folder named after the ZIP. The installation guide in every supported language
+  points to that folder.
 
 ## 0.2.9 — 2026-11-16
 
