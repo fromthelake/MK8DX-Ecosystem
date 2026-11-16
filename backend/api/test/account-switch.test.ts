@@ -161,8 +161,8 @@ async function harness(offline = false, preAuthSlots = 1_024) {
     undefined,
     offline ? {
       origin: baseUrl,
-      // Only redeem() is used by the plugin; every ticket here is Dee's offline account.
-      tickets: { async redeem() {
+      // preview() (the live-card check before the budgets) and redeem(); every ticket here is Dee's offline account.
+      tickets: { async preview() { return "Dee"; }, async redeem() {
         return { accountKey: "offline_account.dee", userAccountId: "user_account.dee",
           authEmail: "dee@accounts.mk8dx.invalid", role: "account" as const, active: true };
       } } as never,
