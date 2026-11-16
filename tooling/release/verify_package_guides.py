@@ -44,7 +44,8 @@ def verify(package: Path, *, source_root: Path = host_bundle.ROOT,
         receipt = json.loads(archive.read(manifest_names[0]))
         if receipt.get("sourceCommit") != source_commit:
             raise ValueError("package source commit differs from the checked-out release commit")
-        if not package.stem.endswith("-" + receipt.get("revision", "")):
+        revision = receipt.get("revision")
+        if not isinstance(revision, str) or revision not in package.stem.split("-"):
             raise ValueError("package file name and manifest revision differ")
         names = set(archive.namelist())
         bundled = {name[len(prefix):] for name in names
