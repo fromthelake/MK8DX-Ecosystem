@@ -245,6 +245,37 @@ def test_oversized_slow_or_malformed_input_changes_nothing(engine, serve) -> Non
     assert engine.memory() == before_memory
 
 
+def test_a_refused_oversized_body_still_gets_its_answer(engine, serve) -> None:
+    # The body is refused before it is read; without discarding it, closing the
+    # socket resets the connection and the client often sees an abort, not 413.
+    before_files, before_memory = engine.state_files(), engine.memory()
+    big_grid = json.dumps({"pad": "x" * serve.MAX_CALIBRATION_BYTES}).encode()
+    for _ in range(60):
+        status, _, headers = engine.act("/api/clockgrid", raw=big_grid)
+        assert status == 413 and headers.get("Connection") == "close"
+    assert engine.state_files() == before_files
+    assert engine.memory() == before_memory
+
+
+def test_a_declared_body_that_never_comes_gets_413_at_once(engine, serve) -> None:
+    # Discarding a refused body is bounded: the answer is sent first, and a body
+    # declared far beyond DRAIN_BYTES that never arrives does not hold it back.
+    connection = http.client.HTTPConnection("127.0.0.1", engine.port, timeout=10)
+    try:
+        connection.putrequest("POST", "/api/settings", skip_host=True)
+        for name, value in (("Host", f"127.0.0.1:{engine.port}"), ("Origin", engine.origin),
+                            ("Content-Type", "application/json"), ("X-LiveTrial-Action", TOKEN),
+                            ("Content-Length", str(100 * serve.DRAIN_BYTES))):
+            connection.putheader(name, value)
+        connection.endheaders(b"{")
+        started = time.monotonic()
+        response = connection.getresponse()
+        assert response.status == 413 and json.loads(response.read())["error"] == "request too large"
+        assert time.monotonic() - started < serve.DRAIN_SECONDS
+    finally:
+        connection.close()
+
+
 def test_a_body_that_never_arrives_is_dropped(engine, serve, monkeypatch) -> None:
     monkeypatch.setattr(serve, "BODY_READ_SECONDS", 0.5)
     before = engine.memory()
