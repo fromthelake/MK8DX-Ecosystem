@@ -196,28 +196,42 @@ _SETUP_STYLE = (
     ".code{font:600 24px/1.3 Consolas,monospace;letter-spacing:1px;color:#f7c948;overflow-wrap:anywhere}"
     "code,.mono{font-family:Consolas,monospace;overflow-wrap:anywhere;font-size:14px;color:#c9cfe8}"
     ".muted{color:#a9b1cf;font-size:15px}[hidden]{display:none!important}"
+    ".steps{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:6px 0 4px;font-size:15px;"
+    "color:#a9b1cf}.steps li{margin:0}.steps b{display:inline-block;min-width:1.6em;text-align:center;"
+    "border:1px solid #26305a;border-radius:999px;margin-right:4px}.steps [aria-current]{color:#eef1fb;font-weight:700}"
+    ".steps [aria-current] b{background:#f7c948;color:#1b1400;border-color:#f7c948}"
+    "ul.brands{padding-left:18px;margin:6px 0;font-size:15px}"
     ".lang-select{float:right;margin:4px 0 0 12px;max-width:50%;font:15px system-ui,sans-serif;color:#eef1fb;"
     "background:#111833;border:1px solid #26305a;border-radius:8px;padding:6px 8px}")
 
 _SETUP_TEXT = {
     "en": {
-        "title": "Prepare this device", "lead": "Do this once per phone, tablet or PC. Afterwards, scan your "
-        "personal sign-in card.", "check": "First check this code. It must match the code on the "
+        "title": "Prepare this device", "lead": "Do this once per phone, tablet or PC, also when you only use the "
+        "website without the app (for example on an iPhone). Afterwards, scan your personal sign-in card.",
+        "steps": ["Trust", "Scan sign-in card", "Done"], "steps_label": "Steps", "check": "First check this code. It must match the code on the "
         "'Prepare a device' card or in MK8DX beheer on the host computer:",
-        "full": "Full fingerprints", "other": "Another kind of device?", "done": "Done? Scan your personal "
-        "sign-in card, or open", "remove": "Leaving this installation? Remove the certificate again in the same settings.",
-        "android": ["Tap the button to download the certificate.",
-                    "Open Settings and search for “certificate” (often: Security → More security settings → "
-                    "Encryption & credentials → Install a certificate → CA certificate).",
-                    "Choose the downloaded MK8DX file and confirm with your PIN."],
+        "full": "Full fingerprints", "other": "Another kind of device?", "done": "Next, step 2: scan your "
+        "personal sign-in card with your phone's camera, or open", "remove": "Leaving this installation? Remove the "
+        "certificate again in the same settings.",
+        "android": ["Tap the button to download the certificate. The file is called {file}.",
+                    "Chrome may say that the file cannot be downloaded securely. Choose Keep: this server is not "
+                    "trusted yet, and the code above is your check.",
+                    "Open Settings and search for “certificate”, then choose CA certificate. The menu differs "
+                    "per brand:",
+                    "Choose the file {file} (not an older root.crt download) and confirm with your PIN."],
+        "brands": ["Pixel and other stock Android: Security & privacy → More security settings → "
+                   "Encryption & credentials → Install a certificate → CA certificate.",
+                   "vivo: Security → More security settings → Install from storage → CA certificate.",
+                   "Samsung, Xiaomi, OnePlus, OPPO and other brands: search for “certificate” in Settings "
+                   "and choose CA certificate."],
         "ios": ["Tap the button to download the profile and allow it.",
                 "Open Settings → Profile downloaded → Install.",
                 "Then Settings → General → About → Certificate Trust Settings → turn on MK8DX."],
-        "windows": ["Download the certificate and open it.",
+        "windows": ["Download the certificate ({file}) and open it.",
                     "Choose Install Certificate → Current User → Place all certificates in the following store → "
                     "Trusted Root Certification Authorities. Do not choose Intermediate Certification Authorities.",
                     "Restart the browser."],
-        "mac": ["Download the certificate and open it; Keychain Access opens.",
+        "mac": ["Download the certificate ({file}) and open it; Keychain Access opens.",
                 "Open the MK8DX certificate → Trust → Always Trust. (macOS is not yet tested end to end.)"],
         "linux": ["Add the same certificate to your distribution's or browser's trusted root store.",
                   "The exact steps differ by distribution; Linux is not yet tested end to end for this route."],
@@ -226,23 +240,32 @@ _SETUP_TEXT = {
         "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
     },
     "nl": {
-        "title": "Dit apparaat voorbereiden", "lead": "Doe dit één keer per telefoon, tablet of pc. Scan daarna je "
-        "persoonlijke inlogkaart.", "check": "Controleer eerst deze code. Hij moet gelijk zijn aan de code op "
+        "title": "Dit apparaat voorbereiden", "lead": "Doe dit één keer per telefoon, tablet of pc, ook als je alleen "
+        "de website gebruikt zonder de app (bijvoorbeeld op een iPhone). Scan daarna je persoonlijke inlogkaart.",
+        "steps": ["Vertrouwen", "Inlogkaart scannen", "Klaar"], "steps_label": "Stappen", "check": "Controleer eerst deze code. Hij moet gelijk zijn aan de code op "
         "de kaart 'Apparaat voorbereiden' of in MK8DX beheer op de hostcomputer:",
-        "full": "Volledige vingerafdrukken", "other": "Ander soort apparaat?", "done": "Klaar? Scan je persoonlijke "
-        "inlogkaart, of open", "remove": "Stop je met deze installatie? Verwijder het certificaat weer via dezelfde instellingen.",
-        "android": ["Tik op de knop om het certificaat te downloaden.",
-                    "Open Instellingen en zoek op “certificaat” (vaak: Beveiliging → Meer beveiligingsinstellingen → "
-                    "Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat).",
-                    "Kies het gedownloade MK8DX-bestand en bevestig met je pincode."],
+        "full": "Volledige vingerafdrukken", "other": "Ander soort apparaat?", "done": "Daarna stap 2: scan je "
+        "persoonlijke inlogkaart met de camera van je telefoon, of open", "remove": "Stop je met deze installatie? "
+        "Verwijder het certificaat weer via dezelfde instellingen.",
+        "android": ["Tik op de knop om het certificaat te downloaden. Het bestand heet {file}.",
+                    "Chrome kan melden dat het bestand niet beveiligd kan worden gedownload. Kies Behouden: deze "
+                    "server wordt nog niet vertrouwd, en de code hierboven is je controle.",
+                    "Open Instellingen en zoek op “certificaat”, kies daarna CA-certificaat. Het menu verschilt "
+                    "per merk:",
+                    "Kies het bestand {file} (niet een oudere root.crt-download) en bevestig met je pincode."],
+        "brands": ["Pixel en ander standaard-Android: Beveiliging en privacy → Meer beveiligingsinstellingen → "
+                   "Versleuteling en inloggegevens → Certificaat installeren → CA-certificaat.",
+                   "vivo: Beveiliging → Meer veiligheidsinstellingen → Installeren vanuit opslag → CA-certificaat.",
+                   "Samsung, Xiaomi, OnePlus, OPPO en andere merken: zoek in Instellingen op “certificaat” en "
+                   "kies CA-certificaat."],
         "ios": ["Tik op de knop om het profiel te downloaden en sta het toe.",
                 "Open Instellingen → Profiel gedownload → Installeer.",
                 "Daarna Instellingen → Algemeen → Info → Certificaatvertrouwen → zet MK8DX aan."],
-        "windows": ["Download het certificaat en open het.",
+        "windows": ["Download het certificaat ({file}) en open het.",
                     "Kies Certificaat installeren → Huidige gebruiker → Alle certificaten in het onderstaande archief "
                     "plaatsen → Vertrouwde basiscertificeringsinstanties. Kies niet Tussenliggende certificeringsinstanties.",
                     "Herstart de browser."],
-        "mac": ["Download het certificaat en open het; Sleutelhangertoegang opent.",
+        "mac": ["Download het certificaat ({file}) en open het; Sleutelhangertoegang opent.",
                 "Open het MK8DX-certificaat → Vertrouw → Altijd vertrouwen. (macOS is nog niet volledig getest.)"],
         "linux": ["Voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser.",
                   "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route."],
@@ -279,7 +302,24 @@ def setup_texts(code: str, catalog_dir: Path | None = None) -> dict:
     return {key: tr(value) for key, value in english.items()}
 
 
-def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None) -> str:
+def certificate_file_name(cert: x509.Certificate) -> str:
+    """The download name of the root: the short check code and the root's date, so a phone's Downloads folder shows
+    which file belongs to which installation (instead of root.crt, root (1).crt, ...). Caddy serves this name with
+    the same bytes as /setup/root.crt (infrastructure/docker/Caddyfile.offline-lan)."""
+    code = cert.fingerprint(hashes.SHA256()).hex()[:8].upper()
+    return f"MK8DX-{code}-{cert.not_valid_before_utc:%Y-%m-%d}.crt"
+
+
+def steps_html(text: dict, current: int) -> str:
+    """The three onboarding steps (1 Trust, 2 Scan sign-in card, 3 Done), shared in wording with /device and the
+    invitation page."""
+    items = "".join(("<li aria-current=\"step\">" if index == current else "<li>")
+                    + f"<b>{index}</b>{html.escape(label)}</li>"
+                    for index, label in enumerate(text["steps"], start=1))
+    return f"<ol class=\"steps\" aria-label=\"{html.escape(text['steps_label'])}\">{items}</ol>"
+
+
+def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None, cert_file: str = "root.crt") -> str:
     """Mobile-first /setup page: the visitor's own platform first, in the device language.
 
     Static and self-contained (served over plain HTTP before trust exists); readable without
@@ -295,15 +335,21 @@ def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None) -> str:
         parts.append(f"<div class=\"lang\" lang=\"{lang}\" data-lang=\"{lang}\" "
                      f"data-label=\"{html.escape(text['language'])}\"{hidden}>")
         parts.append(f"<div class=\"brand\">MK8DX</div><h1>{html.escape(text['title'])}</h1>"
-                     f"<p class=\"lead\">{html.escape(text['lead'])}</p>")
+                     f"{steps_html(text, 1)}<p class=\"lead\">{html.escape(text['lead'])}</p>")
         parts.append(f"<section><p>{html.escape(text['check'])}</p><p class=\"code\">{short}</p>"
                      f"<details><summary>{html.escape(text['full'])}</summary>"
                      f"<p class=\"mono\">{html.escape(text['root_cert'])} {fp['certificateSha256']}</p>"
                      f"<p class=\"mono\">{html.escape(text['root_key'])} {fp['spkiSha256']}</p></details></section>")
         for platform in ("android", "ios", "windows", "mac", "linux"):
-            link = "/setup/root.mobileconfig" if platform == "ios" else "/setup/root.crt"
+            link = "/setup/root.mobileconfig" if platform == "ios" else f"/setup/{cert_file}"
             label = text["dl_ios"] if platform == "ios" else text["dl_crt"]
-            steps = "".join(f"<li>{html.escape(step)}</li>" for step in text[platform])
+            steps = ""
+            for index, step in enumerate(text[platform]):
+                steps += f"<li>{html.escape(step.replace('{file}', cert_file))}"
+                if platform == "android" and index == 2:
+                    steps += "<ul class=\"brands\">" + "".join(
+                        f"<li>{html.escape(brand)}</li>" for brand in text["brands"]) + "</ul>"
+                steps += "</li>"
             parts.append(f"<details class=\"platform\" data-platform=\"{platform}\"><summary>"
                          f"{html.escape(text['names'][platform])}</summary>"
                          f"<a class=\"button\" href=\"{link}\">{html.escape(label)}</a><ol>{steps}</ol></details>")
@@ -342,7 +388,7 @@ def refresh_setup_page(state_dir: Path) -> bool:
     target = safe_private_path(state_dir) / "offline-ca"
     metadata = json.loads((target / "metadata.json").read_text(encoding="utf-8"))
     root = x509.load_pem_x509_certificate((target / "serving" / "root.pem").read_bytes())
-    page = setup_page(metadata["origin"], _fingerprints(root)).encode("utf-8")
+    page = setup_page(metadata["origin"], _fingerprints(root), cert_file=certificate_file_name(root)).encode("utf-8")
     current = target / "setup" / "index.html"
     if current.is_file() and current.read_bytes() == page:
         return False
@@ -359,7 +405,7 @@ def _setup_files(directory: Path, cert: x509.Certificate, address: ipaddress.IPv
     der = cert.public_bytes(serialization.Encoding.DER)
     fp = _fingerprints(cert)
     origin = f"https://{address}"
-    _write_new(directory / "index.html", setup_page(origin, fp).encode("utf-8"))
+    _write_new(directory / "index.html", setup_page(origin, fp, cert_file=certificate_file_name(cert)).encode("utf-8"))
     _write_new(directory / "root.crt", der)
     payload_id = f"nl.mariokart8.offline-lan.{uuid.uuid4()}"
     profile = {"PayloadContent": [{"PayloadCertificateFileName": "MK8DX Offline LAN Root.crt",

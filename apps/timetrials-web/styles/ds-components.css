@@ -3074,6 +3074,28 @@
   .ds-signin__status, .ds-published__status { margin: 0; }
   .ds-signin, .ds-device, .ds-published { display: flex; flex-direction: column; gap: var(--ds-space-lg); min-width: 0; }
   .ds-signin .ds-panel, .ds-device .ds-panel { max-width: 40rem; }
+  /* The A2 onboarding steps (1 Trust, 2 Scan sign-in card, 3 Done) on /device, worded as on /setup. */
+  .ds-onboarding-steps {
+    display: flex; flex-wrap: wrap; gap: var(--ds-space-xxs) var(--ds-space-sm); margin: 0; padding: 0;
+    list-style: none; min-width: 0;
+  }
+  .ds-onboarding-steps__step {
+    display: inline-flex; align-items: center; gap: var(--ds-space-xxs); min-width: 0;
+    font-size: var(--ds-type-body-s-size); line-height: var(--ds-type-body-s-line); color: var(--ds-text-secondary);
+  }
+  .ds-onboarding-steps__mark {
+    display: inline-grid; place-items: center; min-width: 1.75em; height: 1.75em; border-radius: 999px;
+    border: 1px solid var(--ds-border-subtle); font-weight: 700;
+  }
+  .ds-onboarding-steps__step[data-state="done"] .ds-onboarding-steps__mark {
+    background: color-mix(in srgb, var(--ds-status-success) 22%, transparent);
+  }
+  .ds-onboarding-steps__step[data-state="current"] { color: var(--ds-text-primary); font-weight: 700; }
+  .ds-onboarding-steps__step[data-state="current"] .ds-onboarding-steps__mark {
+    background: var(--ds-action-primary); color: var(--ds-action-on-primary); border-color: transparent;
+  }
+  .ds-device__next { margin: 0; padding-left: 1.5em; }
+  .ds-device__next > li { overflow-wrap: anywhere; }
   .ds-signin__account { display: flex; flex-direction: column; gap: var(--ds-space-xs); align-items: flex-start; }
 
   /* ================= Home compositions (W01, W02) ================= */

@@ -3649,6 +3649,16 @@
    ]
   },
   {
+   "key": "Check again",
+   "nl": "Opnieuw controleren",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Check that your app shows the same code.",
    "nl": "Controleer dat je app dezelfde code toont.",
    "kinds": [
@@ -4695,6 +4705,16 @@
    ],
    "places": [
     "web-push-settings.ts"
+   ]
+  },
+  {
+   "key": "Come back here. This page refreshes by itself as soon as you are signed in.",
+   "nl": "Kom hier terug. Deze pagina vernieuwt zelf zodra je bent aangemeld.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -6793,8 +6813,19 @@
     "localized"
    ],
    "places": [
+    "authentication-product-page.ts",
     "time-trial-standing-view.ts",
     "tournament-standing-view.ts"
+   ]
+  },
+  {
+   "key": "Done: go back to the app",
+   "nl": "Klaar: ga terug naar de app",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -11327,16 +11358,6 @@
    ]
   },
   {
-   "key": "Local invitation",
-   "nl": "Lokale uitnodiging",
-   "kinds": [
-    "localized"
-   ],
-   "places": [
-    "authentication-product-page.ts"
-   ]
-  },
-  {
    "key": "Lock the layout and continue to the next step?",
    "nl": "Indeling vergrendelen en doorgaan naar de volgende stap?",
    "kinds": [
@@ -12867,6 +12888,16 @@
    ],
    "places": [
     "ds-track-board.ts"
+   ]
+  },
+  {
+   "key": "Next: sign in on this phone",
+   "nl": "Volgende stap: meld je aan op deze telefoon",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -20192,6 +20223,16 @@
    ]
   },
   {
+   "key": "Scan sign-in card",
+   "nl": "Inlogkaart scannen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Scan this card with the camera of your other phone, tablet or PC. There you will be signed in as yourself — the same account as here, with the same Players and records. The card works once and for 15 minutes.",
    "nl": "Scan deze kaart met de camera van je andere telefoon, tablet of pc. Daar ben je dan ingelogd als jezelf — hetzelfde account als hier, met dezelfde Players en records. De kaart werkt één keer en 15 minuten lang.",
    "kinds": [
@@ -20199,6 +20240,16 @@
    ],
    "places": [
     "device-invitation-card.ts"
+   ]
+  },
+  {
+   "key": "Scan your personal sign-in card with your phone's camera. Ask the host administrator for it; it works once and expires after 15 minutes.",
+   "nl": "Scan je persoonlijke inlogkaart met de camera van je telefoon. Vraag de hostbeheerder erom; hij werkt één keer en verloopt na 15 minuten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
    ]
   },
   {
@@ -21496,8 +21547,8 @@
    ]
   },
   {
-   "key": "Sign in with your invitation first, then return to approve this device.",
-   "nl": "Meld je eerst aan met je uitnodiging en kom daarna terug om dit apparaat goed te keuren.",
+   "key": "Sign in with your personal sign-in card first. This page continues by itself.",
+   "nl": "Meld je eerst aan met je persoonlijke inlogkaart. Deze pagina gaat daarna vanzelf verder.",
    "kinds": [
     "localized"
    ],
@@ -22267,6 +22318,16 @@
    ]
   },
   {
+   "key": "Step 1 is done: this page opened securely, so this phone trusts the server.",
+   "nl": "Stap 1 is klaar: deze pagina opende beveiligd, dus deze telefoon vertrouwt de server.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Step 1 of 3",
    "nl": "Stap 1 van 3",
    "kinds": [
@@ -22477,6 +22538,16 @@
    ]
   },
   {
+   "key": "Steps",
+   "nl": "Stappen",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
    "key": "Stop received; waiting for the final upload.",
    "nl": "Stop ontvangen; de laatste upload wordt afgewacht.",
    "kinds": [
@@ -22654,6 +22725,16 @@
    ],
    "places": [
     "account-switch-chooser.ts",
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Switch back to the MK8DX app. It finishes signing in by itself; you can close this page.",
+   "nl": "Ga terug naar de MK8DX-app. Die rondt het aanmelden zelf af; je kunt deze pagina sluiten.",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
     "authentication-product-page.ts"
    ]
   },
@@ -26570,6 +26651,16 @@
   {
    "key": "TrueSkill, race record and head-to-head across finalized tournaments",
    "nl": "TrueSkill, raceresultaten en onderlinge duels in afgeronde toernooien",
+   "kinds": [
+    "localized"
+   ],
+   "places": [
+    "authentication-product-page.ts"
+   ]
+  },
+  {
+   "key": "Trust",
+   "nl": "Vertrouwen",
    "kinds": [
     "localized"
    ],

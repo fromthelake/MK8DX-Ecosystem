@@ -41,12 +41,55 @@ export function parseProductLanguage(value: unknown): ProductLanguage | null {
   return typeof value === "string" ? KNOWN.get(value.trim().toLowerCase()) ?? null : null;
 }
 
-export function productLanguage(): ProductLanguage {
-  try {
-    return parseProductLanguage(globalThis.localStorage?.getItem(STORAGE_KEY)) ?? "en";
-  } catch {
-    return "en";
+/**
+ * The language of one browser language tag, matched like the A2 pages' language.js: exactly, then by region
+ * (es-MX -> es-419, zh-Hant/TW/HK/MO -> zh-TW, other zh -> zh-CN), then by base language; else null.
+ */
+export function matchBrowserLanguage(tag: unknown): ProductLanguage | null {
+  if (typeof tag !== "string") { return null; }
+  const parts = tag.trim().replace(/_/gu, "-").toLowerCase().split("-");
+  const base = parts[0];
+  if (base === undefined || base === "" || base === "*") { return null; }
+  const exact = KNOWN.get(parts.join("-"));
+  if (exact !== undefined) { return exact; }
+  if (base === "zh") {
+    return parts.slice(1).some((part) => ["hant", "tw", "hk", "mo"].includes(part)) ? "zh-TW" : "zh-CN";
   }
+  if (base === "es" && parts.length > 1 && parts[1] !== "es") { return "es-419"; }
+  return KNOWN.get(base) ?? null;
+}
+
+/** The first of the browser's languages (most wanted first) that is a product language, else English. */
+export function browserProductLanguage(preferred: readonly unknown[]): ProductLanguage {
+  for (const tag of preferred) {
+    const found = matchBrowserLanguage(tag);
+    if (found !== null) { return found; }
+  }
+  return "en";
+}
+
+// Without an explicit choice the page follows the browser (main.ts adopts navigator.languages at start);
+// a choice made in the language menu or Settings is stored and always wins.
+let browserDefault: ProductLanguage = "en";
+
+/** Make the browser's languages the default for a visitor who has not chosen one; the stored choice stays. */
+export function adoptBrowserLanguages(preferred: readonly unknown[]): ProductLanguage {
+  browserDefault = browserProductLanguage(preferred);
+  globalThis.document?.documentElement.setAttribute("lang", productLanguage());
+  return productLanguage();
+}
+
+/** The language the visitor chose explicitly, or null when the browser decides. */
+export function storedProductLanguage(): ProductLanguage | null {
+  try {
+    return parseProductLanguage(globalThis.localStorage?.getItem(STORAGE_KEY));
+  } catch {
+    return null;
+  }
+}
+
+export function productLanguage(): ProductLanguage {
+  return storedProductLanguage() ?? browserDefault;
 }
 
 export function setProductLanguage(language: ProductLanguage): void {

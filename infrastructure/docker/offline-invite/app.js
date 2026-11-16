@@ -20,6 +20,11 @@ const SOURCE = {
     accepted: "Je bent ingelogd op deze installatie.",
     redeem: "Uitnodiging accepteren",
     continue: "Verder naar MK8DX",
+    backToDevice: "Terug naar het goedkeuren van je app",
+    stepTrust: "Vertrouwen",
+    stepScan: "Inlogkaart scannen",
+    stepDone: "Klaar",
+    steps: "Stappen",
     language: "Taal",
   },
   en: {
@@ -36,6 +41,11 @@ const SOURCE = {
     accepted: "You are signed in to this installation.",
     redeem: "Accept invitation",
     continue: "Continue to MK8DX",
+    backToDevice: "Back to approving your app",
+    stepTrust: "Trust",
+    stepScan: "Scan sign-in card",
+    stepDone: "Done",
+    steps: "Steps",
     language: "Language",
   },
 };
@@ -51,7 +61,20 @@ const whoLabel = document.getElementById("who-label");
 const whoName = document.getElementById("who-name");
 const notYou = document.getElementById("not-you");
 const languageSelect = document.getElementById("language");
+const steps = document.getElementById("steps");
 let phase = "checking";
+// A /device page that waits for this sign-in leaves an expiry marker here (apps/timetrials-web/src/
+// pending-device.ts; never a code): after accepting, the continue link goes back to /device instead of home.
+const PENDING_DEVICE_KEY = "mk8dx.pending-device.v1";
+function pendingDevice() {
+  try {
+    const until = Number(window.localStorage.getItem(PENDING_DEVICE_KEY));
+    if (!Number.isFinite(until) || until < Date.now()) return null;
+    window.localStorage.removeItem(PENDING_DEVICE_KEY);
+    return "/device";
+  } catch { return null; }
+}
+let returnToDevice = null;
 let signedInLabel = null;
 
 async function texts(code) {
@@ -75,7 +98,14 @@ function paint() {
   title.textContent = copy.title;
   explanation.textContent = copy.explanation;
   button.textContent = copy.redeem;
-  continueLink.textContent = copy.continue;
+  continueLink.textContent = returnToDevice ? copy.backToDevice : copy.continue;
+  steps.setAttribute("aria-label", copy.steps);
+  for (const [index, key] of [["1", "stepTrust"], ["2", "stepScan"], ["3", "stepDone"]]) {
+    const item = steps.querySelector(`[data-step="${index}"]`);
+    item.querySelector("span").textContent = copy[key];
+    const current = index === (phase === "accepted" || phase === "signedIn" ? "3" : "2");
+    if (current) item.setAttribute("aria-current", "step"); else item.removeAttribute("aria-current");
+  }
   whoLabel.textContent = copy.signsInAs;
   notYou.textContent = copy.notYou;
   languageSelect.setAttribute("aria-label", copy.language);
@@ -153,9 +183,13 @@ button.addEventListener("click", async () => {
     // A new account on this browser: drop the previous account's remembered
     // header identity, exactly as signing out does (shared family devices).
     try { window.localStorage.removeItem("mk8dx.nav-identity.v1"); } catch { /* storage refused */ }
-    if (label === null) setPhase("accepted");
-    else { signedInLabel = label; phase = "signedIn"; status.textContent = `${copy.signedInAs} ${label}.`; }
+    returnToDevice = pendingDevice();
+    if (returnToDevice) continueLink.href = returnToDevice;
+    if (label === null) phase = "accepted";
+    else { signedInLabel = label; phase = "signedIn"; }
+    paint();
     notYou.hidden = true;
+    button.hidden = true;
     continueLink.hidden = false;
   } catch {
     setPhase("failed");
