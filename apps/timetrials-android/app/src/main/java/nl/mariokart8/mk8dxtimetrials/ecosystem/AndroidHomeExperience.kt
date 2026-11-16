@@ -575,7 +575,10 @@ private fun CommunityActivity(
         }
         if (stories.isEmpty()) {
             Text(
-                "No recent community activity yet — be the first.",
+                androidText(
+                    "No recent community activity yet — be the first.",
+                    "Nog geen recente communityactiviteit — wees de eerste.",
+                ),
                 style = type.body,
                 color = colors.textBody,
             )

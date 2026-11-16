@@ -92,13 +92,12 @@ describe("offline invitation redemption limits", () => {
     } finally { await h.app.close(); }
   });
 
-  it("answers 429 when one card is hammered, without affecting other cards", async () => {
+  it("answers 429 when one live card is hammered, without affecting other cards", async () => {
     const h = await harness();
     try {
       const card = h.issue();
-      expect((await h.redeem(card)).statusCode).toBe(200);
-      for (let attempt = 1; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perToken.maximum; attempt += 1) {
-        expect((await h.redeem(card)).statusCode).toBe(401);
+      for (let attempt = 0; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perToken.maximum; attempt += 1) {
+        expect((await h.preview(card)).statusCode).toBe(200);
       }
       const limited = await h.redeem(card);
       expect(limited.statusCode).toBe(429);
@@ -110,15 +109,17 @@ describe("offline invitation redemption limits", () => {
     } finally { await h.app.close(); }
   });
 
-  it("throttles invalid tokens: a repeated one by its hash, random ones per address", async () => {
+  it("answers a used, unknown or malformed token 401 without a bucket of its own; random ones per address", async () => {
     const h = await harness();
     try {
-      const unknown = newToken();
-      for (let attempt = 0; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perToken.maximum; attempt += 1) {
-        expect((await h.redeem(unknown, "192.168.0.50")).statusCode).toBe(401);
+      const used = h.issue();
+      expect((await h.redeem(used)).statusCode).toBe(200);
+      for (let attempt = 0; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perToken.maximum + 2; attempt += 1) {
+        expect((await h.redeem(used, "192.168.0.50")).statusCode).toBe(401);
       }
-      expect((await h.redeem(unknown, "192.168.0.50")).statusCode).toBe(429);
       expect((await h.redeem("not-even-a-token", "192.168.0.51")).statusCode).toBe(401);
+      expect([...h.limiter.counts.keys()].filter((key) => key.startsWith("offline-invitation-redeem-token|")))
+        .toHaveLength(1);
       let limited = 0;
       for (let attempt = 0; attempt < OFFLINE_INVITATION_REDEEM_LIMITS.perAddress.max + 2; attempt += 1) {
         if ((await h.redeem(newToken(), "192.168.0.52")).statusCode === 429) { limited += 1; }
@@ -127,18 +128,37 @@ describe("offline invitation redemption limits", () => {
     } finally { await h.app.close(); }
   });
 
-  it("caps redemption attempts across all clients", async () => {
+  it("a flood of made-up tokens from many addresses never blocks a real card", async () => {
+    const h = await harness();
+    try {
+      const { failures, global, previewGlobal } = OFFLINE_INVITATION_REDEEM_LIMITS;
+      const flood = failures.maximum + global.maximum + previewGlobal.maximum + 10;
+      let refusedFlood = 0;
+      for (let attempt = 0; attempt < flood; attempt += 1) {
+        const address = `10.${Math.floor(attempt / 2_500)}.${Math.floor(attempt / 50) % 50}.${attempt % 50 + 1}`;
+        const response = attempt % 2 === 0 ? await h.redeem(newToken(), address) : await h.preview(newToken(), address);
+        if (response.statusCode === 429) { refusedFlood += 1; }
+      }
+      expect(refusedFlood).toBeGreaterThan(0); // the failure budget itself is bounded
+      const card = h.issue();
+      expect((await h.preview(card, "10.99.0.1")).statusCode).toBe(200);
+      expect((await h.redeem(card, "10.99.0.1")).statusCode).toBe(200);
+    } finally { await h.app.close(); }
+  });
+
+  it("caps redemptions of live cards across all clients, apart from previews", async () => {
     const h = await harness();
     try {
       const { maximum } = OFFLINE_INVITATION_REDEEM_LIMITS.global;
       for (let attempt = 0; attempt < maximum; attempt += 1) {
-        // Spread over many addresses so no per-address bucket is the one that trips.
-        const response = await h.redeem(newToken(), `10.0.${Math.floor(attempt / 10)}.${attempt % 10 + 1}`);
-        expect(response.statusCode).toBe(401);
+        const response = await h.redeem(h.issue(), `10.0.${Math.floor(attempt / 10)}.${attempt % 10 + 1}`);
+        expect(response.statusCode).toBe(200);
       }
       const capped = await h.redeem(h.issue(), "10.9.9.9");
       expect(capped.statusCode).toBe(429);
       expect(capped.json()).toMatchObject({ code: "offline_invitation_rate_limited" });
+      // Previews have their own bucket.
+      expect((await h.preview(h.issue(), "10.9.9.8")).statusCode).toBe(200);
     } finally { await h.app.close(); }
   });
 
