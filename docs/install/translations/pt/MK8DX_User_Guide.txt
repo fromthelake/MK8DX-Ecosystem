@@ -174,9 +174,9 @@ Para uma rede de casa ou de clube, usa o pacote A2. Transfere mk8dx-a2-windows-a
 
 O guia completo passo a passo, com imagens, é o docs/install/A2_HOME_GUIDE_EN.md; dentro do pacote é também o docs/install/guide/en.html, e a configuração abre-o a partir da sua ligação Manual. Cobre a preparação do Windows, do Linux ou do macOS, os telemóveis e PCs, a aplicação Android, o LiveTrial, as noites de torneio, as cópias de segurança, a mudança para um computador novo, um endereço fixo, um novo endereço de rede, as atualizações e a remoção do MK8DX de um computador.
 
-Avançado: com o teu próprio servidor de correio
+Variante avançada histórica: com o teu próprio servidor de correio
 
-O resto deste capítulo descreve uma variante mais antiga e avançada, com um nome de host privado e ligações de início de sessão por e-mail através do teu próprio servidor de correio. A maioria das pessoas não precisa dela. Usa o pacote mk8dx-host-local e a escolha A2 na pergunta da sua configuração.
+As instruções do pacote A2 offline atual terminam acima. Continua no guia A2 ilustrado indicado. O resto deste capítulo descreve uma variante mais antiga e avançada, com um nome de host privado e ligações de início de sessão por e-mail através do teu próprio servidor de correio. A maioria das pessoas não precisa dela. Usa o pacote mk8dx-host-local e a escolha A2 na pergunta da sua configuração. Não combines os seguintes passos do ficheiro hosts, SMTP, certificado ou instalador com o pacote mk8dx-a2 atual nem com os seus dados de instalação.
 
 Esta via cria uma segunda instalação MK8DX, separada, num host Windows. O teu teste num computador mantém-se intacto. A primeira via de cliente documentada é um segundo PC Windows com o Chrome ou o Edge, incluindo o carregamento de imagens no leitor. Um segundo PC físico ou um telemóvel ainda não teve um teste real de aceitação por utilizadores. A aplicação Android genérica não confia automaticamente no certificado local; para ela, usa um endereço HTTPS público de comunidade em alojamento partilhado ou num VPS.
 

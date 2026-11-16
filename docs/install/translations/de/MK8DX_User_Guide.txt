@@ -174,9 +174,9 @@ Für ein Heim- oder Vereinsnetzwerk benutzt du das A2-Paket. Lade mk8dx-a2-windo
 
 Die vollständige Schritt-für-Schritt-Anleitung mit Bildern ist docs/install/A2_HOME_GUIDE_EN.md; im Paket ist sie auch docs/install/guide/en.html, und die Einrichtung öffnet sie über ihren Link Manual (Handbuch). Sie behandelt die Vorbereitung von Windows, Linux oder macOS, Handys und PCs, die Android-App, LiveTrial, Turnierabende, Backups, den Umzug auf einen neuen Computer, eine feste Adresse, eine neue Netzwerkadresse, Updates und das Entfernen von MK8DX von einem Computer.
 
-Fortgeschritten: mit eigenem Mailserver
+Historische fortgeschrittene Variante: mit eigenem Mailserver
 
-Der Rest dieses Kapitels beschreibt eine ältere, fortgeschrittene Variante mit einem privaten Hostnamen und Anmeldelinks per E-Mail über deinen eigenen Mailserver. Die meisten Leute brauchen sie nicht. Sie benutzt das Paket mk8dx-host-local und die Wahl A2 in dessen Einrichtungsfrage.
+Die Anleitung für das aktuelle Offline-A2-Paket endet oben. Fahre in der verlinkten bebilderten A2-Anleitung fort. Der Rest dieses Kapitels beschreibt eine ältere, fortgeschrittene Variante mit einem privaten Hostnamen und Anmeldelinks per E-Mail über deinen eigenen Mailserver. Die meisten Leute brauchen sie nicht. Sie benutzt das Paket mk8dx-host-local und die Wahl A2 in dessen Einrichtungsfrage. Kombiniere die folgenden Schritte zu hosts-Datei, SMTP, Zertifikat und Installer nicht mit dem aktuellen mk8dx-a2-Paket oder dessen Installationsdaten.
 
 Dieser Weg legt eine zweite, getrennte MK8DX-Installation auf einem Windows-Host an. Dein Test auf einem Computer bleibt erhalten. Der dokumentierte erste Client-Weg ist ein zweiter Windows-PC mit Chrome oder Edge, einschließlich Bild-Upload im Scanner. Ein physischer zweiter PC oder ein Handy hatte noch keinen echten Abnahmetest mit Benutzern. Die allgemeine Android-App vertraut dem lokalen Zertifikat nicht automatisch; nimm dafür eine öffentliche HTTPS-Community-Adresse auf Shared Hosting oder einem VPS.
 

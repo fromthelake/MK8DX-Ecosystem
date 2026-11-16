@@ -174,9 +174,9 @@ Pour un réseau domestique ou de club, utilise le paquet A2. Télécharge mk8dx-
 
 Le guide complet pas à pas, avec images, est docs/install/A2_HOME_GUIDE_EN.md ; dans le paquet, c'est aussi docs/install/guide/en.html, et l'installation l'ouvre depuis son lien Manual (Manuel). Il couvre la préparation de Windows, Linux ou macOS, les téléphones et les PC, l'application Android, LiveTrial, les soirées tournoi, les sauvegardes, le passage à un nouvel ordinateur, une adresse fixe, une nouvelle adresse réseau, les mises à jour et la suppression de MK8DX d'un ordinateur.
 
-Avancé : avec ton propre serveur de messagerie
+Ancienne variante avancée : avec ton propre serveur de messagerie
 
-Le reste de ce chapitre décrit une variante plus ancienne et avancée, avec un nom d'hôte privé et des liens de connexion envoyés par e-mail via ton propre serveur de messagerie. La plupart des gens n'en ont pas besoin. Elle utilise le paquet mk8dx-host-local et le choix A2 dans sa question d'installation.
+Les instructions du paquet A2 hors ligne actuel s’arrêtent ci-dessus. Continue dans le guide A2 illustré indiqué. Le reste de ce chapitre décrit une variante plus ancienne et avancée, avec un nom d'hôte privé et des liens de connexion envoyés par e-mail via ton propre serveur de messagerie. La plupart des gens n'en ont pas besoin. Elle utilise le paquet mk8dx-host-local et le choix A2 dans sa question d'installation. Ne mélange pas les étapes suivantes concernant le fichier hosts, SMTP, le certificat ou l’installateur avec le paquet mk8dx-a2 actuel ni avec ses données d’installation.
 
 Cette voie crée une seconde installation MK8DX séparée sur un hôte Windows. Ton essai sur un seul ordinateur reste intact. La première voie client documentée est un second PC Windows avec Chrome ou Edge, y compris l'envoi d'images au scanner. Un second PC physique ou un téléphone n'a pas encore fait l'objet d'un vrai test d'acceptation par un utilisateur. L'application Android générique ne fait pas automatiquement confiance au certificat local ; utilise pour elle une adresse communautaire HTTPS publique sur un hébergement mutualisé ou un VPS.
 

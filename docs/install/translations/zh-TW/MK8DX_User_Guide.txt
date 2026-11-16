@@ -174,9 +174,9 @@ powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoo
 
 附有圖片的完整逐步指南是 docs/install/A2_HOME_GUIDE_EN.md；在套件中它也是 docs/install/guide/en.html，安裝程式會透過它的 Manual（手冊）連結開啟它。指南涵蓋準備 Windows、Linux 或 macOS，手機和電腦，Android App，LiveTrial，錦標賽之夜，備份，搬到新電腦，固定位址，新的網路位址、更新以及從電腦移除 MK8DX。
 
-進階：使用你自己的郵件伺服器
+歷史進階方案：使用自己的郵件伺服器
 
-本章其餘部分介紹一種較舊的進階變化方式，它使用私人主機名稱，並透過你自己的郵件伺服器以電子郵件傳送登入連結。大多數人都不需要它。它使用 mk8dx-host-local 套件，並在安裝問題中選擇 A2。
+目前離線 A2 套件的說明到此結束。請繼續依照上方連結的 A2 圖文指南操作。本章其餘部分介紹一種較舊的進階變化方式，它使用私人主機名稱，並透過你自己的郵件伺服器以電子郵件傳送登入連結。大多數人都不需要它。它使用 mk8dx-host-local 套件，並在安裝問題中選擇 A2。 不要將下面有關 hosts 檔案、SMTP、憑證或安裝程式的步驟與目前 mk8dx-a2 套件或其安裝資料混用。
 
 這種方式會在一台 Windows 主機上建立第二個獨立的 MK8DX 安裝。你在一台電腦上的試用安裝保持不變。文件中第一種用戶端方式是使用 Chrome 或 Edge 的第二台 Windows 電腦，包括掃描器圖片上傳。實體的第二台電腦或手機尚未經過真實使用者的驗收測試。通用版 Android App 不會自動信任本機憑證；請為它使用共享主機或 VPS 上的公開 HTTPS 社群網址。
 

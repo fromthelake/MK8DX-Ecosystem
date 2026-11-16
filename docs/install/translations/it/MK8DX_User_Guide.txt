@@ -174,9 +174,9 @@ Per una rete di casa o del club, usa il pacchetto A2. Scarica mk8dx-a2-windows-a
 
 La guida completa passo dopo passo, con immagini, è docs/install/A2_HOME_GUIDE_EN.md; all'interno del pacchetto è anche docs/install/guide/en.html, e la configurazione la apre dal suo link Manual (Manuale). Tratta la preparazione di Windows, Linux o macOS, di telefoni e PC, l'app Android, LiveTrial, le serate di torneo, i backup, il passaggio a un nuovo computer, un indirizzo fisso, un nuovo indirizzo di rete, gli aggiornamenti e la rimozione di MK8DX da un computer.
 
-Avanzato: con il tuo server di posta
+Variante avanzata storica: con il tuo server di posta
 
-Il resto di questo capitolo descrive una variante più vecchia e avanzata con un nome host privato e link di accesso via email tramite il tuo server di posta. La maggior parte delle persone non ne ha bisogno. Usa il pacchetto mk8dx-host-local e la scelta A2 nella sua domanda di configurazione.
+Le istruzioni per il pacchetto A2 offline attuale terminano sopra. Continua nella guida A2 illustrata collegata. Il resto di questo capitolo descrive una variante più vecchia e avanzata con un nome host privato e link di accesso via email tramite il tuo server di posta. La maggior parte delle persone non ne ha bisogno. Usa il pacchetto mk8dx-host-local e la scelta A2 nella sua domanda di configurazione. Non combinare i seguenti passaggi relativi al file hosts, SMTP, certificato o programma di installazione con il pacchetto mk8dx-a2 attuale o con i suoi dati di installazione.
 
 Questa via crea una seconda installazione MK8DX separata su un host Windows. La tua prova su un computer resta intatta. La prima via client documentata è un secondo PC Windows con Chrome o Edge, compreso il caricamento di immagini nello scanner. Un secondo PC fisico o un telefono non hanno ancora avuto un vero collaudo da parte di utenti. L'app Android generica non si fida automaticamente del certificato locale; per essa usa un indirizzo di community HTTPS pubblico su hosting condiviso o su un VPS.
 

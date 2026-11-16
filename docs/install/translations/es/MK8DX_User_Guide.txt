@@ -174,9 +174,9 @@ Para una red de casa o del club, usa el paquete A2. Descarga mk8dx-a2-windows-am
 
 La guía completa paso a paso, con imágenes, es docs/install/A2_HOME_GUIDE_EN.md; dentro del paquete también es docs/install/guide/en.html, y la configuración la abre desde su enlace Manual. Trata la preparación de Windows, Linux o macOS, móviles y PC, la app de Android, LiveTrial, las noches de torneo, las copias de seguridad, el paso a un ordenador nuevo, una dirección fija, una dirección de red nueva, las actualizaciones y la eliminación de MK8DX de un ordenador.
 
-Avanzado: con tu propio servidor de correo
+Variante avanzada histórica: con tu propio servidor de correo
 
-El resto de este capítulo describe una variante más antigua y avanzada, con un nombre de host privado y enlaces de inicio de sesión por correo a través de tu propio servidor de correo. La mayoría de la gente no la necesita. Usa el paquete mk8dx-host-local y la opción A2 en su pregunta de configuración.
+Las instrucciones del paquete A2 sin conexión actual terminan arriba. Continúa en la guía A2 ilustrada enlazada. El resto de este capítulo describe una variante más antigua y avanzada, con un nombre de host privado y enlaces de inicio de sesión por correo a través de tu propio servidor de correo. La mayoría de la gente no la necesita. Usa el paquete mk8dx-host-local y la opción A2 en su pregunta de configuración. No combines los siguientes pasos del archivo hosts, SMTP, certificado o instalador con el paquete mk8dx-a2 actual ni con sus datos de instalación.
 
 Esta vía crea una segunda instalación de MK8DX, independiente, en un host con Windows. Tu prueba en un ordenador sigue intacta. La primera vía de cliente documentada es un segundo PC con Windows que usa Chrome o Edge, incluida la subida de imágenes al escáner. Un segundo PC o un móvil físico todavía no ha pasado una prueba de aceptación real con usuarios. La app genérica de Android no confía automáticamente en el certificado local; para ella, usa una dirección de comunidad HTTPS pública en un hosting compartido o un VPS.
 
