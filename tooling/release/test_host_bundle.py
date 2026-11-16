@@ -1,6 +1,7 @@
 """Check that a release ZIP will start the images it actually contains."""
 
 import hashlib
+import shutil
 import subprocess
 import tempfile
 import unittest
@@ -96,6 +97,18 @@ class HostBundleArchiveLayoutTest(unittest.TestCase):
             host_bundle.write_archive(bad, receipt, corrupted, {}, None, tar, "amd64", True)
             with self.assertRaisesRegex(ValueError, "guide differs from source"):
                 verify_package_guides.verify(bad)
+
+            host_output = folder / "mk8dx-host-local-v0.2.11-amd64.zip"
+            host_files = {name: (source / name).read_bytes() for name in paths}
+            host_receipt = {"revision": "v0.2.11", "sourceCommit": receipt["sourceCommit"],
+                            "files": {name: {"bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
+                                      for name, data in host_files.items()}}
+            host_bundle.write_archive(host_output, host_receipt, host_files, {}, None, tar, "amd64", False)
+            self.assertEqual(len(paths), verify_package_guides.verify(host_output))
+            wrong_version = folder / "mk8dx-host-local-v0.2.12-amd64.zip"
+            shutil.copyfile(host_output, wrong_version)
+            with self.assertRaisesRegex(ValueError, "revision differ"):
+                verify_package_guides.verify(wrong_version)
 
 
 class HostBundleImageReferencesTest(unittest.TestCase):
