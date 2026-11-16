@@ -48,6 +48,16 @@ http://{$MK8DX_LAN_IP} {
     root * /run/mk8dx/setup
     file_server
   }
+  # Public read-only A2 guide for a phone before it trusts this installation.
+  # The host-only wizard /help and its state are not mounted here. Admit only
+  # the known guide page locales, its CSS/JS and image PNGs; never list folders.
+  @a2_guide path_regexp ^/help/a2/(?:(?:en|en-US|nl|de|es|es-419|fr|fr-CA|it|pt|ru|ja|ko|zh-CN|zh-TW)\.html|guide\.(?:css|js)|img/[A-Za-z0-9-]+\.png)$
+  handle @a2_guide {
+    header Content-Security-Policy "default-src 'none'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; frame-ancestors 'none'"
+    uri strip_prefix /help/a2
+    root * /run/mk8dx/guide
+    file_server
+  }
   handle {
     redir https://{$MK8DX_LAN_IP}{uri} 308
   }

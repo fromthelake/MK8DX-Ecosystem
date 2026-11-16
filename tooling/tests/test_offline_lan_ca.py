@@ -105,6 +105,42 @@ class OfflineLanCaTest(unittest.TestCase):
             self.assertIn("Installeren vanuit opslag", page)  # the vivo route checked on a real phone
             self.assertIn('<ol class="steps"', page)
 
+    def test_phone_guide_uses_only_public_read_only_files_on_the_setup_host(self):
+        root = Path(__file__).resolve().parents[2]
+        caddy = (root / "infrastructure/docker/Caddyfile.offline-lan").read_text(encoding="utf-8")
+        match = re.search(r"@a2_guide path_regexp (\S+)\n", caddy)
+        self.assertIsNotNone(match)
+        pattern = match.group(1)
+        for lang in offline_lan_ca.SETUP_LANGUAGES:
+            with self.subTest(lang=lang):
+                self.assertRegex(f"/help/a2/{lang}.html", pattern)
+        guide = root / "docs/install/guide"
+        for asset in ("guide.css", "guide.js", *(f"img/{path.name}" for path in (guide / "img").glob("*.png"))):
+            with self.subTest(asset=asset):
+                self.assertRegex(f"/help/a2/{asset}", pattern)
+        for blocked in ("/help/a2", "/help/a2/", "/help/a2/images-reviewed-v1.json",
+                        "/help/a2/../setup/index.html", "/help/a2/%2e%2e/setup/index.html",
+                        "/help/a2/en.html/../../setup/index.html", "/help/a2/xx.html"):
+            with self.subTest(blocked=blocked):
+                self.assertNotRegex(blocked, pattern)
+        block = caddy[caddy.index("handle @a2_guide {"):]
+        block = block[:block.index("\n  }\n")]
+        self.assertIn("uri strip_prefix /help/a2", block)
+        self.assertIn("root * /run/mk8dx/guide", block)
+        self.assertIn("file_server", block)
+        self.assertIn("default-src 'none'", block)
+        self.assertIn("frame-ancestors 'none'", block)
+        self.assertNotIn("reverse_proxy", block)
+        self.assertLess(caddy.index("handle @a2_guide {"), caddy.index("\nhttps://"))
+        compose = (root / "compose.offline-lan.yaml").read_text(encoding="utf-8")
+        self.assertIn("./docs/install/guide:/run/mk8dx/guide:ro", compose)
+        page = offline_lan_ca.setup_page("https://192.168.12.34", {
+            "certificateSha256": "a" * 64, "spkiSha256": "b" * 64,
+        }, cert_file="MK8DX-AAAAAAAA-2026-11-16.crt")
+        for lang in offline_lan_ca.SETUP_LANGUAGES:
+            self.assertIn(f'href="/help/a2/{lang}.html"', page)
+        self.assertIn('href="/help/a2/nl.html">Handleiding</a>', page)
+
     @unittest.skipUnless(sys.platform == "win32", "Windows DPAPI only")
     def test_windows_dpapi_machine_round_trip(self):
         original = hashlib.sha256(b"disposable fixture").digest()

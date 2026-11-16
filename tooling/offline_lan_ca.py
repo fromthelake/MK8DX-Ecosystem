@@ -195,7 +195,8 @@ _SETUP_STYLE = (
     "text-decoration:none;border-radius:12px;padding:14px 16px;margin:12px 0}"
     ".code{font:600 24px/1.3 Consolas,monospace;letter-spacing:1px;color:#f7c948;overflow-wrap:anywhere}"
     "code,.mono{font-family:Consolas,monospace;overflow-wrap:anywhere;font-size:14px;color:#c9cfe8}"
-    ".muted{color:#a9b1cf;font-size:15px}[hidden]{display:none!important}"
+    ".muted{color:#a9b1cf;font-size:15px}.guide-link{color:#f7c948;font-weight:700}"
+    ".guide-link:focus-visible{outline:3px solid #f7c948;outline-offset:3px}[hidden]{display:none!important}"
     ".steps{display:flex;flex-wrap:wrap;gap:6px 14px;list-style:none;padding:0;margin:6px 0 4px;font-size:15px;"
     "color:#a9b1cf}.steps li{margin:0}.steps b{display:inline-block;min-width:1.6em;text-align:center;"
     "border:1px solid #26305a;border-radius:999px;margin-right:4px}.steps [aria-current]{color:#eef1fb;font-weight:700}"
@@ -237,6 +238,7 @@ _SETUP_TEXT = {
                   "The exact steps differ by distribution; Linux is not yet tested end to end for this route."],
         "dl_crt": "Download certificate", "dl_ios": "Download profile",
         "root_cert": "Root certificate SHA-256:", "root_key": "Root public key SHA-256 (SPKI):", "language": "Language",
+        "help": "Manual",
         "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
     },
     "nl": {
@@ -271,7 +273,7 @@ _SETUP_TEXT = {
                   "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route."],
         "dl_crt": "Certificaat downloaden", "dl_ios": "Profiel downloaden",
         "root_cert": "SHA-256 van het basiscertificaat:", "root_key": "SHA-256 van de publieke sleutel (SPKI):",
-        "language": "Taal",
+        "language": "Taal", "help": "Handleiding",
         "names": {"android": "Android", "ios": "iPhone / iPad", "windows": "Windows", "mac": "Mac", "linux": "Linux"},
     },
 }
@@ -335,7 +337,9 @@ def setup_page(origin: str, fp: dict, catalog_dir: Path | None = None, cert_file
         parts.append(f"<div class=\"lang\" lang=\"{lang}\" data-lang=\"{lang}\" "
                      f"data-label=\"{html.escape(text['language'])}\"{hidden}>")
         parts.append(f"<div class=\"brand\">MK8DX</div><h1>{html.escape(text['title'])}</h1>"
-                     f"{steps_html(text, 1)}<p class=\"lead\">{html.escape(text['lead'])}</p>")
+                     f"{steps_html(text, 1)}<p class=\"lead\">{html.escape(text['lead'])}</p>"
+                     f"<p><a class=\"guide-link\" href=\"/help/a2/{lang}.html\">"
+                     f"{html.escape(text['help'])}</a></p>")
         parts.append(f"<section><p>{html.escape(text['check'])}</p><p class=\"code\">{short}</p>"
                      f"<details><summary>{html.escape(text['full'])}</summary>"
                      f"<p class=\"mono\">{html.escape(text['root_cert'])} {fp['certificateSha256']}</p>"

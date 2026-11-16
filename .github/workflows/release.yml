@@ -161,7 +161,7 @@ jobs:
           npm ci --ignore-scripts --prefix backend/api
           npx --prefix backend/api playwright install --with-deps chromium
           mkdir -p "$RUNNER_TEMP/out"
-          node tooling/build_guide_bundle.mjs --output "$RUNNER_TEMP/out"
+          node tooling/build_guide_bundle.mjs --output "$RUNNER_TEMP/out" --version "$PACKAGE_VERSION"
           test "$(ls "$RUNNER_TEMP"/out/MK8DX_Guide_*.pdf | wc -l)" -eq 15
           test "$(ls "$RUNNER_TEMP"/out/MK8DX_Guide_*.html | wc -l)" -eq 15
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -265,6 +265,8 @@ jobs:
           mkdir -p "$RUNNER_TEMP/out"
           python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
             --output "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
+          python -m tooling.release.verify_package_guides \
+            "$RUNNER_TEMP/out/mk8dx-host-local-${PACKAGE_VERSION}-amd64.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: host-package
@@ -353,6 +355,8 @@ jobs:
           python tooling/release/host_bundle.py --version "$version" --revision "$PACKAGE_VERSION" \
             --offline-candidate --platform "$A2_PLATFORM" --arch "$A2_ARCH" --wheels-dir "$RUNNER_TEMP/wheels" \
             --output "$RUNNER_TEMP/out/mk8dx-a2-$A2_PLATFORM-$A2_ARCH-${PACKAGE_VERSION}.zip"
+          python -m tooling.release.verify_package_guides \
+            "$RUNNER_TEMP/out/mk8dx-a2-$A2_PLATFORM-$A2_ARCH-${PACKAGE_VERSION}.zip"
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: a2-${{ matrix.platform }}-${{ matrix.arch }}

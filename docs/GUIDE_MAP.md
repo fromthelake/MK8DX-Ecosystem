@@ -70,13 +70,15 @@ words into an old image. Review example data and image hashes before packaging.
    download. A historical release should link to its own guide assets rather
    than to `/releases/latest/`.
 2. An A2 package's `README-FIRST.txt` leads to its local illustrated guide.
+   `START-HERE.html` offers the 15 languages immediately after unpacking.
    The setup/management wizard's **Manual** link serves the guide in the chosen
    language through `/help`, with the Markdown manual as fallback. That wizard
    listens on the host's `127.0.0.1`; phones cannot follow its link.
 3. The phone's `/setup` page and Android onboarding show their own immediate
-   certificate and sign-in instructions. Any fuller phone guide must be served
-   through a separately reviewed, read-only LAN route; it cannot depend on
-   internet or expose the host management wizard.
+   certificate and sign-in instructions. `/setup` also links to the matching
+   illustrated guide through the read-only `/help/a2/<locale>.html` LAN route.
+   This route serves only the packaged guide pages and their required assets;
+   it does not expose the host management wizard.
 4. The website's Apps page gives short install/update instructions. Additional
    Players, LiveTrial, Tournament and operator links should appear near their
    tasks only when those guides are actually reachable in that installation.
@@ -84,3 +86,6 @@ words into an old image. Review example data and image hashes before packaging.
 The packaging check must compare the guide sources and generated copies with
 the exact source commit of a new package. Source validation, package contents
 and published asset checks are separate evidence.
+
+[Guide gaps](GUIDE_GAPS.md) records where EN/NL-only technical references still
+contain extra detail and how the 15-language reading guide directs readers to it.

@@ -18,7 +18,8 @@ class GuideBundleTest(unittest.TestCase):
         codes = sorted(path.stem for path in GUIDE.glob("*.html"))
         self.assertEqual(len(codes), 15)
         with tempfile.TemporaryDirectory() as folder:
-            subprocess.run(["node", str(ROOT / "tooling/build_guide_bundle.mjs"), "--output", folder, "--html-only"],
+            subprocess.run(["node", str(ROOT / "tooling/build_guide_bundle.mjs"), "--output", folder,
+                            "--html-only", "--version", "v0.2.11"],
                            check=True, capture_output=True, text=True, cwd=ROOT)
             built = sorted(path.name for path in Path(folder).iterdir())
             self.assertEqual(built, sorted(f"MK8DX_Guide_{code}.html" for code in codes))
@@ -33,13 +34,15 @@ class GuideBundleTest(unittest.TestCase):
                     source = (GUIDE / f"{code}.html").read_text(encoding="utf-8")
                     self.assertEqual(page.count("data:image/png;base64,"),
                                      len(re.findall(r'(?:src|href)="img/', source)))
-                    self.assertIn("releases/latest/download/MK8DX_Guide_de.html", page)
+                    self.assertIn("releases/download/v0.2.11/MK8DX_Guide_de.html", page)
+                    self.assertNotIn("releases/latest/download/MK8DX_Guide_de.html", page)
 
 
 class ReleaseAttachesGuideBundlesTest(unittest.TestCase):
     def test_release_builds_and_attaches_the_bundles(self):
         workflow = (ROOT / ".github/workflows/release.yml").read_text(encoding="utf-8")
         self.assertIn("node tooling/build_guide_bundle.mjs --output", workflow)
+        self.assertIn('--version "$PACKAGE_VERSION"', workflow)
         self.assertIn("fonts-noto-cjk", workflow)
         self.assertRegex(workflow, r"draft-release:\n    needs: \[[^\]]*\bguides\b")
         # The bundles are in the release folder before the manifest and SHA256SUMS.txt are written.
