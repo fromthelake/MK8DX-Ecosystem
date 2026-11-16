@@ -7,6 +7,13 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ### Added
 
+- **MK8DX beheer: Add a phone or device**, a guided three-step flow per person: 1 Trust (the Prepare a device QR
+  code with its short check code, with a line for the app and one for a phone without it), 2 the person's one-time
+  sign-in card with a countdown and **New card**, 3 **Done** as soon as a device signed in with that card. The host
+  page answers a new administrator-only, rate-limited `POST /api/invitations/status` with the card's state only.
+- **Welcome card**: a printable A6 or A4 page per person with the address, both QR codes and the three numbered
+  steps; the sign-in QR is marked personal and one-time with its expiry, and is left out once it can no longer be
+  used (a card still lasts 15 minutes; no longer-lived card is offered).
 - **LiveTrial: readable clip names.** Every finished clip (runs, record-button clips and ghost replays) also
   appears in `Documents\MK8DX\LiveTrial-clips` with a name such as
   `2026-11-16 10h25m  Mario Kart Stadium  150cc  1m46s784.mp4`: start date and time, track in LiveTrial's language
@@ -26,6 +33,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
   after approval says plainly to go back to the app; the invitation page then offers "Back to approving your app".
 - **The website follows the browser's language** until a language is chosen (a Dutch phone opens in Dutch); a
   choice made in the language menu or Settings still wins.
+- Opening the technical host page (127.0.0.1 with its port) directly now says, in all 15 languages, to use the
+  **MK8DX beheer** shortcut instead of the one-time admin code.
 
 ## 0.2.8 — 2026-11-15
 

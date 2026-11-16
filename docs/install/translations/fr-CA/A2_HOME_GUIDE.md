@@ -185,6 +185,8 @@ Un **compte** est celui qui se connecte. Un **Joueur** est le joueur dans les cl
 2. **À faire (Linux) :** lance **MK8DX beheer** depuis le bureau ou depuis le menu des applications. Sur certains bureaux Linux, tu dois d'abord autoriser une telle icône (clic droit dessus, puis l'option qui autorise le lancement). Cela fonctionne aussi avec `sh tooling/start-mk8dx.sh` dans le dossier MK8DX, comme au chapitre 3. → **Tu vois :** un terminal puis la page **Administration MK8DX**.
 3. **À faire (macOS, non testé) :** double-clique sur **MK8DX beheer.command** sur le bureau, ou lance `sh tooling/start-mk8dx.sh` comme au chapitre 3. → **Tu vois :** Terminal puis la page **Administration MK8DX**.
 
+- **Tu as tapé toi-même 127.0.0.1 avec un port?** Une page **MK8DX lokaal beheer** qui demande un code d'administration à usage unique est la page technique de l'hôte. Tu n'en as pas besoin : ferme-la et ouvre MK8DX beheer avec le raccourci, comme ci-dessus.
+
 **Ajouter des personnes**
 
 1. **À faire :** tape les noms à **Noms (un par ligne)** et clique sur **Ajouter**. → **Tu vois :** les noms sous « Dans cette installation : ».
@@ -206,6 +208,22 @@ Un **compte** est celui qui se connecte. Un **Joueur** est le joueur dans les cl
 
 1. **À faire :** ouvre MK8DX beheer. Sur le premier écran, chaque personne a un bouton **Se déconnecter partout**. Clique dessus. → **Tu vois :** le bouton devient **Sûr ? Clique encore**.
 2. **À faire :** clique encore une fois. → **Tu vois :** « Déconnecté sur tous les appareils. Une nouvelle carte permet à cette personne de se reconnecter. ». Cette personne est maintenant déconnectée sur le site et dans l'appli, le changement d'une touche vers ce compte disparaît et les cartes ouvertes de cette personne cessent de fonctionner. → **Tu vois autre chose?** À côté de ton propre nom, le deuxième clic affiche « Pour te déconnecter toi-même, passe par le menu du compte sur le site (« Se déconnecter sur tous les appareils »). » et personne n'est déconnecté.
+
+**Ajouter un téléphone ou un appareil pour une personne**
+
+La façon guidée de mettre en service le téléphone, la tablette ou le PC de quelqu'un, y compris un iPhone ou un appareil sans l'application MK8DX.
+
+1. **À faire :** ouvre MK8DX beheer et clique sur **Ajouter un téléphone ou un appareil** à côté de la personne. → **Tu vois :** « Ajouter un téléphone ou un appareil pour … » avec le nom, et **1 · Faire confiance** avec la carte **Préparer un appareil** et son code court.
+2. **À faire :** sur l'appareil, avec l'application MK8DX (Android) : scanne le code QR dans l'application. Sans l'application (iPhone, iPad, autre téléphone ou PC) : scanne-le avec l'appareil photo et suis la page qui s'ouvre pour installer le certificat (chapitre 6). Vérifie que la page ou l'application affiche le même code. Si cet appareil a déjà été préparé, saute cette étape. Clique sur **Suivant**. → **Tu vois :** **2 · Scanner la carte de connexion** avec la carte personnelle de cette personne, « Personnelle pour … Fonctionne une fois. » et un compte à rebours comme « Encore valable 14:59 ».
+3. **À faire :** scanne cette carte avec le même appareil et accepte l'invitation sur celui-ci (chapitre 6). → **Tu vois :** dans MK8DX beheer, tout seul en quelques secondes : **3 · Terminé** et « … est connecté ». → **Tu vois autre chose?** « Cette carte a expiré. » ou « Cette carte a été révoquée. » : clique sur **Nouvelle carte**; l'ancienne carte cesse de fonctionner quand tu en crées une nouvelle. « Cette installation ne peut pas signaler si la carte a été utilisée » : regarde l'appareil et clique sur **Ça a marché**.
+4. **À faire :** clique sur **Un autre appareil** pour un deuxième appareil de la même personne, ou sur **Retour aux personnes**.
+
+**Imprimer une carte de bienvenue**
+
+1. **À faire :** dans Ajouter un téléphone ou un appareil, choisis **A6** ou **A4** à **Format du papier** et clique sur **Carte de bienvenue**. → **Tu vois :** un aperçu d'une page, « Bienvenue sur MK8DX, … ! », avec l'adresse et trois étapes numérotées : 1 Faire confiance (le code QR Préparer un appareil et le code de vérification), 2 Scanner la carte de connexion (le code QR personnel, marqué PERSONNELLE, avec « Valable jusqu'à ») et 3 Terminé.
+2. **À faire :** clique sur **Imprimer**, puis sur **Retour**. → **Tu vois :** la fenêtre d'impression de ton navigateur avec uniquement la carte de bienvenue.
+
+- La carte de connexion qui y figure fonctionne une fois et pendant 15 minutes à partir du moment où elle a été créée, sur papier aussi. MK8DX ne peut pas créer de carte qui dure plus longtemps, alors imprime-la juste avant de la remettre. Imprimée sans carte valide (à l'étape 1, ou après son expiration), l'étape 2 est une case vide : la personne reçoit alors une nouvelle carte le jour même. La partie Faire confiance reste valable tant que MK8DX ne change pas d'adresse.
 
 **Fermer MK8DX beheer**
 

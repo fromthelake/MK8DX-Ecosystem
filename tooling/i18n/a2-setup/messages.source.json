@@ -3,6 +3,27 @@
  "generatedBy": "tooling/i18n/extract_a2_messages.py",
  "messages": [
   {
+   "key": "1 · Trust",
+   "nl": "1 · Vertrouwen",
+   "places": [
+    "wizard.js:devStep1"
+   ]
+  },
+  {
+   "key": "2 · Scan sign-in card",
+   "nl": "2 · Inlogkaart scannen",
+   "places": [
+    "wizard.js:devStep2"
+   ]
+  },
+  {
+   "key": "3 · Done",
+   "nl": "3 · Klaar",
+   "places": [
+    "wizard.js:devStep3"
+   ]
+  },
+  {
    "key": "A backup cannot be opened without this code. It is shown only once.",
    "nl": "Zonder deze code is een back-up niet te openen. Hij wordt maar één keer getoond.",
    "places": [
@@ -24,6 +45,20 @@
    ]
   },
   {
+   "key": "Add a phone or device",
+   "nl": "Telefoon of apparaat toevoegen",
+   "places": [
+    "wizard.js:addDevice"
+   ]
+  },
+  {
+   "key": "Add a phone or device for {name}",
+   "nl": "Een telefoon of apparaat toevoegen voor {name}",
+   "places": [
+    "wizard.js:addDeviceTitle"
+   ]
+  },
+  {
    "key": "Add people and make sign-in cards.",
    "nl": "Mensen toevoegen en inlogkaarten maken.",
    "places": [
@@ -35,6 +70,13 @@
    "nl": "Voeg hetzelfde certificaat toe aan de vertrouwde basiscertificaten van je distributie of browser.",
    "places": [
     "offline_lan_ca.py:linux[0]"
+   ]
+  },
+  {
+   "key": "Address",
+   "nl": "Adres",
+   "places": [
+    "wizard.js:welcomeAddress"
    ]
   },
   {
@@ -59,6 +101,13 @@
    ]
   },
   {
+   "key": "Another device",
+   "nl": "Nog een apparaat",
+   "places": [
+    "wizard.js:devAnother"
+   ]
+  },
+  {
    "key": "Another folder (for example a USB stick):",
    "nl": "Andere map (bijvoorbeeld een USB-stick):",
    "places": [
@@ -73,10 +122,24 @@
    ]
   },
   {
+   "key": "Ask the administrator for your personal sign-in card (it works for 15 minutes).",
+   "nl": "Vraag de beheerder om je persoonlijke inlogkaart (die werkt 15 minuten).",
+   "places": [
+    "wizard.js:welcomeNoCard"
+   ]
+  },
+  {
    "key": "Back",
    "nl": "Vorige",
    "places": [
     "wizard.js:back"
+   ]
+  },
+  {
+   "key": "Back to the people",
+   "nl": "Terug naar de mensen",
+   "places": [
+    "wizard.js:devBackToPeople"
    ]
   },
   {
@@ -91,6 +154,13 @@
    "nl": "Kan iemand niet scannen? Stuur deze link alleen naar {name} zelf, bijvoorbeeld in een privébericht. Wie de link opent, kan inloggen als {name}. Hij werkt één keer en tot {until}.",
    "places": [
     "wizard.js:linkWarn"
+   ]
+  },
+  {
+   "key": "Check code",
+   "nl": "Controlecode",
+   "places": [
+    "wizard.js:welcomeCode"
    ]
   },
   {
@@ -230,6 +300,7 @@
    "key": "Done",
    "nl": "Klaar",
    "places": [
+    "wizard.js:welcomeStep3",
     "offline_lan_ca.py:steps[2]"
    ]
   },
@@ -413,6 +484,13 @@
    "nl": "Nieuwe versie installeren en starten",
    "places": [
     "wizard.js:phase_update"
+   ]
+  },
+  {
+   "key": "It worked",
+   "nl": "Het is gelukt",
+   "places": [
+    "wizard.js:devConfirm"
    ]
   },
   {
@@ -676,10 +754,24 @@
    ]
   },
   {
+   "key": "Now scan this personal sign-in card with the same device, in the app or with the camera. The device is then signed in as {name}.",
+   "nl": "Scan nu deze persoonlijke inlogkaart met hetzelfde apparaat, in de app of met de camera. Het apparaat is dan ingelogd als {name}.",
+   "places": [
+    "wizard.js:devSigninText"
+   ]
+  },
+  {
    "key": "Once per device. Scan this QR code with the camera. The device then learns to trust this installation (a security certificate), so the website opens safely. This does not sign you in yet. If the device was prepared before, go straight to step 2.",
    "nl": "Eén keer per apparaat. Scan deze QR-code met de camera. Het apparaat leert dan deze installatie te vertrouwen (een beveiligingscertificaat), zodat de website veilig opent. Je bent daarmee nog niet ingelogd. Was dit apparaat al voorbereid, ga dan meteen naar stap 2.",
    "places": [
     "wizard.js:step1Text"
+   ]
+  },
+  {
+   "key": "Once per device: the device learns to trust this installation (a security certificate). If this device was prepared before, click Next straight away.",
+   "nl": "Eén keer per apparaat: het apparaat leert deze installatie te vertrouwen (een beveiligingscertificaat). Was dit apparaat al voorbereid, klik dan meteen op Volgende.",
+   "places": [
+    "wizard.js:devPrepareText"
    ]
   },
   {
@@ -722,6 +814,27 @@
    "nl": "Andere mogelijkheden (één computer, eigen server, webhosting) staan in de handleiding onder 'Installatieroutes'.",
    "places": [
     "wizard.js:kindOther"
+   ]
+  },
+  {
+   "key": "PERSONAL: only for {name}, works once",
+   "nl": "PERSOONLIJK: alleen voor {name}, werkt één keer",
+   "places": [
+    "wizard.js:welcomePersonal"
+   ]
+  },
+  {
+   "key": "Paper size",
+   "nl": "Papierformaat",
+   "places": [
+    "wizard.js:printFormat"
+   ]
+  },
+  {
+   "key": "Personal for {name}. Works once.",
+   "nl": "Persoonlijk voor {name}. Werkt één keer.",
+   "places": [
+    "wizard.js:devPersonal"
    ]
   },
   {
@@ -774,10 +887,24 @@
    ]
   },
   {
+   "key": "Print",
+   "nl": "Afdrukken",
+   "places": [
+    "wizard.js:printNow"
+   ]
+  },
+  {
    "key": "Print cards",
    "nl": "Kaarten afdrukken",
    "places": [
     "wizard.js:print"
+   ]
+  },
+  {
+   "key": "Print the welcome card just before you hand it over: its sign-in card works only once and for 15 minutes. MK8DX cannot make a card that lasts longer. Without a valid sign-in card, step 2 prints as an empty box; then make a new card on the day itself.",
+   "nl": "Druk de welkomstkaart pas af vlak voordat je hem geeft: de inlogkaart erop werkt maar één keer en 15 minuten. Een langer geldige kaart kan MK8DX niet maken. Zonder geldige inlogkaart staat bij stap 2 een leeg vak; maak dan op de dag zelf een nieuwe kaart.",
+   "places": [
+    "wizard.js:printNote"
    ]
   },
   {
@@ -876,7 +1003,22 @@
    "key": "Scan sign-in card",
    "nl": "Inlogkaart scannen",
    "places": [
+    "wizard.js:welcomeStep2",
     "offline_lan_ca.py:steps[1]"
+   ]
+  },
+  {
+   "key": "Scan this QR code in the MK8DX app, or with the camera (iPhone, another phone or PC) and then follow the page to install the certificate. Once per device.",
+   "nl": "Scan deze QR-code in de MK8DX-app, of met de camera (iPhone, andere telefoon of pc) en volg dan de pagina om het certificaat te installeren. Eén keer per apparaat.",
+   "places": [
+    "wizard.js:welcomeStep1Text"
+   ]
+  },
+  {
+   "key": "Scan this personal sign-in card with the same device. You are then signed in as {name}.",
+   "nl": "Scan deze persoonlijke inlogkaart met hetzelfde apparaat. Je bent dan ingelogd als {name}.",
+   "places": [
+    "wizard.js:welcomeStep2Text"
    ]
   },
   {
@@ -1021,10 +1163,24 @@
    ]
   },
   {
+   "key": "The card was used: a device is now signed in as {name}. Another device for {name}? Click 'Another device'.",
+   "nl": "De kaart is gebruikt: een apparaat is nu ingelogd als {name}. Nog een apparaat voor {name}? Klik op 'Nog een apparaat'.",
+   "places": [
+    "wizard.js:devDoneText"
+   ]
+  },
+  {
    "key": "The exact steps differ by distribution; Linux is not yet tested end to end for this route.",
    "nl": "De stappen verschillen per distributie; Linux is nog niet volledig getest voor deze route.",
    "places": [
     "offline_lan_ca.py:linux[1]"
+   ]
+  },
+  {
+   "key": "The page and the app show this code. It must be exactly the same:",
+   "nl": "De pagina en de app tonen deze code. Hij moet precies hetzelfde zijn:",
+   "places": [
+    "wizard.js:devCheckCode"
    ]
   },
   {
@@ -1039,6 +1195,20 @@
    "nl": "In deze map staat geen MK8DX-back-up. Kopieer de back-upmap (bijvoorbeeld vanaf een USB-stick) naar de map MK8DX-backups in je Documenten, of kies hieronder een andere map.",
    "places": [
     "wizard.js:restoreNone"
+   ]
+  },
+  {
+   "key": "This card has expired. Make a new card.",
+   "nl": "Deze kaart is verlopen. Maak een nieuwe kaart.",
+   "places": [
+    "wizard.js:devExpired"
+   ]
+  },
+  {
+   "key": "This card was revoked. Make a new card.",
+   "nl": "Deze kaart is ingetrokken. Maak een nieuwe kaart.",
+   "places": [
+    "wizard.js:devRevoked"
    ]
   },
   {
@@ -1084,6 +1254,13 @@
    ]
   },
   {
+   "key": "This installation cannot report whether the card was used. Check the device: when it shows {name} as signed in, click 'It worked'.",
+   "nl": "Deze installatie kan niet melden of de kaart gebruikt is. Kijk op het apparaat: staat {name} als ingelogd, klik dan op 'Het is gelukt'.",
+   "places": [
+    "wizard.js:devUnsupported"
+   ]
+  },
+  {
    "key": "This installation runs on Windows, Linux and macOS.",
    "nl": "Deze installatie werkt op Windows, Linux en macOS.",
    "places": [
@@ -1109,6 +1286,13 @@
    "nl": "Deze installatie zet MK8DX op deze computer klaar voor iedereen in huis of op de club. Het duurt ongeveer 5 minuten. Je hoeft bijna alleen op Volgende te klikken.",
    "places": [
     "wizard.js:welcomeWhat"
+   ]
+  },
+  {
+   "key": "Three short steps on {name}'s phone, tablet or PC. Also works on an iPhone and without the MK8DX app.",
+   "nl": "Drie korte stappen op de telefoon, tablet of pc van {name}. Werkt ook op een iPhone en zonder de MK8DX-app.",
+   "places": [
+    "wizard.js:addDeviceLead"
    ]
   },
   {
@@ -1143,6 +1327,7 @@
    "key": "Trust",
    "nl": "Vertrouwen",
    "places": [
+    "wizard.js:welcomeStep1",
     "offline_lan_ca.py:steps[0]"
    ]
   },
@@ -1175,10 +1360,31 @@
    ]
   },
   {
+   "key": "Valid for {time} more",
+   "nl": "Nog {time} geldig",
+   "places": [
+    "wizard.js:devLeft"
+   ]
+  },
+  {
    "key": "Valid until",
    "nl": "Geldig tot",
    "places": [
     "wizard.js:validUntil"
+   ]
+  },
+  {
+   "key": "Valid until {until}",
+   "nl": "Geldig tot {until}",
+   "places": [
+    "wizard.js:welcomeExpires"
+   ]
+  },
+  {
+   "key": "Waiting for the device to sign in…",
+   "nl": "Wachten tot het apparaat inlogt…",
+   "places": [
+    "wizard.js:devWaiting"
    ]
   },
   {
@@ -1189,10 +1395,24 @@
    ]
   },
   {
+   "key": "Welcome card",
+   "nl": "Welkomstkaart",
+   "places": [
+    "wizard.js:printWelcome"
+   ]
+  },
+  {
    "key": "Welcome to MK8DX",
    "nl": "Welkom bij MK8DX",
    "places": [
     "wizard.js:welcomeTitle"
+   ]
+  },
+  {
+   "key": "Welcome to MK8DX, {name}!",
+   "nl": "Welkom bij MK8DX, {name}!",
+   "places": [
+    "wizard.js:welcomeCardTitle"
    ]
   },
   {
@@ -1224,10 +1444,31 @@
    ]
   },
   {
+   "key": "With the MK8DX app (Android): open the app and scan this QR code in the app. The app pairs and trusts MK8DX straight away.",
+   "nl": "Met de MK8DX-app (Android): open de app en scan deze QR-code in de app. De app koppelt zich en vertrouwt MK8DX meteen.",
+   "places": [
+    "wizard.js:devWithApp"
+   ]
+  },
+  {
+   "key": "Without the app (iPhone, iPad, another phone or a PC): scan the QR code with the camera and follow the page that opens to install the certificate.",
+   "nl": "Zonder de app (iPhone, iPad, een andere telefoon of een pc): scan de QR-code met de camera en volg de pagina die opent om het certificaat te installeren.",
+   "places": [
+    "wizard.js:devWithoutApp"
+   ]
+  },
+  {
    "key": "Working",
    "nl": "Bezig",
    "places": [
     "wizard.js:working"
+   ]
+  },
+  {
+   "key": "You are signed in as {name}. Open the website at the address above; the first time, you pick your player name.",
+   "nl": "Je bent ingelogd als {name}. Open de website op het adres hierboven; bij de eerste keer kies je je spelersnaam.",
+   "places": [
+    "wizard.js:welcomeStep3Text"
    ]
   },
   {
@@ -1340,6 +1581,13 @@
    "nl": "vivo: Beveiliging → Meer veiligheidsinstellingen → Installeren vanuit opslag → CA-certificaat.",
    "places": [
     "offline_lan_ca.py:brands[1]"
+   ]
+  },
+  {
+   "key": "{name} is signed in",
+   "nl": "{name} is ingelogd",
+   "places": [
+    "wizard.js:devDoneTitle"
    ]
   }
  ]

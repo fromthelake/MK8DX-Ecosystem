@@ -82,9 +82,15 @@ integration("offline host accounts on disposable MySQL/MariaDB", () => {
     const invite = await tickets.issue({ role: "administrator", userAccountId: first.userAccountId },
       player.accountKey, "account");
     invitations.push(invite.invitationId);
+    expect(await accounts.invitationState(first.userAccountId, invite.invitationId)).toBe("open");
+    await expect(accounts.invitationState(player.userAccountId, invite.invitationId))
+      .rejects.toMatchObject({ code: "forbidden" });
     const target = await tickets.redeem(invite.token);
     expect(target).toMatchObject({ userAccountId: player.userAccountId,
       accountKey: player.accountKey, role: "account" });
+    expect(await accounts.invitationState(first.userAccountId, invite.invitationId)).toBe("used");
+    await expect(accounts.invitationState(first.userAccountId,
+      "offline_invitation.00000000-0000-0000-0000-000000000000")).rejects.toMatchObject({ code: "invalid" });
   });
 
   it("signs another account out on every device and cannot sign out the actor", async () => {

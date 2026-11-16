@@ -1,0 +1,62 @@
+{
+ "schemaVersion": "mk8dx.a2-host-message-source.v1",
+ "generatedBy": "tooling/i18n/extract_a2_messages.py",
+ "messages": [
+  {
+   "key": "No shortcut? Start Start-MK8DX-LAN.cmd (Windows) or tooling/start-mk8dx.sh (Linux, macOS) in the MK8DX folder; it opens the same screen.",
+   "nl": "Geen snelkoppeling? Start Start-MK8DX-LAN.cmd (Windows) of tooling/start-mk8dx.sh (Linux, macOS) in de MK8DX-map; dat opent hetzelfde scherm.",
+   "places": [
+    "offline-host-text.ts:accessNoShortcut"
+   ]
+  },
+  {
+   "key": "One-time admin code (not the certificate fingerprint)",
+   "nl": "Eenmalige beheercode (niet de certificaatvingerafdruk)",
+   "places": [
+    "offline-host-text.ts:codeLabel"
+   ]
+  },
+  {
+   "key": "The code is invalid or expired.",
+   "nl": "De code is ongeldig of verlopen.",
+   "places": [
+    "offline-host-text.ts:invalid"
+   ]
+  },
+  {
+   "key": "This is the technical host page. It asks for a one-time admin code that only an operator command on this computer makes; you normally never need it.",
+   "nl": "Dit is de technische hostpagina. Ze vraagt een eenmalige beheercode die alleen een beheeropdracht op deze computer maakt; die heb je normaal nooit nodig.",
+   "places": [
+    "offline-host-text.ts:accessExpert"
+   ]
+  },
+  {
+   "key": "To add people, make sign-in cards or add a phone: double-click 'MK8DX beheer' on this computer's desktop. It opens MK8DX beheer straight away, without a code.",
+   "nl": "Om mensen toe te voegen, inlogkaarten te maken of een telefoon toe te voegen: dubbelklik op 'MK8DX beheer' op het bureaublad van deze computer. Dat opent MK8DX beheer meteen, zonder code.",
+   "places": [
+    "offline-host-text.ts:accessHint"
+   ]
+  },
+  {
+   "key": "Unlock",
+   "nl": "Ontgrendelen",
+   "places": [
+    "offline-host-text.ts:unlock"
+   ]
+  },
+  {
+   "key": "Unlocked.",
+   "nl": "Ontgrendeld.",
+   "places": [
+    "offline-host-text.ts:unlocked"
+   ]
+  },
+  {
+   "key": "Use the 'MK8DX beheer' shortcut",
+   "nl": "Gebruik de snelkoppeling 'MK8DX beheer'",
+   "places": [
+    "offline-host-text.ts:accessTitle"
+   ]
+  }
+ ]
+}

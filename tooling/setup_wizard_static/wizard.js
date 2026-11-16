@@ -105,6 +105,31 @@ const SOURCE = {
     moveGo: "Verhuizen", moveTitleRun: "Verhuizen", phase_move: "Naar het nieuwe adres verhuizen (Windows vraagt toestemming)",
     moveDone: "MK8DX draait op het nieuwe adres.",
     moveAfter: "Telefoons en pc's blijven MK8DX vertrouwen. Laat ze één keer de kaart 'Apparaat voorbereiden' scannen en opnieuw inloggen; gekoppelde apps koppel je opnieuw.",
+    addDevice: "Telefoon of apparaat toevoegen", addDeviceTitle: "Een telefoon of apparaat toevoegen voor {name}",
+    addDeviceLead: "Drie korte stappen op de telefoon, tablet of pc van {name}. Werkt ook op een iPhone en zonder de MK8DX-app.",
+    devStep1: "1 · Vertrouwen", devStep2: "2 · Inlogkaart scannen", devStep3: "3 · Klaar",
+    devPrepareText: "Eén keer per apparaat: het apparaat leert deze installatie te vertrouwen (een beveiligingscertificaat). Was dit apparaat al voorbereid, klik dan meteen op Volgende.",
+    devWithApp: "Met de MK8DX-app (Android): open de app en scan deze QR-code in de app. De app koppelt zich en vertrouwt MK8DX meteen.",
+    devWithoutApp: "Zonder de app (iPhone, iPad, een andere telefoon of een pc): scan de QR-code met de camera en volg de pagina die opent om het certificaat te installeren.",
+    devCheckCode: "De pagina en de app tonen deze code. Hij moet precies hetzelfde zijn:",
+    devSigninText: "Scan nu deze persoonlijke inlogkaart met hetzelfde apparaat, in de app of met de camera. Het apparaat is dan ingelogd als {name}.",
+    devPersonal: "Persoonlijk voor {name}. Werkt één keer.", devLeft: "Nog {time} geldig",
+    devExpired: "Deze kaart is verlopen. Maak een nieuwe kaart.", devRevoked: "Deze kaart is ingetrokken. Maak een nieuwe kaart.",
+    devWaiting: "Wachten tot het apparaat inlogt…",
+    devUnsupported: "Deze installatie kan niet melden of de kaart gebruikt is. Kijk op het apparaat: staat {name} als ingelogd, klik dan op 'Het is gelukt'.",
+    devConfirm: "Het is gelukt", devDoneTitle: "{name} is ingelogd",
+    devDoneText: "De kaart is gebruikt: een apparaat is nu ingelogd als {name}. Nog een apparaat voor {name}? Klik op 'Nog een apparaat'.",
+    devAnother: "Nog een apparaat", devBackToPeople: "Terug naar de mensen",
+    printWelcome: "Welkomstkaart", printNow: "Afdrukken", printFormat: "Papierformaat",
+    printNote: "Druk de welkomstkaart pas af vlak voordat je hem geeft: de inlogkaart erop werkt maar één keer en 15 minuten. Een langer geldige kaart kan MK8DX niet maken. Zonder geldige inlogkaart staat bij stap 2 een leeg vak; maak dan op de dag zelf een nieuwe kaart.",
+    welcomeCardTitle: "Welkom bij MK8DX, {name}!", welcomeAddress: "Adres",
+    welcomeStep1: "Vertrouwen",
+    welcomeStep1Text: "Scan deze QR-code in de MK8DX-app, of met de camera (iPhone, andere telefoon of pc) en volg dan de pagina om het certificaat te installeren. Eén keer per apparaat.",
+    welcomeCode: "Controlecode", welcomeStep2: "Inlogkaart scannen",
+    welcomeStep2Text: "Scan deze persoonlijke inlogkaart met hetzelfde apparaat. Je bent dan ingelogd als {name}.",
+    welcomePersonal: "PERSOONLIJK: alleen voor {name}, werkt één keer", welcomeExpires: "Geldig tot {until}",
+    welcomeNoCard: "Vraag de beheerder om je persoonlijke inlogkaart (die werkt 15 minuten).",
+    welcomeStep3: "Klaar", welcomeStep3Text: "Je bent ingelogd als {name}. Open de website op het adres hierboven; bij de eerste keer kies je je spelersnaam.",
   },
   en: {
     pageTitle: "Install MK8DX", brandAdmin: "administration", language: "Language", stepsLabel: "Steps",
@@ -202,6 +227,31 @@ const SOURCE = {
     moveGo: "Move", moveTitleRun: "Moving", phase_move: "Moving to the new address (Windows asks for permission)",
     moveDone: "MK8DX runs on the new address.",
     moveAfter: "Phones and PCs keep trusting MK8DX. Let them scan the 'Prepare a device' card once and sign in again; pair apps again.",
+    addDevice: "Add a phone or device", addDeviceTitle: "Add a phone or device for {name}",
+    addDeviceLead: "Three short steps on {name}'s phone, tablet or PC. Also works on an iPhone and without the MK8DX app.",
+    devStep1: "1 · Trust", devStep2: "2 · Scan sign-in card", devStep3: "3 · Done",
+    devPrepareText: "Once per device: the device learns to trust this installation (a security certificate). If this device was prepared before, click Next straight away.",
+    devWithApp: "With the MK8DX app (Android): open the app and scan this QR code in the app. The app pairs and trusts MK8DX straight away.",
+    devWithoutApp: "Without the app (iPhone, iPad, another phone or a PC): scan the QR code with the camera and follow the page that opens to install the certificate.",
+    devCheckCode: "The page and the app show this code. It must be exactly the same:",
+    devSigninText: "Now scan this personal sign-in card with the same device, in the app or with the camera. The device is then signed in as {name}.",
+    devPersonal: "Personal for {name}. Works once.", devLeft: "Valid for {time} more",
+    devExpired: "This card has expired. Make a new card.", devRevoked: "This card was revoked. Make a new card.",
+    devWaiting: "Waiting for the device to sign in…",
+    devUnsupported: "This installation cannot report whether the card was used. Check the device: when it shows {name} as signed in, click 'It worked'.",
+    devConfirm: "It worked", devDoneTitle: "{name} is signed in",
+    devDoneText: "The card was used: a device is now signed in as {name}. Another device for {name}? Click 'Another device'.",
+    devAnother: "Another device", devBackToPeople: "Back to the people",
+    printWelcome: "Welcome card", printNow: "Print", printFormat: "Paper size",
+    printNote: "Print the welcome card just before you hand it over: its sign-in card works only once and for 15 minutes. MK8DX cannot make a card that lasts longer. Without a valid sign-in card, step 2 prints as an empty box; then make a new card on the day itself.",
+    welcomeCardTitle: "Welcome to MK8DX, {name}!", welcomeAddress: "Address",
+    welcomeStep1: "Trust",
+    welcomeStep1Text: "Scan this QR code in the MK8DX app, or with the camera (iPhone, another phone or PC) and then follow the page to install the certificate. Once per device.",
+    welcomeCode: "Check code", welcomeStep2: "Scan sign-in card",
+    welcomeStep2Text: "Scan this personal sign-in card with the same device. You are then signed in as {name}.",
+    welcomePersonal: "PERSONAL: only for {name}, works once", welcomeExpires: "Valid until {until}",
+    welcomeNoCard: "Ask the administrator for your personal sign-in card (it works for 15 minutes).",
+    welcomeStep3: "Done", welcomeStep3Text: "You are signed in as {name}. Open the website at the address above; the first time, you pick your player name.",
   },
 };
 let T = SOURCE.en;
@@ -275,12 +325,21 @@ function setButtons({ next = T.next, nextEnabled = true, back = true, advanced =
 }
 function drawSteps() {
   const steps = $("steps"); steps.replaceChildren();
+  if (state.step === "device") {
+    // Add a phone or device: its own three steps (add-device.js), not the setup flow.
+    const at = MK8DXAddDevice.STEPS.indexOf(state.device.step);
+    MK8DXAddDevice.STEPS.forEach((_, i) => steps.append(el("li", i < at ? "done" : i === at ? "now" : "")));
+    return;
+  }
   const at = state.flow.indexOf(state.step);
   state.flow.forEach((_, i) => steps.append(el("li", i < at ? "done" : i === at ? "now" : "")));
 }
 function go(step) { state.step = step; render(); main.focus(); }
 function forward() { const i = state.flow.indexOf(state.step); if (i < state.flow.length - 1) go(state.flow[i + 1]); }
-$("back").addEventListener("click", () => { const i = state.flow.indexOf(state.step); if (i > 0) go(state.flow[i - 1]); });
+$("back").addEventListener("click", () => {
+  if (state.step === "device") { deviceEvent({ type: "back" }); return; }
+  const i = state.flow.indexOf(state.step); if (i > 0) go(state.flow[i - 1]);
+});
 $("next").addEventListener("click", () => actions[state.step]?.());
 $("advanced").addEventListener("click", () => { state.advanced = !state.advanced; render(); });
 function errorBox(message) { const box = el("div", "error", message); box.setAttribute("role", "alert"); return box; }
@@ -470,8 +529,12 @@ const views = {
         text.append(el("span", "", p.role === "administrator" ? `${p.name} (${T.administrator})` : p.name));
         li.append(el("span", "state ok", "✓"), text);
         if (state.manage) {
+          const tools = el("div", "person-actions");
+          // A guided "Add a phone or device": trust, this person's sign-in card, done when it is used.
+          const device = el("button", "primary small", T.addDevice); device.type = "button";
+          device.addEventListener("click", () => openDevice(p));
           // Lost phone or a card in the wrong hands: end every session of this person.
-          const out = el("button", "secondary small person-action", T.signOut); out.type = "button";
+          const out = el("button", "secondary small", T.signOut); out.type = "button";
           let armed = false;
           out.addEventListener("click", async () => {
             if (!armed) { armed = true; out.textContent = T.signOutConfirm; return; }
@@ -479,7 +542,7 @@ const views = {
             try { await api("/api/people/sign-out", { accountKey: p.accountKey }); text.append(el("div", "muted", T.signedOut)); out.remove(); }
             catch (error) { text.append(el("div", "muted", error.message === "own-account" ? T.signOutSelf : error.message)); out.remove(); }
           });
-          li.append(out);
+          tools.append(device, out); li.append(tools);
         }
         list.append(li);
       });
@@ -581,6 +644,95 @@ const views = {
       else delete state.cards[person.accountKey];
     }
   },
+  async device() {
+    const D = MK8DXAddDevice; const d = state.device; const person = d.person;
+    const fill = (text) => text.replaceAll("{name}", person.name);
+    main.replaceChildren(el("h1", "", fill(T.addDeviceTitle)), el("p", "lead", fill(T.addDeviceLead)));
+    if (d.step === "done") {
+      const box = el("div", "device-done"); const head = el("div", "row");
+      head.append(el("span", "state ok", "✓"), el("h2", "", fill(T.devDoneTitle)));
+      const another = el("button", "secondary small", T.devAnother); another.type = "button";
+      another.addEventListener("click", () => openDevice(person));
+      box.append(head, el("p", "", fill(T.devDoneText)), another);
+      main.append(el("h2", "step-title", T.devStep3), box);
+      setButtons({ next: T.devBackToPeople });
+      return;
+    }
+    let setup = state.setup;
+    try { if (!setup) setup = state.setup = await api("/api/setup"); }
+    catch (error) { main.append(errorBox(error.message)); setButtons({ next: T.retry }); return; }
+    if (state.step !== "device" || state.device !== d) return;  // left while loading
+    if (d.step === "prepare") {
+      const card = el("div", "person"); const img = el("img"); img.src = setup.qr; img.alt = T.setupCard;
+      card.append(el("h3", "", T.setupCard), img, el("div", "muted mono", setup.setupUrl),
+        copyButton(T.copySetup, setup.pairingUrl || setup.setupUrl), el("div", "muted", T.devCheckCode),
+        el("div", "short-code", D.shortCode(setup.fingerprint)));
+      const paths = el("ul", "list device-paths");
+      [T.devWithApp, T.devWithoutApp].forEach((text) => paths.append(el("li", "", text)));
+      const grid = el("div", "device-grid"); grid.append(card, paths);
+      main.append(el("h2", "step-title", T.devStep1), el("p", "muted", T.devPrepareText), grid, printTools(person));
+      setButtons({ next: T.next });
+      return;
+    }
+    // Step 2: this person's one-time sign-in card, with a countdown and its state from the host.
+    if (d.wanted) {
+      setButtons({ nextEnabled: false });
+      main.append(el("h2", "step-title", T.devStep2), el("p", "alive", T.working));
+      try {
+        await revokeShown(person.accountKey);
+        const made = await api("/api/card", { accountKey: person.accountKey, role: person.role });
+        if (state.step !== "device" || state.device !== d) return;
+        state.cards[person.accountKey] = made;
+        deviceEvent({ type: "card", card: made });
+      } catch (error) { main.append(errorBox(error.message)); setButtons({ next: T.retry }); }
+      return;
+    }
+    const c = d.card;
+    const card = el("div", "person"); card.append(el("h3", "", person.name));
+    const left = el("div", "short-code countdown"); left.id = "device-left";
+    const status = el("div", "muted"); status.id = "device-status";
+    if (d.cardState === "open") {
+      const img = el("img"); img.src = c.qr; img.alt = person.name;
+      card.append(img, el("div", "muted", fill(T.devPersonal)), left);
+      status.textContent = T.devWaiting; status.className = "muted alive";
+    } else {
+      const holder = el("div", "placeholder"); holder.append(el("span", "muted", "✕")); card.append(holder);
+      status.textContent = d.cardState === "revoked" ? T.devRevoked
+        : d.cardState === "unsupported" ? fill(T.devUnsupported) : T.devExpired;
+    }
+    card.append(status);
+    const again = el("button", d.cardState === "open" ? "secondary small" : "primary small", T.newCard);
+    again.type = "button"; again.id = "device-new";
+    again.addEventListener("click", () => deviceEvent({ type: "new" }));
+    card.append(again);
+    if (d.cardState === "unsupported") {
+      const ok = el("button", "primary small", T.devConfirm); ok.type = "button";
+      ok.addEventListener("click", () => deviceEvent({ type: "confirm" })); card.append(ok);
+    }
+    if (d.cardState === "open") {
+      // Without a camera (a PC): the same one-use link, only for this person.
+      const until = new Date(c.expiresAtMs).toLocaleTimeString(LANG, { hour: "2-digit", minute: "2-digit" });
+      card.append(el("div", "muted small link-warn", T.linkWarn.replaceAll("{name}", person.name).replace("{until}", until)),
+        copyButton(T.copyLink, c.url));
+    }
+    main.append(el("h2", "step-title", T.devStep2), el("p", "muted", fill(T.devSigninText)), card, printTools(person));
+    setButtons({ nextEnabled: false });
+    if (d.cardState !== "open") return;
+    const tick = () => {
+      left.textContent = T.devLeft.replace("{time}", D.remaining(c, Date.now()));
+      deviceEvent({ type: "tick" });
+    };
+    tick(); deviceTimers.push(setInterval(tick, 1000));
+    // The host page answers "used" once a device signed in with this card (rate-limited there: 30 a minute).
+    const poll = async () => {
+      if (!D.polling(state.device) || state.device.card !== c) return;
+      try {
+        const answer = await api("/api/card/status", { invitationId: c.invitationId });
+        if (state.step === "device" && state.device && state.device.card === c) deviceEvent({ type: "status", state: answer.state });
+      } catch { /* the next poll tries again */ }
+    };
+    deviceTimers.push(setInterval(poll, 4000));
+  },
   async done() {
     const status = await api("/api/status").catch(() => ({}));
     const a = status.addresses || {};
@@ -640,6 +792,11 @@ const actions = {
   },
   people: forward,
   cards: forward,
+  device() {
+    if (!state.setup && state.device.step === "prepare") { render(); return; }  // retry a failed /api/setup
+    if (state.device.wanted) { render(); return; }  // retry a failed card
+    deviceEvent({ type: "next" });
+  },
   async done() {
     $("next").disabled = true;
     let result = {};
@@ -669,7 +826,91 @@ const actions = {
   async closed() { await api("/api/close", {}).catch(() => undefined); window.close(); },
 };
 
-function render() { drawSteps(); views[state.step](); }
+let deviceTimers = [];
+function render() {
+  deviceTimers.forEach(clearInterval); deviceTimers = [];
+  drawSteps(); views[state.step]();
+}
+
+// ---------- Add a phone or device (add-device.js holds the steps) ----------
+function openDevice(person) {
+  state.device = MK8DXAddDevice.start(person);
+  const kept = state.cards[person.accountKey];
+  if (MK8DXAddDevice.usable(kept, Date.now())) state.device = { ...state.device, card: kept, cardState: "open" };
+  closeWelcome(); go("device");
+}
+async function revokeShown(accountKey) {
+  const shown = state.cards[accountKey];
+  if (!shown) return;
+  delete state.cards[accountKey];
+  await api("/api/card/revoke", { invitationId: shown.invitationId }).catch(() => undefined);
+}
+function deviceEvent(event) {
+  const before = state.device;
+  if (!before) return;
+  const after = MK8DXAddDevice.step(before, event, Date.now());
+  if (after.step === "exit") { closeWelcome(); state.device = null; go("people"); return; }
+  if (event.type === "new") revokeShown(before.person.accountKey);
+  if (after.cardState === "used" || after.cardState === "confirmed") delete state.cards[before.person.accountKey];
+  state.device = after;
+  if (after.step !== before.step || after.cardState !== before.cardState || after.wanted !== before.wanted
+      || after.card !== before.card) { render(); main.focus(); }
+}
+// The welcome card: a preview on screen, printed on A6 or A4 (wizard.css, named pages).
+function printTools(person) {
+  const box = el("div", "print-tools no-print"); const row = el("div", "row");
+  const button = el("button", "secondary small", T.printWelcome); button.type = "button"; button.id = "welcome-open";
+  button.addEventListener("click", () => openWelcome(person));
+  const label = el("label", "row"); label.append(el("span", "muted", T.printFormat));
+  const format = el("select", "lang-select"); format.id = "welcome-format";
+  [["a6", "A6"], ["a4", "A4"]].forEach(([value, text]) => { const o = el("option", "", text); o.value = value; format.append(o); });
+  format.value = state.printFormat || "a6";
+  format.addEventListener("change", () => { state.printFormat = format.value; });
+  label.append(format); row.append(button, label);
+  box.append(row, el("p", "muted", T.printNote));
+  return box;
+}
+function welcomeSheet(model) {
+  const sheet = el("section", `welcome-sheet ${model.format}`); sheet.id = "welcome-sheet";
+  const address = el("p", "welcome-address");
+  address.append(el("strong", "", `${T.welcomeAddress}: `), el("span", "mono", model.address));
+  const steps = el("ol", "welcome-steps");
+  for (const s of model.steps) {
+    const item = el("li", s.personal ? "personal" : ""); const text = el("div", "welcome-text");
+    const head = el("div", "welcome-head"); head.append(el("span", "welcome-number", String(s.number)), el("strong", "", s.title));
+    text.append(head, el("p", "", s.text)); item.append(text);
+    if (s.number === 1) {
+      text.append(el("p", "welcome-code", `${s.codeLabel}: ${s.code}`), el("p", "mono welcome-url", model.setupUrl));
+      const img = el("img", "welcome-qr"); img.src = s.qr; img.alt = s.title; item.append(img);
+    } else if (s.number === 2) {
+      const until = model.until ? new Date(model.until).toLocaleString(LANG, { dateStyle: "short", timeStyle: "short" }) : "";
+      text.append(el("p", "welcome-mark", s.mark), el("p", "welcome-expiry", s.expiry.replace("{until}", until)));
+      if (s.qr) { const img = el("img", "welcome-qr"); img.src = s.qr; img.alt = s.title; item.append(img); }
+      else item.append(el("div", "welcome-qr welcome-empty"));
+    }
+    steps.append(item);
+  }
+  sheet.append(el("h1", "", model.title), address, steps);
+  return sheet;
+}
+function openWelcome(person) {
+  closeWelcome();
+  const d = state.device;
+  const model = MK8DXAddDevice.sheet({ person, setup: state.setup, card: d && d.card, cardState: d && d.cardState,
+    now: Date.now(), texts: T, format: state.printFormat || "a6" });
+  const bar = el("div", "welcome-bar no-print"); bar.id = "welcome-bar";
+  const print = el("button", "primary small", T.printNow); print.type = "button"; print.id = "welcome-print";
+  print.addEventListener("click", () => window.print());
+  const close = el("button", "secondary small", T.back); close.type = "button"; close.id = "welcome-close";
+  close.addEventListener("click", closeWelcome);
+  bar.append(print, close, el("span", "muted", T.printNote));
+  document.body.append(bar, welcomeSheet(model));
+  document.body.classList.add("print-welcome");
+}
+function closeWelcome() {
+  document.body.classList.remove("print-welcome");
+  $("welcome-sheet")?.remove(); $("welcome-bar")?.remove();
+}
 
 function copyButton(label, text) {
   const button = el("button", "secondary small no-print", label); button.type = "button";

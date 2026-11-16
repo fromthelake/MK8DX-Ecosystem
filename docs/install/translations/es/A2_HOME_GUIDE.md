@@ -185,6 +185,8 @@ Una **cuenta** es quien inicia sesión. Un **Jugador** es el jugador de las clas
 2. **Haz (Linux):** inicia **MK8DX beheer** desde el escritorio o desde el menú de aplicaciones. En algunos escritorios Linux primero tienes que permitir ese icono (haz clic derecho en él y elige la opción para permitir que se ejecute). También funciona con `sh tooling/start-mk8dx.sh` en la carpeta MK8DX, como en el capítulo 3. → **Verás:** un terminal y después la página **Administración de MK8DX**.
 3. **Haz (macOS, sin probar):** haz doble clic en **MK8DX beheer.command** en el escritorio, o inicia `sh tooling/start-mk8dx.sh` como en el capítulo 3. → **Verás:** Terminal y después la página **Administración de MK8DX**.
 
+- **¿Has escrito tú mismo 127.0.0.1 con un puerto?** Una página **MK8DX lokaal beheer** que pide un código de administración de un solo uso es la página técnica del anfitrión. No la necesitas: ciérrala y abre MK8DX beheer con el acceso directo, como arriba.
+
 **Añadir personas**
 
 1. **Haz:** escribe los nombres en **Nombres (uno por línea)** y haz clic en **Añadir**. → **Verás:** los nombres bajo «En esta instalación:».
@@ -206,6 +208,22 @@ Una **cuenta** es quien inicia sesión. Un **Jugador** es el jugador de las clas
 
 1. **Haz:** abre MK8DX beheer. En la primera pantalla cada persona tiene un botón **Cerrar sesión en todas partes**. Haz clic en él. → **Verás:** el botón cambia a **¿Seguro? Haz clic otra vez**.
 2. **Haz:** haz clic una vez más. → **Verás:** «Sesión cerrada en todos los dispositivos. Con una tarjeta nueva, esta persona puede volver a iniciar sesión.» Esa persona tiene ahora la sesión cerrada en la web y en la app, desaparece el cambio con un toque a esa cuenta y las tarjetas abiertas de esa persona dejan de funcionar. → **¿Ves otra cosa?** Junto a tu propio nombre, el segundo clic muestra «Cierra tu propia sesión desde el menú de cuenta del sitio web («Cerrar sesión en todos los dispositivos»).» y no se cierra ninguna sesión.
+
+**Añadir un teléfono o dispositivo para una persona**
+
+La forma guiada de poner en marcha el teléfono, la tableta o el PC de alguien, también un iPhone o un dispositivo sin la app de MK8DX.
+
+1. **Haz:** abre MK8DX beheer y haz clic en **Añadir un teléfono o dispositivo** junto a la persona. → **Verás:** «Añadir un teléfono o dispositivo para …» con el nombre, y **1 · Confiar** con la tarjeta **Preparar un dispositivo** y su código corto.
+2. **Haz:** en el dispositivo, con la app de MK8DX (Android): escanea el código QR en la app. Sin la app (iPhone, iPad, otro teléfono o un PC): escanéalo con la cámara y sigue la página que se abre para instalar el certificado (capítulo 6). Comprueba que la página o la app muestra el mismo código. Si este dispositivo ya se preparó antes, sáltate esto. Haz clic en **Siguiente**. → **Verás:** **2 · Escanear tarjeta de inicio de sesión** con la tarjeta personal de esa persona, «Personal para … Funciona una vez.» y una cuenta atrás como «Válida durante 14:59 más».
+3. **Haz:** escanea esa tarjeta con el mismo dispositivo y acepta allí la invitación (capítulo 6). → **Verás:** en MK8DX beheer, por sí solo en pocos segundos: **3 · Listo** y «… ha iniciado sesión». → **¿Ves otra cosa?** «Esta tarjeta ha caducado.» o «Esta tarjeta se ha revocado.»: haz clic en **Tarjeta nueva**; la tarjeta antigua deja de funcionar cuando haces una nueva. «Esta instalación no puede indicar si la tarjeta se ha usado»: mira el dispositivo y haz clic en **Ha funcionado**.
+4. **Haz:** haz clic en **Otro dispositivo** para un segundo dispositivo de la misma persona, o en **Volver a las personas**.
+
+**Imprimir una tarjeta de bienvenida**
+
+1. **Haz:** en Añadir un teléfono o dispositivo, elige **A6** o **A4** en **Tamaño del papel** y haz clic en **Tarjeta de bienvenida**. → **Verás:** una vista previa de una página, «¡Bienvenido a MK8DX, …!», con la dirección y tres pasos numerados: 1 Confiar (el código QR de Preparar un dispositivo y el código de comprobación), 2 Escanear tarjeta de inicio de sesión (el código QR personal, marcado como PERSONAL, con «Válida hasta») y 3 Listo.
+2. **Haz:** haz clic en **Imprimir** y después en **Atrás**. → **Verás:** la ventana de impresión de tu navegador solo con la tarjeta de bienvenida.
+
+- La tarjeta de acceso que lleva funciona una vez y durante 15 minutos desde el momento en que se creó, también en papel. MK8DX no puede crear una tarjeta que dure más, así que imprímela justo antes de entregarla. Si se imprime sin una tarjeta válida (en el paso 1, o después de que caducara), el paso 2 es un recuadro vacío: la persona recibe entonces una tarjeta nueva el mismo día. La parte Confiar sigue siendo válida hasta que MK8DX se mueva a otra dirección.
 
 **Cerrar MK8DX beheer**
 
