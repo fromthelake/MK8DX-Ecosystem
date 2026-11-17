@@ -1,6 +1,6 @@
 安装和使用 MK8DX
 
-MK8DX 0.2.11 指南 · 2026 年 11 月 16 日
+MK8DX 0.2.12 指南 · 2026 年 11 月 17 日
 
 本文是英文指南 MK8DX_User_Guide_EN.txt 的机器翻译，以英文版为准。欢迎通过“Translation correction”问题表单提交更正。
 
@@ -8,7 +8,7 @@ MK8DX 0.2.11 指南 · 2026 年 11 月 16 日
 
 MK8DX 是一个为《马力欧卡丁车8 豪华版》（Mario Kart 8 Deluxe）计时赛和锦标赛打造的网站。你可以浏览赛道和参考成绩，通过电子邮件链接登录，并提交你自己的成绩。管理员可以审核提交的内容。扫描器、Android 应用和 Windows 程序是独立的工具。
 
-发布软件包附在项目的 GitHub Releases 中。打开发布页面 https://github.com/fromthelake/MK8DX-Ecosystem/releases，选择最新的版本。在 Assets 下，下载与你的安装方式对应的软件包以及 SHA256SUMS.txt。GitHub 的 Source code (zip) 按钮并不是安装软件包。如果你改为使用源代码的克隆，可以自己构建软件包；见“故障排除和自行构建”。软件包文件名中的 v0.2.11 表示这个版本；主机软件包内的 Docker 镜像带有相应的版本标签。请保留同一版本的所有文件。
+发布软件包附在项目的 GitHub Releases 中。打开发布页面 https://github.com/fromthelake/MK8DX-Ecosystem/releases，选择最新的版本。在 Assets 下，下载与你的安装方式对应的软件包以及 SHA256SUMS.txt。GitHub 的 Source code (zip) 按钮并不是安装软件包。如果你改为使用源代码的克隆，可以自己构建软件包；见“故障排除和自行构建”。软件包文件名中的 v0.2.12 表示这个版本；主机软件包内的 Docker 镜像带有相应的版本标签。请保留同一版本的所有文件。
 
 选择一种使用网站的方式。在一台 Windows 电脑上，可以使用 Docker，或者使用 XAMPP、Node.js 和附带的最新 MariaDB。文档中的 Docker 网络方式可以让你可信网络中的第二台 Windows 电脑访问。如果要使用公共域名，可以选择带 Node.js 的共享网站托管（本章以 mijn.host Starter 为例），或者你自己的 Docker VPS。这些章节是可以互相替代的方案，而不是必须按顺序完成的课程。手机和 Windows 客户端放在网站安装方式之后介绍。
 
@@ -50,9 +50,9 @@ python --version
 
 如果你没有看到 3.12 到 3.15 之间的版本，请用同一个安装程序修复 Python。还要检查 Windows 是否打开了 Microsoft Store 别名，而不是已安装的 Python。在这里，Python 只用来运行安装助手；你不需要构建软件。
 
-3. 把 mk8dx-host-local-v0.2.11-amd64.zip 和 SHA256SUMS.txt 放在同一个下载文件夹中。在该文件夹中打开 PowerShell，检查主机软件包：
+3. 把 mk8dx-host-local-v0.2.12-amd64.zip 和 SHA256SUMS.txt 放在同一个下载文件夹中。在该文件夹中打开 PowerShell，检查主机软件包：
 
-Get-FileHash '.\mk8dx-host-local-v0.2.11-amd64.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-host-local-v0.2.12-amd64.zip' -Algorithm SHA256
 
 将完整的值与 SHA256SUMS.txt 中该文件对应的那一行进行比较。如果不一致，请停止并索取正确的副本。右键单击 ZIP 文件，选择 “Extract All”（全部解压缩）。合适的目标位置是 Documents\MK8DX-A1。打开解压后包含 Start-MK8DX.cmd 和 compose.yaml 的文件夹。
 
@@ -89,11 +89,11 @@ python --version
 
 你应当看到 Node 24 和 Python 3.12 或更新版本。它们运行预先构建好的 MK8DX 文件；你不需要构建应用程序。如果某条命令无法识别，请重新打开 PowerShell，必要时修复那个安装。
 
-3. 把 mk8dx-xampp-node-windows-v0.2.11.zip 和 SHA256SUMS.txt 放在同一个下载文件夹中。在 PowerShell 中，将完整的 SHA-256 值与此 ZIP 对应的那一行进行比较：
+3. 把 mk8dx-xampp-node-windows-v0.2.12.zip 和 SHA256SUMS.txt 放在同一个下载文件夹中。在 PowerShell 中，将完整的 SHA-256 值与此 ZIP 对应的那一行进行比较：
 
-Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.11.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-xampp-node-windows-v0.2.12.zip' -Algorithm SHA256
 
-如果一致，右键单击 ZIP 文件并选择 “Extract All”（全部解压缩）。合适的文件夹是 Documents\MK8DX\nodocker-v0.2.11。打开解压后包含 Start-MK8DX-No-Docker.cmd 的文件夹。其中已经包含 bin\mailpit.exe 和 bin\mariadb-11.4.13-winx64.zip。你不需要编译源代码，也不需要替换旧的 XAMPP 数据库。不要把这个软件包放到 htdocs 中。
+如果一致，右键单击 ZIP 文件并选择 “Extract All”（全部解压缩）。合适的文件夹是 Documents\MK8DX\nodocker-v0.2.12。打开解压后包含 Start-MK8DX-No-Docker.cmd 的文件夹。其中已经包含 bin\mailpit.exe 和 bin\mariadb-11.4.13-winx64.zip。你不需要编译源代码，也不需要替换旧的 XAMPP 数据库。不要把这个软件包放到 htdocs 中。
 
 4. 只为这个本地网站准备 Apache。在解压后的 MK8DX 文件夹中打开 PowerShell。把 -XamppRoot 设置为你实际的 XAMPP 位置：
 
@@ -170,7 +170,7 @@ powershell -ExecutionPolicy Bypass -File .\tooling\configure_xampp.ps1 -XamppRoo
 
 在你的家庭网络中使用
 
-对于家庭或俱乐部网络，请使用 A2 软件包。下载 mk8dx-a2-windows-amd64-v0.2.11.zip（Linux：mk8dx-a2-linux-amd64 或 mk8dx-a2-linux-arm64；使用 Apple 芯片的 macOS：mk8dx-a2-macos-arm64；使用 Intel 处理器的 macOS：mk8dx-a2-macos-amd64）和 SHA256SUMS.txt，按照“在一台电脑上试用”中的方法检查校验和，解压软件包，然后双击 Start-MK8DX-LAN.cmd（Linux 和 macOS：sh tooling/start-mk8dx.sh）。浏览器中会打开一个安装程序，用 Next（下一步）带你完成所有步骤：网络地址、你的管理员账户、用于夜间备份的纸质恢复码，以及每个人在手机或电脑上使用的登录卡。不需要互联网、邮件服务器或 hosts 文件。
+对于家庭或俱乐部网络，请使用 A2 软件包。下载 mk8dx-a2-windows-amd64-v0.2.12.zip（Linux：mk8dx-a2-linux-amd64 或 mk8dx-a2-linux-arm64；使用 Apple 芯片的 macOS：mk8dx-a2-macos-arm64；使用 Intel 处理器的 macOS：mk8dx-a2-macos-amd64）和 SHA256SUMS.txt，按照“在一台电脑上试用”中的方法检查校验和，解压软件包，然后双击 Start-MK8DX-LAN.cmd（Linux 和 macOS：sh tooling/start-mk8dx.sh）。浏览器中会打开一个安装程序，用 Next（下一步）带你完成所有步骤：网络地址、你的管理员账户、用于夜间备份的纸质恢复码，以及每个人在手机或电脑上使用的登录卡。不需要互联网、邮件服务器或 hosts 文件。
 
 带图片的完整分步指南是 docs/install/A2_HOME_GUIDE_EN.md；在软件包中它也是 docs/install/guide/en.html，安装程序通过它的 Manual（手册）链接打开它。指南涵盖准备 Windows、Linux 或 macOS，手机和电脑，Android 应用，LiveTrial，锦标赛之夜，备份，迁移到新电脑，固定地址，新的网络地址、更新以及从电脑上移除 MK8DX。
 
@@ -237,9 +237,9 @@ python tooling/install.py apply --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 这种方式使用 Node.js 配合 Passenger 和 MariaDB，这是 mijn.host Starter 等共享托管所提供的。它不需要 VPS、Docker、root 访问权限，也不需要你自己的 Caddy 服务器。软件包已在本地的 Linux 和 MariaDB 环境中测试过。你仍然需要在你自己的 DirectAdmin 账户中验证这些步骤以及实际的邮件投递。请使用单独的（子）域名和一个空数据库。不要更改现有的网站或数据库。Starter 目前标明 2 GB 内存和 5 GB 存储空间；请在你自己的面板中确认有足够的空间用于上传、npm 依赖、数据和备份。
 
-1. 从“欢迎”一章中给出的发布页面下载 mk8dx-mijnhost-node-v0.2.11.zip 和 SHA256SUMS.txt。这个 ZIP 就是上传软件包。Docker 主机 ZIP 和完整源代码 ZIP 是不同的文件。把这两个文件放在你 Windows 电脑上的同一个文件夹中。在那里打开 PowerShell，将完整的 SHA-256 值与 SHA256SUMS.txt 中的那一行进行比较：
+1. 从“欢迎”一章中给出的发布页面下载 mk8dx-mijnhost-node-v0.2.12.zip 和 SHA256SUMS.txt。这个 ZIP 就是上传软件包。Docker 主机 ZIP 和完整源代码 ZIP 是不同的文件。把这两个文件放在你 Windows 电脑上的同一个文件夹中。在那里打开 PowerShell，将完整的 SHA-256 值与 SHA256SUMS.txt 中的那一行进行比较：
 
-Get-FileHash '.\mk8dx-mijnhost-node-v0.2.11.zip' -Algorithm SHA256
+Get-FileHash '.\mk8dx-mijnhost-node-v0.2.12.zip' -Algorithm SHA256
 
 如果值不一致，请停止。
 
@@ -262,7 +262,7 @@ ssh -p 26 <your-username>@<your-server-name>
 
 你应当看到一个 Linux 命令提示符。把账户密码保存在你的密码管理器中。这不是 VPS 的 root 访问权限。同一条 SSH 通道也用来传输已检查的 ZIP。在你电脑的下载文件夹中打开第二个 PowerShell 窗口：
 
-scp -P 26 '.\mk8dx-mijnhost-node-v0.2.11.zip' <your-username>@<your-server-name>:
+scp -P 26 '.\mk8dx-mijnhost-node-v0.2.12.zip' <your-username>@<your-server-name>:
 
 ZIP 会出现在你自己的托管主目录中。单独的 SFTP 选项可能有不同的设置；这种方式只使用文档中的 SSH/SCP 访问。
 
@@ -277,7 +277,7 @@ command -v mariadb-dump || command -v mysqldump
 如果缺少某条命令，请用你的托管面板或 mijn.host 帮助核对那个缺失的工具。不要创建不安全的公共安装 URL。把 ZIP 解压到你的私有应用程序文件夹中，而不是 public_html：
 
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.11.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.12.zip" -d "$HOME/apps/mk8dx"
 cd "$HOME/apps/mk8dx"
 
 你应当看到 api、web、scanner、assets、mysql 和 tooling。应用程序文件夹是私有的。安装程序也会把配置文件、机密信息和备份保存在 public_html 之外。
@@ -329,7 +329,7 @@ python3 tooling/install.py backup --state-dir "$HOME/mk8dx-private" --backup-out
 cd "$HOME"
 mv "$HOME/apps/mk8dx" "$HOME/apps/mk8dx-before-update"
 mkdir -p "$HOME/apps/mk8dx"
-unzip "$HOME/mk8dx-mijnhost-node-v0.2.11.zip" -d "$HOME/apps/mk8dx"
+unzip "$HOME/mk8dx-mijnhost-node-v0.2.12.zip" -d "$HOME/apps/mk8dx"
 
 再次粘贴 DirectAdmin 中的 Node 24 激活命令行。在新的 api 文件夹中安装锁定的 Linux 依赖，然后回到应用程序根目录：
 
@@ -375,7 +375,7 @@ ssh-keygen -t ed25519 -f (Join-Path $env:USERPROFILE '.ssh\mk8dx_vps_ed25519')
 WinSCP: https://winscp.net/eng/download.php
 WinSCP 密钥格式：https://winscp.net/eng/docs/ui_login_authentication
 
-通过服务商独立的 VPS 控制台或技术支持获取 SSH 主机密钥指纹。把它与 WinSCP 首次连接时的提示进行比较。只接受完全一致的结果。把已检查的 mk8dx-host-local-v0.2.11-amd64.zip 从左侧（你的电脑）拖到右侧（服务器）的 /root/。不要把备份或机密信息上传到 public_html。
+通过服务商独立的 VPS 控制台或技术支持获取 SSH 主机密钥指纹。把它与 WinSCP 首次连接时的提示进行比较。只接受完全一致的结果。把已检查的 mk8dx-host-local-v0.2.12-amd64.zip 从左侧（你的电脑）拖到右侧（服务器）的 /root/。不要把备份或机密信息上传到 public_html。
 
 3. 在你的电脑上为服务器终端打开 PowerShell。使用你真实的 IP、端口和密钥路径。这是第 1 步中的同一个 OpenSSH 密钥，而不是转换后的 .ppk 文件：
 
@@ -448,9 +448,9 @@ Resolve-DnsName www.mijneigenwebsite.nl -Type A
 7. 在 Ubuntu 终端中，通过 WinSCP 传输的 ZIP 位于 /root/ 下。检查并解压它：
 
 pwd
-ls -lh /root/mk8dx-host-local-v0.2.11-amd64.zip
+ls -lh /root/mk8dx-host-local-v0.2.12-amd64.zip
 mkdir -p /opt/mk8dx/host /var/lib/mk8dx
-unzip -q /root/mk8dx-host-local-v0.2.11-amd64.zip -d /opt/mk8dx/host
+unzip -q /root/mk8dx-host-local-v0.2.12-amd64.zip -d /opt/mk8dx/host
 cd /opt/mk8dx/host
 ls Start-MK8DX.cmd compose.yaml tooling/start-mk8dx.sh images/docker-images-amd64.tar
 
@@ -478,13 +478,13 @@ sh tooling/start-mk8dx.sh /var/lib/mk8dx/instance
 
 请始终复制你自己安装显示为 “Website”（网站）（或 “origin”、“Web origin”）的完整网站地址，如果显示了端口，也要包括端口。绝不要在 LiveTrial 中输入测试收件箱地址（“Sign-in mail” 或 “localMailInbox”）：它只会打开本地测试收件箱。在第二台设备上，请使用 HTTPS 网络名称或你的公共域名，而不是服务器的 127.0.0.1 地址。
 
-Android 需要 Android 8.0 或更新版本；建议使用 arm64。本地正式签名的 APK 大约 530 MB。请至少保留 1 GB 可用空间作为安装余量。在你的电脑上用 SHA256SUMS.txt 检查 mk8dx-android-release-v0.2.11.apk，把它复制到手机上，然后从“文件”或“下载”中打开它。如果 Android 询问是否允许从这个文件应用安装，只为已检查的软件包允许。之后你可以关闭这个权限。
+Android 需要 Android 8.0 或更新版本；建议使用 arm64。本地正式签名的 APK 大约 530 MB。请至少保留 1 GB 可用空间作为安装余量。在你的电脑上用 SHA256SUMS.txt 检查 mk8dx-android-release-v0.2.12.apk，把它复制到手机上，然后从“文件”或“下载”中打开它。如果 Android 询问是否允许从这个文件应用安装，只为已检查的软件包允许。之后你可以关闭这个权限。
 
 首次启动时，“选择你的社区”会询问你的社区怎么玩。对于在线社区，在“网站地址”下输入完整的受信任 HTTPS 社区地址，例如 https://www.mijneigenwebsite.nl，不带路径，也不带末尾的斜杠，然后点按“保存”。对于家庭或俱乐部安装（A2），点按“扫描二维码”，扫描“准备设备”卡片；A2 指南会一步步说明这个步骤。以后，点按应用顶部的社区名称即可切换社区，或者用“添加社区”添加一个。每个社区都保留各自的账户和待发送的成绩；它们之间不会自动转移任何内容。你自己的成绩在你的名字 → “我的成绩” 下，离线时也能查看。对于 A2，请按照应用中的“信任”步骤保存 MK8DX 证书，并在手机上将其安装为 CA 证书。然后在应用内扫描个人登录卡，核对显示的姓名。浏览器也需要信任该证书；A2 指南有详细步骤。此次登录不使用浏览器设备代码。早期的公开 APK 使用调试签名。请先保存任何尚未发送的成绩，卸载一次那个调试版应用，然后安装这个正式签名的 APK。以后用同一个正式密钥签名的 APK 可以直接覆盖更新；这不是 Play 商店版本。
 
 APK 由其制作者签名，而不是为每个域名单独签名。自动的 Android 应用链接（App Links）确实需要在真实的应用身份、它实际的签名证书和你的域名之间建立公开的关联。因此默认的 /.well-known/assetlinks.json 以 JSON 形式包含 []。手动选择服务器和登录在没有这种自动关联的情况下也能工作。单独签名的自定义版本属于开发者方式。
 
-对于 Windows x86-64 上的 LiveTrial，用 SHA256SUMS.txt 检查 desktop-client-v0.2.11.zip，并解压整个 ZIP，例如解压到“文档”下。请为解压和你自己的录像预留大约 2 GB；这是余量，不是实测的最低要求。打开 LiveTrial.exe。从采集卡进行实时采集还需要 FFmpeg，由于许可证的原因它没有附带：在 PowerShell 中运行一次 winget install Gyan.FFmpeg，然后重启 LiveTrial（分析视频不需要它）。进入“设置”→“社区网站地址”，输入你的安装的准确地址，然后选择“保存服务器”。确认切换。
+对于 Windows x86-64 上的 LiveTrial，用 SHA256SUMS.txt 检查 desktop-client-v0.2.12.zip，并解压整个 ZIP，例如解压到“文档”下。请为解压和你自己的录像预留大约 2 GB；这是余量，不是实测的最低要求。打开 LiveTrial.exe。从采集卡进行实时采集还需要 FFmpeg，由于许可证的原因它没有附带：在 PowerShell 中运行一次 winget install Gyan.FFmpeg，然后重启 LiveTrial（分析视频不需要它）。进入“设置”→“社区网站地址”，输入你的安装的准确地址，然后选择“保存服务器”。确认切换。
 
 LiveTrial 会保存地址并自动重启。重启期间请保持窗口打开。重启后，检查“设置”中显示的是否正是你的地址。之后才登录；登录应当打开你的社区。当你打开“成绩历史”时，如有需要，该部分会稍等它的本地服务器，然后自动加载。你应该不需要按 F5。如果 LiveTrial 提示自动重启失败，请在应用内选择“退出 LiveTrial”，等到它完全关闭，然后再次打开 LiveTrial.exe。只关闭浏览器窗口是不够的：LiveTrial 可能仍在后台运行。
 
@@ -494,7 +494,7 @@ LiveTrial 会保存地址并自动重启。重启期间请保持窗口打开。�
 
 浏览器扫描器已经是网站的一部分。在你受信任的 HTTPS 地址上打开 /scanner/，从“图片上传”开始。选择你自己的成绩图片，检查识别出的详细信息，核对无误后再确认。使用实时相机需要浏览器权限，并且在 localhost 以外需要受信任的 HTTPS。识别效果还取决于录像质量。文档中描述了 A2 的第二台 Windows 浏览器方式，但尚未经过端到端测试。
 
-对于 Windows x86-64 上的锦标赛工具，检查 tournament-tools-v0.2.11.zip 并解压完整的 ZIP。打开 Install-MK8DX-TournamentTools.cmd。请预留数 GB 的可用空间：大约 450 MB 的 ZIP 和大约 1.3 GB 的解压空间并不能涵盖所有依赖和你自己的媒体文件。安装程序需要联网一次，用来下载 Python 3.12 和公开软件包；OCR 模型已经附带，之后处理可以离线进行。尚未测量所有依赖和媒体的确切最低空间要求。不需要设置 GPU：使用较新的 NVIDIA 驱动时，安装程序会自动选择 CUDA 版本，然后显卡会加快名字、积分和时间的读取（OCR）。录像的第一次扫描总是在处理器上运行，因为软件包中的 OpenCV 版本不支持 CUDA；软件包中的 USING_MK8DX_TOURNAMENT_TOOLS.md 说明了这两个步骤。等待显示 SUCCESS，并保持 runtime-assets 完好。如果失败，请阅读软件包文件夹中的 install.log。
+对于 Windows x86-64 上的锦标赛工具，检查 tournament-tools-v0.2.12.zip 并解压完整的 ZIP。打开 Install-MK8DX-TournamentTools.cmd。请预留数 GB 的可用空间：大约 450 MB 的 ZIP 和大约 1.3 GB 的解压空间并不能涵盖所有依赖和你自己的媒体文件。安装程序需要联网一次，用来下载 Python 3.12 和公开软件包；OCR 模型已经附带，之后处理可以离线进行。尚未测量所有依赖和媒体的确切最低空间要求。不需要设置 GPU：使用较新的 NVIDIA 驱动时，安装程序会自动选择 CUDA 版本，然后显卡会加快名字、积分和时间的读取（OCR）。录像的第一次扫描总是在处理器上运行，因为软件包中的 OpenCV 版本不支持 CUDA；软件包中的 USING_MK8DX_TOURNAMENT_TOOLS.md 说明了这两个步骤。等待显示 SUCCESS，并保持 runtime-assets 完好。如果失败，请阅读软件包文件夹中的 install.log。
 
 把 .mp4 或 .mkv 录像拖到 TournamentProcessor.cmd 上。程序会在视频旁边创建一个会话文件夹，其中包含 Excel、CSV 以及一个以 _TournamentRaceResultsV1.json 结尾的文件。TournamentLive.cmd 需要合适的采集硬件和用于实时输入的驱动程序。
 
@@ -627,14 +627,14 @@ python tooling/install.py check --state-dir (Join-Path $env:LOCALAPPDATA 'MK8DX\
 
 现在可以在本地尝试的内容
 
-你只需要自己的 Linux 电脑，不需要 Windows 电脑。如果它在 x86-64 上运行 Ubuntu 24.04，附带的 Docker 主机软件包就是本地服务器方式。先运行 uname -m，确认它显示 x86_64。安装带 Compose 插件的 Docker Engine、Python 3.12 到 3.15 以及 unzip。Ubuntu 上的 Docker 安装在“在 VPS 上建立公共网站”中有分步说明；对于这次本地试用，请跳过 DNS、开放互联网防火墙端口和真实的 SMTP。从同一个发布版本下载 mk8dx-host-local-v0.2.11-amd64.zip 及其 SHA256SUMS.txt。在下载文件夹中打开终端并检查 ZIP。将结果与 SHA256SUMS.txt 中对应的那一行进行比较。如果不一致，请停止：
+你只需要自己的 Linux 电脑，不需要 Windows 电脑。如果它在 x86-64 上运行 Ubuntu 24.04，附带的 Docker 主机软件包就是本地服务器方式。先运行 uname -m，确认它显示 x86_64。安装带 Compose 插件的 Docker Engine、Python 3.12 到 3.15 以及 unzip。Ubuntu 上的 Docker 安装在“在 VPS 上建立公共网站”中有分步说明；对于这次本地试用，请跳过 DNS、开放互联网防火墙端口和真实的 SMTP。从同一个发布版本下载 mk8dx-host-local-v0.2.12-amd64.zip 及其 SHA256SUMS.txt。在下载文件夹中打开终端并检查 ZIP。将结果与 SHA256SUMS.txt 中对应的那一行进行比较。如果不一致，请停止：
 
-sha256sum mk8dx-host-local-v0.2.11-amd64.zip
+sha256sum mk8dx-host-local-v0.2.12-amd64.zip
 
 解压软件包并进入它的文件夹：
 
 mkdir -p "$HOME/MK8DX/host"
-unzip -q mk8dx-host-local-v0.2.11-amd64.zip -d "$HOME/MK8DX/host"
+unzip -q mk8dx-host-local-v0.2.12-amd64.zip -d "$HOME/MK8DX/host"
 cd "$HOME/MK8DX/host"
 
 现有的 Linux 启动脚本是：
@@ -653,7 +653,7 @@ sh tooling/start-mk8dx.sh "$HOME/mk8dx-data"
 
 你只需要自己的 Mac，不需要 Windows 电脑或其他服务器。在 Intel Mac 上，开发者可以尝试在本地运行附带的 Linux/amd64 Docker 镜像。如果网站、API 和数据库确实启动了，请在同一台 Mac 的浏览器中打开显示的 A1 网站地址和 Mailpit 地址。扫描器是网站的一部分。目前还没有任何 Mac 试用展示过新账户、提交、数据库记录和网站上可见的成绩。仅仅首页能打开并不能证明安装完整。
 
-在 Intel Mac 上，安装 Docker Desktop for Mac 和 Python 3.12 到 3.15。下载同一个主机 ZIP 和 SHA256SUMS.txt。在下载文件夹中打开终端，运行 shasum -a 256 mk8dx-host-local-v0.2.11-amd64.zip，并将结果与 SHA256SUMS.txt 进行比较。如果不一致，请停止。然后使用 Linux 一章中的 mkdir、unzip 和 cd 命令。启动同一个 shell 启动脚本并选择 A1。这是开发者试用，而不是经过验收的 Mac 用户方式。在 Apple 芯片上，这个 A1 主机软件包需要通过模拟来运行它的 amd64 镜像；没有原生的 arm64 A1 软件包，模拟下的功能和速度也尚未得到验证。在使用 Apple 芯片的 Mac 上，请改用 A2 软件包 mk8dx-a2-macos-arm64（见“在你的家庭网络中使用”）。
+在 Intel Mac 上，安装 Docker Desktop for Mac 和 Python 3.12 到 3.15。下载同一个主机 ZIP 和 SHA256SUMS.txt。在下载文件夹中打开终端，运行 shasum -a 256 mk8dx-host-local-v0.2.12-amd64.zip，并将结果与 SHA256SUMS.txt 进行比较。如果不一致，请停止。然后使用 Linux 一章中的 mkdir、unzip 和 cd 命令。启动同一个 shell 启动脚本并选择 A1。这是开发者试用，而不是经过验收的 Mac 用户方式。在 Apple 芯片上，这个 A1 主机软件包需要通过模拟来运行它的 amd64 镜像；没有原生的 arm64 A1 软件包，模拟下的功能和速度也尚未得到验证。在使用 Apple 芯片的 Mac 上，请改用 A2 软件包 mk8dx-a2-macos-arm64（见“在你的家庭网络中使用”）。
 
 适用于 Mac 的 Docker Desktop：https://docs.docker.com/desktop/setup/install/mac-install/
 

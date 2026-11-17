@@ -218,7 +218,7 @@ MK8DX는 플레이어가 플레이어를 위해 만든 오픈 소스입니다. �
 
 ## 프로젝트 현황
 
-현재 릴리스는 **[v0.2.11](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**입니다. 2026년 11월에 모든 설치 경로를 각 가이드를 따라 설치했습니다. A2는 Windows와 Linux, A1과 A3는 Windows, B1은 WSL 2의 Linux에서 리허설했습니다. Mac 패키지는 빌드되었지만 아직 실제 Mac에서는 테스트하지 않았습니다. 버전별 변경 사항은 [변경 내역](../../CHANGELOG.md)에서 볼 수 있습니다.
+현재 릴리스는 **[v0.2.12](https://github.com/fromthelake/MK8DX-Ecosystem/releases/latest)**입니다. 2026년 11월에 모든 설치 경로를 각 가이드를 따라 설치했습니다. A2는 Windows와 Linux, A1과 A3는 Windows, B1은 WSL 2의 Linux에서 리허설했습니다. Mac 패키지는 빌드되었지만 아직 실제 Mac에서는 테스트하지 않았습니다. 버전별 변경 사항은 [변경 내역](../../CHANGELOG.md)에서 볼 수 있습니다.
 
 인식 기능이 스스로 결과를 공식으로 만드는 일은 없습니다. 자신의 타임 어택은 직접 검토하고, 대회 레이스는 주최자가 확인한 뒤에 반영됩니다.
 
