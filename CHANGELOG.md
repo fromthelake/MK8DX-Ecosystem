@@ -5,6 +5,10 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+- The READMEs in all 15 languages now state that Tournament Live's automatic result recognition requires
+  at least six visible player rows and processes races with 6–12 players. Recording video with fewer
+  players remains possible; those results need manual entry.
+
 ## 0.2.12 — 2026-11-17
 
 - Windows A2 startup waits two minutes after sign-in, skips starting Docker Desktop when its Linux engine already

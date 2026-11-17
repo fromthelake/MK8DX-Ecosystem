@@ -205,6 +205,9 @@ corridas: quem se senta onde, que grupo joga a seguir, as pontuações, as finai
   corrida lê as posições finais, personagens, bandeiras, pontos da corrida, totais e a pista
   (também em ecrã dividido para dois jogadores), guarda-os localmente e envia-os para a noite no
   site.
+  O reconhecimento automático dos resultados exige pelo menos seis linhas de jogadores visíveis e
+  processa corridas com 6 a 12 jogadores. Podes gravar vídeo com menos jogadores, mas tens de
+  introduzir esses resultados manualmente.
 - **Tu continuas no comando** — o organizador verifica jogadores e posições antes de um resultado
   contar. Entretanto, a classificação ao vivo é mostrada de forma provisória.
 - **No fim** — classificação final, um relatório para partilhar (WhatsApp, PNG, CSV, um artigo

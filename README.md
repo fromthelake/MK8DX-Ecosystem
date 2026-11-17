@@ -194,6 +194,9 @@ sits where, which group plays next, the scores, the finals and the standings.
 - **Tournament Live reads the races** — point a capture card at each screen. After every race it
   reads the finishing positions, characters, flags, race points, totals and the track (also in
   two-player split screen), saves them locally and sends them to the night on the website.
+  Automatic result recognition requires at least six visible player rows and processes races with
+  6–12 players. You can still record video with fewer players, but must enter those results
+  manually.
 - **You stay in charge** — the organiser checks players and places before a result counts. Live
   standings are shown provisionally in the meantime.
 - **Afterwards** — final standings, a shareable report (WhatsApp, PNG, CSV, a WordPress-ready
