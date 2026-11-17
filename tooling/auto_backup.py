@@ -78,7 +78,7 @@ def _quote(value: str) -> str:
     return "'" + str(value).replace("'", "''") + "'"
 
 
-def _register_task(name: str, execute: str, arguments: str, trigger: str) -> bool:
+def _register_task(name: str, execute: str, arguments: str, trigger: str, *, delay: str = "") -> bool:
     """A task for the signed-in user (no stored password, no elevation).
 
     Docker Desktop only runs in that user's session, so the user's own interactive task is the
@@ -91,14 +91,30 @@ def _register_task(name: str, execute: str, arguments: str, trigger: str) -> boo
         "$who=\"$env:USERDOMAIN\\$env:USERNAME\";"
         f"$a=New-ScheduledTaskAction -Execute {_quote(execute)} -Argument {_quote(arguments)};"
         f"$t={trigger};"
+        + (f"$t.Delay={_quote(delay)};" if delay else "") +
         "$s=New-ScheduledTaskSettingsSet -StartWhenAvailable -AllowStartIfOnBatteries "
-        "-DontStopIfGoingOnBatteries -ExecutionTimeLimit (New-TimeSpan -Hours 2);"
+        "-DontStopIfGoingOnBatteries -MultipleInstances IgnoreNew -ExecutionTimeLimit (New-TimeSpan -Hours 2);"
         "$p=New-ScheduledTaskPrincipal -UserId $who -LogonType Interactive -RunLevel Limited;"
         f"Register-ScheduledTask -TaskName {_quote(name)} -Action $a -Trigger $t -Settings $s "
         "-Principal $p -Force | Out-Null")
     run = subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
                          capture_output=True, text=True, check=False)
     return run.returncode == 0
+
+
+def _windowless_python(python: str) -> str | None:
+    """pythonw.exe avoids the empty console shown by a scheduled python.exe."""
+    sibling = Path(python).with_name("pythonw.exe")
+    return str(sibling) if sibling.is_file() else None
+
+
+def _windows_task(action: str, state: Path, python: str) -> tuple[str, str] | None:
+    quiet = _windowless_python(python)
+    if quiet is None:
+        return None
+    arguments = (f'"{ROOT / "tooling" / "windows_startup.py"}" {action} '
+                 f'--state-dir "{state}" --python "{python}"')
+    return quiet, arguments
 
 
 def _daily(when: str) -> str:
@@ -113,8 +129,9 @@ def register_daily_task(state: Path, python: str, when: str = "03:00") -> bool:
         from tooling import host_platform
         return host_platform.schedule(TASK_NAME, [python, str(ROOT / "tooling" / "auto_backup.py"), "run",
                                                   "--state-dir", str(state)], daily=when)
-    return _register_task(TASK_NAME, python,
-                          f'"{ROOT / "tooling" / "auto_backup.py"}" run --state-dir "{state}"', _daily(when))
+    trigger = _daily(when)
+    task = _windows_task("backup", state, python)
+    return bool(task and _register_task(TASK_NAME, *task, trigger))
 
 
 CA_TASK_NAME = "MK8DX certificate renewal"
@@ -127,40 +144,42 @@ def register_ca_renewal(state: Path, python: str, when: str = "03:30") -> bool:
         from tooling import host_platform
         return host_platform.schedule(CA_TASK_NAME, [python, str(ROOT / "tooling" / "install.py"), "maintain-ca",
                                                      "--qa-offline-candidate", "--state-dir", str(state)], daily=when)
-    return _register_task(CA_TASK_NAME, python,
-                          f'"{ROOT / "tooling" / "install.py"}" maintain-ca --state-dir "{state}"', _daily(when))
+    trigger = _daily(when)
+    task = _windows_task("ca", state, python)
+    return bool(task and _register_task(CA_TASK_NAME, *task, trigger))
 
 
 START_TASK_NAME = "MK8DX start"
 
 
-def docker_desktop_executable() -> Path | None:
-    candidates = [
-        Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "Docker" / "Docker" / "Docker Desktop.exe",
-        Path(os.environ.get("LOCALAPPDATA", "")) / "Programs" / "DockerDesktop" / "Docker Desktop.exe",
-    ]
-    return next((c for c in candidates if c.is_file()), None)
-
-
-def ensure_docker_autostart() -> str:
-    """Start Docker Desktop at sign-in (per user, no admin); MK8DX's containers restart with it.
+def ensure_docker_autostart(state: Path, python: str) -> str:
+    """Check Docker at sign-in after Windows settles; report actual service readiness.
 
     MK8DX keeps its own sign-in task instead of relying on Docker Desktop's "start when you sign
     in" entry: that entry can be switched off in Docker's settings or in Windows' startup apps
     (a host restarted by Windows Update then stayed offline, 2026-11-11). The task starts Docker
-    Desktop only when it is not already running. Linux/macOS: host_platform.docker_autostart."""
+    Desktop only when its Linux engine is not ready. Linux/macOS: host_platform.docker_autostart."""
     if sys.platform != "win32":
         from tooling import host_platform
         return host_platform.docker_autostart()
-    exe = docker_desktop_executable()
-    if exe is None:
-        return "docker-desktop-not-found"
-    starter = (f"if (-not (Get-Process -Name 'Docker Desktop' -ErrorAction SilentlyContinue)) "
-               f"{{ Start-Process -FilePath {_quote(str(exe))} }}")
-    registered = _register_task(START_TASK_NAME, "powershell.exe",
-                                f'-NoProfile -NonInteractive -WindowStyle Hidden -Command "{starter}"',
-                                "New-ScheduledTaskTrigger -AtLogOn -User $who")
+    task = _windows_task("start", state, python)
+    if task is None:
+        return "pythonw-not-found"
+    registered = _register_task(START_TASK_NAME, *task, "New-ScheduledTaskTrigger -AtLogOn -User $who",
+                                delay="PT2M")
     return "enabled" if registered else "failed"
+
+
+def disable_docker_autostart() -> str:
+    """The wizard's off choice also removes an earlier MK8DX sign-in task."""
+    if sys.platform != "win32":
+        return "off"
+    script = (f"$t=Get-ScheduledTask -TaskName {_quote(START_TASK_NAME)} -ErrorAction SilentlyContinue;"
+              f"if ($t) {{ Unregister-ScheduledTask -TaskName {_quote(START_TASK_NAME)} "
+              "-Confirm:$false -ErrorAction Stop }")
+    run = subprocess.run(["powershell.exe", "-NoProfile", "-NonInteractive", "-Command", script],
+                         capture_output=True, text=True, check=False)
+    return "off" if run.returncode == 0 else "failed"
 
 
 def wait_for_docker(timeout_s: float = 900.0, poll_s: float = 10.0) -> bool:

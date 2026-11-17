@@ -419,7 +419,7 @@ Un conflit d'adresses se produit quand deux appareils utilisent la même adresse
 
 **Après un redémarrage de l'ordinateur**
 
-- **Windows :** la tâche « MK8DX start » démarre Docker Desktop dès que tu te connectes à Windows; MK8DX se remet alors en ligne tout seul. Quelqu'un doit donc se connecter : si l'ordinateur reste sur l'écran de connexion après une mise à jour de Windows, MK8DX n'est de nouveau joignable qu'après la connexion.
+- **Windows :** deux minutes après la connexion, la tâche « MK8DX start » vérifie le moteur Linux de Docker. S’il fonctionne déjà, elle le laisse tourner ; sinon, elle lance Docker Desktop et attend au plus dix minutes que le moteur et les services MK8DX soient prêts. Elle fonctionne en arrière-plan, sans fenêtre de commande vide. En cas d’échec, une fenêtre MK8DX explique comment lancer Docker Desktop puis choisir **2** (démarrer) et **3** (vérifier) dans **MK8DX beheer**. Après un redémarrage, quelqu’un doit ouvrir une session Windows.
 - **Linux :** Docker Engine démarre au démarrage de l'ordinateur (grâce à `sudo systemctl enable --now docker` du chapitre 2B), et MK8DX suit tout seul.
 - **macOS (non testé) :** une tâche de connexion ouvre Docker Desktop quand tu te connectes.
 

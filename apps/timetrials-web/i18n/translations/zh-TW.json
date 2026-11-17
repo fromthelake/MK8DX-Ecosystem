@@ -6161,6 +6161,11 @@
   "Readable copy of clips": "易讀的片段副本",
   "Folder for readable clips": "易讀片段的資料夾",
   "Save folder": "儲存資料夾",
-  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "每個完成的片段也會以易讀的名稱出現在此資料夾中：日期、時刻、賽道、等級和成績。在同一磁碟上不佔用額外空間；當 LiveTrial 的清理刪除某個片段時，它的副本也會一併刪除。"
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "每個完成的片段也會以易讀的名稱出現在此資料夾中：日期、時刻、賽道、等級和成績。在同一磁碟上不佔用額外空間；當 LiveTrial 的清理刪除某個片段時，它的副本也會一併刪除。",
+  "Automatic MK8DX start failed.": "MK8DX 無法自動啟動。",
+  "Docker is ready, but MK8DX services are not.": "Docker 已就緒，但 MK8DX 服務尚未就緒。",
+  "Open MK8DX beheer and choose 2 (start), then 3 (check).": "開啟 MK8DX beheer，選擇 2（啟動），然後選擇 3（檢查）。",
+  "Press Enter to close this MK8DX message.": "按 Enter 關閉此 MK8DX 訊息。",
+  "Waiting up to 10 minutes for Docker Desktop.": "最多等待 Docker Desktop 10 分鐘。"
  }
 }

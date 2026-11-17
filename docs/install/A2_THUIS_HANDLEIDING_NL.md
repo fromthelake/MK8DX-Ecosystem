@@ -419,7 +419,7 @@ Een adresconflict ontstaat als twee apparaten hetzelfde adres gebruiken. Een van
 
 **Na een herstart van de computer**
 
-- **Windows:** de taak "MK8DX start" start Docker Desktop zodra je je aanmeldt op Windows; MK8DX komt daarna vanzelf online. Iemand moet zich dus aanmelden: staat de computer na een Windows-update op het aanmeldscherm, dan is MK8DX pas weer bereikbaar na aanmelden.
+- **Windows:** twee minuten nadat je je aanmeldt, controleert de taak "MK8DX start" de Docker Linux-engine. Draait die al, dan laat de taak Docker met rust; anders start hij Docker Desktop en wacht maximaal tien minuten op de engine en MK8DX-diensten. Dat gebeurt op de achtergrond, zonder leeg opdrachtvenster. Mislukt het opstarten, dan legt een herkenbaar MK8DX-venster uit hoe je Docker Desktop start en in **MK8DX beheer** **2** (starten) en daarna **3** (controleren) kiest. Na een herstart moet iemand zich aanmelden; bij alleen het aanmeldscherm komt MK8DX niet online.
 - **Linux:** Docker Engine start bij het opstarten van de computer (dankzij `sudo systemctl enable --now docker` uit hoofdstuk 2B), en MK8DX komt vanzelf mee.
 - **macOS (niet getest):** een aanmeldtaak opent Docker Desktop als je je aanmeldt.
 

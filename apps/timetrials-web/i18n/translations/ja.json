@@ -6161,6 +6161,11 @@
   "Readable copy of clips": "クリップの読みやすいコピー",
   "Folder for readable clips": "読みやすいクリップのフォルダー",
   "Save folder": "フォルダーを保存",
-  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "完了したクリップは、日付・時刻・コース・クラス・タイムの読みやすい名前でこのフォルダーにも表示されます。同じドライブなら追加の容量は使いません。LiveTrial のクリーンアップがクリップを削除すると、そのコピーも削除されます。"
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "完了したクリップは、日付・時刻・コース・クラス・タイムの読みやすい名前でこのフォルダーにも表示されます。同じドライブなら追加の容量は使いません。LiveTrial のクリーンアップがクリップを削除すると、そのコピーも削除されます。",
+  "Automatic MK8DX start failed.": "MK8DX を自動で起動できませんでした。",
+  "Docker is ready, but MK8DX services are not.": "Docker は準備できましたが、MK8DX のサービスはまだ準備できていません。",
+  "Open MK8DX beheer and choose 2 (start), then 3 (check).": "MK8DX beheer を開き、2（起動）、次に3（確認）を選んでください。",
+  "Press Enter to close this MK8DX message.": "Enter キーを押すと、この MK8DX メッセージを閉じます。",
+  "Waiting up to 10 minutes for Docker Desktop.": "Docker Desktop の起動を最大10分間待っています。"
  }
 }

@@ -419,7 +419,7 @@ MK8DX コンピューターのアドレスはルーターが割り当てます�
 
 **コンピューターの再起動後**
 
-- **Windows：** 「MK8DX start」タスクが、Windows にサインインするとすぐに Docker Desktop を起動し、MK8DX も自動的にオンラインになります。つまり、誰かがサインインする必要があります。Windows Update の後にコンピューターがサインイン画面のままになっていると、サインインするまで MK8DX にはつながりません。
+- **Windows：**サインインから2分後に「MK8DX start」タスクが Docker の Linux エンジンを確認します。すでに動いていればそのままにし、動いていなければ Docker Desktop を起動して、エンジンと MK8DX のサービスが準備できるまで最大10分待ちます。空のコマンド画面を表示せず、バックグラウンドで動作します。失敗した場合は MK8DX の画面に対処方法が表示されます。Docker Desktop を起動し、**MK8DX beheer** で **2**（起動）、**3**（確認）を選んでください。再起動後は Windows へのサインインが必要です。
 - **Linux：** Docker Engine はコンピューターの起動時に起動し（第 2B 章の `sudo systemctl enable --now docker` のおかげです）、MK8DX も自動的に起動します。
 - **macOS（未テスト）：** サインイン時のタスクが、サインインしたときに Docker Desktop を開きます。
 

@@ -37,9 +37,12 @@ try {
   throw (Tr 'Python 3.12 to 3.15 is missing. Install the Python install manager from python.org (or the Microsoft Store), run: py install 3.15, reopen PowerShell and retry.')
 }
 Write-Step '2/4' (Tr 'Checking Docker')
-# `docker compose version` also succeeds while the engine is stopped; `docker info` needs the running engine.
-$dockerFound = $null -ne (Get-Command docker -ErrorAction SilentlyContinue)
-$dockerRunning = $dockerFound -and ((Invoke-WithSpinner (Tr 'Waiting for the Docker engine') { Invoke-NativeQuiet { docker info } }) -eq 0)
+# The shared helper checks the Linux engine, starts Desktop only when necessary,
+# and gives up after ten minutes. A visible launcher keeps its existing MK8DX UI.
+Write-Info (Tr 'Waiting up to 10 minutes for Docker Desktop.')
+$dockerRunning = Invoke-WithSpinner (Tr 'Waiting for the Docker engine') {
+  (Invoke-NativeQuiet { & $python tooling/windows_startup.py ensure-docker }) -eq 0
+}
 if (-not $dockerRunning) {
   throw (Tr 'Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows "Engine running", and retry.')
 }

@@ -532,7 +532,8 @@ class Wizard:
 
     def finish(self, shortcut: bool, autostart: bool = True, backups: bool = True, new_code: bool = False):
         from tooling import auto_backup
-        result = {"autostart": auto_backup.ensure_docker_autostart() if autostart else "off"}
+        result = {"autostart": (auto_backup.ensure_docker_autostart(self.state, sys.executable) if autostart
+                                else auto_backup.disable_docker_autostart())}
         had_code = self.installed() and auto_backup.has_recovery_code(self.state)
         if backups and self.installed():
             result.update(auto_backup.enable(self.state, sys.executable))
