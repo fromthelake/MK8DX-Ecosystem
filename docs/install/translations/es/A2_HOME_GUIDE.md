@@ -419,7 +419,7 @@ Un conflicto de direcciones ocurre cuando dos dispositivos usan la misma direcci
 
 **Después de reiniciar el ordenador**
 
-- **Windows:** la tarea «MK8DX start» inicia Docker Desktop en cuanto inicias sesión en Windows; MK8DX se pone en marcha solo. Así que alguien tiene que iniciar sesión: si tras una actualización de Windows el ordenador se queda en la pantalla de inicio de sesión, MK8DX no vuelve a estar accesible hasta que alguien inicia sesión.
+- **Windows:** dos minutos después de iniciar sesión, la tarea «MK8DX start» comprueba el motor Linux de Docker. Si ya funciona, lo deja como está; si no, inicia Docker Desktop y espera hasta diez minutos a que el motor y los servicios de MK8DX estén listos. Lo hace en segundo plano, sin una ventana de comandos vacía. Si falla, una ventana de MK8DX explica cómo iniciar Docker Desktop y elegir **2** (iniciar) y **3** (comprobar) en **MK8DX beheer**. Después de reiniciar, alguien debe iniciar sesión en Windows.
 - **Linux:** Docker Engine se inicia cuando arranca el ordenador (gracias a `sudo systemctl enable --now docker` del capítulo 2B), y MK8DX arranca con él.
 - **macOS (sin probar):** una tarea de inicio de sesión abre Docker Desktop cuando inicias sesión.
 

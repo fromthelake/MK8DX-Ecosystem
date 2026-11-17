@@ -74,7 +74,7 @@ page; the scanner shows the total time, the lap times and the kart combination i
 
 ## Coming back later
 
-Start Docker Desktop, open the same folder and double-click `Start-MK8DX.cmd`. The menu stays open until you type
+Open the same folder and double-click `Start-MK8DX.cmd`. Its branded window checks Docker: if the Linux engine is already running, it continues; otherwise it starts Docker Desktop and waits up to ten minutes. It shows a clear error if startup fails. A1 does not start automatically when you sign in to Windows; choose **2** in the menu when you need the server. The menu stays open until you type
 **0**:
 
 | Type | Does |

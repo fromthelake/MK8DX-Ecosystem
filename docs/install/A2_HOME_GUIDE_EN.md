@@ -419,7 +419,7 @@ An address conflict happens when two devices use the same address. One of them (
 
 **After the computer restarts**
 
-- **Windows:** the "MK8DX start" task starts Docker Desktop as soon as you sign in to Windows; MK8DX then comes online by itself. So someone has to sign in: if the computer sits at the sign-in screen after a Windows update, MK8DX is only reachable again after signing in.
+- **Windows:** two minutes after you sign in, the "MK8DX start" task checks the Docker Linux engine. If it is already running, the task leaves it alone; otherwise it starts Docker Desktop and waits up to ten minutes for the engine and MK8DX services. The task runs in the background without an empty command window. If startup fails, an MK8DX window explains how to start Docker Desktop and use **MK8DX beheer**: choose **2** (start), then **3** (check). Someone must sign in after a restart; the sign-in screen alone cannot bring MK8DX online.
 - **Linux:** Docker Engine starts when the computer boots (thanks to `sudo systemctl enable --now docker` from chapter 2B), and MK8DX comes along by itself.
 - **macOS (not tested):** a sign-in task opens Docker Desktop when you sign in.
 

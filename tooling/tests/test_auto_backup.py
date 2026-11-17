@@ -35,6 +35,7 @@ class AutoBackupTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             calls = []
             with patch.object(auto_backup.sys, "platform", "win32"), \
+                    patch.object(auto_backup, "_windowless_python", return_value="pyw.exe"), \
                     patch.object(auto_backup.subprocess, "run",
                                  side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
                 result = call(Path(temporary))
@@ -42,8 +43,8 @@ class AutoBackupTest(unittest.TestCase):
 
     def test_tasks_run_for_the_current_user_and_catch_up(self):
         for call, name, needle in (
-                (lambda s: auto_backup.register_ca_renewal(s, "py.exe"), "MK8DX certificate renewal", "maintain-ca"),
-                (lambda s: auto_backup.register_daily_task(s, "py.exe"), "MK8DX backup", "auto_backup.py")):
+                (lambda s: auto_backup.register_ca_renewal(s, "py.exe"), "MK8DX certificate renewal", " ca "),
+                (lambda s: auto_backup.register_daily_task(s, "py.exe"), "MK8DX backup", " backup ")):
             result, calls = self._registered(call)
             self.assertTrue(result)
             self.assertEqual(len(calls), 1)
@@ -51,6 +52,8 @@ class AutoBackupTest(unittest.TestCase):
             self.assertEqual(calls[0][:4], ["powershell.exe", "-NoProfile", "-NonInteractive", "-Command"])
             self.assertIn(f"-TaskName '{name}'", script)
             self.assertIn(needle, script)
+            self.assertIn("pyw.exe", script)
+            self.assertIn("windows_startup.py", script)
             # Missed nights (computer off, nobody signed in, on battery) still run afterwards.
             for setting in ("-StartWhenAvailable", "-AllowStartIfOnBatteries", "-DontStopIfGoingOnBatteries",
                             "-LogonType Interactive", "-RunLevel Limited", "-Daily"):
@@ -128,25 +131,33 @@ if __name__ == "__main__":
 
 
 class DockerAutostartTest(unittest.TestCase):
-    def test_own_sign_in_task_starts_docker_desktop_only_when_needed(self):
+    def test_sign_in_task_is_delayed_and_has_no_console(self):
         with tempfile.TemporaryDirectory() as temporary:
-            exe = Path(temporary) / "Programs" / "DockerDesktop" / "Docker Desktop.exe"
-            exe.parent.mkdir(parents=True)
-            exe.write_bytes(b"")
             calls = []
             with patch.object(auto_backup.sys, "platform", "win32"), \
-                    patch.dict("os.environ", {"LOCALAPPDATA": temporary, "ProgramFiles": str(Path(temporary) / "none")}), \
+                    patch.object(auto_backup, "_windowless_python", return_value="pythonw.exe"), \
                     patch.object(auto_backup.subprocess, "run",
                                  side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
-                self.assertEqual(auto_backup.ensure_docker_autostart(), "enabled")
+                self.assertEqual(auto_backup.ensure_docker_autostart(Path(temporary), "python.exe"), "enabled")
             script = calls[0][-1]
             self.assertIn("-TaskName 'MK8DX start'", script)
             self.assertIn("-AtLogOn -User $who", script)
-            self.assertIn("Get-Process -Name ''Docker Desktop''", script)
-            self.assertIn(str(exe).replace("'", "''"), script)
+            self.assertIn("$t.Delay='PT2M'", script)
+            self.assertIn("-MultipleInstances IgnoreNew", script)
+            self.assertIn("pythonw.exe", script)
+            self.assertIn("windows_startup.py", script)
 
-    def test_missing_docker_desktop_is_reported(self):
+    def test_missing_windowless_python_is_reported(self):
         with tempfile.TemporaryDirectory() as temporary:
             with patch.object(auto_backup.sys, "platform", "win32"), \
-                    patch.dict("os.environ", {"LOCALAPPDATA": temporary, "ProgramFiles": temporary}):
-                self.assertEqual(auto_backup.ensure_docker_autostart(), "docker-desktop-not-found")
+                    patch.object(auto_backup, "_windowless_python", return_value=None):
+                self.assertEqual(auto_backup.ensure_docker_autostart(Path(temporary), "python.exe"),
+                                 "pythonw-not-found")
+
+    def test_turning_off_start_removes_old_task(self):
+        calls = []
+        with patch.object(auto_backup.sys, "platform", "win32"), \
+                patch.object(auto_backup.subprocess, "run",
+                             side_effect=lambda args, **k: calls.append(args) or types.SimpleNamespace(returncode=0)):
+            self.assertEqual(auto_backup.disable_docker_autostart(), "off")
+        self.assertIn("Unregister-ScheduledTask -TaskName 'MK8DX start'", calls[0][-1])

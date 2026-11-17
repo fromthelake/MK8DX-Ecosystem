@@ -142,7 +142,7 @@
    "key": "'{0}' is not one of the numbers above.",
    "nl": "'{0}' is geen van de nummers hierboven.",
    "places": [
-    "start-mk8dx.ps1:207",
+    "start-mk8dx.ps1:210",
     "start-mk8dx.sh:179",
     "Manage-MK8DX-No-Docker.cmd:60"
    ]
@@ -305,6 +305,13 @@
    ]
   },
   {
+   "key": "Automatic MK8DX start failed.",
+   "nl": "MK8DX kon niet automatisch starten.",
+   "places": [
+    "windows-startup-alert.ps1:9"
+   ]
+  },
+  {
    "key": "B2 database lifecycle belongs to DirectAdmin",
    "nl": "De B2-database wordt in DirectAdmin aangemaakt en beheerd",
    "places": [
@@ -422,7 +429,7 @@
    "key": "Backups made from now on need this new code. Backups made before still open only with the old code: keep that paper with them.",
    "nl": "Back-ups die vanaf nu worden gemaakt hebben deze nieuwe code nodig. Eerder gemaakte back-ups gaan alleen open met de oude code: bewaar dat papier bij die back-ups.",
    "places": [
-    "scheduled_backup.py:941"
+    "scheduled_backup.py:940"
    ]
   },
   {
@@ -436,7 +443,7 @@
    "key": "Check that everything works",
    "nl": "Controleren of alles werkt",
    "places": [
-    "start-mk8dx.ps1:180",
+    "start-mk8dx.ps1:183",
     "start-mk8dx.sh:159",
     "Manage-MK8DX-No-Docker.cmd:31"
    ]
@@ -453,7 +460,7 @@
    "key": "Checked backup, then the update",
    "nl": "Gecontroleerde back-up, daarna de update",
    "places": [
-    "start-mk8dx.ps1:198",
+    "start-mk8dx.ps1:201",
     "start-mk8dx.sh:176"
    ]
   },
@@ -471,7 +478,7 @@
    "key": "Checking MK8DX",
    "nl": "MK8DX controleren",
    "places": [
-    "start-mk8dx.ps1:194",
+    "start-mk8dx.ps1:197",
     "start-mk8dx.sh:172"
    ]
   },
@@ -532,7 +539,7 @@
    "key": "Close this window",
    "nl": "Dit venster sluiten",
    "places": [
-    "start-mk8dx.ps1:183"
+    "start-mk8dx.ps1:186"
    ]
   },
   {
@@ -567,7 +574,7 @@
    "key": "Could not create the private Python environment.",
    "nl": "De private Python-omgeving kon niet worden gemaakt.",
    "places": [
-    "start-mk8dx.ps1:72"
+    "start-mk8dx.ps1:75"
    ]
   },
   {
@@ -675,7 +682,8 @@
    "key": "Docker Desktop is missing or not running. Start Docker Desktop in Linux-container mode, wait until it shows \"Engine running\", and retry.",
    "nl": "Docker Desktop ontbreekt of draait niet. Start Docker Desktop in de stand voor Linux-containers, wacht tot \"Engine running\" verschijnt en probeer het opnieuw.",
    "places": [
-    "start-mk8dx.ps1:44"
+    "start-mk8dx.ps1:47",
+    "windows-startup-alert.ps1:11"
    ]
   },
   {
@@ -686,10 +694,17 @@
    ]
   },
   {
+   "key": "Docker is ready, but MK8DX services are not.",
+   "nl": "Docker is gereed, maar de MK8DX-diensten zijn dat niet.",
+   "places": [
+    "windows-startup-alert.ps1:13"
+   ]
+  },
+  {
    "key": "Does your host already make daily account backups (for example DirectAdmin or JetBackup)? Then you may say no. An own backup still lets you restore yesterday yourself, including the site's keys, without waiting for support.",
    "nl": "Maakt je hostingpartij al dagelijks back-ups van je account (bijvoorbeeld DirectAdmin of JetBackup)? Dan mag je nee zeggen. Met een eigen back-up zet je gisteren nog steeds zelf terug, inclusief de sleutels van de site, zonder op de helpdesk te wachten.",
    "places": [
-    "scheduled_backup.py:880"
+    "scheduled_backup.py:879"
    ]
   },
   {
@@ -850,7 +865,7 @@
    "key": "First setup",
    "nl": "Eerste installatie",
    "places": [
-    "start-mk8dx.ps1:192",
+    "start-mk8dx.ps1:195",
     "start-mk8dx.sh:170"
    ]
   },
@@ -858,7 +873,7 @@
    "key": "First setup, or finish an interrupted one",
    "nl": "Eerste installatie, of een onderbroken installatie afmaken",
    "places": [
-    "start-mk8dx.ps1:180",
+    "start-mk8dx.ps1:183",
     "start-mk8dx.sh:157"
    ]
   },
@@ -866,7 +881,7 @@
    "key": "First setup: database, keys and reference times (the first time takes a few minutes)",
    "nl": "Eerste installatie: database, sleutels en referentietijden (de eerste keer duurt een paar minuten)",
    "places": [
-    "start-mk8dx.ps1:175",
+    "start-mk8dx.ps1:178",
     "start-mk8dx.sh:152"
    ]
   },
@@ -882,7 +897,7 @@
    "key": "Folder exists without a complete MK8DX operator profile. Keep it and inspect it; do not reset data.",
    "nl": "De map bestaat, maar zonder compleet MK8DX-beheerprofiel. Bewaar de map en bekijk hem; zet geen gegevens terug.",
    "places": [
-    "start-mk8dx.ps1:125"
+    "start-mk8dx.ps1:128"
    ]
   },
   {
@@ -924,14 +939,14 @@
    "key": "Image loading failed.",
    "nl": "Laden van de images mislukt.",
    "places": [
-    "start-mk8dx.ps1:105"
+    "start-mk8dx.ps1:108"
    ]
   },
   {
    "key": "Images loaded in {0}.",
    "nl": "Images geladen in {0}.",
    "places": [
-    "start-mk8dx.ps1:106"
+    "start-mk8dx.ps1:109"
    ]
   },
   {
@@ -988,7 +1003,7 @@
    "key": "Installation path is a link; use a normal folder.",
    "nl": "Het installatiepad is een koppeling; gebruik een gewone map.",
    "places": [
-    "start-mk8dx.ps1:123"
+    "start-mk8dx.ps1:126"
    ]
   },
   {
@@ -1009,7 +1024,7 @@
    "key": "Installing the included Python packages failed.",
    "nl": "Het installeren van de meegeleverde Python-pakketten is mislukt.",
    "places": [
-    "start-mk8dx.ps1:74",
+    "start-mk8dx.ps1:77",
     "start-mk8dx.sh:105"
    ]
   },
@@ -1052,7 +1067,7 @@
    "key": "Keep this window open until you click Finish.",
    "nl": "Laat dit venster open tot je op Voltooien klikt.",
    "places": [
-    "setup_wizard.py:814"
+    "setup_wizard.py:815"
    ]
   },
   {
@@ -1094,14 +1109,14 @@
    "key": "Loading the included Docker images",
    "nl": "De meegeleverde Docker-images laden",
    "places": [
-    "start-mk8dx.ps1:100"
+    "start-mk8dx.ps1:103"
    ]
   },
   {
    "key": "Loading the included Docker images ({0} GB). This can take several minutes; the time below keeps counting.",
    "nl": "De meegeleverde Docker-images laden ({0} GB). Dit kan enkele minuten duren; de tijd hieronder blijft doortellen.",
    "places": [
-    "start-mk8dx.ps1:86"
+    "start-mk8dx.ps1:89"
    ]
   },
   {
@@ -1284,7 +1299,7 @@
    "key": "MK8DX can make its own checked backup of the database and the site's keys every night: about 3 MB a day compressed, 14 days and 4 weeks are kept, at most 1 GB, outside public_html.",
    "nl": "MK8DX kan elke nacht zelf een gecontroleerde back-up maken van de database en de sleutels van de site: ongeveer 3 MB per dag gecomprimeerd, 14 dagen en 4 weken worden bewaard, hooguit 1 GB, buiten public_html.",
    "places": [
-    "scheduled_backup.py:878"
+    "scheduled_backup.py:877"
    ]
   },
   {
@@ -1322,7 +1337,7 @@
    "key": "MK8DX setup is open in your browser: {0}",
    "nl": "De MK8DX-installatie staat open in je browser: {0}",
    "places": [
-    "setup_wizard.py:813"
+    "setup_wizard.py:814"
    ]
   },
   {
@@ -1392,7 +1407,7 @@
    "key": "Make a backup (it is checked right away)",
    "nl": "Een back-up maken (die wordt meteen gecontroleerd)",
    "places": [
-    "start-mk8dx.ps1:181",
+    "start-mk8dx.ps1:184",
     "start-mk8dx.sh:162"
    ]
   },
@@ -1407,14 +1422,14 @@
    "key": "Make and check a backup automatically every night? [Y/n]: ",
    "nl": "Elke nacht automatisch een gecontroleerde back-up maken? [J/n]: ",
    "places": [
-    "scheduled_backup.py:884"
+    "scheduled_backup.py:883"
    ]
   },
   {
    "key": "Make me administrator (after you signed in once)",
    "nl": "Maak mij beheerder (nadat je één keer bent ingelogd)",
    "places": [
-    "start-mk8dx.ps1:138",
+    "start-mk8dx.ps1:141",
     "start-mk8dx.sh:135"
    ]
   },
@@ -1429,7 +1444,7 @@
    "key": "Making and checking a backup",
    "nl": "Back-up maken en controleren",
    "places": [
-    "start-mk8dx.ps1:197",
+    "start-mk8dx.ps1:200",
     "start-mk8dx.sh:175"
    ]
   },
@@ -1458,7 +1473,7 @@
    "key": "Missing prebuilt image {0}. Use the complete host installation package.",
    "nl": "Vooraf gebouwde image {0} ontbreekt. Gebruik het complete installatiepakket voor de host.",
    "places": [
-    "start-mk8dx.ps1:80"
+    "start-mk8dx.ps1:83"
    ]
   },
   {
@@ -1487,7 +1502,7 @@
    "key": "New backup recovery code (shown only once; write it down and keep it away from this computer): {0}",
    "nl": "Nieuwe herstelcode voor de back-ups (wordt maar één keer getoond; schrijf hem op en bewaar hem niet bij deze computer): {0}",
    "places": [
-    "scheduled_backup.py:939"
+    "scheduled_backup.py:938"
    ]
   },
   {
@@ -1501,22 +1516,22 @@
    "key": "Next: type 8 to open the website, sign in with your address, then type 5 to become administrator.",
    "nl": "Volgende stap: typ 8 om de website te openen, log in met je adres en typ daarna 5 om beheerder te worden.",
    "places": [
-    "start-mk8dx.ps1:169"
+    "start-mk8dx.ps1:172"
    ]
   },
   {
    "key": "Nightly automatic backup could not be switched on: {0}. Your installation is fine; see the backup chapter of the guide.",
    "nl": "De nachtelijke automatische back-up kon niet worden aangezet: {0}. Je installatie is in orde; zie het hoofdstuk over back-ups in de handleiding.",
    "places": [
-    "scheduled_backup.py:898",
-    "scheduled_backup.py:914"
+    "scheduled_backup.py:897",
+    "scheduled_backup.py:913"
    ]
   },
   {
    "key": "Nightly automatic backup is on: {0}. Turn it off with: {1}",
    "nl": "Nachtelijke automatische back-up staat aan: {0}. Uitzetten met: {1}",
    "places": [
-    "scheduled_backup.py:869"
+    "scheduled_backup.py:868"
    ]
   },
   {
@@ -1560,7 +1575,7 @@
    "key": "Note: the package folder is read-only, so the next start loads the images again.",
    "nl": "Let op: de pakketmap is alleen-lezen, dus bij de volgende start worden de images opnieuw geladen.",
    "places": [
-    "start-mk8dx.ps1:108",
+    "start-mk8dx.ps1:111",
     "start-mk8dx.sh:93"
    ]
   },
@@ -1671,6 +1686,13 @@
    ]
   },
   {
+   "key": "Open MK8DX beheer and choose 2 (start), then 3 (check).",
+   "nl": "Open MK8DX beheer en kies 2 (starten), daarna 3 (controleren).",
+   "places": [
+    "windows-startup-alert.ps1:17"
+   ]
+  },
+  {
    "key": "Open on this computer: {0}",
    "nl": "Open op deze computer: {0}",
    "places": [
@@ -1681,14 +1703,14 @@
    "key": "Open the website in your browser",
    "nl": "De website in je browser openen",
    "places": [
-    "start-mk8dx.ps1:182"
+    "start-mk8dx.ps1:185"
    ]
   },
   {
    "key": "Opening MK8DX beheer in your browser",
    "nl": "MK8DX beheer openen in je browser",
    "places": [
-    "start-mk8dx.ps1:114",
+    "start-mk8dx.ps1:117",
     "mk8dx-ui.ps1:717",
     "start-mk8dx.sh:121",
     "mk8dx-ui.sh:419"
@@ -1790,7 +1812,7 @@
    "key": "Preparing the MK8DX programs",
    "nl": "De MK8DX-programma's voorbereiden",
    "places": [
-    "start-mk8dx.ps1:50",
+    "start-mk8dx.ps1:53",
     "mk8dx-ui.ps1:713",
     "start-mk8dx.sh:66",
     "mk8dx-ui.sh:415"
@@ -1808,7 +1830,7 @@
    "key": "Preparing the included Python packages (once, without internet).",
    "nl": "De meegeleverde Python-pakketten voorbereiden (eenmalig, zonder internet).",
    "places": [
-    "start-mk8dx.ps1:70",
+    "start-mk8dx.ps1:73",
     "start-mk8dx.sh:101"
    ]
   },
@@ -1824,6 +1846,13 @@
    "nl": "Druk hier op Ctrl+C als de bewerking klaar is.",
    "places": [
     "native_install.py:378"
+   ]
+  },
+  {
+   "key": "Press Enter to close this MK8DX message.",
+   "nl": "Druk op Enter om deze MK8DX-melding te sluiten.",
+   "places": [
+    "windows-startup-alert.ps1:18"
    ]
   },
   {
@@ -1844,7 +1873,7 @@
    "key": "Private backup (keep it safe, never share it): {0}",
    "nl": "Private back-up (bewaar hem goed, deel hem nooit): {0}",
    "places": [
-    "start-mk8dx.ps1:159",
+    "start-mk8dx.ps1:162",
     "start-mk8dx.sh:149"
    ]
   },
@@ -2038,7 +2067,7 @@
    "key": "Ready. MK8DX beheer opens in your browser; keep this window open.",
    "nl": "Klaar. MK8DX beheer opent in je browser; laat dit venster open.",
    "places": [
-    "start-mk8dx.ps1:115",
+    "start-mk8dx.ps1:118",
     "start-mk8dx.sh:122"
    ]
   },
@@ -2343,14 +2372,14 @@
    "key": "Sign-in mail arrives in the local test inbox: {0}",
    "nl": "Inlogmail komt binnen in de lokale testinbox: {0}",
    "places": [
-    "start-mk8dx.ps1:168"
+    "start-mk8dx.ps1:171"
    ]
   },
   {
    "key": "Sign-in mail for this trial arrives in the local inbox: {0}",
    "nl": "Inlogmail voor deze proef komt binnen in de lokale inbox: {0}",
    "places": [
-    "start-mk8dx.ps1:203"
+    "start-mk8dx.ps1:206"
    ]
   },
   {
@@ -2365,7 +2394,7 @@
    "key": "Start MK8DX",
    "nl": "MK8DX starten",
    "places": [
-    "start-mk8dx.ps1:180",
+    "start-mk8dx.ps1:183",
     "start-mk8dx.sh:158"
    ]
   },
@@ -2373,7 +2402,7 @@
    "key": "Starting MK8DX",
    "nl": "MK8DX starten",
    "places": [
-    "start-mk8dx.ps1:193",
+    "start-mk8dx.ps1:196",
     "start-mk8dx.sh:171",
     "Start-MK8DX-No-Docker.cmd:37"
    ]
@@ -2405,7 +2434,7 @@
    "key": "Stop MK8DX",
    "nl": "MK8DX stoppen",
    "places": [
-    "start-mk8dx.ps1:181",
+    "start-mk8dx.ps1:184",
     "start-mk8dx.sh:160"
    ]
   },
@@ -2413,7 +2442,7 @@
    "key": "Stopping MK8DX",
    "nl": "MK8DX stoppen",
    "places": [
-    "start-mk8dx.ps1:195",
+    "start-mk8dx.ps1:198",
     "start-mk8dx.sh:173"
    ]
   },
@@ -2472,6 +2501,7 @@
    "key": "That step did not finish. Read the message above; your data is kept.",
    "nl": "Die stap is niet afgerond. Lees de melding hierboven; je gegevens blijven bewaard.",
    "places": [
+    "windows-startup-alert.ps1:15",
     "mk8dx-ui.ps1:716",
     "mk8dx-ui.sh:418"
    ]
@@ -2480,7 +2510,7 @@
    "key": "That step did not finish. Read the message above; your data is kept. Fix it and choose the step again.",
    "nl": "Die stap is niet afgerond. Lees de melding hierboven; je gegevens blijven bewaard. Los het op en kies de stap opnieuw.",
    "places": [
-    "start-mk8dx.ps1:146",
+    "start-mk8dx.ps1:149",
     "start-mk8dx.sh:144"
    ]
   },
@@ -2524,7 +2554,7 @@
    "key": "The guided setup did not finish.",
    "nl": "De begeleide installatie is niet afgerond.",
    "places": [
-    "start-mk8dx.ps1:129",
+    "start-mk8dx.ps1:132",
     "start-mk8dx.sh:130"
    ]
   },
@@ -2706,7 +2736,7 @@
    "key": "This installation is an A2 home or club installation; start it from the mk8dx-a2 package.",
    "nl": "Dit is een A2-installatie voor thuis of de club; start hem vanuit het pakket mk8dx-a2.",
    "places": [
-    "start-mk8dx.ps1:135",
+    "start-mk8dx.ps1:138",
     "start-mk8dx.sh:137"
    ]
   },
@@ -2808,7 +2838,7 @@
    "key": "Type a number and press Enter",
    "nl": "Typ een nummer en druk op Enter",
    "places": [
-    "start-mk8dx.ps1:188"
+    "start-mk8dx.ps1:191"
    ]
   },
   {
@@ -2858,7 +2888,7 @@
    "key": "Unlock the host page (first administrator, invitations)",
    "nl": "De hostpagina ontgrendelen (eerste beheerder, uitnodigingen)",
    "places": [
-    "start-mk8dx.ps1:138",
+    "start-mk8dx.ps1:141",
     "start-mk8dx.sh:139"
    ]
   },
@@ -2880,7 +2910,7 @@
    "key": "Update to this package (makes a checked backup first)",
    "nl": "Bijwerken naar dit pakket (maakt eerst een gecontroleerde back-up)",
    "places": [
-    "start-mk8dx.ps1:182",
+    "start-mk8dx.ps1:185",
     "start-mk8dx.sh:163"
    ]
   },
@@ -2967,10 +2997,17 @@
    "key": "Waiting for the Docker engine",
    "nl": "Wachten op de Docker-engine",
    "places": [
-    "start-mk8dx.ps1:42",
+    "start-mk8dx.ps1:43",
     "mk8dx-ui.ps1:711",
     "start-mk8dx.sh:61",
     "mk8dx-ui.sh:414"
+   ]
+  },
+  {
+   "key": "Waiting up to 10 minutes for Docker Desktop.",
+   "nl": "Maximaal 10 minuten wachten op Docker Desktop.",
+   "places": [
+    "start-mk8dx.ps1:42"
    ]
   },
   {
@@ -3019,8 +3056,8 @@
    "key": "Website: {0}",
    "nl": "Website: {0}",
    "places": [
-    "start-mk8dx.ps1:166",
-    "start-mk8dx.ps1:200",
+    "start-mk8dx.ps1:169",
+    "start-mk8dx.ps1:203",
     "mk8dx-ui.ps1:32",
     "start-mk8dx.sh:177"
    ]
@@ -3029,7 +3066,7 @@
    "key": "What do you want to do?",
    "nl": "Wat wil je doen?",
    "places": [
-    "start-mk8dx.ps1:186",
+    "start-mk8dx.ps1:189",
     "start-mk8dx.sh:156",
     "Manage-MK8DX-No-Docker.cmd:31"
    ]
@@ -3052,7 +3089,7 @@
    "key": "Write down this backup recovery code and keep it away from this computer: {0}",
    "nl": "Schrijf deze herstelcode voor de back-ups op en bewaar hem niet op deze computer: {0}",
    "places": [
-    "scheduled_backup.py:872"
+    "scheduled_backup.py:871"
    ]
   },
   {
@@ -3089,6 +3126,7 @@
    "nl": "communityserver",
    "places": [
     "start-mk8dx.ps1:22",
+    "windows-startup-alert.ps1:8",
     "start-mk8dx.sh:47"
    ]
   },
@@ -3118,9 +3156,9 @@
    "nl": "thuis- & club-LAN",
    "places": [
     "start-mk8dx.ps1:22",
+    "windows-startup-alert.ps1:8",
     "mk8dx-ui.ps1:706",
-    "start-mk8dx.sh:48",
-    "mk8dx-ui.sh:409"
+    "start-mk8dx.sh:48"
    ]
   },
   {
@@ -3156,7 +3194,7 @@
    "key": "still loading... {0}",
    "nl": "nog bezig met laden... {0}",
    "places": [
-    "start-mk8dx.ps1:96"
+    "start-mk8dx.ps1:99"
    ]
   },
   {

@@ -419,7 +419,7 @@ LiveTrial 是一个 Windows 程序，它通过采集卡（一个把 Switch 画�
 
 **电脑重启之后**
 
-- **Windows：** 只要你登录 Windows，“MK8DX start” 任务就会启动 Docker Desktop；随后 MK8DX 会自动上线。所以必须有人登录：如果电脑在 Windows 更新后停在登录屏幕，只有登录之后才能再次访问 MK8DX。
+- **Windows：**登录两分钟后，“MK8DX start”任务会检查 Docker 的 Linux 引擎。如果引擎已运行，就保持现状；否则启动 Docker Desktop，并最多等待十分钟，让引擎和 MK8DX 服务就绪。任务在后台运行，不会弹出空白命令窗口。如果启动失败，MK8DX 窗口会说明处理步骤：启动 Docker Desktop，然后在 **MK8DX beheer** 中选择 **2**（启动）和 **3**（检查）。重启后必须有人登录 Windows。
 - **Linux：** Docker Engine 在电脑开机时启动（多亏了第 2B 章中的 `sudo systemctl enable --now docker`），MK8DX 也会自动随之启动。
 - **macOS（未测试）：** 一个登录任务会在你登录时打开 Docker Desktop。
 

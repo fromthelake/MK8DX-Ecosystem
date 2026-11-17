@@ -6161,6 +6161,11 @@
   "Readable copy of clips": "Lesbare Kopie der Clips",
   "Folder for readable clips": "Ordner für lesbare Clips",
   "Save folder": "Ordner speichern",
-  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "Jeder fertige Clip erscheint auch in diesem Ordner, mit einem lesbaren Namen: Datum, Uhrzeit, Strecke, Klasse und Zeit. Auf demselben Laufwerk braucht das keinen zusätzlichen Platz; wenn die Aufräumfunktion von LiveTrial einen Clip entfernt, verschwindet auch seine Kopie."
+  "Every finished clip also appears in this folder with a name you can read: date, time, track, class and time. On the same drive it takes no extra space; when LiveTrial's clean-up removes a clip, its copy goes too.": "Jeder fertige Clip erscheint auch in diesem Ordner, mit einem lesbaren Namen: Datum, Uhrzeit, Strecke, Klasse und Zeit. Auf demselben Laufwerk braucht das keinen zusätzlichen Platz; wenn die Aufräumfunktion von LiveTrial einen Clip entfernt, verschwindet auch seine Kopie.",
+  "Automatic MK8DX start failed.": "MK8DX konnte nicht automatisch gestartet werden.",
+  "Docker is ready, but MK8DX services are not.": "Docker ist bereit, aber die MK8DX-Dienste sind es nicht.",
+  "Open MK8DX beheer and choose 2 (start), then 3 (check).": "Öffne MK8DX beheer und wähle 2 (Starten), dann 3 (Prüfen).",
+  "Press Enter to close this MK8DX message.": "Drücke die Eingabetaste, um diese MK8DX-Meldung zu schließen.",
+  "Waiting up to 10 minutes for Docker Desktop.": "Bis zu 10 Minuten auf Docker Desktop warten."
  }
 }

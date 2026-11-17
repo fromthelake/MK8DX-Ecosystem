@@ -67,7 +67,8 @@ FILES = (
     "compose.production.yaml", "compose.images.yaml", "tooling/install.py", "tooling/lifecycle.py",
     "tooling/database_accounts.py", "tooling/scheduled_backup.py",
     # The daily backup schedule (scheduled_backup.schedule) needs these on every route, not only A2.
-    "tooling/auto_backup.py", "tooling/host_platform.py",
+    "tooling/auto_backup.py", "tooling/windows_startup.py", "tooling/windows-startup-alert.ps1",
+    "tooling/host_platform.py",
     # Removing an installation: only the images no other container on this computer still uses.
     "tooling/remove_images.py",
     "tooling/start-mk8dx.ps1", "tooling/mk8dx-ui.ps1", "tooling/start-mk8dx.sh",

@@ -419,7 +419,7 @@ Un conflitto di indirizzi si verifica quando due dispositivi usano lo stesso ind
 
 **Dopo il riavvio del computer**
 
-- **Windows:** l'attività "MK8DX start" avvia Docker Desktop non appena accedi a Windows; MK8DX torna poi online da solo. Quindi qualcuno deve accedere: se dopo un aggiornamento di Windows il computer resta alla schermata di accesso, MK8DX è di nuovo raggiungibile solo dopo l'accesso.
+- **Windows:** due minuti dopo l’accesso, l’attività «MK8DX start» controlla il motore Linux di Docker. Se è già attivo, lo lascia in esecuzione; altrimenti avvia Docker Desktop e attende fino a dieci minuti che il motore e i servizi MK8DX siano pronti. Funziona in background, senza una finestra di comando vuota. Se l’avvio fallisce, una finestra MK8DX spiega come avviare Docker Desktop e scegliere **2** (avvia) e **3** (controlla) in **MK8DX beheer**. Dopo un riavvio, qualcuno deve accedere a Windows.
 - **Linux:** Docker Engine si avvia all'accensione del computer (grazie a `sudo systemctl enable --now docker` del capitolo 2B), e MK8DX parte da solo insieme a lui.
 - **macOS (non testato):** un'attività di accesso apre Docker Desktop quando accedi.
 

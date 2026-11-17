@@ -419,7 +419,7 @@ Ein Adresskonflikt entsteht, wenn zwei Geräte dieselbe Adresse benutzen. Eines 
 
 **Nach einem Neustart des Computers**
 
-- **Windows:** Die Aufgabe „MK8DX start“ startet Docker Desktop, sobald du dich bei Windows anmeldest; MK8DX geht dann von selbst online. Es muss sich also jemand anmelden: Steht der Computer nach einem Windows-Update am Anmeldebildschirm, ist MK8DX erst nach der Anmeldung wieder erreichbar.
+- **Windows:** Zwei Minuten nach der Anmeldung prüft die Aufgabe „MK8DX start“ die Docker-Linux-Engine. Wenn sie bereits läuft, bleibt Docker unverändert; sonst startet die Aufgabe Docker Desktop und wartet höchstens zehn Minuten auf die Engine und die MK8DX-Dienste. Das geschieht im Hintergrund ohne leeres Konsolenfenster. Schlägt der Start fehl, erklärt ein MK8DX-Fenster die nächsten Schritte: Docker Desktop starten, dann in **MK8DX beheer** **2** (Start) und **3** (Prüfen) wählen. Nach einem Neustart muss sich jemand bei Windows anmelden.
 - **Linux:** Die Docker Engine startet beim Hochfahren des Computers (dank `sudo systemctl enable --now docker` aus Kapitel 2B), und MK8DX kommt von selbst mit.
 - **macOS (nicht getestet):** Eine Anmeldeaufgabe öffnet Docker Desktop, wenn du dich anmeldest.
 

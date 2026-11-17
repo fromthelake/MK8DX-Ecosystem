@@ -419,7 +419,7 @@ MK8DX 컴퓨터의 주소는 공유기가 줍니다. 보통은 그대로 유지�
 
 **컴퓨터를 다시 시작한 뒤**
 
-- **Windows:** "MK8DX start" 작업이 Windows에 로그인하자마자 Docker Desktop을 시작하고, 그러면 MK8DX도 저절로 온라인이 됩니다. 그러니 누군가 로그인해야 합니다: Windows 업데이트 후 컴퓨터가 로그인 화면에 멈춰 있으면, 로그인한 뒤에야 MK8DX에 다시 접속할 수 있습니다.
+- **Windows:** 로그인 2분 후 "MK8DX start" 작업이 Docker Linux 엔진을 확인합니다. 이미 실행 중이면 그대로 두고, 아니면 Docker Desktop을 시작한 뒤 엔진과 MK8DX 서비스가 준비될 때까지 최대 10분 기다립니다. 빈 명령 창 없이 백그라운드에서 실행됩니다. 시작에 실패하면 MK8DX 창에 해결 방법이 표시됩니다. Docker Desktop을 시작하고 **MK8DX beheer**에서 **2**(시작), **3**(확인)을 선택하세요. 재부팅 후에는 Windows에 로그인해야 합니다.
 - **Linux:** Docker Engine이 컴퓨터가 부팅될 때 시작되고(2B장의 `sudo systemctl enable --now docker` 덕분), MK8DX도 함께 저절로 시작됩니다.
 - **macOS(테스트 안 됨):** 로그인 작업이 로그인할 때 Docker Desktop을 엽니다.
 

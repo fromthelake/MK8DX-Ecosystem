@@ -772,9 +772,8 @@ def schedule(state: Path, settings: dict, *, python: str | None = None) -> str:
     scheduler = choose_scheduler(route_of(state))
     name = task_name(project)
     if scheduler == "windows-task":
-        ok = auto_backup._register_task(
-            name, python, f'"{ROOT / "tooling" / "install.py"}" backup-run --state-dir "{state}" --quiet',
-            auto_backup._daily(settings["time"]))
+        task = auto_backup._windows_task("other-backup", state, python)
+        ok = bool(task and auto_backup._register_task(name, *task, auto_backup._daily(settings["time"])))
     elif scheduler in ("systemd-user", "launchd"):
         ok = host_platform.schedule(name, [python, str(ROOT / "tooling" / "install.py"), "backup-run",
                                            "--state-dir", str(state), "--quiet"], daily=settings["time"])

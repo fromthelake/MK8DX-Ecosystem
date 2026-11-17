@@ -311,6 +311,7 @@ class SchedulerTest(unittest.TestCase):
         result = types.SimpleNamespace(returncode=0, stdout="", stderr="")
         with patch.object(sb.sys, "platform", "win32"), \
                 patch("tooling.auto_backup.sys.platform", "win32"), \
+                patch("tooling.auto_backup._windowless_python", return_value="C:/Python/pythonw.exe"), \
                 patch("tooling.auto_backup.subprocess.run", side_effect=lambda a, **k: calls.append(a) or result), \
                 patch.object(sb.subprocess, "run", side_effect=lambda a, **k: calls.append(a) or result), \
                 patch.object(sb, "default_backup_root", return_value=Path(self.temporary.name) / "b"):
@@ -318,7 +319,7 @@ class SchedulerTest(unittest.TestCase):
             self.assertEqual(enabled["settings"]["scheduler"], "windows-task")
             script = calls[0][-1]
             self.assertIn("-TaskName 'MK8DX automatic backup mk8dx-os-0123456789'", script)
-            for needle in ("backup-run", "--quiet", "-StartWhenAvailable", "-Daily", "-At '03:15'",
+            for needle in ("windows_startup.py", "other-backup", "pythonw.exe", "-StartWhenAvailable", "-Daily", "-At '03:15'",
                            "-LogonType Interactive"):
                 self.assertIn(needle, script)
             self.assertNotIn("-Password", script)

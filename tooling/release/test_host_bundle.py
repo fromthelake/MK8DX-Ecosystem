@@ -312,6 +312,7 @@ class HostBundlePlatformTest(unittest.TestCase):
         staged = inspect.getsource(non_docker_bundle)
         for name in needed:
             self.assertIn(f'"{name}"', staged)
+        self.assertIn('"tooling/windows_startup.py"', staged)
 
 
 if __name__ == "__main__":
