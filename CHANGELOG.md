@@ -5,6 +5,8 @@ All notable changes to MK8DX Ecosystem are recorded here. The first stable publi
 
 ## Unreleased
 
+## 0.2.12 — 2026-11-17
+
 - Windows A2 startup waits two minutes after sign-in, skips starting Docker Desktop when its Linux engine already
   runs, and checks the MK8DX services with a ten-minute limit. Scheduled startup and maintenance no longer
   create empty console windows; startup failures show branded recovery steps. The A1 manual launcher uses the
