@@ -210,6 +210,9 @@ course : qui s'assoit où, quel groupe joue ensuite, les scores, les finales et 
   course, il lit les positions d'arrivée, les personnages, les drapeaux, les points de course, les
   totaux et le circuit (aussi en écran partagé à deux joueurs), les enregistre localement et les
   envoie à la soirée sur le site.
+  La reconnaissance automatique des résultats nécessite au moins six lignes de joueurs visibles et
+  traite les courses de 6 à 12 joueurs. Tu peux enregistrer une vidéo avec moins de joueurs, mais
+  tu dois saisir ces résultats manuellement.
 - **C'est toi qui décides** — l'organisateur vérifie les joueurs et les places avant qu'un résultat ne
   compte. En attendant, le classement en direct est affiché à titre provisoire.
 - **Ensuite** — classement final, un rapport à partager (WhatsApp, PNG, CSV, un article prêt pour

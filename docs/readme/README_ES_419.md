@@ -207,6 +207,9 @@ clasificación.
   lee las posiciones de llegada, los personajes, las banderas, los puntos de carrera, los totales y el
   circuito (también a pantalla dividida para dos jugadores), los guarda localmente y los envía a la
   noche en la web.
+  El reconocimiento automático de resultados requiere al menos seis filas de jugadores visibles y
+  procesa carreras de 6 a 12 jugadores. Puedes grabar video con menos jugadores, pero tendrás que
+  ingresar esos resultados manualmente.
 - **Tú tienes el control**: el organizador revisa jugadores y posiciones antes de que cuente un
   resultado. Mientras tanto, la clasificación en vivo se muestra de forma provisional.
 - **Después**: clasificación final, un informe para compartir (WhatsApp, PNG, CSV, un artículo listo

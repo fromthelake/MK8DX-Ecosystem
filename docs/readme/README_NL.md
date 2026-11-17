@@ -199,6 +199,9 @@ groep als volgende speelt, de scores, de finales en de standen.
 - **Tournament Live leest de races** — zet een capture card op elk scherm. Na elke race leest het
   de eindposities, characters, vlaggen, racepunten, totalen en de baan (ook in split screen met
   twee spelers), slaat ze lokaal op en stuurt ze naar de avond op de website.
+  Voor automatische uitslagherkenning moeten minstens zes spelersrijen zichtbaar zijn; Tournament
+  Live verwerkt races met 6–12 spelers. Met minder spelers kun je wel video opnemen, maar moet je
+  de uitslagen handmatig invoeren.
 - **Jij houdt de regie** — de organisator controleert spelers en plaatsen voordat een uitslag
   telt. Live-standen worden in de tussentijd voorlopig getoond.
 - **Na afloop** — eindstanden, een deelbaar verslag (WhatsApp, PNG, CSV, een artikel klaar voor

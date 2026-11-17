@@ -201,6 +201,9 @@ gare: chi siede dove, quale girone gioca dopo, i punteggi, le finali e le classi
 - **Tournament Live legge le gare** — collega una scheda di acquisizione a ogni schermo. Dopo ogni gara
   legge le posizioni d'arrivo, i personaggi, le bandiere, i punti gara, i totali e il percorso (anche
   in schermo condiviso a due giocatori), li salva in locale e li invia alla serata sul sito.
+  Il riconoscimento automatico dei risultati richiede almeno sei righe di giocatori visibili e
+  gestisce gare da 6 a 12 giocatori. Puoi comunque registrare un video con meno giocatori, ma
+  dovrai inserire i risultati a mano.
 - **Il controllo resta a te** — l'organizzatore verifica giocatori e posizioni prima che un risultato
   conti. Nel frattempo le classifiche live vengono mostrate in via provvisoria.
 - **Dopo** — classifiche finali, un report da condividere (WhatsApp, PNG, CSV, un articolo pronto per

@@ -206,6 +206,9 @@ Rennen: wer wo sitzt, welche Gruppe als Nächstes spielt, die Punkte, das Finale
 - **Tournament Live liest die Rennen** — Häng an jeden Bildschirm eine Capture-Karte. Nach jedem
   Rennen liest es die Platzierungen, Fahrer, Flaggen, Rennpunkte, Gesamtpunkte und die Strecke (auch
   im Zwei-Spieler-Splitscreen), speichert sie lokal und schickt sie an den Abend auf der Website.
+  Die automatische Ergebniserkennung benötigt mindestens sechs sichtbare Spielerzeilen und
+  verarbeitet Rennen mit 6–12 Spielern. Videoaufnahmen sind auch mit weniger Spielern möglich;
+  ihre Ergebnisse musst du von Hand eingeben.
 - **Du behältst die Kontrolle** — Der Organisator prüft Spieler und Platzierungen, bevor ein Ergebnis
   zählt. Die Live-Tabelle wird in der Zwischenzeit vorläufig angezeigt.
 - **Danach** — Endstand, ein teilbarer Bericht (WhatsApp, PNG, CSV, ein WordPress-fertiger Artikel)
