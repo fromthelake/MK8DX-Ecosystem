@@ -6,7 +6,7 @@
 # fine on CPU) — plain `pip install easyocr` picks the right wheel for your box.
 opencv-python==5.0.0.93
 opencv-python-headless==5.0.0.93
-numpy==2.5.4
+numpy==2.5.5
 Pillow==13.0.0
 easyocr==1.7.2
 jsonschema==4.26.0
